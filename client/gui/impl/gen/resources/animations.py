@@ -1,0 +1,193 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/resources/animations.py
+from gui.impl.gen_utils import DynAccessor
+
+class Animations(DynAccessor):
+    __slots__ = ()
+
+    class _advancedHints(DynAccessor):
+        __slots__ = ()
+        bulletAP = DynAccessor(56915)
+        bulletAPCR = DynAccessor(56916)
+        bulletHE = DynAccessor(56917)
+        bulletHEAT = DynAccessor(56918)
+        bulletHEModern = DynAccessor(56919)
+        consumablesBreadWithSchmaltz = DynAccessor(56920)
+        consumablesBuchty = DynAccessor(56921)
+        consumablesChocolate = DynAccessor(56922)
+        consumablesCoffeeWithCinnamonBuns = DynAccessor(56923)
+        consumablesCola = DynAccessor(56924)
+        consumablesExtinguisherBig = DynAccessor(56925)
+        consumablesExtinguisherSmall = DynAccessor(56926)
+        consumablesExtraCombatRations = DynAccessor(56927)
+        consumablesFirstAidBig = DynAccessor(56928)
+        consumablesFirstAidSmall = DynAccessor(56929)
+        consumablesGasoline100 = DynAccessor(56930)
+        consumablesGasoline105 = DynAccessor(56931)
+        consumablesImprovedCombatRations = DynAccessor(56932)
+        consumablesOilLendLease = DynAccessor(56933)
+        consumablesOilQuality = DynAccessor(56934)
+        consumablesOnigiri = DynAccessor(56935)
+        consumablesPuddingAndTea = DynAccessor(56936)
+        consumablesRepairKitBig = DynAccessor(56937)
+        consumablesRepairKitSmall = DynAccessor(56938)
+        consumablesSpaghetti = DynAccessor(56939)
+        consumablesSpeedGovernorRemoved = DynAccessor(56940)
+        consumablesStrongCoffee = DynAccessor(56941)
+        crewCommander = DynAccessor(56942)
+        crewDriver = DynAccessor(56943)
+        crewGunner = DynAccessor(56944)
+        crewLoader = DynAccessor(56945)
+        crewRadioOperator = DynAccessor(56946)
+        demountKit = DynAccessor(56947)
+        economyBonds = DynAccessor(56948)
+        economyConvertExp = DynAccessor(56949)
+        economyCredits = DynAccessor(56950)
+        economyGold = DynAccessor(56951)
+        economyPremium = DynAccessor(56952)
+        economyTankExperience = DynAccessor(56953)
+        equipment = DynAccessor(56954)
+        equipmentAdditionalGrousers = DynAccessor(56955)
+        equipmentBinocularTelescope = DynAccessor(56956)
+        equipmentCamouflageNet = DynAccessor(56957)
+        equipmentCO2 = DynAccessor(56958)
+        equipmentCoatedOptics = DynAccessor(56959)
+        equipmentCycloneFilter = DynAccessor(56960)
+        equipmentEnhancedSuspension = DynAccessor(56961)
+        equipmentGunLayingDrive = DynAccessor(56962)
+        equipmentImprovedVentilation = DynAccessor(56963)
+        equipmentLightSpallLiner = DynAccessor(56964)
+        equipmentMediumCaliberTankGunRammer = DynAccessor(56965)
+        equipmentToolbox = DynAccessor(56966)
+        equipmentVerticalStabilizer = DynAccessor(56967)
+        equipmentWetAmmoRack = DynAccessor(56968)
+        gamemodeProving = DynAccessor(56969)
+        gamemodeRandom = DynAccessor(56970)
+        gamemodeRanked = DynAccessor(56971)
+        gamemodeSpecial = DynAccessor(56972)
+        gamemodeStronghold = DynAccessor(56973)
+        gamemodeTeam = DynAccessor(56974)
+        gamemodeTraining = DynAccessor(56975)
+        instructions = DynAccessor(56976)
+        moduleDualgun = DynAccessor(56977)
+        moduleEngine = DynAccessor(56978)
+        moduleGun = DynAccessor(56979)
+        moduleRadio = DynAccessor(56980)
+        moduleSuspension = DynAccessor(56981)
+        moduleTurret = DynAccessor(56982)
+        moduleWheel = DynAccessor(56983)
+        service = DynAccessor(56984)
+        skillAdrenalineRush = DynAccessor(56985)
+        skillArmorer = DynAccessor(56986)
+        skillArtLamp = DynAccessor(56987)
+        skillBrothersInArms = DynAccessor(56988)
+        skillCallForVengeance = DynAccessor(56989)
+        skillClutchBraking = DynAccessor(56990)
+        skillConcealment = DynAccessor(56991)
+        skillControlledImpact = DynAccessor(56992)
+        skillDeadEye = DynAccessor(56993)
+        skillDesignatedTarget = DynAccessor(56994)
+        skillEagleEye = DynAccessor(56995)
+        skillExpert = DynAccessor(56996)
+        skillFirefighting = DynAccessor(56997)
+        skillIntuition = DynAccessor(56998)
+        skillJackOfAllTrades = DynAccessor(56999)
+        skillMentor = DynAccessor(57000)
+        skillOffRoadDriving = DynAccessor(57001)
+        skillPreventativeMaintenance = DynAccessor(57002)
+        skillRelaying = DynAccessor(57003)
+        skillRepairs = DynAccessor(57004)
+        skillSafeStowage = DynAccessor(57005)
+        skillSignalBoosting = DynAccessor(57006)
+        skillSituationalAwareness = DynAccessor(57007)
+        skillSixthSense = DynAccessor(57008)
+        skillSmoothRide = DynAccessor(57009)
+        skillSnapShot = DynAccessor(57010)
+        statConcealment = DynAccessor(57011)
+        statFirepower = DynAccessor(57012)
+        statMobility = DynAccessor(57013)
+        statSpotting = DynAccessor(57014)
+        statSurvivability = DynAccessor(57015)
+
+    advancedHints = _advancedHints()
+
+    class _ammunitionPanel(DynAccessor):
+        __slots__ = ()
+        removedDK = DynAccessor(57016)
+
+    ammunitionPanel = _ammunitionPanel()
+
+    class _battlePass(DynAccessor):
+        __slots__ = ()
+        BPBuy = DynAccessor(57017)
+        BPBuySmall = DynAccessor(57018)
+        BPlevelUp = DynAccessor(57019)
+        BPlevelUpSmall = DynAccessor(57020)
+        BPRays = DynAccessor(57021)
+        BPShow = DynAccessor(57022)
+        BPShowSmall = DynAccessor(57023)
+        explosion = DynAccessor(57024)
+        rays = DynAccessor(57025)
+        shine = DynAccessor(57026)
+        sparks = DynAccessor(57027)
+
+    battlePass = _battlePass()
+
+    class _battleRoyale(DynAccessor):
+        __slots__ = ()
+        progressBar_levelUp = DynAccessor(57028)
+
+    battleRoyale = _battleRoyale()
+
+    class _blueprints(DynAccessor):
+        __slots__ = ()
+        receive_10_parts = DynAccessor(57029)
+        receive_12_parts = DynAccessor(57030)
+        receive_4_parts = DynAccessor(57031)
+        receive_6_parts = DynAccessor(57032)
+        receive_8_parts = DynAccessor(57033)
+
+    blueprints = _blueprints()
+
+    class _customization(DynAccessor):
+        __slots__ = ()
+        divine_glow = DynAccessor(57034)
+
+    customization = _customization()
+
+    class _dedication(DynAccessor):
+        __slots__ = ()
+        rays = DynAccessor(57035)
+
+    dedication = _dedication()
+
+    class _mapbox(DynAccessor):
+        __slots__ = ()
+        aniBoom = DynAccessor(57036)
+        currentLevelHorizontalAnimation = DynAccessor(57037)
+        explosion = DynAccessor(57038)
+        godRaysBP = DynAccessor(57039)
+        rays = DynAccessor(57040)
+
+    mapbox = _mapbox()
+
+    class _modeSelector(DynAccessor):
+        __slots__ = ()
+        animCardSparksBg = DynAccessor(57041)
+
+    modeSelector = _modeSelector()
+
+    class _rankedBattles(DynAccessor):
+        __slots__ = ()
+        entryPointParticles = DynAccessor(57042)
+        godRays = DynAccessor(57043)
+
+    rankedBattles = _rankedBattles()
+
+    class _rewards(DynAccessor):
+        __slots__ = ()
+        conversion = DynAccessor(57044)
+        conversion_money = DynAccessor(57045)
+        finalBlueprintFragment = DynAccessor(57046)
+
+    rewards = _rewards()
