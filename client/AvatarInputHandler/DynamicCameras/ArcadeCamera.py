@@ -1,37 +1,32 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/ArcadeCamera.py
+from collections import namedtuple
 import logging
 import math
-from collections import namedtuple
-
-import BigWorld
 import GUI
-import Math
-from Math import Vector2, Vector3, Vector4, Matrix
-
-import BattleReplay
 import Keys
+import Math
+import BattleReplay
 import Settings
 import constants
 import math_utils
+import BigWorld
+from Math import Vector2, Vector3, Vector4, Matrix
 from AvatarInputHandler import cameras, aih_global_binding
 from AvatarInputHandler.AimingSystems.ArcadeAimingSystem import ArcadeAimingSystem, ShotPointCalculatorPlanar
 from AvatarInputHandler.AimingSystems.ArcadeAimingSystemRemote import ArcadeAimingSystemRemote
-from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, AccelerationSmoother, \
-    CameraWithSettings, calcYawPitchDelta
-from AvatarInputHandler.DynamicCameras.arcade_camera_helper import EScrollDir, EXPONENTIAL_EASING, \
-    CollideAnimatorEasing, OverScrollProtector, ZoomStateSwitcher, MinMax
+from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, AccelerationSmoother, CameraWithSettings, calcYawPitchDelta
 from AvatarInputHandler.VideoCamera import KeySensor
 from AvatarInputHandler.cameras import readFloat, readVec2, ImpulseReason, FovExtended
-from account_helpers.settings_core.settings_constants import GAME
 from debug_utils import LOG_WARNING, LOG_ERROR
+from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 from gui.battle_control import event_dispatcher
 from helpers import dependency
-from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 from skeletons.account_helpers.settings_core import ISettingsCache
+from account_helpers.settings_core.settings_constants import GAME
+from AvatarInputHandler.DynamicCameras.arcade_camera_helper import EScrollDir, EXPONENTIAL_EASING, CollideAnimatorEasing, OverScrollProtector, ZoomStateSwitcher, MinMax
 from skeletons.gui.game_control import IBootcampController
-
 _logger = logging.getLogger(__name__)
-
 
 def getCameraAsSettingsHolder(settingsDataSec):
     return ArcadeCamera(settingsDataSec, None)
@@ -41,29 +36,26 @@ _DEFAULT_ZOOM_DURATION = 0.5
 _COLLIDE_ANIM_DIST = 1.0
 _COLLIDE_ANIM_INTERVAL = 0.2
 
-
-class CollisionVolumeGroup(namedtuple('CollisionVolumeGroup', (
-        'minVolume', 'lowSpeedLimit', 'vehicleVisibilityLimit', 'approachSpeed', 'cameraSpeedFactor',
-        'criticalDistance',
-        'canSkip'))):
+class CollisionVolumeGroup(namedtuple('CollisionVolumeGroup', ('minVolume',
+ 'lowSpeedLimit',
+ 'vehicleVisibilityLimit',
+ 'approachSpeed',
+ 'cameraSpeedFactor',
+ 'criticalDistance',
+ 'canSkip'))):
 
     @staticmethod
     def fromSection(dataSection):
         it = iter(CollisionVolumeGroup._fields)
-        return CollisionVolumeGroup(dataSection.readFloat(next(it), 0.0), dataSection.readFloat(next(it), 0.0),
-                                    dataSection.readFloat(next(it), 0.0),
-                                    dataSection.readVector2(next(it), Math.Vector2(1.5, 10000.0)),
-                                    dataSection.readFloat(next(it), 0.1), dataSection.readFloat(next(it), 5.0),
-                                    dataSection.readBool(next(it), False))
+        return CollisionVolumeGroup(dataSection.readFloat(next(it), 0.0), dataSection.readFloat(next(it), 0.0), dataSection.readFloat(next(it), 0.0), dataSection.readVector2(next(it), Math.Vector2(1.5, 10000.0)), dataSection.readFloat(next(it), 0.1), dataSection.readFloat(next(it), 5.0), dataSection.readBool(next(it), False))
 
 
 VOLUME_GROUPS_NAMES = ['tiny',
-                       'small',
-                       'medium',
-                       'large']
+ 'small',
+ 'medium',
+ 'large']
 _INERTIA_EASING = math_utils.Easing.exponentialEasing
 ENABLE_INPUT_ROTATION_INERTIA = False
-
 
 class _InputInertia(object):
     positionDelta = property(lambda self: self.__deltaEasing.value)
@@ -91,8 +83,7 @@ class _InputInertia(object):
         if minMaxZoomMultiplier is not None:
             self.__minMaxZoomMultiplier = minMaxZoomMultiplier
         self.__deltaEasing.reset(Vector3(0.0), Vector3(0.0), duration)
-        fovMultiplier = math_utils.lerp(self.__minMaxZoomMultiplier.min, self.__minMaxZoomMultiplier.max,
-                                        relativeFocusDist)
+        fovMultiplier = math_utils.lerp(self.__minMaxZoomMultiplier.min, self.__minMaxZoomMultiplier.max, relativeFocusDist)
         self.__zoomMultiplierEasing.reset(fovMultiplier, fovMultiplier, duration)
         return
 
@@ -108,9 +99,9 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     __settingsCache = dependency.descriptor(ISettingsCache)
     __bootcampCtrl = dependency.descriptor(IBootcampController)
     REASONS_AFFECT_CAMERA_DIRECTLY = (ImpulseReason.MY_SHOT,
-                                      ImpulseReason.OTHER_SHOT,
-                                      ImpulseReason.VEHICLE_EXPLOSION,
-                                      ImpulseReason.HE_EXPLOSION)
+     ImpulseReason.OTHER_SHOT,
+     ImpulseReason.VEHICLE_EXPLOSION,
+     ImpulseReason.HE_EXPLOSION)
     _DYNAMIC_ENABLED = True
 
     @staticmethod
@@ -180,9 +171,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             self.__defaultAimOffset = defaultOffset
             self.__cam = BigWorld.HomingCamera(self.__adCfg['enable'])
             if self.__adCfg['enable']:
-                self.__cam.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'],
-                                                self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'],
-                                                self.__adCfg['minimalVolume'])
+                self.__cam.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
                 for group_name in VOLUME_GROUPS_NAMES:
                     self.__cam.addVolumeGroup(self.__adCfg['volumeGroups'][group_name])
 
@@ -205,20 +194,16 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__postmortemMode = postmortemMode
         targetMat = self.getTargetMProv()
         aimingSystemClass = ArcadeAimingSystemRemote if BigWorld.player().isObserver() else ArcadeAimingSystem
-        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'],
-                                                self._cfg['focusRadius'], self.__calcAimMatrix(),
-                                                self._cfg['angleRange'], not postmortemMode)
+        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'], self._cfg['focusRadius'], self.__calcAimMatrix(), self._cfg['angleRange'], not postmortemMode)
         if self.__adCfg['enable']:
-            self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'],
-                                                     self.__adCfg['minimalCameraDistance'],
-                                                     self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
+            self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
             for group_name in VOLUME_GROUPS_NAMES:
                 self.__aimingSystem.addVolumeGroup(self.__adCfg['volumeGroups'][group_name])
 
         self.setCameraDistance(self._cfg['startDist'])
         self.__aimingSystem.pitch = self._cfg['startAngle']
         self.__aimingSystem.yaw = Math.Matrix(targetMat).yaw
-        self.__aimingSystem.cursorShouldCheckCollisions(shouldCheckCollisions=False)
+        self.__aimingSystem.cursorShouldCheckCollisions(True)
         self.__updateAngles(0, 0)
         cameraPosProvider = Math.Vector4Translation(self.__aimingSystem.matrix)
         self.__cam.cameraPositionProvider = cameraPosProvider
@@ -279,8 +264,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             shiftMat.setIdentity()
         return
 
-    def enable(self, preferredPos=None, closesDist=False, postmortemParams=None, turretYaw=None, gunPitch=None,
-               camTransitionParams=None, initialVehicleMatrix=None):
+    def enable(self, preferredPos=None, closesDist=False, postmortemParams=None, turretYaw=None, gunPitch=None, camTransitionParams=None, initialVehicleMatrix=None):
         replayCtrl = BattleReplay.g_replayCtrl
         if replayCtrl.isRecording:
             replayCtrl.setAimClipPosition(self.__aimOffset)
@@ -290,8 +274,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         vehicle = player.getVehicleAttached()
         if player.observerSeesAll() and player.arena.period == constants.ARENA_PERIOD.BATTLE:
             if vehicle and vehicle.id == player.playerVehicleID:
-                self.delayCallback(0.0, self.enable, preferredPos, closesDist, postmortemParams, turretYaw, gunPitch,
-                                   camTransitionParams, initialVehicleMatrix)
+                self.delayCallback(0.0, self.enable, preferredPos, closesDist, postmortemParams, turretYaw, gunPitch, camTransitionParams, initialVehicleMatrix)
                 return
         if initialVehicleMatrix is None:
             initialVehicleMatrix = player.getOwnVehicleMatrix() if vehicle is None else vehicle.matrix
@@ -400,12 +383,10 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__cam.pivotPositionProvider = self.__aimingSystem.positionAboveVehicleProv
 
     def __setCameraPosition(self, relativeToVehiclePosition):
-        self.__cam.cameraPositionProvider.a = Vector4(relativeToVehiclePosition.x, relativeToVehiclePosition.y,
-                                                      relativeToVehiclePosition.z, 1.0)
+        self.__cam.cameraPositionProvider.a = Vector4(relativeToVehiclePosition.x, relativeToVehiclePosition.y, relativeToVehiclePosition.z, 1.0)
 
     def __setCameraAimPoint(self, relativeToVehiclePosition):
-        self.__cam.aimPointProvider.a = Vector4(relativeToVehiclePosition.x, relativeToVehiclePosition.y,
-                                                relativeToVehiclePosition.z, 1.0)
+        self.__cam.aimPointProvider.a = Vector4(relativeToVehiclePosition.x, relativeToVehiclePosition.y, relativeToVehiclePosition.z, 1.0)
 
     def disable(self):
         from gui import g_guiResetters
@@ -477,55 +458,423 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__aimingSystem.handleMovement(yawDelta, -pitchDelta)
         return (self.__aimingSystem.yaw, self.__aimingSystem.pitch, 0)
 
-    def __update(self, dx, dy, dz, rotateMode=True, zoomMode=True):
-        if not self.__aimingSystem:
-            return
-        eScrollDir = EScrollDir.convertDZ(dz)
-        prevPos = self.__inputInertia.calcWorldPos(self.__aimingSystem.matrix)
-        prevDist = self.__aimingSystem.distanceFromFocus
-        distMinMax = self.__distRange
-        if self.__isCamInTransition:
-            self.__isCamInTransition = self.__cameraTransition.isInTransition()
-        isColliding = self.__cam.hasCollision()
-        collisionWhileGlide = False
-        if self.__inputInertia.isGliding() and not isColliding and \
-                eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM):
-            cameraPos = self.__aimingSystem.matrix.translation
-            collisionWhileGlide = self.__cam.isColliding(BigWorld.player().spaceID, cameraPos)
-        preventScrollOut = (isColliding or collisionWhileGlide) and \
-                           eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM)
-        if preventScrollOut and prevDist == distMinMax.max and self.__isSettingsEnabled(GAME.COMMANDER_CAM):
-            if self.__isInArcadeZoomState() and not self.__isSettingsEnabled(
-                    GAME.PRE_COMMANDER_CAM) or self.__compareCurrStateSettingsKey(GAME.PRE_COMMANDER_CAM):
-                preventScrollOut = False
-        if isColliding and eScrollDir is EScrollDir.OUT:
-            self.__collideAnimatorEasing.start(_COLLIDE_ANIM_DIST, _COLLIDE_ANIM_INTERVAL)
-        distChanged = False
-        if zoomMode and eScrollDir and not self.__overScrollProtector.isProtecting() and not preventScrollOut:
-            if eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM):
-                if self.__isSettingsEnabled(GAME.COMMANDER_CAM):
-                    event_dispatcher.showCommanderCamHint(show=True)
-            distDelta = dz * float(self.__curScrollSense)
-            newDist = math_utils.clamp(distMinMax.min, distMinMax.max, prevDist - distDelta)
-            floatEps = 0.001
-            if abs(newDist - prevDist) > floatEps:
-                self.__updateCameraSettings(newDist)
-                self.__inputInertia.glideFov(self.__calcRelativeDist())
-                self.__aimingSystem.aimMatrix = self.__calcAimMatrix()
-                distChanged = True
-            if abs(newDist - prevDist) < floatEps and math_utils.almostZero(newDist - distMinMax.min):
-                if self.__isInArcadeZoomState() and self.__onChangeControlMode and not self.__updatedByKeyboard:
-                    self.__onChangeControlMode()
-                    return
-                self.__changeZoomState(EScrollDir.IN)
-            elif abs(newDist - prevDist) < floatEps and math_utils.almostZero(newDist - distMinMax.max):
-                self.__changeZoomState(EScrollDir.OUT)
-        if rotateMode and not self.__isCamInTransition:
-            self.__updateAngles(dx, dy)
-        if ENABLE_INPUT_ROTATION_INERTIA and not distChanged:
-            self.__aimingSystem.update(0.0)
-        if ENABLE_INPUT_ROTATION_INERTIA or distChanged:
-            self.__startInputInertiaTransition(prevPos)
+    def __update--- This code section failed: ---
+
+ 658       0	LOAD_FAST         'self'
+           3	LOAD_ATTR         '__aimingSystem'
+           6	POP_JUMP_IF_TRUE  '13'
+
+ 659       9	LOAD_CONST        ''
+          12	RETURN_END_IF     ''
+
+ 661      13	LOAD_GLOBAL       'EScrollDir'
+          16	LOAD_ATTR         'convertDZ'
+          19	LOAD_FAST         'dz'
+          22	CALL_FUNCTION_1   ''
+          25	STORE_FAST        'eScrollDir'
+
+ 663      28	LOAD_FAST         'self'
+          31	LOAD_ATTR         '__inputInertia'
+          34	LOAD_ATTR         'calcWorldPos'
+          37	LOAD_FAST         'self'
+          40	LOAD_ATTR         '__aimingSystem'
+          43	LOAD_ATTR         'matrix'
+          46	CALL_FUNCTION_1   ''
+          49	STORE_FAST        'prevPos'
+
+ 664      52	LOAD_FAST         'self'
+          55	LOAD_ATTR         '__aimingSystem'
+          58	LOAD_ATTR         'distanceFromFocus'
+          61	STORE_FAST        'prevDist'
+
+ 665      64	LOAD_FAST         'self'
+          67	LOAD_ATTR         '__distRange'
+          70	STORE_FAST        'distMinMax'
+
+ 667      73	LOAD_FAST         'self'
+          76	LOAD_ATTR         '__isCamInTransition'
+          79	POP_JUMP_IF_FALSE '103'
+
+ 668      82	LOAD_FAST         'self'
+          85	LOAD_ATTR         '__cameraTransition'
+          88	LOAD_ATTR         'isInTransition'
+          91	CALL_FUNCTION_0   ''
+          94	LOAD_FAST         'self'
+          97	STORE_ATTR        '__isCamInTransition'
+         100	JUMP_FORWARD      '103'
+       103_0	COME_FROM         '100'
+
+ 671     103	LOAD_FAST         'self'
+         106	LOAD_ATTR         '__cam'
+         109	LOAD_ATTR         'hasCollision'
+         112	CALL_FUNCTION_0   ''
+         115	STORE_FAST        'isColliding'
+
+ 674     118	LOAD_GLOBAL       'False'
+         121	STORE_FAST        'collisionWhileGlide'
+
+ 675     124	LOAD_FAST         'self'
+         127	LOAD_ATTR         '__inputInertia'
+         130	LOAD_ATTR         'isGliding'
+         133	CALL_FUNCTION_0   ''
+         136	POP_JUMP_IF_FALSE '228'
+         139	LOAD_FAST         'isColliding'
+         142	UNARY_NOT         ''
+         143	POP_JUMP_IF_FALSE '228'
+         146	LOAD_FAST         'eScrollDir'
+         149	LOAD_GLOBAL       'EScrollDir'
+         152	LOAD_ATTR         'OUT'
+         155	COMPARE_OP        'is'
+       158_0	COME_FROM         '136'
+       158_1	COME_FROM         '143'
+         158	POP_JUMP_IF_FALSE '228'
+
+ 676     161	LOAD_FAST         'self'
+         164	LOAD_ATTR         '__compareCurrStateSettingsKey'
+         167	LOAD_GLOBAL       'GAME'
+         170	LOAD_ATTR         'COMMANDER_CAM'
+         173	CALL_FUNCTION_1   ''
+         176	UNARY_NOT         ''
+       177_0	COME_FROM         '158'
+         177	POP_JUMP_IF_FALSE '228'
+
+ 678     180	LOAD_FAST         'self'
+         183	LOAD_ATTR         '__aimingSystem'
+         186	LOAD_ATTR         'matrix'
+         189	LOAD_ATTR         'translation'
+         192	STORE_FAST        'cameraPos'
+
+ 679     195	LOAD_FAST         'self'
+         198	LOAD_ATTR         '__cam'
+         201	LOAD_ATTR         'isColliding'
+         204	LOAD_GLOBAL       'BigWorld'
+         207	LOAD_ATTR         'player'
+         210	CALL_FUNCTION_0   ''
+         213	LOAD_ATTR         'spaceID'
+         216	LOAD_FAST         'cameraPos'
+         219	CALL_FUNCTION_2   ''
+         222	STORE_FAST        'collisionWhileGlide'
+         225	JUMP_FORWARD      '228'
+       228_0	COME_FROM         '225'
+
+ 681     228	LOAD_FAST         'isColliding'
+         231	POP_JUMP_IF_TRUE  '240'
+         234	LOAD_FAST         'collisionWhileGlide'
+       237_0	COME_FROM         '231'
+         237	JUMP_IF_FALSE_OR_POP '271'
+         240	LOAD_FAST         'eScrollDir'
+         243	LOAD_GLOBAL       'EScrollDir'
+         246	LOAD_ATTR         'OUT'
+         249	COMPARE_OP        'is'
+         252	JUMP_IF_FALSE_OR_POP '271'
+
+ 682     255	LOAD_FAST         'self'
+         258	LOAD_ATTR         '__compareCurrStateSettingsKey'
+         261	LOAD_GLOBAL       'GAME'
+         264	LOAD_ATTR         'COMMANDER_CAM'
+         267	CALL_FUNCTION_1   ''
+         270	UNARY_NOT         ''
+       271_0	COME_FROM         '237'
+       271_1	COME_FROM         '252'
+         271	STORE_FAST        'preventScrollOut'
+
+ 685     274	LOAD_FAST         'preventScrollOut'
+         277	POP_JUMP_IF_FALSE '374'
+         280	LOAD_FAST         'prevDist'
+         283	LOAD_FAST         'distMinMax'
+         286	LOAD_ATTR         'max'
+         289	COMPARE_OP        '=='
+         292	POP_JUMP_IF_FALSE '374'
+         295	LOAD_FAST         'self'
+         298	LOAD_ATTR         '__isSettingsEnabled'
+         301	LOAD_GLOBAL       'GAME'
+         304	LOAD_ATTR         'COMMANDER_CAM'
+         307	CALL_FUNCTION_1   ''
+       310_0	COME_FROM         '277'
+       310_1	COME_FROM         '292'
+         310	POP_JUMP_IF_FALSE '374'
+
+ 686     313	LOAD_FAST         'self'
+         316	LOAD_ATTR         '__isInArcadeZoomState'
+         319	CALL_FUNCTION_0   ''
+         322	POP_JUMP_IF_FALSE '344'
+         325	LOAD_FAST         'self'
+         328	LOAD_ATTR         '__isSettingsEnabled'
+         331	LOAD_GLOBAL       'GAME'
+         334	LOAD_ATTR         'PRE_COMMANDER_CAM'
+         337	CALL_FUNCTION_1   ''
+         340	UNARY_NOT         ''
+       341_0	COME_FROM         '322'
+         341	POP_JUMP_IF_TRUE  '362'
+
+ 687     344	LOAD_FAST         'self'
+         347	LOAD_ATTR         '__compareCurrStateSettingsKey'
+         350	LOAD_GLOBAL       'GAME'
+         353	LOAD_ATTR         'PRE_COMMANDER_CAM'
+         356	CALL_FUNCTION_1   ''
+       359_0	COME_FROM         '310'
+       359_1	COME_FROM         '341'
+         359	POP_JUMP_IF_FALSE '374'
+
+ 688     362	LOAD_GLOBAL       'False'
+         365	STORE_FAST        'preventScrollOut'
+         368	JUMP_ABSOLUTE     '374'
+         371	JUMP_FORWARD      '374'
+       374_0	COME_FROM         '371'
+
+ 690     374	LOAD_FAST         'isColliding'
+         377	POP_JUMP_IF_FALSE '417'
+         380	LOAD_FAST         'eScrollDir'
+         383	LOAD_GLOBAL       'EScrollDir'
+         386	LOAD_ATTR         'OUT'
+         389	COMPARE_OP        'is'
+       392_0	COME_FROM         '377'
+         392	POP_JUMP_IF_FALSE '417'
+
+ 692     395	LOAD_FAST         'self'
+         398	LOAD_ATTR         '__collideAnimatorEasing'
+         401	LOAD_ATTR         'start'
+         404	LOAD_GLOBAL       '_COLLIDE_ANIM_DIST'
+         407	LOAD_GLOBAL       '_COLLIDE_ANIM_INTERVAL'
+         410	CALL_FUNCTION_2   ''
+         413	POP_TOP           ''
+         414	JUMP_FORWARD      '417'
+       417_0	COME_FROM         '414'
+
+ 695     417	LOAD_GLOBAL       'False'
+         420	STORE_FAST        'distChanged'
+
+ 696     423	LOAD_FAST         'zoomMode'
+         426	POP_JUMP_IF_FALSE '846'
+         429	LOAD_FAST         'eScrollDir'
+         432	POP_JUMP_IF_FALSE '846'
+         435	LOAD_FAST         'self'
+         438	LOAD_ATTR         '__overScrollProtector'
+         441	LOAD_ATTR         'isProtecting'
+         444	CALL_FUNCTION_0   ''
+         447	UNARY_NOT         ''
+         448	POP_JUMP_IF_FALSE '846'
+         451	LOAD_FAST         'preventScrollOut'
+         454	UNARY_NOT         ''
+       455_0	COME_FROM         '426'
+       455_1	COME_FROM         '432'
+       455_2	COME_FROM         '448'
+         455	POP_JUMP_IF_FALSE '846'
+
+ 699     458	LOAD_FAST         'eScrollDir'
+         461	LOAD_GLOBAL       'EScrollDir'
+         464	LOAD_ATTR         'OUT'
+         467	COMPARE_OP        'is'
+         470	POP_JUMP_IF_FALSE '532'
+         473	LOAD_FAST         'self'
+         476	LOAD_ATTR         '__compareCurrStateSettingsKey'
+         479	LOAD_GLOBAL       'GAME'
+         482	LOAD_ATTR         'COMMANDER_CAM'
+         485	CALL_FUNCTION_1   ''
+         488	UNARY_NOT         ''
+       489_0	COME_FROM         '470'
+         489	POP_JUMP_IF_FALSE '532'
+
+ 700     492	LOAD_FAST         'self'
+         495	LOAD_ATTR         '__isSettingsEnabled'
+         498	LOAD_GLOBAL       'GAME'
+         501	LOAD_ATTR         'COMMANDER_CAM'
+         504	CALL_FUNCTION_1   ''
+         507	POP_JUMP_IF_FALSE '532'
+
+ 701     510	LOAD_GLOBAL       'event_dispatcher'
+         513	LOAD_ATTR         'showCommanderCamHint'
+         516	LOAD_CONST        'show'
+         519	LOAD_GLOBAL       'True'
+         522	CALL_FUNCTION_256 ''
+         525	POP_TOP           ''
+         526	JUMP_ABSOLUTE     '532'
+         529	JUMP_FORWARD      '532'
+       532_0	COME_FROM         '529'
+
+ 703     532	LOAD_FAST         'dz'
+         535	LOAD_GLOBAL       'float'
+         538	LOAD_FAST         'self'
+         541	LOAD_ATTR         '__curScrollSense'
+         544	CALL_FUNCTION_1   ''
+         547	BINARY_MULTIPLY   ''
+         548	STORE_FAST        'distDelta'
+
+ 704     551	LOAD_GLOBAL       'math_utils'
+         554	LOAD_ATTR         'clamp'
+         557	LOAD_FAST         'distMinMax'
+         560	LOAD_ATTR         'min'
+         563	LOAD_FAST         'distMinMax'
+         566	LOAD_ATTR         'max'
+         569	LOAD_FAST         'prevDist'
+         572	LOAD_FAST         'distDelta'
+         575	BINARY_SUBTRACT   ''
+         576	CALL_FUNCTION_3   ''
+         579	STORE_FAST        'newDist'
+
+ 705     582	LOAD_CONST        0.001
+         585	STORE_FAST        'floatEps'
+
+ 707     588	LOAD_GLOBAL       'abs'
+         591	LOAD_FAST         'newDist'
+         594	LOAD_FAST         'prevDist'
+         597	BINARY_SUBTRACT   ''
+         598	CALL_FUNCTION_1   ''
+         601	LOAD_FAST         'floatEps'
+         604	COMPARE_OP        '>'
+         607	POP_JUMP_IF_FALSE '672'
+
+ 708     610	LOAD_FAST         'self'
+         613	LOAD_ATTR         '__updateCameraSettings'
+         616	LOAD_FAST         'newDist'
+         619	CALL_FUNCTION_1   ''
+         622	POP_TOP           ''
+
+ 711     623	LOAD_FAST         'self'
+         626	LOAD_ATTR         '__inputInertia'
+         629	LOAD_ATTR         'glideFov'
+         632	LOAD_FAST         'self'
+         635	LOAD_ATTR         '__calcRelativeDist'
+         638	CALL_FUNCTION_0   ''
+         641	CALL_FUNCTION_1   ''
+         644	POP_TOP           ''
+
+ 712     645	LOAD_FAST         'self'
+         648	LOAD_ATTR         '__calcAimMatrix'
+         651	CALL_FUNCTION_0   ''
+         654	LOAD_FAST         'self'
+         657	LOAD_ATTR         '__aimingSystem'
+         660	STORE_ATTR        'aimMatrix'
+
+ 713     663	LOAD_GLOBAL       'True'
+         666	STORE_FAST        'distChanged'
+         669	JUMP_FORWARD      '672'
+       672_0	COME_FROM         '669'
+
+ 717     672	LOAD_GLOBAL       'abs'
+         675	LOAD_FAST         'newDist'
+         678	LOAD_FAST         'prevDist'
+         681	BINARY_SUBTRACT   ''
+         682	CALL_FUNCTION_1   ''
+         685	LOAD_FAST         'floatEps'
+         688	COMPARE_OP        '<'
+         691	POP_JUMP_IF_FALSE '780'
+         694	LOAD_GLOBAL       'math_utils'
+         697	LOAD_ATTR         'almostZero'
+         700	LOAD_FAST         'newDist'
+         703	LOAD_FAST         'distMinMax'
+         706	LOAD_ATTR         'min'
+         709	BINARY_SUBTRACT   ''
+         710	CALL_FUNCTION_1   ''
+       713_0	COME_FROM         '691'
+         713	POP_JUMP_IF_FALSE '780'
+
+ 718     716	LOAD_FAST         'self'
+         719	LOAD_ATTR         '__isInArcadeZoomState'
+         722	CALL_FUNCTION_0   ''
+         725	POP_JUMP_IF_FALSE '761'
+         728	LOAD_FAST         'self'
+         731	LOAD_ATTR         '__onChangeControlMode'
+         734	POP_JUMP_IF_FALSE '761'
+         737	LOAD_FAST         'self'
+         740	LOAD_ATTR         '__updatedByKeyboard'
+         743	UNARY_NOT         ''
+       744_0	COME_FROM         '725'
+       744_1	COME_FROM         '734'
+         744	POP_JUMP_IF_FALSE '761'
+
+ 719     747	LOAD_FAST         'self'
+         750	LOAD_ATTR         '__onChangeControlMode'
+         753	CALL_FUNCTION_0   ''
+         756	POP_TOP           ''
+
+ 720     757	LOAD_CONST        ''
+         760	RETURN_END_IF     ''
+
+ 722     761	LOAD_FAST         'self'
+         764	LOAD_ATTR         '__changeZoomState'
+         767	LOAD_GLOBAL       'EScrollDir'
+         770	LOAD_ATTR         'IN'
+         773	CALL_FUNCTION_1   ''
+         776	POP_TOP           ''
+         777	JUMP_ABSOLUTE     '846'
+
+ 723     780	LOAD_GLOBAL       'abs'
+         783	LOAD_FAST         'newDist'
+         786	LOAD_FAST         'prevDist'
+         789	BINARY_SUBTRACT   ''
+         790	CALL_FUNCTION_1   ''
+         793	LOAD_FAST         'floatEps'
+         796	COMPARE_OP        '<'
+         799	POP_JUMP_IF_FALSE '846'
+         802	LOAD_GLOBAL       'math_utils'
+         805	LOAD_ATTR         'almostZero'
+         808	LOAD_FAST         'newDist'
+         811	LOAD_FAST         'distMinMax'
+         814	LOAD_ATTR         'max'
+         817	BINARY_SUBTRACT   ''
+         818	CALL_FUNCTION_1   ''
+       821_0	COME_FROM         '799'
+         821	POP_JUMP_IF_FALSE '846'
+
+ 724     824	LOAD_FAST         'self'
+         827	LOAD_ATTR         '__changeZoomState'
+         830	LOAD_GLOBAL       'EScrollDir'
+         833	LOAD_ATTR         'OUT'
+         836	CALL_FUNCTION_1   ''
+         839	POP_TOP           ''
+         840	JUMP_ABSOLUTE     '846'
+         843	JUMP_FORWARD      '846'
+       846_0	COME_FROM         '843'
+
+ 726     846	LOAD_FAST         'rotateMode'
+         849	POP_JUMP_IF_FALSE '881'
+         852	LOAD_FAST         'self'
+         855	LOAD_ATTR         '__isCamInTransition'
+         858	UNARY_NOT         ''
+       859_0	COME_FROM         '849'
+         859	POP_JUMP_IF_FALSE '881'
+
+ 727     862	LOAD_FAST         'self'
+         865	LOAD_ATTR         '__updateAngles'
+         868	LOAD_FAST         'dx'
+         871	LOAD_FAST         'dy'
+         874	CALL_FUNCTION_2   ''
+         877	POP_TOP           ''
+         878	JUMP_FORWARD      '881'
+       881_0	COME_FROM         '878'
+
+ 730     881	LOAD_GLOBAL       'ENABLE_INPUT_ROTATION_INERTIA'
+         884	POP_JUMP_IF_FALSE '913'
+         887	LOAD_FAST         'distChanged'
+         890	UNARY_NOT         ''
+       891_0	COME_FROM         '884'
+         891	POP_JUMP_IF_FALSE '913'
+
+ 731     894	LOAD_FAST         'self'
+         897	LOAD_ATTR         '__aimingSystem'
+         900	LOAD_ATTR         'update'
+         903	LOAD_CONST        0.0
+         906	CALL_FUNCTION_1   ''
+         909	POP_TOP           ''
+         910	JUMP_FORWARD      '913'
+       913_0	COME_FROM         '910'
+
+ 733     913	LOAD_GLOBAL       'ENABLE_INPUT_ROTATION_INERTIA'
+         916	POP_JUMP_IF_TRUE  '925'
+         919	LOAD_FAST         'distChanged'
+       922_0	COME_FROM         '916'
+         922	POP_JUMP_IF_FALSE '941'
+
+ 734     925	LOAD_FAST         'self'
+         928	LOAD_ATTR         '__startInputInertiaTransition'
+         931	LOAD_FAST         'prevPos'
+         934	CALL_FUNCTION_1   ''
+         937	POP_TOP           ''
+         938	JUMP_FORWARD      '941'
+       941_0	COME_FROM         '938'
+
+Syntax error at or near 'JUMP_FORWARD' token at offset 371
 
     def __adjustMinDistForShotPointCalc(self):
         if self.__aimingSystem:
@@ -625,15 +974,16 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__aimingSystem.distanceFromFocus = newDist
         if self.__isInArcadeZoomState():
             self._userCfg['startDist'] = newDist
+        heightAboveBase, _ = self.getPivotSettings()
+        diff = heightAboveBase - self._cfg['heightAboveBase']
+        self.__cam.shiftPivotPos(Vector3(0, -diff, 0))
 
     def __isInArcadeZoomState(self):
         return self.__zoomStateSwitcher.getCurrentState() is None
 
     def __compareCurrStateSettingsKey(self, key):
         state = self.__zoomStateSwitcher.getCurrentState()
-        if state:
-            return state.settingsKey == key
-        return False
+        return state.settingsKey == key if state else False
 
     def __isSettingsEnabled(self, settingsKey):
         if settingsKey and self.__settingsCache.isSynced():
@@ -645,6 +995,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     def __updateAdvancedCollision(self):
         enable = self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM)
         self.__cam.setCollisionCheckOnlyAtPos(enable)
+        self.__aimingSystem.cursorShouldCheckCollisions(not enable)
 
     def __updateLodBiasForTanks(self):
         state = self.__zoomStateSwitcher.getCurrentState()
@@ -652,8 +1003,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         BigWorld.setMinLodBiasForTanks(minLodBias)
 
     def __cameraUpdate(self):
-        if not (
-                self.__autoUpdateDxDyDz.x == 0.0 and self.__autoUpdateDxDyDz.y == 0.0 and self.__autoUpdateDxDyDz.z == 0.0):
+        if not (self.__autoUpdateDxDyDz.x == 0.0 and self.__autoUpdateDxDyDz.y == 0.0 and self.__autoUpdateDxDyDz.z == 0.0):
             self.__update(self.__autoUpdateDxDyDz.x, self.__autoUpdateDxDyDz.y, self.__autoUpdateDxDyDz.z)
         inertDt = deltaTime = self.measureDeltaTime()
         replayCtrl = BattleReplay.g_replayCtrl
@@ -682,8 +1032,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         relCamPosMatrix = math_utils.createTranslationMatrix(impulseDeviation + movementDeviation)
         relCamPosMatrix.postMultiply(deviationBasis)
         relCamPosMatrix.translation += fromVehicleToUnshakedPos
-        upRotMat = math_utils.createRotationMatrix(Vector3(0, 0, -impulseDeviation.x * self.__dynamicCfg[
-            'sideImpulseToRollRatio'] - self.__noiseOscillator.deviation.z))
+        upRotMat = math_utils.createRotationMatrix(Vector3(0, 0, -impulseDeviation.x * self.__dynamicCfg['sideImpulseToRollRatio'] - self.__noiseOscillator.deviation.z))
         upRotMat.postMultiply(relCamPosMatrix)
         self.__cam.up = upRotMat.applyVector(Vector3(0, 1, 0))
         relTranslation = relCamPosMatrix.translation
@@ -747,14 +1096,10 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         defaultX = self.__defaultAimOffset[0]
         defaultY = self.__defaultAimOffset[1]
         yawFromImpulse = self.__impulseOscillator.deviation.x * self.__dynamicCfg['sideImpulseToYawRatio']
-        xImpulseDeviationTan = math.tan(
-            -(yawFromImpulse + self.__noiseOscillator.deviation.x) * oscillationsZoomMultiplier)
+        xImpulseDeviationTan = math.tan(-(yawFromImpulse + self.__noiseOscillator.deviation.x) * oscillationsZoomMultiplier)
         pitchFromImpulse = self.__impulseOscillator.deviation.z * self.__dynamicCfg['frontImpulseToPitchRatio']
-        yImpulseDeviationTan = math.tan(
-            (pitchFromImpulse + self.__noiseOscillator.deviation.y) * oscillationsZoomMultiplier)
-        totalOffset = Vector2(
-            (defaultX * xTan + xImpulseDeviationTan) / (xTan * (1 - defaultX * xTan * xImpulseDeviationTan)),
-            (defaultY * yTan + yImpulseDeviationTan) / (yTan * (1 - defaultY * yTan * yImpulseDeviationTan)))
+        yImpulseDeviationTan = math.tan((pitchFromImpulse + self.__noiseOscillator.deviation.y) * oscillationsZoomMultiplier)
+        totalOffset = Vector2((defaultX * xTan + xImpulseDeviationTan) / (xTan * (1 - defaultX * xTan * xImpulseDeviationTan)), (defaultY * yTan + yImpulseDeviationTan) / (yTan * (1 - defaultY * yTan * yImpulseDeviationTan)))
         return totalOffset
 
     def __calcRelativeDist(self):
@@ -810,11 +1155,9 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         relDist = self.__calcRelativeDist()
         zoomMultiplier = math_utils.lerp(1.0, self.__dynamicCfg['zoomExposure'], relDist)
         impulseDeviation = Vector3(self.__impulseOscillator.deviation)
-        impulseDeviation.set(impulseDeviation.x * zoomMultiplier, impulseDeviation.y * zoomMultiplier,
-                             impulseDeviation.z * zoomMultiplier)
+        impulseDeviation.set(impulseDeviation.x * zoomMultiplier, impulseDeviation.y * zoomMultiplier, impulseDeviation.z * zoomMultiplier)
         movementDeviation = Vector3(self.__movementOscillator.deviation)
-        movementDeviation.set(movementDeviation.x * zoomMultiplier, movementDeviation.y * zoomMultiplier,
-                              movementDeviation.z * zoomMultiplier)
+        movementDeviation.set(movementDeviation.x * zoomMultiplier, movementDeviation.y * zoomMultiplier, movementDeviation.z * zoomMultiplier)
         return (impulseDeviation, movementDeviation, zoomMultiplier)
 
     def applyImpulse(self, position, impulse, reason=ImpulseReason.ME_HIT):
@@ -891,32 +1234,21 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         dynamicsSection = dataSec['dynamics']
         self.__impulseOscillator = createOscillatorFromSection(dynamicsSection['impulseOscillator'], False)
         self.__movementOscillator = createOscillatorFromSection(dynamicsSection['movementOscillator'], False)
-        self.__movementOscillator = Math.PyCompoundOscillator(self.__movementOscillator,
-                                                              Math.PyOscillator(1.0, Vector3(50), Vector3(20),
-                                                                                Vector3(0.01, 0.0, 0.01)))
+        self.__movementOscillator = Math.PyCompoundOscillator(self.__movementOscillator, Math.PyOscillator(1.0, Vector3(50), Vector3(20), Vector3(0.01, 0.0, 0.01)))
         self.__noiseOscillator = createOscillatorFromSection(dynamicsSection['randomNoiseOscillatorSpherical'])
         self.__dynamicCfg.readImpulsesConfig(dynamicsSection)
-        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000,
-                                                                 1000, 0.1)
-        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(
-            readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(
-            readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(
-            readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000, 1000, 0.1)
+        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
         accelerationThreshold = readFloat(dynamicsSection, 'accelerationThreshold', 0.0, 1000.0, 0.1)
         self.__dynamicCfg['accelerationThreshold'] = accelerationThreshold
         self.__dynamicCfg['accelerationMax'] = readFloat(dynamicsSection, 'accelerationMax', 0.0, 1000.0, 0.1)
-        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0,
-                                                                10.0)
-        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance',
-                                                                     0.0, 1000.0, 10.0)
+        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0, 10.0)
+        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance', 0.0, 1000.0, 10.0)
         self.__dynamicCfg['zoomExposure'] = readFloat(dynamicsSection, 'zoomExposure', 0.0, 1000.0, 0.25)
-        accelerationFilter = math_utils.RangeFilter(self.__dynamicCfg['accelerationThreshold'],
-                                                    self.__dynamicCfg['accelerationMax'], 100,
-                                                    math_utils.SMAFilter(ArcadeCamera._FILTER_LENGTH))
-        maxAccelerationDuration = readFloat(dynamicsSection, 'maxAccelerationDuration', 0.0, 10000.0,
-                                            ArcadeCamera._DEFAULT_MAX_ACCELERATION_DURATION)
+        accelerationFilter = math_utils.RangeFilter(self.__dynamicCfg['accelerationThreshold'], self.__dynamicCfg['accelerationMax'], 100, math_utils.SMAFilter(ArcadeCamera._FILTER_LENGTH))
+        maxAccelerationDuration = readFloat(dynamicsSection, 'maxAccelerationDuration', 0.0, 10000.0, ArcadeCamera._DEFAULT_MAX_ACCELERATION_DURATION)
         self.__accelerationSmoother = AccelerationSmoother(accelerationFilter, maxAccelerationDuration)
         self.__inputInertia = _InputInertia(self.__calculateInputInertiaMinMax(), 0.0)
         advancedCollider = dataSec['advancedCollider']
@@ -948,14 +1280,11 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         bcfg['angleRange'] = readVec2(dataSec, 'angleRange', (0, 0), (180, 180), (10, 110))
         distRangeVec = readVec2(dataSec, 'distRange', (1, 1), (100, 100), (2, 20))
         bcfg['distRange'] = MinMax(distRangeVec.x, distRangeVec.y)
-        bcfg['minStartDist'] = readFloat(dataSec, 'minStartDist', bcfg['distRange'][0], bcfg['distRange'][1],
-                                         bcfg['distRange'][0])
-        bcfg['optimalStartDist'] = readFloat(dataSec, 'optimalStartDist', bcfg['distRange'][0], bcfg['distRange'][1],
-                                             bcfg['distRange'][0])
+        bcfg['minStartDist'] = readFloat(dataSec, 'minStartDist', bcfg['distRange'][0], bcfg['distRange'][1], bcfg['distRange'][0])
+        bcfg['optimalStartDist'] = readFloat(dataSec, 'optimalStartDist', bcfg['distRange'][0], bcfg['distRange'][1], bcfg['distRange'][0])
         bcfg['angleRange'][0] = math.radians(bcfg['angleRange'][0]) - math.pi * 0.5
         bcfg['angleRange'][1] = math.radians(bcfg['angleRange'][1]) - math.pi * 0.5
-        bcfg['fovMultMinMaxDist'] = MinMax(readFloat(dataSec, 'fovMultMinDist', 0.1, 100, 1.0),
-                                           readFloat(dataSec, 'fovMultMaxDist', 0.1, 100, 1.0))
+        bcfg['fovMultMinMaxDist'] = MinMax(readFloat(dataSec, 'fovMultMinDist', 0.1, 100, 1.0), readFloat(dataSec, 'fovMultMaxDist', 0.1, 100, 1.0))
         bcfg['focusRadius'] = readFloat(dataSec, 'focusRadius', -100, 100, 3)
         bcfg['heightAboveBase'] = readFloat(dataSec, 'heightAboveBase', 0, 100, 4)
         bcfg['overScrollProtectOnMax'] = readFloat(dataSec, 'overScrollProtectOnMax', 0, 10, 0)
@@ -978,9 +1307,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             ucfg['startDist'] = bcfg['optimalStartDist']
         ucfg['startAngle'] = readFloat(dataSec, 'startAngle', 5, 180, 60)
         ucfg['startAngle'] = math.radians(ucfg['startAngle']) - math.pi * 0.5
-        ucfg['fovMultMinMaxDist'] = MinMax(
-            readFloat(dataSec, 'fovMultMinDist', 0.1, 100, bcfg['fovMultMinMaxDist'].min),
-            readFloat(dataSec, 'fovMultMaxDist', 0.1, 100, bcfg['fovMultMinMaxDist'].max))
+        ucfg['fovMultMinMaxDist'] = MinMax(readFloat(dataSec, 'fovMultMinDist', 0.1, 100, bcfg['fovMultMinMaxDist'].min), readFloat(dataSec, 'fovMultMaxDist', 0.1, 100, bcfg['fovMultMinMaxDist'].max))
         return
 
     def _makeCfg(self):
@@ -1026,3 +1353,18 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
 
     def __onRecreateDevice(self):
         self.__aimingSystem.aimMatrix = self.__calcAimMatrix()
+
+
+class ArcadeCameraEpic(ArcadeCamera):
+
+    @staticmethod
+    def _getConfigsKey():
+        return ArcadeCameraEpic.__name__
+
+    def reload(self):
+        if not constants.IS_DEVELOPMENT:
+            return
+        import ResMgr
+        ResMgr.purge('gui/avatar_input_handler.xml')
+        cameraSec = ResMgr.openSection('gui/avatar_input_handler.xml/arcadeEpicMinefieldMode/camera/')
+        self._reloadConfigs(cameraSec)

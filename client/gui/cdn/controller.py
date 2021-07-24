@@ -182,6 +182,7 @@ class _PurchasePackage(object):
     def __clearTimeoutBwCbId(self):
         if self.__timeoutBwCbId is not None:
             BigWorld.cancelCallback(self.__timeoutBwCbId)
+        self.__timeoutBwCbId = None
         return
 
 
