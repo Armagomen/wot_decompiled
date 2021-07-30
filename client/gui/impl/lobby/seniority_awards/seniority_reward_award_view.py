@@ -170,13 +170,15 @@ class SeniorityRewardAwardView(ViewImpl):
         elif tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
             return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[vehicleCD])
         else:
-            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.AWARD_VEHICLE, specialArgs=(vehicleCD,
-             None,
-             None,
-             None,
-             None,
-             None,
-             True)) if tooltipId == SeniorityAwardsVehicleRendererModel.TOOLTIP_VEHICLE_REWARD else None
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SENIORITY_AWARD_VEHICLE,
+                                     specialArgs=(vehicleCD,
+                                                  100,
+                                                  None,
+                                                  None,
+                                                  None,
+                                                  None,
+                                                  True,
+                                                  True)) if tooltipId == SeniorityAwardsVehicleRendererModel.TOOLTIP_VEHICLE_REWARD else None
 
     def __updateBonuses(self, data):
         bonuses, vehicles = getSeniorityAwardsRewardsAndBonuses(data, maxAwardCount=_BONUSES_COUNT, excluded=_EXCLUDED_BONUSES, sortKey=lambda b: _keySortOrder(b, _getBonusOrder()))

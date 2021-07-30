@@ -158,4 +158,5 @@ def applyTankmanSkillOnVehicle(vehicle, skillsByRolesIdx):
         if skills:
             prevRoleLevel = tankmen.MAX_SKILL_LEVEL
             role = tman.role
-            crew[idx] = (roleIdx, cmp_helpers.createTankman(nationID, vehicleTypeID, role, prevRoleLevel, skills, vehicle, idx))
+            crew[idx] = (
+            roleIdx, cmp_helpers.createTankman(nationID, vehicleTypeID, role, prevRoleLevel, skills, vehicle, roleIdx))

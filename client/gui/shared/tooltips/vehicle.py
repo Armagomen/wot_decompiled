@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/vehicle.py
 import collections
 import logging
+import typing
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 import constants
 from gui.impl.gen import R
@@ -43,11 +44,13 @@ from skeletons.gui.game_control import ITradeInController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from items import perks, vehicles
+
+if typing.TYPE_CHECKING:
+    from gui.shared.tooltips.contexts import ExtendedAwardContext
 _logger = logging.getLogger(__name__)
 _EQUIPMENT = 'equipment'
 _OPTION_DEVICE = 'optionalDevice'
 _BATTLE_BOOSTER = 'battleBooster'
-_IS_SENIORITY = 'isSeniority'
 _ARTEFACT_TYPES = (_EQUIPMENT, _OPTION_DEVICE)
 _SKILL_BONUS_TYPE = 'skill'
 _PERK_BONUS_TYPE = 'perk'
@@ -99,6 +102,8 @@ _SHORTEN_TOOLTIP_CASES = ('shopVehicle',)
 class VehicleInfoTooltipData(BlocksTooltipData):
     __itemsCache = dependency.descriptor(IItemsCache)
     __bootcamp = dependency.descriptor(IBootcampController)
+    _LEFT_PADDING = 20
+    _RIGHT_PADDING = 20
 
     def __init__(self, context):
         super(VehicleInfoTooltipData, self).__init__(context, TOOLTIP_TYPE.VEHICLE)
@@ -115,16 +120,24 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         statsConfig = self.context.getStatsConfiguration(vehicle)
         paramsConfig = self.context.getParamsConfiguration(vehicle)
         statusConfig = self.context.getStatusConfiguration(vehicle)
-        leftPadding = 20
-        rightPadding = 20
+        leftPadding = self._LEFT_PADDING
+        rightPadding = self._RIGHT_PADDING
         bottomPadding = 12
         blockTopPadding = -4
         leftRightPadding = formatters.packPadding(left=leftPadding, right=rightPadding)
         blockPadding = formatters.packPadding(left=leftPadding, right=rightPadding, top=blockTopPadding)
         valueWidth = 75
         textGap = -2
-        headerItems = [formatters.packBuildUpBlockData(HeaderBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct(), padding=leftRightPadding, blockWidth=410), formatters.packBuildUpBlockData(self._getCrewIconBlock(), gap=2, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT, padding=formatters.packPadding(top=34, right=0), blockWidth=20)]
-        headerBlockItems = [formatters.packBuildUpBlockData(headerItems, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, padding=formatters.packPadding(bottom=-16))]
+        headerItems = [formatters.packBuildUpBlockData(
+            HeaderBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct(),
+            padding=leftRightPadding, blockWidth=410), formatters.packBuildUpBlockData(self._getCrewIconBlock(), gap=2,
+                                                                                       layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL,
+                                                                                       align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT,
+                                                                                       padding=formatters.packPadding(
+                                                                                           top=34, right=0),
+                                                                                       blockWidth=20)]
+        headerBlockItems = [formatters.packBuildUpBlockData(headerItems, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL,
+                                                            padding=formatters.packPadding(bottom=-16))]
         telecomBlock = TelecomBlockConstructor(vehicle, valueWidth, leftPadding, rightPadding).construct()
         if telecomBlock:
             headerBlockItems.append(formatters.packBuildUpBlockData(telecomBlock, padding=leftRightPadding))
@@ -161,10 +174,6 @@ class VehicleInfoTooltipData(BlocksTooltipData):
                 items.append(formatters.packBuildUpBlockData(statusBlock, padding=blockPadding, blockWidth=440))
             else:
                 self._setContentMargin(bottom=bottomPadding)
-        if self.context.getParams().get(_IS_SENIORITY, False):
-            awardCrewAndHangarBlock = AwardCrewAndHangar(vehicle, paramsConfig, leftPadding, rightPadding).construct()
-            if awardCrewAndHangarBlock:
-                items.append(formatters.packBuildUpBlockData(awardCrewAndHangarBlock))
         return items
 
     def _getCrewIconBlock(self):
@@ -271,7 +280,31 @@ class VehicleSimpleParametersTooltipData(BaseVehicleParametersTooltipData):
         comparator = self.context.getComparator()
         icon = param_formatter.getGroupPenaltyIcon(comparator.getExtendedData(paramName), comparator)
         valueLeftPadding = -3 if icon else 6
-        blocks.append(formatters.packTitleDescParameterWithIconBlockData(title, text_styles.warning(_ms(TOOLTIPS.VEHICLEPARAMS_TITLE_VALUETEMPLATE, value=value)), icon=icon, desc=desc, valueAtRight=True, iconPadding=formatters.packPadding(left=0, top=6), valuePadding=formatters.packPadding(left=valueLeftPadding, top=4)))
+        blocks.append(formatters.packTitleDescParameterWithIconBlockData(title, text_styles.warning(
+            _ms(TOOLTIPS.VEHICLEPARAMS_TITLE_VALUETEMPLATE, value=value)), icon=icon, desc=desc, valueAtRight=True,
+                                                                         iconPadding=formatters.packPadding(left=0,
+                                                                                                            top=6),
+                                                                         valuePadding=formatters.packPadding(
+                                                                             left=valueLeftPadding, top=4)))
+        return blocks
+
+
+class ExtendedVehicleInfoTooltipData(VehicleInfoTooltipData):
+
+    def _packBlocks(self, *args, **kwargs):
+        blocks = super(ExtendedVehicleInfoTooltipData, self)._packBlocks(*args, **kwargs)
+        context = self.context
+        params = context.getParams()
+        showCrew = params.get('showCrew', False)
+        showVehiclSlot = params.get('showVehicleSlot', False)
+        if showCrew or showVehiclSlot:
+            vehicle = self.item
+            awardCrewAndHangarBlock = AwardCrewAndHangar(vehicle, self.context.getParamsConfiguration(vehicle),
+                                                         self._LEFT_PADDING, self._RIGHT_PADDING, showVehiclSlot,
+                                                         params.get('tmanRoleLevel',
+                                                                    CrewTypes.SKILL_100) if showCrew else AwardCrewAndHangar.NO_CREW).construct()
+            if awardCrewAndHangarBlock:
+                blocks.append(formatters.packBuildUpBlockData(awardCrewAndHangarBlock))
         return blocks
 
 
@@ -887,6 +920,13 @@ class CommonStatsBlockConstructor(VehicleTooltipBlockConstructor):
 
 
 class AwardCrewAndHangar(VehicleTooltipBlockConstructor):
+    NO_CREW = -1
+
+    def __init__(self, vehicle, configuration, leftPadding=20, rightPadding=20, showVehicleSlot=False,
+                 crewLevel=NO_CREW):
+        super(AwardCrewAndHangar, self).__init__(vehicle, configuration, leftPadding, rightPadding)
+        self._crewLevelValue = crewLevel
+        self._showVehicleSlot = showVehicleSlot
 
     def construct(self):
         block = []
@@ -894,9 +934,25 @@ class AwardCrewAndHangar(VehicleTooltipBlockConstructor):
             leftPaddingImg = 30
             leftPaddingTxtCrew = 2
             leftPaddingTxtSlot = leftPaddingTxtCrew + 30
-            block.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.SENIORITYAWARDS_ADDITIONAL_TOOLTIP_HEADER), padding=formatters.packPadding(left=20)))
-            block.append(formatters.packImageTextBlockData(title='', desc=text_styles.main(_ms(TOOLTIPS.CUSTOMCREW_REFERRAL_BODY, value=CrewTypes.SKILL_100)), img=RES_ICONS.MAPS_ICONS_CREWBUNDLES_BONUSES_BASICROLEBOOST_100, imgPadding=formatters.packPadding(left=leftPaddingImg, top=10), txtPadding=formatters.packPadding(left=leftPaddingTxtCrew, top=20)))
-            block.append(formatters.packImageTextBlockData(title='', desc=text_styles.main(TOOLTIPS.SENIORITYAWARDS_HANGARSLOT_TOOLTIP_HEADER), img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_SLOTS, imgPadding=formatters.packPadding(left=leftPaddingImg, top=10), txtPadding=formatters.packPadding(left=leftPaddingTxtSlot, top=20)))
+            block.append(formatters.packTextBlockData(
+                text_styles.middleTitle(TOOLTIPS.SENIORITYAWARDS_ADDITIONAL_TOOLTIP_HEADER),
+                padding=formatters.packPadding(left=20)))
+            if self._crewLevelValue != self.NO_CREW:
+                block.append(formatters.packImageTextBlockData(title='', desc=text_styles.main(
+                    _ms(TOOLTIPS.CUSTOMCREW_REFERRAL_BODY, value=self._crewLevelValue)),
+                                                               img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMEN,
+                                                               imgPadding=formatters.packPadding(left=leftPaddingImg,
+                                                                                                 top=10),
+                                                               txtPadding=formatters.packPadding(
+                                                                   left=leftPaddingTxtCrew, top=20)))
+            if self._showVehicleSlot:
+                block.append(formatters.packImageTextBlockData(title='', desc=text_styles.main(
+                    TOOLTIPS.SENIORITYAWARDS_HANGARSLOT_TOOLTIP_HEADER),
+                                                               img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_SLOTS,
+                                                               imgPadding=formatters.packPadding(left=leftPaddingImg,
+                                                                                                 top=10),
+                                                               txtPadding=formatters.packPadding(
+                                                                   left=leftPaddingTxtSlot, top=20)))
         return block
 
 

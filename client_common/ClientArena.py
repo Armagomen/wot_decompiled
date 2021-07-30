@@ -20,28 +20,29 @@ TeamBaseProvider = namedtuple('TeamBaseProvider', ('points', 'invadersCnt', 'cap
 
 class ClientArena(object):
     __onUpdate = {ARENA_UPDATE.SETTINGS: '_ClientArena__onArenaSettingsUpdate',
-     ARENA_UPDATE.VEHICLE_LIST: '_ClientArena__onVehicleListUpdate',
-     ARENA_UPDATE.VEHICLE_ADDED: '_ClientArena__onVehicleAddedUpdate',
-     ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate',
-     ARENA_UPDATE.STATISTICS: '_ClientArena__onStatisticsUpdate',
-     ARENA_UPDATE.VEHICLE_STATISTICS: '_ClientArena__onVehicleStatisticsUpdate',
-     ARENA_UPDATE.VEHICLE_KILLED: '_ClientArena__onVehicleKilled',
-     ARENA_UPDATE.AVATAR_READY: '_ClientArena__onAvatarReady',
-     ARENA_UPDATE.BASE_POINTS: '_ClientArena__onBasePointsUpdate',
-     ARENA_UPDATE.BASE_CAPTURED: '_ClientArena__onBaseCaptured',
-     ARENA_UPDATE.TEAM_KILLER: '_ClientArena__onTeamKiller',
-     ARENA_UPDATE.VEHICLE_UPDATED: '_ClientArena__onVehicleUpdatedUpdate',
-     ARENA_UPDATE.COMBAT_EQUIPMENT_USED: '_ClientArena__onCombatEquipmentUsed',
-     ARENA_UPDATE.FLAG_TEAMS: '_ClientArena__onFlagTeamsReceived',
-     ARENA_UPDATE.FLAG_STATE_CHANGED: '_ClientArena__onFlagStateChanged',
-     ARENA_UPDATE.INTERACTIVE_STATS: '_ClientArena__onInteractiveStats',
-     ARENA_UPDATE.RESOURCE_POINT_STATE_CHANGED: '_ClientArena__onResourcePointStateChanged',
-     ARENA_UPDATE.OWN_VEHICLE_INSIDE_RP: '_ClientArena__onOwnVehicleInsideRP',
-     ARENA_UPDATE.OWN_VEHICLE_LOCKED_FOR_RP: '_ClientArena__onOwnVehicleLockedForRP',
-     ARENA_UPDATE.VIEW_POINTS: '_ClientArena__onViewPoints',
-     ARENA_UPDATE.VEHICLE_RECOVERED: '_ClientArena__onVehicleRecovered',
-     ARENA_UPDATE.FOG_OF_WAR: '_ClientArena__onFogOfWar',
-     ARENA_UPDATE.RADAR_INFO_RECEIVED: '_ClientArena__onRadarInfoReceived'}
+                  ARENA_UPDATE.VEHICLE_LIST: '_ClientArena__onVehicleListUpdate',
+                  ARENA_UPDATE.VEHICLE_ADDED: '_ClientArena__onVehicleAddedUpdate',
+                  ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate',
+                  ARENA_UPDATE.STATISTICS: '_ClientArena__onStatisticsUpdate',
+                  ARENA_UPDATE.VEHICLE_STATISTICS: '_ClientArena__onVehicleStatisticsUpdate',
+                  ARENA_UPDATE.VEHICLE_KILLED: '_ClientArena__onVehicleKilled',
+                  ARENA_UPDATE.AVATAR_READY: '_ClientArena__onAvatarReady',
+                  ARENA_UPDATE.BASE_POINTS: '_ClientArena__onBasePointsUpdate',
+                  ARENA_UPDATE.BASE_CAPTURED: '_ClientArena__onBaseCaptured',
+                  ARENA_UPDATE.TEAM_KILLER: '_ClientArena__onTeamKiller',
+                  ARENA_UPDATE.VEHICLE_UPDATED: '_ClientArena__onVehicleUpdatedUpdate',
+                  ARENA_UPDATE.COMBAT_EQUIPMENT_USED: '_ClientArena__onCombatEquipmentUsed',
+                  ARENA_UPDATE.FLAG_TEAMS: '_ClientArena__onFlagTeamsReceived',
+                  ARENA_UPDATE.FLAG_STATE_CHANGED: '_ClientArena__onFlagStateChanged',
+                  ARENA_UPDATE.INTERACTIVE_STATS: '_ClientArena__onInteractiveStats',
+                  ARENA_UPDATE.RESOURCE_POINT_STATE_CHANGED: '_ClientArena__onResourcePointStateChanged',
+                  ARENA_UPDATE.OWN_VEHICLE_INSIDE_RP: '_ClientArena__onOwnVehicleInsideRP',
+                  ARENA_UPDATE.OWN_VEHICLE_LOCKED_FOR_RP: '_ClientArena__onOwnVehicleLockedForRP',
+                  ARENA_UPDATE.VIEW_POINTS: '_ClientArena__onViewPoints',
+                  ARENA_UPDATE.VEHICLE_RECOVERED: '_ClientArena__onVehicleRecovered',
+                  ARENA_UPDATE.FOG_OF_WAR: '_ClientArena__onFogOfWar',
+                  ARENA_UPDATE.RADAR_INFO_RECEIVED: '_ClientArena__onRadarInfoReceived',
+                  ARENA_UPDATE.VEHICLE_DESCR: '_ClientArena__onVehicleDescrUpdate'}
 
     def __init__(self, arenaUniqueID, arenaTypeID, arenaBonusType, arenaGuiType, arenaExtraData, spaceID):
         self.__vehicles = {}
@@ -218,6 +219,15 @@ class ClientArena(object):
         self.__vehicles[vehID] = self.__preprocessVehicleInfo(info)
         self.onVehicleUpdated(vehID)
 
+    def __onVehicleDescrUpdate(self, argStr):
+        vehID, compactDescr, maxHealth = cPickle.loads(argStr)
+        info = self.__vehicles[vehID]
+        extVehicleTypeData = {'vehPostProgression': info['vehPostProgression'],
+                              'customRoleSlotTypeId': info['customRoleSlotTypeId']}
+        self.__vehicles[vehID]['vehicleType'] = self.__getVehicleType(compactDescr, extVehicleTypeData)
+        self.__vehicles[vehID]['maxHealth'] = maxHealth
+        self.onVehicleUpdated(vehID)
+
     def __onPeriodInfoUpdate(self, argStr):
         self.__periodInfo = cPickle.loads(zlib.decompress(argStr))
         self.onPeriodChange(*self.__periodInfo)
@@ -332,8 +342,8 @@ class ClientArena(object):
         extVehicleTypeData = {'vehPostProgression': info[25],
          'customRoleSlotTypeId': info[26]}
         infoAsDict = {'vehicleType': self.__getVehicleType(info[1], extVehicleTypeData),
-         'name': info[2],
-         'team': info[3],
+                      'name': info[2],
+                      'team': info[3],
          'isAlive': info[4],
          'isAvatarReady': info[5],
          'isTeamKiller': info[6],
@@ -344,21 +354,23 @@ class ClientArena(object):
          'isPrebattleCreator': bool(info[11]),
          'forbidInBattleInvitations': bool(info[12]),
          'events': info[13],
-         'igrType': info[14],
-         'personalMissionIDs': info[15],
-         'personalMissionInfo': info[16],
-         'ranked': info[17],
-         'outfitCD': info[18],
-         'avatarSessionID': info[19],
-         'wtr': int(info[20]),
-         'fakeName': info[21],
-         'badges': info[22],
-         'overriddenBadge': info[23],
-         'maxHealth': info[24]}
+                      'igrType': info[14],
+                      'personalMissionIDs': info[15],
+                      'personalMissionInfo': info[16],
+                      'ranked': info[17],
+                      'outfitCD': info[18],
+                      'avatarSessionID': info[19],
+                      'wtr': int(info[20]),
+                      'fakeName': info[21],
+                      'badges': info[22],
+                      'overriddenBadge': info[23],
+                      'maxHealth': info[24],
+                      'vehPostProgression': info[25],
+                      'customRoleSlotTypeId': info[26]}
         return (info[0], infoAsDict)
 
-    def __getVehicleType(self, intCD, extData):
-        return None if intCD is None else vehicles.VehicleDescr(compactDescr=intCD, extData=extData)
+    def __getVehicleType(self, compactDescr, extData):
+        return None if compactDescr is None else vehicles.VehicleDescr(compactDescr=compactDescr, extData=extData)
 
     def __vehicleStatisticsAsDict(self, stats):
         return (stats[0], {'frags': stats[1]})

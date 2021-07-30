@@ -1964,7 +1964,9 @@ class FLAvatarStealthRadar(Equipment, SharedCooldownConsumableConfigReader, Cool
 
 
 class MineParams(object):
-    __slots__ = ('triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType', 'lifetime', 'damage', 'shell', 'shellAlt', 'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
+    __slots__ = (
+    'triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType', 'lifetime', 'damage', 'shell', 'shellLowDamage',
+    'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
 
     def __init__(self):
         self.triggerRadius = 1.0
@@ -1974,35 +1976,38 @@ class MineParams(object):
         self.lifetime = 10
         self.damage = 100
         self.shell = None
-        self.shellAlt = None
+        self.shellLowDamage = None
         self.resistAllyDamage = False
         self.destroyMyMinesOverlappingAlliedMines = False
         self.directDetectionTypes = []
         return
 
     def __repr__(self):
-        return 'motParams ({}, {}, {}, {}, {}, {}, {}, {})'.format(self.triggerRadius, self.triggerHeight, self.triggerDepth, self.influenceType, self.lifetime, self.damage, self.shell, self.shellAlt)
+        return 'motParams ({}, {}, {}, {}, {}, {}, {}, {})'.format(self.triggerRadius, self.triggerHeight,
+                                                                   self.triggerDepth, self.influenceType, self.lifetime,
+                                                                   self.damage, self.shell, self.shellLowDamage)
 
     def _readConfig(self, xmlCtx, section):
         self.triggerRadius = _xml.readPositiveFloat(xmlCtx, section, 'triggerRadius')
         self.triggerHeight = _xml.readPositiveFloat(xmlCtx, section, 'triggerHeight')
         self.triggerDepth = _xml.readNonNegativeFloat(xmlCtx, section, 'triggerDepth', 0.0)
-        self.influenceType = _xml.readInt(xmlCtx, section, 'influenceType', component_constants.INFLUENCE_ALL, component_constants.INFLUENCE_ENEMY)
+        self.influenceType = _xml.readInt(xmlCtx, section, 'influenceType', component_constants.INFLUENCE_ALL,
+                                          component_constants.INFLUENCE_ENEMY)
         self.lifetime = _xml.readPositiveInt(xmlCtx, section, 'lifetime')
         self.damage = _xml.readNonNegativeInt(xmlCtx, section, 'damage')
         if section.has_key('shellCompactDescr'):
             self.shell = _xml.readInt(xmlCtx, section, 'shellCompactDescr')
-        if section.has_key('shellAltCompactDescr'):
-            self.shellAlt = _xml.readInt(xmlCtx, section, 'shellAltCompactDescr')
+        if section.has_key('shellCompactDescrLowDamage'):
+            self.shellLowDamage = _xml.readInt(xmlCtx, section, 'shellCompactDescrLowDamage')
         if section.has_key('resistAllyDamage'):
             self.resistAllyDamage = _xml.readBool(xmlCtx, section, 'resistAllyDamage')
         if section.has_key('destroyMyMinesOverlappingAlliedMines'):
             self.resistAllyDamage = _xml.readBool(xmlCtx, section, 'destroyMyMinesOverlappingAlliedMines')
         if section.has_key('directDetectionTypes'):
             mapping = {'RAYTRACE': 0,
-             'RECON': 1,
-             'RADAR': 2,
-             'STEALTH_RADAR': 3}
+                       'RECON': 1,
+                       'RADAR': 2,
+                       'STEALTH_RADAR': 3}
             DDTypes = _xml.readTupleOfStrings(xmlCtx, section, 'directDetectionTypes')
             self.directDetectionTypes = [ mapping[t] for t in DDTypes ]
 
