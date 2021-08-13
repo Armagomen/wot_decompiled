@@ -9,12 +9,10 @@ from WebBrowser import getWebCache
 from gui.impl.lobby.offers import getGfImagePath
 from gui.wgnc.image_notification_helper import WebImageHelper
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
-
 _LOCAL_FOLDER_NAME = 'multiple_awards'
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
-
 
 class _IPrefetcher(object):
 

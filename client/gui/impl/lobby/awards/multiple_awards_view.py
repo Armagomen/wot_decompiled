@@ -26,11 +26,9 @@ from helpers import dependency
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from gui.impl.gen.view_models.views.lobby.awards.reward_model import RewardModel, RentTypeEnum
-
 if typing.TYPE_CHECKING:
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
 _logger = logging.getLogger(__name__)
-
 
 class MultipleAwardsView(ViewImpl):
     __purchaseCache = dependency.descriptor(IPurchaseCache)

@@ -12,7 +12,6 @@ from gui.impl.gen.view_models.views.battle.battle_page.prebattle_ammunition_pane
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
-
 class PrebattleAmmunitionPanelInject(PrebattleAmmunitionPanelViewMeta, IPrebattleSetupsListener, IAmmoListener,
                                      IAbstractPeriodView):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -55,7 +54,7 @@ class PrebattleAmmunitionPanelInject(PrebattleAmmunitionPanelViewMeta, IPrebattl
 
     @hasAliveInject(deadUnexpected=True)
     def updateVehicleSetups(self, vehicle):
-        self._injectView.updateViewVehicle(vehicle)
+        self._injectView.updateViewVehicle(vehicle, False)
 
     @hasAliveInject(deadUnexpected=True)
     def stopSetupsSelection(self):

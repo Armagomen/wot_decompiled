@@ -3,10 +3,8 @@
 import CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from gui.battle_control import event_dispatcher
-
 _SETUP_CMDS = (
 CommandMapping.CMD_AMMUNITION_SHORTCUT_SWITCH_SETUP_1, CommandMapping.CMD_AMMUNITION_SHORTCUT_SWITCH_SETUP_2)
-
 
 class PrebattleSetupsControl(InputHandlerCommand):
 

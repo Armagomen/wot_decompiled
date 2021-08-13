@@ -140,6 +140,11 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
     def setPeriodInfo(self, period, endTime, length, additionalInfo):
         self.__updatePeriod(period)
 
+    def stopSelection(self):
+        if not self.__isSelectionStopped():
+            self.__updateState(_States.SELECTION_STOPPED)
+            self.__onFiniStepCompleted()
+
     @MethodsRules.delayable('setPlayerVehicle')
     def setCrew(self, vehicleID, crew):
         if self.__playerVehicleID != vehicleID or self.__isSelectionStopped() or self.__state & _States.CREW:
@@ -341,8 +346,7 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
 
     def __updatePeriod(self, period):
         if period >= ARENA_PERIOD.BATTLE:
-            self.__updateState(_States.SELECTION_STOPPED)
-            self.__onFiniStepCompleted()
+            self.stopSelection()
 
     def __updateState(self, addMask):
         if addMask == _States.SELECTION_STARTED:

@@ -44,13 +44,13 @@ from skeletons.gui.game_control import ITradeInController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from items import perks, vehicles
-
 if typing.TYPE_CHECKING:
     from gui.shared.tooltips.contexts import ExtendedAwardContext
 _logger = logging.getLogger(__name__)
 _EQUIPMENT = 'equipment'
 _OPTION_DEVICE = 'optionalDevice'
 _BATTLE_BOOSTER = 'battleBooster'
+_IS_SENIORITY = 'isSeniority'
 _ARTEFACT_TYPES = (_EQUIPMENT, _OPTION_DEVICE)
 _SKILL_BONUS_TYPE = 'skill'
 _PERK_BONUS_TYPE = 'perk'
@@ -142,18 +142,28 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         if telecomBlock:
             headerBlockItems.append(formatters.packBuildUpBlockData(telecomBlock, padding=leftRightPadding))
         self.__createStatusBlock(vehicle, headerBlockItems, statsConfig, paramsConfig, valueWidth)
-        items.append(formatters.packBuildUpBlockData(headerBlockItems, gap=-4, padding=formatters.packPadding(bottom=-8)))
+        items.append(
+            formatters.packBuildUpBlockData(headerBlockItems, gap=-4, padding=formatters.packPadding(bottom=-8)))
         if vehicle.isEarnCrystals:
             crystalBlock, linkage = CrystalBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct()
             if crystalBlock:
                 items.append(formatters.packBuildUpBlockData(crystalBlock, linkage=linkage, padding=leftRightPadding))
-        simplifiedStatsBlock = SimplifiedStatsBlockConstructor(vehicle, paramsConfig, leftPadding, rightPadding).construct()
+        simplifiedStatsBlock = SimplifiedStatsBlockConstructor(vehicle, paramsConfig, leftPadding,
+                                                               rightPadding).construct()
         if simplifiedStatsBlock:
-            items.append(formatters.packBuildUpBlockData(simplifiedStatsBlock, gap=-4, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=leftRightPadding))
+            items.append(formatters.packBuildUpBlockData(simplifiedStatsBlock, gap=-4,
+                                                         linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE,
+                                                         padding=leftRightPadding))
         if not vehicle.isRotationGroupLocked:
-            commonStatsBlock = CommonStatsBlockConstructor(vehicle, paramsConfig, valueWidth, leftPadding, rightPadding).construct()
+            commonStatsBlock = CommonStatsBlockConstructor(vehicle, paramsConfig, valueWidth, leftPadding,
+                                                           rightPadding).construct()
             if commonStatsBlock:
                 items.append(formatters.packBuildUpBlockData(commonStatsBlock, gap=textGap, padding=blockPadding))
+        if self.context.getParams().get(_IS_SENIORITY, False):
+            awardCrewAndHangarBlock = AwardCrewAndHangar(vehicle, paramsConfig, leftPadding, rightPadding, True,
+                                                         100).construct()
+            if awardCrewAndHangarBlock:
+                items.append(formatters.packBuildUpBlockData(awardCrewAndHangarBlock))
         statsBlockConstructor = None
         if vehicle.isRotationGroupLocked:
             statsBlockConstructor = RotationLockAdditionalStatsBlockConstructor
@@ -162,8 +172,11 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         elif vehicle.clanLock and vehicle.clanLock > time_utils.getCurrentTimestamp():
             statsBlockConstructor = ClanLockAdditionalStatsBlockConstructor
         if statsBlockConstructor is not None:
-            items.append(formatters.packBuildUpBlockData(statsBlockConstructor(vehicle, paramsConfig, self.context.getParams(), valueWidth, leftPadding, rightPadding).construct(), gap=textGap, padding=blockPadding))
-        priceBlock, invalidWidth = PriceBlockConstructor(vehicle, statsConfig, self.context.getParams(), valueWidth, leftPadding, rightPadding).construct()
+            items.append(formatters.packBuildUpBlockData(
+                statsBlockConstructor(vehicle, paramsConfig, self.context.getParams(), valueWidth, leftPadding,
+                                      rightPadding).construct(), gap=textGap, padding=blockPadding))
+        priceBlock, invalidWidth = PriceBlockConstructor(vehicle, statsConfig, self.context.getParams(), valueWidth,
+                                                         leftPadding, rightPadding).construct()
         shouldBeCut = self.calledBy and self.calledBy in _SHORTEN_TOOLTIP_CASES or vehicle.isOnlyForEpicBattles
         if priceBlock and not shouldBeCut:
             self._setWidth(_TOOLTIP_MAX_WIDTH if invalidWidth else _TOOLTIP_MIN_WIDTH)
@@ -932,8 +945,7 @@ class AwardCrewAndHangar(VehicleTooltipBlockConstructor):
         block = []
         if self.configuration.params:
             leftPaddingImg = 30
-            leftPaddingTxtCrew = 2
-            leftPaddingTxtSlot = leftPaddingTxtCrew + 30
+            leftPaddingTxt = 20
             block.append(formatters.packTextBlockData(
                 text_styles.middleTitle(TOOLTIPS.SENIORITYAWARDS_ADDITIONAL_TOOLTIP_HEADER),
                 padding=formatters.packPadding(left=20)))
@@ -943,16 +955,16 @@ class AwardCrewAndHangar(VehicleTooltipBlockConstructor):
                                                                img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMEN,
                                                                imgPadding=formatters.packPadding(left=leftPaddingImg,
                                                                                                  top=10),
-                                                               txtPadding=formatters.packPadding(
-                                                                   left=leftPaddingTxtCrew, top=20)))
+                                                               txtPadding=formatters.packPadding(left=leftPaddingTxt,
+                                                                                                 top=20)))
             if self._showVehicleSlot:
                 block.append(formatters.packImageTextBlockData(title='', desc=text_styles.main(
                     TOOLTIPS.SENIORITYAWARDS_HANGARSLOT_TOOLTIP_HEADER),
                                                                img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_SLOTS,
                                                                imgPadding=formatters.packPadding(left=leftPaddingImg,
                                                                                                  top=10),
-                                                               txtPadding=formatters.packPadding(
-                                                                   left=leftPaddingTxtSlot, top=20)))
+                                                               txtPadding=formatters.packPadding(left=leftPaddingTxt,
+                                                                                                 top=20)))
         return block
 
 

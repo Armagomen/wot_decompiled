@@ -756,6 +756,20 @@ class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', ('isPos
         return self._replace(**dataToUpdate)
 
 
+class _BirthdayCalendarConfig(namedtuple('_BirthdayCalendarConfig', ('enabled', 'calendarURL', 'calendarIntroUrl'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(enabled=False, calendarURL='', calendarIntroUrl='')
+        defaults.update(kwargs)
+        return super(_BirthdayCalendarConfig, cls).__new__(cls, **defaults)
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+
 class ServerSettings(object):
 
     def __init__(self, serverSettings):
@@ -777,6 +791,7 @@ class ServerSettings(object):
         self.__rankedBattlesSettings = RankedBattlesConfig.defaults()
         self.__epicMetaGameSettings = _EpicMetaGameConfig()
         self.__adventCalendar = _AdventCalendarConfig()
+        self.__birthdayCalendar = _BirthdayCalendarConfig()
         self.__epicGameSettings = EpicGameConfig()
         self.__unitAssemblerConfig = _UnitAssemblerConfig.defaults()
         self.__telecomConfig = _TelecomConfig.defaults()
@@ -827,13 +842,19 @@ class ServerSettings(object):
         if 'ranked_config' in self.__serverSettings:
             self.__rankedBattlesSettings = makeTupleByDict(RankedBattlesConfig, self.__serverSettings['ranked_config'])
         if 'advent_calendar_config' in self.__serverSettings:
-            self.__adventCalendar = makeTupleByDict(_AdventCalendarConfig, self.__serverSettings['advent_calendar_config'])
+            self.__adventCalendar = makeTupleByDict(_AdventCalendarConfig,
+                                                    self.__serverSettings['advent_calendar_config'])
+        if 'bday_calendar_config' in self.__serverSettings:
+            self.__birthdayCalendar = makeTupleByDict(_BirthdayCalendarConfig,
+                                                      self.__serverSettings['bday_calendar_config'])
         if 'epic_config' in self.__serverSettings:
             LOG_DEBUG('epic_config', self.__serverSettings['epic_config'])
-            self.__epicMetaGameSettings = makeTupleByDict(_EpicMetaGameConfig, self.__serverSettings['epic_config']['epicMetaGame'])
+            self.__epicMetaGameSettings = makeTupleByDict(_EpicMetaGameConfig,
+                                                          self.__serverSettings['epic_config']['epicMetaGame'])
             self.__epicGameSettings = makeTupleByDict(EpicGameConfig, self.__serverSettings['epic_config'])
         if 'unit_assembler_config' in self.__serverSettings:
-            self.__unitAssemblerConfig = makeTupleByDict(_UnitAssemblerConfig, self.__serverSettings['unit_assembler_config'])
+            self.__unitAssemblerConfig = makeTupleByDict(_UnitAssemblerConfig,
+                                                         self.__serverSettings['unit_assembler_config'])
         if PremiumConfigs.PREM_SQUAD in self.__serverSettings:
             self.__squadPremiumBonus = _SquadPremiumBonus.create(self.__serverSettings[PremiumConfigs.PREM_SQUAD])
         if Configs.BATTLE_ROYALE_CONFIG.value in self.__serverSettings:
@@ -898,6 +919,9 @@ class ServerSettings(object):
         if 'advent_calendar_config' in serverSettingsDiff:
             self.__updateAdventCalendar(serverSettingsDiff)
             self.__serverSettings['advent_calendar_config'] = serverSettingsDiff['advent_calendar_config']
+        if 'bday_calendar_config' in serverSettingsDiff:
+            self.__updateBirthdayCalendar(serverSettingsDiff)
+            self.__serverSettings['bday_calendar_config'] = serverSettingsDiff['bday_calendar_config']
         if 'epic_config' in serverSettingsDiff:
             self.__updateEpic(serverSettingsDiff)
             self.__serverSettings['epic_config'] = serverSettingsDiff['epic_config']
@@ -1010,6 +1034,10 @@ class ServerSettings(object):
     @property
     def adventCalendar(self):
         return self.__adventCalendar
+
+    @property
+    def birthdayCalendar(self):
+        return self.__birthdayCalendar
 
     @property
     def epicMetaGame(self):
@@ -1328,7 +1356,8 @@ class ServerSettings(object):
 
     def __updateWgcg(self, targetSettings):
         cProfile = targetSettings['wgcg']
-        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''), cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False))
+        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''),
+                            cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False))
 
     def __updateWgnp(self, targetSettings):
         cProfile = targetSettings['wgnp']
@@ -1337,11 +1366,15 @@ class ServerSettings(object):
     def __updateAdventCalendar(self, targetSettings):
         self.__adventCalendar = self.__adventCalendar.replace(targetSettings['advent_calendar_config'])
 
+    def __updateBirthdayCalendar(self, targetSettings):
+        self.__birthdayCalendar = self.__birthdayCalendar.replace(targetSettings['bday_calendar_config'])
+
     def __updateRanked(self, targetSettings):
         self.__rankedBattlesSettings = self.__rankedBattlesSettings.replace(targetSettings['ranked_config'])
 
     def __updateEpic(self, targetSettings):
-        self.__epicMetaGameSettings = self.__epicMetaGameSettings.replace(targetSettings['epic_config'].get('epicMetaGame', {}))
+        self.__epicMetaGameSettings = self.__epicMetaGameSettings.replace(
+            targetSettings['epic_config'].get('epicMetaGame', {}))
         self.__epicGameSettings = self.__epicGameSettings.replace(targetSettings['epic_config'])
 
     def __updateUnitAssemblerConfig(self, targetSettings):

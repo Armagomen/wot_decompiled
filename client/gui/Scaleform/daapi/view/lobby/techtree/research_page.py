@@ -54,13 +54,17 @@ class _VehicleState(object):
 
 
 def _getPremiumBaseBenefit(benefits, root, _=None):
-    if not root.isEpicActionVehicle:
-        benefits.append((backport.image(R.images.gui.maps.shop.kpi.star_icon_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier()), backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpText())))
+    if not root.isOnlyForEpicBattles:
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.star_icon_benefits()),
+                         backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier()),
+                         backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpText())))
 
 
 def _getMoneyBenefits(benefits, root, _=None):
-    if not (root.isSpecial or root.isEpicActionVehicle):
-        benefits.append((backport.image(R.images.gui.maps.shop.kpi.money_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier()), backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsText())))
+    if not (root.isSpecial or root.isOnlyForEpicBattles):
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.money_benefits()),
+                         backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier()),
+                         backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsText())))
 
 
 def _getCrewBenefits(benefits, root, _=None):

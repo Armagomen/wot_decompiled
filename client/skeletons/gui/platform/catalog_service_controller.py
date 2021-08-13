@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/skeletons/gui/platform/catalog_service_controller.py
 import adisp
 
-
 class IPurchaseCache(object):
 
     def init(self):

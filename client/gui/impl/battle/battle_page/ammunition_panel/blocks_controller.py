@@ -10,11 +10,9 @@ from gui.impl.common.tabs_controller import tabUpdateFunc
 from gui.impl.common.ammunition_panel.ammunition_panel_blocks import ShellsBlock, ConsumablesBlock
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-
 if TYPE_CHECKING:
     from gui.shared.gui_items import Vehicle
 _EMPTY_INT_COMPACT_DESCRIPTOR = 0
-
 
 class PrebattleShellsBlock(ShellsBlock):
 

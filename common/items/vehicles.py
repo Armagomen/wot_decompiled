@@ -224,21 +224,21 @@ class EnhancementItem(object):
 
 def vehicleAttributeFactors():
     return {'engine/power': 1.0,
-     'turret/rotationSpeed': 1.0,
-     'circularVisionRadius': 1.0,
-     'invisibility': [0.0, 1.0],
-     'radio/distance': 1.0,
-     'gun/rotationSpeed': 1.0,
-     'chassis/shotDispersionFactors/movement': 1.0,
-     'chassis/shotDispersionFactors/rotation': 1.0,
-     'gun/shotDispersionFactors/turretRotation': 1.0,
-     'gun/reloadTime': 1.0,
-     'gun/aimingTime': 1.0,
-     'gun/piercing': 1.0,
-     'gun/canShoot': True,
-     'engine/fireStartingChance': 1.0,
-     'healthBurnPerSecLossFraction': 1.0,
-     'repairSpeed': 1.0,
+            'turret/rotationSpeed': 1.0,
+            'circularVisionRadius': 1.0,
+            'invisibility': [0.0, 1.0],
+            'radio/distance': 1.0,
+            'gun/rotationSpeed': 1.0,
+            'chassis/shotDispersionFactors/movement': 1.0,
+            'chassis/shotDispersionFactors/rotation': 1.0,
+            'gun/shotDispersionFactors/turretRotation': 1.0,
+            'gun/reloadTime': 1.0,
+            'gun/aimingTime': 1.0,
+            'gun/piercing': 1.0,
+            'gun/canShoot': True,
+            'engine/fireStartingChance': 1.0,
+            'healthBurnPerSecLossFraction': 1.0,
+            'repairSpeed': 1.0,
      'additiveShotDispersionFactor': 1.0,
      'brokenTrack': 0,
      'vehicle/rotationSpeed': 1.0,
@@ -249,17 +249,19 @@ def vehicleAttributeFactors():
      'crewChanceToHitFactor': 1.0,
      'crewRolesFactor': 1.0,
      'stunResistanceEffect': 0.0,
-     'stunResistanceDuration': 0.0,
-     'repeatedStunDurationFactor': 1.0,
-     'healthFactor': 1.0,
-     'damageFactor': 1.0,
-     'enginePowerFactor': 1.0,
-     'deathZones/sensitivityFactor': 1.0,
-     'multShotDispersionFactor': 1.0,
-     'gun/changeShell/reloadFactor': 1.0,
-     'demaskMovingFactor': 1.0,
-     'demaskFoliageFactor': 1.0,
-     'invisibilityAdditiveTerm': 0.0}
+            'stunResistanceDuration': 0.0,
+            'repeatedStunDurationFactor': 1.0,
+            'healthFactor': 1.0,
+            'damageFactor': 1.0,
+            'enginePowerFactor': 1.0,
+            'deathZones/sensitivityFactor': 1.0,
+            'multShotDispersionFactor': 1.0,
+            'gun/changeShell/reloadFactor': 1.0,
+            'demaskMovingFactor': 1.0,
+            'demaskFoliageFactor': 1.0,
+            'invisibilityAdditiveTerm': 0.0,
+            'engineReduceFineFactor': 1.0,
+            'ammoBayReduceFineFactor': 1.0}
 
 
 WHEEL_SIZE_COEF = 2.2
@@ -682,6 +684,9 @@ class VehicleDescriptor(object):
 
             return (True, None)
 
+    def rebuildAttrs(self):
+        return self.__updateAttributes()
+
     def installComponent(self, compactDescr, positionIndex=0):
         itemTypeID, nationID, compID = parseIntCompactDescr(compactDescr)
         itemTypeName = items.ITEM_TYPE_NAMES[itemTypeID]
@@ -783,17 +788,19 @@ class VehicleDescriptor(object):
         self.__updateAttributes()
         return
 
-    def installOptionalDevice(self, compactDescr, slotIdx):
+    def installOptionalDevice(self, compactDescr, slotIdx, rebuildAttrs=True):
         device = g_cache.optionalDevices()[parseIntCompactDescr(compactDescr)[2]]
         devices = self.optionalDevices
         prevDevice = devices[slotIdx]
         devices[slotIdx] = device
         self._optDevSlotsMap[compactDescr] = self.supplySlots.getSlotByIdxInItemType(ITEM_TYPES.optionalDevice, slotIdx)
-        self.__updateAttributes()
+        if rebuildAttrs:
+            self.__updateAttributes()
         if prevDevice is None:
             return (component_constants.EMPTY_TUPLE, component_constants.EMPTY_TUPLE)
         else:
-            return ((prevDevice.compactDescr,), component_constants.EMPTY_TUPLE) if prevDevice.removable else (component_constants.EMPTY_TUPLE, (prevDevice.compactDescr,))
+            return ((prevDevice.compactDescr,), component_constants.EMPTY_TUPLE) if prevDevice.removable else (
+            component_constants.EMPTY_TUPLE, (prevDevice.compactDescr,))
 
     def mayRemoveOptionalDevice(self, slotIdx):
         prevDevices = self.optionalDevices
@@ -809,15 +816,17 @@ class VehicleDescriptor(object):
 
         return (True, None)
 
-    def removeOptionalDevice(self, slotIdx, *args):
+    def removeOptionalDevice(self, slotIdx, rebuildAttrs=True):
         device = self.optionalDevices[slotIdx]
         if device is None:
             return (component_constants.EMPTY_TUPLE, component_constants.EMPTY_TUPLE)
         else:
             self.optionalDevices[slotIdx] = None
             self._optDevSlotsMap.pop(device.compactDescr)
-            self.__updateAttributes()
-            return ((device.compactDescr,), component_constants.EMPTY_TUPLE) if device.removable else (component_constants.EMPTY_TUPLE, (device.compactDescr,))
+            if rebuildAttrs:
+                self.__updateAttributes()
+            return ((device.compactDescr,), component_constants.EMPTY_TUPLE) if device.removable else (
+            component_constants.EMPTY_TUPLE, (device.compactDescr,))
 
     def maySwapOptionalDevice(self, leftID, rightID):
         if leftID >= self.supplySlots.getAmountForType(ITEM_TYPES.optionalDevice):
@@ -1342,38 +1351,40 @@ class VehicleDescriptor(object):
 
         weight, maxWeight = self.__computeWeight()
         self.miscAttrs = {'maxWeight': maxWeight,
-         'repairSpeedFactor': 1.0,
-         'additiveShotDispersionFactor': 1.0,
-         'antifragmentationLiningFactor': 1.0,
-         'circularVisionRadiusFactor': 1.0,
-         'gunReloadTimeFactor': 1.0,
-         'gunAimingTimeFactor': 1.0,
-         'vehicleByChassisDamageFactor': 1.0,
-         'crewLevelIncrease': 0.0,
-         'crewChanceToHitFactor': 1.0,
-         'stunResistanceEffect': 0.0,
-         'stunResistanceDuration': 0.0,
-         'repeatedStunDurationFactor': 1.0,
-         'healthFactor': 1.0,
-         'damageFactor': 1.0,
-         'enginePowerFactor': 1.0,
-         'armorSpallsDamageDevicesFactor': 1.0,
-         'increaseEnemySpottingTime': 0.0,
-         'decreaseOwnSpottingTime': 0.0,
-         'demaskFoliageFactor': 1.0,
-         'chassisRepairSpeedFactor': 1.0,
-         'turretRotationSpeed': 1.0,
-         'invisibilityAdditiveTerm': 0.0,
-         'forwardMaxSpeedKMHTerm': 0.0,
-         'backwardMaxSpeedKMHTerm': 0.0,
-         'onStillRotationSpeedFactor': 1.0,
-         'onMoveRotationSpeedFactor': 1.0,
-         'fireStartingChanceFactor': 1.0,
-         'multShotDispersionFactor': 1.0,
-         'chassisHealthAfterHysteresisFactor': 1.0,
-         'ammoBayHealthFactor': 1.0,
-         'engineHealthFactor': 1.0,
-         'chassisHealthFactor': 1.0,
+                          'repairSpeedFactor': 1.0,
+                          'additiveShotDispersionFactor': 1.0,
+                          'antifragmentationLiningFactor': 1.0,
+                          'circularVisionRadiusFactor': 1.0,
+                          'circularVisionRadiusBaseFactor': 1.0,
+                          'gunReloadTimeFactor': 1.0,
+                          'gunAimingTimeFactor': 1.0,
+                          'vehicleByChassisDamageFactor': 1.0,
+                          'crewLevelIncrease': 0.0,
+                          'crewChanceToHitFactor': 1.0,
+                          'stunResistanceEffect': 0.0,
+                          'stunResistanceDuration': 0.0,
+                          'repeatedStunDurationFactor': 1.0,
+                          'healthFactor': 1.0,
+                          'damageFactor': 1.0,
+                          'enginePowerFactor': 1.0,
+                          'armorSpallsDamageDevicesFactor': 1.0,
+                          'increaseEnemySpottingTime': 0.0,
+                          'decreaseOwnSpottingTime': 0.0,
+                          'demaskFoliageFactor': 1.0,
+                          'chassisRepairSpeedFactor': 1.0,
+                          'turretRotationSpeed': 1.0,
+                          'invisibilityAdditiveTerm': 0.0,
+                          'invisibilityBaseAdditive': 0.0,
+                          'forwardMaxSpeedKMHTerm': 0.0,
+                          'backwardMaxSpeedKMHTerm': 0.0,
+                          'onStillRotationSpeedFactor': 1.0,
+                          'onMoveRotationSpeedFactor': 1.0,
+                          'fireStartingChanceFactor': 1.0,
+                          'multShotDispersionFactor': 1.0,
+                          'chassisHealthAfterHysteresisFactor': 1.0,
+                          'ammoBayHealthFactor': 1.0,
+                          'engineHealthFactor': 1.0,
+                          'chassisHealthFactor': 1.0,
          'fuelTankHealthFactor': 1.0,
          'turretRotatorHealthFactor': 1.0,
          'radioHealthFactor': 1.0,
@@ -1384,14 +1395,14 @@ class VehicleDescriptor(object):
          'deathZones/sensitivityFactor': 1.0,
          'rammingFactor': 1.0,
          'rollingFrictionFactor': 1.0,
-         'chassis/shotDispersionFactors/movement': chassisShotDispersionFactors[0],
-         'chassis/shotDispersionFactors/rotation': chassisShotDispersionFactors[1],
-         'invisibilityFactorAtShot': self.gun.invisibilityFactorAtShot,
-         'gun/shotDispersionFactors/afterShot': gunShotDispersionFactors['afterShot'],
-         'gun/shotDispersionFactors/turretRotation': gunShotDispersionFactors['turretRotation'],
-         'gun/shotDispersionFactors/whileGunDamaged': gunShotDispersionFactors['whileGunDamaged'],
-         'ammoBayReduceFineFactor': 1.0,
-         'engineReduceFineFactor': 1.0}
+                          'chassis/shotDispersionFactors/movement': chassisShotDispersionFactors[0],
+                          'chassis/shotDispersionFactors/rotation': chassisShotDispersionFactors[1],
+                          'invisibilityFactorAtShot': self.gun.invisibilityFactorAtShot,
+                          'gun/shotDispersionFactors/afterShot': gunShotDispersionFactors['afterShot'],
+                          'gun/shotDispersionFactors/turretRotation': gunShotDispersionFactors['turretRotation'],
+                          'gun/shotDispersionFactors/whileGunDamaged': gunShotDispersionFactors['whileGunDamaged'],
+                          'ammoBayReduceFineFactor': 1.0,
+                          'engineReduceFineFactor': 1.0}
         if IS_CLIENT or IS_EDITOR or IS_CELLAPP or IS_WEB or IS_BOT or onAnyApp:
             trackCenterOffset = chassis.topRightCarryingPoint[0]
             self.physics = {'weight': weight,
@@ -1505,9 +1516,9 @@ class CompositeVehicleDescriptor(object):
         self.__siegeDescr.installModifications(modificationIDs, rebuildAttrs)
         return self.__vehicleDescr.installModifications(modificationIDs, rebuildAttrs)
 
-    def installOptionalDevice(self, compactDescr, slotIdx):
-        self.__siegeDescr.installOptionalDevice(compactDescr, slotIdx)
-        return self.__vehicleDescr.installOptionalDevice(compactDescr, slotIdx)
+    def installOptionalDevice(self, compactDescr, slotIdx, rebuildAttrs=True):
+        self.__siegeDescr.installOptionalDevice(compactDescr, slotIdx, rebuildAttrs)
+        return self.__vehicleDescr.installOptionalDevice(compactDescr, slotIdx, rebuildAttrs)
 
     def installOptDevsSequence(self, optDevSequence):
         self.__siegeDescr.installOptDevsSequence(optDevSequence)
@@ -1517,9 +1528,13 @@ class CompositeVehicleDescriptor(object):
         self.__siegeDescr.installTurret(turretCompactDescr, gunCompactDescr, positionIndex)
         return self.__vehicleDescr.installTurret(turretCompactDescr, gunCompactDescr, positionIndex)
 
-    def removeOptionalDevice(self, slotIdx):
-        self.__siegeDescr.removeOptionalDevice(slotIdx)
-        return self.__vehicleDescr.removeOptionalDevice(slotIdx)
+    def removeOptionalDevice(self, slotIdx, rebuildAttrs=True):
+        self.__siegeDescr.removeOptionalDevice(slotIdx, rebuildAttrs)
+        return self.__vehicleDescr.removeOptionalDevice(slotIdx, rebuildAttrs)
+
+    def rebuildAttrs(self):
+        self.__siegeDescr.rebuildAttrs()
+        return self.__vehicleDescr.rebuildAttrs()
 
     def __installGun(self, gunID, turretPositionIdx):
         self.__siegeDescr.__installGun(gunID, turretPositionIdx)
@@ -6469,12 +6484,13 @@ def areOptDevicesLayoutsEqual(oldDevicesObjs, newDevicesCDs):
 
 def reinstallOptionalDevices(vehDescr, newDevices):
     for slotIdx in xrange(len(vehDescr.optionalDevices)):
-        vehDescr.removeOptionalDevice(slotIdx)
+        vehDescr.removeOptionalDevice(slotIdx, rebuildAttrs=False)
 
     for slotIdx, compactDescr in enumerate(newDevices):
         if compactDescr != 0:
-            vehDescr.installOptionalDevice(compactDescr, slotIdx)
+            vehDescr.installOptionalDevice(compactDescr, slotIdx, rebuildAttrs=False)
 
+    vehDescr.rebuildAttrs()
     return vehDescr
 
 
