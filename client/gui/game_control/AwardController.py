@@ -84,11 +84,9 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from skeletons.gui.sounds import ISoundsController
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
-
 if typing.TYPE_CHECKING:
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
 _logger = logging.getLogger(__name__)
-
 
 class QUEST_AWARD_POSTFIX(object):
     CREW_SKINS = 'awardcrewskin'

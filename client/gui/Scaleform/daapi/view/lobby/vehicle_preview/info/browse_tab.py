@@ -58,15 +58,24 @@ class VehiclePreviewBrowseTab(VehiclePreviewBrowseTabMeta):
             if item.buyPrices.itemPrice.defPrice.get(Currency.GOLD):
                 maxDescriptionLength = _MAX_LENGTH_FULL_DESCRIPTION_WITH_KPI
                 bonuses = []
-                if not self.__isFrontlineCreditsOffer():
+                if not (self.__isFrontlineCreditsOffer() or item.isOnlyForEpicBattles):
                     bonuses.append({'iconSrc': backport.image(R.images.gui.maps.shop.kpi.star_icon_benefits()),
-                     'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier())), text_styles.main(backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpText())))})
-                if not (item.isSpecial or self.__isFrontlineCreditsOffer()):
+                                    'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(
+                                        backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier())),
+                                                                                    text_styles.main(backport.text(
+                                                                                        R.strings.vehicle_preview.infoPanel.premium.freeExpText())))})
+                if not (item.isSpecial or self.__isFrontlineCreditsOffer() or item.isOnlyForEpicBattles):
                     bonuses.append({'iconSrc': backport.image(R.images.gui.maps.shop.kpi.money_benefits()),
-                     'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier())), text_styles.main(backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsText())))})
+                                    'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(
+                                        backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier())),
+                                                                                    text_styles.main(backport.text(
+                                                                                        R.strings.vehicle_preview.infoPanel.premium.creditsText())))})
                 if not item.isCrewLocked:
                     bonuses.append({'iconSrc': backport.image(R.images.gui.maps.shop.kpi.crow_benefits()),
-                     'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(backport.text(R.strings.vehicle_preview.infoPanel.premium.crewTransferTitle())), text_styles.main(backport.text(R.strings.vehicle_preview.infoPanel.premium.crewTransferText())))})
+                                    'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(
+                                        backport.text(R.strings.vehicle_preview.infoPanel.premium.crewTransferTitle())),
+                                                                                    text_styles.main(backport.text(
+                                                                                        R.strings.vehicle_preview.infoPanel.premium.crewTransferText())))})
                 builtInEquipmentIDs = item.getBuiltInEquipmentIDs()
                 builtInCount = len(builtInEquipmentIDs) if builtInEquipmentIDs else 0
                 if builtInCount > 0:

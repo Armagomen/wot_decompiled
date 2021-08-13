@@ -892,15 +892,21 @@ def _validateProjectionDecal(component, item, vehDescr, usedStyle=None):
     if options & Options.MIRRORED_HORIZONTALLY and not (
             item.canBeMirroredHorizontally or item.canBeMirroredOnlyVertically):
         raise SoftException('projection decal {} wrong horizontally mirrored option'.format(component.id))
-    if options & Options.MIRRORED_VERTICALLY and not (item.canBeMirroredVertically and slotParams.canBeMirroredVertically):
-        raise SoftException('projection decal {} wrong vertically mirrored option for slotId = {}'.format(component.id, slotId))
+    if options & Options.MIRRORED_VERTICALLY and not (
+            item.canBeMirroredVertically and slotParams.canBeMirroredVertically):
+        raise SoftException(
+            'projection decal {} wrong vertically mirrored option for slotId = {}'.format(component.id, slotId))
     if item.canBeMirroredOnlyVertically and options ^ Options.COMBO_MIRRORED and options ^ Options.NONE:
-        raise SoftException('projection decal {} must have equal mirroring options for both directions'.format(component.id))
+        raise SoftException(
+            'projection decal {} must have equal mirroring options for both directions'.format(component.id))
     if HIDDEN_FOR_USER_TAG in slotParams.tags:
         raise SoftException('Hidden for user slot (slotId = {}) can not be in outfit'.format(slotId))
     usedModel = SLOT_DEFAULT_ALLOWED_MODEL if usedStyle is None or not usedStyle.modelsSet else usedStyle.modelsSet
     if usedModel not in slotParams.compatibleModels:
-        raise SoftException('user slot (slotId = {}, compatibleModels={}) is not compatible with used modelset {}'.format(slotId, slotParams.compatibleModels, usedModel))
+        raise SoftException(
+            'user slot (slotId = {}, compatibleModels={}) is not compatible with used modelset {}'.format(slotId,
+                                                                                                          slotParams.compatibleModels,
+                                                                                                          usedModel))
     slotFormFactors = set([ tag for tag in slotParams.tags if tag.startswith(ProjectionDecalFormTags.PREFIX) ])
     if slotFormFactors:
         formfactor = next((tag for tag in item.tags if tag.startswith(ProjectionDecalFormTags.PREFIX)), '')

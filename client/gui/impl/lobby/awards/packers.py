@@ -21,7 +21,6 @@ from helpers import dependency, int2roman
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
     from gui.server_events.bonuses import VehiclesBonus, TokensBonus
     from gui.impl.backport import TooltipData
