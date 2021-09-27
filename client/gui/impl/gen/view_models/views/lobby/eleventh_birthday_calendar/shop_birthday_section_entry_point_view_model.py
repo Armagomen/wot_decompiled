@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/eleventh_birthday_calendar/shop_birthday_section_entry_point_view_model.py
 from frameworks.wulf import ViewModel
 
-
 class ShopBirthdaySectionEntryPointViewModel(ViewModel):
     __slots__ = ('openShopBirthdaySection',)
 

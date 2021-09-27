@@ -177,10 +177,13 @@ class VehicleInfoTooltipData(BlocksTooltipData):
                                       rightPadding).construct(), gap=textGap, padding=blockPadding))
         priceBlock, invalidWidth = PriceBlockConstructor(vehicle, statsConfig, self.context.getParams(), valueWidth,
                                                          leftPadding, rightPadding).construct()
-        shouldBeCut = self.calledBy and self.calledBy in _SHORTEN_TOOLTIP_CASES or vehicle.isOnlyForEpicBattles
+        shouldBeCut = self.calledBy and self.calledBy in _SHORTEN_TOOLTIP_CASES or vehicle.isOnlyForEpicBattles or vehicle.isOnlyForClanWarsBattles
         if priceBlock and not shouldBeCut:
             self._setWidth(_TOOLTIP_MAX_WIDTH if invalidWidth else _TOOLTIP_MIN_WIDTH)
-            items.append(formatters.packBuildUpBlockData(priceBlock, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, gap=5, padding=formatters.packPadding(left=98), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL))
+            items.append(formatters.packBuildUpBlockData(priceBlock,
+                                                         linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE,
+                                                         gap=5, padding=formatters.packPadding(left=98),
+                                                         layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL))
         if not vehicle.isRotationGroupLocked:
             statusBlock, operationError = StatusBlockConstructor(vehicle, statusConfig).construct()
             if statusBlock and not (operationError and shouldBeCut):
@@ -212,21 +215,30 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         if statsConfig.rentals and not vehicle.isPremiumIGR and not frontlineBlock:
             if statsConfig.futureRentals:
                 rentLeftKey = '#tooltips:vehicle/rentLeftFuture/%s'
-                rentInfo = RentalInfoProvider(time=ctxParams.get('rentExpiryTime'), battles=ctxParams.get('rentBattlesLeft'), wins=ctxParams.get('rentWinsLeft'), seasonRent=ctxParams.get('rentSeason'), isRented=True)
+                rentInfo = RentalInfoProvider(time=ctxParams.get('rentExpiryTime'),
+                                              battles=ctxParams.get('rentBattlesLeft'),
+                                              wins=ctxParams.get('rentWinsLeft'),
+                                              seasonRent=ctxParams.get('rentSeason'), isRented=True)
             else:
                 rentLeftKey = '#tooltips:vehicle/rentLeft/%s'
                 rentInfo = vehicle.rentInfo
             rentFormatter = RentLeftFormatter(rentInfo)
             descrStr = rentFormatter.getRentLeftStr(rentLeftKey)
             leftStr = ''
-            if rentInfo.rentExpiryTime:
-                leftStr = getTimeLeftStr(rentLeftKey, rentInfo.getTimeLeft())
+            rentTimeLeft = rentInfo.getTimeLeft()
+            if rentTimeLeft:
+                leftStr = getTimeLeftStr(rentLeftKey, rentTimeLeft)
             elif rentInfo.battlesLeft:
                 leftStr = str(rentInfo.battlesLeft)
             elif rentInfo.winsLeft > 0:
                 leftStr = str(rentInfo.winsLeft)
             if descrStr or leftStr:
-                items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(descrStr), value=text_styles.main(leftStr), icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2, gap=0, valueWidth=valueWidth, padding=formatters.packPadding(left=0, bottom=-10)))
+                items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(descrStr),
+                                                                           value=text_styles.main(leftStr),
+                                                                           icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2,
+                                                                           gap=0, valueWidth=valueWidth,
+                                                                           padding=formatters.packPadding(left=0,
+                                                                                                          bottom=-10)))
         if statsConfig.showRankedBonusBattle:
             items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(backport.text(R.strings.tooltips.vehicle.rankedBonusBattle())), value='', icon=ICON_TEXT_FRAMES.BONUS_BATTLE, iconYOffset=2, valueWidth=valueWidth, gap=0, padding=formatters.packPadding(left=0, top=-2, bottom=5)))
         if statsConfig.dailyXP:
@@ -1094,7 +1106,8 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
             elif self.configuration.isAwardWindow:
                 result = None
             else:
-                result = self.__getVehicleStatus(self.configuration.showCustomStates, self.vehicle)
+                result = self.__getVehicleStatus(self.configuration.showCustomStates, self.vehicle,
+                                                 self.configuration.isSpecialWindow)
             if result is not None:
                 statusLevel = result['level']
                 if statusLevel == Vehicle.VEHICLE_STATE_LEVEL.INFO:
@@ -1147,15 +1160,15 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
          'text': text,
          'level': level}
 
-    def __getVehicleStatus(self, showCustomStates, vehicle):
+    def __getVehicleStatus(self, showCustomStates, vehicle, isSpecial=False):
         if showCustomStates:
             isInInventory = vehicle.isInInventory
             level = Vehicle.VEHICLE_STATE_LEVEL.WARNING
             if not isInInventory and vehicle.hasRestoreCooldown() and vehicle.isHidden:
                 timeKey, formattedTime = getTimeLeftInfo(self.vehicle.restoreInfo.getRestoreCooldownTimeLeft())
                 return {'header': _ms('#tooltips:vehicleStatus/restoreCooldown/%s' % timeKey, time=formattedTime),
-                 'text': '',
-                 'level': level}
+                        'text': '',
+                        'level': level}
             isUnlocked = vehicle.isUnlocked
             mayObtain, reason = vehicle.mayObtainForMoney(self.itemsCache.items.stats.money)
             msg = None
@@ -1164,7 +1177,7 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                 msg = 'notUnlocked'
             elif isInInventory:
                 msg = 'inHangar'
-            elif not mayObtain:
+            elif not mayObtain and not isSpecial:
                 level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
                 if reason == GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_GOLD:
                     msg = 'notEnoughGold'
@@ -1174,11 +1187,13 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                     msg = 'operationError'
                     operationError = True
             if msg:
+                if isSpecial:
+                    level = Vehicle.VEHICLE_STATE_LEVEL.INFO
                 header, text = getComplexStatus('#tooltips:vehicleStatus/%s' % msg)
                 return {'header': header,
-                 'text': text,
-                 'level': level,
-                 'operationError': operationError}
+                        'text': text,
+                        'level': level,
+                        'operationError': operationError}
             return
         else:
             state, level = vehicle.getState()

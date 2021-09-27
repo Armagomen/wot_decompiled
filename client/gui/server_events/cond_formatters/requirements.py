@@ -10,6 +10,7 @@ from gui.impl.gen import R
 from gui.server_events.cond_formatters import packText, packTokenProgress, getSeparatorBlock
 from gui.server_events.cond_formatters.formatters import ConditionsFormatter, ConditionFormatter
 from gui.server_events.conditions import GROUP_TYPE, AndGroup
+from gui.server_events.events_constants import WT_QUEST_UNAVAILABLE_NOT_ENOUGH_TICKETS_REASON
 from gui.server_events.formatters import TOKEN_SIZES
 from gui.shared.formatters import text_styles, icons
 from helpers import int2roman, dependency
@@ -164,12 +165,20 @@ class AccountRequirementsFormatter(ConditionsFormatter):
         raise SoftException('This method should not be reached in this context')
 
 
+class WtAccountRequirementsFormatter(AccountRequirementsFormatter):
+
+    def __init__(self):
+        super(WtAccountRequirementsFormatter, self).__init__({'and': WtRecursiveGroupFormatter(),
+                                                              'or': WtRecursiveGroupFormatter(),
+                                                              'single': SingleGroupFormatter()})
+
+
 class TQAccountRequirementsFormatter(AccountRequirementsFormatter):
 
     def __init__(self):
         super(TQAccountRequirementsFormatter, self).__init__({'and': TQRecursiveGroupFormatter(),
-         'or': TQRecursiveGroupFormatter(),
-         'single': SingleGroupFormatter()})
+                                                              'or': TQRecursiveGroupFormatter(),
+                                                              'single': SingleGroupFormatter()})
 
     def _getGroupFormatter(self, group):
         return self.getConditionFormatter(group.getName())
@@ -548,8 +557,21 @@ class TokenGatheringRequirementFormatter(ConditionFormatter):
         needCount = condition.getNeededCount()
         gotCount = condition.getReceivedCount()
         image = condition.getImage(TOKEN_SIZES.BIG)
-        self._tokens.append(packTokenProgress(condition.getID(), event.getID(), '', image, gotCount, needCount, isBigSize=True))
+        self._tokens.append(
+            packTokenProgress(condition.getID(), event.getID(), '', image, gotCount, needCount, isBigSize=True))
         self._isAvailable = self._isAvailable and condition.isAvailable()
 
     def isAvailable(self):
         return self._isAvailable
+
+
+class WtRecursiveGroupFormatter(RecursiveGroupFormatter):
+
+    def conclusion(self, group, event, requirements, passed, total):
+        result = event.isAvailable()
+        if not result.isValid and result.reason == WT_QUEST_UNAVAILABLE_NOT_ENOUGH_TICKETS_REASON:
+            icon = (
+            icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, width=14, height=14, vSpace=-1, hSpace=-2),)
+            return text_styles.concatStylesToSingleLine(icon, text_styles.error(
+                backport.text(R.strings.quests.missionDetails.requirements.header.unavailable())), text_styles.main(
+                backport.text(R.strings.event.quests.error.no_ticket())))

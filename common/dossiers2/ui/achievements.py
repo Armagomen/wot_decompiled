@@ -84,27 +84,30 @@ class ACHIEVEMENT_SECTION:
 
 
 _AT, _AS, _AB, _AM = (ACHIEVEMENT_TYPE,
- ACHIEVEMENT_SECTION,
- ACHIEVEMENT_BLOCK,
- ACHIEVEMENT_MODE)
+                      ACHIEVEMENT_SECTION,
+                      ACHIEVEMENT_BLOCK,
+                      ACHIEVEMENT_MODE)
 DEFAULT_WEIGHT = -1
+
 
 def makeAchievesStorageName(block):
     return (block, '')
 
 
+MARK_OF_MASTERY = 'markOfMastery'
+MARK_ON_GUN = 'marksOnGun'
 WHITE_TIGER_RECORD = (_AB.CLIENT, 'whiteTiger')
 RARE_STORAGE_RECORD = makeAchievesStorageName(_AB.RARE)
-MARK_OF_MASTERY_RECORD = (_AB.TOTAL, 'markOfMastery')
-MARK_ON_GUN_RECORD = (_AB.TOTAL, 'marksOnGun')
+MARK_OF_MASTERY_RECORD = (_AB.TOTAL, MARK_OF_MASTERY)
+MARK_ON_GUN_RECORD = (_AB.TOTAL, MARK_ON_GUN)
 HONORED_RANK_RECORD = (_AB.CLIENT, 'honoredRank')
 _MODE_CONVERTER = {'random': ACHIEVEMENT_MODE.RANDOM,
- 'ranked': ACHIEVEMENT_MODE.RANKED,
- '7x7': ACHIEVEMENT_MODE.TEAM_7X7,
- 'historical': ACHIEVEMENT_MODE.HISTORICAL,
- 'rated7x7': ACHIEVEMENT_MODE.RATED_7X7,
- 'epic_battle': ACHIEVEMENT_MODE.EPIC_BATTLE,
- 'all': ACHIEVEMENT_MODE.ALL}
+                   'ranked': ACHIEVEMENT_MODE.RANKED,
+                   '7x7': ACHIEVEMENT_MODE.TEAM_7X7,
+                   'historical': ACHIEVEMENT_MODE.HISTORICAL,
+                   'rated7x7': ACHIEVEMENT_MODE.RATED_7X7,
+                   'epic_battle': ACHIEVEMENT_MODE.EPIC_BATTLE,
+                   'all': ACHIEVEMENT_MODE.ALL}
 ACHIEVEMENTS = {}
 ACHIEVEMENT_SECTIONS_ORDER = (_AS.BATTLE,
  _AS.SPECIAL,

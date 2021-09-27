@@ -19,13 +19,17 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_divisions import RankedBattlesDivisionsView
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_leagues import RankedBattlesLeaguesView
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_season_gap import RankedBattlesSeasonGapView
-    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_unreachable_view import RankedBattlesUnreachableView
+    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_unreachable_view import \
+        RankedBattlesUnreachableView
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_results import RankedBattlesResults
     from gui.Scaleform.daapi.view.lobby.rankedBattles.postbattle_ranked_awards_view import PostbattleRankedAwardsView
     from gui.Scaleform.daapi.view.lobby.hangar.ranked_battles_widget import RankedBattleResultsWidget
-    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_season_complete_view import RankedBattlesSeasonCompleteView
+    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_season_complete_view import \
+        RankedBattlesSeasonCompleteView
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_prime_time_view import RankedBattlesPrimeTimeView
-    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_browser_pages import RankedRatingPage, RankedBattlesInfoPage, RankedSeasonGapPage, RankedYearRatingPage, RankedYearLBLandingView, RankedShopPage, RankedShopLandingView, RankedWebOverlay
+    from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_browser_pages import RankedRatingPage, \
+        RankedBattlesInfoPage, RankedSeasonGapPage, RankedYearRatingPage, RankedYearLBLandingView, RankedShopPage, \
+        RankedShopLandingView, RankedWebOverlay
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_progress import RankedBattlesProgress
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_qualification import RankedBattlesQualification
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_entry_point import RankedBattlesEntryPoint
@@ -71,10 +75,10 @@ def getViewSettings():
                  RANKEDBATTLES_ALIASES.RANKED_BATTLES_UNREACHABLE_VIEW_UI, WindowLayer.SUB_VIEW,
                  RANKEDBATTLES_ALIASES.RANKED_BATTLES_UNREACHABLE_VIEW_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE, True),
     ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS, RankedBattlesResults,
-                 RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS_UI, WindowLayer.FULLSCREEN_WINDOW,
+                 RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS_UI, WindowLayer.TOP_WINDOW,
                  RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS, ScopeTemplates.LOBBY_TOP_SUB_SCOPE, True),
     ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD, PostbattleRankedAwardsView,
-                 RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD_UI, WindowLayer.FULLSCREEN_WINDOW,
+                 RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD_UI, WindowLayer.TOP_WINDOW,
                  RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD, ScopeTemplates.LOBBY_TOP_SUB_SCOPE, True),
     ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_COMPLETE, RankedBattlesSeasonCompleteView,
                  RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_COMPLETE_UI, WindowLayer.FULLSCREEN_WINDOW,

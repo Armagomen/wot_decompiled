@@ -188,15 +188,20 @@ class Barracks(BarracksMeta, LobbySubView, IGlobalListener):
 
     def __updateTanksList(self):
         data = list()
-        modulesAll = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE | ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING).values()
+        criteria = REQ_CRITERIA.INVENTORY
+        criteria |= ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
+        criteria |= ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING
+        criteria |= ~REQ_CRITERIA.VEHICLE.EVENT_BATTLE
+        modulesAll = self.itemsCache.items.getVehicles(criteria).values()
         modulesAll.sort()
         for module in modulesAll:
-            if self.filter['nation'] != -1 and self.filter['nation'] != module.descriptor.type.id[0] or self.filter['tankType'] != 'None' and self.filter['tankType'] != -1 and self.filter['tankType'] != module.type:
+            if self.filter['nation'] != -1 and self.filter['nation'] != module.descriptor.type.id[0] or self.filter[
+                'tankType'] != 'None' and self.filter['tankType'] != -1 and self.filter['tankType'] != module.type:
                 continue
             data.append({'data': {'type': module.type,
-                      'nationID': module.descriptor.type.id[0],
-                      'typeID': module.descriptor.type.id[1]},
-             'label': module.descriptor.type.shortUserString})
+                                  'nationID': module.descriptor.type.id[0],
+                                  'typeID': module.descriptor.type.id[1]},
+                         'label': module.descriptor.type.shortUserString})
 
         self.as_updateTanksListS(data)
 

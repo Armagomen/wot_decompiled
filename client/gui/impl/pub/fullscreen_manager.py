@@ -5,6 +5,7 @@ import weakref
 import typing
 from frameworks.state_machine import SingleStateObserver
 from frameworks.wulf import WindowLayer, WindowStatus
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
 from helpers import dependency
 from skeletons.gameplay import GameplayStateID, IGameplayLogic
 from skeletons.gui.impl import IGuiLoader, IFullscreenManager, INotificationWindowController
@@ -43,26 +44,39 @@ class FullscreenManager(IFullscreenManager):
             self.__gui.windowsManager.onWindowStatusChanged -= self.__onWindowStatusChanged
 
     def __onWindowStatusChanged(self, uniqueID, newState):
+        window = self.__gui.windowsManager.getWindow(uniqueID)
         if newState == WindowStatus.LOADING:
-            window = self.__gui.windowsManager.getWindow(uniqueID)
             self.__onWindowOpen(window)
+        if newState == WindowStatus.LOADED:
+            self.__onWindowsOpened(window)
 
     def __onWindowOpen(self, newWindow):
+        if isinstance(newWindow, PreloadableWindow) and newWindow.isPreloading:
+            return
         layer = newWindow.layer
         if not WindowLayer.VIEW <= layer <= WindowLayer.FULLSCREEN_WINDOW:
             return
         windows = self.__gui.windowsManager.findWindows(self.__fullscreenPredicate)
         windowsToClose = []
         for window in windows:
-            if window != newWindow and (window.layer > layer or window.layer == layer) and not self.__isParent(window, newWindow) and self.__isAllowed(newWindow):
+            if window != newWindow and (window.layer > layer or window.layer == layer) and not self.__isParent(window,
+                                                                                                               newWindow) and self.__isAllowed(
+                    newWindow):
                 windowsToClose.append(window)
 
-        if (not windows or windowsToClose) and not self.__notificationMgr.hasWindow(newWindow) and self.__isAllowed(newWindow):
+        if (not windows or windowsToClose) and not self.__notificationMgr.hasWindow(newWindow) and self.__isAllowed(
+                newWindow):
             _logger.info('Notification queue postpones by opening window %r', newWindow)
             self.__notificationMgr.postponeActive()
         for window in windowsToClose:
             _logger.info('Window %r has been destroyed by opening window %r', window, newWindow)
             window.destroy()
+
+    def __onWindowsOpened(self, newWindow):
+        layer = newWindow.layer
+        if layer != WindowLayer.FULLSCREEN_WINDOW:
+            return
+        newWindow.bringToFront()
 
     @classmethod
     def __isParent(cls, pWindow, window):

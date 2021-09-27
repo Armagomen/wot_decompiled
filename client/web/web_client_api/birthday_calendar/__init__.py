@@ -6,7 +6,6 @@ from skeletons.gui.game_control import IBirthdayCalendarController
 from skeletons.gui.shared import IItemsCache
 from web.web_client_api import w2c, w2capi, W2CSchema, Field
 
-
 def _invokedFromValidator(value, _):
     return not value or value in CalendarInvokeOrigin.ALL()
 

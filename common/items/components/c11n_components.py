@@ -907,7 +907,7 @@ def _validateProjectionDecal(component, item, vehDescr, usedStyle=None):
             'user slot (slotId = {}, compatibleModels={}) is not compatible with used modelset {}'.format(slotId,
                                                                                                           slotParams.compatibleModels,
                                                                                                           usedModel))
-    slotFormFactors = set([ tag for tag in slotParams.tags if tag.startswith(ProjectionDecalFormTags.PREFIX) ])
+    slotFormFactors = set([tag for tag in slotParams.tags if tag.startswith(ProjectionDecalFormTags.PREFIX)])
     if slotFormFactors:
         formfactor = next((tag for tag in item.tags if tag.startswith(ProjectionDecalFormTags.PREFIX)), '')
         if not formfactor:

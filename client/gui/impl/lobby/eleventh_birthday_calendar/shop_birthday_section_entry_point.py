@@ -12,7 +12,6 @@ from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 
-
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def isBirthdayEntryPointAvailable(itemsCache=None):
     return itemsCache.items.stats.actualEventCoin > 0

@@ -47,7 +47,13 @@ class _ClassicComponentsConfig(ComponentsConfig):
                                                         BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
                                                         BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
                                                         (BATTLE_CTRL_ID.AMMO,
-                                                         (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,))), viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER, period_music_listener.PeriodMusicListener), (DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer), (DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
+                                                         (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,))),
+                                                       viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER,
+                                                                     period_music_listener.PeriodMusicListener), (
+                                                                    DynamicAliases.DRONE_MUSIC_PLAYER,
+                                                                    drone_music_player.DroneMusicPlayer), (
+                                                                    DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
+                                                                    StartCountdownSoundPlayer)))
 
 
 COMMON_CLASSIC_CONFIG = _ClassicComponentsConfig()

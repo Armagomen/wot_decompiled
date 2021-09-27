@@ -37,7 +37,6 @@ from web.web_client_api.ui.ranked import OpenRankedPagesMixin
 from web.web_client_api.ui.frontline import OpenFrontLinePagesMixin
 from web.web_client_api.ui.referral import ReferralProgramPagesMixin
 
-
 @w2capi(name='open_window', key='window_id')
 class OpenWindowWebApi(OpenBrowserWindowWebApiMixin, ClanWindowWebApiMixin, ProfileWindowWebApiMixin,
                        OpenExternalBrowserWebApiMixin, VehicleSellWebApiMixin, hangar.HangarWindowsWebApiMixin,

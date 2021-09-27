@@ -28,39 +28,33 @@ class DynamicAliases(CONST_CONTAINER):
 class _EpicBattleComponentsConfig(ComponentsConfig):
 
     def __init__(self):
-        super(_EpicBattleComponentsConfig, self).__init__(((BATTLE_CTRL_ID.ARENA_PERIOD,
-                                                            (BATTLE_VIEW_ALIASES.BATTLE_TIMER,
-                                                             BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
-                                                             BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
-                                                             DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,
-                                                             DynamicAliases.PERIOD_MUSIC_LISTENER,
-                                                             ClassicDynAliases.PREBATTLE_TIMER_SOUND_PLAYER)),
-                                                           (BATTLE_CTRL_ID.CALLOUT,
-                                                            (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
-                                                           (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
-                                                           (BATTLE_CTRL_ID.RESPAWN,
-                                                            (BATTLE_VIEW_ALIASES.EPIC_RESPAWN_VIEW,)),
-                                                           (BATTLE_CTRL_ID.MAPS, (
-                                                           BATTLE_VIEW_ALIASES.EPIC_OVERVIEW_MAP_SCREEN,
-                                                           BATTLE_VIEW_ALIASES.MINIMAP)),
-                                                           (BATTLE_CTRL_ID.SPECTATOR,
-                                                            (BATTLE_VIEW_ALIASES.EPIC_SPECTATOR_VIEW,)),
-                                                           (BATTLE_CTRL_ID.GAME_NOTIFICATIONS,
-                                                            (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-                                                           (BATTLE_CTRL_ID.EPIC_MISSIONS,
-                                                            (BATTLE_VIEW_ALIASES.EPIC_MISSIONS_PANEL,)),
-                                                           (BATTLE_CTRL_ID.TEAM_BASES, (
-                                                           BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL,
-                                                           DynamicAliases.EPIC_DRONE_MUSIC_PLAYER)),
-                                                           (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL,
-                                                            (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,)),
-                                                           (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL,
-                                                            (BATTLE_VIEW_ALIASES.SUPER_PLATOON_PANEL,)),
-                                                           (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,)),
-                                                           (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-                                                           (BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-                                                           (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
-                                                           (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,))), viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER, period_music_listener.PeriodMusicListener), (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER, drone_music_player.EpicDroneMusicPlayer), (ClassicDynAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
+        super(_EpicBattleComponentsConfig, self).__init__(
+            ((BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER,
+                                            BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
+                                            BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
+                                            DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,
+                                            DynamicAliases.PERIOD_MUSIC_LISTENER,
+                                            ClassicDynAliases.PREBATTLE_TIMER_SOUND_PLAYER)),
+             (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
+             (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+             (BATTLE_CTRL_ID.RESPAWN, (BATTLE_VIEW_ALIASES.EPIC_RESPAWN_VIEW,)),
+             (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.EPIC_OVERVIEW_MAP_SCREEN, BATTLE_VIEW_ALIASES.MINIMAP)),
+             (BATTLE_CTRL_ID.SPECTATOR, (BATTLE_VIEW_ALIASES.EPIC_SPECTATOR_VIEW,)),
+             (BATTLE_CTRL_ID.GAME_NOTIFICATIONS, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+             (BATTLE_CTRL_ID.EPIC_MISSIONS, (BATTLE_VIEW_ALIASES.EPIC_MISSIONS_PANEL,)),
+             (
+             BATTLE_CTRL_ID.TEAM_BASES, (BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, DynamicAliases.EPIC_DRONE_MUSIC_PLAYER)),
+             (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,)),
+             (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (BATTLE_VIEW_ALIASES.SUPER_PLATOON_PANEL,)),
+             (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER,)),
+             (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+             (BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+             (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL,
+              (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
+             (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,))), viewsConfig=(
+            (DynamicAliases.PERIOD_MUSIC_LISTENER, period_music_listener.PeriodMusicListener),
+            (DynamicAliases.EPIC_DRONE_MUSIC_PLAYER, drone_music_player.EpicDroneMusicPlayer),
+            (ClassicDynAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
 
 
 EPIC_BATTLE_CLASSIC_CONFIG = _EpicBattleComponentsConfig()

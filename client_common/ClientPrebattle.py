@@ -51,18 +51,19 @@ class ClientPrebattle(object):
         return
 
     def __accInfoAsDict(self, accInfoAsTuple):
-        pID, name, dbID, badges, roster, state, time, vehCompDescr, igrType, clanDBID, clanAbbrev, group, vehEnhancements = accInfoAsTuple
+        pID, name, dbID, badges, roster, state, time, vehCompDescr, igrType, clanDBID, clanAbbrev, group, vehEnhancements, role = accInfoAsTuple
         return (roster, pID, {'name': name,
-          'dbID': dbID,
-          'badges': badges,
-          'state': state,
-          'time': time,
-          'vehCompDescr': vehCompDescr,
-          'clanDBID': clanDBID,
-          'clanAbbrev': clanAbbrev,
-          'igrType': igrType,
-          'group': group,
-          'vehEnhancements': vehEnhancements})
+                              'dbID': dbID,
+                              'badges': badges,
+                              'state': state,
+                              'time': time,
+                              'vehCompDescr': vehCompDescr,
+                              'clanDBID': clanDBID,
+                              'clanAbbrev': clanAbbrev,
+                              'igrType': igrType,
+                              'group': group,
+                              'vehEnhancements': vehEnhancements,
+                              'role': role})
 
     def __onRosterReceived(self, argStr):
         rostersAsList = cPickle.loads(argStr)
@@ -85,8 +86,10 @@ class ClientPrebattle(object):
         self.onPlayerRemoved(pID, roster, name)
 
     def __onPlayerStateChanged(self, argStr):
-        pID, roster, state, vehCompDescr, igrType, badges, clanDBID, clanAbbrev, vehEnhancements = cPickle.loads(argStr)
-        LOG_DEBUG_DEV('__onPlayerStateChanged', pID, roster, state, vehCompDescr, igrType, clanDBID, clanAbbrev, vehEnhancements)
+        pID, roster, state, vehCompDescr, igrType, badges, clanDBID, clanAbbrev, vehEnhancements, role = cPickle.loads(
+            argStr)
+        LOG_DEBUG_DEV('__onPlayerStateChanged', pID, roster, state, vehCompDescr, igrType, clanDBID, clanAbbrev,
+                      vehEnhancements, role)
         accInfo = self.rosters.get(roster, {}).get(pID, None)
         if accInfo is None:
             return
@@ -98,6 +101,7 @@ class ClientPrebattle(object):
             accInfo['clanDBID'] = clanDBID
             accInfo['clanAbbrev'] = clanAbbrev
             accInfo['vehEnhancements'] = vehEnhancements
+            accInfo['role'] = role
             self.onPlayerStateChanged(pID, roster)
             return
 

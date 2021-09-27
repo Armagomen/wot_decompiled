@@ -230,8 +230,6 @@ def __updateDossierCommonPart(dossierType, dossierDescr, results, dossierXP, ava
         __updateAggregatedValues(dossierDescr.expand('fortSorties'), dossierDescr.expand('fortSorties'), results, dossierXP, frags8p)
     if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_FORT_BATTLE):
         __updateAggregatedValues(dossierDescr.expand('fortBattles'), dossierDescr.expand('fortBattles'), results, dossierXP, frags8p, determineWinnerTeam(avatarResults))
-    if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_RANKED):
-        __updateAggregatedValues(dossierDescr.expand('ranked'), dossierDescr.expand('ranked'), results, dossierXP, frags8p)
     if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_EPIC_BATTLE):
         __updateAggregatedValues(dossierDescr.expand('epicBattle'), dossierDescr.expand('epicBattle'), results, dossierXP, frags8p)
         for record in ['deathCount']:
@@ -409,10 +407,14 @@ def __updateMarkOfMastery(dossierDescr, results):
 def __updateVehicleDossierImpl(vehTypeCompDescr, dossierDescr, results, dossierXP):
     bonusType = results['bonusType']
     if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_ACHIEVEMENTS_7X7):
-        _updatePerBattleSeries(dossierDescr['achievements7x7'], 'tacticalBreakthroughSeries', results['winnerTeam'] == results['team'])
+        _updatePerBattleSeries(dossierDescr['achievements7x7'], 'tacticalBreakthroughSeries',
+                               results['winnerTeam'] == results['team'])
         return
+    if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_RANKED):
+        __updateAggregatedValues(dossierDescr.expand('ranked_10x10'), dossierDescr.expand('ranked_10x10'), results,
+                                 dossierXP, 0)
     if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_MAXRANKED):
-        __updateMaxValues(dossierDescr.expand('maxRanked'), results, dossierXP)
+        __updateMaxValues(dossierDescr.expand('maxRanked_10x10'), results, dossierXP)
     __updateMarksOnGun(dossierDescr, results)
     __updateMarkOfMastery(dossierDescr, results)
     if not BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_ACHIEVEMENTS_15X15):
@@ -477,7 +479,7 @@ def __updateAccountDossierCuts(dossierDescr, results, dossierXP, vehTypeCompDesc
         battleCut[vehTypeCompDescr] = (vehBattles['battlesCount'], vehBattles['wins'], vehBattles['xp'])
     if BONUS_CAPS.checkAny(bonusType, BONUS_CAPS.DOSSIER_RANKED):
         cut = dossierDescr['rankedCut']
-        veh = vehDossierDescr['ranked']
+        veh = vehDossierDescr['ranked_10x10']
         cut[vehTypeCompDescr] = (veh['battlesCount'], veh['wins'], veh['xp'])
         seasonBlock = 'rankedCutSeason{}'.format(avatarResults['rankedSeasonNum'])
         currentCut = dossierDescr[seasonBlock]

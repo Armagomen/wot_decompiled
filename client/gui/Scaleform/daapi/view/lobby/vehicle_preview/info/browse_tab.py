@@ -13,8 +13,10 @@ from gui.impl.gen import R
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from skeletons.gui.shared import IItemsCache
-_MAX_LENGTH_FULL_DESCRIPTION_NO_KPI = 400
-_MAX_LENGTH_FULL_DESCRIPTION_WITH_KPI = 280
+
+_MAX_LENGTH_FULL_DESCRIPTION_NO_KPI = 410
+_MAX_LENGTH_FULL_DESCRIPTION_WITH_KPI = 290
+
 
 class VehiclePreviewBrowseTab(VehiclePreviewBrowseTabMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -70,6 +72,12 @@ class VehiclePreviewBrowseTab(VehiclePreviewBrowseTabMeta):
                                         backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier())),
                                                                                     text_styles.main(backport.text(
                                                                                         R.strings.vehicle_preview.infoPanel.premium.creditsText())))})
+                if item.isEarnCrystals:
+                    bonuses.append({'iconSrc': backport.image(R.images.gui.maps.shop.kpi.bons_benefits()),
+                                    'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(
+                                        backport.text(R.strings.vehicle_preview.infoPanel.premium.bonsTitle())),
+                                                                                    text_styles.main(backport.text(
+                                                                                        R.strings.vehicle_preview.infoPanel.premium.bonsText())))})
                 if not item.isCrewLocked:
                     bonuses.append({'iconSrc': backport.image(R.images.gui.maps.shop.kpi.crow_benefits()),
                                     'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(

@@ -36,6 +36,7 @@ class SettingsCore(ISettingsCore):
         self.__interfaceScale = None
         self.__storages = None
         self.__options = None
+        self.__eventDisabledStorages = set()
         self.__isReady = False
         return
 
@@ -83,12 +84,12 @@ class SettingsCore(ISettingsCore):
         MESSENGER_SETTINGS_STORAGE = settings_storages.MessengerSettingsStorage(GAME_SETTINGS_STORAGE)
         EXTENDED_MESSENGER_SETTINGS_STORAGE = settings_storages.MessengerSettingsStorage(EXTENDED_GAME_SETTINGS_STORAGE)
         self.__storages = {'game': GAME_SETTINGS_STORAGE,
-         'extendedGame': EXTENDED_GAME_SETTINGS_STORAGE,
-         'extendedGame2': EXTENDED_GAME_2_SETTINGS_STORAGE,
-         'gameplay': GAMEPLAY_SETTINGS_STORAGE,
-         'sound': SOUND_SETTINGS_STORAGE,
-         'controls': CONTROLS_SETTINGS_STORAGE,
-         'aim': AIM_SETTINGS_STORAGE,
+                           'extendedGame': EXTENDED_GAME_SETTINGS_STORAGE,
+                           'extendedGame2': EXTENDED_GAME_2_SETTINGS_STORAGE,
+                           'gameplay': GAMEPLAY_SETTINGS_STORAGE,
+                           'sound': SOUND_SETTINGS_STORAGE,
+                           'controls': CONTROLS_SETTINGS_STORAGE,
+                           'aim': AIM_SETTINGS_STORAGE,
          'markers': MARKERS_SETTINGS_STORAGE,
          'graphics': GRAPHICS_SETTINGS_STORAGE,
          'video': VIDEO_SETTINGS_STORAGE,
@@ -99,16 +100,18 @@ class SettingsCore(ISettingsCore):
          'tutorial': TUTORIAL_SETTINGS_STORAGE,
          'damageIndicator': DAMAGE_INDICATOR_SETTINGS_STORAGE,
          'damageLog': DAMAGE_LOG_SETTINGS_STORAGE,
-         'battleEvents': BATTLE_EVENTS_SETTINGS_STORAGE,
-         'battleBorderMap': BATTLE_BORDER_MAP_SETTINGS_STORAGE,
-         'questsProgress': QUESTS_PROGRESS_SETTINGS_STORAGE,
-         'battleComm': BATTLE_COMM_SETTINGS_STORAGE,
-         'battleHud': BATTLE_HUD_SETTINGS_STORAGE,
-         'dogTags': DOG_TAGS_SETTINGS_STORAGE,
-         'spgAim': SPG_AIM_SETTINGS_STORAGE}
+                           'battleEvents': BATTLE_EVENTS_SETTINGS_STORAGE,
+                           'battleBorderMap': BATTLE_BORDER_MAP_SETTINGS_STORAGE,
+                           'questsProgress': QUESTS_PROGRESS_SETTINGS_STORAGE,
+                           'battleComm': BATTLE_COMM_SETTINGS_STORAGE,
+                           'battleHud': BATTLE_HUD_SETTINGS_STORAGE,
+                           'dogTags': DOG_TAGS_SETTINGS_STORAGE,
+                           'spgAim': SPG_AIM_SETTINGS_STORAGE}
         self.isDeviseRecreated = False
         self.isChangesConfirmed = True
-        graphicSettings = tuple(((settingName, options.GraphicSetting(settingName, settingName == GRAPHICS.COLOR_GRADING_TECHNIQUE)) for settingName in BigWorld.generateGfxSettings()))
+        graphicSettings = tuple(
+            ((settingName, options.GraphicSetting(settingName, settingName == GRAPHICS.COLOR_GRADING_TECHNIQUE)) for
+             settingName in BigWorld.generateGfxSettings()))
         self.__options = options.SettingsContainer(graphicSettings + (
         (GAME.REPLAY_ENABLED, options.ReplaySetting(GAME.REPLAY_ENABLED, storage=GAME_SETTINGS_STORAGE)),
         (GAME.SNIPER_ZOOM, options.SniperZoomSetting(GAME.SNIPER_ZOOM, storage=EXTENDED_GAME_SETTINGS_STORAGE)),
@@ -451,6 +454,7 @@ class SettingsCore(ISettingsCore):
         g_playerEvents.onAccountBecomeNonPlayer -= self.revertSettings
         AccountSettings.onSettingsChanging -= self.__onAccountSettingsChanging
         AccountSettings.clearCache()
+        self.__eventDisabledStorages.clear()
         LOG_DEBUG('SettingsCore is destroyed')
         return
 
@@ -515,10 +519,11 @@ class SettingsCore(ISettingsCore):
     def isSettingChanged(self, name, value):
         return not self.__options.getSetting(name).isEqual(value)
 
-    def applyStorages(self, restartApproved):
+    def applyStorages(self, restartApproved, force=True):
         confirmators = []
-        for storage in self.__storages.values():
-            confirmators.append(storage.apply(restartApproved))
+        for storageName, storage in self.__storages.iteritems():
+            if storageName not in self.__eventDisabledStorages or force:
+                confirmators.append(storage.apply(restartApproved))
 
         return confirmators
 
@@ -534,12 +539,19 @@ class SettingsCore(ISettingsCore):
 
         return
 
-    def clearStorages(self):
-        for storage in self.__storages.values():
-            storage.clear()
+    def clearStorages(self, force=True):
+        for storageName, storage in self.__storages.iteritems():
+            if storageName not in self.__eventDisabledStorages or force:
+                storage.clear()
 
     def isReady(self):
         return self.__isReady
+
+    def setEventDisabledStorages(self, storagesName):
+        self.__eventDisabledStorages.update(storagesName)
+
+    def unsetEventDisabledStorages(self):
+        self.__eventDisabledStorages.clear()
 
     def __onAccountSettingsChanging(self, key, value):
         self.onSettingsChanged({key: value})

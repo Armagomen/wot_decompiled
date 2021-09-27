@@ -87,9 +87,10 @@ VEHICLE_CLASS_TAGS = frozenset(('lightTank',
  'AT-SPG'))
 VEHICLE_LEVEL_EARN_CRYSTAL = 10
 MODES_WITHOUT_CRYSTAL_EARNINGS = set(('bob',
- 'fallout',
- 'event_battles',
- 'battle_royale'))
+                                      'fallout',
+                                      'event_battles',
+                                      'battle_royale',
+                                      'clanWarsBattles'))
 
 class VEHICLE_PHYSICS_TYPE():
     TANK = 0
@@ -157,23 +158,23 @@ EmblemSlot = namedtuple('EmblemSlot', ['rayStart',
  'isUVProportional',
  'emblemId'])
 VEHICLE_MISC_ATTRIBUTE_FACTOR_NAMES = ('fuelTankHealthFactor',
- 'repairSpeedFactor',
- 'additiveShotDispersionFactor',
- 'antifragmentationLiningFactor',
- 'circularVisionRadiusFactor',
- 'gunReloadTimeFactor',
- 'gunAimingTimeFactor',
- 'ammoBayHealthFactor',
- 'engineHealthFactor',
- 'chassisHealthFactor',
- 'vehicleByChassisDamageFactor',
- 'fuelTankHealthFactor',
- 'crewLevelIncrease',
- 'crewChanceToHitFactor',
- 'stunResistanceEffect',
- 'stunResistanceDuration',
- 'repeatedStunDurationFactor',
- 'healthFactor',
+                                       'repairSpeedFactor',
+                                       'additiveShotDispersionFactor',
+                                       'antifragmentationLiningFactor',
+                                       'circularVisionRadiusFactor',
+                                       'gunReloadTimeFactor',
+                                       'gunAimingTimeFactor',
+                                       'ammoBayHealthFactor',
+                                       'engineHealthFactor',
+                                       'chassisHealthFactor',
+                                       'vehicleByChassisDamageFactor',
+                                       'fuelTankHealthFactor',
+                                       'crewLevelIncrease',
+                                       'crewChanceToHitFactor',
+                                       'stunResistanceEffect',
+                                       'stunResistanceDuration',
+                                       'repeatedStunDurationFactor',
+                                       'healthFactor',
  'damageFactor',
  'enginePowerFactor',
  'radioHealthFactor',
@@ -184,17 +185,19 @@ VEHICLE_MISC_ATTRIBUTE_FACTOR_NAMES = ('fuelTankHealthFactor',
  'decreaseOwnSpottingTime',
  'demaskFoliageFactor',
  'demaskMovingFactor',
- 'chassisRepairSpeedFactor',
- 'turretRotationSpeed',
- 'invisibilityAdditiveTerm',
- 'forwardMaxSpeedKMHTerm',
- 'backwardMaxSpeedKMHTerm',
- 'onStillRotationSpeedFactor',
- 'onMoveRotationSpeedFactor',
- 'fireStartingChanceFactor',
- 'multShotDispersionFactor',
- 'chassisHealthAfterHysteresisFactor',
- 'centerRotationFwdSpeedFactor')
+                                       'chassisRepairSpeedFactor',
+                                       'turretRotationSpeed',
+                                       'invisibilityAdditiveTerm',
+                                       'forwardMaxSpeedKMHTerm',
+                                       'backwardMaxSpeedKMHTerm',
+                                       'onStillRotationSpeedFactor',
+                                       'onMoveRotationSpeedFactor',
+                                       'fireStartingChanceFactor',
+                                       'multShotDispersionFactor',
+                                       'chassisHealthAfterHysteresisFactor',
+                                       'centerRotationFwdSpeedFactor',
+                                       'receivedDamageFactor',
+                                       'proofHealth')
 VEHICLE_MISC_ATTRIBUTE_FACTOR_INDICES = dict(((value, index) for index, value in enumerate(VEHICLE_MISC_ATTRIBUTE_FACTOR_NAMES)))
 
 class EnhancementItem(object):
@@ -239,20 +242,21 @@ def vehicleAttributeFactors():
             'engine/fireStartingChance': 1.0,
             'healthBurnPerSecLossFraction': 1.0,
             'repairSpeed': 1.0,
-     'additiveShotDispersionFactor': 1.0,
-     'brokenTrack': 0,
-     'vehicle/rotationSpeed': 1.0,
-     'vehicle/maxSpeed': 1.0,
-     'chassis/terrainResistance': [1.0, 1.0, 1.0],
-     'ramming': 1.0,
-     'crewLevelIncrease': 0.0,
-     'crewChanceToHitFactor': 1.0,
-     'crewRolesFactor': 1.0,
-     'stunResistanceEffect': 0.0,
+            'additiveShotDispersionFactor': 1.0,
+            'brokenTrack': 0,
+            'vehicle/rotationSpeed': 1.0,
+            'vehicle/maxSpeed': 1.0,
+            'chassis/terrainResistance': [1.0, 1.0, 1.0],
+            'ramming': 1.0,
+            'crewLevelIncrease': 0.0,
+            'crewChanceToHitFactor': 1.0,
+            'crewRolesFactor': 1.0,
+            'stunResistanceEffect': 0.0,
             'stunResistanceDuration': 0.0,
             'repeatedStunDurationFactor': 1.0,
             'healthFactor': 1.0,
             'damageFactor': 1.0,
+            'receivedDamageFactor': 1.0,
             'enginePowerFactor': 1.0,
             'deathZones/sensitivityFactor': 1.0,
             'multShotDispersionFactor': 1.0,
@@ -261,7 +265,8 @@ def vehicleAttributeFactors():
             'demaskFoliageFactor': 1.0,
             'invisibilityAdditiveTerm': 0.0,
             'engineReduceFineFactor': 1.0,
-            'ammoBayReduceFineFactor': 1.0}
+            'ammoBayReduceFineFactor': 1.0,
+            'proofHealth': 0}
 
 
 WHEEL_SIZE_COEF = 2.2
@@ -1366,6 +1371,7 @@ class VehicleDescriptor(object):
                           'repeatedStunDurationFactor': 1.0,
                           'healthFactor': 1.0,
                           'damageFactor': 1.0,
+                          'receivedDamageFactor': 1.0,
                           'enginePowerFactor': 1.0,
                           'armorSpallsDamageDevicesFactor': 1.0,
                           'increaseEnemySpottingTime': 0.0,
@@ -1385,16 +1391,16 @@ class VehicleDescriptor(object):
                           'ammoBayHealthFactor': 1.0,
                           'engineHealthFactor': 1.0,
                           'chassisHealthFactor': 1.0,
-         'fuelTankHealthFactor': 1.0,
-         'turretRotatorHealthFactor': 1.0,
-         'radioHealthFactor': 1.0,
-         'surveyingDeviceHealthFactor': 1.0,
-         'gunHealthFactor': 1.0,
-         'demaskMovingFactor': 1.0,
-         'centerRotationFwdSpeedFactor': 1.0,
-         'deathZones/sensitivityFactor': 1.0,
-         'rammingFactor': 1.0,
-         'rollingFrictionFactor': 1.0,
+                          'fuelTankHealthFactor': 1.0,
+                          'turretRotatorHealthFactor': 1.0,
+                          'radioHealthFactor': 1.0,
+                          'surveyingDeviceHealthFactor': 1.0,
+                          'gunHealthFactor': 1.0,
+                          'demaskMovingFactor': 1.0,
+                          'centerRotationFwdSpeedFactor': 1.0,
+                          'deathZones/sensitivityFactor': 1.0,
+                          'rammingFactor': 1.0,
+                          'rollingFrictionFactor': 1.0,
                           'chassis/shotDispersionFactors/movement': chassisShotDispersionFactors[0],
                           'chassis/shotDispersionFactors/rotation': chassisShotDispersionFactors[1],
                           'invisibilityFactorAtShot': self.gun.invisibilityFactorAtShot,
@@ -1402,7 +1408,8 @@ class VehicleDescriptor(object):
                           'gun/shotDispersionFactors/turretRotation': gunShotDispersionFactors['turretRotation'],
                           'gun/shotDispersionFactors/whileGunDamaged': gunShotDispersionFactors['whileGunDamaged'],
                           'ammoBayReduceFineFactor': 1.0,
-                          'engineReduceFineFactor': 1.0}
+                          'engineReduceFineFactor': 1.0,
+                          'proofHealth': 0}
         if IS_CLIENT or IS_EDITOR or IS_CELLAPP or IS_WEB or IS_BOT or onAnyApp:
             trackCenterOffset = chassis.topRightCarryingPoint[0]
             self.physics = {'weight': weight,
@@ -1644,63 +1651,63 @@ class VehicleType(object):
     currentReadingVeh = None
     __metaclass__ = ReflectionMetaclass
     __slots__ = ('name',
-     'id',
-     'compactDescr',
-     'mode',
-     'tags',
-     'level',
-     'hasSiegeMode',
-     'hasAutoSiegeMode',
-     'isWheeledVehicle',
-     'isDualgunVehicleType',
-     'hasCustomDefaultCamouflage',
-     'customizationNationID',
-     'baseColorID',
-     'speedLimits',
-     'repairCost',
-     'crewXpFactor',
-     'premiumVehicleXPFactor',
-     'xpFactor',
-     'creditsFactor',
-     'freeXpFactor',
-     'healthBurnPerSec',
-     'healthBurnPerSecLossFraction',
-     'invisibility',
-     'invisibilityDeltas',
-     'crewRoles',
-     'extras',
-     'extrasDict',
-     'devices',
-     'tankmen',
-     'damageByStaticsChances',
-     'i18nInfo',
-     'balanceByClass',
-     'balanceByComponentLevels',
-     'damageStickersLodDist',
-     'heavyCollisionEffectVelocities',
-     'effects',
-     'camouflage',
-     'emblemsLodDist',
-     'emblemsAlpha',
-     '_prereqs',
-     'clientAdjustmentFactors',
-     'defaultPlayerEmblemID',
-     '_defEmblem',
-     '_defEmblems',
-     'unlocks',
-     'chassis',
-     'engines',
-     'fuelTanks',
-     'radios',
-     'turrets',
-     'hulls',
-     'installableComponents',
-     'unlocksDescrs',
-     'autounlockedItems',
-     'collisionEffectVelocities',
-     'isRotationStill',
-     'useHullZSize',
-     'useHullZOffset',
+                 'id',
+                 'compactDescr',
+                 'mode',
+                 'tags',
+                 'level',
+                 'hasSiegeMode',
+                 'hasAutoSiegeMode',
+                 'isWheeledVehicle',
+                 'isDualgunVehicleType',
+                 'hasCustomDefaultCamouflage',
+                 'customizationNationID',
+                 'baseColorID',
+                 'speedLimits',
+                 'repairCost',
+                 'crewXpFactor',
+                 'premiumVehicleXPFactor',
+                 'xpFactor',
+                 'creditsFactor',
+                 'freeXpFactor',
+                 'healthBurnPerSec',
+                 'healthBurnPerSecLossFraction',
+                 'invisibility',
+                 'invisibilityDeltas',
+                 'crewRoles',
+                 'extras',
+                 'extrasDict',
+                 'devices',
+                 'tankmen',
+                 'damageByStaticsChances',
+                 'i18nInfo',
+                 'balanceByClass',
+                 'balanceByComponentLevels',
+                 'damageStickersLodDist',
+                 'heavyCollisionEffectVelocities',
+                 'effects',
+                 'camouflage',
+                 'emblemsLodDist',
+                 'emblemsAlpha',
+                 '_prereqs',
+                 'clientAdjustmentFactors',
+                 'defaultPlayerEmblemID',
+                 '_defEmblem',
+                 '_defEmblems',
+                 'unlocks',
+                 'chassis',
+                 'engines',
+                 'fuelTanks',
+                 'radios',
+                 'turrets',
+                 'hulls',
+                 'installableComponents',
+                 'unlocksDescrs',
+                 'autounlockedItems',
+                 'collisionEffectVelocities',
+                 'isRotationStill',
+                 'useHullZSize',
+                 'useHullZOffset',
      'siegeModeParams',
      'hullAimingParams',
      'overmatchMechanicsVer',
@@ -1711,17 +1718,18 @@ class VehicleType(object):
      'hasCharge',
      'role',
      'actionsGroup',
-     'actions',
-     'builtins',
-     'nationChangeGroupId',
-     'isCollectorVehicle',
-     'hasTurboshaftEngine',
-     'hasHydraulicChassis',
-     'supplySlots',
-     'optDevsOverrides',
-     'postProgressionTree',
-     'customRoleSlotOptions',
-     '__weakref__')
+                 'actions',
+                 'builtins',
+                 'nationChangeGroupId',
+                 'isCollectorVehicle',
+                 'hasTurboshaftEngine',
+                 'hasHydraulicChassis',
+                 'supplySlots',
+                 'optDevsOverrides',
+                 'postProgressionTree',
+                 'customRoleSlotOptions',
+                 'armorMaxHealth',
+                 '__weakref__')
 
     def __init__(self, nationID, basicInfo, xmlPath, vehMode=VEHICLE_MODE.DEFAULT):
         self.name = basicInfo.name
@@ -1807,6 +1815,7 @@ class VehicleType(object):
             self.extrasDict = copyMethod(commonConfig['extrasDict'])
             self.devices = copyMethod(commonConfig['_devices'])
             self.tankmen = _selectCrewExtras(self.crewRoles, self.extrasDict)
+            self.armorMaxHealth = _xml.readIntOrNone(xmlCtx, section, 'armorMaxHealth')
         if IS_CLIENT or IS_WEB:
             self.i18nInfo = basicInfo.i18n
         if IS_CLIENT or IS_EDITOR:
@@ -2696,22 +2705,34 @@ def isItemWithCompactDescrExist(compactDescr):
 
 
 _itemGetters = {ITEM_TYPES.vehicle: lambda nationID, compTypeID: g_cache.vehicle(nationID, compTypeID),
- ITEM_TYPES.shell: lambda nationID, compTypeID: g_cache.shells(nationID)[compTypeID],
- ITEM_TYPES.equipment: lambda nationID, compTypeID: g_cache.equipments()[compTypeID],
- ITEM_TYPES.optionalDevice: lambda nationID, compTypeID: g_cache.optionalDevices()[compTypeID],
- ITEM_TYPES.vehicleGun: lambda nationID, compTypeID: g_cache.guns(nationID)[compTypeID],
- ITEM_TYPES.vehicleTurret: lambda nationID, compTypeID: g_cache.turrets(nationID)[compTypeID],
- ITEM_TYPES.vehicleEngine: lambda nationID, compTypeID: g_cache.engines(nationID)[compTypeID],
- ITEM_TYPES.vehicleRadio: lambda nationID, compTypeID: g_cache.radios(nationID)[compTypeID],
- ITEM_TYPES.vehicleChassis: lambda nationID, compTypeID: g_cache.chassis(nationID)[compTypeID],
- ITEM_TYPES.vehicleFuelTank: lambda nationID, compTypeID: g_cache.fuelTanks(nationID)[compTypeID],
- ITEM_TYPES.customizationItem: lambda cType, compTypeID: g_cache.customization20().itemTypes[cType][compTypeID],
- ITEM_TYPES.slot: lambda _, compTypeID: g_cache.supplySlots().getSlotDescr(compTypeID)}
+                ITEM_TYPES.shell: lambda nationID, compTypeID: g_cache.shells(nationID)[compTypeID],
+                ITEM_TYPES.equipment: lambda nationID, compTypeID: g_cache.equipments()[compTypeID],
+                ITEM_TYPES.optionalDevice: lambda nationID, compTypeID: g_cache.optionalDevices()[compTypeID],
+                ITEM_TYPES.vehicleGun: lambda nationID, compTypeID: g_cache.guns(nationID)[compTypeID],
+                ITEM_TYPES.vehicleTurret: lambda nationID, compTypeID: g_cache.turrets(nationID)[compTypeID],
+                ITEM_TYPES.vehicleEngine: lambda nationID, compTypeID: g_cache.engines(nationID)[compTypeID],
+                ITEM_TYPES.vehicleRadio: lambda nationID, compTypeID: g_cache.radios(nationID)[compTypeID],
+                ITEM_TYPES.vehicleChassis: lambda nationID, compTypeID: g_cache.chassis(nationID)[compTypeID],
+                ITEM_TYPES.vehicleFuelTank: lambda nationID, compTypeID: g_cache.fuelTanks(nationID)[compTypeID],
+                ITEM_TYPES.customizationItem: lambda cType, compTypeID: g_cache.customization20().itemTypes[cType][
+                    compTypeID],
+                ITEM_TYPES.slot: lambda _, compTypeID: g_cache.supplySlots().getSlotDescr(compTypeID)}
 VEHICLE_ITEM_TYPES = _itemGetters.keys()
+
 
 def isVehicleTypeCompactDescr(vehDescr):
     cdType = type(vehDescr)
     return True if cdType is int or cdType is long else False
+
+
+def getEquipmentByName(name):
+    eqID = g_cache.equipmentIDs()[name]
+    return g_cache.equipments()[eqID]
+
+
+def getOptionalDeviceByName(name):
+    optDevID = g_cache.optionalDeviceIDs()[name]
+    return g_cache.optionalDevices()[optDevID]
 
 
 def getVehicleType(compactDescr):
@@ -2885,8 +2906,12 @@ def _getAmmoForGun(gunDescr, defaultPortion=None):
 
 
 def getBuiltinEqsForVehicle(vehType):
-    numSlots = vehType.supplySlots.getAmountForType(ITEM_TYPES.equipment, items.EQUIPMENT_TYPES.regular)
-    return [ e.compactDescr for e in g_cache.equipments().itervalues() if e.name in vehType.builtins ][:numSlots]
+    result = []
+    for eqName in vehType.builtins:
+        eq = getEquipmentByName(eqName)
+        result.append(eq.compactDescr)
+
+    return sorted(result)
 
 
 def getUnlocksSources():
@@ -4611,7 +4636,12 @@ def _readShell(xmlCtx, section, name, nationID, shellTypeID, icons):
     if shell.isTracer:
         shell.isForceTracer = section.readBool('isForceTracer', False)
     if IS_CLIENT or IS_WEB:
-        shell.i18n = shared_components.I18nComponent(section.readString('userString'), section.readString('description'))
+        shell.i18n = shared_components.I18nComponent(userStringKey=section.readString('userString'),
+                                                     descriptionKey=section.readString('description'),
+                                                     shortDescriptionSpecialKey=section.readString(
+                                                         'shortDescriptionSpecial'),
+                                                     longDescriptionSpecialKey=section.readString(
+                                                         'longDescriptionSpecial'))
         v = _xml.readNonEmptyString(xmlCtx, section, 'icon')
         if icons.get(v) is None:
             _xml.raiseWrongXml(xmlCtx, 'icon', "unknown icon '%s'" % v)

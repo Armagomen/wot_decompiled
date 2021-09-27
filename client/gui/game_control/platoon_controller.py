@@ -58,17 +58,17 @@ if TYPE_CHECKING:
     from typing import Optional as TOptional, Tuple as TTuple
     from UnitBase import ProfileVehicle
 _logger = logging.getLogger(__name__)
-_QUEUE_TYPE_TO_PREBATTLE_ACTION_NAME = {QUEUE_TYPE.EVENT_BATTLES: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.RANDOMS: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.EPIC: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD,
- QUEUE_TYPE.MAPBOX: PREBATTLE_ACTION_NAME.MAPBOX_SQUAD}
+_QUEUE_TYPE_TO_PREBATTLE_ACTION_NAME = {QUEUE_TYPE.EVENT_BATTLES: PREBATTLE_ACTION_NAME.EVENT_SQUAD,
+                                        QUEUE_TYPE.RANDOMS: PREBATTLE_ACTION_NAME.SQUAD,
+                                        QUEUE_TYPE.EPIC: PREBATTLE_ACTION_NAME.SQUAD,
+                                        QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD,
+                                        QUEUE_TYPE.MAPBOX: PREBATTLE_ACTION_NAME.MAPBOX_SQUAD}
 _QUEUE_TYPE_TO_PREBATTLE_TYPE = {QUEUE_TYPE.EVENT_BATTLES: PREBATTLE_TYPE.EVENT,
- QUEUE_TYPE.RANDOMS: PREBATTLE_TYPE.SQUAD,
- QUEUE_TYPE.EPIC: PREBATTLE_TYPE.EPIC,
- QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE,
- QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT,
- QUEUE_TYPE.MAPBOX: PREBATTLE_TYPE.MAPBOX,
+                                 QUEUE_TYPE.RANDOMS: PREBATTLE_TYPE.SQUAD,
+                                 QUEUE_TYPE.EPIC: PREBATTLE_TYPE.EPIC,
+                                 QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE,
+                                 QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT,
+                                 QUEUE_TYPE.MAPBOX: PREBATTLE_TYPE.MAPBOX,
  QUEUE_TYPE.MAPS_TRAINING: PREBATTLE_TYPE.MAPS_TRAINING}
 _RANDOM_VEHICLE_CRITERIA = ~(REQ_CRITERIA.VEHICLE.EPIC_BATTLE ^ REQ_CRITERIA.VEHICLE.BATTLE_ROYALE ^ REQ_CRITERIA.VEHICLE.EVENT_BATTLE ^ REQ_CRITERIA.VEHICLE.MAPS_TRAINING)
 _PREBATTLE_TYPE_TO_VEH_CRITERIA = {PREBATTLE_TYPE.SQUAD: _RANDOM_VEHICLE_CRITERIA,
@@ -934,7 +934,10 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
             return
         else:
             self.__isPlatoonVisualizationEnabled = displayPlatoonMembers
-            isInPlatoon = self.prbDispatcher.getFunctionalState().isInUnit()
+            if self.prbDispatcher:
+                isInPlatoon = self.prbDispatcher.getFunctionalState().isInUnit()
+            else:
+                isInPlatoon = False
             self.onPlatoonTankVisualizationChanged(self.__isPlatoonVisualizationEnabled and isInPlatoon)
             self.__updatePlatoonTankInfo()
             return
@@ -994,11 +997,14 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
             unitMgrID = entity.getID()
             for slot in entity.getSlotsIterator(*entity.getUnit(unitMgrID=unitMgrID)):
                 if slot.player is not None and not slot.player.isCurrentPlayer():
-                    canDisplayModel = slot.player.isReady and not slot.player.isInArena()
+                    isEvent = entity.getEntityType() == PREBATTLE_TYPE.EVENT
+                    canDisplayModel = slot.player.isReady and not slot.player.isInArena() and not isEvent
                     profileVehicle = slot.profileVehicle
                     player = slot.player
                     if profileVehicle and player:
-                        tankInfo = PlatoonTankInfo(canDisplayModel, profileVehicle.vehCompDescr, profileVehicle.vehOutfitCD, profileVehicle.seasonType, profileVehicle.marksOnGun, player.clanDBID, player.getFullName())
+                        tankInfo = PlatoonTankInfo(canDisplayModel, profileVehicle.vehCompDescr,
+                                                   profileVehicle.vehOutfitCD, profileVehicle.seasonType,
+                                                   profileVehicle.marksOnGun, player.clanDBID, player.getFullName())
                     else:
                         tankInfo = None
                     displaySlotIndex = self.__tankDisplayPosition[player.accID]

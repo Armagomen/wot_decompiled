@@ -5,12 +5,10 @@ import time
 import weakref
 import threading
 from Queue import PriorityQueue, Empty as QueueEmptyError
-
 _logger = logging.getLogger(__name__)
 INFINITE_QUEUE_SIZE = 0
 _LOW_PRIORITY = 10
 _DEFAULT_PRIORITY = 1
-
 
 class Job(object):
 

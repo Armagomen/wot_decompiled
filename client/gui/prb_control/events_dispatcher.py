@@ -92,6 +92,9 @@ class EventDispatcher(object):
     def loadBattleQueue(self):
         self.__fireLoadEvent(VIEW_ALIAS.BATTLE_QUEUE)
 
+    def loadEventBattleQueue(self):
+        self.__fireLoadEvent(VIEW_ALIAS.EVENT_BATTLE_QUEUE)
+
     def loadTrainingList(self):
         self.addTrainingToCarousel()
         self.__showTrainingList()
@@ -354,12 +357,16 @@ class EventDispatcher(object):
                 res = True
         return res
 
+    def entityWasUpdated(self):
+        self.__fireEvent(events.FightButtonEvent(events.HangarSimpleEvent.DISPATCHER_ENTITY_WAS_UPDATED))
+
     def _showUnitProgress(self, prbType, show):
         clientID = channel_num_gen.getClientID4Prebattle(prbType)
         if not clientID:
             LOG_ERROR('Client ID not found', '_showUnitStatus', prbType)
             return
-        self.__fireEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_SHOW, {'show': show}))
+        self.__fireEvent(
+            events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_SHOW, {'show': show}))
 
     def __showSquadWindow(self, prbType, showInvitesWindow=False, toggleUI=False):
         self.platoonCtrl.evaluateVisibility(toggleUI=toggleUI)

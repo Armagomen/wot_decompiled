@@ -5,11 +5,13 @@ import typing
 from battle_pass_common import get3DStyleProgressToken, BattlePassRewardReason
 from frameworks.state_machine import ConditionTransition, StringEventTransition
 from frameworks.state_machine import State, StateFlags, StateEvent
-from gui.battle_pass.battle_pass_helpers import getStyleInfoForChapter, showVideo
+from gui.battle_pass.battle_pass_helpers import getStyleInfoForChapter, showVideo, BattlePassProgressionSubTabs
 from gui.battle_pass.state_machine import lockNotificationManager
 from gui.battle_pass.state_machine.state_machine_helpers import isProgressionComplete, packToken
 from gui.impl.gen import R
-from gui.server_events.events_dispatcher import showBattlePass3dStyleChoiceWindow
+from gui.impl.lobby.battle_pass.battle_pass_buy_view import g_BPBuyViewStates, WINDOW_IS_NOT_OPENED
+from gui.server_events.events_dispatcher import showBattlePass3dStyleChoiceWindow, \
+    showMissionsBattlePassCommonProgression
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.event_dispatcher import showBattlePassRewardChoiceWindow, showBattlePassAwardsWindow
 from gui.shared.events import LobbySimpleEvent
@@ -17,6 +19,7 @@ from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.impl import INotificationWindowController
+
 if typing.TYPE_CHECKING:
     from gui.battle_pass.state_machine.machine import BattlePassStateMachine
 
@@ -73,6 +76,8 @@ class LobbyState(State):
     def _onEntered(self):
         lockNotificationManager(False, notificationManager=self.__notificationManager)
         self.__battlePass.onRewardSelectChange()
+        if g_BPBuyViewStates.chapter != WINDOW_IS_NOT_OPENED:
+            showMissionsBattlePassCommonProgression(BattlePassProgressionSubTabs.BUY_TAB)
 
     def _onExited(self):
         lockNotificationManager(True, notificationManager=self.__notificationManager)

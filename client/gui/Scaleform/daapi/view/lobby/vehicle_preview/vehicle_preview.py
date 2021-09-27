@@ -40,7 +40,8 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from preview_selectable_logic import PreviewSelectableLogic
 from skeletons.account_helpers.settings_core import ISettingsCore
-from skeletons.gui.game_control import IHeroTankController, IVehicleComparisonBasket
+from skeletons.gui.game_control import IHeroTankController, IVehicleComparisonBasket, IGameEventController
+from skeletons.prebattle_vehicle import IPrebattleVehicle
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from gui.Scaleform.daapi.view.lobby.store.browser.sound_constants import SHOP_PREVIEW_SOUND_SPACE
@@ -124,6 +125,8 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
     __heroTanksControl = dependency.descriptor(IHeroTankController)
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __settingsCore = dependency.descriptor(ISettingsCore)
+    __gameEventCtrl = dependency.descriptor(IGameEventController)
+    __prebattleVehicle = dependency.descriptor(IPrebattleVehicle)
 
     def __init__(self, ctx=None):
         self._backAlias = ctx.get('previewAlias', VIEW_ALIAS.LOBBY_HANGAR)
@@ -164,6 +167,11 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         if not self.__isHeroTank:
             self.__hangarSpace.removeVehicle()
         g_currentPreviewVehicle.selectHeroTank(self.__isHeroTank)
+        self.__previewCloseCb = None
+        if self.__gameEventCtrl.isEventPrbActive():
+            if self.__prebattleVehicle.item is not None:
+                self.__prebattleVehicle.selectNone()
+            self.__previewCloseCb = self.__prebattleVehicle.selectPreviousVehicle
         return
 
     def setBottomPanel(self):
@@ -171,6 +179,12 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
 
     def _populate(self):
         self.addListener(CameraRelatedEvents.VEHICLE_LOADING, self.__onVehicleLoading, EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.addListener(events.HangarSimpleEvent.EVENT_PORTAL_SELECTED, self.__onCloseView,
+                               EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.addListener(events.HangarSimpleEvent.EVENT_VEHICLE_SELECTED, self.__onCloseView,
+                               EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.addListener(events.HangarSimpleEvent.PORTAL_MANAGER_ACTIVATED, self.__onCloseView,
+                               EVENT_BUS_SCOPE.LOBBY)
         self.setBottomPanel()
         g_currentPreviewVehicle.selectVehicle(self._vehicleCD, self.__vehicleStrCD)
         super(VehiclePreview, self)._populate()
@@ -191,9 +205,19 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         g_eventBus.addListener(OFFER_CHANGED_EVENT, self.__onOfferChanged)
         _updateCollectorHintParameters()
         _updatePostProgressionParameters()
+        g_eventBus.handleEvent(events.HangarSimpleEvent(events.HangarSimpleEvent.VEHICLE_PREVIEW_LOADED),
+                               scope=EVENT_BUS_SCOPE.LOBBY)
         return
 
     def _dispose(self):
+        g_eventBus.handleEvent(events.HangarSimpleEvent(events.HangarSimpleEvent.VEHICLE_PREVIEW_UNLOADED),
+                               scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.removeListener(events.HangarSimpleEvent.EVENT_PORTAL_SELECTED, self.__onCloseView,
+                                  EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.removeListener(events.HangarSimpleEvent.EVENT_VEHICLE_SELECTED, self.__onCloseView,
+                                  EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.removeListener(events.HangarSimpleEvent.PORTAL_MANAGER_ACTIVATED, self.__onCloseView,
+                                  EVENT_BUS_SCOPE.LOBBY)
         specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
         if specialData is not None and specialData.exitEvent:
             SoundGroups.g_instance.playSound2D(specialData.exitEvent)
@@ -209,11 +233,15 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         if self._needToResetAppearance:
             g_currentPreviewVehicle.selectNoVehicle()
             g_currentPreviewVehicle.resetAppearance()
-        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.VEHICLE_PREVIEW_HIDDEN), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.VEHICLE_PREVIEW_HIDDEN),
+                               scope=EVENT_BUS_SCOPE.LOBBY)
         if self._backAlias == VIEW_ALIAS.VEHICLE_PREVIEW:
             g_currentVehicle.refreshModel()
         self._previewBackCb = None
         super(VehiclePreview, self)._dispose()
+        if self.__previewCloseCb is not None:
+            self.__previewCloseCb()
+            self.__previewCloseCb = None
         if not self._heroInteractive:
             self.__heroTanksControl.setInteractive(True)
         if self.__vehAppearanceChanged:
@@ -387,21 +415,27 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             if tab['linkage'] == VEHPREVIEW_CONSTANTS.CREW_LINKAGE:
                 tab['label'] = _ms(VEHICLE_PREVIEW.INFOPANEL_TAB_CREWINFO_NAME, crewCount=crewCount)
 
-    def __onCompareBasketChanged(self, changedData):
+    def __onCompareBasketChanged(self, changedData, _=None):
         if changedData.isFullChanged:
             self.__updateHeaderData()
 
     def __updateHeaderData(self):
         self.as_setDataS(self._getData())
 
+    def __onCloseView(self, _):
+        self.closeView()
+
     @staticmethod
     def __getInfoPanelListDescription(vehicle):
         descriptions = (text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREW),
-         text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWSKILLS),
-         text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWEQUIPS),
-         text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWSKILLSEQUIPS))
+                        text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWSKILLS),
+                        text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWEQUIPS),
+                        text_styles.main(VEHICLE_PREVIEW.INFOPANEL_TAB_LISTDESC_CREWSKILLSEQUIPS))
         hasSkillBonuses = any((tMan.skills for _, tMan in vehicle.crew))
-        hasEquipBonuses = any(itertools.chain(vehicle.optDevices.installed, vehicle.battleAbilities.installed, vehicle.battleBoosters.installed, (rCons and rCons.kpi for rCons in vehicle.consumables.installed), (vehicle.hasOutfit(vehicle.getAnyOutfitSeason()),)))
+        hasEquipBonuses = any(itertools.chain(vehicle.optDevices.installed, vehicle.battleAbilities.installed,
+                                              vehicle.battleBoosters.installed,
+                                              (rCons and rCons.kpi for rCons in vehicle.consumables.installed),
+                                              (vehicle.hasOutfit(vehicle.getAnyOutfitSeason()),)))
         return descriptions[hasEquipBonuses << 1 | hasSkillBonuses]
 
     def _getBackBtnLabel(self):

@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/mark_on_gun.py
 from gui.impl import backport
 from helpers import i18n
-from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
+from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB, MARK_ON_GUN
 from gui import makeHtmlString
 from abstract import RegularAchievement
 from items import vehicles
@@ -13,7 +13,7 @@ class MarkOnGunAchievement(RegularAchievement):
     IT_95X85 = '95x85'
 
     def __init__(self, dossier, value=None):
-        super(MarkOnGunAchievement, self).__init__('marksOnGun', _AB.TOTAL, dossier, value)
+        super(MarkOnGunAchievement, self).__init__(MARK_ON_GUN, _AB.TOTAL, dossier, value)
         self.__nationId = self._readVehicleNationID(dossier)
         self.__damageRating = self._readDamageRating(dossier)
 
@@ -32,14 +32,18 @@ class MarkOnGunAchievement(RegularAchievement):
     def getDamageRating(self):
         return self.__damageRating
 
+    def getIconName(self):
+        return self.__getActualIconName()
+
     def getIcons(self):
         return {self.ICON_TYPE.IT_180X180: self.__getIconPath(self.ICON_TYPE.IT_180X180),
-         self.ICON_TYPE.IT_67X71: self.__getIconPath(self.ICON_TYPE.IT_67X71),
-         self.ICON_TYPE.IT_32X32: self.__getIconPath(self.ICON_TYPE.IT_32X32),
-         self.IT_95X85: self.__getIconPath(self.IT_95X85)}
+                self.ICON_TYPE.IT_67X71: self.__getIconPath(self.ICON_TYPE.IT_67X71),
+                self.ICON_TYPE.IT_32X32: self.__getIconPath(self.ICON_TYPE.IT_32X32),
+                self.IT_95X85: self.__getIconPath(self.IT_95X85)}
 
     def getI18nValue(self):
-        return makeHtmlString('html_templates:lobby/tooltips/achievements', 'marksOnGun', {'count': backport.getNiceNumberFormat(self.__damageRating)}) if self.__damageRating > 0 else ''
+        return makeHtmlString('html_templates:lobby/tooltips/achievements', 'marksOnGun', {
+            'count': backport.getNiceNumberFormat(self.__damageRating)}) if self.__damageRating > 0 else ''
 
     def _getActualName(self):
         return '%s%d' % (self._name, self._value)
@@ -52,13 +56,13 @@ class MarkOnGunAchievement(RegularAchievement):
     def _readVehicleNationID(cls, dossier):
         return vehicles.parseIntCompactDescr(dossier.getCompactDescriptor())[1] if dossier is not None else 0
 
-    def __getIconPath(self, dir_):
+    def __getActualIconName(self):
         currentValue = 3 if self._value == 0 else self._value
         markCtx = 'mark' if currentValue < 2 else 'marks'
-        return '../maps/icons/marksOnGun/%s/%s_%s_%s.png' % (dir_,
-         NATION_NAMES[self.__nationId],
-         currentValue,
-         markCtx)
+        return '{}_{}_{}'.format(NATION_NAMES[self.__nationId], currentValue, markCtx)
+
+    def __getIconPath(self, dir_):
+        return ''.join(('../maps/icons/marksOnGun/{}/'.format(dir_), self.__getActualIconName(), '.png'))
 
     def __repr__(self):
         return 'MarkOnGunAchievement<value=%s; damageRating=%.2f>' % (str(self._value), float(self.__damageRating))

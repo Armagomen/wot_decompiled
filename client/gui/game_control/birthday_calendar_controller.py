@@ -31,12 +31,10 @@ from web.web_client_api.birthday_calendar import BirthdayCalendarWebApi
 from web.web_client_api.shop import ShopWebApi
 from web.web_client_api.sound import SoundWebApi
 from web.web_client_api.ui import CloseViewWebApi, CloseWindowWebApi, OpenTabWebApi, OpenWindowWebApi, UtilWebApi
-
 _logger = logging.getLogger(__name__)
 _BROWSER_SIZE = (1014, 654)
 _BIRTHDAY_TOKEN = 'birthday_calendar_stage'
 _BIRTHDAY_EVENT_POSTFIX = '_birthday_calendar'
-
 
 @w2capi(name='close_window', key='window_id')
 class _CloseWindowWebApi(CloseWindowWebApi):

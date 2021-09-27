@@ -6,8 +6,11 @@ from functools import partial
 from vehicle_systems.stricted_loading import makeCallbackWeak
 import BigWorld
 import Math
+import ResMgr
 import material_kinds
 import AnimationSequence
+import Projectiles
+import Health
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_CURRENT_EXCEPTION
 from items import vehicles
 from common_tank_appearance import MAX_DISTANCE
@@ -16,6 +19,7 @@ from helpers.EffectsList import EffectsListPlayer
 from helpers.EntityExtra import EntityExtra
 from helpers.laser_sight_matrix_provider import LaserSightMatrixProvider
 from constants import IS_EDITOR, CollisionFlags
+
 if not IS_EDITOR:
     from vehicle_extras_battle_royale import AfterburningBattleRoyale
 
@@ -67,6 +71,11 @@ class ShowShooting(EntityExtra):
             if not vehicle.isAlive():
                 self.stop(data)
                 return
+            shotsDone = vehicle.appearance.findComponentByType(Projectiles.ShotsDoneComponent)
+            if shotsDone is None:
+                vehicle.appearance.createComponent(Projectiles.ShotsDoneComponent)
+            else:
+                shotsDone.addShot()
             burstCount, burstInterval = data['_burst']
             gunModel = data['_gunModel']
             effPlayer = data['_effectsListPlayer']
@@ -162,6 +171,11 @@ class ShowShootingMultiGun(ShowShooting):
             if not vehicle.isAlive():
                 self.stop(data)
                 return
+            shotsDone = vehicle.appearance.findComponentByType(Projectiles.ShotsDoneComponent)
+            if shotsDone is not None:
+                shotsDone.addShot()
+            else:
+                vehicle.appearance.createComponent(Projectiles.ShotsDoneComponent)
             self.__doGunEffect(data)
             self.__doRecoil(data)
             if not IS_EDITOR:
@@ -171,6 +185,8 @@ class ShowShootingMultiGun(ShowShooting):
         except Exception:
             LOG_CURRENT_EXCEPTION()
             self.stop(data)
+
+        return
 
     def __doGunEffect(self, data):
         gunModel = data['_gunModel']
@@ -261,11 +277,15 @@ class Fire(EntityExtra):
     def _start(self, data, args):
         data['_isStarted'] = False
         vehicle = data['entity']
+        fire = vehicle.appearance.findComponentByType(Health.FireComponent)
+        if fire is None:
+            vehicle.appearance.createComponent(Health.FireComponent)
         isUnderwater = vehicle.appearance.isUnderwater
         if not isUnderwater:
             self.__playEffect(data)
         data['_isStarted'] = True
         data['_invokeTime'] = BigWorld.time()
+        return
 
     def _update(self, data, args):
         if not data['_isStarted']:
@@ -292,6 +312,7 @@ class Fire(EntityExtra):
             return
         else:
             vehicle = data['entity']
+            vehicle.appearance.removeComponentByType(Health.FireComponent)
             effectsListPlayer = self.__getEffectsListPlayer(data)
             if effectsListPlayer is not None:
                 if vehicle.health <= 0:

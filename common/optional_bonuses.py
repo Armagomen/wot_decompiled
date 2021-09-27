@@ -175,25 +175,25 @@ def __mergeBattlePassPoints(total, key, value, isLeaf=False, count=1, *args):
 
 
 BONUS_MERGERS = {'credits': __mergeValue,
- 'gold': __mergeValue,
- 'xp': __mergeValue,
- 'crystal': __mergeValue,
- 'eventCoin': __mergeValue,
- 'bpcoin': __mergeValue,
- 'freeXP': __mergeValue,
- 'tankmenXP': __mergeValue,
- 'vehicleXP': __mergeValue,
- 'creditsFactor': __mergeFactor,
- 'xpFactor': __mergeFactor,
- 'freeXPFactor': __mergeFactor,
- 'tankmenXPFactor': __mergeFactor,
- 'vehicleXPFactor': __mergeFactor,
- 'items': __mergeItems,
- 'vehicles': __mergeVehicles,
- 'slots': __mergeValue,
- 'berths': __mergeValue,
- 'premium': __mergeValue,
- 'premium_plus': __mergeValue,
+                 'gold': __mergeValue,
+                 'xp': __mergeValue,
+                 'crystal': __mergeValue,
+                 'eventCoin': __mergeValue,
+                 'bpcoin': __mergeValue,
+                 'freeXP': __mergeValue,
+                 'tankmenXP': __mergeValue,
+                 'vehicleXP': __mergeValue,
+                 'creditsFactor': __mergeFactor,
+                 'xpFactor': __mergeFactor,
+                 'freeXPFactor': __mergeFactor,
+                 'tankmenXPFactor': __mergeFactor,
+                 'vehicleXPFactor': __mergeFactor,
+                 'items': __mergeItems,
+                 'vehicles': __mergeVehicles,
+                 'slots': __mergeValue,
+                 'berths': __mergeValue,
+                 'premium': __mergeValue,
+                 'premium_plus': __mergeValue,
  'premium_vip': __mergeValue,
  'tokens': __mergeTokens,
  'goodies': __mergeGoodies,
@@ -204,15 +204,28 @@ BONUS_MERGERS = {'credits': __mergeValue,
  'blueprintsAny': __mergeItems,
  'blueprints': __mergeBlueprints,
  'enhancements': __mergeEnhancements,
- 'entitlements': __mergeEntitlements,
- 'rankedDailyBattles': __mergeValue,
- 'rankedBonusBattles': __mergeValue,
- 'dogTagComponents': __mergeDogTag,
- 'battlePassPoints': __mergeBattlePassPoints,
- 'meta': lambda *args, **kwargs: None}
+                 'entitlements': __mergeEntitlements,
+                 'rankedDailyBattles': __mergeValue,
+                 'rankedBonusBattles': __mergeValue,
+                 'dogTagComponents': __mergeDogTag,
+                 'battlePassPoints': __mergeBattlePassPoints,
+                 'meta': lambda *args, **kwargs: None}
 ITEM_INVENTORY_CHECKERS = {'vehicles': lambda account, key: account._inventory.getVehicleInvID(key) != 0,
- 'customizations': lambda account, key: account._customizations20.getItems((key,), 0)[key] > 0,
- 'tokens': lambda account, key: account._quests.hasToken(key)}
+                           'customizations': lambda account, key: account._customizations20.getItems((key,), 0)[
+                                                                      key] > 0,
+                           'tokens': lambda account, key: account._quests.hasToken(key)}
+
+
+def getProbableBonuses(bonusType, value):
+    if bonusType == 'allof':
+        bonusData = value[0]
+        probability, bonuses = bonusData[0], bonusData[3]
+        return (probability, [bonuses] if bonuses is not None else [])
+    elif bonusType == 'oneof':
+        return (None, [bonus for _, _, _, bonus in value[1]])
+    else:
+        return (None, [])
+
 
 class BonusItemsCache(object):
 
@@ -617,11 +630,12 @@ class StripVisitor(NodeVisitor):
         _, values = values
         for probability, bonusProbability, refGlobalID, bonusValue in values:
             stippedValue = {}
+            probability = bonusValue.get('properties', {}).get('userProbability', None)
             self._walkSubsection(stippedValue, bonusValue)
-            strippedValues.append(([-1],
-             -1,
-             None,
-             stippedValue))
+            strippedValues.append((probability,
+                                   -1,
+                                   None,
+                                   stippedValue))
 
         storage['oneof'] = (None, strippedValues)
         return
@@ -630,11 +644,12 @@ class StripVisitor(NodeVisitor):
         strippedValues = []
         for probability, bonusProbability, refGlobalID, bonusValue in values:
             stippedValue = {}
+            probability = bonusValue.get('properties', {}).get('userProbability', None)
             self._walkSubsection(stippedValue, bonusValue)
-            strippedValues.append(([-1],
-             -1,
-             None,
-             stippedValue))
+            strippedValues.append((probability,
+                                   -1,
+                                   None,
+                                   stippedValue))
 
         storage['allof'] = strippedValues
         return

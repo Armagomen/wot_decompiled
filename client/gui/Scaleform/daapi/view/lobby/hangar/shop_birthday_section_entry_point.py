@@ -5,7 +5,6 @@ from gui.Scaleform.daapi.view.meta.ShopBirthdaySectionEntryPointMeta import Shop
 from gui.impl.lobby.eleventh_birthday_calendar.shop_birthday_section_entry_point import \
     ShopBirthdaySectionEntryPointView
 
-
 class ShopBirthdaySectionEntryPoint(ShopBirthdaySectionEntryPointMeta):
 
     def _makeInjectView(self):

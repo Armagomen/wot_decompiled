@@ -9,7 +9,6 @@ from helpers import dependency
 from skeletons.gui.game_control import IBirthdayCalendarController
 from skeletons.gui.shared.utils import IHangarSpace
 
-
 class HangarBirthdayPoster(ClientSelectableObject):
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __birthdayCalendarController = dependency.descriptor(IBirthdayCalendarController)

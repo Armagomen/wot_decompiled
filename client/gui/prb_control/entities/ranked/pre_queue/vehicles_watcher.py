@@ -19,10 +19,19 @@ class RankedVehiclesWatcher(BaseVehiclesWatcher):
         allVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY).itervalues()
         config = self.__lobbyContext.getServerSettings().rankedBattles
         vehLevels = range(MIN_VEHICLE_LEVEL, config.minLevel) + range(config.maxLevel + 1, MAX_VEHICLE_LEVEL + 1)
-        vehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.LEVELS(vehLevels)).itervalues()
-        classVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLASSES(config.forbiddenClassTags)).itervalues()
-        typeVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(config.forbiddenVehTypes)).itervalues()
-        eventVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE).itervalues()
-        epicVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EPIC_BATTLE).itervalues()
-        battleRoyaleVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.BATTLE_ROYALE).itervalues()
-        return chain(vehs, classVehs, typeVehs, eventVehs, epicVehs, battleRoyaleVehs) if not onClear else allVehs
+        vehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.LEVELS(vehLevels)).itervalues()
+        classVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLASSES(config.forbiddenClassTags)).itervalues()
+        typeVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(config.forbiddenVehTypes)).itervalues()
+        eventVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE).itervalues()
+        epicVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EPIC_BATTLE).itervalues()
+        battleRoyaleVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.BATTLE_ROYALE).itervalues()
+        clanWarsVehs = self.__itemsCache.items.getVehicles(
+            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLAN_WARS).itervalues()
+        return chain(vehs, classVehs, typeVehs, eventVehs, epicVehs, battleRoyaleVehs,
+                     clanWarsVehs) if not onClear else allVehs

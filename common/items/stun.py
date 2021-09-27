@@ -24,15 +24,24 @@ def readConfig():
     c['stunFactorTurretTraverse'] = _xml.readFraction(xmlCtx, section, 'stunFactorTurretTraverse')
     c['stunFactorViewDistance'] = _xml.readFraction(xmlCtx, section, 'stunFactorViewDistance')
     c['stunFactorMaxSpeed'] = _xml.readFraction(xmlCtx, section, 'stunFactorMaxSpeed')
+    c['eventStunFactorEnginePower'] = _xml.readFraction(xmlCtx, section, 'eventStunFactorEnginePower')
+    c['eventStunFactorVehicleRotationSpeed'] = _xml.readFraction(xmlCtx, section, 'eventStunFactorVehicleRotationSpeed')
+    c['eventStunFactorTurretTraverse'] = _xml.readFraction(xmlCtx, section, 'eventStunFactorTurretTraverse')
+    c['eventStunFactorMaxSpeed'] = _xml.readFraction(xmlCtx, section, 'eventStunFactorMaxSpeed')
     c['stunFactorReloadTime'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorReloadTime', 1.0)
     _validateValue1inf('stunFactorReloadTime', c['stunFactorReloadTime'])
     c['stunFactorAimingTime'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorAimingTime', 1.0)
     _validateValue1inf('stunFactorAimingTime', c['stunFactorAimingTime'])
-    c['stunFactorVehicleMovementShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorVehicleMovementShotDispersion', 1.0)
+    c['stunFactorVehicleMovementShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section,
+                                                                          'stunFactorVehicleMovementShotDispersion',
+                                                                          1.0)
     _validateValue1inf('stunFactorVehicleMovementShotDispersion', c['stunFactorVehicleMovementShotDispersion'])
-    c['stunFactorVehicleRotationShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorVehicleRotationShotDispersion', 1.0)
+    c['stunFactorVehicleRotationShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section,
+                                                                          'stunFactorVehicleRotationShotDispersion',
+                                                                          1.0)
     _validateValue1inf('stunFactorVehicleRotationShotDispersion', c['stunFactorVehicleRotationShotDispersion'])
-    c['stunFactorTurretRotationShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorTurretRotationShotDispersion', 1.0)
+    c['stunFactorTurretRotationShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section,
+                                                                         'stunFactorTurretRotationShotDispersion', 1.0)
     _validateValue1inf('stunFactorTurretRotationShotDispersion', c['stunFactorTurretRotationShotDispersion'])
     c['stunFactorMinShotDispersion'] = _xml.readPositiveFloat(xmlCtx, section, 'stunFactorMinShotDispersion', 1.0)
     _validateValue1inf('stunFactorMinShotDispersion', c['stunFactorMinShotDispersion'])

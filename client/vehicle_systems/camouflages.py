@@ -535,6 +535,9 @@ def getModelAnimators(outfit, vehicleDescr, spaceId, loadedAnimators, compoundMo
             continue
         fakeModel = newFakeModel()
         node = compoundModel.node(param.attachNode)
+        if node is None:
+            _logger.error('Failed to attach sequence: "%s", node "%s" not found', param.animatorName, param.attachNode)
+            continue
         node.attach(fakeModel, param.transform)
         animWrapper = AnimationSequence.ModelWrapperContainer(fakeModel, spaceId)
         animator = __prepareAnimator(loadedAnimators, param.animatorName, animWrapper, node)
@@ -608,7 +611,10 @@ def getAttachments(outfit, vehicleDescr):
 
     def getAttachmentParams(slotParams, slotData, idx):
         item = getItemByCompactDescr(slotData.intCD)
-        return AttachmentParams(transform=__createTransform(slotParams, slotData), attachNode=slotParams.attachNode, modelName=item.modelName, sequenceId=item.sequenceId, attachmentLogic=item.attachmentLogic, initialVisibility=item.initialVisibility, partNodeAlias='attachment' + str(idx))
+        return AttachmentParams(transform=__createTransform(slotParams, slotData), attachNode=slotParams.attachNode,
+                                modelName=item.modelName, sequenceId=item.sequenceId,
+                                attachmentLogic=item.attachmentLogic, initialVisibility=item.initialVisibility,
+                                partNodeAlias='attachment' + str(idx) if item.attachmentLogic != 'prefab' else None)
 
     return __getParams(outfit, vehicleDescr, 'attachment', GUI_ITEM_TYPE.ATTACHMENT, getAttachmentParams)
 

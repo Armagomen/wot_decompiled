@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/web_client_api/common.py
+import itertools
 from collections import namedtuple
 from gui.shared.money import MONEY_UNDEFINED
 from shared_utils import CONST_CONTAINER
@@ -16,8 +17,17 @@ VehicleOfferEntry.__new__.__defaults__ = ('',
  None,
  None,
  False)
-ItemPackEntry = namedtuple('ItemPackEntry', ('type', 'id', 'count', 'groupID', 'compensation', 'iconSource', 'title', 'description', 'extra'))
-ItemPackEntry.__new__.__defaults__ = (None, None, None, None, None, None, '', '', None)
+ItemPackEntry = namedtuple('ItemPackEntry', (
+'type', 'id', 'count', 'groupID', 'compensation', 'iconSource', 'title', 'description', 'extra'))
+ItemPackEntry.__new__.__defaults__ = (None,
+                                      None,
+                                      None,
+                                      None,
+                                      None,
+                                      None,
+                                      '',
+                                      '',
+                                      {})
 
 class ShopItemType(CONST_CONTAINER):
     VEHICLE = 'vehicle'
@@ -111,17 +121,20 @@ class ItemPackType(CONST_CONTAINER):
 
 
 class ItemPackTypeGroup(CONST_CONTAINER):
-    ITEM = (ItemPackType.ITEM_SHELL, ItemPackType.ITEM_DEVICE, ItemPackType.ITEM_EQUIPMENT)
+    ITEM = (ItemPackType.ITEM_SHELL,
+            ItemPackType.ITEM_DEVICE,
+            ItemPackType.ITEM_EQUIPMENT,
+            ItemPackType.CREW_BOOK_BROCHURE)
     VEHICLE = (ItemPackType.VEHICLE_SPG,
-     ItemPackType.VEHICLE_AT_SPG,
-     ItemPackType.VEHICLE_HEAVY,
-     ItemPackType.VEHICLE_MEDIUM,
-     ItemPackType.VEHICLE_LIGHT)
+               ItemPackType.VEHICLE_AT_SPG,
+               ItemPackType.VEHICLE_HEAVY,
+               ItemPackType.VEHICLE_MEDIUM,
+               ItemPackType.VEHICLE_LIGHT)
     GOODIE = (ItemPackType.GOODIE_GOLD,
-     ItemPackType.GOODIE_CREDITS,
-     ItemPackType.GOODIE_EXPERIENCE,
-     ItemPackType.GOODIE_CREW_EXPERIENCE,
-     ItemPackType.GOODIE_FREE_EXPERIENCE,
+              ItemPackType.GOODIE_CREDITS,
+              ItemPackType.GOODIE_EXPERIENCE,
+              ItemPackType.GOODIE_CREW_EXPERIENCE,
+              ItemPackType.GOODIE_FREE_EXPERIENCE,
      ItemPackType.GOODIE_FRONTLINE_EXPERIENCE)
     CAMOUFLAGE = (ItemPackType.CAMOUFLAGE_ALL,
      ItemPackType.CAMOUFLAGE_DESERT,
@@ -136,16 +149,18 @@ class ItemPackTypeGroup(CONST_CONTAINER):
     DECAL = (ItemPackType.DECAL_1, ItemPackType.DECAL_2)
     PROJECTION_DECAL = (ItemPackType.PROJECTION_DECAL,)
     PERSONAL_NUMBER = (ItemPackType.PERSONAL_NUMBER,)
+    CUSTOMIZATION = tuple(
+        itertools.chain(STYLE, CAMOUFLAGE, PAINT, DECAL, PROJECTION_DECAL, PERSONAL_NUMBER, MODIFICATION))
     CUSTOM = (ItemPackType.CUSTOM_PREMIUM,
-     ItemPackType.CUSTOM_PREMIUM_PLUS,
-     ItemPackType.CUSTOM_CRYSTAL,
-     ItemPackType.CUSTOM_GOLD,
-     ItemPackType.CUSTOM_CREDITS,
-     ItemPackType.CUSTOM_EVENT_COIN,
-     ItemPackType.CUSTOM_EVENT_COIN_EXTERNAL,
-     ItemPackType.CUSTOM_REFERRAL_CREW,
-     ItemPackType.CUSTOM_SLOT,
-     ItemPackType.CUSTOM_SUPPLY_POINT)
+              ItemPackType.CUSTOM_PREMIUM_PLUS,
+              ItemPackType.CUSTOM_CRYSTAL,
+              ItemPackType.CUSTOM_GOLD,
+              ItemPackType.CUSTOM_CREDITS,
+              ItemPackType.CUSTOM_EVENT_COIN,
+              ItemPackType.CUSTOM_EVENT_COIN_EXTERNAL,
+              ItemPackType.CUSTOM_REFERRAL_CREW,
+              ItemPackType.CUSTOM_SLOT,
+              ItemPackType.CUSTOM_SUPPLY_POINT)
     CREW = (ItemPackType.CREW_50,
      ItemPackType.CREW_75,
      ItemPackType.CREW_100,

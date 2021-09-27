@@ -315,13 +315,14 @@ class ARENA_BONUS_TYPE:
      BATTLE_ROYALE_TRN_SQUAD)
     BATTLE_ROYALE_REGULAR_RANGE = (BATTLE_ROYALE_SOLO, BATTLE_ROYALE_SQUAD)
     BATTLE_ROYALE_SQUAD_RANGE = (BATTLE_ROYALE_SQUAD, BATTLE_ROYALE_TRN_SQUAD)
+    EVENT_BATTLES_RANGE = (EVENT_BATTLES, EVENT_BATTLES_2)
     EXTERNAL_RANGE = (SORTIE_2,
-     FORT_BATTLE_2,
-     GLOBAL_MAP,
-     TOURNAMENT,
-     TOURNAMENT_CLAN,
-     TOURNAMENT_REGULAR,
-     TOURNAMENT_EVENT)
+                      FORT_BATTLE_2,
+                      GLOBAL_MAP,
+                      TOURNAMENT,
+                      TOURNAMENT_CLAN,
+                      TOURNAMENT_REGULAR,
+                      TOURNAMENT_EVENT)
 
 
 ARENA_BONUS_TYPE_NAMES = dict([ (k, v) for k, v in ARENA_BONUS_TYPE.__dict__.iteritems() if isinstance(v, int) ])
@@ -555,6 +556,8 @@ class PREBATTLE_ROLE:
     ASSIGNMENT_1_2 = 16
     SEE_1 = 32
     SEE_2 = 64
+    SELF_ASSIGNMENT_1 = 128
+    SELF_ASSIGNMENT_2 = 256
     KICK_1 = 512
     KICK_2 = 1024
     CHANGE_ARENA = 2048
@@ -606,6 +609,7 @@ class PREBATTLE_ERRORS:
     INVALID_VEHICLE = 'INVALID_VEHICLE'
     OBSERVERS_LIMIT = 'OBSERVERS_LIMIT'
     PLAYERS_LIMIT = 'PLAYERS_LIMIT'
+    INSUFFICIENT_ROLE = 'INSUFFICIENT_ROLE'
 
 
 class PREBATTLE_UPDATE:
@@ -794,6 +798,7 @@ class PremiumConfigs(object):
     PREM_SQUAD = 'premSquad_config'
 
 
+POSTBATTLE20_CONFIG = 'postbattle20_config'
 DAILY_QUESTS_CONFIG = 'daily_quests_config'
 DOG_TAGS_CONFIG = 'dog_tags_config'
 IS_LOOT_BOXES_ENABLED = 'isLootBoxesEnabled'
@@ -811,6 +816,8 @@ class Configs(enum.Enum):
     EPIC_CONFIG = 'epic_config'
     MAPBOX_CONFIG = 'mapbox_config'
     BIRTHDAY_CALENDAR_CONFIG = 'bday_calendar_config'
+    EVENT_BATTLES_CONFIG = 'event_battles_config'
+    LOOTBOX_CONFIG = 'lootBoxes_config'
 
 
 class RESTRICTION_TYPE:
@@ -869,6 +876,38 @@ class CLAN_MEMBER_FLAGS(object):
     MAY_REMOVE_CLAN = LEADER
     MAY_ACTIVATE_ORDER = LEADER | VICE_LEADER | STAFF | COMMANDER
     MAY_EXCHANGE_MONEY = LEADER | VICE_LEADER | STAFF | COMMANDER | DIPLOMAT | TREASURER | RECRUITER | JUNIOR | PRIVATE
+
+
+class CLAN_ROLES(object):
+    LEADER = 'commander'
+    VICE_LEADER = 'executive_officer'
+    RECRUITER = 'recruitment_officer'
+    TREASURER = 'quartermaster'
+    DIPLOMAT = 'intelligence_officer'
+    COMMANDER = 'combat_officer'
+    PRIVATE = 'private'
+    RECRUIT = 'recruit'
+    STAFF = 'personnel_officer'
+    JUNIOR = 'junior_officer'
+    RESERVIST = 'reservist'
+    FLAGS_TO_ROLES = {CLAN_MEMBER_FLAGS.LEADER: LEADER,
+                      CLAN_MEMBER_FLAGS.VICE_LEADER: VICE_LEADER,
+                      CLAN_MEMBER_FLAGS.RECRUITER: RECRUITER,
+                      CLAN_MEMBER_FLAGS.TREASURER: TREASURER,
+                      CLAN_MEMBER_FLAGS.DIPLOMAT: DIPLOMAT,
+                      CLAN_MEMBER_FLAGS.COMMANDER: COMMANDER,
+                      CLAN_MEMBER_FLAGS.PRIVATE: PRIVATE,
+                      CLAN_MEMBER_FLAGS.RECRUIT: RECRUIT,
+                      CLAN_MEMBER_FLAGS.STAFF: STAFF,
+                      CLAN_MEMBER_FLAGS.JUNIOR: JUNIOR,
+                      CLAN_MEMBER_FLAGS.RESERVIST: RESERVIST}
+
+    @classmethod
+    def getRole(cls, memberFlags):
+        for i in range(len(cls.FLAGS_TO_ROLES)):
+            flag = memberFlags & 1 << i
+            if flag:
+                return cls.FLAGS_TO_ROLES[flag]
 
 
 class AIMING_MODE:
@@ -1402,12 +1441,14 @@ class GameSeasonType(object):
     EPIC = 2
     BATTLE_ROYALE = 3
     MAPBOX = 4
+    EVENT_BATTLES = 5
 
 
 SEASON_TYPE_BY_NAME = {'ranked': GameSeasonType.RANKED,
- 'epic': GameSeasonType.EPIC,
- 'battle_royale': GameSeasonType.BATTLE_ROYALE,
- 'mapbox': GameSeasonType.MAPBOX}
+                       'epic': GameSeasonType.EPIC,
+                       'battle_royale': GameSeasonType.BATTLE_ROYALE,
+                       'mapbox': GameSeasonType.MAPBOX,
+                       'event_battles': GameSeasonType.EVENT_BATTLES}
 SEASON_NAME_BY_TYPE = {val:key for key, val in SEASON_TYPE_BY_NAME.iteritems()}
 CHANNEL_SEARCH_RESULTS_LIMIT = 50
 USER_SEARCH_RESULTS_LIMIT = 50
@@ -1495,6 +1536,7 @@ class REQUEST_COOLDOWN:
     RUN_QUEST = 1.0
     PAWN_FREE_AWARD_LIST = 1.0
     LOOTBOX = 1.0
+    LOOTBOX_RECORDS = 1.0
     BADGES = 2.0
     CREW_SKINS = 0.3
     BPF_COMMAND = 1.0
@@ -1760,104 +1802,105 @@ class USER_SERVER_SETTINGS:
 
 
 INT_USER_SETTINGS_KEYS = {USER_SERVER_SETTINGS.VERSION: 'Settings version',
- 1: 'Game section settings',
- 2: 'Graphics section settings',
- 3: 'Sound section settings',
- 4: 'Controls section settings',
- 5: 'Keyboard section settings',
- 6: 'Keyboard section settings',
- 7: 'Keyboard section settings',
- 8: 'Keyboard section settings',
- 9: 'Keyboard section settings',
- 10: 'Keyboard section settings',
- 11: 'Keyboard section settings',
- 12: 'Keyboard section settings',
- 13: 'Keyboard section settings',
- 14: 'Keyboard section settings',
- 15: 'Keyboard section settings',
- 16: 'Keyboard section settings',
- 17: 'Keyboard section settings',
- 18: 'Keyboard section settings',
- 19: 'Keyboard section settings',
- 20: 'Keyboard section settings',
- 21: 'Keyboard section settings',
- 22: 'Keyboard section settings',
- 23: 'Keyboard section settings',
- 24: 'Keyboard section settings',
- 25: 'Keyboard section settings',
- 26: 'Keyboard section settings',
- 27: 'Keyboard section settings',
- 28: 'Keyboard section settings',
- 29: 'Keyboard section settings',
- 30: 'Keyboard section settings',
- 31: 'Keyboard section settings',
- 32: 'Keyboard section settings',
- 33: 'Keyboard section settings',
- 34: 'Keyboard section settings',
- 35: 'Keyboard section settings',
- 36: 'Keyboard section settings',
- 37: 'Keyboard section settings',
- 38: 'Keyboard section settings',
- 39: 'Keyboard section settings',
- 40: 'Keyboard section settings',
- 41: 'Keyboard section settings',
- 42: 'Keyboard section settings',
- USER_SERVER_SETTINGS.ARCADE_AIM_1: 'Arcade aim setting',
- USER_SERVER_SETTINGS.ARCADE_AIM_2: 'Arcade aim setting',
- USER_SERVER_SETTINGS.ARCADE_AIM_3: 'Arcade aim setting',
- USER_SERVER_SETTINGS.SNIPER_AIM_1: 'Sniper aim setting',
- USER_SERVER_SETTINGS.SNIPER_AIM_2: 'Sniper aim setting',
- USER_SERVER_SETTINGS.SNIPER_AIM_3: 'Sniper aim setting',
- 49: 'Enemy marker setting',
- 50: 'Dead marker setting',
- 51: 'Ally marker setting',
- 52: 'GuiStartBehavior',
- 53: '[Free]',
- USER_SERVER_SETTINGS.EULA_VERSION: 'EULAVersion',
- 55: 'Gameplay settings',
- 56: '[Free]',
- 57: 'Users storage revision',
- 58: 'Contacts',
- USER_SERVER_SETTINGS.GAME_EXTENDED: 'Game extended section settings',
- 60: 'Fallout',
- 61: 'Tutorial',
- 62: '[Free]',
- USER_SERVER_SETTINGS.ARCADE_AIM_4: 'Arcade aim setting',
- USER_SERVER_SETTINGS.SNIPER_AIM_4: 'Sniper aim setting',
- USER_SERVER_SETTINGS.SPG_AIM: 'SPG aim setting',
- 66: '[Free]',
- 67: '[Free]',
- USER_SERVER_SETTINGS.DOG_TAGS: 'Dog tags',
- USER_SERVER_SETTINGS.BATTLE_COMM: 'Battle communication',
- 70: 'Once only hints',
- 71: 'Keyboard section settings',
- 73: 'Carousel filter',
- 74: 'Carousel filter',
- 75: '[Free]',
- 76: '[Free]',
- 77: 'Unit filter',
- 78: '[Free]',
- 79: '[Free]',
- 80: 'Ranked carousel filter',
- 81: 'Ranked carousel filter',
- 82: 'feedback damage indicator',
- 83: 'feedback damage log',
- 84: 'feedback battle events',
- 85: 'feedback border map',
- 86: 'ui storage, used for preserving first entry flags etc',
- USER_SERVER_SETTINGS.HIDE_MARKS_ON_GUN: 'Hide marks on gun',
- USER_SERVER_SETTINGS.LINKEDSET_QUESTS: 'linkedset quests show reward info',
- USER_SERVER_SETTINGS.QUESTS_PROGRESS: 'feedback quests progress',
- 91: 'Loot box last viewed count',
- USER_SERVER_SETTINGS.SESSION_STATS: 'sessiong statistics settings',
- 97: 'BattlePass carouse filter 1',
- 98: 'Battle Pass Storage',
- 99: 'Once only hints',
- 100: 'Battle Royale carousel filter 1',
- 101: 'Battle Royale carousel filter 2',
- USER_SERVER_SETTINGS.GAME_EXTENDED_2: 'Game extended section settings 2',
- 103: 'Mapbox carousel filter 1',
- 104: 'Mapbox carousel filter 2'}
+                          1: 'Game section settings',
+                          2: 'Graphics section settings',
+                          3: 'Sound section settings',
+                          4: 'Controls section settings',
+                          5: 'Keyboard section settings',
+                          6: 'Keyboard section settings',
+                          7: 'Keyboard section settings',
+                          8: 'Keyboard section settings',
+                          9: 'Keyboard section settings',
+                          10: 'Keyboard section settings',
+                          11: 'Keyboard section settings',
+                          12: 'Keyboard section settings',
+                          13: 'Keyboard section settings',
+                          14: 'Keyboard section settings',
+                          15: 'Keyboard section settings',
+                          16: 'Keyboard section settings',
+                          17: 'Keyboard section settings',
+                          18: 'Keyboard section settings',
+                          19: 'Keyboard section settings',
+                          20: 'Keyboard section settings',
+                          21: 'Keyboard section settings',
+                          22: 'Keyboard section settings',
+                          23: 'Keyboard section settings',
+                          24: 'Keyboard section settings',
+                          25: 'Keyboard section settings',
+                          26: 'Keyboard section settings',
+                          27: 'Keyboard section settings',
+                          28: 'Keyboard section settings',
+                          29: 'Keyboard section settings',
+                          30: 'Keyboard section settings',
+                          31: 'Keyboard section settings',
+                          32: 'Keyboard section settings',
+                          33: 'Keyboard section settings',
+                          34: 'Keyboard section settings',
+                          35: 'Keyboard section settings',
+                          36: 'Keyboard section settings',
+                          37: 'Keyboard section settings',
+                          38: 'Keyboard section settings',
+                          39: 'Keyboard section settings',
+                          40: 'Keyboard section settings',
+                          41: 'Keyboard section settings',
+                          42: 'Keyboard section settings',
+                          USER_SERVER_SETTINGS.ARCADE_AIM_1: 'Arcade aim setting',
+                          USER_SERVER_SETTINGS.ARCADE_AIM_2: 'Arcade aim setting',
+                          USER_SERVER_SETTINGS.ARCADE_AIM_3: 'Arcade aim setting',
+                          USER_SERVER_SETTINGS.SNIPER_AIM_1: 'Sniper aim setting',
+                          USER_SERVER_SETTINGS.SNIPER_AIM_2: 'Sniper aim setting',
+                          USER_SERVER_SETTINGS.SNIPER_AIM_3: 'Sniper aim setting',
+                          49: 'Enemy marker setting',
+                          50: 'Dead marker setting',
+                          51: 'Ally marker setting',
+                          52: 'GuiStartBehavior',
+                          53: '[Free]',
+                          USER_SERVER_SETTINGS.EULA_VERSION: 'EULAVersion',
+                          55: 'Gameplay settings',
+                          56: '[Free]',
+                          57: 'Users storage revision',
+                          58: 'Contacts',
+                          USER_SERVER_SETTINGS.GAME_EXTENDED: 'Game extended section settings',
+                          60: 'Fallout',
+                          61: 'Tutorial',
+                          62: '[Free]',
+                          USER_SERVER_SETTINGS.ARCADE_AIM_4: 'Arcade aim setting',
+                          USER_SERVER_SETTINGS.SNIPER_AIM_4: 'Sniper aim setting',
+                          USER_SERVER_SETTINGS.SPG_AIM: 'SPG aim setting',
+                          66: '[Free]',
+                          67: '[Free]',
+                          USER_SERVER_SETTINGS.DOG_TAGS: 'Dog tags',
+                          USER_SERVER_SETTINGS.BATTLE_COMM: 'Battle communication',
+                          70: 'Once only hints',
+                          71: 'Keyboard section settings',
+                          73: 'Carousel filter',
+                          74: 'Carousel filter',
+                          75: '[Free]',
+                          76: '[Free]',
+                          77: 'Unit filter',
+                          78: '[Free]',
+                          79: '[Free]',
+                          80: 'Ranked carousel filter',
+                          81: 'Ranked carousel filter',
+                          82: 'feedback damage indicator',
+                          83: 'feedback damage log',
+                          84: 'feedback battle events',
+                          85: 'feedback border map',
+                          86: 'ui storage, used for preserving first entry flags etc',
+                          USER_SERVER_SETTINGS.HIDE_MARKS_ON_GUN: 'Hide marks on gun',
+                          USER_SERVER_SETTINGS.LINKEDSET_QUESTS: 'linkedset quests show reward info',
+                          USER_SERVER_SETTINGS.QUESTS_PROGRESS: 'feedback quests progress',
+                          91: 'Loot box last viewed count',
+                          USER_SERVER_SETTINGS.SESSION_STATS: 'sessiong statistics settings',
+                          97: 'BattlePass carouse filter 1',
+                          98: 'Battle Pass Storage',
+                          99: 'Once only hints',
+                          100: 'Battle Royale carousel filter 1',
+                          101: 'Battle Royale carousel filter 2',
+                          USER_SERVER_SETTINGS.GAME_EXTENDED_2: 'Game extended section settings 2',
+                          103: 'Mapbox carousel filter 1',
+                          104: 'Mapbox carousel filter 2',
+                          105: 'Event Storage'}
 
 class WG_GAMES:
     TANKS = 'wot'
@@ -2188,8 +2231,10 @@ class VISIBILITY:
     MIN_RADIUS = 50.0
 
 
-VEHICLE_ATTRS_TO_SYNC = frozenset(['circularVisionRadius', 'gun/piercing'])
-VEHICLE_ATTRS_TO_SYNC_ALIASES = {'gun/piercing': 'gunPiercing'}
+VEHICLE_ATTRS_TO_SYNC = frozenset(['circularVisionRadius', 'gun/piercing', 'gun/canShoot'])
+VEHICLE_ATTRS_TO_SYNC_ALIASES = {'gun/piercing': 'gunPiercing',
+                                 'gun/canShoot': 'gunCanShoot'}
+
 
 class OBSTACLE_KIND:
     CHUNK_DESTRUCTIBLE = 1
@@ -2399,11 +2444,13 @@ class BotNamingType(object):
     CREW_MEMBER = 1
     VEHICLE_MODEL = 2
     CUSTOM = 3
+    LABEL = 4
     DEFAULT = CREW_MEMBER
     _parseDict = {'crew': CREW_MEMBER,
-     'vehicle': VEHICLE_MODEL,
-     'custom': CUSTOM,
-     'default': DEFAULT}
+                  'vehicle': VEHICLE_MODEL,
+                  'custom': CUSTOM,
+                  'label': LABEL,
+                  'default': DEFAULT}
 
     @classmethod
     def parse(cls, typeString):
@@ -2568,7 +2615,9 @@ class MarathonConfig(object):
     URL = 'marathonUrl'
     REWARD_VEHICLE_URL = 'rewardVehicleUrl'
     REWARD_VEHICLE_URL_IGB = 'rewardVehicleUrlIgb'
+    REWARD_STYLE_URL_IGB = 'rewardStyleUrlIgb'
     FINISH_SALE_TIME = 'finishSaleTime'
+    VIDEO_CONTENT_URL = 'videoContentUrl'
 
 
 class ClansConfig(object):
@@ -2749,4 +2798,67 @@ class MapsTrainingParameters(enum.IntEnum):
 
 
 MAPS_REWARDS_INDEX = {'scenarioComplete': 0,
- 'mapComplete': 1}
+                      'mapComplete': 1}
+BATTLE_MODE_VEHICLE_TAGS = {'event_battles',
+                            'fallout',
+                            'epic_battles',
+                            'bob',
+                            'battle_royale',
+                            'clanWarsBattles'}
+
+
+class BATTLE_MODE_LOCK_MASKS(object):
+    _COMMON_FIRST_BIT = 0
+    _CLAN_RENTED_VEHICLE_FIRST_BIT = 4
+    _COMMON = 15 << _COMMON_FIRST_BIT
+    _CLAN_RENTED_VEHICLE = 15 << _CLAN_RENTED_VEHICLE_FIRST_BIT
+
+    @staticmethod
+    def getCommonVehLockMode(vehLockMode):
+        return (vehLockMode & BATTLE_MODE_LOCK_MASKS._COMMON) >> BATTLE_MODE_LOCK_MASKS._COMMON_FIRST_BIT
+
+    @staticmethod
+    def getClanRentedVehLockMode(vehLockMode):
+        return (
+                           vehLockMode & BATTLE_MODE_LOCK_MASKS._CLAN_RENTED_VEHICLE) >> BATTLE_MODE_LOCK_MASKS._CLAN_RENTED_VEHICLE_FIRST_BIT
+
+    @staticmethod
+    def makeCompactVehLockMode(commonVehLockMode, clanRentedVehLockMode):
+        return commonVehLockMode << BATTLE_MODE_LOCK_MASKS._COMMON_FIRST_BIT & BATTLE_MODE_LOCK_MASKS._COMMON | clanRentedVehLockMode << BATTLE_MODE_LOCK_MASKS._CLAN_RENTED_VEHICLE_FIRST_BIT & BATTLE_MODE_LOCK_MASKS._CLAN_RENTED_VEHICLE
+
+    @staticmethod
+    def getUnpackedVehLockMode(vehLockMode, vehType):
+        return BATTLE_MODE_LOCK_MASKS.getClanRentedVehLockMode(
+            vehLockMode) if 'clanWarsBattles' in vehType.tags else BATTLE_MODE_LOCK_MASKS.getCommonVehLockMode(
+            vehLockMode)
+
+
+class Progress(object):
+    DEFAULT = 0
+    START = 1
+    STOP = 2
+    FAILED = 3
+    SUCCEED = 4
+
+
+class WT_BATTLE_STAGE(object):
+    INVINCIBLE = 0
+    DEBUFF = 1
+    END_GAME = 2
+
+    @staticmethod
+    def getCurrent(arenaInfo):
+        if 'wtShieldDebuffDuration' in arenaInfo.dynamicComponents:
+            return WT_BATTLE_STAGE.DEBUFF
+        return WT_BATTLE_STAGE.END_GAME if arenaInfo.publicCounter.counter == 0 else WT_BATTLE_STAGE.INVINCIBLE
+
+
+class WT_TEAMS(object):
+    BOSS_TEAM = 1
+    HUNTERS_TEAM = 2
+
+
+class WT_TAGS(object):
+    BOSS = 'event_boss'
+    HUNTER = 'event_hunter'
+    PRIORITY_BOSS = 'special_event_boss'

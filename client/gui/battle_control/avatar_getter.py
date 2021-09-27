@@ -260,9 +260,9 @@ def changeVehicleSetting(code, value, avatar=None):
     if avatar is None:
         avatar = BigWorld.player()
     try:
-        avatar.base.vehicle_changeSetting(code, value)
+        avatar.cell.vehicle_changeSetting(code, value)
     except AttributeError:
-        _logger.exception('Attribute "base.vehicle_changeSetting" not found')
+        _logger.exception('Attribute "cell.vehicle_changeSetting" not found')
 
     return
 
@@ -274,6 +274,17 @@ def activateAvatarEquipment(equipmentID, avatar=None):
         avatar.cell.activateEquipment(equipmentID)
     except AttributeError:
         _logger.exception('Attribute "cell.activateEquipment" not found')
+
+    return
+
+
+def activateVehicleEquipment(equipmentID, param, avatar=None):
+    if avatar is None:
+        avatar = BigWorld.player()
+    try:
+        avatar.cell.activateVehicleEquipment(equipmentID, param)
+    except AttributeError:
+        _logger.exception('Attribute "cell.activateVehicleEquipment" not found')
 
     return
 

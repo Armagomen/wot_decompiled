@@ -20,6 +20,7 @@ from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS
 from gui.server_events.recruit_helper import getSourceIdFromQuest
 from gui.shared.formatters import text_styles
 from gui.shared.money import Currency
+from gui.wt_event.wt_event_helpers import isWTEventProgressionQuest
 from messenger import g_settings
 from messenger.formatters import TimeFormatter
 from messenger.formatters.service_channel import WaitItemsSyncFormatter, QuestAchievesFormatter, \
@@ -33,7 +34,9 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.game_control import IRankedBattlesController
 from helpers import dependency
 from helpers import time_utils
+
 _logger = logging.getLogger(__name__)
+
 
 class ITokenQuestsSubFormatter(object):
 
@@ -193,7 +196,7 @@ class RankedSeasonTokenQuestFormatter(RankedTokenQuestFormatter):
         customizations = data.get('customizations', [])
         for customizationItem in customizations:
             customizationType = customizationItem['custType']
-            _, itemUserName = getCustomizationItemData(customizationItem['id'], customizationType)
+            _, itemUserName, _ = getCustomizationItemData(customizationItem['id'], customizationType)
             if customizationType == 'style':
                 result.append(itemUserName)
 
@@ -700,3 +703,10 @@ class BirthdayTokenQuestSubFormatter(AsyncTokenQuestsSubFormatter):
     @classmethod
     def _isQuestOfThisGroup(cls, questID):
         return cls.__QUEST_PATTERN in questID
+
+
+class WtEventProgressionQuestFormatter(WaitItemsSyncFormatter, TokenQuestsSubFormatter):
+
+    @classmethod
+    def _isQuestOfThisGroup(cls, questID):
+        return isWTEventProgressionQuest(questID)

@@ -16,11 +16,14 @@ from helpers import dependency
 from preview_selectable_logic import PreviewSelectableLogic
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-from skeletons.gui.game_control import IHeroTankController
+from skeletons.gui.game_control import IHeroTankController, IGameEventController
+from skeletons.prebattle_vehicle import IPrebattleVehicle
 from gui.prb_control.events_dispatcher import g_eventDispatcher
+
 _SHOW_CLOSE_BTN = False
 _SHOW_BACK_BTN = True
 _logger = logging.getLogger(__name__)
+
 
 class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     __background_alpha__ = 0.0
@@ -28,6 +31,8 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     __itemsCache = dependency.descriptor(IItemsCache)
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __heroTanksControl = dependency.descriptor(IHeroTankController)
+    __gameEventCtrl = dependency.descriptor(IGameEventController)
+    __prebattleVehicle = dependency.descriptor(IPrebattleVehicle)
     _COMMON_SOUND_SPACE = STYLE_PREVIEW_SOUND_SPACE
 
     def __init__(self, ctx=None):
@@ -35,11 +40,17 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         self._style = ctx['style']
         self.__vehicleCD = ctx['itemCD']
         self.__styleDescr = ctx.get('styleDescr') % {'insertion_open': '',
-         'insertion_close': ''}
+                                                     'insertion_close': ''}
         self.__backCallback = ctx.get('backCallback', event_dispatcher.showHangar)
-        self.__backBtnDescrLabel = ctx.get('backBtnDescrLabel', backport.text(R.strings.vehicle_preview.header.backBtn.descrLabel.personalAwards()))
+        self.__backBtnDescrLabel = ctx.get('backBtnDescrLabel', backport.text(
+            R.strings.vehicle_preview.header.backBtn.descrLabel.personalAwards()))
         self.__selectedVehicleEntityId = None
         g_currentPreviewVehicle.selectHeroTank(ctx.get('isHeroTank', False))
+        self.__previewCloseCb = None
+        if self.__gameEventCtrl.isEventPrbActive():
+            if self.__prebattleVehicle.item is not None:
+                self.__prebattleVehicle.selectNone()
+            self.__previewCloseCb = self.__prebattleVehicle.selectPreviousVehicle
         return
 
     def closeView(self):
@@ -76,8 +87,12 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         self.__heroTanksControl.setInteractive(True)
         g_currentPreviewVehicle.selectNoVehicle()
         g_currentPreviewVehicle.resetAppearance()
-        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.VEHICLE_PREVIEW_HIDDEN), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.VEHICLE_PREVIEW_HIDDEN),
+                               scope=EVENT_BUS_SCOPE.LOBBY)
         super(VehicleStylePreview, self)._dispose()
+        if self.__previewCloseCb is not None:
+            self.__previewCloseCb()
+            self.__previewCloseCb = None
         return
 
     def _createSelectableLogic(self):

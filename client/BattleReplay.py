@@ -46,6 +46,7 @@ FAST_FORWARD_STEP = 20.0
 _BATTLE_SIMULATION_KEY_PATH = 'development/replayBattleSimulation'
 _POSTMORTEM_CTRL_MODES = (CTRL_MODE_NAME.POSTMORTEM, CTRL_MODE_NAME.DEATH_FREE_CAM, CTRL_MODE_NAME.RESPAWN_DEATH)
 _FORWARD_INPUT_CTRL_MODES = (CTRL_MODE_NAME.VIDEO, CTRL_MODE_NAME.CAT, CTRL_MODE_NAME.DEATH_FREE_CAM)
+_BONUS_TYPES_WITHOUT_REPlAY = constants.ARENA_BONUS_TYPE.EVENT_BATTLES_RANGE
 
 class CallbackDataNames(object):
     APPLY_ZOOM = 'applyZoom'
@@ -173,6 +174,7 @@ class BattleReplay(object):
     def subscribe(self):
         g_playerEvents.onBattleResultsReceived += self.__onBattleResultsReceived
         g_playerEvents.onAccountBecomePlayer += self.__onAccountBecomePlayer
+        g_playerEvents.onAvatarBecomePlayer += self.__onAvatarBecomePlayer
         g_playerEvents.onArenaPeriodChange += self.__onArenaPeriodChange
         g_playerEvents.onBootcampAccountMigrationComplete += self.__onBootcampAccountMigrationComplete
         self.settingsCore.onSettingsChanged += self.__onSettingsChanging
@@ -180,6 +182,7 @@ class BattleReplay(object):
     def unsubscribe(self):
         g_playerEvents.onBattleResultsReceived -= self.__onBattleResultsReceived
         g_playerEvents.onAccountBecomePlayer -= self.__onAccountBecomePlayer
+        g_playerEvents.onAvatarBecomePlayer -= self.__onAvatarBecomePlayer
         g_playerEvents.onArenaPeriodChange -= self.__onArenaPeriodChange
         g_playerEvents.onBootcampAccountMigrationComplete -= self.__onBootcampAccountMigrationComplete
         self.settingsCore.onSettingsChanged -= self.__onSettingsChanging
@@ -733,11 +736,13 @@ class BattleReplay(object):
         player = BigWorld.player()
         if not self.isPlaying or not isPlayerAvatar():
             return
+        elif forceControlMode is None and not self.isControllingCamera:
+            return
         else:
             entity = BigWorld.entities.get(self.playerVehicleID)
             if (entity is None or not entity.isStarted) and forceControlMode is None:
                 controlMode = self.getControlMode()
-                if controlMode == CTRL_MODE_NAME.SNIPER or forceControlMode == CTRL_MODE_NAME.STRATEGIC:
+                if controlMode == CTRL_MODE_NAME.SNIPER:
                     return
             controlMode = self.getControlMode() if forceControlMode is None else forceControlMode
             if self.__equipmentId is None and controlMode == CTRL_MODE_NAME.MAP_CASE_ARCADE:
@@ -898,6 +903,10 @@ class BattleReplay(object):
             else:
                 self.__playerDatabaseID = player.databaseID
             return
+
+    def __onAvatarBecomePlayer(self):
+        if self.sessionProvider.arenaVisitor.getArenaBonusType() in _BONUS_TYPES_WITHOUT_REPlAY:
+            self.enableAutoRecordingBattles(False, True)
 
     def __onSettingsChanging(self, *_):
         newSpeed = self.__playbackSpeedModifiers[self.__playbackSpeedIdx]
