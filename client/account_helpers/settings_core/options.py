@@ -2889,12 +2889,10 @@ class QuestsProgressDisplayType(GroupSetting):
     SHOW_ALL = 0
     PROGRESS_ONLY = 1
     OPTIONS = {SHOW_ALL: 'showAll',
-               PROGRESS_ONLY: 'showProgress'}
+     PROGRESS_ONLY: 'showProgress'}
 
     def __init__(self, settingName, storage, isPreview=False):
-        super(QuestsProgressDisplayType, self).__init__(settingName, storage, options=self.OPTIONS,
-                                                        settingsKey='#settings:feedback/tab/questsProgress/standardConditions/%s',
-                                                        isPreview=isPreview)
+        super(QuestsProgressDisplayType, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/questsProgress/standardConditions/%s', isPreview=isPreview)
 
     def getDefaultValue(self):
         return self.SHOW_ALL
@@ -2921,7 +2919,7 @@ class SwitchSetupsInLoadingSetting(AccountSetting):
 
     def __detectDefaultValue(self, write=True):
         presetIndx = BigWorld.detectGraphicsPresetFromSystemSettings()
-        enabledPresets = [BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in self._ENABLED_BY_DEFAULT]
+        enabledPresets = [ BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in self._ENABLED_BY_DEFAULT ]
         enabledByDefault = presetIndx in enabledPresets
         if write:
             AccountSettings.setSettings(self.key, enabledByDefault)

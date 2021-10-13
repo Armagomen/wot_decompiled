@@ -49,13 +49,13 @@ class ClassicMinimapComponent(component.MinimapComponent):
 
 
 class GlobalSettingsPlugin(common.SimplePlugin):
-    __slots__ = ('_isVisible', '__currentSizeSettings', '__sizeIndex')
+    __slots__ = ('__currentSizeSettings', '__isVisible', '__sizeIndex')
     _AccountSettingsClass = AccountSettings
 
     def __init__(self, parentObj):
         super(GlobalSettingsPlugin, self).__init__(parentObj)
-        self._isVisible = True
         self.__currentSizeSettings = 'minimapSize'
+        self.__isVisible = True
         self.__sizeIndex = 0
 
     def start(self):
@@ -95,8 +95,8 @@ class GlobalSettingsPlugin(common.SimplePlugin):
         return previousSettings
 
     def _toogleVisible(self):
-        self._isVisible = not self._isVisible
-        self._parentObj.as_setVisibleS(self._isVisible)
+        self.__isVisible = not self.__isVisible
+        self._parentObj.as_setVisibleS(self.__isVisible)
 
     def __saveSettings(self):
         self._AccountSettingsClass.setSettings(self.__currentSizeSettings, self.__sizeIndex)
@@ -184,8 +184,7 @@ class TeamsOrControlsPointsPlugin(common.EntriesPlugin):
         else:
             model = self.__markerIDs[objectID]
             if model is not None:
-                if _ACTIONS.battleChatCommandFromActionID(commandID).name in [BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
-                                                                              BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE]:
+                if _ACTIONS.battleChatCommandFromActionID(commandID).name in [BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE, BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE]:
                     self.__onReplyFeedbackReceived(objectID, senderID, MarkerType.BASE_MARKER_TYPE, 0, 1)
                 else:
                     self._invoke(model.getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_ATTACK)
@@ -198,16 +197,13 @@ class TeamsOrControlsPointsPlugin(common.EntriesPlugin):
         playerHasReply = replierID == avatar_getter.getPlayerVehicleID()
         if ucmdID in self.__markerIDs and newReply:
             if playerHasReply:
-                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE,
-                             BATTLE_MINIMAP_CONSTS.STATE_REPLY)
+                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_REPLY)
                 self.__hasActiveCommit = True
             elif not self.__hasActiveCommit:
-                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE,
-                             BATTLE_MINIMAP_CONSTS.STATE_IDLE)
+                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_IDLE)
         if ucmdID in self.__markerIDs:
             if newReplyCount < oldReplyCount and playerHasReply or newReplyCount <= 0:
-                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE,
-                             BATTLE_MINIMAP_CONSTS.STATE_IDLE)
+                self._invoke(self.__markerIDs[ucmdID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_IDLE)
                 if playerHasReply:
                     self.__hasActiveCommit = False
 
@@ -215,8 +211,7 @@ class TeamsOrControlsPointsPlugin(common.EntriesPlugin):
         if not self.__markerIDs or markerType != MarkerType.BASE_MARKER_TYPE:
             return
         if removeID in self.__markerIDs:
-            self._invoke(self.__markerIDs[removeID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE,
-                         BATTLE_MINIMAP_CONSTS.STATE_DEFAULT)
+            self._invoke(self.__markerIDs[removeID].getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_DEFAULT)
             return
         _logger.error(str(removeID) + ' not found in markerIDs')
 

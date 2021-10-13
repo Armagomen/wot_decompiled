@@ -12,6 +12,7 @@ import nations
 from gui import g_htmlTemplates, makeHtmlString, GUI_NATIONS
 from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import getReserveNameVO, getDirection
+from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
@@ -35,6 +36,7 @@ from gui.impl.lobby.battle_pass.tooltips.battle_pass_in_progress_tooltip_view im
 from gui.impl.lobby.battle_pass.tooltips.battle_pass_not_started_tooltip_view import BattlePassNotStartedTooltipView
 from gui.impl.lobby.battle_pass.tooltips.vehicle_points_tooltip_view import VehiclePointsTooltipView
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
+from gui.impl.lobby.subscription.wot_plus_tooltip import WotPlusTooltip
 from gui.impl.lobby.tooltips.veh_post_progression_entry_point_tooltip import VehPostProgressionEntryPointTooltip
 from gui.prb_control.items.stronghold_items import SUPPORT_TYPE, REQUISITION_TYPE, HEAVYTRUCKS_TYPE
 from gui.prb_control.settings import BATTLES_TO_SELECT_RANDOM_MIN_LIMIT
@@ -48,6 +50,7 @@ from gui.shared.formatters.time_formatters import getTimeLeftStr, getTillTimeByR
 from gui.shared.gui_items import GUI_ITEM_TYPE, ACTION_ENTITY_ITEM
 from gui.shared.money import Money, Currency, MONEY_UNDEFINED
 from gui.shared.tooltips import ToolTipBaseData, TOOLTIP_TYPE, ACTION_TOOLTIPS_TYPE, ToolTipParameterField
+from gui.shared.tooltips import efficiency
 from gui.shared.tooltips import formatters
 from gui.shared.view_helpers import UsersInfoHelper
 from helpers import dependency
@@ -230,6 +233,25 @@ class DynamicBlocksTooltipData(BlocksTooltipData):
         if self.isVisible() and self.app is not None:
             self.app.updateTooltip(self.buildToolTip(), self.getType())
         return
+
+
+class EfficiencyTooltipData(BlocksTooltipData):
+    _packers = {BATTLE_EFFICIENCY_TYPES.ARMOR: efficiency.ArmorItemPacker,
+     BATTLE_EFFICIENCY_TYPES.DAMAGE: efficiency.DamageItemPacker,
+     BATTLE_EFFICIENCY_TYPES.DESTRUCTION: efficiency.KillItemPacker,
+     BATTLE_EFFICIENCY_TYPES.DETECTION: efficiency.DetectionItemPacker,
+     BATTLE_EFFICIENCY_TYPES.ASSIST: efficiency.AssistItemPacker,
+     BATTLE_EFFICIENCY_TYPES.CRITS: efficiency.CritsItemPacker,
+     BATTLE_EFFICIENCY_TYPES.CAPTURE: efficiency.CaptureItemPacker,
+     BATTLE_EFFICIENCY_TYPES.DEFENCE: efficiency.DefenceItemPacker,
+     BATTLE_EFFICIENCY_TYPES.ASSIST_STUN: efficiency.StunItemPacker}
+
+    def __init__(self, context):
+        super(EfficiencyTooltipData, self).__init__(context, TOOLTIP_TYPE.EFFICIENCY)
+        self._setWidth(300)
+
+    def _packBlocks(self, data):
+        return self._packers[data.type]().pack(data.toDict()) if data is not None and data.type in self._packers else []
 
 
 _ENV_TOOLTIPS_PATH = '#environment_tooltips:%s'
@@ -866,17 +888,13 @@ class FortSortieTooltipData(ToolTipBaseData):
     def getDisplayableData(self, data):
         division = text_styles.main(i18n.makeString(data.divisionName))
         inBattleIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_SWORDSICON, 16, 16, -3, 0)
-        descriptionText = text_styles.main(
-            i18n.makeString(data.descriptionForTT)) if data.descriptionForTT != '' else ''
-        return {'titleText': text_styles.highTitle(
-            i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_TITLE, name=data.creatorName)),
-                'divisionText': text_styles.standard(
-                    i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_DIVISION, division=division)),
-                'descriptionText': descriptionText,
-                'hintText': text_styles.standard(i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_HINT)),
-                'inBattleText': text_styles.error(i18n.makeString(
-                    TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_INBATTLE) + ' ' + inBattleIcon) if data.isInBattle else '',
-                'isInBattle': data.isInBattle}
+        descriptionText = text_styles.main(i18n.makeString(data.descriptionForTT)) if data.descriptionForTT != '' else ''
+        return {'titleText': text_styles.highTitle(i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_TITLE, name=data.creatorName)),
+         'divisionText': text_styles.standard(i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_DIVISION, division=division)),
+         'descriptionText': descriptionText,
+         'hintText': text_styles.standard(i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_HINT)),
+         'inBattleText': text_styles.error(i18n.makeString(TOOLTIPS.FORTIFICATION_TOOLTIPFORTSORTIE_INBATTLE) + ' ' + inBattleIcon) if data.isInBattle else '',
+         'isInBattle': data.isInBattle}
 
 
 class SettingsSwitchEquipment(BlocksTooltipData):
@@ -887,10 +905,7 @@ class SettingsSwitchEquipment(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         tooltipBlocks = super(SettingsSwitchEquipment, self)._packBlocks()
-        tooltipBlocks.append(formatters.packBuildUpBlockData([formatters.packTitleDescBlock(
-            text_styles.highTitle(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_HEADER),
-            text_styles.main(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_BODY)), formatters.packTextBlockData(
-            text_styles.neutral(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_BODYFOOTER), padding={'bottom': -15})]))
+        tooltipBlocks.append(formatters.packBuildUpBlockData([formatters.packTitleDescBlock(text_styles.highTitle(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_HEADER), text_styles.main(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_BODY)), formatters.packTextBlockData(text_styles.neutral(TOOLTIPS.SETTINGS_SWITCHEQUIPMENT_BODYFOOTER), padding={'bottom': -15})]))
         return tooltipBlocks
 
 
@@ -1532,3 +1547,12 @@ class VehPostProgressionEntryPointTooltipContentWindowData(ToolTipBaseData):
 
     def getDisplayableData(self, intCD, parentScreen, *args, **kwargs):
         return DecoratedTooltipWindow(VehPostProgressionEntryPointTooltip(intCD, parentScreen), useDecorator=False)
+
+
+class WotPlusTooltipContentWindowData(ToolTipBaseData):
+
+    def __init__(self, context):
+        super(WotPlusTooltipContentWindowData, self).__init__(context, TOOLTIPS_CONSTANTS.WOT_PLUS)
+
+    def getDisplayableData(self, perkID, *args, **kwargs):
+        return DecoratedTooltipWindow(WotPlusTooltip(), useDecorator=False)

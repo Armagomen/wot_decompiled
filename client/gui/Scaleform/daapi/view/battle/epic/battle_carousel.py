@@ -173,10 +173,10 @@ class BattleCarouselDataProvider(CarouselDataProvider):
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
         return (vehicle.level,
-                not vehicle.isFavorite,
-                GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
-                VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
-                vehicle.userName)
+         not vehicle.isFavorite,
+         GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
+         VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
+         vehicle.userName)
 
     def __isVehicleLevelsFilterNeeded(self):
         return len(self.__availableLevels) > 1
@@ -306,7 +306,6 @@ class BattleTankCarousel(BattleTankCarouselMeta):
     def latePopulate(self):
         self.updateVehicles(self.__vehicleData.getVehicles())
         self.updateAviability()
-        self.resetFilters()
 
     def getCustomParams(self):
         return {'vehicleLevelsFilter': self._carouselDP.getAvailableLevels()}

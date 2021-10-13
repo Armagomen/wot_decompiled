@@ -15,12 +15,13 @@ from gui.Scaleform.daapi.view.lobby.tank_setup.ammunition_setup_vehicle import g
 from gui.Scaleform.daapi.view.lobby.techtree.techtree_dp import g_techTreeDP
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_vehicle import g_postProgressionVehicle
+from gui.Scaleform.daapi.view.lobby.vehicle_compare.cmp_configurator_vehicle import g_cmpConfiguratorVehicle
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift
 from gui.server_events import recruit_helper
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Tankman import getTankmanSkill, SabatonTankmanSkill, TankmanSkill, OffspringTankmanSkill
+from gui.shared.gui_items.Tankman import getTankmanSkill, SabatonTankmanSkill, TankmanSkill, OffspringTankmanSkill, YhaTankmanSkill
 from gui.shared.gui_items.dossier import factories, loadDossier
 from gui.shared.items_parameters import params_helper, bonus_helper
 from gui.shared.items_parameters.formatters import NO_BONUS_SIMPLIFIED_SCHEME
@@ -76,9 +77,7 @@ class StatsConfiguration(object):
 
 
 class StatusConfiguration(object):
-    __slots__ = (
-    'vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow', 'isSpecialWindow', 'isResearchPage',
-    'checkNotSuitable', 'showCustomStates', 'useWhiteBg', 'withSlots', 'isCompare', 'eqSetupIDx')
+    __slots__ = ('vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow', 'isResearchPage', 'checkNotSuitable', 'showCustomStates', 'useWhiteBg', 'withSlots', 'isCompare', 'eqSetupIDx')
 
     def __init__(self):
         self.vehicle = None
@@ -94,7 +93,6 @@ class StatusConfiguration(object):
         self.withSlots = False
         self.isCompare = False
         self.eqSetupIDx = None
-        self.isSpecialWindow = False
         return
 
 
@@ -244,7 +242,7 @@ class AwardContext(DefaultContext):
         self._rentBattlesLeft = rentBattles
         self._rentWinsLeft = rentWins
         self._seasonRent = {'season': rentSeason or [],
-                            'cycle': rentCycle or []}
+         'cycle': rentCycle or []}
         self._isSeniority = isSeniority
         return self.itemsCache.items.getItemByCD(int(intCD))
 
@@ -277,11 +275,11 @@ class AwardContext(DefaultContext):
                 seasonRent.setdefault(seasonType, []).append((int(seasonID), RENT_TYPE_TO_DURATION[key]))
 
         return {'tmanRoleLevel': self._tmanRoleLevel,
-                'rentExpiryTime': self._rentExpiryTime,
-                'rentBattlesLeft': self._rentBattlesLeft,
-                'rentWinsLeft': self._rentWinsLeft,
-                'rentSeason': seasonRent,
-                'isSeniority': self._isSeniority}
+         'rentExpiryTime': self._rentExpiryTime,
+         'rentBattlesLeft': self._rentBattlesLeft,
+         'rentWinsLeft': self._rentWinsLeft,
+         'rentSeason': seasonRent,
+         'isSeniority': self._isSeniority}
 
 
 class ExtendedAwardContext(AwardContext):
@@ -291,12 +289,10 @@ class ExtendedAwardContext(AwardContext):
         self._showCrew = False
         self._showVehicleSlot = False
 
-    def buildItem(self, intCD, tmanCrewLevel=None, rentExpiryTime=None, rentBattles=None, rentWins=None,
-                  rentSeason=None, showCrew=False, _showVehicleSlot=False):
+    def buildItem(self, intCD, tmanCrewLevel=None, rentExpiryTime=None, rentBattles=None, rentWins=None, rentSeason=None, showCrew=False, _showVehicleSlot=False):
         self._showCrew = showCrew
         self._showVehicleSlot = _showVehicleSlot
-        return super(ExtendedAwardContext, self).buildItem(intCD, tmanCrewLevel, rentExpiryTime, rentBattles, rentWins,
-                                                           rentSeason)
+        return super(ExtendedAwardContext, self).buildItem(intCD, tmanCrewLevel, rentExpiryTime, rentBattles, rentWins, rentSeason)
 
     def getParams(self):
         params = super(ExtendedAwardContext, self).getParams()
@@ -319,21 +315,6 @@ class ShopContext(AwardContext):
         value = super(ShopContext, self).getStatsConfiguration(item)
         value.inventoryCount = True
         value.vehiclesCount = True
-        return value
-
-
-class WtEventPortalContext(DefaultContext):
-
-    def getStatsConfiguration(self, item):
-        value = super(WtEventPortalContext, self).getStatsConfiguration(item)
-        value.sellPrice = False
-        value.buyPrice = False
-        value.unlockPrice = False
-        return value
-
-    def getStatusConfiguration(self, item):
-        value = super(WtEventPortalContext, self).getStatusConfiguration(item)
-        value.isSpecialWindow = True
         return value
 
 
@@ -501,7 +482,7 @@ class BaseHangarParamContext(ToolTipContext):
         return params_helper.idealCrewComparator(g_currentVehicle.item)
 
     def buildItem(self, *args, **kwargs):
-        return g_currentVehicle.item
+        return None
 
     def getBonusExtractor(self, vehicle, bonuses, paramName):
         return bonus_helper.BonusExtractor(vehicle, bonuses, paramName)
@@ -512,6 +493,9 @@ class HangarParamContext(BaseHangarParamContext):
     def __init__(self):
         super(HangarParamContext, self).__init__(True)
         self.formatters = NO_BONUS_SIMPLIFIED_SCHEME
+
+    def buildItem(self, *args, **kwargs):
+        return g_currentVehicle.item
 
 
 class PreviewParamContext(HangarParamContext):
@@ -532,6 +516,9 @@ class CmpParamContext(HangarParamContext):
     def __init__(self):
         super(CmpParamContext, self).__init__()
         self.formatters = NO_BONUS_SIMPLIFIED_SCHEME
+
+    def buildItem(self, *args, **kwargs):
+        return g_cmpConfiguratorVehicle.item
 
     def getComparator(self):
         return params_helper.vehiclesComparator(_getCmpVehicle(), _getCmpInitialVehicle()[0])
@@ -922,7 +909,9 @@ class PreviewCaseContext(ToolTipContext):
     def buildItem(self, skillID):
         if skillID == 'sabaton_brotherhood':
             return SabatonTankmanSkill('brotherhood')
-        return OffspringTankmanSkill('brotherhood') if skillID == 'offspring_brotherhood' else TankmanSkill(skillID)
+        if skillID == 'offspring_brotherhood':
+            return OffspringTankmanSkill('brotherhood')
+        return YhaTankmanSkill('brotherhood') if skillID == 'yha_brotherhood' else TankmanSkill(skillID)
 
 
 class CrewSkinContext(ToolTipContext):

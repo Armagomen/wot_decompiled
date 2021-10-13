@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleRoyalePostmortemPanelMeta.py
 from gui.Scaleform.daapi.view.meta.BasePostmortemPanelMeta import BasePostmortemPanelMeta
 
-
 class BattleRoyalePostmortemPanelMeta(BasePostmortemPanelMeta):
 
     def as_showDeadReasonS(self):
@@ -10,6 +9,3 @@ class BattleRoyalePostmortemPanelMeta(BasePostmortemPanelMeta):
 
     def as_setPlayerInfoS(self, playerInfo):
         return self.flashObject.as_setPlayerInfo(playerInfo) if self._isDAAPIInited() else None
-
-    def as_setSpectatorPanelVisibleS(self, value):
-        return self.flashObject.as_setSpectatorPanelVisible(value) if self._isDAAPIInited() else None

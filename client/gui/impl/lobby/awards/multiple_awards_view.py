@@ -13,8 +13,7 @@ from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.awards.multiple_awards_view_model import MultipleAwardsViewModel
 from gui.impl.gen.view_models.views.lobby.awards.tooltips.awards_vehicle_for_choose_tooltip_view_model import AwardsVehicleForChooseTooltipViewModel
 from gui.impl.gen.view_models.views.loot_box_compensation_tooltip_types import LootBoxCompensationTooltipTypes
-from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import \
-    LootBoxVehicleCompensationTooltipModel
+from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import LootBoxVehicleCompensationTooltipModel
 from gui.impl.lobby.awards import SupportedTokenTypes
 from gui.impl.lobby.awards.tooltip import VEH_FOR_CHOOSE_ID
 from gui.impl.lobby.awards.tooltip.vehicle_for_choose import VehicleForChooseTooltipContent
@@ -22,6 +21,7 @@ from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.shared import event_dispatcher
 from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
@@ -103,18 +103,19 @@ class MultipleAwardsView(ViewImpl):
             with self.viewModel.transaction() as model:
                 productTitle = purchasePackage.getTitleID()
                 if productTitle:
-                    model.setTitle(backport.text(R.strings.awards.multipleAwards.steam.dyn(productTitle)(),
-                                                 name=purchasePackage.getProductName()))
+                    model.setTitle(backport.text(R.strings.awards.multipleAwards.steam.dyn(productTitle)(), name=purchasePackage.getProductName()))
                 productIconID = purchasePackage.getIconID()
                 if productIconID:
-                    model.setTitleIcon(
-                        backport.image(R.images.gui.maps.icons.awards.multipleAwards.title.dyn(productIconID)()))
+                    model.setTitleIcon(backport.image(R.images.gui.maps.icons.awards.multipleAwards.title.dyn(productIconID)()))
                 self.__setProductTypeData(rewards)
                 model.setMainItemsCount(purchasePackage.getMainAmount())
                 for vR in rewards:
                     model.rewards.addViewModel(vR)
 
+        switchHangarOverlaySoundFilter(on=True)
+
     def _finalize(self):
+        switchHangarOverlaySoundFilter(on=False)
         self.viewModel.onClose -= self.__onClose
         self.viewModel.showHangar -= self.__handleShowHangar
         self.viewModel.makeChoice -= self.__handleMakeChoice

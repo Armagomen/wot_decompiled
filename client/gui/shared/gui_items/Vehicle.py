@@ -11,6 +11,7 @@ from copy import deepcopy
 from backports.functools_lru_cache import lru_cache
 import BigWorld
 import constants
+from gui import GUI_SETTINGS
 from collector_vehicle import CollectorVehicleConsts
 from AccountCommands import LOCK_REASON, VEHICLE_SETTINGS_FLAG, VEHICLE_EXTRA_SETTING_FLAG
 from PerksParametersController import PerksParametersController
@@ -31,7 +32,7 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import CLAN_LOCK, GUI_ITEM_TYPE, getItemIconName, GUI_ITEM_ECONOMY_CODE, checkForTags
 from gui.shared.gui_items.customization.slots import ProjectionDecalSlot, BaseCustomizationSlot, EmblemSlot
 from vehicle_outfit.outfit import Area, REGIONS_BY_SLOT_TYPE, ANCHOR_TYPE_TO_SLOT_TYPE_MAP
-from gui.shared.gui_items.vehicle_equipment import VehicleEquipment
+from gui.shared.gui_items.vehicle_equipment import VehicleEquipment, SUPPORT_EXT_DATA_FEATURES
 from gui.shared.gui_items.gui_item import HasStrCD
 from gui.shared.gui_items.fitting_item import FittingItem, RentalInfoProvider
 from gui.shared.gui_items.Tankman import Tankman, BROTHERHOOD_SKILL_NAME
@@ -157,14 +158,12 @@ class VEHICLE_TAGS(CONST_CONTAINER):
     RENT_PROMOTION = 'rent_promotion'
     EARN_CRYSTALS = 'earn_crystals'
     MAPS_TRAINING = 'maps_training'
+    T34_DISCLAIMER = 't34_disclaimer'
     CLAN_WARS_BATTLES = 'clanWarsBattles'
-    EVENT_BOSS = 'event_boss'
-    EVENT_HUNTER = 'event_hunter'
-    EVENT_BOT = 'event_bot'
-    EVENT_SPECIAL_BOSS = 'special_event_boss'
-    EVENT_VEHS = frozenset((EVENT_BOSS, EVENT_HUNTER))
 
 
+DISCLAIMER_TAGS = frozenset((VEHICLE_TAGS.T34_DISCLAIMER,))
+EPIC_ACTION_VEHICLE_CDS = (44033, 63265)
 NOT_FULL_AMMO_MULTIPLIER = 0.2
 _MAX_RENT_MULTIPLIER = 2
 RentPackagesInfo = namedtuple('RentPackagesInfo', ('hasAvailableRentPackages', 'mainRentType', 'seasonType'))
@@ -172,16 +171,7 @@ CrystalsEarnedInfo = namedtuple('CrystalsEarnedInfo', ('current', 'max'))
 EliteStatusProgress = typing.NamedTuple('EliteStatusProgress', (('unlocked', typing.Set[int]), ('toUnlock', typing.Set[int]), ('total', typing.Set[int])))
 
 class Vehicle(FittingItem):
-    __slots__ = (
-    '__customState', '_inventoryID', '_xp', '_dailyXPFactor', '_isElite', '_isFullyElite', '_clanLock', '_isUnique',
-    '_rentPackages', '_rentPackagesInfo', '_isDisabledForBuy', '_isSelected', '_restorePrice', '_tradeInAvailable',
-    '_tradeOffAvailable', '_tradeOffPriceFactor', '_tradeOffPrice', '_searchableUserName', '_personalDiscountPrice',
-    '_rotationGroupNum', '_rotationBattlesLeft', '_isRotationGroupLocked', '_isInfiniteRotationGroup', '_settings',
-    '_lock', '_repairCost', '_health', '_gun', '_turret', '_engine', '_chassis', '_radio', '_fuelTank', '_equipment',
-    '_bonuses', '_crewIndices', '_slotsIds', '_crew', '_lastCrew', '_hasModulesToSelect', '_outfitComponents',
-    '_isStyleInstalled', '_slotsAnchors', '_unlockedBy', '_maxRentDuration', '_minRentDuration', '_slotsAnchorsById',
-    '_hasNationGroup', '_extraSettings', '_perksController', '_personalTradeInAvailableSale',
-    '_personalTradeInAvailableBuy', '_groupIDs', '_postProgression')
+    __slots__ = ('__customState', '_inventoryID', '_xp', '_dailyXPFactor', '_isElite', '_isFullyElite', '_clanLock', '_isUnique', '_rentPackages', '_rentPackagesInfo', '_isDisabledForBuy', '_isSelected', '_restorePrice', '_tradeInAvailable', '_tradeOffAvailable', '_tradeOffPriceFactor', '_tradeOffPrice', '_searchableUserName', '_personalDiscountPrice', '_rotationGroupNum', '_rotationBattlesLeft', '_isRotationGroupLocked', '_isInfiniteRotationGroup', '_settings', '_lock', '_repairCost', '_health', '_gun', '_turret', '_engine', '_chassis', '_radio', '_fuelTank', '_equipment', '_bonuses', '_crewIndices', '_slotsIds', '_crew', '_lastCrew', '_hasModulesToSelect', '_outfitComponents', '_isStyleInstalled', '_slotsAnchors', '_unlockedBy', '_maxRentDuration', '_minRentDuration', '_slotsAnchorsById', '_hasNationGroup', '_extraSettings', '_perksController', '_personalTradeInAvailableSale', '_personalTradeInAvailableBuy', '_groupIDs', '_postProgression')
 
     class VEHICLE_STATE(object):
         DAMAGED = 'damaged'
@@ -204,12 +194,8 @@ class Vehicle(FittingItem):
         UNSUITABLE_TO_QUEUE = 'unsuitableToQueue'
         UNSUITABLE_TO_UNIT = 'unsuitableToUnit'
         WILL_BE_UNLOCKED_IN_BATTLE = 'willBeUnlockedInBattle'
-        TICKETS_SHORTAGE = 'ticketsShortage'
-        CUSTOM = (UNSUITABLE_TO_QUEUE,
-                  UNSUITABLE_TO_UNIT,
-                  WILL_BE_UNLOCKED_IN_BATTLE,
-                  TICKETS_SHORTAGE)
-        UNSUITABLE = (UNSUITABLE_TO_QUEUE, UNSUITABLE_TO_UNIT, TICKETS_SHORTAGE)
+        CUSTOM = (UNSUITABLE_TO_QUEUE, UNSUITABLE_TO_UNIT, WILL_BE_UNLOCKED_IN_BATTLE)
+        UNSUITABLE = (UNSUITABLE_TO_QUEUE, UNSUITABLE_TO_UNIT)
         DEAL_IS_OVER = 'dealIsOver'
         ROTATION_GROUP_UNLOCKED = 'rotationGroupUnlocked'
         ROTATION_GROUP_LOCKED = 'rotationGroupLocked'
@@ -296,6 +282,7 @@ class Vehicle(FittingItem):
         else:
             self._searchableUserName = makeSearchableString(self.userName)
         invData = invData or dict()
+        postProgressionFeatures = None
         tradeInData = None
         personalTradeIn = None
         if proxy is not None and proxy.inventory.isSynced() and proxy.stats.isSynced() and proxy.shop.isSynced() and proxy.vehicleRotation.isSynced() and proxy.recycleBin.isSynced():
@@ -329,6 +316,9 @@ class Vehicle(FittingItem):
             self._isRotationGroupLocked = proxy.vehicleRotation.isGroupLocked(self.rotationGroupNum)
             self._isInfiniteRotationGroup = proxy.vehicleRotation.isInfinite(self.rotationGroupNum)
             self._unlockedBy = proxy.vehicleRotation.unlockedBy(self.rotationGroupNum)
+            postProgressionFeatures = proxy.inventory.getVehPostProgressionFeaturesListByCD(self.intCD)
+        if postProgressionFeatures is None and extData and SUPPORT_EXT_DATA_FEATURES in extData:
+            postProgressionFeatures = extData[SUPPORT_EXT_DATA_FEATURES]
         self._inventoryCount = 1 if invData.keys() else 0
         self._settings = invData.get('settings', 0)
         self._extraSettings = invData.get('extraSettings', 0)
@@ -368,7 +358,7 @@ class Vehicle(FittingItem):
                 if self.intCD in vehs:
                     self._groupIDs.add(groupId)
 
-        self._equipment = VehicleEquipment(proxy, vehDescr, invData)
+        self._equipment = VehicleEquipment(proxy, vehDescr, invData, postProgressionFeatures)
         defaultCrew = [None] * len(vehDescr.type.crewRoles)
         crewList = invData.get('crew', defaultCrew)
         battleCrewList = invData.get('battleCrewCDs')
@@ -480,8 +470,7 @@ class Vehicle(FittingItem):
     @property
     def outfits(self):
         vehicleCD = self.descriptor.makeCompactDescr()
-        outfits = {season: self.__getOutfit(component, vehicleCD) for season, component in
-                   self._outfitComponents.iteritems()}
+        outfits = {season:self.__getOutfit(component, vehicleCD) for season, component in self._outfitComponents.iteritems()}
         return outfits
 
     def getUnlockDescrByIntCD(self, intCD):
@@ -586,8 +575,7 @@ class Vehicle(FittingItem):
             else:
                 isCustomOutfitInstalled = any((proxy.inventory.getOutfitData(self.intCD, s) for s in SeasonType.SEASONS))
                 self._isStyleInstalled = not isCustomOutfitInstalled
-        self._outfitComponents = {season: self._getOutfitComponent(proxy, style, season) for season in
-                                  SeasonType.SEASONS}
+        self._outfitComponents = {season:self._getOutfitComponent(proxy, style, season) for season in SeasonType.SEASONS}
         return
 
     def _getOutfitComponent(self, proxy, style, season):
@@ -774,6 +762,10 @@ class Vehicle(FittingItem):
     def health(self):
         return self._health
 
+    @health.setter
+    def health(self, value):
+        self._health = value
+
     @property
     def gun(self):
         return self._gun
@@ -951,12 +943,12 @@ class Vehicle(FittingItem):
         return self.rentInfo.getExpiryState()
 
     @property
-    def type(self):
-        return set(vehicles.VEHICLE_CLASS_TAGS & self.tags).pop()
+    def isWotPlusRent(self):
+        return self._rentInfo.isWotPlus
 
     @property
-    def eventType(self):
-        return set(VEHICLE_TAGS.EVENT_VEHS & self.tags).pop()
+    def type(self):
+        return set(vehicles.VEHICLE_CLASS_TAGS & self.tags).pop()
 
     @property
     def typeUserName(self):
@@ -987,10 +979,6 @@ class Vehicle(FittingItem):
     @property
     def isAmmoFull(self):
         return sum((s.count for s in self.shells.installed.getItems())) >= self.ammoMinSize
-
-    @property
-    def isAmmoFullInSetups(self, setupIdx=None):
-        return self.shells.setupLayouts.isAmmoFull(setupIdx, self.ammoMinSize)
 
     @property
     def isAmmoNotFullInSetups(self):
@@ -1031,6 +1019,14 @@ class Vehicle(FittingItem):
         return self._descriptor.type.isWheeledVehicle
 
     @property
+    def isTrackWithinTrack(self):
+        return self._descriptor.isTrackWithinTrack
+
+    @property
+    def miscAttrs(self):
+        return self._descriptor.miscAttrs
+
+    @property
     def hasNationGroup(self):
         isEnabled = self.lobbyContext.getServerSettings().isNationChangeEnabled()
         return isEnabled and self._hasNationGroup
@@ -1038,6 +1034,9 @@ class Vehicle(FittingItem):
     @property
     def isNationChangeAvailable(self):
         return self.hasNationGroup and not self.isLocked and not self.isBroken and (self.isPurchased or self.isRented)
+
+    def isAmmoFullInSetups(self, setupIdx=None):
+        return self.shells.setupLayouts.isAmmoFull(setupIdx, self.ammoMinSize)
 
     def getAllNationGroupVehs(self, proxy):
         nationGroupVehs = [ proxy.getItemByCD(cd) for cd in iterVehTypeCDsInNationGroup(self.intCD) ]
@@ -1132,6 +1131,10 @@ class Vehicle(FittingItem):
             return Vehicle.VEHICLE_STATE.RENTABLE_AGAIN
         return state
 
+    @classmethod
+    def __getEventVehicles(cls):
+        return cls.eventsCache.getEventVehicles()
+
     def isRotationApplied(self):
         return self.rotationGroupNum != 0
 
@@ -1140,20 +1143,19 @@ class Vehicle(FittingItem):
 
     def __getStateLevel(self, state):
         if state in (Vehicle.VEHICLE_STATE.CREW_NOT_FULL,
-                     Vehicle.VEHICLE_STATE.DAMAGED,
-                     Vehicle.VEHICLE_STATE.EXPLODED,
-                     Vehicle.VEHICLE_STATE.DESTROYED,
-                     Vehicle.VEHICLE_STATE.SERVER_RESTRICTION,
-                     Vehicle.VEHICLE_STATE.RENTAL_IS_OVER,
-                     Vehicle.VEHICLE_STATE.IGR_RENTAL_IS_OVER,
-                     Vehicle.VEHICLE_STATE.TOO_HEAVY,
-                     Vehicle.VEHICLE_STATE.AMMO_NOT_FULL,
-                     Vehicle.VEHICLE_STATE.AMMO_NOT_FULL_EVENTS,
-                     Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE,
-                     Vehicle.VEHICLE_STATE.DEAL_IS_OVER,
-                     Vehicle.VEHICLE_STATE.UNSUITABLE_TO_UNIT,
-                     Vehicle.VEHICLE_STATE.ROTATION_GROUP_LOCKED,
-                     Vehicle.VEHICLE_STATE.TICKETS_SHORTAGE):
+         Vehicle.VEHICLE_STATE.DAMAGED,
+         Vehicle.VEHICLE_STATE.EXPLODED,
+         Vehicle.VEHICLE_STATE.DESTROYED,
+         Vehicle.VEHICLE_STATE.SERVER_RESTRICTION,
+         Vehicle.VEHICLE_STATE.RENTAL_IS_OVER,
+         Vehicle.VEHICLE_STATE.IGR_RENTAL_IS_OVER,
+         Vehicle.VEHICLE_STATE.TOO_HEAVY,
+         Vehicle.VEHICLE_STATE.AMMO_NOT_FULL,
+         Vehicle.VEHICLE_STATE.AMMO_NOT_FULL_EVENTS,
+         Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE,
+         Vehicle.VEHICLE_STATE.DEAL_IS_OVER,
+         Vehicle.VEHICLE_STATE.UNSUITABLE_TO_UNIT,
+         Vehicle.VEHICLE_STATE.ROTATION_GROUP_LOCKED):
             return Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
         if state in (Vehicle.VEHICLE_STATE.UNDAMAGED, Vehicle.VEHICLE_STATE.ROTATION_GROUP_UNLOCKED):
             return Vehicle.VEHICLE_STATE_LEVEL.INFO
@@ -1191,24 +1193,11 @@ class Vehicle(FittingItem):
 
     @property
     def isEvent(self):
-        return self.isOnlyForEventBattles
-
-    @property
-    def isBoss(self):
-        return checkForTags(self.tags, VEHICLE_TAGS.EVENT_BOSS)
-
-    @property
-    def isSpecialBoss(self):
-        return checkForTags(self.tags, VEHICLE_TAGS.EVENT_SPECIAL_BOSS)
-
-    @property
-    def isHunterOrBoss(self):
-        return checkForTags(self.tags, VEHICLE_TAGS.EVENT_VEHS)
+        return self.isOnlyForEventBattles and self in Vehicle.__getEventVehicles()
 
     @property
     def isDisabledInRoaming(self):
-        return checkForTags(self.tags,
-                            VEHICLE_TAGS.DISABLED_IN_ROAMING) and self.lobbyContext.getServerSettings().roaming.isInRoaming()
+        return checkForTags(self.tags, VEHICLE_TAGS.DISABLED_IN_ROAMING) and self.lobbyContext.getServerSettings().roaming.isInRoaming()
 
     @property
     def canNotBeSold(self):
@@ -1415,11 +1404,6 @@ class Vehicle(FittingItem):
         return result
 
     @property
-    def isUnsuitableToQueue(self):
-        state, _ = self.getState()
-        return state == self.VEHICLE_STATE.UNSUITABLE_TO_QUEUE
-
-    @property
     def isReadyToFight(self):
         if self.rentalIsOver:
             return False
@@ -1574,6 +1558,16 @@ class Vehicle(FittingItem):
             return mayRestore
         return False
 
+    def getDisclaimerTag(self):
+        disclaimers = set(DISCLAIMER_TAGS & self.tags)
+        if len(disclaimers) > 1:
+            _logger.warning("Vehicle has several disclaimer tags. This design isn't provided and only one will be used.")
+        return disclaimers.pop() if disclaimers else ''
+
+    def getDisclaimerUrl(self):
+        vehicleDisclaimerURLs = GUI_SETTINGS.vehicleDisclaimerURLs
+        return vehicleDisclaimerURLs.get(self.getDisclaimerTag(), '')
+
     def getRentPackage(self, rentID=None):
         if rentID is not None:
             for package in self.rentPackages:
@@ -1668,6 +1662,9 @@ class Vehicle(FittingItem):
     def getOutfitComponent(self, season):
         return self._outfitComponents.get(season)
 
+    def removeOutfitForSeason(self, season):
+        self._outfitComponents[season] = self.__getEmptyOutfitComponent()
+
     def setCustomOutfit(self, season, outfit):
         for s in SeasonType.REGULAR:
             if s == season:
@@ -1721,6 +1718,10 @@ class Vehicle(FittingItem):
 
     def isRestoreAvailable(self):
         return self.isRestorePossible() and not self.restoreInfo.isInCooldown()
+
+    def hasDisclaimer(self):
+        vehicleDisclaimerURLs = GUI_SETTINGS.vehicleDisclaimerURLs
+        return vehicleDisclaimerURLs.get(self.getDisclaimerTag(), None) is not None
 
     def hasLimitedRestore(self):
         return self.isRestorePossible() and self.restoreInfo.isLimited() and self.restoreInfo.getRestoreTimeLeft() > 0
@@ -1852,8 +1853,7 @@ class Vehicle(FittingItem):
 
 
 def getTypeUserName(vehType, isElite):
-    return i18n.makeString('#menu:header/vehicleType/elite/%s' % vehType) if isElite else i18n.makeString(
-        '#menu:header/vehicleType/%s' % vehType)
+    return i18n.makeString('#menu:header/vehicleType/elite/%s' % vehType) if isElite else i18n.makeString('#menu:header/vehicleType/%s' % vehType)
 
 
 def getTypeShortUserName(vehType):
@@ -1934,10 +1934,6 @@ def getUserName(vehicleType, textPrefix=False):
 
 def getShortUserName(vehicleType, textPrefix=False):
     return _getActualName(vehicleType.shortUserString, vehicleType.tags, textPrefix)
-
-
-def getSimpleShortUserName(vehicleType):
-    return vehicleType.descriptor.type.shortUserString
 
 
 def _getActualName(name, tags, textPrefix=False):
@@ -2030,13 +2026,4 @@ def getVehicleStateAddIcon(vState):
 
 
 def getBattlesLeft(vehicle):
-    return i18n.makeString('#menu:infinitySymbol') if vehicle.isInfiniteRotationGroup else str(
-        vehicle.rotationBattlesLeft)
-
-
-def getCommander(vehicle):
-    for _, tman in vehicle.crew:
-        if tman.role == Tankman.ROLES.COMMANDER:
-            return tman
-
-    return None
+    return i18n.makeString('#menu:infinitySymbol') if vehicle.isInfiniteRotationGroup else str(vehicle.rotationBattlesLeft)

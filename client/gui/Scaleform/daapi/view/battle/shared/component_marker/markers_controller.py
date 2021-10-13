@@ -13,7 +13,7 @@ from gui.shared.gui_items.marker_items import MarkerParamsFactory
 _logger = logging.getLogger(__name__)
 
 class BaseMarkerController(IArenaVehiclesController):
-    _UPDATE_TICK_LENGTH = 0.0
+    _UPDATE_TICK_LENGTH = 0.01
 
     def __init__(self):
         super(BaseMarkerController, self).__init__()
@@ -177,11 +177,8 @@ class BaseMarkerController(IArenaVehiclesController):
         self.checkStopTimer()
 
     def _clear(self):
-        g_eventBus.removeListener(events.GameEvent.GUI_VISIBILITY, self._handleGUIVisibility,
-                                  scope=EVENT_BUS_SCOPE.BATTLE)
+        g_eventBus.removeListener(events.GameEvent.GUI_VISIBILITY, self._handleGUIVisibility, scope=EVENT_BUS_SCOPE.BATTLE)
         self.removeAllMarkers()
-        if self._gui is not None:
-            self._gui.clear()
         self._gui = None
         return
 

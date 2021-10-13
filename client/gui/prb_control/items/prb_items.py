@@ -10,14 +10,10 @@ from gui.shared.gui_items.Vehicle import Vehicle, getOrderByVehicleClass
 from skeletons.gui.lobby_context import ILobbyContext
 
 class PlayerPrbInfo(object):
-    __slots__ = (
-    'accID', 'name', 'dbID', 'state', 'time', 'vehCompDescr', 'igrType', 'clanDBID', 'clanAbbrev', 'roster',
-    'isCreator', 'regionCode', 'badges', 'group', 'vehEnhancements', 'role')
+    __slots__ = ('accID', 'name', 'dbID', 'state', 'time', 'vehCompDescr', 'igrType', 'clanDBID', 'clanAbbrev', 'roster', 'isCreator', 'regionCode', 'badges', 'group', 'vehEnhancements', 'role')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
-    def __init__(self, accID, name='', dbID=0, state=PREBATTLE_ACCOUNT_STATE.UNKNOWN, time=0.0, vehCompDescr=0,
-                 igrType=0, clanDBID=0, clanAbbrev='', roster=0, entity=None, badges=None, group=0,
-                 vehEnhancements=None, role=0):
+    def __init__(self, accID, name='', dbID=0, state=PREBATTLE_ACCOUNT_STATE.UNKNOWN, time=0.0, vehCompDescr=0, igrType=0, clanDBID=0, clanAbbrev='', roster=0, entity=None, badges=None, group=0, vehEnhancements=None, role=0):
         self.accID = accID
         self.name = name
         self.dbID = dbID
@@ -40,10 +36,7 @@ class PlayerPrbInfo(object):
 
     def __repr__(self):
         badge = self.badges.getBadge()
-        return 'PlayerPrbInfo(accID = {0:n}, dbID = {1:n}, fullName = {2:>s}, state = {3:n}, isCreator = {4!r:s}, time = {5:n}, vehCompDescr = {6!r:s}, badgeID = {7}, vehEnhancements = {8}, role = {9})'.format(
-            self.accID, self.dbID, self.getFullName(), self.state, self.isCreator, self.time,
-            self.getVehicle().name if self.isVehicleSpecified() else None, badge.badgeID if badge else None,
-            self.vehEnhancements, self.role)
+        return 'PlayerPrbInfo(accID = {0:n}, dbID = {1:n}, fullName = {2:>s}, state = {3:n}, isCreator = {4!r:s}, time = {5:n}, vehCompDescr = {6!r:s}, badgeID = {7}, vehEnhancements = {8}, role = {9})'.format(self.accID, self.dbID, self.getFullName(), self.state, self.isCreator, self.time, self.getVehicle().name if self.isVehicleSpecified() else None, badge.badgeID if badge else None, self.vehEnhancements, self.role)
 
     def getFullName(self, isClan=True, isRegion=True):
         if isClan:
@@ -163,21 +156,19 @@ def getPlayersComparator(playerComparatorType=PREBATTLE_PLAYERS_COMPARATORS.REGU
             return cmp(getOrderByVehicleClass(playerVehicleType), getOrderByVehicleClass(otherVehicleType))
         playerVehicleLevel = playerVehicle.level
         otherVehicleLevel = otherVehicle.level
-        return cmp(otherVehicleLevel, playerVehicleLevel) if playerVehicleLevel != otherVehicleLevel else cmp(
-            playerVehicle.shortUserName, otherVehicle.shortUserName)
+        return cmp(otherVehicleLevel, playerVehicleLevel) if playerVehicleLevel != otherVehicleLevel else cmp(playerVehicle.shortUserName, otherVehicle.shortUserName)
 
     def comparator_by_status(player, other):
         if player.state != other.state:
             return cmp(other.state, player.state)
-        return comparator_by_vehicle(player, other) if player.isVehicleSpecified() else comparator_by_player_name(
-            player, other)
+        return comparator_by_vehicle(player, other) if player.isVehicleSpecified() else comparator_by_player_name(player, other)
 
     def comparator_by_player_name(player, other):
         return cmp(player.name, other.name)
 
     comparators = {PREBATTLE_PLAYERS_COMPARATORS.REGULAR: comparator,
-                   PREBATTLE_PLAYERS_COMPARATORS.OBSERVERS_TO_BOTTOM: comparator_observers_to_bottom,
-                   PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE: comparator_by_vehicle,
-                   PREBATTLE_PLAYERS_COMPARATORS.BY_STATE: comparator_by_status,
-                   PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME: comparator_by_player_name}
+     PREBATTLE_PLAYERS_COMPARATORS.OBSERVERS_TO_BOTTOM: comparator_observers_to_bottom,
+     PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE: comparator_by_vehicle,
+     PREBATTLE_PLAYERS_COMPARATORS.BY_STATE: comparator_by_status,
+     PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME: comparator_by_player_name}
     return comparators.get(playerComparatorType, comparator)

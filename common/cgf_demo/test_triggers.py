@@ -32,8 +32,7 @@ class TestPrefabSpawner(CGFComponent):
     instancesCount = ComponentProperty(type=CGFMetaTypes.INT, editorName='Instances count', value=1)
     areaToSpawn = ComponentProperty(type=CGFMetaTypes.LINK, editorName='Area to spawn', value=Triggers.CylinderAreaComponent)
     triggerToMonitor = ComponentProperty(type=CGFMetaTypes.LINK, editorName='Trigger to monitor', value=Triggers.AreaTriggerComponent)
-    transform = ComponentProperty(type=CGFMetaTypes.LINK, editorName='transform',
-                                  value=GenericComponents.TransformComponent)
+    transform = ComponentProperty(type=CGFMetaTypes.LINK, editorName='transform', value=GenericComponents.TransformComponent)
     attachToEntered = ComponentProperty(type=CGFMetaTypes.BOOL, editorName='attach to entered', value=False)
 
 
@@ -76,6 +75,7 @@ class TestComponentCreationManager(CGF.ComponentManager):
 
     def __spawn(self, spawner, who):
         if spawner.attachToEntered:
+
             def _onLoaded(gameObject):
                 import Vehicle
                 h = CGF.HierarchyManager(self.spaceID)

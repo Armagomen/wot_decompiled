@@ -5,9 +5,8 @@ import typing
 from enum import unique, Enum
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.periodic_battles.models import CalendarStatusVO
-from gui.ranked_battles.constants import PrimeTimeStatus
 from gui.shared.formatters import time_formatters, text_styles
+from gui.periodic_battles.models import AlertData, PrimeTimeStatus
 from helpers import dependency, i18n, time_utils, int2roman
 from items import vehicles
 from items.components.supply_slot_categories import SlotCategories
@@ -306,44 +305,44 @@ class MultipleMetersTextParam(MultiTextParam, MultiValuesMixin):
 
 
 epicEquipmentParameterFormaters = {'cooldownTime': DirectNumericTextParam.updateParams,
-                                   'delay': DirectNumericTextParam.updateParams,
-                                   'delay-recon': DirectNumericTextParam.updateParams,
-                                   'areaRadius': DirectNumericTextParam.updateParams,
-                                   'shotsNumber': DirectNumericTextParam.updateParams,
-                                   'duration-inspire': DirectNumericTextParam.updateParams,
-                                   'duration-artillery': DirectNumericTextParam.updateParams,
-                                   'areaLength_areaWidth-targetedArea': MultipleMetersTextParam.updateParams,
-                                   'areaLength_areaWidth-dropArea': MultipleMetersTextParam.updateParams,
-                                   'bombsNumber': DirectNumericTextParam.updateParams,
-                                   'shellCompactDescr': ShellStunSecondsDeltaBarParam.updateParams,
-                                   '#epic_battle:abilityInfo/params/recon/revealedArea/value': FixedTextParam.updateParams,
-                                   'entitiesToSearch/Vehicle/spottingDuration': NestedNumericTextParam.updateParams,
-                                   'minDelay': DirectNumericTextParam.updateParams,
-                                   'projectilesNumber': DirectNumericTextParam.updateParams,
-                                   'totalDuration': DirectNumericTextParam.updateParams,
-                                   'increaseFactors[crewRolesFactor]': NestedPercentNumericTextParam.updateParams,
-                                   'inactivationDelay': DirectNumericTextParam.updateParams,
-                                   'resupplyCooldownFactor': ReciprocalNumericTextParam.updateParams,
-                                   'resupplyHealthPointsFactor': PercentNumericTextParam.updateParams,
-                                   'captureSpeedFactor': PercentNumericTextParam.updateParams,
-                                   'captureBlockBonusTime': DirectNumericTextParam.updateParams,
-                                   'mineParams/lifetime': NestedNumericTextParam.updateParams,
-                                   'mineParams/shell': NestedShellStunSecondsDeltaBarParam.updateParams,
-                                   'healTime': DirectNumericTextParam.updateParams,
-                                   'healthRegenPerTick': DirectPercentNumericTextParam.updateParams,
-                                   'initialHeal': DirectPercentNumericTextParam.updateParams,
-                                   'duration-stealth_radar': DirectSecondsTextParam.updateParams,
-                                   'overridableFactors/invisibility': NestedDirectPercentNumericTextParam.updateParams,
-                                   'increaseFactors/demaskMovingFactor': NestedPercentNumericTextParam.updateParams,
-                                   'increaseFactors/demaskFoliageFactor': NestedPercentNumericTextParam.updateParams,
-                                   'passiveCircularVisionRadius': DirectMetersTextParam.updateParams,
-                                   'bombsNumber-minefield': DirectNumericTextParam.updateParams,
-                                   'increaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
-                                   'selfIncreaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
-                                   'resupplyShellsFactor': PercentNumericTextParam.updateParams,
-                                   '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': FixedTextParam.updateParams,
-                                   'visionRadiusFactor': AbsPercentNumericTextParam.updateParams,
-                                   'radius': DirectMetersTextParam.updateParams}
+ 'delay': DirectNumericTextParam.updateParams,
+ 'delay-recon': DirectNumericTextParam.updateParams,
+ 'areaRadius': DirectNumericTextParam.updateParams,
+ 'shotsNumber': DirectNumericTextParam.updateParams,
+ 'duration-inspire': DirectNumericTextParam.updateParams,
+ 'duration-artillery': DirectNumericTextParam.updateParams,
+ 'areaLength_areaWidth-targetedArea': MultipleMetersTextParam.updateParams,
+ 'areaLength_areaWidth-dropArea': MultipleMetersTextParam.updateParams,
+ 'bombsNumber': DirectNumericTextParam.updateParams,
+ 'shellCompactDescr': ShellStunSecondsDeltaBarParam.updateParams,
+ '#epic_battle:abilityInfo/params/recon/revealedArea/value': FixedTextParam.updateParams,
+ 'entitiesToSearch/Vehicle/spottingDuration': NestedNumericTextParam.updateParams,
+ 'minDelay': DirectNumericTextParam.updateParams,
+ 'projectilesNumber': DirectNumericTextParam.updateParams,
+ 'totalDuration': DirectNumericTextParam.updateParams,
+ 'increaseFactors[crewRolesFactor]': NestedPercentNumericTextParam.updateParams,
+ 'inactivationDelay': DirectNumericTextParam.updateParams,
+ 'resupplyCooldownFactor': ReciprocalNumericTextParam.updateParams,
+ 'resupplyHealthPointsFactor': PercentNumericTextParam.updateParams,
+ 'captureSpeedFactor': PercentNumericTextParam.updateParams,
+ 'captureBlockBonusTime': DirectNumericTextParam.updateParams,
+ 'mineParams/lifetime': NestedNumericTextParam.updateParams,
+ 'mineParams/shell': NestedShellStunSecondsDeltaBarParam.updateParams,
+ 'healTime': DirectNumericTextParam.updateParams,
+ 'healthRegenPerTick': DirectPercentNumericTextParam.updateParams,
+ 'initialHeal': DirectPercentNumericTextParam.updateParams,
+ 'duration-stealth_radar': DirectSecondsTextParam.updateParams,
+ 'overridableFactors/invisibility': NestedDirectPercentNumericTextParam.updateParams,
+ 'increaseFactors/demaskMovingFactor': NestedPercentNumericTextParam.updateParams,
+ 'increaseFactors/demaskFoliageFactor': NestedPercentNumericTextParam.updateParams,
+ 'passiveCircularVisionRadius': DirectMetersTextParam.updateParams,
+ 'bombsNumber-minefield': DirectNumericTextParam.updateParams,
+ 'increaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
+ 'selfIncreaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
+ 'resupplyShellsFactor': PercentNumericTextParam.updateParams,
+ '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': FixedTextParam.updateParams,
+ 'visionRadiusFactor': AbsPercentNumericTextParam.updateParams,
+ 'radius': DirectMetersTextParam.updateParams}
 
 def checkIfVehicleIsHidden(intCD):
     return FRONTLINE_HIDDEN_TAG in vehicles.getVehicleType(intCD).tags
@@ -408,7 +407,7 @@ def getAlertStatusVO(epicController=None):
     status, timeLeft, _ = epicController.getPrimeTimeStatus()
     showPrimeTimeAlert = status != PrimeTimeStatus.AVAILABLE
     hasAvailableServers = epicController.hasAvailablePrimeTimeServers()
-    return CalendarStatusVO(alertIcon=backport.image(R.images.gui.maps.icons.library.alertBigIcon()) if showPrimeTimeAlert else None, buttonIcon='', buttonLabel=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.button()), buttonVisible=showPrimeTimeAlert and hasAvailableServers, buttonTooltip=None, statusText=_getAlertStatusText(timeLeft, hasAvailableServers), popoverAlias=None, bgVisible=True, shadowFilterVisible=showPrimeTimeAlert, tooltip=None, isSimpleTooltip=False)
+    return AlertData(alertIcon=backport.image(R.images.gui.maps.icons.library.alertBigIcon()) if showPrimeTimeAlert else None, buttonIcon='', buttonLabel=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.button()), buttonVisible=showPrimeTimeAlert and hasAvailableServers, buttonTooltip=None, statusText=_getAlertStatusText(timeLeft, hasAvailableServers), popoverAlias=None, bgVisible=True, shadowFilterVisible=showPrimeTimeAlert, tooltip=None, isSimpleTooltip=False)
 
 
 @dependency.replace_none_kwargs(epicController=IEpicBattleMetaGameController, connectionMgr=IConnectionManager)

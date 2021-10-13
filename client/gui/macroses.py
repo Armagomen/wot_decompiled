@@ -92,12 +92,16 @@ def getCurrentRealm(args=None):
 
 @dependency.replace_none_kwargs(marathonCtrl=IMarathonEventsController)
 def getMarathonPackage(args=None, marathonCtrl=None):
+    from gui.marathon.marathon_constants import MarathonState
     postfix = ''
     result = ''
     marathon = marathonCtrl.getPrimaryMarathon()
     if marathon is not None:
         currentStep, _ = marathon.getMarathonProgress()
         packageTemplate = marathon.packageTemplate
+        state = marathon.getState()
+        if state == MarathonState.FINISHED:
+            postfix = marathon.finishedPostfix
         result = packageTemplate.format(currentStep, postfix)
     return result
 
@@ -125,17 +129,17 @@ def getClanDBID(args=None):
 
 def getSyncMacroses():
     return {'LANGUAGE_CODE': getLanguageCode,
-            'AREA_ID': getAreaID,
-            'ENCODED_LOGIN': getEncodedLogin,
-            'QUOTED_LOGIN': getQuotedLogin,
-            'DB_ID': getDatabaseID,
-            'PERIPHERY_ID': getPeripheryID,
-            'AUTH_REALM': getAuthRealm,
-            'UNIT_SERVER_ID': getUnitServerID,
-            'CLAN_DBID': getClanDBID,
-            'CURRENT_REALM': getCurrentRealm,
-            'PACKAGE_ID': getMarathonPackage,
-            'STYLE_PACKAGE_ID': getMarathonStylePackage}
+     'AREA_ID': getAreaID,
+     'ENCODED_LOGIN': getEncodedLogin,
+     'QUOTED_LOGIN': getQuotedLogin,
+     'DB_ID': getDatabaseID,
+     'PERIPHERY_ID': getPeripheryID,
+     'AUTH_REALM': getAuthRealm,
+     'UNIT_SERVER_ID': getUnitServerID,
+     'CLAN_DBID': getClanDBID,
+     'CURRENT_REALM': getCurrentRealm,
+     'PACKAGE_ID': getMarathonPackage,
+     'STYLE_PACKAGE_ID': getMarathonStylePackage}
 
 
 @async

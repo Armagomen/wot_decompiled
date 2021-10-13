@@ -441,10 +441,7 @@ class ImprovedConfiguration(StaticOptionalDevice):
 
 
 class Equipment(Artefact):
-    __slots__ = (
-    'equipmentType', 'reuseCount', 'cooldownSeconds', 'soundNotification', 'soundPressedReady', 'soundPressedNotReady',
-    'stunResistanceEffect', 'stunResistanceDuration', 'repeatedStunDurationFactor', 'consumeSeconds', 'deploySeconds',
-    'rechargeSeconds')
+    __slots__ = ('equipmentType', 'reuseCount', 'cooldownSeconds', 'soundNotification', 'stunResistanceEffect', 'stunResistanceDuration', 'repeatedStunDurationFactor')
 
     def __init__(self):
         super(Equipment, self).__init__(items.ITEM_TYPES.equipment, 0, '', 0)
@@ -454,25 +451,16 @@ class Equipment(Artefact):
         self.repeatedStunDurationFactor = 1.0
         self.reuseCount = component_constants.ZERO_INT
         self.cooldownSeconds = component_constants.ZERO_INT
-        self.consumeSeconds = component_constants.ZERO_INT
-        self.rechargeSeconds = component_constants.ZERO_INT
-        self.deploySeconds = component_constants.ZERO_INT
         self.soundNotification = None
-        self.soundPressedReady = None
-        self.soundPressedNotReady = None
         return
 
     def _readBasicConfig(self, xmlCtx, section):
         super(Equipment, self)._readBasicConfig(xmlCtx, section)
         self.equipmentType = items.EQUIPMENT_TYPES[section.readString('type', 'regular')]
         self.soundNotification = _xml.readStringOrNone(xmlCtx, section, 'soundNotification')
-        self.soundPressedReady = _xml.readStringOrNone(xmlCtx, section, 'soundPressedReady')
-        self.soundPressedNotReady = _xml.readStringOrNone(xmlCtx, section, 'soundPressedNotReady')
         scriptSection = section['script']
-        self.stunResistanceEffect, self.stunResistanceDuration, self.repeatedStunDurationFactor = _readStun(xmlCtx,
-                                                                                                            scriptSection)
-        params = _readReuseParams(xmlCtx, scriptSection)
-        self.reuseCount, self.cooldownSeconds, self.consumeSeconds, self.deploySeconds, self.rechargeSeconds = params
+        self.stunResistanceEffect, self.stunResistanceDuration, self.repeatedStunDurationFactor = _readStun(xmlCtx, scriptSection)
+        self.reuseCount, self.cooldownSeconds = _readReuseParams(xmlCtx, scriptSection)
 
     def updateVehicleAttrFactorsForAspect(self, vehicleDescr, factors, aspect, *args, **kwargs):
         pass
@@ -1977,9 +1965,7 @@ class FLAvatarStealthRadar(Equipment, SharedCooldownConsumableConfigReader, Cool
 
 
 class MineParams(object):
-    __slots__ = (
-    'triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType', 'lifetime', 'damage', 'shell', 'shellLowDamage',
-    'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
+    __slots__ = ('triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType', 'lifetime', 'damage', 'shell', 'shellLowDamage', 'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
 
     def __init__(self):
         self.triggerRadius = 1.0
@@ -1996,16 +1982,13 @@ class MineParams(object):
         return
 
     def __repr__(self):
-        return 'motParams ({}, {}, {}, {}, {}, {}, {}, {})'.format(self.triggerRadius, self.triggerHeight,
-                                                                   self.triggerDepth, self.influenceType, self.lifetime,
-                                                                   self.damage, self.shell, self.shellLowDamage)
+        return 'motParams ({}, {}, {}, {}, {}, {}, {}, {})'.format(self.triggerRadius, self.triggerHeight, self.triggerDepth, self.influenceType, self.lifetime, self.damage, self.shell, self.shellLowDamage)
 
     def _readConfig(self, xmlCtx, section):
         self.triggerRadius = _xml.readPositiveFloat(xmlCtx, section, 'triggerRadius')
         self.triggerHeight = _xml.readPositiveFloat(xmlCtx, section, 'triggerHeight')
         self.triggerDepth = _xml.readNonNegativeFloat(xmlCtx, section, 'triggerDepth', 0.0)
-        self.influenceType = _xml.readInt(xmlCtx, section, 'influenceType', component_constants.INFLUENCE_ALL,
-                                          component_constants.INFLUENCE_ENEMY)
+        self.influenceType = _xml.readInt(xmlCtx, section, 'influenceType', component_constants.INFLUENCE_ALL, component_constants.INFLUENCE_ENEMY)
         self.lifetime = _xml.readPositiveInt(xmlCtx, section, 'lifetime')
         self.damage = _xml.readNonNegativeInt(xmlCtx, section, 'damage')
         if section.has_key('shellCompactDescr'):
@@ -2018,9 +2001,9 @@ class MineParams(object):
             self.resistAllyDamage = _xml.readBool(xmlCtx, section, 'destroyMyMinesOverlappingAlliedMines')
         if section.has_key('directDetectionTypes'):
             mapping = {'RAYTRACE': 0,
-                       'RECON': 1,
-                       'RADAR': 2,
-                       'STEALTH_RADAR': 3}
+             'RECON': 1,
+             'RADAR': 2,
+             'STEALTH_RADAR': 3}
             DDTypes = _xml.readTupleOfStrings(xmlCtx, section, 'directDetectionTypes')
             self.directDetectionTypes = [ mapping[t] for t in DDTypes ]
 
@@ -2146,43 +2129,17 @@ class SpawnKamikaze(ConsumableSpawnKamikaze):
     pass
 
 
-class VisualScriptEquipment(Equipment):
-    __slots__ = ('visualScript',)
-
-    def __init__(self):
-        super(VisualScriptEquipment, self).__init__()
-        self.visualScript = {}
-
-    def _readConfig(self, xmlCtx, section):
-        from ArenaType import _readVisualScript
-        self.visualScript = _readVisualScript(section)
-
-
 _readTags = vehicles._readTags
 
-
 def _readStun(xmlCtx, scriptSection):
-    stunResistanceEffect = _xml.readFraction(xmlCtx, scriptSection, 'stunResistanceEffect') if scriptSection.has_key(
-        'stunResistanceEffect') else 0.0
-    stunResistanceDuration = _xml.readFraction(xmlCtx, scriptSection,
-                                               'stunResistanceDuration') if scriptSection.has_key(
-        'stunResistanceDuration') else 0.0
-    repeatedStunDurationFactor = _xml.readFraction(xmlCtx, scriptSection,
-                                                   'repeatedStunDurationFactor') if scriptSection.has_key(
-        'repeatedStunDurationFactor') else 1.0
+    stunResistanceEffect = _xml.readFraction(xmlCtx, scriptSection, 'stunResistanceEffect') if scriptSection.has_key('stunResistanceEffect') else 0.0
+    stunResistanceDuration = _xml.readFraction(xmlCtx, scriptSection, 'stunResistanceDuration') if scriptSection.has_key('stunResistanceDuration') else 0.0
+    repeatedStunDurationFactor = _xml.readFraction(xmlCtx, scriptSection, 'repeatedStunDurationFactor') if scriptSection.has_key('repeatedStunDurationFactor') else 1.0
     return (stunResistanceEffect, stunResistanceDuration, repeatedStunDurationFactor)
 
 
 def _readReuseParams(xmlCtx, scriptSection):
-    return (_xml.readInt(xmlCtx, scriptSection, 'reuseCount', minVal=-1) if scriptSection.has_key('reuseCount') else 0,
-            _xml.readInt(xmlCtx, scriptSection, 'cooldownSeconds', minVal=0) if scriptSection.has_key(
-                'cooldownSeconds') else 0,
-            _xml.readInt(xmlCtx, scriptSection, 'consumeSeconds', minVal=0) if scriptSection.has_key(
-                'consumeSeconds') else 0,
-            _xml.readInt(xmlCtx, scriptSection, 'deploySeconds', minVal=0) if scriptSection.has_key(
-                'deploySeconds') else 0,
-            _xml.readInt(xmlCtx, scriptSection, 'rechargeSeconds', minVal=0) if scriptSection.has_key(
-                'rechargeSeconds') else 0)
+    return (_xml.readInt(xmlCtx, scriptSection, 'reuseCount', minVal=-1) if scriptSection.has_key('reuseCount') else 0, _xml.readInt(xmlCtx, scriptSection, 'cooldownSeconds', minVal=0) if scriptSection.has_key('cooldownSeconds') else 0)
 
 
 class OPT_DEV_TYPE_TAG(object):

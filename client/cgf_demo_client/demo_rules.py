@@ -6,7 +6,6 @@ from cgf_demo_client.test_state_machine_trigger import StateMachineActivatorMana
 from cgf_demo_client.test_triggers import EntranceModifierManager
 from cgf_script.managers_registrator import Rule, registerManager
 
-
 class TestClientDemoRules(Rule):
     category = DEMO_CATEGORY
 

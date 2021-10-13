@@ -156,8 +156,7 @@ class TestHierarchyModifierManager(CGF.ComponentManager):
                     transfComp = hmodifier.cameraTransform()
                     direction = vehicle.position - transfComp.worldTransform.translation
                     matrix = transfComp.transform
-                    transfComp.transform = math_utils.createRTMatrix((direction.yaw, direction.pitch, 0.0),
-                                                                     matrix.translation)
+                    transfComp.transform = math_utils.createRTMatrix((direction.yaw, direction.pitch, 0.0), matrix.translation)
 
             return
 

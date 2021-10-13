@@ -102,7 +102,7 @@ class BattlePassRewardChoiceView(ViewImpl):
     def __fillRewards(self, model=None):
         self.__tooltips.clear()
         model.rewards.clearItems()
-        gifts = {gift.id: gift.bonuses[0] for gift in self.__offer.getAllGifts()}
+        gifts = {gift.id:gift.bonuses[0] for gift in self.__offer.getAllGifts()}
         packRewardOptionModel(self.__rewardType, gifts, model.rewards, self.__tooltips)
 
     def __onCloseClick(self):

@@ -1235,8 +1235,7 @@ class CalendarSplashModifier(ActionModifier):
 class HeroTankAdventCalendarRedirectModifier(ActionModifier):
 
     def __init__(self, _, params):
-        super(HeroTankAdventCalendarRedirectModifier, self).__init__('heroTankAdventCalendarRedirect', params,
-                                                                     modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
+        super(HeroTankAdventCalendarRedirectModifier, self).__init__('heroTankAdventCalendarRedirect', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
 
     def getIsEnabled(self):
         return self._params.get('enabled', '').lower() in ('1', 'yes', 'true')
@@ -1245,8 +1244,7 @@ class HeroTankAdventCalendarRedirectModifier(ActionModifier):
 class LobbyHeaderTabCounterModifier(ActionModifier):
 
     def __init__(self, _, params):
-        super(LobbyHeaderTabCounterModifier, self).__init__('LobbyHeaderTabCounterModification', params,
-                                                            modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
+        super(LobbyHeaderTabCounterModifier, self).__init__('LobbyHeaderTabCounterModification', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
 
     def getAlias(self):
         return self._params.get('alias', '')
@@ -1256,46 +1254,46 @@ class LobbyHeaderTabCounterModifier(ActionModifier):
 
 
 _MODIFIERS = (('mul_EconomicsParams', EconomicsMul),
-              ('set_EconomicsParams', EconomicsSet),
-              ('mul_EconomicsPrices', EconomicsMul),
-              ('set_EconomicsPrices', EconomicsSet),
-              ('set_TradeInParams', EconomicsSet),
-              ('cond_VehPrice', VehPriceCond),
-              ('mul_VehPrice', VehPriceMul),
-              ('set_VehPrice', VehPriceSet),
-              ('mul_VehPriceAll', VehPriceAll),
-              ('mul_VehPriceNation', VehPriceNation),
-              ('set_VehSellPrice', VehSellPriceSet),
-              ('cond_VehRentPrice', VehRentPriceCond),
-              ('mul_VehRentPrice', VehRentPriceMul),
-              ('set_VehRentPrice', VehRentPriceSet),
-              ('mul_VehRentPriceAll', VehRentPriceAll),
-              ('mul_VehRentPriceNation', VehRentPriceNation),
-              ('mul_EquipmentPriceAll', EquipmentPriceAll),
-              ('mul_EquipmentPrice', EquipmentPriceMul),
-              ('set_EquipmentPrice', EquipmentPriceSet),
-              ('mul_OptionalDevicePriceAll', OptDevicePriceAll),
-              ('mul_OptionalDevicePrice', OptDevicePriceMul),
-              ('set_OptionalDevicePrice', OptDevicePriceSet),
-              ('mul_ShellPriceAll', ShellPriceAll),
-              ('mul_ShellPriceNation', ShellPriceNation),
-              ('mul_ShellPrice', ShellPriceMul),
-              ('set_ShellPrice', ShellPriceSet),
-              ('set_PriceGroupPrice', C11nPriceGroupPriceSet),
-              ('mul_PriceGroupPrice', C11nPriceGroupPriceMul),
-              ('mul_PriceGroupPriceByTag', C11nPriceGroupPriceByTagMul),
-              ('mul_PriceGroupPriceAll', C11nPriceGroupPriceAll),
-              ('set_GoodiePrice', BoosterPriceSet),
-              ('mul_GoodiePrice', BoosterPriceMul),
-              ('mul_GoodiePriceAll', BoostersPriceAll),
-              ('set_MarathonAnnounce', MarathonEventModifier),
-              ('set_MarathonInProgress', MarathonEventModifier),
-              ('set_MarathonFinished', MarathonEventModifier),
-              ('ReferralProgramDisabled', ReferralModifier),
-              ('AdventCalendarEnabled', CalendarModifier),
-              ('AdventCalendarForced', CalendarSplashModifier),
-              ('HeroTankAdventCalendarRedirect', HeroTankAdventCalendarRedirectModifier),
-              ('LobbyHeaderTabCounterModification', LobbyHeaderTabCounterModifier))
+ ('set_EconomicsParams', EconomicsSet),
+ ('mul_EconomicsPrices', EconomicsMul),
+ ('set_EconomicsPrices', EconomicsSet),
+ ('set_TradeInParams', EconomicsSet),
+ ('cond_VehPrice', VehPriceCond),
+ ('mul_VehPrice', VehPriceMul),
+ ('set_VehPrice', VehPriceSet),
+ ('mul_VehPriceAll', VehPriceAll),
+ ('mul_VehPriceNation', VehPriceNation),
+ ('set_VehSellPrice', VehSellPriceSet),
+ ('cond_VehRentPrice', VehRentPriceCond),
+ ('mul_VehRentPrice', VehRentPriceMul),
+ ('set_VehRentPrice', VehRentPriceSet),
+ ('mul_VehRentPriceAll', VehRentPriceAll),
+ ('mul_VehRentPriceNation', VehRentPriceNation),
+ ('mul_EquipmentPriceAll', EquipmentPriceAll),
+ ('mul_EquipmentPrice', EquipmentPriceMul),
+ ('set_EquipmentPrice', EquipmentPriceSet),
+ ('mul_OptionalDevicePriceAll', OptDevicePriceAll),
+ ('mul_OptionalDevicePrice', OptDevicePriceMul),
+ ('set_OptionalDevicePrice', OptDevicePriceSet),
+ ('mul_ShellPriceAll', ShellPriceAll),
+ ('mul_ShellPriceNation', ShellPriceNation),
+ ('mul_ShellPrice', ShellPriceMul),
+ ('set_ShellPrice', ShellPriceSet),
+ ('set_PriceGroupPrice', C11nPriceGroupPriceSet),
+ ('mul_PriceGroupPrice', C11nPriceGroupPriceMul),
+ ('mul_PriceGroupPriceByTag', C11nPriceGroupPriceByTagMul),
+ ('mul_PriceGroupPriceAll', C11nPriceGroupPriceAll),
+ ('set_GoodiePrice', BoosterPriceSet),
+ ('mul_GoodiePrice', BoosterPriceMul),
+ ('mul_GoodiePriceAll', BoostersPriceAll),
+ ('set_MarathonAnnounce', MarathonEventModifier),
+ ('set_MarathonInProgress', MarathonEventModifier),
+ ('set_MarathonFinished', MarathonEventModifier),
+ ('ReferralProgramDisabled', ReferralModifier),
+ ('AdventCalendarEnabled', CalendarModifier),
+ ('AdventCalendarForced', CalendarSplashModifier),
+ ('HeroTankAdventCalendarRedirect', HeroTankAdventCalendarRedirectModifier),
+ ('LobbyHeaderTabCounterModification', LobbyHeaderTabCounterModifier))
 _MODIFIERS_DICT = dict(_MODIFIERS)
 _MODIFIERS_ORDER = dict(((n, idx) for idx, (n, _) in enumerate(_MODIFIERS)))
 

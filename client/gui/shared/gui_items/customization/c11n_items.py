@@ -166,14 +166,10 @@ def previewTemplate(texture, width, height, innerWidth, innerHeight):
 
 def previewUrl(texture, width, height, innerWidth, innerHeight):
     params = {'w': width,
-              'h': height,
-              'iw': innerWidth,
-              'ih': innerHeight}
+     'h': height,
+     'iw': innerWidth,
+     'ih': innerHeight}
     return _PREVIEW_ICON_URL.format(texture=texture, params=urllib.urlencode(params))
-
-
-def isStyle3D(customizationItem):
-    return customizationItem.itemTypeName == 'style' and customizationItem.modelsSet
 
 
 class ConcealmentBonus(object):

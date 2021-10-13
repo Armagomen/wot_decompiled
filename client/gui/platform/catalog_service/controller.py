@@ -74,8 +74,7 @@ class _ProductExtraData(object):
 
 
 class _PurchaseDescriptor(object):
-    __slots__ = ('__entitlements', '__metadataWot', '__currencies', '__isEntitlementsInvalid', '__tokens', '__titleID',
-                 '__productExtraData', '__iconID', '__productName', '__mainAmount', '__displayWays')
+    __slots__ = ('__entitlements', '__metadataWot', '__currencies', '__isEntitlementsInvalid', '__tokens', '__titleID', '__productExtraData', '__iconID', '__productName', '__mainAmount', '__displayWays')
 
     def __init__(self, entitlements=None, currencies=None, metadataWot=None):
         super(_PurchaseDescriptor, self).__init__()
@@ -137,13 +136,8 @@ class _PurchaseDescriptor(object):
                             metadataPrefix = 'entitlements_{}'.format(dataIndex)
                             title = self.__getMetadataValueByName('{}_title'.format(metadataPrefix))
                             description = self.__getMetadataValueByName('{}_description'.format(metadataPrefix))
-                            imgBig = self.__extractValue(
-                                self.__metadataWot.get('{}_image_large'.format(metadataPrefix), {}).get('data', {}).get(
-                                    'url', {}))
-                            imgSmall = self.__extractValue(
-                                self.__metadataWot.get('{}_icon_url_big'.format(metadataPrefix), {}).get('data',
-                                                                                                         {}).get('url',
-                                                                                                                 {}))
+                            imgBig = self.__extractValue(self.__metadataWot.get('{}_image_large'.format(metadataPrefix), {}).get('data', {}).get('url', {}))
+                            imgSmall = self.__extractValue(self.__metadataWot.get('{}_icon_url_big'.format(metadataPrefix), {}).get('data', {}).get('url', {}))
 
                 self.__tokens[tID] = _TokenDescriptor(imgSmall, imgBig, title, description)
             return self.__tokens[tID]
@@ -196,8 +190,7 @@ class _PurchasePackage(object):
             self.__pendingCallbacks.append(callback)
             if not self.__downloader:
                 if timeout <= 0:
-                    _logger.warning('Cache wrong sync timeout: %s. Using default: %s, URL=%s', timeout,
-                                    _DEFAULT_SYNC_TIMEOUT, self.__descriptorUrl)
+                    _logger.warning('Cache wrong sync timeout: %s. Using default: %s, URL=%s', timeout, _DEFAULT_SYNC_TIMEOUT, self.__descriptorUrl)
                     timeout = _DEFAULT_SYNC_TIMEOUT
                 self.__timeoutBwCbId = BigWorld.callback(timeout, self.__onTimeout)
                 self.__downloader = WebDownloader(_WORKERS_LIMIT)

@@ -93,8 +93,7 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
             self.__show()
 
     def __shouldHide(self):
-        return not isDailyQuestsEnable() or self.promoController.isTeaserOpen() or not (
-                    self._isRandomBattleSelected() or self._isMapboxSelected())
+        return not isDailyQuestsEnable() or self.promoController.isTeaserOpen() or not (self._isRandomBattleSelected() or self._isMapboxSelected())
 
     def __hasIncompleteQuests(self):
         for quest in self.eventsCache.getDailyQuests().values():

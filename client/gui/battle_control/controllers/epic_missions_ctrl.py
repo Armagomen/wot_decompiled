@@ -184,7 +184,7 @@ class EpicMissionsController(IViewComponentsController):
             if eqCtrl is not None:
                 eqCtrl.onEquipmentAdded += self.__onEquipmentAdded
                 eqCtrl.onEquipmentReset += self.__onEquipmentReset
-                eqCtrl.onEquipmentsCleared += self.__onClearEquipments
+                eqCtrl.onEquipmentsCleared += self.__onEquipmentsCleared
             if BattleReplay.g_replayCtrl.isPlaying:
                 g_replayEvents.onTimeWarpStart += self.__onReplayTimeWarpStart
                 g_replayEvents.onTimeWarpFinish += self.__onReplayTimeWarpFinished
@@ -238,7 +238,7 @@ class EpicMissionsController(IViewComponentsController):
         if eqCtrl is not None:
             eqCtrl.onEquipmentAdded -= self.__onEquipmentAdded
             eqCtrl.onEquipmentReset -= self.__onEquipmentReset
-            eqCtrl.onEquipmentsCleared -= self.__onClearEquipments
+            eqCtrl.onEquipmentsCleared -= self.__onEquipmentsCleared
         self.__sessionProvider = None
         self._notificationTypeToMissionTriggerArgs.clear()
         return
@@ -525,18 +525,14 @@ class EpicMissionsController(IViewComponentsController):
             capturedBasesInCompanentSystem = sectorBaseComp.getCapturedBaseIDs()
             self.__capturedBases.update(capturedBasesInCompanentSystem)
             seconds = epicPlayerDataComp.getGameTimeToAddPerCapture(sector.IDInPlayerGroup)
-            if sectorBaseComp.getNumCapturedBases() == len(sectorBaseComp.sectorBases):
+            if len(self.__capturedBases) == len(sectorBaseComp.sectorBases):
                 seconds += epicPlayerDataComp.getGameTimeToAddWhenAllCaptured()
             minutes = int(seconds / 60)
             seconds -= minutes * 60
-            self.__sendIngameMessage(self.__makeMessageData(
-                GAME_MESSAGES_CONSTS.BASE_CAPTURED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CAPTURED,
-                {'baseID': baseId,
-                 'title': EPIC_BATTLE.ZONE_CAPTURED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT,
-                 'timerText': backport.text(R.strings.epic_battle.zone.time_added(), minutes=':'.join(
-                     ('{:02d}'.format(int(minutes)), '{:02d}'.format(int(seconds))))),
-                 'descriptionText': backport.text(
-                     R.strings.epic_battle.missions.unlockTankLevel()) if vehiclesUnlocked else ''}))
+            self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.BASE_CAPTURED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CAPTURED, {'baseID': baseId,
+             'title': EPIC_BATTLE.ZONE_CAPTURED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT,
+             'timerText': backport.text(R.strings.epic_battle.zone.time_added(), minutes=':'.join(('{:02d}'.format(int(minutes)), '{:02d}'.format(int(seconds))))),
+             'descriptionText': backport.text(R.strings.epic_battle.missions.unlockTankLevel()) if vehiclesUnlocked else ''}))
             if onPlayerLane:
                 if self.__isAttacker():
                     self.__nextObjectiveMessage(self.__isAttacker())
@@ -743,7 +739,7 @@ class EpicMissionsController(IViewComponentsController):
         if oldIntCD in self.__orderBattleAbilities:
             self.__orderBattleAbilities[self.__orderBattleAbilities.index(oldIntCD)] = newIntCD
 
-    def __onClearEquipments(self):
+    def __onEquipmentsCleared(self):
         self.__orderBattleAbilities = []
 
     def __getRankUpdateData(self, newRank):

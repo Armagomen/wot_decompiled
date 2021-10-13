@@ -18,15 +18,15 @@ _RankedSeasonsKeys = namedtuple('_RankedSeasonsKeys', ['all', 'current', 'previo
 _RANKED_SEASONS_ARCHIVE = 'archive'
 RANKED_SEASONS_ARCHIVE_10x10 = '_10x10'
 _FRAME_LABELS = {PROFILE_DROPDOWN_KEYS.ALL: 'random',
-                 PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: 'epicRandom',
-                 PROFILE_DROPDOWN_KEYS.FALLOUT: 'fallout',
-                 PROFILE_DROPDOWN_KEYS.HISTORICAL: 'historical',
-                 PROFILE_DROPDOWN_KEYS.TEAM: 'team7x7',
-                 PROFILE_DROPDOWN_KEYS.STATICTEAM: 'team7x7',
-                 PROFILE_DROPDOWN_KEYS.CLAN: 'clan',
-                 PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: 'fortifications',
-                 PROFILE_DROPDOWN_KEYS.STATICTEAM_SEASON: 'team7x7',
-                 PROFILE_DROPDOWN_KEYS.RANKED: 'ranked_15x15',
+ PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: 'epicRandom',
+ PROFILE_DROPDOWN_KEYS.FALLOUT: 'fallout',
+ PROFILE_DROPDOWN_KEYS.HISTORICAL: 'historical',
+ PROFILE_DROPDOWN_KEYS.TEAM: 'team7x7',
+ PROFILE_DROPDOWN_KEYS.STATICTEAM: 'team7x7',
+ PROFILE_DROPDOWN_KEYS.CLAN: 'clan',
+ PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: 'fortifications',
+ PROFILE_DROPDOWN_KEYS.STATICTEAM_SEASON: 'team7x7',
+ PROFILE_DROPDOWN_KEYS.RANKED: 'ranked_15x15',
  PROFILE_DROPDOWN_KEYS.RANKED_10X10: BATTLE_TYPES.RANKED_10X10}
 
 def _packProviderType(mainType, addValue=None):

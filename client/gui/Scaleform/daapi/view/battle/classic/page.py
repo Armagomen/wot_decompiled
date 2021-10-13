@@ -21,39 +21,23 @@ class _ClassicComponentsConfig(ComponentsConfig):
 
     def __init__(self):
         super(_ClassicComponentsConfig, self).__init__(((BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER,
-                                                                                       BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
-                                                                                       DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
-                                                                                       BATTLE_VIEW_ALIASES.PLAYERS_PANEL,
-                                                                                       BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL,
-                                                                                       BATTLE_VIEW_ALIASES.HINT_PANEL,
-                                                                                       BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
-                                                                                       DynamicAliases.DRONE_MUSIC_PLAYER,
-                                                                                       DynamicAliases.PERIOD_MUSIC_LISTENER)),
-                                                        (BATTLE_CTRL_ID.TEAM_BASES, (
-                                                        BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL,
-                                                        DynamicAliases.DRONE_MUSIC_PLAYER)),
-                                                        (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
-                                                        (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
-                                                        (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
-                                                        (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (
-                                                        DynamicAliases.DRONE_MUSIC_PLAYER,
-                                                        BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR,
-                                                        BATTLE_VIEW_ALIASES.PLAYERS_PANEL)),
-                                                        (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS,
-                                                         (DynamicAliases.DRONE_MUSIC_PLAYER,)),
-                                                        (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL,
-                                                         (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-                                                        (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (
-                                                        BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
-                                                        BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
-                                                        (BATTLE_CTRL_ID.AMMO,
-                                                         (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,))),
-                                                       viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER,
-                                                                     period_music_listener.PeriodMusicListener), (
-                                                                    DynamicAliases.DRONE_MUSIC_PLAYER,
-                                                                    drone_music_player.DroneMusicPlayer), (
-                                                                    DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
-                                                                    StartCountdownSoundPlayer)))
+           BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
+           DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
+           BATTLE_VIEW_ALIASES.PLAYERS_PANEL,
+           BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL,
+           BATTLE_VIEW_ALIASES.HINT_PANEL,
+           BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
+           DynamicAliases.DRONE_MUSIC_PLAYER,
+           DynamicAliases.PERIOD_MUSIC_LISTENER)),
+         (BATTLE_CTRL_ID.TEAM_BASES, (BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, DynamicAliases.DRONE_MUSIC_PLAYER)),
+         (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
+         (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
+         (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+         (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (DynamicAliases.DRONE_MUSIC_PLAYER, BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR, BATTLE_VIEW_ALIASES.PLAYERS_PANEL)),
+         (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.DRONE_MUSIC_PLAYER,)),
+         (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+         (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
+         (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL))), viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER, period_music_listener.PeriodMusicListener), (DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer), (DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
 
 
 COMMON_CLASSIC_CONFIG = _ClassicComponentsConfig()

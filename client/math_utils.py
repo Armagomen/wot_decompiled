@@ -3,7 +3,7 @@
 import random
 import math
 import Math
-from Math import Vector2, Vector3, Matrix, MatrixProduct
+from Math import Vector2, Vector3, Matrix
 
 def createIdentityMatrix():
     result = Matrix()
@@ -40,20 +40,12 @@ def createSRTMatrix(scale, rotation, translation):
     return result
 
 
-def createMatrixProduct(provider1, provider2):
-    product = MatrixProduct()
-    product.a = provider1
-    product.b = provider2
-    return product
-
-
 def setTranslation(matrix, translation):
     matrix.translation = translation
 
 
 clamp = lambda minVal, maxVal, val: (minVal if val < minVal else maxVal if val > maxVal else val)
 clamp01 = lambda val: clamp(0.0, 1.0, val)
-
 
 def clampVector3(minVal, maxVal, val):
     return Vector3(clamp(minVal.x, maxVal.x, val.x), clamp(minVal.y, maxVal.y, val.y), clamp(minVal.z, maxVal.z, val.z))

@@ -46,18 +46,17 @@ class CurtailingAwardsComposer(QuestsBonusComposer):
             compensationReason = self._packBonus(bonus.compensationReason, size)
         return {'label': bonus.getFormattedLabel(),
          'imgSource': bonus.getImage(size),
-                'tooltip': bonus.tooltip,
-                'isSpecial': bonus.isSpecial,
-                'specialAlias': bonus.specialAlias,
-                'specialArgs': bonus.specialArgs,
-                'hasCompensation': bonus.isCompensation,
-                'compensationReason': compensationReason,
-                'align': bonus.align,
-                'highlightType': bonus.getHighlightType(size),
-                'overlayType': bonus.getOverlayType(size),
-                'highlightIcon': bonus.getHighlightIcon(size),
-                'overlayIcon': bonus.getOverlayIcon(size),
-                'isWulfTooltip': bonus.isWulfTooltip}
+         'tooltip': bonus.tooltip,
+         'isSpecial': bonus.isSpecial,
+         'specialAlias': bonus.specialAlias,
+         'specialArgs': bonus.specialArgs,
+         'hasCompensation': bonus.isCompensation,
+         'compensationReason': compensationReason,
+         'align': bonus.align,
+         'highlightType': bonus.getHighlightType(size),
+         'overlayType': bonus.getOverlayType(size),
+         'highlightIcon': bonus.getHighlightIcon(size),
+         'overlayIcon': bonus.getOverlayIcon(size)}
 
     def _packMergedBonuses(self, mergedBonuses, size=AWARDS_SIZES.SMALL):
         mergedBonusCount = len(mergedBonuses)

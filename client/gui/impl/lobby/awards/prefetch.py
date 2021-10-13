@@ -62,5 +62,5 @@ class TokenDataPrefetcher(_IPrefetcher):
 
 
 PREFETCHERS = {SupportedTokenTypes.BATTLE_TOKEN: TokenDataPrefetcher,
-               SupportedTokenTypes.TOKENS: TokenDataPrefetcher,
-               SupportedTokenTypes.PROGRESSION_XP_TOKEN: TokenDataPrefetcher}
+ SupportedTokenTypes.TOKENS: TokenDataPrefetcher,
+ SupportedTokenTypes.PROGRESSION_XP_TOKEN: TokenDataPrefetcher}

@@ -271,6 +271,7 @@ class KPI(object):
         COMPOUND_KPI = 'compoundKPI'
         VEHICLE_REPAIR_SPEED = 'vehicleRepairSpeed'
         VEHICLE_CHASSIS_REPAIR_SPEED = 'vehicleChassisRepairSpeed'
+        VEHICLE_CHASSIS_REPAIR_TIME = 'vehicleChassisRepairTime'
         VEHICLE_ENGINE_POWER = 'vehicleEnginePower'
         VEHICLE_TURRET_ROTATION_SPEED = 'vehicleTurretRotationSpeed'
         VEHICLE_CIRCULAR_VISION_RADIUS = 'vehicleCircularVisionRadius'
@@ -462,17 +463,17 @@ def collectKpi(descriptor, vehicle=None):
 
 
 VEHICLE_ATTR_TO_KPI_NAME_MAP = {'repairSpeed': KPI.Name.VEHICLE_REPAIR_SPEED,
-                                'repairSpeedFactor': KPI.Name.VEHICLE_REPAIR_SPEED,
-                                'circularVisionRadius': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
-                                'circularVisionRadiusFactor': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
-                                'circularVisionRadiusBaseFactor': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
-                                'gunReloadTimeFactor': KPI.Name.VEHICLE_GUN_RELOAD_TIME,
-                                'gunAimingTimeFactor': KPI.Name.VEHICLE_GUN_AIM_SPEED,
-                                'crewLevelIncrease': KPI.Name.CREW_LEVEL,
-                                'ammoBayHealthFactor': KPI.Name.VEHICLE_AMMO_BAY_STRENGTH,
-                                'fuelTankHealthFactor': KPI.Name.VEHICLE_FUEL_TANK_STRENGTH,
-                                'engineHealthFactor': KPI.Name.VEHICLE_ENGINE_STRENGTH,
-                                'additiveShotDispersionFactor': KPI.Name.VEHICLE_GUN_SHOT_DISPERSION}
+ 'repairSpeedFactor': KPI.Name.VEHICLE_REPAIR_SPEED,
+ 'circularVisionRadius': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
+ 'circularVisionRadiusFactor': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
+ 'circularVisionRadiusBaseFactor': KPI.Name.VEHICLE_CIRCULAR_VISION_RADIUS,
+ 'gunReloadTimeFactor': KPI.Name.VEHICLE_GUN_RELOAD_TIME,
+ 'gunAimingTimeFactor': KPI.Name.VEHICLE_GUN_AIM_SPEED,
+ 'crewLevelIncrease': KPI.Name.CREW_LEVEL,
+ 'ammoBayHealthFactor': KPI.Name.VEHICLE_AMMO_BAY_STRENGTH,
+ 'fuelTankHealthFactor': KPI.Name.VEHICLE_FUEL_TANK_STRENGTH,
+ 'engineHealthFactor': KPI.Name.VEHICLE_ENGINE_STRENGTH,
+ 'additiveShotDispersionFactor': KPI.Name.VEHICLE_GUN_SHOT_DISPERSION}
 CREW_SKILL_TO_KPI_NAME_MAP = {'repair': KPI.Name.CREW_SKILL_REPAIR,
  'fireFighting': KPI.Name.CREW_SKILL_FIRE_FIGHTING,
  'camouflage': KPI.Name.CREW_SKILL_CAMOUFLAGE,

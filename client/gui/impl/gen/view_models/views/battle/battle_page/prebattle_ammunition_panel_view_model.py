@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle/battle_page/prebattle_ammunition_panel_view_model.py
 from enum import IntEnum
-from gui.impl.gen.view_models.views.battle.battle_page.prebattle_ammunition_panel_model import \
-    PrebattleAmmunitionPanelModel
+from gui.impl.gen.view_models.views.battle.battle_page.prebattle_ammunition_panel_model import PrebattleAmmunitionPanelModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.ammunition_panel_view_model import AmmunitionPanelViewModel
 
 class State(IntEnum):

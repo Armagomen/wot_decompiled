@@ -35,8 +35,7 @@ def _addCompensation(compensation, toUpdate):
             if isinstance(toUpdDataStruct, list):
                 toUpdDataStruct.extend(cValue)
             else:
-                _logger.warning('The type of compensation and updatable must be list! Updatable is %s, item=%s',
-                                type(toUpdDataStruct).__name__, toUpdDataStruct)
+                _logger.warning('The type of compensation and updatable must be list! Updatable is %s, item=%s', type(toUpdDataStruct).__name__, toUpdDataStruct)
         _logger.warning('Unsupported data type for compensation applying: %')
 
 
@@ -44,9 +43,9 @@ class _OrderHelper(object):
 
     @classmethod
     def buildSortedBonusList(cls, validData, order, entitlements):
-        codeOrder = {entitlement.get('code'): entitlement.get('order', 0) for entitlement in entitlements}
+        codeOrder = {entitlement.get('code'):entitlement.get('order', 0) for entitlement in entitlements}
         order.sort(key=lambda x: codeOrder.get(x[1], 0))
-        order = [item[0] for item in order]
+        order = [ item[0] for item in order ]
         sortedList = []
         for oItem in order:
             for orderK, orderV in oItem.iteritems():
@@ -76,8 +75,7 @@ class _OrderHelper(object):
                                     sortedList.append({orderK: validSection})
                                     del validData[orderK]
                             else:
-                                _logger.warning('Unsupported list item data type: %s, item=%s',
-                                                type(firstListItem).__name__, firstListItem)
+                                _logger.warning('Unsupported list item data type: %s, item=%s', type(firstListItem).__name__, firstListItem)
                     else:
                         sortedList.append({orderK: validSection})
                         del validData[orderK]
@@ -105,8 +103,7 @@ class _OrderHelper(object):
                 _logger.debug("Couldn't find any item with intCD=%s in %s", key, validSection)
 
             return itemVal
-        _logger.warning('Unsupported data format! Expected list or dict but %s received! Data: %s',
-                        type(validSection).__name__, validSection)
+        _logger.warning('Unsupported data format! Expected list or dict but %s received! Data: %s', type(validSection).__name__, validSection)
         return
 
     @classmethod
@@ -169,8 +166,7 @@ class MultipleAwardRewardsMainPacker(object):
             bonusData = deepcopy(invoiceData['data'])
             compensation = invoiceData.get('compensation', {})
             _addCompensation(compensation, bonusData)
-            sortedBList = _OrderHelper.buildSortedBonusList(bonusData, metaData.get('order', EMPTY_TUPLE),
-                                                            purchasePackage.getEntitlements())
+            sortedBList = _OrderHelper.buildSortedBonusList(bonusData, metaData.get('order', EMPTY_TUPLE), purchasePackage.getEntitlements())
             self.__extendSortedBonusList(sortedBList, purchasePackage.getExtraData())
             bonuses = []
             for bData in sortedBList:

@@ -7,16 +7,13 @@ from gui.impl.gen import R
 from gui.shared.formatters import text_styles
 from gui.shared.tooltips import TOOLTIP_TYPE, formatters
 from gui.shared.tooltips.common import BlocksTooltipData
-from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, getCDFromId, getItemIcon, \
-    getItemTitle
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, getCDFromId, getItemIcon, getItemTitle
 from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeGroup
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.goodies import IGoodiesCache
-
 _logger = logging.getLogger(__name__)
 _ICON_SIZE = '48x48'
-
 
 class AwardsTooltipData(BlocksTooltipData):
     _TOOLTIP_MIN_WIDTH = 340
@@ -52,9 +49,7 @@ class AwardsTooltipData(BlocksTooltipData):
             if not icon:
                 continue
             awardCount = backport.text(self.__resPath.awardCount(), count=count) if count > 1 else ' '
-            textBlock = formatters.packTitleDescBlock(title=text_styles.main(title), desc=text_styles.stats(awardCount),
-                                                      padding=formatters.packPadding(top=-35, left=58),
-                                                      descPadding=formatters.packPadding(top=0, left=-24))
+            textBlock = formatters.packTitleDescBlock(title=text_styles.main(title), desc=text_styles.stats(awardCount), padding=formatters.packPadding(top=-35, left=58), descPadding=formatters.packPadding(top=0, left=-24))
             imageBlock = formatters.packImageBlockData(img=icon, width=48, height=48)
             blocks.append(imageBlock)
             blocks.append(textBlock)

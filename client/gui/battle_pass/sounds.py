@@ -40,17 +40,17 @@ class BattlePassLanguageSwitch(CONST_CONTAINER):
 
 class AwardVideoSoundControl(IVideoSoundManager):
     __LANGUAGE_STATES = {'ru': BattlePassLanguageSwitch.RU,
-                         'en': BattlePassLanguageSwitch.EN,
-                         'cn': BattlePassLanguageSwitch.CN}
+     'en': BattlePassLanguageSwitch.EN,
+     'cn': BattlePassLanguageSwitch.CN}
     __VIDEO_TO_SOUND = {'c_135244_2': BattlePassSounds.VIDEO_STYLE_268_2,
-                        'c_135244_3': BattlePassSounds.VIDEO_STYLE_268_3,
-                        'c_135244_4': BattlePassSounds.VIDEO_STYLE_268_4,
-                        'c_136268_2': BattlePassSounds.VIDEO_STYLE_AMX_M4_2,
-                        'c_136268_3': BattlePassSounds.VIDEO_STYLE_AMX_M4_3,
-                        'c_136268_4': BattlePassSounds.VIDEO_STYLE_AMX_M4_4,
-                        'c_76364_2': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_2,
-                        'c_76364_3': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_3,
-                        'c_76364_4': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_4}
+     'c_135244_3': BattlePassSounds.VIDEO_STYLE_268_3,
+     'c_135244_4': BattlePassSounds.VIDEO_STYLE_268_4,
+     'c_136268_2': BattlePassSounds.VIDEO_STYLE_AMX_M4_2,
+     'c_136268_3': BattlePassSounds.VIDEO_STYLE_AMX_M4_3,
+     'c_136268_4': BattlePassSounds.VIDEO_STYLE_AMX_M4_4,
+     'c_76364_2': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_2,
+     'c_76364_3': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_3,
+     'c_76364_4': BattlePassSounds.VIDEO_STYLE_CENTURION_AX_4}
 
     def __init__(self, videoID):
         self.__videoID = videoID

@@ -18,12 +18,11 @@ from skeletons.gui.platform.wgnp_controller import IWGNPRequestController
 from skeletons.gui.shared.utils import IHangarSpace
 _ANIMATION_DURATION = 300
 _LAYERS = (WindowLayer.MARKER,
-           WindowLayer.VIEW,
-           WindowLayer.WINDOW,
-           WindowLayer.WAITING,
-           WindowLayer.SYSTEM_MESSAGE,
-           WindowLayer.FULLSCREEN_WINDOW,
-           WindowLayer.OVERLAY)
+ WindowLayer.VIEW,
+ WindowLayer.WINDOW,
+ WindowLayer.WAITING,
+ WindowLayer.SYSTEM_MESSAGE,
+ WindowLayer.FULLSCREEN_WINDOW)
 
 class Overlay(IOverlayController):
     _hangarSpace = dependency.descriptor(IHangarSpace)

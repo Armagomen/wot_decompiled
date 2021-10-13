@@ -22,9 +22,7 @@ _logger = logging.getLogger(__name__)
 class BaseAmmunitionPanelView(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
     _hangarSpace = dependency.descriptor(IHangarSpace)
-    __slots__ = (
-    '_ammunitionPanel', 'onSizeChanged', 'onPanelSectionSelected', 'onPanelSectionResized', 'onVehicleChanged',
-    'onEscKeyDown')
+    __slots__ = ('_ammunitionPanel', 'onSizeChanged', 'onPanelSectionSelected', 'onPanelSectionResized', 'onVehicleChanged', 'onEscKeyDown')
 
     def __init__(self, flags=ViewFlags.VIEW):
         settings = ViewSettings(R.views.lobby.tanksetup.AmmunitionPanel())

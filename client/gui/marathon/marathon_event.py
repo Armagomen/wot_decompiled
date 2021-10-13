@@ -6,12 +6,9 @@ from functools import partial
 import constants
 from constants import MarathonConfig
 from account_helpers import AccountSettings
-from account_helpers.AccountSettings import MARATHON_REWARD_WAS_SHOWN_PREFIX, MARATHON_VIDEO_WAS_SHOWN_PREFIX, \
-    MARATHON_INTRO_WAS_SHOWN_PREFIX
+from account_helpers.AccountSettings import MARATHON_REWARD_WAS_SHOWN_PREFIX, MARATHON_VIDEO_WAS_SHOWN_PREFIX
 from adisp import async, process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.impl.lobby.marathon.marathon_intro_screen import showMarathonIntroWindow
-from gui.game_control.links import URLMacros
 from gui.impl.lobby.marathon.marathon_reward_helper import showMarathonReward
 from gui.marathon.marathon_event_container import MarathonEventContainer
 from gui.marathon.marathon_resource_manager import MarathonResourceManager
@@ -23,7 +20,6 @@ from helpers.time_utils import ONE_DAY
 from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
-
 if typing.TYPE_CHECKING:
     from gui.server_events.event_items import Quest
 _logger = logging.getLogger(__name__)
@@ -37,7 +33,6 @@ class MarathonEvent(object):
         super(MarathonEvent, self).__init__()
         self._data = dataContainerClass()
         self._resource = resourceGeneratorClass(self._data)
-        self._urlMacros = URLMacros()
 
     @property
     def prefix(self):
@@ -74,31 +69,25 @@ class MarathonEvent(object):
     @async
     @process
     def getUrl(self, callback):
-        url = yield self._urlMacros.parse(self._getUrl())
+        url = yield self._data.urlMacros.parse(self._getUrl())
         callback(url)
 
     @async
     @process
     def getMarathonVehicleUrl(self, callback):
-        url = yield self._urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_VEHICLE_URL))
+        url = yield self._data.urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_VEHICLE_URL))
         callback(url)
 
     @async
     @process
     def getMarathonVehicleUrlIgb(self, callback):
-        url = yield self._urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_VEHICLE_URL_IGB))
+        url = yield self._data.urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_VEHICLE_URL_IGB))
         callback(url)
 
     @async
     @process
     def getMarathonStyleUrlIgb(self, callback):
-        url = yield self._urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_STYLE_URL_IGB))
-        callback(url)
-
-    @async
-    @process
-    def getVideoContentUrl(self, callback):
-        url = yield self._urlMacros.parse(self._getUrl(urlType=MarathonConfig.VIDEO_CONTENT_URL))
+        url = yield self._data.urlMacros.parse(self._getUrl(urlType=MarathonConfig.REWARD_STYLE_URL_IGB))
         callback(url)
 
     def hasIgbLink(self):
@@ -134,8 +123,8 @@ class MarathonEvent(object):
         return (currentStep, self._data.questsInChain)
 
     def getMarathonPostProgress(self):
-        tokens = self.getTokensData(prefix=self._data.tokenPrefix, postfix=self._data.styleDiscountPostfix).values()
-        progress = tokens[0][1] if tokens and tokens[0] else 0
+        tokens = self.getTokensData(prefix=self._data.tokenPrefix, postfix=self._data.styleTokenPostfix)
+        progress = tokens.values()[0][1] if tokens.values()[0] else 0
         return progress
 
     def getState(self):
@@ -146,11 +135,11 @@ class MarathonEvent(object):
 
     def getMarathonFlagState(self, vehicle):
         return {'flagHeaderIcon': self.__getHangarFlagHeaderIcon(),
-                'flagStateIcon': self.__getHangarFlagStateIcon(vehicle),
+         'flagStateIcon': self.__getHangarFlagStateIcon(vehicle),
          'flagMain': self.getHangarFlag(),
          'tooltip': self.__getTooltip(),
          'enable': self.isAvailable(),
-                'visible': self.isEnabled()}
+         'visible': self.isEnabled()}
 
     def checkForWarnings(self, vehicle):
         if self.prbEntity.getEntityType() != constants.ARENA_GUI_TYPE.RANDOM:
@@ -169,13 +158,9 @@ class MarathonEvent(object):
     def getExtraTimeToBuy(self):
         return '' if self._data.state != MarathonState.FINISHED else self._resource.getExtraTimeToBuy()
 
-    def getMarathonDiscount(self, isPostprogress=False):
-        if isPostprogress:
-            passQuests = self.getMarathonPostProgress()
-            allQuests = self._data.questsPostInChain
-        else:
-            passQuests, allQuests = self.getMarathonProgress()
-        return passQuests * 100.0 / allQuests if passQuests and allQuests else 0
+    def getMarathonDiscount(self):
+        passQuests, allQuests = self.getMarathonProgress()
+        return int(passQuests * 100) / allQuests if passQuests and self._data.questsInChain else 0
 
     def setState(self):
         if not self._data.group:
@@ -198,8 +183,8 @@ class MarathonEvent(object):
 
     def updateQuestsData(self):
         currentStep, _ = self.getMarathonProgress()
-        self._data.setGroup(self._eventsCache.getGroups(self.__marathonFilterFunc))
         self._data.setQuest(self._eventsCache.getHiddenQuests(self.__marathonFilterFunc), currentStep)
+        self._data.setGroup(self._eventsCache.getGroups(self.__marathonFilterFunc))
         tokensData = self.getTokensData(prefix=self._data.tokenPrefix)
         self._data.setRewardObtained(tokensData)
         self._data.setPostRewardObtained(tokensData)
@@ -213,9 +198,6 @@ class MarathonEvent(object):
         timeLeft, timeRight = self._data.getQuestTimeInterval()
         return (timeLeft if self._data.state == MarathonState.NOT_STARTED else timeRight) + 1
 
-    def getQuestTimeInterval(self):
-        return self._data.getQuestTimeInterval()
-
     def showRewardVideo(self):
         videoShownKey = self.__getRewardShownMarkKey(MARATHON_VIDEO_WAS_SHOWN_PREFIX)
         if self.isRewardObtained() and self._data.doesShowRewardVideo and not AccountSettings.getUIFlag(videoShownKey):
@@ -226,33 +208,12 @@ class MarathonEvent(object):
             return
         isUIFlag = AccountSettings.getUIFlag(self.__getRewardShownMarkKey(MARATHON_REWARD_WAS_SHOWN_PREFIX))
         if self.isRewardObtained() and not isUIFlag:
-            showBrowserOverlayView(self._getUrl() + self._data.marathonCompleteUrlAdd, alias=VIEW_ALIAS.BROWSER_OVERLAY,
-                                   callbackOnLoad=partial(self.__setScreenWasShown, MARATHON_REWARD_WAS_SHOWN_PREFIX))
-
-    @process
-    def showVideoContentScreen(self, url):
-        if self._data.state not in MarathonState.ENABLED_STATE:
-            return
-        else:
-            if url is None:
-                url = yield self.getVideoContentUrl()
-            showBrowserOverlayView(url, alias=VIEW_ALIAS.BROWSER_OVERLAY)
-            return
-
-    def tryShowIntroScreen(self):
-        layoutId = self._data.introScreenLayoutId
-        if not layoutId or self._data.state != MarathonState.IN_PROGRESS:
-            return
-        shownKey = self.__getRewardShownMarkKey(MARATHON_INTRO_WAS_SHOWN_PREFIX)
-        if not AccountSettings.getUIFlag(shownKey):
-            showMarathonIntroWindow(layoutId, self._data.vehicleID)
-            AccountSettings.setUIFlag(shownKey, True)
+            showBrowserOverlayView(self._getUrl() + self._data.marathonCompleteUrlAdd, alias=VIEW_ALIAS.BROWSER_OVERLAY, callbackOnLoad=partial(self.__setScreenWasShown, MARATHON_REWARD_WAS_SHOWN_PREFIX))
 
     def getVehiclePreviewTitleTooltip(self):
         if self._data.state not in MarathonState.ENABLED_STATE:
             return self._resource.getEmptyTooltip()
-        return self._resource.getTitleNotStartedTooltip() if self._data.state == MarathonState.NOT_STARTED else self._resource.getTitleTooltip(
-            self.getFinishSaleTime(), self.getMarathonDiscount())
+        return self._resource.getTitleNotStartedTooltip() if self._data.state == MarathonState.NOT_STARTED else self._resource.getTitleTooltip(self.getFinishSaleTime(), self.getMarathonDiscount())
 
     def getPreviewBuyBtnData(self):
         hasIgbLink = self.hasIgbLink()

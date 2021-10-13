@@ -301,9 +301,9 @@ class MENU(object):
     TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOUNIT = '#menu:tankCarousel/vehicleStates/unsuitableToUnit'
     TANKCAROUSEL_VEHICLESTATES_DISABLED = '#menu:tankCarousel/vehicleStates/disabled'
     TANKCAROUSEL_VEHICLESTATES_TOOHEAVY = '#menu:tankCarousel/vehicleStates/tooHeavy'
+    TANKCAROUSEL_WOTPLUSSELECTIONAVAILABLE = '#menu:tankCarousel/wotPlusSelectionAvailable'
     TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED = '#menu:tankCarousel/vehicleStates/xpMultReceived'
     TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED_NOT = '#menu:tankCarousel/vehicleStates/xpMultReceived/not'
-    TANKCAROUSEL_VEHICLESTATES_TICKETSSHORTAGE = '#menu:tankCarousel/vehicleStates/ticketsShortage'
     STORE_VEHICLESTATES_BATTLE = '#menu:store/vehicleStates/battle'
     STORE_VEHICLESTATES_LOCKED = '#menu:store/vehicleStates/locked'
     STORE_VEHICLESTATES_CLANLOCKED = '#menu:store/vehicleStates/clanLocked'
@@ -378,7 +378,6 @@ class MENU(object):
     CURRENTVEHICLESTATUS_ROTATIONGROUPUNLOCKED = '#menu:currentVehicleStatus/rotationGroupUnlocked'
     CURRENTVEHICLESTATUS_ROTATIONGROUPLOCKED = '#menu:currentVehicleStatus/rotationGroupLocked'
     CURRENTVEHICLESTATUS_WILLBEUNLOCKEDINBATTLE = '#menu:currentVehicleStatus/willBeUnlockedInBattle'
-    CURRENTVEHICLESTATUS_TICKETSSHORTAGE = '#menu:currentVehicleStatus/ticketsShortage'
     REPAIR_REPAIRSTATUS = '#menu:repair/repairstatus'
     REPAIR_CURIENCY = '#menu:repair/curiency'
     REPAIR_BUTTON = '#menu:repair/button'
@@ -567,6 +566,8 @@ class MENU(object):
     TANK_PARAMS_INVISIBILITYSTILLFACTOR = '#menu:tank_params/invisibilityStillFactor'
     TANK_PARAMS_INVISIBILITYMOVINGFACTOR = '#menu:tank_params/invisibilityMovingFactor'
     TANK_PARAMS_EXTRAREPAIRSPEED = '#menu:tank_params/extraRepairSpeed'
+    TANK_PARAMS_CHASSISREPAIRTIME = '#menu:tank_params/chassisRepairTime'
+    TANK_PARAMS_CHASSISREPAIRTIMEYOH = '#menu:tank_params/chassisRepairTimeYoh'
     TANK_PARAMS_TURBOSHAFTINVISIBILITYSTILLFACTOR = '#menu:tank_params/turboshaftInvisibilityStillFactor'
     TANK_PARAMS_TURBOSHAFTINVISIBILITYMOVINGFACTOR = '#menu:tank_params/turboshaftInvisibilityMovingFactor'
     TANK_PARAMS_VALUES_PARAM12_VALUE0 = '#menu:tank_params/values/param12/value0'
@@ -589,7 +590,7 @@ class MENU(object):
     TANK_PARAMS_GPS = '#menu:tank_params/gps'
     TANK_PARAMS_SPM = '#menu:tank_params/spm'
     TANK_PARAMS_S = '#menu:tank_params/s'
-    TANK_PARAMS_S_S = '#menu:tank_params/s_s'
+    TANK_PARAMS_YOH_S_S = '#menu:tank_params/yoh_s_s'
     TANK_PARAMS_MM = '#menu:tank_params/mm'
     TANK_PARAMS_VAL = '#menu:tank_params/val'
     TANK_PARAMS_VPM = '#menu:tank_params/vpm'
@@ -961,6 +962,7 @@ class MENU(object):
     PROFILE_STATS_ITEMS_READYTOLEARN = '#menu:profile/stats/items/readyToLearn'
     PROFILE_STATS_ITEMS_NEXTSKILLXPLEFT = '#menu:profile/stats/items/nextSkillXPLeft'
     PROFILE_STATS_ITEMS_NEXTSKILLBATTLESLEFT = '#menu:profile/stats/items/nextSkillBattlesLeft'
+    PROFILE_STATS_ITEMS_TIMEUNTILNEXTLEVEL = '#menu:profile/stats/items/timeUntilNextLevel'
     PROFILE_STATS_ITEMS_XP = '#menu:profile/stats/items/xp'
     PROFILE_STATS_ITEMS_FRAGS = '#menu:profile/stats/items/frags'
     PROFILE_STATS_ITEMS_UNKNOWN = '#menu:profile/stats/items/unknown'
@@ -1050,11 +1052,14 @@ class MENU(object):
     MODULEINFO_AUTORELOADGUNLABEL = '#menu:moduleInfo/autoReloadGunLabel'
     MODULEINFO_AUTORELOADGUNLABEL_BOOST = '#menu:moduleInfo/autoReloadGunLabel/boost'
     MODULEINFO_DUALGUNLABEL = '#menu:moduleInfo/dualGunLabel'
+    MODULEINFO_TRACKWITHINTRACKCHASSISLABEL = '#menu:moduleInfo/trackWithinTrackChassisLabel'
     MODULEINFO_HYDRAULICCHASSISLABEL = '#menu:moduleInfo/hydraulicChassisLabel'
     MODULEINFO_HYDRAULICAUTOSIEGECHASSISLABEL = '#menu:moduleInfo/hydraulicAutoSiegeChassisLabel'
     MODULEINFO_HYDRAULICWHEELEDCHASSISLABEL = '#menu:moduleInfo/hydraulicWheeledChassisLabel'
     MODULEINFO_PARAMS_SHOTSPEED = '#menu:moduleInfo/params/shotSpeed'
     MODULEINFO_TURBOSHAFTENGINE = '#menu:moduleInfo/turboshaftEngine'
+    MODULEINFO_PARAMS_CHASSISREPAIRTIME = '#menu:moduleInfo/params/chassisRepairTime'
+    MODULEINFO_PARAMS_CHASSISREPAIRTIMEYOH = '#menu:moduleInfo/params/chassisRepairTimeYoh'
     MODULEINFO_PARAMS_MAXLOAD = '#menu:moduleInfo/params/maxLoad'
     MODULEINFO_PARAMS_MAXSTEERINGLOCKANGLE = '#menu:moduleInfo/params/maxSteeringLockAngle'
     MODULEINFO_PARAMS_BOMBSNUMBERRANGE = '#menu:moduleInfo/params/bombsNumberRange'
@@ -1172,6 +1177,8 @@ class MENU(object):
     VEHICLEINFO_PARAMS_TURBOSHAFTENGINEPOWER = '#menu:vehicleInfo/params/turboshaftEnginePower'
     VEHICLEINFO_PARAMS_STUNMAXDURATION = '#menu:vehicleInfo/params/stunMaxDuration'
     VEHICLEINFO_PARAMS_STUNMINDURATION = '#menu:vehicleInfo/params/stunMinDuration'
+    VEHICLEINFO_PARAMS_CHASSISREPAIRTIME = '#menu:vehicleInfo/params/chassisRepairTime'
+    VEHICLEINFO_PARAMS_CHASSISREPAIRTIMEYOH = '#menu:vehicleInfo/params/chassisRepairTimeYoh'
     VEHICLEINFO_TABS_PROPERTIES = '#menu:vehicleInfo/tabs/properties'
     VEHICLEINFO_TABS_BASE = '#menu:vehicleInfo/tabs/base'
     VEHICLEINFO_TABS_STATISTIC = '#menu:vehicleInfo/tabs/statistic'
@@ -1489,7 +1496,6 @@ class MENU(object):
     HANGAR_AMMUNITIONPANEL_TECHNICALMAITENANCE_BUTTONS_CLOSE = '#menu:hangar/ammunitionPanel/technicalMaitenance/buttons/close'
     HANGAR_AMMUNITIONPANEL_TECHNICALMAITENANCE_BUTTONS_LABELTOTAL = '#menu:hangar/ammunitionPanel/technicalMaitenance/buttons/labelTotal'
     HANGAR_AMMUNITIONPANEL_TECHNICALMAITENANCE_EQUIPMENTDISABLED = '#menu:hangar/ammunitionPanel/technicalMaitenance/equipmentDisabled'
-    HANGAR_CLOSEBTN = '#menu:hangar/closeBtn'
     FITTINGLISTITEMRENDERER_UNLOAD = '#menu:fittingListItemRenderer/unload'
     FITTINGLISTITEMRENDERER_REPLACE = '#menu:fittingListItemRenderer/replace'
     CUSTOMIZATION_TITLE = '#menu:customization/title'
@@ -1509,7 +1515,6 @@ class MENU(object):
     CONTEXTMENU_VEHICLEBUY = '#menu:contextMenu/vehicleBuy'
     CONTEXTMENU_VEHICLERESTORE = '#menu:contextMenu/vehicleRestore'
     CONTEXTMENU_VEHICLEREMOVE = '#menu:contextMenu/vehicleRemove'
-    CONTEXTMENU_VEHICLERENTRENEW = '#menu:contextMenu/vehicleRentRenew'
     CONTEXTMENU_USERINFO = '#menu:contextMenu/userInfo'
     CONTEXTMENU_CLANINFO = '#menu:contextMenu/clanInfo'
     CONTEXTMENU_SENDCLANINVITE = '#menu:contextMenu/sendClanInvite'
@@ -1564,6 +1569,7 @@ class MENU(object):
     CONTEXTMENU_PERSONALCASE_STATSBLOCKTITLE = '#menu:contextMenu/personalCase/statsBlockTitle'
     CONTEXTMENU_PERSONALCASE_STATS_FIRSTINFO = '#menu:contextMenu/personalCase/stats/firstInfo'
     CONTEXTMENU_PERSONALCASE_STATS_SECONDINFO = '#menu:contextMenu/personalCase/stats/secondInfo'
+    CONTEXTMENU_PERSONALCASE_STATS_WOTPLUS = '#menu:contextMenu/personalCase/stats/wotPlus'
     CONTEXTMENU_TANKMANUNLOAD = '#menu:contextMenu/tankmanUnload'
     CONTEXTMENU_TANKMANUNLOADALL = '#menu:contextMenu/tankmanUnloadAll'
     CONTEXTMENU_DISMISS = '#menu:contextMenu/dismiss'
@@ -1957,6 +1963,7 @@ class MENU(object):
     DISCOUNT_DESCRIPTION_VEHICLE = '#menu:discount/description/vehicle'
     CONTEXTMENU_VIEWCLANPROFILE = '#menu:contextMenu/viewClanProfile'
     CONTEXTMENU_COPYCLANNAME = '#menu:contextMenu/copyClanName'
+    CONTEXTMENU_WOTPLUSRENT = '#menu:contextMenu/wotPlusRent'
     INFINITYSYMBOL = '#menu:infinitySymbol'
     HEADERBUTTONS_BATTLE_TYPES_EPICBATTLE = '#menu:headerButtons/battle/types/epicBattle'
     HEADERBUTTONS_BATTLE_TYPES_EPICBATTLE_DESCR = '#menu:headerButtons/battle/types/epicBattle/descr'
@@ -2218,7 +2225,6 @@ class MENU(object):
      CONTEXTMENU_VEHICLEBUY,
      CONTEXTMENU_VEHICLERESTORE,
      CONTEXTMENU_VEHICLEREMOVE,
-     CONTEXTMENU_VEHICLERENTRENEW,
      CONTEXTMENU_USERINFO,
      CONTEXTMENU_CLANINFO,
      CONTEXTMENU_SENDCLANINVITE,
@@ -2273,6 +2279,7 @@ class MENU(object):
      CONTEXTMENU_PERSONALCASE_STATSBLOCKTITLE,
      CONTEXTMENU_PERSONALCASE_STATS_FIRSTINFO,
      CONTEXTMENU_PERSONALCASE_STATS_SECONDINFO,
+     CONTEXTMENU_PERSONALCASE_STATS_WOTPLUS,
      CONTEXTMENU_TANKMANUNLOAD,
      CONTEXTMENU_TANKMANUNLOADALL,
      CONTEXTMENU_DISMISS,
@@ -2298,7 +2305,8 @@ class MENU(object):
      CONTEXTMENU_REJECTINVITATIONTOSQUAD,
      CONTEXTMENU_GOTOBLUEPRINT,
      CONTEXTMENU_VIEWCLANPROFILE,
-     CONTEXTMENU_COPYCLANNAME)
+     CONTEXTMENU_COPYCLANNAME,
+     CONTEXTMENU_WOTPLUSRENT)
     NATIONS_ENUM = (NATIONS_TITLE,
      NATIONS_USSR,
      NATIONS_GERMANY,
@@ -2322,50 +2330,49 @@ class MENU(object):
      TANKMEN_LOCKREASON_BROKEN,
      TANKMEN_LOCKREASON_DISABLED)
     TANKCAROUSEL_VEHICLESTATES_ENUM = (TANKCAROUSEL_VEHICLESTATES_BATTLE,
-                                       TANKCAROUSEL_VEHICLESTATES_LOCKED,
-                                       TANKCAROUSEL_VEHICLESTATES_CLANLOCKED,
-                                       TANKCAROUSEL_VEHICLESTATES_INPREBATTLE,
-                                       TANKCAROUSEL_VEHICLESTATES_AMMONOTFULL,
-                                       TANKCAROUSEL_VEHICLESTATES_AMMONOTFULLEVENTS,
-                                       TANKCAROUSEL_VEHICLESTATES_DAMAGED,
-                                       TANKCAROUSEL_VEHICLESTATES_DESTROYED,
-                                       TANKCAROUSEL_VEHICLESTATES_EXPLODED,
-                                       TANKCAROUSEL_VEHICLESTATES_NOTPRESENT,
-                                       TANKCAROUSEL_VEHICLESTATES_UNDAMAGED,
-                                       TANKCAROUSEL_VEHICLESTATES_WILLBEUNLOCKEDINBATTLE,
-                                       TANKCAROUSEL_VEHICLESTATES_SERVERRESTRICTION,
-                                       TANKCAROUSEL_VEHICLESTATES_CREWNOTFULL,
-                                       TANKCAROUSEL_VEHICLESTATES_GROUP_IS_NOT_READY,
-                                       TANKCAROUSEL_VEHICLESTATES_FALLOUT_MIN,
-                                       TANKCAROUSEL_VEHICLESTATES_FALLOUT_MAX,
-                                       TANKCAROUSEL_VEHICLESTATES_FALLOUT_REQUIRED,
-                                       TANKCAROUSEL_VEHICLESTATES_FALLOUT_BROKEN,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTALISOVER,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLE,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLE_EPIC,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLE_RANKED,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLEAGAIN_EPIC,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLEAGAIN_RANKED,
-                                       TANKCAROUSEL_VEHICLESTATES_RENTABLE_HOVER,
-                                       TANKCAROUSEL_VEHICLESTATES_IGRRENTALISOVER,
-                                       TANKCAROUSEL_VEHICLESTATES_INPREMIUMIGRONLY,
-                                       TANKCAROUSEL_VEHICLESTATES_BUYTANK,
-                                       TANKCAROUSEL_VEHICLESTATES_BUYTANKEMPTYCOUNT,
-                                       TANKCAROUSEL_VEHICLESTATES_BUYSLOT,
-                                       TANKCAROUSEL_VEHICLESTATES_RESTORETANK,
-                                       TANKCAROUSEL_VEHICLESTATES_RESTORETANKCOUNT,
-                                       TANKCAROUSEL_VEHICLESTATES_UNAVAILABLE,
-                                       TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOQUEUE,
-                                       TANKCAROUSEL_VEHICLESTATES_FALLOUT_ONLY,
-                                       TANKCAROUSEL_VEHICLESTATES_DEALISOVER,
-                                       TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOUNIT,
-                                       TANKCAROUSEL_VEHICLESTATES_DISABLED,
-                                       TANKCAROUSEL_VEHICLESTATES_TOOHEAVY,
-                                       TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED,
-                                       TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED_NOT,
-                                       TANKCAROUSEL_VEHICLESTATES_TICKETSSHORTAGE,
-                                       TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPUNLOCKED,
-                                       TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPLOCKED)
+     TANKCAROUSEL_VEHICLESTATES_LOCKED,
+     TANKCAROUSEL_VEHICLESTATES_CLANLOCKED,
+     TANKCAROUSEL_VEHICLESTATES_INPREBATTLE,
+     TANKCAROUSEL_VEHICLESTATES_AMMONOTFULL,
+     TANKCAROUSEL_VEHICLESTATES_AMMONOTFULLEVENTS,
+     TANKCAROUSEL_VEHICLESTATES_DAMAGED,
+     TANKCAROUSEL_VEHICLESTATES_DESTROYED,
+     TANKCAROUSEL_VEHICLESTATES_EXPLODED,
+     TANKCAROUSEL_VEHICLESTATES_NOTPRESENT,
+     TANKCAROUSEL_VEHICLESTATES_UNDAMAGED,
+     TANKCAROUSEL_VEHICLESTATES_WILLBEUNLOCKEDINBATTLE,
+     TANKCAROUSEL_VEHICLESTATES_SERVERRESTRICTION,
+     TANKCAROUSEL_VEHICLESTATES_CREWNOTFULL,
+     TANKCAROUSEL_VEHICLESTATES_GROUP_IS_NOT_READY,
+     TANKCAROUSEL_VEHICLESTATES_FALLOUT_MIN,
+     TANKCAROUSEL_VEHICLESTATES_FALLOUT_MAX,
+     TANKCAROUSEL_VEHICLESTATES_FALLOUT_REQUIRED,
+     TANKCAROUSEL_VEHICLESTATES_FALLOUT_BROKEN,
+     TANKCAROUSEL_VEHICLESTATES_RENTALISOVER,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLE,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLE_EPIC,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLE_RANKED,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLEAGAIN_EPIC,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLEAGAIN_RANKED,
+     TANKCAROUSEL_VEHICLESTATES_RENTABLE_HOVER,
+     TANKCAROUSEL_VEHICLESTATES_IGRRENTALISOVER,
+     TANKCAROUSEL_VEHICLESTATES_INPREMIUMIGRONLY,
+     TANKCAROUSEL_VEHICLESTATES_BUYTANK,
+     TANKCAROUSEL_VEHICLESTATES_BUYTANKEMPTYCOUNT,
+     TANKCAROUSEL_VEHICLESTATES_BUYSLOT,
+     TANKCAROUSEL_VEHICLESTATES_RESTORETANK,
+     TANKCAROUSEL_VEHICLESTATES_RESTORETANKCOUNT,
+     TANKCAROUSEL_VEHICLESTATES_UNAVAILABLE,
+     TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOQUEUE,
+     TANKCAROUSEL_VEHICLESTATES_FALLOUT_ONLY,
+     TANKCAROUSEL_VEHICLESTATES_DEALISOVER,
+     TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOUNIT,
+     TANKCAROUSEL_VEHICLESTATES_DISABLED,
+     TANKCAROUSEL_VEHICLESTATES_TOOHEAVY,
+     TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED,
+     TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED_NOT,
+     TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPUNLOCKED,
+     TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPLOCKED)
     DATETIME_WEEKDAYS_FULL_ENUM = (DATETIME_WEEKDAYS_FULL_1,
      DATETIME_WEEKDAYS_FULL_2,
      DATETIME_WEEKDAYS_FULL_3,
@@ -2583,6 +2590,8 @@ class MENU(object):
      TANK_PARAMS_INVISIBILITYSTILLFACTOR,
      TANK_PARAMS_INVISIBILITYMOVINGFACTOR,
      TANK_PARAMS_EXTRAREPAIRSPEED,
+     TANK_PARAMS_CHASSISREPAIRTIME,
+     TANK_PARAMS_CHASSISREPAIRTIMEYOH,
      TANK_PARAMS_TURBOSHAFTINVISIBILITYSTILLFACTOR,
      TANK_PARAMS_TURBOSHAFTINVISIBILITYMOVINGFACTOR,
      TANK_PARAMS_VALUES_PARAM12_VALUE0,
@@ -2605,7 +2614,7 @@ class MENU(object):
      TANK_PARAMS_GPS,
      TANK_PARAMS_SPM,
      TANK_PARAMS_S,
-     TANK_PARAMS_S_S,
+     TANK_PARAMS_YOH_S_S,
      TANK_PARAMS_MM,
      TANK_PARAMS_VAL,
      TANK_PARAMS_VPM,

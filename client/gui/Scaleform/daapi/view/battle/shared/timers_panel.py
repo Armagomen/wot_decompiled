@@ -31,47 +31,41 @@ from skeletons.gui.lobby_context import ILobbyContext
 from gui.battle_royale.constants import SteelHunterEquipmentNames
 _logger = logging.getLogger(__name__)
 _TIMERS_PRIORITY = {(_TIMER_STATES.STUN, _TIMER_STATES.WARNING_VIEW): 1,
-                    (_TIMER_STATES.CAPTURE_BLOCK, _TIMER_STATES.WARNING_VIEW): 1,
-                    (_TIMER_STATES.OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.HALF_OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.DROWN, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.DEATH_ZONE, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.DEATH_ZONE, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.ORANGE_ZONE, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.ORANGE_ZONE, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.FIRE, _TIMER_STATES.WARNING_VIEW): 2,
-                    (_TIMER_STATES.DROWN, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.OVERTURNED, _TIMER_STATES.WARNING_VIEW): 4,
-                    (_TIMER_STATES.HALF_OVERTURNED, _TIMER_STATES.WARNING_VIEW): 4,
-                    (_TIMER_STATES.UNDER_FIRE, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.RECOVERY, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.SECTOR_AIRSTRIKE, _TIMER_STATES.CRITICAL_VIEW): 1,
-                    (_TIMER_STATES.SECTOR_AIRSTRIKE, _TIMER_STATES.WARNING_VIEW): 1,
-                    (_TIMER_STATES.SMOKE, _TIMER_STATES.WARNING_VIEW): 4,
-                    (_TIMER_STATES.BERSERKER, _TIMER_STATES.WARNING_VIEW): 4,
-                    (_TIMER_STATES.INSPIRE, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.INSPIRE_CD, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.HEALING, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.HEALING_CD, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.REPAIRING, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.REPAIRING_CD, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.WT_BOMB_CAPTURE, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.WT_BOMB_DEPLOY, _TIMER_STATES.WARNING_VIEW): 3,
-                    (_TIMER_STATES.WT_BOMB_ABSORB, _TIMER_STATES.WARNING_VIEW): 3}
+ (_TIMER_STATES.CAPTURE_BLOCK, _TIMER_STATES.WARNING_VIEW): 1,
+ (_TIMER_STATES.OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.HALF_OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.DROWN, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.DEATH_ZONE, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.DEATH_ZONE, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.ORANGE_ZONE, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.ORANGE_ZONE, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.FIRE, _TIMER_STATES.WARNING_VIEW): 2,
+ (_TIMER_STATES.DROWN, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.OVERTURNED, _TIMER_STATES.WARNING_VIEW): 4,
+ (_TIMER_STATES.HALF_OVERTURNED, _TIMER_STATES.WARNING_VIEW): 4,
+ (_TIMER_STATES.UNDER_FIRE, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.RECOVERY, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.SECTOR_AIRSTRIKE, _TIMER_STATES.CRITICAL_VIEW): 1,
+ (_TIMER_STATES.SECTOR_AIRSTRIKE, _TIMER_STATES.WARNING_VIEW): 1,
+ (_TIMER_STATES.SMOKE, _TIMER_STATES.WARNING_VIEW): 4,
+ (_TIMER_STATES.BERSERKER, _TIMER_STATES.WARNING_VIEW): 4,
+ (_TIMER_STATES.INSPIRE, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.INSPIRE_CD, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.HEALING, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.HEALING_CD, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.REPAIRING, _TIMER_STATES.WARNING_VIEW): 3,
+ (_TIMER_STATES.REPAIRING_CD, _TIMER_STATES.WARNING_VIEW): 3}
 _SECONDARY_TIMERS = (_TIMER_STATES.STUN,
-                     _TIMER_STATES.CAPTURE_BLOCK,
-                     _TIMER_STATES.SMOKE,
-                     _TIMER_STATES.INSPIRE,
-                     _TIMER_STATES.INSPIRE_CD,
-                     _TIMER_STATES.HEALING,
-                     _TIMER_STATES.HEALING_CD,
-                     _TIMER_STATES.ORANGE_ZONE,
-                     _TIMER_STATES.BERSERKER,
-                     _TIMER_STATES.REPAIRING,
-                     _TIMER_STATES.REPAIRING_CD,
-                     _TIMER_STATES.WT_BOMB_CAPTURE,
-                     _TIMER_STATES.WT_BOMB_DEPLOY,
-                     _TIMER_STATES.WT_BOMB_ABSORB)
+ _TIMER_STATES.CAPTURE_BLOCK,
+ _TIMER_STATES.SMOKE,
+ _TIMER_STATES.INSPIRE,
+ _TIMER_STATES.INSPIRE_CD,
+ _TIMER_STATES.HEALING,
+ _TIMER_STATES.HEALING_CD,
+ _TIMER_STATES.ORANGE_ZONE,
+ _TIMER_STATES.BERSERKER,
+ _TIMER_STATES.REPAIRING,
+ _TIMER_STATES.REPAIRING_CD)
 _MAX_DISPLAYED_SECONDARY_STATUS_TIMERS = 2
 _VERTICAL_SHIFT_WITH_AUTOLOADER_IN_SNIPER_MODE = 42
 
@@ -421,8 +415,7 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
         if crosshairCtrl is not None:
             crosshairCtrl.onCrosshairViewChanged += self.__onCrosshairViewChanged
         self.__equipmentCtrl = self.sessionProvider.shared.equipments
-        self.as_setInitDataS({'mainTimers': self._generateMainTimersData(),
-         'secondaryTimers': self._generateSecondaryTimersData()})
+        self.__initData()
         return
 
     def _generateMainTimersData(self):
@@ -645,6 +638,12 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
             self._hideTimer(_TIMER_STATES.DEATH_ZONE)
         return
 
+    @MethodsRules.delayable()
+    def __initData(self):
+        self.as_setInitDataS({'mainTimers': self._generateMainTimersData(),
+         'secondaryTimers': self._generateSecondaryTimersData()})
+
+    @MethodsRules.delayable('__initData')
     @MethodsRules.delayable()
     def __onVehicleControlling(self, vehicle):
         ctrl = self.sessionProvider.shared.vehicleState

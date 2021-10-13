@@ -23,10 +23,8 @@ from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.game_control import IWalletController, IBattlePassController
 from skeletons.gui.shared import IItemsCache
-
 WINDOW_IS_NOT_OPENED = -1
 _NO_CHAPTER_CHOSEN = 0
-
 
 class BattlePassBuyViewStates(object):
 
@@ -45,10 +43,8 @@ class BattlePassBuyViewStates(object):
 g_BPBuyViewStates = BattlePassBuyViewStates()
 _logger = logging.getLogger(__name__)
 
-
 class BattlePassBuyView(ViewImpl):
-    __slots__ = (
-    '__packages', '__selectedPackage', '__tooltipItems', '__backCallback', '__backBtnDescrLabel', '__tooltipWindow')
+    __slots__ = ('__packages', '__selectedPackage', '__tooltipItems', '__backCallback', '__backBtnDescrLabel', '__tooltipWindow')
     __battlePassController = dependency.descriptor(IBattlePassController)
     __wallet = dependency.descriptor(IWalletController)
     __itemsCache = dependency.descriptor(IItemsCache)

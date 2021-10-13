@@ -45,16 +45,7 @@ _EXCLUDE_ITEMS = {v for v in ItemPackTypeGroup.CREW} | {ItemPackType.FRONTLINE_T
 _ANY_ITEM_TYPE = {v for _, v in ItemPackType.getIterator()} - _EXCLUDE_ITEMS
 _FRONTLINE_GIFTS = {v for _, v in ItemPackType.getIterator()} - {ItemPackType.FRONTLINE_TOKEN}
 _NATIVE_ITEM_TYPE = set(itertools.chain(ItemPackTypeGroup.VEHICLE, ItemPackTypeGroup.ITEM))
-_CREW_BOOKS = {ItemPackType.CREW_BOOK,
-               ItemPackType.CREW_BOOK_BROCHURE,
-               ItemPackType.CREW_BOOK_GUIDE,
-               ItemPackType.CREW_BOOK_CREW_BOOK,
-               ItemPackType.CREW_BOOK_PERSONAL_BOOK,
-               ItemPackType.CREW_BOOK_UNIVERSAL_BOOK}
-_CUSTOMIZATION_ITEM_TYPE = set(
-    itertools.chain(ItemPackTypeGroup.STYLE, ItemPackTypeGroup.CAMOUFLAGE, ItemPackTypeGroup.PAINT,
-                    ItemPackTypeGroup.DECAL, ItemPackTypeGroup.PROJECTION_DECAL, ItemPackTypeGroup.PERSONAL_NUMBER,
-                    ItemPackTypeGroup.MODIFICATION))
+_CUSTOMIZATION_ITEM_TYPE = set(itertools.chain(ItemPackTypeGroup.STYLE, ItemPackTypeGroup.CAMOUFLAGE, ItemPackTypeGroup.PAINT, ItemPackTypeGroup.DECAL, ItemPackTypeGroup.PROJECTION_DECAL, ItemPackTypeGroup.PERSONAL_NUMBER, ItemPackTypeGroup.MODIFICATION))
 _CUSTOMIZATION_TYPES_MAP = {ItemPackType.STYLE: CustomizationType.STYLE,
  ItemPackType.CAMOUFLAGE_ALL: CustomizationType.CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_SUMMER: CustomizationType.CAMOUFLAGE,
@@ -80,53 +71,53 @@ _UNCOUNTABLE_ITEM_TYPE = {ItemPackType.CUSTOM_PREMIUM,
  ItemPackType.CUSTOM_BPCOIN}
 _PACK_ITEMS_SORT_ORDER = list(itertools.chain(ItemPackTypeGroup.DISCOUNT, ItemPackTypeGroup.CUSTOM, ItemPackTypeGroup.TOKEN, ItemPackTypeGroup.GOODIE, ItemPackTypeGroup.CREW, ItemPackTypeGroup.STYLE, ItemPackTypeGroup.CAMOUFLAGE, ItemPackTypeGroup.DECAL, ItemPackTypeGroup.MODIFICATION, ItemPackTypeGroup.PAINT, ItemPackTypeGroup.ITEM))
 _TOOLTIP_TYPE = {ItemPackType.ITEM_DEVICE: TOOLTIPS_CONSTANTS.SHOP_MODULE,
-                 ItemPackType.ITEM_EQUIPMENT: TOOLTIPS_CONSTANTS.SHOP_MODULE,
-                 ItemPackType.ITEM_SHELL: TOOLTIPS_CONSTANTS.SHOP_SHELL,
-                 ItemPackType.GOODIE_CREDITS: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
-                 ItemPackType.GOODIE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
-                 ItemPackType.GOODIE_CREW_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
-                 ItemPackType.GOODIE_FREE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
-                 ItemPackType.GOODIE_FRONTLINE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
-                 ItemPackType.VEHICLE: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.VEHICLE_MEDIUM: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.VEHICLE_HEAVY: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.VEHICLE_LIGHT: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.VEHICLE_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.VEHICLE_AT_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
-                 ItemPackType.STYLE: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PAINT_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PAINT_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PAINT_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PAINT_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.DECAL_1: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.DECAL_2: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PROJECTION_DECAL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.PERSONAL_NUMBER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.MODIFICATION: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.CAMOUFLAGE_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.CAMOUFLAGE_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.CAMOUFLAGE_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.CAMOUFLAGE_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
-                 ItemPackType.ACHIEVEMENT: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
-                 ItemPackType.SINGLE_ACHIEVEMENTS: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
-                 ItemPackType.BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
-                 ItemPackType.REFERRAL_BADGE: TOOLTIPS_CONSTANTS.REFERRAL_BADGE,
-                 ItemPackType.PLAYER_BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
-                 ItemPackType.TRADE_IN_INFO: TOOLTIPS_CONSTANTS.TRADE_IN_INFO,
-                 ItemPackType.CREW_BUNDLE: TOOLTIPS_CONSTANTS.SHOP_CREW_BUNDLE,
-                 ItemPackType.CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.CREW_BOOK_BROCHURE: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.CREW_BOOK_GUIDE: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.CREW_BOOK_CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.CREW_BOOK_PERSONAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.CREW_BOOK_UNIVERSAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
-                 ItemPackType.BLUEPRINT: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
-                 ItemPackType.BLUEPRINT_NATIONAL: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
-                 ItemPackType.BLUEPRINT_INTELEGENCE_DATA: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
-                 ItemPackType.BLUEPRINT_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_INFO,
-                 ItemPackType.REFERRAL_AWARDS: TOOLTIPS_CONSTANTS.REFERRAL_AWARDS,
-                 ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS,
-                 ItemPackType.DEMOUNT_KIT: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT}
+ ItemPackType.ITEM_EQUIPMENT: TOOLTIPS_CONSTANTS.SHOP_MODULE,
+ ItemPackType.ITEM_SHELL: TOOLTIPS_CONSTANTS.SHOP_SHELL,
+ ItemPackType.GOODIE_CREDITS: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+ ItemPackType.GOODIE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+ ItemPackType.GOODIE_CREW_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+ ItemPackType.GOODIE_FREE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+ ItemPackType.GOODIE_FRONTLINE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+ ItemPackType.VEHICLE: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.VEHICLE_MEDIUM: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.VEHICLE_HEAVY: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.VEHICLE_LIGHT: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.VEHICLE_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.VEHICLE_AT_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+ ItemPackType.STYLE: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PAINT_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PAINT_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PAINT_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PAINT_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.DECAL_1: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.DECAL_2: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PROJECTION_DECAL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.PERSONAL_NUMBER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.MODIFICATION: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.CAMOUFLAGE_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.CAMOUFLAGE_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.CAMOUFLAGE_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.CAMOUFLAGE_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+ ItemPackType.ACHIEVEMENT: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
+ ItemPackType.SINGLE_ACHIEVEMENTS: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
+ ItemPackType.BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
+ ItemPackType.REFERRAL_BADGE: TOOLTIPS_CONSTANTS.REFERRAL_BADGE,
+ ItemPackType.PLAYER_BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
+ ItemPackType.TRADE_IN_INFO: TOOLTIPS_CONSTANTS.TRADE_IN_INFO,
+ ItemPackType.CREW_BUNDLE: TOOLTIPS_CONSTANTS.SHOP_CREW_BUNDLE,
+ ItemPackType.CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.CREW_BOOK_BROCHURE: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.CREW_BOOK_GUIDE: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.CREW_BOOK_CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.CREW_BOOK_PERSONAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.CREW_BOOK_UNIVERSAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+ ItemPackType.BLUEPRINT: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+ ItemPackType.BLUEPRINT_NATIONAL: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+ ItemPackType.BLUEPRINT_INTELEGENCE_DATA: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+ ItemPackType.BLUEPRINT_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_INFO,
+ ItemPackType.REFERRAL_AWARDS: TOOLTIPS_CONSTANTS.REFERRAL_AWARDS,
+ ItemPackType.DEMOUNT_KIT: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT,
+ ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS}
 _ICONS = {ItemPackType.CAMOUFLAGE_ALL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_WINTER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_SUMMER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
@@ -164,8 +155,7 @@ _PREM_ICONS = {1: RES_SHOP.MAPS_SHOP_REWARDS_48X48_ICON_BATTLE_MISSIONS_PRIZE_1D
 
 def __getPremiumPlusIcon(days):
     r = R.images.gui.maps.icons.quests.bonuses.small.dyn('premium_plus_{}'.format(days))
-    return backport.image(r()) if r.exists() else backport.image(
-        R.images.gui.maps.icons.quests.bonuses.small.premium_universal())
+    return backport.image(r()) if r.exists() else ''
 
 
 _BOX_ITEM = None
@@ -250,8 +240,6 @@ def getItemIcon(rawItem, item):
     if not icon:
         if item is not None:
             icon = _ICONS.get(rawItem.type, item.icon)
-            if rawItem.type in _CREW_BOOKS:
-                icon = backport.image(R.images.gui.maps.icons.crewBooks.books.small.dyn(item.icon)())
         elif rawItem.type == ItemPackType.CUSTOM_PREMIUM:
             icon = _PREM_ICONS.get(rawItem.count, '')
         elif rawItem.type == ItemPackType.CUSTOM_PREMIUM_PLUS:
@@ -349,7 +337,7 @@ def showItemTooltip(toolTipMgr, rawItem, item):
     tooltipType = getItemTooltipType(rawItem, item)
     if tooltipType is not None:
         defaults = toolTipMgr.getTypedTooltipDefaultBuildArgs(tooltipType)
-        buildArgs = [rawItem.extra.get(argName, defaultValue) for argName, defaultValue in defaults]
+        buildArgs = [ rawItem.extra.get(argName, defaultValue) for argName, defaultValue in defaults ]
         toolTipMgr.onCreateTypedTooltip(tooltipType, [rawItem.id] + buildArgs[1:], 'INFO')
     else:
         header = getItemTitle(rawItem, item)
@@ -396,8 +384,7 @@ def _createItemVO(rawItem, itemsCache, goodiesCache, slotIndex, rawTooltipData=N
         overlay = fittingItem.getHighlightType() if fittingItem is not None else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
         if rawItem.type in ItemPackTypeGroup.CREW:
             countFormat = _formatCrew(rawItem)
-        elif rawItem.type in _UNCOUNTABLE_ITEM_TYPE and icon != backport.image(
-                R.images.gui.maps.icons.quests.bonuses.small.premium_universal()):
+        elif rawItem.type in _UNCOUNTABLE_ITEM_TYPE:
             countFormat = ''
         else:
             count = rawItem.count
@@ -433,15 +420,12 @@ def _getBoxTooltipVO(rawItems, itemsCache, goodiesCache):
             overlay = fittingItem.getHighlightType()
         else:
             overlay = SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
-        count = str(rawItem.count) if rawItem.type not in _UNCOUNTABLE_ITEM_TYPE and rawItem.count > 1 else ''
-        if icon == backport.image(R.images.gui.maps.icons.quests.bonuses.small.premium_universal()):
-            count = str(rawItem.count)
         items.append({'id': rawItem.id,
-                      'type': rawItem.type,
-                      'count': count,
-                      'icon': icon,
-                      'overlay': overlay,
-                      'desc': getItemTitle(rawItem, fittingItem, forBox=True)})
+         'type': rawItem.type,
+         'count': str(rawItem.count) if rawItem.type not in _UNCOUNTABLE_ITEM_TYPE and rawItem.count > 1 else '',
+         'icon': icon,
+         'overlay': overlay,
+         'desc': getItemTitle(rawItem, fittingItem, forBox=True)})
 
     vo = {'icon': backport.image(R.images.gui.maps.icons.rankedBattles.boxes.c_48x48.metal_1()),
      'count': len(rawItems),

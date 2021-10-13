@@ -16,14 +16,15 @@ class VEHICLE_PREVIEW(object):
     HEADER_BACKBTN_DESCRLABEL_FRONTLINE = '#vehicle_preview:header/backBtn/descrLabel/frontline'
     HEADER_BACKBTN_DESCRLABEL_EVENTPROGRESSION = '#vehicle_preview:header/backBtn/descrLabel/eventProgression'
     HEADER_BACKBTN_DESCRLABEL_MARATHON = '#vehicle_preview:header/backBtn/descrLabel/marathon'
-    HEADER_BACKBTN_DESCRLABEL_SABATON_MARATHON = '#vehicle_preview:header/backBtn/descrLabel/sabaton_marathon'
+    HEADER_BACKBTN_DESCRLABEL_MAY21_MARATHON = '#vehicle_preview:header/backBtn/descrLabel/may21_marathon'
     HEADER_BACKBTN_DESCRLABEL_RANKED = '#vehicle_preview:header/backBtn/descrLabel/ranked'
     HEADER_BACKBTN_DESCRLABEL_VEHPOSTPROGRESSION = '#vehicle_preview:header/backBtn/descrLabel/vehPostProgression'
     HEADER_BACKBTN_DESCRLABEL_BLUEPRINTSEXCHANGE = '#vehicle_preview:header/backBtn/descrLabel/blueprintsExchange'
-    HEADER_BACKBTN_DESCRLABEL_WTTANKPORTAL = '#vehicle_preview:header/backBtn/descrLabel/wtTankPortal'
     HEADER_TITLE = '#vehicle_preview:header/title'
-    HERO_HEADER_TITLE = '#vehicle_preview:hero/header/title'
     HEADER_CLOSEBTN_LABEL = '#vehicle_preview:header/closeBtn/label'
+    HERO_HEADER_TITLE = '#vehicle_preview:hero/header/title'
+    DISCLAIMER = '#vehicle_preview:disclaimer'
+    DISCLAIMER_BUTTON = '#vehicle_preview:disclaimer/button'
     BUYINGPANEL_LABEL = '#vehicle_preview:buyingPanel/Label'
     BUYINGPANEL_ALERTLABEL = '#vehicle_preview:buyingPanel/alertLabel'
     BUYINGPANEL_UNIQUEVEHICLELABEL = '#vehicle_preview:buyingPanel/uniqueVehicleLabel'
@@ -102,21 +103,20 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_PROGRESSIONSTYLES_NOTIFICATION_TEXT = '#vehicle_preview:buyingPanel/progressionStyles/notification/text'
     BUYINGPANEL_PROGRESSIONSTYLES_CURRENTLEVEL = '#vehicle_preview:buyingPanel/progressionStyles/currentLevel'
     HEADER_BACKBTN_DESCRLABEL_ENUM = (HEADER_BACKBTN_DESCRLABEL_RESEARCHTREE,
-                                      HEADER_BACKBTN_DESCRLABEL_PERSONALAWARDS,
-                                      HEADER_BACKBTN_DESCRLABEL_SHOP,
-                                      HEADER_BACKBTN_DESCRLABEL_STORAGE,
-                                      HEADER_BACKBTN_DESCRLABEL_ADVENTCALENDAR,
-                                      HEADER_BACKBTN_DESCRLABEL_HANGAR,
-                                      HEADER_BACKBTN_DESCRLABEL_VEHICLECOMPARE,
-                                      HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM,
-                                      HEADER_BACKBTN_DESCRLABEL_FRONTLINE,
-                                      HEADER_BACKBTN_DESCRLABEL_EVENTPROGRESSION,
-                                      HEADER_BACKBTN_DESCRLABEL_MARATHON,
-                                      HEADER_BACKBTN_DESCRLABEL_SABATON_MARATHON,
-                                      HEADER_BACKBTN_DESCRLABEL_RANKED,
-                                      HEADER_BACKBTN_DESCRLABEL_VEHPOSTPROGRESSION,
-                                      HEADER_BACKBTN_DESCRLABEL_BLUEPRINTSEXCHANGE,
-                                      HEADER_BACKBTN_DESCRLABEL_WTTANKPORTAL)
+     HEADER_BACKBTN_DESCRLABEL_PERSONALAWARDS,
+     HEADER_BACKBTN_DESCRLABEL_SHOP,
+     HEADER_BACKBTN_DESCRLABEL_STORAGE,
+     HEADER_BACKBTN_DESCRLABEL_ADVENTCALENDAR,
+     HEADER_BACKBTN_DESCRLABEL_HANGAR,
+     HEADER_BACKBTN_DESCRLABEL_VEHICLECOMPARE,
+     HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM,
+     HEADER_BACKBTN_DESCRLABEL_FRONTLINE,
+     HEADER_BACKBTN_DESCRLABEL_EVENTPROGRESSION,
+     HEADER_BACKBTN_DESCRLABEL_MARATHON,
+     HEADER_BACKBTN_DESCRLABEL_MAY21_MARATHON,
+     HEADER_BACKBTN_DESCRLABEL_RANKED,
+     HEADER_BACKBTN_DESCRLABEL_VEHPOSTPROGRESSION,
+     HEADER_BACKBTN_DESCRLABEL_BLUEPRINTSEXCHANGE)
     BUYINGPANEL_OFFER_RENT_NAME_ENUM = (BUYINGPANEL_OFFER_RENT_NAME_CYCLE, BUYINGPANEL_OFFER_RENT_NAME_CYCLES, BUYINGPANEL_OFFER_RENT_NAME_SEASON)
     BUYINGPANEL_OFFER_RENT_LABEL_ENUM = (BUYINGPANEL_OFFER_RENT_LABEL_CYCLE, BUYINGPANEL_OFFER_RENT_LABEL_CYCLES, BUYINGPANEL_OFFER_RENT_LABEL_SEASON)
 

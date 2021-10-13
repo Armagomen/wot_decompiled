@@ -14,8 +14,7 @@ from gui.impl.lobby.awards import SupportedTokenTypes
 from gui.impl.lobby.awards.prefetch import TokenDataPrefetcher
 from gui.impl.lobby.awards.tooltip import VEH_FOR_CHOOSE_ID
 from gui.shared.gui_items.Vehicle import getNationLessName, getIconResourceName
-from gui.shared.missions.packers.bonus import VehiclesBonusUIPacker, getDefaultBonusPackersMap, BaseBonusUIPacker, \
-    AsyncBonusUIPacker, BACKPORT_TOOLTIP_CONTENT_ID, Customization3Dand2DbonusUIPacker
+from gui.shared.missions.packers.bonus import VehiclesBonusUIPacker, getDefaultBonusPackersMap, BaseBonusUIPacker, AsyncBonusUIPacker, BACKPORT_TOOLTIP_CONTENT_ID, Customization3Dand2DbonusUIPacker
 from gui.shared.utils.functions import makeTooltip
 from helpers import dependency, int2roman
 from skeletons.gui.offers import IOffersDataProvider
@@ -61,9 +60,9 @@ def _getOffersTokenStateData(offers):
 
     rentTypesCount = len(rentData)
     return (offersIDs[0] if len(offersIDs) == 1 else 0,
-            vehicles,
-            rentTypesCount > 0,
-            rentData[0] if rentTypesCount == 1 else None)
+     vehicles,
+     rentTypesCount > 0,
+     rentData[0] if rentTypesCount == 1 else None)
 
 
 def _getVehicleUIData(vehicle):
@@ -190,8 +189,7 @@ class _MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
         for vehicle, _ in bonus.getVehicles():
             compensation = bonus.compensation(vehicle, bonus)
             if compensation:
-                outcome.append(
-                    R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent())
+                outcome.append(R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent())
             outcome.append(BACKPORT_TOOLTIP_CONTENT_ID)
 
         return outcome
@@ -199,22 +197,21 @@ class _MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
     @classmethod
     def _packCompensationTooltip(cls, bonusComp, vehicle):
         tooltipDataList = super(_MultiAwardVehiclesBonusUIPacker, cls)._packCompensationTooltip(bonusComp, vehicle)
-        return [cls.__convertCompensationTooltip(bonusComp, vehicle, tooltipData) for tooltipData in tooltipDataList]
+        return [ cls.__convertCompensationTooltip(bonusComp, vehicle, tooltipData) for tooltipData in tooltipDataList ]
 
     @classmethod
     def _packTooltip(cls, bonus, vehicle, vehInfo):
         result = super(_MultiAwardVehiclesBonusUIPacker, cls)._packTooltip(bonus, vehicle, vehInfo)
         tmanRoleLevel = bonus.getTmanRoleLevel(vehInfo)
         result.specialArgs.extend([tmanRoleLevel > 0, False])
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EXTENDED_AWARD_VEHICLE,
-                                 specialArgs=result.specialArgs)
+        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EXTENDED_AWARD_VEHICLE, specialArgs=result.specialArgs)
 
     @classmethod
     def __convertCompensationTooltip(cls, bonusComp, vehicle, tooltipData):
         specialArgs = {'labelBefore': '',
-                       'iconAfter': backport.image(R.images.gui.maps.icons.quests.bonuses.big.gold()),
-                       'labelAfter': bonusComp.getIconLabel(),
-                       'bonusName': bonusComp.getName()}
+         'iconAfter': backport.image(R.images.gui.maps.icons.quests.bonuses.big.gold()),
+         'labelAfter': bonusComp.getIconLabel(),
+         'bonusName': bonusComp.getName()}
         uiData = _getVehicleUIData(vehicle)
         formattedTypeName = uiData['vehicleType']
         isElite = vehicle.isElite
@@ -233,9 +230,9 @@ def getMultipleAwardsBonusPacker(productCode):
     tokenBonus = _MultiAwardTokenBonusUIPacker(productCode)
     mapping = getDefaultBonusPackersMap()
     mapping.update({'vehicles': _MultiAwardVehiclesBonusUIPacker(),
-                    'tmanToken': TmanTemplateBonusPacker(),
-                    'customizations': Customization3Dand2DbonusUIPacker(),
-                    SupportedTokenTypes.BATTLE_TOKEN: tokenBonus,
-                    SupportedTokenTypes.TOKENS: tokenBonus,
-                    SupportedTokenTypes.PROGRESSION_XP_TOKEN: tokenBonus})
+     'tmanToken': TmanTemplateBonusPacker(),
+     'customizations': Customization3Dand2DbonusUIPacker(),
+     SupportedTokenTypes.BATTLE_TOKEN: tokenBonus,
+     SupportedTokenTypes.TOKENS: tokenBonus,
+     SupportedTokenTypes.PROGRESSION_XP_TOKEN: tokenBonus})
     return AsyncBonusUIPacker(mapping)

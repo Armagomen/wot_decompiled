@@ -345,8 +345,7 @@ def saveOptimizedGarbage(path):
     with open(path, 'w') as f:
         for garbageObject in gcGarbageCopy:
             try:
-                f.write(logPattern.format(delimiter, str(garbageObject), type(garbageObject),
-                                          sys.getrefcount(garbageObject), inspect.getmodule(garbageObject)))
+                f.write(logPattern.format(delimiter, str(garbageObject), type(garbageObject), sys.getrefcount(garbageObject), inspect.getmodule(garbageObject)))
             except:
                 continue
 

@@ -35,10 +35,7 @@ from vehicle_systems.tankStructure import TankNodeNames
 from gui.impl.lobby.maps_training.sound_constants import MapsTrainingSound, MAPS_TRAINING_SOUND_SPACE
 
 class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
-    __slots__ = (
-    '__selectedMap', '__selectedScenario', '__ctxVehicleType', '__ctxSide', '__ctxShowAnimation', '__tooltipData',
-    '__account', '__mapsConfig', '__isDataLoaded', '__blur', '__blurRectId', '__packer', '__hangarCameraManager',
-    '__tickCallback', '__preferences', '__markerPosOffset', '__finalizationInProgress')
+    __slots__ = ('__selectedMap', '__selectedScenario', '__ctxVehicleType', '__ctxSide', '__ctxShowAnimation', '__tooltipData', '__account', '__mapsConfig', '__isDataLoaded', '__blur', '__blurRectId', '__packer', '__hangarCameraManager', '__tickCallback', '__preferences', '__markerPosOffset', '__finalizationInProgress')
     _TACTICAL_MAPS_CONFIG_PATH = 'scripts/maps_training_tactical_maps.xml'
     _SCENARIO_COUNT = len(VEHICLE_TYPE.ALL_TYPES) * len(VEHICLE_TYPE.ALL_TEAMS)
     _UPDATE_TICK_RATE = 0.1

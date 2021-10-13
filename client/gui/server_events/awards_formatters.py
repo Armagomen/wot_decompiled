@@ -13,7 +13,6 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.settings import ICONS_SIZES
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.lobby.wt_event.wt_event_constants import EventCollections
 from gui.ranked_battles.constants import YEAR_POINTS_TOKEN, YEAR_AWARD_SELECTABLE_OPT_DEVICE
 from gui.server_events.formatters import parseComplexToken, TOKEN_SIZES
 from gui.server_events.recruit_helper import getRecruitInfo
@@ -31,7 +30,6 @@ from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
 from personal_missions import PM_BRANCH
 from shared_utils import CONST_CONTAINER, findFirst
 from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.game_control import IGameEventController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
@@ -62,35 +60,31 @@ class LABEL_ALIGN(CONST_CONTAINER):
 PACK_RENT_VEHICLES_BONUS = 'packRentVehicleBonus'
 BATTLE_BONUS_X5_TOKEN = 'battle_bonus_x5'
 AWARD_IMAGES = {AWARDS_SIZES.SMALL: {Currency.CREDITS: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CREDITS,
-                                     Currency.GOLD: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_GOLD,
-                                     Currency.CRYSTAL: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CRYSTAL,
-                                     Currency.EVENT_COIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EVENTCOIN,
-                                     Currency.BPCOIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_BPCOIN,
-                                     'creditsFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CREDITS,
-                                     'freeXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP,
-                                     'freeXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP,
-                                     'tankmenXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMENXP,
-                                     'tankmenXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMENXP,
-                                     'xp': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EXP,
-                                     'xpFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EXP,
-                                     'dailyXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP,
-                                     EventCollections.BOSS: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_COLLECTION_BOSS,
-                                     EventCollections.HUNTER: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_COLLECTION_HUNTER},
-                AWARDS_SIZES.BIG: {Currency.CREDITS: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CREDITS,
-                                   Currency.GOLD: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_GOLD,
-                                   Currency.CRYSTAL: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CRYSTAL,
-                                   Currency.EVENT_COIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EVENTCOIN,
-                                   Currency.BPCOIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_BPCOIN,
-                                   'creditsFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CREDITS,
-                                   'freeXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP,
-                                   'freeXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP,
-                                   'tankmenXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKMENXP,
-                                   'tankmenXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKMENXP,
-                                   'xp': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EXP,
-                                   'xpFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EXP,
-                                   'dailyXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP,
-                                   EventCollections.BOSS: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_COLLECTION_BOSS,
-                                   EventCollections.HUNTER: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_COLLECTION_HUNTER}}
+                      Currency.GOLD: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_GOLD,
+                      Currency.CRYSTAL: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CRYSTAL,
+                      Currency.EVENT_COIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EVENTCOIN,
+                      Currency.BPCOIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_BPCOIN,
+                      'creditsFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CREDITS,
+                      'freeXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP,
+                      'freeXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP,
+                      'tankmenXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMENXP,
+                      'tankmenXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_TANKMENXP,
+                      'xp': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EXP,
+                      'xpFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_EXP,
+                      'dailyXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP},
+ AWARDS_SIZES.BIG: {Currency.CREDITS: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CREDITS,
+                    Currency.GOLD: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_GOLD,
+                    Currency.CRYSTAL: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CRYSTAL,
+                    Currency.EVENT_COIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EVENTCOIN,
+                    Currency.BPCOIN: RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_BPCOIN,
+                    'creditsFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_CREDITS,
+                    'freeXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP,
+                    'freeXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP,
+                    'tankmenXP': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKMENXP,
+                    'tankmenXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKMENXP,
+                    'xp': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EXP,
+                    'xpFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_EXP,
+                    'dailyXPFactor': RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_FREEXP}}
 
 def _getMultiplierFormatter(formatter):
 
@@ -131,23 +125,23 @@ def getDefaultFormattersMap():
     tokenBonusFormatter = TokenBonusFormatter()
     countableIntegralBonusFormatter = CountableIntegralBonusFormatter()
     return {'strBonus': simpleBonusFormatter,
-            Currency.GOLD: simpleBonusFormatter,
-            Currency.CREDITS: simpleBonusFormatter,
-            Currency.CRYSTAL: simpleBonusFormatter,
-            Currency.EVENT_COIN: simpleBonusFormatter,
-            Currency.BPCOIN: simpleBonusFormatter,
-            'freeXP': simpleBonusFormatter,
-            'xp': simpleBonusFormatter,
-            'tankmenXP': simpleBonusFormatter,
-            'xpFactor': simpleBonusFormatter,
-            'creditsFactor': simpleBonusFormatter,
-            'freeXPFactor': simpleBonusFormatter,
-            'tankmenXPFactor': simpleBonusFormatter,
-            'dailyXPFactor': simpleBonusFormatter,
-            PREMIUM_ENTITLEMENTS.BASIC: PremiumDaysBonusFormatter(),
-            PREMIUM_ENTITLEMENTS.PLUS: PremiumDaysBonusFormatter(),
-            'vehicles': VehiclesBonusFormatter(),
-            'meta': simpleBonusFormatter,
+     Currency.GOLD: simpleBonusFormatter,
+     Currency.CREDITS: simpleBonusFormatter,
+     Currency.CRYSTAL: simpleBonusFormatter,
+     Currency.EVENT_COIN: simpleBonusFormatter,
+     Currency.BPCOIN: simpleBonusFormatter,
+     'freeXP': simpleBonusFormatter,
+     'xp': simpleBonusFormatter,
+     'tankmenXP': simpleBonusFormatter,
+     'xpFactor': simpleBonusFormatter,
+     'creditsFactor': simpleBonusFormatter,
+     'freeXPFactor': simpleBonusFormatter,
+     'tankmenXPFactor': simpleBonusFormatter,
+     'dailyXPFactor': simpleBonusFormatter,
+     PREMIUM_ENTITLEMENTS.BASIC: PremiumDaysBonusFormatter(),
+     PREMIUM_ENTITLEMENTS.PLUS: PremiumDaysBonusFormatter(),
+     'vehicles': VehiclesBonusFormatter(),
+     'meta': simpleBonusFormatter,
      'tokens': tokenBonusFormatter,
      'tankwomanBonus': TankwomanBonusFormatter(),
      'battleToken': tokenBonusFormatter,
@@ -158,18 +152,17 @@ def getDefaultFormattersMap():
      'dossier': DossierBonusFormatter(),
      'progressionXPToken': tokenBonusFormatter,
      'blueprints': BlueprintBonusFormatter(),
-            'blueprintsAny': BlueprintBonusFormatter(),
-            'finalBlueprints': BlueprintBonusFormatter(),
-            'crewSkins': CrewSkinsBonusFormatter(),
-            'crewBooks': CrewBooksBonusFormatter(),
-            'slots': countableIntegralBonusFormatter,
-            'berths': countableIntegralBonusFormatter,
-            'entitlements': EntitlementFormatter(),
-            'rankedDailyBattles': countableIntegralBonusFormatter,
-            'rankedBonusBattles': countableIntegralBonusFormatter,
-            'tmanToken': TmanTemplateBonusFormatter(),
-            'battlePassPoints': BattlePassBonusFormatter(),
-            'ticket': tokenBonusFormatter}
+     'blueprintsAny': BlueprintBonusFormatter(),
+     'finalBlueprints': BlueprintBonusFormatter(),
+     'crewSkins': CrewSkinsBonusFormatter(),
+     'crewBooks': CrewBooksBonusFormatter(),
+     'slots': countableIntegralBonusFormatter,
+     'berths': countableIntegralBonusFormatter,
+     'entitlements': EntitlementFormatter(),
+     'rankedDailyBattles': countableIntegralBonusFormatter,
+     'rankedBonusBattles': countableIntegralBonusFormatter,
+     'tmanToken': TmanTemplateBonusFormatter(),
+     'battlePassPoints': BattlePassBonusFormatter()}
 
 
 def getEpicFormattersMap():
@@ -262,18 +255,12 @@ def getBattlePassFormatterMap():
 def getRoyaleFormatterMap():
     simpleBonusFormatter = SimpleBonusFormatter()
     return {Currency.GOLD: simpleBonusFormatter,
-            Currency.CREDITS: simpleBonusFormatter,
-            Currency.CRYSTAL: simpleBonusFormatter,
-            PREMIUM_ENTITLEMENTS.BASIC: PremiumDaysBonusFormatter(),
-            PREMIUM_ENTITLEMENTS.PLUS: PremiumDaysBonusFormatter(),
-            'customizations': CustomizationsBonusFormatter(),
-            'dossier': DossierBonusFormatter()}
-
-
-def getEventFormattersMap():
-    mapping = getDefaultFormattersMap()
-    mapping.update({'groups': EventGroupsFormatter()})
-    return mapping
+     Currency.CREDITS: simpleBonusFormatter,
+     Currency.CRYSTAL: simpleBonusFormatter,
+     PREMIUM_ENTITLEMENTS.BASIC: PremiumDaysBonusFormatter(),
+     PREMIUM_ENTITLEMENTS.PLUS: PremiumDaysBonusFormatter(),
+     'customizations': CustomizationsBonusFormatter(),
+     'dossier': DossierBonusFormatter()}
 
 
 def getDefaultAwardFormatter():
@@ -320,14 +307,10 @@ def getRoyaleAwardsPacker():
     return AwardsPacker(getRoyaleFormatterMap())
 
 
-def getEventAwardFormatter():
-    return AwardsPacker(getEventFormattersMap())
-
-
 def getPersonalMissionAwardPacker():
     mapping = getDefaultFormattersMap()
     mapping.update({'completionTokens': CompletionTokensBonusFormatter(),
-                    'freeTokens': FreeTokensBonusFormatter()})
+     'freeTokens': FreeTokensBonusFormatter()})
     return AwardsPacker(mapping)
 
 
@@ -362,8 +345,7 @@ def formatTimeLabel(hours):
     return str(int(time)) + ' ' + timeMetric
 
 
-_PreformattedBonus = namedtuple('_PreformattedBonus',
-                                'bonusName label userName images tooltip labelFormatter areTokensPawned specialArgs specialAlias isSpecial isCompensation align highlightType overlayType highlightIcon overlayIcon compensationReason postProcessTags isWulfTooltip')
+_PreformattedBonus = namedtuple('_PreformattedBonus', 'bonusName label userName images tooltip labelFormatter areTokensPawned specialArgs specialAlias isSpecial isCompensation align highlightType overlayType highlightIcon overlayIcon compensationReason postProcessTags')
 
 class PostProcessTags(CONST_CONTAINER):
     IS_SUFFIX_BADGE = 'isSuffixBadge'
@@ -401,24 +383,23 @@ class PreformattedBonus(_PreformattedBonus):
 
 
 PreformattedBonus.__new__.__defaults__ = (None,
-                                          None,
-                                          None,
-                                          None,
-                                          None,
-                                          None,
-                                          False,
-                                          None,
-                                          None,
-                                          False,
-                                          False,
-                                          LABEL_ALIGN.CENTER,
-                                          None,
-                                          None,
-                                          None,
-                                          None,
-                                          None,
-                                          tuple(),
-                                          False)
+ None,
+ None,
+ None,
+ None,
+ None,
+ False,
+ None,
+ None,
+ False,
+ False,
+ LABEL_ALIGN.CENTER,
+ None,
+ None,
+ None,
+ None,
+ None,
+ tuple())
 
 class QuestsBonusComposer(object):
 
@@ -694,7 +675,6 @@ class SeniorityPremiumDaysBonusFormatter(LinkedSetPremiumDaysBonusFormatter):
 class TokenBonusFormatter(SimpleBonusFormatter):
     eventsCache = dependency.descriptor(IEventsCache)
     itemsCache = dependency.descriptor(IItemsCache)
-    gameEventCtrl = dependency.descriptor(IGameEventController)
 
     @staticmethod
     def getBattleBonusX5Tooltip(*args):
@@ -712,7 +692,6 @@ class TokenBonusFormatter(SimpleBonusFormatter):
     def _getFormattedBonus(self, tokenID, token, bonus):
         formatted = None
         complexToken = parseComplexToken(tokenID)
-        ticketName = self.gameEventCtrl.getConfig().ticketToken
         if complexToken.isDisplayable:
             formatted = self._formatComplexToken(complexToken, token, bonus)
         elif tokenID.startswith(LOOTBOX_TOKEN_PREFIX):
@@ -721,8 +700,6 @@ class TokenBonusFormatter(SimpleBonusFormatter):
             formatted = self._formatBattleBonusToken(token, bonus)
         elif tokenID.startswith(RESOURCE_TOKEN_PREFIX):
             formatted = self._formatResource(token, bonus)
-        elif tokenID == ticketName:
-            formatted = self._formatTicket(token, bonus)
         return formatted
 
     def _formatBonusLabel(self, count):
@@ -768,32 +745,10 @@ class TokenBonusFormatter(SimpleBonusFormatter):
             for size in AWARDS_SIZES.ALL():
                 images[size] = RES_ICONS.getLootBoxBonusIcon(size, lootBox.getType())
 
-            return PreformattedBonus(label=self._formatBonusLabel(token.count), userName=lootBox.getUserName(),
-                                     labelFormatter=self._getLabelFormatter(bonus), images=images,
-                                     specialAlias=TOOLTIPS_CONSTANTS.EVENT_LOOTBOX, specialArgs=[lootBox.getType()],
-                                     isWulfTooltip=True, tooltip=makeTooltip(header=lootBox.getUserName(), body=''),
-                                     align=LABEL_ALIGN.RIGHT, isCompensation=self._isCompensation(bonus))
+            return PreformattedBonus(label=self._formatBonusLabel(token.count), userName=lootBox.getUserName(), labelFormatter=self._getLabelFormatter(bonus), images=images, tooltip=makeTooltip(header=lootBox.getUserName(), body=''), align=self._getLabelAlign(bonus), isCompensation=self._isCompensation(bonus))
 
     def _formatBattleBonusToken(self, token, bonus):
-        return None if token.count <= 0 else PreformattedBonus(bonusName=bonus.getName(),
-                                                               label=self._formatBonusLabel(token.count),
-                                                               userName=bonus.getUserName(),
-                                                               labelFormatter=self._getLabelFormatter(bonus),
-                                                               images=self.__getBattleBonusX5Images(),
-                                                               tooltip=self.getBattleBonusX5Tooltip(),
-                                                               align=self._getLabelAlign(bonus),
-                                                               isCompensation=self._isCompensation(bonus))
-
-    def _formatTicket(self, token, bonus):
-        images = {}
-        header = backport.text(R.strings.event.ticketTooltip.title())
-        for size in AWARDS_SIZES.ALL():
-            images[size] = RES_ICONS.getBonusIcon(size, 'ticket')
-
-        return PreformattedBonus(bonusName=token.id, images=images, label=self._formatBonusLabel(token.count),
-                                 userName=header, labelFormatter=self._getLabelFormatter(bonus),
-                                 align=LABEL_ALIGN.RIGHT, isCompensation=self._isCompensation(bonus),
-                                 specialAlias=TOOLTIPS_CONSTANTS.EVENT_BATTLES_TICKET, isWulfTooltip=True)
+        return None if token.count <= 0 else PreformattedBonus(bonusName=bonus.getName(), label=self._formatBonusLabel(token.count), userName=bonus.getUserName(), labelFormatter=self._getLabelFormatter(bonus), images=self.__getBattleBonusX5Images(), tooltip=self.getBattleBonusX5Tooltip(), align=self._getLabelAlign(bonus), isCompensation=self._isCompensation(bonus))
 
     @staticmethod
     def __getBattleBonusX5Images():
@@ -1686,40 +1641,3 @@ class BattlePassEpicBonusFormatter(BattlePassBonusFormatter):
         if image is not None:
             images[size] = image
         return images
-
-
-class EventGroupsFormatter(SimpleBonusFormatter):
-    __gameEventCtrl = dependency.descriptor(IGameEventController)
-
-    def _format(self, bonus):
-        if bonus.getName() != 'groups':
-            return []
-        else:
-            value = bonus.getValue()
-            if not value or 'oneof' not in value[0]:
-                return []
-            bonusesCount = len(value[0]['oneof'][1])
-            bossSize = self.__gameEventCtrl.getBossCollectionSize()
-            hunterSize = self.__gameEventCtrl.getHunterCollectionSize()
-            if bonusesCount == bossSize:
-                collectionType = EventCollections.BOSS
-            elif bonusesCount == hunterSize:
-                collectionType = EventCollections.HUNTER
-            else:
-                collectionType = None
-            return [] if not collectionType else [PreformattedBonus(label='', images=self._getImages(collectionType),
-                                                                    tooltip=self._makeTooltip(collectionType))]
-
-    @classmethod
-    def _getImages(cls, collectionType):
-        result = {}
-        for size in AWARDS_SIZES.ALL():
-            result[size] = AWARD_IMAGES.get(size, {}).get(collectionType)
-
-        return result
-
-    @staticmethod
-    def _makeTooltip(collectionType):
-        collectionName = 'boss' if collectionType == EventCollections.BOSS else 'hunter'
-        collectionRes = R.strings.event.bonuses.dyn('%s_collection' % collectionName)
-        return makeTooltip(backport.text(collectionRes.tooltip.header()), backport.text(collectionRes.tooltip.body()))

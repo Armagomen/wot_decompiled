@@ -20,8 +20,7 @@ from gui.impl.gen import R
 from gui.prb_control.settings import VEHICLE_LEVELS
 from gui.shared.formatters import text_styles
 from gui.shared.formatters.ranges import toRomanRangeString
-from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME, \
-    VEHICLE_ROLES_LABELS_BY_CLASS
+from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME, VEHICLE_ROLES_LABELS_BY_CLASS
 from gui.shared.utils.functions import makeTooltip
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -290,8 +289,7 @@ class TankCarouselFilterPopover(VehiclesFilterPopover):
             mapping[_SECTION.SPECIALS].append('event')
         if constants.IS_KOREA:
             mapping[_SECTION.SPECIALS].append('igr')
-        clanWarsVehicles = cls.itemsCache.items.getItems(GUI_ITEM_TYPE.VEHICLE,
-                                                         REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLAN_WARS)
+        clanWarsVehicles = cls.itemsCache.items.getItems(GUI_ITEM_TYPE.VEHICLE, REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLAN_WARS)
         if bool(clanWarsVehicles):
             mapping[_SECTION.SPECIALS].append('clanRented')
         return mapping

@@ -119,10 +119,7 @@ class BattleSessionEntity(LegacyEntity):
         result = dict(((r, []) for r in prbRosters))
         for roster in prbRosters:
             if roster in rosters:
-                result[roster] = map(lambda accInfo, rosterBits=roster: prb_items.PlayerPrbInfo(accInfo[0], entity=self,
-                                                                                                roster=rosterBits,
-                                                                                                **accInfo[1]),
-                                     rosters[roster].iteritems())
+                result[roster] = map(lambda accInfo, rosterBits=roster: prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=rosterBits, **accInfo[1]), rosters[roster].iteritems())
 
         return result
 

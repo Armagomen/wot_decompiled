@@ -4,7 +4,6 @@ from frameworks.wulf import Array
 from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
 from gui.impl.gen.view_models.views.lobby.marathon.base_event_model import BaseEventModel
 
-
 class BonusesEventModel(BaseEventModel):
     __slots__ = ()
 

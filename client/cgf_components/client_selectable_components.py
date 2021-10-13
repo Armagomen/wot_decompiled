@@ -10,10 +10,8 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.game_control.links import URLMacros
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
 if IS_CLIENT:
     from gui.shared.event_dispatcher import showBrowserOverlayView
-
 
 class OnClickComponent(CGFComponent):
     onClickAction = Event.Event()
@@ -23,8 +21,7 @@ class OnClickComponent(CGFComponent):
 
 
 class OpenBrowserOnClickComponent(CGFComponent):
-    urlProvider = ComponentProperty(type=CGFMetaTypes.STRING, editorName='url provider',
-                                    value='MARATHON_VIDEO_URL_PROVIDER')
+    urlProvider = ComponentProperty(type=CGFMetaTypes.STRING, editorName='url provider', value='MARATHON_VIDEO_URL_PROVIDER')
 
     def __init__(self):
         super(OpenBrowserOnClickComponent, self).__init__()
@@ -47,7 +44,6 @@ def getMarathonVideoUrl():
 
 
 URL_PROVIDERS = {'MARATHON_VIDEO_URL_PROVIDER': getMarathonVideoUrl}
-
 
 @autoregister(presentInAllWorlds=False, category='lobby')
 class ClientSelectableComponentsManager(CGF.ComponentManager):

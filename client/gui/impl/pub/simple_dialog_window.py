@@ -3,7 +3,6 @@
 import typing
 from frameworks.wulf import ViewModel, ViewSettings
 from gui.impl.gen.resources import R
-from PlayerEvents import g_playerEvents
 from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
 from gui.impl.gen.view_models.windows.simple_dialog_window_model import SimpleDialogWindowModel
 from gui.impl.pub.dialog_window import DialogContent, DialogFlags
@@ -11,25 +10,11 @@ from gui.impl.pub.pure_dialog_window import PureDialogWindow
 
 class SimpleDialogWindow(PureDialogWindow):
 
-    def __init__(self, bottomContent=None, parent=None, balanceContent=None, enableBlur=True,
-                 preset=DialogPresets.DEFAULT, flags=DialogFlags.TOP_WINDOW):
+    def __init__(self, bottomContent=None, parent=None, balanceContent=None, enableBlur=True, preset=DialogPresets.DEFAULT, flags=DialogFlags.TOP_WINDOW):
         contentSettings = ViewSettings(R.views.common.dialog_view.simple_dialog_content.SimpleDialogContent())
         contentSettings.model = SimpleDialogWindowModel()
-        super(SimpleDialogWindow, self).__init__(bottomContent=bottomContent, parent=parent,
-                                                 balanceContent=balanceContent, enableBlur=enableBlur,
-                                                 content=DialogContent(contentSettings), flags=flags)
+        super(SimpleDialogWindow, self).__init__(bottomContent=bottomContent, parent=parent, balanceContent=balanceContent, enableBlur=enableBlur, content=DialogContent(contentSettings), flags=flags)
         self._setPreset(preset)
-
-    def load(self):
-        super(SimpleDialogWindow, self).load()
-        g_playerEvents.onAccountBecomeNonPlayer += self.onAccountBecomeNonPlayer
-
-    def destroy(self):
-        g_playerEvents.onAccountBecomeNonPlayer -= self.onAccountBecomeNonPlayer
-        super(SimpleDialogWindow, self).destroy()
-
-    def onAccountBecomeNonPlayer(self):
-        self.destroy()
 
     @property
     def contentViewModel(self):

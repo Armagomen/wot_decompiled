@@ -3,7 +3,6 @@
 from gui.impl.gen import R
 from frameworks.wulf import ViewModel
 
-
 class BaseEventModel(ViewModel):
     __slots__ = ('onAction',)
 

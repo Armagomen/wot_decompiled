@@ -237,18 +237,18 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
              'igrType': account.igrType,
              'time': account.time,
              'isCreator': account.isCreator,
-                           'state': account.state,
-                           'icon': vContourIcon,
-                           'vShortName': vShortName,
-                           'isCurrentPayer': account.isCurrentPlayer(),
-                           'vLevel': vLevel,
-                           'vType': vType,
-                           'tags': list(user.getTags()) if user else [],
-                           'isPlayerSpeaking': isPlayerSpeaking(account.dbID),
-                           'colors': getColors(key),
-                           'isExperimentalModule': bool(badgeVisibility),
-                           'experimentalModuleName': moduleName,
-                           'hasPermissions': False})
+             'state': account.state,
+             'icon': vContourIcon,
+             'vShortName': vShortName,
+             'isCurrentPayer': account.isCurrentPlayer(),
+             'vLevel': vLevel,
+             'vType': vType,
+             'tags': list(user.getTags()) if user else [],
+             'isPlayerSpeaking': isPlayerSpeaking(account.dbID),
+             'colors': getColors(key),
+             'isExperimentalModule': bool(badgeVisibility),
+             'experimentalModuleName': moduleName,
+             'hasPermissions': False})
 
         return result
 

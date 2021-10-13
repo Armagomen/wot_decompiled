@@ -89,17 +89,17 @@ class TrainingSettingsWindow(TrainingWindowMeta):
         else:
             rTitle = R.strings.menu.training.create.title() if self.__isCreateRequest else R.strings.menu.training.info.settings.title()
         info = {'description': self.__settings.getComment(),
-                'timeout': self.__settings.getRoundLen() / 60,
-                'arena': self.__settings.getArenaTypeID(),
-                'privacy': not self.__settings.isOpened(),
-                'create': self.__isCreateRequest,
-                'wndTitle': backport.text(rTitle),
-                'canMakeOpenedClosed': True,
-                'canChangeComment': not IS_CHINA,
-                'isShowComment': not IS_CHINA,
-                'canChangeArenaTime': not self.__isEpic,
-                'canChangeArena': True,
-                'maxBattleTime': maxBound / 60}
+         'timeout': self.__settings.getRoundLen() / 60,
+         'arena': self.__settings.getArenaTypeID(),
+         'privacy': not self.__settings.isOpened(),
+         'create': self.__isCreateRequest,
+         'wndTitle': backport.text(rTitle),
+         'canMakeOpenedClosed': True,
+         'canChangeComment': not IS_CHINA,
+         'isShowComment': not IS_CHINA,
+         'canChangeArenaTime': not self.__isEpic,
+         'canChangeArena': True,
+         'maxBattleTime': maxBound / 60}
         if not self.__isCreateRequest:
             permissions = self.prbEntity.getPermissions()
             info['canMakeOpenedClosed'] = permissions.canMakeOpenedClosed()

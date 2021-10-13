@@ -61,29 +61,28 @@ class _InputInertia(object):
     fovZoomMultiplier = property(lambda self: self.__zoomMultiplierEasing.value)
     endZoomMultiplier = property(lambda self: self.__zoomMultiplierEasing.b)
 
-    def __init__(self, minMaxZoomMultiplier, relativeFocusDist, duration=_DEFAULT_ZOOM_DURATION):
+    def __init__(self, minMaxZoomMultiplier, relativeFocusDist, duration = _DEFAULT_ZOOM_DURATION):
         self.__deltaEasing = EXPONENTIAL_EASING(Vector3(0.0), Vector3(0.0), duration)
         fovMultiplier = math_utils.lerp(minMaxZoomMultiplier.min, minMaxZoomMultiplier.max, relativeFocusDist)
         self.__zoomMultiplierEasing = EXPONENTIAL_EASING(fovMultiplier, fovMultiplier, duration)
         self.__minMaxZoomMultiplier = minMaxZoomMultiplier
 
-    def glide(self, posDelta, duration=_DEFAULT_ZOOM_DURATION, easing=EXPONENTIAL_EASING):
+    def glide(self, posDelta, duration = _DEFAULT_ZOOM_DURATION, easing = EXPONENTIAL_EASING):
         self.__deltaEasing = easing(posDelta, Vector3(0.0), duration)
 
     def isGliding(self):
         return self.__deltaEasing != Vector3(0.0) and not self.__deltaEasing.stopped
 
-    def glideFov(self, newRelativeFocusDist, duration=_DEFAULT_ZOOM_DURATION):
+    def glideFov(self, newRelativeFocusDist, duration = _DEFAULT_ZOOM_DURATION):
         minMult, maxMult = self.__minMaxZoomMultiplier
         endMult = math_utils.lerp(minMult, maxMult, newRelativeFocusDist)
         self.__zoomMultiplierEasing.reset(self.__zoomMultiplierEasing.value, endMult, duration)
 
-    def teleport(self, relativeFocusDist, minMaxZoomMultiplier=None, duration=_DEFAULT_ZOOM_DURATION):
+    def teleport(self, relativeFocusDist, minMaxZoomMultiplier = None, duration = _DEFAULT_ZOOM_DURATION):
         if minMaxZoomMultiplier is not None:
             self.__minMaxZoomMultiplier = minMaxZoomMultiplier
         self.__deltaEasing.reset(Vector3(0.0), Vector3(0.0), duration)
-        fovMultiplier = math_utils.lerp(self.__minMaxZoomMultiplier.min, self.__minMaxZoomMultiplier.max,
-                                        relativeFocusDist)
+        fovMultiplier = math_utils.lerp(self.__minMaxZoomMultiplier.min, self.__minMaxZoomMultiplier.max, relativeFocusDist)
         self.__zoomMultiplierEasing.reset(fovMultiplier, fovMultiplier, duration)
         return
 
@@ -145,7 +144,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     vehicleMProv = property(__getVehicleMProv, __setVehicleMProv)
     __aimOffset = aih_global_binding.bindRW(aih_global_binding.BINDING_ID.AIM_OFFSET)
 
-    def __init__(self, dataSec, defaultOffset=None):
+    def __init__(self, dataSec, defaultOffset = None):
         super(ArcadeCamera, self).__init__()
         CallbackDelayer.__init__(self)
         TimeDeltaMeter.__init__(self)
@@ -188,19 +187,15 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     def _getConfigsKey():
         return ArcadeCamera.__name__
 
-    def create(self, onChangeControlMode=None, postmortemMode=False):
+    def create(self, onChangeControlMode = None, postmortemMode = False):
         super(ArcadeCamera, self).create()
         self.__onChangeControlMode = onChangeControlMode
         self.__postmortemMode = postmortemMode
         targetMat = self.getTargetMProv()
         aimingSystemClass = ArcadeAimingSystemRemote if BigWorld.player().isObserver() else ArcadeAimingSystem
-        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'],
-                                                self._cfg['focusRadius'], self.__calcAimMatrix(),
-                                                self._cfg['angleRange'], not postmortemMode)
+        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'], self._cfg['focusRadius'], self.__calcAimMatrix(), self._cfg['angleRange'], not postmortemMode)
         if self.__adCfg['enable']:
-            self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'],
-                                                     self.__adCfg['minimalCameraDistance'],
-                                                     self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
+            self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
             for group_name in VOLUME_GROUPS_NAMES:
                 self.__aimingSystem.addVolumeGroup(self.__adCfg['volumeGroups'][group_name])
 
@@ -255,7 +250,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     def focusOnPos(self, preferredPos):
         self.__aimingSystem.focusOnPos(preferredPos)
 
-    def shiftCamPos(self, shift=None):
+    def shiftCamPos(self, shift = None):
         matrixProduct = self.__aimingSystem.vehicleMProv
         shiftMat = matrixProduct.a
         if shift is not None:
@@ -268,8 +263,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             shiftMat.setIdentity()
         return
 
-    def enable(self, preferredPos=None, closesDist=False, postmortemParams=None, turretYaw=None, gunPitch=None,
-               camTransitionParams=None, initialVehicleMatrix=None):
+    def enable(self, preferredPos = None, closesDist = False, postmortemParams = None, turretYaw = None, gunPitch = None, camTransitionParams = None, initialVehicleMatrix = None):
         replayCtrl = BattleReplay.g_replayCtrl
         if replayCtrl.isRecording:
             replayCtrl.setAimClipPosition(self.__aimOffset)
@@ -279,8 +273,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         vehicle = player.getVehicleAttached()
         if player.observerSeesAll() and player.arena.period == constants.ARENA_PERIOD.BATTLE:
             if vehicle and vehicle.id == player.playerVehicleID:
-                self.delayCallback(0.0, self.enable, preferredPos, closesDist, postmortemParams, turretYaw, gunPitch,
-                                   camTransitionParams, initialVehicleMatrix)
+                self.delayCallback(0.0, self.enable, preferredPos, closesDist, postmortemParams, turretYaw, gunPitch, camTransitionParams, initialVehicleMatrix)
                 return
         if initialVehicleMatrix is None:
             initialVehicleMatrix = player.getOwnVehicleMatrix(self.vehicleMProv) if vehicle is None else vehicle.matrix
@@ -418,7 +411,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__cam.shiftCamera(Vector3(0.0))
         return
 
-    def update(self, dx, dy, dz, rotateMode=True, zoomMode=True, updatedByKeyboard=False):
+    def update(self, dx, dy, dz, rotateMode = True, zoomMode = True, updatedByKeyboard = False):
         eScrollDirection = EScrollDir.convertDZ(dz)
         if eScrollDirection:
             self.__overScrollProtector.updateOnScroll(eScrollDirection)
@@ -464,7 +457,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__aimingSystem.handleMovement(yawDelta, -pitchDelta)
         return (self.__aimingSystem.yaw, self.__aimingSystem.pitch, 0)
 
-    def __update(self, dx, dy, dz, rotateMode=True, zoomMode=True):
+    def __update(self, dx, dy, dz, rotateMode = True, zoomMode = True):
         if not self.__aimingSystem:
             return
         eScrollDir = EScrollDir.convertDZ(dz)
@@ -475,16 +468,12 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             self.__isCamInTransition = self.__cameraTransition.isInTransition()
         isColliding = self.__cam.hasCollision()
         collisionWhileGlide = False
-        if self.__inputInertia.isGliding() and not isColliding and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(
-                GAME.COMMANDER_CAM):
+        if self.__inputInertia.isGliding() and not isColliding and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM):
             cameraPos = self.__aimingSystem.matrix.translation
             collisionWhileGlide = self.__cam.isColliding(BigWorld.player().spaceID, cameraPos)
-        preventScrollOut = (
-                                       isColliding or collisionWhileGlide) and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(
-            GAME.COMMANDER_CAM)
+        preventScrollOut = (isColliding or collisionWhileGlide) and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM)
         if preventScrollOut and prevDist == distMinMax.max and self.__isSettingsEnabled(GAME.COMMANDER_CAM):
-            if self.__isInArcadeZoomState() and not self.__isSettingsEnabled(
-                    GAME.PRE_COMMANDER_CAM) or self.__compareCurrStateSettingsKey(GAME.PRE_COMMANDER_CAM):
+            if self.__isInArcadeZoomState() and not self.__isSettingsEnabled(GAME.PRE_COMMANDER_CAM) or self.__compareCurrStateSettingsKey(GAME.PRE_COMMANDER_CAM):
                 preventScrollOut = False
         if isColliding and eScrollDir is EScrollDir.OUT:
             self.__collideAnimatorEasing.start(_COLLIDE_ANIM_DIST, _COLLIDE_ANIM_INTERVAL)
@@ -523,7 +512,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             minDist = ShotPointCalculatorPlanar.MIN_DIST + vehCamDiff
             self.__aimingSystem.setMinDistanceForShotPointCalc(minDist)
 
-    def __startInputInertiaTransition(self, prevPos, duration=_DEFAULT_ZOOM_DURATION, easing=EXPONENTIAL_EASING):
+    def __startInputInertiaTransition(self, prevPos, duration = _DEFAULT_ZOOM_DURATION, easing = EXPONENTIAL_EASING):
         worldDeltaPos = prevPos - self.__aimingSystem.matrix.translation
         matInv = Matrix(self.__aimingSystem.matrix)
         matInv.invert()
@@ -533,7 +522,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         distMinMax = self.__distRange
         return math_utils.clamp(distMinMax.min, distMinMax.max, newDistance)
 
-    def __updateProperties(self, state=None):
+    def __updateProperties(self, state = None):
         self.__zoomStateSwitcher.setCurrentState(state)
         self.__distRange = state.distRange if state else self._cfg['distRange']
         self.__overScrollProtectOnMax = state.overScrollProtectOnMax if state else self._cfg['overScrollProtectOnMax']
@@ -801,14 +790,14 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         movementDeviation.set(movementDeviation.x * zoomMultiplier, movementDeviation.y * zoomMultiplier, movementDeviation.z * zoomMultiplier)
         return (impulseDeviation, movementDeviation, zoomMultiplier)
 
-    def applyImpulse(self, position, impulse, reason=ImpulseReason.ME_HIT):
+    def applyImpulse(self, position, impulse, reason = ImpulseReason.ME_HIT):
         adjustedImpulse, noiseMagnitude = self.__dynamicCfg.adjustImpulse(impulse, reason)
         yawMat = math_utils.createRotationMatrix((-self.__aimingSystem.yaw, 0, 0))
         impulseLocal = yawMat.applyVector(adjustedImpulse)
         self.__impulseOscillator.applyImpulse(impulseLocal)
         self.__applyNoiseImpulse(noiseMagnitude)
 
-    def applyDistantImpulse(self, position, impulseValue, reason=ImpulseReason.ME_HIT):
+    def applyDistantImpulse(self, position, impulseValue, reason = ImpulseReason.ME_HIT):
         applicationPosition = self.__cam.position
         if reason == ImpulseReason.SPLASH:
             applicationPosition = Matrix(self.vehicleMProv).translation
@@ -831,7 +820,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         noiseImpulse = math_utils.RandomVectors.random3(noiseMagnitude)
         self.__noiseOscillator.applyImpulse(noiseImpulse)
 
-    def handleKeyEvent(self, isDown, key, mods, event=None):
+    def handleKeyEvent(self, isDown, key, mods, event = None):
         if self.__shiftKeySensor is None:
             return False
         elif BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and mods & 4:

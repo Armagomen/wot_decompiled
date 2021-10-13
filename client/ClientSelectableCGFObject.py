@@ -5,7 +5,6 @@ from ClientSelectableObject import ClientSelectableObject
 from Math import Vector3
 from cgf_components.client_selectable_components import OnClickComponent
 
-
 class ClientSelectableCGFObject(ClientSelectableObject):
 
     def __init__(self):

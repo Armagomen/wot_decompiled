@@ -8,6 +8,7 @@ from items import vehicles, ITEM_TYPES
 from math_common import roundToPower10
 from time_converters import time2decisec
 from wotdecorators import noexcept
+from helpers_common import unpackDeviceRepairProgress
 Cooldowns = namedtuple('Cooldows', ['id', 'leftTime', 'baseTime'])
 _DO_LOG = False
 
@@ -63,7 +64,8 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         avatar = self._avatar()
         for device in deviceList:
             timeLeft = self.__getTimeLeft(device)
-            avatar.updateDestroyedDevicesIsRepairing(self.entity.id, device.extraIndex, device.progress, timeLeft)
+            progress, isLimited = unpackDeviceRepairProgress(device.progressData)
+            avatar.updateDestroyedDevicesIsRepairing(self.entity.id, device.extraIndex, progress, timeLeft, isLimited)
 
     @noexcept
     def update_vehicleDamageInfoList(self, damageInfoList):
@@ -130,7 +132,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     @noexcept
     def update_drownLevel(self, drownLevel):
-        self._avatar().updateDrownLevel(self.entity.id, drownLevel.level, drownLevel.times)
+        self._avatar().updateDrownLevel(self.entity.id, drownLevel.level, self.__getDestroyTimes(drownLevel.times))
 
     @noexcept
     def update_isOtherVehicleDamagedDevicesVisible(self, isOtherVehicleDamagedDevicesVisible):
@@ -138,7 +140,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     @noexcept
     def update_overturnLevel(self, overturnLevel):
-        self._avatar().updateOverturnLevel(self.entity.id, overturnLevel.level, overturnLevel.times)
+        self._avatar().updateOverturnLevel(self.entity.id, overturnLevel.level, self.__getDestroyTimes(overturnLevel.times))
 
     @noexcept
     def update_smoke(self, smoke):
@@ -150,11 +152,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     @noexcept
     def update_targetingInfo(self, data):
-        self._avatar().updateTargetingInfo(self.entity.id, data.turretYaw, data.gunPitch, data.maxTurretRotationSpeed,
-                                           data.maxGunRotationSpeed, data.shotDispMultiplierFactor,
-                                           data.gunShotDispersionFactorsTurretRotation,
-                                           data.chassisShotDispersionFactorsMovement,
-                                           data.chassisShotDispersionFactorsRotation, data.aimingTime)
+        self._avatar().updateTargetingInfo(data.turretYaw, data.gunPitch, data.maxTurretRotationSpeed, data.maxGunRotationSpeed, data.shotDispMultiplierFactor, data.gunShotDispersionFactorsTurretRotation, data.chassisShotDispersionFactorsMovement, data.chassisShotDispersionFactorsRotation, data.aimingTime)
 
     @noexcept
     def update_vehicleHealthInfo(self, data):
@@ -193,8 +191,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
     def showOwnVehicleHitDirection(self, data):
         if _DO_LOG:
             self._doLog('showOwnVehicleHitDirection {}'.format(data))
-        self._avatar().showOwnVehicleHitDirection(data.hitDirYaw, data.attackerID, data.damage, data.crits,
-                                                  data.isBlocked, data.isShellHE, data.damagedID, data.attackReasonID)
+        self._avatar().showOwnVehicleHitDirection(data.hitDirYaw, data.attackerID, data.damage, data.crits, data.isBlocked, data.isShellHE, data.damagedID, data.attackReasonID)
 
     def getReloadTime(self):
         return self.__getTimeLeftBaseTime(self.vehicleGunReloadTime, True) if self.vehicleGunReloadTime else (0, 0)
@@ -205,6 +202,10 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
             self._avatar().resetVehicleAmmo(prev.compactDescr, changedAmmo.compactDescr, changedAmmo.quantity, changedAmmo.previousStage, changedAmmo.endTime, changedAmmo.totalTime)
         else:
             self.__setNested(self.update_vehicleAmmoList, 'vehicleAmmoList', path, prev)
+
+    def __getDestroyTimes(self, times):
+        startTime = BigWorld.serverTime() if self.__isAttachingToVehicle else times[0]
+        return (startTime, max(times[1] - startTime, 0.0))
 
     def __getTimeLeft(self, data, useEndTime=None):
         if useEndTime is None:

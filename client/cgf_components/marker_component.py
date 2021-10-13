@@ -14,22 +14,17 @@ from gui.Scaleform.framework.entities.View import ViewKey
 from gui.app_loader.settings import APP_NAME_SPACE
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
-
 if typing.TYPE_CHECKING:
     import BigWorld
 _logger = logging.getLogger(__name__)
 
-
 class LobbyFlashMarker(CGFComponent):
-    icon = ComponentProperty(type=CGFMetaTypes.STRING, editorName='marker icon',
-                             value='gui/maps/icons/marathon/marker/video.png', annotations={'path': '*.png'})
-    textKey = ComponentProperty(type=CGFMetaTypes.STRING, editorName='marker text key',
-                                value='#marathon:3dObject/showVideo')
+    icon = ComponentProperty(type=CGFMetaTypes.STRING, editorName='marker icon', value='gui/maps/icons/marathon/marker/video.png', annotations={'path': '*.png'})
+    textKey = ComponentProperty(type=CGFMetaTypes.STRING, editorName='marker text key', value='#marathon:3dObject/showVideo')
 
 
 class LobbyFlashMarkerVisibility(CGFComponent):
-    mainTankMarkerGO = ComponentProperty(type=CGFMetaTypes.LINK, value=CGF.GameObject,
-                                         editorName='non-hero tank marker GO')
+    mainTankMarkerGO = ComponentProperty(type=CGFMetaTypes.LINK, value=CGF.GameObject, editorName='non-hero tank marker GO')
     heroTankMarkerGO = ComponentProperty(type=CGFMetaTypes.LINK, value=CGF.GameObject, editorName='hero tank marker GO')
 
 
@@ -68,8 +63,7 @@ class LobbyMarkersManager(CGF.ComponentManager):
         rootGameObject = self.__hierarchyManager.getTopMostParent(gameObject)
         goSyncComponent = rootGameObject.findComponentByType(EntityGOSync)
         if goSyncComponent is None:
-            _logger.error('gameObject id=%d, name=%s has no root bigworld entity to show marker', gameObject.id,
-                          gameObject.name)
+            _logger.error('gameObject id=%d, name=%s has no root bigworld entity to show marker', gameObject.id, gameObject.name)
             return
         else:
             return goSyncComponent.entity
@@ -85,11 +79,11 @@ class LobbyMarkersVisibilityManager(CGF.ComponentManager):
     @onAddedQuery(LobbyFlashMarkerVisibility, CGF.GameObject)
     def handleVisibilityAdded(self, lobbyFlashMarkerVisibility, _):
         self.__onHeroTankAction(lobbyFlashMarkerVisibility)
-        g_currentPreviewVehicle.onSelected += lambda: self.__onHeroTankAction(lobbyFlashMarkerVisibility)
+        g_currentPreviewVehicle.onSelected += lambda : self.__onHeroTankAction(lobbyFlashMarkerVisibility)
 
     @onRemovedQuery(LobbyFlashMarkerVisibility, CGF.GameObject)
     def handleVisibilityRemoved(self, lobbyFlashMarkerVisibility, _):
-        g_currentPreviewVehicle.onSelected -= lambda: self.__onHeroTankAction(lobbyFlashMarkerVisibility)
+        g_currentPreviewVehicle.onSelected -= lambda : self.__onHeroTankAction(lobbyFlashMarkerVisibility)
 
     def __onHeroTankAction(self, component):
         if g_currentPreviewVehicle.isHeroTank and g_currentPreviewVehicle.item:

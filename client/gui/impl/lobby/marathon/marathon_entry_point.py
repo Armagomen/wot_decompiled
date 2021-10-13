@@ -18,10 +18,8 @@ from skeletons.gui.server_events import IEventsCache
 from helpers.time_utils import ONE_DAY, ONE_HOUR
 from gui.impl import backport
 from gui.shared.missions.packers.events import BattleQuestUIDataPacker
-
-_MARATHON_PREFIX = 'sabaton_marathon'
+_MARATHON_PREFIX = 'may21_marathon'
 _eventsCache = dependency.descriptor(IEventsCache)
-
 
 @dependency.replace_none_kwargs(marathonsCtrl=IMarathonEventsController)
 def isMarathonEntryPointAvailable(marathonsCtrl=None):
@@ -33,8 +31,7 @@ def isMarathonEntryPointAvailable(marathonsCtrl=None):
     if state in (MarathonState.NOT_STARTED, MarathonState.IN_PROGRESS):
         return True
     else:
-        return True if state == MarathonState.FINISHED and not (
-                    marathonEvent.isRewardObtained() and marathonEvent.isPostRewardObtained()) else False
+        return True if state == MarathonState.FINISHED and not (marathonEvent.isRewardObtained() and marathonEvent.isPostRewardObtained()) else False
 
 
 class MarathonEntryPoint(ViewImpl):
@@ -74,15 +71,11 @@ class MarathonEntryPoint(ViewImpl):
             marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
             with self.viewModel.transaction() as tx:
                 state = marathonEvent.getState()
-                currentPhase, phaseCount = marathonEvent.getMarathonProgress()
+                currentPhase, _ = marathonEvent.getMarathonProgress()
                 timeTillNextState = marathonEvent.getClosestStatusUpdateTime()
-                _, timeTillNextQuest = marathonEvent.getQuestTimeInterval()
-                currentGrindQuest = self._eventsCache.getHiddenQuests(
-                    partial(self.__marathonFilterFunc, postfix=marathonEvent.grindPostfix)).values()
-                currentProQuest = self._eventsCache.getHiddenQuests(
-                    partial(self.__marathonFilterFunc, postfix=marathonEvent.proPostfix)).values()
-                currentPostQuest = self._eventsCache.getHiddenQuests(
-                    partial(self.__marathonPostFilterFunc, postfix=marathonEvent.postPostfix)).values()
+                currentGrindQuest = self._eventsCache.getHiddenQuests(partial(self.__marathonFilterFunc, postfix=marathonEvent.grindPostfix)).values()
+                currentProQuest = self._eventsCache.getHiddenQuests(partial(self.__marathonFilterFunc, postfix=marathonEvent.proPostfix)).values()
+                currentPostQuest = self._eventsCache.getHiddenQuests(partial(self.__marathonPostFilterFunc, postfix=marathonEvent.postPostfix)).values()
                 userTokens = marathonEvent.getTokensData(prefix=marathonEvent.tokenPrefix)
                 if state in MarathonState.DISABLED_STATE:
                     state = MarathonEntryPointModel.STATE_MARATHON_DISABLED
@@ -110,14 +103,11 @@ class MarathonEntryPoint(ViewImpl):
                 tx.setState(state)
                 tx.setTimeTillNextState(timeTillNextState)
                 tx.setFormattedTimeTillNextState(self.__getFormattedTillTimeString(timeTillNextState, marathonEvent))
-                tx.setTimeTillNextQuest(timeTillNextQuest)
-                tx.setFormattedTimeTillNextQuest(self.__getFormattedTillTimeString(timeTillNextQuest, marathonEvent))
                 tx.setCurrentPhase(currentPhase)
-                isRewardObtained = marathonEvent.isRewardObtained()
                 tx.setRewardObtained(marathonEvent.isRewardObtained())
-                tx.setDiscount(marathonEvent.getMarathonDiscount(isPostprogress=isRewardObtained))
+                tx.setDiscount(marathonEvent.getMarathonDiscount())
                 tx.setIsPremShopURL(not marathonEvent.hasIgbLink())
-                tx.setIsPostProgression(currentPhase == phaseCount)
+                tx.setIsPostProgression(marathonEvent.isRewardObtained())
                 tx.setTokenTemplate(marathonEvent.tokenPrefix)
                 tx.setTokenDoneTemplate(marathonEvent.stageDoneTemplate)
         else:
@@ -156,8 +146,8 @@ class MarathonEntryPoint(ViewImpl):
     def __marathonFilterFunc(self, q, postfix=''):
         marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
         currentPhase, _ = marathonEvent.getMarathonProgress()
-        return q.getID().startswith('{0}s{1}{2}'.format(marathonEvent.tokenPrefix, currentPhase + 1, postfix))
+        return q.getID().startswith('{0}S{1}{2}'.format(marathonEvent.tokenPrefix, currentPhase + 1, postfix))
 
     def __marathonPostFilterFunc(self, q, postfix=''):
         marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
-        return q.getID().startswith('{0}{1}s'.format(marathonEvent.tokenPrefix, postfix)) and q.isAvailable()[0]
+        return q.getID().startswith('{0}{1}S'.format(marathonEvent.tokenPrefix, postfix)) and q.isAvailable()[0]
