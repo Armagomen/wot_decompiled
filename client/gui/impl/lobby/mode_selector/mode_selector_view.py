@@ -100,7 +100,7 @@ class ModeSelectorView(ViewImpl):
                     body = modeSelectorItem.calendarTooltipText
                 return self.__createSimpleTooltip(event, body=body)
             if tooltipId == ModeSelectorTooltipsConstants.RANDOM_BP_PAUSED_TOOLTIP:
-                return self.__createSimpleTooltip(event, header=backport.text(R.strings.battle_pass_2020.tooltips.entryPoint.disabled.header()), body=backport.text(R.strings.battle_pass_2020.tooltips.entryPoint.disabled.body()))
+                return self.__createSimpleTooltip(event, header=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.header()), body=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.body()))
             if tooltipId in [ModeSelectorTooltipsConstants.RANKED_CALENDAR_DAY_INFO_TOOLTIP,
              ModeSelectorTooltipsConstants.RANKED_STEP_TOOLTIP,
              ModeSelectorTooltipsConstants.RANKED_BATTLES_LEAGUE_TOOLTIP,
@@ -155,7 +155,8 @@ class ModeSelectorView(ViewImpl):
         self.__updateViewModel(self.viewModel)
         self.__blur = CachedBlur(enabled=True, ownLayer=WindowLayer.MARKER)
         g_eventBus.handleEvent(events.GameEvent(events.GameEvent.HIDE_LOBBY_SUB_CONTAINER_ITEMS), scope=EVENT_BUS_SCOPE.GLOBAL)
-        g_eventBus.handleEvent(events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.TOGGLE_VISIBILITY, ctx={'state': HeaderMenuVisibilityState.NOTHING}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.TOGGLE_VISIBILITY, ctx={'state': HeaderMenuVisibilityState.NOTHING,
+         'alias': self.layoutID}), scope=EVENT_BUS_SCOPE.LOBBY)
         app = self.__appLoader.getApp()
         self.__prevAppBackgroundAlpha = app.getBackgroundAlpha()
         app.setBackgroundAlpha(_BACKGROUND_ALPHA)

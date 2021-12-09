@@ -6194,15 +6194,19 @@ def __readDamagedStateEffects(xmlCtx, damagedStateGroupName, personalEffects, ca
 
 def __readNormalEffects(xmlCtx, section, personalEffects, cachedEffects, defaultEffects):
     res = {}
+    isPersonalEffects = personalEffects is not None and len(personalEffects) > 0
     for effectKind in _vehicleEffectKindNames:
-        effect = personalEffects.get(effectKind) if personalEffects is not None and len(personalEffects) > 0 else None
-        if effect is None:
+        effect = personalEffects.get(effectKind) if isPersonalEffects else None
+        if not effect:
             subsection = section[effectKind]
             if subsection is not None:
                 effectName = subsection.asString
-                effect = cachedEffects.get(effectName)
-                if effect is None:
-                    _xml.raiseWrongXml((xmlCtx, section.asString), effectKind, 'missing or wrong effect name')
+                if effectName:
+                    effect = cachedEffects.get(effectName)
+                    if effect is None:
+                        _xml.raiseWrongXml((xmlCtx, section.asString), effectKind, 'missing or wrong effect name')
+                else:
+                    effect = []
             elif defaultEffects is not None:
                 effect = defaultEffects.get(effectKind)
         if effect is not None:

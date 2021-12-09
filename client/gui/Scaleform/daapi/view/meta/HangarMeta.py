@@ -70,6 +70,9 @@ class HangarMeta(View):
     def as_setNotificationEnabledS(self, value):
         return self.flashObject.as_setNotificationEnabled(value) if self._isDAAPIInited() else None
 
+    def as_setLootboxesVisibleS(self, value):
+        return self.flashObject.as_setLootboxesVisible(value) if self._isDAAPIInited() else None
+
     def as_createDQWidgetS(self):
         return self.flashObject.as_createDQWidget() if self._isDAAPIInited() else None
 
@@ -84,9 +87,6 @@ class HangarMeta(View):
 
     def as_toggleCnSubscriptionS(self, isCnSubscription):
         return self.flashObject.as_toggleCnSubscription(isCnSubscription) if self._isDAAPIInited() else None
-
-    def as_setYHAVisibleS(self, value):
-        return self.flashObject.as_setYHAVisible(value) if self._isDAAPIInited() else None
 
     def as_setDQWidgetLayoutS(self, lyout):
         return self.flashObject.as_setDQWidgetLayout(lyout) if self._isDAAPIInited() else None

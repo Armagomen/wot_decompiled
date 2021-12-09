@@ -32,7 +32,7 @@ from helpers.func_utils import CallParams, cooldownCallerDecorator
 from helpers.i18n import makeString as _ms
 from items import parseIntCompactDescr
 from items.components.c11n_components import getItemSlotType
-from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ProjectionDecalDirectionTags
+from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags
 from items.vehicles import VEHICLE_CLASS_TAGS
 from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
@@ -378,12 +378,6 @@ def getItemFromSlot(outfit, slotId, service=None):
 def getComponentFromSlot(outfit, slotId):
     slotData = getSlotDataFromSlot(outfit, slotId)
     return None if slotData is None else slotData.component
-
-
-def isNeedToMirrorProjectionDecal(item, slot):
-    if not item.canBeMirroredHorizontally:
-        return False
-    return False if item.direction == ProjectionDecalDirectionTags.ANY or slot.direction == ProjectionDecalDirectionTags.ANY else item.direction != slot.direction
 
 
 def isSlotFilled(outfit, slotId):

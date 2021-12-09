@@ -1,21 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/formatters.py
+import logging
 import re
 import types
 from collections import namedtuple
-import logging
+import typing
 import ArenaType
 from constants import ARENA_BONUS_TYPE, GAMEPLAY_NAMES_WITH_DISABLED_QUESTS
 from gui import makeHtmlString
+from gui.Scaleform.genConsts.QUEST_AWARD_BLOCK_ALIASES import QUEST_AWARD_BLOCK_ALIASES
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.settings import ICONS_SIZES
 from gui.impl import backport
-from gui.Scaleform.genConsts.QUEST_AWARD_BLOCK_ALIASES import QUEST_AWARD_BLOCK_ALIASES
-from gui.shared.formatters import text_styles, icons as gui_icons
+from gui.shared.formatters import icons as gui_icons, text_styles
 from gui.shared.money import Currency
 from helpers import i18n
 from shared_utils import CONST_CONTAINER
+if typing.TYPE_CHECKING:
+    from gui.server_events.cond_formatters import FormattableField
 COMPLEX_TOKEN = 'complex_token'
 COMPLEX_TOKEN_TEMPLATE = 'img:(?P<styleID>.+):(?P<webID>.+)'
 TokenComplex = namedtuple('TokenComplex', 'isDisplayable styleID webID')
@@ -271,6 +274,17 @@ def packSimpleBonusesBlock(bonusesList, endlineSymbol='', complexTooltip=''):
     return UiElement(data)
 
 
+def packSingleLineBonusesBlock(bonusesList, endlineSymbol='', complexTooltip='', specialTooltip=''):
+    data = {'linkage': 'QuestSingleLineTextAwardBlockUI',
+     'items': bonusesList,
+     'separator': ', ',
+     'ellipsis': '..',
+     'endline': endlineSymbol,
+     'complexTooltip': complexTooltip,
+     'specialTooltip': specialTooltip}
+    return UiElement(data)
+
+
 def packNewStyleBonusesBlock(bonusesList, endlineSymbol=''):
     data = {'linkage': QUEST_AWARD_BLOCK_ALIASES.QUEST_BIG_ICON_AWARD_BLOCK,
      'items': bonusesList,
@@ -311,7 +325,7 @@ def packProgressData(rendererLinkage, progressList):
     return ProgressData(rendererLinkage, progressList)
 
 
-PreFormattedCondition = namedtuple('PreForamttedCondition', 'titleData, descrData, iconKey, current, total, earned, progressData, conditionData,progressType, sortKey, progressID')
+PreFormattedCondition = namedtuple('PreFormattedCondition', 'titleData, descrData, iconKey, current, total, earned, progressData, conditionData,progressType, sortKey, progressID')
 
 def packMissionIconCondition(titleData, progressType, descrData, iconKey, current=None, total=None, earned=None, progressData=None, conditionData=None, sortKey='', progressID=None):
     return PreFormattedCondition(titleData, descrData, iconKey, current, total, earned, progressData, conditionData, progressType, sortKey, progressID)
@@ -324,14 +338,14 @@ def packMissionBonusTypeElements(bonusTypes, width=32, height=32, vSpace=-11):
     elements = []
     for bonusType in uniqueTypes:
         label = i18n.makeString('#menu:bonusType/%d' % bonusType)
-        icon = gui_icons.makeImageTag(RES_ICONS.getBrebattleConditionIcon(bonusType), width=width, height=height, vSpace=vSpace)
+        icon = gui_icons.makeImageTag(RES_ICONS.getPrebattleConditionIcon(bonusType), width=width, height=height, vSpace=vSpace)
         elements.append(_IconData(icon, label))
 
     return elements
 
 
 def packMissionFormationElement(formationName, width=32, height=32, vSpace=-11):
-    return _IconData(gui_icons.makeImageTag(RES_ICONS.getBrebattleConditionIcon(formationName), width=width, height=height, vSpace=vSpace), i18n.makeString('#quests:details/conditions/formation/%s' % formationName))
+    return _IconData(gui_icons.makeImageTag(RES_ICONS.getPrebattleConditionIcon(formationName), width=width, height=height, vSpace=vSpace), i18n.makeString('#quests:details/conditions/formation/%s' % formationName))
 
 
 def getUniqueBonusTypes(bonusTypes):
@@ -362,7 +376,7 @@ def packMissionPrebattleCondition(label, icons='', tooltip=''):
 
 
 def packMissionCamoElement(camoTypeName, width=32, height=32, vSpace=-11):
-    return _IconData(gui_icons.makeImageTag(RES_ICONS.getBrebattleConditionIcon(camoTypeName), width=width, height=height, vSpace=vSpace), i18n.makeString('#quests:details/conditions/mapsType/%s' % camoTypeName))
+    return _IconData(gui_icons.makeImageTag(RES_ICONS.getPrebattleConditionIcon(camoTypeName), width=width, height=height, vSpace=vSpace), i18n.makeString('#quests:details/conditions/mapsType/%s' % camoTypeName))
 
 
 def packMissionkMapElement(arenaTypeID):

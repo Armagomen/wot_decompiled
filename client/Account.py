@@ -27,9 +27,11 @@ from account_helpers.AccountSettings import CURRENT_VEHICLE
 from account_helpers.battle_pass import BattlePassManager
 from account_helpers.festivity_manager import FestivityManager
 from account_helpers.renewable_subscription import RenewableSubscription
+from account_helpers.telecom_rentals import TelecomRentals
 from account_helpers.settings_core import IntUserSettings
 from account_helpers.session_statistics import SessionStatistics
 from account_helpers.spa_flags import SPAFlags
+from account_helpers.gift_system import GiftSystem
 from account_shared import NotificationItem, readClientServerVersion
 from adisp import process
 from bootcamp.Bootcamp import g_bootcamp
@@ -79,6 +81,7 @@ def _isStrList(l):
 class _ClientCommandProxy(object):
     _COMMAND_SIGNATURES = (('doCmdStr', lambda args: len(args) == 1 and _isStr(args[0])),
      ('doCmdIntStr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStr(args[1])),
+     ('doCmdInt', lambda args: len(args) == 1 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt2', lambda args: len(args) == 2 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt3', lambda args: len(args) == 3 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt4', lambda args: len(args) == 4 and all([ _isInt(arg) for arg in args ])),
@@ -166,6 +169,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.dogTags = g_accountRepository.dogTags
         self.mapsTraining = g_accountRepository.mapsTraining
         self.renewableSubscription = g_accountRepository.renewableSubscription
+        self.telecomRentals = g_accountRepository.telecomRentals
+        self.giftSystem = g_accountRepository.giftSystem
         self.customFilesCache = g_accountRepository.customFilesCache
         self.syncData.setAccount(self)
         self.inventory.setAccount(self)
@@ -193,6 +198,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.dogTags.setAccount(self)
         self.mapsTraining.setAccount(self)
         self.renewableSubscription.setAccount(self)
+        self.telecomRentals.setAccount(self)
         g_accountRepository.commandProxy.setGateway(self.__doCmd)
         self.isLongDisconnectedFromCenter = False
         self.prebattle = None
@@ -252,11 +258,13 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.dogTags.onAccountBecomePlayer()
         self.mapsTraining.onAccountBecomePlayer()
         self.renewableSubscription.onAccountBecomePlayer()
+        self.telecomRentals.onAccountBecomePlayer()
         self.sessionStats.onAccountBecomePlayer()
         self.spaFlags.onAccountBecomePlayer()
         self.anonymizer.onAccountBecomePlayer()
         self.battlePass.onAccountBecomePlayer()
         self.offers.onAccountBecomePlayer()
+        self.giftSystem.onAccountBecomePlayer()
         chatManager.switchPlayerProxy(self)
         events.onAccountBecomePlayer()
         BigWorld.target.source = BigWorld.MouseTargetingMatrix()
@@ -264,6 +272,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         BigWorld.target.skeletonCheckEnabled = True
         BigWorld.target.caps()
         BigWorld.target.isEnabled = True
+        BigWorld.target.isFastPicking = True
         uniprof.exitFromRegion('player.account.entering')
         return
 
@@ -298,6 +307,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.dogTags.onAccountBecomeNonPlayer()
         self.mapsTraining.onAccountBecomeNonPlayer()
         self.renewableSubscription.onAccountBecomeNonPlayer()
+        self.telecomRentals.onAccountBecomeNonPlayer()
+        self.giftSystem.onAccountBecomeNonPlayer()
         self.__cancelCommands()
         self.syncData.setAccount(None)
         self.inventory.setAccount(None)
@@ -515,6 +526,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.isInTutorialQueue = True
         events.onTutorialEnqueued(number, queueLen, avgWaitingTime)
         events.onEnqueued(QUEUE_TYPE.TUTORIAL)
+
+    @property
+    def selectedEntity(self):
+        return self.__selectedEntity
 
     def targetFocus(self, entity):
         if self.__objectsSelectionEnabled:
@@ -883,14 +898,13 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         if not events.isPlayerEntityChanging:
             self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_SANDBOX, 0, 0, 0)
 
-    def enqueueEventBattles(self, vehInvIDs):
+    def enqueueEventBattles(self, vehInvID):
         if not events.isPlayerEntityChanging:
-            arr = [len(vehInvIDs)] + vehInvIDs
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_EVENT_BATTLES, arr)
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.EVENT_BATTLES, vehInvID])
 
     def dequeueEventBattles(self):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_EVENT_BATTLES, 0, 0, 0)
+            self.base.doCmdInt(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_FROM_BATTLE_QUEUE, QUEUE_TYPE.EVENT_BATTLES)
 
     def enqueueRanked(self, vehInvID):
         if events.isPlayerEntityChanging:
@@ -1276,6 +1290,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def _doCmdIntArr(self, cmd, arr, callback):
         return self.__doCmd('doCmdIntArr', cmd, callback, arr)
 
+    def _doCmdIntArrStr(self, cmd, arr, s, callback):
+        return self.__doCmd('doCmdIntArrStr', cmd, callback, arr, s)
+
     def _doCmdIntStrArr(self, cmd, int1, strArr, callback):
         return self.__doCmd('doCmdIntStrArr', cmd, callback, int1, strArr)
 
@@ -1314,6 +1331,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self.dogTags.synchronize(isFullSync, diff)
             self.mapsTraining.synchronize(isFullSync, diff)
             self.renewableSubscription.synchronize(isFullSync, diff)
+            self.telecomRentals.synchronize(isFullSync, diff)
+            self.giftSystem.synchronize(isFullSync, diff)
             self.__synchronizeServerSettings(diff)
             self.__synchronizeDisabledPersonalMissions(diff)
             self.__synchronizeEventNotifications(diff)
@@ -1559,6 +1578,8 @@ class _AccountRepository(object):
         self.dogTags = DogTags(self.syncData)
         self.mapsTraining = MapsTraining(self.syncData)
         self.renewableSubscription = RenewableSubscription(self.syncData)
+        self.telecomRentals = TelecomRentals(self.syncData)
+        self.giftSystem = GiftSystem(self.syncData, self.commandProxy)
         self.platformBlueprintsConvertSaleLimits = {}
         self.gMap = ClientGlobalMap()
         self.onTokenReceived = Event.Event()

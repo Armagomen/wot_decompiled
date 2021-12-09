@@ -13,7 +13,6 @@ import SoundGroups
 from Event import Event
 from debug_utils import LOG_ERROR
 from aih_constants import ShakeReason
-from VehicleStickers import VehicleStickers
 from shared_utils import findFirst
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from vehicle_systems.components.terrain_circle_component import TerrainCircleComponent
@@ -75,7 +74,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return
 
     def setVehicle(self, vehicle):
-        _logger.info('CompoundAppearance::setVehicle vid=%s; ds=%s', vehicle.id, self.damageState.state)
         self._vehicle = vehicle
         if self.customEffectManager is not None:
             self.customEffectManager.setVehicle(vehicle)
@@ -95,6 +93,10 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     def getVehicle(self):
         return self._vehicle
 
+    def setVehicleInfo(self, vehInfo):
+        super(CompoundAppearance, self).setVehicleInfo(vehInfo)
+        self.__updateStickers()
+
     def __arenaPeriodChanged(self, period, *otherArgs):
         if self.detailedEngineState is None:
             return
@@ -113,7 +115,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return (chassisCollisionMatrix, gunNodeName)
 
     def activate(self):
-        _logger.info('CompoundAppearance::activate. v=%s. ds=%s', self._vehicle, self.damageState.state)
         if self.__activated or self._vehicle is None:
             return
         else:
@@ -140,7 +141,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             return
 
     def deactivate(self, stopEffects=True):
-        _logger.info('CompoundAppearance::deactivate. v=%s. ds=%s', self._vehicle, self.damageState.state)
         if not self.__activated:
             return
         else:
@@ -262,7 +262,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return
 
     def destroy(self):
-        _logger.info('CompoundAppearance::destroy. v=%s. ds=%s', self._vehicle, self.damageState.state)
         if self._vehicle is not None:
             self.deactivate()
         self.__destroyEngineAudition()
@@ -280,7 +279,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return
 
     def construct(self, isPlayer, resourceRefs):
-        _logger.info('CompoundAppearance::construct. v=%s. ds=%s', self._vehicle, self.damageState.state)
         super(CompoundAppearance, self).construct(isPlayer, resourceRefs)
         if self.damageState.effect is not None:
             self.playEffect(self.damageState.effect, SpecialKeyPointNames.STATIC)
@@ -347,7 +345,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return
 
     def onVehicleHealthChanged(self, showEffects=True):
-        _logger.info('CompoundAppearance::onVehicleHealthChanged. v=%s. ds=%s', self._vehicle, self.damageState.state)
         vehicle = self._vehicle
         if not vehicle.isAlive() and vehicle.health > 0:
             self.changeEngineMode((0, 0))
@@ -475,7 +472,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         return self.collisions.getBoundingBox(DamageFromShotDecoder.convertComponentIndex(partIdx, vehicleDesc=self.typeDescriptor)) if self.collisions is not None else (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0)
 
     def __requestModelsRefresh(self):
-        _logger.info('CompoundAppearance::__requestModelsRefresh. v=%s. ds=%s', self._vehicle, self.damageState.state)
         self._onRequestModelsRefresh()
         self._isTurretDetached = self._vehicle.isTurretDetached
         modelsSetParams = self.modelsSetParams
@@ -484,12 +480,15 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         BigWorld.loadResourceListBG((assembler, collisionAssembler), makeCallbackWeak(self.__onModelsRefresh, modelsSetParams.state), loadingPriority(self._vehicle.id))
 
     def __onModelsRefresh(self, modelState, resourceList):
-        _logger.info('CompoundAppearance::__onModelsRefresh. v=%s. ds=%s', self._vehicle, self.damageState.state)
+        if not self.damageState.isCurrentModelDamaged:
+            _logger.error('Current model is not damaged. Wrong refresh request!')
         if BattleReplay.isFinished():
             return
-        elif self._vehicle is None:
-            return
         else:
+            if modelState != self.damageState.modelState:
+                _logger.error('Required modelState differs from actual one. Wrong refresh request!')
+            if self._vehicle is None:
+                return
             self.highlighter.highlight(False)
             oldHolder = self.findComponentByType(CompoundHolder)
             if oldHolder is not None:
@@ -622,12 +621,25 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         self.filter.vehicleCollisionCallback = player.handleVehicleCollidedVehicle
         return
 
-    def _createStickers(self, vehInfo):
-        insigniaRank = self._vehicle.publicInfo['marksOnGun']
-        vId = self._vehicle.id if self._vehicle is not None else -1
-        vehicleStickers = VehicleStickers(self.typeDescriptor, insigniaRank, self.outfit, vehicleId=vId)
-        vehicleStickers.setClanID(vehInfo['clanDBID'])
-        return vehicleStickers
+    def _attachStickers(self):
+        super(CompoundAppearance, self)._attachStickers()
+        self.__updateStickers()
+
+    def __updateStickers(self):
+        self.__updateClanSticker()
+        self.__updateInsigniaSticker()
+
+    def __updateClanSticker(self):
+        if self.vehicleStickers is not None:
+            clanID = self._vehicleInfo.get('clanDBID', 0)
+            self.vehicleStickers.setClanID(clanID)
+        return
+
+    def __updateInsigniaSticker(self):
+        if self.vehicleStickers is not None:
+            insigniaRank = self._vehicle.publicInfo['marksOnGun'] if self._vehicle is not None else 0
+            self.vehicleStickers.setInsigniaRank(insigniaRank)
+        return
 
     def __createTerrainCircle(self):
         if self.__terrainCircle is not None:

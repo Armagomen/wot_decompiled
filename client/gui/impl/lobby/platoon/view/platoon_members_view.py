@@ -722,7 +722,3 @@ class MembersWindow(PreloadableWindow):
         if initialPosition:
             self.move(initialPosition.x, initialPosition.y)
         return
-
-    def show(self):
-        super(MembersWindow, self).show()
-        self.bringToFront()

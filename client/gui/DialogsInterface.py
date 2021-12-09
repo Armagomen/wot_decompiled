@@ -1,12 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/DialogsInterface.py
+import BigWorld
+import WGC
+from adisp import process
 from constants import ACCOUNT_KICK_REASONS
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.utils import decorators
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.dialogs import I18nInfoDialogMeta, I18nConfirmDialogMeta, DisconnectMeta, CheckBoxDialogMeta
+from gui.Scaleform.daapi.view.dialogs import I18nInfoDialogMeta, I18nConfirmDialogMeta, DisconnectMeta, CheckBoxDialogMeta, DemoAccountBootcampFailureMeta, DIALOG_BUTTON_ID
 
 class _DialogCallbackWrapper(object):
 
@@ -47,6 +50,15 @@ def showI18nInfoDialog(i18nKey, callback, meta=None):
 
 
 @decorators.async
+@process
+def showDemoAccountBootcampFailureDialog(i18nKey, meta=None):
+    result = yield showDialog(DemoAccountBootcampFailureMeta(i18nKey, meta=meta))
+    if result == DIALOG_BUTTON_ID.HYPERLINK:
+        WGC.requestCompleteAccount()
+    BigWorld.quit()
+
+
+@decorators.async
 def showI18nConfirmDialog(i18nKey, callback, ctx=None, meta=None, focusedID=None):
     showDialog(I18nConfirmDialogMeta(i18nKey, messageCtx=ctx, meta=meta, focusedID=focusedID), callback)
 
@@ -68,5 +80,8 @@ def showDisconnect(reason=None, kickReasonType=ACCOUNT_KICK_REASONS.UNKNOWN, exp
         global __ifDisconnectDialogShown
         __ifDisconnectDialogShown = False
 
-    __ifDisconnectDialogShown = True
-    showDialog(DisconnectMeta(reason, kickReasonType, expiryTime), callback)
+    if kickReasonType == ACCOUNT_KICK_REASONS.DEMO_ACCOUNT_BOOTCAMP_FAILURE:
+        showDemoAccountBootcampFailureDialog(reason)
+    else:
+        __ifDisconnectDialogShown = True
+        showDialog(DisconnectMeta(reason, kickReasonType, expiryTime), callback)

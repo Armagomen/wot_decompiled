@@ -39,7 +39,6 @@ class MESSENGER(object):
     LOBBY_USERS_ACTIONS_COPYNAMETOCLIPBOARD = '#messenger:lobby/users/actions/copyNameToClipboard'
     LOBBY_FAQ_TITLE = '#messenger:lobby/faq/title'
     LOBBY_FAQ_CLOSE = '#messenger:lobby/faq/close'
-    BATTLE_HINTS_CHANGERECEIVER = '#messenger:battle/hints/changeReceiver'
     BATTLE_TOOLTIPS_USINGCHAT = '#messenger:battle/toolTips/usingChat'
     BATTLE_TOOLTIPS_STARTCHAT = '#messenger:battle/toolTips/startChat'
     BATTLE_TOOLTIPS_DEFAULT = '#messenger:battle/toolTips/default'
@@ -335,6 +334,9 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLERESULTS_QUESTS_BATTLEPASSPOINTS = '#messenger:serviceChannelMessages/battleResults/quests/battlePassPoints'
     SERVICECHANNELMESSAGES_BATTLERESULTS_SENIORITYREWARDHEADER = '#messenger:serviceChannelMessages/battleResults/seniorityRewardHeader'
     SERVICECHANNELMESSAGES_BATTLERESULTS_SENIORITYREWARDBODY = '#messenger:serviceChannelMessages/battleResults/seniorityRewardBody'
+    SERVICECHANNELMESSAGES_BATTLERESULTS_QUESTS_NYBOXES = '#messenger:serviceChannelMessages/battleResults/quests/nyBoxes'
+    SERVICECHANNELMESSAGES_BATTLERESULTS_QUESTS_NYGIFTSTAMPS = '#messenger:serviceChannelMessages/battleResults/quests/nyGiftStamps'
+    SERVICECHANNELMESSAGES_BATTLERESULTS_QUESTS_VARIADICDISCOUNT = '#messenger:serviceChannelMessages/battleResults/quests/variadicDiscount'
     SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS = '#messenger:serviceChannelMessages/battleResults/personalMissions'
     SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_1 = '#messenger:serviceChannelMessages/battleResults/personalMissions/1'
     SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_2 = '#messenger:serviceChannelMessages/battleResults/personalMissions/2'
@@ -381,6 +383,7 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BOOTCAMP_DEVICES = '#messenger:serviceChannelMessages/bootcamp/devices'
     SERVICECHANNELMESSAGES_BOOTCAMP_CREW = '#messenger:serviceChannelMessages/bootcamp/crew'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_AUCTION = '#messenger:serviceChannelMessages/currencyUpdate/auction'
+    SERVICECHANNELMESSAGES_CURRENCYUPDATE_BATTLEPASS = '#messenger:serviceChannelMessages/currencyUpdate/battlepass'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_FINANCIAL_TRANSACTION = '#messenger:serviceChannelMessages/currencyUpdate/financial_transaction'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DATE = '#messenger:serviceChannelMessages/currencyUpdate/date'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CREDITS = '#messenger:serviceChannelMessages/currencyUpdate/received/credits'
@@ -388,11 +391,13 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CRYSTAL = '#messenger:serviceChannelMessages/currencyUpdate/received/crystal'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_EVENTCOIN = '#messenger:serviceChannelMessages/currencyUpdate/received/eventCoin'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_BPCOIN = '#messenger:serviceChannelMessages/currencyUpdate/received/bpcoin'
+    SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_FREEXP = '#messenger:serviceChannelMessages/currencyUpdate/received/freeXp'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_CREDITS = '#messenger:serviceChannelMessages/currencyUpdate/debited/credits'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_GOLD = '#messenger:serviceChannelMessages/currencyUpdate/debited/gold'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_CRYSTAL = '#messenger:serviceChannelMessages/currencyUpdate/debited/crystal'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_EVENTCOIN = '#messenger:serviceChannelMessages/currencyUpdate/debited/eventCoin'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_BPCOIN = '#messenger:serviceChannelMessages/currencyUpdate/debited/bpcoin'
+    SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_FREEXP = '#messenger:serviceChannelMessages/currencyUpdate/debited/freeXp'
     SERVICECHANNELMESSAGES_INVOICERECEIVED_GOLDACCRUED = '#messenger:serviceChannelMessages/invoiceReceived/goldAccrued'
     SERVICECHANNELMESSAGES_INVOICERECEIVED_GOLDDEBITED = '#messenger:serviceChannelMessages/invoiceReceived/goldDebited'
     SERVICECHANNELMESSAGES_INVOICERECEIVED_CRYSTALACCRUED = '#messenger:serviceChannelMessages/invoiceReceived/crystalAccrued'
@@ -476,6 +481,14 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_INVOICERECEIVED_PURCHASE_RECEIVED_FROM = '#messenger:serviceChannelMessages/invoiceReceived/purchase/received_from'
     SERVICECHANNELMESSAGES_QUOTEDTEXTTEMPLATE = '#messenger:serviceChannelMessages/quotedTextTemplate'
     SERVICECHANNELMESSAGES_OFFERTOKENBONUS_TITLE = '#messenger:serviceChannelMessages/offerTokenBonus/title'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYTOYSACCRUEDINVOICERECEIVED = '#messenger:serviceChannelMessages/invoiceReceived/nyToysAccruedInvoiceReceived'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYTOYSDEBITEDINVOICERECEIVED = '#messenger:serviceChannelMessages/invoiceReceived/nyToysDebitedInvoiceReceived'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYFILLERSACCRUED = '#messenger:serviceChannelMessages/invoiceReceived/nyFillersAccrued'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYFILLERSDEBITED = '#messenger:serviceChannelMessages/invoiceReceived/nyFillersDebited'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYFRAGMENTSACCRUED = '#messenger:serviceChannelMessages/invoiceReceived/nyFragmentsAccrued'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYFRAGMENTSDEBITED = '#messenger:serviceChannelMessages/invoiceReceived/nyFragmentsDebited'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_NYFRAGMENTSDEBITEDFORANTIDUPLICATOR = '#messenger:serviceChannelMessages/invoiceReceived/nyFragmentsDebitedForAntiduplicator'
+    SERVICECHANNELMESSAGES_INVOICERECEIVED_TOYTYPEWRAPPER = '#messenger:serviceChannelMessages/invoiceReceived/toyTypeWrapper'
     SERVICECHANNELMESSAGES_DURATIONOFPREMIUMACCOUNTEXPIRES = '#messenger:serviceChannelMessages/durationOfPremiumAccountExpires'
     SERVICECHANNELMESSAGES_PREMIUMBOUGHT = '#messenger:serviceChannelMessages/premiumBought'
     SERVICECHANNELMESSAGES_PREMIUMEXTENDED = '#messenger:serviceChannelMessages/premiumExtended'
@@ -587,6 +600,7 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_SERVERDOWNTIMECOMPENSATION_PLAYEREMBLEMS = '#messenger:serviceChannelMessages/serverDowntimeCompensation/playerEmblems'
     SERVICECHANNELMESSAGES_SERVERDOWNTIMECOMPENSATION_PLAYERINSCRIPTIONS = '#messenger:serviceChannelMessages/serverDowntimeCompensation/playerInscriptions'
     SERVICECHANNELMESSAGES_SERVERDOWNTIMECOMPENSATION_RENTALS = '#messenger:serviceChannelMessages/serverDowntimeCompensation/rentals'
+    SERVICECHANNELMESSAGES_SERVERDOWNTIMECOMPENSATION_PREMIUM_SUBS = '#messenger:serviceChannelMessages/serverDowntimeCompensation/premium_subs'
     SERVICECHANNELMESSAGES_ACTIONBEGIN = '#messenger:serviceChannelMessages/actionBegin'
     SERVICECHANNELMESSAGES_ACTIONEND = '#messenger:serviceChannelMessages/actionEnd'
     SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_TITLE = '#messenger:serviceChannelMessages/sysMsg/converter/title'
@@ -640,7 +654,6 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_LOOTBOXES_ITEM_NAME = '#messenger:serviceChannelMessages/lootBoxes/item/name'
     SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_HEADER = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/header'
     SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_TEXT = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/text'
-    SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_COUNTER = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/counter'
     SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_EVENT_HEADER = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/event/header'
     SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_EVENT_TEXT = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/event/text'
     SERVICECHANNELMESSAGES_LOOTBOXESAUTOOPEN_EVENT_BOXES = '#messenger:serviceChannelMessages/lootBoxesAutoOpen/event/boxes'
@@ -1030,6 +1043,14 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_PREBATTLESWITCHTOGGLED_OPT_DEV_BOOSTERS_SWITCH = '#messenger:serviceChannelMessages/vehiclePostProgression/prebattleSwitchToggled/opt_dev_boosters_switch'
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_PREBATTLESWITCHTOGGLED_ENABLED = '#messenger:serviceChannelMessages/vehiclePostProgression/prebattleSwitchToggled/enabled'
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_PREBATTLESWITCHTOGGLED_DISABLED = '#messenger:serviceChannelMessages/vehiclePostProgression/prebattleSwitchToggled/disabled'
+    SERVICECHANNELMESSAGES_PAYERSENIORITY_COINS_HEADER = '#messenger:serviceChannelMessages/payerSeniority/coins/header'
+    SERVICECHANNELMESSAGES_PAYERSENIORITY_COINS_BODY = '#messenger:serviceChannelMessages/payerSeniority/coins/body'
+    SERVICECHANNELMESSAGES_PAYERSENIORITY_COINS_BUTTON = '#messenger:serviceChannelMessages/payerSeniority/coins/button'
+    PLATFORMCURRENCYMSG_SACOIN = '#messenger:platformCurrencyMsg/sacoin'
+    PLATFORMCURRENCYMSG_CURRENCYUPDATE_RECEIVED_SACOIN = '#messenger:platformCurrencyMsg/currencyUpdate/received/sacoin'
+    PLATFORMCURRENCYMSG_CURRENCYUPDATE_DEBITED_SACOIN = '#messenger:platformCurrencyMsg/currencyUpdate/debited/sacoin'
+    PLATFORMCURRENCYMSG_INVOICE_ACCRUED_SACOIN = '#messenger:platformCurrencyMsg/invoice/accrued/sacoin'
+    PLATFORMCURRENCYMSG_INVOICE_DEBITED_SACOIN = '#messenger:platformCurrencyMsg/invoice/debited/sacoin'
     CLIENT_ERROR_SHARED_ENUM = (CLIENT_ERROR_SHARED_TRY_LATER,
      CLIENT_ERROR_SHARED_GENERIC,
      CLIENT_ERROR_SHARED_LOCKED,
@@ -1119,11 +1140,13 @@ class MESSENGER(object):
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CRYSTAL,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_EVENTCOIN,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_BPCOIN,
+     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_FREEXP,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_CREDITS,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_GOLD,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_CRYSTAL,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_EVENTCOIN,
-     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_BPCOIN)
+     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_BPCOIN,
+     SERVICECHANNELMESSAGES_CURRENCYUPDATE_DEBITED_FREEXP)
 
     @classmethod
     def client_error_shared(cls, key0):

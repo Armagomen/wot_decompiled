@@ -52,6 +52,7 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     MANUAL_CHAPTER_VIEW = 'manualChapterView'
     WOT_PLUS_INFO_VIEW = 'wotPlusInfoView'
     VEHICLE_RENTAL_VIEW = 'vehicleRentalView'
+    TELECOM_RENTAL_VIEW = 'telecomRentalView'
     AMMUNITION_SETUP_VIEW = 'ammunitionSetupView'
     LOBBY_TECHTREE = 'techtree'
     LOBBY_RESEARCH = 'research'
@@ -114,6 +115,7 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     STRONGHOLD_ADS = 'StrongholdAdsView'
     BROWSER_VIEW = 'BrowserView'
     SIMPLE_DIALOG = 'simpleDialog'
+    BUTTON_DIALOG = 'buttonDialog'
     CONFIRM_MODULE_DIALOG = 'confirmModuleDialog'
     USE_FREEW_AWARD_SHEET_DIALOG = 'useFreeAwardSheetDialog'
     ICON_DIALOG = 'iconDialog'
@@ -128,6 +130,9 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     BATTLE_TYPE_SELECT_POPOVER = 'battleTypeSelectPopover'
     SQUAD_TYPE_SELECT_POPOVER = 'squadTypeSelectPopover'
     TRADEIN_POPOVER = 'TradeInPopover'
+    NY_SELECT_VEHICLE_POPOVER = 'NYSelectVehiclePopover'
+    NY_SELECT_VEHICLE_FOR_DISCOUNT_POPOVER = 'NYSelectVehicleForDiscountPopover'
+    NY_BROWSER_VIEW = 'NyBrowserView'
     ACOUSTIC_POPOVER = 'acousticPopover'
     DISMISS_TANKMAN_DIALOG = 'dismissTankmanDialog'
     RESTORE_TANKMAN_DIALOG = 'restoreTankmanDialog'
@@ -142,7 +147,6 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     UI_LOGGER_TEST_DIALOG = 'uiLoggerDialog'
     VEH_POST_PROGRESSION = 'vehPostProgression'
     VEH_POST_PROGRESSION_CMP = 'vehPostProgressionCmp'
-    YEAR_HARE_AFFAIR_VIEW = 'yearHareAffairView'
     MINIMAP_LOBBY = 'minimapLobby'
     MINIMAP_GRID = 'minimapGridLobby'
     MINIMAP_ON_BATTLE_LOADING = 'minimapOnBattleLoading'
@@ -236,6 +240,7 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     FEEDBACK_DAMAGE_INDICATOR = 'feedbackDamageIndicator'
     FEEDBACK_BATTLE_BORDER_MAP = 'feedbackBattleBorderMap'
     FEEDBACK_QUESTS_PROGRESS = 'feedbackQuestsProgress'
+    LOOT_BOX_SHOP_OVERLAY = 'overlayBrowserLootBoxShop'
     LOADINGS = (BATTLE_LOADING, TUTORIAL_LOADING)
     BATTLE_PAGES = (CLASSIC_BATTLE_PAGE,
      TUTORIAL_BATTLE_PAGE,

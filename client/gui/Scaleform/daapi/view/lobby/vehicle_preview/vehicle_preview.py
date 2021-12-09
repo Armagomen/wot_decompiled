@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview.py
 import itertools
+from copy import deepcopy
 import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import HeroTank
@@ -38,7 +39,6 @@ from gui.shared.money import MONEY_UNDEFINED
 from gui.shared.tutorial_helper import getTutorialGlobalStorage
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from preview_selectable_logic import PreviewSelectableLogic
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IHeroTankController, IVehicleComparisonBasket, IMapsTrainingController
 from skeletons.gui.shared import IItemsCache
@@ -152,6 +152,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.__description = ctx.get('description')
         self.__endTime = ctx.get('endTime')
         self.__buyParams = ctx.get('buyParams')
+        self.__unmodifiedItemsPack = deepcopy(self._itemsPack)
         addBuiltInEquipment(self._itemsPack, self.__itemsCache, self._vehicleCD)
         notInteractive = (VIEW_ALIAS.LOBBY_STORE, VIEW_ALIAS.RANKED_BATTLE_PAGE, VIEW_ALIAS.VEH_POST_PROGRESSION)
         self._heroInteractive = not (self._itemsPack or self.__offers or self._backAlias in notInteractive)
@@ -225,6 +226,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         if self._backAlias == VIEW_ALIAS.VEHICLE_PREVIEW:
             g_currentVehicle.refreshModel()
         self._previewBackCb = None
+        self.__unmodifiedItemsPack = None
         super(VehiclePreview, self)._dispose()
         if not self._heroInteractive:
             self.__heroTanksControl.setInteractive(True)
@@ -276,7 +278,10 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.as_hide3DSceneTooltipS()
 
     def _createSelectableLogic(self):
-        return PreviewSelectableLogic()
+        if self.__isHeroTank:
+            return super(VehiclePreview, self)._createSelectableLogic()
+        from new_year.custom_selectable_logic import WithoutNewYearObjectsSelectableLogic
+        return WithoutNewYearObjectsSelectableLogic()
 
     def _onRegisterFlashComponent(self, viewPy, alias):
         super(VehiclePreview, self)._onRegisterFlashComponent(viewPy, alias)
@@ -347,14 +352,15 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
     def _getExitEvent(self):
         hangarVehicleCD = None
         hangarVehicle = self.__hangarSpace.getVehicleEntity()
-        if self.__isHeroTank and hangarVehicle.typeDescriptor.type.compactDescr != g_currentVehicle.item.compactDescr:
+        currentVehicle = g_currentVehicle.item
+        if self.__isHeroTank and currentVehicle is not None and hangarVehicle.typeDescriptor.type.compactDescr != currentVehicle.compactDescr:
             hangarVehicleCD = hangarVehicle.typeDescriptor.type.compactDescr
         return events.LoadViewEvent(SFViewLoadParams(self.alias), ctx={'itemCD': self._vehicleCD,
          'previewAlias': self._backAlias,
          'previousBackAlias': self._previousBackAlias,
          'vehicleStrCD': self.__vehicleStrCD,
          'previewBackCb': self._previewBackCb,
-         'itemsPack': self._itemsPack,
+         'itemsPack': self.__unmodifiedItemsPack,
          'offers': self.__offers,
          'price': self._price,
          'oldPrice': self._oldPrice,
@@ -441,11 +447,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             return entity.getQueueType() if entity is not None else QUEUE_TYPE.UNKNOWN
 
     def __onHangarCreateOrRefresh(self):
-        if self._getPrbEntityType() in (QUEUE_TYPE.BATTLE_ROYALE, QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT):
-            self.closeView()
-            return
-        self.__keepVehicleSelectionEnabled = True
-        self.__handleWindowClose()
+        self.closeView()
 
     @event_bus_handlers.eventBusHandler(events.HideWindowEvent.HIDE_VEHICLE_PREVIEW, EVENT_BUS_SCOPE.LOBBY)
     def __handleWindowClose(self, event=None):

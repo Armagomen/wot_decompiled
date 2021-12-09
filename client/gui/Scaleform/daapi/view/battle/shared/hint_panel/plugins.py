@@ -707,7 +707,7 @@ class PreBattleHintPlugin(HintPanelPlugin):
 
     def __updateHintCounterOnStart(self, section, vehicle, setting):
         if section not in setting:
-            setting[section] = {HINTS_LEFT: 1,
+            setting[section] = {HINTS_LEFT: 3,
              LAST_DISPLAY_DAY: 0,
              NUM_BATTLES: 0}
         if vehicle.isAlive() and vehicle.isPlayerVehicle:

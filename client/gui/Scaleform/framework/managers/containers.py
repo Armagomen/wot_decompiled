@@ -3,6 +3,7 @@
 import logging
 import weakref
 from collections import OrderedDict
+import typing
 from Event import Event
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
@@ -12,6 +13,8 @@ from gui.Scaleform.framework.entities.abstract.ContainerManagerMeta import Conta
 from gui.Scaleform.framework.managers.loaders import ViewLoadMode, ViewKey
 from gui.Scaleform.framework.settings import UIFrameworkImpl
 from shared_utils import findFirst
+if typing.TYPE_CHECKING:
+    from typing import List
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _POPUPS_CONTAINERS = (WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW, WindowLayer.WINDOW)
@@ -770,6 +773,12 @@ class ContainerManager(ContainerManagerMeta, IContainerManager):
 
     def hideContainers(self, layers, time=0):
         self.as_hideContainersS(layers, time)
+
+    def getVisibleLayers(self):
+        return self.as_getVisibleLayersS()
+
+    def setVisibleLayers(self, layerList):
+        self.as_setVisibleLayersS(layerList)
 
     def isContainerShown(self, layer):
         return self.as_isContainerShownS(layer)
