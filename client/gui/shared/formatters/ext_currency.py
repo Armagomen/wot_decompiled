@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/formatters/ext_currency.py
+# Embedded file name: scripts/client/gui/shared/formatters/ext_currency.py
 from gui.impl import backport
 from gui.shared.formatters import text_styles
 from gui.shared.formatters.currency import getBWFormatter, getStyle

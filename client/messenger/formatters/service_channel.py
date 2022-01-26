@@ -20,7 +20,9 @@ from blueprints.FragmentTypes import getFragmentType
 from cache import cached_property
 from chat_shared import decompressSysMessage, SYS_MESSAGE_TYPE, MapRemovedFromBLReason
 from constants import INVOICE_ASSET, AUTO_MAINTENANCE_TYPE, AUTO_MAINTENANCE_RESULT, PREBATTLE_TYPE, FINISH_REASON, KICK_REASON_NAMES, KICK_REASON, NC_MESSAGE_TYPE, NC_MESSAGE_PRIORITY, SYS_MESSAGE_CLAN_EVENT, SYS_MESSAGE_CLAN_EVENT_NAMES, ARENA_GUI_TYPE, SYS_MESSAGE_FORT_EVENT_NAMES, PREMIUM_ENTITLEMENTS, PREMIUM_TYPE, OFFER_TOKEN_PREFIX, LOOTBOX_TOKEN_PREFIX
+from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.server_events.events_helpers import isCelebrityQuest
+from gui.shared.formatters.ext_currency import formatExtendedCurrencyValue
 from items.components.ny_constants import CurrentNYConstants, TOKEN_VARIADIC_DISCOUNT_PREFIX, VEH_BRANCH_EXTRA_SLOT_TOKEN
 from new_year.ny_constants import TOY_COLLECTIONS
 from dog_tags_common.components_config import componentConfigAdapter
@@ -49,16 +51,19 @@ from gui.server_events.finders import PERSONAL_MISSION_TOKEN
 from gui.server_events.recruit_helper import getRecruitInfo
 from gui.shared import formatters as shared_fmts
 from gui.shared.formatters import text_styles
-from gui.shared.formatters.currency import getBWFormatter, getStyle, applyAll
+from gui.shared.formatters.currency import getBWFormatter, applyAll
 from gui.shared.formatters.time_formatters import getTillTimeByResource, getTimeLeftInfo, RentDurationKeys
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.loot_box import NewYearCategories
 from gui.shared.gui_items.Tankman import Tankman
-from gui.shared.gui_items.Vehicle import getUserName, getShortUserName
+from gui.shared.gui_items.Vehicle import getUserName, getShortUserName, getShopIconResource
 from gui.shared.gui_items.crew_skin import localizedFullName
 from gui.shared.gui_items.dossier.factories import getAchievementFactory
 from gui.shared.gui_items.fitting_item import RentalInfoProvider
+from gui.shared.gui_items.loot_box import ALL_LUNAR_NY_LOOT_BOX_TYPES, LunarNYLootBoxTypes
 from gui.shared.money import Money, MONEY_UNDEFINED, Currency, ZERO_MONEY
 from gui.shared.notifications import NotificationPriorityLevel, NotificationGuiSettings
+from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.ShopRequester import _NamedGoodieData
 from gui.shared.utils.requesters.blueprints_requester import getUniqueBlueprints, getFragmentNationID
 from gui.shared.utils.transport import z_loads
@@ -70,6 +75,7 @@ from items.components.crew_books_constants import CREW_BOOK_RARITY
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from items.components.c11n_constants import UNBOUND_VEH_KEY
 from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
+from lunar_ny.lunar_ny_constants import LOOT_BOX_TYPE_TO_ENVELOPE_TYPE, ENVELOPE_ENTITLEMENT_CODE_TO_TYPE
 from maps_training_common.maps_training_constants import SCENARIO_RESULT, SCENARIO_INDEXES
 from messenger import g_settings
 from messenger.ext import passCensor
@@ -464,13 +470,15 @@ class BattleResultsFormatter(WaitItemsSyncFormatter):
                  Currency.CREDITS: '0'}
                 vehicleNames = {intCD:self._itemsCache.items.getItemByCD(intCD) for intCD in battleResults.get('playerVehicles', {}).keys()}
                 ctx['vehicleNames'] = ', '.join(map(operator.attrgetter('userName'), sorted(vehicleNames.values())))
-                xp = battleResults.get('xp')
+                lunarNYBonuses = self.__getLunarNYBonuses(battleResults)
+                xp = battleResults.get('xp', 0) + lunarNYBonuses.get('xp')
                 if xp:
                     ctx['xp'] = backport.getIntegralFormat(xp)
                 battleResKey = battleResults.get('isWinner', 0)
                 ctx['xpEx'] = self.__makeXpExString(xp, battleResKey, battleResults.get('xpPenalty', 0), battleResults)
                 ctx[Currency.GOLD] = self.__makeGoldString(battleResults.get(Currency.GOLD, 0))
-                accCredits = battleResults.get(Currency.CREDITS) - battleResults.get('creditsToDraw', 0)
+                lunarCredits = lunarNYBonuses.get(Currency.CREDITS)
+                accCredits = battleResults.get(Currency.CREDITS) - battleResults.get('creditsToDraw', 0) + lunarCredits
                 if accCredits:
                     ctx[Currency.CREDITS] = self.__makeCurrencyString(Currency.CREDITS, accCredits)
                 ctx['piggyBank'] = self.__makePiggyBankString(battleResults.get('piggyBank'))
@@ -536,6 +544,14 @@ class BattleResultsFormatter(WaitItemsSyncFormatter):
         else:
             callback([MessageData(None, None)])
         return
+
+    def __getLunarNYBonuses(self, battleResults):
+        default = {}
+        detailedRewards = battleResults.get('detailedRewards', default)
+        lunarNewYearBattle = detailedRewards.get('lunarNewYearBattle', default)
+        return {Currency.CREDITS: lunarNewYearBattle.get(Currency.CREDITS, 0),
+         'xp': lunarNewYearBattle.get('xp', 0),
+         'freeXP': lunarNewYearBattle.get('freeXP', 0)}
 
     def __makeMapsTrainingMsgCtx(self, battleResults, ctx):
         vehTypeCompDescr = next(battleResults['playerVehicles'].iterkeys())
@@ -875,6 +891,8 @@ class CurrencyUpdateFormatter(ServiceChannelFormatter):
     _EMITTER_ID_TO_TITLE = {2525: R.strings.messenger.serviceChannelMessages.currencyUpdate.auction(),
      2524: R.strings.messenger.serviceChannelMessages.currencyUpdate.battlepass()}
     _DEFAULT_TITLE = R.strings.messenger.serviceChannelMessages.currencyUpdate.financial_transaction()
+    _FREE_XP = 'freeXp'
+    _CURRENCY_MAP = {'freeXP': _FREE_XP}
 
     def format(self, message, *args):
         data = message.data
@@ -887,15 +905,16 @@ class CurrencyUpdateFormatter(ServiceChannelFormatter):
             formatted = g_settings.msgTemplates.format(xmlKey, ctx={'title': backport.text(self._EMITTER_ID_TO_TITLE.get(emitterID, self._DEFAULT_TITLE)),
              'date': TimeFormatter.getLongDatetimeFormat(transactionTime),
              'currency': self.__getCurrencyString(currencyCode, amountDelta),
-             'amount': getStyle(currencyCode)(getBWFormatter(currencyCode)(abs(amountDelta)))}, data={'icon': currencyCode.title() + 'Icon'})
+             'amount': formatExtendedCurrencyValue(currencyCode, abs(amountDelta))}, data={'icon': currencyCode.title() + 'Icon'})
             return [MessageData(formatted, self._getGuiSettings(message, xmlKey))]
         else:
             return [MessageData(None, None)]
 
     def __ifPlatformCurrency(self, currencyCode):
-        return currencyCode not in Currency.ALL
+        return currencyCode not in Currency.ALL + (self._FREE_XP,)
 
     def __getCurrencyString(self, currencyCode, amountDelta):
+        currencyCode = self._CURRENCY_MAP.get(currencyCode, currencyCode)
         return backport.text(R.strings.messenger.platformCurrencyMsg.currencyUpdate.dyn('debited' if amountDelta < 0 else 'received').dyn(currencyCode)()) if self.__ifPlatformCurrency(currencyCode) else backport.text(R.strings.messenger.serviceChannelMessages.currencyUpdate.dyn('debited' if amountDelta < 0 else 'received').dyn(currencyCode)())
 
 
@@ -1338,6 +1357,9 @@ class InvoiceReceivedFormatter(WaitItemsSyncFormatter):
             rankedBonusBattlesStr = self.__getRankedBonusBattlesString(rankedPersistentBattles, rankedDailyBattles)
             if rankedBonusBattlesStr:
                 operations.append(rankedBonusBattlesStr)
+            charms = dataEx.get('charms', {})
+            if charms:
+                operations.append(self.__getCharmsString(charms))
             platformCurrenciesStr = self.__getPlatformCurrenciesString(dataEx.get('currencies', {}))
             if platformCurrenciesStr:
                 operations.append(platformCurrenciesStr)
@@ -1704,6 +1726,25 @@ class InvoiceReceivedFormatter(WaitItemsSyncFormatter):
          'spec': specStr})
 
     @classmethod
+    def __getCharmsString(cls, charms):
+        countAccrued = 0
+        countDebited = 0
+        msg = ''
+        for charmData in charms.values():
+            countCharms = charmData.get('count', 0)
+            if countCharms > 0:
+                countAccrued += countCharms
+            countDebited += countCharms
+
+        if countAccrued > 0:
+            msg += g_settings.htmlTemplates.format('charmsAccruedInvoiceReceived', {'amount': backport.getIntegralFormat(abs(countAccrued))})
+        if countDebited < 0:
+            if msg:
+                msg += '<br/>'
+            msg += g_settings.htmlTemplates.format('charmsDebitedInvoiceReceived', {'amount': backport.getIntegralFormat(abs(countDebited))})
+        return msg
+
+    @classmethod
     def __getL10nDescription(cls, data):
         descr = ''
         lData = getLocalizedData(data.get('data', {}), 'localized_description', defVal=None)
@@ -1778,11 +1819,25 @@ class InvoiceReceivedFormatter(WaitItemsSyncFormatter):
                     tokenStrings.append(offerTokenResult)
             if tokenName == constants.PERSONAL_MISSION_FREE_TOKEN_NAME:
                 count += tokenData.get('count', 0)
-            quests = self.__eventsCache.getQuestsByTokenRequirement(tokenName)
-            for quest in quests:
-                text = quest.getNotificationText().format(count=tokenData.get('count', 0))
-                if text:
-                    tokenStrings.append(g_settings.htmlTemplates.format('questTokenInvoiceReceived', {'text': text}))
+            else:
+                quests = self.__eventsCache.getQuestsByTokenRequirement(tokenName)
+                for quest in quests:
+                    text = quest.getNotificationText().format(count=tokenData.get('count', 0))
+                    if text:
+                        tokenStrings.append(g_settings.htmlTemplates.format('questTokenInvoiceReceived', {'text': text}))
+
+            boxItem = None
+            if tokenName.startswith(LOOTBOX_TOKEN_PREFIX):
+                boxItem = self._itemsCache.items.tokens.getLootBoxByTokenID(tokenName)
+            if boxItem is not None and boxItem.getType() in ALL_LUNAR_NY_LOOT_BOX_TYPES:
+                boxType, tokensCount = LunarNYLootBoxTypes(boxItem.getType()), tokenData.get('count', 0)
+                entitlementName = backport.text(R.strings.lunar_ny.systemMessage.sendEnvelope.dyn(LOOT_BOX_TYPE_TO_ENVELOPE_TYPE[boxType].name)())
+                if tokensCount > 0:
+                    resId = R.strings.lunar_ny.systemMessage.invoiceReceived.lootboxAccrued()
+                else:
+                    tokensCount = abs(tokensCount)
+                    resId = R.strings.lunar_ny.systemMessage.invoiceReceived.lootboxDebited()
+                tokenStrings.append(backport.text(resId, entitlementType=entitlementName, count=backport.getIntegralFormat(tokensCount)))
 
         if count != 0:
             template = 'awardListAccruedInvoiceReceived' if count > 0 else 'awardListDebitedInvoiceReceived'
@@ -1792,17 +1847,23 @@ class InvoiceReceivedFormatter(WaitItemsSyncFormatter):
     def __getEntitlementsString(self, data):
         accrued = []
         debited = []
+        result = ''
         for entitlementID, entitlementData in data.iteritems():
             count = entitlementData.get('count', 0)
+            if entitlementID in ENVELOPE_ENTITLEMENT_CODE_TO_TYPE.keys():
+                entitlementName = EntitlementBonus.getUserName(entitlementID)
+                fmtType = 'entitlementsAccrued' if count > 0 else 'entitlementsDebited'
+                lunarFmt = backport.text(R.strings.lunar_ny.systemMessage.invoiceReceived.dyn(fmtType)(), entitlementType=entitlementName, count=backport.getIntegralFormat(abs(count)))
+                result = text_styles.concatStylesToMultiLine(result, lunarFmt) if result else lunarFmt
             accrued.append((entitlementID, max(count, 0)))
             debited.append((entitlementID, max(-count, 0)))
 
-        result = ''
         accruedStr = self.getEntitlementsString(accrued)
         debitedStr = self.getEntitlementsString(debited)
         if accruedStr:
             templateId = 'entitlementsAccruedInvoiceReceived'
-            result = g_settings.htmlTemplates.format(templateId, ctx={'entitlements': accruedStr})
+            accruedFormatted = g_settings.htmlTemplates.format(templateId, ctx={'entitlements': accruedStr})
+            result = text_styles.concatStylesToMultiLine(result, accruedFormatted) if result else accruedFormatted
         if debitedStr:
             templateId = 'entitlementsDebitedInvoiceReceived'
             debitedFormatted = g_settings.htmlTemplates.format(templateId, ctx={'entitlements': debitedStr})
@@ -2576,6 +2637,12 @@ class QuestAchievesFormatter(object):
         nyGiftStamps = cls.__processNyGiftStamps(data)
         if nyGiftStamps:
             result.append(nyGiftStamps)
+        entitlements = data.get('entitlements', {})
+        for envelopeId in ENVELOPE_ENTITLEMENT_CODE_TO_TYPE.iterkeys():
+            envelope = entitlements.pop(envelopeId, None)
+            if envelope is not None and envelope.get('count', 0) > 0:
+                result.append(text_styles.stats(cls.__makeEnvelopeData(envelopeId, envelope['count'])))
+
         tokenResult = cls._processTokens(data)
         if tokenResult and processTokens:
             result.append(tokenResult)
@@ -2603,6 +2670,12 @@ class QuestAchievesFormatter(object):
             if gold:
                 fomatter = getBWFormatter(Currency.GOLD)
                 result.append(cls.__makeQuestsAchieve('battleQuestsGold', gold=fomatter(gold)))
+            charms = data.get('charms')
+            if charms:
+                result.append(cls.__makeCharms(charms))
+            lunarNYCustomizations = data.get('lunarNYCustomizations')
+            if lunarNYCustomizations:
+                result.append(cls.__makeLunarCustomization(lunarNYCustomizations))
             bpcoin = data.get(Currency.BPCOIN, 0)
             if bpcoin:
                 fomatter = getBWFormatter(Currency.BPCOIN)
@@ -2820,6 +2893,46 @@ class QuestAchievesFormatter(object):
     @classmethod
     def __makeQuestsAchieve(cls, key, **kwargs):
         return g_settings.htmlTemplates.format(key, kwargs)
+
+    @classmethod
+    def __makeEnvelopeData(cls, envelopeId, count):
+        envelopeName = backport.text(R.strings.lunar_ny.systemMessage.sendEnvelope.dyn(ENVELOPE_ENTITLEMENT_CODE_TO_TYPE[envelopeId].name)())
+        return g_settings.htmlTemplates.format('battleQuestsEnvelopes', {'envelopeName': envelopeName,
+         'count': count})
+
+    @classmethod
+    def __makeCharms(cls, charmsData):
+        if len(charmsData) == 1:
+            charmID = first(charmsData)
+            charmName = backport.text(R.strings.lunar_ny.charmName.num(charmID)())
+            result = g_settings.htmlTemplates.format('battleQuestsCharm', {'charm': charmName})
+        else:
+            count = sum((data.get('count', 0) for data in charmsData.itervalues()))
+            result = g_settings.htmlTemplates.format('battleQuestsCharms', {'count': count})
+        return result
+
+    @classmethod
+    def __makeLunarCustomization(cls, customizationData):
+        result = ''
+
+        def findById(decalId):
+            criteria = REQ_CRITERIA.CUSTOM(lambda item: item.id == decalId)
+            return cls.__itemsCache.items.getItems(GUI_ITEM_TYPE.PROJECTION_DECAL, criteria=criteria)
+
+        for name, items in customizationData.iteritems():
+            if len(items) == 1:
+                res = R.strings.lunar_ny.systemMessage.awards.dyn(name)
+                decalID = items[0].get('id', 0)
+                decals = findById(decalID)
+                body = decals.values()[0].userName
+            else:
+                res = R.strings.lunar_ny.systemMessage.awards.many.dyn(name)
+                body = len(items)
+            if res.isValid():
+                result += g_settings.htmlTemplates.format('customizationAwards', {'header': backport.text(res()),
+                 'text': body})
+
+        return result
 
 
 class TokenQuestsFormatter(WaitItemsSyncFormatter):
@@ -4150,6 +4263,29 @@ class NewNYEventFormatter(ClientSysMessageFormatter):
         return NotificationGuiSettings(self.isNotify(), priorityLevel=priorityLevel, auxData=auxData, groupID=groupID, messageSubtype=SCH_CLIENT_MSG_TYPE.NY_EVENT_BUTTON_MESSAGE)
 
 
+class WinterOfferFormatter(ServiceChannelFormatter):
+    __template = 'WinterOfferMessage'
+
+    def format(self, message, *auxData):
+        if auxData and auxData[0]:
+            params = auxData[0][0]
+            buttonLabel = params.get('buttonLabel', '')
+            vehicleName = params.get('vehicleName', None)
+            rIcon = getShopIconResource(vehicleName, size=STORE_CONSTANTS.ICON_SIZE_SMALL)
+            ctx = {'header': params.get('header', ''),
+             'body': params.get('body', '')}
+            data = {'icon': backport.image(rIcon) if rIcon else ''}
+            if buttonLabel:
+                data.update({'buttonsLayout': [{'action': params.get('action', False),
+                                    'type': 'submit',
+                                    'label': buttonLabel}]})
+            formatted = g_settings.msgTemplates.format(self.__template, ctx, data=data)
+            settings = self._getGuiSettings(message, self.__template, messageSubtype=SCH_CLIENT_MSG_TYPE.WO_NOTIFICATION)
+            return [MessageData(formatted, settings)]
+        else:
+            return [MessageData(None, None)]
+
+
 class CustomizationProgressFormatter(WaitItemsSyncFormatter):
     itemsCache = dependency.descriptor(IItemsCache)
 
@@ -4461,3 +4597,11 @@ class NewYearCollectionFormatter(object):
                 result.append(msg)
 
         return EOL.join(result)
+
+
+class LunarReturnEnvelopeFormatter(ServiceChannelFormatter):
+    __TEMPLATE = 'LunarNYReturnedEnvelope'
+
+    def format(self, message, *args):
+        formatted = g_settings.msgTemplates.format(self.__TEMPLATE)
+        return [MessageData(formatted, self._getGuiSettings(message, self.__TEMPLATE))]

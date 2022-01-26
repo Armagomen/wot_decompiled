@@ -1798,6 +1798,10 @@ class TOOLTIPS(object):
     AWARDITEM_CREDITS_HEADER = '#tooltips:awardItem/credits/header'
     AWARDITEM_CREDITS_BODY = '#tooltips:awardItem/credits/body'
     AWARDITEM_CRYSTAL_HEADER = '#tooltips:awardItem/crystal/header'
+    AWARDITEM_CHARMCOMMON_HEADER = '#tooltips:awardItem/charmCommon/header'
+    AWARDITEM_CHARMCOMMON_BODY = '#tooltips:awardItem/charmCommon/body'
+    AWARDITEM_CHARMRARE_HEADER = '#tooltips:awardItem/charmRare/header'
+    AWARDITEM_CHARMRARE_BODY = '#tooltips:awardItem/charmRare/body'
     AWARDITEM_CRYSTAL_BODY = '#tooltips:awardItem/crystal/body'
     AWARDITEM_RANDOMBOOKLET_HEADER = '#tooltips:awardItem/randomBooklet/header'
     AWARDITEM_RANDOMBOOKLET_BODY = '#tooltips:awardItem/randomBooklet/body'
@@ -2816,7 +2820,8 @@ class TOOLTIPS(object):
     KURSK_ERROR_BATTLE_TYPE = '#tooltips:kursk/error/battle_type'
     MARATHON_HEADER = '#tooltips:marathon/header'
     MARATHON_BODY = '#tooltips:marathon/body'
-    MARATHON_BODY_EXTRA = '#tooltips:marathon/body/extra'
+    MARATHON_BODY_EXTRA_VEHICLE = '#tooltips:marathon/body/extra_vehicle'
+    MARATHON_BODY_EXTRA_STYLE = '#tooltips:marathon/body/extra_style'
     MARATHON_BODY_EXTRA_SMART = '#tooltips:marathon/body/extra_smart'
     MARATHON_STATE_START = '#tooltips:marathon/state/start'
     MARATHON_STATE_END = '#tooltips:marathon/state/end'
@@ -2907,6 +2912,8 @@ class TOOLTIPS(object):
     NOTRECRUITEDTANKMAN_COMMANDER_DUKE_DESC = '#tooltips:notrecruitedtankman/commander_duke/desc'
     NOTRECRUITEDTANKMAN_COMMANDER_COBRA_LABEL = '#tooltips:notrecruitedtankman/commander_cobra/label'
     NOTRECRUITEDTANKMAN_COMMANDER_COBRA_DESC = '#tooltips:notrecruitedtankman/commander_cobra/desc'
+    NOTRECRUITEDTANKMAN_YANDEX_1_LABEL = '#tooltips:notrecruitedtankman/yandex_1/label'
+    NOTRECRUITEDTANKMAN_YANDEX_1_DESC = '#tooltips:notrecruitedtankman/yandex_1/desc'
     NOTRECRUITEDTANKMAN_NY19MEN_LABEL = '#tooltips:notrecruitedtankman/ny19men/label'
     NOTRECRUITEDTANKMAN_NY19MEN_DESC = '#tooltips:notrecruitedtankman/ny19men/desc'
     NOTRECRUITEDTANKMAN_NY19WOMAN_LABEL = '#tooltips:notrecruitedtankman/ny19woman/label'
@@ -3508,6 +3515,8 @@ class TOOLTIPS(object):
     AWARDITEM_ALL_HEADER_ENUM = (AWARDITEM_GROUPS_HEADER,
      AWARDITEM_CREDITS_HEADER,
      AWARDITEM_CRYSTAL_HEADER,
+     AWARDITEM_CHARMCOMMON_HEADER,
+     AWARDITEM_CHARMRARE_HEADER,
      AWARDITEM_RANDOMBOOKLET_HEADER,
      AWARDITEM_GOLD_HEADER,
      AWARDITEM_EVENTCOIN_HEADER,
@@ -3574,6 +3583,8 @@ class TOOLTIPS(object):
      AWARDITEM_GIFTSYSTEM_2_NYSTAMP_HEADER)
     AWARDITEM_ALL_BODY_ENUM = (AWARDITEM_GROUPS_BODY,
      AWARDITEM_CREDITS_BODY,
+     AWARDITEM_CHARMCOMMON_BODY,
+     AWARDITEM_CHARMRARE_BODY,
      AWARDITEM_CRYSTAL_BODY,
      AWARDITEM_RANDOMBOOKLET_BODY,
      AWARDITEM_GOLD_BODY,
@@ -3927,6 +3938,7 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_LABEL,
      NOTRECRUITEDTANKMAN_COMMANDER_DUKE_LABEL,
      NOTRECRUITEDTANKMAN_COMMANDER_COBRA_LABEL,
+     NOTRECRUITEDTANKMAN_YANDEX_1_LABEL,
      NOTRECRUITEDTANKMAN_NY19MEN_LABEL,
      NOTRECRUITEDTANKMAN_NY19WOMAN_LABEL,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_LABEL,
@@ -4026,6 +4038,7 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_DESC,
      NOTRECRUITEDTANKMAN_COMMANDER_DUKE_DESC,
      NOTRECRUITEDTANKMAN_COMMANDER_COBRA_DESC,
+     NOTRECRUITEDTANKMAN_YANDEX_1_DESC,
      NOTRECRUITEDTANKMAN_NY19MEN_DESC,
      NOTRECRUITEDTANKMAN_NY19WOMAN_DESC,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_DESC,

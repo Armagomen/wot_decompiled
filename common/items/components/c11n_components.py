@@ -83,6 +83,10 @@ class BaseCustomizationItem(object):
         return self.progression is not None
 
     @property
+    def isProgressionRewindEnabled(self):
+        return ItemTags.PROGRESSION_REWIND_ENABLED in self.tags
+
+    @property
     def isUnique(self):
         return self.maxNumber > 0
 
@@ -362,6 +366,10 @@ class StyleItem(BaseCustomizationItem):
     @property
     def isProgression(self):
         return ItemTags.STYLE_PROGRESSION in self.tags
+
+    @property
+    def isProgressionRewindEnabled(self):
+        return ItemTags.PROGRESSION_REWIND_ENABLED in self.tags
 
     @property
     def hasDependent(self):
@@ -848,7 +856,7 @@ def _validateProgression(component, item, progressionStorage, vehType):
     if achievedLevel is None:
         raise SoftException('missing progression for item: {} at vehicle: {}'.format(item.id, vehTypeCD))
     if not 0 <= level <= achievedLevel:
-        raise SoftException('wrong progression level: {} for component: {} at vehicle: {}'.format(level, component.id, vehTypeCD))
+        raise SoftException('wrong progression level: {}, achievedLevel: {} for component: {} at vehicle: {}, '.format(level, achievedLevel, component.id, vehTypeCD))
     return
 
 

@@ -1961,11 +1961,15 @@ class RES_ICONS(object):
     MAPS_ICONS_COMPONENTS_SCROLL_AREA_THUMB = '../maps/icons/components/scroll_area/thumb.png'
     MAPS_ICONS_COMPONENTS_SCROLL_AREA_THUMB_HORIZONTAL = '../maps/icons/components/scroll_area/thumb_horizontal.png'
     MAPS_ICONS_COMPONENTS_SPINNER_SPINNER = '../maps/icons/components/spinner/spinner.png'
+    MAPS_ICONS_COMPONENTS_SWITCHER_CURRENTTEXT = '../maps/icons/components/switcher/currentText.png'
+    MAPS_ICONS_COMPONENTS_SWITCHER_CURRENTTEXTTEXTURE = '../maps/icons/components/switcher/currentTextTexture.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_CURRENT_BIG = '../maps/icons/components/switcher/current_big.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_DISABLE = '../maps/icons/components/switcher/disable.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_EMPTY = '../maps/icons/components/switcher/empty.png'
+    MAPS_ICONS_COMPONENTS_SWITCHER_EMPTYTEXT = '../maps/icons/components/switcher/emptyText.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_FINISHED_SMALL = '../maps/icons/components/switcher/finished_small.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_FINISHED_SMALL_HOVER = '../maps/icons/components/switcher/finished_small_hover.png'
+    MAPS_ICONS_COMPONENTS_SWITCHER_GLOWTEXT = '../maps/icons/components/switcher/glowText.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_SELECTED_EMPTY = '../maps/icons/components/switcher/selected_empty.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_NUMBERS_NUMBER_0_BIG_DARK = '../maps/icons/components/switcher/numbers/number_0_big_dark.png'
     MAPS_ICONS_COMPONENTS_SWITCHER_NUMBERS_NUMBER_0_BIG_LIGHT = '../maps/icons/components/switcher/numbers/number_0_big_light.png'
@@ -2306,6 +2310,8 @@ class RES_ICONS(object):
     MAPS_ICONS_CUSTOMIZATION_NON_HISTORICAL = '../maps/icons/customization/non_historical.png'
     MAPS_ICONS_CUSTOMIZATION_NON_HISTORICAL_MINI = '../maps/icons/customization/non_historical_mini.png'
     MAPS_ICONS_CUSTOMIZATION_PROGRESSION_LEVEL = '../maps/icons/customization/progression_level.png'
+    MAPS_ICONS_CUSTOMIZATION_PROGRESSION_REWIND = '../maps/icons/customization/progression_rewind.png'
+    MAPS_ICONS_CUSTOMIZATION_PROGRESSION_REWIND_SMALL = '../maps/icons/customization/progression_rewind_small.png'
     MAPS_ICONS_CUSTOMIZATION_STAR = '../maps/icons/customization/star.png'
     MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON = '../maps/icons/customization/storage_icon.png'
     MAPS_ICONS_CUSTOMIZATION_TANK = '../maps/icons/customization/tank.png'
@@ -3789,19 +3795,15 @@ class RES_ICONS(object):
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_BIG = '../maps/icons/event/craftMachine/entryPoint/big.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_BIG_HIGHLIGHT = '../maps/icons/event/craftMachine/entryPoint/big_highlight.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_BIG_HOVER = '../maps/icons/event/craftMachine/entryPoint/big_hover.png'
-    MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_BIG_STROKE = '../maps/icons/event/craftMachine/entryPoint/big_stroke.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINEXTRASMALL = '../maps/icons/event/craftMachine/entryPoint/thinExtraSmall.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINEXTRASMALL_HIGHLIGHT = '../maps/icons/event/craftMachine/entryPoint/thinExtraSmall_highlight.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINEXTRASMALL_HOVER = '../maps/icons/event/craftMachine/entryPoint/thinExtraSmall_hover.png'
-    MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINEXTRASMALL_STROKE = '../maps/icons/event/craftMachine/entryPoint/thinExtraSmall_stroke.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINSMALL = '../maps/icons/event/craftMachine/entryPoint/thinSmall.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINSMALL_HIGHLIGHT = '../maps/icons/event/craftMachine/entryPoint/thinSmall_highlight.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINSMALL_HOVER = '../maps/icons/event/craftMachine/entryPoint/thinSmall_hover.png'
-    MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_THINSMALL_STROKE = '../maps/icons/event/craftMachine/entryPoint/thinSmall_stroke.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_WIDESMALL = '../maps/icons/event/craftMachine/entryPoint/wideSmall.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_WIDESMALL_HIGHLIGHT = '../maps/icons/event/craftMachine/entryPoint/wideSmall_highlight.png'
     MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_WIDESMALL_HOVER = '../maps/icons/event/craftMachine/entryPoint/wideSmall_hover.png'
-    MAPS_ICONS_EVENT_CRAFTMACHINE_ENTRYPOINT_WIDESMALL_STROKE = '../maps/icons/event/craftMachine/entryPoint/wideSmall_stroke.png'
     MAPS_ICONS_EVENTBOARDS_BATTLE_DAMAGE = '../maps/icons/eventBoards/battle_damage.png'
     MAPS_ICONS_EVENTBOARDS_BATTLE_DAMAGE_ASSIST = '../maps/icons/eventBoards/battle_damage_assist.png'
     MAPS_ICONS_EVENTBOARDS_BATTLE_DAMAGE_ASSIST_MAX = '../maps/icons/eventBoards/battle_damage_assist_max.png'
@@ -4986,6 +4988,7 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_STEAMICON_1 = '../maps/icons/library/SteamIcon-1.png'
     MAPS_ICONS_LIBRARY_STORAGE_ICON = '../maps/icons/library/storage_icon.png'
     MAPS_ICONS_LIBRARY_STRONGHOLDINVITEICON_1 = '../maps/icons/library/strongholdInviteIcon-1.png'
+    MAPS_ICONS_LIBRARY_SUN_RAYS = '../maps/icons/library/sun_rays.png'
     MAPS_ICONS_LIBRARY_SWORDSICON = '../maps/icons/library/swordsIcon.png'
     MAPS_ICONS_LIBRARY_TANK = '../maps/icons/library/tank.png'
     MAPS_ICONS_LIBRARY_TANKITEM_BUY_SLOT = '../maps/icons/library/TankItem_buy_slot.png'
@@ -5082,7 +5085,12 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_105 = '../maps/icons/library/badges/220x220/badge_105.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_106 = '../maps/icons/library/badges/220x220/badge_106.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_107 = '../maps/icons/library/badges/220x220/badge_107.png'
+    MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_108 = '../maps/icons/library/badges/220x220/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_109 = '../maps/icons/library/badges/220x220/badge_109.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_11 = '../maps/icons/library/badges/220x220/badge_11.png'
+    MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_110 = '../maps/icons/library/badges/220x220/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_111 = '../maps/icons/library/badges/220x220/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_112 = '../maps/icons/library/badges/220x220/badge_112.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_12 = '../maps/icons/library/badges/220x220/badge_12.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_13 = '../maps/icons/library/badges/220x220/badge_13.png'
     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_14 = '../maps/icons/library/badges/220x220/badge_14.png'
@@ -5148,7 +5156,16 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_105 = '../maps/icons/library/badges/24x24/badge_105.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_106 = '../maps/icons/library/badges/24x24/badge_106.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_107 = '../maps/icons/library/badges/24x24/badge_107.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_108 = '../maps/icons/library/badges/24x24/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_109 = '../maps/icons/library/badges/24x24/badge_109.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_11 = '../maps/icons/library/badges/24x24/badge_11.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_110 = '../maps/icons/library/badges/24x24/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_111 = '../maps/icons/library/badges/24x24/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_112 = '../maps/icons/library/badges/24x24/badge_112.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_113 = '../maps/icons/library/badges/24x24/badge_113.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_114 = '../maps/icons/library/badges/24x24/badge_114.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_115 = '../maps/icons/library/badges/24x24/badge_115.png'
+    MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_116 = '../maps/icons/library/badges/24x24/badge_116.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_12 = '../maps/icons/library/badges/24x24/badge_12.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_13 = '../maps/icons/library/badges/24x24/badge_13.png'
     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_14 = '../maps/icons/library/badges/24x24/badge_14.png'
@@ -5249,6 +5266,11 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_56 = '../maps/icons/library/badges/32x32/badge_56.png'
     MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_57 = '../maps/icons/library/badges/32x32/badge_57.png'
     MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_94 = '../maps/icons/library/badges/32x32/badge_94.png'
+    MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_108 = '../maps/icons/library/badges/400x300/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_109 = '../maps/icons/library/badges/400x300/badge_109.png'
+    MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_110 = '../maps/icons/library/badges/400x300/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_111 = '../maps/icons/library/badges/400x300/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_112 = '../maps/icons/library/badges/400x300/badge_112.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_1 = '../maps/icons/library/badges/48x48/badge_1.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_10 = '../maps/icons/library/badges/48x48/badge_10.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_100 = '../maps/icons/library/badges/48x48/badge_100.png'
@@ -5259,7 +5281,16 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_105 = '../maps/icons/library/badges/48x48/badge_105.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_106 = '../maps/icons/library/badges/48x48/badge_106.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_107 = '../maps/icons/library/badges/48x48/badge_107.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_108 = '../maps/icons/library/badges/48x48/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_109 = '../maps/icons/library/badges/48x48/badge_109.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_11 = '../maps/icons/library/badges/48x48/badge_11.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_110 = '../maps/icons/library/badges/48x48/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_111 = '../maps/icons/library/badges/48x48/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_112 = '../maps/icons/library/badges/48x48/badge_112.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_113 = '../maps/icons/library/badges/48x48/badge_113.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_114 = '../maps/icons/library/badges/48x48/badge_114.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_115 = '../maps/icons/library/badges/48x48/badge_115.png'
+    MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_116 = '../maps/icons/library/badges/48x48/badge_116.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_12 = '../maps/icons/library/badges/48x48/badge_12.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_13 = '../maps/icons/library/badges/48x48/badge_13.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_14 = '../maps/icons/library/badges/48x48/badge_14.png'
@@ -5357,6 +5388,11 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_BG = '../maps/icons/library/badges/48x48/badge_bg.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_DEFAULT = '../maps/icons/library/badges/48x48/badge_default.png'
     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_EMPTY = '../maps/icons/library/badges/48x48/badge_empty.png'
+    MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_108 = '../maps/icons/library/badges/500x500/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_109 = '../maps/icons/library/badges/500x500/badge_109.png'
+    MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_110 = '../maps/icons/library/badges/500x500/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_111 = '../maps/icons/library/badges/500x500/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_112 = '../maps/icons/library/badges/500x500/badge_112.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_1 = '../maps/icons/library/badges/80x80/badge_1.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_10 = '../maps/icons/library/badges/80x80/badge_10.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_100 = '../maps/icons/library/badges/80x80/badge_100.png'
@@ -5367,7 +5403,16 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_105 = '../maps/icons/library/badges/80x80/badge_105.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_106 = '../maps/icons/library/badges/80x80/badge_106.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_107 = '../maps/icons/library/badges/80x80/badge_107.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_108 = '../maps/icons/library/badges/80x80/badge_108.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_109 = '../maps/icons/library/badges/80x80/badge_109.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_11 = '../maps/icons/library/badges/80x80/badge_11.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_110 = '../maps/icons/library/badges/80x80/badge_110.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_111 = '../maps/icons/library/badges/80x80/badge_111.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_112 = '../maps/icons/library/badges/80x80/badge_112.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_113 = '../maps/icons/library/badges/80x80/badge_113.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_114 = '../maps/icons/library/badges/80x80/badge_114.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_115 = '../maps/icons/library/badges/80x80/badge_115.png'
+    MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_116 = '../maps/icons/library/badges/80x80/badge_116.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_12 = '../maps/icons/library/badges/80x80/badge_12.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_13 = '../maps/icons/library/badges/80x80/badge_13.png'
     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_14 = '../maps/icons/library/badges/80x80/badge_14.png'
@@ -5722,6 +5767,10 @@ class RES_ICONS(object):
     MAPS_ICONS_LIBRARY_FORTIFICATION_PROMRES_ICON4POSTBATTLE_TRANSP = '../maps/icons/library/fortification/promres-icon4postbattle_transp.png'
     MAPS_ICONS_LIBRARY_FORTIFICATION_RESERVE_INPROGRESS_24 = '../maps/icons/library/fortification/reserve_inprogress_24.png'
     MAPS_ICONS_LIBRARY_FORTIFICATION_USSR_T62A = '../maps/icons/library/fortification/ussr-T62A.png'
+    MAPS_ICONS_LIBRARY_GOLDWAVYRIBBON_RIBBON_EXTRALG = '../maps/icons/library/goldWavyRibbon/ribbon_extralg.png'
+    MAPS_ICONS_LIBRARY_GOLDWAVYRIBBON_RIBBON_LG = '../maps/icons/library/goldWavyRibbon/ribbon_lg.png'
+    MAPS_ICONS_LIBRARY_GOLDWAVYRIBBON_RIBBON_MD = '../maps/icons/library/goldWavyRibbon/ribbon_md.png'
+    MAPS_ICONS_LIBRARY_GOLDWAVYRIBBON_RIBBON_SM = '../maps/icons/library/goldWavyRibbon/ribbon_sm.png'
     MAPS_ICONS_LIBRARY_HANGARENTRYPOINTS_3DSTYLES = '../maps/icons/library/hangarEntryPoints/3dStyles.png'
     MAPS_ICONS_LIBRARY_HANGARENTRYPOINTS_BP_ENTRY_ICON_BROWN_SILVER = '../maps/icons/library/hangarEntryPoints/bp_entry_icon_brown_silver.png'
     MAPS_ICONS_LIBRARY_HANGARENTRYPOINTS_BP_ENTRY_ICON_GREY_GOLD = '../maps/icons/library/hangarEntryPoints/bp_entry_icon_grey_gold.png'
@@ -5892,6 +5941,901 @@ class RES_ICONS(object):
     MAPS_ICONS_LOOTBOXES_SPECIALREWARD_STYLE_R169_ST_II = '../maps/icons/lootboxes/specialReward/style_R169_ST_II.png'
     MAPS_ICONS_LOOTBOXES_TYPES_NEWYEAR_PREMIUM = '../maps/icons/lootboxes/types/newYear_premium.png'
     MAPS_ICONS_LOOTBOXES_TYPES_NEWYEAR_USUAL = '../maps/icons/lootboxes/types/newYear_usual.png'
+    MAPS_ICONS_LUNAR_NY_LOGO = '../maps/icons/lunar_ny/logo.png'
+    MAPS_ICONS_LUNAR_NY_LOGO_HOVER = '../maps/icons/lunar_ny/logo_hover.png'
+    MAPS_ICONS_LUNAR_NY_LOGO_LARGE = '../maps/icons/lunar_ny/logo_large.png'
+    MAPS_ICONS_LUNAR_NY_LOGO_LARGE_HOVER = '../maps/icons/lunar_ny/logo_large_hover.png'
+    MAPS_ICONS_LUNAR_NY_NO_ENVELOPES_STUB = '../maps/icons/lunar_ny/no_envelopes_stub.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_BACKGROUND = '../maps/icons/lunar_ny/album/background.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_BONUS_DECORATION = '../maps/icons/lunar_ny/album/bonus_decoration.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_GODRAYS = '../maps/icons/lunar_ny/album/godrays.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_ICON = '../maps/icons/lunar_ny/album/icon.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_ICON_SMALL = '../maps/icons/lunar_ny/album/icon_small.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_LIP = '../maps/icons/lunar_ny/album/lip.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_LIP_END = '../maps/icons/lunar_ny/album/lip_end.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_NEW_CHARMS_DECORATION = '../maps/icons/lunar_ny/album/new_charms_decoration.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_NEW_CHARMS_HIGHLIGHT = '../maps/icons/lunar_ny/album/new_charms_highlight.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_PETAL_1 = '../maps/icons/lunar_ny/album/petal_1.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_PETAL_2 = '../maps/icons/lunar_ny/album/petal_2.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_100 = '../maps/icons/lunar_ny/album/slots/empty_100.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_112 = '../maps/icons/lunar_ny/album/slots/empty_112.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_136 = '../maps/icons/lunar_ny/album/slots/empty_136.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_180 = '../maps/icons/lunar_ny/album/slots/empty_180.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_HOVER_100 = '../maps/icons/lunar_ny/album/slots/empty_hover_100.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_HOVER_112 = '../maps/icons/lunar_ny/album/slots/empty_hover_112.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_HOVER_136 = '../maps/icons/lunar_ny/album/slots/empty_hover_136.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_EMPTY_HOVER_180 = '../maps/icons/lunar_ny/album/slots/empty_hover_180.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_100 = '../maps/icons/lunar_ny/album/slots/full_100.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_112 = '../maps/icons/lunar_ny/album/slots/full_112.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_136 = '../maps/icons/lunar_ny/album/slots/full_136.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_180 = '../maps/icons/lunar_ny/album/slots/full_180.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_HOVER_100 = '../maps/icons/lunar_ny/album/slots/full_hover_100.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_HOVER_112 = '../maps/icons/lunar_ny/album/slots/full_hover_112.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_HOVER_136 = '../maps/icons/lunar_ny/album/slots/full_hover_136.png'
+    MAPS_ICONS_LUNAR_NY_ALBUM_SLOTS_FULL_HOVER_180 = '../maps/icons/lunar_ny/album/slots/full_hover_180.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_ADD_FRIEND = '../maps/icons/lunar_ny/awardView/add_friend.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_ARROW_DISABLED = '../maps/icons/lunar_ny/awardView/arrow_disabled.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_ARROW_ENABLED = '../maps/icons/lunar_ny/awardView/arrow_enabled.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_ARROW_HOVER = '../maps/icons/lunar_ny/awardView/arrow_hover.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_COMPLETE = '../maps/icons/lunar_ny/awardView/complete.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_GOD_RAYS = '../maps/icons/lunar_ny/awardView/god_rays.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SEND_BACK = '../maps/icons/lunar_ny/awardView/send_back.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_TITLE = '../maps/icons/lunar_ny/awardView/title.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_TITLE_SMALL = '../maps/icons/lunar_ny/awardView/title_small.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_URL_ICON = '../maps/icons/lunar_ny/awardView/url_icon.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_MULTI_BACKGROUNDS_FREE = '../maps/icons/lunar_ny/awardView/multi_backgrounds/free.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_MULTI_BACKGROUNDS_PAID = '../maps/icons/lunar_ny/awardView/multi_backgrounds/paid.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_MULTI_BACKGROUNDS_PREMIUMPAID = '../maps/icons/lunar_ny/awardView/multi_backgrounds/premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_REWARDS_GOLD = '../maps/icons/lunar_ny/awardView/rewards/gold.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_FIRSTFRAME_FREE = '../maps/icons/lunar_ny/awardView/single_backgrounds/firstFrame/free.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_FIRSTFRAME_PAID = '../maps/icons/lunar_ny/awardView/single_backgrounds/firstFrame/paid.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_FIRSTFRAME_PREMIUMPAID = '../maps/icons/lunar_ny/awardView/single_backgrounds/firstFrame/premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_LASTFRAME_FREE = '../maps/icons/lunar_ny/awardView/single_backgrounds/lastFrame/free.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_LASTFRAME_PAID = '../maps/icons/lunar_ny/awardView/single_backgrounds/lastFrame/paid.png'
+    MAPS_ICONS_LUNAR_NY_AWARDVIEW_SINGLE_BACKGROUNDS_LASTFRAME_PREMIUMPAID = '../maps/icons/lunar_ny/awardView/single_backgrounds/lastFrame/premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SELECT_SHARM_BG = '../maps/icons/lunar_ny/bonus/select_sharm_bg.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_20_COMBATEXPERIENCE = '../maps/icons/lunar_ny/bonus/20/combatExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_20_CREDITS = '../maps/icons/lunar_ny/bonus/20/credits.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_20_CREWEXPERIENCE = '../maps/icons/lunar_ny/bonus/20/crewExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_20_FREEEXPERIENCE = '../maps/icons/lunar_ny/bonus/20/freeExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_28_COMBATEXPERIENCE = '../maps/icons/lunar_ny/bonus/28/combatExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_28_CREDITS = '../maps/icons/lunar_ny/bonus/28/credits.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_28_CREWEXPERIENCE = '../maps/icons/lunar_ny/bonus/28/crewExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_28_FREEEXPERIENCE = '../maps/icons/lunar_ny/bonus/28/freeExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_48_COMBATEXPERIENCE = '../maps/icons/lunar_ny/bonus/48/combatExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_48_CREDITS = '../maps/icons/lunar_ny/bonus/48/credits.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_48_CREWEXPERIENCE = '../maps/icons/lunar_ny/bonus/48/crewExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_48_FREEEXPERIENCE = '../maps/icons/lunar_ny/bonus/48/freeExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_500X500_GIFTSYSTEM_3_BASEENVELOPE = '../maps/icons/lunar_ny/bonus/500x500/giftsystem_3_baseEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_BIG_GIFTSYSTEM_3_BASEENVELOPE = '../maps/icons/lunar_ny/bonus/big/giftsystem_3_baseEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_BIG_GIFTSYSTEM_3_SIMPLEENVELOPE = '../maps/icons/lunar_ny/bonus/big/giftsystem_3_simpleEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_BIG_GIFTSYSTEM_3_SPECIALENVELOPE = '../maps/icons/lunar_ny/bonus/big/giftsystem_3_specialEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SELECT_CHARM_FILTER_COMBATEXPERIENCE = '../maps/icons/lunar_ny/bonus/select_charm_filter/combatExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SELECT_CHARM_FILTER_CREDITS = '../maps/icons/lunar_ny/bonus/select_charm_filter/credits.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SELECT_CHARM_FILTER_CREWEXPERIENCE = '../maps/icons/lunar_ny/bonus/select_charm_filter/crewExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SELECT_CHARM_FILTER_FREEEXPERIENCE = '../maps/icons/lunar_ny/bonus/select_charm_filter/freeExperience.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SMALL_GIFTSYSTEM_3_BASEENVELOPE = '../maps/icons/lunar_ny/bonus/small/giftsystem_3_baseEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SMALL_GIFTSYSTEM_3_SIMPLEENVELOPE = '../maps/icons/lunar_ny/bonus/small/giftsystem_3_simpleEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_BONUS_SMALL_GIFTSYSTEM_3_SPECIALENVELOPE = '../maps/icons/lunar_ny/bonus/small/giftsystem_3_specialEnvelope.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_TOOLTIP_BACKGROUND = '../maps/icons/lunar_ny/charms/tooltip_background.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_1 = '../maps/icons/lunar_ny/charms/150/1.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_10 = '../maps/icons/lunar_ny/charms/150/10.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_11 = '../maps/icons/lunar_ny/charms/150/11.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_12 = '../maps/icons/lunar_ny/charms/150/12.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_13 = '../maps/icons/lunar_ny/charms/150/13.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_14 = '../maps/icons/lunar_ny/charms/150/14.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_15 = '../maps/icons/lunar_ny/charms/150/15.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_16 = '../maps/icons/lunar_ny/charms/150/16.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_17 = '../maps/icons/lunar_ny/charms/150/17.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_18 = '../maps/icons/lunar_ny/charms/150/18.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_19 = '../maps/icons/lunar_ny/charms/150/19.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_2 = '../maps/icons/lunar_ny/charms/150/2.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_20 = '../maps/icons/lunar_ny/charms/150/20.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_21 = '../maps/icons/lunar_ny/charms/150/21.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_22 = '../maps/icons/lunar_ny/charms/150/22.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_23 = '../maps/icons/lunar_ny/charms/150/23.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_24 = '../maps/icons/lunar_ny/charms/150/24.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_25 = '../maps/icons/lunar_ny/charms/150/25.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_26 = '../maps/icons/lunar_ny/charms/150/26.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_27 = '../maps/icons/lunar_ny/charms/150/27.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_28 = '../maps/icons/lunar_ny/charms/150/28.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_29 = '../maps/icons/lunar_ny/charms/150/29.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_3 = '../maps/icons/lunar_ny/charms/150/3.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_30 = '../maps/icons/lunar_ny/charms/150/30.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_31 = '../maps/icons/lunar_ny/charms/150/31.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_32 = '../maps/icons/lunar_ny/charms/150/32.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_33 = '../maps/icons/lunar_ny/charms/150/33.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_34 = '../maps/icons/lunar_ny/charms/150/34.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_35 = '../maps/icons/lunar_ny/charms/150/35.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_36 = '../maps/icons/lunar_ny/charms/150/36.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_37 = '../maps/icons/lunar_ny/charms/150/37.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_38 = '../maps/icons/lunar_ny/charms/150/38.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_39 = '../maps/icons/lunar_ny/charms/150/39.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_4 = '../maps/icons/lunar_ny/charms/150/4.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_40 = '../maps/icons/lunar_ny/charms/150/40.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_41 = '../maps/icons/lunar_ny/charms/150/41.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_42 = '../maps/icons/lunar_ny/charms/150/42.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_43 = '../maps/icons/lunar_ny/charms/150/43.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_44 = '../maps/icons/lunar_ny/charms/150/44.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_45 = '../maps/icons/lunar_ny/charms/150/45.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_46 = '../maps/icons/lunar_ny/charms/150/46.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_47 = '../maps/icons/lunar_ny/charms/150/47.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_48 = '../maps/icons/lunar_ny/charms/150/48.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_49 = '../maps/icons/lunar_ny/charms/150/49.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_5 = '../maps/icons/lunar_ny/charms/150/5.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_50 = '../maps/icons/lunar_ny/charms/150/50.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_51 = '../maps/icons/lunar_ny/charms/150/51.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_52 = '../maps/icons/lunar_ny/charms/150/52.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_53 = '../maps/icons/lunar_ny/charms/150/53.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_54 = '../maps/icons/lunar_ny/charms/150/54.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_55 = '../maps/icons/lunar_ny/charms/150/55.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_56 = '../maps/icons/lunar_ny/charms/150/56.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_57 = '../maps/icons/lunar_ny/charms/150/57.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_58 = '../maps/icons/lunar_ny/charms/150/58.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_59 = '../maps/icons/lunar_ny/charms/150/59.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_6 = '../maps/icons/lunar_ny/charms/150/6.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_60 = '../maps/icons/lunar_ny/charms/150/60.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_61 = '../maps/icons/lunar_ny/charms/150/61.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_62 = '../maps/icons/lunar_ny/charms/150/62.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_63 = '../maps/icons/lunar_ny/charms/150/63.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_64 = '../maps/icons/lunar_ny/charms/150/64.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_65 = '../maps/icons/lunar_ny/charms/150/65.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_66 = '../maps/icons/lunar_ny/charms/150/66.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_67 = '../maps/icons/lunar_ny/charms/150/67.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_68 = '../maps/icons/lunar_ny/charms/150/68.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_69 = '../maps/icons/lunar_ny/charms/150/69.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_7 = '../maps/icons/lunar_ny/charms/150/7.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_70 = '../maps/icons/lunar_ny/charms/150/70.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_71 = '../maps/icons/lunar_ny/charms/150/71.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_72 = '../maps/icons/lunar_ny/charms/150/72.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_73 = '../maps/icons/lunar_ny/charms/150/73.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_74 = '../maps/icons/lunar_ny/charms/150/74.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_75 = '../maps/icons/lunar_ny/charms/150/75.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_76 = '../maps/icons/lunar_ny/charms/150/76.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_77 = '../maps/icons/lunar_ny/charms/150/77.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_78 = '../maps/icons/lunar_ny/charms/150/78.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_79 = '../maps/icons/lunar_ny/charms/150/79.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_8 = '../maps/icons/lunar_ny/charms/150/8.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_80 = '../maps/icons/lunar_ny/charms/150/80.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_81 = '../maps/icons/lunar_ny/charms/150/81.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_82 = '../maps/icons/lunar_ny/charms/150/82.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_83 = '../maps/icons/lunar_ny/charms/150/83.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_84 = '../maps/icons/lunar_ny/charms/150/84.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_85 = '../maps/icons/lunar_ny/charms/150/85.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_150_9 = '../maps/icons/lunar_ny/charms/150/9.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_1 = '../maps/icons/lunar_ny/charms/240/1.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_10 = '../maps/icons/lunar_ny/charms/240/10.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_11 = '../maps/icons/lunar_ny/charms/240/11.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_12 = '../maps/icons/lunar_ny/charms/240/12.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_13 = '../maps/icons/lunar_ny/charms/240/13.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_14 = '../maps/icons/lunar_ny/charms/240/14.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_15 = '../maps/icons/lunar_ny/charms/240/15.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_16 = '../maps/icons/lunar_ny/charms/240/16.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_17 = '../maps/icons/lunar_ny/charms/240/17.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_18 = '../maps/icons/lunar_ny/charms/240/18.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_19 = '../maps/icons/lunar_ny/charms/240/19.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_2 = '../maps/icons/lunar_ny/charms/240/2.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_20 = '../maps/icons/lunar_ny/charms/240/20.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_21 = '../maps/icons/lunar_ny/charms/240/21.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_22 = '../maps/icons/lunar_ny/charms/240/22.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_23 = '../maps/icons/lunar_ny/charms/240/23.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_24 = '../maps/icons/lunar_ny/charms/240/24.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_25 = '../maps/icons/lunar_ny/charms/240/25.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_26 = '../maps/icons/lunar_ny/charms/240/26.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_27 = '../maps/icons/lunar_ny/charms/240/27.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_28 = '../maps/icons/lunar_ny/charms/240/28.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_29 = '../maps/icons/lunar_ny/charms/240/29.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_3 = '../maps/icons/lunar_ny/charms/240/3.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_30 = '../maps/icons/lunar_ny/charms/240/30.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_31 = '../maps/icons/lunar_ny/charms/240/31.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_32 = '../maps/icons/lunar_ny/charms/240/32.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_33 = '../maps/icons/lunar_ny/charms/240/33.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_34 = '../maps/icons/lunar_ny/charms/240/34.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_35 = '../maps/icons/lunar_ny/charms/240/35.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_36 = '../maps/icons/lunar_ny/charms/240/36.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_37 = '../maps/icons/lunar_ny/charms/240/37.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_38 = '../maps/icons/lunar_ny/charms/240/38.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_39 = '../maps/icons/lunar_ny/charms/240/39.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_4 = '../maps/icons/lunar_ny/charms/240/4.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_40 = '../maps/icons/lunar_ny/charms/240/40.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_41 = '../maps/icons/lunar_ny/charms/240/41.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_42 = '../maps/icons/lunar_ny/charms/240/42.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_43 = '../maps/icons/lunar_ny/charms/240/43.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_44 = '../maps/icons/lunar_ny/charms/240/44.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_45 = '../maps/icons/lunar_ny/charms/240/45.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_46 = '../maps/icons/lunar_ny/charms/240/46.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_47 = '../maps/icons/lunar_ny/charms/240/47.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_48 = '../maps/icons/lunar_ny/charms/240/48.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_49 = '../maps/icons/lunar_ny/charms/240/49.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_5 = '../maps/icons/lunar_ny/charms/240/5.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_50 = '../maps/icons/lunar_ny/charms/240/50.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_51 = '../maps/icons/lunar_ny/charms/240/51.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_52 = '../maps/icons/lunar_ny/charms/240/52.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_53 = '../maps/icons/lunar_ny/charms/240/53.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_54 = '../maps/icons/lunar_ny/charms/240/54.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_55 = '../maps/icons/lunar_ny/charms/240/55.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_56 = '../maps/icons/lunar_ny/charms/240/56.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_57 = '../maps/icons/lunar_ny/charms/240/57.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_58 = '../maps/icons/lunar_ny/charms/240/58.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_59 = '../maps/icons/lunar_ny/charms/240/59.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_6 = '../maps/icons/lunar_ny/charms/240/6.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_60 = '../maps/icons/lunar_ny/charms/240/60.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_61 = '../maps/icons/lunar_ny/charms/240/61.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_62 = '../maps/icons/lunar_ny/charms/240/62.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_63 = '../maps/icons/lunar_ny/charms/240/63.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_64 = '../maps/icons/lunar_ny/charms/240/64.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_65 = '../maps/icons/lunar_ny/charms/240/65.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_66 = '../maps/icons/lunar_ny/charms/240/66.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_67 = '../maps/icons/lunar_ny/charms/240/67.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_68 = '../maps/icons/lunar_ny/charms/240/68.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_69 = '../maps/icons/lunar_ny/charms/240/69.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_7 = '../maps/icons/lunar_ny/charms/240/7.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_70 = '../maps/icons/lunar_ny/charms/240/70.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_71 = '../maps/icons/lunar_ny/charms/240/71.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_72 = '../maps/icons/lunar_ny/charms/240/72.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_73 = '../maps/icons/lunar_ny/charms/240/73.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_74 = '../maps/icons/lunar_ny/charms/240/74.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_75 = '../maps/icons/lunar_ny/charms/240/75.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_76 = '../maps/icons/lunar_ny/charms/240/76.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_77 = '../maps/icons/lunar_ny/charms/240/77.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_78 = '../maps/icons/lunar_ny/charms/240/78.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_79 = '../maps/icons/lunar_ny/charms/240/79.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_8 = '../maps/icons/lunar_ny/charms/240/8.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_80 = '../maps/icons/lunar_ny/charms/240/80.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_81 = '../maps/icons/lunar_ny/charms/240/81.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_82 = '../maps/icons/lunar_ny/charms/240/82.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_83 = '../maps/icons/lunar_ny/charms/240/83.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_84 = '../maps/icons/lunar_ny/charms/240/84.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_85 = '../maps/icons/lunar_ny/charms/240/85.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_240_9 = '../maps/icons/lunar_ny/charms/240/9.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_1 = '../maps/icons/lunar_ny/charms/512/1.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_10 = '../maps/icons/lunar_ny/charms/512/10.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_11 = '../maps/icons/lunar_ny/charms/512/11.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_12 = '../maps/icons/lunar_ny/charms/512/12.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_13 = '../maps/icons/lunar_ny/charms/512/13.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_14 = '../maps/icons/lunar_ny/charms/512/14.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_15 = '../maps/icons/lunar_ny/charms/512/15.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_16 = '../maps/icons/lunar_ny/charms/512/16.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_17 = '../maps/icons/lunar_ny/charms/512/17.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_18 = '../maps/icons/lunar_ny/charms/512/18.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_19 = '../maps/icons/lunar_ny/charms/512/19.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_2 = '../maps/icons/lunar_ny/charms/512/2.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_20 = '../maps/icons/lunar_ny/charms/512/20.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_21 = '../maps/icons/lunar_ny/charms/512/21.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_22 = '../maps/icons/lunar_ny/charms/512/22.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_23 = '../maps/icons/lunar_ny/charms/512/23.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_24 = '../maps/icons/lunar_ny/charms/512/24.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_25 = '../maps/icons/lunar_ny/charms/512/25.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_26 = '../maps/icons/lunar_ny/charms/512/26.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_27 = '../maps/icons/lunar_ny/charms/512/27.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_28 = '../maps/icons/lunar_ny/charms/512/28.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_29 = '../maps/icons/lunar_ny/charms/512/29.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_3 = '../maps/icons/lunar_ny/charms/512/3.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_30 = '../maps/icons/lunar_ny/charms/512/30.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_31 = '../maps/icons/lunar_ny/charms/512/31.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_32 = '../maps/icons/lunar_ny/charms/512/32.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_33 = '../maps/icons/lunar_ny/charms/512/33.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_34 = '../maps/icons/lunar_ny/charms/512/34.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_35 = '../maps/icons/lunar_ny/charms/512/35.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_36 = '../maps/icons/lunar_ny/charms/512/36.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_37 = '../maps/icons/lunar_ny/charms/512/37.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_38 = '../maps/icons/lunar_ny/charms/512/38.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_39 = '../maps/icons/lunar_ny/charms/512/39.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_4 = '../maps/icons/lunar_ny/charms/512/4.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_40 = '../maps/icons/lunar_ny/charms/512/40.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_41 = '../maps/icons/lunar_ny/charms/512/41.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_42 = '../maps/icons/lunar_ny/charms/512/42.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_43 = '../maps/icons/lunar_ny/charms/512/43.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_44 = '../maps/icons/lunar_ny/charms/512/44.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_45 = '../maps/icons/lunar_ny/charms/512/45.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_46 = '../maps/icons/lunar_ny/charms/512/46.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_47 = '../maps/icons/lunar_ny/charms/512/47.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_48 = '../maps/icons/lunar_ny/charms/512/48.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_49 = '../maps/icons/lunar_ny/charms/512/49.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_5 = '../maps/icons/lunar_ny/charms/512/5.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_50 = '../maps/icons/lunar_ny/charms/512/50.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_51 = '../maps/icons/lunar_ny/charms/512/51.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_52 = '../maps/icons/lunar_ny/charms/512/52.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_53 = '../maps/icons/lunar_ny/charms/512/53.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_54 = '../maps/icons/lunar_ny/charms/512/54.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_55 = '../maps/icons/lunar_ny/charms/512/55.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_56 = '../maps/icons/lunar_ny/charms/512/56.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_57 = '../maps/icons/lunar_ny/charms/512/57.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_58 = '../maps/icons/lunar_ny/charms/512/58.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_59 = '../maps/icons/lunar_ny/charms/512/59.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_6 = '../maps/icons/lunar_ny/charms/512/6.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_60 = '../maps/icons/lunar_ny/charms/512/60.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_61 = '../maps/icons/lunar_ny/charms/512/61.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_62 = '../maps/icons/lunar_ny/charms/512/62.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_63 = '../maps/icons/lunar_ny/charms/512/63.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_64 = '../maps/icons/lunar_ny/charms/512/64.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_65 = '../maps/icons/lunar_ny/charms/512/65.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_66 = '../maps/icons/lunar_ny/charms/512/66.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_67 = '../maps/icons/lunar_ny/charms/512/67.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_68 = '../maps/icons/lunar_ny/charms/512/68.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_69 = '../maps/icons/lunar_ny/charms/512/69.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_7 = '../maps/icons/lunar_ny/charms/512/7.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_70 = '../maps/icons/lunar_ny/charms/512/70.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_71 = '../maps/icons/lunar_ny/charms/512/71.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_72 = '../maps/icons/lunar_ny/charms/512/72.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_73 = '../maps/icons/lunar_ny/charms/512/73.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_74 = '../maps/icons/lunar_ny/charms/512/74.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_75 = '../maps/icons/lunar_ny/charms/512/75.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_76 = '../maps/icons/lunar_ny/charms/512/76.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_77 = '../maps/icons/lunar_ny/charms/512/77.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_78 = '../maps/icons/lunar_ny/charms/512/78.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_79 = '../maps/icons/lunar_ny/charms/512/79.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_8 = '../maps/icons/lunar_ny/charms/512/8.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_80 = '../maps/icons/lunar_ny/charms/512/80.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_81 = '../maps/icons/lunar_ny/charms/512/81.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_82 = '../maps/icons/lunar_ny/charms/512/82.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_83 = '../maps/icons/lunar_ny/charms/512/83.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_84 = '../maps/icons/lunar_ny/charms/512/84.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_85 = '../maps/icons/lunar_ny/charms/512/85.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_512_9 = '../maps/icons/lunar_ny/charms/512/9.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_1 = '../maps/icons/lunar_ny/charms/80/1.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_10 = '../maps/icons/lunar_ny/charms/80/10.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_11 = '../maps/icons/lunar_ny/charms/80/11.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_12 = '../maps/icons/lunar_ny/charms/80/12.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_13 = '../maps/icons/lunar_ny/charms/80/13.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_14 = '../maps/icons/lunar_ny/charms/80/14.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_15 = '../maps/icons/lunar_ny/charms/80/15.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_16 = '../maps/icons/lunar_ny/charms/80/16.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_17 = '../maps/icons/lunar_ny/charms/80/17.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_18 = '../maps/icons/lunar_ny/charms/80/18.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_19 = '../maps/icons/lunar_ny/charms/80/19.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_2 = '../maps/icons/lunar_ny/charms/80/2.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_20 = '../maps/icons/lunar_ny/charms/80/20.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_21 = '../maps/icons/lunar_ny/charms/80/21.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_22 = '../maps/icons/lunar_ny/charms/80/22.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_23 = '../maps/icons/lunar_ny/charms/80/23.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_24 = '../maps/icons/lunar_ny/charms/80/24.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_25 = '../maps/icons/lunar_ny/charms/80/25.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_26 = '../maps/icons/lunar_ny/charms/80/26.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_27 = '../maps/icons/lunar_ny/charms/80/27.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_28 = '../maps/icons/lunar_ny/charms/80/28.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_29 = '../maps/icons/lunar_ny/charms/80/29.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_3 = '../maps/icons/lunar_ny/charms/80/3.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_30 = '../maps/icons/lunar_ny/charms/80/30.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_31 = '../maps/icons/lunar_ny/charms/80/31.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_32 = '../maps/icons/lunar_ny/charms/80/32.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_33 = '../maps/icons/lunar_ny/charms/80/33.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_34 = '../maps/icons/lunar_ny/charms/80/34.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_35 = '../maps/icons/lunar_ny/charms/80/35.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_36 = '../maps/icons/lunar_ny/charms/80/36.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_37 = '../maps/icons/lunar_ny/charms/80/37.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_38 = '../maps/icons/lunar_ny/charms/80/38.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_39 = '../maps/icons/lunar_ny/charms/80/39.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_4 = '../maps/icons/lunar_ny/charms/80/4.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_40 = '../maps/icons/lunar_ny/charms/80/40.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_41 = '../maps/icons/lunar_ny/charms/80/41.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_42 = '../maps/icons/lunar_ny/charms/80/42.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_43 = '../maps/icons/lunar_ny/charms/80/43.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_44 = '../maps/icons/lunar_ny/charms/80/44.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_45 = '../maps/icons/lunar_ny/charms/80/45.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_46 = '../maps/icons/lunar_ny/charms/80/46.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_47 = '../maps/icons/lunar_ny/charms/80/47.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_48 = '../maps/icons/lunar_ny/charms/80/48.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_49 = '../maps/icons/lunar_ny/charms/80/49.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_5 = '../maps/icons/lunar_ny/charms/80/5.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_50 = '../maps/icons/lunar_ny/charms/80/50.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_51 = '../maps/icons/lunar_ny/charms/80/51.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_52 = '../maps/icons/lunar_ny/charms/80/52.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_53 = '../maps/icons/lunar_ny/charms/80/53.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_54 = '../maps/icons/lunar_ny/charms/80/54.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_55 = '../maps/icons/lunar_ny/charms/80/55.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_56 = '../maps/icons/lunar_ny/charms/80/56.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_57 = '../maps/icons/lunar_ny/charms/80/57.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_58 = '../maps/icons/lunar_ny/charms/80/58.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_59 = '../maps/icons/lunar_ny/charms/80/59.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_6 = '../maps/icons/lunar_ny/charms/80/6.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_60 = '../maps/icons/lunar_ny/charms/80/60.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_61 = '../maps/icons/lunar_ny/charms/80/61.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_62 = '../maps/icons/lunar_ny/charms/80/62.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_63 = '../maps/icons/lunar_ny/charms/80/63.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_64 = '../maps/icons/lunar_ny/charms/80/64.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_65 = '../maps/icons/lunar_ny/charms/80/65.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_66 = '../maps/icons/lunar_ny/charms/80/66.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_67 = '../maps/icons/lunar_ny/charms/80/67.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_68 = '../maps/icons/lunar_ny/charms/80/68.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_69 = '../maps/icons/lunar_ny/charms/80/69.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_7 = '../maps/icons/lunar_ny/charms/80/7.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_70 = '../maps/icons/lunar_ny/charms/80/70.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_71 = '../maps/icons/lunar_ny/charms/80/71.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_72 = '../maps/icons/lunar_ny/charms/80/72.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_73 = '../maps/icons/lunar_ny/charms/80/73.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_74 = '../maps/icons/lunar_ny/charms/80/74.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_75 = '../maps/icons/lunar_ny/charms/80/75.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_76 = '../maps/icons/lunar_ny/charms/80/76.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_77 = '../maps/icons/lunar_ny/charms/80/77.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_78 = '../maps/icons/lunar_ny/charms/80/78.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_79 = '../maps/icons/lunar_ny/charms/80/79.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_8 = '../maps/icons/lunar_ny/charms/80/8.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_80 = '../maps/icons/lunar_ny/charms/80/80.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_81 = '../maps/icons/lunar_ny/charms/80/81.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_82 = '../maps/icons/lunar_ny/charms/80/82.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_83 = '../maps/icons/lunar_ny/charms/80/83.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_84 = '../maps/icons/lunar_ny/charms/80/84.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_85 = '../maps/icons/lunar_ny/charms/80/85.png'
+    MAPS_ICONS_LUNAR_NY_CHARMS_80_9 = '../maps/icons/lunar_ny/charms/80/9.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_0 = '../maps/icons/lunar_ny/congratulations/free/0.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_1 = '../maps/icons/lunar_ny/congratulations/free/1.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_10 = '../maps/icons/lunar_ny/congratulations/free/10.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_11 = '../maps/icons/lunar_ny/congratulations/free/11.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_12 = '../maps/icons/lunar_ny/congratulations/free/12.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_13 = '../maps/icons/lunar_ny/congratulations/free/13.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_14 = '../maps/icons/lunar_ny/congratulations/free/14.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_15 = '../maps/icons/lunar_ny/congratulations/free/15.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_16 = '../maps/icons/lunar_ny/congratulations/free/16.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_17 = '../maps/icons/lunar_ny/congratulations/free/17.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_18 = '../maps/icons/lunar_ny/congratulations/free/18.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_19 = '../maps/icons/lunar_ny/congratulations/free/19.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_2 = '../maps/icons/lunar_ny/congratulations/free/2.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_3 = '../maps/icons/lunar_ny/congratulations/free/3.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_4 = '../maps/icons/lunar_ny/congratulations/free/4.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_5 = '../maps/icons/lunar_ny/congratulations/free/5.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_6 = '../maps/icons/lunar_ny/congratulations/free/6.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_7 = '../maps/icons/lunar_ny/congratulations/free/7.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_8 = '../maps/icons/lunar_ny/congratulations/free/8.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_FREE_9 = '../maps/icons/lunar_ny/congratulations/free/9.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_0 = '../maps/icons/lunar_ny/congratulations/paid/0.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_1 = '../maps/icons/lunar_ny/congratulations/paid/1.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_10 = '../maps/icons/lunar_ny/congratulations/paid/10.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_11 = '../maps/icons/lunar_ny/congratulations/paid/11.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_12 = '../maps/icons/lunar_ny/congratulations/paid/12.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_13 = '../maps/icons/lunar_ny/congratulations/paid/13.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_14 = '../maps/icons/lunar_ny/congratulations/paid/14.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_15 = '../maps/icons/lunar_ny/congratulations/paid/15.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_16 = '../maps/icons/lunar_ny/congratulations/paid/16.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_17 = '../maps/icons/lunar_ny/congratulations/paid/17.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_18 = '../maps/icons/lunar_ny/congratulations/paid/18.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_19 = '../maps/icons/lunar_ny/congratulations/paid/19.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_2 = '../maps/icons/lunar_ny/congratulations/paid/2.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_3 = '../maps/icons/lunar_ny/congratulations/paid/3.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_4 = '../maps/icons/lunar_ny/congratulations/paid/4.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_5 = '../maps/icons/lunar_ny/congratulations/paid/5.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_6 = '../maps/icons/lunar_ny/congratulations/paid/6.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_7 = '../maps/icons/lunar_ny/congratulations/paid/7.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_8 = '../maps/icons/lunar_ny/congratulations/paid/8.png'
+    MAPS_ICONS_LUNAR_NY_CONGRATULATIONS_PAID_9 = '../maps/icons/lunar_ny/congratulations/paid/9.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_624 = '../maps/icons/lunar_ny/decals/140/624.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_625 = '../maps/icons/lunar_ny/decals/140/625.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_626 = '../maps/icons/lunar_ny/decals/140/626.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_627 = '../maps/icons/lunar_ny/decals/140/627.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_628 = '../maps/icons/lunar_ny/decals/140/628.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_629 = '../maps/icons/lunar_ny/decals/140/629.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_630 = '../maps/icons/lunar_ny/decals/140/630.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_631 = '../maps/icons/lunar_ny/decals/140/631.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_632 = '../maps/icons/lunar_ny/decals/140/632.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_633 = '../maps/icons/lunar_ny/decals/140/633.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_634 = '../maps/icons/lunar_ny/decals/140/634.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_635 = '../maps/icons/lunar_ny/decals/140/635.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_636 = '../maps/icons/lunar_ny/decals/140/636.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_637 = '../maps/icons/lunar_ny/decals/140/637.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_638 = '../maps/icons/lunar_ny/decals/140/638.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_639 = '../maps/icons/lunar_ny/decals/140/639.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_640 = '../maps/icons/lunar_ny/decals/140/640.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_641 = '../maps/icons/lunar_ny/decals/140/641.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_642 = '../maps/icons/lunar_ny/decals/140/642.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_643 = '../maps/icons/lunar_ny/decals/140/643.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_644 = '../maps/icons/lunar_ny/decals/140/644.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_645 = '../maps/icons/lunar_ny/decals/140/645.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_646 = '../maps/icons/lunar_ny/decals/140/646.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_647 = '../maps/icons/lunar_ny/decals/140/647.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_648 = '../maps/icons/lunar_ny/decals/140/648.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_649 = '../maps/icons/lunar_ny/decals/140/649.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_650 = '../maps/icons/lunar_ny/decals/140/650.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_651 = '../maps/icons/lunar_ny/decals/140/651.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_652 = '../maps/icons/lunar_ny/decals/140/652.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_653 = '../maps/icons/lunar_ny/decals/140/653.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_654 = '../maps/icons/lunar_ny/decals/140/654.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_655 = '../maps/icons/lunar_ny/decals/140/655.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_656 = '../maps/icons/lunar_ny/decals/140/656.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_657 = '../maps/icons/lunar_ny/decals/140/657.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_658 = '../maps/icons/lunar_ny/decals/140/658.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_659 = '../maps/icons/lunar_ny/decals/140/659.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_660 = '../maps/icons/lunar_ny/decals/140/660.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_661 = '../maps/icons/lunar_ny/decals/140/661.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_662 = '../maps/icons/lunar_ny/decals/140/662.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_663 = '../maps/icons/lunar_ny/decals/140/663.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_664 = '../maps/icons/lunar_ny/decals/140/664.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_665 = '../maps/icons/lunar_ny/decals/140/665.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_666 = '../maps/icons/lunar_ny/decals/140/666.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_667 = '../maps/icons/lunar_ny/decals/140/667.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_140_668 = '../maps/icons/lunar_ny/decals/140/668.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_624 = '../maps/icons/lunar_ny/decals/280/624.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_625 = '../maps/icons/lunar_ny/decals/280/625.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_626 = '../maps/icons/lunar_ny/decals/280/626.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_627 = '../maps/icons/lunar_ny/decals/280/627.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_628 = '../maps/icons/lunar_ny/decals/280/628.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_629 = '../maps/icons/lunar_ny/decals/280/629.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_630 = '../maps/icons/lunar_ny/decals/280/630.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_631 = '../maps/icons/lunar_ny/decals/280/631.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_632 = '../maps/icons/lunar_ny/decals/280/632.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_633 = '../maps/icons/lunar_ny/decals/280/633.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_634 = '../maps/icons/lunar_ny/decals/280/634.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_635 = '../maps/icons/lunar_ny/decals/280/635.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_636 = '../maps/icons/lunar_ny/decals/280/636.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_637 = '../maps/icons/lunar_ny/decals/280/637.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_638 = '../maps/icons/lunar_ny/decals/280/638.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_639 = '../maps/icons/lunar_ny/decals/280/639.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_640 = '../maps/icons/lunar_ny/decals/280/640.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_641 = '../maps/icons/lunar_ny/decals/280/641.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_642 = '../maps/icons/lunar_ny/decals/280/642.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_643 = '../maps/icons/lunar_ny/decals/280/643.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_644 = '../maps/icons/lunar_ny/decals/280/644.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_645 = '../maps/icons/lunar_ny/decals/280/645.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_646 = '../maps/icons/lunar_ny/decals/280/646.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_647 = '../maps/icons/lunar_ny/decals/280/647.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_648 = '../maps/icons/lunar_ny/decals/280/648.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_649 = '../maps/icons/lunar_ny/decals/280/649.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_650 = '../maps/icons/lunar_ny/decals/280/650.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_651 = '../maps/icons/lunar_ny/decals/280/651.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_652 = '../maps/icons/lunar_ny/decals/280/652.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_653 = '../maps/icons/lunar_ny/decals/280/653.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_654 = '../maps/icons/lunar_ny/decals/280/654.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_655 = '../maps/icons/lunar_ny/decals/280/655.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_656 = '../maps/icons/lunar_ny/decals/280/656.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_657 = '../maps/icons/lunar_ny/decals/280/657.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_658 = '../maps/icons/lunar_ny/decals/280/658.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_659 = '../maps/icons/lunar_ny/decals/280/659.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_660 = '../maps/icons/lunar_ny/decals/280/660.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_661 = '../maps/icons/lunar_ny/decals/280/661.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_662 = '../maps/icons/lunar_ny/decals/280/662.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_663 = '../maps/icons/lunar_ny/decals/280/663.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_664 = '../maps/icons/lunar_ny/decals/280/664.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_665 = '../maps/icons/lunar_ny/decals/280/665.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_666 = '../maps/icons/lunar_ny/decals/280/666.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_667 = '../maps/icons/lunar_ny/decals/280/667.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_280_668 = '../maps/icons/lunar_ny/decals/280/668.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_624 = '../maps/icons/lunar_ny/decals/512/624.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_625 = '../maps/icons/lunar_ny/decals/512/625.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_626 = '../maps/icons/lunar_ny/decals/512/626.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_627 = '../maps/icons/lunar_ny/decals/512/627.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_628 = '../maps/icons/lunar_ny/decals/512/628.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_629 = '../maps/icons/lunar_ny/decals/512/629.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_630 = '../maps/icons/lunar_ny/decals/512/630.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_631 = '../maps/icons/lunar_ny/decals/512/631.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_632 = '../maps/icons/lunar_ny/decals/512/632.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_633 = '../maps/icons/lunar_ny/decals/512/633.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_634 = '../maps/icons/lunar_ny/decals/512/634.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_635 = '../maps/icons/lunar_ny/decals/512/635.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_636 = '../maps/icons/lunar_ny/decals/512/636.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_637 = '../maps/icons/lunar_ny/decals/512/637.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_638 = '../maps/icons/lunar_ny/decals/512/638.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_639 = '../maps/icons/lunar_ny/decals/512/639.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_640 = '../maps/icons/lunar_ny/decals/512/640.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_641 = '../maps/icons/lunar_ny/decals/512/641.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_642 = '../maps/icons/lunar_ny/decals/512/642.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_643 = '../maps/icons/lunar_ny/decals/512/643.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_644 = '../maps/icons/lunar_ny/decals/512/644.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_645 = '../maps/icons/lunar_ny/decals/512/645.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_646 = '../maps/icons/lunar_ny/decals/512/646.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_647 = '../maps/icons/lunar_ny/decals/512/647.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_648 = '../maps/icons/lunar_ny/decals/512/648.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_649 = '../maps/icons/lunar_ny/decals/512/649.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_650 = '../maps/icons/lunar_ny/decals/512/650.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_651 = '../maps/icons/lunar_ny/decals/512/651.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_652 = '../maps/icons/lunar_ny/decals/512/652.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_653 = '../maps/icons/lunar_ny/decals/512/653.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_654 = '../maps/icons/lunar_ny/decals/512/654.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_655 = '../maps/icons/lunar_ny/decals/512/655.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_656 = '../maps/icons/lunar_ny/decals/512/656.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_657 = '../maps/icons/lunar_ny/decals/512/657.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_658 = '../maps/icons/lunar_ny/decals/512/658.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_659 = '../maps/icons/lunar_ny/decals/512/659.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_660 = '../maps/icons/lunar_ny/decals/512/660.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_661 = '../maps/icons/lunar_ny/decals/512/661.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_662 = '../maps/icons/lunar_ny/decals/512/662.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_663 = '../maps/icons/lunar_ny/decals/512/663.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_664 = '../maps/icons/lunar_ny/decals/512/664.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_665 = '../maps/icons/lunar_ny/decals/512/665.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_666 = '../maps/icons/lunar_ny/decals/512/666.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_667 = '../maps/icons/lunar_ny/decals/512/667.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_512_668 = '../maps/icons/lunar_ny/decals/512/668.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_624 = '../maps/icons/lunar_ny/decals/80/624.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_625 = '../maps/icons/lunar_ny/decals/80/625.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_626 = '../maps/icons/lunar_ny/decals/80/626.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_627 = '../maps/icons/lunar_ny/decals/80/627.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_628 = '../maps/icons/lunar_ny/decals/80/628.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_629 = '../maps/icons/lunar_ny/decals/80/629.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_630 = '../maps/icons/lunar_ny/decals/80/630.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_631 = '../maps/icons/lunar_ny/decals/80/631.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_632 = '../maps/icons/lunar_ny/decals/80/632.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_633 = '../maps/icons/lunar_ny/decals/80/633.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_634 = '../maps/icons/lunar_ny/decals/80/634.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_635 = '../maps/icons/lunar_ny/decals/80/635.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_636 = '../maps/icons/lunar_ny/decals/80/636.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_637 = '../maps/icons/lunar_ny/decals/80/637.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_638 = '../maps/icons/lunar_ny/decals/80/638.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_639 = '../maps/icons/lunar_ny/decals/80/639.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_640 = '../maps/icons/lunar_ny/decals/80/640.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_641 = '../maps/icons/lunar_ny/decals/80/641.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_642 = '../maps/icons/lunar_ny/decals/80/642.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_643 = '../maps/icons/lunar_ny/decals/80/643.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_644 = '../maps/icons/lunar_ny/decals/80/644.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_645 = '../maps/icons/lunar_ny/decals/80/645.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_646 = '../maps/icons/lunar_ny/decals/80/646.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_647 = '../maps/icons/lunar_ny/decals/80/647.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_648 = '../maps/icons/lunar_ny/decals/80/648.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_649 = '../maps/icons/lunar_ny/decals/80/649.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_650 = '../maps/icons/lunar_ny/decals/80/650.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_651 = '../maps/icons/lunar_ny/decals/80/651.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_652 = '../maps/icons/lunar_ny/decals/80/652.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_653 = '../maps/icons/lunar_ny/decals/80/653.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_654 = '../maps/icons/lunar_ny/decals/80/654.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_655 = '../maps/icons/lunar_ny/decals/80/655.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_656 = '../maps/icons/lunar_ny/decals/80/656.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_657 = '../maps/icons/lunar_ny/decals/80/657.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_658 = '../maps/icons/lunar_ny/decals/80/658.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_659 = '../maps/icons/lunar_ny/decals/80/659.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_660 = '../maps/icons/lunar_ny/decals/80/660.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_661 = '../maps/icons/lunar_ny/decals/80/661.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_662 = '../maps/icons/lunar_ny/decals/80/662.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_663 = '../maps/icons/lunar_ny/decals/80/663.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_664 = '../maps/icons/lunar_ny/decals/80/664.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_665 = '../maps/icons/lunar_ny/decals/80/665.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_666 = '../maps/icons/lunar_ny/decals/80/666.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_667 = '../maps/icons/lunar_ny/decals/80/667.png'
+    MAPS_ICONS_LUNAR_NY_DECALS_80_668 = '../maps/icons/lunar_ny/decals/80/668.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_ENVELOPE_CLEAR = '../maps/icons/lunar_ny/entry_point/envelope/envelope_clear.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_ENVELOPE_NORMAL = '../maps/icons/lunar_ny/entry_point/envelope/envelope_normal.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_GLOW_POINT = '../maps/icons/lunar_ny/entry_point/envelope/glow_point.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SPARKS = '../maps/icons/lunar_ny/entry_point/envelope/sparks.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_00 = '../maps/icons/lunar_ny/entry_point/envelope/seq/00.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_01 = '../maps/icons/lunar_ny/entry_point/envelope/seq/01.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_02 = '../maps/icons/lunar_ny/entry_point/envelope/seq/02.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_03 = '../maps/icons/lunar_ny/entry_point/envelope/seq/03.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_04 = '../maps/icons/lunar_ny/entry_point/envelope/seq/04.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_05 = '../maps/icons/lunar_ny/entry_point/envelope/seq/05.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_06 = '../maps/icons/lunar_ny/entry_point/envelope/seq/06.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_07 = '../maps/icons/lunar_ny/entry_point/envelope/seq/07.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_08 = '../maps/icons/lunar_ny/entry_point/envelope/seq/08.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_09 = '../maps/icons/lunar_ny/entry_point/envelope/seq/09.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_10 = '../maps/icons/lunar_ny/entry_point/envelope/seq/10.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_11 = '../maps/icons/lunar_ny/entry_point/envelope/seq/11.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_12 = '../maps/icons/lunar_ny/entry_point/envelope/seq/12.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_13 = '../maps/icons/lunar_ny/entry_point/envelope/seq/13.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_14 = '../maps/icons/lunar_ny/entry_point/envelope/seq/14.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_15 = '../maps/icons/lunar_ny/entry_point/envelope/seq/15.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_16 = '../maps/icons/lunar_ny/entry_point/envelope/seq/16.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_17 = '../maps/icons/lunar_ny/entry_point/envelope/seq/17.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_18 = '../maps/icons/lunar_ny/entry_point/envelope/seq/18.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_19 = '../maps/icons/lunar_ny/entry_point/envelope/seq/19.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_20 = '../maps/icons/lunar_ny/entry_point/envelope/seq/20.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_21 = '../maps/icons/lunar_ny/entry_point/envelope/seq/21.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_22 = '../maps/icons/lunar_ny/entry_point/envelope/seq/22.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_23 = '../maps/icons/lunar_ny/entry_point/envelope/seq/23.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_24 = '../maps/icons/lunar_ny/entry_point/envelope/seq/24.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_25 = '../maps/icons/lunar_ny/entry_point/envelope/seq/25.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_26 = '../maps/icons/lunar_ny/entry_point/envelope/seq/26.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_27 = '../maps/icons/lunar_ny/entry_point/envelope/seq/27.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_28 = '../maps/icons/lunar_ny/entry_point/envelope/seq/28.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_29 = '../maps/icons/lunar_ny/entry_point/envelope/seq/29.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_30 = '../maps/icons/lunar_ny/entry_point/envelope/seq/30.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_31 = '../maps/icons/lunar_ny/entry_point/envelope/seq/31.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_32 = '../maps/icons/lunar_ny/entry_point/envelope/seq/32.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_33 = '../maps/icons/lunar_ny/entry_point/envelope/seq/33.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_34 = '../maps/icons/lunar_ny/entry_point/envelope/seq/34.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_35 = '../maps/icons/lunar_ny/entry_point/envelope/seq/35.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_36 = '../maps/icons/lunar_ny/entry_point/envelope/seq/36.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_37 = '../maps/icons/lunar_ny/entry_point/envelope/seq/37.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_38 = '../maps/icons/lunar_ny/entry_point/envelope/seq/38.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_39 = '../maps/icons/lunar_ny/entry_point/envelope/seq/39.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_40 = '../maps/icons/lunar_ny/entry_point/envelope/seq/40.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_41 = '../maps/icons/lunar_ny/entry_point/envelope/seq/41.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_42 = '../maps/icons/lunar_ny/entry_point/envelope/seq/42.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_43 = '../maps/icons/lunar_ny/entry_point/envelope/seq/43.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_44 = '../maps/icons/lunar_ny/entry_point/envelope/seq/44.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_45 = '../maps/icons/lunar_ny/entry_point/envelope/seq/45.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_46 = '../maps/icons/lunar_ny/entry_point/envelope/seq/46.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_47 = '../maps/icons/lunar_ny/entry_point/envelope/seq/47.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_48 = '../maps/icons/lunar_ny/entry_point/envelope/seq/48.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_49 = '../maps/icons/lunar_ny/entry_point/envelope/seq/49.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_50 = '../maps/icons/lunar_ny/entry_point/envelope/seq/50.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_51 = '../maps/icons/lunar_ny/entry_point/envelope/seq/51.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_52 = '../maps/icons/lunar_ny/entry_point/envelope/seq/52.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_53 = '../maps/icons/lunar_ny/entry_point/envelope/seq/53.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_54 = '../maps/icons/lunar_ny/entry_point/envelope/seq/54.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_55 = '../maps/icons/lunar_ny/entry_point/envelope/seq/55.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_56 = '../maps/icons/lunar_ny/entry_point/envelope/seq/56.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_57 = '../maps/icons/lunar_ny/entry_point/envelope/seq/57.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_58 = '../maps/icons/lunar_ny/entry_point/envelope/seq/58.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_59 = '../maps/icons/lunar_ny/entry_point/envelope/seq/59.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_60 = '../maps/icons/lunar_ny/entry_point/envelope/seq/60.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_61 = '../maps/icons/lunar_ny/entry_point/envelope/seq/61.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_62 = '../maps/icons/lunar_ny/entry_point/envelope/seq/62.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_63 = '../maps/icons/lunar_ny/entry_point/envelope/seq/63.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_64 = '../maps/icons/lunar_ny/entry_point/envelope/seq/64.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_65 = '../maps/icons/lunar_ny/entry_point/envelope/seq/65.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_66 = '../maps/icons/lunar_ny/entry_point/envelope/seq/66.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_67 = '../maps/icons/lunar_ny/entry_point/envelope/seq/67.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_68 = '../maps/icons/lunar_ny/entry_point/envelope/seq/68.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_69 = '../maps/icons/lunar_ny/entry_point/envelope/seq/69.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_70 = '../maps/icons/lunar_ny/entry_point/envelope/seq/70.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_71 = '../maps/icons/lunar_ny/entry_point/envelope/seq/71.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_72 = '../maps/icons/lunar_ny/entry_point/envelope/seq/72.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_73 = '../maps/icons/lunar_ny/entry_point/envelope/seq/73.png'
+    MAPS_ICONS_LUNAR_NY_ENTRY_POINT_ENVELOPE_SEQ_74 = '../maps/icons/lunar_ny/entry_point/envelope/seq/74.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_FRAME = '../maps/icons/lunar_ny/envelopes/frame.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_FRAME_FULL = '../maps/icons/lunar_ny/envelopes/frame_full.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_FREE = '../maps/icons/lunar_ny/envelopes/free.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_PAID = '../maps/icons/lunar_ny/envelopes/paid.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_PREMIUMPAID = '../maps/icons/lunar_ny/envelopes/premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_32X32_1 = '../maps/icons/lunar_ny/envelopes/32x32/1.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_32X32_2 = '../maps/icons/lunar_ny/envelopes/32x32/2.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_32X32_3 = '../maps/icons/lunar_ny/envelopes/32x32/3.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_48X48_0 = '../maps/icons/lunar_ny/envelopes/48x48/0.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_48X48_1 = '../maps/icons/lunar_ny/envelopes/48x48/1.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_48X48_2 = '../maps/icons/lunar_ny/envelopes/48x48/2.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_80X80_1 = '../maps/icons/lunar_ny/envelopes/80x80/1.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_80X80_2 = '../maps/icons/lunar_ny/envelopes/80x80/2.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_80X80_3 = '../maps/icons/lunar_ny/envelopes/80x80/3.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_NOTICE_BLINK = '../maps/icons/lunar_ny/envelopes_notice/blink.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_NOTICE_ENVELOPES_TRANSPARENT = '../maps/icons/lunar_ny/envelopes_notice/envelopes_transparent.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_NOTICE_NOTICE_BACKGROUND = '../maps/icons/lunar_ny/envelopes_notice/notice_background.png'
+    MAPS_ICONS_LUNAR_NY_ENVELOPES_NOTICE_NOTICE_BACKGROUND_HOVER = '../maps/icons/lunar_ny/envelopes_notice/notice_background_hover.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_ADD_FRIEND = '../maps/icons/lunar_ny/historyEnvelopes/add_friend.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_ASC = '../maps/icons/lunar_ny/historyEnvelopes/asc.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_DESC = '../maps/icons/lunar_ny/historyEnvelopes/desc.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_FOOTER_CENTER = '../maps/icons/lunar_ny/historyEnvelopes/footer_center.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_FOOTER_LEFT = '../maps/icons/lunar_ny/historyEnvelopes/footer_left.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_FOOTER_RIGHT = '../maps/icons/lunar_ny/historyEnvelopes/footer_right.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_OFFLINE_STATUS = '../maps/icons/lunar_ny/historyEnvelopes/offline_status.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_ONLINE_STATUS = '../maps/icons/lunar_ny/historyEnvelopes/online_status.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_RESPONSE = '../maps/icons/lunar_ny/historyEnvelopes/response.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_RESPONSE_DISABLE = '../maps/icons/lunar_ny/historyEnvelopes/response_disable.png'
+    MAPS_ICONS_LUNAR_NY_HISTORYENVELOPES_WAITING = '../maps/icons/lunar_ny/historyEnvelopes/waiting.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ALBUM_IMG = '../maps/icons/lunar_ny/info/album_img.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ALBUM_SHARM_SIMPLE = '../maps/icons/lunar_ny/info/album_sharm_simple.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ALBUM_SHARM_SPECIAL = '../maps/icons/lunar_ny/info/album_sharm_special.png'
+    MAPS_ICONS_LUNAR_NY_INFO_CP_VIDEO = '../maps/icons/lunar_ny/info/cp_video.png'
+    MAPS_ICONS_LUNAR_NY_INFO_DIVIDER = '../maps/icons/lunar_ny/info/divider.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ENVELOPE_FREE = '../maps/icons/lunar_ny/info/envelope_free.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ENVELOPE_PAID = '../maps/icons/lunar_ny/info/envelope_paid.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ENVELOPE_PREMIUM = '../maps/icons/lunar_ny/info/envelope_premium.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ICON = '../maps/icons/lunar_ny/info/icon.png'
+    MAPS_ICONS_LUNAR_NY_INFO_ICON_SMALL = '../maps/icons/lunar_ny/info/icon_small.png'
+    MAPS_ICONS_LUNAR_NY_INFO_INFO_BG = '../maps/icons/lunar_ny/info/info_bg.png'
+    MAPS_ICONS_LUNAR_NY_INFO_PRESENTS = '../maps/icons/lunar_ny/info/presents.png'
+    MAPS_ICONS_LUNAR_NY_INFO_PROGRESSS_IMG = '../maps/icons/lunar_ny/info/progresss_img.png'
+    MAPS_ICONS_LUNAR_NY_INFO_URL_ICON = '../maps/icons/lunar_ny/info/url_icon.png'
+    MAPS_ICONS_LUNAR_NY_INFO_URL_ICON_SMALL = '../maps/icons/lunar_ny/info/url_icon_small.png'
+    MAPS_ICONS_LUNAR_NY_INFO_WHERE_IMG = '../maps/icons/lunar_ny/info/where_img.png'
+    MAPS_ICONS_LUNAR_NY_INTRO_INTRO_1 = '../maps/icons/lunar_ny/intro/intro_1.png'
+    MAPS_ICONS_LUNAR_NY_INTRO_INTRO_2 = '../maps/icons/lunar_ny/intro/intro_2.png'
+    MAPS_ICONS_LUNAR_NY_INTRO_INTRO_3 = '../maps/icons/lunar_ny/intro/intro_3.png'
+    MAPS_ICONS_LUNAR_NY_INTRO_INTRO_ARROW = '../maps/icons/lunar_ny/intro/intro_arrow.png'
+    MAPS_ICONS_LUNAR_NY_INTRO_INTRO_BG = '../maps/icons/lunar_ny/intro/intro_bg.png'
+    MAPS_ICONS_LUNAR_NY_NOTIFICATION_ENVELOPES = '../maps/icons/lunar_ny/notification/envelopes.png'
+    MAPS_ICONS_LUNAR_NY_NOTIFICATION_ENVELOPE_0 = '../maps/icons/lunar_ny/notification/envelope_0.png'
+    MAPS_ICONS_LUNAR_NY_NOTIFICATION_ENVELOPE_1 = '../maps/icons/lunar_ny/notification/envelope_1.png'
+    MAPS_ICONS_LUNAR_NY_NOTIFICATION_ENVELOPE_2 = '../maps/icons/lunar_ny/notification/envelope_2.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_COUNT_BG = '../maps/icons/lunar_ny/popovers/count_bg.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVELOPERS_POPOVER_ARROW = '../maps/icons/lunar_ny/popovers/envelopers_popover_arrow.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVELOPERS_POPOVER_BG = '../maps/icons/lunar_ny/popovers/envelopers_popover_bg.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_FREE = '../maps/icons/lunar_ny/popovers/envel_free.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_FREE_DIZ = '../maps/icons/lunar_ny/popovers/envel_free_diz.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_PAID = '../maps/icons/lunar_ny/popovers/envel_paid.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_PAID_DIZ = '../maps/icons/lunar_ny/popovers/envel_paid_diz.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_PREMIUM = '../maps/icons/lunar_ny/popovers/envel_premium.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ENVEL_PREMIUM_DIZ = '../maps/icons/lunar_ny/popovers/envel_premium_diz.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ICO_ALERT = '../maps/icons/lunar_ny/popovers/ico_alert.png'
+    MAPS_ICONS_LUNAR_NY_POPOVERS_ICO_OUTSIDE = '../maps/icons/lunar_ny/popovers/ico_outside.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_BEEP = '../maps/icons/lunar_ny/progression/beep.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_CHECK_ORANGE = '../maps/icons/lunar_ny/progression/check_orange.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_FAN = '../maps/icons/lunar_ny/progression/fan.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_FLARE = '../maps/icons/lunar_ny/progression/flare.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_FRAMING = '../maps/icons/lunar_ny/progression/framing.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_GLOW_HOVER = '../maps/icons/lunar_ny/progression/glow_hover.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_GLOW_NORMAL = '../maps/icons/lunar_ny/progression/glow_normal.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_PROGRESSION_BG = '../maps/icons/lunar_ny/progression/progression_bg.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_PROGRESSION_FULL = '../maps/icons/lunar_ny/progression/progression_full.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_SCALE = '../maps/icons/lunar_ny/progression/scale.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSION_SHADOW = '../maps/icons/lunar_ny/progression/shadow.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSIONAWARD_BACKGROUND = '../maps/icons/lunar_ny/progressionAward/background.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSIONAWARD_EVENT_NAME = '../maps/icons/lunar_ny/progressionAward/event_name.png'
+    MAPS_ICONS_LUNAR_NY_PROGRESSIONAWARD_EVENT_NAME_SMALL = '../maps/icons/lunar_ny/progressionAward/event_name_small.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_BACKGROUND = '../maps/icons/lunar_ny/sendEnvelopes/background.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ERROR_ICO = '../maps/icons/lunar_ny/sendEnvelopes/error_ico.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_EXTERNALLINK = '../maps/icons/lunar_ny/sendEnvelopes/externalLink.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_EXTERNALLINK_GREY_ICO = '../maps/icons/lunar_ny/sendEnvelopes/externalLink_grey_ico.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_EXTERNALLINK_ICO = '../maps/icons/lunar_ny/sendEnvelopes/externalLink_ico.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ICON = '../maps/icons/lunar_ny/sendEnvelopes/icon.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ICON_SMALL = '../maps/icons/lunar_ny/sendEnvelopes/icon_small.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SHADOW_M = '../maps/icons/lunar_ny/sendEnvelopes/shadow_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SHADOW_S = '../maps/icons/lunar_ny/sendEnvelopes/shadow_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_BUTTON_SHINE = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/button_shine.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_ENTRYENVELOPEHOVER = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/entryEnvelopeHover.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_FREE_DIZ = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/free_diz.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_FREE_L = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/free_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_FREE_M = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/free_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_FREE_S = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/free_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_FREE_XL = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/free_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PAID_DIZ = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/paid_diz.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PAID_L = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/paid_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PAID_M = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/paid_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PAID_S = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/paid_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PAID_XL = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/paid_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PREMIUMPAID_DIZ = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/premiumPaid_diz.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PREMIUMPAID_L = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/premiumPaid_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PREMIUMPAID_M = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/premiumPaid_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PREMIUMPAID_S = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/premiumPaid_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_PREMIUMPAID_XL = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/premiumPaid_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_RAYS = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/rays.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_ENTRYENVELOPES_WAITING = '../maps/icons/lunar_ny/sendEnvelopes/entryEnvelopes/waiting.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_BACKGROUND_VIDEO = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/background_video.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_ENVELOPES_CONG = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/envelopes_cong.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_ENVELOPE_FILL_FREE = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/envelope_fill_free.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_ENVELOPE_FILL_PAID = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/envelope_fill_paid.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_ENVELOPE_FILL_PREMIUMPAID = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/envelope_fill_premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_REFRESH_ICO = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/refresh_ico.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_SEARCH_ICON = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/search_icon.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_SELECT_BUTTON = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/select_button.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_NO_FRIENDS_BATTLE = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/no_friends/battle.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_NO_FRIENDS_CLAN = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/no_friends/clan.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_NO_FRIENDS_PLATOON = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/no_friends/platoon.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_NO_FRIENDS_SOCIAL = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/no_friends/social.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_TABS_BAR_HIGHLIGHT = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/tabs/bar_highlight.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_TABS_RANDOM_SEND = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/tabs/random_send.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_FILLENVELOPES_TABS_USER_SEND = '../maps/icons/lunar_ny/sendEnvelopes/fillEnvelopes/tabs/user_send.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_DECORATIVE_STRIP = '../maps/icons/lunar_ny/sendEnvelopes/header/decorative_strip.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_FREE_M = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_free_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_FREE_S = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_free_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_PAID_M = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_paid_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_PAID_S = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_paid_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_PREMIUMPAID_M = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_premiumPaid_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_HEADER_HEADING_PREMIUMPAID_S = '../maps/icons/lunar_ny/sendEnvelopes/header/heading_premiumPaid_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_DECAL_L = '../maps/icons/lunar_ny/sendEnvelopes/rewards/decal_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_DECAL_M = '../maps/icons/lunar_ny/sendEnvelopes/rewards/decal_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_DECAL_S = '../maps/icons/lunar_ny/sendEnvelopes/rewards/decal_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_DECAL_XL = '../maps/icons/lunar_ny/sendEnvelopes/rewards/decal_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_1_L = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_1_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_1_M = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_1_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_1_S = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_1_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_1_XL = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_1_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_2_L = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_2_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_2_M = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_2_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_2_S = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_2_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_GOLD_2_XL = '../maps/icons/lunar_ny/sendEnvelopes/rewards/gold_2_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_1_L = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_1_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_1_M = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_1_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_1_S = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_1_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_1_XL = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_1_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_2_L = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_2_l.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_2_M = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_2_m.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_2_S = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_2_s.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_REWARDS_SHARM_2_XL = '../maps/icons/lunar_ny/sendEnvelopes/rewards/sharm_2_xl.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_ENVELOPE_CLOSE_FREE = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/envelope_close_free.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_ENVELOPE_CLOSE_PAID = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/envelope_close_paid.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_ENVELOPE_CLOSE_PREMIUM = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/envelope_close_premium.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_GLOW = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/glow.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_GLOW_B = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/glow_b.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_SHINE = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/shine.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_SPLASH = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/splash.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_STAMP_EMPTY = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/stamp_empty.png'
+    MAPS_ICONS_LUNAR_NY_SENDENVELOPES_SENDENVELOPE_STAMP_FULL = '../maps/icons/lunar_ny/sendEnvelopes/sendEnvelope/stamp_full.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ACTIVE = '../maps/icons/lunar_ny/storeEnvelopes/active.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ACTIVE_EXTRALARGE = '../maps/icons/lunar_ny/storeEnvelopes/active_extraLarge.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ACTIVE_LARGE = '../maps/icons/lunar_ny/storeEnvelopes/active_large.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ARROW = '../maps/icons/lunar_ny/storeEnvelopes/arrow.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ARROW_HOVER = '../maps/icons/lunar_ny/storeEnvelopes/arrow_hover.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_BACKGROUND = '../maps/icons/lunar_ny/storeEnvelopes/background.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_HISTORY_BUTTON_BACKGROUND = '../maps/icons/lunar_ny/storeEnvelopes/history_button_background.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ICON = '../maps/icons/lunar_ny/storeEnvelopes/icon.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ICON_SMALL = '../maps/icons/lunar_ny/storeEnvelopes/icon_small.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_WAITING_28X28 = '../maps/icons/lunar_ny/storeEnvelopes/waiting_28x28.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ENVELOPES_FREE = '../maps/icons/lunar_ny/storeEnvelopes/envelopes/free.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ENVELOPES_PAID = '../maps/icons/lunar_ny/storeEnvelopes/envelopes/paid.png'
+    MAPS_ICONS_LUNAR_NY_STOREENVELOPES_ENVELOPES_PREMIUMPAID = '../maps/icons/lunar_ny/storeEnvelopes/envelopes/premiumPaid.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPERS_ENTRY_TOOLTIP = '../maps/icons/lunar_ny/tooltips/envelopers_entry_tooltip.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPERS_NEW_TOOLTIP = '../maps/icons/lunar_ny/tooltips/envelopers_new_tooltip.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPE_FREE = '../maps/icons/lunar_ny/tooltips/envelope_free.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPE_PAID = '../maps/icons/lunar_ny/tooltips/envelope_paid.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPE_PREMIUM = '../maps/icons/lunar_ny/tooltips/envelope_premium.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ENVELOPE_TOOLTIP_SHINE = '../maps/icons/lunar_ny/tooltips/envelope_tooltip_shine.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ICON_ATTENTION = '../maps/icons/lunar_ny/tooltips/icon_attention.png'
+    MAPS_ICONS_LUNAR_NY_TOOLTIPS_ICON_NOTIFICATION = '../maps/icons/lunar_ny/tooltips/icon_notification.png'
     MAPS_ICONS_MANUAL_MAINPAGE_BACKGROUND = '../maps/icons/manual/mainPage/background.png'
     MAPS_ICONS_MANUAL_MAINPAGE_MAINVIEWTILE1 = '../maps/icons/manual/mainPage/mainViewTile1.png'
     MAPS_ICONS_MANUAL_MAINPAGE_MAINVIEWTILE2 = '../maps/icons/manual/mainPage/mainViewTile2.png'
@@ -6669,7 +7613,60 @@ class RES_ICONS(object):
     MAPS_ICONS_MAPSTRAINING_REWARD_TIMER_ICON = '../maps/icons/mapsTraining/reward/timer_icon.png'
     MAPS_ICONS_MAPSTRAINING_REWARD_TITLE_BG = '../maps/icons/mapsTraining/reward/title_bg.png'
     MAPS_ICONS_MAPSTRAINING_REWARD_TITLE_BG_SMALL = '../maps/icons/mapsTraining/reward/title_bg_small.png'
+    MAPS_ICONS_MARATHON_BANNER = '../maps/icons/marathon/banner.png'
+    MAPS_ICONS_MARATHON_BANNER_POST = '../maps/icons/marathon/banner_post.png'
+    MAPS_ICONS_MARATHON_BANNER_POST_THIN_EXTRA_SMALL = '../maps/icons/marathon/banner_post_thin_extra_small.png'
+    MAPS_ICONS_MARATHON_BANNER_POST_THIN_SMALL = '../maps/icons/marathon/banner_post_thin_small.png'
+    MAPS_ICONS_MARATHON_BANNER_POST_WIDE_SMALL = '../maps/icons/marathon/banner_post_wide_small.png'
+    MAPS_ICONS_MARATHON_BANNER_THIN_EXTRA_SMALL = '../maps/icons/marathon/banner_thin_extra_small.png'
+    MAPS_ICONS_MARATHON_BANNER_THIN_SMALL = '../maps/icons/marathon/banner_thin_small.png'
+    MAPS_ICONS_MARATHON_BANNER_WIDE_SMALL = '../maps/icons/marathon/banner_wide_small.png'
+    MAPS_ICONS_MARATHON_BIG_STROKE = '../maps/icons/marathon/big_stroke.png'
+    MAPS_ICONS_MARATHON_BORDER = '../maps/icons/marathon/border.png'
+    MAPS_ICONS_MARATHON_BOTTOMSHADOW = '../maps/icons/marathon/bottomShadow.png'
+    MAPS_ICONS_MARATHON_CARD_DISCOUNT_SPARKLES_SMALL = '../maps/icons/marathon/card_discount_sparkles_small.png'
+    MAPS_ICONS_MARATHON_HOVER = '../maps/icons/marathon/hover.png'
+    MAPS_ICONS_MARATHON_HOVER_THIN_EXTRA_SMALL = '../maps/icons/marathon/hover_thin_extra_small.png'
+    MAPS_ICONS_MARATHON_HOVER_THIN_SMALL = '../maps/icons/marathon/hover_thin_small.png'
+    MAPS_ICONS_MARATHON_HOVER_WIDE_SMALL = '../maps/icons/marathon/hover_wide_small.png'
+    MAPS_ICONS_MARATHON_ICON = '../maps/icons/marathon/icon.png'
+    MAPS_ICONS_MARATHON_ICON_URL = '../maps/icons/marathon/icon_url.png'
+    MAPS_ICONS_MARATHON_LIGHT_BEST = '../maps/icons/marathon/light_best.png'
+    MAPS_ICONS_MARATHON_MISSION_DONE = '../maps/icons/marathon/mission_done.png'
+    MAPS_ICONS_MARATHON_SHADOW = '../maps/icons/marathon/shadow.png'
+    MAPS_ICONS_MARATHON_SHADOW_BIG = '../maps/icons/marathon/shadow_big.png'
+    MAPS_ICONS_MARATHON_SHADOW_DARK = '../maps/icons/marathon/shadow_dark.png'
+    MAPS_ICONS_MARATHON_SHADOW_SMALL = '../maps/icons/marathon/shadow_small.png'
+    MAPS_ICONS_MARATHON_SPARKLES = '../maps/icons/marathon/sparkles.png'
+    MAPS_ICONS_MARATHON_THINEXTRASMALL_STROKE = '../maps/icons/marathon/thinExtraSmall_stroke.png'
+    MAPS_ICONS_MARATHON_THINSMALL_STROKE = '../maps/icons/marathon/thinSmall_stroke.png'
+    MAPS_ICONS_MARATHON_TT = '../maps/icons/marathon/tt.png'
+    MAPS_ICONS_MARATHON_WIDESMALL_STROKE = '../maps/icons/marathon/wideSmall_stroke.png'
+    MAPS_ICONS_MARATHON_WIDGET_ARROW = '../maps/icons/marathon/widget_arrow.png'
+    MAPS_ICONS_MARATHON_ICONS_AWARD = '../maps/icons/marathon/icons/award.png'
+    MAPS_ICONS_MARATHON_ICONS_BLOCKED_DAMAGE = '../maps/icons/marathon/icons/blocked_damage.png'
+    MAPS_ICONS_MARATHON_ICONS_DAMAGE = '../maps/icons/marathon/icons/damage.png'
+    MAPS_ICONS_MARATHON_ICONS_EXP = '../maps/icons/marathon/icons/exp.png'
+    MAPS_ICONS_MARATHON_ICONS_KILL_VEHICLES = '../maps/icons/marathon/icons/kill_vehicles.png'
+    MAPS_ICONS_MARATHON_ICONS_TOP = '../maps/icons/marathon/icons/top.png'
+    MAPS_ICONS_MARATHON_ICONS_TOP3 = '../maps/icons/marathon/icons/top3.png'
+    MAPS_ICONS_MARATHON_ICONS_WINS = '../maps/icons/marathon/icons/wins.png'
     MAPS_ICONS_MARATHON_MARKER_VIDEO = '../maps/icons/marathon/marker/video.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_BG = '../maps/icons/marathon/rewardWindow/bg.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_BG_GLOW = '../maps/icons/marathon/rewardWindow/bg_glow.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_BG_STYLE = '../maps/icons/marathon/rewardWindow/bg_style.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_GOLD_RIBBON = '../maps/icons/marathon/rewardWindow/gold_ribbon.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_STYLE_IMAGE = '../maps/icons/marathon/rewardWindow/style_image.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_STYLE_IMAGE_CN = '../maps/icons/marathon/rewardWindow/style_image_cn.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_STYLE_REWARD = '../maps/icons/marathon/rewardWindow/style_reward.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_TOOLTIP_SEPARATOR = '../maps/icons/marathon/rewardWindow/tooltip_separator.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_VEHICLE_IMAGE = '../maps/icons/marathon/rewardWindow/vehicle_image.png'
+    MAPS_ICONS_MARATHON_REWARDWINDOW_VEHICLE_IMAGE_CN = '../maps/icons/marathon/rewardWindow/vehicle_image_cn.png'
+    MAPS_ICONS_MARATHON_TANKTYPES_TYPE_TANK_BIG_AT_SPG = '../maps/icons/marathon/tankTypes/type_tank_big_at-spg.png'
+    MAPS_ICONS_MARATHON_TANKTYPES_TYPE_TANK_BIG_HEAVYTANK = '../maps/icons/marathon/tankTypes/type_tank_big_heavytank.png'
+    MAPS_ICONS_MARATHON_TANKTYPES_TYPE_TANK_BIG_LIGHTTANK = '../maps/icons/marathon/tankTypes/type_tank_big_lighttank.png'
+    MAPS_ICONS_MARATHON_TANKTYPES_TYPE_TANK_BIG_MEDIUMTANK = '../maps/icons/marathon/tankTypes/type_tank_big_mediumtank.png'
+    MAPS_ICONS_MARATHON_TANKTYPES_TYPE_TANK_BIG_SPG = '../maps/icons/marathon/tankTypes/type_tank_big_spg.png'
     MAPS_ICONS_MATCHMAKER_10X10 = '../maps/icons/matchmaker/10x10.png'
     MAPS_ICONS_MATCHMAKER_GLOW_EFFECT = '../maps/icons/matchmaker/glow_effect.png'
     MAPS_ICONS_MATCHMAKER_URL_ICON = '../maps/icons/matchmaker/url_icon.png'
@@ -6942,6 +7939,7 @@ class RES_ICONS(object):
     MAPS_ICONS_MISSIONS_ICONS_CHECK_WHITE_XS = '../maps/icons/missions/icons/check_white_xs.png'
     MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_1 = '../maps/icons/missions/icons/dq_info_1.png'
     MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_1_GIFT_SYSTEM_DISABLED = '../maps/icons/missions/icons/dq_info_1_gift_system_disabled.png'
+    MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_1_LUNAR_NY = '../maps/icons/missions/icons/dq_info_1_lunar_ny.png'
     MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_1_NY = '../maps/icons/missions/icons/dq_info_1_ny.png'
     MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_2 = '../maps/icons/missions/icons/dq_info_2.png'
     MAPS_ICONS_MISSIONS_ICONS_DQ_INFO_3 = '../maps/icons/missions/icons/dq_info_3.png'
@@ -8069,7 +9067,12 @@ class RES_ICONS(object):
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_100 = '../maps/icons/quests/bonuses/badges/220x220/badge_100.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_105 = '../maps/icons/quests/bonuses/badges/220x220/badge_105.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_107 = '../maps/icons/quests/bonuses/badges/220x220/badge_107.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_108 = '../maps/icons/quests/bonuses/badges/220x220/badge_108.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_109 = '../maps/icons/quests/bonuses/badges/220x220/badge_109.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_11 = '../maps/icons/quests/bonuses/badges/220x220/badge_11.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_110 = '../maps/icons/quests/bonuses/badges/220x220/badge_110.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_111 = '../maps/icons/quests/bonuses/badges/220x220/badge_111.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_112 = '../maps/icons/quests/bonuses/badges/220x220/badge_112.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_12 = '../maps/icons/quests/bonuses/badges/220x220/badge_12.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_13 = '../maps/icons/quests/bonuses/badges/220x220/badge_13.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_14 = '../maps/icons/quests/bonuses/badges/220x220/badge_14.png'
@@ -8120,7 +9123,12 @@ class RES_ICONS(object):
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_102 = '../maps/icons/quests/bonuses/badges/24x24/badge_102.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_105 = '../maps/icons/quests/bonuses/badges/24x24/badge_105.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_107 = '../maps/icons/quests/bonuses/badges/24x24/badge_107.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_108 = '../maps/icons/quests/bonuses/badges/24x24/badge_108.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_109 = '../maps/icons/quests/bonuses/badges/24x24/badge_109.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_11 = '../maps/icons/quests/bonuses/badges/24x24/badge_11.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_110 = '../maps/icons/quests/bonuses/badges/24x24/badge_110.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_111 = '../maps/icons/quests/bonuses/badges/24x24/badge_111.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_112 = '../maps/icons/quests/bonuses/badges/24x24/badge_112.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_12 = '../maps/icons/quests/bonuses/badges/24x24/badge_12.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_13 = '../maps/icons/quests/bonuses/badges/24x24/badge_13.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_14 = '../maps/icons/quests/bonuses/badges/24x24/badge_14.png'
@@ -8208,7 +9216,12 @@ class RES_ICONS(object):
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_102 = '../maps/icons/quests/bonuses/badges/48x48/badge_102.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_105 = '../maps/icons/quests/bonuses/badges/48x48/badge_105.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_107 = '../maps/icons/quests/bonuses/badges/48x48/badge_107.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_108 = '../maps/icons/quests/bonuses/badges/48x48/badge_108.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_109 = '../maps/icons/quests/bonuses/badges/48x48/badge_109.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_11 = '../maps/icons/quests/bonuses/badges/48x48/badge_11.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_110 = '../maps/icons/quests/bonuses/badges/48x48/badge_110.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_111 = '../maps/icons/quests/bonuses/badges/48x48/badge_111.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_112 = '../maps/icons/quests/bonuses/badges/48x48/badge_112.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_12 = '../maps/icons/quests/bonuses/badges/48x48/badge_12.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_13 = '../maps/icons/quests/bonuses/badges/48x48/badge_13.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_14 = '../maps/icons/quests/bonuses/badges/48x48/badge_14.png'
@@ -8291,13 +9304,23 @@ class RES_ICONS(object):
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_97 = '../maps/icons/quests/bonuses/badges/48x48/badge_97.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_DEFAULT = '../maps/icons/quests/bonuses/badges/48x48/badge_default.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_EMPTY = '../maps/icons/quests/bonuses/badges/48x48/badge_empty.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_108 = '../maps/icons/quests/bonuses/badges/500x500/badge_108.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_109 = '../maps/icons/quests/bonuses/badges/500x500/badge_109.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_110 = '../maps/icons/quests/bonuses/badges/500x500/badge_110.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_111 = '../maps/icons/quests/bonuses/badges/500x500/badge_111.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_112 = '../maps/icons/quests/bonuses/badges/500x500/badge_112.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_1 = '../maps/icons/quests/bonuses/badges/80x80/badge_1.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_10 = '../maps/icons/quests/bonuses/badges/80x80/badge_10.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_100 = '../maps/icons/quests/bonuses/badges/80x80/badge_100.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_102 = '../maps/icons/quests/bonuses/badges/80x80/badge_102.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_105 = '../maps/icons/quests/bonuses/badges/80x80/badge_105.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_107 = '../maps/icons/quests/bonuses/badges/80x80/badge_107.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_108 = '../maps/icons/quests/bonuses/badges/80x80/badge_108.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_109 = '../maps/icons/quests/bonuses/badges/80x80/badge_109.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_11 = '../maps/icons/quests/bonuses/badges/80x80/badge_11.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_110 = '../maps/icons/quests/bonuses/badges/80x80/badge_110.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_111 = '../maps/icons/quests/bonuses/badges/80x80/badge_111.png'
+    MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_112 = '../maps/icons/quests/bonuses/badges/80x80/badge_112.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_12 = '../maps/icons/quests/bonuses/badges/80x80/badge_12.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_13 = '../maps/icons/quests/bonuses/badges/80x80/badge_13.png'
     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_14 = '../maps/icons/quests/bonuses/badges/80x80/badge_14.png'
@@ -9845,6 +10868,7 @@ class RES_ICONS(object):
     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_GIRL_4 = '../maps/icons/tankmen/icons/special/ny22_girl_4.png'
     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_MEN = '../maps/icons/tankmen/icons/special/ny22_men.png'
     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_MEN_A = '../maps/icons/tankmen/icons/special/ny22_men_A.png'
+    MAPS_ICONS_TANKMEN_ICONS_SPECIAL_YANDEX_1 = '../maps/icons/tankmen/icons/special/yandex_1.png'
     MAPS_ICONS_TANKMEN_WINDOWS_ABOUTRUDY = '../maps/icons/tankmen/windows/aboutRudy.png'
     MAPS_ICONS_TANKMEN_WINDOWS_EMPTY_RECRUITWINDOWBG = '../maps/icons/tankmen/windows/empty_recruitWindowBg.png'
     MAPS_ICONS_TANKMEN_WINDOWS_NY19MEN_RECRUITWINDOWBG = '../maps/icons/tankmen/windows/ny19men_recruitWindowBg.png'
@@ -11172,7 +12196,12 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_105,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_106,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_107,
+     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_109,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_11,
+     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_112,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_12,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_13,
      MAPS_ICONS_LIBRARY_BADGES_220X220_BADGE_14,
@@ -11238,7 +12267,16 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_105,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_106,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_107,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_109,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_11,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_112,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_113,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_114,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_115,
+     MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_116,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_12,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_13,
      MAPS_ICONS_LIBRARY_BADGES_24X24_BADGE_14,
@@ -11339,6 +12377,11 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_56,
      MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_57,
      MAPS_ICONS_LIBRARY_BADGES_32X32_BADGE_94,
+     MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_109,
+     MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_400X300_BADGE_112,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_1,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_10,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_100,
@@ -11349,7 +12392,16 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_105,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_106,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_107,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_109,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_11,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_112,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_113,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_114,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_115,
+     MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_116,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_12,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_13,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_14,
@@ -11447,6 +12499,11 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_BG,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_DEFAULT,
      MAPS_ICONS_LIBRARY_BADGES_48X48_BADGE_EMPTY,
+     MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_109,
+     MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_500X500_BADGE_112,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_1,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_10,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_100,
@@ -11457,7 +12514,16 @@ class RES_ICONS(object):
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_105,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_106,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_107,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_108,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_109,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_11,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_110,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_111,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_112,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_113,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_114,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_115,
+     MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_116,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_12,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_13,
      MAPS_ICONS_LIBRARY_BADGES_80X80_BADGE_14,
@@ -11707,7 +12773,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_14,
@@ -11758,7 +12829,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_14,
@@ -11846,7 +12922,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_14,
@@ -11929,13 +13010,23 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_97,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_DEFAULT,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_EMPTY,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_109,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_1,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_10,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_14,
@@ -12342,7 +13433,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_14,
@@ -12393,7 +13489,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_14,
@@ -12481,7 +13582,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_14,
@@ -12564,13 +13670,23 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_97,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_DEFAULT,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_EMPTY,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_109,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_1,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_10,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_14,
@@ -13385,7 +14501,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_14,
@@ -13436,7 +14557,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_14,
@@ -13524,7 +14650,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_14,
@@ -13607,13 +14738,23 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_97,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_DEFAULT,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_EMPTY,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_109,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_1,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_10,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_14,
@@ -14121,7 +15262,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_220X220_BADGE_14,
@@ -14172,7 +15318,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_24X24_BADGE_14,
@@ -14260,7 +15411,12 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_14,
@@ -14343,13 +15499,23 @@ class RES_ICONS(object):
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_97,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_DEFAULT,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_48X48_BADGE_EMPTY,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_109,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_500X500_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_1,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_10,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_100,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_102,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_105,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_107,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_108,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_109,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_11,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_110,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_111,
+     MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_112,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_12,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_13,
      MAPS_ICONS_QUESTS_BONUSES_BADGES_80X80_BADGE_14,
@@ -17200,7 +18366,8 @@ class RES_ICONS(object):
      MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_GIRL_3,
      MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_GIRL_4,
      MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_MEN,
-     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_MEN_A)
+     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_NY22_MEN_A,
+     MAPS_ICONS_TANKMEN_ICONS_SPECIAL_YANDEX_1)
     MAPS_ICONS_BLUEPRINTS_TOOLTIP_LAYOUT_ENUM = (MAPS_ICONS_BLUEPRINTS_TOOLTIP_LAYOUT_1,
      MAPS_ICONS_BLUEPRINTS_TOOLTIP_LAYOUT_10,
      MAPS_ICONS_BLUEPRINTS_TOOLTIP_LAYOUT_12,

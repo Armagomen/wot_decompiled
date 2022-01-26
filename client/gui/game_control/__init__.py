@@ -72,6 +72,9 @@ def getGameControllersConfig(manager):
     from gui.game_control.telecom_rentals_controller import TelecomRentalsNotificationController
     from gui.game_control.event_battles_controller import EventBattlesController
     from gui.game_control.gift_system_controller import GiftSystemController
+    from gui.game_control.wo_controller import WOController as _WOController
+    from lunar_ny import ILunarNYController
+    from lunar_ny.lunar_ny_controller import LunarNYController
     from skeletons import new_year as _NYInterface
     from new_year.ny_jukebox_controller import JukeboxController as _JukeboxController
     from new_year.celebrity.celebrity_scene_ctrl import CelebritySceneController as _CelebritySceneController
@@ -116,6 +119,7 @@ def getGameControllersConfig(manager):
     _config(_interface.IPlatoonController, _PlatoonController())
     _config(_interface.IMarathonEventsController, _MarathonEventsController())
     _config(_interface.ICalendarController, _Calendar())
+    _config(_interface.IWOController, _WOController())
     _config(_interface.IEpicBattleMetaGameController, _EpicMeta())
     _config(_interface.IBattleRoyaleController, _BattleRoyale())
     _config(_interface.IBattleRoyaleTournamentController, _BRTournament())
@@ -147,6 +151,7 @@ def getGameControllersConfig(manager):
     _config(_interface.IWotPlusNotificationController, WotPlusNotificationController())
     _config(_interface.ITelecomRentalsNotificationController, TelecomRentalsNotificationController())
     _config(_interface.IGiftSystemController, GiftSystemController())
+    _config(ILunarNYController, LunarNYController())
     _config(_NYInterface.IJukeboxController, _JukeboxController())
     _config(_NYInterface.ICelebritySceneController, _CelebritySceneController())
     _config(_NYInterface.INewYearCraftMachineController, _NewYearCraftMachineController())

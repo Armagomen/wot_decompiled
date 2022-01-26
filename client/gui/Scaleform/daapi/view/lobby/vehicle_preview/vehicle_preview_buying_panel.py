@@ -361,7 +361,7 @@ class VehiclePreviewBuyingPanel(VehiclePreviewBuyingPanelMeta):
         else:
             btnData = self.__getBtnData()
             self._actionType = self.__previewDP.getBuyType(item)
-            if self.__items:
+            if self.__items is not None:
                 buyingPanelData = self.__previewDP.getItemPackBuyingPanelData(btnData, self.__items, self.__couponInfo.selected if self.__couponInfo else False, self.__price.get(Currency.GOLD))
             elif self.__offers:
                 buyingPanelData = self.__previewDP.getOffersBuyingPanelData(btnData)
@@ -426,7 +426,7 @@ class VehiclePreviewBuyingPanel(VehiclePreviewBuyingPanelMeta):
         itemPrices = ItemPrice(price=price, defPrice=self.__oldPrice)
         specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
         if specialData is not None and specialData.buyButtonLabel:
-            buttonLabel = backport.text(specialData.buyButtonLabel)
+            buttonLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.dyn(specialData.buyButtonLabel)())
         elif self.__isReferralWindow():
             buttonLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.obtain())
         elif self._marathonEvent is not None:
@@ -527,7 +527,7 @@ class VehiclePreviewBuyingPanel(VehiclePreviewBuyingPanelMeta):
                 tooltip = _buildBuyButtonTooltip('parentVehicleIsLocked')
         specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
         if specialData is not None and specialData.buyButtonLabel:
-            buyLabel = backport.text(specialData.buyButtonLabel)
+            buyLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.dyn(specialData.buyButtonLabel)())
         else:
             buyLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.research())
         return _ButtonState(enabled=isAvailableToUnlock, itemPrice=getItemUnlockPricesVO(unlockProps), label=buyLabel, icon=buttonIcon, iconAlign=buttonIconAlign, isAction=unlockProps.discount > 0, actionTooltip=None, tooltip=tooltip, title=self.__title, isMoneyEnough=isXpEnough, isUnlock=True, isPrevItemsUnlock=isNext2Unlock, customOffer=None, isShowSpecial=False)
@@ -647,7 +647,7 @@ class VehiclePreviewBuyingPanel(VehiclePreviewBuyingPanelMeta):
     @process
     def __hasExternalLink(self, callback=None):
         url = ''
-        if self._marathonEvent:
+        if self._marathonEvent and not self._marathonEvent.hasIgbLink():
             url = yield self._marathonEvent.getMarathonVehicleUrl()
         elif self.__isHeroTank:
             if not self._heroTanks.isAdventHero() and not self._heroTanks.getCurrentShopUrl():
@@ -677,7 +677,7 @@ class VehiclePreviewBuyingPanel(VehiclePreviewBuyingPanelMeta):
     def __getUnlockedVehicleBtnLabel(self, priceType):
         specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
         if specialData is not None and specialData.buyButtonLabel:
-            buttonLabel = backport.text(specialData.buyButtonLabel)
+            buttonLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.dyn(specialData.buyButtonLabel)())
         elif priceType == ActualPrice.RESTORE_PRICE:
             buttonLabel = backport.text(R.strings.vehicle_preview.buyingPanel.buyBtn.label.restore())
         elif priceType == ActualPrice.RENT_PRICE:

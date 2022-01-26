@@ -52,12 +52,16 @@ def __mergeItems(total, key, value, isLeaf=False, count=1, *args):
         items[itemCompDescr] = items.get(itemCompDescr, 0) + count * itemCount
 
 
+def __mergeMeta(total, key, value, isLeaf=False, count=1, *args):
+    total[key] = value
+
+
 def __mergeList(total, key, value, count):
     items = total.setdefault(key, [])
     items.extend((value if isinstance(value, list) else [value]) * count)
 
 
-def __mergeVehicles(total, key, value, isLeaf, count, *args):
+def __mergeVehicles(total, key, value, isLeaf, count=1, *args):
     __mergeList(total, key, value, count)
 
 
@@ -180,6 +184,13 @@ def __mergeBattlePassPoints(total, key, value, isLeaf=False, count=1, *args):
     battlePass['vehicles'][NON_VEH_CD] += value.get('vehicles', {}).get(NON_VEH_CD, 0) * count
 
 
+def __mergeCharms(total, key, value, isLeaf=False, count=1, *args):
+    result = total.setdefault(key, {})
+    for charmID, charmData in value.iteritems():
+        charmMerged = result.setdefault(charmID, {})
+        charmMerged['count'] = charmMerged.get('count', 0) + count * charmData.get('count', 0)
+
+
 def __mergeNYToys(total, key, value, isLeaf=False, count=1, *args):
     result = total.setdefault(key, {})
     for toyID, toysCount in value.iteritems():
@@ -230,7 +241,8 @@ BONUS_MERGERS = {'credits': __mergeValue,
  'rankedBonusBattles': __mergeValue,
  'dogTagComponents': __mergeDogTag,
  'battlePassPoints': __mergeBattlePassPoints,
- 'meta': lambda *args, **kwargs: None,
+ 'meta': __mergeMeta,
+ 'charms': __mergeCharms,
  CurrentNYConstants.TOYS: __mergeNYToys,
  CurrentNYConstants.TOY_FRAGMENTS: __mergeValue,
  CurrentNYConstants.ANY_OF: __mergeNYAnyOf,
@@ -485,13 +497,13 @@ class NodeVisitor(object):
         self._mergersArgs = args
 
     def onOneOf(self, storage, values):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def onAllOf(self, storage, values):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def onGroup(self, storage, values):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def onMergeValue(self, storage, name, value, isLeaf):
         self._mergers[name](storage, name, value, isLeaf, *self._mergersArgs)
