@@ -68,7 +68,8 @@ _UNCOUNTABLE_ITEM_TYPE = {ItemPackType.CUSTOM_PREMIUM,
  ItemPackType.CUSTOM_GOLD,
  ItemPackType.CUSTOM_EVENT_COIN,
  ItemPackType.CUSTOM_EVENT_COIN_EXTERNAL,
- ItemPackType.CUSTOM_BPCOIN}
+ ItemPackType.CUSTOM_BPCOIN,
+ ItemPackType.CUSTOM_DRAGON_BOAT_POINTS}
 _PACK_ITEMS_SORT_ORDER = list(itertools.chain(ItemPackTypeGroup.DISCOUNT, ItemPackTypeGroup.CUSTOM, ItemPackTypeGroup.TOKEN, ItemPackTypeGroup.GOODIE, ItemPackTypeGroup.CREW, ItemPackTypeGroup.STYLE, ItemPackTypeGroup.CAMOUFLAGE, ItemPackTypeGroup.DECAL, ItemPackTypeGroup.MODIFICATION, ItemPackTypeGroup.PAINT, ItemPackTypeGroup.ITEM))
 _TOOLTIP_TYPE = {ItemPackType.ITEM_DEVICE: TOOLTIPS_CONSTANTS.SHOP_MODULE,
  ItemPackType.ITEM_EQUIPMENT: TOOLTIPS_CONSTANTS.SHOP_MODULE,
@@ -118,9 +119,7 @@ _TOOLTIP_TYPE = {ItemPackType.ITEM_DEVICE: TOOLTIPS_CONSTANTS.SHOP_MODULE,
  ItemPackType.REFERRAL_AWARDS: TOOLTIPS_CONSTANTS.REFERRAL_AWARDS,
  ItemPackType.DEMOUNT_KIT: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT,
  ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS,
- ItemPackType.LUNAR_NY_ENVELOPE: TOOLTIPS_CONSTANTS.SHOP_LUNAR_NY_ENVELOPE,
- ItemPackType.LUNAR_NY_PREREQUISITE: TOOLTIPS_CONSTANTS.SHOP_LUNAR_NY_PREREQUISITE}
-WULF_TOOLTIP_TYPES = (TOOLTIPS_CONSTANTS.SHOP_LUNAR_NY_ENVELOPE, TOOLTIPS_CONSTANTS.SHOP_LUNAR_NY_PREREQUISITE)
+ ItemPackType.CUSTOM_DRAGON_BOAT_POINTS: TOOLTIPS_CONSTANTS.DRAGON_BOAT_POINTS_INFO}
 _ICONS = {ItemPackType.CAMOUFLAGE_ALL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_WINTER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_SUMMER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
@@ -140,12 +139,14 @@ _ICONS = {ItemPackType.CAMOUFLAGE_ALL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CA
  ItemPackType.CUSTOM_EVENT_COIN_EXTERNAL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_MONEY_EVENT_COIN,
  ItemPackType.CUSTOM_BPCOIN: RES_SHOP.MAPS_SHOP_REWARDS_48X48_MONEY_BPCOIN,
  ItemPackType.CUSTOM_SLOT: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_HANGARSLOT,
+ ItemPackType.CUSTOM_SLOTS: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_HANGARSLOT,
  ItemPackType.CUSTOM_REFERRAL_CREW: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZECREW,
  ItemPackType.CREW_50: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZECREW,
  ItemPackType.CREW_75: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZECREW,
  ItemPackType.CREW_100: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZECREW,
  ItemPackType.CUSTOM_CREW_100: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZECREW,
- ItemPackType.CREW_BOOK_BROCHURE: RES_ICONS.MAPS_ICONS_MODULETYPES_CREWBOOK_BROCHURE}
+ ItemPackType.CREW_BOOK_BROCHURE: RES_ICONS.MAPS_ICONS_MODULETYPES_CREWBOOK_BROCHURE,
+ ItemPackType.CUSTOM_DRAGON_BOAT_POINTS: RES_SHOP.MAPS_SHOP_REWARDS_48X48_MONEY_BPCOIN}
 _NOT_FOUND_ICONS = {ItemPackType.TOKEN: RES_ICONS.MAPS_ICONS_QUESTS_ICON_BATTLE_MISSIONS_PRIZE_TOKEN}
 _PREM_ICONS = {1: RES_SHOP.MAPS_SHOP_REWARDS_48X48_ICON_BATTLE_MISSIONS_PRIZE_1DAYPREM,
  2: RES_SHOP.MAPS_SHOP_REWARDS_48X48_ICON_BATTLE_MISSIONS_PRIZE_2DAYPREM,
@@ -268,7 +269,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
             if tooltipKey:
                 title = _ms(tooltipKey, group=item.userType, value=item.userName)
                 title = title.replace(_DOUBLE_OPEN_QUOTES, _OPEN_QUOTES).replace(_DOUBLE_CLOSE_QUOTES, _CLOSE_QUOTES)
-    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
+    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SLOTS):
         title = _ms(key=TOOLTIPS.AWARDITEM_SLOTS_HEADER)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         title = _ms(key=QUESTS.BONUSES_GOLD_DESCRIPTION, value=rawItem.count)
@@ -280,6 +281,8 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
         title = _ms(key=QUESTS.BONUSES_EVENTCOIN_DESCRIPTION, value=rawItem.count)
     elif rawItem.type == ItemPackType.CUSTOM_BPCOIN:
         title = backport.text(R.strings.quests.bonuses.bpcoin.header(), value=backport.getIntegralFormat(rawItem.count))
+    elif rawItem.type == ItemPackType.CUSTOM_DRAGON_BOAT_POINTS:
+        title = backport.text(R.strings.quests.bonuses.dragonBoatPoints.description(), value=backport.getIntegralFormat(rawItem.count))
     elif rawItem.type == ItemPackType.CUSTOM_SUPPLY_POINT:
         title = _ms(EPIC_BATTLE.EPICBATTLEITEM_SUPPLYPOINTS_HEADER)
     elif rawItem.type == ItemPackType.CUSTOM_PREMIUM:
@@ -305,7 +308,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
 def getItemDescription(rawItem, item):
     if item is not None:
         description = item.fullDescription
-    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
+    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SLOTS):
         description = _ms(TOOLTIPS.AWARDITEM_SLOTS_BODY)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         description = _ms(TOOLTIPS.AWARDITEM_GOLD_BODY)
@@ -317,6 +320,8 @@ def getItemDescription(rawItem, item):
         description = _ms(TOOLTIPS.AWARDITEM_EVENTCOIN_BODY)
     elif rawItem.type == ItemPackType.CUSTOM_BPCOIN:
         description = backport.text(R.strings.tooltips.awardItem.bp())
+    elif rawItem.type == ItemPackType.CUSTOM_DRAGON_BOAT_POINTS:
+        description = backport.text(R.strings.tooltips.awardItem.dragonBoatPoints.body())
     elif rawItem.type == ItemPackType.CUSTOM_PREMIUM:
         description = backport.text(R.strings.tooltips.awardItem.premium.body())
     elif rawItem.type == ItemPackType.CUSTOM_PREMIUM_PLUS:
@@ -346,13 +351,9 @@ def getItemTooltipType(rawItem, item):
 def showItemTooltip(toolTipMgr, rawItem, item):
     tooltipType = getItemTooltipType(rawItem, item)
     if tooltipType is not None:
-        if tooltipType in WULF_TOOLTIP_TYPES:
-            buildArgs = [rawItem.id, rawItem.count]
-            toolTipMgr.showWulfTooltip(tooltipType, buildArgs)
-        else:
-            defaults = toolTipMgr.getTypedTooltipDefaultBuildArgs(tooltipType)
-            buildArgs = [ rawItem.extra.get(argName, defaultValue) for argName, defaultValue in defaults ]
-            toolTipMgr.onCreateTypedTooltip(tooltipType, [rawItem.id] + buildArgs[1:], 'INFO')
+        defaults = toolTipMgr.getTypedTooltipDefaultBuildArgs(tooltipType)
+        buildArgs = [ rawItem.extra.get(argName, defaultValue) for argName, defaultValue in defaults ]
+        toolTipMgr.onCreateTypedTooltip(tooltipType, [rawItem.id] + buildArgs[1:], 'INFO')
     else:
         header = getItemTitle(rawItem, item)
         body = getItemDescription(rawItem, item)

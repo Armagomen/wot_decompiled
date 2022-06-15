@@ -261,6 +261,8 @@ class EditableStyleMode(CustomMode):
             emptyComponent = CustomizationOutfit()
             outfit = self._modifiedOutfits[self.season]
             emptyComponent.styleId = outfit.id
+            if outfit.style is not None and outfit.style.isProgressionRewindEnabled:
+                emptyComponent.styleProgressionLevel = outfit.progressionLevel
             outfit = Outfit(component=emptyComponent)
             requestData.append((outfit, SeasonType.ALL))
         result = yield OutfitApplier(g_currentVehicle.item, requestData).request()
@@ -268,6 +270,7 @@ class EditableStyleMode(CustomMode):
         if self.isInited:
             self._events.onItemsBought(originalOutfits, purchaseItems, results)
         callback(self)
+        return
 
     def _fillOutfits(self):
         isInstalled = self._service.isStyleInstalled()
@@ -305,6 +308,13 @@ class EditableStyleMode(CustomMode):
                 self.selectSlot(slotId)
             return False
         else:
+            if selItemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL:
+                ancors = self.getAnchorVOs()
+                if len(ancors) == 1 and ancors[0] is not None:
+                    slotId = C11nId(**ancors[0]['slotId'])
+                    self.installItem(intCD, slotId)
+                    self.selectSlot(slotId)
+                    return False
             result = super(EditableStyleMode, self)._selectItem(intCD, progressionLevel)
             return result
 

@@ -5,12 +5,13 @@ from frameworks.wulf import ViewModel
 
 class AnimationState(Enum):
     NORMAL = 'normal'
-    SHOW_NEW_LEVEL = 'showNewLevel'
-    SHOW_BUY_BP = 'showBuyBP'
-    SHOW_NOT_TAKEN_REWARDS = 'showNotTakenRewards'
-    SHOW_PROGRESSION_COMPLETED = 'showProgressionCompleted'
-    SHOW_NEW_CHAPTER = 'showNewChapter'
-    SHOW_CHANGE_PROGRESS = 'showChangeProgress'
+    NEW_LEVEL = 'newLevel'
+    BUY_BATTLE_PASS = 'buyBattlePass'
+    NOT_TAKEN_REWARDS = 'notTakenRewards'
+    PROGRESSION_COMPLETED = 'progressionCompleted'
+    NEW_CHAPTER = 'newChapter'
+    CHANGE_PROGRESS = 'changeProgress'
+    CHAPTER_NOT_CHOSEN = 'chapterNotChosen'
 
 
 class BPState(Enum):
@@ -23,107 +24,139 @@ class BPState(Enum):
 class BattlePassEntryPointViewModel(ViewModel):
     __slots__ = ('onClick',)
 
-    def __init__(self, properties=16, commands=1):
+    def __init__(self, properties=21, commands=1):
         super(BattlePassEntryPointViewModel, self).__init__(properties=properties, commands=commands)
 
+    def getPrevHasExtra(self):
+        return self._getBool(0)
+
+    def setPrevHasExtra(self, value):
+        self._setBool(0, value)
+
+    def getHasExtra(self):
+        return self._getBool(1)
+
+    def setHasExtra(self, value):
+        self._setBool(1, value)
+
     def getPrevLevel(self):
-        return self._getNumber(0)
+        return self._getNumber(2)
 
     def setPrevLevel(self, value):
-        self._setNumber(0, value)
+        self._setNumber(2, value)
 
     def getLevel(self):
-        return self._getNumber(1)
+        return self._getNumber(3)
 
     def setLevel(self, value):
-        self._setNumber(1, value)
+        self._setNumber(3, value)
 
     def getPrevProgression(self):
-        return self._getReal(2)
+        return self._getReal(4)
 
     def setPrevProgression(self, value):
-        self._setReal(2, value)
+        self._setReal(4, value)
 
     def getProgression(self):
-        return self._getReal(3)
+        return self._getReal(5)
 
     def setProgression(self, value):
-        self._setReal(3, value)
+        self._setReal(5, value)
 
     def getBattlePassState(self):
-        return BPState(self._getString(4))
+        return BPState(self._getString(6))
 
     def setBattlePassState(self, value):
-        self._setString(4, value.value)
+        self._setString(6, value.value)
 
     def getIsSmall(self):
-        return self._getBool(5)
-
-    def setIsSmall(self, value):
-        self._setBool(5, value)
-
-    def getTooltipID(self):
-        return self._getNumber(6)
-
-    def setTooltipID(self, value):
-        self._setNumber(6, value)
-
-    def getIsFirstShow(self):
         return self._getBool(7)
 
-    def setIsFirstShow(self, value):
+    def setIsSmall(self, value):
         self._setBool(7, value)
 
+    def getTooltipID(self):
+        return self._getNumber(8)
+
+    def setTooltipID(self, value):
+        self._setNumber(8, value)
+
+    def getIsFirstShow(self):
+        return self._getBool(9)
+
+    def setIsFirstShow(self, value):
+        self._setBool(9, value)
+
     def getAnimState(self):
-        return AnimationState(self._getString(8))
+        return AnimationState(self._getString(10))
 
     def setAnimState(self, value):
-        self._setString(8, value.value)
+        self._setString(10, value.value)
 
     def getAnimStateKey(self):
-        return self._getNumber(9)
+        return self._getNumber(11)
 
     def setAnimStateKey(self, value):
-        self._setNumber(9, value)
+        self._setNumber(11, value)
 
     def getIsProgressionCompleted(self):
-        return self._getBool(10)
-
-    def setIsProgressionCompleted(self, value):
-        self._setBool(10, value)
-
-    def getHasBattlePass(self):
-        return self._getBool(11)
-
-    def setHasBattlePass(self, value):
-        self._setBool(11, value)
-
-    def getIs3DStyleChosen(self):
         return self._getBool(12)
 
-    def setIs3DStyleChosen(self, value):
+    def setIsProgressionCompleted(self, value):
         self._setBool(12, value)
 
+    def getHasBattlePass(self):
+        return self._getBool(13)
+
+    def setHasBattlePass(self, value):
+        self._setBool(13, value)
+
     def getNotChosenRewardCount(self):
-        return self._getNumber(13)
-
-    def setNotChosenRewardCount(self, value):
-        self._setNumber(13, value)
-
-    def getChapterNumber(self):
         return self._getNumber(14)
 
-    def setChapterNumber(self, value):
+    def setNotChosenRewardCount(self, value):
         self._setNumber(14, value)
 
+    def getPreviousChapterID(self):
+        return self._getNumber(15)
+
+    def setPreviousChapterID(self, value):
+        self._setNumber(15, value)
+
+    def getChapterID(self):
+        return self._getNumber(16)
+
+    def setChapterID(self, value):
+        self._setNumber(16, value)
+
     def getBattleType(self):
-        return self._getString(15)
+        return self._getString(17)
 
     def setBattleType(self, value):
-        self._setString(15, value)
+        self._setString(17, value)
+
+    def getIsChapterChosen(self):
+        return self._getBool(18)
+
+    def setIsChapterChosen(self, value):
+        self._setBool(18, value)
+
+    def getFreePoints(self):
+        return self._getNumber(19)
+
+    def setFreePoints(self, value):
+        self._setNumber(19, value)
+
+    def getFinalReward(self):
+        return self._getString(20)
+
+    def setFinalReward(self, value):
+        self._setString(20, value)
 
     def _initialize(self):
         super(BattlePassEntryPointViewModel, self)._initialize()
+        self._addBoolProperty('prevHasExtra', False)
+        self._addBoolProperty('hasExtra', False)
         self._addNumberProperty('prevLevel', 0)
         self._addNumberProperty('level', 0)
         self._addRealProperty('prevProgression', 0.0)
@@ -136,8 +169,11 @@ class BattlePassEntryPointViewModel(ViewModel):
         self._addNumberProperty('animStateKey', 0)
         self._addBoolProperty('isProgressionCompleted', False)
         self._addBoolProperty('hasBattlePass', False)
-        self._addBoolProperty('is3DStyleChosen', False)
         self._addNumberProperty('notChosenRewardCount', 0)
-        self._addNumberProperty('chapterNumber', 0)
+        self._addNumberProperty('previousChapterID', 0)
+        self._addNumberProperty('chapterID', 0)
         self._addStringProperty('battleType', '')
+        self._addBoolProperty('isChapterChosen', False)
+        self._addNumberProperty('freePoints', 0)
+        self._addStringProperty('finalReward', '')
         self.onClick = self._addCommand('onClick')

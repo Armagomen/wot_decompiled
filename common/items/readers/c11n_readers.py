@@ -272,6 +272,9 @@ class CamouflageXmlReader(BaseCustomizationItemXmlReader):
             target.editorData.glossMetallicSettingsType = 0
             if target.glossMetallicSettings['glossMetallicMap'] != '':
                 target.editorData.glossMetallicSettingsType = 1
+            editorOnlySection = c11n.getEditorOnlySection(section)
+            if editorOnlySection is not None:
+                target.editorData.paletteIndex = editorOnlySection.readInt('paletteIndex', 0)
         if section.has_key('palettes'):
             palettes = []
             spalettes = section['palettes']
@@ -283,6 +286,8 @@ class CamouflageXmlReader(BaseCustomizationItemXmlReader):
 
                 palettes.append(res)
                 target.palettes = tuple(palettes)
+
+        return
 
     def _readClientOnlyFromXml(self, target, xmlCtx, section, cache=None):
         super(CamouflageXmlReader, self)._readClientOnlyFromXml(target, xmlCtx, section)
@@ -626,6 +631,8 @@ def _readProgression(cache, xmlCtx, section, progression):
         itemId, progress = __readProgress((xmlCtx, 'progress'), gsection)
         if progress.priceGroup:
             if progress.priceGroup not in cache.priceGroupNames:
+                if IS_EDITOR:
+                    continue
                 ix.raiseWrongXml(xmlCtx, 'priceGroup', 'unknown price group %s for item %s' % (progress.priceGroup, itemId))
             priceGroupId = cache.priceGroupNames[progress.priceGroup]
             pgDescr = cache.priceGroups[priceGroupId].compactDescr
@@ -647,6 +654,8 @@ def _readItems(cache, itemCls, xmlCtx, section, itemSectionName, storage, progre
         itemType = CUSTOMIZATION_CLASSES[itemCls]
         cache.editorData.groups[itemType] = []
         sourceFiles = set()
+        if section is None:
+            return
     for i, (gname, gsection) in enumerate(section.items()):
         if gname != 'itemGroup' and 'xmlns:' not in gname:
             ix.raiseWrongSection(xmlCtx, gname)
@@ -690,6 +699,8 @@ def _readItems(cache, itemCls, xmlCtx, section, itemSectionName, storage, progre
                 iv._readPriceForItem(iCtx, isection, item.compactDescr)
             if item.priceGroup:
                 if item.priceGroup not in cache.priceGroupNames:
+                    if IS_EDITOR:
+                        continue
                     ix.raiseWrongXml(iCtx, 'priceGroup', 'unknown price group %s for item %s' % (item.priceGroup, item.id))
                 priceGroupId = cache.priceGroupNames[item.priceGroup]
                 item.priceGroupTags = priceGroupsDict[priceGroupId].tags
@@ -722,33 +733,40 @@ def _addEmptyItem(itemCls, storage, itemSectionName):
 
 
 def _readPriceGroups(cache, xmlCtx, section, sectionName):
-    for tag, iSection in section.items():
-        if tag != sectionName:
-            continue
-        priceGroup = cc.PriceGroup()
-        priceGroup.id = ix.readInt(xmlCtx, iSection, 'id', 1)
-        iCtx = (xmlCtx, 'id %s' % priceGroup.id)
-        if priceGroup.id in cache.priceGroups:
-            ix.raiseWrongXml(iCtx, 'id', 'duplicate price group id')
-        priceGroup.name = intern(ix.readString(iCtx, iSection, 'name'))
-        if priceGroup.name in cache.priceGroupNames:
-            ix.raiseWrongXml(iCtx, 'id', 'duplicate price group name "%s"' % priceGroup.name)
-        priceGroup.notInShop = iSection.readBool('notInShop', False)
-        iv._readPriceForItem(iCtx, iSection, priceGroup.compactDescr)
-        if iSection.has_key('tags'):
-            tags = iSection.readString('tags').split()
-            priceGroup.tags = frozenset(map(intern, tags))
-            for tag in priceGroup.tags:
-                cache.priceGroupTags.setdefault(tag, []).append(priceGroup)
+    if IS_EDITOR and section is None:
+        return
+    else:
+        for tag, iSection in section.items():
+            if tag != sectionName:
+                continue
+            priceGroup = cc.PriceGroup()
+            priceGroup.id = ix.readInt(xmlCtx, iSection, 'id', 1)
+            iCtx = (xmlCtx, 'id %s' % priceGroup.id)
+            if priceGroup.id in cache.priceGroups:
+                ix.raiseWrongXml(iCtx, 'id', 'duplicate price group id')
+            priceGroup.name = intern(ix.readString(iCtx, iSection, 'name'))
+            if priceGroup.name in cache.priceGroupNames:
+                ix.raiseWrongXml(iCtx, 'id', 'duplicate price group name "%s"' % priceGroup.name)
+            priceGroup.notInShop = iSection.readBool('notInShop', False)
+            iv._readPriceForItem(iCtx, iSection, priceGroup.compactDescr)
+            if iSection.has_key('tags'):
+                tags = iSection.readString('tags').split()
+                priceGroup.tags = frozenset(map(intern, tags))
+                for tag in priceGroup.tags:
+                    cache.priceGroupTags.setdefault(tag, []).append(priceGroup)
 
-        cache.priceGroupNames[priceGroup.name] = priceGroup.id
-        cache.priceGroups[priceGroup.id] = priceGroup
+            cache.priceGroupNames[priceGroup.name] = priceGroup.id
+            cache.priceGroups[priceGroup.id] = priceGroup
+
+        return
 
 
 def _readFonts(cache, xmlCtx, section, sectionName):
     if IS_EDITOR:
         itemType = CUSTOMIZATION_CLASSES[cc.Font]
         sourceFiles = set()
+        if section is None:
+            return
     for tag, iSection in section.items():
         if tag != sectionName:
             continue
@@ -770,6 +788,7 @@ def _readFonts(cache, xmlCtx, section, sectionName):
 
     if IS_EDITOR:
         cache.editorData.sourceFiles[itemType] = list(sourceFiles)
+    return
 
 
 def _readDefault(cache, xmlCtx, section, sectionName):
@@ -785,6 +804,8 @@ def _readDefault(cache, xmlCtx, section, sectionName):
         cache.defaultColors[nations.INDICES[nation]] = tuple(colors)
         itemId = ix.readInt(xmlCtx, iSection, 'insignia_id')
         cache.defaultInsignias[nations.INDICES[nation]] = itemId
+        itemId = ix.readInt(xmlCtx, iSection, 'emblem_id')
+        cache.defaultPlayerEmblems[nations.INDICES[nation]] = itemId
         if iSection.has_key('top_vehicle'):
             topVehicle = ix.readString(xmlCtx, iSection, 'top_vehicle')
             cache.topVehiclesByNation[nation] = topVehicle

@@ -1133,7 +1133,7 @@ class BattlesCount(_Cumulativable):
     def getUserString(self):
         result = []
         for bType in self._bonusTypes:
-            result.append(i18n.makeString(QUESTS.getDetailsDossier(bType, self._getKey())))
+            result.append(str(i18n.makeString(QUESTS.getDetailsDossier(bType, self._getKey()))))
 
         if not result:
             _logger.warning('There are no matching condition strings for selected arenaBonusTypes')

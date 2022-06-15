@@ -204,6 +204,7 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
         self.onMembersUpdate = Event.Event()
         self.onPlatoonTankUpdated = Event.Event()
         self.onAutoSearchCooldownChanged = Event.Event()
+        self.onPlatoonTankRemove = Event.Event()
         self.__prevPrbEntityInfo = _PrbEntityInfo(QUEUE_TYPE.UNKNOWN, PREBATTLE_TYPE.NONE)
         return
 
@@ -439,7 +440,7 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
     def getPlatoonSlotsData(self):
         entity = self.prbEntity
         orderedSlots = {}
-        if isinstance(self.prbEntity, UnitEntity):
+        if isinstance(entity, UnitEntity):
             unitFullData = entity.getUnitFullData(entity.getID())
             if unitFullData.unit is None:
                 return orderedSlots
@@ -735,8 +736,9 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
         for ePlatoonLayout in self.__ePlatoonLayouts:
             view = self.__getView(ePlatoonLayout)
             if view:
-                if hideOnly and not view.getParentWindow().isHidden():
-                    view.getParentWindow().hide()
+                if hideOnly:
+                    if not view.getParentWindow().isHidden():
+                        view.getParentWindow().hide()
                 else:
                     canPreloadWelcomeLayout = ePlatoonLayout != _EPlatoonLayout.WELCOME
                     if ePlatoonLayout == _EPlatoonLayout.MEMBER and self.__isPlatoonVisualizationEnabled:
@@ -935,10 +937,9 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
             return
         else:
             self.__isPlatoonVisualizationEnabled = displayPlatoonMembers
-            state = self.getFunctionalState()
-            if state is not None:
-                self.onPlatoonTankVisualizationChanged(self.__isPlatoonVisualizationEnabled and state.isInUnit())
-                self.__updatePlatoonTankInfo()
+            isInPlatoon = self.prbDispatcher.getFunctionalState().isInUnit()
+            self.onPlatoonTankVisualizationChanged(self.__isPlatoonVisualizationEnabled and isInPlatoon)
+            self.__updatePlatoonTankInfo()
             return
 
     def __onSettingsApplied(self, diff):
@@ -1023,6 +1024,12 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
         maxSlotCount = self.prbEntity.getRosterSettings().getMaxSlots()
         if len(playerIds) > maxSlotCount:
             _logger.warning('The number of players in slot (%s) is higher then max slots to display (%s). This state should not happen for this type of unit.', len(playerIds), maxSlotCount)
+        if maxSlotCount >= 3:
+            self.__updateDisplaySlotsIndicesForPlayers(playerIds, maxSlotCount)
+        elif maxSlotCount == 2:
+            self.__updateDisplaySlotsIndicesFor2Players(players)
+
+    def __updateDisplaySlotsIndicesForPlayers(self, playerIds, maxSlotCount):
         if not self.__tankDisplayPosition:
             nextDisplayIndex = 0
             if maxSlotCount == _MAX_SLOT_COUNT_FOR_PLAYER_RESORTING:
@@ -1046,12 +1053,10 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
                     self.__tankDisplayPosition[playerId] = displaySlot
 
             return
-        freeDisplayIndices = []
-        for playerId, displayIndex in self.__tankDisplayPosition.items():
+        for playerId, _ in self.__tankDisplayPosition.items():
             if playerId in playerIds:
                 playerIds.remove(playerId)
                 continue
-            freeDisplayIndices.append(displayIndex)
             self.__tankDisplayPosition.pop(playerId)
 
         availableSlotIndex = 0
@@ -1060,6 +1065,27 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
                 availableSlotIndex += 1
 
             self.__tankDisplayPosition[newPlayerId] = availableSlotIndex
+
+    def __updateDisplaySlotsIndicesFor2Players(self, players):
+        currentPlayer = [ player for player in players.values() if player.isInSlot and player.isCurrentPlayer() ][0]
+        teamMate = [ player for player in players.values() if player.isInSlot and not player.isCurrentPlayer() ]
+        if teamMate:
+            teamMateAccID = teamMate[0].accID
+            currentPlayerIdx = 1
+            newSlotIdx, removeSlotIdx = (2, 0) if currentPlayer.isCommander() else (0, 2)
+            if self.__tankDisplayPosition.get(teamMateAccID) == removeSlotIdx:
+                self.onPlatoonTankRemove(removeSlotIdx)
+                self.__tankDisplayPosition.pop(teamMateAccID)
+            self.__tankDisplayPosition[teamMateAccID] = newSlotIdx
+        else:
+            allTeams = [ data for data in self.__tankDisplayPosition.iteritems() if data[0] != currentPlayer.accID ]
+            if allTeams:
+                teamMateAccID, teamMateIdx = allTeams[0]
+                self.onPlatoonTankRemove(teamMateIdx)
+                self.__tankDisplayPosition.pop(teamMateAccID, None)
+            currentPlayerIdx = 0
+        self.__tankDisplayPosition[currentPlayer.accID] = currentPlayerIdx
+        return
 
     def __onVehicleStateChanged(self, updateReason, _):
         if updateReason in (CACHE_SYNC_REASON.CLIENT_UPDATE, CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC):
@@ -1082,7 +1108,6 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
         prebattleType = self.getPrbEntityType()
         allowedLevels = self.getAllowedTankLevels(prebattleType)
         criteria = REQ_CRITERIA.INVENTORY
-        criteria |= ~REQ_CRITERIA.HIDDEN
         criteria |= ~REQ_CRITERIA.VEHICLE.DISABLED_IN_PREM_IGR
         criteria |= _PREBATTLE_TYPE_TO_VEH_CRITERIA.get(prebattleType, REQ_CRITERIA.EMPTY)
         allowedList = [ lvl for lvl in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1) if allowedLevels & 1 << lvl ]

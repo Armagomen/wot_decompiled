@@ -9,6 +9,7 @@ from gui.Scaleform.framework.settings import UIFrameworkImpl
 class COMMON_VIEW_ALIAS(object):
     LOGIN = 'login'
     INTRO_VIDEO = 'introVideo'
+    EXTRA_INTRO_VIDEO = 'ExtraIntroVideo'
     LOBBY = 'lobby'
     BATTLE = 'battle'
     CURSOR = 'cursor'
@@ -137,7 +138,8 @@ ConditionalViewSettings.__new__.__defaults__ = (None,
  False,
  True,
  0)
-g_entitiesFactories = EntitiesFactories((DAAPIModuleFactory((WindowLayer.UNDEFINED,)), ViewFactory((WindowLayer.MARKER,
+g_entitiesFactories = EntitiesFactories((DAAPIModuleFactory((WindowLayer.UNDEFINED,)), ViewFactory((WindowLayer.HIDDEN_SERVICE_LAYOUT,
+  WindowLayer.MARKER,
   WindowLayer.VIEW,
   WindowLayer.SUB_VIEW,
   WindowLayer.TOP_SUB_VIEW,

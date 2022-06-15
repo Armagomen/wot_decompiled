@@ -158,7 +158,8 @@ class StyledMode(CustomizationMode):
                     self._removeHiddenFromOutfit(diffOutfit, g_currentVehicle.item.intCD)
                     diff = diffOutfit.pack().makeCompDescr()
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD, diff=diff)
-                outfit = getStyleProgressionOutfit(outfit, styleProgressionLevel, season)
+                if self.__modifiedStyle and self.__modifiedStyle.isProgressionRewindEnabled:
+                    outfit = getStyleProgressionOutfit(outfit, styleProgressionLevel, season)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
 
@@ -267,11 +268,12 @@ class StyledMode(CustomizationMode):
         if style is not None and style.isRentable and self.__prolongRent:
             self._service.buyItems(style, count=1, vehicle=g_currentVehicle.item)
             self.__prolongRent = False
-        if self.__autoRentEnabled != g_currentVehicle.item.isAutoRentStyle:
+        isAutoRentChanged = self.__autoRentEnabled != g_currentVehicle.item.isAutoRentStyle
+        if isAutoRentChanged:
             yield VehicleAutoStyleEquipProcessor(g_currentVehicle.item, self.__autoRentEnabled, self.__autoRentChangeSource).request()
             self.__autoRentChangeSource = CLIENT_COMMAND_SOURCES.UNDEFINED
         if self.isInited:
-            self._events.onItemsBought(originalOutfits, purchaseItems, results)
+            self._events.onItemsBought(originalOutfits, purchaseItems, results, isAutoRentChanged)
         callback(self)
         return
 

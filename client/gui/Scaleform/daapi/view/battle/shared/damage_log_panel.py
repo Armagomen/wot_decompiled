@@ -4,7 +4,7 @@ from collections import defaultdict
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE as _BET
 from account_helpers.settings_core.options import DamageLogDetailsSetting as _VIEW_MODE, DamageLogEventPositionsSetting as _EVENT_POSITIONS, DamageLogEventTypesSetting as _DISPLAYED_EVENT_TYPES
 from account_helpers.settings_core.settings_constants import DAMAGE_LOG, GRAPHICS
-from constants import SHELL_TYPES
+from constants import BATTLE_LOG_SHELL_TYPES
 from gui.Scaleform.daapi.view.meta.BattleDamageLogPanelMeta import BattleDamageLogPanelMeta
 from gui.Scaleform.genConsts.BATTLEDAMAGELOG_IMAGES import BATTLEDAMAGELOG_IMAGES as _IMAGES
 from gui.Scaleform.genConsts.DAMAGE_LOG_SHELL_BG_TYPES import DAMAGE_LOG_SHELL_BG_TYPES
@@ -49,11 +49,13 @@ _VEHICLE_CLASS_TAGS_ICONS = {'lightTank': _IMAGES.WHITE_ICON_LIGHTTANK_16X16,
  'heavyTank': _IMAGES.WHITE_ICON_HEAVYTANK_16X16,
  'SPG': _IMAGES.WHITE_ICON_SPG_16X16,
  'AT-SPG': _IMAGES.WHITE_ICON_AT_SPG_16X16}
-_SHELL_TYPES_TO_STR = {SHELL_TYPES.ARMOR_PIERCING: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING,
- SHELL_TYPES.HIGH_EXPLOSIVE: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE,
- SHELL_TYPES.ARMOR_PIERCING_HE: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_HE,
- SHELL_TYPES.ARMOR_PIERCING_CR: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_CR,
- SHELL_TYPES.HOLLOW_CHARGE: INGAME_GUI.DAMAGELOG_SHELLTYPE_HOLLOW_CHARGE}
+_SHELL_TYPES_TO_STR = {BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING,
+ BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_HE: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_HE,
+ BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_CR: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_CR,
+ BATTLE_LOG_SHELL_TYPES.HOLLOW_CHARGE: INGAME_GUI.DAMAGELOG_SHELLTYPE_HOLLOW_CHARGE,
+ BATTLE_LOG_SHELL_TYPES.HE_MODERN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE,
+ BATTLE_LOG_SHELL_TYPES.HE_LEGACY_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE,
+ BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE}
 _DEATH_ZONES_STR = INGAME_GUI.DAMAGELOG_DEATH_ZONE
 
 def _formatTotalValue(value):
@@ -143,6 +145,9 @@ class _ReceivedHitVehicleVOBuilder(_VehicleVOBuilder):
         elif info.isBombersDamage() or info.isBombersDamage(primary=False) or info.isBomberEqDamage() or info.isBomberEqDamage(primary=False):
             vehicleVO.vehicleName = ''
             vehicleVO.vehicleTypeImg = _IMAGES.DAMAGELOG_AIRSTRIKE_16X16
+        elif info.isFortArtilleryEqDamage() or info.isFortArtilleryEqDamage(primary=False):
+            vehicleVO.vehicleName = ''
+            vehicleVO.vehicleTypeImg = _IMAGES.DAMAGELOG_FORT_ARTILLERY_16X16
 
 
 class _ShellVOModel(_VOModel):
@@ -158,17 +163,22 @@ class _ShellVOModel(_VOModel):
 class _ShellVOBuilder(_IVOBuilder):
 
     def buildVO(self, info, arenaDP):
-        return _ShellVOModel(self._getShellTypeStr(info), self._getShellTypeBg(info))
+        return _ShellVOModel(self._getShellTypeStr(info), self._getShellTypeBg(info, arenaDP))
 
     def _getShellTypeStr(self, info):
         shType = info.getShellType()
         return _SHELL_TYPES_TO_STR[shType] if shType is not None and shType in _SHELL_TYPES_TO_STR else ''
 
-    def _getShellTypeBg(self, info):
-        if info.getShellType() is None:
+    def _getShellTypeBg(self, info, arenaDP=None):
+        shellType = info.getShellType()
+        if shellType is None or arenaDP is None:
             return DAMAGE_LOG_SHELL_BG_TYPES.EMPTY
+        elif arenaDP.getVehicleInfo(info.getArenaVehicleID()).isSPG():
+            if shellType in (BATTLE_LOG_SHELL_TYPES.HE_MODERN, BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN):
+                return DAMAGE_LOG_SHELL_BG_TYPES.SPG_HE_NO_STUN
+            return DAMAGE_LOG_SHELL_BG_TYPES.SPG
         else:
-            return DAMAGE_LOG_SHELL_BG_TYPES.GOLD if info.isShellGold() else DAMAGE_LOG_SHELL_BG_TYPES.WHITE
+            return DAMAGE_LOG_SHELL_BG_TYPES.GOLD if info.isShellGold() else DAMAGE_LOG_SHELL_BG_TYPES.DEFAULT
 
 
 class _EmptyShellVOBuilder(_ShellVOBuilder):
@@ -176,7 +186,7 @@ class _EmptyShellVOBuilder(_ShellVOBuilder):
     def _getShellTypeStr(self, info):
         pass
 
-    def _getShellTypeBg(self, info):
+    def _getShellTypeBg(self, info, arenaDP=None):
         return DAMAGE_LOG_SHELL_BG_TYPES.EMPTY
 
 
@@ -259,9 +269,9 @@ class _ActionImgVOBuilder(_IVOBuilder):
 
 
 class _DamageActionImgVOBuilder(_ActionImgVOBuilder):
-    __slots__ = ('__shotIcon', '__fireIcon', '__ramIcon', '__wcIcon', '__berserkerIcon', '__spawnBotDmgIcon', '__mineFieldIcon')
+    __slots__ = ('__shotIcon', '__fireIcon', '__ramIcon', '__wcIcon', '__berserkerIcon', '__spawnBotDmgIcon', '__mineFieldIcon', '__smokeDmgIcon', '__corrodingShotDmgIcon', '__fireCircleDmgIcon', '__clingBranderDmgIcon', '__thunderStrikeIcon')
 
-    def __init__(self, shotIcon, fireIcon, ramIcon, wcIcon, mineFieldIcon, berserkerIcon=None, spawnBotDmgIcon=None, smokeDmgIcon=None):
+    def __init__(self, shotIcon, fireIcon, ramIcon, wcIcon, mineFieldIcon, berserkerIcon=None, spawnBotDmgIcon=None, smokeDmgIcon=None, corrodingShotIcon=None, fireCircleDmgIcon=None, clingBranderDmgIcon=None, thunderStrikeIcon=None):
         super(_DamageActionImgVOBuilder, self).__init__('')
         self.__shotIcon = shotIcon
         self.__fireIcon = fireIcon
@@ -271,9 +281,15 @@ class _DamageActionImgVOBuilder(_ActionImgVOBuilder):
         self.__spawnBotDmgIcon = spawnBotDmgIcon
         self.__mineFieldIcon = mineFieldIcon
         self.__smokeDmgIcon = smokeDmgIcon
+        self.__corrodingShotDmgIcon = corrodingShotIcon
+        self.__fireCircleDmgIcon = fireCircleDmgIcon
+        self.__clingBranderDmgIcon = clingBranderDmgIcon
+        self.__thunderStrikeIcon = thunderStrikeIcon
 
     def _getImage(self, info):
-        if info.isShot() or info.isProtectionZoneDamage() or info.isBombersDamage() or info.isArtilleryEqDamage() or info.isBomberEqDamage() or info.isDeathZone():
+        if info.isClingBrander():
+            return self.__clingBranderDmgIcon
+        if info.isShot() or info.isProtectionZoneDamage() or info.isBombersDamage() or info.isArtilleryEqDamage() or info.isBomberEqDamage() or info.isDeathZone() or info.isFortArtilleryEqDamage():
             return self.__shotIcon
         if info.isFire():
             return self.__fireIcon
@@ -285,7 +301,13 @@ class _DamageActionImgVOBuilder(_ActionImgVOBuilder):
             return self.__wcIcon
         if info.isMinefield():
             return self.__mineFieldIcon
-        return self.__smokeDmgIcon if info.isDamagingSmoke() else self.__ramIcon
+        if info.isDamagingSmoke():
+            return self.__smokeDmgIcon
+        if info.isCorrodingShot():
+            return self.__corrodingShotDmgIcon
+        if info.isFireCircle():
+            return self.__fireCircleDmgIcon
+        return self.__thunderStrikeIcon if info.isThunderStrike() else self.__ramIcon
 
 
 class _AssistActionImgVOBuilder(_ActionImgVOBuilder):
@@ -302,8 +324,8 @@ class _AssistActionImgVOBuilder(_ActionImgVOBuilder):
 _DEFAULT_VEHICLE_VO_BUILDER = _VehicleVOBuilder()
 _EMPTY_SHELL_VO_BUILDER = _EmptyShellVOBuilder()
 _DAMAGE_VALUE_VO_BUILDER = _DamageValueVOBuilder()
-_ETYPE_TO_RECORD_VO_BUILDER = {_ETYPE.DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_16X16, fireIcon=_IMAGES.DAMAGELOG_FIRE_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_16X16, wcIcon=_IMAGES.DAMAGELOG_ICON_WORLD_COLLISION, mineFieldIcon=_IMAGES.DAMAGELOG_MINE_FIELD_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_YOUR_SPAWNED_BOT_DMG_16X16)),
- _ETYPE.RECEIVED_DAMAGE: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _DamageShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, fireIcon=_IMAGES.DAMAGELOG_BURN_ENEMY_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_ENEMY_16X16, wcIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, mineFieldIcon=_IMAGES.DAMAGELOG_BY_MINE_FIELD_16X16, berserkerIcon=_IMAGES.DAMAGELOG_BERSERKER_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SPAWNED_BOT_16X16, smokeDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SMOKE_16X16)),
+_ETYPE_TO_RECORD_VO_BUILDER = {_ETYPE.DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_16X16, fireIcon=_IMAGES.DAMAGELOG_FIRE_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_16X16, wcIcon=_IMAGES.DAMAGELOG_ICON_WORLD_COLLISION, mineFieldIcon=_IMAGES.DAMAGELOG_MINE_FIELD_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_YOUR_SPAWNED_BOT_DMG_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_16X16)),
+ _ETYPE.RECEIVED_DAMAGE: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _DamageShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, fireIcon=_IMAGES.DAMAGELOG_BURN_ENEMY_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_ENEMY_16X16, wcIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, mineFieldIcon=_IMAGES.DAMAGELOG_BY_MINE_FIELD_16X16, berserkerIcon=_IMAGES.DAMAGELOG_BERSERKER_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SPAWNED_BOT_16X16, smokeDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SMOKE_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_ENEMY_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_ENEMY_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_ENEMY_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_ENEMY_16X16)),
  _ETYPE.BLOCKED_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _ShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_REFLECT_16X16)),
  _ETYPE.ASSIST_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _AssistActionImgVOBuilder()),
  _ETYPE.RECEIVED_CRITICAL_HITS: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _CritsShellVOBuilder(), _CriticalHitValueVOBuilder(), _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_CRITICAL_ENEMY_16X16)),

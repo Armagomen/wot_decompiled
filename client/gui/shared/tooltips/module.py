@@ -131,7 +131,7 @@ class ModuleBlockTooltipData(BlocksTooltipData):
             items.append(formatters.packBuildUpBlockData(statusBlock, padding=formatters.packPadding(left=leftPadding, right=rightPadding, top=statusTopPadding, bottom=-15)))
         if bonus_helper.isSituationalBonus(module.name):
             items.append(formatters.packImageTextBlockData(title='', desc=text_styles.standard(backport.text(R.strings.tooltips.vehicleParams.bonus.situational())), img=backport.image(R.images.gui.maps.icons.tooltip.asterisk_optional()), imgPadding=formatters.packPadding(left=4, top=3), txtGap=-4, txtOffset=20, padding=formatters.packPadding(left=59, right=_DEFAULT_PADDING)))
-        if itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE and statsConfig.vehicle is not None and not module.isInstalled(statsConfig.vehicle) and module.hasSimilarDevicesInstalled(statsConfig.vehicle):
+        if itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE and statsConfig.vehicle is not None and not module.isInstalled(statsConfig.vehicle) and module.hasSimilarDevicesInstalled(statsConfig.vehicle) and not module.mayInstall(statsConfig.vehicle, statusConfig.slotIdx)[0]:
             items.append(formatters.packBuildUpBlockData(blocks=[formatters.packTitleDescBlock(title=text_styles.critical(backport.text(R.strings.tooltips.moduleFits.duplicated.header())), gap=0, desc=text_styles.standard(backport.text(R.strings.tooltips.moduleFits.duplicated.note())))], padding=formatters.packPadding(left=leftPadding, right=rightPadding, top=blockTopPadding, bottom=-13), stretchBg=False))
         if statsConfig.isStaticInfoOnly:
             lastItem = items[-1]
@@ -663,7 +663,7 @@ class OptDeviceEffectsBlockConstructor(ModuleTooltipBlockConstructor):
             descr = backport.text(R.strings.tank_setup.effects.template(), icon=icons.makeImageTag(source=backport.image(R.images.gui.maps.icons.tanksetup.cards.effect()), width=10, height=16), title=text_styles.neutral(backport.text(R.strings.tank_setup.effects.name())), descr=backport.text(additionalDescr()))
             block.append(formatters.packTextBlockData(text_styles.standard(descr)))
         if categories and isPanelTooltip and slotCategories:
-            kpiTitle = backport.text(R.strings.tank_setup.tooltips.optDevice.bonusDesc(), match=self.__neutralFatTextStyle(backport.text(R.strings.tank_setup.tooltips.optDevice.bonusDesc.dyn(str(isSpecMatch))())))
+            kpiTitle = backport.text(R.strings.tank_setup.tooltips.optDevice.bonusDesc(), match=self.__neutralFatTextStyle(backport.text(R.strings.tank_setup.tooltips.optDevice.bonusDesc.num(str(isSpecMatch))())))
         else:
             kpiTitle = backport.text(R.strings.tank_setup.tooltips.optDevice.bonusDesc.applied())
         block.append(formatters.packTextBlockData(text_styles.middleTitle(kpiTitle), padding=formatters.packPadding(top=8 if additionalDescr else -1, bottom=5)))

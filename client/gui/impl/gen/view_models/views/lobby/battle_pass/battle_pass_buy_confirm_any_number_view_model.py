@@ -7,7 +7,7 @@ from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import R
 class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
     __slots__ = ('onCloseClick', 'onBuyClick', 'onShowRewardsClick', 'onChangeSelectedLevels')
 
-    def __init__(self, properties=8, commands=4):
+    def __init__(self, properties=9, commands=4):
         super(BattlePassBuyConfirmAnyNumberViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -44,10 +44,10 @@ class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
     def setLevelsSelected(self, value):
         self._setNumber(5, value)
 
-    def getChapter(self):
+    def getChapterID(self):
         return self._getNumber(6)
 
-    def setChapter(self, value):
+    def setChapterID(self, value):
         self._setNumber(6, value)
 
     def getBackBtnText(self):
@@ -55,6 +55,12 @@ class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
 
     def setBackBtnText(self, value):
         self._setString(7, value)
+
+    def getFinalReward(self):
+        return self._getString(8)
+
+    def setFinalReward(self, value):
+        self._setString(8, value)
 
     def _initialize(self):
         super(BattlePassBuyConfirmAnyNumberViewModel, self)._initialize()
@@ -64,8 +70,9 @@ class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
         self._addNumberProperty('levelsPassed', 0)
         self._addNumberProperty('levelsTotal', 0)
         self._addNumberProperty('levelsSelected', 0)
-        self._addNumberProperty('chapter', 0)
+        self._addNumberProperty('chapterID', 0)
         self._addStringProperty('backBtnText', '')
+        self._addStringProperty('finalReward', '')
         self.onCloseClick = self._addCommand('onCloseClick')
         self.onBuyClick = self._addCommand('onBuyClick')
         self.onShowRewardsClick = self._addCommand('onShowRewardsClick')

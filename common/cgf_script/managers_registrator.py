@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/cgf_script/managers_registrator.py
+import sys
 import CGF
 from cgf_script.component_meta_class import CGFComponent
 from soft_exception import SoftException
@@ -11,10 +12,10 @@ class Reactions(object):
     ON_TICK = 3
 
 
-def tickGroup(groupName):
+def tickGroup(groupName, updatePeriod=0.0):
 
     def warapper(func):
-        return CGF.Reaction(Reactions.ON_TICK, func, groupName)
+        return CGF.Reaction(Reactions.ON_TICK, func, groupName, updatePeriod)
 
     return warapper
 
@@ -22,7 +23,7 @@ def tickGroup(groupName):
 def onProcessQuery(*args, **kwargs):
 
     def wrapper(func):
-        return CGF.Reaction(Reactions.ON_PROCESS_QUERY, func, kwargs.get('tickGroup', 'Simulation'), args)
+        return CGF.Reaction(Reactions.ON_PROCESS_QUERY, func, kwargs.get('tickGroup', 'Simulation'), kwargs.get('period', 0.0), args)
 
     return wrapper
 
@@ -30,7 +31,7 @@ def onProcessQuery(*args, **kwargs):
 def onAddedQuery(*args, **kwargs):
 
     def wrapper(func):
-        return CGF.Reaction(Reactions.ON_ADDED_QUERY, func, kwargs.get('tickGroup', 'Init'), args)
+        return CGF.Reaction(Reactions.ON_ADDED_QUERY, func, kwargs.get('tickGroup', 'Init'), 0.0, args)
 
     return wrapper
 
@@ -38,7 +39,7 @@ def onAddedQuery(*args, **kwargs):
 def onRemovedQuery(*args, **kwargs):
 
     def wrapper(func):
-        return CGF.Reaction(Reactions.ON_REMOVED_QUERY, func, kwargs.get('tickGroup', 'Init'), args)
+        return CGF.Reaction(Reactions.ON_REMOVED_QUERY, func, kwargs.get('tickGroup', 'Init'), 0.0, args)
 
     return wrapper
 
@@ -77,7 +78,7 @@ def registerManager(manager, presentInEditor=False):
     return wrapper
 
 
-_rule_template = "import sys\nclass {typename}Rule(rule):\n    category = '{category}'\n    modulePath = sys.modules[managerType.__module__].__file__\n    def __init__(self):\n        super({typename}Rule, self).__init__()\n    @registrator(managerType)\n    def registerReactor(self):\n        return None\n"
+_rule_template = "import sys\nclass {typename}Rule(rule):\n    vseVisible = False\n    category = '{category}'\n    modulePath = sys.modules[managerType.__module__].__file__\n    def __init__(self):\n        super({typename}Rule, self).__init__()\n    @registrator(managerType)\n    def registerReactor(self):\n        return None\n"
 
 def generateRule(cls, category):
     rule_class_definition = _rule_template.format(typename=cls.__name__, category=category)
@@ -88,10 +89,12 @@ def generateRule(cls, category):
         raise SoftException(e.message + ':\n' + rule_class_definition)
 
 
-def autoregister(presentInAllWorlds=False, category='', presentInEditor=False):
+def autoregister(presentInAllWorlds=False, category='', presentInEditor=False, creationPredicate=None):
 
     def manager_registrator(cls):
-        CGF.registerManager(cls, presentInAllWorlds, presentInEditor)
+        CGF.registerManager(cls, presentInAllWorlds, presentInEditor, creationPredicate)
+        modulePath = sys.modules[cls.__module__].__file__ if cls.__module__ != '__builtin__' else '__builtin__'
+        CGF.registerModulePath(cls, modulePath)
         if presentInAllWorlds is False:
             generateRule(cls, category)
         return cls

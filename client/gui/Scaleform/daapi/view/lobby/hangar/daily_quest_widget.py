@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/daily_quest_widget.py
 import typing
-from constants import QUEUE_TYPE
+from constants import QUEUE_TYPE, DAILY_QUESTS_CONFIG
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.server_events.events_helpers import isDailyQuestsEnable
@@ -13,8 +13,6 @@ from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.game_control import IPromoController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
-if typing.TYPE_CHECKING:
-    from typing import Any
 
 class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -86,11 +84,13 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
             self.__timer.delayCallback(0.0, self.__executeShowOrHide)
 
     def __executeShowOrHide(self):
+        isEnabled = False
         if self.__shouldHide():
             self.__hide()
-            return
-        if self.__hasIncompleteQuests() or self.__hasQuestStatusChanged():
+        elif self.__hasIncompleteQuests() or self.__hasQuestStatusChanged():
+            isEnabled = True
             self.__show()
+        self.as_setEnabledS(isEnabled)
 
     def __shouldHide(self):
         return not isDailyQuestsEnable() or self.promoController.isTeaserOpen() or not (self._isRandomBattleSelected() or self._isMapboxSelected())
@@ -109,8 +109,9 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
 
         return False
 
-    def __onServerSettingsChanged(self, _):
-        self.__showOrHide()
+    def __onServerSettingsChanged(self, diff):
+        if DAILY_QUESTS_CONFIG in diff:
+            self.__showOrHide()
 
     def __onTeaserClosed(self):
         self.__delayedShowOrHide()

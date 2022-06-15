@@ -414,7 +414,9 @@ class VehicleArenaInfoVO(object):
         return self.vehicleStatus & _VEHICLE_STATUS.IS_READY > 0
 
     def isObserver(self):
-        return self.vehicleType.isObserver
+        if self.vehicleType.isObserver:
+            return True
+        return avatar_getter.isBecomeObserverAfterDeath() if self.vehicleID == avatar_getter.getPlayerVehicleID() and not self.isAlive() else False
 
     def isSPG(self):
         return self.vehicleType.classTag == VEHICLE_CLASS_NAME.SPG
@@ -424,6 +426,9 @@ class VehicleArenaInfoVO(object):
 
     def isActionsDisabled(self):
         return not self.player.avatarSessionID
+
+    def isPlayer(self):
+        return not self.isObserver() and bool(self.player.avatarSessionID)
 
     def isChatCommandsDisabled(self, isAlly):
         arena = avatar_getter.getArena()

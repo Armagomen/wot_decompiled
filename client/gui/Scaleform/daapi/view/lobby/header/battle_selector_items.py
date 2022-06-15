@@ -9,7 +9,7 @@ from battle_selector_item import SelectorItem
 from account_helpers import isDemonstratorExpert
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, ACCOUNT_ATTR
 from gui import GUI_SETTINGS
-from gui.battle_royale.constants import BattleRoyalePerfProblems
+from battle_royale.gui.constants import BattleRoyalePerfProblems
 from gui.clans.clan_helpers import isStrongholdsEnabled
 from gui.impl import backport
 from gui.impl.gen import R
@@ -279,12 +279,9 @@ class _SpecBattleItem(_SelectorItem):
         return super(_SpecBattleItem, self).getFightButtonLabel(state, playerInfo)
 
     def _update(self, state):
-        if state.isInSpecialPrebattle():
+        if state.isInSpecialPrebattle() or self.__battleRoyaleTournamentController.isSelected():
             self._isSelected = True
             self._isDisabled = state.hasLockedState
-        elif self.__battleRoyaleTournamentController.isSelected():
-            self._isDisabled = False
-            self._isSelected = True
         else:
             self._isSelected = False
             self._isDisabled = areSpecBattlesHidden()
@@ -667,7 +664,10 @@ class _BattleRoyaleItem(SelectorItem):
     @process
     def _doSelect(self, dispatcher):
         currentSeason = self.__battleRoyaleController.getCurrentSeason()
-        if currentSeason is not None:
+        if currentSeason is None:
+            self.__battleRoyaleController.openURL()
+            return
+        else:
             isActiveCycle = self.__battleRoyaleController.getCurrentCycleInfo()[1]
             nextCycle = currentSeason.getNextByTimeCycle(time_utils.getCurrentLocalServerTimestamp())
             if isActiveCycle or nextCycle:
@@ -675,10 +675,8 @@ class _BattleRoyaleItem(SelectorItem):
                 isSuccess = yield dispatcher.doSelectAction(PrbAction(self._data))
                 if isSuccess and self._isNew:
                     selectorUtils.setBattleTypeAsKnown(self._selectorType)
-                else:
-                    return
-        self.__battleRoyaleController.openURL()
-        return
+                    self.__battleRoyaleController.showIntroWindow()
+            return
 
     def _update(self, state):
         isNow = self.__battleRoyaleController.isInPrimeTime()
@@ -721,11 +719,8 @@ class _BattleRoyaleItem(SelectorItem):
         return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText if attentionText and iconPath else None
 
     def __getIsVisible(self):
-        if self.__battleRoyaleController.isEnabled():
-            return True
-        else:
-            season = self.__battleRoyaleController.getCurrentSeason() or self.__battleRoyaleController.getNextSeason()
-            return season is not None
+        season = self.__battleRoyaleController.getCurrentSeason() or self.__battleRoyaleController.getNextSeason()
+        return season is not None
 
 
 class _MapboxItem(SelectorItem):
@@ -795,16 +790,17 @@ class EpicBattleItem(SelectorItem):
     @process
     def _doSelect(self, dispatcher):
         currentSeason = self.__epicController.getCurrentSeason()
+        isEventActive = False
         if currentSeason is not None:
             isActiveCycle = self.__epicController.getCurrentCycleInfo()[1]
             nextCycle = currentSeason.getNextByTimeCycle(time_utils.getCurrentLocalServerTimestamp())
             if isActiveCycle or nextCycle:
-                isSuccess = yield dispatcher.doSelectAction(PrbAction(self._data))
-                if isSuccess and self._isNew:
-                    selectorUtils.setBattleTypeAsKnown(self._selectorType)
-                else:
-                    return
-        self.__epicController.openURL()
+                isEventActive = True
+                yield dispatcher.doSelectAction(PrbAction(self._data))
+        if self._isNew or not isEventActive:
+            self.__epicController.openURL()
+            if self._isNew:
+                selectorUtils.setBattleTypeAsKnown(self._selectorType)
         return
 
     def _update(self, state):
@@ -821,13 +817,8 @@ class EpicBattleItem(SelectorItem):
         else:
             currentSeason = self.__epicController.getCurrentSeason()
             if currentSeason:
-                seasonResID = R.strings.epic_battle.season.num(currentSeason.getSeasonID())
-                seasonName = backport.text(seasonResID.name()) if seasonResID else None
                 if currentSeason.hasActiveCycle(time_utils.getCurrentLocalServerTimestamp()):
-                    if currentSeason.isSingleCycleSeason():
-                        scheduleStr = None
-                    else:
-                        scheduleStr = backport.text(R.strings.menu.headerButtons.battle.types.epic.extra.currentCycle(), cycle=int2roman(currentSeason.getCycleInfo().getEpicCycleNumber()), season=seasonName)
+                    scheduleStr = None
                 else:
                     nextCycle = currentSeason.getNextCycleInfo(time_utils.getCurrentLocalServerTimestamp())
                     if nextCycle is None:
@@ -864,43 +855,13 @@ _g_squadItems = None
 _DEFAULT_PAN = PREBATTLE_ACTION_NAME.RANDOM
 _DEFAULT_SQUAD_PAN = PREBATTLE_ACTION_NAME.SQUAD
 
-@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
-def _createItems(lobbyContext=None):
-    settings = lobbyContext.getServerSettings()
-    isInRoaming = settings.roaming.isInRoaming()
-    items = []
-    _addRandomBattleType(items)
-    _addRankedBattleType(items, settings)
-    _addCommandBattleType(items, settings)
-    _addStrongholdsBattleType(items, isInRoaming)
-    _addTrainingBattleType(items, settings)
-    _addEpicTrainingBattleType(items, settings)
-    _addRoyaleBattleType(items)
-    _addMapboxBattleType(items)
-    _addMapsTrainingBattleType(items)
-    _addEpicBattleType(items)
-    _addEventBattlesType(items)
-    if GUI_SETTINGS.specPrebatlesVisible:
-        _addSpecialBattleType(items)
-    if settings is not None and settings.isSandboxEnabled() and not isInRoaming:
-        _addSandboxType(items)
-    return _BattleSelectorItems(items)
-
-
-def _createSquadSelectorItems():
-    items = []
-    _addSimpleSquadType(items)
-    _addBattleRoyaleSquadType(items)
-    _addEventSquadType(items)
-    _addMapboxSquadType(items)
-    return _SquadSelectorItems(items)
-
-
 def _addRandomBattleType(items):
     items.append(_RandomQueueItem(backport.text(_R_BATTLE_TYPES.standart()), PREBATTLE_ACTION_NAME.RANDOM, 0))
 
 
-def _addRankedBattleType(items, settings):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addRankedBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
     visible = settings is not None and settings.rankedBattles.isEnabled
     items.append(_RankedItem(backport.text(_R_BATTLE_TYPES.ranked()), PREBATTLE_ACTION_NAME.RANKED, 1, SELECTOR_BATTLE_TYPES.RANKED, isVisible=visible))
     return
@@ -914,13 +875,18 @@ def _addMapboxBattleType(items):
     items.append(_MapboxItem(backport.text(_R_BATTLE_TYPES.mapbox()), PREBATTLE_ACTION_NAME.MAPBOX, 2, SELECTOR_BATTLE_TYPES.MAPBOX))
 
 
-def _addCommandBattleType(items, settings):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addCommandBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
     visible = settings is not None and settings.isCommandBattleEnabled()
     items.append(_CommandItem(backport.text(_R_BATTLE_TYPES.unit()), PREBATTLE_ACTION_NAME.E_SPORT, 3, SELECTOR_BATTLE_TYPES.UNIT, isVisible=visible))
     return
 
 
-def _addStrongholdsBattleType(items, isInRoaming):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addStrongholdsBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
+    isInRoaming = settings.roaming.isInRoaming()
     visible = isStrongholdsEnabled()
     items.append((_DisabledSelectorItem if isInRoaming else _StrongholdsItem)(backport.text(_R_BATTLE_TYPES.strongholds()), PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST, 4, SELECTOR_BATTLE_TYPES.SORTIE, isVisible=visible))
 
@@ -937,13 +903,18 @@ def _addSpecialBattleType(items):
     items.append(_SpecBattleItem(backport.text(_R_BATTLE_TYPES.spec()), PREBATTLE_ACTION_NAME.SPEC_BATTLES_LIST, 6))
 
 
-def _addTrainingBattleType(items, settings):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addTrainingBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
     visible = settings is not None and settings.isTrainingBattleEnabled()
     items.append(_TrainingItem(backport.text(_R_BATTLE_TYPES.training()), PREBATTLE_ACTION_NAME.TRAININGS_LIST, 7, isVisible=visible))
     return
 
 
-def _addTutorialBattleType(items, isInRoaming):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addTutorialBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
+    isInRoaming = settings.roaming.isInRoaming()
     items.append((_DisabledSelectorItem if isInRoaming else _BattleTutorialItem)(backport.text(_R_BATTLE_TYPES.battleTutorial()), PREBATTLE_ACTION_NAME.BATTLE_TUTORIAL, 9))
 
 
@@ -951,7 +922,9 @@ def _addSandboxType(items):
     items.append(_SandboxItem(backport.text(_R_BATTLE_TYPES.battleTeaching()), PREBATTLE_ACTION_NAME.SANDBOX, 10))
 
 
-def _addEpicTrainingBattleType(items, settings=None):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _addEpicTrainingBattleType(items, lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
     visible = settings is not None and settings.frontline.isEpicTrainingEnabled
     items.append(_EpicTrainingItem(backport.text(_R_BATTLE_TYPES.epicTraining()), PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST, 11, SELECTOR_BATTLE_TYPES.EPIC, isVisible=visible))
     return
@@ -959,6 +932,42 @@ def _addEpicTrainingBattleType(items, settings=None):
 
 def _addEventBattlesType(items):
     items.append(_EventBattlesItem('Event Battle', PREBATTLE_ACTION_NAME.EVENT_BATTLE, 2, SELECTOR_BATTLE_TYPES.EVENT))
+
+
+BATTLES_SELECTOR_ITEMS = {PREBATTLE_ACTION_NAME.RANDOM: _addRandomBattleType,
+ PREBATTLE_ACTION_NAME.RANKED: _addRankedBattleType,
+ PREBATTLE_ACTION_NAME.E_SPORT: _addCommandBattleType,
+ PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST: _addStrongholdsBattleType,
+ PREBATTLE_ACTION_NAME.TRAININGS_LIST: _addTrainingBattleType,
+ PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST: _addEpicTrainingBattleType,
+ PREBATTLE_ACTION_NAME.BATTLE_ROYALE: _addRoyaleBattleType,
+ PREBATTLE_ACTION_NAME.MAPBOX: _addMapboxBattleType,
+ PREBATTLE_ACTION_NAME.MAPS_TRAINING: _addMapsTrainingBattleType,
+ PREBATTLE_ACTION_NAME.EPIC: _addEpicBattleType,
+ PREBATTLE_ACTION_NAME.EVENT_BATTLE: _addEventBattlesType}
+
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def _createItems(lobbyContext=None):
+    settings = lobbyContext.getServerSettings()
+    isInRoaming = settings.roaming.isInRoaming()
+    items = []
+    for battleItem in BATTLES_SELECTOR_ITEMS.itervalues():
+        battleItem(items)
+
+    if GUI_SETTINGS.specPrebatlesVisible:
+        _addSpecialBattleType(items)
+    if settings is not None and settings.isSandboxEnabled() and not isInRoaming:
+        _addSandboxType(items)
+    return _BattleSelectorItems(items)
+
+
+def _createSquadSelectorItems():
+    items = []
+    _addSimpleSquadType(items)
+    _addBattleRoyaleSquadType(items)
+    _addEventSquadType(items)
+    _addMapboxSquadType(items)
+    return _SquadSelectorItems(items)
 
 
 def _addSimpleSquadType(items):

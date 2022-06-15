@@ -10,7 +10,6 @@ import Math
 import Health
 import WoT
 import AreaDestructibles
-import ArenaType
 import BattleReplay
 import DestructiblesCache
 import TriggersManager
@@ -20,9 +19,11 @@ from account_helpers.settings_core.settings_constants import GAME
 from TriggersManager import TRIGGER_TYPE
 from VehicleEffects import DamageFromShotDecoder
 from aih_constants import ShakeReason
+from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
 from constants import SPT_MATKIND
 from constants import VEHICLE_HIT_EFFECT, VEHICLE_SIEGE_STATE, ATTACK_REASON_INDICES, ATTACK_REASON
 from debug_utils import LOG_DEBUG_DEV
+from Event import Event
 from gui.battle_control import vehicle_getter, avatar_getter
 from gui.battle_control.avatar_getter import getSoundNotifications
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _GUI_EVENT_ID, VEHICLE_VIEW_STATE
@@ -38,6 +39,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.game_control import ISpecialSoundCtrl, IBattleRoyaleController
 from skeletons.vehicle_appearance_cache import IAppearanceCache
 from soft_exception import SoftException
+from vehicle_systems.components.shot_damage_components import ShotDamageComponent
 from vehicle_systems.entity_components.battle_abilities_component import BattleAbilitiesComponent
 from vehicle_systems.model_assembler import collisionIdxToTrackPairIdx
 from vehicle_systems.tankStructure import TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
@@ -45,6 +47,7 @@ from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
 from shared_utils.vehicle_utils import createWheelFilters
 import GenericComponents
 import Projectiles
+import CGF
 _logger = logging.getLogger(__name__)
 LOW_ENERGY_COLLISION_D = 0.3
 HIGH_ENERGY_COLLISION_D = 0.6
@@ -89,7 +92,7 @@ StunInfo = namedtuple('StunInfo', ('startTime',
 DebuffInfo = namedtuple('DebuffInfo', ('duration', 'animated'))
 VEHICLE_COMPONENTS = {BattleAbilitiesComponent}
 
-class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
+class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesComponent):
     isEnteringWorld = property(lambda self: self.__isEnteringWorld)
     isTurretDetached = property(lambda self: constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health) and self.__turretDetachmentConfirmed)
     isTurretMarkedForDetachment = property(lambda self: constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health))
@@ -158,6 +161,7 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         self.extras = {}
         self.typeDescriptor = None
         self.appearance = None
+        self.onAppearanceReady = Event()
         self.isPlayerVehicle = False
         self.isStarted = False
         self.__isEnteringWorld = False
@@ -176,6 +180,7 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         self.refreshNationalVoice()
         self.__prevHealth = None
         self.__quickShellChangerIsActive = False
+        self.__isInDebuff = False
         return
 
     def reload(self):
@@ -270,6 +275,7 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         self.isForceReloading = False
         self.__prevHealth = self.maxHealth
         self.resetProperties()
+        self.onAppearanceReady()
 
     def __onVehicleInfoAdded(self, vehID):
         if self.id != vehID:
@@ -349,7 +355,18 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
                 showFriendlyFlashBang = isFriendlyFireMode and hasCustomAllyDamageEffect
             showFullscreenEffs = self.isPlayerVehicle and self.isAlive()
             keyPoints, effects, _ = effectsDescr[maxPriorityHitPoint.hitEffectGroup]
-            self.appearance.boundEffects.addNewToNode(maxPriorityHitPoint.componentName, maxPriorityHitPoint.matrix, effects, keyPoints, isPlayerVehicle=self.isPlayerVehicle, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs and not showFriendlyFlashBang, showFriendlyFlashBang=showFullscreenEffs and showFriendlyFlashBang, entity_id=self.id, damageFactor=damageFactor, attackerID=attackerID, hitdir=firstHitDir)
+            self.appearance.boundEffects.addNewToNode(maxPriorityHitPoint.componentName, maxPriorityHitPoint.matrix, effects, keyPoints, isPlayerVehicle=self.isPlayerVehicle, showShockWave=showFullscreenEffs, showFlashBang=showFullscreenEffs and not showFriendlyFlashBang, showFriendlyFlashBang=showFullscreenEffs and showFriendlyFlashBang, entity_id=self.id, damageFactor=damageFactor, attackerID=attackerID, hitdir=firstHitDir, surfaceNormal=maxPriorityHitPoint.matrix.applyVector(Math.Vector3(0, 0, -1)))
+            prefabHit = effectsDescr['hitPrefabs'].get(maxPriorityHitPoint.hitEffectGroup) if 'hitPrefabs' in effectsDescr else None
+            if prefabHit:
+
+                def hitLoadCallback(go):
+                    if self.isAlive():
+                        go.createComponent(ShotDamageComponent, firstHitPoint.componentName, compoundModel)
+                    else:
+                        CGF.removeGameObject(go)
+
+                partGO = self.appearance.partsGameObjects.getPartGameObject(prefabHit, self.spaceID, self.appearance.gameObject)
+                CGF.loadGameObjectIntoHierarchy(prefabHit, partGO, firstHitPoint.matrix, hitLoadCallback)
             if not self.isAlive():
                 return
             soundNotifications = getSoundNotifications()
@@ -505,6 +522,10 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         if syncGunAngles:
             yaw, pitch = decodeGunAngles(self.gunAnglesPacked, self.typeDescriptor.gun.pitchLimits['absolute'])
             syncGunAngles(yaw, pitch)
+            replayCtrl = BattleReplay.g_replayCtrl
+            if replayCtrl.isServerSideReplay:
+                replayCtrl.setTurretYaw(yaw)
+                replayCtrl.setGunPitch(pitch)
         return
 
     def set_health(self, _=None):
@@ -906,6 +927,8 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         self.appearance = None
         self.isStarted = False
         self.__speedInfo.reset()
+        if self.__isInDebuff:
+            self.onDebuffEffectApplied(False)
         return
 
     def show(self, show):
@@ -989,7 +1012,6 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         physics.staticMode = False
         physics.movementSignals = 0
         self.filter.setVehiclePhysics(physics)
-        physics.visibilityMask = ArenaType.getVisibilityMask(BigWorld.player().arenaTypeID >> 16)
         yaw, pitch = decodeGunAngles(self.gunAnglesPacked, typeDescr.gun.pitchLimits['absolute'])
         self.filter.syncGunAngles(yaw, pitch)
         self.__speedInfo.set(self.filter.speedInfo)
@@ -1092,6 +1114,7 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
         return
 
     def onDebuffEffectApplied(self, applied):
+        self.__isInDebuff = applied
         attachedVehicle = BigWorld.player().getVehicleAttached()
         if attachedVehicle is not None and self.id == attachedVehicle.id:
             playerDebuffInfo = DebuffInfo(duration=0.1 if applied else 0, animated=applied)
@@ -1105,6 +1128,7 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
 
     def onDynamicComponentCreated(self, component):
         LOG_DEBUG_DEV('Component created', component)
+        super(Vehicle, self).onDynamicComponentCreated(component)
 
     @property
     def label(self):
@@ -1124,6 +1148,9 @@ class Vehicle(BigWorld.Entity, BattleAbilitiesComponent):
     @quickShellChangerIsActive.setter
     def quickShellChangerIsActive(self, value):
         self.__quickShellChangerIsActive = value
+
+    def isOnFire(self):
+        return 'fire' in self.dynamicComponents
 
     def resetProperties(self):
         self.set_burnoutLevel()

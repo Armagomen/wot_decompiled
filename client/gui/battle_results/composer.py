@@ -127,7 +127,13 @@ class SandboxStatsComposer(StatsComposer):
 class StrongholdBattleStatsComposer(StatsComposer):
 
     def __init__(self, reusable):
-        super(StrongholdBattleStatsComposer, self).__init__(reusable, templates.STRONGHOLD_BATTLE_COMMON_STATS_BLOCK.clone(), templates.REGULAR_PERSONAL_STATS_BLOCK.clone(), templates.REGULAR_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
+        super(StrongholdBattleStatsComposer, self).__init__(reusable, templates.STRONGHOLD_BATTLE_COMMON_STATS_BLOCK.clone(), templates.STRONGHOLD_PERSONAL_STATS_BLOCK.clone(), templates.STRONGHOLD_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
+
+
+class StrongholdSortieBattleStatsComposer(StatsComposer):
+
+    def __init__(self, reusable):
+        super(StrongholdSortieBattleStatsComposer, self).__init__(reusable, templates.REGULAR_COMMON_STATS_BLOCK.clone(), templates.STRONGHOLD_PERSONAL_STATS_BLOCK.clone(), templates.STRONGHOLD_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
 
 
 class RankedBattlesStatsComposer(StatsComposer):
@@ -254,6 +260,8 @@ def createComposer(reusable):
         composer = SandboxStatsComposer(reusable)
     elif bonusType == ARENA_BONUS_TYPE.FORT_BATTLE_2:
         composer = StrongholdBattleStatsComposer(reusable)
+    elif bonusType == ARENA_BONUS_TYPE.SORTIE_2:
+        composer = StrongholdSortieBattleStatsComposer(reusable)
     elif bonusType == ARENA_BONUS_TYPE.RANKED:
         composer = RankedBattlesStatsComposer(reusable)
     elif bonusType == ARENA_BONUS_TYPE.BOOTCAMP:

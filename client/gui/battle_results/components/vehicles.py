@@ -204,6 +204,10 @@ class EpicVehicleStatsBlock(RegularVehicleStatsBlock):
         return super(EpicVehicleStatsBlock, self).getVO()
 
 
+class StrongholdVehicleStatsBlock(RegularVehicleStatsBlock):
+    pass
+
+
 class RegularVehicleStatValuesBlock(base.StatsBlock):
     __slots__ = ('_isPersonal', '_filters', 'shots', 'hits', 'explosionHits', 'damageDealt', 'sniperDamageDealt', 'directHitsReceived', 'piercingsReceived', 'noDamageDirectHitsReceived', 'explosionHitsReceived', 'damageBlockedByArmor', 'teamHitsDamage', 'spotted', 'damagedKilled', 'damageAssisted', 'damageAssistedStun', 'stunNum', 'stunDuration', 'capturePoints', 'mileage', '__rawDamageAssistedStun', '__rawStunNum')
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -266,6 +270,16 @@ class RankedVehicleStatValuesBlock(RegularVehicleStatValuesBlock):
         self.xpForAttack = result.xpForAttack - result.xpPenalty
         self.xpForAssist = result.xpForAssist
         self.xpOther = result.xpOther
+
+
+class StrongholdVehicleStatValuesBlock(RegularVehicleStatValuesBlock):
+    __slots__ = ('artilleryFortEquipDamageDealt',)
+
+    def setRecord(self, result, reusable):
+        super(StrongholdVehicleStatValuesBlock, self).setRecord(result, reusable)
+        self.artilleryFortEquipDamageDealt = style.getIntegralFormatIfNoEmpty(result.artilleryFortEquipDamageDealt)
+        if result.artilleryFortEquipDamageDealt == 0:
+            self.addFilters(('artilleryFortEquipDamageDealt',))
 
 
 class EpicVehicleStatValuesBlock(base.StatsBlock):
@@ -377,6 +391,21 @@ class AllEpicVehicleStatValuesBlock(base.StatsBlock):
             add(block)
 
 
+class AllStrongholdVehicleStatValuesBlock(base.StatsBlock):
+    __slots__ = ()
+
+    def setRecord(self, result, reusable):
+        isPersonal, iterator = result
+        add = self.addNextComponent
+        stunFilter = _getStunFilter()
+        for vehicle in iterator:
+            block = StrongholdVehicleStatValuesBlock()
+            block.setPersonal(isPersonal)
+            block.addFilters(stunFilter)
+            block.setRecord(vehicle, reusable)
+            add(block)
+
+
 class PersonalVehiclesRegularStatsBlock(base.StatsBlock):
     __slots__ = ()
 
@@ -416,6 +445,21 @@ class PersonalVehiclesEpicStatsBlock(base.StatsBlock):
         stunFilter = _getStunFilter()
         for data in info.getVehiclesIterator():
             block = EpicVehicleStatValuesBlock()
+            block.setPersonal(True)
+            block.addFilters(stunFilter)
+            block.setRecord(data, reusable)
+            add(block)
+
+
+class PersonalVehiclesStrongholdStatsBlock(base.StatsBlock):
+    __slots__ = ()
+
+    def setRecord(self, result, reusable):
+        info = reusable.getPersonalVehiclesInfo(result)
+        add = self.addNextComponent
+        stunFilter = _getStunFilter()
+        for data in info.getVehiclesIterator():
+            block = StrongholdVehicleStatValuesBlock()
             block.setPersonal(True)
             block.addFilters(stunFilter)
             block.setRecord(data, reusable)
@@ -472,6 +516,13 @@ class EpicTeamStatsBlock(TeamStatsBlock):
 
     def __init__(self, meta=None, field='', *path):
         super(EpicTeamStatsBlock, self).__init__(EpicVehicleStatsBlock, meta, field, *path)
+
+
+class StrongholdTeamStatsBlock(TeamStatsBlock):
+    __slots__ = ()
+
+    def __init__(self, meta=None, field='', *path):
+        super(StrongholdTeamStatsBlock, self).__init__(StrongholdVehicleStatsBlock, meta, field, *path)
 
 
 class TwoTeamsStatsBlock(shared.BiDiStatsBlock):

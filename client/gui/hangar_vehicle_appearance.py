@@ -426,7 +426,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         if not self.__isVehicleDestroyed:
             self.__modelAnimators.extend(camouflages.getAttachmentsAnimators(self.__attachments, self.__spaceId, resourceRefs, self.compoundModel))
         from vehicle_systems import model_assembler
-        model_assembler.assembleCustomLogicComponents(self, self.__attachments, self.__modelAnimators)
+        model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments, self.__modelAnimators)
         for modelAnimator in self.__modelAnimators:
             modelAnimator.animator.start()
 
@@ -798,7 +798,7 @@ class HangarVehicleAppearance(ScriptGameObject):
             self.__clearModelAnimators()
             if not self.__isVehicleDestroyed:
                 from vehicle_systems import model_assembler
-                model_assembler.assembleCustomLogicComponents(self, self.__attachments, self.__modelAnimators)
+                model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments, self.__modelAnimators)
             return
         BigWorld.loadResourceListBG(tuple(resources), makeCallbackWeak(self.__onAnimatorsLoaded, self.__curBuildInd, outfit))
 

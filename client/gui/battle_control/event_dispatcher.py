@@ -155,3 +155,7 @@ def sniperCameraTransition(transitionTime, currentGunIndex):
 
 def showCommanderCamHint(show):
     g_eventBus.handleEvent(GameEvent(GameEvent.COMMANDER_HINT, {'show': show}), scope=_SCOPE)
+
+
+def togglePiercingDebugPanel():
+    g_eventBus.handleEvent(GameEvent(GameEvent.TOGGLE_DEBUG_PIERCING_PANEL), scope=_SCOPE)

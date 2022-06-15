@@ -118,10 +118,7 @@ class EpicBattleTrainingEntity(LegacyEntity):
          REQUEST_TYPE.EPIC_SWAP_BETWEEN_TEAM: self.swapBetweenTeam}
         super(EpicBattleTrainingEntity, self).__init__(FUNCTIONAL_FLAG.EPIC_TRAINING, settings, permClass=EpicBattleTrainingPermissions, limits=EpicBattleTrainingLimits(self), requestHandlers=requests)
         self.__settingRecords = []
-
-    @legacy_storage_getter(PREBATTLE_TYPE.EPIC_TRAINING)
-    def storage(self):
-        return None
+        self.storage = legacy_storage_getter(PREBATTLE_TYPE.EPIC_TRAINING)()
 
     def init(self, clientPrb=None, ctx=None):
         result = super(EpicBattleTrainingEntity, self).init(clientPrb=clientPrb)

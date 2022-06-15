@@ -58,6 +58,7 @@ class BasePerksController(object):
     def onCollectFactors(self, factors):
         if IS_DEVELOPMENT:
             oldFactors = factors.copy()
+        factors['crewRolesFactor'] *= self._collectModifiersMulScopes(self._modifiedFactors['crewRolesFactor'])
         factors['circularVisionRadius'] *= self._collectModifiersMulScopes(self._modifiedFactors['circularVisionRadius'])
         factors['radio/distance'] *= self._collectModifiersMulScopes(self._modifiedFactors['radio/distance'])
         factors['gun/reloadTime'] *= self._collectModifiersMulScopes(self._modifiedFactors['gun/reloadTime'])

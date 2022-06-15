@@ -523,10 +523,12 @@ class AmmoController(MethodsRules, ViewComponentsController):
             self.__shellChangeTime = baseTime
         interval = self.__gunSettings.clip.interval
         self.triggerReloadEffect(timeLeft, baseTime)
-        if interval > 0 and self.__currShellCD in self.__ammo:
+        if interval > 0 and self.__currShellCD in self.__ammo and baseTime > 0.0:
             shellsInClip = self.__ammo[self.__currShellCD][1]
             if not (shellsInClip == 1 and timeLeft == 0 and not self.__gunSettings.hasAutoReload() or shellsInClip == 0 and timeLeft != 0):
                 baseTime = interval
+        elif baseTime == 0.0:
+            baseTime = timeLeft
         isIgnored = False
         if CommandMapping.g_instance.isActive(CommandMapping.CMD_CM_SHOOT):
             isIgnored = self.__autoShoots.process(timeLeft, self._reloadingState.getActualValue())
@@ -626,6 +628,10 @@ class AmmoController(MethodsRules, ViewComponentsController):
             return result
         else:
             return quantity
+
+    def getAllShellsQuantityLeft(self):
+        quantity = self.getShellsQuantityLeft()
+        return sum((quantity for quantity, _ in self.__ammo.itervalues())) if quantity == 0 else quantity
 
     @MethodsRules.delayable('setGunSettings')
     def setShells(self, intCD, quantity, quantityInClip):

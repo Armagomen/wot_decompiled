@@ -19,19 +19,16 @@ _CELL_BLINKING_DURATION = 3.0
 class _DamagedDevicesExtraFetcher(object):
     __slots__ = ('__total', '__critical', '__destroyed', '__isInFire')
 
-    def __init__(self, total, critical, destroyed):
+    def __init__(self, total, critical, destroyed, isInFire):
         super(_DamagedDevicesExtraFetcher, self).__init__()
         self.__total = map(self.__convertExtra, total)
         self.__critical = critical
         self.__destroyed = destroyed
-        self.__isInFire = False
+        self.__isInFire = isInFire
 
     def getDamagedDevices(self):
         for idx in self.__critical:
             name = self.__total[idx]
-            if name == 'fire':
-                self.__isInFire = True
-                continue
             yield (name, 'damaged')
 
         for idx in self.__destroyed:
@@ -253,8 +250,9 @@ class BattleFeedbackAdaptor(IBattleController):
 
     def showVehicleDamagedDevices(self, vehicleID, criticalExtras, destroyedExtras):
         totalExtras = self.__arenaVisitor.vehicles.getVehicleExtras(vehicleID)
-        if totalExtras is not None:
-            fetcher = _DamagedDevicesExtraFetcher(totalExtras, criticalExtras, destroyedExtras)
+        vehicle = BigWorld.entities.get(vehicleID)
+        if totalExtras is not None and vehicle is not None:
+            fetcher = _DamagedDevicesExtraFetcher(totalExtras, criticalExtras, destroyedExtras, vehicle.isOnFire())
             self.onVehicleFeedbackReceived(_FET.SHOW_VEHICLE_DAMAGES_DEVICES, vehicleID, fetcher)
         return
 

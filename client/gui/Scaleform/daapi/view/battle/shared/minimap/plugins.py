@@ -29,7 +29,7 @@ from gui.battle_control import avatar_getter, minimap_utils, matrix_factory
 from gui.battle_control.arena_info.interfaces import IVehiclesAndPositionsController
 from gui.battle_control.arena_info.settings import INVALIDATE_OP
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, VEHICLE_LOCATION, VEHICLE_VIEW_STATE
-from gui.battle_control.controllers.radar_ctrl import IRadarListener
+from battle_royale.gui.battle_control.controllers.radar_ctrl import IRadarListener
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
@@ -397,6 +397,7 @@ class PersonalEntriesPlugin(common.SimplePlugin):
             self._setActive(self.__animationID, True)
             getter = self.settingsCore.getSetting
             showDirectionLine = GUI_SETTINGS.showDirectionLine and getter(settings_constants.GAME.SHOW_VECTOR_ON_MAP)
+            showDirectionLine = showDirectionLine and self._canShowDirectionLine()
             showYawLimit = GUI_SETTINGS.showSectorLines and getter(settings_constants.GAME.SHOW_SECTOR_ON_MAP)
             showCircles = self._canShowDrawRangeCircle() or self._canShowMaxViewRangeCircle() or self._canShowViewRangeCircle()
             if showDirectionLine:
@@ -445,6 +446,9 @@ class PersonalEntriesPlugin(common.SimplePlugin):
     def _canShowDrawRangeCircle(self):
         return self.settingsCore.getSetting(settings_constants.GAME.MINIMAP_DRAW_RANGE)
 
+    def _canShowDirectionLine(self):
+        return True
+
     def _enableCameraEntryInCtrlMode(self, ctrlMode):
         return True
 
@@ -482,7 +486,7 @@ class PersonalEntriesPlugin(common.SimplePlugin):
     def _onVehicleFeedbackReceived(self, eventID, _, __):
         if eventID == FEEDBACK_EVENT_ID.VEHICLE_ATTRS_CHANGED and self.__circlesVisibilityState & settings.CIRCLE_TYPE.VIEW_RANGE:
             self._invoke(self.__circlesID, settings.VIEW_RANGE_CIRCLES_AS3_DESCR.AS_UPDATE_DYN_CIRCLE, self._getViewRangeRadius())
-        if eventID == FEEDBACK_EVENT_ID.VEHICLE_DEAD and self.__isObserver:
+        if eventID == FEEDBACK_EVENT_ID.VEHICLE_DEAD and self.__isObserver and not BattleReplay.isServerSideReplay():
             self.__removeAllCircles()
             self.__hideDirectionLine()
 
@@ -887,7 +891,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
                 break
 
         self.__replayRegistrator.registerHideVehicle(vehicleToHideID)
-        if isDeactivate:
+        if isDeactivate or BattleReplay.g_replayCtrl.isVehicleChanging():
             self.__setActive(entry, False)
         return
 
@@ -985,17 +989,18 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
             return
 
     def __onMinimapVehicleRemoved(self, vehicleID):
-        if vehicleID == self.__playerVehicleID or vehicleID not in self._entries:
+        replayCtrl = BattleReplay.g_replayCtrl
+        if vehicleID == self.__playerVehicleID or vehicleID not in self._entries or replayCtrl.isServerSideReplay and replayCtrl.isAllyToObservedVehicle(vehicleID):
             return
         entry = self._entries[vehicleID]
         if entry.getLocation() == VEHICLE_LOCATION.AOI:
-            if not minimap_utils.isVehicleInAOI(entry.getMatrix()):
+            if replayCtrl.isServerSideReplay and replayCtrl.isVehicleChanging() or minimap_utils.isVehicleInAOI(entry.getMatrix()):
+                self._hideVehicle(entry)
+                self._notifyVehicleRemoved(vehicleID)
+            else:
                 matrix = matrix_factory.makeVehicleMPByLocation(vehicleID, VEHICLE_LOCATION.AOI_TO_FAR, {})
                 self.__setLocationAndMatrix(entry, VEHICLE_LOCATION.AOI_TO_FAR, matrix)
                 self.__setAoIToFarCallback(vehicleID)
-            else:
-                self._hideVehicle(entry)
-                self._notifyVehicleRemoved(vehicleID)
         else:
             LOG_DEBUG('Location of vehicle entry is not in AoI', entry)
 

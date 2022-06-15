@@ -7,23 +7,20 @@ import CommandMapping
 from helpers import dependency
 from items import vehicles
 from skeletons.gui.game_control import IBattleRoyaleController
-from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList
+from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList, getHotKeyVkList
 from skeletons.gui.shared.hangar_spaces_switcher import IHangarSpacesSwitcher
+from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
 
 def getEquipmentById(equipmentId):
     return vehicles.g_cache.equipments()[equipmentId]
 
 
-def getSmokeDataByPredicate(smokesInfo, predicate):
-    if smokesInfo is None or not predicate:
+def getSmokeDataByPredicate(smokeInfo, predicate):
+    if smokeInfo is None or not predicate:
         return (None, None)
     else:
-        activeSmokes = list(((sInfo['endTime'], sInfo['equipmentID']) for sInfo in smokesInfo if predicate(sInfo['equipmentID'])))
-        if activeSmokes:
-            maxEndTime, maxEndTimeEquipmentId = max(activeSmokes)
-            return (maxEndTime, getEquipmentById(maxEndTimeEquipmentId))
-        return (None, None)
+        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID'])) if predicate(smokeInfo['equipmentID']) else (None, None)
 
 
 def parseSmokeData(smokesInfo):
@@ -64,6 +61,14 @@ def getHotKeyListByIndex(index):
     return getHotKeyList(command)
 
 
+def getHotKeyVkListByIndex(index):
+    if index == 0:
+        command = CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_LEFT
+    else:
+        command = CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_RIGHT
+    return getHotKeyVkList(command)
+
+
 def isIncorrectVehicle(vehicle):
     return vehicle is None or not vehicle.isOnlyForBattleRoyaleBattles
 
@@ -79,13 +84,22 @@ def isAdditionalModule(level, unlocks, moduleGetter):
 
 @dependency.replace_none_kwargs(brCtrl=IBattleRoyaleController)
 def canVehicleSpawnBot(vehicleName, brCtrl=None):
-    equipmentIds = brCtrl.getBrVehicleEquipmentIds(vehicleName)
-    if equipmentIds:
-        spawnedBotID = vehicles.g_cache.equipmentIDs()['spawn_kamikaze']
-        return spawnedBotID in equipmentIds
-    return False
+    vehicleEquipmentIDs = brCtrl.getBrVehicleEquipmentIds(vehicleName)
+    equipments = vehicles.g_cache.equipments()
+    return any((eqID for eqID in vehicleEquipmentIDs if hasattr(equipments[eqID], 'botType')))
 
 
 @dependency.replace_none_kwargs(hangarSwitcher=IHangarSpacesSwitcher)
-def currentHangarIsSteelHunter(hangarSwitcher=None):
+def currentHangarIsBattleRoyale(hangarSwitcher=None):
     return hangarSwitcher.currentItem == hangarSwitcher.itemsToSwitch.BATTLE_ROYALE
+
+
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
+def getAvailableNationsNames(lobbyContext=None):
+    keys = lobbyContext.getServerSettings().battleRoyale.vehiclesSlotsConfig.keys()
+    names = [ values.split(':')[0] for values in keys ]
+    return names
+
+
+def getAvailableVehicleTypes():
+    return frozenset(('lightTank', 'mediumTank', 'heavyTank'))

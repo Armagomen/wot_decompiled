@@ -10,9 +10,13 @@ import os
 import string
 import struct
 import typing
+from ExtensionsManager import g_extensionsManager
+from items import ItemsPrices
+from items.components.supply_slot_categories import LevelsFactor
+from math_common import ceilTo
+from soft_exception import SoftException
 from Math import Vector2, Vector3
 from collections import namedtuple
-from collector_vehicle import CollectorVehicleConsts
 from constants import ACTION_LABEL_TO_TYPE, ROLE_LABEL_TO_TYPE, ROLE_TYPE, DamageAbsorptionLabelToType, ROLE_LEVELS, ROLE_TYPE_TO_LABEL
 from constants import IGR_TYPE, IS_RENTALS_ENABLED, IS_CELLAPP, IS_BASEAPP, IS_CLIENT, IS_EDITOR
 from constants import IS_BOT, IS_WEB, ITEM_DEFS_PATH, SHELL_TYPES, VEHICLE_SIEGE_STATE, VEHICLE_MODE
@@ -54,16 +58,13 @@ from wrapped_reflection_framework import ReflectionMetaclass
 from collector_vehicle import CollectorVehicleConsts
 from material_kinds import IDS_BY_NAMES
 from items.customization_slot_tags_validator import getDirectionAndFormFactorTags
+from extension_utils import ResMgr, importClass
 if IS_EDITOR:
     from meta_objects.items.vehicle_items_meta.utils import getEffectNameByEffect
     from combined_data_section import CombinedDataSection
     from reflection import ReflectedObject
     from wrapped_reflection_framework import reflectedNamedTuple
     import Math
-if IS_CLIENT or IS_EDITOR:
-    import ResMgr
-else:
-    from realm_utils import ResMgr
 if IS_CELLAPP or IS_CLIENT or IS_BOT or IS_EDITOR:
     from ModelHitTester import HitTesterManager, BoundingBoxManager, createBBoxManagerForModels
 if IS_CELLAPP or IS_CLIENT or IS_EDITOR or IS_WEB:
@@ -2743,6 +2744,17 @@ def isItemWithCompactDescrExist(compactDescr):
     return None
 
 
+def customizationLambda(cType, compTypeID):
+    if IS_EDITOR:
+        items = g_cache.customization20().itemTypes[cType]
+        if items is None or len(items) == 0:
+            return
+        return items[compTypeID]
+    else:
+        return g_cache.customization20().itemTypes[cType][compTypeID]
+        return
+
+
 _itemGetters = {ITEM_TYPES.vehicle: lambda nationID, compTypeID: g_cache.vehicle(nationID, compTypeID),
  ITEM_TYPES.shell: lambda nationID, compTypeID: g_cache.shells(nationID)[compTypeID],
  ITEM_TYPES.equipment: lambda nationID, compTypeID: g_cache.equipments()[compTypeID],
@@ -2753,7 +2765,7 @@ _itemGetters = {ITEM_TYPES.vehicle: lambda nationID, compTypeID: g_cache.vehicle
  ITEM_TYPES.vehicleRadio: lambda nationID, compTypeID: g_cache.radios(nationID)[compTypeID],
  ITEM_TYPES.vehicleChassis: lambda nationID, compTypeID: g_cache.chassis(nationID)[compTypeID],
  ITEM_TYPES.vehicleFuelTank: lambda nationID, compTypeID: g_cache.fuelTanks(nationID)[compTypeID],
- ITEM_TYPES.customizationItem: lambda cType, compTypeID: g_cache.customization20().itemTypes[cType][compTypeID]}
+ ITEM_TYPES.customizationItem: lambda cType, compTypeID: customizationLambda(cType, compTypeID)}
 VEHICLE_ITEM_TYPES = _itemGetters.keys()
 
 def isVehicleTypeCompactDescr(vehDescr):
@@ -3190,6 +3202,7 @@ def _readHull(xmlCtx, section):
         else:
             item.hangarShadowTexture = None
         item.burnoutAnimation = __readBurnoutAnimation(xmlCtx, section)
+        item.prefabs = section.readStrings('prefab')
     if IS_CLIENT or IS_EDITOR or IS_WEB or IS_CELLAPP:
         item.primaryArmor = _readPrimaryArmor(xmlCtx, section, 'primaryArmor', item.materials)
     return item
@@ -3204,12 +3217,12 @@ def _writeHulls(hulls, section):
     _xml.rewriteInt(section, 'maxHealth', item.maxHealth)
     __writeTurretPitches(section, item.turretPitches)
     _writeCamouflageSettings(section, 'camouflage', item.camouflage)
-    slots = item.emblemSlots + item.slotsAnchors
-    shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
     shared_writers.writeModelsSets(item.modelsSets, section['models'])
     shared_writers.writeSwingingSettings(item.swinging, section['swinging'])
     __writeExhaustEffect(item.customEffects[0], section)
     _xml.rewriteString(section, 'hangarShadowTexture', item.hangarShadowTexture)
+    slots = item.emblemSlots + item.slotsAnchors
+    shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
     _writeCustomizableAreas(item.customizableVehicleAreas, section)
     _writeHullVariants(hulls, section)
     return
@@ -3265,6 +3278,9 @@ def __readTurretPitches(xmlCtx, section, numTurrets):
 
 
 def __writeTurretPitches(section, pitches):
+    if pitches:
+        if len(pitches) == 1 and pitches[0] == 0:
+            return
     with _xml.ListRewriter(section, 'turretPitches/turret') as listRewriter:
         for pitch, child in zip(pitches, listRewriter):
             child.writeFloat('', degrees(pitch))
@@ -3551,6 +3567,7 @@ def _readChassis(xmlCtx, section, item, unlocksDescrs=None, _=None, isWheeledVeh
         item.chassisLodDistance = shared_readers.readLodDist(xmlCtx, section, 'wheels/lodDist', g_cache)
         item.customEffects = (CustomEffectsDescriptor.getDescriptor(section, g_cache._customEffects['slip'], xmlCtx, 'effects/mud'),)
         item.AODecals = _readAODecals(xmlCtx, section, 'AODecals')
+        item.prefabs = section.readStrings('prefab')
     item.unlocks = _readUnlocks(xmlCtx, section, 'unlocks', unlocksDescrs, item.compactDescr)
     return
 
@@ -3562,9 +3579,9 @@ def _writeChassis(item, section, *args):
     _writeArmor(item.materials, None, section, 'armor', optional=True)
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
+    _writeCustomizableAreas(item.customizableVehicleAreas, section)
     chassis_writers.writeWheelsAndGroups(item.wheels, section)
     shared_writers.writeModelsSets(item.modelsSets, section['models'])
-    chassis_writers.writeSplineDesc(item.splineDesc, section, g_cache)
     chassis_writers.writeTraces(item.traces, section, g_cache)
     chassis_writers.writeTrackBasicParams(item.tracks, section, g_cache)
     chassis_writers.writeTrackSplineParams(item.trackSplineParams, section)
@@ -3574,7 +3591,6 @@ def _writeChassis(item, section, *args):
     shared_writers.writeLodDist(item.effects['lodDist'], section, 'effects/lodDist', g_cache)
     chassis_writers.writeMudEffect(item.customEffects[0], g_cache, section, 'effects/mud')
     sound_writers.writeWWTripleSoundConfig(item.sounds, section)
-    _writeCustomizableAreas(item.customizableVehicleAreas, section)
     _writeAODecals(item.AODecals, section, 'AODecals')
     if IS_EDITOR:
         editorData = item.editorData
@@ -3582,6 +3598,7 @@ def _writeChassis(item, section, *args):
         _xml.rewriteString(section, 'drivingWheels', drivingWheelNames)
     if item.generalWheelsAnimatorConfig:
         item.generalWheelsAnimatorConfig.save(section.getPrioritySection('wheels'))
+    chassis_writers.writeSplineDesc(item.splineDesc, section, g_cache)
     physicalTracksSection = None
     if section.has_key('physicalTracks'):
         physicalTracksSection = section['physicalTracks']
@@ -4027,6 +4044,7 @@ def _readTurret(xmlCtx, section, item, unlocksDescrs=None, _=None):
         item.AODecals = _readAODecals(xmlCtx, section, 'AODecals')
         commonConfig = g_cache.commonConfig
         item.turretDetachmentEffects = _readTurretDetachmentEffects(xmlCtx, section, 'turretDetachmentEffects', commonConfig['defaultTurretDetachmentEffects'])
+        item.prefabs = section.readStrings('prefab')
     if IS_CELLAPP or IS_EDITOR:
         arrayStr = section.readString('physicsShape')
         strArr = arrayStr.split()
@@ -4050,8 +4068,8 @@ def _writeTurret(item, section, sharedSections):
     _writeArmor(item.materials, None, section, 'armor')
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
-    shared_writers.writeModelsSets(item.modelsSets, section['models'])
     _writeCustomizableAreas(item.customizableVehicleAreas, section)
+    shared_writers.writeModelsSets(item.modelsSets, section['models'])
     arrayStr = ' '.join([ '{:.3f}'.format(value) for value in item.physicsShape ])
     _xml.rewriteString(section, 'physicsShape', arrayStr)
     nationID = parseIntCompactDescr(item.compactDescr)[1]
@@ -4197,6 +4215,8 @@ def _readGun(xmlCtx, section, item, unlocksDescrs=None, _=None):
         item.animateEmblemSlots = section.readBool('animateEmblemSlots', True)
         if section.has_key('emblemSlots'):
             item.emblemSlots, item.slotsAnchors = shared_readers.readEmblemSlots(xmlCtx, section, 'emblemSlots')
+        item.prefabs = section.readStrings('prefab')
+        item.edgeByVisualModel = section.readBool('edgeByVisualModel', True)
     if IS_CLIENT or IS_EDITOR or IS_BOT or IS_BASEAPP:
         if section.has_key('customizationSlots'):
             item.emblemSlots, item.slotsAnchors = shared_readers.readCustomizationSlots(xmlCtx, section, 'customizationSlots')
@@ -4437,6 +4457,11 @@ def _readGunLocals(xmlCtx, section, sharedItem, unlocksDescrs, turretCompactDesc
         else:
             hasOverride = True
             animateEmblemSlots = section.readBool('animateEmblemSlots', True)
+        if not section.has_key('edgeByVisualModel'):
+            edgeByVisualModel = sharedItem.edgeByVisualModel
+        else:
+            hasOverride = True
+            edgeByVisualModel = section.readBool('edgeByVisualModel', True)
         if section.has_key('drivenJoints'):
             drivenJoints = _readDrivenJoints(xmlCtx, section, 'drivenJoints')
         else:
@@ -4532,6 +4557,7 @@ def _readGunLocals(xmlCtx, section, sharedItem, unlocksDescrs, turretCompactDesc
             item.recoil = recoil
             item.camouflage = cam
             item.animateEmblemSlots = animateEmblemSlots
+            item.edgeByVisualModel = edgeByVisualModel
             item.emblemSlots = emblemSlots
             item.reloadEffect = reloadEffect
             item.drivenJoints = drivenJoints
@@ -4551,19 +4577,20 @@ def _writeGun(item, section, *args):
     _xml.rewriteFloat(section, 'invisibilityFactorAtShot', item.invisibilityFactorAtShot)
     _xml.rewriteFloat(section, 'impulse', item.impulse)
     _xml.rewriteBool(section, 'animateEmblemSlots', item.animateEmblemSlots)
-    _xml.rewriteVector3(section, 'shotOffset', item.shotOffset)
+    _xml.rewriteBool(section, 'edgeByVisualModel', item.edgeByVisualModel, True)
+    _xml.rewriteVector3(section, 'shotOffset', item.shotOffset, (0, 0, 0))
     _xml.rewriteVector2(section, 'turretYawLimits', item.editorTurretYawLimits)
     _writeGunEffectName(item, section)
     _writeCamouflageSettings(section, 'camouflage', item.camouflage)
     _writeArmor(item.materials, None, section, 'armor', optional=True)
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
+    _writeCustomizableAreas(item.customizableVehicleAreas, section)
     shared_writers.writeModelsSets(item.modelsSets, section['models'])
     gun_writers.writeRecoilEffect(item.recoil, section['recoil'], g_cache)
     _writeHitTester(item.hitTesterManager, None, section, 'hitTester')
     _writeGunPitchLimits(item.pitchLimits, section['pitchLimits'])
     _writeDrivenJoints(item.drivenJoints, section, 'drivenJoints')
-    _writeCustomizableAreas(item.customizableVehicleAreas, section)
     _writeDualGun(item, section)
     return
 
@@ -4826,6 +4853,8 @@ def _readShell(xmlCtx, section, name, nationID, shellTypeID, icons):
     shell.effectsIndex = v
     if section.has_key('tags'):
         shell.tags = _readTags(xmlCtx, section, 'tags', 'shell')
+    if section.has_key('secondaryAttackReason'):
+        shell.secondaryAttackReason = _xml.readStringOrNone(xmlCtx, section, 'secondaryAttackReason')
     return shell
 
 
@@ -5052,7 +5081,7 @@ def _writeDualGun(item, section):
         _xml.rewriteFloat(subSection, 'chargeThreshold', item.dualGun.chargeThreshold)
         _xml.rewriteFloat(subSection, 'afterShotDelay', item.dualGun.afterShotDelay)
         _xml.rewriteFloat(subSection, 'preChargeIndication', item.dualGun.preChargeIndication)
-        _xml.rewriteFloat(subSection, 'chargeCancelTime', item.dualGun.chargeCancelTime)
+        _xml.rewriteFloat(subSection, 'chargeCancelTime', item.dualGun.chargeCancelTime, 0.2)
         return
 
 
@@ -5552,11 +5581,16 @@ def _readShotEffects(xmlCtx, section):
          'shellMass': _xml.readNonNegativeFloat(xmlCtx, section, 'physicsParams/shellMass'),
          'splashRadius': _xml.readNonNegativeFloat(xmlCtx, section, 'physicsParams/splashRadius'),
          'splashStrength': _xml.readNonNegativeFloat(xmlCtx, section, 'physicsParams/splashStrength')}
+        hitPrefabs = {}
         res['armorHit'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorHit'))
+        hitPrefabs['armorHit'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorHit/prefab')
         res['armorCriticalHit'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorCriticalHit'))
+        hitPrefabs['armorCriticalHit'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorCriticalHit/prefab')
         res['armorResisted'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorResisted'))
+        hitPrefabs['armorResisted'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorResisted/prefab')
         if section.has_key('armorSplashHit'):
             res['armorSplashHit'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorSplashHit'))
+            hitPrefabs['armorSplashHit'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorSplashHit/prefab')
         if not artillery and not airstrike:
             model = _xml.readNonEmptyString(xmlCtx, section, 'projectile/model')
             modelOwnShot = section.readString('projectile/modelOwnShot', model)
@@ -5573,10 +5607,12 @@ def _readShotEffects(xmlCtx, section):
                 res['waterParams'] = (_xml.readPositiveFloat(xmlCtx, section, 'waterParams/shallowWaterDepth'), _xml.readPositiveFloat(xmlCtx, section, 'waterParams/rippleDiameter'))
             if section.has_key('armorBasicRicochet'):
                 res['armorBasicRicochet'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorBasicRicochet'))
+                hitPrefabs['armorBasicRicochet'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorBasicRicochet/prefab')
             else:
                 res['armorBasicRicochet'] = res['armorResisted']
             if section.has_key('armorRicochet'):
                 res['armorRicochet'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'armorRicochet'))
+                hitPrefabs['armorRicochet'] = _xml.readStringOrEmpty(xmlCtx, section, 'armorRicochet/prefab')
             else:
                 res['armorRicochet'] = res['armorResisted']
             defSubEffName = EFFECT_MATERIALS[0] + 'Hit'
@@ -5589,13 +5625,16 @@ def _readShotEffects(xmlCtx, section):
 
             if section.has_key('deepWaterHit'):
                 res['deepWaterHit'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'deepWaterHit'))
+                hitPrefabs['deepWaterHit'] = _xml.readStringOrEmpty(xmlCtx, section, 'deepWaterHit/prefab')
             if section.has_key('shallowWaterHit'):
                 res['shallowWaterHit'] = __readEffectsTimeLine(xmlCtx, _xml.getSubsection(xmlCtx, section, 'shallowWaterHit'))
+                hitPrefabs['shallowWaterHit'] = _xml.readStringOrEmpty(xmlCtx, section, 'shallowWaterHit/prefab')
             if not res.has_key('deepWaterHit'):
                 v = res.get('shallowWaterHit')
                 res['deepWaterHit'] = v if v else res[defSubEffName]
             if not res.has_key('shallowWaterHit'):
                 res['shallowWaterHit'] = res['deepWaterHit']
+            res['hitPrefabs'] = hitPrefabs
     return res
 
 
@@ -5758,7 +5797,6 @@ def _readMaterials(xmlCtx, section, subsectionName, extrasDict):
 
 
 def _readArtefacts(xmlPath):
-    import artefacts
     section = ResMgr.openSection(xmlPath)
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
@@ -5772,10 +5810,10 @@ def _readArtefacts(xmlPath):
         name = intern(name)
         if name in idsByNames:
             _xml.raiseWrongXml(xmlCtx, name, 'name is not unique')
-        className = _xml.readNonEmptyString(ctx, subsection, 'script')
-        classObj = getattr(artefacts, className, None)
+        classPath = _xml.readNonEmptyString(ctx, subsection, 'script')
+        classObj = importClass(classPath, defaultMod='items.artefacts')
         if classObj is None:
-            _xml.raiseWrongXml(ctx, 'script', "class '%s' is not found in '%s'" % (className, artefacts.__name__))
+            _xml.raiseWrongXml(ctx, 'script', "Can't import %s" % classPath)
         instObj = classObj()
         instObj.init(ctx, subsection)
         _readPriceForItem(ctx, subsection, instObj.compactDescr)
@@ -5927,7 +5965,7 @@ def _writeCamouflageSettings(section, sectionName, camouflage):
     aoTextureSizeKey = sectionName + '/aoTextureSize'
     if camouflage.aoTextureSize is not None and len(camouflage.aoTextureSize) == 2:
         aoTextureValue = Math.Vector2(camouflage.aoTextureSize[0], camouflage.aoTextureSize[1])
-        _xml.rewriteVector2(section, aoTextureSizeKey, aoTextureValue)
+        _xml.rewriteVector2(section, aoTextureSizeKey, aoTextureValue, [1.0, 1.0])
     return
 
 

@@ -28,6 +28,7 @@ from gui.shared.gui_items.customization.c11n_items import Customization
 import math_utils
 from helpers import newFakeModel
 from soft_exception import SoftException
+from CurrentVehicle import g_currentVehicle
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 if typing.TYPE_CHECKING:
     from items.components.shared_components import ProjectionDecalSlotDescription
@@ -117,7 +118,7 @@ def updateFashions(appearance):
         if outfit and outfit.style and outfit.style.isProgression:
             changeStyleProgression(style=outfit.style, appearance=appearance, level=outfit.progressionLevel)
         if IS_EDITOR:
-            if outfit and outfit.style and outfit.style.modelsSet != appearance.currentModelsSet:
+            if outfit.style is not None and outfit.style.modelsSet != appearance.currentModelsSet:
                 setMaterialsVisibility(appearance, appearance.availableMaterials, False)
         appearance.c11nComponent = appearance.createComponent(Vehicular.C11nComponent, fashions, appearance.compoundModel, outfitData)
         return
@@ -200,7 +201,13 @@ def prepareBattleOutfit(outfitCD, vehicleDescriptor, vehicleId):
     outfitComponent = getOutfitComponent(outfitCD, vehicleDescriptor)
     outfit = Outfit(component=outfitComponent, vehicleCD=vehicleCD)
     player = BigWorld.player()
-    forceHistorical = player.playerVehicleID != vehicleId and player.customizationDisplayType < outfit.customizationDisplayType()
+    if player is not None and hasattr(player, 'customizationDisplayType'):
+        localPlayerWantsHistoricallyAccurate = player.customizationDisplayType < outfit.customizationDisplayType()
+        isLocalVehicle = player.playerVehicleID != vehicleId
+    else:
+        localPlayerWantsHistoricallyAccurate = False
+        isLocalVehicle = False
+    forceHistorical = isLocalVehicle and localPlayerWantsHistoricallyAccurate
     if outfit.style and (outfit.style.isProgression or IS_EDITOR):
         progressionOutfit = getStyleProgressionOutfit(outfit, toLevel=outfit.progressionLevel)
         if progressionOutfit is not None:
@@ -208,11 +215,24 @@ def prepareBattleOutfit(outfitCD, vehicleDescriptor, vehicleId):
     return Outfit(vehicleCD=vehicleCD) if forceHistorical else outfit
 
 
+def getCurrentLevelForRewindStyle(outfit):
+    itemsCache = dependency.instance(IItemsCache)
+    inventory = itemsCache.items.inventory
+    intCD = makeIntCompactDescrByID('customizationItem', CustomizationType.STYLE, outfit.style.id)
+    vehDesc = g_currentVehicle.item.descriptor
+    progressData = inventory.getC11nProgressionData(intCD, vehDesc.type.compactDescr)
+    return progressData.currentLevel if progressData is not None else 1
+
+
 def getStyleProgressionOutfit(outfit, toLevel=0, season=None):
     styleProgression = outfit.style.styleProgressions
     allLevels = styleProgression.keys()
     if not season:
         season = _currentMapSeason()
+    style = outfit.style
+    if toLevel == 0 and style.isProgressionRewindEnabled:
+        _logger.info('Get style progression level for the rewind style with id=%d', style.id)
+        toLevel = getCurrentLevelForRewindStyle(outfit)
     if allLevels and toLevel not in allLevels:
         _logger.error('Get style progression outfit: incorrect level given: %d', toLevel)
         toLevel = 1

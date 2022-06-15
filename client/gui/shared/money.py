@@ -5,18 +5,17 @@ from shared_utils import CONST_CONTAINER
 from soft_exception import SoftException
 
 class Currency(CONST_CONTAINER):
-    FREE_XP = 'freeXP'
     CREDITS = 'credits'
     GOLD = 'gold'
     CRYSTAL = 'crystal'
     EVENT_COIN = 'eventCoin'
     BPCOIN = 'bpcoin'
+    BRCOIN = 'brcoin'
     ALL = (CREDITS,
      GOLD,
      CRYSTAL,
      EVENT_COIN,
      BPCOIN)
-    EXTENDED = ALL + (FREE_XP,)
     BY_WEIGHT = (GOLD,
      CRYSTAL,
      CREDITS,
@@ -27,8 +26,7 @@ class Currency(CONST_CONTAINER):
      GOLD: 'gold',
      CRYSTAL: 'crystal',
      EVENT_COIN: 'event_coin',
-     BPCOIN: 'bpcoin',
-     FREE_XP: 'free_xp'}
+     BPCOIN: 'bpcoin'}
     _CURRENCY_INTERNAL_MAP = {external:internal for internal, external in _CURRENCY_EXTERNAL_MAP.iteritems()}
 
     @classmethod
@@ -259,6 +257,10 @@ class Money(object):
     def get(self, currency, default=None):
         return self._values[currency] if currency in self._values else default
 
+    @property
+    def currencies(self):
+        return self.ALL
+
     def replace(self, currency, value):
         copy = self._values.copy()
         self._setValue(copy, currency, value)
@@ -392,6 +394,39 @@ MONEY_ZERO_BPCOIN = Money(bpcoin=0)
 ZERO_MONEY = Money(**{c:0 for c in Currency.ALL})
 _CurrencyCollection = namedtuple('CurrencyCollection', Currency.ALL)
 _CurrencyCollection.__new__.__defaults__ = len(Currency.ALL) * (None,)
+
+class DynamicMoney(Money):
+
+    def __init__(self, *args, **kwargs):
+        super(DynamicMoney, self).__init__(*args, **kwargs)
+        if kwargs:
+            extended = {key:value for key, value in kwargs.iteritems() if key not in self._values}
+            self._values.update(extended)
+            currencies = tuple(extended.keys())
+            self.ALL = Currency.ALL + currencies
+            self.WEIGHT = Currency.BY_WEIGHT + currencies
+
+    def isCompound(self):
+        return self.isCompound() and self.isDynCompound()
+
+    def isDynCompound(self):
+        consist = [ currency for currency in self._values if currency not in Currency.ALL and self.get(currency, 0) != 0 ]
+        return len(consist) > 1
+
+    def isSpecCompound(self, currencies):
+        consist = [ currency for currency in currencies if self.isSet(currency) ]
+        return len(consist) > 1
+
+    def toMoneyTuple(self):
+        raise SoftException('Conversion of ExtendedMoney to old style _Money is not supported')
+
+
+DynamicMoney.UNDEFINED = DynamicMoney()
+DYNAMIC_MONEY_ZERO_CREDITS = DynamicMoney(credits=0)
+DYNAMIC_MONEY_ZERO_GOLD = DynamicMoney(gold=0)
+DYNAMIC_MONEY_ZERO_CRYSTAL = DynamicMoney(crystal=0)
+DYNAMIC_MONEY_ZERO_EVENT_COIN = DynamicMoney(eventCoin=0)
+DYNAMIC_MONEY_ZERO_BPCOIN = DynamicMoney(bpcoin=0)
 
 class CurrencyCollection(_CurrencyCollection):
 

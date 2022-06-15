@@ -199,11 +199,12 @@ def isPlayerOnArena(avatar=None):
 def getInputHandler(avatar=None):
     if avatar is None:
         avatar = BigWorld.player()
-        if avatar is None:
-            return
     try:
         result = avatar.inputHandler
     except AttributeError:
+        import Avatar
+        if not isinstance(avatar, Avatar.Avatar):
+            return
         _logger.exception('Attribute "inputHandler" not found')
         result = None
 
@@ -213,11 +214,12 @@ def getInputHandler(avatar=None):
 def getArena(avatar=None):
     if avatar is None:
         avatar = BigWorld.player()
-        if avatar is None:
-            return
     try:
         result = avatar.arena
     except AttributeError:
+        import Avatar
+        if not isinstance(avatar, Avatar.Avatar):
+            return
         _logger.exception('Attribute "arena" not found')
         result = None
 
@@ -433,6 +435,18 @@ def isObserverSeesAll(avatar=None):
         result = avatar.observerSeesAll()
     except AttributeError as error:
         _logger.exception('Attribute "isObserverSeesAll" not found, exception %s', error.message)
+        result = False
+
+    return result
+
+
+def isBecomeObserverAfterDeath(avatar=None):
+    if avatar is None:
+        avatar = BigWorld.player()
+    try:
+        result = avatar.isBecomeObserverAfterDeath()
+    except AttributeError as error:
+        _logger.exception('Attribute "isBecomeObserverAfterDeath" not found, exception %s', error.message)
         result = False
 
     return result

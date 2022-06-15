@@ -21,7 +21,7 @@ from cgf_obsolete_script.auto_properties import AutoProperty
 from vehicle_systems import model_assembler
 from vehicle_systems import camouflages
 from vehicle_systems.vehicle_damage_state import VehicleDamageState
-from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes, TankNodeNames, TankRenderMode
+from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes, TankNodeNames, TankRenderMode, CgfTankNodes
 from vehicle_systems.components.CrashedTracks import CrashedTrackController
 from vehicle_systems.components.vehicleDecal import VehicleDecal
 from vehicle_systems.components.siegeEffectsController import SiegeEffectsController
@@ -31,7 +31,7 @@ from vehicle_outfit.outfit import Outfit
 from items.battle_royale import isSpawnedBot
 from helpers import isPlayerAvatar
 from ModelHitTester import ModelStatus
-from vehicle_systems.components import debris_crashed_tracks
+from vehicle_systems.components.debris_crashed_tracks import TrackCrashWithDebrisComponent
 _logger = logging.getLogger(__name__)
 DEFAULT_STICKERS_ALPHA = 1.0
 MATKIND_COUNT = 3
@@ -42,6 +42,18 @@ TANK_FRICTION_EVENT = 'collision_tank_friction_pc'
 PERIODIC_UPDATE_TIME = 0.25
 _LOD_DISTANCE_EXHAUST = 200.0
 _LOD_DISTANCE_TRAIL_PARTICLES = 100.0
+
+class PartProperties(object):
+    HIGHLIGHTABLE = 1
+    HIGHLIGHTBYVISUAL = 2
+
+
+class VehicleAppearanceComponent(object):
+    appearance = property(lambda self: self.__appearance)
+
+    def __init__(self, appearance):
+        self.__appearance = appearance
+
 
 class CommonTankAppearance(ScriptGameObject):
     compoundModel = property(lambda self: self._compoundModel)
@@ -56,6 +68,11 @@ class CommonTankAppearance(ScriptGameObject):
     renderMode = property(lambda self: self.__renderMode)
 
     def _setFashions(self, fashions, isTurretDetached=False):
+        if IS_EDITOR and self.__fashions:
+            for fashion in self.__fashions:
+                if fashion:
+                    fashion.disowned()
+
         self.__fashions = fashions
         if isTurretDetached:
             self.compoundModel.setupFashions((fashions.chassis, fashions.hull))
@@ -125,7 +142,7 @@ class CommonTankAppearance(ScriptGameObject):
     flagComponent = ComponentDescriptor()
 
     def __init__(self, spaceID):
-        ScriptGameObject.__init__(self, spaceID, 'Tank.Root')
+        ScriptGameObject.__init__(self, spaceID, CgfTankNodes.TANK_ROOT)
         self._vehicle = None
         self.__wheelsGameObject = ScriptGameObject(spaceID, 'Tank.Wheels.Root')
         self.__filter = None
@@ -166,6 +183,8 @@ class CommonTankAppearance(ScriptGameObject):
         self.__frameTimestamp = 0
         self.__periodicTimerID = None
         self.undamagedStateChildren = []
+        self.createComponent(VehicleAppearanceComponent, self)
+        self._loadingQueue = []
         return
 
     def prerequisites(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, renderMode=None):
@@ -184,6 +203,8 @@ class CommonTankAppearance(ScriptGameObject):
         prereqs.extend(camouflages.getAttachmentsAnimatorsPrereqs(self.__attachments, self.spaceID))
         splineDesc = self.typeDescriptor.chassis.splineDesc
         modelsSet = self.outfit.modelsSet
+        if IS_EDITOR:
+            modelsSet = self.currentModelsSet
         if splineDesc is not None:
             for _, trackDesc in splineDesc.trackPairs.iteritems():
                 prereqs += trackDesc.prerequisites(modelsSet)
@@ -195,18 +216,26 @@ class CommonTankAppearance(ScriptGameObject):
             self.damageState.update(0, isCrewActive, False)
         collisionAssembler = model_assembler.prepareCollisionAssembler(self.typeDescriptor, self.isTurretDetached, self.spaceID)
         prereqs.append(collisionAssembler)
+        skin = modelsSetParams.skin
+        if IS_EDITOR:
+            skin = self.currentModelsSet
         physicalTracksBuilders = self.typeDescriptor.chassis.physicalTracks
         for name, builders in physicalTracksBuilders.iteritems():
             for index, builder in enumerate(builders):
-                prereqs.append(builder.createLoader(self.spaceID, '{0}{1}PhysicalTrack'.format(name, index), modelsSetParams.skin))
+                prereqs.append(builder.createLoader(self.spaceID, '{0}{1}PhysicalTrack'.format(name, index), skin))
 
         return prereqs
 
     def construct(self, isPlayer, resourceRefs):
         self.__isObserver = 'observer' in self.typeDescriptor.type.tags
         self._compoundModel = resourceRefs[self.typeDescriptor.name]
+        self.removeComponentByType(GenericComponents.DynamicModelComponent)
+        self.createComponent(GenericComponents.DynamicModelComponent, self._compoundModel)
         if not self._compoundModel.isValid():
             _logger.error('compoundModel is not valid')
+        if self.typeDescriptor.gun.edgeByVisualModel:
+            self._compoundModel.setPartProperties(TankPartIndexes.GUN, PartProperties.HIGHLIGHTABLE | PartProperties.HIGHLIGHTBYVISUAL)
+        self._compoundModel.setPartProperties(TankPartIndexes.CHASSIS, PartProperties.HIGHLIGHTABLE | PartProperties.HIGHLIGHTBYVISUAL)
         self.__boundEffects = bound_effects.ModelBoundEffects(self.compoundModel)
         isCurrentModelDamaged = self.damageState.isCurrentModelDamaged
         fashions = camouflages.prepareFashions(isCurrentModelDamaged)
@@ -218,6 +247,8 @@ class CommonTankAppearance(ScriptGameObject):
         self._setupModels()
         if not isCurrentModelDamaged:
             modelsSet = self.outfit.modelsSet
+            if IS_EDITOR:
+                modelsSet = self.currentModelsSet
             self._splineTracks = model_assembler.setupSplineTracks(self.fashion, self.typeDescriptor, self.compoundModel, resourceRefs, modelsSet)
             self.crashedTracksController = CrashedTrackController(self.typeDescriptor, self.fashion, modelsSet)
         else:
@@ -282,8 +313,12 @@ class CommonTankAppearance(ScriptGameObject):
         self.__postSetupFilter()
         compoundModel.setPartBoundingBoxAttachNode(TankPartIndexes.GUN, TankNodeNames.GUN_INCLINATION)
         camouflages.updateFashions(self)
-        model_assembler.assembleCustomLogicComponents(self, self.__attachments, self.__modelAnimators)
+        model_assembler.assembleCustomLogicComponents(self, self.typeDescriptor, self.__attachments, self.__modelAnimators)
         self._createStickers()
+        while self._loadingQueue:
+            prefab, go, vector, callback = self._loadingQueue.pop()
+            CGF.loadGameObjectIntoHierarchy(prefab, go, vector, callback)
+
         return
 
     def destroy(self):
@@ -306,6 +341,7 @@ class CommonTankAppearance(ScriptGameObject):
         self._chassisDecal = None
         self._compoundModel = None
         self._destroyStickers()
+        self._loadingQueue = []
         return
 
     def activate(self):
@@ -773,6 +809,12 @@ class CommonTankAppearance(ScriptGameObject):
     def maxTurretRotationSpeed(self):
         pass
 
+    def pushToLoadingQueue(self, prefab, go, vector, callback):
+        self._loadingQueue.append((prefab,
+         go,
+         vector,
+         callback))
+
     def _onCameraChanged(self, cameraName, currentVehicleId=None):
         if self.id != BigWorld.player().playerVehicleID:
             return
@@ -804,7 +846,7 @@ class CommonTankAppearance(ScriptGameObject):
             return
         else:
             track = self.tracks.getTrackGameObject(isLeft, pairIndex)
-            debris = track.createComponent(debris_crashed_tracks.TrackCrashWithDebrisComponent, isLeft, pairIndex, self.typeDescriptor, self.gameObject, self.boundEffects)
+            debris = track.createComponent(TrackCrashWithDebrisComponent, isLeft, pairIndex, self.typeDescriptor, self.gameObject, self.boundEffects)
             debris.isTopPriority = self._vehicle.isPlayerVehicle
             debris.isPlayer = self._vehicle.isPlayerVehicle
             debris.isFlying = isSideFlying
@@ -819,7 +861,7 @@ class CommonTankAppearance(ScriptGameObject):
             return
         else:
             track = self.tracks.getTrackGameObject(isLeft, pairIndex)
-            debris = track.findComponentByType(debris_crashed_tracks.TrackCrashWithDebrisComponent)
+            debris = track.findComponentByType(TrackCrashWithDebrisComponent)
             if debris is not None:
                 debris.markAsRepaired()
                 track.removeComponent(debris)

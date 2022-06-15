@@ -20,6 +20,7 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.battle_results.reusable.vehicles import VehiclesInfo
+    from gui.shared.utils.requesters.StatsRequester import _ControllableXPData
 _LifeTimeInfo = namedtuple('_LifeTimeInfo', ('isKilled', 'lifeTime'))
 
 class _SquadBonusInfo(object):
@@ -321,6 +322,8 @@ class _EconomicsRecordsChains(object):
         return
 
     def _addXPResults(self, connector, results):
+        premiumType = results.get('premMask', PREMIUM_TYPE.NONE)
+        hasPremiumPlus = bool(premiumType & PREMIUM_TYPE.PLUS)
         if 'xpReplay' in results and results['xpReplay'] is not None:
             replay = ValueReplay(connector, recordName='xp', replay=results['xpReplay'])
             self.__updateAdditionalFactorFromReplay(replay, results, setDefault=True)
@@ -331,11 +334,12 @@ class _EconomicsRecordsChains(object):
             self._premiumXP.addRecords(_XPReplayRecords(replay, isHighScope, results['achievementXP']))
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.PLUS)
             self._premiumPlusXP.addRecords(_XPReplayRecords(replay, isHighScope, results['achievementXP']))
+            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=hasPremiumPlus)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.NONE)
             self._baseXPAdd.addRecords(_XPReplayRecords(replay, isHighScope, results['achievementXP']))
-            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=False)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.BASIC)
             self._premiumXPAdd.addRecords(_XPReplayRecords(replay, isHighScope, results['achievementXP']))
+            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=False)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.PLUS)
             self._premiumPlusXPAdd.addRecords(_XPReplayRecords(replay, isHighScope, results['achievementXP']))
         else:
@@ -349,11 +353,12 @@ class _EconomicsRecordsChains(object):
             self._premiumFreeXP.addRecords(_FreeXPReplayRecords(replay, results['achievementFreeXP']))
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.PLUS)
             self._premiumPlusFreeXP.addRecords(_FreeXPReplayRecords(replay, results['achievementFreeXP']))
+            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=hasPremiumPlus)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.NONE)
             self._baseFreeXPAdd.addRecords(_FreeXPReplayRecords(replay, results['achievementFreeXP']))
-            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=False)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.BASIC)
             self._premiumFreeXPAdd.addRecords(_FreeXPReplayRecords(replay, results['achievementFreeXP']))
+            self.__updateAdditionalFactorFromReplay(replay, results, setDefault=False)
             self.__updatePremiumXPFactor(replay, results, premType=PREMIUM_TYPE.PLUS)
             self._premiumPlusFreeXPAdd.addRecords(_FreeXPReplayRecords(replay, results['achievementFreeXP']))
         else:
@@ -410,7 +415,7 @@ class _EconomicsRecordsChains(object):
 
 
 class PersonalInfo(shared.UnpackedInfo):
-    __slots__ = ('__avatar', '__vehicles', '__lifeTimeInfo', '__isObserver', '_economicsRecords', '__questsProgress', '__PM2Progress', '__rankInfo', '__isTeamKiller', '__progressiveReward', '__premiumMask', '__isAddXPBonusApplied', '__c11nProgress', '__dogTags', '__goldBankGain')
+    __slots__ = ('__avatar', '__vehicles', '__lifeTimeInfo', '__isObserver', '_economicsRecords', '__questsProgress', '__PM2Progress', '__rankInfo', '__isTeamKiller', '__progressiveReward', '__premiumMask', '__isAddXPBonusApplied', '__c11nProgress', '__dogTags', '__goldBankGain', '__xpProgress', '__replayURL')
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, personal):
@@ -430,9 +435,11 @@ class PersonalInfo(shared.UnpackedInfo):
         self.__questsProgress = {}
         self.__PM2Progress = {}
         self.__c11nProgress = {}
+        self.__xpProgress = {}
         self.__rankInfo = PostBattleRankInfo(0, 0, 0, 0, 0, 0, 0, 0, {}, {}, False, 0, 0)
         self.__dogTags = {}
         self.__goldBankGain = 0
+        self.__replayURL = ''
         if not self.hasUnpackedItems():
             self.__collectRequiredData(personal)
         return
@@ -472,6 +479,10 @@ class PersonalInfo(shared.UnpackedInfo):
     @property
     def isTeamKiller(self):
         return self.__isTeamKiller
+
+    @property
+    def xpProgress(self):
+        return self.__xpProgress
 
     def getVehicleCDsIterator(self, result):
         for intCD in self.__vehicles:
@@ -514,6 +525,9 @@ class PersonalInfo(shared.UnpackedInfo):
 
     def getGoldBankGain(self):
         return self.__goldBankGain
+
+    def getReplayURL(self):
+        return self.__replayURL
 
     def getPM2Progress(self):
         return self.__PM2Progress
@@ -560,6 +574,15 @@ class PersonalInfo(shared.UnpackedInfo):
     def getCrystalDetailsRecords(self):
         return self._economicsRecords.getCrystalDetails()
 
+    def updateXPEarnings(self, extraXPData):
+        vehProgress = self.__xpProgress[extraXPData.vehicleID]
+        vehProgress['xp'] += extraXPData.extraXP
+        newTankmenXp = []
+        for (oldID, oldValue), (newID, newValue) in zip(vehProgress['xpByTmen'], extraXPData.extraTmenXP):
+            newTankmenXp.append((newID, oldValue + newValue))
+
+        vehProgress['xpByTmen'] = newTankmenXp
+
     def __collectRequiredData(self, info):
         getItemByCD = self.itemsCache.items.getItemByCD
         itemCDs = [ key for key in info.keys() if isinstance(key, (int, long, float)) ]
@@ -573,6 +596,7 @@ class PersonalInfo(shared.UnpackedInfo):
             self.__progressiveReward = infoAvatar.get('progressiveReward')
             self.__dogTags.update(infoAvatar.get('dogTags', {}))
             self.__goldBankGain = infoAvatar.get('goldBankGain', 0)
+            self.__replayURL = infoAvatar.get('replayURL', '')
         for item in items:
             intCD = item.intCD
             data = info[intCD]
@@ -592,6 +616,8 @@ class PersonalInfo(shared.UnpackedInfo):
             self.__questsProgress.update(data.get('questsProgress', {}))
             self.__PM2Progress.update(data.get('PM2Progress', {}))
             self.__c11nProgress[intCD] = data.get('c11nProgress', {})
+            self.__xpProgress[intCD] = {'xp': data.get('xp', 0),
+             'xpByTmen': data.get('xpByTmen', [])}
 
         if lifeTimes:
             self.__lifeTimeInfo = _LifeTimeInfo(True, min(lifeTimes))

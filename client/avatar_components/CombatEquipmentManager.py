@@ -71,7 +71,7 @@ class CombatEquipmentManager(object):
             self.debugPolyLine = Flock.DebugPolyLine()
             self.debugPoints = []
             self.debugDirs = []
-        self.__lastSmokeInfos = None
+        self.__lastSmokeInfo = None
         self.__onCombatEquipmentShotCB = None
         return
 
@@ -281,13 +281,17 @@ class CombatEquipmentManager(object):
         area.setup(pos, direction, size, visual, color, None)
         return area
 
-    def onSmoke(self, smokeInfos):
-        ctrl = self.guiSessionProvider.shared.vehicleState
-        self.__lastSmokeInfos = smokeInfos
-        if ctrl is not None:
-            ctrl.notifyStateChanged(VEHICLE_VIEW_STATE.SMOKE, smokeInfos)
-        return
+    def onSmoke(self, smokeInfo):
+        attachedVehicle = BigWorld.player().getVehicleAttached()
+        if not attachedVehicle or not attachedVehicle.isAlive():
+            return
+        else:
+            ctrl = self.guiSessionProvider.shared.vehicleState
+            self.__lastSmokeInfo = smokeInfo
+            if ctrl is not None:
+                ctrl.notifyStateChanged(VEHICLE_VIEW_STATE.SMOKE, smokeInfo)
+            return
 
     @property
-    def lastSmokeInfos(self):
-        return self.__lastSmokeInfos
+    def lastSmokeInfo(self):
+        return self.__lastSmokeInfo

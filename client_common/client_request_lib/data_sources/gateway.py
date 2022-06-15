@@ -445,9 +445,10 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         return self._request_data(callback, url, get_data={}, converters={'periphery_id': int,
          'unit_server_id': int}, method='PATCH', post_data=post_data)
 
-    def set_equipment_commander(self, callback, periphery_id, unit_server_id, target_account_id, fields=None):
+    def set_equipment_commander(self, callback, periphery_id, unit_server_id, target_account_id, role, fields=None):
         url = '/wgsh/periphery/{periphery_id}/units/{unit_server_id}/equipment_commander/'.format(periphery_id=periphery_id, unit_server_id=unit_server_id)
-        post_data = {'equipment_commander_id': target_account_id}
+        post_data = {'equipment_commander_id': target_account_id,
+         'role': role}
         return self._request_data(callback, url, get_data={}, converters={'periphery_id': int,
          'unit_server_id': int}, method='POST', post_data=post_data)
 
@@ -593,9 +594,9 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         url = '/mapbox'
         return self._request_data(callback, url, method='POST', post_data={'itemID': itemID})
 
-    def complete_survey(self, callback, mapName):
+    def complete_survey(self, callback, surveyData):
         url = '/mapbox/surveys/complete'
-        return self._request_data(callback, url, method='POST', post_data={'name': mapName})
+        return self._request_data(callback, url, method='POST', post_data=surveyData)
 
     def request_authorized_survey_url(self, callback, mapURL):
         return self._request_data(callback, mapURL, method='GET')
@@ -609,12 +610,6 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         url = '/giftsystem/gift'
         post_data = {'entitlement_code': entitlement_code,
          'receiver_id': receiver_id}
-        post_data.update(meta_info)
-        return self._request_data(callback, url, method='POST', post_data=post_data)
-
-    def post_secret_santa_gift(self, callback, entitlement_code, meta_info):
-        url = '/giftsystem/gift/secret_santa'
-        post_data = {'entitlement_code': entitlement_code}
         post_data.update(meta_info)
         return self._request_data(callback, url, method='POST', post_data=post_data)
 

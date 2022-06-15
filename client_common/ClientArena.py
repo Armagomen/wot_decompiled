@@ -267,11 +267,11 @@ class ClientArena(object):
         self.onVehicleStatisticsUpdate(vehicleID)
 
     def __onVehicleKilled(self, argStr):
-        victimID, killerID, equipmentID, reason = cPickle.loads(argStr)
+        victimID, killerID, equipmentID, reason, numVehiclesAffected = cPickle.loads(argStr)
         vehInfo = self.__vehicles.get(victimID, None)
         if vehInfo is not None:
             vehInfo['isAlive'] = False
-            self.onVehicleKilled(victimID, killerID, equipmentID, reason)
+            self.onVehicleKilled(victimID, killerID, equipmentID, reason, numVehiclesAffected)
         return
 
     def __onAvatarReady(self, argStr):
@@ -284,6 +284,9 @@ class ClientArena(object):
             self._vsePlans.load(self.arenaType.visualScript[ASPECT.CLIENT])
             self._vsePlans.start()
         return
+
+    def loadVsePlans(self):
+        self._vsePlans.load(self.arenaType.visualScript[ASPECT.CLIENT], autoStart=True)
 
     def __onBasePointsUpdate(self, argStr):
         team, baseID, points, timeLeft, invadersCnt, capturingStopped = cPickle.loads(argStr)

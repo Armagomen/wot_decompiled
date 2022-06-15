@@ -52,6 +52,9 @@ class INotificationWindowController(IGameController):
     def isEnabled(self):
         raise NotImplementedError
 
+    def isExecuting(self):
+        raise NotImplementedError
+
     def postponeActive(self):
         raise NotImplementedError
 
@@ -90,22 +93,3 @@ class IFullscreenManager(object):
 
 class IWindowLoaderController(IGameController):
     __slots__ = ()
-
-
-class IOverlaysManager(object):
-    __slots__ = ()
-
-    def isSuspended(self, window):
-        raise NotImplementedError
-
-    def suspend(self, condition=None):
-        raise NotImplementedError
-
-    def release(self):
-        raise NotImplementedError
-
-    def init(self):
-        raise NotImplementedError
-
-    def fini(self):
-        raise NotImplementedError

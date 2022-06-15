@@ -12,6 +12,7 @@ COLOR_WHITE = 4294967295L
 
 class CombatSelectedArea(object):
     position = property(lambda self: self.__matrix.translation)
+    area = property(lambda self: self.__area)
 
     def __init__(self, enableConstrainToArenaBounds=False):
         self.__terrainSelectedArea = None
@@ -24,6 +25,7 @@ class CombatSelectedArea(object):
         self.__color = None
         self.__size = None
         self.__enableConstrainToArenaBounds = enableConstrainToArenaBounds
+        self.__area = None
         return
 
     def setup(self, position, direction, size, visualPath, color, marker):
@@ -36,13 +38,14 @@ class CombatSelectedArea(object):
         rootNode.attach(area)
         self.__size = size
         self.__color = color
-        BigWorld.addModel(model)
+        BigWorld.player().addModel(model)
         self.__matrix = Math.Matrix()
         model.addMotor(BigWorld.Servo(self.__matrix))
         self.relocate(position, direction)
         self.__nextPosition = position
         self.__speed = Math.Vector3(0.0, 0.0, 0.0)
         self.__time = 0.0
+        self.__area = area
 
     def addLine(self, position, color, width, height):
         if self.__fakeModel is None:
@@ -125,13 +128,14 @@ class CombatSelectedArea(object):
         self.setup(position, direction, size, DEFAULT_RADIUS_MODEL, COLOR_WHITE, marker)
 
     def destroy(self):
-        BigWorld.delModel(self.__fakeModel)
+        BigWorld.player().delModel(self.__fakeModel)
         self.__terrainSelectedArea = None
         self.__terrainRotatedArea = None
         self.__pixelQuad = None
         self.__fakeModel = None
         self.__matrix = None
         self.__rotateModelNode = None
+        self.__area = None
         return
 
     def pointInside(self, point):
@@ -141,6 +145,12 @@ class CombatSelectedArea(object):
         x_side = self.__size.x / 2
         y_side = self.__size.y / 2
         return -x_side < point.x < x_side and -y_side < point.z < y_side
+
+    def pointInsideCircle(self, point, radius):
+        m = Math.Matrix(self.__fakeModel.matrix)
+        m.invert()
+        point = m.applyPoint(point)
+        return point.x * point.x + point.z * point.z <= radius * radius
 
     def setColor(self, color=None):
         if color is None:
@@ -152,3 +162,7 @@ class CombatSelectedArea(object):
     def enableAccurateCollision(self, isEnabled):
         if self.__terrainSelectedArea:
             self.__terrainSelectedArea.enableAccurateCollision(isEnabled)
+
+    def enableWaterCollision(self, isEnabled):
+        if self.__terrainSelectedArea:
+            self.__terrainSelectedArea.enableWaterCollision(isEnabled)

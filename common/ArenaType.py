@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/ArenaType.py
-from collections import defaultdict
+import os
 from realm_utils import ResMgr
-from constants import IS_BOT, IS_WEB, IS_CLIENT, ARENA_TYPE_XML_PATH, ARENA_GUI_TYPE_LABEL
-from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA, IS_DEVELOPMENT
+from constants import IS_BOT, IS_WEB, IS_CLIENT, ARENA_TYPE_XML_PATH
+from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA, HAS_DEV_RESOURCES
 from constants import IS_CELLAPP, IS_BASEAPP
 from constants import CHAT_COMMAND_FLAGS
 from coordinate_system import AXIS_ALIGNED_DIRECTION
@@ -14,7 +14,8 @@ from typing import Dict
 from soft_exception import SoftException
 from collections import defaultdict
 from data_structures import DictObj
-from visual_script.misc import ASPECT, VisualScriptTag
+from visual_script.misc import ASPECT, VisualScriptTag, readVisualScriptPlanParams, readVisualScriptPlans
+from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory, SpaceVisibilityFlags
 from Math import Vector2
 if IS_CLIENT:
     from helpers import i18n
@@ -25,12 +26,19 @@ if IS_CELLAPP or IS_BASEAPP:
     from server_constants import ARENA_ESTIMATED_LOAD_DEFAULT
 g_cache = {}
 g_geometryCache = {}
+g_spaceCache = {}
 g_geometryNamesToIDs = {}
 g_gameplayNames = set()
 g_gameplaysMask = 0
 
-def getVisibilityMask(gameplayID):
-    return 1 << gameplayID
+def getVisibilityMask(typeID):
+    global g_spaceCache
+    gameplayID, geometryID = parseTypeID(typeID)
+    return g_spaceCache[geometryID][SpaceVisibilityFlags.FLAGS_CONFIG_SECTION].getMaskForGameplayID(gameplayID)
+
+
+def getCompositeVisibilityMask(geometryID, gameplayIDs):
+    return g_spaceCache[geometryID][SpaceVisibilityFlags.FLAGS_CONFIG_SECTION].getMaskForGameplayIDs(gameplayIDs)
 
 
 def getGameplaysMask(gameplayNames):
@@ -60,7 +68,7 @@ def buildArenaTypeID(gameplayID, geometryID):
 _LIST_XML = ARENA_TYPE_XML_PATH + '_list_.xml'
 _DEFAULT_XML = ARENA_TYPE_XML_PATH + '_default_.xml'
 
-def init():
+def init(isFullCache=True):
     global g_gameplayNames
     global g_cache
     global g_geometryNamesToIDs
@@ -76,11 +84,13 @@ def init():
         raise SoftException("No defaults for 'gameplayTypes'")
     geometriesSet = set()
     for key, value in rootSection.items():
+        isDevelopmentArena = value.readBool('isDevelopment')
         geometryID = value.readInt('id')
         if geometryID in geometriesSet:
             raise SoftException('Geometry ID=%d is not unique' % geometryID)
-        geometriesSet.add(geometryID)
-        __buildCache(geometryID, value.readString('name'), defaultXml)
+        buildResult = __buildCache(geometryID, value.readString('name'), defaultXml, isFullCache, isDevelopmentArena)
+        if buildResult:
+            geometriesSet.add(geometryID)
 
     ResMgr.purge(_LIST_XML, True)
     ResMgr.purge(_DEFAULT_XML, True)
@@ -156,25 +166,58 @@ class GeometryType(_BonusTypeOverridesMixin):
         return value if value is not None else self.__cfg.get(name)
 
 
-def __buildCache(geometryID, geometryName, defaultXml):
+class _DroneSettingHolder(object):
+
+    def __init__(self):
+        super(_DroneSettingHolder, self).__init__()
+        self.__defaultValue = None
+        self.__specificValues = {}
+        return
+
+    def setValue(self, arenaTypeLabel, value):
+        self.__specificValues[arenaTypeLabel] = value
+        return self
+
+    def getValue(self, arenaTypeLabel):
+        value = self.__specificValues.get(arenaTypeLabel)
+        return value if value is not None else self.__defaultValue
+
+    def setDefault(self, value):
+        self.__defaultValue = value
+        return self
+
+    def getDefault(self):
+        return self.__defaultValue
+
+    def getSpecificItemsCount(self):
+        return len(self.__specificValues)
+
+    def __getitem__(self, key):
+        return self.getValue(key)
+
+
+def __buildCache(geometryID, geometryName, defaultXml, isFullCache, isDevelopmentArena=False):
     global g_geometryCache
     sectionName = ARENA_TYPE_XML_PATH + geometryName + '.xml'
     section = ResMgr.openSection(sectionName)
     if section is None:
+        if isDevelopmentArena:
+            return False
         raise SoftException("Can't open '%s'" % sectionName)
     geometryCfg = __readGeometryCfg(geometryID, geometryName, section, defaultXml)
-    if geometryCfg['isDevelopment'] and not IS_DEVELOPMENT:
-        return
-    else:
-        geometryType = GeometryType(geometryCfg)
-        g_geometryCache[geometryID] = __addBonusTypeOverrides(geometryType, section, defaultXml)
-        for gameplayCfg in __readGameplayCfgs(geometryName, section, defaultXml, geometryCfg):
-            arenaType = ArenaType(geometryType, gameplayCfg)
-            g_cache[arenaType.id] = arenaType
-            g_gameplayNames.add(arenaType.gameplayName)
+    geometryType = GeometryType(geometryCfg)
+    g_geometryCache[geometryID] = __addBonusTypeOverrides(geometryType, section, defaultXml)
+    if isFullCache:
+        spaceName = os.path.basename(geometryCfg['geometry'])
+        spaceData = __readSpaceCfg(spaceName)
+        g_spaceCache[geometryID] = spaceData
+    for gameplayCfg in __readGameplayCfgs(geometryName, section, defaultXml, geometryCfg):
+        arenaType = ArenaType(geometryType, gameplayCfg)
+        g_cache[arenaType.id] = arenaType
+        g_gameplayNames.add(arenaType.gameplayName)
 
-        ResMgr.purge(sectionName, True)
-        return
+    ResMgr.purge(sectionName, True)
+    return True
 
 
 def __addBonusTypeOverrides(overridable, section, defaultXml):
@@ -232,7 +275,6 @@ def __readGeometryCfg(geometryID, geometryName, section, defaultXml):
             cfg['waterFreqX'] = section.readFloat('water/freqX', 1.0)
             cfg['waterFreqZ'] = section.readFloat('water/freqZ', 1.0)
             cfg['defaultGroundEffect'] = __readDefaultGroundEffect(section, defaultXml)
-            cfg['deathZoneBorders'] = __readDeathZoneBordersSection(section, defaultXml)
         cfg.update(__readCommonCfg(section, defaultXml, True, {}))
     except Exception as e:
         LOG_CURRENT_EXCEPTION()
@@ -256,7 +298,11 @@ def __readGameplayCfgs(geometryName, section, defaultXml, geometryCfg):
             defaultSubsection = defaultGameplayTypesXml[name]
             if defaultSubsection is None:
                 raise SoftException("no defaults for '%s'" % name)
-            cfgs.append(__readGameplayCfg(name, subsection, defaultSubsection, geometryCfg))
+            gameplayCfg = __readGameplayCfg(name, subsection, defaultSubsection, geometryCfg)
+            if IS_CLIENT:
+                wwmusicDroneSetup = 'wwmusicDroneSetup'
+                gameplayCfg[wwmusicDroneSetup] = __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml, name)
+            cfgs.append(gameplayCfg)
 
     except Exception as e:
         LOG_CURRENT_EXCEPTION()
@@ -381,9 +427,6 @@ def __readCommonCfg(section, defaultXml, raiseIfMissing, geometryCfg):
             musicSetup = __readWWmusicSection(section, defaultXml)
         if musicSetup is not None:
             cfg['wwmusicSetup'] = musicSetup
-        wwmusicDroneSetup = 'wwmusicDroneSetup'
-        if raiseIfMissing or __hasKey(wwmusicDroneSetup, section, defaultXml):
-            cfg[wwmusicDroneSetup] = __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml)
         if raiseIfMissing or __hasKey('wwbattleCountdownTimerSound', section, defaultXml):
             cfg['battleCountdownTimerSound'] = _readString('wwbattleCountdownTimerSound', section, defaultXml)
         if raiseIfMissing or section.has_key('mapActivities'):
@@ -413,17 +456,6 @@ def __readWWmusicSection(section, defaultXml):
     return wwmusic
 
 
-def __readDeathZoneBordersSection(section, defaultXml):
-    if __hasKey('deathZoneBorders', section, defaultXml):
-        dataSection = section['deathZoneBorders']
-        return {'maxAlpha': dataSection.readFloat('maxAlpha'),
-         'height': dataSection.readFloat('height'),
-         'activeColor': dataSection.readVector4('activeColor'),
-         'waitingColor': dataSection.readVector4('waitingColor')}
-    else:
-        return None
-
-
 def __readNotificationsRemappingSection(section, defaultXml):
     notificationsRemapping = None
     if __hasKey('notificationsRemapping', section, defaultXml):
@@ -435,12 +467,12 @@ def __readNotificationsRemappingSection(section, defaultXml):
     return notificationsRemapping
 
 
-def __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml):
+def __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml, gameplayName):
     if section.has_key(wwmusicDroneSetup):
         dataSection = section
     else:
         dataSection = defaultXml
-    outcome = defaultdict(dict)
+    outcome = defaultdict(_DroneSettingHolder)
     droneChildren = sorted(_xml.getChildren(defaultXml, dataSection, wwmusicDroneSetup), key=lambda item: len(item[1].items()))
     valueTag = 'value'
     for settingName, settingChildren in droneChildren:
@@ -448,27 +480,24 @@ def __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml):
             settingValue = settingChildren.readInt(valueTag)
             if settingChildren.has_key('arena_type_label'):
                 if settingChildren.has_key('gameplay_name'):
-                    gameplayType = settingChildren.readString('gameplay_name')
-                    arenaTypeLabel = settingChildren.readString('arena_type_label')
-                    outcome[settingName][arenaTypeLabel, gameplayType] = settingValue
+                    if gameplayName == settingChildren.readString('gameplay_name'):
+                        outcome[settingName].setValue(settingChildren.readString('arena_type_label'), settingValue)
                 else:
-                    arenaTypeLabel = settingChildren.readString('arena_type_label')
-                    for gameplayType in ARENA_GAMEPLAY_NAMES:
-                        outcome[settingName][arenaTypeLabel, gameplayType] = settingValue
-
+                    outcome[settingName].setValue(settingChildren.readString('arena_type_label'), settingValue)
             elif settingChildren.has_key('gameplay_name'):
-                gameplayType = settingChildren.readString('gameplay_name')
-                for arenaTypeLabel in ARENA_GUI_TYPE_LABEL.LABELS.itervalues():
-                    outcome[settingName][arenaTypeLabel, gameplayType] = settingValue
-
+                if gameplayName == settingChildren.readString('gameplay_name'):
+                    outcome[settingName].setDefault(settingValue)
             else:
-                for arenaTypeLabel in ARENA_GUI_TYPE_LABEL.LABELS.itervalues():
-                    for gameplayType in ARENA_GAMEPLAY_NAMES:
-                        outcome[settingName][arenaTypeLabel, gameplayType] = settingValue
-
+                outcome[settingName].setDefault(settingValue)
         raise SoftException('"{}" section missed the key "{}"!'.format(settingName, valueTag))
 
     return outcome
+
+
+def __readSpaceCfg(geometryName):
+    cfg = {}
+    cfg[SpaceVisibilityFlags.FLAGS_CONFIG_SECTION] = SpaceVisibilityFlagsFactory.create(geometryName)
+    return cfg
 
 
 def __hasKey(key, xml, defaultXml):
@@ -547,17 +576,21 @@ def _readFloatArray(key, tag, xml, defaultXml, defaultValue=None):
         return
 
 
-def _readVisualScriptAspect(section, aspect, default):
+def _readVisualScriptAspect(section, aspect, commonParams):
+    plans = []
     if section.has_key(aspect):
-        return [ value.asString for name, value in section[aspect].items() if name == 'plan' ]
-    return default
+        plans = readVisualScriptPlans(section[aspect], commonParams)
+    return plans
 
 
 def _readVisualScript(section):
     if section.has_key(VisualScriptTag):
         vseSection = section[VisualScriptTag]
-        return {ASPECT.CLIENT: _readVisualScriptAspect(vseSection, ASPECT.CLIENT.lower(), []),
-         ASPECT.SERVER: _readVisualScriptAspect(vseSection, ASPECT.SERVER.lower(), [])}
+        commonParams = {}
+        if vseSection.has_key('common'):
+            commonParams = readVisualScriptPlanParams(vseSection['common'])
+        return {ASPECT.CLIENT: _readVisualScriptAspect(vseSection, ASPECT.CLIENT.lower(), commonParams),
+         ASPECT.SERVER: _readVisualScriptAspect(vseSection, ASPECT.SERVER.lower(), commonParams)}
     return {ASPECT.CLIENT: [],
      ASPECT.SERVER: []}
 

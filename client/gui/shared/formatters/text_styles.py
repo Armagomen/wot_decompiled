@@ -56,15 +56,9 @@ __all__ = ('standard',
  'grandTitle',
  'grandTitleYellow',
  'grandTitleTK',
- 'nyVehicleTitle',
- 'nyVehicleSmallTitle',
- 'nyVehicleMain',
- 'nyVehicleSmallMain',
  'textEpic',
  'yellowText',
- 'greenText',
- 'nyNotEnoughShardsDialogCostBlock',
- 'nyNotEnoughShardsDialogLevel')
+ 'greenText')
 
 def _getStyle(style, ctx=None):
     if ctx is None:
@@ -282,6 +276,10 @@ def bpcoin(text):
     return _formatText('bpcoinText', text)
 
 
+def brcoin(text):
+    return _formatText('creditsText', text)
+
+
 def defRes(text):
     return _formatText('defresText', text)
 
@@ -304,10 +302,6 @@ def titleFont(text):
 
 def tutorial(text):
     return _formatText('tutorialText', text)
-
-
-def tutorialBig(text):
-    return _formatText('tutorialTextBig', text)
 
 
 def playerOnline(text):
@@ -428,34 +422,6 @@ def greenText(text):
     return _formatText('greenText', text)
 
 
-def nyVehicleTitle(text):
-    return _formatText('nyVehicleTitle', text)
-
-
-def nyVehicleSmallTitle(text):
-    return _formatText('nyVehicleSmallTitle', text)
-
-
-def nyVehicleMain(text):
-    return _formatText('nyVehicleMain', text)
-
-
-def nyVehicleSmallMain(text):
-    return _formatText('nyVehicleSmallMain', text)
-
-
-def vehicleNameNY(text):
-    return _formatText('vehicleNameNY', text)
-
-
-def nyNotEnoughShardsDialogCostBlock(text):
-    return _formatText('nyNotEnoughShardsDialogCostBlock', text)
-
-
-def nyNotEnoughShardsDialogLevel(text):
-    return _formatText('nyNotEnoughShardsDialogLevel', text)
-
-
 def discountText(text):
     return _formatText('discountText', text)
 
@@ -487,6 +453,10 @@ def concatStylesToMultiLine(*styles):
 
 def concatStylesWithSpace(*styles):
     return ' '.join(map(_processStyle, styles))
+
+
+def concatStylesWithNBSP(*styles):
+    return '&nbsp;'.join(map(_processStyle, styles))
 
 
 class _StylesBuilder(object):

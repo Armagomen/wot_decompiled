@@ -50,7 +50,7 @@ def prepareCollisionAssembler(vehicleDesc, isTurretDetached, worldID):
     bspModels = []
     for partName, hitTester in hitTestersByPart.iteritems():
         partId = TankPartNames.getIdx(partName)
-        bspModel = (partId, hitTester.bspModelName)
+        bspModel = (partId, hitTester.bspModelName, (0.0, 0.0, 0.0))
         bspModels.append(bspModel)
 
     trackPairs = vehicleDesc.chassis.trackPairs[1:]
@@ -850,12 +850,24 @@ def assembleBurnoutProcessor(appearance):
         return
 
 
-def assembleCustomLogicComponents(appearance, attachments, modelAnimators):
+def assembleCustomLogicComponents(appearance, typeDescriptor, attachments, modelAnimators):
     assemblers = [('flagAnimation', __assembleAnimationFlagComponent), ('prefab', __assemblePrefabComponent)]
     for assemblerName, assembler in assemblers:
         for attachment in attachments:
             if attachment.attachmentLogic == assemblerName:
                 assembler(appearance, attachment, attachments, modelAnimators)
+
+    for prefab in typeDescriptor.chassis.prefabs:
+        loadAppearancePrefab(prefab, appearance)
+
+    for prefab in typeDescriptor.hull.prefabs:
+        loadAppearancePrefab(prefab, appearance)
+
+    for prefab in typeDescriptor.turret.prefabs:
+        loadAppearancePrefab(prefab, appearance)
+
+    for prefab in typeDescriptor.gun.prefabs:
+        loadAppearancePrefab(prefab, appearance)
 
 
 def __assembleAnimationFlagComponent(appearance, attachment, attachments, modelAnimators):
@@ -876,11 +888,20 @@ def __assembleAnimationFlagComponent(appearance, attachment, attachments, modelA
         return True
 
 
-def __assemblePrefabComponent(appearance, attachment, _, __):
+def loadAppearancePrefab(prefab, appearance, posloadCallback=None):
 
     def _onLoaded(gameObject):
         appearance.undamagedStateChildren.append(gameObject)
         gameObject.createComponent(GenericComponents.RedirectorComponent, appearance.gameObject)
         gameObject.createComponent(GenericComponents.DynamicModelComponent, appearance.compoundModel)
+        if posloadCallback:
+            posloadCallback(gameObject)
 
-    CGF.loadGameObjectIntoHierarchy(attachment.modelName, appearance.gameObject, attachment.transform, _onLoaded)
+    if appearance.compoundModel:
+        CGF.loadGameObjectIntoHierarchy(prefab, appearance.gameObject, Math.Vector3(0, 0, 0), _onLoaded)
+    else:
+        appearance.pushToLoadingQueue(prefab, appearance.gameObject, Math.Vector3(0, 0, 0), _onLoaded)
+
+
+def __assemblePrefabComponent(appearance, attachment, _, __):
+    loadAppearancePrefab(attachment.modelName, appearance)

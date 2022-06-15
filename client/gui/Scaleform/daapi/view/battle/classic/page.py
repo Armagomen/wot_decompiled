@@ -3,7 +3,7 @@
 from aih_constants import CTRL_MODE_NAME
 from constants import ARENA_PERIOD
 from debug_utils import LOG_DEBUG
-from gui.Scaleform.daapi.view.battle.shared import SharedPage, finish_sound_player, drone_music_player, period_music_listener
+from gui.Scaleform.daapi.view.battle.shared import SharedPage, finish_sound_player, drone_music_player
 from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
 from gui.Scaleform.daapi.view.battle.shared.start_countdown_sound_player import StartCountdownSoundPlayer
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
@@ -14,7 +14,6 @@ class DynamicAliases(CONST_CONTAINER):
     PREBATTLE_TIMER_SOUND_PLAYER = 'prebattleTimerSoundPlayer'
     FINISH_SOUND_PLAYER = 'finishSoundPlayer'
     DRONE_MUSIC_PLAYER = 'droneMusicPlayer'
-    PERIOD_MUSIC_LISTENER = 'periodMusicListener'
 
 
 class _ClassicComponentsConfig(ComponentsConfig):
@@ -27,8 +26,7 @@ class _ClassicComponentsConfig(ComponentsConfig):
            BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL,
            BATTLE_VIEW_ALIASES.HINT_PANEL,
            BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
-           DynamicAliases.DRONE_MUSIC_PLAYER,
-           DynamicAliases.PERIOD_MUSIC_LISTENER)),
+           DynamicAliases.DRONE_MUSIC_PLAYER)),
          (BATTLE_CTRL_ID.TEAM_BASES, (BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, DynamicAliases.DRONE_MUSIC_PLAYER)),
          (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
          (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
@@ -37,7 +35,7 @@ class _ClassicComponentsConfig(ComponentsConfig):
          (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.DRONE_MUSIC_PLAYER,)),
          (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
          (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
-         (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL))), viewsConfig=((DynamicAliases.PERIOD_MUSIC_LISTENER, period_music_listener.PeriodMusicListener), (DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer), (DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
+         (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL))), viewsConfig=((DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer), (DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
 
 
 COMMON_CLASSIC_CONFIG = _ClassicComponentsConfig()
@@ -81,7 +79,8 @@ class ClassicPage(SharedPage):
             fullStats = self.getComponent(self._fullStatsAlias)
             if fullStats is None:
                 return
-            elif self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.RADIAL_MENU):
+            ctrl = self.sessionProvider.shared.calloutCtrl
+            if ctrl is not None and ctrl.isRadialMenuOpened():
                 return
             hasTabs = fullStats.hasTabs
             if not hasTabs and tabIndex > 0:
@@ -152,8 +151,11 @@ class ClassicPage(SharedPage):
         self._toggleRadialMenu(isShown=event.ctx['isDown'])
 
     def _handleHelpEvent(self, event):
-        if self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.RADIAL_MENU):
+        ctrl = self.sessionProvider.shared.calloutCtrl
+        if ctrl is not None and ctrl.isRadialMenuOpened():
             self._toggleRadialMenu(False, False)
+            ctrl.resetRadialMenuData()
+        return
 
     def _handleToggleFullStats(self, event):
         self._toggleFullStats(event.ctx['isDown'], tabIndex=0)
@@ -185,10 +187,12 @@ class ClassicPage(SharedPage):
 
     def _switchToPostmortem(self):
         super(ClassicPage, self)._switchToPostmortem()
-        if self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.RADIAL_MENU):
+        ctrl = self.sessionProvider.shared.calloutCtrl
+        if ctrl is not None and ctrl.isRadialMenuOpened():
             self._toggleRadialMenu(False)
         if self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.CALLOUT_PANEL):
             self._processCallout(needShow=False)
+        return
 
     def _changeCtrlMode(self, ctrlMode):
 

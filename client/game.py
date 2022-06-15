@@ -30,6 +30,7 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gameplay import IGameplayLogic
 from async import async, await
 from gui.impl.dialogs import dialogs
+from system_events import g_systemEvents
 loadingScreenClass = GameLoading
 __import__('__main__').GameLoading = loadingScreenClass
 try:
@@ -55,6 +56,10 @@ def init(scriptConfig, engineConfig, userPreferences, loadingScreenGUI=None):
     global g_onBeforeSendEvent
     try:
         log.config.setupFromXML()
+        import extension_rules
+        extension_rules.init()
+        import arena_bonus_type_caps
+        arena_bonus_type_caps.init()
         if constants.IS_DEVELOPMENT:
             autoFlushPythonLog()
             from development_features import initDevBonusTypes
@@ -92,7 +97,8 @@ def init(scriptConfig, engineConfig, userPreferences, loadingScreenGUI=None):
         import motivation_quests
         motivation_quests.init()
         BigWorld.worldDrawEnabled(False)
-        dependency.configure(services_config.getClientServicesConfig)
+        manager = dependency.configure(services_config.getClientServicesConfig)
+        g_systemEvents.onDependencyConfigReady(manager)
         SoundGroups.g_instance.startListeningGUISpaceChanges()
         gui_personality.init(loadingScreenGUI=loadingScreenGUI)
         EdgeDetectColorController.g_instance.create()
@@ -202,6 +208,8 @@ def fini():
     elif LightingGenerationMode.enabled():
         return
     else:
+        if g_replayCtrl is not None:
+            g_replayCtrl.stop(isDestroyed=True)
         BigWorld.wg_setScreenshotNotifyCallback(None)
         g_critMemHandler.restore()
         g_critMemHandler.destroy()
@@ -354,7 +362,7 @@ def handleKeyEvent(event):
         if inputHandler is not None:
             if inputHandler.handleKeyEvent(event):
                 return True
-        for handler in g_keyEventHandlers.copy():
+        for handler in g_keyEventHandlers:
             try:
                 if handler(event):
                     return True
@@ -508,4 +516,4 @@ def checkBotNet():
     g_pathManager.setPathes()
     from scenario_player import g_scenarioPlayer
     rpycPort = sys.argv[sys.argv.index(botArg) + 1]
-    g_scenarioPlayer.setRpycConection(rpycPort)
+    g_scenarioPlayer.initScenarioPlayer(rpycPort)

@@ -511,7 +511,7 @@ class ArcadeControlMode(_GunControlMode):
     def enable(self, **args):
         super(ArcadeControlMode, self).enable(**args)
         SoundGroups.g_instance.changePlayMode(0)
-        self._cam.enable(args.get('preferredPos'), args.get('closesDist', False), turretYaw=args.get('turretYaw', 0.0), gunPitch=args.get('gunPitch', 0.0), initialVehicleMatrix=args.get('initialVehicleMatrix', None))
+        self._cam.enable(args.get('preferredPos'), args.get('closesDist', False), turretYaw=args.get('turretYaw', None), gunPitch=args.get('gunPitch', None), initialVehicleMatrix=args.get('initialVehicleMatrix', None), arcadeState=args.get('arcadeState', None))
         player = BigWorld.player()
         if player.isObserver() and not player.observerSeesAll():
             player.updateObservedVehicleData()
@@ -629,7 +629,7 @@ class ArcadeControlMode(_GunControlMode):
 
     def __activateAlternateMode(self, pos=None, bByScroll=False):
         ownVehicle = BigWorld.entity(BigWorld.player().playerVehicleID)
-        if ownVehicle is not None and ownVehicle.isStarted and avatar_getter.isVehicleBarrelUnderWater() or BigWorld.player().isGunLocked:
+        if ownVehicle is not None and ownVehicle.isStarted and avatar_getter.isVehicleBarrelUnderWater() or BigWorld.player().isGunLocked or BigWorld.player().isObserver():
             return
         elif self._aih.isSPG and not bByScroll:
             self._cam.update(0, 0, 0, False, False)
@@ -705,10 +705,14 @@ class _TrajectoryControlMode(_GunControlMode):
         self._cam.create(self.onChangeControlModeByScroll)
         super(_TrajectoryControlMode, self).create()
         self.__initTrajectoryDrawer()
+        self.__interpolator.onInterpolationStart += self.__onInterpolationStart
+        self.__interpolator.onInterpolationStop += self.__onInterpolationStop
 
     def destroy(self):
         self.disable()
         self.__delTrajectoryDrawer()
+        self.__interpolator.onInterpolationStart -= self.__onInterpolationStart
+        self.__interpolator.onInterpolationStop -= self.__onInterpolationStop
         super(_TrajectoryControlMode, self).destroy()
 
     def enable(self, **args):
@@ -820,6 +824,12 @@ class _TrajectoryControlMode(_GunControlMode):
 
     def getCamDistRange(self):
         return self._cam.getCamDistRange()
+
+    def __onInterpolationStart(self):
+        self._cam.isAimOffsetEnabled = False
+
+    def __onInterpolationStop(self):
+        self._cam.isAimOffsetEnabled = True
 
     def __switchToNextControlMode(self, switchToPos=None, switchToPlace=None):
         if GUI_SETTINGS.spgAlternativeAimingCameraEnabled:
@@ -1473,7 +1483,7 @@ class PostMortemControlMode(IControlMode):
                 self._switchToCtrlMode(self._targetCtrlModeAfterDelay)
             return
 
-    def __onArenaVehicleKilled(self, targetID, attackerID, equipmentID, reason):
+    def __onArenaVehicleKilled(self, targetID, attackerID, equipmentID, reason, numVehiclesAffected):
         if self.curPostmortemDelay is not None or self.__altTargetMode is None:
             return
         else:

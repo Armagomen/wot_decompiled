@@ -267,7 +267,7 @@ class ChatCommandsController(IBattleController):
             return
         positionVec = Math.Vector3(position[0], position[1], position[2])
         if name == BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA and self.__isSPG():
-            time = self.__getReloadTime() if self.__ammo.getShellsQuantityLeft() > 0 else -1
+            time = self.__getReloadTime() if self.__ammo.getAllShellsQuantityLeft() > 0 else -1
             command = self.proto.battleCmd.createByPosition(positionVec, name, time)
         else:
             command = self.proto.battleCmd.createByPosition(positionVec, name)

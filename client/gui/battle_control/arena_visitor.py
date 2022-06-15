@@ -3,16 +3,11 @@
 import functools
 import weakref
 import BigWorld
-import constants
-import arena_bonus_type_caps
+from constants import ARENA_GUI_TYPE as _GUI_TYPE, ARENA_GUI_TYPE_LABEL as _GUI_TYPE_LABEL, ARENA_BONUS_TYPE as _BONUS_TYPE, ARENA_PERIOD as _PERIOD, QUEUE_TYPE, TEAMS_IN_ARENA
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 import win_points
 from gui import GUI_SETTINGS
 from skeletons.gui.battle_session import IClientArenaVisitor
-_GUI_TYPE = constants.ARENA_GUI_TYPE
-_GUI_TYPE_LABEL = constants.ARENA_GUI_TYPE_LABEL
-_BONUS_TYPE = constants.ARENA_BONUS_TYPE
-_PERIOD = constants.ARENA_PERIOD
-_CAPS = arena_bonus_type_caps.ARENA_BONUS_TYPE_CAPS
 
 def _getClientArena(avatar=None):
     if avatar is None:
@@ -78,7 +73,7 @@ class _ArenaTypeSkeleton(object):
     name = ''
     geometryName = ''
     gameplayName = ''
-    maxTeamsInArena = constants.TEAMS_IN_ARENA.MIN_TEAMS
+    maxTeamsInArena = TEAMS_IN_ARENA.MIN_TEAMS
     teamBasePositions = []
     teamLowLevelSpawnPoints = []
     teamSpawnPoints = []
@@ -263,6 +258,10 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
         super(_ArenaGuiTypeVisitor, self).__init__()
         self._guiType = guiType
 
+    @property
+    def guiType(self):
+        return self._guiType
+
     def clear(self):
         self._guiType = _GUI_TYPE.UNKNOWN
 
@@ -313,6 +312,9 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
 
     def isMapsTraining(self):
         return self._guiType == _GUI_TYPE.MAPS_TRAINING
+
+    def isStrongholdRange(self):
+        return self._guiType in _GUI_TYPE.STRONGHOLD_RANGE
 
     def hasLabel(self):
         return self._guiType != _GUI_TYPE.UNKNOWN and self._guiType in _GUI_TYPE_LABEL.LABELS
@@ -403,6 +405,10 @@ class _ArenaExtraDataVisitor(IArenaVisitor):
 
     def isLowLevelBattle(self):
         return 0 < self._extra.get('battleLevel', 0) < 4
+
+    @property
+    def queueType(self):
+        return self._extra.get('queueType', QUEUE_TYPE.UNKNOWN)
 
 
 class _ArenaVehiclesVisitor(IArenaVisitor):

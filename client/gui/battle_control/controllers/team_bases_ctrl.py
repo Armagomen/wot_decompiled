@@ -246,9 +246,8 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
         for clientID in self.__clientIDs:
             self.__clearUpdateCallback(clientID)
             self.__stopCaptureSound(clientID)
-            if not BattleReplay.isPlaying():
-                for viewCmp in self._viewComponents:
-                    viewCmp.removeTeamBase(clientID)
+            for viewCmp in self._viewComponents:
+                viewCmp.removeTeamBase(clientID)
 
         self.__clientIDs.clear()
 

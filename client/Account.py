@@ -9,6 +9,7 @@ import AccountCommands
 import BigWorld
 import ClientPrebattle
 import Event
+import BattleReplay
 from ChatManager import chatManager
 from ClientChat import ClientChat
 from ClientGlobalMap import ClientGlobalMap
@@ -32,12 +33,12 @@ from account_helpers.settings_core import IntUserSettings
 from account_helpers.session_statistics import SessionStatistics
 from account_helpers.spa_flags import SPAFlags
 from account_helpers.gift_system import GiftSystem
-from lunar_ny.lunar_ny_account_helper import LunarNYAccountHelper
+from account_helpers.trade_in import TradeIn
 from account_shared import NotificationItem, readClientServerVersion
 from adisp import process
 from bootcamp.Bootcamp import g_bootcamp
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE, EVENT_CLIENT_DATA
-from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE
+from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE, ARENA_GAMEPLAY_MASK_DEFAULT
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_WARNING
 from gui.Scaleform.Waiting import Waiting
 from gui.shared.ClanCache import g_clanCache
@@ -80,10 +81,8 @@ def _isStrList(l):
 
 
 class _ClientCommandProxy(object):
-    _COMMAND_SIGNATURES = (('doCmdInt', lambda args: len(args) == 1 and _isInt(args[0])),
-     ('doCmdStr', lambda args: len(args) == 1 and _isStr(args[0])),
+    _COMMAND_SIGNATURES = (('doCmdStr', lambda args: len(args) == 1 and _isStr(args[0])),
      ('doCmdIntStr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStr(args[1])),
-     ('doCmdInt', lambda args: len(args) == 1 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt2', lambda args: len(args) == 2 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt3', lambda args: len(args) == 3 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt4', lambda args: len(args) == 4 and all([ _isInt(arg) for arg in args ])),
@@ -172,8 +171,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.mapsTraining = g_accountRepository.mapsTraining
         self.renewableSubscription = g_accountRepository.renewableSubscription
         self.telecomRentals = g_accountRepository.telecomRentals
+        self.tradeIn = g_accountRepository.tradeIn
         self.giftSystem = g_accountRepository.giftSystem
-        self.lunarNY = g_accountRepository.lunarNY
         self.customFilesCache = g_accountRepository.customFilesCache
         self.syncData.setAccount(self)
         self.inventory.setAccount(self)
@@ -191,6 +190,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.ranked.setAccount(self)
         self.battleRoyale.setAccount(self)
         self.badges.setAccount(self)
+        self.tokens.setAccount(self)
         self.epicMetaGame.setAccount(self)
         self.blueprints.setAccount(self)
         self.sessionStats.setAccount(self)
@@ -201,6 +201,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.mapsTraining.setAccount(self)
         self.renewableSubscription.setAccount(self)
         self.telecomRentals.setAccount(self)
+        self.tradeIn.setAccount(self)
         g_accountRepository.commandProxy.setGateway(self.__doCmd)
         self.isLongDisconnectedFromCenter = False
         self.prebattle = None
@@ -214,17 +215,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.eventsData = g_accountRepository.eventsData
         self.__eventsDataUnpacked = {}
         self.personalMissionsLock = g_accountRepository.personalMissionsLock
-        self.isInRandomQueue = False
-        self.isInTutorialQueue = False
-        self.isInBootcampQueue = False
-        self.isInEventBattles = False
-        self.isInSandboxQueue = False
-        self.isInRankedQueue = False
-        self.isInEpicQueue = False
-        self.isInBattleRoyaleQueue = False
-        self.isInBattleRoyaleTournamentQueue = False
-        self.isInMapboxQueue = False
-        self.isInMapsTrainingQueue = False
+        self.battleQueueType = QUEUE_TYPE.UNKNOWN
         self.platformBlueprintsConvertSaleLimits = g_accountRepository.platformBlueprintsConvertSaleLimits
         self.__onCmdResponse = {}
         self.__onStreamComplete = {}
@@ -253,7 +244,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.ranked.onAccountBecomePlayer()
         self.battleRoyale.onAccountBecomePlayer()
         self.badges.onAccountBecomePlayer()
-        self.tokens.onAccountBecomePlayer()
+        self.tokens.onAccountBecomeNonPlayer()
         self.epicMetaGame.onAccountBecomePlayer()
         self.blueprints.onAccountBecomePlayer()
         self.festivities.onAccountBecomePlayer()
@@ -267,7 +258,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.battlePass.onAccountBecomePlayer()
         self.offers.onAccountBecomePlayer()
         self.giftSystem.onAccountBecomePlayer()
-        self.lunarNY.onAccountBecomePlayer()
         chatManager.switchPlayerProxy(self)
         events.onAccountBecomePlayer()
         BigWorld.target.source = BigWorld.MouseTargetingMatrix()
@@ -275,7 +265,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         BigWorld.target.skeletonCheckEnabled = True
         BigWorld.target.caps()
         BigWorld.target.isEnabled = True
-        BigWorld.target.isFastPicking = True
         uniprof.exitFromRegion('player.account.entering')
         return
 
@@ -312,7 +301,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.renewableSubscription.onAccountBecomeNonPlayer()
         self.telecomRentals.onAccountBecomeNonPlayer()
         self.giftSystem.onAccountBecomeNonPlayer()
-        self.lunarNY.onAccountBecomeNonPlayer()
         self.__cancelCommands()
         self.syncData.setAccount(None)
         self.inventory.setAccount(None)
@@ -329,6 +317,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.ranked.setAccount(None)
         self.battleRoyale.setAccount(None)
         self.badges.setAccount(None)
+        self.tokens.setAccount(None)
         self.epicMetaGame.setAccount(None)
         self.blueprints.setAccount(None)
         self.sessionStats.setAccount(None)
@@ -424,115 +413,27 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             return
 
     def isInBattleQueue(self):
-        return self.isInRandomQueue or self.isInTutorialQueue or self.isInBootcampQueue or self.isInEventBattles or self.isInSandboxQueue or self.isInRankedQueue or self.isInEpicQueue or self.isInMapsTrainingQueue
+        return self.battleQueueType != QUEUE_TYPE.UNKNOWN
 
     def onEnqueued(self, queueType):
         LOG_DEBUG('onEnqueued', queueType)
-        if queueType == QUEUE_TYPE.RANDOMS:
-            self.isInRandomQueue = True
-            events.onEnqueuedRandom()
-        elif queueType == QUEUE_TYPE.TUTORIAL:
-            pass
-        elif queueType == QUEUE_TYPE.BOOTCAMP:
-            pass
-        elif queueType == QUEUE_TYPE.EVENT_BATTLES:
-            self.isInEventBattles = True
-            events.onEnqueuedEventBattles()
-        elif queueType == QUEUE_TYPE.SANDBOX:
-            self.isInSandboxQueue = True
-            events.onEnqueuedSandbox()
-        elif queueType == QUEUE_TYPE.RANKED:
-            self.isInRankedQueue = True
-            events.onEnqueuedRanked()
-        elif queueType == QUEUE_TYPE.EPIC:
-            self.isInEpicQueue = True
-            events.onEnqueuedEpic()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE:
-            self.isInBattleRoyaleQueue = True
-            events.onEnqueuedBattleRoyale()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT:
-            self.isInBattleRoyaleTournamentQueue = True
-            events.onEnqueuedBattleRoyaleTournament()
-        elif queueType == QUEUE_TYPE.MAPBOX:
-            self.isInMapboxQueue = True
-            events.onEnqueuedMapbox()
-        elif queueType == QUEUE_TYPE.MAPS_TRAINING:
-            self.isInMapsTrainingQueue = True
-            events.onEnqueuedMapsTraining()
+        self.battleQueueType = queueType
         events.onEnqueued(queueType)
 
     def onEnqueueFailure(self, queueType, errorCode, errorStr):
         LOG_DEBUG('onEnqueueFailure', queueType, errorCode, errorStr)
-        if queueType == QUEUE_TYPE.RANDOMS:
-            events.onEnqueueRandomFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.TUTORIAL:
-            events.onTutorialEnqueueFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.BOOTCAMP:
-            events.onBootcampEnqueueFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.EVENT_BATTLES:
-            events.onEnqueueEventBattlesFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.SANDBOX:
-            events.onEnqueuedSandboxFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.RANKED:
-            events.onEnqueuedRankedFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.EPIC:
-            events.onEnqueuedEpicFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE:
-            events.onEnqueuedBattleRoyaleFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT:
-            events.onEnqueuedBattleRoyaleTournamentFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.MAPBOX:
-            events.onEnqueuedMapboxFailure(errorCode, errorStr)
-        elif queueType == QUEUE_TYPE.MAPS_TRAINING:
-            events.onEnqueuedMapsTrainingFailure(errorCode, errorStr)
         events.onEnqueueFailure(queueType, errorCode, errorStr)
 
     def onDequeued(self, queueType):
         LOG_DEBUG('onDequeued', queueType)
-        if queueType == QUEUE_TYPE.RANDOMS:
-            self.isInRandomQueue = False
-            events.onDequeuedRandom()
-        elif queueType == QUEUE_TYPE.TUTORIAL:
-            self.isInTutorialQueue = False
-            events.onTutorialDequeued()
-        elif queueType == QUEUE_TYPE.EVENT_BATTLES:
-            self.isInEventBattles = False
-            events.onDequeuedEventBattles()
-        elif queueType == QUEUE_TYPE.SANDBOX:
-            self.isInSandboxQueue = False
-            events.onDequeuedSandbox()
-        elif queueType == QUEUE_TYPE.RANKED:
-            self.isInRankedQueue = False
-            events.onDequeuedRanked()
-        elif queueType == QUEUE_TYPE.BOOTCAMP:
-            self.isInBootcampQueue = False
-            events.onBootcampDequeued()
-        elif queueType == QUEUE_TYPE.EPIC:
-            self.isInEpicQueue = False
-            events.onDequeuedEpic()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE:
-            self.isInBattleRoyaleQueue = False
-            events.onDequeuedBattleRoyale()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT:
-            self.isInBattleRoyaleTournamentQueue = False
-            events.onDequeuedBattleRoyaleTournament()
-        elif queueType == QUEUE_TYPE.MAPS_TRAINING:
-            self.isInMapsTrainingQueue = False
-            events.onDequeuedMapsTraining()
-        elif queueType == QUEUE_TYPE.MAPBOX:
-            self.isInMapboxQueue = False
-            events.onDequeuedMapbox()
+        self.battleQueueType = QUEUE_TYPE.UNKNOWN
         events.onDequeued(queueType)
 
     def onTutorialEnqueued(self, number, queueLen, avgWaitingTime):
         LOG_DEBUG('onTutorialEnqueued', number, queueLen, avgWaitingTime)
-        self.isInTutorialQueue = True
+        self.battleQueueType = QUEUE_TYPE.TUTORIAL
         events.onTutorialEnqueued(number, queueLen, avgWaitingTime)
         events.onEnqueued(QUEUE_TYPE.TUTORIAL)
-
-    @property
-    def selectedEntity(self):
-        return self.__selectedEntity
 
     def targetFocus(self, entity):
         if self.__objectsSelectionEnabled:
@@ -553,44 +454,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def onKickedFromQueue(self, queueType):
         LOG_DEBUG('onKickedFromQueue', queueType)
-        if queueType == QUEUE_TYPE.RANDOMS:
-            self.isInRandomQueue = False
-            events.onKickedFromRandomQueue()
-        elif queueType == QUEUE_TYPE.TUTORIAL:
-            self.isInTutorialQueue = False
-            events.onKickedFromTutorialQueue()
-        elif queueType == QUEUE_TYPE.BOOTCAMP:
-            self.isInBootcampQueue = False
-            events.onKickedFromBootcampQueue()
-        elif queueType == QUEUE_TYPE.UNITS:
-            events.onKickedFromUnitsQueue()
-        elif queueType == QUEUE_TYPE.EVENT_BATTLES:
-            self.isInEventBattles = False
-            events.onKickedFromEventBattles()
-        elif queueType == QUEUE_TYPE.SANDBOX:
-            self.isInSandboxQueue = False
-            events.onKickedFromSandboxQueue()
-        elif queueType == QUEUE_TYPE.RANKED:
-            self.isInRankedQueue = False
-            events.onKickedFromRankedQueue()
-        elif queueType == QUEUE_TYPE.BOOTCAMP:
-            self.isInBootcampQueue = False
-            events.onKickedFromBootcampQueue()
-        elif queueType == QUEUE_TYPE.EPIC:
-            self.isInEpicQueue = False
-            events.onKickedFromEpicQueue()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE:
-            self.isInBattleRoyaleQueue = False
-            events.onKickedFromBattleRoyaleQueue()
-        elif queueType == QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT:
-            self.isInBattleRoyaleTournamentQueue = False
-            events.onKickedFromBattleRoyaleTournamentQueue()
-        elif queueType == QUEUE_TYPE.MAPBOX:
-            self.isInMapboxQueue = False
-            events.onKickedFromMapboxQueue()
-        elif queueType == QUEUE_TYPE.MAPS_TRAINING:
-            self.isInMapsTrainingQueue = False
-            events.onKickedFromMapsTrainingQueue()
+        self.battleQueueType = QUEUE_TYPE.UNKNOWN
         events.onKickedFromQueue(queueType)
 
     def onArenaCreated(self):
@@ -603,17 +467,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def onArenaJoinFailure(self, errorCode, errorStr):
         LOG_DEBUG('onArenaJoinFailure', errorCode, errorStr)
-        self.isInRandomQueue = False
-        self.isInTutorialQueue = False
-        self.isInEventBattles = False
-        self.isInSandboxQueue = False
-        self.isInRankedQueue = False
-        self.isInBootcampQueue = False
-        self.isInEpicQueue = False
-        self.isInBattleRoyaleQueue = False
-        self.isInBattleRoyaleTournamentQueue = False
-        self.isInMapboxQueue = False
-        self.isInMapsTrainingQueue = False
+        self.battleQueueType = QUEUE_TYPE.UNKNOWN
         events.isPlayerEntityChanging = False
         events.onPlayerEntityChangeCanceled()
         events.onArenaJoinFailure(errorCode, errorStr)
@@ -661,16 +515,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def onKickedFromArena(self, reasonCode):
         LOG_DEBUG('onKickedFromArena', reasonCode)
-        self.isInRandomQueue = False
-        self.isInTutorialQueue = False
-        self.isInBootcampQueue = False
-        self.isInEventBattles = False
-        self.isInSandboxQueue = False
-        self.isInRankedQueue = False
-        self.isInEpicQueue = False
-        self.isInBattleRoyaleQueue = False
-        self.isInBattleRoyaleTournamentQueue = False
-        self.isInMapsTrainingQueue = False
+        self.battleQueueType = QUEUE_TYPE.UNKNOWN
         events.isPlayerEntityChanging = False
         events.onPlayerEntityChangeCanceled()
         events.onKickedFromArena(reasonCode)
@@ -712,8 +557,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.databaseID = ctx['databaseID']
         if 'prebattleID' in ctx:
             self.prebattle = ClientPrebattle.ClientPrebattle(ctx['prebattleID'])
-        self.isInRandomQueue = ctx.get('inQueue', None) == QUEUE_TYPE.RANDOMS
-        self.isInTutorialQueue = ctx.get('isInTutorialQueue', False)
+        self.battleQueueType = ctx.get('inQueue', QUEUE_TYPE.UNKNOWN)
         self._initTimeCorrection(ctx)
         if 'isLongDisconnectedFromCenter' in ctx:
             isLongDisconnectedFromCenter = ctx['isLongDisconnectedFromCenter']
@@ -728,7 +572,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             AccountSettings.setFavorites(CURRENT_VEHICLE, currentVehInvID)
         events.isPlayerEntityChanging = False
         events.onAccountShowGUI(ctx)
-        return
 
     def receiveQueueInfo(self, queueInfo):
         events.onQueueInfoReceived(queueInfo)
@@ -803,7 +646,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def requestPlayerInfo(self, databaseID, callback):
         if events.isPlayerEntityChanging:
             return
-        proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, ext.get('databaseID', 0L), ext.get('dossier', ''), ext.get('clanDBID', 0), ext.get('clanInfo', None), ext.get('globalRating', 0), ext.get('eSportSeasons', {}), ext.get('ranked', {}), ext.get('dogTag', {}))
+        proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, ext.get('databaseID', 0L), ext.get('dossier', ''), ext.get('clanDBID', 0), ext.get('clanInfo', None), ext.get('globalRating', 0), ext.get('eSportSeasons', {}), ext.get('ranked', {}), ext.get('dogTag', {}), ext.get('battleRoyaleStats', {}))
         self._doCmdInt3(AccountCommands.CMD_REQ_PLAYER_INFO, databaseID, 0, 0, proxy)
 
     def requestAccountDossier(self, accountID, callback):
@@ -835,7 +678,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self._doCmdIntArrStrArr(AccountCommands.CMD_REQ_PLAYERS_GLOBAL_RATING, accountIDs, [], proxy)
         return
 
-    def enqueueRandom(self, vehInvID, gameplaysMask=65535, arenaTypeID=0, isOnly10ModeEnabled=False):
+    def enqueueRandom(self, vehInvID, gameplaysMask=ARENA_GAMEPLAY_MASK_DEFAULT, arenaTypeID=0, isOnly10ModeEnabled=False):
         if events.isPlayerEntityChanging:
             return
         self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.RANDOMS,
@@ -1253,6 +1096,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def receiveOfferGift(self, offerID, giftID, callback=None):
         return self._doCmdInt2(AccountCommands.CMD_RECEIVE_OFFER_GIFT, offerID, giftID, callback)
 
+    def receiveMultipleOfferGifts(self, chosenGifts, callback=None):
+        return self._doCmdStr(AccountCommands.CMD_RECEIVE_OFFER_GIFT_MULTIPLE, chosenGifts, callback)
+
     def dismountEnhancement(self, vehicleInvID, slot, callback):
         if callback is not None:
             proxy = lambda requestID, resultID, errorStr, ext=None: callback(resultID, errorStr, ext)
@@ -1260,6 +1106,22 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             proxy = None
         self._doCmdInt2(AccountCommands.CMD_DISMOUNT_ENHANCEMENT, vehicleInvID, slot, proxy)
         return
+
+    def startWatchingReplay(self, callback=None):
+        if self.prebattle:
+            LOG_ERROR('Account.startWatchingReplay: Watching replay in prebattle is forbidden')
+            return
+        elif not BattleReplay.getDemandedToWatchFileName():
+            LOG_ERROR('Account.startWatchingReplay: no replay to watch')
+            return
+        else:
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorCode: callback(resultID, errorCode)
+            else:
+                proxy = None
+            LOG_DEBUG('Account.startWatchingReplay: ')
+            self._doCmdInt(AccountCommands.CMD_WATCH_REPLAY, 0, proxy)
+            return
 
     def exchangeBlueprintsSale(self, offerID, count=1, callback=None):
         if callback is not None:
@@ -1292,9 +1154,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def _doCmdIntArr(self, cmd, arr, callback):
         return self.__doCmd('doCmdIntArr', cmd, callback, arr)
-
-    def _doCmdIntArrStr(self, cmd, arr, s, callback):
-        return self.__doCmd('doCmdIntArrStr', cmd, callback, arr, s)
 
     def _doCmdIntStrArr(self, cmd, int1, strArr, callback):
         return self.__doCmd('doCmdIntStrArr', cmd, callback, int1, strArr)
@@ -1336,7 +1195,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self.renewableSubscription.synchronize(isFullSync, diff)
             self.telecomRentals.synchronize(isFullSync, diff)
             self.giftSystem.synchronize(isFullSync, diff)
-            self.lunarNY.synchronize(isFullSync, diff)
             self.__synchronizeServerSettings(diff)
             self.__synchronizeDisabledPersonalMissions(diff)
             self.__synchronizeEventNotifications(diff)
@@ -1569,7 +1427,7 @@ class _AccountRepository(object):
         self.ranked = client_ranked.ClientRanked(self.syncData)
         self.battleRoyale = ClientBattleRoyale.ClientBattleRoyale(self.syncData)
         self.badges = ClientBadges.ClientBadges(self.syncData)
-        self.tokens = tokens.Tokens(self.syncData, self.commandProxy)
+        self.tokens = tokens.Tokens(self.syncData)
         self.epicMetaGame = client_epic_meta_game.ClientEpicMetaGame(self.syncData)
         self.blueprints = client_blueprints.ClientBlueprints(self.syncData)
         self.festivities = FestivityManager(self.syncData, self.commandProxy)
@@ -1583,8 +1441,8 @@ class _AccountRepository(object):
         self.mapsTraining = MapsTraining(self.syncData)
         self.renewableSubscription = RenewableSubscription(self.syncData)
         self.telecomRentals = TelecomRentals(self.syncData)
+        self.tradeIn = TradeIn()
         self.giftSystem = GiftSystem(self.syncData, self.commandProxy)
-        self.lunarNY = LunarNYAccountHelper(self.syncData, self.commandProxy)
         self.platformBlueprintsConvertSaleLimits = {}
         self.gMap = ClientGlobalMap()
         self.onTokenReceived = Event.Event()

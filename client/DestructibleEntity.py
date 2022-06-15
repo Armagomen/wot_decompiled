@@ -3,7 +3,6 @@
 import BigWorld
 import destructible_entities
 import Math
-from entity_constants import HighlightColors
 from debug_utils import LOG_ERROR
 from DestructibleStickers import DestructibleStickers
 from Vehicle import SegmentCollisionResultExt
@@ -18,6 +17,7 @@ COLLISION_SEGMENT_LENGTH = 2
 
 class PART_PROPERTIES(object):
     HIGHLIGHTABLE = 0
+    HIGHLIGHTBYVISUAL = 2
 
 
 class ASSEMBLER_NAME_SUFFIXES(object):
@@ -194,8 +194,8 @@ class DestructibleEntity(BigWorld.Entity):
     def drawEdge(self, forceSimpleEdge=False):
         if not self.model or not self.model.visible:
             return
-        colorMode = HighlightColors.GREEN if self.isPlayerTeam else HighlightColors.RED
-        BigWorld.wgAddEdgeDetectEntity(self, colorMode, 0, False, False)
+        colorMode = 2 if self.isPlayerTeam else 1
+        BigWorld.wgAddEdgeDetectEntity(self, self.__activeStateResource.collisionComponent, colorMode, False, 0, False, False)
 
     def removeEdge(self, forceSimpleEdge=False):
         if self.model:
@@ -245,7 +245,10 @@ class DestructibleEntityState(ScriptGameObject):
                 visualModel.addRootPart(component.visualModel, 'root')
             else:
                 visualModel.emplacePart(component.visualModel, 'root', componentId)
-            bspModels.append((componentIdx, component.physicsModel))
+            bspModels.append((componentIdx,
+             component.physicsModel,
+             (0, 0, 0),
+             False))
 
         collisionAssembler = BigWorld.CollisionAssembler(tuple(bspModels), self.spaceID)
         collisionAssembler.name = self.__stateName + ASSEMBLER_NAME_SUFFIXES.PHYSICS
@@ -259,7 +262,7 @@ class DestructibleEntityState(ScriptGameObject):
         if assemblerName not in prereqs.failedIDs:
             self.__visualModel = prereqs[assemblerName]
             for componentIdx, component in enumerate(self.__stateProperties.components.itervalues()):
-                self.__visualModel.setPartProperties(componentIdx, int(component.destructible) << PART_PROPERTIES.HIGHLIGHTABLE)
+                self.__visualModel.setPartProperties(componentIdx, int(component.destructible) << PART_PROPERTIES.HIGHLIGHTABLE | PART_PROPERTIES.HIGHLIGHTBYVISUAL)
                 link = self.__visualModel.getPartGeometryLink(componentIdx)
                 self.__damageStickers[componentIdx] = DestructibleStickers(link, self.__visualModel.node('root'))
 

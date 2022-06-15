@@ -691,3 +691,11 @@ def fillKillerInfoBlock(vehicleStateBlock, deathReason, killerID, reusable):
         playerKillerBlock.setTeamKillerInfo()
         vehicleStateBlock.isKilledByTeamKiller = True
     vehicleStateBlock.addComponent(vehicleStateBlock.getNextComponentIndex(), playerKillerBlock)
+
+
+class ReplayURL(base.StatsItem):
+    __itemsCache = dependency.descriptor(IItemsCache)
+
+    def _convert(self, value, reusable):
+        hasFlag = self.__itemsCache.items.stats.isSsrPlayEnabled
+        return reusable.personal.getReplayURL() if hasFlag else ''

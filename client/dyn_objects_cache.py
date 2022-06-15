@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/dyn_objects_cache.py
 import logging
 from collections import namedtuple
+import typing
 import BigWorld
 import resource_helper
 from constants import ARENA_GUI_TYPE
@@ -124,6 +125,10 @@ class _BattleRoyaleBotDeliveryEffect(_TeamRelatedEffect):
     _SECTION_NAME = 'BotDeliveryEffect'
 
 
+class _BattleRoyaleBotClingDeliveryEffect(_TeamRelatedEffect):
+    _SECTION_NAME = 'BotClingDeliveryEffect'
+
+
 class _BattleRoyaleBotDeliveryMarkerArea(_TeamRelatedEffect):
     _SECTION_NAME = 'BotDeliveryArea'
 
@@ -207,6 +212,22 @@ class _CommonForBattleRoyaleAndEpicBattleDynObjects(DynObjectsBase):
         pass
 
 
+class _StrongholdDynObjects(DynObjectsBase):
+
+    def __init__(self):
+        super(_StrongholdDynObjects, self).__init__()
+        self.__inspiringEffect = None
+        return
+
+    def init(self, dataSection):
+        if not self._initialized:
+            self.__inspiringEffect = _createTerrainCircleSettings(dataSection['InspireAreaVisual'])
+            super(_StrongholdDynObjects, self).init(dataSection)
+
+    def getInspiringEffect(self):
+        return self.__inspiringEffect
+
+
 class _EpicBattleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
 
     def __init__(self):
@@ -232,6 +253,7 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
         self.__trapPoint = None
         self.__repairPoint = None
         self.__botDeliveryEffect = None
+        self.__botClingDeliveryEffect = None
         self.__botDeliveryMarker = None
         self.__dropPlane = None
         self.__airDrop = None
@@ -248,6 +270,7 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
             self.__trapPoint = _BattleRoyaleTrapPointEffect(dataSection)
             self.__repairPoint = _BattleRoyaleRepairPointEffect(dataSection)
             self.__botDeliveryEffect = _BattleRoyaleBotDeliveryEffect(dataSection)
+            self.__botClingDeliveryEffect = _BattleRoyaleBotClingDeliveryEffect(dataSection)
             self.__botDeliveryMarker = _BattleRoyaleBotDeliveryMarkerArea(dataSection)
             self.__minesEffects = _MinesEffects(plantEffect=_MinesPlantEffect(dataSection), idleEffect=_MinesIdleEffect(dataSection), destroyEffect=_MinesDestroyEffect(dataSection), blowUpEffectName='minesBlowUpEffect')
             self.__berserkerEffects = _BerserkerEffects(turretEffect=_BerserkerTurretEffect(dataSection), hullEffect=_BerserkerHullEffect(dataSection), transformPath=dataSection.readString('berserkerTransformPath'))
@@ -272,6 +295,9 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
 
     def getBotDeliveryEffect(self):
         return self.__botDeliveryEffect
+
+    def getBotClingDeliveryEffect(self):
+        return self.__botClingDeliveryEffect
 
     def getBotDeliveryMarker(self):
         return self.__botDeliveryMarker
@@ -311,9 +337,12 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
         self.__resourcesCache = resourceRefs
 
 
-_CONF_STORAGES = {ARENA_GUI_TYPE.BATTLE_ROYALE: _BattleRoyaleDynObjects,
+_CONF_STORAGES = {ARENA_GUI_TYPE.SORTIE_2: _StrongholdDynObjects,
+ ARENA_GUI_TYPE.FORT_BATTLE_2: _StrongholdDynObjects,
+ ARENA_GUI_TYPE.BATTLE_ROYALE: _BattleRoyaleDynObjects,
  ARENA_GUI_TYPE.EPIC_BATTLE: _EpicBattleDynObjects,
- ARENA_GUI_TYPE.EPIC_TRAINING: _EpicBattleDynObjects}
+ ARENA_GUI_TYPE.EPIC_TRAINING: _EpicBattleDynObjects,
+ ARENA_GUI_TYPE.EVENT_BATTLES: _EpicBattleDynObjects}
 
 class BattleDynamicObjectsCache(IBattleDynamicObjectsCache):
 
@@ -325,6 +354,7 @@ class BattleDynamicObjectsCache(IBattleDynamicObjectsCache):
         return self.__configStorage.get(arenaType)
 
     def load(self, arenaType):
+        _logger.info('Trying to load resources for arenaType = %s', arenaType)
         if arenaType not in self.__configStorage:
             if arenaType in _CONF_STORAGES:
                 confStorage = _CONF_STORAGES[arenaType]()

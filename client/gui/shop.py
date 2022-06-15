@@ -2,9 +2,8 @@
 # Embedded file name: scripts/client/gui/shop.py
 import logging
 from collections import namedtuple
-import BigWorld
-from adisp import async, process
-from constants import RentType, GameSeasonType
+from adisp import process
+from constants import GameSeasonType, RentType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.BrowserView import makeBrowserParams
 from gui.Scaleform.daapi.view.lobby.store.browser import shop_helpers as helpers
@@ -65,10 +64,6 @@ def _getParams(reason, price, itemId=None):
     if itemId is not None:
         params['itemId'] = itemId
     return params
-
-
-def _getTradeOffParams(targetVehicleLevel):
-    return {'targetVehicleLevel': targetVehicleLevel}
 
 
 def _makeBuyItemUrl(categoryUrl, itemId=None):
@@ -133,12 +128,9 @@ def showBuyOptionalDeviceOverlay(itemId, source=None, origin=None, alias=VIEW_AL
         showBuyItemWebView(helpers.getBuyOptionalDevicesUrl(), itemId, source, origin, alias)
 
 
-def showTradeOffOverlay(targetLevel, parent=None):
-    _showBlurredWebOverlay(helpers.getTradeOffOverlayUrl(), _getTradeOffParams(targetLevel), parent, isClientCloseControl=True)
-
-
-def showPersonalTradeOffOverlay(parent=None):
-    _showBlurredWebOverlay(helpers.getPersonalTradeOffOverlayUrl(), parent=parent, isClientCloseControl=True)
+def showTradeOffOverlay(parent=None):
+    _showBlurredWebOverlay(helpers.getTradeOffOverlayUrl(), None, parent, isClientCloseControl=True)
+    return
 
 
 def showBuyGoldForVehicleWebOverlay(fullPrice, intCD, parent=None):
@@ -187,9 +179,9 @@ def showBuyGoldForBundle(fullPrice, params=None):
     showBuyGoldWebOverlay(params)
 
 
-def showBluprintsExchangeOverlay(url=None, parent=None):
-    _url = url or helpers.getBlueprintsExchangeUrl()
-    _showBlurredWebOverlay(_url, parent=parent)
+def showBlueprintsExchangeOverlay(url=None, parent=None):
+    url = yield URLMacros().parse(url or helpers.getBlueprintsExchangeUrl())
+    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BLUEPRINTS_EXCHANGE_VIEW, parent=parent), ctx={'url': url}), EVENT_BUS_SCOPE.LOBBY)
 
 
 @process
@@ -222,24 +214,17 @@ def showBuyGoldWebOverlay(params=None, parent=None):
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE, parent=parent), ctx={'url': url}), EVENT_BUS_SCOPE.LOBBY)
 
 
-@process
-def showBuyVehicleOverlay(params=None):
-    url = helpers.getVehicleUrl()
-    if url:
-        url = yield URLMacros().parse(url, params=params)
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url,
-         'browserParams': makeBrowserParams(R.strings.waiting.buyItem(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)
+def showBuyProductOverlay(params=None):
+    _showOverlayWebStoreDefault(helpers.getBuyProductUrl(), params)
+
+
+def showRentProductOverlay(params=None):
+    _showOverlayWebStoreDefault(helpers.getBuyProductUrl(), params)
 
 
 @process
-def showRentVehicleOverlay(params=None):
-    url = helpers.getVehicleUrl()
+def _showOverlayWebStoreDefault(url, params=None):
     if url:
         url = yield URLMacros().parse(url, params=params)
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url,
          'browserParams': makeBrowserParams(R.strings.waiting.updating(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)
-
-
-@async
-def _fetchUrl(url, headers, timeout, method, callback):
-    BigWorld.fetchURL(url, callback, headers, timeout, method)

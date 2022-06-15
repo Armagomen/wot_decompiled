@@ -207,6 +207,10 @@ class _VehicleInfo(object):
         raise NotImplementedError
 
     @property
+    def artilleryFortEquipDamageDealt(self):
+        raise NotImplementedError
+
+    @property
     def kills(self):
         raise NotImplementedError
 
@@ -371,7 +375,7 @@ class _VehicleInfo(object):
 
 
 class VehicleDetailedInfo(_VehicleInfo):
-    __slots__ = ('_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted', '_piercings', '_piercingEnemyHits', '_piercingsReceived', '_damageDealt', '_tdamageDealt', '_sniperDamageDealt', '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio', '_damageAssistedStun', '_stunNum', '_stunDuration', '_rickochetsReceived', '_noDamageDirectHitsReceived', '_targetKills', '_directHits', '_directEnemyHits', '_directHitsReceived', '_explosionHits', '_explosionHitsReceived', '_shots', '_kills', '_tkills', '_damaged', '_mileage', '_capturePoints', '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller', '_isKilledByTeamKiller', '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt', '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther', '_xpPenalty', '_numDefended', '_vehicleNumCaptured', '_numRecovered', '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel')
+    __slots__ = ('_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted', '_piercings', '_piercingEnemyHits', '_piercingsReceived', '_damageDealt', '_tdamageDealt', '_sniperDamageDealt', '_artilleryFortEquipDamageDealt', '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio', '_damageAssistedStun', '_stunNum', '_stunDuration', '_rickochetsReceived', '_noDamageDirectHitsReceived', '_targetKills', '_directHits', '_directEnemyHits', '_directHitsReceived', '_explosionHits', '_explosionHitsReceived', '_shots', '_kills', '_tkills', '_damaged', '_mileage', '_capturePoints', '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller', '_isKilledByTeamKiller', '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt', '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther', '_xpPenalty', '_numDefended', '_vehicleNumCaptured', '_numRecovered', '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel')
 
     def __init__(self, vehicleID, vehicle, player, deathReason=DEATH_REASON_ALIVE):
         super(VehicleDetailedInfo, self).__init__(vehicleID, player, deathReason)
@@ -390,6 +394,7 @@ class VehicleDetailedInfo(_VehicleInfo):
         self._damageDealt = 0
         self._tdamageDealt = 0
         self._sniperDamageDealt = 0
+        self._artilleryFortEquipDamageDealt = 0
         self._equipmentDamageDealt = 0
         self._damageAssistedTrack = 0
         self._damageAssistedRadio = 0
@@ -466,6 +471,10 @@ class VehicleDetailedInfo(_VehicleInfo):
     @property
     def sniperDamageDealt(self):
         return self._sniperDamageDealt
+
+    @property
+    def artilleryFortEquipDamageDealt(self):
+        return self._artilleryFortEquipDamageDealt
 
     @property
     def equipmentDamageDealt(self):
@@ -666,6 +675,7 @@ class VehicleDetailedInfo(_VehicleInfo):
         info._piercingsReceived = vehicleRecords['piercingsReceived']
         info._tdamageDealt = vehicleRecords['tdamageDealt']
         info._sniperDamageDealt = vehicleRecords['sniperDamageDealt']
+        info._artilleryFortEquipDamageDealt = vehicleRecords['artilleryFortEquipDamageDealt']
         info._equipmentDamageDealt = vehicleRecords['equipmentDamageDealt']
         info._shots = vehicleRecords['shots']
         info._directHitsReceived = vehicleRecords['directHitsReceived']
@@ -789,6 +799,10 @@ class VehicleSummarizeInfo(_VehicleInfo):
     @property
     def sniperDamageDealt(self):
         return self.__accumulate('sniperDamageDealt')
+
+    @property
+    def artilleryFortEquipDamageDealt(self):
+        return self.__accumulate('artilleryFortEquipDamageDealt')
 
     @property
     def targetKills(self):

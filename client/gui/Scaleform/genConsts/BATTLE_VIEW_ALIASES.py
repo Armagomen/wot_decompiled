@@ -70,6 +70,7 @@ class BATTLE_VIEW_ALIASES(object):
     EVENT_OBJECTIVES = 'eventObjectives'
     CALLOUT_PANEL = 'calloutPanel'
     BATTLE_NOTIFIER = 'battleNotifier'
+    CORRODING_SHOT_INDICATOR = 'corrodingShotIndicator'
     EVENT_POSTMORTEM_PANEL = 'eventPostmortemPanel'
     BATTLE_VEHICLE_CONFIGURATOR = 'battleVehicleConfigurator'
     BATTLE_LEVEL_PANEL = 'levelPanel'
@@ -84,3 +85,4 @@ class BATTLE_VIEW_ALIASES(object):
     PREBATTLE_AMMUNITION_PANEL = 'prebattleAmmunitionPanel'
     EPIC_RESPAWN_AMMUNITION_PANEL = 'epicRespawnAmmunitionPanel'
     MAPS_TRAINING_GOALS = 'mapsTrainingGoals'
+    PIERCING_DEBUG_PANEL = 'piercingDebugPanel'

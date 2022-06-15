@@ -63,13 +63,11 @@ class TOOLTIP_TYPE(CONST_CONTAINER):
     BLUEPRINTS = 'blueprintsInfo'
     FRONTLINE = 'frontlineInfo'
     BATTLE_ROYALE_SELECTOR_INFO = 'battleRoyaleSelectorInfo'
+    BATTLE_ROYALE_SELECTOR_CALENDAR_INFO = 'battleRoyaleSelectorCalendarInfo'
     BATTLE_ROYALE_WIDGET_INFO = 'battleRoyaleWidgetInfo'
     SQUAD_BONUS = 'squadBonus'
-    NY_CREDIT_BONUS = 'nyTotalCreditBonus'
-    NY_VEHICLE_BONUS = 'nyVehicleBonus'
     SESSION_STATS = 'sessionStats'
     TRADE_IN_INFO = 'tradeInInfo'
-    PERSONAL_TRADE_IN_INFO = 'personalTradeInInfo'
     TRADE_IN_INFO_NOT_AVAILABLE = 'tradeInInfoNotAvailable'
     TRADE_IN_STATE_NOT_AVAILABLE = 'tradeInStateNotAvailable'
     DEMOUNT_KIT = 'demountKit'
@@ -81,6 +79,7 @@ class TOOLTIP_TYPE(CONST_CONTAINER):
     RANDOM_CREWBOOK = 'randomCrewbook'
     REFERRAL_PROGRAMM = 'referralProgram'
     EPIC_RANK_UNLOCK = 'epicRankUnlock'
+    RANKED_SELECTABLE_REWARD = 'rankedSelectableReward'
 
 
 class TOOLTIP_COMPONENT(CONST_CONTAINER):

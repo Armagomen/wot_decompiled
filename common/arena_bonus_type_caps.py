@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/arena_bonus_type_caps.py
-from constants import ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES
+from constants import ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, IS_EDITOR
+from debug_utils import LOG_ERROR
 from soft_exception import SoftException
 from BonusCaps import BonusCapsConfig
 
@@ -56,7 +57,6 @@ class ARENA_BONUS_TYPE_CAPS():
     DOSSIER_MAXFALLOUT = 'DOSSIER_MAXFALLOUT'
     CREW_IMMUNE_TO_DAMAGE = 'CREW_IMMUNE_TO_DAMAGE'
     BOOSTERS = 'BOOSTERS'
-    GAS_ATTACK_MECHANICS = 'GAS_ATTACK_MECHANICS'
     DOSSIER_ACHIEVEMENTS_FALLOUT = 'DOSSIER_ACHIEVEMENTS_FALLOUT'
     SQUADS = 'SQUADS'
     SQUAD_XP = 'SQUAD_XP'
@@ -126,6 +126,7 @@ class ARENA_BONUS_TYPE_CAPS():
     BATTLE_NOTIFIER = 'BATTLE_NOTIFIER'
     MATCHMAKER_STATS = 'MATCHMAKER_STATS'
     OBSERVER_SEES_ALL = 'OBSERVER_SEES_ALL'
+    BECOME_AN_OBSERVER_AFTER_DEATH = 'BECOME_AN_OBSERVER_AFTER_DEATH'
     FOLLOW_WINNER = 'FOLLOW_WINNER'
     EXTENDED_SPG_MECHANICS = 'EXTENDED_SPG_MECHANICS'
     TEAMS_INFO = 'TEAMS_INFO'
@@ -139,6 +140,9 @@ class ARENA_BONUS_TYPE_CAPS():
     VPP_MODIFICATIONS = 'VPP_MODIFICATIONS'
     SWITCH_SETUPS = 'SWITCH_SETUPS'
     LOG_ALL_VEHICLES = 'LOG_ALL_VEHICLES'
+    SSR = 'SSR'
+    SSR_FORCE_RECORD = 'SSR_FORCE_RECORD'
+    RTS_COMPONENT = 'RTS_COMPONENT'
     DOSSIER_ACHIEVEMENTS = frozenset((DOSSIER_ACHIEVEMENTS_15X15,
      DOSSIER_ACHIEVEMENTS_RANKED15X15,
      DOSSIER_ACHIEVEMENTS_7X7,
@@ -155,8 +159,11 @@ class ARENA_BONUS_TYPE_CAPS():
 
     @staticmethod
     def init():
-        import bonus_caps_config
-        ARENA_BONUS_TYPE_CAPS._typeToCaps = bonus_caps_config.readConfig()
+        if not ARENA_BONUS_TYPE_CAPS._typeToCaps:
+            import bonus_caps_config
+            ARENA_BONUS_TYPE_CAPS._typeToCaps = bonus_caps_config.readConfig()
+        else:
+            LOG_ERROR('re-init ARENA_BONUS_TYPE_CAPS')
 
     @staticmethod
     def check():
@@ -213,4 +220,5 @@ def init():
 
 
 ALLOWED_ARENA_BONUS_TYPE_CAPS = frozenset([ v for k, v in ARENA_BONUS_TYPE_CAPS.__dict__.iteritems() if not k.startswith('__') and isinstance(v, str) ])
-init()
+if IS_EDITOR:
+    init()

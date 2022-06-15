@@ -3,42 +3,51 @@
 import logging
 import math
 import operator
-import typing
 from collections import namedtuple
+import typing
 import BigWorld
 import personal_missions
+from battle_pass_common import BattlePassConsts
+from constants import EVENT_TYPE
 from dog_tags_common.components_config import componentConfigAdapter as cca
-from gui.dog_tag_composer import dogTagComposer
-from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import getEventPostBattleInfo, getBattlePassQuestInfo
-from gui.Scaleform.daapi.view.lobby.customization.progression_helpers import getProgressionPostBattleInfo, parseEventID, getC11nProgressionLinkBtnParams
+from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import currentHangarIsBattleRoyale
+from gui.Scaleform.daapi.view.lobby.customization.progression_helpers import getC11nProgressionLinkBtnParams, getProgressionPostBattleInfo, parseEventID
+from gui.Scaleform.daapi.view.lobby.server_events.awards_formatters import BattlePassTextBonusesPacker
+from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import getEventPostBattleInfo
 from gui.Scaleform.daapi.view.lobby.techtree.techtree_dp import g_techTreeDP
+from gui.Scaleform.genConsts.MISSIONS_STATES import MISSIONS_STATES
 from gui.Scaleform.genConsts.PROGRESSIVEREWARD_CONSTANTS import PROGRESSIVEREWARD_CONSTANTS as prConst
+from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.Scaleform.locale.BATTLE_RESULTS import BATTLE_RESULTS
-from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import currentHangarIsSteelHunter
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.battle_results.components import base
 from gui.battle_results.settings import PROGRESS_ACTION
+from gui.dog_tag_composer import dogTagComposer
 from gui.impl import backport
 from gui.impl.auxiliary.rewards_helper import getProgressiveRewardVO
 from gui.impl.gen import R
-from gui.server_events.events_constants import CELEBRITY_GROUP_PREFIX
-from gui.shared.formatters import text_styles, getItemUnlockPricesVO, getItemPricesVO
+from gui.server_events import formatters
+from gui.server_events.awards_formatters import QuestsBonusComposer
+from gui.shared.formatters import getItemPricesVO, getItemUnlockPricesVO, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, Tankman, getVehicleComponentsByType
-from gui.shared.gui_items.crew_skin import localizedFullName
-from gui.shared.gui_items.Vehicle import getLevelIconPath
 from gui.shared.gui_items.Tankman import getCrewSkinIconSmall
+from gui.shared.gui_items.Vehicle import getLevelIconPath
+from gui.shared.gui_items.crew_skin import localizedFullName
 from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Currency
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from new_year.celebrity.celebrity_quests_helpers import getCelebrityQuests, getCelebrityQuestsGroups, getCelebrityTokens
+from items.components.crew_skins_constants import NO_CREW_SKIN_ID
+from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-from items.components.crew_skins_constants import NO_CREW_SKIN_ID
-from battle_pass_common import BattlePassConsts
 if typing.TYPE_CHECKING:
-    from gui.server_events.event_items import CelebrityGroup
-MIN_BATTLES_TO_SHOW_PROGRESS = 5
+    from typing import Dict, Tuple
+    from gui.battle_results.reusable import _ReusableInfo
+    from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import BattlePassProgress
+_POST_BATTLE_RES = R.strings.battle_pass.reward.postBattle
+_MIN_BATTLES_TO_SHOW_PROGRESS = 5
 _logger = logging.getLogger(__name__)
 
 def isQuestCompleted(_, pPrev, pCur):
@@ -98,7 +107,7 @@ class VehicleProgressHelper(object):
             if self.__vehicleXp - unlockProps.xpCost <= vehicleBattleXp and item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
                 avgBattles2Unlock = self.__getAvgBattles2Unlock(unlockProps)
                 if not self.__vehicleXp > unlockProps.xpCost:
-                    if 0 < avgBattles2Unlock <= MIN_BATTLES_TO_SHOW_PROGRESS:
+                    if 0 < avgBattles2Unlock <= _MIN_BATTLES_TO_SHOW_PROGRESS:
                         ready2UnlockVehicles.append(self.__makeUnlockVehicleVO(item, unlockProps, avgBattles2Unlock))
                 elif self.__vehicleXp > unlockProps.xpCost:
                     ready2UnlockModules.append(self.__makeUnlockModuleVO(item, unlockProps))
@@ -142,7 +151,7 @@ class VehicleProgressHelper(object):
                 else:
                     tmanDossier = self.itemsCache.items.getTankmanDossier(tman.invID)
                     avgBattles2NewSkill = self.__getAvgBattles2NewSkill(tmanDossier.getAvgXP(), tman)
-                    if 0 < avgBattles2NewSkill <= MIN_BATTLES_TO_SHOW_PROGRESS:
+                    if 0 < avgBattles2NewSkill <= _MIN_BATTLES_TO_SHOW_PROGRESS:
                         skilledTankmans.append(self.__makeTankmanVO(tman, avgBattles2NewSkill))
 
         return skilledTankmans
@@ -226,10 +235,12 @@ class VehicleProgressBlock(base.StatsBlock):
     __slots__ = ()
 
     def setRecord(self, result, reusable):
+        xpEarnings = reusable.personal.xpProgress
         for intCD, data in reusable.personal.getVehicleCDsIterator(result):
-            vehicleBattleXp = data.get('xp', 0)
+            xpEarningsForVehicle = xpEarnings.get(intCD, {})
+            vehicleBattleXp = xpEarningsForVehicle.get('xp', 0)
+            tmenXps = dict(xpEarningsForVehicle.get('xpByTmen', []))
             pureCreditsReceived = data.get('pureCreditsReceived', 0)
-            tmenXps = dict(data.get('xpByTmen', []))
             helper = VehicleProgressHelper(intCD)
             progress = helper.getProgressList(vehicleBattleXp, pureCreditsReceived, tmenXps)
             for item in progress:
@@ -241,21 +252,77 @@ class VehicleProgressBlock(base.StatsBlock):
 PMComplete = namedtuple('PMComplete', ['isMainComplete', 'isAddComplete'])
 
 class BattlePassProgressBlock(base.StatsBlock):
+    __battlePassController = dependency.descriptor(IBattlePassController)
 
     def setRecord(self, result, reusable):
-        if reusable.battlePassProgress is not None:
-            if BattlePassConsts.PROGRESSION_INFO_PREV in reusable.battlePassProgress:
-                info = reusable.battlePassProgress[BattlePassConsts.PROGRESSION_INFO_PREV]
-                self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', getBattlePassQuestInfo(info)))
-            if BattlePassConsts.PROGRESSION_INFO in reusable.battlePassProgress:
-                info = reusable.battlePassProgress[BattlePassConsts.PROGRESSION_INFO]
-                self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', getBattlePassQuestInfo(info)))
-        return
+        if reusable.battlePassProgress.hasProgress:
+            self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(reusable.battlePassProgress)))
+            if reusable.battlePassProgress.isLevelReached:
+                self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(reusable.battlePassProgress, True)))
+
+    @classmethod
+    def __formatBattlePassProgress(cls, progress, isExtraBlock=False):
+        return ('', {'awards': cls.__makeProgressAwards(progress, isExtraBlock),
+          'questInfo': cls.__makeProgressQuestInfo(progress, isExtraBlock),
+          'questType': EVENT_TYPE.BATTLE_QUEST,
+          'progressList': cls.__makeProgressList(progress, isExtraBlock),
+          'questState': {'statusState': cls.__getMissionState(progress.isDone)},
+          'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
+          'linkBtnEnabled': progress.isApplied})
+
+    @staticmethod
+    def __makeProgressAwards(progress, isExtraBlock):
+        if progress.awards and not isExtraBlock:
+            awardsList = QuestsBonusComposer(BattlePassTextBonusesPacker()).getPreformattedBonuses(progress.awards)
+
+            def makeUnavailableBlockData():
+                return formatters.packTextBlock(text_styles.alert(backport.text(R.strings.quests.bonuses.notAvailable())))
+
+            if awardsList:
+                return [ award.getDict() for award in awardsList ]
+            return [makeUnavailableBlockData().getDict()]
+        return []
+
+    @classmethod
+    def __makeProgressQuestInfo(cls, progress, isExtraBlock):
+        isFreePoints = progress.pointsAux and not progress.isLevelMax or progress.isLevelMax and isExtraBlock
+        chapterID = progress.chapterID
+        return {'status': cls.__getMissionState(progress.isDone and not isExtraBlock),
+         'questID': BattlePassConsts.FAKE_QUEST_ID,
+         'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
+         'eventType': EVENT_TYPE.BATTLE_QUEST,
+         'maxProgrVal': progress.pointsMax,
+         'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
+         'description': backport.text(_POST_BATTLE_RES.title.free() if isFreePoints else _POST_BATTLE_RES.title(), level=progress.level if not isExtraBlock else progress.level + 1, chapter=cls.__getChapterName(chapterID)),
+         'currentProgrVal': progress.pointsNew,
+         'tasksCount': -1,
+         'progrBarType': cls.__getProgressBarType(not progress.isDone),
+         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
+
+    @classmethod
+    def __makeProgressList(cls, progress, isExtraBlock):
+        return [{'description': backport.text(_POST_BATTLE_RES.progress()),
+          'maxProgrVal': progress.pointsMax,
+          'progressDiff': '+ {}'.format(progress.pointsAdd),
+          'progressDiffTooltip': backport.text(_POST_BATTLE_RES.progress.tooltip(), points=progress.pointsAdd),
+          'currentProgrVal': progress.pointsNew,
+          'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}] if not progress.isDone or progress.pointsAux and not progress.isLevelMax or isExtraBlock else []
+
+    @classmethod
+    def __getChapterName(cls, chapterID):
+        return backport.text(R.strings.battle_pass.chapter.dyn(cls.__battlePassController.getRewardType(chapterID).value).fullName.num(chapterID)()) if chapterID else ''
+
+    @staticmethod
+    def __getMissionState(isDone):
+        return MISSIONS_STATES.COMPLETED if isDone else MISSIONS_STATES.IN_PROGRESS
+
+    @staticmethod
+    def __getProgressBarType(needShow):
+        return formatters.PROGRESS_BAR_TYPE.SIMPLE if needShow else formatters.PROGRESS_BAR_TYPE.NONE
 
 
 class QuestsProgressBlock(base.StatsBlock):
     eventsCache = dependency.descriptor(IEventsCache)
-    itemsCache = dependency.descriptor(IItemsCache)
     __slots__ = ()
 
     def getVO(self):
@@ -263,21 +330,13 @@ class QuestsProgressBlock(base.StatsBlock):
         return vo
 
     def setRecord(self, result, reusable):
-        questsProgress = reusable.personal.getQuestsProgress()
-        personalMissions = {}
         commonQuests = []
+        personalMissions = {}
         allCommonQuests = self.eventsCache.getQuests()
         allCommonQuests.update(self.eventsCache.getHiddenQuests(lambda q: q.isShowedPostBattle()))
-        allCelebrityQuests = getCelebrityQuests()
-        celebrityProgressGroups = set()
+        questsProgress = reusable.personal.getQuestsProgress()
         if questsProgress:
             for qID, qProgress in questsProgress.iteritems():
-                if qID.startswith(CELEBRITY_GROUP_PREFIX):
-                    if qID in allCelebrityQuests:
-                        quest = allCelebrityQuests[qID]
-                        groupID = quest.getGroupID()
-                        celebrityProgressGroups.add(groupID)
-                    continue
                 pGroupBy, pPrev, pCur = qProgress
                 isCompleted = isQuestCompleted(pGroupBy, pPrev, pCur)
                 if qID in allCommonQuests:
@@ -305,36 +364,6 @@ class QuestsProgressBlock(base.StatsBlock):
                     personalMissions[quest].update(data)
                 progress = personalMissions.setdefault(quest, {})
                 progress.update(data)
-
-        if celebrityProgressGroups:
-            celebrityQuestGroups = getCelebrityQuestsGroups()
-            celebrityTokens = getCelebrityTokens()
-            for groupID in sorted(celebrityProgressGroups):
-                celebrityGroup = celebrityQuestGroups.get(groupID)
-                if celebrityGroup is None:
-                    continue
-                celebrityGroup.update(allCelebrityQuests)
-                if not celebrityGroup.isValid:
-                    continue
-                activeQuest = celebrityGroup.getActiveQuest(celebrityTokens)
-                if activeQuest is None:
-                    continue
-                questProgress = questsProgress.get(activeQuest.getID())
-                if questProgress is None:
-                    continue
-                pGroupBy, pPrev, pCur = questProgress
-                isCompleted = isQuestCompleted(pGroupBy, pPrev, pCur)
-                info = None
-                if isCompleted:
-                    bonusQuest = celebrityGroup.bonusQuest
-                    info = getEventPostBattleInfo(bonusQuest, allCelebrityQuests, None, None, False, True)
-                elif pPrev or max(pCur.itervalues()) != 0:
-                    isProgressReset = activeQuest.bonusCond.isInRow() and pCur.get('battlesCount', 0) == 0
-                    pPrevProgress = {pGroupBy: pPrev} if pPrev else None
-                    pCurProgress = {pGroupBy: pCur} if pCur else None
-                    info = getEventPostBattleInfo(activeQuest, allCelebrityQuests, pCurProgress, pPrevProgress, isProgressReset, isCompleted)
-                if info is not None:
-                    self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', info))
 
         for quest, data in sorted(personalMissions.items(), key=operator.itemgetter(0), cmp=self.__sortPersonalMissions):
             if data.get(quest.getAddQuestID(), False):
@@ -460,7 +489,7 @@ class ProgressiveCustomizationVO(base.DirectStatsItem):
             _, vehicleIntCD = parseEventID(questID)
             vehicle = self._itemsCache.items.getItemByCD(vehicleIntCD)
             linkBtnEnabled, linkBtnTooltip = getC11nProgressionLinkBtnParams(vehicle)
-            if currentHangarIsSteelHunter():
+            if currentHangarIsBattleRoyale():
                 linkBtnEnabled = False
             self._value['linkBtnEnabled'] = linkBtnEnabled
             self._value['linkBtnTooltip'] = backport.text(linkBtnTooltip)

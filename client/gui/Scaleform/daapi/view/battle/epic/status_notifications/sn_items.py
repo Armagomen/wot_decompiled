@@ -21,15 +21,11 @@ def getEquipmentById(equipmentId):
     return vehicles.g_cache.equipments()[equipmentId]
 
 
-def getSmokeDataByPredicate(smokesInfo, predicate):
-    if smokesInfo is None or not predicate:
+def getSmokeDataByPredicate(smokeInfo, teamPredicate, postEffectPredicate):
+    if smokeInfo is None or not teamPredicate or not postEffectPredicate:
         return (None, None)
     else:
-        activeSmokes = list(((sInfo['endTime'], sInfo['equipmentID']) for sInfo in smokesInfo if predicate(sInfo['team'])))
-        if activeSmokes:
-            maxEndTime, maxEndTimeEquipmentId = max(activeSmokes)
-            return (maxEndTime, getEquipmentById(maxEndTimeEquipmentId))
-        return (None, None)
+        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID'])) if teamPredicate(smokeInfo['team']) and postEffectPredicate(smokeInfo['expiring']) else (None, None)
 
 
 class _VehicleStateSN(StatusNotificationItem):
@@ -191,11 +187,26 @@ class StunSN(TimerSN):
 
 
 class CaptureBlockSN(TimerSN):
+    __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self, updateCallback):
         super(CaptureBlockSN, self).__init__(updateCallback)
         self._vo['title'] = backport.text(R.strings.epic_battle.progress_timers.blocked())
         self._subscribeOnVehControlling()
+        self.__isBlocked = False
+        ctrl = self.__sessionProvider.dynamic.progressTimer
+        if ctrl is not None:
+            ctrl.onVehicleLeft += self.__onVehicleLeft
+            ctrl.onVehicleEntered += self.__onVehicleEntered
+        return
+
+    def destroy(self):
+        ctrl = self.__sessionProvider.dynamic.progressTimer
+        if ctrl is not None:
+            ctrl.onVehicleEntered -= self.__onVehicleEntered
+            ctrl.onVehicleLeft -= self.__onVehicleLeft
+        super(CaptureBlockSN, self).destroy()
+        return
 
     def getItemID(self):
         return VEHICLE_VIEW_STATE.CAPTURE_BLOCKED
@@ -207,9 +218,19 @@ class CaptureBlockSN(TimerSN):
         if duration:
             self._updateTimeParams(duration, 0)
             self._isVisible = True
+            self.__isBlocked = True
             self._sendUpdate()
         else:
+            self.__isBlocked = False
             self._setVisible(False)
+
+    def __onVehicleLeft(self, *_):
+        if self.__isBlocked:
+            self._setVisible(False)
+
+    def __onVehicleEntered(self, *_):
+        if self.__isBlocked:
+            self._setVisible(True)
 
 
 class _DestroyTimerSN(TimerSN):
@@ -318,9 +339,10 @@ class ResupplyTimerSN(TimerSN):
     def __onProgressUpdate(self, circleType, _, value):
         if circleType is not PROGRESS_CIRCLE_TYPE.RESUPPLY_CIRCLE:
             return
-        if 'additionalInfo' in self._vo and self._vo['additionalInfo'] == value:
+        valueStr = str(value)
+        if 'additionalInfo' in self._vo and self._vo['additionalInfo'] == valueStr:
             return
-        self._vo['additionalInfo'] = value
+        self._vo['additionalInfo'] = valueStr
         if self._isVisible:
             self._sendUpdate()
 
@@ -658,14 +680,17 @@ class _SmokeBase(TimerSN):
     def _isFitByTeam(self, teamID):
         raise NotImplementedError
 
+    def _postEffectCondition(self, isPostEffect):
+        raise NotImplementedError
+
     def _update(self, smokesInfo):
-        endTime, equipment = getSmokeDataByPredicate(smokesInfo, self._isFitByTeam)
+        endTime, equipment = getSmokeDataByPredicate(smokesInfo, self._isFitByTeam, self._postEffectCondition)
         if endTime is None:
             if self._isVisible:
                 self._setVisible(False)
             return
         else:
-            self._updateTimeParams(equipment.totalDuration, endTime)
+            self._updateTimeParams(equipment.expireDelay if smokesInfo['expiring'] else equipment.totalDuration, endTime)
             self._isVisible = True
             self._sendUpdate()
             return
@@ -680,6 +705,9 @@ class SmokeSN(_SmokeBase):
     def _isFitByTeam(self, teamID):
         return teamID == avatar_getter.getPlayerTeam()
 
+    def _postEffectCondition(self, isPostEffect):
+        return not isPostEffect
+
     def getViewTypeID(self):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.SMOKE
 
@@ -693,8 +721,21 @@ class EnemySmokeSN(_SmokeBase):
     def _isFitByTeam(self, teamID):
         return teamID != avatar_getter.getPlayerTeam()
 
+    def _postEffectCondition(self, isPostEffect):
+        return not isPostEffect
+
     def getViewTypeID(self):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.DAMAGING_SMOKE
+
+
+class EnemySmokePostEffectSN(EnemySmokeSN):
+
+    def __init__(self, updateCallback):
+        super(EnemySmokePostEffectSN, self).__init__(updateCallback)
+        self._vo['title'] = backport.text(R.strings.epic_battle.smoke.InEnemySmokePostEffect())
+
+    def _postEffectCondition(self, isPostEffect):
+        return isPostEffect
 
 
 class _StealthBaseSN(_BuffSN):

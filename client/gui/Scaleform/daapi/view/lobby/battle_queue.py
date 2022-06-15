@@ -193,9 +193,6 @@ class _BattleRoyaleQueueProvider(_RandomQueueProvider):
 
         self._proxy.as_setDPS(modesData)
 
-    def getTankIcon(self, vehicle):
-        return RES_ICONS.getBattleRoyaleTankIconPath(vehicle.nationName)
-
     def getLayoutStr(self):
         pass
 
@@ -466,7 +463,7 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
                 textStyle = text_styles.highTitleDisabled
                 updateData['myClanRating'] = textStyle('--')
         else:
-            textStyle = text_styles.highTitle
+            textStyle = text_styles.highTitleDisabled
         myClanElo = clanData.get('elo')
         if isinstance(myClanElo, int):
             updateData['myClanElo'] = textStyle(backport.getNiceNumberFormat(myClanElo))

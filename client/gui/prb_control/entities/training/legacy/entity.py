@@ -129,11 +129,8 @@ class TrainingEntity(LegacyEntity):
         super(TrainingEntity, self).__init__(FUNCTIONAL_FLAG.TRAINING, settings, permClass=TrainingPermissions, limits=TrainingLimits(self), requestHandlers=requests)
         self.__settingRecords = []
         self.__watcher = None
+        self.storage = legacy_storage_getter(PREBATTLE_TYPE.TRAINING)()
         return
-
-    @legacy_storage_getter(PREBATTLE_TYPE.TRAINING)
-    def storage(self):
-        return None
 
     def init(self, clientPrb=None, ctx=None):
         result = super(TrainingEntity, self).init(clientPrb=clientPrb, ctx=ctx)

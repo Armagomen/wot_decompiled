@@ -377,6 +377,18 @@ class MissionsPremiumSoundEnv(SoundEnv):
         super(MissionsPremiumSoundEnv, self).__init__(soundsCtrl, 'dailyMissions', filters=(SoundFilters.HANGAR_PLACE_TASKS_DAILY,))
 
 
+class MissionsEventsSoundEnv(SoundEnv):
+
+    def __init__(self, soundsCtrl):
+        super(MissionsEventsSoundEnv, self).__init__(soundsCtrl, 'missionEvent', filters=(SoundFilters.HANGAR_PLACE_TASKS_EVENTS,))
+
+
+class DragonBoatSoundEnv(SoundEnv):
+
+    def __init__(self, soundCtrl):
+        super(DragonBoatSoundEnv, self).__init__(soundCtrl, 'dragonBoat', filters=(SoundFilters.HANGAR_PLACE_TASKS_DRAGON_BOAT,))
+
+
 class GuiAmbientsCtrl(object):
     _spaces = {GuiGlobalSpaceID.LOGIN: LoginSpaceEnv,
      GuiGlobalSpaceID.LOBBY: LobbySpaceEnv,

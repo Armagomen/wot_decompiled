@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/common.py
+import BigWorld
 from constants import ARENA_GUI_TYPE, FINISH_REASON
 from gui.impl import backport
 from gui.impl.gen import R
@@ -278,3 +279,17 @@ class SortieTeamsUiVisibility(TeamsUiVisibility):
         ui_visibility = super(SortieTeamsUiVisibility, self)._convert(value, reusable)
         ui_visibility |= UI_VISIBILITY.SHOW_RESOURCES
         return ui_visibility
+
+
+class SpaFlagItem(base.StatsItem):
+    __slots__ = ('_spaFlag',)
+
+    def __init__(self, field, spaFlag):
+        super(SpaFlagItem, self).__init__(field)
+        self._spaFlag = spaFlag
+
+    def clone(self):
+        return self.__class__(self._field, self._spaFlag)
+
+    def _convert(self, value, reusable):
+        return BigWorld.player().spaFlags.getFlag(self._spaFlag)

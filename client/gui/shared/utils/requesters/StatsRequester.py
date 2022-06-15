@@ -1,10 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/StatsRequester.py
 from collections import namedtuple
+import json
 import BigWorld
 from account_helpers.premium_info import PremiumInfo
 from adisp import async
-from gui.shared.money import Money, Currency
+from gui.shared.money import Money, Currency, DynamicMoney
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from gui.veh_post_progression.models.ext_money import ExtendedMoney
 from helpers import time_utils, dependency
@@ -264,6 +265,18 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
             result = int(spaDict[gfKey])
         return result
 
+    def getTelecomBundleId(self):
+        for key, attrValue in self.SPA.iteritems():
+            if key.startswith(SPA_ATTRS.RSS):
+                value = json.loads(attrValue)
+                return value['bundleID']
+
+        return None
+
+    @property
+    def isSsrPlayEnabled(self):
+        return self.getCacheValue('isSsrPlayEnabled', False)
+
     @property
     def tutorialsCompleted(self):
         return self.getCacheValue('tutorialsCompleted', 0)
@@ -289,6 +302,11 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
     def getMoneyExt(self, vehCD):
         vehicleXP = self.vehiclesXPs.get(vehCD, 0)
         return ExtendedMoney(xp=(self.freeXP + vehicleXP), vehXP=vehicleXP, freeXP=self.freeXP, **self.money.toDict())
+
+    def getDynamicMoney(self):
+        money = self.money.toDict()
+        money.update(self.dynamicCurrencies)
+        return DynamicMoney(**money)
 
     def getWeeklyVehicleCrystals(self, vehCD):
         return self.getCacheValue('weeklyVehicleCrystals', {}).get(vehCD, 0)

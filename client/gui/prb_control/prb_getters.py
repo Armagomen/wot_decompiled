@@ -10,78 +10,13 @@ from skeletons.gui.lobby_context import ILobbyContext
 from soft_exception import SoftException
 from PlayerEvents import g_playerEvents
 
-def isInRandomQueue():
-    return getattr(BigWorld.player(), 'isInRandomQueue', False)
-
-
-def isInTutorialQueue():
-    return getattr(BigWorld.player(), 'isInTutorialQueue', False)
-
-
-def isInBootcampQueue():
-    return getattr(BigWorld.player(), 'isInBootcampQueue', False)
-
-
-def isInEventBattlesQueue():
-    return getattr(BigWorld.player(), 'isInEventBattles', False)
-
-
-def isInSandboxQueue():
-    return getattr(BigWorld.player(), 'isInSandboxQueue', False)
-
-
-def isInRankedQueue():
-    return getattr(BigWorld.player(), 'isInRankedQueue', False)
+def getQueueType():
+    return getattr(BigWorld.player(), 'battleQueueType', QUEUE_TYPE.UNKNOWN)
 
 
 @dependency.replace_none_kwargs(bootcampController=IBootcampController)
 def isInBootcampAccount(bootcampController=None):
     return bootcampController is not None and bootcampController.isInBootcampAccount()
-
-
-def isInEpicQueue():
-    return getattr(BigWorld.player(), 'isInEpicQueue', False)
-
-
-def isInBattleRoyaleQueue():
-    return getattr(BigWorld.player(), 'isInBattleRoyaleQueue', False)
-
-
-def isInBattleRoyaleTournamentQueue():
-    return getattr(BigWorld.player(), 'isInBattleRoyaleTournamentQueue', False)
-
-
-def isInMapboxQueue():
-    return getattr(BigWorld.player(), 'isInMapboxQueue', False)
-
-
-def isInMapsTrainingQueue():
-    return getattr(BigWorld.player(), 'isInMapsTrainingQueue', False)
-
-
-def getQueueType():
-    queueType = 0
-    if isInRandomQueue():
-        queueType = QUEUE_TYPE.RANDOMS
-    elif isInEventBattlesQueue():
-        queueType = QUEUE_TYPE.EVENT_BATTLES
-    elif isInTutorialQueue():
-        queueType = QUEUE_TYPE.TUTORIAL
-    elif isInBootcampQueue():
-        queueType = QUEUE_TYPE.BOOTCAMP
-    elif isInSandboxQueue():
-        queueType = QUEUE_TYPE.SANDBOX
-    elif isInEpicQueue():
-        queueType = QUEUE_TYPE.EPIC
-    elif isInBattleRoyaleQueue():
-        queueType = QUEUE_TYPE.BATTLE_ROYALE
-    elif isInBattleRoyaleTournamentQueue():
-        queueType = QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT
-    elif isInMapboxQueue():
-        queueType = QUEUE_TYPE.MAPBOX
-    elif isInMapsTrainingQueue():
-        queueType = QUEUE_TYPE.MAPS_TRAINING
-    return queueType
 
 
 def getClientPrebattle():

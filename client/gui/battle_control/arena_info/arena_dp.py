@@ -13,7 +13,6 @@ from gui.battle_control.arena_info import vos_collections
 from gui.battle_control.arena_info.arena_vos import EPIC_BATTLE_KEYS
 from gui.battle_control.battle_constants import MULTIPLE_TEAMS_TYPE
 from gui.battle_control.battle_constants import PLAYER_GUI_PROPS
-from items.battle_royale import isSpawnedBot
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.battle_session import IArenaDataProvider
 from helpers import dependency
@@ -338,7 +337,7 @@ class ArenaDataProvider(IArenaDataProvider):
 
     def getActiveVehiclesGenerator(self):
         for vInfo in self.__vInfoVOs.itervalues():
-            if not isSpawnedBot(vInfo.vehicleType.tags) and not vInfo.isObserver():
+            if vInfo.isPlayer():
                 yield (vInfo, self.__vStatsVOs[vInfo.vehicleID])
 
     def getAlliesVehiclesNumber(self):

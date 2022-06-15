@@ -51,7 +51,7 @@ class OnAnyVehicleDestroyed(TunableEventBlock, VehicleMeta):
         BigWorld.player().arena.onVehicleKilled -= self.__onVehicleKilled
 
     @TunableEventBlock.eventProcessor
-    def __onVehicleKilled(self, targetID, attackerID, equipmentID, reason):
+    def __onVehicleKilled(self, targetID, attackerID, equipmentID, reason, numVehiclesAffected):
         target = BigWorld.entities.get(targetID)
         if target:
             self._target.setValue(weakref.proxy(BigWorld.entities.get(targetID)))
@@ -130,10 +130,7 @@ class IsVehicleBurning(Block, VehicleMeta):
 
     def _exec(self):
         v = self._vehicle.getValue()
-        extra = v.typeDescriptor.extrasDict['fire']
-        res = extra is not None and extra.isRunningFor(v)
-        self._res.setValue(res)
-        return
+        self._res.setValue(v.isOnFire())
 
     @classmethod
     def blockAspects(cls):

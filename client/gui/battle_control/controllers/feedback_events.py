@@ -3,7 +3,7 @@
 import logging
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE as _BET, NONE_SHELL_TYPE
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _FET
-from constants import ATTACK_REASON, ATTACK_REASONS, SHELL_TYPES_LIST, ROLE_TYPE, ROLE_TYPE_TO_LABEL
+from constants import ATTACK_REASON, ATTACK_REASONS, BATTLE_LOG_SHELL_TYPES, ROLE_TYPE, ROLE_TYPE_TO_LABEL
 _logger = logging.getLogger(__name__)
 
 def _unpackInteger(packedData):
@@ -70,7 +70,7 @@ _PLAYER_FEEDBACK_EXTRA_DATA_CONVERTERS = {_FET.PLAYER_DAMAGED_HP_ENEMY: _unpackD
  _FET.PLAYER_STUN_ENEMIES: _unpackMultiStun}
 
 def _getShellType(shellTypeID):
-    return None if shellTypeID == NONE_SHELL_TYPE else SHELL_TYPES_LIST[shellTypeID]
+    return None if shellTypeID == NONE_SHELL_TYPE else BATTLE_LOG_SHELL_TYPES(shellTypeID)
 
 
 class _DamageExtra(object):
@@ -92,6 +92,9 @@ class _DamageExtra(object):
 
     def getAttackReasonID(self):
         return self.__attackReasonID
+
+    def getSecondaryAttackReasonID(self):
+        return self.__secondaryAttackReasonID
 
     def getShellType(self):
         return self.__shellType
@@ -132,6 +135,9 @@ class _DamageExtra(object):
     def isArtilleryEq(self, primary=True):
         return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
 
+    def isFortArtilleryEq(self, primary=True):
+        return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+
     def isBomberEq(self, primary=True):
         return self.isAttackReason(ATTACK_REASON.BOMBER_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
 
@@ -143,6 +149,15 @@ class _DamageExtra(object):
 
     def isDamagingSmoke(self, primary=True):
         return self.isAttackReason(ATTACK_REASON.SMOKE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.SMOKE)
+
+    def isCorrodingShot(self, primary=True):
+        return self.isAttackReason(ATTACK_REASON.CORRODING_SHOT) if primary else self.isSecondaryAttackReason(ATTACK_REASON.CORRODING_SHOT)
+
+    def isFireCircle(self, primary=True):
+        return self.isAttackReason(ATTACK_REASON.FIRE_CIRCLE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FIRE_CIRCLE)
+
+    def isThunderStrike(self, primary=True):
+        return self.isAttackReason(ATTACK_REASON.THUNDER_STRIKE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.THUNDER_STRIKE)
 
     def isAttackReason(self, attackReason):
         return ATTACK_REASONS[self.__attackReasonID] == attackReason
@@ -157,7 +172,15 @@ class _DamageExtra(object):
         return self.isAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION) if primary else self.isSecondaryAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION)
 
     def isSpawnedBotRam(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.SPAWNED_BOT_RAM) if primary else self.isSecondaryAttackReason(ATTACK_REASON.SPAWNED_BOT_RAM)
+        return self.isAttackReason(ATTACK_REASON.BRANDER_RAM) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BRANDER_RAM)
+
+    def isClingBrander(self):
+        isShot = self.isAttackReason(ATTACK_REASON.SHOT)
+        isClingBrander = self.isSecondaryAttackReason(ATTACK_REASON.CLING_BRANDER)
+        return isShot and isClingBrander
+
+    def isClingBranderRam(self):
+        return self.isAttackReason(ATTACK_REASON.CLING_BRANDER_RAM)
 
 
 class _VisibilityExtra(object):
@@ -228,6 +251,15 @@ class _CritsExtra(object):
     def isDamagingSmoke(self):
         return self.isAttackReason(ATTACK_REASON.SMOKE)
 
+    def isCorrodingShot(self):
+        return self.isAttackReason(ATTACK_REASON.CORRODING_SHOT)
+
+    def isFireCircle(self):
+        return self.isAttackReason(ATTACK_REASON.FIRE_CIRCLE)
+
+    def isThunderStrike(self):
+        return self.isAttackReason(ATTACK_REASON.THUNDER_STRIKE)
+
     def isRam(self):
         return self.isAttackReason(ATTACK_REASON.RAM)
 
@@ -246,6 +278,9 @@ class _CritsExtra(object):
     def isArtilleryEq(self, primary=True):
         return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
 
+    def isFortArtilleryEq(self, primary=True):
+        return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+
     def isBomberEq(self, primary=True):
         return self.isAttackReason(ATTACK_REASON.BOMBER_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
 
@@ -257,6 +292,14 @@ class _CritsExtra(object):
 
     def isAttackReason(self, attackReason):
         return ATTACK_REASONS[self.__attackReasonID] == attackReason
+
+    def isClingBrander(self):
+        isShot = self.isAttackReason(ATTACK_REASON.SHOT)
+        isClingBrander = self.isSecondaryAttackReason(ATTACK_REASON.CLING_BRANDER)
+        return isShot and isClingBrander
+
+    def isClingBranderRam(self):
+        return self.isAttackReason(ATTACK_REASON.CLING_BRANDER_RAM)
 
 
 class _FeedbackEvent(object):

@@ -4,7 +4,7 @@ from CurrentVehicle import g_currentVehicle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite, CurrentVehicleActionsValidator
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
 from gui.prb_control.items import ValidationResult
-from gui.prb_control.settings import PRE_QUEUE_RESTRICTION
+from gui.prb_control.settings import PRE_QUEUE_RESTRICTION, UNIT_RESTRICTION
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.game_control import IMapboxController
@@ -18,6 +18,8 @@ class MapboxVehicleValidator(CurrentVehicleActionsValidator):
 
     @staticmethod
     def validateForMapbox(vehicle):
+        if vehicle is None:
+            return ValidationResult(False, UNIT_RESTRICTION.VEHICLE_NOT_SELECTED)
         lobbyContext = dependency.instance(ILobbyContext)
         config = lobbyContext.getServerSettings().mapbox
         if vehicle.level not in config.levels:
@@ -39,7 +41,7 @@ class MapboxActionsValidator(PreQueueActionsValidator):
 
     def _createVehiclesValidator(self, entity):
         baseValidator = super(MapboxActionsValidator, self)._createVehiclesValidator(entity)
-        return ActionsValidatorComposite(entity, [baseValidator, MapboxVehicleValidator(entity)])
+        return ActionsValidatorComposite(entity, [MapboxVehicleValidator(entity), baseValidator])
 
     def _createStateValidator(self, entity):
         baseValidator = super(MapboxActionsValidator, self)._createStateValidator(entity)

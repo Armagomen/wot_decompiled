@@ -77,7 +77,7 @@ class StatsConfiguration(object):
 
 
 class StatusConfiguration(object):
-    __slots__ = ('vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow', 'isResearchPage', 'checkNotSuitable', 'showCustomStates', 'useWhiteBg', 'withSlots', 'isCompare', 'eqSetupIDx')
+    __slots__ = ('vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow', 'isResearchPage', 'checkNotSuitable', 'showCustomStates', 'useWhiteBg', 'withSlots', 'isCompare', 'eqSetupIDx', 'battleRoyale')
 
     def __init__(self):
         self.vehicle = None
@@ -93,6 +93,7 @@ class StatusConfiguration(object):
         self.withSlots = False
         self.isCompare = False
         self.eqSetupIDx = None
+        self.battleRoyale = None
         return
 
 
@@ -678,6 +679,9 @@ class VehCmpConfigurationContext(HangarContext):
         value.buyPrice = True
         return value
 
+    def buildItem(self, intCD, slotIdx=0, historicalBattleID=-1, vehicle=None):
+        return super(VehCmpConfigurationContext, self).buildItem(intCD, slotIdx, historicalBattleID, None)
+
 
 class VehCmpConfigurationSlotContext(VehCmpConfigurationContext):
 
@@ -1065,13 +1069,6 @@ class BattleResultMarkOfMasteryContext(BattleResultContext):
         return item
 
 
-class LunarNYProgressionContext(BattleResultContext):
-
-    def buildItem(self, block, name, value=0, **kwargs):
-        factory = factories.getAchievementFactory((block, name))
-        return factory.create(value=value) if factory is not None else None
-
-
 class VehicleEliteBonusContext(ToolTipContext):
 
     def __init__(self, fieldsToExclude=None):
@@ -1109,9 +1106,13 @@ class FortificationContext(ToolTipContext):
 
 
 class ReserveContext(ToolTipContext):
+    itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, fieldsToExclude=None):
         super(ReserveContext, self).__init__(TOOLTIP_COMPONENT.RESERVE, fieldsToExclude)
+
+    def buildItem(self, intCD):
+        return self.itemsCache.items.getItemByCD(int(intCD))
 
 
 class ClanProfileFortBuildingContext(ToolTipContext):
@@ -1127,10 +1128,10 @@ class ContactContext(ToolTipContext):
 
 
 class BattleConsumableContext(FortificationContext):
-    itemsCache = dependency.descriptor(IItemsCache)
+    __itemsCache = dependency.descriptor(IItemsCache)
 
     def buildItem(self, intCD):
-        return self.itemsCache.items.getItemByCD(int(intCD))
+        return self.__itemsCache.items.getItemByCD(int(intCD))
 
 
 class HangarTutorialContext(ToolTipContext):

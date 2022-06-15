@@ -1,14 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/consumables_panel.py
-from epic_constants import IN_BATTLE_RESERVE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.consumables_panel import ConsumablesPanel
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from helpers.epic_game import searchRankForSlot
+from items.vehicles import getVehicleClassFromVehicleType
+from gui.impl import backport
+from gui.impl.gen import R
 
 class EpicBattleConsumablesPanel(ConsumablesPanel):
     _EMPTY_LOCKED_SLOT = -1
     _GLOW_DELAY = 0.5
-    _EPIC_EQUIPMENT_ICON_PATH = '../maps/icons/epicBattles/skills/48x48/%s.png'
+    _R_EPIC_EQUIPMENT_ICON = R.images.gui.maps.icons.epicBattles.skills.c_48x48
 
     def __init__(self):
         super(EpicBattleConsumablesPanel, self).__init__()
@@ -36,7 +39,7 @@ class EpicBattleConsumablesPanel(ConsumablesPanel):
             return
 
     def _getEquipmentIcon(self, idx, icon):
-        return self._EPIC_EQUIPMENT_ICON_PATH % icon if idx in self.__battleReserveSlots else super(EpicBattleConsumablesPanel, self)._getEquipmentIcon(idx, icon)
+        return backport.image(self._R_EPIC_EQUIPMENT_ICON.dyn(icon)()) if idx in self.__battleReserveSlots else super(EpicBattleConsumablesPanel, self)._getEquipmentIcon(idx, icon)
 
     def _resetEquipmentSlot(self, idx, intCD, item):
         super(EpicBattleConsumablesPanel, self)._resetEquipmentSlot(idx, intCD, item)
@@ -72,13 +75,15 @@ class EpicBattleConsumablesPanel(ConsumablesPanel):
             return
         else:
             arena = self.sessionProvider.arenaVisitor.getArenaSubscription()
+            vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
+            vehClass = getVehicleClassFromVehicleType(vehicle.typeDescriptor.type)
             if arena is None:
                 return
-            slotEventsConfig = arena.settings.get('epic_config', {}).get('epicMetaGame', {}).get('inBattleReservesByRank').get('events', {})
+            slotEventsConfig = arena.settings.get('epic_config', {}).get('epicMetaGame', {}).get('inBattleReservesByRank').get('slotActions', {}).get(vehClass, {})
             if not slotEventsConfig:
                 return
             unlockedSlotIdx = idx - self._ORDERS_START_IDX
-            rank = self.__searchRankForUnlock(unlockedSlotIdx, slotEventsConfig)
+            rank = searchRankForSlot(unlockedSlotIdx, slotEventsConfig)
             if rank is None:
                 return
             currentRank = playerDataComp.playerRank if playerDataComp.playerRank is not None else 0
@@ -88,15 +93,6 @@ class EpicBattleConsumablesPanel(ConsumablesPanel):
             tooltipId = TOOLTIPS_CONSTANTS.EPIC_RANK_UNLOCK_INFO if rank > 1 else ''
             self.as_updateLockedInformationS(idx, rank, tooltipId)
             return
-
-    @staticmethod
-    def __searchRankForUnlock(slotIdx, slotEventsConfig):
-        for rank, (_, updateEvent) in enumerate(slotEventsConfig):
-            for updateType, updateSet in updateEvent.iteritems():
-                if updateType == IN_BATTLE_RESERVE_EVENTS.SLOT_EVENT_ACTIONS.UNLOCKED and slotIdx in updateSet:
-                    return rank
-
-        return None
 
     def __addEquipmentLevelToSlot(self, idx, item):
         itemName = item.getDescriptor().name

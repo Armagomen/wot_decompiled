@@ -8,7 +8,7 @@ from shared_utils import CONST_CONTAINER
 if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.managers.loaders import GuiImplViewLoadParams
     from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-__all__ = ('ArgsEvent', 'ComponentEvent', 'LoadViewEvent', 'LoadGuiImplViewEvent', 'ShowDialogEvent', 'LoginEvent', 'LoginEventEx', 'LobbySimpleEvent', 'FightButtonDisablingEvent', 'FightButtonEvent', 'CloseWindowEvent', 'BrowserEvent', 'HangarVehicleEvent', 'HangarCustomizationEvent', 'GameEvent', 'BootcampEvent', 'ViewEventType', 'OpenLinkEvent', 'ChannelManagementEvent', 'PreBattleChannelEvent', 'AmmunitionSetupViewEvent', 'HasCtxEvent', 'DogTagsEvent', 'FullscreenModeSelectorEvent', 'ModeSelectorPopoverEvent', 'NewYearEvent')
+__all__ = ('ArgsEvent', 'ComponentEvent', 'LoadViewEvent', 'LoadGuiImplViewEvent', 'ShowDialogEvent', 'LoginEvent', 'LoginEventEx', 'LobbySimpleEvent', 'FightButtonDisablingEvent', 'FightButtonEvent', 'CloseWindowEvent', 'BrowserEvent', 'HangarVehicleEvent', 'HangarCustomizationEvent', 'GameEvent', 'BootcampEvent', 'ViewEventType', 'OpenLinkEvent', 'ChannelManagementEvent', 'PreBattleChannelEvent', 'AmmunitionSetupViewEvent', 'HasCtxEvent', 'DogTagsEvent', 'FullscreenModeSelectorEvent', 'ModeSelectorPopoverEvent')
 _logger = logging.getLogger(__name__)
 
 class HasCtxEvent(SharedEvent):
@@ -81,7 +81,7 @@ class GameEvent(HasCtxEvent):
     ROLE_HINT_TOGGLE = 'roleHintToggle'
     COMMANDER_HINT = 'game/commanderHint'
     CHANGE_AMMUNITION_SETUP = 'game/changeAmmunitionSetup'
-    IMAGE_VIEW_DONE = 'game/imageViewDone'
+    TOGGLE_DEBUG_PIERCING_PANEL = 'game/toggleDebugPiercingPanel'
 
 
 class GUICommonEvent(SharedEvent):
@@ -296,13 +296,9 @@ class LobbySimpleEvent(HasCtxEvent):
     WAITING_SHOWN = 'waitingShown'
     WAITING_HIDDEN = 'waitingHidden'
     BATTLE_RESULTS_POSTED = 'battleResultsPosted'
-    TURN_LOBBY_DRAGGING_ON = 'turnLobbyDraggingOn'
-    TURN_LOBBY_DRAGGING_OFF = 'turnLobbyDraggingOff'
     BATTLE_RESULTS_SHOW_QUEST = 'battleResultsWindowShowQuest'
     CHANGE_SOUND_ENVIRONMENT = 'changeSoundEnvironment'
     VEHICLE_PREVIEW_HIDDEN = 'vehiclePreviewHidden'
-    SWITCH_NEW_YEAR_VIEW = 'switchNewYearView'
-    SHOW_LOOT_BOX_VIEW = 'showLootBoxView'
 
 
 class MissionsEvent(HasCtxEvent):
@@ -549,7 +545,6 @@ class OpenLinkEvent(SharedEvent):
     PREM_SHOP = 'premShopURL'
     TOKEN_SHOP = 'tokenShopUrl'
     FRONTLINE_CHANGES = 'frontlineChangesURL'
-    TECHTREE_UPDATE_NEWS = 'techTreeUpdateNewsURL'
 
     def __init__(self, eventType, url='', title='', params=None):
         super(OpenLinkEvent, self).__init__(eventType)
@@ -619,12 +614,12 @@ class VehicleBuyEvent(HasCtxEvent):
 
 
 class HangarVehicleEvent(HasCtxEvent):
-    ON_HERO_TANK_LABEL_UPDATE_REQUIRED = 'hangarVehicle/onHeroTankLabelUpdateRequired'
     ON_HERO_TANK_LOADED = 'hangarVehicle/onHeroTankLoaded'
     ON_HERO_TANK_DESTROY = 'hangarVehicle/onHeroTankDestroy'
     ON_PLATOON_TANK_LOADED = 'hangarVehicle/onPlatoonTankLoaded'
     ON_PLATOON_TANK_DESTROY = 'hangarVehicle/onPlatoonTankDestroy'
     PLATOON_TANK_MARKER = 'hangarVehicle/platoonTankMarker'
+    SELECT_VEHICLE_IN_HANGAR = 'hangarVehicle/selectVehicleInHangar'
 
 
 class LinkedSetEvent(HasCtxEvent):
@@ -651,41 +646,6 @@ class SeniorityAwardsEvent(HasCtxEvent):
     ON_ENTRY_VIEW_LOADED = 'seniorityAwards/onEntryViewLoaded'
 
 
-class NewYearEvent(HasCtxEvent):
-    ON_BREAK_TOYS_FILTER_APPLIED = 'newYear/onBreakToysFilterApplied'
-    ON_BREAK_TOYS_ANIMATION_COMPLETED = 'newYear/onBreakToysAnimationCompleted'
-    ON_PRE_SWITCH_VIEW = 'newYear/onPreSwitchView'
-    ON_SWITCH_VIEW = 'newYear/onSwitchView'
-    ON_SIDEBAR_SELECTED = 'newYear/onSidebarSelected'
-    SELECT_SIDEBAR_TAB_OUTSIDE = 'newYear/selectSidebarTabOutside'
-    UPDATE_BACK_BUTTON = 'newYear/updateBackButton'
-    ON_TOY_INSTALLED = 'newYear/onToyInstalled'
-
-
-class LootboxesEvent(HasCtxEvent):
-    ON_REWARD_VIEW_CLOSED = 'lootboxes/onRewardViewClosed'
-    ON_MULTI_OPEN_VIEW_CLOSED = 'lootboxes/onMultiOpenViewClosed'
-    ON_SHOW_SPECIAL_REWARDS_CLOSED = 'lootboxes/onShowSpecialRewardsClosed'
-    ON_ENTRY_VIEW_LOADED = 'lootboxes/onEntryViewLoaded'
-    ON_MAIN_VIEW_CLOSED = 'lootboxes/onMainViewClosed'
-    ON_OPENING_START = 'lootboxes/onOpeningStart'
-    ON_OPENING_END = 'lootboxes/onOpeningEnd'
-    ON_OPEN_LOOTBOX = 'lootboxes/onOpenNext'
-    NEED_SHOW_REWARDS = 'lootboxes/needShowRewards'
-    NEED_STOP_ENTRY_VIDEO = 'lootboxes/needStopEntryVideo'
-    REMOVE_HIDE_VIEW = 'lootboxes/removeHideView'
-    HIDE_COMPLETE = 'lootboxes/hideComplete'
-    ON_VIDEO_OFF_MOVIE_LOADED = 'lootboxes/onVideoOffMovieLoaded'
-    ON_VIDEO_LOAD_ERROR = 'lootboxes/onVideoLoadError'
-    ON_TAB_SELECTED = 'lootboxes/onTabSelected'
-    NEED_DELIVERY_VIDEO_START = 'lootboxes/needDeliveryVideoStart'
-    NEED_DELIVERY_VIDEO_STOP = 'lootboxes/needDeliveryVideoStop'
-    ON_DELIVERY_VIDEO_END = 'lootboxes/onDeliveryVideoEnd'
-    ON_BOX_TRANSITION_END = 'lootboxes/onBoxTransitionEnd'
-    ON_STATISTICS_RESET = 'lootboxes/onStatisticsReset'
-    SWITCH_BOX_HOVER = 'lootboxes/switchBoxHover'
-
-
 class ReferralProgramEvent(HasCtxEvent):
     REFERRAL_PROGRAM_ACTIVATED = 'referralProgramActivated'
     REFERRAL_PROGRAM_DEACTIVATED = 'referralProgrammDeactivated'
@@ -709,6 +669,20 @@ class AirDropEvent(HasCtxEvent):
     AIR_DROP_LOOP_LEFT = 'onAirDropLootLeft'
 
 
+class ProfilePageEvent(HasCtxEvent):
+    SELECT_PROFILE_ALIAS = 'onProfileSelectAlias'
+
+
+class ProfileStatisticEvent(HasCtxEvent):
+    SELECT_BATTLE_TYPE = 'onProfileStatisticEventBattleTypeSelect'
+    DISPOSE = 'onProfileStatisticEventDispose'
+
+
+class ProfileTechniqueEvent(HasCtxEvent):
+    SELECT_BATTLE_TYPE = 'onProfileTechniqueEventBattleTypeSelect'
+    DISPOSE = 'onProfileTechniqueEventDispose'
+
+
 class HangarCameraManagerEvent(HasCtxEvent):
     ON_CREATE = 'hangarCameraManagerEvent/onCreate'
     ON_DESTROY = 'hangarCameraManagerEvent/onDestroy'
@@ -719,11 +693,6 @@ class BattlePassEvent(HasCtxEvent):
     AWARD_VIEW_CLOSE = 'onAwardViewClose'
     ON_PURCHASE_LEVELS = 'onPurchaseLevels'
     ON_PREVIEW_PROGRESSION_STYLE_CLOSE = 'onPreviewProgressionStyleClose'
-
-
-class ChoosingDevicesEvent(HasCtxEvent):
-    DEVICE_ADDED = 'deviceAdded'
-    DEVICE_REMOVED = 'deviceRemoved'
 
 
 class ItemRemovalByDemountKitEvent(HasCtxEvent):
@@ -800,6 +769,5 @@ class ModeSelectorPopoverEvent(HasCtxEvent):
     NAME = 'ModeSelectorPopoverEvent'
 
 
-class GiftSystemOperationEvent(HasCtxEvent):
-    GIFT_SENT = 'GiftSentEvent'
-    GIFT_OPENED = 'GiftOpenedEvent'
+class GunMarkerEvent(HasCtxEvent):
+    UPDATE_PIERCING_DATA = 'onPiercingDataUpdated'

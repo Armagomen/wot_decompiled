@@ -67,6 +67,15 @@ class _DamageEfficiencyInfo(_FeedbackEventEfficiencyInfo):
     def isDamagingSmoke(self):
         return self.__damage.isDamagingSmoke()
 
+    def isCorrodingShot(self):
+        return self.__damage.isCorrodingShot()
+
+    def isFireCircle(self):
+        return self.__damage.isFireCircle()
+
+    def isThunderStrike(self):
+        return self.__damage.isThunderStrike()
+
     def isRam(self):
         return self.__damage.isRam()
 
@@ -97,8 +106,17 @@ class _DamageEfficiencyInfo(_FeedbackEventEfficiencyInfo):
     def isMineFieldDamage(self, primary=True):
         return self.__damage.isMineField(primary=primary)
 
+    def isFortArtilleryEqDamage(self, primary=True):
+        return self.__damage.isFortArtilleryEq(primary=primary)
+
     def getShellType(self):
         return self.__damage.getShellType()
+
+    def isClingBrander(self):
+        return self.__damage.isClingBrander()
+
+    def isClingBranderRam(self):
+        return self.__damage.isClingBranderRam()
 
 
 class _CriticalHitsEfficiencyInfo(_FeedbackEventEfficiencyInfo):
@@ -122,6 +140,15 @@ class _CriticalHitsEfficiencyInfo(_FeedbackEventEfficiencyInfo):
 
     def isDamagingSmoke(self):
         return self.__critsExtra.isDamagingSmoke()
+
+    def isCorrodingShot(self):
+        return self.__critsExtra.isCorrodingShot()
+
+    def isFireCircle(self):
+        return self.__critsExtra.isFireCircle()
+
+    def isThunderStrike(self):
+        return self.__critsExtra.isThunderStrike()
 
     def isRam(self):
         return self.__critsExtra.isRam()
@@ -149,6 +176,15 @@ class _CriticalHitsEfficiencyInfo(_FeedbackEventEfficiencyInfo):
 
     def isBombersDamage(self, primary=True):
         return self.__critsExtra.isBombers(primary=primary)
+
+    def isClingBrander(self):
+        return self.__critsExtra.isClingBrander()
+
+    def isClingBranderRam(self):
+        return self.__critsExtra.isClingBranderRam()
+
+    def isFortArtilleryEqDamage(self, primary=True):
+        return self.__critsExtra.isFortArtilleryEq(primary=primary)
 
     def getShellType(self):
         return self.__critsExtra.getShellType()
@@ -180,6 +216,9 @@ class _DestructibleDamagedEfficiencyInfo(_FeedbackEventEfficiencyInfo):
         return True
 
     def isDeathZone(self):
+        return False
+
+    def isClingBrander(self):
         return False
 
 

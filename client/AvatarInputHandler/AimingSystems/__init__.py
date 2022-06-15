@@ -180,12 +180,23 @@ def _getDesiredShotPointUncached(start, direction, onlyOnGround, isStrategicMode
 
 g_desiredShotPoint = Vector3(0)
 g_frameStamp = -1
+__disableShotPointCache = False
+
+def disableShotPointCache(f):
+
+    def wrapped(*args, **kwargs):
+        __disableShotPointCache = True
+        f(*args, **kwargs)
+        __disableShotPointCache = False
+
+    return wrapped
+
 
 def getDesiredShotPoint(start, direction, onlyOnGround=False, isStrategicMode=False, terrainOnlyCheck=False, shotDistance=10000.0):
     global g_desiredShotPoint
     global g_frameStamp
     currentFrameStamp = BigWorld.wg_getFrameTimestamp()
-    if g_frameStamp == currentFrameStamp:
+    if g_frameStamp == currentFrameStamp and not __disableShotPointCache:
         return g_desiredShotPoint
     g_frameStamp = currentFrameStamp
     g_desiredShotPoint = _getDesiredShotPointUncached(start, direction, onlyOnGround, isStrategicMode, terrainOnlyCheck, shotDistance)

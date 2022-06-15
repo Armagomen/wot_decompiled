@@ -625,7 +625,7 @@ class ProgressForCustomization(object):
 
 class CustomizationCache(object):
     __metaclass__ = ReflectionMetaclass
-    __slots__ = ('paints', 'camouflages', 'decals', 'projection_decals', 'modifications', 'levels', 'itemToPriceGroup', 'priceGroups', 'priceGroupNames', 'insignias', 'styles', 'defaultColors', 'defaultInsignias', 'itemTypes', 'priceGroupTags', '__victimStyles', 'personal_numbers', 'fonts', 'sequences', 'attachments', 'customizationWithProgression', 'itemGroupByProgressionBonusType', '__vehicleCanMayIncludeCustomization', 'topVehiclesByNation')
+    __slots__ = ('paints', 'camouflages', 'decals', 'projection_decals', 'modifications', 'levels', 'itemToPriceGroup', 'priceGroups', 'priceGroupNames', 'insignias', 'styles', 'defaultColors', 'defaultInsignias', 'defaultPlayerEmblems', 'itemTypes', 'priceGroupTags', '__victimStyles', 'personal_numbers', 'fonts', 'sequences', 'attachments', 'customizationWithProgression', 'itemGroupByProgressionBonusType', '__vehicleCanMayIncludeCustomization', 'topVehiclesByNation')
 
     def __init__(self):
         self.priceGroupTags = {}
@@ -641,6 +641,7 @@ class CustomizationCache(object):
         self.styles = {}
         self.insignias = {}
         self.defaultInsignias = {}
+        self.defaultPlayerEmblems = {}
         self.defaultColors = {}
         self.fonts = {}
         self.sequences = {}

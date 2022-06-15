@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/web/web_client_api/common.py
 import itertools
 from collections import namedtuple
+from enum import Enum, unique
 from gui.shared.money import MONEY_UNDEFINED
 from shared_utils import CONST_CONTAINER
 SPA_ID_TYPES = (int, long)
@@ -28,8 +29,30 @@ ItemPackEntry.__new__.__defaults__ = (None,
  '',
  {})
 
+class _Enum(Enum):
+
+    @classmethod
+    def hasValue(cls, value):
+        return value in cls._value2member_map_
+
+
+@unique
+class TManLocation(_Enum):
+    NEWBIES = 'newbies'
+    BARRACKS = 'barracks'
+    TANKS = 'tanks'
+    DEMOBILIZED = 'demobilized'
+
+
+@unique
+class TManGender(_Enum):
+    MALE = 'male'
+    FEMALE = 'female'
+
+
 class ShopItemType(CONST_CONTAINER):
     VEHICLE = 'vehicle'
+    CREW = 'crew'
     EQUIPMENT = 'equipment'
     DEVICE = 'device'
     BOOSTER = 'booster'
@@ -83,6 +106,8 @@ class ItemPackType(CONST_CONTAINER):
     CUSTOM_REFERRAL_CREW = 'custom/crew'
     CUSTOM_SUPPLY_POINT = 'custom/supply_point'
     CUSTOM_BATTLE_PASS_POINTS = 'custom/battlePassPoints'
+    CUSTOM_DRAGON_BOAT_POINTS = 'custom/dragonBoatPoints'
+    CUSTOM_SLOTS = 'custom/slots'
     TOKEN = 'token'
     PAINT_ALL = 'paint/all'
     PAINT_SUMMER = 'paint/summer'
@@ -117,8 +142,6 @@ class ItemPackType(CONST_CONTAINER):
     BLUEPRINT_ANY = 'blueprint/any'
     DEMOUNT_KIT = 'demountKit'
     REFERRAL_AWARDS = 'referral_awards'
-    LUNAR_NY_ENVELOPE = 'lunarNY_envelop'
-    LUNAR_NY_PREREQUISITE = 'lunarNY_prerequisite'
 
 
 class ItemPackTypeGroup(CONST_CONTAINER):
@@ -158,7 +181,8 @@ class ItemPackTypeGroup(CONST_CONTAINER):
      ItemPackType.CUSTOM_EVENT_COIN_EXTERNAL,
      ItemPackType.CUSTOM_REFERRAL_CREW,
      ItemPackType.CUSTOM_SLOT,
-     ItemPackType.CUSTOM_SUPPLY_POINT)
+     ItemPackType.CUSTOM_SUPPLY_POINT,
+     ItemPackType.CUSTOM_SLOTS)
     CREW = (ItemPackType.CREW_50,
      ItemPackType.CREW_75,
      ItemPackType.CREW_100,

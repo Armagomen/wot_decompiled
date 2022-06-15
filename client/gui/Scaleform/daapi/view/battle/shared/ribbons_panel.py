@@ -29,7 +29,12 @@ _ADDITIONAL_USER_SETTINGS = (BATTLE_EVENTS.VEHICLE_INFO,
  BATTLE_EVENTS.SHOW_IN_BATTLE,
  GRAPHICS.RENDER_PIPELINE,
  GRAPHICS.COLOR_BLIND)
-_BATTLE_EVENTS_SETTINGS_TO_BATTLE_EFFICIENCY_TYPES = {BATTLE_EVENTS.ENEMY_HP_DAMAGE: (_BET.DAMAGE, _BET.SPAWNED_BOT_DMG, _BET.DAMAGE_BY_MINEFIELD),
+_BATTLE_EVENTS_SETTINGS_TO_BATTLE_EFFICIENCY_TYPES = {BATTLE_EVENTS.ENEMY_HP_DAMAGE: (_BET.DAMAGE,
+                                 _BET.SPAWNED_BOT_DMG,
+                                 _BET.DAMAGE_BY_MINEFIELD,
+                                 _BET.DEALT_DMG_BY_CORRODING_SHOT,
+                                 _BET.DEALT_DMG_BY_FIRE_CIRCLE,
+                                 _BET.DEALT_DMG_BY_CLING_BRANDER),
  BATTLE_EVENTS.BLOCKED_DAMAGE: (_BET.ARMOR,),
  BATTLE_EVENTS.ENEMY_RAM_ATTACK: (_BET.RAM,),
  BATTLE_EVENTS.ENEMY_BURNING: (_BET.BURN,),
@@ -48,7 +53,10 @@ _BATTLE_EVENTS_SETTINGS_TO_BATTLE_EFFICIENCY_TYPES = {BATTLE_EVENTS.ENEMY_HP_DAM
                                  _BET.BERSERKER,
                                  _BET.RECEIVED_DMG_BY_SPAWNED_BOT,
                                  _BET.RECEIVED_BY_MINEFIELD,
-                                 _BET.RECEIVED_BY_SMOKE),
+                                 _BET.RECEIVED_BY_SMOKE,
+                                 _BET.RECEIVED_BY_CORRODING_SHOT,
+                                 _BET.RECEIVED_BY_FIRE_CIRCLE,
+                                 _BET.RECEIVED_BY_CLING_BRANDER),
  BATTLE_EVENTS.RECEIVED_CRITS: (_BET.RECEIVED_CRITS,),
  BATTLE_EVENTS.ENEMIES_STUN: (_BET.STUN,),
  BATTLE_EVENTS.ENEMY_ASSIST_STUN: (_BET.ASSIST_STUN,)}
@@ -170,7 +178,15 @@ _RIBBONS_FMTS = {_BET.CAPTURE: _baseRibbonFormatter,
  _BET.RECEIVED_DMG_BY_SPAWNED_BOT: _singleVehRibbonFormatter,
  _BET.DAMAGE_BY_MINEFIELD: _singleVehRibbonFormatter,
  _BET.RECEIVED_BY_MINEFIELD: _singleVehRibbonFormatter,
- _BET.RECEIVED_BY_SMOKE: _singleVehRibbonFormatter}
+ _BET.RECEIVED_BY_SMOKE: _singleVehRibbonFormatter,
+ _BET.DEALT_DMG_BY_CORRODING_SHOT: _singleVehRibbonFormatter,
+ _BET.RECEIVED_BY_CORRODING_SHOT: _singleVehRibbonFormatter,
+ _BET.DEALT_DMG_BY_FIRE_CIRCLE: _singleVehRibbonFormatter,
+ _BET.RECEIVED_BY_FIRE_CIRCLE: _singleVehRibbonFormatter,
+ _BET.DEALT_DMG_BY_CLING_BRANDER: _singleVehRibbonFormatter,
+ _BET.RECEIVED_BY_CLING_BRANDER: _singleVehRibbonFormatter,
+ _BET.DEALT_DMG_BY_THUNDER_STRIKE: _singleVehRibbonFormatter,
+ _BET.RECEIVED_BY_THUNDER_STRIKE: _singleVehRibbonFormatter}
 
 class BattleRibbonsPanel(RibbonsPanelMeta):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -340,4 +356,12 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
          [_BET.RECEIVED_DMG_BY_SPAWNED_BOT, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedDmgBySpawnedBot())],
          [_BET.DAMAGE_BY_MINEFIELD, backport.text(R.strings.ingame_gui.efficiencyRibbons.damageByMinefield())],
          [_BET.RECEIVED_BY_MINEFIELD, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedByMinefield())],
-         [_BET.RECEIVED_BY_SMOKE, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedBySmoke())]], self.__isExtendedAnim, self.__enabled, self.__isWithRibbonName, self.__isWithVehName, [backport.text(R.strings.ingame_gui.efficiencyRibbons.bonusRibbon())])
+         [_BET.RECEIVED_BY_SMOKE, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedBySmoke())],
+         [_BET.DEALT_DMG_BY_CORRODING_SHOT, backport.text(R.strings.ingame_gui.efficiencyRibbons.dealtDamageByCorrodingShot())],
+         [_BET.RECEIVED_BY_CORRODING_SHOT, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedByCorrodingShot())],
+         [_BET.DEALT_DMG_BY_FIRE_CIRCLE, backport.text(R.strings.ingame_gui.efficiencyRibbons.dealtDamageByFireCircle())],
+         [_BET.RECEIVED_BY_FIRE_CIRCLE, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedByFireCircle())],
+         [_BET.DEALT_DMG_BY_CLING_BRANDER, backport.text(R.strings.ingame_gui.efficiencyRibbons.dealtDamageByClingBrander())],
+         [_BET.RECEIVED_BY_CLING_BRANDER, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedByClingBrander())],
+         [_BET.DEALT_DMG_BY_THUNDER_STRIKE, backport.text(R.strings.ingame_gui.efficiencyRibbons.dealtDamageByThunderStrike())],
+         [_BET.RECEIVED_BY_THUNDER_STRIKE, backport.text(R.strings.ingame_gui.efficiencyRibbons.receivedByThunderStrike())]], self.__isExtendedAnim, self.__enabled, self.__isWithRibbonName, self.__isWithVehName, [backport.text(R.strings.ingame_gui.efficiencyRibbons.bonusRibbon())])

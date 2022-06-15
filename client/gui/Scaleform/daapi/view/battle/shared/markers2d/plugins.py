@@ -528,7 +528,7 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
 
     def __onEquipmentMarkerShown(self, item, position, _, delay):
         markerID = self._createMarkerWithPosition(settings.MARKER_SYMBOL_NAME.EQUIPMENT_MARKER, position + settings.MARKER_POSITION_ADJUSTMENT)
-        self._invokeMarker(markerID, 'init', item.getMarker(), _EQUIPMENT_DELAY_FORMAT.format(round(delay)), self.__defaultPostfix)
+        self._invokeMarker(markerID, 'init', item.getMarker(), _EQUIPMENT_DELAY_FORMAT.format(round(delay)), self.__defaultPostfix, item.getMarkerColor())
         self.__setCallback(markerID, round(BigWorld.serverTime() + delay))
 
     def __setCallback(self, markerID, finishTime, interval=_EQUIPMENT_DEFAULT_INTERVAL):

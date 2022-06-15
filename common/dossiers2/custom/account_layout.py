@@ -13,7 +13,6 @@ from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import STEAM_ACHIEVEMENT_DEPENDENCIES
-from dossiers2.custom.dependencies import PLAYER_BADGES_DEPENDENCIES
 from battle_statistics_layouts import *
 TOTAL_BLOCK_LAYOUT = ['creationTime',
  'lastBattleTime',
@@ -258,7 +257,13 @@ _ACHIEVEMENTS15X15_BLOCK_LAYOUT = ['fragsBeast',
  'wtxBossWins',
  'wtxSpecBossDefeat',
  'whiteTiger2012',
- 'lunarNY2022Progression']
+ 'lunarNY2022Progression',
+ 'oowTankmanWins',
+ 'oowStrategistWins',
+ 'oowCompetetiveWin',
+ 'mapboxUniversal',
+ 'wclTournamentParticipant',
+ 'wclParticipant']
 _achievements15x15PopUps = ['warrior',
  'invader',
  'sniper',
@@ -408,7 +413,13 @@ _achievements15x15PopUps = ['warrior',
  'wtxHunterWins',
  'wtxBossWins',
  'wtxSpecBossDefeat',
- 'lunarNY2022Progression']
+ 'lunarNY2022Progression',
+ 'oowTankmanWins',
+ 'oowStrategistWins',
+ 'oowCompetetiveWin',
+ 'mapboxUniversal',
+ 'wclTournamentParticipant',
+ 'wclParticipant']
 _achievements15x15BlockBuilder = StaticSizeBlockBuilder('achievements', _ACHIEVEMENTS15X15_BLOCK_LAYOUT, ACHIEVEMENT15X15_DEPENDENCIES, _achievements15x15PopUps)
 _STEAM_BLOCK_LAYOUT = ['steamBattleCredits',
  'steamLittleSavingsMedal',
@@ -782,7 +793,13 @@ _SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
  '11YearsOfService',
  'NY22_AtmsphrLevel',
  'NY22_CelebChallenge',
- 'december21']
+ 'december21',
+ 'BattlePassCommonPr_7',
+ 'oowCBTParticipant',
+ 'june22',
+ 'BattlePassCommonPr_8',
+ 'BattlePassCommonPr_8ru',
+ 'BattlePassCommonPr_8quest']
 _singleAchievementsPopUps = ['titleSniper',
  'invincible',
  'diehard',
@@ -945,7 +962,13 @@ _singleAchievementsPopUps = ['titleSniper',
  '11YearsOfService',
  'NY22_AtmsphrLevel',
  'NY22_CelebChallenge',
- 'december21']
+ 'december21',
+ 'BattlePassCommonPr_7',
+ 'oowCBTParticipant',
+ 'june22',
+ 'BattlePassCommonPr_8',
+ 'BattlePassCommonPr_8ru',
+ 'BattlePassCommonPr_8quest']
 _singleAchievementsBlockBuilder = BinarySetDossierBlockBuilder('singleAchievements', _SINGLE_ACHIEVEMENTS_VALUES, SINGLE_ACHIEVEMENTS_DEPENDENCIES, _singleAchievementsPopUps)
 FORT_ACHIEVEMENTS_BLOCK_LAYOUT = ['conqueror',
  'fireAndSword',
@@ -967,7 +990,7 @@ RANKED_BADGES_BLOCK_LAYOUT = ['1',
  '7',
  '8',
  '9']
-_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', PLAYER_BADGES_DEPENDENCIES)
+_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', {})
 _rankedSeasonsBlockBuilder = DictBlockBuilder('rankedSeasons', 'II', 'BHHHH', {})
 _rareAchievementsBlockBuilder = ListBlockBuilder('rareAchievements', 'I', {})
 UNIQUE_ACHIEVEMENT_VALUES = ['histBattle1_battlefield',

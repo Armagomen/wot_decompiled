@@ -164,6 +164,10 @@ class MENU(object):
     LOADING_BATTLETYPES_DESC_24 = '#menu:loading/battleTypes/desc/24'
     LOADING_BATTLETYPES_25 = '#menu:loading/battleTypes/25'
     LOADING_BATTLETYPES_DESC_25 = '#menu:loading/battleTypes/desc/25'
+    LOADING_BATTLETYPES_26 = '#menu:loading/battleTypes/26'
+    LOADING_BATTLETYPES_DESC_26 = '#menu:loading/battleTypes/desc/26'
+    LOADING_BATTLETYPES_28 = '#menu:loading/battleTypes/28'
+    LOADING_BATTLETYPES_DESC_28 = '#menu:loading/battleTypes/desc/28'
     LOADING_TEAM1 = '#menu:loading/team1'
     LOADING_TEAM2 = '#menu:loading/team2'
     LOADING_TEAMS_ALLIES = '#menu:loading/teams/allies'
@@ -290,9 +294,6 @@ class MENU(object):
     TANKCAROUSEL_VEHICLESTATES_INPREMIUMIGRONLY = '#menu:tankCarousel/vehicleStates/inPremiumIgrOnly'
     TANKCAROUSEL_VEHICLESTATES_BUYTANK = '#menu:tankCarousel/vehicleStates/buyTank'
     TANKCAROUSEL_VEHICLESTATES_BUYTANKEMPTYCOUNT = '#menu:tankCarousel/vehicleStates/buyTankEmptyCount'
-    TANKCAROUSEL_VEHICLESTATES_NYTANK = '#menu:tankCarousel/vehicleStates/nyTank'
-    TANKCAROUSEL_VEHICLESTATES_NYTANKEMPTYCOUNT = '#menu:tankCarousel/vehicleStates/nyTankEmptyCount'
-    TANKCAROUSEL_VEHICLESTATES_NYTANKSLOTSFULL = '#menu:tankCarousel/vehicleStates/nyTankSlotsFull'
     TANKCAROUSEL_VEHICLESTATES_BUYSLOT = '#menu:tankCarousel/vehicleStates/buySlot'
     TANKCAROUSEL_VEHICLESTATES_RESTORETANK = '#menu:tankCarousel/vehicleStates/restoreTank'
     TANKCAROUSEL_VEHICLESTATES_RESTORETANKCOUNT = '#menu:tankCarousel/vehicleStates/restoreTankCount'
@@ -389,6 +390,8 @@ class MENU(object):
     PRICE_GOLD = '#menu:price/gold'
     PRICE_CRYSTAL = '#menu:price/crystal'
     PRICE_EVENTCOIN = '#menu:price/eventCoin'
+    PRICE_BPCOIN = '#menu:price/bpcoin'
+    PRICE_BPBIT = '#menu:price/bpbit'
     PRICE_SPENT = '#menu:price/spent'
     PRICE_RECEIVED = '#menu:price/received'
     AMMORELOAD_TITLE = '#menu:ammoReload/title'
@@ -587,6 +590,7 @@ class MENU(object):
     TANK_PARAMS_VALUES_PARAM11_VALUE2 = '#menu:tank_params/values/param11/value2'
     TANK_PARAMS_VALUES_PARAM11_VALUE3 = '#menu:tank_params/values/param11/value3'
     TANK_PARAMS_EXPLOSIONRADIUS = '#menu:tank_params/explosionRadius'
+    TANK_PARAMS_INCREASEHEALTH = '#menu:tank_params/increaseHealth'
     TANK_PARAMS_T = '#menu:tank_params/t'
     TANK_PARAMS_P = '#menu:tank_params/p'
     TANK_PARAMS_PT = '#menu:tank_params/pt'
@@ -679,6 +683,13 @@ class MENU(object):
     HEADERBUTTONS_BATTLE_TYPES_RANKED_AVAILABILITY_MIN = '#menu:headerButtons/battle/types/ranked/availability/min'
     HEADERBUTTONS_BATTLE_TYPES_RANKED_AVAILABILITY_LESSMIN = '#menu:headerButtons/battle/types/ranked/availability/lessMin'
     HEADERBUTTONS_BATTLE_TYPES_RANKEDLEAVE_DESCR = '#menu:headerButtons/battle/types/rankedLeave/descr'
+    HEADERBUTTONS_BATTLE_TYPES_RTS = '#menu:headerButtons/battle/types/rts'
+    PREBATTLE_RTS_TANKLABEL = '#menu:prebattle/rts/tankLabel'
+    HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_DEFAULT = '#menu:headerButtons/battle/types/rts/availability/default'
+    HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_AFTERCYCLE = '#menu:headerButtons/battle/types/rts/availability/afterCycle'
+    HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_FROZEN = '#menu:headerButtons/battle/types/rts/availability/frozen'
+    HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_BEFORECYCLE = '#menu:headerButtons/battle/types/rts/availability/beforeCycle'
+    HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_BETWEENCYCLES = '#menu:headerButtons/battle/types/rts/availability/betweenCycles'
     HEADERBUTTONS_BATTLE_TYPES_SQUAD = '#menu:headerButtons/battle/types/squad'
     HEADERBUTTONS_BATTLE_TYPES_SQUAD_DESCRIPTION = '#menu:headerButtons/battle/types/squad/description'
     HEADERBUTTONS_BATTLE_TYPES_SIMPLESQUAD = '#menu:headerButtons/battle/types/simpleSquad'
@@ -1069,6 +1080,13 @@ class MENU(object):
     MODULEINFO_PARAMS_BOMBSNUMBERRANGE = '#menu:moduleInfo/params/bombsNumberRange'
     MODULEINFO_PARAMS_AREASQUARE = '#menu:moduleInfo/params/areaSquare'
     MODULEINFO_PARAMS_FLYDELAYRANGE = '#menu:moduleInfo/params/flyDelayRange'
+    MODULEINFO_PARAMS_COMMONDELAY = '#menu:moduleInfo/params/commonDelay'
+    MODULEINFO_PARAMS_DURATION = '#menu:moduleInfo/params/duration'
+    MODULEINFO_PARAMS_COMMONAREARADIUS = '#menu:moduleInfo/params/commonAreaRadius'
+    MODULEINFO_PARAMS_INACTIVATIONDELAY = '#menu:moduleInfo/params/inactivationDelay'
+    MODULEINFO_PARAMS_CREWROLESFACTOR = '#menu:moduleInfo/params/crewRolesFactor'
+    MODULEINFO_PARAMS_SHORT_CREWROLESFACTOR = '#menu:moduleInfo/params/short/crewRolesFactor'
+    MODULEINFO_PARAMS_MAXDAMAGE = '#menu:moduleInfo/params/maxDamage'
     MODULEINFO_PARAMS_BOMBDAMAGE = '#menu:moduleInfo/params/bombDamage'
     MODULEINFO_PARAMS_SHOTSNUMBERRANGE = '#menu:moduleInfo/params/shotsNumberRange'
     MODULEINFO_PARAMS_AREARADIUS = '#menu:moduleInfo/params/areaRadius'
@@ -1393,10 +1411,9 @@ class MENU(object):
     VEHICLE_RENTLEFT_HOURS = '#menu:vehicle/rentLeft/hours'
     VEHICLE_RENTLEFT_BATTLES = '#menu:vehicle/rentLeft/battles'
     VEHICLE_RENTLEFT_WINS = '#menu:vehicle/rentLeft/wins'
+    VEHICLE_RENTLEFT_EPIC_BASE = '#menu:vehicle/rentLeft/epic/base'
     VEHICLE_RENTLEFT_EPIC_SEASON = '#menu:vehicle/rentLeft/epic/season'
     VEHICLE_RENTLEFT_EPIC_DAYS = '#menu:vehicle/rentLeft/epic/days'
-    VEHICLE_RENTLEFT_EPIC_CYCLE = '#menu:vehicle/rentLeft/epic/cycle'
-    VEHICLE_RENTLEFT_EPIC_CYCLES = '#menu:vehicle/rentLeft/epic/cycles'
     VEHICLE_RESTORELEFT_DISABLEDBYRENT = '#menu:vehicle/restoreLeft/disabledByRent'
     VEHICLE_RESTORELEFT_UNLIM = '#menu:vehicle/restoreLeft/unlim'
     VEHICLE_RESTORELEFT_DAYS = '#menu:vehicle/restoreLeft/days'
@@ -1505,7 +1522,6 @@ class MENU(object):
     CUSTOMIZATION_TITLE = '#menu:customization/title'
     SCREENSHOT_SAVE = '#menu:screenshot/save'
     CONTEXTMENU_EXCHANGE = '#menu:contextMenu/exchange'
-    CONTEXTMENU_PERSONALTRADEEXCHANGE = '#menu:contextMenu/personalTradeExchange'
     CONTEXTMENU_VEHICLEINFO = '#menu:contextMenu/vehicleInfo'
     CONTEXTMENU_VEHICLEINFOEX = '#menu:contextMenu/vehicleInfoEx'
     CONTEXTMENU_GOTONATIONTREE = '#menu:contextMenu/goToNationTree'
@@ -1554,15 +1570,16 @@ class MENU(object):
     CONTEXTMENU_KICKPLAYERFROMPREBATTLE = '#menu:contextMenu/kickPlayerFromPrebattle'
     CONTEXTMENU_KICKPLAYERFROMUNIT = '#menu:contextMenu/kickPlayerFromUnit'
     CONTEXTMENU_GIVELEADERSHIP = '#menu:contextMenu/giveLeadership'
-    CONTEXTMENU_TAKEEQUIPMENTCOMMANDER = '#menu:contextMenu/takeEquipmentCommander'
-    CONTEXTMENU_GIVEEQUIPMENTCOMMANDER = '#menu:contextMenu/giveEquipmentCommander'
+    CONTEXTMENU_TAKEARTILLERYEQUIPMENTCOMMANDER = '#menu:contextMenu/takeArtilleryEquipmentCommander'
+    CONTEXTMENU_GIVEARTILLERYEQUIPMENTCOMMANDER = '#menu:contextMenu/giveArtilleryEquipmentCommander'
+    CONTEXTMENU_TAKEINSPIREEQUIPMENTCOMMANDER = '#menu:contextMenu/takeInspireEquipmentCommander'
+    CONTEXTMENU_GIVEINSPIREEQUIPMENTCOMMANDER = '#menu:contextMenu/giveInspireEquipmentCommander'
     CONTEXTMENU_TAKELEADERSHIP = '#menu:contextMenu/takeLeadership'
     CONTEXTMENU_CREATESQUAD = '#menu:contextMenu/createSquad'
     CONTEXTMENU_CREATEEVENTSQUAD = '#menu:contextMenu/createEventSquad'
     CONTEXTMENU_CREATEBATTLEROYALESQUAD = '#menu:contextMenu/createBattleRoyaleSquad'
     CONTEXTMENU_CREATEMAPBOXSQUAD = '#menu:contextMenu/createMapboxSquad'
     CONTEXTMENU_INVITE = '#menu:contextMenu/invite'
-    CONTEXTMENU_NYSENDGIFT = '#menu:contextMenu/nySendGift'
     CONTEXTMENU_APPEAL = '#menu:contextMenu/appeal'
     CONTEXTMENU_INCORRECTBEHAVIOR = '#menu:contextMenu/incorrectBehavior'
     CONTEXTMENU_NOTFAIRPLAY = '#menu:contextMenu/notFairPlay'
@@ -1584,6 +1601,8 @@ class MENU(object):
     CONTEXTMENU_MESSENGER_CLOSECURRENT = '#menu:contextMenu/messenger/closeCurrent'
     CONTEXTMENU_MESSENGER_CLOSEALLEXCEPTCURRENT = '#menu:contextMenu/messenger/closeAllExceptCurrent'
     CONTEXTMENU_CREATECONTACTNOTE = '#menu:contextMenu/createContactNote'
+    BATTLEROYALE_CONTEXTMENU_TAKETESTDRIVE = '#menu:battleRoyale/contextMenu/takeTestDrive'
+    BATTLEROYALE_CONTEXTMENU_TAKERENT = '#menu:battleRoyale/contextMenu/takeRent'
     CONTEXTMENU_EDITCONTACTNOTE = '#menu:contextMenu/editContactNote'
     CONTEXTMENU_REMOVECONTACTNOTE = '#menu:contextMenu/removeContactNote'
     CONTEXTMENU_BOTNOACTIONS = '#menu:contextMenu/botNoActions'
@@ -1742,6 +1761,7 @@ class MENU(object):
     DATETIME_FROMTOWITHYEAR = '#menu:dateTime/fromToWithYear'
     DATETIME_ORDER = '#menu:dateTime/order'
     DATETIME_UNLIMITED = '#menu:dateTime/unlimited'
+    DATETIME_TRADE_IN_UNDEFINED = '#menu:dateTime/trade_in/undefined'
     DATETIME_MONTHS_SHORT_1 = '#menu:dateTime/months/short/1'
     DATETIME_MONTHS_SHORT_2 = '#menu:dateTime/months/short/2'
     DATETIME_MONTHS_SHORT_3 = '#menu:dateTime/months/short/3'
@@ -1975,8 +1995,6 @@ class MENU(object):
     HEADERBUTTONS_BATTLE_TYPES_EPIC = '#menu:headerButtons/battle/types/epic'
     HEADERBUTTONS_BATTLE_TYPES_EPIC_DESCR = '#menu:headerButtons/battle/types/epic/descr'
     HEADERBUTTONS_BATTLE_TYPES_EPIC_EXTRA_STARTSAT = '#menu:headerButtons/battle/types/epic/extra/startsAt'
-    HEADERBUTTONS_BATTLE_TYPES_EPIC_EXTRA_CURRENTCYCLE = '#menu:headerButtons/battle/types/epic/extra/currentCycle'
-    HEADERBUTTONS_BATTLE_TYPES_EPIC_EXTRA_CURRENTSEASON = '#menu:headerButtons/battle/types/epic/extra/currentSeason'
     HEADERBUTTONS_BATTLE_TYPES_EPIC_EXTRA_FROZEN = '#menu:headerButtons/battle/types/epic/extra/frozen'
     RANGEDELIMITER = '#menu:rangeDelimiter'
     ONLINECOUNTER_TOTAL = '#menu:onlineCounter/total'
@@ -2007,19 +2025,8 @@ class MENU(object):
     TECHTREE_PREMIUMPANEL_TITLE = '#menu:techtree/premiumPanel/title'
     TECHTREE_PREMIUMPANEL_BTNLABEL = '#menu:techtree/premiumPanel/btnLabel'
     TECHTREE_PREMIUMPANEL_BTNLABEL_COUNT = '#menu:techtree/premiumPanel/btnLabel/count'
-    TECHTREE_INTRO_TITLE = '#menu:techtree/intro/title'
-    TECHTREE_INTRO_BLOCK0_TITLE = '#menu:techtree/intro/block0/title'
-    TECHTREE_INTRO_BLOCK0_DESC = '#menu:techtree/intro/block0/desc'
-    TECHTREE_INTRO_BLOCK1_TITLE = '#menu:techtree/intro/block1/title'
-    TECHTREE_INTRO_BLOCK1_DESC = '#menu:techtree/intro/block1/desc'
-    TECHTREE_INTRO_BLOCK2_TITLE = '#menu:techtree/intro/block2/title'
-    TECHTREE_INTRO_BLOCK2_DESC = '#menu:techtree/intro/block2/desc'
-    TECHTREE_INTRO_COMPENSATION_TITLE = '#menu:techtree/intro/compensation/title'
-    TECHTREE_INTRO_FOOTER = '#menu:techtree/intro/footer'
-    TECHTREE_INTRO_BTNYES = '#menu:techtree/intro/btnYes'
     CST_ITEM_CTX_MENU_BUY = '#menu:cst_item_ctx_menu/buy'
     CST_ITEM_CTX_MENU_EXCHANGE = '#menu:cst_item_ctx_menu/exchange'
-    CST_ITEM_CTX_MENU_PERSONALTRADEEXCHANGE = '#menu:cst_item_ctx_menu/personalTradeExchange'
     CST_ITEM_CTX_MENU_BUYMORE = '#menu:cst_item_ctx_menu/buyMore'
     CST_ITEM_CTX_MENU_SELL = '#menu:cst_item_ctx_menu/sell'
     CST_ITEM_CTX_MENU_NATIONCHANGE = '#menu:cst_item_ctx_menu/nationChange'
@@ -2216,7 +2223,6 @@ class MENU(object):
     BADGE_NEW = '#menu:badge/new'
     BADGE_CONFIRM = '#menu:badge/confirm'
     CONTEXTMENU_ENUM = (CONTEXTMENU_EXCHANGE,
-     CONTEXTMENU_PERSONALTRADEEXCHANGE,
      CONTEXTMENU_VEHICLEINFO,
      CONTEXTMENU_VEHICLEINFOEX,
      CONTEXTMENU_GOTONATIONTREE,
@@ -2265,15 +2271,16 @@ class MENU(object):
      CONTEXTMENU_KICKPLAYERFROMPREBATTLE,
      CONTEXTMENU_KICKPLAYERFROMUNIT,
      CONTEXTMENU_GIVELEADERSHIP,
-     CONTEXTMENU_TAKEEQUIPMENTCOMMANDER,
-     CONTEXTMENU_GIVEEQUIPMENTCOMMANDER,
+     CONTEXTMENU_TAKEARTILLERYEQUIPMENTCOMMANDER,
+     CONTEXTMENU_GIVEARTILLERYEQUIPMENTCOMMANDER,
+     CONTEXTMENU_TAKEINSPIREEQUIPMENTCOMMANDER,
+     CONTEXTMENU_GIVEINSPIREEQUIPMENTCOMMANDER,
      CONTEXTMENU_TAKELEADERSHIP,
      CONTEXTMENU_CREATESQUAD,
      CONTEXTMENU_CREATEEVENTSQUAD,
      CONTEXTMENU_CREATEBATTLEROYALESQUAD,
      CONTEXTMENU_CREATEMAPBOXSQUAD,
      CONTEXTMENU_INVITE,
-     CONTEXTMENU_NYSENDGIFT,
      CONTEXTMENU_APPEAL,
      CONTEXTMENU_INCORRECTBEHAVIOR,
      CONTEXTMENU_NOTFAIRPLAY,
@@ -2365,9 +2372,6 @@ class MENU(object):
      TANKCAROUSEL_VEHICLESTATES_INPREMIUMIGRONLY,
      TANKCAROUSEL_VEHICLESTATES_BUYTANK,
      TANKCAROUSEL_VEHICLESTATES_BUYTANKEMPTYCOUNT,
-     TANKCAROUSEL_VEHICLESTATES_NYTANK,
-     TANKCAROUSEL_VEHICLESTATES_NYTANKEMPTYCOUNT,
-     TANKCAROUSEL_VEHICLESTATES_NYTANKSLOTSFULL,
      TANKCAROUSEL_VEHICLESTATES_BUYSLOT,
      TANKCAROUSEL_VEHICLESTATES_RESTORETANK,
      TANKCAROUSEL_VEHICLESTATES_RESTORETANKCOUNT,
@@ -2616,6 +2620,7 @@ class MENU(object):
      TANK_PARAMS_VALUES_PARAM11_VALUE2,
      TANK_PARAMS_VALUES_PARAM11_VALUE3,
      TANK_PARAMS_EXPLOSIONRADIUS,
+     TANK_PARAMS_INCREASEHEALTH,
      TANK_PARAMS_T,
      TANK_PARAMS_P,
      TANK_PARAMS_PT,
@@ -2667,7 +2672,9 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_22,
      LOADING_BATTLETYPES_DESC_23,
      LOADING_BATTLETYPES_DESC_24,
-     LOADING_BATTLETYPES_DESC_25)
+     LOADING_BATTLETYPES_DESC_25,
+     LOADING_BATTLETYPES_DESC_26,
+     LOADING_BATTLETYPES_DESC_28)
     LOADING_BATTLETYPES_ENUM = (LOADING_BATTLETYPES_0,
      LOADING_BATTLETYPES_DESC_0,
      LOADING_BATTLETYPES_1,
@@ -2715,10 +2722,13 @@ class MENU(object):
      LOADING_BATTLETYPES_24,
      LOADING_BATTLETYPES_DESC_24,
      LOADING_BATTLETYPES_25,
-     LOADING_BATTLETYPES_DESC_25)
+     LOADING_BATTLETYPES_DESC_25,
+     LOADING_BATTLETYPES_26,
+     LOADING_BATTLETYPES_DESC_26,
+     LOADING_BATTLETYPES_28,
+     LOADING_BATTLETYPES_DESC_28)
     CST_ITEM_CTX_MENU_ENUM = (CST_ITEM_CTX_MENU_BUY,
      CST_ITEM_CTX_MENU_EXCHANGE,
-     CST_ITEM_CTX_MENU_PERSONALTRADEEXCHANGE,
      CST_ITEM_CTX_MENU_BUYMORE,
      CST_ITEM_CTX_MENU_SELL,
      CST_ITEM_CTX_MENU_NATIONCHANGE,

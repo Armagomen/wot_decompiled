@@ -1222,18 +1222,6 @@ class CalendarModifier(ActionModifier):
         return int(strDuration) if strDuration else None
 
 
-class AvailabilityModifier(ActionModifier):
-
-    def __init__(self, name, params):
-        super(AvailabilityModifier, self).__init__(name, params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
-
-
-class EventStateModifier(AvailabilityModifier):
-
-    def getState(self):
-        return self.getParams().get('state')
-
-
 class CalendarSplashModifier(ActionModifier):
 
     def __init__(self, name, params):
@@ -1253,6 +1241,12 @@ class HeroTankAdventCalendarRedirectModifier(ActionModifier):
         return self._params.get('enabled', '').lower() in ('1', 'yes', 'true')
 
 
+class TradeInModifier(ActionModifier):
+
+    def __init__(self, name, params):
+        super(TradeInModifier, self).__init__('tradein', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
+
+
 class LobbyHeaderTabCounterModifier(ActionModifier):
 
     def __init__(self, _, params):
@@ -1269,7 +1263,7 @@ _MODIFIERS = (('mul_EconomicsParams', EconomicsMul),
  ('set_EconomicsParams', EconomicsSet),
  ('mul_EconomicsPrices', EconomicsMul),
  ('set_EconomicsPrices', EconomicsSet),
- ('set_TradeInParams', EconomicsSet),
+ ('set_TradeIn', TradeInModifier),
  ('cond_VehPrice', VehPriceCond),
  ('mul_VehPrice', VehPriceMul),
  ('set_VehPrice', VehPriceSet),
@@ -1304,7 +1298,6 @@ _MODIFIERS = (('mul_EconomicsParams', EconomicsMul),
  ('ReferralProgramDisabled', ReferralModifier),
  ('AdventCalendarEnabled', CalendarModifier),
  ('AdventCalendarForced', CalendarSplashModifier),
- ('EventState', EventStateModifier),
  ('HeroTankAdventCalendarRedirect', HeroTankAdventCalendarRedirectModifier),
  ('LobbyHeaderTabCounterModification', LobbyHeaderTabCounterModifier))
 _MODIFIERS_DICT = dict(_MODIFIERS)

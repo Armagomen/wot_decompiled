@@ -4,6 +4,7 @@ from collections import defaultdict
 import logging
 import BigWorld
 import Math
+from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from AvatarInputHandler.subfilters_constants import AVATAR_SUBFILTERS, FILTER_INTERPOLATION_TYPE
@@ -87,6 +88,7 @@ class AvatarObserver(CallbackDelayer):
                 self.__observedVehicleID = self.vehicle.id
                 self.onObserverVehicleChanged()
                 self.guiSessionProvider.getArenaDP().switchCurrentTeam(self.vehicle.publicInfo['team'])
+                g_playerEvents.onAvatarObserverVehicleChanged(self.vehicle.id)
                 self.inputHandler.setObservedVehicle(self.__observedVehicleID)
                 if self.gunRotator is not None:
                     self.gunRotator.start()
@@ -228,6 +230,9 @@ class AvatarObserver(CallbackDelayer):
 
     def observerSeesAll(self):
         return self.guiSessionProvider.getCtx().isObserver(self.playerVehicleID) and BONUS_CAPS.checkAny(self.arenaBonusType, BONUS_CAPS.OBSERVER_SEES_ALL)
+
+    def isBecomeObserverAfterDeath(self):
+        return BONUS_CAPS.checkAny(self.arenaBonusType, BONUS_CAPS.BECOME_AN_OBSERVER_AFTER_DEATH)
 
     def isFollowWinner(self):
         return BONUS_CAPS.checkAny(self.arenaBonusType, BONUS_CAPS.FOLLOW_WINNER)

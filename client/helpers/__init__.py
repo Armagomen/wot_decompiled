@@ -216,5 +216,15 @@ class ClanQuestButtonHandler(object):
         return
 
 
-def isMemoryRiskySystem():
-    return BigWorld.totalVirtualMemory() < 3145728
+def unicodeToStr(data):
+    if isinstance(data, unicode):
+        return data.encode('utf-8')
+    if isinstance(data, list):
+        return [ unicodeToStr(el) for el in data ]
+    if isinstance(data, dict):
+        res = {}
+        for k, v in data.iteritems():
+            res[unicodeToStr(k)] = unicodeToStr(v)
+
+        return res
+    return data

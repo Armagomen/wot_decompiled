@@ -27,7 +27,7 @@ _SIMPLE_VALUE_STATS = ('fortResource', 'slots', 'berths', 'freeXP', 'dossier', '
 _DICT_STATS = ('vehTypeXP', 'vehTypeLocks', 'restrictions', 'globalVehicleLocks', 'dummySessionStats', 'maxResearchedLevelByNation', 'weeklyVehicleCrystals')
 _GROWING_SET_STATS = ('unlocks', 'eliteVehicles', 'multipliedXPVehs', 'multipliedRankedBattlesVehs')
 _ACCOUNT_STATS = ('clanDBID', 'attrs', 'premiumExpiryTime', 'autoBanTime', 'globalRating')
-_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs')
+_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs', 'isSsrPlayEnabled')
 _PREFERRED_MAPS_KEY = 'preferredMaps'
 _ADDITIONAL_XP_CACHE_KEY = '_additionalXPCache'
 
@@ -130,12 +130,12 @@ class Stats(object):
             spaDiff = cacheDiff.get('SPA', None)
             if spaDiff:
                 synchronizeDicts(spaDiff, cache.setdefault('SPA', dict()))
-            dynamicCurrenciesDiff = cacheDiff.get('dynamicCurrencies', None)
-            if dynamicCurrenciesDiff:
-                synchronizeDicts(dynamicCurrenciesDiff, cache.setdefault('dynamicCurrencies', dict()))
             entitlementsDiff = cacheDiff.get('entitlements', None)
             if entitlementsDiff is not None:
                 synchronizeDicts(entitlementsDiff, cache.setdefault('entitlements', {}))
+            dynamicCurrenciesDiff = cacheDiff.get('dynamicCurrencies', None)
+            if dynamicCurrenciesDiff:
+                synchronizeDicts(dynamicCurrenciesDiff, cache.setdefault('dynamicCurrencies', dict()))
         piggyBankDiff = diff.get(PIGGY_BANK_PDATA_KEY, None)
         if piggyBankDiff is not None:
             synchronizeDicts(piggyBankDiff, cache.setdefault(PIGGY_BANK_PDATA_KEY, dict()))

@@ -21,7 +21,7 @@ class VEHICLE_PREVIEW(object):
     HEADER_BACKBTN_DESCRLABEL_RANKED = '#vehicle_preview:header/backBtn/descrLabel/ranked'
     HEADER_BACKBTN_DESCRLABEL_VEHPOSTPROGRESSION = '#vehicle_preview:header/backBtn/descrLabel/vehPostProgression'
     HEADER_BACKBTN_DESCRLABEL_BLUEPRINTSEXCHANGE = '#vehicle_preview:header/backBtn/descrLabel/blueprintsExchange'
-    HEADER_BACKBTN_DESCRLABEL_LOOTBOXREWARDS = '#vehicle_preview:header/backBtn/descrLabel/lootBoxRewards'
+    HEADER_BACKBTN_DESCRLABEL_REWARDS = '#vehicle_preview:header/backBtn/descrLabel/rewards'
     HEADER_TITLE = '#vehicle_preview:header/title'
     HEADER_CLOSEBTN_LABEL = '#vehicle_preview:header/closeBtn/label'
     HERO_HEADER_TITLE = '#vehicle_preview:hero/header/title'
@@ -32,7 +32,6 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_UNIQUEVEHICLELABEL = '#vehicle_preview:buyingPanel/uniqueVehicleLabel'
     BUYINGPANEL_TRADEINLABEL = '#vehicle_preview:buyingPanel/tradeInLabel'
     BUYINGPANEL_OFFER_RENT_TITLE_FRONTLINE_ORDINAL = '#vehicle_preview:buyingPanel/offer/rent/title/frontline/ordinal'
-    BUYINGPANEL_OFFER_RENT_TITLE_FRONTLINE_SINGLE_CYCLE = '#vehicle_preview:buyingPanel/offer/rent/title/frontline/single_cycle'
     BUYINGPANEL_OFFER_RENT_FRONTLINE_DESCRIPTION_HEADER = '#vehicle_preview:buyingPanel/offer/rent/frontline/description/header'
     BUYINGPANEL_OFFER_RENT_FRONTLINE_DESCRIPTION_BODY_CREDITS = '#vehicle_preview:buyingPanel/offer/rent/frontline/description/body/credits'
     BUYINGPANEL_OFFER_RENT_FRONTLINE_DESCRIPTION_BODY_GOLD = '#vehicle_preview:buyingPanel/offer/rent/frontline/description/body/gold'
@@ -49,8 +48,9 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_CUSTOMOFFER_BUY = '#vehicle_preview:buyingPanel/customOffer/buy'
     BUYINGPANEL_CUSTOMOFFER_RESEARCH = '#vehicle_preview:buyingPanel/customOffer/research'
     BUYINGPANEL_TRADEIN_TRADEOFFPRICETEXT = '#vehicle_preview:buyingPanel/tradeIn/tradeOffPriceText'
+    BUYINGPANEL_TRADEIN_TRADEOFFPRICEFREETEXT = '#vehicle_preview:buyingPanel/tradeIn/tradeOffPriceFreeText'
     BUYINGPANEL_TRADEIN_PERSONALTRADEOFFPRICETEXT = '#vehicle_preview:buyingPanel/tradeIn/personaltradeOffPriceText'
-    BUYINGPANEL_TRADEIN_AVAILABLELEVELS = '#vehicle_preview:buyingPanel/tradeIn/availableLevels'
+    BUYINGPANEL_TRADEIN_FOOTERNOTE = '#vehicle_preview:buyingPanel/tradeIn/footerNote'
     BUYINGPANEL_TRADEIN_NOTAVAILABLETRADEOFFVEHICLES = '#vehicle_preview:buyingPanel/tradeIn/notAvailableTradeOffVehicles'
     BUYINGPANEL_TRADEIN_EXPIRED = '#vehicle_preview:buyingPanel/tradeIn/expired'
     BUYINGPANEL_TRADEIN_INVALIDTRADEOFFVEHICLE = '#vehicle_preview:buyingPanel/tradeIn/invalidTradeOffVehicle'
@@ -63,15 +63,12 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_BUYBTN_LABEL_BUYITEMPACK = '#vehicle_preview:buyingPanel/buyBtn/label/buyItemPack'
     BUYINGPANEL_BUYBTN_LABEL_RENT = '#vehicle_preview:buyingPanel/buyBtn/label/rent'
     BUYINGPANEL_BUYBTN_LABEL_RESTORE = '#vehicle_preview:buyingPanel/buyBtn/label/restore'
-    BUYINGPANEL_BUYBTN_LABEL_RESTOREREQUESTED = '#vehicle_preview:buyingPanel/buyBtn/label/restoreRequested'
     BUYINGPANEL_BUYBTN_LABEL_RESEARCH = '#vehicle_preview:buyingPanel/buyBtn/label/research'
     BUYINGPANEL_BUYBTN_LABEL_OBTAIN = '#vehicle_preview:buyingPanel/buyBtn/label/obtain'
     BUYINGPANEL_BUYBTN_LABEL_SHOWADVENTCALENDAR = '#vehicle_preview:buyingPanel/buyBtn/label/showAdventCalendar'
     BUYINGPANEL_BUYBTN_LABEL_OFFSPRING = '#vehicle_preview:buyingPanel/buyBtn/label/offspring'
-    BUYINGPANEL_BUYBTN_LABEL_AUCTION = '#vehicle_preview:buyingPanel/buyBtn/label/auction'
     BUYINGPANEL_NOTRESEARCHEDVEHICLEWARNING = '#vehicle_preview:buyingPanel/notResearchedVehicleWarning'
     BUYINGPANEL_COLLECTIBLE_NOTRESEARCHEDVEHICLESWARNING = '#vehicle_preview:buyingPanel/collectible/notResearchedVehiclesWarning'
-    BUYINGPANEL_BUYBTN_LABEL_TOCALENDAR = '#vehicle_preview:buyingPanel/buyBtn/label/toCalendar'
     BUYINGPANEL_COMPENSATION = '#vehicle_preview:buyingPanel/compensation'
     BUYINGPANEL_COMPENSATION_BODY = '#vehicle_preview:buyingPanel/compensation/body'
     BUYINGPANEL_PRESENT = '#vehicle_preview:buyingPanel/present'
@@ -108,6 +105,15 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_PROGRESSIONSTYLES_NOTIFICATION_TEXT = '#vehicle_preview:buyingPanel/progressionStyles/notification/text'
     BUYINGPANEL_PROGRESSIONSTYLES_NOTIFICATION_REWIND_ENABLE_TEXT = '#vehicle_preview:buyingPanel/progressionStyles/notification/rewind_enable/text'
     BUYINGPANEL_PROGRESSIONSTYLES_CURRENTLEVEL = '#vehicle_preview:buyingPanel/progressionStyles/currentLevel'
+    BUYINGPANEL_STYLE_DESCRIPTION_WAITING = '#vehicle_preview:buyingPanel/style/description/waiting'
+    BUYINGPANEL_STYLE_DESCRIPTION_MAXLEVEL = '#vehicle_preview:buyingPanel/style/description/maxLevel'
+    BUYINGPANEL_STYLE_DESCRIPTION_NONPROGRESSION = '#vehicle_preview:buyingPanel/style/description/nonProgression'
+    BUYINGPANEL_STYLE_STATUS_1 = '#vehicle_preview:buyingPanel/style/status/1'
+    BUYINGPANEL_STYLE_STATUS_2 = '#vehicle_preview:buyingPanel/style/status/2'
+    BUYINGPANEL_STYLE_BUTTON_BUY = '#vehicle_preview:buyingPanel/style/button/buy'
+    BUYINGPANEL_STYLE_CAPTION_USERMONEY = '#vehicle_preview:buyingPanel/style/caption/userMoney'
+    TOPPANEL_TAB_VEHICLE = '#vehicle_preview:topPanel/tab/vehicle'
+    TOPPANEL_TAB_STYLE = '#vehicle_preview:topPanel/tab/style'
     HEADER_BACKBTN_DESCRLABEL_ENUM = (HEADER_BACKBTN_DESCRLABEL_RESEARCHTREE,
      HEADER_BACKBTN_DESCRLABEL_PERSONALAWARDS,
      HEADER_BACKBTN_DESCRLABEL_SHOP,
@@ -124,7 +130,7 @@ class VEHICLE_PREVIEW(object):
      HEADER_BACKBTN_DESCRLABEL_RANKED,
      HEADER_BACKBTN_DESCRLABEL_VEHPOSTPROGRESSION,
      HEADER_BACKBTN_DESCRLABEL_BLUEPRINTSEXCHANGE,
-     HEADER_BACKBTN_DESCRLABEL_LOOTBOXREWARDS)
+     HEADER_BACKBTN_DESCRLABEL_REWARDS)
     BUYINGPANEL_OFFER_RENT_NAME_ENUM = (BUYINGPANEL_OFFER_RENT_NAME_CYCLE, BUYINGPANEL_OFFER_RENT_NAME_CYCLES, BUYINGPANEL_OFFER_RENT_NAME_SEASON)
     BUYINGPANEL_OFFER_RENT_LABEL_ENUM = (BUYINGPANEL_OFFER_RENT_LABEL_CYCLE, BUYINGPANEL_OFFER_RENT_LABEL_CYCLES, BUYINGPANEL_OFFER_RENT_LABEL_SEASON)
 

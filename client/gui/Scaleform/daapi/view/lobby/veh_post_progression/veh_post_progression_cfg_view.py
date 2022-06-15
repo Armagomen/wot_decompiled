@@ -4,8 +4,9 @@ from functools import partial
 from adisp import process
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.go_back_helper import BackButtonContextKeys, VEHICLE_PREVIEW_ALIASES
+from gui.Scaleform.daapi.view.lobby.go_back_helper import BackButtonContextKeys
 from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_vehicle import g_postProgressionVehicle
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VEHICLE_PREVIEW_ALIASES
 from gui.Scaleform.daapi.view.meta.VehiclePostProgressionViewMeta import VehiclePostProgressionViewMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -82,8 +83,9 @@ class VehiclePostProgressionCfgView(VehiclePostProgressionViewMeta):
         self.__cmpBasket.onSwitchChange -= self._updateData
         self.__cmpBasket.onChange -= self.__onCmpBasketChange
         progressionInjectView = self._progressionInject.getInjectView()
-        progressionInjectView.onResearchAction -= self.__onResearchAction
-        progressionInjectView.onGoBackAction -= self.__onGoBackAction
+        if progressionInjectView:
+            progressionInjectView.onResearchAction -= self.__onResearchAction
+            progressionInjectView.onGoBackAction -= self.__onGoBackAction
         super(VehiclePostProgressionCfgView, self)._removeListeners()
 
     def _onExit(self):

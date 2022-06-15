@@ -132,9 +132,6 @@ _DEFAULT_SETTINGS = {'registrationURL': '',
  'rankedBattles': {},
  'referralProgram': {},
  'easterEgg': EasterEggProps(True, []),
- 'adventCalendar': {'popupIntervalInHours': 24,
-                    'baseURL': '',
-                    'herotankURL': ''},
  'premiumInfo': {},
  'checkPromoFrequencyInBattles': 5,
  'vivoxLicense': '',
@@ -197,6 +194,10 @@ class GuiSettings(object):
         if name in self.__settings:
             settings = self.__applyMacros(self.__settings[name])
         return settings
+
+    def checkAndReplaceWebBridgeMacros(self, url):
+        webBridgeUrl = self.baseUrls.get('webBridgeRootURL')
+        return url.replace('{webBridgeRootURL}', webBridgeUrl) if webBridgeUrl and url.find('{webBridgeRootURL}') > -1 else url
 
     def __applyMacros(self, value):
         if isinstance(value, _MacrosValue):

@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/CompoundAppearance.py
+from functools import partial
 import logging
 import math
 from math import tan
@@ -28,6 +29,8 @@ from cgf_obsolete_script.script_game_object import ComponentDescriptor
 from vehicle_systems import model_assembler
 from VehicleEffects import DamageFromShotDecoder
 from common_tank_appearance import CommonTankAppearance
+import CGF
+import GenericComponents
 _ROOT_NODE_NAME = 'V'
 _GUN_RECOIL_NODE_NAME = 'G'
 _PERIODIC_TIME_ENGINE = 0.1
@@ -45,6 +48,31 @@ class CompoundHolder(object):
         self.compound = compound
 
 
+class PartsGameObjects(object):
+
+    def __init__(self):
+        self.__gameObjects = {}
+
+    def destroy(self):
+        self.__gameObjects = None
+        return
+
+    def getExistingGameObject(self, partName):
+        go = self.__gameObjects.get(partName)
+        return go if go is not None and go.isValid() else None
+
+    def getPartGameObject(self, partName, spaceID, parentGO):
+        go = self.__gameObjects.get(partName)
+        if go is None or not go.isValid():
+            go = CGF.GameObject(spaceID)
+            go.activate()
+            go.createComponent(GenericComponents.HierarchyComponent, parentGO)
+            go.createComponent(GenericComponents.NodeFollower, partName, parentGO)
+            go.createComponent(GenericComponents.TransformComponent, Math.Vector3(0, 0, 0))
+            self.__gameObjects[partName] = go
+        return go
+
+
 class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     activated = property(lambda self: self.__activated)
     wheelsState = property(lambda self: self._vehicle.wheelsState if self._vehicle is not None else 0)
@@ -55,6 +83,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     highlighter = ComponentDescriptor()
     tutorialMatKindsController = ComponentDescriptor()
     compoundHolder = ComponentDescriptor()
+    partsGameObjects = ComponentDescriptor()
 
     def __init__(self):
         CallbackDelayer.__init__(self)
@@ -63,6 +92,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         self.gunMatrix = Math.WGAdaptiveMatrixProvider()
         self.__originalFilter = None
         self.__terrainCircle = None
+        self.__showCircleDelayed = None
         self.onModelChanged = Event()
         self.__activated = False
         self.__dirtUpdateTime = 0.0
@@ -71,6 +101,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         self.__tmpGameObjects = {}
         self.__engineStarted = False
         self.__turbochargerSoundPlaying = False
+        self.partsGameObjects = PartsGameObjects()
         return
 
     def setVehicle(self, vehicle):
@@ -146,7 +177,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         else:
             self.__engineStarted = False
             self.__activated = False
-            self.highlighter.removeHighlight()
+            self.highlighter.deactivate()
             super(CompoundAppearance, self).deactivate()
             if self.__inSpeedTreeCollision:
                 BigWorld.setSpeedTreeCollisionBody(None)
@@ -157,6 +188,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             self._vehicle.filter = self.__originalFilter
             self.filter.reset()
             self.__originalFilter = None
+            self.__showCircleDelayed = None
             if self.__terrainCircle.isAttached():
                 self.__terrainCircle.detach()
             if stopEffects:
@@ -258,7 +290,9 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if self.tessellationCollisionSensor is not None and not self.tessellationCollisionSensor.activePostmortem:
             self.tessellationCollisionSensor = None
         self.siegeEffects = None
+        self.partsGameObjects = None
         self._destroySystems()
+        self._loadingQueue = []
         return
 
     def destroy(self):
@@ -270,6 +304,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if self.tracks is not None:
             self.tracks.reset()
         super(CompoundAppearance, self).destroy()
+        self.__showCircleDelayed = None
         if self.__terrainCircle is not None:
             self.__terrainCircle.destroy()
             self.__terrainCircle = None
@@ -282,7 +317,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         super(CompoundAppearance, self).construct(isPlayer, resourceRefs)
         if self.damageState.effect is not None:
             self.playEffect(self.damageState.effect, SpecialKeyPointNames.STATIC)
-        self.highlighter = Highlighter(self.isAlive)
+        self.highlighter = Highlighter(self.isAlive, self.collisions)
         if isPlayer and BigWorld.player().isInTutorial:
             self.tutorialMatKindsController = TutorialMatKindsController()
             self.tutorialMatKindsController.terrainGroundTypesLink = lambda : self.terrainGroundType
@@ -314,6 +349,9 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if (radius is None) != (terrainCircleSettings is None):
             LOG_ERROR('showTerrainCircle: radius or terrainCircleSetting is not set. You need to set both or none of them.')
             return
+        elif self.__terrainCircle is None:
+            self.__showCircleDelayed = partial(self.showTerrainCircle, radius, terrainCircleSettings)
+            return
         else:
             if radius is not None:
                 self.__terrainCircle.configure(radius, terrainCircleSettings)
@@ -324,6 +362,8 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
 
     def hideTerrainCircle(self):
         self.__terrainCircle.setVisible(False)
+        self.__showCircleDelayed = None
+        return
 
     def updateTurretVisibility(self):
         self.__requestModelsRefresh()
@@ -507,6 +547,8 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
                 BigWorld.setSpeedTreeCollisionBody(None)
                 self.__inSpeedTreeCollision = False
             self._compoundModel = newCompoundModel
+            self.removeComponentByType(GenericComponents.DynamicModelComponent)
+            self.createComponent(GenericComponents.DynamicModelComponent, self._compoundModel)
             self.collisions = None
             self.collisions = self.createComponent(BigWorld.CollisionComponent, resourceList['collisionAssembler'])
             model_assembler.setupCollisions(self.typeDescriptor, self.collisions)
@@ -547,9 +589,8 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if isUnderWater and self.damageState.effect not in ('submersionDeath',):
             self._stopEffects()
         if self._vehicle is not None:
-            extra = self._vehicle.typeDescriptor.extrasDict['fire']
-            if extra.isRunningFor(self._vehicle):
-                extra.checkUnderwater(self._vehicle, isUnderWater)
+            if self._vehicle.isOnFire():
+                self._vehicle.fire.onUnderWaterSwitch(isUnderWater)
         return
 
     def updateTracksScroll(self, leftScroll, rightScroll):
@@ -646,6 +687,9 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             return
         else:
             self.__terrainCircle = TerrainCircleComponent()
+            if self.__showCircleDelayed is not None:
+                self.__showCircleDelayed()
+                self.__showCircleDelayed = None
             return
 
     def __attachTerrainCircle(self):

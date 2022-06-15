@@ -199,7 +199,7 @@ class VehicleInfoTooltipData(BlocksTooltipData):
             self._setWidth(_TOOLTIP_MAX_WIDTH if invalidWidth else _TOOLTIP_MIN_WIDTH)
             items.append(formatters.packBuildUpBlockData(priceBlock, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, gap=5, padding=formatters.packPadding(left=98), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL))
         if not vehicle.isRotationGroupLocked:
-            statusBlock, operationError = StatusBlockConstructor(vehicle, statusConfig).construct()
+            statusBlock, operationError, _ = StatusBlockConstructor(vehicle, statusConfig).construct()
             if statusBlock and not (operationError and shouldBeCut):
                 items.append(formatters.packBuildUpBlockData(statusBlock, padding=blockPadding, blockWidth=440))
             else:
@@ -652,12 +652,12 @@ class VehicleTradeInTooltipData(ToolTipBaseData):
 
     def getDisplayableData(self, *args, **kwargs):
         vehicle = self.context.buildItem(*args, **kwargs)
-        tradeInInfo = self.tradeIn.getTradeInInfo(vehicle)
-        if tradeInInfo is None:
+        tradeInDiscounts = self.tradeIn.getTradeInDiscounts(vehicle)
+        if tradeInDiscounts is None:
             discount = i18n.makeString(TOOLTIPS.TRADE_NODISCOUNT)
         else:
-            discountValue = moneyWithIcon(tradeInInfo.maxDiscountPrice, currType=Currency.GOLD)
-            if tradeInInfo.hasMultipleTradeOffs:
+            discountValue = moneyWithIcon(tradeInDiscounts.maxDiscountPrice, currType=Currency.GOLD)
+            if tradeInDiscounts.hasMultipleTradeOffs:
                 discountValue = i18n.makeString(TOOLTIPS.TRADE_SEVERALDISCOUNTS, discountValue=discountValue)
             discount = i18n.makeString(TOOLTIPS.TRADE_DISCOUNT, discountValue=discountValue)
         return {'header': i18n.makeString(TOOLTIPS.TRADE_HEADER),
@@ -706,7 +706,7 @@ class VehicleStatusTooltipData(BlocksTooltipData):
         items = super(VehicleStatusTooltipData, self)._packBlocks()
         statusConfig = self.context.getStatusConfiguration(vehicle)
         if not vehicle.isRotationGroupLocked:
-            statusBlock, operationError = StatusBlockConstructor(vehicle, statusConfig).construct()
+            statusBlock, operationError, _ = StatusBlockConstructor(vehicle, statusConfig).construct()
             if statusBlock and not operationError:
                 items.append(formatters.packBuildUpBlockData(statusBlock, padding=formatters.packPadding(bottom=-16)))
         return items
@@ -792,7 +792,8 @@ class TelecomBlockConstructor(VehicleTooltipBlockConstructor):
     def construct(self):
         if self.vehicle.isTelecom:
             telecomConfig = self.lobbyContext.getServerSettings().telecomConfig
-            provider = telecomConfig.getInternetProvider(self.vehicle.intCD)
+            telecomBundleId = self.itemsCache.items.stats.getTelecomBundleId()
+            provider = telecomConfig.getInternetProvider(telecomBundleId)
             providerLocRes = R.strings.menu.internet_provider.dyn(provider)
             telecomTextRes = R.strings.tooltips.vehicle.deal.telecom.main.dyn(provider, R.strings.tooltips.vehicle.deal.telecom.main.default)
             return [formatters.packTextBlockData(text=text_styles.main(backport.text(telecomTextRes(), tariff=backport.text(providerLocRes.tariff()) if providerLocRes else '', provider=backport.text(providerLocRes.name()) if providerLocRes else '')))]
@@ -1096,7 +1097,8 @@ class ClanLockAdditionalStatsBlockConstructor(LockAdditionalStatsBlockConstructo
 
 
 class StatusBlockConstructor(VehicleTooltipBlockConstructor):
-    lobbyContext = dependency.descriptor(ILobbyContext)
+    __lobbyContext = dependency.descriptor(ILobbyContext)
+    __bootcamp = dependency.descriptor(IBootcampController)
 
     def construct(self):
         block = []
@@ -1109,6 +1111,8 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                 result = self.__getTechTreeVehicleStatus(self.configuration, self.vehicle)
             elif self.configuration.isAwardWindow:
                 result = None
+            elif self.configuration.battleRoyale is not None:
+                result = self.__getBattleRoyaleVehicleStatus(self.configuration, self.vehicle)
             else:
                 result = self.__getVehicleStatus(self.configuration.showCustomStates, self.vehicle)
             if result is not None:
@@ -1133,7 +1137,7 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                     block.append(formatters.packTextBlockData(text=text_styles.standard(text)))
                 else:
                     block.append(formatters.packAlignedTextBlockData(header, BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
-            return (block, result and result.get('operationError') is not None)
+            return (block, result and result.get('operationError') is not None, result)
 
     def __getTechTreeVehicleStatus(self, config, vehicle):
         nodeState = int(config.node.state)
@@ -1143,11 +1147,14 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
             parentCD = int(config.node.unlockProps.parentID) or None
         _, _, need2Unlock, _, _ = getUnlockPrice(vehicle.intCD, parentCD, vehicle.level)
         if not nodeState & NODE_STATE_FLAGS.UNLOCKED and not nodeState & NODE_STATE_FLAGS.COLLECTIBLE:
-            level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
-            if not nodeState & NODE_STATE_FLAGS.NEXT_2_UNLOCK:
+            if self.__bootcamp.isInBootcamp() and nodeState & NODE_STATE_FLAGS.PURCHASE_DISABLED:
+                tooltip = None
+            elif not nodeState & NODE_STATE_FLAGS.NEXT_2_UNLOCK:
                 tooltip = TOOLTIPS.RESEARCHPAGE_VEHICLE_STATUS_PARENTMODULEISLOCKED
             elif need2Unlock > 0:
                 tooltip = TOOLTIPS.RESEARCHPAGE_MODULE_STATUS_NOTENOUGHXP
+            if tooltip is not None:
+                level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
         else:
             if nodeState & NODE_STATE_FLAGS.IN_INVENTORY:
                 return self.__getVehicleStatus(False, vehicle)
@@ -1203,8 +1210,9 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
             if state == Vehicle.VEHICLE_STATE.ROTATION_GROUP_UNLOCKED:
                 header, text = getComplexStatus('#tooltips:vehicleStatus/%s' % state, groupNum=vehicle.rotationGroupNum, battlesLeft=getBattlesLeft(vehicle))
             elif state == Vehicle.VEHICLE_STATE.DEAL_IS_OVER:
-                telecomConfig = self.lobbyContext.getServerSettings().telecomConfig
-                provider = telecomConfig.getInternetProvider(vehicle.intCD)
+                telecomConfig = self.__lobbyContext.getServerSettings().telecomConfig
+                telecomBundleId = self.itemsCache.items.stats.getTelecomBundleId()
+                provider = telecomConfig.getInternetProvider(telecomBundleId)
                 providerLocRes = R.strings.menu.internet_provider.dyn(provider)
                 keyString = '#tooltips:vehicleStatus/{}'.format(state)
                 if provider != '':
@@ -1217,6 +1225,11 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
             return {'header': header,
              'text': text,
              'level': level}
+
+    def __getBattleRoyaleVehicleStatus(self, configuration, vehicle):
+        return {'header': backport.text(R.strings.battle_royale.tooltips.vehicle.status.notRented()),
+         'text': '',
+         'level': Vehicle.VEHICLE_STATE_LEVEL.CRITICAL} if vehicle.isRented and configuration.battleRoyale.isRentNotActive else self.__getVehicleStatus(configuration.showCustomStates, vehicle)
 
 
 def _getNumNotNullPenaltyTankman(penalties):

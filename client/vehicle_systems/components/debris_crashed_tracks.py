@@ -4,12 +4,14 @@ import logging
 import random
 import CGF
 import Vehicular
-from CustomEffectManager import CustomEffectManager
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
 from vehicle_systems import tankStructure
 import math_utils
 from vehicle_systems.tankStructure import TankSoundObjectsIndexes
 import GenericComponents
+from constants import IS_CGF_DUMP, IS_EDITOR
+if not IS_CGF_DUMP:
+    from CustomEffectManager import CustomEffectManager
 _logger = logging.getLogger(__name__)
 
 class TrackCrashWithDebrisComponent(object):
@@ -135,17 +137,20 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
 
     def __remapNodes(self, debris):
         go = debris.wheelsGameObject
-        debrisDesc = debris.debrisDesc
-        nodes = {}
-        existingRemap = go.findComponentByType(NodeRemapperComponent)
-        if existingRemap is not None:
-            nodes = dict(existingRemap.nodes)
-            go.removeComponentByType(NodeRemapperComponent)
-        for fromNode, toNode in debrisDesc.nodesRemap.iteritems():
-            nodes[fromNode] = toNode
+        if IS_EDITOR and not go.isValid():
+            return
+        else:
+            debrisDesc = debris.debrisDesc
+            nodes = {}
+            existingRemap = go.findComponentByType(NodeRemapperComponent)
+            if existingRemap is not None:
+                nodes = dict(existingRemap.nodes)
+                go.removeComponentByType(NodeRemapperComponent)
+            for fromNode, toNode in debrisDesc.nodesRemap.iteritems():
+                nodes[fromNode] = toNode
 
-        go.createComponent(NodeRemapperComponent, nodes)
-        return
+            go.createComponent(NodeRemapperComponent, nodes)
+            return
 
     def __unmapNodes(self, debris):
         go = debris.wheelsGameObject
@@ -209,10 +214,14 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
                 go.createComponent(GenericComponents.RemoveGoDelayedComponent, self.DEBRIS_MAX_LIFETIME)
         return
 
+
+if not IS_CGF_DUMP:
+
     @onAddedQuery(NodeRemapperComponent, CustomEffectManager)
     def performNodeRemap(self, nodeRemapper, customEffectManager):
         for fromNode, toNode in nodeRemapper.nodes.iteritems():
             customEffectManager.remapNode(fromNode, toNode)
+
 
     @onRemovedQuery(NodeRemapperComponent, CustomEffectManager)
     def performNodeUnmap(self, nodeRemapper, customEffectManager):

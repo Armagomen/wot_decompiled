@@ -1,19 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/__init__.py
 import collections
-import weakref
+import time
 import itertools
-import types
 import logging
+import types
+import weakref
+from functools import partial, wraps
 import typing
-from functools import partial
 import BigWorld
 from adisp import async
-_logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    from typing import Callable, Iterable, List, Optional, Tuple, TypeVar, Union
+    from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
     T = TypeVar('T')
     R = TypeVar('R')
+_logger = logging.getLogger(__name__)
 ScalarTypes = (types.IntType,
  types.LongType,
  types.FloatType,
@@ -73,6 +74,10 @@ def findFirst(function_or_None, sequence, default=None):
 
 def first(sequence, default=None):
     return findFirst(None, sequence, default)
+
+
+def safeIndexOf(item, collection, default=None):
+    return collection.index(item) if item in collection else default
 
 
 def collapseIntervals(sequence):
@@ -268,5 +273,14 @@ def awaitNextFrame(callback):
     return
 
 
-def inPercents(fraction, digitsToRound=1):
-    return round(fraction * 100, digitsToRound)
+def timeit(method):
+
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        rt = te - ts
+        _logger.info('%s elapsed time: %s sec', method.__name__, rt)
+        return result
+
+    return timed

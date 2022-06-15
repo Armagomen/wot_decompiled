@@ -297,8 +297,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
                 self.__initAnchorsPositionsCallback = BigWorld.callback(0.0, self.__initAnchorsPositions)
                 return
         self.__setAnchorsInitData()
-        if not self.__styleInfo.visible:
-            self.__locateCameraToCustomizationPreview(updateTankCentralPoint=True, forceLocate=True)
+        self.__locateCameraToCustomizationPreview(updateTankCentralPoint=True, forceLocate=True)
         return
 
     def onBuyConfirmed(self, isOk):
@@ -532,6 +531,14 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
     def resetC11nItemsNovelty(self, itemsList):
         self.__ctx.resetItemsNovelty(itemsList)
 
+    @adisp.async
+    @adisp.process
+    def applyItems(self, purchaseItems, callback=None):
+        self.service.stopHighlighter()
+        yield self.__ctx.applyItems(purchaseItems)
+        callback(None)
+        return
+
     def __locateCameraOnAnchor(self, slotId, forceRotate=False):
         if self.__ctx.c11nCameraManager is None:
             return
@@ -576,7 +583,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             self.__ctx.vehicleAnchorsUpdater.onCameraLocated()
             return
 
-    def __onItemsBought(self, originalOutfits, purchaseItems, results):
+    def __onItemsBought(self, originalOutfits, purchaseItems, results, isAutoRentChanged=False):
         if results:
             if not self.__checkPurchaseSuccess(results):
                 _logger.error('Failed to purchase customization outfits.')
@@ -589,7 +596,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
                 priority = NC_MESSAGE_PRIORITY.DEFAULT if currency != Currency.CREDITS else None
             else:
                 modifiedOutfits = self.__ctx.mode.getModifiedOutfits()
-                msgText = self.__getModifyMessage(originalOutfits, modifiedOutfits)
+                msgText = self.__getModifyMessage(originalOutfits, modifiedOutfits, isAutoRentChanged)
                 msgType = SM_TYPE.Information
                 priority = None
             if msgText is not None:
@@ -633,7 +640,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
              'money': money}
         return backport.text(msgKey, **msgCtx)
 
-    def __getModifyMessage(self, originalOutfits, modifiedOutfits):
+    def __getModifyMessage(self, originalOutfits, modifiedOutfits, isAutoRentChanged):
         forwardDiffs = False
         backwardDiffs = False
         for season in SeasonType.COMMON_SEASONS:
@@ -652,6 +659,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             msgText = backport.text(msgKey.change())
         elif hasRemovalsOnly:
             msgText = backport.text(msgKey.remove())
+        elif isAutoRentChanged:
+            msgText = None
         else:
             _logger.error('Failed to construct customization purchase system message. Missing outfits diff.')
             msgText = None
@@ -702,7 +711,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         self.__ctx.events.onHideStyleInfo += self.__onHideStyleInfo
         self.__ctx.events.onEditModeEnabled += self.__onEditModeEnabled
         self.__ctx.events.onGetItemBackToHand += self.__onGetItemBackToHand
-        self.__ctx.events.onCloseWindow += self.onCloseWindow
         self.__ctx.events.onSlotSelected += self.__onSlotSelected
         self.__ctx.events.onSlotUnselected += self.__onSlotUnselected
         self.__ctx.events.onAnchorsStateChanged += self.__onAnchorsStateChanged
@@ -804,7 +812,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         self.__ctx.events.onHideStyleInfo -= self.__onHideStyleInfo
         self.__ctx.events.onEditModeEnabled -= self.__onEditModeEnabled
         self.__ctx.events.onGetItemBackToHand -= self.__onGetItemBackToHand
-        self.__ctx.events.onCloseWindow -= self.onCloseWindow
         self.__ctx.events.onSlotSelected -= self.__onSlotSelected
         self.__ctx.events.onSlotUnselected -= self.__onSlotUnselected
         self.__ctx.events.onAnchorsStateChanged -= self.__onAnchorsStateChanged
@@ -814,9 +821,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         if self.__initAnchorsPositionsCallback is not None:
             BigWorld.cancelCallback(self.__initAnchorsPositionsCallback)
             self.__initAnchorsPositionsCallback = None
-        exitCallback = self.__ctx.getExitCallback()
-        if exitCallback is not None:
-            exitCallback.destroy()
         super(MainView, self)._dispose()
         self.__ctx = None
         self.service.closeCustomization()
@@ -1199,4 +1203,4 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
 
     @adisp.process
     def __applyItems(self, purchaseItems):
-        yield self.__ctx.applyItems(purchaseItems)
+        yield self.applyItems(purchaseItems)

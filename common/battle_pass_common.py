@@ -1,20 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/battle_pass_common.py
 import bisect
-import time
 import struct
-from battle_pass_integration import getBattlePassByGameMode
-from constants import MAX_VEHICLE_LEVEL, OFFER_TOKEN_PREFIX, ARENA_BONUS_TYPE
+import time
 from collections import namedtuple
-from items import vehicles, parseIntCompactDescr
+import typing
+from enum import Enum, unique
+from battle_pass_integration import getBattlePassByGameMode
+from constants import ARENA_BONUS_TYPE, MAX_VEHICLE_LEVEL, OFFER_TOKEN_PREFIX
+from debug_utils import LOG_ERROR
+from items import parseIntCompactDescr, vehicles
+if typing.TYPE_CHECKING:
+    from typing import Dict, Generator, Sequence, Tuple, Union, List
 BATTLE_PASS_TOKEN_PREFIX = 'battle_pass:'
 BATTLE_PASS_TOKEN_PASS = BATTLE_PASS_TOKEN_PREFIX + 'pass:'
 BATTLE_PASS_ENTITLEMENT_PASS = BATTLE_PASS_TOKEN_PASS.replace(':', '_')
+BATTLE_PASS_SHOP_ENTITLEMENT_PASS = 'battle_pass_shop_'
 BATTLE_PASS_OFFER_TOKEN_PREFIX = OFFER_TOKEN_PREFIX + BATTLE_PASS_TOKEN_PREFIX
-BATTLE_PASS_TOKEN_TROPHY_OFFER_2020 = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'trophy'
-BATTLE_PASS_TOKEN_TROPHY_GIFT_OFFER_2020 = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'trophy_gift'
-BATTLE_PASS_TOKEN_NEW_DEVICE_OFFER_2020 = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'new_device'
-BATTLE_PASS_TOKEN_NEW_DEVICE_GIFT_OFFER_2020 = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'new_device_gift'
+BATTLE_PASS_Q_CHAIN_TOKEN_PREFIX = BATTLE_PASS_TOKEN_PREFIX + 'q_chain:'
 BATTLE_PASS_TOKEN_TROPHY_OFFER = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'trophy:'
 BATTLE_PASS_TOKEN_TROPHY_GIFT_OFFER = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'trophy_gift:'
 BATTLE_PASS_TOKEN_NEW_DEVICE_MI_OFFER = BATTLE_PASS_OFFER_TOKEN_PREFIX + 'new_device_mi:'
@@ -42,24 +45,28 @@ BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS = (BATTLE_PASS_TOKEN_TROPHY_GIFT_OFF
  BATTLE_PASS_TOKEN_GUIDE_GIFT_OFFER)
 BATTLE_PASS_CHOICE_REWARD_OFFER_TOKEN_FREE_POSTFIX = 'free:'
 BATTLE_PASS_CHOICE_REWARD_OFFER_TOKEN_PAID_POSTFIX = 'paid:'
+BATTLE_PASS_PDATA_KEY = 'battlePass'
 BATTLE_PASS_CONFIG_NAME = 'battlePass_config'
 BATTLE_PASS_SELECT_BONUS_NAME = 'battlePassSelectToken'
 BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME = 'styleProgressToken'
+BATTLE_PASS_Q_CHAIN_BONUS_NAME = 'battlePassQuestChainToken'
 BATTLE_PASS_BADGE_ID = 90
 USE_BATTLE_PASS_BADGE = False
 MAX_BADGE_LEVEL = 100
-ENDLESS_TIME = 4104777660L
 DEFAULT_REWARD_LEVEL = 0
 NON_VEH_CD = 0
-BattlePassInBattleProgress = namedtuple('BattlePassInBattleProgress', ['chapter',
- 'level',
- 'pointsNew',
- 'pointsTotal',
- 'pointsDiff',
- 'isDone',
- 'pointsBattleDiff',
- 'awards',
- 'isEnabled'])
+MAX_NON_CHAPTER_POINTS = 1000000
+
+@unique
+class FinalReward(Enum):
+    STYLE = 'style'
+    TANKMAN = 'tankman'
+
+
+@unique
+class CurrencyBP(Enum):
+    BIT = 'bpbit'
+
 
 class BattlePassRewardReason(object):
     DEFAULT = 0
@@ -67,9 +74,10 @@ class BattlePassRewardReason(object):
     PURCHASE_BATTLE_PASS = 2
     PURCHASE_BATTLE_PASS_LEVELS = 3
     INVOICE = 4
-    SELECT_STYLE = 5
-    SELECT_TROPHY_DEVICE = 6
+    STYLE_UPGRADE = 5
+    SELECT_REWARD = 6
     PURCHASE_BATTLE_PASS_MULTIPLE = 7
+    SELECT_CHAPTER = 8
     PURCHASE_REASONS = (PURCHASE_BATTLE_PASS, PURCHASE_BATTLE_PASS_LEVELS, PURCHASE_BATTLE_PASS_MULTIPLE)
 
 
@@ -87,16 +95,12 @@ class BattlePassConsts(object):
     RARE_REWARD_TAG = 'rare'
     FREE_MASK = 1
     PAID_MASK = 2
-    PROGRESSION_INFO = 'progressionInfo'
-    PROGRESSION_INFO_PREV = 'progressionInfoPrev'
     FAKE_QUEST_ID = 'battlePassFakeQuestID'
     MINIMAL_CHAPTER_NUMBER = 1
 
 
 MASK_TO_REWARD = {BattlePassConsts.FREE_MASK: BattlePassConsts.REWARD_FREE,
  BattlePassConsts.PAID_MASK: BattlePassConsts.REWARD_PAID}
-AWARD_TYPE_TO_TOKEN_POSTFIX = {BattlePassConsts.REWARD_FREE: BATTLE_PASS_CHOICE_REWARD_OFFER_TOKEN_FREE_POSTFIX,
- BattlePassConsts.REWARD_PAID: BATTLE_PASS_CHOICE_REWARD_OFFER_TOKEN_PAID_POSTFIX}
 
 class BattlePassStatsCommon(object):
     _CNT_SEASONS_FORMAT = '<I'
@@ -123,7 +127,7 @@ class BattlePassStatsCommon(object):
             vehCDs.append(vehCD)
             vehPoints.append(vehCDPoints)
 
-        return BattlePassStatsCommon.SeasonStats(seasonID, tuple(vehCDs), tuple(vehPoints), tuple(seasonStats['reachedCaps']), BattlePassStatsCommon.OtherStats(seasonStats['battles'], seasonStats['maxBase'], seasonStats.get('maxPost', 0)))
+        return BattlePassStatsCommon.SeasonStats(seasonID, tuple(vehCDs), tuple(vehPoints), tuple(seasonStats['reachedCaps']), BattlePassStatsCommon.OtherStats(seasonStats['battles'], sum((chapterStats.points for chapterStats in seasonStats.get('chaptersStats', {}).itervalues())), seasonStats.get('maxPost', 0)))
 
     @staticmethod
     def packSeasonStats(seasonStats):
@@ -169,10 +173,16 @@ class BattlePassStatsCommon(object):
 
     @staticmethod
     def initialSeasonStatsData():
-        return {'maxBase': 0,
+        return {'chaptersStats': {},
+         'nonChapterPoints': 0,
          'battles': 0,
-         'reachedCaps': set(),
-         'chosenItems': {}}
+         'reachedCaps': set()}
+
+    @staticmethod
+    def initialChapterData():
+        return {'points': 0,
+         'level': 0,
+         'styleLevel': 0}
 
 
 def getVehicleLevel(vehTypeCompDescr):
@@ -188,6 +198,10 @@ def getBattlePassPassEntitlementName(season):
     return '{}{}'.format(BATTLE_PASS_ENTITLEMENT_PASS, season)
 
 
+def getBattlePassShopEntitlementName(season):
+    return '{}{}'.format(BATTLE_PASS_SHOP_ENTITLEMENT_PASS, season)
+
+
 def getSeasonAndChapterFromBattlePassToken(tokenID):
     seasonAndChapter = tokenID.split(BATTLE_PASS_TOKEN_PASS)[-1].split(':')
     return (int(seasonAndChapter[0]), int(seasonAndChapter[1]))
@@ -198,7 +212,9 @@ def isBattlePassPassToken(token):
 
 
 def extendBaseAvatarResultsForBattlePass(results):
-    results.update({'basePointsDiff': 0,
+    results.update({'bpChapter': 0,
+     'basePointsDiff': 0,
+     'bpNonChapterPointsDiff': 0,
      'sumPoints': 0,
      'capBonus': 0})
 
@@ -230,16 +246,26 @@ def get3DStyleProgressToken(seasonID, chapter, progressLevel):
     return '{}{}:{}:{}'.format(BATTLE_PASS_TOKEN_3D_STYLE, seasonID, chapter, progressLevel)
 
 
+def getPresentLevel(rawLevel):
+    return rawLevel + 1
+
+
 class BattlePassConfig(object):
     REWARD_IDX = 0
     TAGS_IDX = 1
 
     def __init__(self, config):
         self._config = config
-        self._season = config.get('season', {})
-        self._rewards = config.get('rewards', {})
-        self._freeRewards = config.get('rewards', {}).get(BattlePassConsts.REWARD_FREE, {})
-        self._paidRewards = config.get('rewards', {}).get(BattlePassConsts.REWARD_PAID, {})
+        self._season = config.get('season') or {}
+        self._rewards = config.get('rewards') or {}
+        self._regularChapterIds = set()
+        self._extraChapterIds = set()
+        if not self.chapters:
+            return
+        for chapterID, chapterData in self.chapters.iteritems():
+            if chapterData['extra']:
+                self._extraChapterIds.add(chapterID)
+            self._regularChapterIds.add(chapterID)
 
     @property
     def mode(self):
@@ -262,66 +288,53 @@ class BattlePassConfig(object):
         return self._season.get('seasonFinish', 0)
 
     @property
-    def points(self):
-        return self._season.get('points', {})
-
-    @property
-    def basePoints(self):
-        return self._season.get('base', [0])
-
-    @property
-    def maxBaseLevel(self):
-        return len(self.basePoints)
-
-    @property
-    def finalLevelsInChapter(self):
-        return self._season.get('finalLevelsInChapter', [1])
-
-    @property
-    def maxBasePoints(self):
-        return self.basePoints[-1]
-
-    @property
     def finalOfferTime(self):
         return self._season.get('finalOfferTime', 0)
 
     @property
+    def points(self):
+        return self._season.get('points', {})
+
+    @property
+    def chapters(self):
+        return self._season.get('chapters', {})
+
+    @property
     def vehLevelCaps(self):
-        return self._season.get('vehLevelCaps', [0] * MAX_VEHICLE_LEVEL)
+        return self._season.get('vehLevelCaps', (0,) * MAX_VEHICLE_LEVEL)
 
     @property
     def vehCDCaps(self):
         return self._season.get('vehCDCaps', {})
 
-    @property
-    def selectedReward(self):
-        return self._config.get('selectedReward', {})
+    def getRewardType(self, chapterID):
+        if chapterID not in self.chapters:
+            LOG_ERROR('BattlePass wrong chapter={}, exists: {}'.format(chapterID, self.chapters))
+            return None
+        else:
+            return FinalReward(self.chapters[chapterID]['finalRewardType'])
 
-    @property
-    def seasonsHistory(self):
-        return self._config.get('seasonsHistory', {})
+    def getChapterLevels(self, chapterID):
+        return self.getChapter(chapterID).get('levels', (0,))
 
-    def getSumPointsTo(self, level):
-        return self.basePoints[level - 1] if level else 0
+    def getMaxChapterLevel(self, chapterID):
+        return len(self.getChapterLevels(chapterID)) if chapterID else 0
 
-    def iterRewardRanges(self, prevLvl, newLvl, rewardMask):
-        for fromLvl, toLvl, mask in ((prevLvl, newLvl, BattlePassConsts.FREE_MASK), (prevLvl, newLvl, BattlePassConsts.PAID_MASK)):
-            if mask & rewardMask:
-                yield (fromLvl, toLvl, mask)
+    def getMaxChapterPoints(self, chapterID):
+        return self.getChapterLevels(chapterID)[-1] if chapterID else MAX_NON_CHAPTER_POINTS
 
-    def isEnabled(self):
-        return self.mode == 'enabled'
+    def getRegularChapterIds(self):
+        return self._regularChapterIds
+
+    def getbattlePassCost(self, chapterID):
+        return self.chapters.get(chapterID, {}).get('battlePassCost', {'gold': 0})
+
+    @staticmethod
+    def iterRewardRanges(prevLvl, newLvl, rewardMask):
+        return ((fromLvl, toLvl, mask) for fromLvl, toLvl, mask in ((prevLvl, newLvl, BattlePassConsts.FREE_MASK), (prevLvl, newLvl, BattlePassConsts.PAID_MASK)) if mask & rewardMask)
 
     def isGameModeEnabled(self, gameMode):
-        if not self._season or not self._season['points']:
-            return False
-        return self.points[gameMode]['enabled'] if gameMode in self._season['points'] else False
-
-    def isPaused(self):
-        return self.mode == 'paused'
-
-    def isDisabled(self):
-        return self.mode == 'disabled'
+        return self.points.get(gameMode, {}).get('enabled', False)
 
     def isBuyingAllowed(self):
         return self.isActive(int(time.time()))
@@ -329,8 +342,26 @@ class BattlePassConfig(object):
     def isActive(self, curTime):
         return self.isEnabled() and self.seasonStart <= curTime < self.seasonFinish
 
+    def isEnabled(self):
+        return self.mode == 'enabled'
+
+    def isPaused(self):
+        return self.mode == 'paused'
+
+    def isDisabled(self):
+        return self.mode == 'disabled'
+
     def isSeasonTimeOver(self, curTime):
         return int(curTime) >= self.seasonFinish
+
+    def isExtraChapter(self, chapterID):
+        return chapterID in self._extraChapterIds
+
+    def isRegularChapter(self, chapterID):
+        return chapterID in self._regularChapterIds
+
+    def getChapterExpireTimestamp(self, chapterID):
+        return self.getChapter(chapterID).get('expires', 0)
 
     def getSpecialVehicles(self):
         return self._season.get('specialVehicles', [])
@@ -338,77 +369,63 @@ class BattlePassConfig(object):
     def isSpecialVehicle(self, vehTypeCompDescr):
         return vehTypeCompDescr in self.getSpecialVehicles()
 
-    def capacityList(self):
-        return self._season.get('caps', [0] * MAX_VEHICLE_LEVEL)
-
     def capBonusList(self):
-        return self._season.get('capBonuses', [0] * MAX_VEHICLE_LEVEL)
+        return self._season.get('capBonuses', (0,) * MAX_VEHICLE_LEVEL)
+
+    def capBonus(self, vehLevel):
+        return self.capBonusList()[vehLevel - 1]
+
+    def vehicleContribution(self, vehTypeCompDescr):
+        return self.vehicleCapacity(vehTypeCompDescr) + self.capBonusForVehTypeCompDescr(vehTypeCompDescr)
+
+    def capBonusForVehTypeCompDescr(self, vehTypeCompDescr):
+        return self.capBonusList()[getVehicleLevel(vehTypeCompDescr) - 1]
 
     def vehicleCapacity(self, vehTypeCompDescr):
         isSecret = 'secret' in vehicles.getVehicleType(vehTypeCompDescr).tags
         return 0 if isSecret and vehTypeCompDescr not in self.vehCDCaps else self.vehCDCaps.get(vehTypeCompDescr, self.vehLevelCaps[getVehicleLevel(vehTypeCompDescr) - 1])
 
-    def capBonus(self, vehLevel):
-        return self.capBonusList()[vehLevel - 1]
-
-    def capBonusForVehTypeCompDescr(self, vehTypeCompDescr):
-        return self.capBonusList()[getVehicleLevel(vehTypeCompDescr) - 1]
-
-    def vehicleContribution(self, vehTypeCompDescr):
-        return self.vehicleCapacity(vehTypeCompDescr) + self.capBonusForVehTypeCompDescr(vehTypeCompDescr)
-
-    def alignedPointsFromSumPoints(self, sumPoints):
-        if sumPoints >= self.maxBasePoints:
-            return sumPoints - self.maxBasePoints
-        else:
-            return sumPoints
-
     def bonusPointsList(self, vehTypeCompDescr=None, isWinner=True, gameMode=ARENA_BONUS_TYPE.REGULAR):
         teamKey = 'win' if isWinner else 'lose'
-        teamPoints = self._config.get('season', {}).get('points', {}).get(gameMode, {})
+        teamPoints = self.points.get(gameMode, {})
         if vehTypeCompDescr in teamPoints:
             teamPoints = teamPoints[vehTypeCompDescr]
-        return teamPoints.get(teamKey) or [0] * getBattlePassByGameMode(gameMode).getTeamSize()
+        return teamPoints.get(teamKey) or (0,) * getBattlePassByGameMode(gameMode).getTeamSize()
 
     def getSeasonRewards(self):
-        return self._config.get('rewards', {})
+        return self._rewards
 
-    def hasSeasonRewards(self):
-        return self.getSeasonRewards() is not None
+    def getChapterRewards(self, chapterID, rewardType):
+        return self._rewards.get(chapterID, {}).get(rewardType, {})
 
-    def getTags(self, level, rewardType):
-        return self._config.get('rewards', {}).get(rewardType, {}).get(level, ({}, tuple()))[BattlePassConfig.TAGS_IDX]
+    def getTags(self, chapterID, level, rewardType):
+        return self.getChapterRewards(chapterID, rewardType).get(level, ({}, tuple()))[BattlePassConfig.TAGS_IDX]
 
-    def getPostReward(self, level):
-        return {}
+    def getRewardByMask(self, chapterID, level, rewardMask):
+        return self.getRewardByType(chapterID, level, MASK_TO_REWARD[rewardMask])
 
-    def getFreeReward(self, level):
-        return self._freeRewards.get(level, ({}, tuple()))[BattlePassConfig.REWARD_IDX]
+    def getFreeReward(self, chapterID, level):
+        return self.getRewardByType(chapterID, level, BattlePassConsts.REWARD_FREE)
 
-    def getPaidReward(self, level):
-        return self._paidRewards.get(level, ({}, tuple()))[BattlePassConfig.REWARD_IDX]
+    def getPaidReward(self, chapterID, level):
+        return self.getRewardByType(chapterID, level, BattlePassConsts.REWARD_PAID)
 
-    def getRewardByMask(self, level, rewardMask):
-        return self.getRewardByType(level, MASK_TO_REWARD[rewardMask])
+    def getRewardByType(self, chapterID, level, rewardType):
+        return self.getChapterRewards(chapterID, rewardType).get(level, ({}, tuple()))[BattlePassConfig.REWARD_IDX]
 
-    def getRewardByType(self, level, rewardType):
-        return self._rewards.get(rewardType, {}).get(level, ({}, tuple()))[BattlePassConfig.REWARD_IDX]
+    def getChapterBorders(self, chapterID):
+        fromLevel = 1
+        toLevel = len(self.getChapterLevels(chapterID))
+        return (fromLevel, toLevel)
 
-    def getChapter(self, level):
-        for i, finalLevelInChapter in enumerate(self.finalLevelsInChapter):
-            if finalLevelInChapter > level:
-                return i + 1
-
-        return len(self.finalLevelsInChapter)
-
-    def getChapterBorders(self, chapter):
-        startLevel = self.finalLevelsInChapter[chapter - 2] if chapter > 1 else 0
-        endLevel = self.finalLevelsInChapter[chapter - 1] if chapter else self.maxBaseLevel
-        return (startLevel, endLevel)
-
-    def getChapterNumbers(self):
-        for i, finalLevelInChapter in enumerate(self.finalLevelsInChapter):
-            yield i + 1
+    def getChapterIDs(self):
+        return sorted(self.chapters.iterkeys())
 
     def getAvailableStyles(self):
-        return [ item['id'] for item in self.selectedReward.get('customizations', []) if item['custType'] == 'style' ]
+        return tuple((chapter['styleId'] for chapter in self.chapters.itervalues()))
+
+    def getChapterStyleID(self, chapterID):
+        return self.chapters.get(chapterID, {}).get('styleId')
+
+    def getChapter(self, chapterID):
+        return self.chapters.get(chapterID, {})

@@ -8,6 +8,7 @@ import BigWorld
 import Keys
 import Math
 import ResMgr
+from AvatarInputHandler.AimingSystems import disableShotPointCache
 from helpers.CallbackDelayer import CallbackDelayer
 import BattleReplay
 import CommandMapping
@@ -93,6 +94,7 @@ _DYNAMIC_CAMERAS = (DynamicCameras.ArcadeCamera.ArcadeCamera,
  DynamicCameras.StrategicCamera.StrategicCamera,
  DynamicCameras.ArtyCamera.ArtyCamera,
  DynamicCameras.DualGunCamera.DualGunCamera)
+_FREE_AND_CHAT_SHORTCUT_CMD = (CommandMapping.CMD_CM_FREE_CAMERA, CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND)
 
 class DynamicCameraSettings(object):
     settings = property(lambda self: self.__dynamic)
@@ -311,7 +313,10 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
                     return True
 
             if self.__isStarted and self.__isDetached:
-                if self.__curCtrl.alwaysReceiveKeyEvents(isDown=isDown) and not self.isObserverFPV or CommandMapping.g_instance.isFired(CommandMapping.CMD_CM_LOCK_TARGET, key):
+                alwaysReceive = self.__curCtrl.alwaysReceiveKeyEvents(isDown=isDown) and not self.isObserverFPV
+                cmdLockTarget = CommandMapping.g_instance.isFired(CommandMapping.CMD_CM_LOCK_TARGET, key)
+                cmdFreeAndChat = CommandMapping.g_instance.isFiredList(_FREE_AND_CHAT_SHORTCUT_CMD, key, True)
+                if alwaysReceive or cmdLockTarget or cmdFreeAndChat:
                     self.__curCtrl.handleKeyEvent(isDown, key, mods, event)
                 for command in self.__detachedCommands:
                     if command.handleKeyEvent(isDown, key, mods, event):
@@ -545,10 +550,11 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
         for control in self.__ctrls.itervalues():
             control.setObservedVehicle(vehicleID)
 
+    @disableShotPointCache
     def onControlModeChanged(self, eMode, **args):
         if self.steadyVehicleMatrixCalculator is not None:
             self.steadyVehicleMatrixCalculator.relinkSources()
-        if not self.__isArenaStarted and eMode != _CTRL_MODE.POSTMORTEM:
+        if not self.__isArenaStarted and eMode != _CTRL_MODE.POSTMORTEM and not BattleReplay.isServerSideReplay:
             return
         else:
             player = BigWorld.player()
@@ -635,6 +641,8 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
                 self.__curCtrl.handleMouseEvent(0.0, 0.0, 0.0)
             vehicle.appearance.removeComponentByType(GenericComponents.ControlModeStatus)
             vehicle.appearance.createComponent(GenericComponents.ControlModeStatus, _CTRL_MODES.index(eMode))
+            if eMode in aih_constants.MAP_CASE_MODES:
+                BigWorld.setEdgeDrawerRenderMode(1)
             return
 
     def onVehicleControlModeChanged(self, eMode):
@@ -985,7 +993,7 @@ class _VertScreenshotCamera(object):
         centerXZ = Math.Vector2(0.5 * (arenaBB[0][0] + arenaBB[1][0]), 0.5 * (arenaBB[0][1] + arenaBB[1][1]))
         halfSizesXZ = Math.Vector2(0.5 * (arenaBB[1][0] - arenaBB[0][0]), 0.5 * (arenaBB[1][1] - arenaBB[0][1]))
         camFov = math.radians(15.0)
-        camPos = Math.Vector3(centerXZ.x, 0, centerXZ.z)
+        camPos = Math.Vector3(centerXZ.x, 0, centerXZ.y)
         aspectRatio = BigWorld.getAspectRatio()
         camPos.y = max(halfSizesXZ.x / math.sin(0.5 * camFov * aspectRatio), halfSizesXZ.y / math.sin(0.5 * camFov))
         camMatr = Math.Matrix()

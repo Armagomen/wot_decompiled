@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_completed_tooltip_view.py
 from frameworks.wulf import ViewSettings
-from gui.battle_pass.battle_pass_helpers import getNotChosen3DStylesCount
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_pass_completed_tooltip_view_model import BattlePassCompletedTooltipViewModel
 from gui.impl.pub import ViewImpl
@@ -23,8 +22,8 @@ class BattlePassCompletedTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(BattlePassCompletedTooltipView, self)._onLoading(*args, **kwargs)
+        bpController = self.__battlePassController
+        isBought = all((bpController.isBought(chapterID=chapter) for chapter in bpController.getChapterIDs()))
         with self.getViewModel().transaction() as model:
-            model.setLevel(self.__battlePassController.getMaxLevel())
-            model.setIsBattlePassPurchased(self.__battlePassController.isBought())
-            model.setIsStyleChosen(not bool(getNotChosen3DStylesCount(battlePass=self.__battlePassController)))
+            model.setIsBattlePassPurchased(isBought)
             model.setNotChosenRewardCount(self.__battlePassController.getNotChosenRewardCount())

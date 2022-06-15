@@ -6,7 +6,7 @@ import time
 from math import cos, radians
 from time import time as timestamp
 from collections import namedtuple
-from itertools import izip
+from itertools import izip, chain
 from realm import CURRENT_REALM
 try:
     import BigWorld
@@ -18,11 +18,13 @@ except ImportError:
 
 IS_CLIENT = BigWorld.component == 'client'
 IS_EDITOR = BigWorld.component == 'editor'
+IS_VS_EDITOR = BigWorld.component == 'vs_editor'
 IS_BOT = BigWorld.component == 'bot'
 IS_CELLAPP = BigWorld.component == 'cell'
 IS_BASEAPP = BigWorld.component in ('base', 'service')
 IS_WEB = BigWorld.component == 'web'
-IS_DYNAPDATER = False
+IS_DYNUPDATER = False
+IS_CGF_DUMP = BigWorld.component == 'client_cgf_dump'
 DEFAULT_LANGUAGE = 'ru'
 AUTH_REALM = 'RU'
 IS_DEVELOPMENT = CURRENT_REALM == 'DEV'
@@ -155,8 +157,23 @@ class WOT_GAMEPLAY:
     ON = 1
 
 
-ARENA_GAMEPLAY_NAMES = ('ctf', 'domination', 'assault', 'nations', 'ctf2', 'domination2', 'assault2', 'fallout', 'fallout2', 'fallout3', 'fallout4', 'ctf30x30', 'domination30x30', 'sandbox', 'bootcamp', 'epic')
+ARENA_GAMEPLAY_NAMES = ('ctf', 'domination', 'assault', 'nations', 'ctf2', 'domination2', 'assault2', 'fallout', 'fallout2', 'fallout3', 'fallout4', 'ctf30x30', 'domination30x30', 'sandbox', 'bootcamp', 'epic', 'maps_training', 'rts', 'rts_1x1', 'rts_bootcamp')
+if IS_EDITOR:
+    ARENA_GAMEPLAY_READABLE_NAMES = ('Capture The Flag', 'Domination', 'Assault', 'Nations', 'Capture The Flag 2', 'Domination 2', 'Assault 2', 'Fallout Bomb', 'Fallout 2 Flag', 'Fallout 3', 'Fallout 4', 'Capture The Flag 30 vs 30', 'Domination 30 vs 30', 'Sandbox', 'Bootcamp', 'Epic', 'Maps Training', 'RTS', 'RTS 1 vs 1', 'RTS Boot Camp')
 ARENA_GAMEPLAY_IDS = dict(((value, index) for index, value in enumerate(ARENA_GAMEPLAY_NAMES)))
+ARENA_GAMEPLAY_MASK_DEFAULT = 1048575
+VALID_TRAINING_ARENA_GAMEPLAY_IDS = frozenset((ARENA_GAMEPLAY_IDS[gameplayName] for gameplayName in ('ctf', 'domination', 'assault', 'nations', 'ctf2', 'domination2', 'assault2', 'epic', 'sandbox', 'bootcamp', 'ctf30x30', 'domination30x30', 'rts', 'rts_1x1', 'rts_bootcamp')))
+
+class HANGAR_VISIBILITY_TAGS:
+    LAYERS = ('1', '2', '3', '4', '5', '6', '7')
+    FIRST_BIT_RANKED = len(LAYERS)
+    RANKED_TAGS = ('R_ON', 'R_GAP', 'R_OFF')
+    FIRST_BIT_REGIONS = 16
+    REGIONS = ('NA', 'ASIA', 'EU', 'RU')
+    IDS = dict(((value, index) for index, value in chain(enumerate(LAYERS), enumerate(RANKED_TAGS, FIRST_BIT_RANKED), enumerate(REGIONS, FIRST_BIT_REGIONS))))
+    NAMES = dict(((index, value) for index, value in chain(enumerate(LAYERS), enumerate(RANKED_TAGS, FIRST_BIT_RANKED), enumerate(REGIONS, FIRST_BIT_REGIONS))))
+    ALL_BITS_DEFAULT = (1 << len(LAYERS)) - 1 | sum((1 << key for key in NAMES.iterkeys()))
+
 
 class ARENA_GUI_TYPE:
     UNKNOWN = 0
@@ -181,6 +198,9 @@ class ARENA_GUI_TYPE:
     BATTLE_ROYALE = 23
     MAPBOX = 24
     MAPS_TRAINING = 25
+    RTS = 26
+    RTS_TRAINING = 27
+    RTS_BOOTCAMP = 28
     RANGE = (UNKNOWN,
      RANDOM,
      TRAINING,
@@ -202,11 +222,15 @@ class ARENA_GUI_TYPE:
      EPIC_TRAINING,
      BATTLE_ROYALE,
      MAPBOX,
-     MAPS_TRAINING)
+     MAPS_TRAINING,
+     RTS,
+     RTS_TRAINING,
+     RTS_BOOTCAMP)
     RANDOM_RANGE = (RANDOM, EPIC_RANDOM)
     SANDBOX_RANGE = (SANDBOX, RATED_SANDBOX)
     FALLOUT_RANGE = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
     EPIC_RANGE = (EPIC_BATTLE, EPIC_TRAINING)
+    STRONGHOLD_RANGE = (SORTIE_2, FORT_BATTLE_2)
 
 
 class ARENA_GUI_TYPE_LABEL:
@@ -268,6 +292,9 @@ class ARENA_BONUS_TYPE:
     WEEKEND_BRAWL = 36
     MAPBOX = 37
     MAPS_TRAINING = 38
+    RTS = 39
+    RTS_1x1 = 40
+    RTS_BOOTCAMP = 41
     RANGE = (UNKNOWN,
      REGULAR,
      TRAINING,
@@ -301,7 +328,10 @@ class ARENA_BONUS_TYPE:
      BATTLE_ROYALE_TRN_SQUAD,
      MAPBOX,
      WEEKEND_BRAWL,
-     MAPS_TRAINING)
+     MAPS_TRAINING,
+     RTS,
+     RTS_1x1,
+     RTS_BOOTCAMP)
     RANDOM_RANGE = (REGULAR, EPIC_RANDOM)
     SANDBOX_RANGE = (RATED_SANDBOX, SANDBOX)
     FALLOUT_RANGE = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
@@ -315,6 +345,8 @@ class ARENA_BONUS_TYPE:
      BATTLE_ROYALE_TRN_SQUAD)
     BATTLE_ROYALE_REGULAR_RANGE = (BATTLE_ROYALE_SOLO, BATTLE_ROYALE_SQUAD)
     BATTLE_ROYALE_SQUAD_RANGE = (BATTLE_ROYALE_SQUAD, BATTLE_ROYALE_TRN_SQUAD)
+    RTS_RANGE = (RTS, RTS_1x1, RTS_BOOTCAMP)
+    RTS_BATTLES = (RTS, RTS_1x1)
     EXTERNAL_RANGE = (SORTIE_2,
      FORT_BATTLE_2,
      GLOBAL_MAP,
@@ -329,7 +361,7 @@ ARENA_BONUS_TYPE_IDS = dict([ (v, k) for k, v in ARENA_BONUS_TYPE_NAMES.iteritem
 
 class ARENA_BONUS_MASK:
     TYPE_BITS = dict(((name, 2 ** id) for id, name in enumerate(ARENA_BONUS_TYPE.RANGE[1:])))
-    ANY = 8589934591L
+    ANY = sum((1 << index for index in xrange(len(TYPE_BITS))))
 
     @staticmethod
     def mask(*args):
@@ -338,6 +370,10 @@ class ARENA_BONUS_MASK:
     @staticmethod
     def exclude(*args):
         return reduce(lambda v, x: v & ~x, [ ARENA_BONUS_MASK.TYPE_BITS[arg] for arg in args ], ARENA_BONUS_MASK.ANY)
+
+    @classmethod
+    def reInit(cls):
+        cls.TYPE_BITS = dict(((name, 2 ** id) for id, name in enumerate(ARENA_BONUS_TYPE.RANGE[1:])))
 
 
 class ARENA_PERIOD:
@@ -475,6 +511,8 @@ class PREBATTLE_TYPE:
     BATTLE_ROYALE_TOURNAMENT = 18
     MAPBOX = 19
     MAPS_TRAINING = 20
+    RTS = 21
+    RTS_TRAINING = 22
     RANGE = (SQUAD,
      TRAINING,
      COMPANY,
@@ -491,11 +529,14 @@ class PREBATTLE_TYPE:
      BATTLE_ROYALE,
      BATTLE_ROYALE_TOURNAMENT,
      MAPBOX,
-     MAPS_TRAINING)
+     MAPS_TRAINING,
+     RTS,
+     RTS_TRAINING)
     LEGACY_PREBATTLES = (TRAINING,
      TOURNAMENT,
      CLAN,
-     EPIC_TRAINING)
+     EPIC_TRAINING,
+     RTS_TRAINING)
     SQUAD_PREBATTLES = (SQUAD,
      FALLOUT,
      EVENT,
@@ -522,7 +563,7 @@ class PREBATTLE_TYPE:
      BATTLE_ROYALE_TOURNAMENT,
      MAPBOX)
     CREATE_FROM_WEB = (UNIT, SQUAD, STRONGHOLD)
-    TRAININGS = (TRAINING, EPIC_TRAINING)
+    TRAININGS = (TRAINING, EPIC_TRAINING, RTS_TRAINING)
     EXTERNAL_PREBATTLES = (STRONGHOLD, TOURNAMENT)
     CREATE_EX_FROM_SERVER = (SQUAD,
      CLAN,
@@ -537,6 +578,7 @@ class PREBATTLE_TYPE:
      EVENT,
      MAPBOX)
     EPIC_PREBATTLES = (EPIC, EPIC_TRAINING)
+    RTS_PREBATTLES = (RTS, RTS_TRAINING)
     REMOVED = (COMPANY, CLUBS)
 
 
@@ -788,6 +830,7 @@ class PREM_BONUS_TYPES:
     CREDITS = 0
     XP = 1
     TMEN_XP = 2
+    DYN_CURRENCIES = 3
 
 
 class PremiumConfigs(object):
@@ -811,13 +854,13 @@ ACTIVE_TEST_CONFIRMATION_CONFIG = 'active_test_confirmation_config'
 MISC_GUI_SETTINGS = 'misc_gui_settings'
 META_GAME_SETTINGS = 'meta_game_settings'
 MAPS_TRAINING_ENABLED_KEY = 'isMapsTrainingEnabled'
+OFFERS_ENABLED_KEY = 'isOffersEnabled'
 
 class Configs(enum.Enum):
     BATTLE_ROYALE_CONFIG = 'battle_royale_config'
     EPIC_CONFIG = 'epic_config'
     MAPBOX_CONFIG = 'mapbox_config'
     GIFTS_CONFIG = 'gifts_config'
-    LUNAR_NY_EVENT_CONFIG = 'lunar_ny_event_config'
 
 
 class RESTRICTION_TYPE:
@@ -848,6 +891,7 @@ class SPA_ATTRS:
     LOGGING_ENABLED = '/wot/game/logging_enabled/'
     BOOTCAMP_VIDEO_DISABLED = '/wot/game/bc_video_disabled/'
     STEAM_ALLOW = '/wot/steam/allow/'
+    RSS = '/wot/game/service/rss/'
 
     @staticmethod
     def toClientAttrs():
@@ -908,6 +952,12 @@ class CLAN_ROLES(object):
             flag = memberFlags & 1 << i
             if flag:
                 return cls.FLAGS_TO_ROLES[flag]
+
+    @classmethod
+    def getFlagByRole(cls, memberRole):
+        for flag, role in cls.FLAGS_TO_ROLES.iteritems():
+            if role == memberRole:
+                return flag
 
 
 class AIMING_MODE:
@@ -1065,8 +1115,15 @@ class ATTACK_REASON(object):
     MINEFIELD_EQ = 'minefield_eq'
     SPAWNED_BOT_EXPLOSION = 'spawned_bot_explosion'
     BERSERKER = 'berserker_eq'
-    SPAWNED_BOT_RAM = 'spawned_bot_ram'
     SMOKE = 'smoke'
+    CORRODING_SHOT = 'corrodingShot'
+    ADAPTATION_HEALTH_RESTORE = 'AdaptationHealthRestore'
+    THUNDER_STRIKE = 'thunderStrike'
+    FIRE_CIRCLE = 'fireCircle'
+    CLING_BRANDER = 'clingBrander'
+    CLING_BRANDER_RAM = 'ram_cling_brander'
+    BRANDER_RAM = 'ram_brander'
+    FORT_ARTILLERY_EQ = 'fort_artillery_eq'
     NONE = 'none'
 
     @classmethod
@@ -1093,9 +1150,17 @@ ATTACK_REASONS = (ATTACK_REASON.SHOT,
  ATTACK_REASON.NONE,
  ATTACK_REASON.SPAWNED_BOT_EXPLOSION,
  ATTACK_REASON.BERSERKER,
- ATTACK_REASON.SPAWNED_BOT_RAM,
- ATTACK_REASON.SMOKE)
+ ATTACK_REASON.SMOKE,
+ ATTACK_REASON.CORRODING_SHOT,
+ ATTACK_REASON.ADAPTATION_HEALTH_RESTORE,
+ ATTACK_REASON.THUNDER_STRIKE,
+ ATTACK_REASON.FIRE_CIRCLE,
+ ATTACK_REASON.CLING_BRANDER,
+ ATTACK_REASON.CLING_BRANDER_RAM,
+ ATTACK_REASON.BRANDER_RAM,
+ ATTACK_REASON.FORT_ARTILLERY_EQ)
 ATTACK_REASON_INDICES = dict(((value, index) for index, value in enumerate(ATTACK_REASONS)))
+BOT_RAM_REASONS = (ATTACK_REASON.BRANDER_RAM, ATTACK_REASON.CLING_BRANDER_RAM)
 DEATH_REASON_ALIVE = -1
 
 class REPAIR_TYPE:
@@ -1144,11 +1209,14 @@ class VEHICLE_HIT_FLAGS:
     ATTACK_IS_EXTERNAL_EXPLOSION = 2097152
     STUN_STARTED = 4194304
     ATTACK_IS_RICOCHET_PROJECTILE = 8388608
+    ATTACK_IS_COMPRESSION = 16777216
     IS_ANY_DAMAGE_MASK = MATERIAL_WITH_POSITIVE_DF_PIERCED_BY_PROJECTILE | MATERIAL_WITH_POSITIVE_DF_PIERCED_BY_EXPLOSION | DEVICE_PIERCED_BY_PROJECTILE | DEVICE_PIERCED_BY_EXPLOSION
     IS_ANY_PIERCING_MASK = IS_ANY_DAMAGE_MASK | ARMOR_WITH_ZERO_DF_PIERCED_BY_PROJECTILE | ARMOR_WITH_ZERO_DF_PIERCED_BY_EXPLOSION
 
 
-DAMAGE_INFO_CODES = ('DEVICE_CRITICAL', 'DEVICE_DESTROYED', 'TANKMAN_HIT', 'FIRE', 'DEVICE_CRITICAL_AT_SHOT', 'DEVICE_DESTROYED_AT_SHOT', 'DEVICE_CRITICAL_AT_RAMMING', 'DEVICE_DESTROYED_AT_RAMMING', 'DEVICE_STARTED_FIRE_AT_SHOT', 'DEVICE_STARTED_FIRE_AT_RAMMING', 'TANKMAN_HIT_AT_SHOT', 'DEATH_FROM_DEVICE_EXPLOSION_AT_SHOT', 'DEVICE_CRITICAL_AT_FIRE', 'DEVICE_DESTROYED_AT_FIRE', 'DEVICE_CRITICAL_AT_WORLD_COLLISION', 'DEVICE_DESTROYED_AT_WORLD_COLLISION', 'DEVICE_CRITICAL_AT_DROWNING', 'DEVICE_DESTROYED_AT_DROWNING', 'DEVICE_REPAIRED_TO_CRITICAL', 'DEVICE_REPAIRED', 'TANKMAN_HIT_AT_WORLD_COLLISION', 'TANKMAN_HIT_AT_DROWNING', 'TANKMAN_RESTORED', 'DEATH_FROM_DEVICE_EXPLOSION_AT_FIRE', 'ENGINE_CRITICAL_AT_UNLIMITED_RPM', 'ENGINE_DESTROYED_AT_UNLIMITED_RPM', 'ENGINE_CRITICAL_AT_BURNOUT', 'ENGINE_DESTROYED_AT_BURNOUT', 'DEATH_FROM_SHOT', 'DEATH_FROM_INACTIVE_CREW_AT_SHOT', 'DEATH_FROM_RAMMING', 'DEATH_FROM_MINE_EXPLOSION', 'DEATH_FROM_FIRE', 'DEATH_FROM_INACTIVE_CREW', 'DEATH_FROM_DROWNING', 'DEATH_FROM_WORLD_COLLISION', 'DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION', 'DEATH_FROM_DEATH_ZONE', 'DEATH_FROM_GAS_ATTACK', 'DEATH_FROM_OVERTURN', 'DEATH_FROM_ARTILLERY_PROTECTION', 'DEATH_FROM_ARTILLERY_SECTOR', 'DEATH_FROM_BOMBER', 'FIRE_STOPPED', 'DEATH_FROM_RECOVERY', 'DEATH_FROM_KAMIKAZE')
+FIRE_NOTIFICATION_CODES = ('DEVICE_STARTED_FIRE_AT_SHOT', 'DEVICE_STARTED_FIRE_AT_RAMMING', 'FIRE_STOPPED')
+FIRE_NOTIFICATION_INDICES = dict(((x[1], x[0]) for x in enumerate(FIRE_NOTIFICATION_CODES)))
+DAMAGE_INFO_CODES = ('DEVICE_CRITICAL', 'DEVICE_DESTROYED', 'TANKMAN_HIT', 'DEVICE_CRITICAL_AT_SHOT', 'DEVICE_DESTROYED_AT_SHOT', 'DEVICE_CRITICAL_AT_RAMMING', 'DEVICE_DESTROYED_AT_RAMMING', 'TANKMAN_HIT_AT_SHOT', 'DEATH_FROM_DEVICE_EXPLOSION_AT_SHOT', 'DEVICE_CRITICAL_AT_FIRE', 'DEVICE_DESTROYED_AT_FIRE', 'DEVICE_CRITICAL_AT_WORLD_COLLISION', 'DEVICE_DESTROYED_AT_WORLD_COLLISION', 'DEVICE_CRITICAL_AT_DROWNING', 'DEVICE_DESTROYED_AT_DROWNING', 'DEVICE_REPAIRED_TO_CRITICAL', 'DEVICE_REPAIRED', 'TANKMAN_HIT_AT_WORLD_COLLISION', 'TANKMAN_HIT_AT_DROWNING', 'TANKMAN_RESTORED', 'DEATH_FROM_DEVICE_EXPLOSION_AT_FIRE', 'ENGINE_CRITICAL_AT_UNLIMITED_RPM', 'ENGINE_DESTROYED_AT_UNLIMITED_RPM', 'ENGINE_CRITICAL_AT_BURNOUT', 'ENGINE_DESTROYED_AT_BURNOUT', 'DEATH_FROM_SHOT', 'DEATH_FROM_INACTIVE_CREW_AT_SHOT', 'DEATH_FROM_RAMMING', 'DEATH_FROM_MINE_EXPLOSION', 'DEATH_FROM_FIRE', 'DEATH_FROM_INACTIVE_CREW', 'DEATH_FROM_DROWNING', 'DEATH_FROM_WORLD_COLLISION', 'DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION', 'DEATH_FROM_DEATH_ZONE', 'DEATH_FROM_GAS_ATTACK', 'DEATH_FROM_OVERTURN', 'DEATH_FROM_ARTILLERY_PROTECTION', 'DEATH_FROM_ARTILLERY_SECTOR', 'DEATH_FROM_BOMBER', 'DEATH_FROM_RECOVERY', 'DEATH_FROM_KAMIKAZE', 'DEATH_FROM_FIRE_CIRCLE', 'DEATH_FROM_THUNDER_STRIKE', 'DEATH_FROM_CORRODING_SHOT', 'DEATH_FROM_CLING_BRANDER')
 
 class IGR_TYPE:
     NONE = 0
@@ -1323,6 +1391,9 @@ class QUEUE_TYPE:
     BATTLE_ROYALE_TOURNAMENT = 22
     MAPBOX = 23
     MAPS_TRAINING = 24
+    RTS = 25
+    RTS_1x1 = 26
+    RTS_BOOTCAMP = 27
     FALLOUT = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
     ALL = (RANDOMS,
      COMPANIES,
@@ -1344,7 +1415,10 @@ class QUEUE_TYPE:
      BATTLE_ROYALE,
      BATTLE_ROYALE_TOURNAMENT,
      MAPBOX,
-     MAPS_TRAINING)
+     MAPS_TRAINING,
+     RTS,
+     RTS_1x1,
+     RTS_BOOTCAMP)
     REMOVED = (COMPANIES,)
 
 
@@ -1538,7 +1612,7 @@ class REQUEST_COOLDOWN:
     SEND_INVITATION_COOLDOWN = 1.0
     RUN_QUEST = 1.0
     PAWN_FREE_AWARD_LIST = 1.0
-    LOOTBOX = 0.5
+    LOOTBOX = 1.0
     BADGES = 2.0
     CREW_SKINS = 0.3
     BPF_COMMAND = 1.0
@@ -1557,19 +1631,6 @@ class REQUEST_COOLDOWN:
     ANONYMIZER = 1.0
     UPDATE_IN_BATTLE_PLAYER_RELATIONS = 1.0
     FLUSH_RELATIONS = 1.0
-    NEW_YEAR_SLOT_FILL = 0.4
-    NEW_YEAR_CRAFT = 0.5
-    NEW_YEAR_CRAFT_OLD_TOYS = 0.5
-    NEW_YEAR_BREAK_TOYS = 1.0
-    NEW_YEAR_SEE_INVENTORY_TOYS = 0.5
-    NEW_YEAR_SEE_COLLECTION_TOYS = 0.5
-    NEW_YEAR_SELECT_DISCOUNT = 1.0
-    NEW_YEAR_VIEW_ALBUM = 0.5
-    NEW_YEAR_CONVERT_FILLERS = 1.0
-    NEW_YEAR_FILL_OLD_COLLECTION = 0.5
-    NEW_YEAR_SET_NY_VEHICLE = 0.5
-    NEW_YEAR_SIMPLIFY_CELEBRITY_QUEST = 1.0
-    NEW_YEAR_CHOOSE_SLOT_BONUS = 0.5
     EQUIP_ENHANCEMENT = 1.0
     DISMOUNT_ENHANCEMENT = 1.0
     BUY_BATTLE_PASS = 1.0
@@ -1579,6 +1640,7 @@ class REQUEST_COOLDOWN:
     CUSTOMIZATION_NOVELTY = 0.5
     REPAIR_VEHICLE = 0.5
     RECEIVE_OFFER_GIFT = 1.0
+    RECEIVE_OFFER_GIFT_MULTIPLE = 1.0
     SET_OFFER_BANNER_SEEN = 0.3
     EQUIP_OPTDEV = 1.0
     CHANGE_EVENT_ENQUEUE_DATA = 1.0
@@ -1589,9 +1651,7 @@ class REQUEST_COOLDOWN:
     POST_PROGRESSION_BASE = 1.0
     POST_PROGRESSION_CELL = 0.5
     SYNC_GIFTS = 0.5
-    GIFTS_HISTORY_PAGE = 1.0
-    GIFTS_HISTORY_LOAD = 1.0
-    LUNAR_NEW_YEAR = 0.4
+    WATCH_REPLAY = 5.0
 
 
 IS_SHOW_INGAME_HELP_FIRST_TIME = False
@@ -1645,6 +1705,11 @@ class OVERTURN_CONDITION:
     ONBOARD_COSINE = cos(radians(80))
     OVERTURN_COSINE = cos(radians(120))
     HULL_PRESSURE = 0.2
+
+
+class ARTILLERY_STRIKE_ZONE_STATUS:
+    OUTSIDE_ZONE = 0
+    INSIDE_ZONE = 1
 
 
 TREE_TAG = 'tree'
@@ -1806,6 +1871,8 @@ class USER_SERVER_SETTINGS:
     LINKEDSET_QUESTS = 89
     QUESTS_PROGRESS = 90
     SESSION_STATS = 96
+    CONTOUR = 106
+    DRAGON_BOAT = 107
     _ALL = (HIDE_MARKS_ON_GUN,
      EULA_VERSION,
      GAME_EXTENDED,
@@ -1813,7 +1880,9 @@ class USER_SERVER_SETTINGS:
      SESSION_STATS,
      DOG_TAGS,
      GAME_EXTENDED_2,
-     BATTLE_HUD)
+     BATTLE_HUD,
+     CONTOUR,
+     DRAGON_BOAT)
 
     @classmethod
     def isBattleInvitesForbidden(cls, settings):
@@ -1910,10 +1979,6 @@ INT_USER_SETTINGS_KEYS = {USER_SERVER_SETTINGS.VERSION: 'Settings version',
  USER_SERVER_SETTINGS.LINKEDSET_QUESTS: 'linkedset quests show reward info',
  USER_SERVER_SETTINGS.QUESTS_PROGRESS: 'feedback quests progress',
  91: 'Loot box last viewed count',
- 92: 'Oriental loot box last viewed count',
- 93: 'New year loot box last viewed count',
- 94: 'Fairytale loot box last viewed count',
- 95: 'Christmas loot box last viewed count',
  USER_SERVER_SETTINGS.SESSION_STATS: 'sessiong statistics settings',
  97: 'BattlePass carouse filter 1',
  98: 'Battle Pass Storage',
@@ -1923,8 +1988,8 @@ INT_USER_SETTINGS_KEYS = {USER_SERVER_SETTINGS.VERSION: 'Settings version',
  USER_SERVER_SETTINGS.GAME_EXTENDED_2: 'Game extended section settings 2',
  103: 'Mapbox carousel filter 1',
  104: 'Mapbox carousel filter 2',
- 105: 'New Year settings storage',
- 106: 'Common loot box last viewed count'}
+ USER_SERVER_SETTINGS.CONTOUR: 'Contour settings',
+ USER_SERVER_SETTINGS.DRAGON_BOAT: 'dragon boat settings'}
 
 class WG_GAMES:
     TANKS = 'wot'
@@ -2223,10 +2288,9 @@ class CONTENT_TYPE:
 
 class DEATH_ZONES:
     STATIC = 0
-    GAS_ATTACK = 1
-    SECTOR_BOMBING = 2
-    SECTOR_AIRSTRIKE = 3
-    SECTOR_AIRSUPPORT = 4
+    SECTOR_BOMBING = 1
+    SECTOR_AIRSTRIKE = 2
+    SECTOR_AIRSUPPORT = 3
 
 
 class FALLOUT_ARENA_TYPE:
@@ -2285,6 +2349,32 @@ SHELL_TYPES_INDICES = dict(((value, index) for index, value in enumerate(SHELL_T
 class SHELL_MECHANICS_TYPE:
     LEGACY = 'LEGACY'
     MODERN = 'MODERN'
+
+
+class BATTLE_LOG_SHELL_TYPES(enum.IntEnum):
+    HOLLOW_CHARGE = 0
+    ARMOR_PIERCING = 1
+    ARMOR_PIERCING_HE = 2
+    ARMOR_PIERCING_CR = 3
+    SMOKE = 4
+    HE_MODERN = 5
+    HE_LEGACY_STUN = 6
+    HE_LEGACY_NO_STUN = 7
+
+    @classmethod
+    def getType(cls, shellDescr):
+        if shellDescr.kind != SHELL_TYPES.HIGH_EXPLOSIVE:
+            return cls[shellDescr.kind]
+        elif shellDescr.type.mechanics == SHELL_MECHANICS_TYPE.MODERN:
+            return cls.HE_MODERN
+        elif shellDescr.hasStun:
+            return cls.HE_LEGACY_STUN
+        else:
+            return cls.HE_LEGACY_NO_STUN
+
+    @classmethod
+    def getIndex(cls, shellDescr):
+        return int(cls.getType(shellDescr))
 
 
 class HIT_INDIRECTION:
@@ -2366,6 +2456,11 @@ class TARGET_LOST_FLAGS:
     KILLED_BY_ME = 2
     KILLED_BY_OTHERS = 4
     UNREACHABLE = 8
+
+
+class REPLAY_ONLY_ENTITIES:
+    OBSERVER_AVATAR = 1
+    OBSERVER_VEHICLE = 2
 
 
 GIFT_TANKMAN_TOKEN_NAME = 'WOTD-95479_gift_tankman'
@@ -2518,6 +2613,7 @@ class LOOT_TYPE(object):
 class AirdropType(object):
     LOOT = 1
     BOT = 2
+    BOT_CLING = 3
 
 
 class LootAction(object):
@@ -2649,6 +2745,7 @@ class ClansConfig(object):
     NOTIFICATION_ENABLED = 'isClanNotificationEnabled'
     QUEST_URL = 'clanQuestUrl'
     CRAFT_MACHINE_URL = 'craftMachineUrl'
+    NOTIFICATION_START_TIME = 'notificationStartTime'
 
 
 class EnhancementsConfig(object):

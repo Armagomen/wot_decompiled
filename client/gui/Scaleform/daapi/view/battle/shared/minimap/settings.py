@@ -31,6 +31,7 @@ class ENTRY_SYMBOL_NAME(object):
     TUTORIAL_TARGET = 'TutorialTargetEntry'
     BOOTCAMP_TARGET = 'BootcampTargetEntry'
     ARTILLERY_ENTRY = 'ArtilleryEntry'
+    ARTILLERY_YELLOW_ENTRY = 'ArtilleryYellowEntry'
     BOMBER_ENTRY = 'BomberEntry'
     RECON_ENTRY = 'ReconEntry'
     SMOKE_ENTRY = 'SmokeEntry'
@@ -112,6 +113,7 @@ class VIEW_RANGE_CIRCLES_AS3_DESCR(object):
 
 
 EQ_MARKER_TO_SYMBOL = {'artillery': ENTRY_SYMBOL_NAME.ARTILLERY_ENTRY,
+ 'artillery_yellow': ENTRY_SYMBOL_NAME.ARTILLERY_YELLOW_ENTRY,
  'bomber': ENTRY_SYMBOL_NAME.BOMBER_ENTRY,
  'recon': ENTRY_SYMBOL_NAME.RECON_ENTRY,
  'smoke': ENTRY_SYMBOL_NAME.SMOKE_ENTRY}

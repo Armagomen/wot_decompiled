@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/settings/views.py
 from gui.Scaleform.framework import COMMON_VIEW_ALIAS
-from gui.Scaleform.genConsts.PERSONAL_MISSIONS_ALIASES import PERSONAL_MISSIONS_ALIASES
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
+from gui.Scaleform.genConsts.PERSONAL_MISSIONS_ALIASES import PERSONAL_MISSIONS_ALIASES
 
 class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     GOLD_FISH_WINDOW = 'goldFishWindow'
@@ -20,10 +20,11 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     OVERLAY_WEB_STORE = 'overlayWebStore'
     BROWSER_LOBBY_TOP_SUB = 'overlayBrowserView'
     BROWSER_OVERLAY = 'overlayBrowserFull'
+    MAP_BOX_INFO_OVERLAY = 'mapboxInfoOverlay'
     BATTLE_PASS_BROWSER_VIEW = 'battlePassBrowserView'
     MANUAL_BROWSER_VIEW = 'ManualBrowserView'
-    OVERLAY_PREM_CONTENT_VIEW = 'overlayPremContentView'
     WEB_VIEW_TRANSPARENT = 'webViewTransparent'
+    BLUEPRINTS_EXCHANGE_VIEW = 'blueprintsExchangeView'
     LOBBY_PROFILE = 'profile'
     LOBBY_MISSIONS = 'missions'
     LOBBY_MISSION_DETAILS = 'missionDetails'
@@ -99,13 +100,13 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     DEMONSTRATOR_WINDOW = 'demonstratorWindow'
     VEHICLE_PREVIEW = 'vehiclePreviewPage'
     STYLE_PREVIEW = 'vehicleStylePreview'
-    PROGRESSION_STYLES_STYLE_PREVIEW = 'progressionStylesStylePreview'
-    BLUEPRINTS_EXCHANGE_STYLE_PREVIEW = 'blueprintsExchangeVehicleStylePreivew'
+    STYLE_PROGRESSION_PREVIEW = 'vehicleStyleProgressionPreview'
+    STYLE_BUYING_PREVIEW = 'vehicleStyleBuyingPreview'
     IMAGE_VIEW = 'imageView'
     HERO_VEHICLE_PREVIEW = 'heroVehiclePreviewPage'
     TRADE_IN_VEHICLE_PREVIEW = 'tradeInVehiclePreview'
-    PERSONAL_TRADE_IN_VEHICLE_PREVIEW = 'personalTradeInVehiclePreview'
     WOT_PLUS_VEHICLE_PREVIEW = 'wotPlusVehiclePreview'
+    BATTLE_PASS_VEHICLE_PREVIEW = 'battlePassVehiclePreview'
     MARATHON_VEHICLE_PREVIEW = 'marathonVehiclePreview'
     CONFIGURABLE_VEHICLE_PREVIEW = 'configurableVehiclePreview'
     OFFER_GIFT_VEHICLE_PREVIEW = 'offerGiftVehiclePreview'
@@ -130,9 +131,6 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     BATTLE_TYPE_SELECT_POPOVER = 'battleTypeSelectPopover'
     SQUAD_TYPE_SELECT_POPOVER = 'squadTypeSelectPopover'
     TRADEIN_POPOVER = 'TradeInPopover'
-    NY_SELECT_VEHICLE_POPOVER = 'NYSelectVehiclePopover'
-    NY_SELECT_VEHICLE_FOR_DISCOUNT_POPOVER = 'NYSelectVehicleForDiscountPopover'
-    NY_BROWSER_VIEW = 'NyBrowserView'
     ACOUSTIC_POPOVER = 'acousticPopover'
     DISMISS_TANKMAN_DIALOG = 'dismissTankmanDialog'
     RESTORE_TANKMAN_DIALOG = 'restoreTankmanDialog'
@@ -193,6 +191,7 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     CLAN_NOTIFICATION_WINDOW = 'clanNotificationWindow'
     EPIC_RANDOM_PAGE = 'epicRandomPage'
     EPIC_BATTLE_PAGE = 'epicBattlePage'
+    STRONGHOLD_BATTLE_PAGE = 'strongholdBattlePage'
     EVENT_BATTLE_PAGE = 'classicBattlePage'
     RANKED_BATTLE_PAGE = 'rankedBattlePage'
     BATTLE_ROYALE_PAGE = 'battleRoyalePage'
@@ -240,7 +239,6 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     FEEDBACK_DAMAGE_INDICATOR = 'feedbackDamageIndicator'
     FEEDBACK_BATTLE_BORDER_MAP = 'feedbackBattleBorderMap'
     FEEDBACK_QUESTS_PROGRESS = 'feedbackQuestsProgress'
-    LOOT_BOX_SHOP_OVERLAY = 'overlayBrowserLootBoxShop'
     LOADINGS = (BATTLE_LOADING, TUTORIAL_LOADING)
     BATTLE_PAGES = (CLASSIC_BATTLE_PAGE,
      TUTORIAL_BATTLE_PAGE,

@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/repositories.py
 from debug_utils import LOG_ERROR, LOG_DEBUG
+from gui.shared.system_factory import registerBattleControllerRepo
+from constants import ARENA_GUI_TYPE
 from gui.battle_control.arena_info.interfaces import IArenaController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID, REUSABLE_BATTLE_CTRL_IDS, getBattleCtrlName
-from gui.battle_control.controllers import arena_border_ctrl, arena_load_ctrl, battle_field_ctrl, avatar_stats_ctrl, bootcamp_ctrl, chat_cmd_ctrl, consumables, debug_ctrl, drr_scale_ctrl, dyn_squad_functional, feedback_adaptor, game_messages_ctrl, hit_direction_ctrl, interfaces, msgs_ctrl, period_ctrl, personal_efficiency_ctrl, respawn_ctrl, team_bases_ctrl, vehicle_state_ctrl, view_points_ctrl, epic_respawn_ctrl, progress_circle_ctrl, epic_maps_ctrl, default_maps_ctrl, epic_spectator_ctrl, epic_missions_ctrl, game_notification_ctrl, epic_team_bases_ctrl, anonymizer_fakes_ctrl, korea_msgs_ctrl, callout_ctrl, deathzones_ctrl, progression_ctrl, death_ctrl, dog_tags_ctrl, team_health_bar_ctrl, battle_notifier_ctrl, prebattle_setups_ctrl
-from gui.battle_control.controllers.appearance_cache_ctrls.battle_royale_appearance_cache_ctrl import BattleRoyaleAppearanceCacheController
+from gui.battle_control.controllers import arena_border_ctrl, arena_load_ctrl, battle_field_ctrl, avatar_stats_ctrl, bootcamp_ctrl, chat_cmd_ctrl, consumables, debug_ctrl, drr_scale_ctrl, dyn_squad_functional, feedback_adaptor, game_messages_ctrl, hit_direction_ctrl, interfaces, msgs_ctrl, period_ctrl, personal_efficiency_ctrl, respawn_ctrl, team_bases_ctrl, vehicle_state_ctrl, view_points_ctrl, epic_respawn_ctrl, progress_circle_ctrl, epic_maps_ctrl, default_maps_ctrl, epic_spectator_ctrl, epic_missions_ctrl, game_notification_ctrl, epic_team_bases_ctrl, anonymizer_fakes_ctrl, korea_msgs_ctrl, callout_ctrl, deathzones_ctrl, dog_tags_ctrl, team_health_bar_ctrl, battle_notifier_ctrl, prebattle_setups_ctrl
 from gui.battle_control.controllers.appearance_cache_ctrls.default_appearance_cache_ctrl import DefaultAppearanceCacheController
 from gui.battle_control.controllers.appearance_cache_ctrls.event_appearance_cache_ctrl import EventAppearanceCacheController
 from gui.battle_control.controllers.appearance_cache_ctrls.maps_training_appearance_cache_ctrl import MapsTrainingAppearanceCacheController
 from gui.battle_control.controllers.quest_progress import quest_progress_ctrl
+from gui.battle_control.controllers.sound_ctrls.stronghold_battle_sounds import StrongholdBattleSoundController
 from skeletons.gui.battle_session import ISharedControllersLocator, IDynamicControllersLocator
 from gui.battle_control.controllers import battle_hints_ctrl
-from gui.battle_control.controllers import radar_ctrl
-from gui.battle_control.controllers import spawn_ctrl
-from gui.battle_control.controllers import vehicles_count_ctrl
 
 class BattleSessionSetup(object):
     __slots__ = ('avatar', 'replayCtrl', 'gasAttackMgr', 'sessionProvider')
@@ -257,6 +256,10 @@ class DynamicControllersLocator(_ControllersLocator, IDynamicControllersLocator)
     def battleNotifier(self):
         return self._repository.getController(BATTLE_CTRL_ID.BATTLE_NOTIFIER)
 
+    @property
+    def soundPlayers(self):
+        return self._repository.getController(BATTLE_CTRL_ID.SOUND_PLAYERS_CTRL)
+
 
 class _EmptyRepository(interfaces.IBattleControllersRepository):
     __slots__ = ()
@@ -419,28 +422,6 @@ class EpicControllersRepository(_ControllersRepository):
         return repository
 
 
-class BattleRoyaleControllersRepository(_ControllersRepository):
-    __slots__ = ()
-
-    @classmethod
-    def create(cls, setup):
-        repository = super(BattleRoyaleControllersRepository, cls).create(setup)
-        repository.addArenaViewController(progression_ctrl.ProgressionController(), setup)
-        repository.addArenaViewController(battle_field_ctrl.BattleFieldCtrl(), setup)
-        repository.addViewController(spawn_ctrl.SpawnController(), setup)
-        repository.addViewController(debug_ctrl.DebugController(), setup)
-        repository.addArenaViewController(vehicles_count_ctrl.VehicleCountController(), setup)
-        repository.addViewController(default_maps_ctrl.DefaultMapsController(setup), setup)
-        repository.addArenaController(BattleRoyaleAppearanceCacheController(setup), setup)
-        repository.addArenaController(death_ctrl.DeathScreenController(), setup)
-        if setup.isReplayPlaying:
-            radarCtrl = radar_ctrl.RadarReplayController()
-        else:
-            radarCtrl = radar_ctrl.RadarController()
-        repository.addViewController(radarCtrl, setup)
-        return repository
-
-
 class EventControllerRepository(_ControllersRepositoryByBonuses):
     __slots__ = ()
 
@@ -473,3 +454,23 @@ class MapsTrainingControllerRepository(_ControllersRepositoryByBonuses):
         repository.addViewController(battle_hints_mt.createBattleHintsController(), setup)
         repository.addArenaController(MapsTrainingAppearanceCacheController(setup), setup)
         return repository
+
+
+class StrongholdControllerRepository(ClassicControllersRepository):
+
+    @classmethod
+    def create(cls, setup):
+        repository = super(StrongholdControllerRepository, cls).create(setup)
+        repository.addController(StrongholdBattleSoundController())
+        return repository
+
+
+for guiType in ARENA_GUI_TYPE.EPIC_RANGE:
+    registerBattleControllerRepo(guiType, EpicControllersRepository)
+
+for guiType in ARENA_GUI_TYPE.STRONGHOLD_RANGE:
+    registerBattleControllerRepo(guiType, StrongholdControllerRepository)
+
+registerBattleControllerRepo(ARENA_GUI_TYPE.EVENT_BATTLES, EventControllerRepository)
+registerBattleControllerRepo(ARENA_GUI_TYPE.MAPS_TRAINING, MapsTrainingControllerRepository)
+registerBattleControllerRepo(ARENA_GUI_TYPE.TUTORIAL, None)

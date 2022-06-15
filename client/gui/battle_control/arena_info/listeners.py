@@ -309,16 +309,20 @@ class PersonalInvitationsListener(_Listener):
         super(PersonalInvitationsListener, self).start(setup)
         self.__filter.setArenaUniqueID(self._visitor.getArenaUniqueID())
         invitesManager = self.prbInvites
-        invitesManager.onReceivedInviteListModified += self.__im_onReceivedInviteModified
-        invitesManager.onSentInviteListModified += self.__im_onSentInviteListModified
-        invitesManager.onInvitesListInited += self.__im_onInvitesListInited
+        if invitesManager is not None:
+            invitesManager.onReceivedInviteListModified += self.__im_onReceivedInviteModified
+            invitesManager.onSentInviteListModified += self.__im_onSentInviteListModified
+            invitesManager.onInvitesListInited += self.__im_onInvitesListInited
+        return
 
     def stop(self):
         invitesManager = self.prbInvites
-        invitesManager.onReceivedInviteListModified -= self.__im_onReceivedInviteModified
-        invitesManager.onSentInviteListModified -= self.__im_onSentInviteListModified
-        invitesManager.onInvitesListInited -= self.__im_onInvitesListInited
+        if invitesManager is not None:
+            invitesManager.onReceivedInviteListModified -= self.__im_onReceivedInviteModified
+            invitesManager.onSentInviteListModified -= self.__im_onSentInviteListModified
+            invitesManager.onInvitesListInited -= self.__im_onInvitesListInited
         super(PersonalInvitationsListener, self).stop()
+        return
 
     def addController(self, controller):
         result = super(PersonalInvitationsListener, self).addController(controller)

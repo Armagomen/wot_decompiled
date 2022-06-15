@@ -18,7 +18,7 @@ class EpicBattleServerPresenter(ServerListItemPresenter):
 
     def _buildTooltip(self, peripheryID):
         if not self.getTimeLeft():
-            tooltipStr = text_styles.expText(backport.text(R.strings.epic_battle.primeTime.endOfCycle(), server=self.getName()))
+            tooltipStr = text_styles.expText(self._getEndOfCycleTooltipText())
         else:
             timeStr = text_styles.neutral(time_formatters.getTillTimeByResource(self.getTimeLeft(), R.strings.menu.Time.timeValueShort))
             if self._getIsAvailable():
@@ -29,6 +29,9 @@ class EpicBattleServerPresenter(ServerListItemPresenter):
          'specialArgs': [],
          'specialAlias': None,
          'isSpecial': None}
+
+    def _getEndOfCycleTooltipText(self):
+        return backport.text(R.strings.epic_battle.primeTime.endOfCycle(), server=self.getName())
 
 
 class EpicBattlesPrimeTimeView(EpicPrimeTimeMeta):
@@ -91,7 +94,7 @@ class EpicBattlesPrimeTimeView(EpicPrimeTimeMeta):
             serverName = ''
         currentSeason = self._getController().getCurrentSeason()
         if currentSeason and not timeLeft:
-            return backport.text(R.strings.epic_battle.primeTime.endOfCycle(), server=serverName)
+            return ''
         if not timeLeft and not isAvailable and not currentSeason:
             nextSeason = self._getController().getNextSeason()
             if nextSeason:
@@ -111,7 +114,7 @@ class EpicBattlesPrimeTimeView(EpicPrimeTimeMeta):
         return backport.text(stringR, server=serverName, time=text_styles.neutral(timeLeftStr))
 
     def _getCycleFinishedOnThisServerText(self, cycleNumber, serverName):
-        return backport.text(R.strings.epic_battle.primeTime.status.cycleFinishedOnThisServer(), cycleNo=cycleNumber, server=serverName)
+        return backport.text(R.strings.epic_battle.primeTime.status.cycleFinishedOnThisServer(), server=serverName)
 
     def _onServerSettingsChange(self, diff):
         if diff.get(Configs.EPIC_CONFIG.value, {}).get('isEnabled') is False:
