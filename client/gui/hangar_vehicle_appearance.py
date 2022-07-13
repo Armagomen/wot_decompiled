@@ -200,6 +200,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         if self.shadowManager is not None and self.__vEntity.model is not None:
             self.shadowManager.unregisterCompoundModel(self.__vEntity.model)
         self.__clearModelAnimators()
+        self.__vehicleStickers = None
         ScriptGameObject.deactivate(self)
         ScriptGameObject.destroy(self)
         self.__vDesc = None
@@ -781,7 +782,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         insigniaRank = 0
         if self.__showMarksOnGun:
             insigniaRank = self._getThisVehicleDossierInsigniaRank()
-        self.__vehicleStickers = VehicleStickers.VehicleStickers(self.__vDesc, insigniaRank, outfit)
+        self.__vehicleStickers = VehicleStickers.VehicleStickers(self.__spaceId, self.__vDesc, insigniaRank, outfit)
         self.__vehicleStickers.alpha = self.__currentEmblemsAlpha
         self.__vehicleStickers.attach(self.__vEntity.model, self.__isVehicleDestroyed, False)
         self._requestClanDBIDForStickers(self.__onClanDBIDRetrieved)

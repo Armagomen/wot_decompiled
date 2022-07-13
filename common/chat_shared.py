@@ -1271,7 +1271,16 @@ SYS_MESSAGE_TYPE = Enumeration('systemMessageType', ['serverReboot',
  'wotPlusNoRentSelected',
  'giftSystemMessage',
  'telecomMergeResults',
- 'battlePassUseNonChapterPoints'])
+ 'battlePassUseNonChapterPoints',
+ 'epicSeasonEnd',
+ 'epicLevelUp',
+ 'recertificationResetUsed',
+ 'recertificationReset',
+ 'recertificationAvailability',
+ 'recertificationFinancial',
+ 'resourceWellOperation',
+ 'resourceWellReward',
+ 'resourceWellNoVehicles'])
 SYS_MESSAGE_IMPORTANCE = Enumeration('systemMessageImportance', ['normal', 'high'])
 SM_REQUEST_PERSONAL_MESSAGES_FLAG = 1
 SM_REQUEST_SYSTEM_MESSAGES_FLAG = 2

@@ -26,7 +26,7 @@ from personal_missions import PM_BRANCH
 from post_progression_common import FEATURE_BY_GROUP_ID, ROLESLOT_FEATURE
 from ranked_common import SwitchState
 from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION
-from shared_utils import makeTupleByDict, updateDict
+from shared_utils import makeTupleByDict, updateDict, first, findFirst
 from telecom_rentals_common import TELECOM_RENTALS_CONFIG
 from trade_in_common.constants_types import CONFIG_NAME as TRADE_IN_CONFIG_NAME
 if typing.TYPE_CHECKING:
@@ -175,7 +175,8 @@ class _ESportCurrentSeason(namedtuple('_ESportSeason', ('eSportSeasonID', 'eSpor
 class _Wgcg(namedtuple('_Wgcg', ('enabled',
  'url',
  'type',
- 'loginOnStart'))):
+ 'loginOnStart',
+ 'isJwtAuthorizationEnabled'))):
     __slots__ = ()
 
     def isEnabled(self):
@@ -190,9 +191,12 @@ class _Wgcg(namedtuple('_Wgcg', ('enabled',
     def getLoginOnStart(self):
         return self.loginOnStart
 
+    def isJwtEnabled(self):
+        return self.isJwtAuthorizationEnabled
+
     @classmethod
     def defaults(cls):
-        return cls(False, '', '', False)
+        return cls(False, '', '', False, False)
 
 
 class _Wgnp(namedtuple('_Wgnp', ('enabled', 'url', 'renameApiEnabled'))):
@@ -383,7 +387,8 @@ class _EpicMetaGameConfig(namedtuple('_EpicMetaGameConfig', ['maxCombatReserveLe
  'rewards',
  'defaultSlots',
  'slots',
- 'inBattleReservesByRank'])):
+ 'inBattleReservesByRank',
+ 'skipParamsValidation'])):
 
     def asDict(self):
         return self._asdict()
@@ -400,7 +405,8 @@ _EpicMetaGameConfig.__new__.__defaults__ = (0,
  {},
  {},
  {},
- {})
+ {},
+ 0)
 
 class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
  'validVehicleLevels',
@@ -667,6 +673,9 @@ class _crystalRewardsConfig(namedtuple('_crystalRewardsConfig', ('limits', 'rewa
 
         return results
 
+    def isCrystalEarnPossible(self, arenaType):
+        return findFirst(lambda item: item.arenaType == arenaType, self.getRewardInfoData(), None) is not None
+
 
 class _ReactiveCommunicationConfig(object):
     __slots__ = ('__isEnabled', '__url')
@@ -754,7 +763,7 @@ class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', ('isPos
 
     @classmethod
     def defaults(cls):
-        return cls(False, frozenset(), frozenset(), frozenset)
+        return cls(False, frozenset(), frozenset(), frozenset())
 
     @property
     def isEnabled(self):
@@ -850,30 +859,114 @@ class GiftSystemConfig(namedtuple('_GiftSystemConfig', ('events',))):
         data['events'] = {eID:makeTupleByDict(GiftEventConfig, eData) for eID, eData in data['events'].iteritems()}
 
 
-class _DragonBoatConfig(namedtuple('_DragonBoatConfig', ('isEnabled',
- 'isActive',
- 'endTime',
- 'dragonBoatUrl',
- 'dragonBoatTokens',
- 'dragonBoatQuests'))):
+class _WellRewardConfig(namedtuple('_WellRewardConfig', ('bonus',
+ 'limit',
+ 'isSerial',
+ 'sequence',
+ 'rewardId'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, isActive=False, endTime=0, dragonBoatUrl='', dragonBoatTokens={}, dragonBoatQuests={})
+        defaults = dict(bonus={}, limit=0, isSerial=False, sequence='', rewardId='')
         defaults.update(kwargs)
-        return super(_DragonBoatConfig, cls).__new__(cls, **defaults)
+        return super(_WellRewardConfig, cls).__new__(cls, **defaults)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
+class _ResourceConfig(namedtuple('_ResourceConfig', ('name', 'rate', 'limit'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(name='', rate=0, limit=0)
+        defaults.update(kwargs)
+        return super(_ResourceConfig, cls).__new__(cls, **defaults)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
+class ResourceWellConfig(namedtuple('_ResourceWellConfig', ('isEnabled',
+ 'season',
+ 'finishTime',
+ 'remindTime',
+ 'rewards',
+ 'points',
+ 'resources',
+ 'startTime'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(isEnabled=False, season=0, finishTime=0, remindTime=0, rewards={}, points=0, resources={}, startTime=0)
+        defaults.update(kwargs)
+        cls.__packResourceConfigs(defaults)
+        cls.__packRewardsConfigs(defaults)
+        return super(ResourceWellConfig, cls).__new__(cls, **defaults)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        self.__packResourceConfigs(dataToUpdate)
+        self.__packRewardsConfigs(dataToUpdate)
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def __packResourceConfigs(cls, data):
+        resources = {}
+        for resourceType, resourceConfig in data['resources'].iteritems():
+            resources[resourceType] = {name:_ResourceConfig(name=name, rate=resourceData.get('rate'), limit=resourceData.get('limit')) for name, resourceData in resourceConfig.iteritems()}
+
+        data['resources'] = resources
+
+    @classmethod
+    def __packRewardsConfigs(cls, data):
+        data['rewards'] = {rewardId:makeTupleByDict(_WellRewardConfig, reward) for rewardId, reward in data['rewards'].iteritems()}
+
+
+class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled',
+ 'events',
+ 'eventID',
+ 'peripheryIDs',
+ 'seasons',
+ 'primeTimes',
+ 'cycleTimes',
+ 'levels',
+ 'forbiddenClassTags',
+ 'forbiddenVehTypes',
+ 'battleModifiersDescr',
+ 'infoPageUrl'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(isEnabled=False, events={}, eventID='', peripheryIDs={}, seasons={}, primeTimes={}, cycleTimes=(), levels=(), forbiddenClassTags=set(), forbiddenVehTypes=set(), battleModifiersDescr=(), infoPageUrl='')
+        defaults.update(kwargs)
+        cls.__repackEventConfigs(defaults, defaults.viewkeys())
+        return super(FunRandomConfig, cls).__new__(cls, **defaults)
+
+    @classmethod
+    def defaults(cls):
+        return cls(False, {}, '', set(), {}, {}, (), (), set(), set(), (), '')
 
     def asDict(self):
         return self._asdict()
 
     def replace(self, data):
-        allowedFields = self._fields
+        allowedFields = set(self._fields)
         dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        self.__repackEventConfigs(dataToUpdate, allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
-    def defaults(cls):
-        return cls()
+    def __repackEventConfigs(cls, data, allowedFields):
+        eventData = first(data.get('events', {}).itervalues(), {})
+        data.update(((k, eventData[k]) for k in allowedFields & eventData.viewkeys()))
 
 
 class ServerSettings(object):
@@ -910,7 +1003,8 @@ class ServerSettings(object):
         self.__vehiclePostProgressionConfig = VehiclePostProgressionConfig()
         self.__eventBattlesConfig = _EventBattlesConfig()
         self.__giftSystemConfig = GiftSystemConfig()
-        self.__dragonBoatConfig = _DragonBoatConfig()
+        self.__resourceWellConfig = ResourceWellConfig()
+        self.__funRandomConfig = FunRandomConfig()
         self.set(serverSettings)
 
     def set(self, serverSettings):
@@ -1011,10 +1105,10 @@ class ServerSettings(object):
             self.__eventBattlesConfig = _EventBattlesConfig.defaults()
         if Configs.GIFTS_CONFIG.value in self.__serverSettings:
             self.__giftSystemConfig = makeTupleByDict(GiftSystemConfig, {'events': self.__serverSettings[Configs.GIFTS_CONFIG.value]})
-        if 'dragon_boat_config' in self.__serverSettings:
-            self.__dragonBoatConfig = makeTupleByDict(_DragonBoatConfig, self.__serverSettings['dragon_boat_config'])
-        else:
-            self.__dragonBoatConfig = _DragonBoatConfig.defaults()
+        if Configs.RESOURCE_WELL.value in self.__serverSettings:
+            self.__resourceWellConfig = makeTupleByDict(ResourceWellConfig, self.__serverSettings[Configs.RESOURCE_WELL.value])
+        if Configs.FUN_RANDOM_CONFIG.value in self.__serverSettings:
+            self.__funRandomConfig = makeTupleByDict(FunRandomConfig, self.__serverSettings[Configs.FUN_RANDOM_CONFIG.value])
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1089,10 +1183,12 @@ class ServerSettings(object):
             self.__updateGiftSystemConfig(serverSettingsDiff)
         if TRADE_IN_CONFIG_NAME in serverSettingsDiff:
             self.__serverSettings[TRADE_IN_CONFIG_NAME] = serverSettingsDiff[TRADE_IN_CONFIG_NAME]
+        if Configs.RESOURCE_WELL.value in serverSettingsDiff:
+            self.__updateResourceWellConfig(serverSettingsDiff)
+        if Configs.FUN_RANDOM_CONFIG.value in serverSettingsDiff:
+            self.__updateFunRandomConfig(serverSettingsDiff)
         self.__updateBlueprintsConvertSaleConfig(serverSettingsDiff)
         self.__updateReactiveCommunicationConfig(serverSettingsDiff)
-        if 'dragon_boat_config' in serverSettingsDiff:
-            self.__dragonBoatConfig = makeTupleByDict(_DragonBoatConfig, serverSettingsDiff['dragon_boat_config'])
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1202,12 +1298,16 @@ class ServerSettings(object):
         return self.__eventBattlesConfig
 
     @property
-    def dragonBoatConfig(self):
-        return self.__dragonBoatConfig
-
-    @property
     def giftSystemConfig(self):
         return self.__giftSystemConfig
+
+    @property
+    def resourceWellConfig(self):
+        return self.__resourceWellConfig
+
+    @property
+    def funRandomConfig(self):
+        return self.__funRandomConfig
 
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
@@ -1306,6 +1406,9 @@ class ServerSettings(object):
 
     def isMapsTrainingEnabled(self):
         return self.__getGlobalSetting('isMapsTrainingEnabled', False)
+
+    def recertificationFormState(self):
+        return self.__getGlobalSetting('recertificationFormState', constants.SwitchState.DISABLED.value)
 
     def getLootBoxConfig(self):
         return self.__getGlobalSetting('lootBoxes_config', {})
@@ -1526,7 +1629,7 @@ class ServerSettings(object):
 
     def __updateWgcg(self, targetSettings):
         cProfile = targetSettings['wgcg']
-        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''), cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False))
+        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''), cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False), cProfile.get('isJwtAuthorizationEnabled', True))
 
     def __updateWgnp(self, targetSettings):
         cProfile = targetSettings['wgnp']
@@ -1600,6 +1703,12 @@ class ServerSettings(object):
 
     def __updateGiftSystemConfig(self, serverSettingsDiff):
         self.__giftSystemConfig = self.__giftSystemConfig.replace({'events': serverSettingsDiff[Configs.GIFTS_CONFIG.value]})
+
+    def __updateResourceWellConfig(self, diff):
+        self.__resourceWellConfig = self.__resourceWellConfig.replace(diff[Configs.RESOURCE_WELL.value])
+
+    def __updateFunRandomConfig(self, serverSettingsDiff):
+        self.__funRandomConfig = self.__funRandomConfig.replace(serverSettingsDiff[Configs.FUN_RANDOM_CONFIG.value])
 
 
 def serverSettingsChangeListener(*configKeys):

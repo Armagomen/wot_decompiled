@@ -48,7 +48,9 @@ class ChannelsManager(object):
 
         for channel, callbackID in self.__callbackIDs.iteritems():
             BigWorld.cancelCallback(callbackID)
-            self.__channels[channel].unsubscribe(self.__client)
+            if channel in self.__channels:
+                self.__channels[channel].unsubscribe(self.__client)
+            _logger.warning('Channel %s is not in channels', channel)
 
         self.__callbackIDs.clear()
 
@@ -90,7 +92,10 @@ class ChannelsManager(object):
                 _logger.error('Can not connect to server by url %s', self.__url)
                 raise async.AsyncReturn(False)
         else:
-            channel.subscribe(self.__client)
+            if self.__client.status == websocket.ConnectionStatus.Opened:
+                channel.subscribe(self.__client)
+            else:
+                _logger.warning('Connection is not opened, waiting for reconnect to subscribe to channel <%s>', channel.name)
             event = async.AsyncEvent()
             self.__pending.append((event, subscription))
             yield async.await(event.wait())
@@ -169,7 +174,10 @@ class ChannelsManager(object):
 
             def _invoke():
                 self.__callbackIDs.pop(channel, None)
-                self.__channels[channel].unsubscribe(self.__client)
+                if channel in self.__channels:
+                    self.__channels[channel].unsubscribe(self.__client)
+                else:
+                    _logger.warning('Channel %s is not in channels', channel)
                 return
 
             self.__callbackIDs[channel] = BigWorld.callback(constants.CHANNEL_UNSUBSCRIPTION_DELAY, _invoke)
