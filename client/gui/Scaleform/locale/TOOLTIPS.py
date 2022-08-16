@@ -1192,6 +1192,7 @@ class TOOLTIPS(object):
     QUESTS_DISABLELINKBTN_TASK = '#tooltips:quests/disableLinkBtn/task'
     QUESTS_LINKBTN_BATTLEPASS = '#tooltips:quests/linkBtn/battlePass'
     QUESTS_LINKBTN_BATTLEPASS_SELECT = '#tooltips:quests/linkBtn/battlePass/select'
+    QUESTS_LINKBTN_WOTANNIVERSARY = '#tooltips:quests/linkBtn/wotAnniversary'
     QUESTS_STATUS_DONE = '#tooltips:quests/status/done'
     QUESTS_STATUS_CUSTOMIZATIONPROGRESSION_DONEFIRST = '#tooltips:quests/status/customizationProgression/doneFirst'
     QUESTS_STATUS_CUSTOMIZATIONPROGRESSION_DONE = '#tooltips:quests/status/customizationProgression/done'
@@ -3022,6 +3023,8 @@ class TOOLTIPS(object):
     NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_DESC = '#tooltips:notrecruitedtankman/commander_twitch_ermelinda/desc'
     NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_LABEL = '#tooltips:notrecruitedtankman/commander_bjornson/label'
     NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_DESC = '#tooltips:notrecruitedtankman/commander_bjornson/desc'
+    NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_LABEL = '#tooltips:notrecruitedtankman/commander_patricia/label'
+    NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_DESC = '#tooltips:notrecruitedtankman/commander_patricia/desc'
     NOTRECRUITEDTANKMAN_YHA_COMMANDER_LABEL = '#tooltips:notrecruitedtankman/yha_commander/label'
     NOTRECRUITEDTANKMAN_YHA_COMMANDER_DESC = '#tooltips:notrecruitedtankman/yha_commander/desc'
     NOTRECRUITEDTANKMAN_YHA_DRIVER_LABEL = '#tooltips:notrecruitedtankman/yha_driver/label'
@@ -4050,6 +4053,7 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_LABEL,
      NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_LABEL,
      NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_LABEL,
      NOTRECRUITEDTANKMAN_YHA_COMMANDER_LABEL,
      NOTRECRUITEDTANKMAN_YHA_DRIVER_LABEL,
      NOTRECRUITEDTANKMAN_YHA_GUNNER_LABEL,
@@ -4172,6 +4176,7 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_DESC,
      NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_DESC,
      NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_DESC,
      NOTRECRUITEDTANKMAN_YHA_COMMANDER_DESC,
      NOTRECRUITEDTANKMAN_YHA_DRIVER_DESC,
      NOTRECRUITEDTANKMAN_YHA_GUNNER_DESC,
