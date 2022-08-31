@@ -1,20 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_operation_awards_screen.py
-from gui.Scaleform.daapi.view.meta.PersonalMissionsOperationAwardsScreenMeta import PersonalMissionsOperationAwardsScreenMeta
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import AWARDS_SIZES, LABEL_ALIGN
+from gui.Scaleform.daapi.view.meta.PersonalMissionsOperationAwardsScreenMeta import \
+    PersonalMissionsOperationAwardsScreenMeta
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.settings import ICONS_SIZES
-from gui.server_events.pm_constants import SOUNDS, PERSONAL_MISSIONS_SOUND_SPACE
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.gui_items.Vehicle import getTypeBigIconPath
 from gui.server_events import finders
+from gui.server_events.pm_constants import SOUNDS, PERSONAL_MISSIONS_SOUND_SPACE
+from gui.shared.gui_items.Vehicle import getTypeBigIconPath
+from gui.shared.utils.functions import makeTooltip
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from shared_utils import first
 from skeletons.gui.server_events import IEventsCache
+
 
 class PersonalMissionsOperationAwardsScreen(PersonalMissionsOperationAwardsScreenMeta):
     _COMMON_SOUND_SPACE = PERSONAL_MISSIONS_SOUND_SPACE
@@ -76,9 +78,12 @@ class PersonalMissionsOperationAwardsScreen(PersonalMissionsOperationAwardsScree
             vehicleLevel = _ms(TOOLTIPS.level(vehicle.level))
             vehicleTypeIcon = getTypeBigIconPath(vehicle.type, vehicle.isElite)
             return {'vehicleSrc': vehIcon,
-             'vehicleTypeIcon': vehicleTypeIcon,
-             'vehicleName': vehicle.userName,
-             'vehicleLevel': vehicleLevel} if vehIcon is not None else None
+                    'vehicleTypeIcon': vehicleTypeIcon,
+                    'vehicleName': vehicle.userName,
+                    'vehicleLevel': vehicleLevel,
+                    'tooltip': {'isSpecial': True,
+                                'specialAlias': TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                                'specialArgs': [vehicle.intCD]}} if vehIcon is not None else None
 
     def __packBadges(self, badges):
         result = []

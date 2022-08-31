@@ -2,20 +2,21 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/__init__.py
 import sys
 import weakref
-import typing
+
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.Scaleform.daapi.view.lobby.techtree.settings import UNKNOWN_VEHICLE_LEVEL, UnlockProps
 from gui.Scaleform.daapi.view.lobby.techtree.techtree_dp import g_techTreeDP
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.app_loader import sf_lobby
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.formatters import icons
 from helpers import dependency
 from helpers.i18n import makeString
 from items import vehicles
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.shared import IItemsCache
-from gui.impl import backport
-from gui.impl.gen import R
+
 
 class TOOLTIP_TYPE(CONST_CONTAINER):
     VEHICLE = 'vehicle'
@@ -81,7 +82,6 @@ class TOOLTIP_TYPE(CONST_CONTAINER):
     REFERRAL_PROGRAMM = 'referralProgram'
     EPIC_RANK_UNLOCK = 'epicRankUnlock'
     RANKED_SELECTABLE_REWARD = 'rankedSelectableReward'
-    FUN_RANDOM_CALENDAR_DAY = 'funRandomCalendarDayInfo'
 
 
 class TOOLTIP_COMPONENT(CONST_CONTAINER):

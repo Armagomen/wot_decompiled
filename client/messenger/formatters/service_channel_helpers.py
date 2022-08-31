@@ -1,20 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/formatters/service_channel_helpers.py
-import typing
 import logging
+import typing
 from collections import namedtuple
+
+from helpers import dependency
 from items import makeIntCompactDescrByID
+from items.components.c11n_constants import CustomizationNamesToTypes
+from messenger import g_settings
 from optional_bonuses import BONUS_MERGERS
 from skeletons.gui.shared import IItemsCache
-from items.components.c11n_constants import CustomizationNamesToTypes
-from helpers import dependency
-from messenger import g_settings
+
 _logger = logging.getLogger(__name__)
 EOL = '\n'
 DEFAULT_MESSAGE = 'defaultMessage'
 if typing.TYPE_CHECKING:
-    from messenger.proto.bw.wrappers import ServiceChannelMessage
+    pass
 MessageData = namedtuple('MessageData', 'data, settings')
+
 
 def getRewardsForBoxes(message, boxIDs):
     data = message.data or {}
@@ -53,13 +56,17 @@ def _mergeSelectableCrewbook(resultRewards, bonusName, bonusValue):
         selectablesTotal[item['itemName']] = item['count']
 
 
-def getCustomizationItemData(itemId, customizationName):
+def getCustomizationItem(itemId, customizationName):
     itemsCache = dependency.instance(IItemsCache)
     customizationType = CustomizationNamesToTypes.get(customizationName.upper())
     if customizationType is None:
         _logger.warning('Wrong customization name: %s', customizationName)
     compactDescr = makeIntCompactDescrByID('customizationItem', customizationType, itemId)
-    item = itemsCache.items.getItemByCD(compactDescr)
+    return itemsCache.items.getItemByCD(compactDescr)
+
+
+def getCustomizationItemData(itemId, customizationName):
+    item = getCustomizationItem(itemId, customizationName)
     itemName = item.userName
     itemTypeName = item.itemFullTypeName
     return _CustomizationItemData(itemTypeName, itemName)
@@ -67,6 +74,7 @@ def getCustomizationItemData(itemId, customizationName):
 
 _CustomizationItemData = namedtuple('_CustomizationItemData', ('guiItemType', 'userName'))
 
+
 def getDefaultMessage(normal='', bold=''):
     return g_settings.msgTemplates.format(DEFAULT_MESSAGE, {'normal': normal,
-     'bold': bold})
+                                                            'bold': bold})

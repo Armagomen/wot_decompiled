@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/battle_queue.py
 import weakref
+
 import BigWorld
 import MusicControllerWWISE
 import constants
@@ -11,39 +12,40 @@ from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_DEBUG
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
-from gui.impl.gen import R
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.event_boards.formaters import getClanTag
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.daapi.view.meta.BattleQueueMeta import BattleQueueMeta
 from gui.Scaleform.daapi.view.meta.BattleStrongholdsQueueMeta import BattleStrongholdsQueueMeta
-from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
+from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.impl.gen import R
 from gui.prb_control import prb_getters, prbEntityProperty
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME, getTypeBigIconPath
-from gui.shared.view_helpers import ClanEmblemsHelper
 from gui.shared.image_helper import getTextureLinkByID, ImagesFetchCoordinator
+from gui.shared.view_helpers import ClanEmblemsHelper
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.sounds.ambients import BattleQueueEnv
 from helpers import dependency, i18n, time_utils, int2roman
 from helpers.i18n import makeString
 from skeletons.gui.lobby_context import ILobbyContext
-from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
-from gui.Scaleform.locale.MENU import MENU
 from skeletons.gui.shared import IItemsCache
+
 TYPES_ORDERED = (('heavyTank', ITEM_TYPES.VEHICLE_TAGS_HEAVY_TANK_NAME),
- ('mediumTank', ITEM_TYPES.VEHICLE_TAGS_MEDIUM_TANK_NAME),
- ('lightTank', ITEM_TYPES.VEHICLE_TAGS_LIGHT_TANK_NAME),
- ('AT-SPG', ITEM_TYPES.VEHICLE_TAGS_AT_SPG_NAME),
+                 ('mediumTank', ITEM_TYPES.VEHICLE_TAGS_MEDIUM_TANK_NAME),
+                 ('lightTank', ITEM_TYPES.VEHICLE_TAGS_LIGHT_TANK_NAME),
+                 ('AT-SPG', ITEM_TYPES.VEHICLE_TAGS_AT_SPG_NAME),
  ('SPG', ITEM_TYPES.VEHICLE_TAGS_SPG_NAME))
 _LONG_WAITING_LEVELS = (9, 10)
 _HTMLTEMP_PLAYERSLABEL = 'html_templates:lobby/queue/playersLabel'
@@ -180,10 +182,6 @@ class _MapboxQueueProvider(_RandomQueueProvider):
     pass
 
 
-class _FunRandomQueueProvider(_RandomQueueProvider):
-    pass
-
-
 class _BattleRoyaleQueueProvider(_RandomQueueProvider):
 
     def processQueueInfo(self, qInfo):
@@ -202,12 +200,11 @@ class _BattleRoyaleQueueProvider(_RandomQueueProvider):
 
 
 _PROVIDER_BY_QUEUE_TYPE = {constants.QUEUE_TYPE.RANDOMS: _RandomQueueProvider,
- constants.QUEUE_TYPE.EVENT_BATTLES: _EventQueueProvider,
- constants.QUEUE_TYPE.RANKED: _RankedQueueProvider,
- constants.QUEUE_TYPE.EPIC: _EpicQueueProvider,
- constants.QUEUE_TYPE.BATTLE_ROYALE: _BattleRoyaleQueueProvider,
- constants.QUEUE_TYPE.MAPBOX: _MapboxQueueProvider,
- constants.QUEUE_TYPE.FUN_RANDOM: _FunRandomQueueProvider}
+                           constants.QUEUE_TYPE.EVENT_BATTLES: _EventQueueProvider,
+                           constants.QUEUE_TYPE.RANKED: _RankedQueueProvider,
+                           constants.QUEUE_TYPE.EPIC: _EpicQueueProvider,
+                           constants.QUEUE_TYPE.BATTLE_ROYALE: _BattleRoyaleQueueProvider,
+                           constants.QUEUE_TYPE.MAPBOX: _MapboxQueueProvider}
 
 def _providerFactory(proxy, qType):
     return _PROVIDER_BY_QUEUE_TYPE.get(qType, _QueueProvider)(proxy, qType)

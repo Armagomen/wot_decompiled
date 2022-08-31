@@ -7,6 +7,7 @@ from account_helpers.AccountSettings import NATION_CHANGE_VIEWED, AccountSetting
 from frameworks.wulf import ViewSettings
 from frameworks.wulf import ViewStatus
 from gui import SystemMessages
+from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.backport.backport_tooltip import TooltipData, BackportTooltipWindow
@@ -15,8 +16,8 @@ from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_device_mod
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_screen_model import NationChangeScreenModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_shell_model import NationChangeShellModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_supply_model import NationChangeSupplyModel
-from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tankman_model import NationChangeTankmanModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tank_setup_model import NationChangeTankSetupModel
+from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tankman_model import NationChangeTankmanModel
 from gui.impl.pub import ViewImpl
 from gui.shared import event_dispatcher
 from gui.shared.gui_items.Vehicle import getNationLessName, getIconResourceName, sortCrew
@@ -33,6 +34,7 @@ from nation_change.nation_change_helpers import iterVehTypeCDsInNationGroup
 from post_progression_common import SERVER_SETTINGS_KEY, SWITCH_LAYOUT_CAPACITY
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 
 class NationChangeScreen(ViewImpl):
     __itemsCache = descriptor(IItemsCache)
@@ -268,6 +270,7 @@ class NationChangeScreen(ViewImpl):
 
     def __addListeners(self):
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChange
+        g_clientUpdateManager.addCallbacks({'inventory.1.compDescr': self.__onVehiclesInInventoryUpdate})
         self.viewModel.onCloseBtnClick += self.__onWindowClose
         self.viewModel.onSwitchBtnClick += self.__onSwitchBtnClick
         self.viewModel.onCancelBtnClick += self.__onCancelBtnClick
@@ -280,6 +283,7 @@ class NationChangeScreen(ViewImpl):
         self.viewModel.onCancelBtnClick -= self.__onCancelBtnClick
         self.viewModel.onHangarBtnClick -= self.__onHangarBtnClick
         self.viewModel.onDogClick -= self.__onDogClick
+        g_clientUpdateManager.removeCallback('inventory.1.compDescr', self.__onVehiclesInInventoryUpdate)
         self.__lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingsChange
 
     @serverSettingsChangeListener('isNationChangeEnabled', SERVER_SETTINGS_KEY)
@@ -291,8 +295,14 @@ class NationChangeScreen(ViewImpl):
             self.__updateTankSlot(vm.currentNation, self.__currentVehicle)
             self.__updateTankSlot(vm.targetNation, self.__targetVehicle)
 
+    def __onVehiclesInInventoryUpdate(self, diff):
+        if self.__currentVehicle.invID in diff and diff[self.__currentVehicle.invID] is None:
+            self.__onWindowClose()
+        return
+
     def __onWindowClose(self):
-        if g_currentVehicle.item == self.__currentVehicle and not self.__itemsCache.items.getItemByCD(self.__currentVehicle.intCD).activeInNationGroup:
+        if g_currentVehicle.item == self.__currentVehicle and not self.__itemsCache.items.getItemByCD(
+                self.__currentVehicle.intCD).activeInNationGroup:
             event_dispatcher.selectVehicleInHangar(self.__targetVehicle.intCD)
         self.destroyWindow()
 

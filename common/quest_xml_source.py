@@ -1,27 +1,32 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/quest_xml_source.py
 import time
-import ArenaType
-import ResMgr
-import nations
-from soft_exception import SoftException
 from copy import deepcopy
 from pprint import pformat
+
+import ResMgr
+
+import ArenaType
+import nations
+from battle_results import getBattleResultsNames
 from bonus_readers import readBonusSection, readUTC, timeDataToUTC
-from constants import VEHICLE_CLASS_INDICES, ARENA_BONUS_TYPE, EVENT_TYPE, IGR_TYPE, ATTACK_REASONS, QUEST_RUN_FLAGS, DEFAULT_QUEST_START_TIME, DEFAULT_QUEST_FINISH_TIME, ROLE_LABEL_TO_TYPE, ACCOUNT_ATTR
+from constants import VEHICLE_CLASS_INDICES, ARENA_BONUS_TYPE, EVENT_TYPE, IGR_TYPE, ATTACK_REASONS, QUEST_RUN_FLAGS, \
+    DEFAULT_QUEST_START_TIME, DEFAULT_QUEST_FINISH_TIME, ROLE_LABEL_TO_TYPE, ACCOUNT_ATTR, QUESTS_SUPPORTED_EXCLUDE_TAGS
 from debug_utils import LOG_WARNING
-from dossiers2.custom.layouts import accountDossierLayout, vehicleDossierLayout, StaticSizeBlockBuilder, BinarySetDossierBlockBuilder
+from dossiers2.custom.layouts import accountDossierLayout, vehicleDossierLayout, StaticSizeBlockBuilder, \
+    BinarySetDossierBlockBuilder
 from dossiers2.custom.records import RECORD_DB_IDS
 from items import vehicles
 from optional_bonuses import StripVisitor
-from battle_results import getBattleResultsNames
+from soft_exception import SoftException
+
 _WEEKDAYS = {'Mon': 1,
- 'Tue': 2,
- 'Wed': 3,
- 'Thu': 4,
- 'Fri': 5,
- 'Sat': 6,
- 'Sun': 7}
+             'Tue': 2,
+             'Wed': 3,
+             'Thu': 4,
+             'Fri': 5,
+             'Sat': 6,
+             'Sun': 7}
 _YEAR = 31556926
 MAX_BONUS_LIMIT = 1000000
 
@@ -152,6 +157,9 @@ class Source(object):
             if conditions and conditions.has_key('common'):
                 condition = conditions['common']
                 self.__readBattleResultsConditionList(conditionReaders, condition, commonNode)
+            if conditions and conditions.has_key('description'):
+                description = conditions['description']
+                mainNode.questClientConditions.append(('description', self.__readMetaSection(description)))
             daily = commonNode.getChildNode('daily')
             info['isDaily'] = daily is not None
             weekly = commonNode.getChildNode('weekly')
@@ -329,88 +337,94 @@ class Source(object):
          'equal': self.__readCondition_DateTimeOrFloat,
          'less': self.__readCondition_DateTimeOrFloat,
          'lessOrEqual': self.__readCondition_DateTimeOrFloat,
-         'greaterOrEqual': self.__readCondition_DateTimeOrFloat,
-         'and': self.__readBattleResultsConditionList,
-         'or': self.__readBattleResultsConditionList,
-         'not': self.__readBattleResultsConditionList,
-         'token': self.__readBattleResultsConditionList,
-         'id': self.__readCondition_string,
-         'consume': self.__readCondition_consume,
-         'inClan': self.__readListOfInts,
-         'vehiclesUnlocked': self.__readBattleResultsConditionList,
-         'vehiclesOwned': self.__readBattleResultsConditionList,
-         'classes': self.__readVehicleFilter_classes,
-         'levels': self.__readVehicleFilter_levels,
-         'nations': self.__readVehicleFilter_nations,
-         'types': self.__readVehicleFilter_types,
-         'roles': self.__readVehicleFilter_roles,
-         'dossier': self.__readBattleResultsConditionList,
-         'record': self.__readCondition_dossierRecord,
-         'average': self.__readCondition_int,
-         'GR': self.__readBattleResultsConditionList,
-         'igrType': self.__readCondition_IGRType,
-         'premium': self.__readCondition_bool,
-         'premiumPlus': self.__readCondition_bool,
-         'premiumVip': self.__readCondition_bool,
-         'isPremiumQuestsEnabled': self.__readCondition_bool,
-         'wotPlus': self.__readCondition_bool,
-         'isFreeDirectivesEnabled': self.__readCondition_bool,
-         'daily': self.__readCondition_true,
-         'weekly': self.__readCondition_true,
-         'bonusLimit': self.__readCondition_int,
-         'isTutorialCompleted': self.__readCondition_bool,
-         'isLinkedSetEnabled': self.__readCondition_bool,
-         'isSteamAllowed': self.__readCondition_bool,
-         'totalBattles': self.__readBattleResultsConditionList,
-         'accountPrimaryTypes': self.__readListOfInts,
-         'accountSecondaryTypes': self.__readListOfInts,
-         'accountAttributes': self.__readListAccountAttributes,
-         'externalData': self.__readBattleResultsConditionList,
-         'externalDataItem': self.__readBattleResultsConditionList,
-         'source': self.__readCondition_string,
-         'paramName': self.__readCondition_string}
+                             'greaterOrEqual': self.__readCondition_DateTimeOrFloat,
+                             'and': self.__readBattleResultsConditionList,
+                             'or': self.__readBattleResultsConditionList,
+                             'not': self.__readBattleResultsConditionList,
+                             'token': self.__readBattleResultsConditionList,
+                             'id': self.__readCondition_string,
+                             'consume': self.__readCondition_consume,
+                             'inClan': self.__readListOfInts,
+                             'vehiclesUnlocked': self.__readBattleResultsConditionList,
+                             'vehiclesOwned': self.__readBattleResultsConditionList,
+                             'vehiclesUnlockedAndOwned': self.__readBattleResultsConditionList,
+                             'classes': self.__readVehicleFilter_classes,
+                             'levels': self.__readVehicleFilter_levels,
+                             'nations': self.__readVehicleFilter_nations,
+                             'types': self.__readVehicleFilter_types,
+                             'roles': self.__readVehicleFilter_roles,
+                             'excludeTags': self.__readVehicleFilter_excludeTags,
+                             'dossier': self.__readBattleResultsConditionList,
+                             'record': self.__readCondition_dossierRecord,
+                             'average': self.__readCondition_int,
+                             'GR': self.__readBattleResultsConditionList,
+                             'igrType': self.__readCondition_IGRType,
+                             'premium': self.__readCondition_bool,
+                             'premiumPlus': self.__readCondition_bool,
+                             'premiumVip': self.__readCondition_bool,
+                             'isPremiumQuestsEnabled': self.__readCondition_bool,
+                             'wotPlus': self.__readCondition_bool,
+                             'isFreeDirectivesEnabled': self.__readCondition_bool,
+                             'daily': self.__readCondition_true,
+                             'weekly': self.__readCondition_true,
+                             'bonusLimit': self.__readCondition_int,
+                             'isTutorialCompleted': self.__readCondition_bool,
+                             'isBattleMattersEnabled': self.__readCondition_bool,
+                             'isSteamAllowed': self.__readCondition_bool,
+                             'totalBattles': self.__readBattleResultsConditionList,
+                             'accountPrimaryTypes': self.__readListOfInts,
+                             'accountSecondaryTypes': self.__readListOfInts,
+                             'accountAttributes': self.__readListAccountAttributes,
+                             'externalData': self.__readBattleResultsConditionList,
+                             'externalDataItem': self.__readBattleResultsConditionList,
+                             'source': self.__readCondition_string,
+                             'paramName': self.__readCondition_string,
+                             'mapsTraining': self.__readBattleResultsConditionList,
+                             'mapsCompleted': self.__readBattleResultsConditionList,
+                             'scenariosCompleted': self.__readBattleResultsConditionList,
+                             'difficulty': self.__readCondition_int}
         if eventType in EVENT_TYPE.LIKE_BATTLE_QUESTS:
             condition_readers.update({'value': self.__readCondition_bool,
-             'win': self.__readConditionComplex_true,
-             'isAlive': self.__readConditionComplex_true,
-             'isSquad': self.__readCondition_bool,
-             'clanMembership': self.__readCondition_string,
-             'allAlive': self.__readCondition_true,
-             'aliveCnt': self.__readCondition_int,
-             'achievements': self.__readCondition_achievements,
-             'hasReceivedMultipliedXP': self.__readCondition_bool,
-             'multiDamageEvent': self.__readBattleResultsConditionList,
-             'killedByShot': self.__readCondition_int,
-             'damagedByShot': self.__readCondition_int,
-             'multiStunEvent': self.__readBattleResultsConditionList,
-             'stunnedByShot': self.__readCondition_int,
-             'unitVehicleDamage': self.__readBattleResultsConditionList,
-             'unitVehicleKills': self.__readBattleResultsConditionList,
-             'unitVehicleDescr': self.__readBattleResultsConditionList,
-             'vehicleDamage': self.__readBattleResultsConditionList,
-             'vehicleStun': self.__readBattleResultsConditionList,
-             'vehicleKills': self.__readBattleResultsConditionList,
-             'vehicleDescr': self.__readBattleResultsConditionList,
-             'clanKills': self.__readBattleResultsConditionList,
-             'lvlDiff': self.__readCondition_int,
-             'classesDiversity': self.__readCondition_int,
-             'limittedTime': self.__readCondition_int,
-             'rammingInfo': self.__readCondition_rammingInfo,
-             'distance': self.__readCondition_int,
-             'whileMoving': self.__readCondition_true,
-             'whileEnemyMoving': self.__readCondition_int,
-             'soloAssist': self.__readCondition_true,
-             'fireStarted': self.__readCondition_true,
-             'whileEnemyInvisible': self.__readCondition_true,
-             'whileInvisible': self.__readCondition_true,
-             'attackReason': self.__readCondition_attackReason,
-             'enemyImmobilized': self.__readCondition_true,
-             'enemyInvader': self.__readCondition_true,
-             'eventCount': self.__readCondition_true,
-             'whileFullHealth': self.__readCondition_true,
-             'whileEnemyFullHealth': self.__readCondition_true,
-             'allInSpecifiedClasses': self.__readCondition_true,
-             'enemyIsNotSpotted': self.__readCondition_true,
+                                      'win': self.__readConditionComplex_true,
+                                      'isAlive': self.__readConditionComplex_true,
+                                      'isSquad': self.__readCondition_bool,
+                                      'clanMembership': self.__readCondition_string,
+                                      'allAlive': self.__readCondition_true,
+                                      'aliveCnt': self.__readCondition_int,
+                                      'achievements': self.__readCondition_achievements,
+                                      'hasReceivedMultipliedXP': self.__readCondition_bool,
+                                      'multiDamageEvent': self.__readBattleResultsConditionList,
+                                      'killedByShot': self.__readCondition_int,
+                                      'damagedByShot': self.__readCondition_int,
+                                      'multiStunEvent': self.__readBattleResultsConditionList,
+                                      'stunnedByShot': self.__readCondition_int,
+                                      'unitVehicleDamage': self.__readBattleResultsConditionList,
+                                      'unitVehicleKills': self.__readBattleResultsConditionList,
+                                      'unitVehicleDescr': self.__readBattleResultsConditionList,
+                                      'vehicleDamage': self.__readBattleResultsConditionList,
+                                      'vehicleStun': self.__readBattleResultsConditionList,
+                                      'vehicleKills': self.__readBattleResultsConditionList,
+                                      'vehicleDescr': self.__readBattleResultsConditionList,
+                                      'clanKills': self.__readBattleResultsConditionList,
+                                      'lvlDiff': self.__readCondition_int,
+                                      'classesDiversity': self.__readCondition_int,
+                                      'limittedTime': self.__readCondition_int,
+                                      'rammingInfo': self.__readCondition_rammingInfo,
+                                      'distance': self.__readCondition_int,
+                                      'whileMoving': self.__readCondition_true,
+                                      'whileEnemyMoving': self.__readCondition_int,
+                                      'soloAssist': self.__readCondition_true,
+                                      'fireStarted': self.__readCondition_true,
+                                      'whileEnemyInvisible': self.__readCondition_true,
+                                      'whileInvisible': self.__readCondition_true,
+                                      'attackReason': self.__readCondition_attackReason,
+                                      'enemyImmobilized': self.__readCondition_true,
+                                      'enemyInvader': self.__readCondition_true,
+                                      'eventCount': self.__readCondition_true,
+                                      'whileFullHealth': self.__readCondition_true,
+                                      'whileEnemyFullHealth': self.__readCondition_true,
+                                      'allInSpecifiedClasses': self.__readCondition_true,
+                                      'enemyIsNotSpotted': self.__readCondition_true,
              'installedModules': self.__readBattleResultsConditionList,
              'guns': self.__readCondition_installedModules,
              'engines': self.__readCondition_installedModules,
@@ -421,26 +435,27 @@ class Source(object):
              'optionalDeviceCount': self.__readBattleResultsConditionList,
              'consumables': self.__readBattleResultsConditionList,
              'equipment': self.__readCondition_consumables,
-             'equipmentCount': self.__readBattleResultsConditionList,
-             'goodies': self.__readBattleResultsConditionList,
-             'goodiesCount': self.__readBattleResultsConditionList,
-             'correspondedCamouflage': self.__readConditionComplex_true,
-             'correspondedDecal': self.__readConditionComplex_true,
-             'correspondedPaint': self.__readConditionComplex_true,
-             'correspondedStyle': self.__readConditionComplex_true,
-             'correspondedModification': self.__readConditionComplex_true,
-             'correspondedProjectionDecal': self.__readConditionComplex_true,
-             'correspondedPersonalNumber': self.__readConditionComplex_true,
-             'unit': self.__readBattleResultsConditionList,
-             'results': self.__readBattleResultsConditionList,
-             'key': self.__readCondition_keyResults,
-             'max': self.__readCondition_int,
-             'total': self.__readCondition_false,
-             'compareWithMaxHealth': self.__readCondition_true,
-             'plus': self.__readBattleResultsConditionList,
-             'exceptUs': self.__readCondition_true,
-             'compareWithDeathCount': self.__readCondition_true,
-             'mapCamouflageKind': self.__readBattleFilter_CamouflageKind,
+                                      'equipmentCount': self.__readBattleResultsConditionList,
+                                      'goodies': self.__readBattleResultsConditionList,
+                                      'goodiesCount': self.__readBattleResultsConditionList,
+                                      'correspondedCamouflage': self.__readConditionComplex_true,
+                                      'correspondedDecal': self.__readConditionComplex_true,
+                                      'correspondedPaint': self.__readConditionComplex_true,
+                                      'correspondedStyle': self.__readConditionComplex_true,
+                                      'correspondedModification': self.__readConditionComplex_true,
+                                      'correspondedProjectionDecal': self.__readConditionComplex_true,
+                                      'correspondedPersonalNumber': self.__readConditionComplex_true,
+                                      'correspondedEquipment': self.__readCondition_correspondedEquipment,
+                                      'unit': self.__readBattleResultsConditionList,
+                                      'results': self.__readBattleResultsConditionList,
+                                      'key': self.__readCondition_keyResults,
+                                      'max': self.__readCondition_int,
+                                      'total': self.__readCondition_false,
+                                      'compareWithMaxHealth': self.__readCondition_true,
+                                      'plus': self.__readBattleResultsConditionList,
+                                      'exceptUs': self.__readCondition_true,
+                                      'compareWithDeathCount': self.__readCondition_true,
+                                      'mapCamouflageKind': self.__readBattleFilter_CamouflageKind,
              'bonusTypes': self.__readBattleFilter_BonusTypes,
              'geometryNames': self.__readBattleFilter_GeometryNames,
              'battles': self.__readBattleResultsConditionList,
@@ -451,14 +466,14 @@ class Source(object):
              'groupName': self.__readCondition_groupBy,
              'cumulative': self.__readCondition_cumulative,
              'cumulativeExt': self.__readBattleResultsConditionList,
-             'crits': self.__readBattleResultsConditionList,
-             'destroyed': self.__readBattleResultsConditionList,
-             'tankman': self.__readBattleResultsConditionList,
-             'critical': self.__readBattleResultsConditionList,
-             'crit': self.__readBattleResultsConditionList,
-             'critName': self.__readCritName,
-             'unregularAmmo': self.__readCondition_true,
-             'isNotLeaver': self.__readCondition_true})
+                                      'crits': self.__readBattleResultsConditionList,
+                                      'destroyed': self.__readBattleResultsConditionList,
+                                      'tankman': self.__readBattleResultsConditionList,
+                                      'critical': self.__readBattleResultsConditionList,
+                                      'crit': self.__readBattleResultsConditionList,
+                                      'critName': self.__readCritName,
+                                      'unregularAmmo': self.__readCondition_true,
+                                      'isNotLeaver': self.__readCondition_true})
         if eventType in (EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST):
             condition_readers.update({'red': self.__readListOfInts,
              'silver': self.__readListOfInts,
@@ -477,15 +492,15 @@ class Source(object):
 
     def __getAvailableBonuses(self, eventType):
         bonusTypes = {'meta',
-         'gold',
-         'credits',
-         'crystal',
-         'freeXP',
-         'item',
-         'equipment',
-         'slots',
-         'berths',
-         'premium',
+                      'gold',
+                      'credits',
+                      'crystal',
+                      'freeXP',
+                      'item',
+                      'equipment',
+                      'slots',
+                      'berths',
+                      'premium',
          'premium_plus',
          'premium_vip',
          'token',
@@ -496,17 +511,18 @@ class Source(object):
          'customizations',
          'vehicleChoice',
          'crewSkin',
-         'blueprint',
-         'blueprintAny',
-         'enhancement',
-         'eventCoin',
-         'bpcoin',
-         'entitlement',
-         'rankedDailyBattles',
-         'rankedBonusBattles',
-         'dogTagComponent',
-         'battlePassPoints',
-         'currency'}
+                      'blueprint',
+                      'blueprintAny',
+                      'enhancement',
+                      'eventCoin',
+                      'bpcoin',
+                      'entitlement',
+                      'rankedDailyBattles',
+                      'rankedBonusBattles',
+                      'dogTagComponent',
+                      'battlePassPoints',
+                      'currency',
+                      'freePremiumCrew'}
         if eventType in (EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST, EVENT_TYPE.NT_QUEST):
             bonusTypes.update(('xp', 'tankmenXP', 'xpFactor', 'creditsFactor', 'freeXPFactor', 'tankmenXPFactor'))
         if eventType in (EVENT_TYPE.NT_QUEST,):
@@ -563,6 +579,33 @@ class Source(object):
         else:
             raise SoftException('Unknown consumables(%s)' % node.name)
         node.addChild(modules)
+
+    def __readCondition_correspondedEquipment(self, _, section, node):
+        equipment = set()
+        for name, sub in section.items():
+            if name in ('title', 'description'):
+                node.questClientConditions.append((name, self.__readMetaSection(sub)))
+                continue
+            if name in ('hideInGui',):
+                node.questClientConditions.append((name, True))
+                continue
+            if name in ('tags',):
+                tags = set(sub.readString('', '').split())
+                if not tags:
+                    raise SoftException('Empty tags for corresponded equipment is not allowed')
+                equipment = {equipment.compactDescr for idx, equipment in vehicles.g_cache.equipments().iteritems() if
+                             tags == tags & equipment.tags}
+                if not equipment:
+                    raise SoftException('No corresponded equipments for tags {}'.format(tags))
+                continue
+            if name in ('ignoreBoostersCompatibility',):
+                currentNode = XMLNode(name)
+                currentNode.addChild(True)
+                node.addChild(currentNode)
+
+        equipmentNode = XMLNode('equipment')
+        equipmentNode.addChild(equipment)
+        node.addChild(equipmentNode)
 
     def __readCritName(self, _, section, node):
         critName = section.asString
@@ -678,20 +721,20 @@ class Source(object):
         node.addChild(False)
 
     def __readCondition_bool(self, _, section, node):
-        node.addChild(bool(section.asString))
+        node.addChild(section.asBool)
 
     def __readCondition_int(self, _, section, node):
-        node.addChild(int(section.asString))
+        node.addChild(section.asInt)
 
     def __readCondition_float(self, _, section, node):
-        node.addChild(float(section.asString))
+        node.addChild(section.asFloat)
 
     def __readCondition_DateTimeOrFloat(self, _, section, node):
         try:
             value = timeDataToUTC(section.asString, None)
         except SoftException as e:
             try:
-                value = float(section.asString)
+                value = section.asFloat
             except ValueError:
                 raise e
 
@@ -768,11 +811,18 @@ class Source(object):
 
     def __readVehicleTypeList(self, section):
         typeNames = section.asString.split()
-        return [ vehicles.makeVehicleTypeCompDescrByName(typeName) for typeName in typeNames ]
+        return [vehicles.makeVehicleTypeCompDescrByName(typeName) for typeName in typeNames]
 
     def __readVehicleFilter_roles(self, _, section, node):
-        roles = set([ ROLE_LABEL_TO_TYPE[role] for role in section.asString.split() ])
+        roles = set([ROLE_LABEL_TO_TYPE[role] for role in section.asString.split()])
         node.addChild(roles)
+
+    def __readVehicleFilter_excludeTags(self, _, section, node):
+        tags = set(section.asString.split())
+        diff = tags.difference(QUESTS_SUPPORTED_EXCLUDE_TAGS)
+        if diff:
+            raise SoftException('Unsupported vehicle exclude tags %s' % diff)
+        node.addChild(tags)
 
     def __readListAccountAttributes(self, _, section, node):
         attrs = 0
@@ -794,3 +844,17 @@ class Source(object):
                 meta[local.strip()] = sub.readString('', '').strip()
 
             return meta
+
+
+def collectSections(root):
+    sections = []
+    pqSection = ResMgr.openSection(root)
+    if pqSection is not None:
+        for k, s in pqSection.items():
+            sectionPath = root + '/' + k
+            if k.endswith('.xml'):
+                sections.append(sectionPath)
+            if s is not None:
+                sections.extend(collectSections(sectionPath))
+
+    return sections

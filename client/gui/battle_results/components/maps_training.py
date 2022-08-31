@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/maps_training.py
 import logging
+
 from ArenaType import parseTypeID
-from constants import VEHICLE_CLASSES
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.battle_results.components import base
 from gui.battle_results.settings import PLAYER_TEAM_RESULT
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.server_events.bonuses import getNonQuestBonuses
 from helpers import dependency
 from maps_training_common.helpers import getMapsTrainingAwards
 from maps_training_common.maps_training_constants import MAX_SCENARIO_PROGRESS
 from skeletons.gui.game_control import IMapsTrainingController
+
 _logger = logging.getLogger(__name__)
 _IMAGES_FOLDER_PATH = '../maps/icons/maps_training/battle_result/'
 _BG_FOLDER_PATH = _IMAGES_FOLDER_PATH + 'background/'
@@ -36,11 +37,9 @@ class BattleResultBlock(base.StatsBlock):
 class BattleGoalsBlock(base.StatsBlock):
 
     def setRecord(self, result, reusable):
-        battleGoals = result['personal']['avatar']['vseBattleResults']
-        classes = ('heavyTank', 'mediumTank', 'lightTank', 'AT-SPG', 'SPG')
-        totalClasses = len(classes)
-        for vehClass, goal, res in zip(classes, battleGoals[:totalClasses], battleGoals[totalClasses:]):
-            self.addNextComponent(base.DirectStatsItem(vehClass, [goal, res]))
+        vseBattleResults = result['personal']['avatar']['vseBattleResults']
+        for vehClass, goalResult in vseBattleResults.iteritems():
+            self.addNextComponent(base.DirectStatsItem(vehClass, goalResult))
 
 
 class BattleDurationItem(base.StatsItem):
@@ -58,18 +57,17 @@ class StatsBlock(base.StatsBlock):
         for statType, statFieldName in BATTLE_STATS_RESULT_FIELDS.iteritems():
             statVal = info.__getattribute__(statFieldName)
             self.addNextComponent(base.DirectStatsItem('', {'id': statType,
-             'value': statVal}))
+                                                            'value': statVal}))
 
-        totalClasses = len(VEHICLE_CLASSES)
         questKills = 0
-        battleResult = result['personal']['avatar']['vseBattleResults']
-        for goal, kills in zip(battleResult[:totalClasses], battleResult[totalClasses:]):
+        vseBattleResults = result['personal']['avatar']['vseBattleResults']
+        for goal, kills in vseBattleResults.itervalues():
             if goal == 0:
                 continue
             questKills += goal if kills > goal else kills
 
         self.addNextComponent(base.DirectStatsItem('', {'id': 'questKills',
-         'value': questKills}))
+                                                        'value': questKills}))
 
 
 class GeometryIdItem(base.StatsItem):

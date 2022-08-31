@@ -1,16 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/arena_descrs.py
 import weakref
+
 import BattleReplay
 from constants import IS_DEVELOPMENT
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.Scaleform import getNecessaryArenaFrameName
 from gui.Scaleform.locale.MENU import MENU
 from gui.battle_control.arena_info import settings
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.prb_control.formatters import getPrebattleFullDescription
 from gui.shared.utils import toUpper, functions
 from helpers import i18n
+
 
 def _getDefaultTeamName(isAlly):
     return i18n.makeString(MENU.LOADING_TEAMS_ALLIES) if isAlly else i18n.makeString(MENU.LOADING_TEAMS_ENEMIES)
@@ -295,13 +297,6 @@ class MapboxArenaDescription(ArenaWithLabelDescription):
         return not replayCtrl.isPlaying or replayCtrl.isBattleSimulation
 
 
-class FunRandomArenaDescription(ArenaWithLabelDescription):
-
-    def isInvitationEnabled(self):
-        replayCtrl = BattleReplay.g_replayCtrl
-        return not replayCtrl.isPlaying or replayCtrl.isBattleSimulation
-
-
 def createDescription(arenaVisitor):
     guiVisitor = arenaVisitor.gui
     if guiVisitor.isRandomBattle() or guiVisitor.isTrainingBattle():
@@ -316,8 +311,6 @@ def createDescription(arenaVisitor):
         description = BattleRoyaleDescription(arenaVisitor)
     elif guiVisitor.isMapbox():
         description = MapboxArenaDescription(arenaVisitor)
-    elif guiVisitor.isFunRandom():
-        description = FunRandomArenaDescription(arenaVisitor)
     elif guiVisitor.hasLabel():
         description = ArenaWithLabelDescription(arenaVisitor)
     else:

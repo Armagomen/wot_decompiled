@@ -2,15 +2,9 @@
 # Embedded file name: scripts/client/skeletons/gui/shared/utils/requesters.py
 import typing
 if typing.TYPE_CHECKING:
-    from typing import Dict, Generator, List, NamedTuple, Optional, Sequence, Set, Tuple, Union
-    from collections import OrderedDict
-    from gui.shared.gui_items.dossier.achievements.abstract import RegularAchievement
     from gui.shared.gui_items.gui_item_economics import ItemPrice
-    from gui.shared.money import Money, DynamicMoney
-    from gui.shared.utils.requesters import InventoryRequester
-    from gui.veh_post_progression.models.ext_money import ExtendedMoney
     from post_progression_common import VehicleState
-    from items.vehicles import VehicleType
+
 
 class IRequester(object):
 
@@ -648,8 +642,7 @@ class IShopRequester(IShopCommonStats, IRequester):
     def getTankmanCostWithDefaults(self):
         raise NotImplementedError
 
-    @property
-    def tankmanCostWithGoodyDiscount(self):
+    def getTankmanCostWithGoodyDiscount(self, vehLevel):
         raise NotImplementedError
 
     @property
@@ -703,7 +696,7 @@ class IShopRequester(IShopCommonStats, IRequester):
     def getVehicleSlotsItemPrice(self, currentSlotsCount):
         raise NotImplementedError
 
-    def getTankmanCostItemPrices(self):
+    def getTankmanCostItemPrices(self, vehLevel):
         raise NotImplementedError
 
     def getNotInShopProgressionLvlItems(self):

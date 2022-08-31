@@ -1,37 +1,38 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/customization/shared.py
-from collections import namedtuple, Counter, defaultdict
 import logging
-import typing
+from collections import namedtuple, Counter, defaultdict
+
 import Math
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import InfoItemBase
+from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.customization.constants import CustomizationModes
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.money import Currency, ZERO_MONEY
-from items.components.c11n_constants import CustomizationType, C11N_MASK_REGION, MAX_USERS_PROJECTION_DECALS, ProjectionDecalFormTags, SeasonType, ApplyArea, C11N_GUN_APPLY_REGIONS, UNBOUND_VEH_KEY, EMPTY_ITEM_ID
-from shared_utils import CONST_CONTAINER, isEmpty
-from skeletons.gui.server_events import IEventsCache
-from skeletons.gui.shared import IItemsCache
-from skeletons.gui.customization import ICustomizationService
-from vehicle_systems.tankStructure import TankPartIndexes, TankPartNames
-from CurrentVehicle import g_currentVehicle
 from gui.shared.utils.requesters import REQ_CRITERIA
-from vehicle_outfit.outfit import Area, SLOT_TYPE_TO_ANCHOR_TYPE_MAP, scaffold, Outfit
-from gui.impl import backport
-from gui.impl.gen import R
 from helpers import dependency
 from items import vehicles
+from items.components.c11n_constants import CustomizationType, C11N_MASK_REGION, MAX_USERS_PROJECTION_DECALS, \
+    ProjectionDecalFormTags, SeasonType, ApplyArea, C11N_GUN_APPLY_REGIONS, UNBOUND_VEH_KEY, EMPTY_ITEM_ID
+from shared_utils import CONST_CONTAINER, isEmpty
+from skeletons.gui.customization import ICustomizationService
+from skeletons.gui.server_events import IEventsCache
+from skeletons.gui.shared import IItemsCache
+from vehicle_outfit.outfit import Area, SLOT_TYPE_TO_ANCHOR_TYPE_MAP, scaffold, Outfit
+from vehicle_systems.tankStructure import TankPartIndexes, TankPartNames
+
 _logger = logging.getLogger(__name__)
 C11nId = namedtuple('C11nId', ('areaId', 'slotType', 'regionIdx'))
 C11nId.__new__.__defaults__ = (-1, -1, -1)
 C11N_ITEM_TYPE_MAP = {GUI_ITEM_TYPE.PAINT: CustomizationType.PAINT,
- GUI_ITEM_TYPE.CAMOUFLAGE: CustomizationType.CAMOUFLAGE,
- GUI_ITEM_TYPE.MODIFICATION: CustomizationType.MODIFICATION,
- GUI_ITEM_TYPE.DECAL: CustomizationType.DECAL,
- GUI_ITEM_TYPE.EMBLEM: CustomizationType.DECAL,
- GUI_ITEM_TYPE.INSCRIPTION: CustomizationType.DECAL,
+                      GUI_ITEM_TYPE.CAMOUFLAGE: CustomizationType.CAMOUFLAGE,
+                      GUI_ITEM_TYPE.MODIFICATION: CustomizationType.MODIFICATION,
+                      GUI_ITEM_TYPE.DECAL: CustomizationType.DECAL,
+                      GUI_ITEM_TYPE.EMBLEM: CustomizationType.DECAL,
+                      GUI_ITEM_TYPE.INSCRIPTION: CustomizationType.DECAL,
  GUI_ITEM_TYPE.PERSONAL_NUMBER: CustomizationType.PERSONAL_NUMBER,
  GUI_ITEM_TYPE.STYLE: CustomizationType.STYLE,
  GUI_ITEM_TYPE.PROJECTION_DECAL: CustomizationType.PROJECTION_DECAL,
@@ -136,27 +137,6 @@ class MoneyForPurchase(object):
 class AdditionalPurchaseGroups(object):
     STYLES_GROUP_ID = -1
     UNASSIGNED_GROUP_ID = -2
-
-
-class CartExchangeCreditsInfoItem(InfoItemBase):
-
-    @property
-    def itemTypeName(self):
-        pass
-
-    @property
-    def userName(self):
-        pass
-
-    @property
-    def itemTypeID(self):
-        return GUI_ITEM_TYPE.CUSTOMIZATION
-
-    def getExtraIconInfo(self):
-        return None
-
-    def getGUIEmblemID(self):
-        pass
 
 
 class CustomizationTankPartNames(TankPartNames):
@@ -440,4 +420,37 @@ def __getAppliedToRegions(areaId, slotType, vehicleDescr):
     itemTypeName = GUI_ITEM_TYPE_NAMES[slotType]
     vehiclePart = getVehiclePartByIdx(vehicleDescr, areaId)
     _, regionNames = vehiclePart.customizableVehicleAreas[itemTypeName]
-    return tuple((C11N_GUN_APPLY_REGIONS[regionName] for regionName in regionNames)) if areaId == TankPartIndexes.GUN else tuple(range(len(regionNames)))
+    return tuple(
+        (C11N_GUN_APPLY_REGIONS[regionName] for regionName in regionNames)) if areaId == TankPartIndexes.GUN else tuple(
+        range(len(regionNames)))
+
+
+class _QuestGroupWrapper(object):
+
+    def __init__(self, item):
+        self.item = item
+
+    def getGroupID(self):
+        groupID, _ = self.item.getQuestsProgressionInfo()
+        return groupID
+
+    def getGroupName(self):
+        groupID, _ = self.item.getQuestsProgressionInfo()
+        return '' if not groupID else backport.text(R.strings.vehicle_customization.questProgress.dyn(groupID)())
+
+
+class _ClassicGroupWrapper(object):
+
+    def __init__(self, item):
+        self.item = item
+
+    def getGroupID(self):
+        return self.item.groupID
+
+    def getGroupName(self):
+        return self.item.groupUserName
+
+
+def getGroupHelper(item):
+    return _QuestGroupWrapper(
+        item) if not item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isQuestsProgression else _ClassicGroupWrapper(item)

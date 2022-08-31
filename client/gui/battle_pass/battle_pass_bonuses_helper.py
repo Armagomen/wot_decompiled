@@ -7,14 +7,14 @@ from gui.impl.gen import R
 from gui.server_events.recruit_helper import getRecruitInfo
 from helpers import i18n
 from gui import makeHtmlString
-from gui.server_events.bonuses import IntelligenceBlueprintBonus, NationalBlueprintBonus, DossierBonus
+from gui.server_events.bonuses import IntelligenceBlueprintBonus, NationalBlueprintBonus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters.blueprints_requester import getVehicleCDForIntelligence, getVehicleCDForNational
 from gui.battle_pass.battle_pass_constants import BonusesLayoutConsts
 from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
 from shared_utils import first
 if typing.TYPE_CHECKING:
-    from gui.server_events.bonuses import SimpleBonus, VehicleBlueprintBonus, ItemsBonus, CustomizationsBonus, BattlePassSelectTokensBonus, BattlePassStyleProgressTokenBonus
+    pass
 _logger = logging.getLogger(__name__)
 
 class BonusesHelper(object):
@@ -79,6 +79,8 @@ class _ItemsSubTypeGetter(_BaseSubTypeGetter):
         if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
             subType = _HelperConsts.TROPHY_DEVICE_TYPE if item.isTrophy else _HelperConsts.OPTIONAL_DEVICE_TYPE
         elif item.itemTypeID == GUI_ITEM_TYPE.EQUIPMENT:
+            subType = _HelperConsts.EQUIPMENT_TYPE
+        elif item.itemTypeID == GUI_ITEM_TYPE.BATTLE_BOOSTER:
             subType = _HelperConsts.EQUIPMENT_TYPE
         return subType
 

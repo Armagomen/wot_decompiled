@@ -5,19 +5,19 @@ import Event
 from chat_shared import CHAT_ACTIONS, CHAT_RESPONSES
 from constants import USER_ACTIVE_CHANNELS_LIMIT, IS_CHINA
 from debug_utils import LOG_DEBUG
-from helpers import i18n
 from gui.shared.utils import getPlayerDatabaseID
 from messenger import g_settings
 from messenger.ext import passCensor
 from messenger.m_constants import LAZY_CHANNEL, MESSENGER_SCOPE, USER_TAG, PROTO_TYPE
-from messenger.proto.bw.ChatActionsListener import ChatActionsListener
 from messenger.proto.bw import entities
-from messenger.proto.bw.errors import ChannelNotFound, ChannelLimitReachedError
 from messenger.proto.bw import find_criteria, limits
+from messenger.proto.bw.ChatActionsListener import ChatActionsListener
+from messenger.proto.bw.errors import ChannelNotFound, ChannelLimitReachedError
 from messenger.proto.bw.wrappers import ChatActionWrapper
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.xmpp.log_output import g_logOutput, CLIENT_LOG_AREA
 from messenger.storage import storage_getter
+
 
 class ChannelsManager(ChatActionsListener):
 
@@ -134,7 +134,7 @@ class ChannelsManager(ChatActionsListener):
         channels = self.channelsStorage.getChannelsByCriteria(find_criteria.BWLazyChannelFindCriteria(LAZY_CHANNEL.ALL))
         for channel in channels:
             if channel.isJoined():
-                LOG_DEBUG('Send request to exit from lazy channel', i18n.encodeUtf8(channel.getName()))
+                LOG_DEBUG('Send request to exit from lazy channel', channel.getName())
                 self.exitFromChannel(channel.getID())
 
     def removeChannelFromClient(self, channel):

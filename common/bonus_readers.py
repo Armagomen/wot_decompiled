@@ -1,25 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/bonus_readers.py
-import time
-from typing import Union, TYPE_CHECKING
-import blueprints
-import dossiers2
-from dynamic_currencies import g_dynamicCurrenciesData
-import items
 import calendar
+import time
+from typing import TYPE_CHECKING
+
+import dossiers2
+import items
 from account_shared import validateCustomizationItem
 from battle_pass_common import NON_VEH_CD
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentTypes import isUniversalFragment
+from constants import DOSSIER_TYPE, IS_DEVELOPMENT, SEASON_TYPE_BY_NAME, EVENT_TYPE, INVOICE_LIMITS
+from customization_quests_common import validateCustomizationQuestToken
 from dossiers2.custom.cache import getCache
+from dynamic_currencies import g_dynamicCurrenciesData
 from invoices_helpers import checkAccountDossierOperation
 from items import vehicles, tankmen, utils
 from items.components.c11n_constants import SeasonType
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
-from constants import DOSSIER_TYPE, IS_DEVELOPMENT, SEASON_TYPE_BY_NAME, EVENT_TYPE, INVOICE_LIMITS
 from soft_exception import SoftException
+
 if TYPE_CHECKING:
-    from ResMgr import DataSection
+    pass
 __all__ = ['readBonusSection', 'readUTC', 'SUPPORTED_BONUSES']
 
 def bonusReaderLimitDecorator(invoiceLimit, readFunction):
@@ -457,7 +459,9 @@ def __readBonus_vehicle(bonus, _name, section, eventType, checkLimit):
         __readBonus_outfits(extra, None, section['outfits'])
     if section.has_key('ammo'):
         ammo = section['ammo'].asString
-        extra['ammo'] = [ int(item) for item in ammo.split(' ') ]
+        extra['ammo'] = [int(item) for item in ammo.split(' ')]
+    if section.has_key('unlock'):
+        extra['unlock'] = True
     vehicleBonuses = bonus.setdefault('vehicles', {})
     vehKey = vehCompDescr if vehCompDescr else vehTypeCompDescr
     if vehKey in vehicleBonuses:
@@ -640,8 +644,12 @@ def __readBonus_tokens(bonus, _name, section, eventType, checkLimit):
     token['count'] = 1
     if section.has_key('count'):
         token['count'] = section['count'].asInt
+    res = validateCustomizationQuestToken(id, token)
+    if not res[0]:
+        raise SoftException(res[1])
     if checkLimit and token['count'] > INVOICE_LIMITS.TOKENS_MAX:
-        raise SoftException('Invalid count of tankman token with id %s with amount %d when limit is %d.' % (id, token['count'], INVOICE_LIMITS.TOKENS_MAX))
+        raise SoftException('Invalid count of tankman token with id %s with amount %d when limit is %d.' % (
+        id, token['count'], INVOICE_LIMITS.TOKENS_MAX))
     return
 
 
@@ -681,9 +689,11 @@ def __readBonus_entitlement(bonus, _name, section, eventType, checkLimit):
     else:
         entitlement['count'] = 1
     if checkLimit and entitlement['count'] > INVOICE_LIMITS.ENTITLEMENTS_MAX:
-        raise SoftException('Invalid count of entitlement id %s with amount %d when limit is %d.' % (id, entitlement['count'], INVOICE_LIMITS.ENTITLEMENTS_MAX))
+        raise SoftException('Invalid count of entitlement id %s with amount %d when limit is %d.' % (
+        id, entitlement['count'], INVOICE_LIMITS.ENTITLEMENTS_MAX))
     if section.has_key('expires'):
-        entitlement['expires'] = readUTC(section, 'expires')
+        entitlement['expires'] = expires = {}
+        __readBonus_expires(id, expires, section)
 
 
 def __readBonus_currency(bonus, _name, section, eventType, checkLimit):
@@ -773,6 +783,8 @@ def __readBonus_vehicleChoice(bonus, _name, section, eventType, checkLimit):
             if 1 <= int(level) <= 10:
                 extra.setdefault('levels', set()).add(int(level))
 
+    if section.has_key('crewLvl'):
+        extra['crewLvl'] = section['crewLvl'].asInt
     bonus['demandedVehicles'] = extra
 
 
@@ -820,8 +832,6 @@ def __readBonus_optionalData(config, bonusReaders, section, eventType):
         properties['compensation'] = section['compensation'].asBool
     if section.has_key('shouldCompensated'):
         properties['shouldCompensated'] = section['shouldCompensated'].asBool
-    if section.has_key('priority'):
-        properties['priority'] = section['priority'].asInt
     if IS_DEVELOPMENT:
         if section.has_key('name'):
             properties['name'] = section['name'].asString
@@ -850,7 +860,7 @@ def __readBonus_optional(config, bonusReaders, bonus, section, eventType):
     if config.get('useBonusProbability', False) and bonusProbability is None:
         raise SoftException("Missing bonusProbability attribute in 'optional'")
     properties = subBonus.get('properties', {})
-    for property in ('compensation', 'shouldCompensated', 'priority'):
+    for property in ('compensation', 'shouldCompensated'):
         if properties.get(property, None) is not None:
             raise SoftException("Property '{}' not allowed for standalone 'optional'".format(property))
 
@@ -956,8 +966,18 @@ def __readBonus_dogTag(bonus, _name, section, eventType, checkLimit):
 def __readBonus_battlePassPoints(bonus, _name, section, eventType, checkLimit):
     count = __readIntWithTokenExpansion(section)
     if checkLimit and count > INVOICE_LIMITS.BATTLE_PASS_POINTS:
-        raise SoftException('Invalid count of battlePassPoints with amount %d when limit is %d.' % (count, INVOICE_LIMITS.BATTLE_PASS_POINTS))
+        raise SoftException('Invalid count of battlePassPoints with amount %d when limit is %d.' % (
+        count, INVOICE_LIMITS.BATTLE_PASS_POINTS))
     bonus['battlePassPoints'] = {'vehicles': {NON_VEH_CD: count}}
+
+
+def __readBonus_freePremiumCrew(bonus, _name, section, eventType, checkLimit):
+    vehLevel = section['vehLevel'].asInt
+    count = section.readInt('count', 1)
+    if 'freePremiumCrew' in bonus and vehLevel in bonus['freePremiumCrew']:
+        raise SoftException('Duplicate free premium crew vehLevel', vehLevel)
+    freePremiumCrewBonus = bonus.setdefault('freePremiumCrew', {})
+    freePremiumCrewBonus[vehLevel] = count
 
 
 def __readBonus_group(config, bonusReaders, bonus, section, eventType):
@@ -967,8 +987,8 @@ def __readBonus_group(config, bonusReaders, bonus, section, eventType):
 
 
 __BONUS_READERS = {'meta': __readMetaSection,
- 'buyAllVehicles': __readBonus_bool,
- 'buySecretVehicles': __readBonus_bool,
+                   'buyAllVehicles': __readBonus_bool,
+                   'buySecretVehicles': __readBonus_bool,
  'buySpecialVehicles': __readBonus_bool,
  'buyCommonVehicles': __readBonus_bool,
  'researchAllVehicles': __readBonus_bool,
@@ -979,24 +999,24 @@ __BONUS_READERS = {'meta': __readMetaSection,
  'premiumAmmo': __readBonus_int,
  'gold': bonusReaderLimitDecorator(INVOICE_LIMITS.GOLD_MAX, __readBonus_int),
  'credits': bonusReaderLimitDecorator(INVOICE_LIMITS.CREDITS_MAX, __readBonus_int),
- 'crystal': bonusReaderLimitDecorator(INVOICE_LIMITS.CRYSTAL_MAX, __readBonus_int),
- 'eventCoin': bonusReaderLimitDecorator(INVOICE_LIMITS.EVENT_COIN_MAX, __readBonus_int),
- 'bpcoin': bonusReaderLimitDecorator(INVOICE_LIMITS.BPCOIN_MAX, __readBonus_int),
- 'freeXP': bonusReaderLimitDecorator(INVOICE_LIMITS.FREEXP_MAX, __readBonus_int),
- 'slots': bonusReaderLimitDecorator(INVOICE_LIMITS.SLOTS_MAX, __readBonus_int),
- 'berths': bonusReaderLimitDecorator(INVOICE_LIMITS.BERTHS_MAX, __readBonus_int),
- 'premium': __readBonus_int,
- 'premium_plus': __readBonus_int,
- 'premium_vip': __readBonus_int,
- 'xp': __readBonus_int,
- 'tankmenXP': __readBonus_int,
- 'vehicleXP': __readBonus_int,
- 'trainCommander': __readBonus_int,
- 'maxVehicleLevel': __readBonus_int,
- 'xpFactor': __readBonus_factor,
- 'creditsFactor': __readBonus_factor,
- 'freeXPFactor': __readBonus_factor,
- 'tankmenXPFactor': __readBonus_factor,
+                   'crystal': bonusReaderLimitDecorator(INVOICE_LIMITS.CRYSTAL_MAX, __readBonus_int),
+                   'eventCoin': bonusReaderLimitDecorator(INVOICE_LIMITS.EVENT_COIN_MAX, __readBonus_int),
+                   'bpcoin': bonusReaderLimitDecorator(INVOICE_LIMITS.BPCOIN_MAX, __readBonus_int),
+                   'freeXP': bonusReaderLimitDecorator(INVOICE_LIMITS.FREEXP_MAX, __readBonus_int),
+                   'slots': bonusReaderLimitDecorator(INVOICE_LIMITS.SLOTS_MAX, __readBonus_int),
+                   'berths': bonusReaderLimitDecorator(INVOICE_LIMITS.BERTHS_MAX, __readBonus_int),
+                   'premium': __readBonus_int,
+                   'premium_plus': __readBonus_int,
+                   'premium_vip': __readBonus_int,
+                   'xp': __readBonus_int,
+                   'tankmenXP': __readBonus_int,
+                   'vehicleXP': __readBonus_int,
+                   'trainCommander': __readBonus_int,
+                   'maxVehicleLevel': __readBonus_int,
+                   'xpFactor': __readBonus_factor,
+                   'creditsFactor': __readBonus_factor,
+                   'freeXPFactor': __readBonus_factor,
+                   'tankmenXPFactor': __readBonus_factor,
  'vehicleXPFactor': __readBonus_factor,
  'item': __readBonus_item,
  'enhancement': __readBonus_enhancement,
@@ -1007,30 +1027,32 @@ __BONUS_READERS = {'meta': __readMetaSection,
  'vehicle': __readBonus_vehicle,
  'dossier': __readBonus_dossier,
  'tankmen': __readBonus_tankmen,
- 'customizations': __readBonus_customizations,
- 'crewSkin': __readBonus_crewSkin,
- 'entitlement': __readBonus_entitlement,
- 'rankedDailyBattles': bonusReaderLimitDecorator(INVOICE_LIMITS.RANKED_DAILY_BATTLES_MAX, __readBonus_int),
- 'rankedBonusBattles': bonusReaderLimitDecorator(INVOICE_LIMITS.RANKED_BONUS_BATTLES_MAX, __readBonus_int),
- 'dogTagComponent': __readBonus_dogTag,
- 'battlePassPoints': __readBonus_battlePassPoints,
- 'vehicleChoice': __readBonus_vehicleChoice,
- 'blueprint': __readBonus_blueprint,
- 'blueprintAny': __readBonus_blueprintAny,
- 'currency': __readBonus_currency}
+                   'customizations': __readBonus_customizations,
+                   'crewSkin': __readBonus_crewSkin,
+                   'entitlement': __readBonus_entitlement,
+                   'rankedDailyBattles': bonusReaderLimitDecorator(INVOICE_LIMITS.RANKED_DAILY_BATTLES_MAX,
+                                                                   __readBonus_int),
+                   'rankedBonusBattles': bonusReaderLimitDecorator(INVOICE_LIMITS.RANKED_BONUS_BATTLES_MAX,
+                                                                   __readBonus_int),
+                   'dogTagComponent': __readBonus_dogTag,
+                   'battlePassPoints': __readBonus_battlePassPoints,
+                   'vehicleChoice': __readBonus_vehicleChoice,
+                   'blueprint': __readBonus_blueprint,
+                   'blueprintAny': __readBonus_blueprintAny,
+                   'currency': __readBonus_currency,
+                   'freePremiumCrew': __readBonus_freePremiumCrew}
 __PROBABILITY_READERS = {'optional': __readBonus_optional,
  'oneof': __readBonus_oneof,
  'group': __readBonus_group}
 _RESERVED_NAMES = frozenset(['config',
- 'properties',
- 'limitID',
- 'probability',
- 'compensation',
- 'name',
- 'shouldCompensated',
- 'probabilityStageDependence',
- 'bonusProbability',
- 'priority'])
+                             'properties',
+                             'limitID',
+                             'probability',
+                             'compensation',
+                             'name',
+                             'shouldCompensated',
+                             'probabilityStageDependence',
+                             'bonusProbability'])
 SUPPORTED_BONUSES = frozenset(__BONUS_READERS.iterkeys())
 __SORTED_BONUSES = sorted(SUPPORTED_BONUSES)
 SUPPORTED_BONUSES_IDS = dict(((n, i) for i, n in enumerate(__SORTED_BONUSES)))
@@ -1079,10 +1101,6 @@ def __readBonusConfig(section):
         if name == 'useBonusProbability':
             config.setdefault('useBonusProbability', False)
             config['useBonusProbability'] = data.asBool
-        if name == 'showBonusInfo':
-            config['showBonusInfo'] = data.asBool
-        if name == 'showProbabilitiesInfo':
-            config['showProbabilitiesInfo'] = data.asBool
         raise SoftException('Unknown config section: {}'.format(name))
 
     limitIDsLen = sum([ len(limitID) for limitID in config.get('limits', {}) ])

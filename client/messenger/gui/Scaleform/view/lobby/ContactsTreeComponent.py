@@ -1,11 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ContactsTreeComponent.py
-from helpers.i18n import makeString
+import Event
 from gui.Scaleform.daapi.view.meta.ContactsTreeComponentMeta import ContactsTreeComponentMeta
 from gui.Scaleform.locale.MESSENGER import MESSENGER
+from helpers.i18n import makeString
+from messenger import normalizeGroupId
 from messenger.gui.Scaleform.data.contacts_data_provider import ContactsDataProvider
 from messenger.gui.Scaleform.view.lobby import ACCOUNT_NAME_MIN_CHARS_LENGTH, ACCOUNT_NAME_MAX_CHARS_LENGTH
-import Event
+
 
 class ContactsTreeComponent(ContactsTreeComponentMeta):
     LIST_EMPTY_STATE = 'listEmptyState'
@@ -20,7 +22,7 @@ class ContactsTreeComponent(ContactsTreeComponentMeta):
         return self._mainDP
 
     def onGroupSelected(self, mainGroup, groupData):
-        groupName = groupData.groupName
+        groupName = normalizeGroupId(groupData.groupName)
         self._mainDP.toggleGroup(mainGroup, groupName)
         self.onGroupToggled(mainGroup, groupName, not groupData.currentOpened)
 

@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/xml/format_by_tags.py
 import re
+
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_WARNING
 from gui.impl import backport
 from helpers import i18n
+
 _RE_FLAGS = re.M | re.U
 
 class _TagFormatter(object):
@@ -141,7 +143,7 @@ class _DateTimeFormatter(_TimeFormatter):
 
     def _getValue(self, value):
         value = self._getLocalTime(value)
-        return '{0:>s} {1:>s}'.format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value))
+        return u'{0:>s} {1:>s}'.format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value))
 
 
 _LINK_HTML = '<a href="event:{0}">{1}</a>'

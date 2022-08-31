@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/dialogs/sub_views/top_right/money_balance.py
-from functools import partial
 import typing
+from functools import partial
+
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl import backport
@@ -16,8 +17,9 @@ from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
+
 if typing.TYPE_CHECKING:
-    from frameworks.wulf import View
+    pass
 NO_WGM_TOOLTIP_DATA = {CurrencyType.GOLD: {'header': R.strings.tooltips.header.buttons.gold.header(),
                      'body': R.strings.tooltips.wallet.not_available_gold.body()},
  CurrencyType.CREDITS: {'header': R.strings.tooltips.header.buttons.credits.header(),
@@ -36,6 +38,7 @@ class MoneyBalance(ViewImpl):
         settings.model = viewModel or MoneyBalanceViewModel()
         super(MoneyBalance, self).__init__(settings)
         self._stats = self._itemsCache.items.stats
+        self._tooltips = self._initTooltips()
 
     @property
     def viewModel(self):
@@ -59,7 +62,6 @@ class MoneyBalance(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(MoneyBalance, self)._onLoading(*args, **kwargs)
         g_clientUpdateManager.addMoneyCallback(self._moneyChangeHandler)
-        self._tooltips = self._initTooltips()
         self.__setStats(self.viewModel)
 
     def _finalize(self):

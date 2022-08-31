@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/loot_box.py
 from enum import Enum
+
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items.gui_item import GUIItem
 from shared_utils import CONST_CONTAINER
+
 
 class NewYearLootBoxes(CONST_CONTAINER):
     PREMIUM = 'newYear_premium'
@@ -36,23 +38,19 @@ class LunarNYLootBoxTypes(Enum):
     SPECIAL = 'lunar_special'
 
 
-class ChinaLootBoxes(CONST_CONTAINER):
-    PREMIUM = 'china_premium'
-    COMMON = 'china_common'
-
-
 ALL_LUNAR_NY_LOOT_BOX_TYPES = ('lunar_base', 'lunar_simple', 'lunar_special')
 LUNAR_NY_LOOT_BOXES_CATEGORIES = 'LunarNY'
-CHINA_LOOT_BOXES_CATEGORIES = 'chinaLootBoxes'
 SENIORITY_AWARDS_LOOT_BOXES_TYPE = 'seniorityAwards'
-GUI_ORDER_NY = (NewYearLootBoxes.COMMON, NewYearLootBoxes.PREMIUM)
-CATEGORIES_GUI_ORDER_NY = (NewYearCategories.NEWYEAR,
- NewYearCategories.CHRISTMAS,
- NewYearCategories.ORIENTAL,
- NewYearCategories.FAIRYTALE)
+GUI_ORDER = (NewYearLootBoxes.COMMON, NewYearLootBoxes.PREMIUM)
+CATEGORIES_GUI_ORDER = (NewYearCategories.NEWYEAR,
+                        NewYearCategories.CHRISTMAS,
+                        NewYearCategories.ORIENTAL,
+                        NewYearCategories.FAIRYTALE)
+
 
 class LootBox(GUIItem):
-    __slots__ = ('__id', '__invCount', '__type', '__category', '__historyName', '__guaranteedFrequency', '__guaranteedFrequencyName')
+    __slots__ = (
+    '__id', '__invCount', '__type', '__category', '__historyName', '__guaranteedFrequency', '__guaranteedFrequencyName')
 
     def __init__(self, lootBoxID, lootBoxConfig, invCount):
         super(LootBox, self).__init__()

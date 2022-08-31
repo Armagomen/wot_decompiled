@@ -14,21 +14,21 @@ from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model im
 from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import CurrencySize
 from gui.impl.lobby.frontline.dialogs.blank_price_view import BlankPriceView
 from gui.impl.pub.dialog_window import DialogButtons
+from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Money, Currency
 from gui.shop import showBuyGoldForCrew
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.shared import IItemsCache
-from gui.shared.gui_items.gui_item_economics import ItemPrice
 from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions
 from uilogging.epic_battle.loggers import EpicBattleTooltipLogger
+
 BLANK_COST_COUNT = 1
 FULL_REUSE = 100
 
 class SkillDropDialog(DialogTemplateView):
-    __uiEpicBattleLogger = EpicBattleTooltipLogger()
     __appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__tankman', '__isBlank', '__price', '__freeDropSave100')
+    __slots__ = ('__tankman', '__isBlank', '__price', '__freeDropSave100', '__uiEpicBattleLogger')
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, tankman, price=None, isBlank=False, freeDropSave100=False, layoutID=None, uniqueID=None):
@@ -37,6 +37,7 @@ class SkillDropDialog(DialogTemplateView):
         self.__price = price
         self.__tankman = tankman
         self.__freeDropSave100 = freeDropSave100
+        self.__uiEpicBattleLogger = EpicBattleTooltipLogger()
 
     @property
     def itemPrice(self):

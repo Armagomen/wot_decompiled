@@ -1,40 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/SettingsWindow.py
 import functools
+
 import BattleReplay
 import BigWorld
-import WGC
 import VOIP
+import WGC
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COLOR_SETTINGS_TAB_IDX
-from account_helpers.settings_core.settings_constants import SETTINGS_GROUP
-from debug_utils import LOG_DEBUG, LOG_WARNING
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from account_helpers.counter_settings import getNewSettings, invalidateSettings
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.SETTINGS import SETTINGS
-from gui import DialogsInterface, g_guiResetters
-from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.utils import flashObject2Dict, decorators, graphics
-from gui.Scaleform.daapi.view.meta.SettingsWindowMeta import SettingsWindowMeta
-from gui.Scaleform.daapi.view.common.settings.SettingsParams import SettingsParams
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import APPLY_METHOD
+from account_helpers.settings_core.settings_constants import SETTINGS_GROUP
+from debug_utils import LOG_DEBUG, LOG_WARNING
+from gui import DialogsInterface, g_guiResetters
+from gui import makeHtmlString
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.common.settings.SettingsParams import SettingsParams
+from gui.Scaleform.daapi.view.meta.SettingsWindowMeta import SettingsWindowMeta
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.genConsts.SETTINGS_DIALOGS import SETTINGS_DIALOGS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.SETTINGS import SETTINGS
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.shared.formatters import icons
+from gui.shared.utils import flashObject2Dict, decorators, graphics
 from helpers import dependency
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
-from gui.Scaleform.genConsts.SETTINGS_DIALOGS import SETTINGS_DIALOGS
-from gui.shared.formatters import icons
-from gui import makeHtmlString
-from gui.impl import backport
-from gui.impl.gen import R
-from uilogging.deprecated.decorators import loggerTarget, loggerEntry, settingsLog
-from uilogging.deprecated.ibc.constants import IBC_LOG_KEYS, IBC_SETTINGS_MAP
-from uilogging.deprecated.ibc.loggers import IBCLogger
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IAnonymizerController
 from skeletons.gui.lobby_context import ILobbyContext
+
 _PAGES = (SETTINGS.GAMETITLE,
  SETTINGS.GRAFICTITLE,
  SETTINGS.SOUNDTITLE,
@@ -63,7 +62,6 @@ def _delayCall(delay, function):
         BigWorld.callback(delay, function)
 
 
-@loggerTarget(logKey=IBC_LOG_KEYS.IBC_SETTINGS_PAGE, loggerCls=IBCLogger)
 class SettingsWindow(SettingsWindowMeta):
     anonymizerController = dependency.descriptor(IAnonymizerController)
     settingsCore = dependency.descriptor(ISettingsCore)
@@ -132,7 +130,6 @@ class SettingsWindow(SettingsWindowMeta):
         BigWorld.worldDrawEnabled(False)
         BigWorld.restartGame()
 
-    @loggerEntry
     def _populate(self):
         super(SettingsWindow, self)._populate()
         dataVO = [{'label': SETTINGS.FEEDBACK_TAB_DAMAGEINDICATOR,
@@ -191,7 +188,6 @@ class SettingsWindow(SettingsWindowMeta):
             newSettings = getNewSettings()
             self.as_setCountersDataS(newSettings)
 
-    @settingsLog(argsIndex=1, preProcessAction=lambda x: flashObject2Dict(x), argMap=IBC_SETTINGS_MAP)
     def onSettingsChange(self, settingName, settingValue):
         settingValue = flashObject2Dict(settingValue)
         LOG_DEBUG('onSettingsChange', settingName, settingValue)

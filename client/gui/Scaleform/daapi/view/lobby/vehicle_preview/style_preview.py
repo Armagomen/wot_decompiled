@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/style_preview.py
 import logging
+
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.LobbySelectableView import LobbySelectableView
@@ -15,13 +16,16 @@ from gui.shared import EVENT_BUS_SCOPE, event_bus_handlers, event_dispatcher, ev
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.customization.c11n_items import getGroupFullNameResourceID
 from helpers import dependency
-from preview_selectable_logic import PreviewSelectableLogic
 from skeletons.gui.game_control import IHeroTankController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
+
+from preview_selectable_logic import PreviewSelectableLogic
+
 _SHOW_CLOSE_BTN = False
 _SHOW_BACK_BTN = True
 _logger = logging.getLogger(__name__)
+
 
 class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     __background_alpha__ = 0.0
@@ -35,6 +39,7 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         super(VehicleStylePreview, self).__init__(ctx)
         self.__ctx = ctx
         self._style = ctx['style']
+        self.__outfit = ctx.get('outfit')
         self.__vehicleCD = ctx['itemCD']
         self.__styleDescr = (ctx.get('styleDescr') or self._style.getDescription()) % {'insertion_open': '',
          'insertion_close': ''}
@@ -57,7 +62,7 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     def _populate(self):
         self.setTopPanel()
         super(VehicleStylePreview, self)._populate()
-        g_currentPreviewVehicle.selectVehicle(self.__vehicleCD, style=self._style)
+        g_currentPreviewVehicle.selectVehicle(self.__vehicleCD, style=self._style, outfit=self.__outfit)
         self.__selectedVehicleEntityId = g_currentPreviewVehicle.vehicleEntityID
         if not g_currentPreviewVehicle.isPresent() or self._style is None:
             event_dispatcher.showHangar()

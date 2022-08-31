@@ -4,31 +4,20 @@ import functools
 import logging
 import math
 from functools import partial
+
+import BattleReplay
 import BigWorld
+import CommandMapping
+import GenericComponents
 import Keys
 import Math
 import ResMgr
-from AvatarInputHandler.AimingSystems import disableShotPointCache
-from helpers.CallbackDelayer import CallbackDelayer
-import BattleReplay
-import CommandMapping
-import DynamicCameras.ArcadeCamera
-import DynamicCameras.ArtyCamera
-import DynamicCameras.DualGunCamera
-import DynamicCameras.SniperCamera
-import DynamicCameras.StrategicCamera
-import GenericComponents
-import MapCaseMode
-import RespawnDeathMode
 import aih_constants
-import cameras
 import constants
-import control_modes
-import epic_battle_death_mode
 from AvatarInputHandler import AimingSystems
 from AvatarInputHandler import aih_global_binding, gun_marker_ctrl
 from AvatarInputHandler import steel_hunter_control_modes
-from AvatarInputHandler.AimingSystems.SniperAimingSystem import SniperAimingSystem
+from AvatarInputHandler.AimingSystems import disableShotPointCache
 from AvatarInputHandler.AimingSystems.steady_vehicle_matrix import SteadyVehicleMatrixCalculator
 from AvatarInputHandler.commands.bootcamp_mode_control import BootcampModeControl
 from AvatarInputHandler.commands.dualgun_control import DualGunController
@@ -38,22 +27,38 @@ from AvatarInputHandler.commands.siege_mode_control import SiegeModeControl
 from AvatarInputHandler.commands.vehicle_upgrade_control import VehicleUpdateControl
 from AvatarInputHandler.commands.vehicle_upgrade_control import VehicleUpgradePanelControl
 from AvatarInputHandler.remote_camera_sender import RemoteCameraSender
-from AvatarInputHandler.siege_mode_player_notifications import SiegeModeSoundNotifications, SiegeModeCameraShaker, TurboshaftModeSoundNotifications
+from AvatarInputHandler.siege_mode_player_notifications import SiegeModeSoundNotifications, SiegeModeCameraShaker, \
+    TurboshaftModeSoundNotifications
+from BigWorld import SniperAimingSystem
 from Event import Event
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
+from cgf_obsolete_script.script_game_object import ScriptGameObject, ComponentDescriptor
 from constants import ARENA_PERIOD, AIMING_MODE
 from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_WARNING
 from gui import g_guiResetters, GUI_CTRL_MODE_FLAG, GUI_SETTINGS
 from gui.app_loader import settings
 from gui.battle_control import event_dispatcher as gui_event_dispatcher
 from helpers import dependency
+from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IBootcampController
-from cgf_obsolete_script.script_game_object import ScriptGameObject, ComponentDescriptor
+
+import DynamicCameras.ArcadeCamera
+import DynamicCameras.ArtyCamera
+import DynamicCameras.DualGunCamera
+import DynamicCameras.SniperCamera
+import DynamicCameras.StrategicCamera
+import MapCaseMode
+import RespawnDeathMode
+import cameras
+import control_modes
+import epic_battle_death_mode
+
 INPUT_HANDLER_CFG = 'gui/avatar_input_handler.xml'
 _logger = logging.getLogger(__name__)
+
 
 class _CTRL_TYPE(object):
     USUAL = 0
@@ -172,7 +177,10 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
         for dynamicCameraClass in _DYNAMIC_CAMERAS:
             dynamicCameraClass.enableDynamicCamera(enable)
 
-        SniperAimingSystem.setStabilizerSettings(useHorizontalStabilizer, True)
+        if isinstance(useHorizontalStabilizer, tuple):
+            SniperAimingSystem.setStabilizerSettings(*useHorizontalStabilizer)
+        else:
+            SniperAimingSystem.setStabilizerSettings(useHorizontalStabilizer, True)
 
     @staticmethod
     def enableHullLock(enable):

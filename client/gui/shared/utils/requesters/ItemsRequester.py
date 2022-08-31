@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/ItemsRequester.py
 import operator
+import typing
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict, namedtuple
-import typing
+
 import BigWorld
 import async as future_async
 import constants
@@ -22,15 +23,15 @@ from helpers import dependency
 from items import getTypeOfCompactDescr, makeIntCompactDescrByID, tankmen, vehicles
 from items.components.c11n_constants import CustomizationDisplayType, SeasonType
 from items.components.crew_skins_constants import CrewSkinType
-from nation_change.nation_change_helpers import isMainInNationGroupSafe, iterVehTypeCDsInNationGroup, iterVehiclesWithNationGroupInOrder
+from nation_change.nation_change_helpers import isMainInNationGroupSafe, iterVehTypeCDsInNationGroup, \
+    iterVehiclesWithNationGroupInOrder
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
 from skeletons.gui.game_control import IVehiclePostProgressionController
 from skeletons.gui.shared import IItemsCache, IItemsRequester
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
+
 if typing.TYPE_CHECKING:
-    import skeletons.gui.shared.utils.requesters as requesters
-    from gui.veh_post_progression.models.progression import PostProgressionItem
-    from items.vehicles import VehicleType
+    pass
 DO_LOG_BROKEN_SYNC = False
 
 def getDiffID(itemdID):

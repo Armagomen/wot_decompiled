@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/tokens.py
 from functools import partial
+
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
+
 
 class Tokens(object):
 
@@ -41,14 +43,6 @@ class Tokens(object):
         else:
             proxy = None
         self.__account._doCmdInt2(AccountCommands.CMD_LOOTBOX_OPEN, boxID, count, proxy)
-        return
-
-    def getInfoLootBox(self, boxIDs, callback):
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
-        else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_LOOTBOX_GETINFO, boxIDs, proxy)
         return
 
     def __onGetCacheResponse(self, callback, resultID):

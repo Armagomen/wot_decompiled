@@ -1,18 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/local_cache.py
 import base64
-import shelve
-from collections import defaultdict
-from contextlib import contextmanager
-import os
 import cPickle
-from threading import Lock, Thread
+import os
+import shelve
 import types
 import zlib
+from collections import defaultdict
+from contextlib import contextmanager
+from threading import Lock, Thread
+
 import BigWorld
 import Event
 from debug_utils import LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_ERROR
+from external_strings_utils import unicode_from_utf8
 from soft_exception import SoftException
+
 
 class CacheIO(object):
 
@@ -245,7 +248,7 @@ class CryptIO(RedirectIO):
 
 def makeFileLocalCachePath(space, tags, fileFormat='.dat'):
     p = os.path
-    prefsFilePath = unicode(BigWorld.wg_getPreferencesFilePath(), 'utf-8', errors='ignore')
+    prefsFilePath = unicode_from_utf8(BigWorld.wg_getPreferencesFilePath())[1]
     dirPath = p.join(p.dirname(prefsFilePath), space)
     try:
         if not os.path.isdir(dirPath):

@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/squad_finder.py
 from collections import defaultdict, namedtuple
+
 from gui.battle_control.arena_info import settings
 from soft_exception import SoftException
+
 
 class ISquadFinder(object):
     __slots__ = ()
@@ -164,7 +166,7 @@ class ContinuousNumberingFinder(_SquadFinder):
 def createSquadFinder(arenaVisitor):
     teams = arenaVisitor.type.getTeamsOnArenaRange()
     guiVisitor = arenaVisitor.gui
-    if guiVisitor.isRandomBattle() or guiVisitor.isEventBattle() or guiVisitor.isEpicBattle() or guiVisitor.isBattleRoyale() or guiVisitor.isMapbox() or guiVisitor.isFunRandom():
+    if guiVisitor.isRandomBattle() or guiVisitor.isEventBattle() or guiVisitor.isEpicBattle() or guiVisitor.isBattleRoyale() or guiVisitor.isMapbox():
         finder = TeamScopeNumberingFinder(teams)
     elif guiVisitor.isMultiTeam():
         finder = ContinuousNumberingFinder(teams)

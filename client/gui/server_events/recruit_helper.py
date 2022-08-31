@@ -1,28 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/recruit_helper.py
 import typing
+
+from account_helpers.AccountSettings import AccountSettings, RECRUIT_NOTIFICATIONS
 from constants import ENDLESS_TOKEN_TIME
+from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
+from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
+from gui.shared.gui_items import Tankman
+from helpers import dependency
+from helpers.i18n import makeString as _ms
+from items import tankmen, vehicles
+from items.components import skills_constants
+from items.components.component_constants import EMPTY_STRING
 from items.components.tankmen_components import SPECIAL_CREW_TAG
 from items.tankmen import TankmanDescr, MAX_SKILL_LEVEL
 from nations import NONE_INDEX, INDICES, NAMES as NationNames
-from items import tankmen, vehicles
-from items.components.component_constants import EMPTY_STRING
-from items.components import skills_constants
-from helpers import dependency
-from skeletons.gui.server_events import IEventsCache
-from gui.shared.gui_items import Tankman
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
-from gui.Scaleform.locale.QUESTS import QUESTS
-from helpers.i18n import makeString as _ms
-from account_helpers.AccountSettings import AccountSettings, RECRUIT_NOTIFICATIONS
-from soft_exception import SoftException
 from shared_utils import first, findFirst
+from skeletons.gui.server_events import IEventsCache
+from soft_exception import SoftException
+
 from .events_helpers import getTankmanRewardQuests
+
 if typing.TYPE_CHECKING:
-    from typing import List, Union
+    pass
 
 class RecruitGroupID(object):
     WOMEN1 = 'women1'
@@ -62,44 +65,46 @@ class RecruitSourceID(object):
     TWITCH_29 = 'twitch29'
     TWITCH_30 = 'twitch30'
     TWITCH_31 = 'twitch31'
+    TWITCH_32 = 'twitch32'
     BUFFON = 'buffon'
     LOOTBOX = 'lootbox'
     COMMANDER_MARINA = 'commander_marina'
     COMMANDER_PATRICK = 'commander_patrick'
     EVENTS = (TWITCH_0,
-     TWITCH_1,
-     TWITCH_2,
-     TWITCH_3,
-     TWITCH_4,
-     TWITCH_5,
-     TWITCH_6,
-     TWITCH_7,
-     TWITCH_8,
-     TWITCH_9,
-     COMMANDER_MARINA,
-     COMMANDER_PATRICK,
-     TWITCH_10,
-     TWITCH_11,
-     TWITCH_12,
-     TWITCH_13,
-     TWITCH_14,
-     TWITCH_15,
-     TWITCH_16,
-     TWITCH_17,
-     TWITCH_18,
-     TWITCH_19,
-     TWITCH_20,
-     TWITCH_21,
-     TWITCH_22,
-     TWITCH_23,
-     TWITCH_24,
-     TWITCH_25,
-     TWITCH_26,
-     TWITCH_27,
-     TWITCH_28,
-     TWITCH_29,
-     TWITCH_30,
-     TWITCH_31)
+              TWITCH_1,
+              TWITCH_2,
+              TWITCH_3,
+              TWITCH_4,
+              TWITCH_5,
+              TWITCH_6,
+              TWITCH_7,
+              TWITCH_8,
+              TWITCH_9,
+              COMMANDER_MARINA,
+              COMMANDER_PATRICK,
+              TWITCH_10,
+              TWITCH_11,
+              TWITCH_12,
+              TWITCH_13,
+              TWITCH_14,
+              TWITCH_15,
+              TWITCH_16,
+              TWITCH_17,
+              TWITCH_18,
+              TWITCH_19,
+              TWITCH_20,
+              TWITCH_21,
+              TWITCH_22,
+              TWITCH_23,
+              TWITCH_24,
+              TWITCH_25,
+              TWITCH_26,
+              TWITCH_27,
+              TWITCH_28,
+              TWITCH_29,
+              TWITCH_30,
+              TWITCH_31,
+              TWITCH_32)
 
 
 _NEW_SKILL = 'new_skill'

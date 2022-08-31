@@ -2,12 +2,14 @@
 # Embedded file name: scripts/client/gui/__init__.py
 import logging
 from collections import defaultdict
+
 import nations
 from constants import IS_DEVELOPMENT, HAS_DEV_RESOURCES
 from gui import promo
 from gui.GuiSettings import GuiSettings as _GuiSettings
-from helpers.html.templates import XMLCollection
 from gui.active_vehicle import ActiveVehicleSeasonType
+from helpers.html.templates import XMLCollection
+
 _logger = logging.getLogger(__name__)
 g_guiResetters = set()
 g_repeatKeyHandlers = set()
@@ -89,6 +91,8 @@ class HtmlTemplatesCache(defaultdict):
         ns = path[1] if len(path) > 1 else ''
         value = XMLCollection(domain, ns)
         value.load()
+        if isinstance(value, str):
+            value = unicode(value)
         self[key] = value
         return value
 

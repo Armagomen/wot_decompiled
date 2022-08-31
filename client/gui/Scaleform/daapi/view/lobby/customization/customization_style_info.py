@@ -1,18 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_style_info.py
 from collections import namedtuple
+
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText
 from gui.Scaleform.daapi.view.meta.CustomizationStyleInfoMeta import CustomizationStyleInfoMeta
-from gui.shared.utils.graphics import isRendererPipelineDeferred
-from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.customization.shared import C11nId, getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.utils.graphics import isRendererPipelineDeferred
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from items.components.c11n_constants import SeasonType
@@ -20,6 +21,7 @@ from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from vehicle_outfit.outfit import Area
+
 StyleInfoVO = namedtuple('StyleInfoVO', ('styleName', 'styleInfo', 'styleInfoBig', 'suitableBlock', 'styleParams'))
 ButtonVO = namedtuple('ButtonVO', ('enabled', 'label', 'disabledTooltip', 'visible'))
 ParamVO = namedtuple('ParamVO', ('iconSrc', 'paramText'))
@@ -153,13 +155,18 @@ class CustomizationStyleInfo(CustomizationStyleInfoMeta, CallbackDelayer):
             stylePrice = style.getBuyPrice().price
             moneyState = getPurchaseMoneyState(stylePrice)
             purchaseItem = first(self.__ctx.mode.getPurchaseItems())
+            tooltip = backport.text(R.strings.vehicle_customization.customization.buyDisabled.body())
             if purchaseItem is not None and purchaseItem.isFromInventory:
                 label = backport.text(R.strings.vehicle_customization.commit.apply())
-                enabled = True
+                if self.__ctx.mode.isOutfitsHasLockedItems():
+                    enabled = False
+                    tooltip = backport.text(R.strings.vehicle_customization.customization.lockedItemsApply())
+                else:
+                    enabled = True
             else:
                 label = backport.text(R.strings.vehicle_customization.commit.buy())
                 enabled = isTransactionValid(moneyState, stylePrice)
-            buttonVO = ButtonVO(enabled=enabled, label=label, disabledTooltip=backport.text(R.strings.vehicle_customization.customization.buyDisabled.body()), visible=True)._asdict()
+            buttonVO = ButtonVO(enabled=enabled, label=label, disabledTooltip=tooltip, visible=True)._asdict()
         return buttonVO
 
     def __makeParamsVO(self, style):

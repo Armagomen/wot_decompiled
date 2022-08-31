@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/opt_device.py
 import typing
+
 import adisp
-from async import async, await, await_callback
 from BWUtil import AsyncReturn
+from async import async, await, await_callback
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
@@ -11,8 +12,9 @@ from gui.impl.lobby.tank_setup.interactors.base import BaseInteractor
 from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
 from gui.shared.event_dispatcher import showTankSetupExitConfirmDialog
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.artefacts import OptionalDevice
+    pass
 
 class BaseOptDeviceInteractor(BaseInteractor):
     __slots__ = ()
@@ -41,6 +43,21 @@ class OptDeviceInteractor(BaseOptDeviceInteractor):
         vehicle.optDevices.setInstalled(*self.getItem().optDevices.layout)
         vehicle.optDevices.dynSlotType = self.getItem().optDevices.dynSlotType
         return vehicle
+
+    def getChangedList(self):
+        setOfPrevLayout = set((item.intCD for item in self.getInstalledLayout() if item is not None))
+        currentItems = []
+        vehicle = self.getItem()
+        for slotID, item in enumerate(self.getCurrentLayout()):
+            if item and item.intCD not in setOfPrevLayout:
+                if self.__canInstall(item, vehicle):
+                    currentItems.append(item)
+                else:
+                    self.setItemInCurrentLayout(slotID, None)
+                    self.onSlotAction(actionType=BaseSetupModel.REVERT_SLOT_ACTION, slotID=slotID)
+                    self.itemUpdated()
+
+        return currentItems
 
     def setItemInCurrentLayout(self, slotID, item):
         self.getCurrentLayout()[slotID] = item
@@ -169,6 +186,16 @@ class OptDeviceInteractor(BaseOptDeviceInteractor):
     @async
     def showExitConfirmDialog(self):
         changedList = self.getChangedList()
-        result = yield await(showTankSetupExitConfirmDialog(items=changedList, vehicle=self.getItem(), fromSection=self.getName(), startState=BuyAndExchangeStateEnum.BUY_NOT_REQUIRED if not changedList else None))
+        result = yield await(
+            showTankSetupExitConfirmDialog(items=changedList, vehicle=self.getItem(), fromSection=self.getName(),
+                                           startState=BuyAndExchangeStateEnum.BUY_NOT_REQUIRED if not changedList else None))
         raise AsyncReturn(result)
         return
+
+    def __canInstall(self, item, vehicle):
+        if item.isHidden and not item.isRegular:
+            isInInventory = item.isInInventory
+            if vehicle.isPostProgressionExists:
+                return isInInventory or self.getSetupLayout().getIntCDs().count(item.intCD) > 0
+            return isInInventory
+        return True

@@ -56,11 +56,8 @@ from vehicle_outfit.outfit import Area, REGIONS_BY_SLOT_TYPE, ANCHOR_TYPE_TO_SLO
 if typing.TYPE_CHECKING:
     from skeletons.gui.shared import IItemsRequester
     from items.components.c11n_components import StyleItem
-    from items.customizations import CustomizationOutfit
     from vehicle_outfit.outfit import Outfit
-    from gui.veh_post_progression.models.progression import PostProgressionItem, AvailabilityCheckResult
     from post_progression_common import VehicleState
-    from typing import Dict, Any, List, Tuple
 _logger = logging.getLogger(__name__)
 
 class VEHICLE_CLASS_NAME(CONST_CONTAINER):
@@ -79,6 +76,7 @@ VEHICLE_TYPES_ORDER = (VEHICLE_CLASS_NAME.LIGHT_TANK,
 EmblemSlotHelper = namedtuple('EmblemSlotHelper', ['tankAreaSlot', 'tankAreaId'])
 SlotHelper = namedtuple('SlotHelper', ['tankAreaSlot', 'tankAreaId'])
 VEHICLE_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(VEHICLE_TYPES_ORDER)))
+VEHICLE_TYPES_ORDER_INDICES_REVERSED = {n: i for i, n in enumerate(reversed(VEHICLE_TYPES_ORDER))}
 UNKNOWN_VEHICLE_CLASS_ORDER = 100
 
 def compareByVehTypeName(vehTypeA, vehTypeB):
@@ -536,7 +534,7 @@ class Vehicle(FittingItem):
         styleSerialNumber = ''
         if styleOutfitData is not None:
             self._isStyleInstalled = True
-            styledOutfitComponent = customizations.parseCompDescr(styleOutfitData)
+            styledOutfitComponent = customizations.parseC11sComponentDescr(styleOutfitData)
             styleProgressionLevel = styledOutfitComponent.styleProgressionLevel
             styleSerialNumber = styledOutfitComponent.serial_number
             styleIntCD = vehicles.makeIntCompactDescrByID('customizationItem', CustomizationType.STYLE, styledOutfitComponent.styleId)
@@ -1023,6 +1021,10 @@ class Vehicle(FittingItem):
     @property
     def isWheeledTech(self):
         return self._descriptor.type.isWheeledVehicle
+
+    @property
+    def isScout(self):
+        return checkForTags(self.tags, 'scout')
 
     @property
     def isTrackWithinTrack(self):
@@ -1820,7 +1822,8 @@ class Vehicle(FittingItem):
 
     def __getCustomOutfitComponent(self, proxy, season):
         customOutfitData = proxy.inventory.getOutfitData(self.intCD, season)
-        return customizations.parseCompDescr(customOutfitData) if customOutfitData is not None else self.__getEmptyOutfitComponent()
+        return customizations.parseC11sComponentDescr(
+            customOutfitData) if customOutfitData is not None else self.__getEmptyOutfitComponent()
 
     def __getStyledOutfitComponent(self, proxy, style, styleProgressionLevel, styleSerialNumber, season):
         component = deepcopy(style.outfits.get(season))
@@ -1845,7 +1848,7 @@ class Vehicle(FittingItem):
         if diff is None:
             return component.copy()
         else:
-            diffComponent = customizations.parseCompDescr(diff)
+            diffComponent = customizations.parseC11sComponentDescr(diff)
             if component.styleId != diffComponent.styleId:
                 _logger.error('Merging outfits of different styles is not allowed. ID1: %s ID2: %s', component.styleId, diffComponent.styleId)
                 return component.copy()

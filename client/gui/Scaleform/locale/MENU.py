@@ -111,6 +111,7 @@ class MENU(object):
     LOGIN_STATUS_SOCIAL_SESSION_END = '#menu:login/status/SOCIAL_SESSION_END'
     LOGIN_STATUS_ACCOUNTNOTREADY = '#menu:login/status/accountNotReady'
     LOGIN_STATUS_VERSIONMISMATCH = '#menu:login/status/versionMismatch'
+    LOGIN_STATUS_ACCESSFORBIDDENTOPERIPHERY = '#menu:login/status/accessForbiddenToPeriphery'
     LOGIN_STATUS_CENTERRESTART = '#menu:login/status/centerRestart'
     LOGIN_STATUS_CLIENT_SERVER_VERSIONS_ARE_DIFFERENT = '#menu:login/status/CLIENT_SERVER_VERSIONS_ARE_DIFFERENT'
     LOADING_GAME = '#menu:loading/game'
@@ -168,8 +169,6 @@ class MENU(object):
     LOADING_BATTLETYPES_DESC_26 = '#menu:loading/battleTypes/desc/26'
     LOADING_BATTLETYPES_28 = '#menu:loading/battleTypes/28'
     LOADING_BATTLETYPES_DESC_28 = '#menu:loading/battleTypes/desc/28'
-    LOADING_BATTLETYPES_29 = '#menu:loading/battleTypes/29'
-    LOADING_BATTLETYPES_DESC_29 = '#menu:loading/battleTypes/desc/29'
     LOADING_TEAM1 = '#menu:loading/team1'
     LOADING_TEAM2 = '#menu:loading/team2'
     LOADING_TEAMS_ALLIES = '#menu:loading/teams/allies'
@@ -736,8 +735,6 @@ class MENU(object):
     HEADERBUTTONS_BATTLE_TYPES_MAPBOX_AVAILABILITY_DAYS = '#menu:headerButtons/battle/types/mapbox/availability/days'
     HEADERBUTTONS_BATTLE_TYPES_MAPBOX_AVAILABILITY_HOURS = '#menu:headerButtons/battle/types/mapbox/availability/hours'
     HEADERBUTTONS_BATTLE_TYPES_MAPBOX_AVAILABILITY_LESSTHANHOUR = '#menu:headerButtons/battle/types/mapbox/availability/lessThanHour'
-    HEADERBUTTONS_BATTLE_TYPES_FUNRANDOM = '#menu:headerButtons/battle/types/funRandom'
-    HEADERBUTTONS_BATTLE_TYPES_FUNRANDOMSQUAD = '#menu:headerButtons/battle/types/funRandomSquad'
     HEADERBUTTONS_BATTLE_AVAILABLESINCE = '#menu:headerButtons/battle/availableSince'
     HEADERBUTTONS_BATTLE_AVAILABLESINCESOON = '#menu:headerButtons/battle/availableSinceSoon'
     HEADERBUTTONS_BATTLE_AVAILABLEUNTIL = '#menu:headerButtons/battle/availableUntil'
@@ -799,12 +796,18 @@ class MENU(object):
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_BATTLEROYALEDISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/battleRoyaleDisabled/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_UNSUTABLETOBATTLEROYALE_HEADER = '#menu:headerButtons/fightBtn/tooltip/unsutableToBattleRoyale/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_UNSUTABLETOBATTLEROYALE_BODY = '#menu:headerButtons/fightBtn/tooltip/unsutableToBattleRoyale/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMDISABLED_HEADER = '#menu:headerButtons/fightBtn/tooltip/funRandomDisabled/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMDISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/funRandomDisabled/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMNOTSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/funRandomNotSet/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMNOTSET_BODY = '#menu:headerButtons/fightBtn/tooltip/funRandomNotSet/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMVEHLIMITS_HEADER = '#menu:headerButtons/fightBtn/tooltip/funRandomVehLimits/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_FUNRANDOMVEHLIMITS_BODY = '#menu:headerButtons/fightBtn/tooltip/funRandomVehLimits/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_VEHICLEISBROKEN_HEADER = '#menu:headerButtons/fightBtn/tooltip/vehicleIsBroken/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_VEHICLEISBROKEN_BODY = '#menu:headerButtons/fightBtn/tooltip/vehicleIsBroken/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_CREWNOTFULL_HEADER = '#menu:headerButtons/fightBtn/tooltip/crewNotFull/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_CREWNOTFULL_BODY = '#menu:headerButtons/fightBtn/tooltip/crewNotFull/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_NOTSUPPORTED_HEADER = '#menu:headerButtons/fightBtn/tooltip/notSupported/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_NOTSUPPORTED_BODY = '#menu:headerButtons/fightBtn/tooltip/notSupported/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_INPREMIUMIGRONLY_HEADER = '#menu:headerButtons/fightBtn/tooltip/inPremiumIgrOnly/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_INPREMIUMIGRONLY_BODY = '#menu:headerButtons/fightBtn/tooltip/inPremiumIgrOnly/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_NOVEHICLE_HEADER = '#menu:headerButtons/fightBtn/tooltip/noVehicle/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_NOVEHICLE_BODY = '#menu:headerButtons/fightBtn/tooltip/noVehicle/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_RENTALISOVER_HEADER = '#menu:headerButtons/fightBtn/tooltip/rentalIsOver/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_RENTALISOVER_BODY = '#menu:headerButtons/fightBtn/tooltip/rentalIsOver/body'
     HEADERBUTTONS_DEFAULTCOUNTER = '#menu:headerButtons/defaultCounter'
     PVESANDBOX_QUEUE_TITLE = '#menu:pveSandbox/queue/title'
     PVESANDBOX_QUEUE_UNITS = '#menu:pveSandbox/queue/units'
@@ -1590,7 +1593,6 @@ class MENU(object):
     CONTEXTMENU_CREATEEVENTSQUAD = '#menu:contextMenu/createEventSquad'
     CONTEXTMENU_CREATEBATTLEROYALESQUAD = '#menu:contextMenu/createBattleRoyaleSquad'
     CONTEXTMENU_CREATEMAPBOXSQUAD = '#menu:contextMenu/createMapboxSquad'
-    CONTEXTMENU_CREATEFUNRANDOMSQUAD = '#menu:contextMenu/createFunRandomSquad'
     CONTEXTMENU_INVITE = '#menu:contextMenu/invite'
     CONTEXTMENU_APPEAL = '#menu:contextMenu/appeal'
     CONTEXTMENU_INCORRECTBEHAVIOR = '#menu:contextMenu/incorrectBehavior'
@@ -1726,7 +1728,6 @@ class MENU(object):
     BONUSTYPE_29 = '#menu:bonusType/29'
     BONUSTYPE_37 = '#menu:bonusType/37'
     BONUSTYPE_38 = '#menu:bonusType/38'
-    BONUSTYPE_42 = '#menu:bonusType/42'
     FORTIFICATIONCTX_ASSIGNEDPLAYERS = '#menu:fortificationCtx/assignedPlayers'
     FORTIFICATIONCTX_PREPAREORDER = '#menu:fortificationCtx/prepareOrder'
     FORTIFICATIONCTX_CLANDESCRIPTION_OPENCLANCARD = '#menu:fortificationCtx/clanDescription/openClanCard'
@@ -2092,6 +2093,7 @@ class MENU(object):
     VIEWHEADER_BACKBTN_DESCRLABEL_STORAGE = '#menu:viewHeader/backBtn/descrLabel/storage'
     VIEWHEADER_BACKBTN_DESCRLABEL_RESEARCH = '#menu:viewHeader/backBtn/descrLabel/research'
     VIEWHEADER_BACKBTN_DESCRLABEL_PREVIEW = '#menu:viewHeader/backBtn/descrLabel/preview'
+    VIEWHEADER_BACKBTN_DESCRLABEL_BATTLEMATTERS = '#menu:viewHeader/backBtn/descrLabel/battleMatters'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_USSR = '#menu:viewHeader/backBtn/descrLabel/techtree/ussr'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_GERMANY = '#menu:viewHeader/backBtn/descrLabel/techtree/germany'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_USA = '#menu:viewHeader/backBtn/descrLabel/techtree/usa'
@@ -2298,7 +2300,6 @@ class MENU(object):
      CONTEXTMENU_CREATEEVENTSQUAD,
      CONTEXTMENU_CREATEBATTLEROYALESQUAD,
      CONTEXTMENU_CREATEMAPBOXSQUAD,
-     CONTEXTMENU_CREATEFUNRANDOMSQUAD,
      CONTEXTMENU_INVITE,
      CONTEXTMENU_APPEAL,
      CONTEXTMENU_INCORRECTBEHAVIOR,
@@ -2669,86 +2670,83 @@ class MENU(object):
      TANK_PARAMS_NO_BRACKETS_MM)
     BROWSER_CUSTOMTITLE_ENUM = (BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT, BROWSER_CUSTOMTITLE_FORT_CONGRATULATION)
     LOADING_BATTLETYPES_DESC_ENUM = (LOADING_BATTLETYPES_DESC_0,
-     LOADING_BATTLETYPES_DESC_1,
-     LOADING_BATTLETYPES_DESC_2,
-     LOADING_BATTLETYPES_DESC_4,
-     LOADING_BATTLETYPES_DESC_5,
-     LOADING_BATTLETYPES_DESC_6,
-     LOADING_BATTLETYPES_DESC_7,
-     LOADING_BATTLETYPES_DESC_8,
-     LOADING_BATTLETYPES_DESC_9,
-     LOADING_BATTLETYPES_DESC_10,
-     LOADING_BATTLETYPES_DESC_11,
-     LOADING_BATTLETYPES_DESC_12,
-     LOADING_BATTLETYPES_DESC_13,
-     LOADING_BATTLETYPES_DESC_14,
-     LOADING_BATTLETYPES_DESC_15,
-     LOADING_BATTLETYPES_DESC_16,
-     LOADING_BATTLETYPES_DESC_17,
-     LOADING_BATTLETYPES_DESC_19,
-     LOADING_BATTLETYPES_DESC_20,
-     LOADING_BATTLETYPES_DESC_21,
-     LOADING_BATTLETYPES_DESC_22,
-     LOADING_BATTLETYPES_DESC_23,
-     LOADING_BATTLETYPES_DESC_24,
-     LOADING_BATTLETYPES_DESC_25,
-     LOADING_BATTLETYPES_DESC_26,
-     LOADING_BATTLETYPES_DESC_28,
-     LOADING_BATTLETYPES_DESC_29)
+                                     LOADING_BATTLETYPES_DESC_1,
+                                     LOADING_BATTLETYPES_DESC_2,
+                                     LOADING_BATTLETYPES_DESC_4,
+                                     LOADING_BATTLETYPES_DESC_5,
+                                     LOADING_BATTLETYPES_DESC_6,
+                                     LOADING_BATTLETYPES_DESC_7,
+                                     LOADING_BATTLETYPES_DESC_8,
+                                     LOADING_BATTLETYPES_DESC_9,
+                                     LOADING_BATTLETYPES_DESC_10,
+                                     LOADING_BATTLETYPES_DESC_11,
+                                     LOADING_BATTLETYPES_DESC_12,
+                                     LOADING_BATTLETYPES_DESC_13,
+                                     LOADING_BATTLETYPES_DESC_14,
+                                     LOADING_BATTLETYPES_DESC_15,
+                                     LOADING_BATTLETYPES_DESC_16,
+                                     LOADING_BATTLETYPES_DESC_17,
+                                     LOADING_BATTLETYPES_DESC_19,
+                                     LOADING_BATTLETYPES_DESC_20,
+                                     LOADING_BATTLETYPES_DESC_21,
+                                     LOADING_BATTLETYPES_DESC_22,
+                                     LOADING_BATTLETYPES_DESC_23,
+                                     LOADING_BATTLETYPES_DESC_24,
+                                     LOADING_BATTLETYPES_DESC_25,
+                                     LOADING_BATTLETYPES_DESC_26,
+                                     LOADING_BATTLETYPES_DESC_28)
     LOADING_BATTLETYPES_ENUM = (LOADING_BATTLETYPES_0,
-     LOADING_BATTLETYPES_DESC_0,
-     LOADING_BATTLETYPES_1,
-     LOADING_BATTLETYPES_DESC_1,
-     LOADING_BATTLETYPES_2,
-     LOADING_BATTLETYPES_DESC_2,
-     LOADING_BATTLETYPES_4,
-     LOADING_BATTLETYPES_DESC_4,
-     LOADING_BATTLETYPES_5,
-     LOADING_BATTLETYPES_DESC_5,
-     LOADING_BATTLETYPES_6,
-     LOADING_BATTLETYPES_DESC_6,
-     LOADING_BATTLETYPES_7,
-     LOADING_BATTLETYPES_DESC_7,
-     LOADING_BATTLETYPES_8,
-     LOADING_BATTLETYPES_DESC_8,
-     LOADING_BATTLETYPES_9,
-     LOADING_BATTLETYPES_DESC_9,
-     LOADING_BATTLETYPES_10,
-     LOADING_BATTLETYPES_DESC_10,
-     LOADING_BATTLETYPES_11,
-     LOADING_BATTLETYPES_DESC_11,
-     LOADING_BATTLETYPES_12,
-     LOADING_BATTLETYPES_DESC_12,
-     LOADING_BATTLETYPES_13,
-     LOADING_BATTLETYPES_DESC_13,
-     LOADING_BATTLETYPES_14,
-     LOADING_BATTLETYPES_DESC_14,
-     LOADING_BATTLETYPES_15,
-     LOADING_BATTLETYPES_DESC_15,
-     LOADING_BATTLETYPES_16,
-     LOADING_BATTLETYPES_DESC_16,
-     LOADING_BATTLETYPES_17,
-     LOADING_BATTLETYPES_DESC_17,
-     LOADING_BATTLETYPES_19,
-     LOADING_BATTLETYPES_DESC_19,
-     LOADING_BATTLETYPES_20,
-     LOADING_BATTLETYPES_DESC_20,
-     LOADING_BATTLETYPES_21,
-     LOADING_BATTLETYPES_DESC_21,
-     LOADING_BATTLETYPES_22,
-     LOADING_BATTLETYPES_DESC_22,
-     LOADING_BATTLETYPES_23,
-     LOADING_BATTLETYPES_DESC_23,
-     LOADING_BATTLETYPES_24,
-     LOADING_BATTLETYPES_DESC_24,
-     LOADING_BATTLETYPES_25,
-     LOADING_BATTLETYPES_DESC_25,
-     LOADING_BATTLETYPES_26,
-     LOADING_BATTLETYPES_DESC_26,
-     LOADING_BATTLETYPES_28,
-     LOADING_BATTLETYPES_DESC_28,
-     LOADING_BATTLETYPES_29,
-     LOADING_BATTLETYPES_DESC_29)
+                                LOADING_BATTLETYPES_DESC_0,
+                                LOADING_BATTLETYPES_1,
+                                LOADING_BATTLETYPES_DESC_1,
+                                LOADING_BATTLETYPES_2,
+                                LOADING_BATTLETYPES_DESC_2,
+                                LOADING_BATTLETYPES_4,
+                                LOADING_BATTLETYPES_DESC_4,
+                                LOADING_BATTLETYPES_5,
+                                LOADING_BATTLETYPES_DESC_5,
+                                LOADING_BATTLETYPES_6,
+                                LOADING_BATTLETYPES_DESC_6,
+                                LOADING_BATTLETYPES_7,
+                                LOADING_BATTLETYPES_DESC_7,
+                                LOADING_BATTLETYPES_8,
+                                LOADING_BATTLETYPES_DESC_8,
+                                LOADING_BATTLETYPES_9,
+                                LOADING_BATTLETYPES_DESC_9,
+                                LOADING_BATTLETYPES_10,
+                                LOADING_BATTLETYPES_DESC_10,
+                                LOADING_BATTLETYPES_11,
+                                LOADING_BATTLETYPES_DESC_11,
+                                LOADING_BATTLETYPES_12,
+                                LOADING_BATTLETYPES_DESC_12,
+                                LOADING_BATTLETYPES_13,
+                                LOADING_BATTLETYPES_DESC_13,
+                                LOADING_BATTLETYPES_14,
+                                LOADING_BATTLETYPES_DESC_14,
+                                LOADING_BATTLETYPES_15,
+                                LOADING_BATTLETYPES_DESC_15,
+                                LOADING_BATTLETYPES_16,
+                                LOADING_BATTLETYPES_DESC_16,
+                                LOADING_BATTLETYPES_17,
+                                LOADING_BATTLETYPES_DESC_17,
+                                LOADING_BATTLETYPES_19,
+                                LOADING_BATTLETYPES_DESC_19,
+                                LOADING_BATTLETYPES_20,
+                                LOADING_BATTLETYPES_DESC_20,
+                                LOADING_BATTLETYPES_21,
+                                LOADING_BATTLETYPES_DESC_21,
+                                LOADING_BATTLETYPES_22,
+                                LOADING_BATTLETYPES_DESC_22,
+                                LOADING_BATTLETYPES_23,
+                                LOADING_BATTLETYPES_DESC_23,
+                                LOADING_BATTLETYPES_24,
+                                LOADING_BATTLETYPES_DESC_24,
+                                LOADING_BATTLETYPES_25,
+                                LOADING_BATTLETYPES_DESC_25,
+                                LOADING_BATTLETYPES_26,
+                                LOADING_BATTLETYPES_DESC_26,
+                                LOADING_BATTLETYPES_28,
+                                LOADING_BATTLETYPES_DESC_28)
     CST_ITEM_CTX_MENU_ENUM = (CST_ITEM_CTX_MENU_BUY,
      CST_ITEM_CTX_MENU_EXCHANGE,
      CST_ITEM_CTX_MENU_BUYMORE,

@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/package_item.py
 from enum import IntEnum
+
 from frameworks.wulf import ViewModel
+
 
 class ChapterStates(IntEnum):
     ACTIVE = 0
@@ -19,7 +21,7 @@ class PackageType(IntEnum):
 class PackageItem(ViewModel):
     __slots__ = ()
 
-    def __init__(self, properties=11, commands=0):
+    def __init__(self, properties=10, commands=0):
         super(PackageItem, self).__init__(properties=properties, commands=commands)
 
     def getPackageID(self):
@@ -82,12 +84,6 @@ class PackageItem(ViewModel):
     def setExpireTime(self, value):
         self._setNumber(9, value)
 
-    def getFinalReward(self):
-        return self._getString(10)
-
-    def setFinalReward(self, value):
-        self._setString(10, value)
-
     def _initialize(self):
         super(PackageItem, self)._initialize()
         self._addNumberProperty('packageID', 0)
@@ -100,4 +96,3 @@ class PackageItem(ViewModel):
         self._addNumberProperty('currentLevel', 0)
         self._addBoolProperty('isExtra', False)
         self._addNumberProperty('expireTime', 0)
-        self._addStringProperty('finalReward', '')

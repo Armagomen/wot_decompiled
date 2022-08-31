@@ -4,7 +4,9 @@ import json
 import logging
 import types
 from encodings import utf_8
+
 from frameworks import wulf
+
 _logger = logging.getLogger(__name__)
 
 def convert(utf8String):
@@ -25,6 +27,8 @@ def doesTextExist(key):
 
 
 def makeString(key, *args, **kwargs):
+    if isinstance(key, bytes):
+        key = unicode(key)
     if not key:
         return key
     if args:
@@ -45,6 +49,8 @@ def makeString(key, *args, **kwargs):
 
 
 def makePluralString(key, pluralKey, n, *args, **kwargs):
+    if isinstance(key, bytes):
+        key = unicode(key)
     if not key:
         return key
     if args:

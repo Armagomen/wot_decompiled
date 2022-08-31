@@ -1,11 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/storage/UsersStorage.py
 import logging
-from collections import deque, defaultdict
 import types
+from collections import deque, defaultdict
+
+from messenger import normalizeGroupId
 from messenger.m_constants import USER_GUI_TYPE, BREAKERS_MAX_LENGTH, USER_TAG, MESSENGER_SCOPE, UserEntityScope
 from messenger.storage.local_cache import RevCachedStorage
+
 _logger = logging.getLogger(__name__)
+
 
 class UsersStorage(RevCachedStorage):
     __slots__ = ('__contacts', '__emptyGroups', '__openedGroups', '__clanMembersIDs', '__breakers')
@@ -258,7 +262,7 @@ class UsersStorage(RevCachedStorage):
         result = None
         emptyGroups = record.pop(0)
         if isinstance(emptyGroups, types.TupleType):
-            self.__emptyGroups = set([ group for group in emptyGroups if isinstance(group, types.StringType) ])
+            self.__emptyGroups = set([normalizeGroupId(group) for group in emptyGroups])
         contacts = record.pop(0)
         if isinstance(contacts, types.ListType):
 
@@ -275,7 +279,9 @@ class UsersStorage(RevCachedStorage):
 
             result = stateGenerator
         if record:
-            self.__openedGroups = record.pop(0) or {}
+            openedGroups = record.pop(0) or {}
+            openedGroups = {k: {normalizeGroupId(gr) for gr in v} for k, v in openedGroups.items()}
+            self.__openedGroups = openedGroups
         else:
             self.__openedGroups = {}
         return result

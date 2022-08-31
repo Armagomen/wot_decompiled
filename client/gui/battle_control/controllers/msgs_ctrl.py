@@ -1,17 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/msgs_ctrl.py
 import weakref
-import BigWorld
-from helpers import dependency
+
 import BattleReplay
+import BigWorld
 import Event
 from ReplayEvents import g_replayEvents
 from constants import ATTACK_REASON_INDICES as _AR_INDICES
 from gui.battle_control.arena_info.arena_vos import EPIC_BATTLE_KEYS
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.controllers.interfaces import IBattleController
+from helpers import dependency
 from items.battle_royale import isSpawnedBot
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 
 class _ENTITY_TYPE(object):
     UNKNOWN = 'unknown'
@@ -22,21 +24,25 @@ class _ENTITY_TYPE(object):
 
 
 _ATTACK_REASON_CODE = {_AR_INDICES['shot']: 'DEATH_FROM_SHOT',
- _AR_INDICES['fire']: 'DEATH_FROM_SHOT',
- _AR_INDICES['ramming']: 'DEATH_FROM_RAMMING',
- _AR_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION',
- _AR_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE',
- _AR_INDICES['drowning']: 'DEATH_FROM_DROWNING',
- _AR_INDICES['overturn']: 'DEATH_FROM_OVERTURN',
- _AR_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION',
- _AR_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION',
- _AR_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS',
- _AR_INDICES['recovery']: 'DEATH_FROM_RECOVERY',
- _AR_INDICES['artillery_eq']: 'DEATH_FROM_SHOT',
- _AR_INDICES['bomber_eq']: 'DEATH_FROM_SHOT',
- _AR_INDICES['minefield_eq']: 'DEATH_FROM_SHOT',
- _AR_INDICES['spawned_bot_explosion']: 'DEATH_FROM_SHOT',
- _AR_INDICES['fort_artillery_eq']: 'DEATH_FROM_SHOT'}
+                       _AR_INDICES['fire']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['ramming']: 'DEATH_FROM_RAMMING',
+                       _AR_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION',
+                       _AR_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE',
+                       _AR_INDICES['drowning']: 'DEATH_FROM_DROWNING',
+                       _AR_INDICES['overturn']: 'DEATH_FROM_OVERTURN',
+                       _AR_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION',
+                       _AR_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION',
+                       _AR_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS',
+                       _AR_INDICES['recovery']: 'DEATH_FROM_RECOVERY',
+                       _AR_INDICES['artillery_eq']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['bomber_eq']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['minefield_eq']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['spawned_bot_explosion']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['fort_artillery_eq']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['thunderStrike']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['corrodingShot']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['fireCircle']: 'DEATH_FROM_SHOT',
+                       _AR_INDICES['clingBrander']: 'DEATH_FROM_SHOT'}
 _PLAYER_KILL_ENEMY_SOUND = 'enemy_killed_by_player'
 _PLAYER_KILL_ALLY_SOUND = 'ally_killed_by_player'
 _ALLY_KILLED_SOUND = 'ally_killed_by_enemy'
@@ -106,7 +112,7 @@ class BattleMessagesController(IBattleController):
                     return
                 if targetID == avatar.inputHandler.ctrl.curVehicleID:
                     return
-            code, postfix, sound, soundExt = self.__getKillInfo(avatar, targetID, attackerID, equipmentID, reason)
+            code, postfix, sound, soundExt = self.__getKillInfo(avatar, targetID, attackerID, reason)
             if sound is not None:
                 avatar.soundNotifications.play(sound)
             if soundExt is not None:
@@ -163,7 +169,7 @@ class BattleMessagesController(IBattleController):
             postfix = '%s_%s' % (entity.upper(), target.upper())
         return (code, postfix)
 
-    def __getKillInfo(self, avatar, targetID, attackerID, equipmentID, reason):
+    def __getKillInfo(self, avatar, targetID, attackerID, reason):
         attacker = self.__getEntityString(avatar, attackerID, reason)
         target = _ENTITY_TYPE.SUICIDE
         if targetID != attackerID:
@@ -320,6 +326,7 @@ class BattleRoyaleBattleMessagesController(BattleMessagesController):
     def showVehicleKilledMessage(self, avatar, targetID, attackerID, equipmentID, reason):
         if _isVehicleSpawnedBot(targetID):
             return
+        equipmentID = 0
         super(BattleRoyaleBattleMessagesController, self).showVehicleKilledMessage(avatar, targetID, attackerID, equipmentID, reason)
 
 
@@ -339,6 +346,7 @@ class BattleRoyaleBattleMessagesPlayer(BattleMessagesPlayer):
             return
         if _isVehicleSpawnedBot(targetID):
             return
+        equipmentID = 0
         super(BattleRoyaleBattleMessagesPlayer, self).showVehicleKilledMessage(avatar, targetID, attackerID, equipmentID, reason)
 
 

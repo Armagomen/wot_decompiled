@@ -1,20 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/crewOperations/RetrainCrewWindow.py
 from CurrentVehicle import g_currentVehicle
+from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.meta.RetrainCrewWindowMeta import RetrainCrewWindowMeta
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.shop import showBuyGoldForCrew
+from gui.shared.formatters import text_styles
 from gui.shared.gui_items.processors.tankman import TankmanCrewRetraining
 from gui.shared.gui_items.serializers import packTraining
-from gui.shared.utils import decorators
 from gui.shared.money import Money, Currency
-from gui import SystemMessages
+from gui.shared.utils import decorators
+from gui.shop import showBuyGoldForCrew
 from helpers import dependency
 from items import tankmen
-from gui.shared.formatters import text_styles
 from skeletons.gui.shared import IItemsCache
+
 
 class RetrainCrewWindow(RetrainCrewWindowMeta):
     AVAILABLE_OPERATIONS = range(3)
@@ -36,6 +37,7 @@ class RetrainCrewWindow(RetrainCrewWindowMeta):
     def _populate(self):
         super(RetrainCrewWindow, self)._populate()
         g_clientUpdateManager.addMoneyCallback(self.__updateDataCallBack)
+        g_clientUpdateManager.addCallbacks({'inventory.1.compDescr': self.__onVehiclesInInventoryUpdate})
         g_currentVehicle.onChanged += self.__onCurrentVehicleChanged
         self.__updateAllData()
 
@@ -156,3 +158,8 @@ class RetrainCrewWindow(RetrainCrewWindowMeta):
             self.destroy()
         else:
             self.__updateAllData()
+
+    def __onVehiclesInInventoryUpdate(self, diff):
+        if self.__vehicle.invID in diff and diff[self.__vehicle.invID] is None:
+            self.onWindowClose()
+        return

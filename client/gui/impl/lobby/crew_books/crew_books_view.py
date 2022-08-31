@@ -21,6 +21,7 @@ from gui.impl.pub import ViewImpl
 from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgModel
 from gui.shared import events, g_eventBus, event_dispatcher
 from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.event_dispatcher import showHangar
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import sortCrew, getIconResourceName
 from gui.shared.gui_items.crew_book import sortItems
@@ -32,6 +33,7 @@ from items.components.crew_books_constants import CREW_BOOK_INVALID_TYPE, CREW_B
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 
 class CrewBooksView(ViewImpl):
     __itemsCache = descriptor(IItemsCache)
@@ -175,11 +177,17 @@ class CrewBooksView(ViewImpl):
         return
 
     def __onInventoryUpdate(self, invDiff):
-        with self.viewModel.transaction() as vm:
-            if GUI_ITEM_TYPE.TANKMAN in invDiff:
-                self.__updateTankmenListModelData(vm, invDiff[GUI_ITEM_TYPE.TANKMAN])
-            if GUI_ITEM_TYPE.CREW_BOOKS in invDiff:
-                self.__updateBooksViewModelData(vm)
+        vehsCompDescr = invDiff.get(GUI_ITEM_TYPE.VEHICLE, {}).get('compDescr', {})
+        if self.__vehicle.invID in vehsCompDescr and vehsCompDescr[self.__vehicle.invID] is None:
+            self.__onWindowClose()
+            return
+        else:
+            with self.viewModel.transaction() as vm:
+                if GUI_ITEM_TYPE.TANKMAN in invDiff:
+                    self.__updateTankmenListModelData(vm, invDiff[GUI_ITEM_TYPE.TANKMAN])
+                if GUI_ITEM_TYPE.CREW_BOOKS in invDiff:
+                    self.__updateBooksViewModelData(vm)
+            return
 
     def __updateGuiItemList(self):
         criteria = REQ_CRITERIA.CREW_ITEM.IN_ACCOUNT ^ ~REQ_CRITERIA.CREW_ITEM.BOOK_RARITIES(CREW_BOOK_RARITY.UNIVERSAL)
@@ -208,9 +216,11 @@ class CrewBooksView(ViewImpl):
     def __updateTankmenListModelData(self, screenVM, diff):
         crewListVM = screenVM.crewBookTankmenList.getItems()
         self.__vehicle = g_currentVehicle.item
+        tankmenCompDescr = diff.get('compDescr', {})
         roles = self.__vehicle.descriptor.type.crewRoles
         crew = sortCrew(self.__vehicle.crew, roles)
-        crewDiff = [ (i, tankman) for i, (_, tankman) in enumerate(crew) if tankman is not None and tankman.invID in diff['compDescr'] ]
+        crewDiff = [(i, tankman) for i, (_, tankman) in enumerate(crew) if
+                    tankman is not None and tankman.invID in tankmenCompDescr]
         for slotIdx, tankman in crewDiff:
             tankmanVM = crewListVM[slotIdx]
             tankmanVM.setRoleLevel(str(tankman.roleLevel))
@@ -238,7 +248,7 @@ class CrewBooksView(ViewImpl):
         g_clientUpdateManager.removeCallback('inventory', self.__onInventoryUpdate)
 
     def __onWindowClose(self):
-        event_dispatcher.selectVehicleInHangar(self.__vehicle.intCD)
+        showHangar()
         self.destroyWindow()
 
     @async
@@ -513,14 +523,16 @@ class CrewBooksLackView(ViewImpl):
         self.viewModel.onBuyBtnClick += self.__onBuyBtnClick
         self.viewModel.onHangarBtnClick += self.__onHangarBtnClick
         self.viewModel.onCloseBtnClick += self.__onWindowClose
+        g_clientUpdateManager.addCallbacks({'inventory.1.compDescr': self.__onVehiclesInInventoryUpdate})
 
     def __removeListeners(self):
+        g_clientUpdateManager.removeCallback('inventory.1.compDescr', self.__onVehiclesInInventoryUpdate)
         self.viewModel.onBuyBtnClick -= self.__onBuyBtnClick
         self.viewModel.onHangarBtnClick -= self.__onHangarBtnClick
         self.viewModel.onCloseBtnClick -= self.__onWindowClose
 
     def __onWindowClose(self):
-        event_dispatcher.selectVehicleInHangar(self.__vehicle.intCD)
+        showHangar()
         self.destroyWindow()
 
     @async
@@ -581,3 +593,8 @@ class CrewBooksLackView(ViewImpl):
             if i == self.THIRD_SLOT:
                 itemModel.setHasArrow(False)
             noBookList.addViewModel(itemModel)
+
+    def __onVehiclesInInventoryUpdate(self, diff):
+        if self.__vehicle.invID in diff and diff[self.__vehicle.invID] is None:
+            self.__onWindowClose()
+        return

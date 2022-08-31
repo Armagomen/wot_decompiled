@@ -3,8 +3,8 @@
 import nations
 from blueprints.BlueprintTypes import BlueprintTypes
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.NATIONS import NATIONS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen.resources import R
@@ -15,6 +15,7 @@ from gui.shared.tooltips.common import BlocksTooltipData, DynamicBlocksTooltipDa
 from gui.shared.utils.requesters.blueprints_requester import SPECIAL_BLUEPRINT_LEVEL
 from helpers import int2roman, i18n
 from helpers.blueprint_generator import g_blueprintGenerator
+
 
 class BlueprintTooltipData(BlocksTooltipData):
 
@@ -243,15 +244,16 @@ class BlueprintFragmentRandomTooltipData(BlueprintTooltipData):
         return formatters.packImageTextBlockData(desc=text_styles.main(TOOLTIPS.BLUEPRINT_BLUEPRINTFRAGMENTTOOLTIP_RANDOM_DISCOUNT), img=RES_ICONS.MAPS_ICONS_BLUEPRINTS_TOOLTIP_DISCOUNT_SMALL, imgPadding=formatters.packPadding(top=2, right=5), padding=formatters.packPadding(left=40))
 
     def __packRandomFragmentBlocks(self):
-        self._items.append(formatters.packImageTextBlockData(title=text_styles.highTitle(self._getHeader()), img=RES_ICONS.getBlueprintFragment('small', 'random'), imgPadding=formatters.packPadding(top=3), txtPadding=formatters.packPadding(left=21)))
-        descriptionBlock = formatters.packImageTextBlockData(desc=text_styles.main(self._getDescr()), img=RES_ICONS.MAPS_ICONS_BLUEPRINTS_PLUS, imgPadding=formatters.packPadding(top=0, right=5), padding=formatters.packPadding(left=40))
-        self._items.append(formatters.packBuildUpBlockData(blocks=[descriptionBlock, self.__packDiscountBlock()], gap=5, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE))
-
-    def _getHeader(self):
-        return backport.text(R.strings.tooltips.blueprint.BlueprintFragmentTooltip.random.header())
-
-    def _getDescr(self):
-        return backport.text(R.strings.tooltips.blueprint.BlueprintFragmentTooltip.random.description())
+        self._items.append(formatters.packImageTextBlockData(
+            title=text_styles.highTitle(TOOLTIPS.BLUEPRINT_BLUEPRINTFRAGMENTTOOLTIP_RANDOM_HEADER),
+            img=RES_ICONS.getBlueprintFragment('small', 'random'), imgPadding=formatters.packPadding(top=3),
+            txtPadding=formatters.packPadding(left=21)))
+        descriptionBlock = formatters.packImageTextBlockData(
+            desc=text_styles.main(TOOLTIPS.BLUEPRINT_BLUEPRINTFRAGMENTTOOLTIP_RANDOM_DESCRIPTION),
+            img=RES_ICONS.MAPS_ICONS_BLUEPRINTS_PLUS, imgPadding=formatters.packPadding(top=0, right=5),
+            padding=formatters.packPadding(left=40))
+        self._items.append(formatters.packBuildUpBlockData(blocks=[descriptionBlock, self.__packDiscountBlock()], gap=5,
+                                                           linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE))
 
 
 class BlueprintFragmentRandomNationalTooltipData(BlueprintTooltipData):

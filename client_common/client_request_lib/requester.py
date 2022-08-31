@@ -1,8 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/requester.py
-from client_request_lib.data_sources.staging import StagingDataAccessor
 from client_request_lib.data_sources.fake import FakeDataAccessor
 from client_request_lib.data_sources.gateway import GatewayDataAccessor
+from client_request_lib.data_sources.staging import StagingDataAccessor
+
 try:
     import BigWorld
 except ImportError:
@@ -359,10 +360,10 @@ class GiftSystemAccessor(BaseAccessor):
         return self._data_source.post_gift_system_gift(callback, entitlementCode, receiverID, metaInfo)
 
 
-class AgateAccessor(BaseAccessor):
+class UILoggingAccessor(BaseAccessor):
 
-    def get_inventory_entitlements(self, callback, entitlement_codes):
-        return self._data_source.get_inventory_entitlements(callback, entitlement_codes)
+    def get_uilogging_session(self, callback):
+        return self._data_source.get_uilogging_session(callback)
 
 
 class Requester(object):
@@ -385,7 +386,7 @@ class Requester(object):
     craftmachine = RequestDescriptor(CrafmachineAccessor)
     mapbox = RequestDescriptor(MapboxAccessor)
     gifts = RequestDescriptor(GiftSystemAccessor)
-    agate = RequestDescriptor(AgateAccessor)
+    uilogging = RequestDescriptor(UILoggingAccessor)
 
     @classmethod
     def create_requester(cls, url_fetcher, config, client_lang=None, user_agent=None):

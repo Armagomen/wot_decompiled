@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/sounds/ambients.py
 from collections import defaultdict
+
 import MusicControllerWWISE as _MC
 from Event import Event
 from constants import ARENA_PERIOD as _PERIOD
@@ -19,6 +20,7 @@ from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader, GuiGlobalSpaceID
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.shared.utils import IHangarSpace
+
 
 def _getViewSoundEnv(view):
     if hasattr(view, 'getDynamicSoundEnv'):
@@ -374,20 +376,29 @@ class MissionsCategoriesSoundEnv(SoundEnv):
 class MissionsPremiumSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MissionsPremiumSoundEnv, self).__init__(soundsCtrl, 'dailyMissions', filters=(SoundFilters.HANGAR_PLACE_TASKS_DAILY,))
+        super(MissionsPremiumSoundEnv, self).__init__(soundsCtrl, 'dailyMissions',
+                                                      filters=(SoundFilters.HANGAR_PLACE_TASKS_DAILY,))
 
 
 class MissionsEventsSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MissionsEventsSoundEnv, self).__init__(soundsCtrl, 'missionEvent', filters=(SoundFilters.HANGAR_PLACE_TASKS_EVENTS,))
+        super(MissionsEventsSoundEnv, self).__init__(soundsCtrl, 'missionEvent',
+                                                     filters=(SoundFilters.HANGAR_PLACE_TASKS_EVENTS,))
+
+
+class BattleMattersSoundEnv(SoundEnv):
+
+    def __init__(self, soundsCtrl):
+        super(BattleMattersSoundEnv, self).__init__(soundsCtrl, 'battleMatters',
+                                                    filters=(SoundFilters.HANGAR_PLACE_TASKS_BATTLE_MATTERS,))
 
 
 class GuiAmbientsCtrl(object):
     _spaces = {GuiGlobalSpaceID.LOGIN: LoginSpaceEnv,
-     GuiGlobalSpaceID.LOBBY: LobbySpaceEnv,
-     GuiGlobalSpaceID.BATTLE_LOADING: BattleLoadingSpaceEnv,
-     GuiGlobalSpaceID.BATTLE: BattleSpaceEnv}
+               GuiGlobalSpaceID.LOBBY: LobbySpaceEnv,
+               GuiGlobalSpaceID.BATTLE_LOADING: BattleLoadingSpaceEnv,
+               GuiGlobalSpaceID.BATTLE: BattleSpaceEnv}
     hangarSpace = dependency.descriptor(IHangarSpace)
     appLoader = dependency.descriptor(IAppLoader)
 

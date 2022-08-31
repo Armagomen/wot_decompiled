@@ -23,8 +23,6 @@ from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from items.customizations import parseCompDescr
 if typing.TYPE_CHECKING:
-    from items.customizations import SerializableComponent
-    from gui.shared.gui_items.customization.c11n_items import Style, Customization
     from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 _logger = logging.getLogger(__name__)
 
@@ -173,19 +171,26 @@ class StyledMode(CustomizationMode):
 
     def _selectItem(self, intCD, *_):
         self.selectSlot(self.STYLE_SLOT)
-        self.installItem(intCD, self._selectedSlot)
-        item = self._service.getItemByCD(intCD)
-        serverSettings = self._settingsCore.serverSettings
-        if item.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
-            wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT))
-            if not wasVisited:
-                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
-                 OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
-        elif item.isEditable:
-            wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT))
-            if not wasVisited and item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
-                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
-        return False
+        currentItem = self.getItemFromSlot(self._selectedSlot)
+        if currentItem is not None and currentItem.intCD == intCD:
+            return False
+        else:
+            self.installItem(intCD, self._selectedSlot)
+            item = self._service.getItemByCD(intCD)
+            serverSettings = self._settingsCore.serverSettings
+            if item.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
+                wasVisited = bool(
+                    serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT))
+                if not wasVisited:
+                    serverSettings.setOnceOnlyHintsSettings(
+                        {OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                         OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
+            elif item.isEditable:
+                wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT))
+                if not wasVisited and item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
+                    serverSettings.setOnceOnlyHintsSettings(
+                        {OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
+            return False
 
     def _unselectItem(self):
         return False

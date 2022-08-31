@@ -8,14 +8,15 @@ from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.ranked_battles.ranked_builders.shared_vos import buildRankTooltipVO
 from gui.shared.formatters import text_styles
 from gui.shared.money import MONEY_UNDEFINED
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE, ACTION_TOOLTIPS_STATE
 from gui.shared.utils.functions import makeTooltip, stripColorTagDescrTags
 from helpers import i18n, time_utils
-from gui.impl.gen import R
-from gui.impl import backport
+
 TXT_GAP_FOR_BIG_TITLE = 2
 TXT_GAP_FOR_SMALL_TITLE = 3
 RENDERERS_ALIGN_LEFT = 'renderers_left'
@@ -123,16 +124,21 @@ def packTextParameterWithIconBlockData(name, value, icon, linkage=BLOCKS_TOOLTIP
     return packBlockDataItem(linkage, data, padding)
 
 
-def packTitleDescParameterWithIconBlockData(title, value='', icon=None, desc=None, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TITLE_DESC_PARAMETER_WITH_ICON_BLOCK_LINKAGE, valueAtRight=False, valueWidth=-1, gap=5, titlePadding=None, valuePadding=None, iconPadding=None, padding=None, iconAlpha=1):
+def packTitleDescParameterWithIconBlockData(title, value='', icon=None, desc=None,
+                                            linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TITLE_DESC_PARAMETER_WITH_ICON_BLOCK_LINKAGE,
+                                            valueAtRight=False, valueWidth=-1, titleWidth=-1, gap=5, titlePadding=None,
+                                            valuePadding=None, iconPadding=None, padding=None, iconAlpha=1):
     data = {'name': title,
-     'value': value,
-     'valueAtRight': valueAtRight,
-     'iconAlpha': iconAlpha,
-     'gap': gap}
+            'value': value,
+            'valueAtRight': valueAtRight,
+            'iconAlpha': iconAlpha,
+            'gap': gap}
     if icon is not None:
         data['icon'] = icon
     if valueWidth != -1:
         data['valueWidth'] = valueWidth
+    if titleWidth != -1:
+        data['titleWidth'] = titleWidth
     if titlePadding is not None:
         data['titlePadding'] = titlePadding
     if valuePadding is not None:
@@ -307,7 +313,7 @@ def packImageBlockData(img=None, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=
 
 def packQuestRewardItemBlockData(img=None, overlayPath=None, overlayPadding=None, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_REWARD_ITEM_BLOCK_LINKAGE, padding=None):
     data = {'align': align,
-     'alpha': 1.0}
+            'alpha': 1.0}
     if img is not None:
         data['imagePath'] = img
     if overlayPath is not None:
@@ -317,14 +323,26 @@ def packQuestRewardItemBlockData(img=None, overlayPath=None, overlayPadding=None
     return packBlockDataItem(linkage, data, padding)
 
 
-def packBlueprintBlockData(blueprintImg, schemeImg, numCols, numRows, layout, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BLUEPRINT_BLOCK_LINKAGE, width=-1, height=-1, padding=None, alpha=1.0):
+def packQuestProgressBlockData(progress=0, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_PROGRESS_BLOCK_LINKAGE,
+                               padding=None):
+    data = {'progress': progress}
+    return packBlockDataItem(linkage, data, padding)
+
+
+def packQuestOrConditionBlockData(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_OR_CONDITION_BLOCK_LINKAGE, padding=None):
+    return packBlockDataItem(linkage, {}, padding)
+
+
+def packBlueprintBlockData(blueprintImg, schemeImg, numCols, numRows, layout, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT,
+                           linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BLUEPRINT_BLOCK_LINKAGE, width=-1, height=-1,
+                           padding=None, alpha=1.0):
     data = {'blueprintPath': blueprintImg,
-     'blueprintLayout': layout,
-     'imagePath': schemeImg,
-     'numCols': numCols,
-     'numRows': numRows,
-     'align': align,
-     'alpha': alpha}
+            'blueprintLayout': layout,
+            'imagePath': schemeImg,
+            'numCols': numCols,
+            'numRows': numRows,
+            'align': align,
+            'alpha': alpha}
     if width != -1:
         data['width'] = width
     if height != -1:

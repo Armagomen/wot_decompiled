@@ -2,7 +2,9 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/LoginView.py
 import json
 from collections import defaultdict
+
 import BigWorld
+import WWISE
 import constants
 from PlayerEvents import g_playerEvents
 from adisp import process
@@ -30,21 +32,35 @@ from helpers import getFullClientVersion, dependency, uniprof
 from helpers.i18n import makeString as _ms
 from helpers.statistics import HANGAR_LOADING_STATE
 from helpers.time_utils import makeLocalServerTime
-from login_modes import createLoginMode
-from login_modes.base_mode import INVALID_FIELDS
 from predefined_hosts import AUTO_LOGIN_QUERY_URL, AUTO_LOGIN_QUERY_ENABLED, g_preDefinedHosts
+from shared_utils import CONST_CONTAINER
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.login_manager import ILoginManager
 from skeletons.helpers.statistics import IStatisticsCollector
-_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda : INVALID_FIELDS.ALL_VALID, {LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.PWD_INVALID,
- LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
- LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,
- LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
+
+from login_modes import createLoginMode
+from login_modes.base_mode import INVALID_FIELDS
+
+_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda: INVALID_FIELDS.ALL_VALID, {
+    LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.PWD_INVALID,
+    LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
+    LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,
+    LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
+
+
+class CustomLoginStatuses(CONST_CONTAINER):
+    ANOTHER_PERIPHERY = 'another_periphery'
+    CHECKOUT_ERROR = 'checkout_error'
+    CENTER_RESTART = 'centerRestart'
+    VERSION_MISMATCH = 'versionMismatch'
+    ACCESS_FORBIDDEN_TO_PERIPHERY = 'accessForbiddenToPeriphery'
+
 
 def DialogPredicate(window):
-    return window.windowStatus in (WindowStatus.LOADING, WindowStatus.LOADED) and window.windowFlags & WindowFlags.DIALOG
+    return window.windowStatus in (
+    WindowStatus.LOADING, WindowStatus.LOADED) and window.windowFlags & WindowFlags.DIALOG
 
 
 class LoginView(LoginPageMeta):
@@ -127,6 +143,7 @@ class LoginView(LoginPageMeta):
         self.__showExitDialog()
 
     def changeAccount(self):
+        self.__clearPeripheryRouting()
         self._loginMode.changeAccount()
 
     def musicFadeOut(self):
@@ -147,6 +164,9 @@ class LoginView(LoginPageMeta):
     def startListenCsisUpdate(self, startListenCsis):
         self.loginManager.servers.startListenCsisQuery(startListenCsis)
 
+    def doUpdate(self):
+        pass
+
     @uniprof.regionDecorator(label='offline.login', scope='enter')
     def _populate(self):
         View._populate(self)
@@ -158,9 +178,11 @@ class LoginView(LoginPageMeta):
         self.connectionMgr.onKickWhileLoginReceived += self._onKickedWhileLogin
         self.connectionMgr.onQueued += self._onHandleQueue
         self.connectionMgr.onLoggedOn += self._onLoggedOn
+        self.connectionMgr.onPeripheryRoutingGroupUpdated += self.__updateServersList
         g_playerEvents.onAccountShowGUI += self._clearLoginView
         g_playerEvents.onEntityCheckOutEnqueued += self._onEntityCheckoutEnqueued
         g_playerEvents.onAccountBecomeNonPlayer += self._onAccountBecomeNonPlayer
+        g_playerEvents.onBootcampStartChoice += self.__onBootcampStartChoice
         self.as_setVersionS(getFullClientVersion())
         self.as_setCopyrightS(backport.text(R.strings.menu.copy()), backport.text(R.strings.menu.legal()))
         self.sessionProvider.getCtx().lastArenaUniqueID = None
@@ -178,6 +200,7 @@ class LoginView(LoginPageMeta):
         if self.__capsLockCallbackID is not None:
             BigWorld.cancelCallback(self.__capsLockCallbackID)
             self.__capsLockCallbackID = None
+        self.connectionMgr.onPeripheryRoutingGroupUpdated -= self.__updateServersList
         self.connectionMgr.onRejected -= self._onLoginRejected
         self.connectionMgr.onKickWhileLoginReceived -= self._onKickedWhileLogin
         self.connectionMgr.onQueued -= self._onHandleQueue
@@ -186,6 +209,7 @@ class LoginView(LoginPageMeta):
         g_playerEvents.onAccountShowGUI -= self._clearLoginView
         g_playerEvents.onEntityCheckOutEnqueued -= self._onEntityCheckoutEnqueued
         g_playerEvents.onAccountBecomeNonPlayer -= self._onAccountBecomeNonPlayer
+        g_playerEvents.onBootcampStartChoice -= self.__onBootcampStartChoice
         if self._entityEnqueueCancelCallback:
             g_eventBus.removeListener(ViewEventType.LOAD_VIEW, self._onEntityCheckoutCanceled, EVENT_BUS_SCOPE.LOBBY)
         self._serversDP.fini()
@@ -212,16 +236,23 @@ class LoginView(LoginPageMeta):
             self.__closeLoginRetryDialog()
 
     def _onKickedWhileLogin(self, peripheryID):
-        if peripheryID >= 0:
-            self.__customLoginStatus = 'another_periphery' if peripheryID else 'checkout_error'
-            if not self.__loginRetryDialogShown:
-                self.__showLoginRetryDialog({'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()),
-                 'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()),
-                 'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(), self.__getServerText(self.__customLoginStatus, self.connectionMgr.serverUserName))})
+        if peripheryID > 0:
+            self.__customLoginStatus = CustomLoginStatuses.ANOTHER_PERIPHERY
+        elif peripheryID == 0:
+            self.__customLoginStatus = CustomLoginStatuses.CHECKOUT_ERROR
         elif peripheryID == -2:
-            self.__customLoginStatus = 'centerRestart'
+            self.__customLoginStatus = CustomLoginStatuses.CENTER_RESTART
         elif peripheryID == -3:
-            self.__customLoginStatus = 'versionMismatch'
+            self.__customLoginStatus = CustomLoginStatuses.VERSION_MISMATCH
+        elif peripheryID == -4:
+            self.__customLoginStatus = CustomLoginStatuses.ACCESS_FORBIDDEN_TO_PERIPHERY
+        if not self.__loginRetryDialogShown and peripheryID >= 0:
+            self.__showLoginRetryDialog(
+                {'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()),
+                 'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()),
+                 'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(),
+                                          self.__getServerText(self.__customLoginStatus,
+                                                               self.connectionMgr.serverUserName))})
 
     def _onHandleQueue(self, queueNumber):
         serverName = self.connectionMgr.serverUserName
@@ -275,6 +306,7 @@ class LoginView(LoginPageMeta):
 
     def _onLoginRejected(self, loginStatus, responseData):
         Waiting.hide('login')
+        loginStatus = str(loginStatus)
         if not self._loginMode.skipRejectionError(loginStatus):
             if loginStatus == LOGIN_STATUS.LOGIN_REJECTED_BAN:
                 self.__loginRejectedBan(responseData)
@@ -333,8 +365,17 @@ class LoginView(LoginPageMeta):
              'message': backport.text(R.strings.waiting.message.autoLogin(), self.__getServerText('overload', self.connectionMgr.serverUserName))})
 
     def __loginRejectedWithCustomState(self):
-        self.as_setErrorMessageS(backport.text(R.strings.menu.login.status.dyn(self.__customLoginStatus)()), INVALID_FIELDS.ALL_VALID)
+        if self.__customLoginStatus == CustomLoginStatuses.ACCESS_FORBIDDEN_TO_PERIPHERY:
+            if self.connectionMgr.peripheryRoutingGroup is not None:
+                peripheriesStr = ', '.join((p.shortName for p in self.connectionMgr.availableHosts))
+            else:
+                peripheriesStr = ''
+            msg = backport.text(R.strings.menu.login.status.dyn(self.__customLoginStatus)(), peripheries=peripheriesStr)
+        else:
+            msg = backport.text(R.strings.menu.login.status.dyn(self.__customLoginStatus)())
+        self.as_setErrorMessageS(msg, INVALID_FIELDS.ALL_VALID)
         self.__clearFields(INVALID_FIELDS.ALL_VALID)
+        return
 
     def __showLoginRetryDialog(self, data):
         self._clearLoginView()
@@ -386,4 +427,13 @@ class LoginView(LoginPageMeta):
             BigWorld.quit()
 
     def __getServerText(self, key, serverName):
-        return makeHtmlString('html_templates:login/server-state', key, {'message': backport.text(R.strings.waiting.message.server.dyn(key)(), server=serverName)})
+        return makeHtmlString('html_templates:login/server-state', key, {
+            'message': backport.text(R.strings.waiting.message.server.dyn(key)(), server=serverName)})
+
+    def __onBootcampStartChoice(self):
+        WWISE.WW_eventGlobal('loginscreen_mute')
+
+    def __clearPeripheryRouting(self):
+        if self.connectionMgr.peripheryRoutingGroup is not None:
+            self.connectionMgr.setPeripheryRoutingGroup(None, None)
+        return

@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/linked_set/linkedset_hints.py
-from gui.Scaleform.daapi.view.meta.LinkedSetHintsViewMeta import LinkedSetHintsViewMeta
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.sounds.ambients import BattleResultsEnv
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
+from gui.Scaleform.daapi.view.meta.LinkedSetHintsViewMeta import LinkedSetHintsViewMeta
 from gui.server_events.bonuses import mergeBonuses
+from gui.sounds.ambients import BattleResultsEnv
+
 
 class LinkedSetHintsView(LinkedSetHintsViewMeta):
     __sound_env__ = BattleResultsEnv
@@ -41,12 +40,12 @@ class LinkedSetHintsView(LinkedSetHintsViewMeta):
         return
 
     def _getViewCtxFromMessage(self, message):
-        return {'icon': backport.image(R.images.gui.maps.icons.linkedSet.icons.dyn(message.get('icon', ''))()),
-         'title': message.get('title', ''),
-         'description': message.get('description', ''),
-         'buttonLabel': message.get('buttonLabel', ''),
-         'back': message.get('back', 'red'),
-         'awards': self._getAwards(message.get('bonuses', []))}
+        return {'icon': '',
+                'title': message.get('title', ''),
+                'description': message.get('description', ''),
+                'buttonLabel': message.get('buttonLabel', ''),
+                'back': message.get('back', 'red'),
+                'awards': self._getAwards(message.get('bonuses', []))}
 
     def _getAwards(self, bonuses):
         return [ {'icon': award['imgSource'],

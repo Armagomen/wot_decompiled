@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/client_web_api/common.py
 import logging
+
 from Event import Event
 from web.client_web_api.battle_pass import BattlePassEventHandler
 from web.client_web_api.platform import PlatformEventHandler
@@ -10,7 +11,7 @@ from web.client_web_api.shop.stats import BalanceEventHandler
 from web.client_web_api.shop.telecom_rentals import TelecomTokenEventHandler
 from web.client_web_api.shop.unified_trade_in import UnifiedTradeInEventHandler
 from web.client_web_api.util.vehicle import VehicleCompareEventHandler, VehicleStateEventHandler
-from web.client_web_api.wot_anniversary import WotAnniversaryEventHandler
+
 _logger = logging.getLogger(__name__)
 
 class WebEventSender(object):
@@ -36,13 +37,12 @@ class WebEventSender(object):
 
     def _createHandlers(self):
         return (BalanceEventHandler(self),
-         UnifiedTradeInEventHandler(self),
-         VehicleCompareEventHandler(self),
-         VehicleStateEventHandler(self),
-         ReactiveCommunicationEventHandler(self),
-         PlatformEventHandler(self),
-         RankedEventHandler(self),
-         BrowsersBridgeC2W(self),
-         TelecomTokenEventHandler(self),
-         BattlePassEventHandler(self),
-         WotAnniversaryEventHandler(self))
+                UnifiedTradeInEventHandler(self),
+                VehicleCompareEventHandler(self),
+                VehicleStateEventHandler(self),
+                ReactiveCommunicationEventHandler(self),
+                PlatformEventHandler(self),
+                RankedEventHandler(self),
+                BrowsersBridgeC2W(self),
+                TelecomTokenEventHandler(self),
+                BattlePassEventHandler(self))

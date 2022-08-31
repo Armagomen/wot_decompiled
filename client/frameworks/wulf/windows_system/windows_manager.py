@@ -1,11 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/frameworks/wulf/windows_system/windows_manager.py
 import logging
-import typing
+
 import Event
-from ..py_object_binder import PyObjectEntity
+
 from .windows_area import WindowsArea
+from ..py_object_binder import PyObjectEntity
+
 _logger = logging.getLogger(__name__)
+
 
 class WindowsManager(PyObjectEntity):
     __slots__ = ('__eManager', 'onWindowStatusChanged', 'onViewStatusChanged', '__weakref__')
@@ -30,7 +33,7 @@ class WindowsManager(PyObjectEntity):
         return
 
     def getView(self, uniqueID):
-        return self.proxy.getPyView(uniqueID)
+        return self.proxy.getPyView(int(uniqueID))
 
     def getViewByLayoutID(self, layoutID):
         return self.proxy.getPyViewByLayoutID(layoutID)

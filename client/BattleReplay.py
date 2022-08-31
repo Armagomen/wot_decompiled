@@ -1,45 +1,48 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/BattleReplay.py
 import base64
-import os
-import datetime
-import json
-import copy
 import cPickle as pickle
-import logging
+import copy
+import datetime
 import httplib
+import json
+import logging
+import os
 from collections import defaultdict
 from functools import partial
-import Math
-import BigWorld
+
 import ArenaType
-import Settings
-import CommandMapping
-import constants
-import Keys
-import Event
-import AreaDestructibles
 import BWReplay
-import TriggersManager
-from aih_constants import CTRL_MODE_NAME
+import BigWorld
+import Event
+import Math
+import constants
+from constants import ARENA_BONUS_TYPE
+from constants import ARENA_PERIOD
 from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION
-from gui import GUI_CTRL_MODE_FLAG
-from gui.SystemMessages import pushI18nMessage, SM_TYPE
-from helpers import EffectsList, isPlayerAvatar, isPlayerAccount, getFullClientVersion
+from post_progression_common import SERVER_SETTINGS_KEY
+from soft_exception import SoftException
+
+import AreaDestructibles
+import CommandMapping
+import Keys
+import Settings
+import TriggersManager
 from PlayerEvents import g_playerEvents
 from ReplayEvents import g_replayEvents
-from constants import ARENA_PERIOD
-from helpers import dependency
+from aih_constants import CTRL_MODE_NAME
+from gui import GUI_CTRL_MODE_FLAG
+from gui.SystemMessages import pushI18nMessage, SM_TYPE
 from gui.app_loader import settings
-from post_progression_common import SERVER_SETTINGS_KEY
+from helpers import EffectsList, isPlayerAvatar, isPlayerAccount, getFullClientVersion
+from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gameplay import IGameplayLogic, ReplayEventID
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-from soft_exception import SoftException
-from constants import ARENA_BONUS_TYPE
+
 _logger = logging.getLogger(__name__)
 g_replayCtrl = None
 REPLAY_FILE_EXTENSION = '.wotreplay'
@@ -84,6 +87,7 @@ class CallbackDataNames(object):
     GUN_DAMAGE_SOUND = 'gunDamagedSound'
     SHOW_AUTO_AIM_MARKER = 'showAutoAimMarker'
     HIDE_AUTO_AIM_MARKER = 'hideAutoAimMarker'
+    ON_TARGET_VEHICLE_CHANGED = 'onTargetVehicleChanged'
     MT_CONFIG_CALLBACK = 'mapsTrainingConfigurationCallback'
 
 
@@ -1042,8 +1046,8 @@ class BattleReplay(object):
     def setFpsPingLag(self, fps, ping, isLaggingNow):
         if self.isPlaying:
             return
-        self.__replayCtrl.fps = fps
-        self.__replayCtrl.ping = ping
+        self.__replayCtrl.fps = int(fps)
+        self.__replayCtrl.ping = int(ping)
         self.__replayCtrl.isLaggingNow = isLaggingNow
 
     def onClientVersionDiffers(self):
@@ -1218,13 +1222,9 @@ class BattleReplay(object):
         self.__replayCtrl.onSetEquipmentID(value)
 
     def onSetEquipmentId(self, equipmentId):
-        mapCaseMode = BigWorld.player().inputHandler.ctrls.get('mapcase', None)
         if equipmentId != -1:
             self.__equipmentId = equipmentId
             BigWorld.player().inputHandler.showGunMarker(False)
-            mapCaseMode = BigWorld.player().inputHandler.ctrls.get('mapcase', None)
-            if mapCaseMode is not None:
-                mapCaseMode.activateEquipment(equipmentId)
         else:
             BigWorld.player().inputHandler.showGunMarker(True)
             self.__equipmentId = None

@@ -5,43 +5,50 @@ import copy
 import weakref
 import zlib
 from collections import namedtuple
+
 import AccountCommands
 import BigWorld
 import ClientPrebattle
 import Event
-import BattleReplay
-from ChatManager import chatManager
 from ClientChat import ClientChat
-from ClientGlobalMap import ClientGlobalMap
 from ClientUnitMgr import ClientUnitMgr, ClientUnitBrowser
-from ContactInfo import ContactInfo
-from OfflineMapCreator import g_offlineMapCreator
-from PlayerEvents import g_playerEvents as events
-from account_helpers import AccountSyncData, Inventory, DossierCache, Shop, Stats, QuestProgress, CustomFilesCache, BattleResultsCache, ClientGoodies, client_blueprints, client_recycle_bin, AccountSettings, client_anonymizer, ClientBattleRoyale
-from account_helpers.dog_tags import DogTags
-from account_helpers.maps_training import MapsTraining
-from account_helpers.offers.sync_data import OffersSyncData
-from account_helpers import ClientInvitations, vehicle_rotation
-from account_helpers import client_ranked, ClientBadges
-from account_helpers import client_epic_meta_game, tokens
-from account_helpers.AccountSettings import CURRENT_VEHICLE
-from account_helpers.battle_pass import BattlePassManager
-from account_helpers.festivity_manager import FestivityManager
-from account_helpers.game_restrictions import GameRestrictions
-from account_helpers.renewable_subscription import RenewableSubscription
-from account_helpers.resource_well import ResourceWell
-from account_helpers.telecom_rentals import TelecomRentals
-from account_helpers.settings_core import IntUserSettings
-from account_helpers.session_statistics import SessionStatistics
-from account_helpers.spa_flags import SPAFlags
-from account_helpers.gift_system import GiftSystem
-from account_helpers.trade_in import TradeIn
 from account_shared import NotificationItem, readClientServerVersion
 from adisp import process
-from bootcamp.Bootcamp import g_bootcamp
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE, EVENT_CLIENT_DATA
 from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE, ARENA_GAMEPLAY_MASK_DEFAULT
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_WARNING
+from shared_utils.account_helpers.diff_utils import synchronizeDicts
+from soft_exception import SoftException
+from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN
+
+import BattleReplay
+from ChatManager import chatManager
+from ClientGlobalMap import ClientGlobalMap
+from ContactInfo import ContactInfo
+from OfflineMapCreator import g_offlineMapCreator
+from PlayerEvents import g_playerEvents as events
+from account_helpers import AccountSyncData, Inventory, DossierCache, Shop, Stats, QuestProgress, CustomFilesCache, \
+    BattleResultsCache, ClientGoodies, client_blueprints, client_recycle_bin, AccountSettings, client_anonymizer, \
+    ClientBattleRoyale
+from account_helpers import ClientInvitations, vehicle_rotation
+from account_helpers import client_epic_meta_game, tokens
+from account_helpers import client_ranked, ClientBadges
+from account_helpers.AccountSettings import CURRENT_VEHICLE
+from account_helpers.battle_pass import BattlePassManager
+from account_helpers.dog_tags import DogTags
+from account_helpers.festivity_manager import FestivityManager
+from account_helpers.game_restrictions import GameRestrictions
+from account_helpers.gift_system import GiftSystem
+from account_helpers.maps_training import MapsTraining
+from account_helpers.offers.sync_data import OffersSyncData
+from account_helpers.renewable_subscription import RenewableSubscription
+from account_helpers.resource_well import ResourceWell
+from account_helpers.session_statistics import SessionStatistics
+from account_helpers.settings_core import IntUserSettings
+from account_helpers.spa_flags import SPAFlags
+from account_helpers.telecom_rentals import TelecomRentals
+from account_helpers.trade_in import TradeIn
+from bootcamp.Bootcamp import g_bootcamp
 from gui.Scaleform.Waiting import Waiting
 from gui.shared.ClanCache import g_clanCache
 from gui.wgnc import g_wgncProvider
@@ -52,8 +59,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils import IHangarSpace
-from soft_exception import SoftException
-from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN
+
 StreamData = namedtuple('StreamData', ['data',
  'isCorrupted',
  'origPacketLen',
@@ -138,11 +144,11 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self.name = 'offline_account'
         className = self.__class__.__name__
         if g_accountRepository is not None and g_accountRepository.className != className:
-            self.connectionMgr.onDisconnected -= _delAccountRepository
-            _delAccountRepository()
+            self.connectionMgr.onDisconnected -= delAccountRepository
+            delAccountRepository()
         if g_accountRepository is None:
             g_accountRepository = _AccountRepository(self.name, className, self.initialServerSettings)
-            self.connectionMgr.onDisconnected += _delAccountRepository
+            self.connectionMgr.onDisconnected += delAccountRepository
         self.contactInfo = g_accountRepository.contactInfo
         self.syncData = g_accountRepository.syncData
         self.serverSettings = g_accountRepository.serverSettings
@@ -223,6 +229,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.personalMissionsLock = g_accountRepository.personalMissionsLock
         self.battleQueueType = QUEUE_TYPE.UNKNOWN
         self.platformBlueprintsConvertSaleLimits = g_accountRepository.platformBlueprintsConvertSaleLimits
+        self.freePremiumCrew = g_accountRepository.freePremiumCrew
         self.__onCmdResponse = {}
         self.__onStreamComplete = {}
         self.__objectsSelectionEnabled = True
@@ -812,14 +819,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             proxy = lambda requestID, resultID, errorStr, ext=[]: callback(resultID, errorStr, ext)
             self._doCmdInt3(AccountCommands.CMD_REQ_MAPS_TRAINING_INITIAL_CONFIGURATION, accountID, 0, 0, proxy)
 
-    def enqueueFunRandom(self, vehInvID):
-        if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.FUN_RANDOM, vehInvID])
-
-    def dequeueFunRandom(self):
-        if not events.isPlayerEntityChanging:
-            self.base.doCmdInt(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_FROM_BATTLE_QUEUE, QUEUE_TYPE.FUN_RANDOM)
-
     def createArenaFromQueue(self):
         if not events.isPlayerEntityChanging:
             self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_FORCE_QUEUE, 0, 0, 0)
@@ -1233,7 +1232,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self.__synchronizeCacheDict(self.personalMissionsLock, diff.get('cache', None), 'potapovQuestIDs', 'replace', events.onPMLocksChanged)
             self.__synchronizeCacheDict(self.dailyQuests, diff, 'dailyQuests', 'replace', events.onDailyQuestsInfoChange)
             self.__synchronizeCacheSimpleValue('globalRating', diff.get('account', None), 'globalRating', events.onAccountGlobalRatingChanged)
-            self.__synchronizeCacheDict(self.platformBlueprintsConvertSaleLimits, diff, 'platformBlueprintsConvertSaleLimits', 'replace', events.onPlatformBlueprintsConvertSaleLimits)
+            self.__synchronizeCacheDict(self.platformBlueprintsConvertSaleLimits, diff,
+                                        'platformBlueprintsConvertSaleLimits', 'replace',
+                                        events.onPlatformBlueprintsConvertSaleLimits)
+            synchronizeDicts(diff.get('freePremiumCrew', {}), self.freePremiumCrew)
             events.onClientUpdated(diff, not triggerEvents)
             if triggerEvents and not isFullSync:
                 for vehTypeCompDescr in diff.get('stats', {}).get('eliteVehicles', ()):
@@ -1474,6 +1476,7 @@ class _AccountRepository(object):
         self.giftSystem = GiftSystem(self.syncData, self.commandProxy)
         self.gameRestrictions = GameRestrictions(self.syncData)
         self.platformBlueprintsConvertSaleLimits = {}
+        self.freePremiumCrew = {}
         self.gMap = ClientGlobalMap()
         self.onTokenReceived = Event.Event()
         self.requestID = AccountCommands.REQUEST_ID_UNRESERVED_MIN
@@ -1483,9 +1486,9 @@ class _AccountRepository(object):
         return self.serverSettings['file_server']
 
 
-def _delAccountRepository():
+def delAccountRepository():
     global g_accountRepository
-    LOG_DEBUG('_delAccountRepository')
+    LOG_DEBUG('delAccountRepository')
     if g_accountRepository is None:
         return
     else:

@@ -1,48 +1,50 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/hangar_vehicle_appearance.py
 import logging
-import weakref
 import math
+import weakref
 from collections import namedtuple
-from typing import TYPE_CHECKING
 from functools import partial
+from typing import TYPE_CHECKING
+
 import BigWorld
+import CGF
 import Event
+import GenericComponents
 import Math
 import VehicleStickers
 import Vehicular
 import math_utils
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
-from items.components.c11n_constants import EASING_TRANSITION_DURATION
 from gui import g_tankActiveCamouflage
+from gui.ClientHangarSpace import hangarCFG
+from gui.battle_control.vehicle_getter import hasTurretRotator
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
+from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.simple_turret_rotator import SimpleTurretRotator
-from skeletons.gui.customization import ICustomizationService
-from vehicle_outfit.outfit import Area, ANCHOR_TYPE_TO_SLOT_TYPE_MAP, SLOT_TYPES
-from gui.shared.gui_items.customization.slots import SLOT_ASPECT_RATIO, BaseCustomizationSlot, EmblemSlot, getProgectionDecalAspect
+from gui.shared.gui_items.customization.slots import SLOT_ASPECT_RATIO, BaseCustomizationSlot, EmblemSlot, \
+    getProgectionDecalAspect
 from gui.shared.items_cache import CACHE_SYNC_REASON
+from gui.simple_turret_rotator import SimpleTurretRotator
 from helpers import dependency
 from items.components.c11n_constants import ApplyArea
+from items.components.c11n_constants import EASING_TRANSITION_DURATION
 from skeletons.account_helpers.settings_core import ISettingsCore
+from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.turret_gun_angles import ITurretAndGunAngles
+from vehicle_outfit.outfit import Area, ANCHOR_TYPE_TO_SLOT_TYPE_MAP, SLOT_TYPES
 from vehicle_systems import camouflages
 from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
+from vehicle_systems.stricted_loading import makeCallbackWeak
 from vehicle_systems.tankStructure import ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes
 from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames
-from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
-from vehicle_systems.stricted_loading import makeCallbackWeak
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
-from gui.shared import g_eventBus, EVENT_BUS_SCOPE
-from gui.ClientHangarSpace import hangarCFG
-from gui.battle_control.vehicle_getter import hasTurretRotator
-import GenericComponents
-import CGF
+
 if TYPE_CHECKING:
-    from vehicle_outfit.outfit import Outfit as TOutfit
-    from items.vehicles import VehicleDescrType
+    pass
 _SHOULD_CHECK_DECAL_UNDER_GUN = True
 _PROJECTION_DECAL_OVERLAPPING_FACTOR = 0.7
 _HANGAR_TURRET_SHIFT = math.pi / 8
@@ -423,11 +425,19 @@ class HangarVehicleAppearance(ScriptGameObject):
         if buildInd != self.__curBuildInd:
             return
         self.__clearModelAnimators()
-        self.__modelAnimators = camouflages.getModelAnimators(outfit, self.__vDesc, self.__spaceId, resourceRefs, self.compoundModel)
+        self.__modelAnimators = camouflages.getModelAnimators(outfit, self.__vDesc, self.__spaceId, resourceRefs,
+                                                              self.compoundModel)
+        for modelAnimator in self.__modelAnimators:
+            modelAnimator.animator.setEnabled(True)
+            modelAnimator.animator.start()
+
         if not self.__isVehicleDestroyed:
-            self.__modelAnimators.extend(camouflages.getAttachmentsAnimators(self.__attachments, self.__spaceId, resourceRefs, self.compoundModel))
+            self.__modelAnimators.extend(
+                camouflages.getAttachmentsAnimators(self.__attachments, self.__spaceId, resourceRefs,
+                                                    self.compoundModel))
         from vehicle_systems import model_assembler
-        model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments, self.__modelAnimators)
+        model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments,
+                                                      self.__modelAnimators)
         for modelAnimator in self.__modelAnimators:
             modelAnimator.animator.start()
 
@@ -540,7 +550,9 @@ class HangarVehicleAppearance(ScriptGameObject):
         BigWorld.player().stats.get('clanDBID', callback)
 
     def __onClanDBIDRetrieved(self, _, clanID):
-        self.__vehicleStickers.setClanID(clanID)
+        if self.__vehicleStickers is not None:
+            self.__vehicleStickers.setClanID(clanID)
+        return
 
     def __setupModel(self, buildIdx):
         self.__assembleModel()

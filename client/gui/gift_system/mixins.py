@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/gift_system/mixins.py
-import typing
 from gifts.gifts_common import GiftEventID, GiftEventState
 from gui.gift_system.constants import HubUpdateReason
-from gui.gift_system.hubs.base.hub_core import IGiftEventHub
 from gui.gift_system.wrappers import filterGiftHubsAction
 from helpers import dependency
 from skeletons.gui.game_control import IGiftSystemController
@@ -52,7 +50,7 @@ class GiftEventHubWatcher(object):
 
     @filterGiftHubsAction(_GIFT_EVENT_ID)
     def __onHubsCreation(self, *_):
-        self._eventHub = self.__giftsController.getEventHub(self._GIFT_EVENT_ID)
+        self._eventHub = self.__giftsController.getEventHub(GiftEventID.NY_HOLIDAYS)
         self._eventHub.onHubUpdated += self._onGiftHubUpdate
         self._onGiftHubUpdate(HubUpdateReason.SETTINGS)
 

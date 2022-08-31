@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_view.py
 from account_helpers.settings_core.settings_constants import BattlePassStorageKeys
+from frameworks.wulf import ViewStatus
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.MissionsBattlePassViewMeta import MissionsBattlePassViewMeta
@@ -76,24 +77,27 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
         super(BattlePassViewsHolderComponent, self)._dispose()
 
     def _addInjectContentListeners(self):
-        self._injectView.viewModel.onViewLoaded += self.__onViewLoaded
+        self._injectView.onStatusChanged += self.__onViewLoaded
 
     def _removeInjectContentListeners(self):
-        self._injectView.viewModel.onViewLoaded -= self.__onViewLoaded
+        self._injectView.onStatusChanged -= self.__onViewLoaded
 
     def _makeInjectView(self, layoutID=None, chapterID=0):
         self.as_setWaitingVisibleS(True)
         return _VIEWS[layoutID](chapterID=chapterID)
 
     def __needTakeDefault(self, layoutID, chapterID):
-        return layoutID not in _VIEWS or layoutID == _R_VIEWS.BattlePassProgressionsView() and chapterID and not self.__battlePassController.isChapterExists(chapterID)
+        return layoutID not in _VIEWS or layoutID == _R_VIEWS.BattlePassProgressionsView() and chapterID and not self.__battlePassController.isChapterExists(
+            chapterID)
 
     def __needReload(self, layoutID):
-        return self._injectView is None or self._injectView.layoutID != layoutID or self._injectView.layoutID in (_R_VIEWS.BattlePassProgressionsView(), _R_VIEWS.ChapterChoiceView())
+        return self._injectView is None or self._injectView.layoutID != layoutID or self._injectView.layoutID in (
+        _R_VIEWS.BattlePassProgressionsView(), _R_VIEWS.ChapterChoiceView())
 
-    def __onViewLoaded(self):
-        self.as_showViewS()
-        self.as_setWaitingVisibleS(False)
+    def __onViewLoaded(self, state):
+        if state == ViewStatus.LOADED:
+            self.as_showViewS()
+            self.as_setWaitingVisibleS(False)
 
     def __onSettingsChanged(self, *_):
         if self.__isDummyVisible:
@@ -134,6 +138,7 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
         elif not self.__isIntroVideoIsShowing:
             self.__showExtraVideoIfNeeded()
 
+    @nextTick
     def __showExtraVideoIfNeeded(self):
         if not self.__hasTrueInBPStorage(_EXTRA_VIDEO_SHOWN) and self.__battlePassController.hasExtra():
             _showOverlayVideo(getExtraIntroVideoURL())

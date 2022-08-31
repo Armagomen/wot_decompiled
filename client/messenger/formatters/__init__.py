@@ -1,13 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/formatters/__init__.py
 import logging
-from time import gmtime, time as getTime
 from collections import namedtuple
+from time import gmtime, time as getTime
+
 from constants import NC_CONTEXT_ITEM_TYPE
 from gui.impl import backport
-from helpers import time_utils, i18n
+from helpers import time_utils
 from messenger import g_settings
+
 _logger = logging.getLogger(__name__)
+
 
 class TimeFormatter(object):
     _messageDateTimeFormat = {0: 'getMessageEmptyFormatU',
@@ -130,7 +133,7 @@ class NCContextItemFormatter(object):
 
     @classmethod
     def getStringFormat(cls, value):
-        return i18n.encodeUtf8(value)
+        return unicode(value)
 
     @classmethod
     def _makeLocalTimeString(cls, value, formatter):

@@ -1,21 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/formatters.py
+import logging
 import re
 import types
 from collections import namedtuple
-import logging
+
 import ArenaType
 from constants import ARENA_BONUS_TYPE, GAMEPLAY_NAMES_WITH_DISABLED_QUESTS
 from gui import makeHtmlString
+from gui.Scaleform.genConsts.QUEST_AWARD_BLOCK_ALIASES import QUEST_AWARD_BLOCK_ALIASES
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.settings import ICONS_SIZES
 from gui.impl import backport
-from gui.Scaleform.genConsts.QUEST_AWARD_BLOCK_ALIASES import QUEST_AWARD_BLOCK_ALIASES
 from gui.shared.formatters import text_styles, icons as gui_icons
 from gui.shared.money import Currency
 from helpers import i18n
 from shared_utils import CONST_CONTAINER
+
 COMPLEX_TOKEN = 'complex_token'
 COMPLEX_TOKEN_TEMPLATE = 'img:(?P<styleID>.+):(?P<webID>.+)'
 TokenComplex = namedtuple('TokenComplex', 'isDisplayable styleID webID')
@@ -375,7 +377,7 @@ def getMapName(arenaTypeID):
         return
     else:
         arenaType = ArenaType.g_cache[arenaTypeID]
-        if arenaType.gameplayName != 'ctf':
+        if arenaType.gameplayName not in ('ctf', 'maps_training'):
             label = None
             if arenaType.gameplayName not in GAMEPLAY_NAMES_WITH_DISABLED_QUESTS:
                 label = '%s (%s)' % (arenaType.name, i18n.makeString('#arenas:type/%s/name' % arenaType.gameplayName))

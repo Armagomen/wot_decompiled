@@ -2,16 +2,18 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/quests.py
 import constants
 from CurrentVehicle import g_currentVehicle
+from battle_royale.gui.Scaleform.daapi.view.lobby.tooltips.battle_royale_tooltip_quest_helper import \
+    getQuestsDescriptionForHangarFlag, getQuestTooltipBlock
 from gui import makeHtmlString
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.server_events import events_helpers
 from gui.server_events.awards_formatters import TokenBonusFormatter, PreformattedBonus, LABEL_ALIGN
 from gui.server_events.bonuses import CustomizationsBonus
@@ -26,13 +28,14 @@ from gui.shared.utils.functions import makeTooltip
 from helpers import dependency, time_utils
 from helpers.i18n import makeString as _ms
 from shared_utils import findFirst
-from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.game_control import IQuestsController, IRankedBattlesController, IBattleRoyaleController
-from battle_royale.gui.Scaleform.daapi.view.lobby.tooltips.battle_royale_tooltip_quest_helper import getQuestsDescriptionForHangarFlag, getQuestTooltipBlock
+from skeletons.gui.server_events import IEventsCache
+
 _MAX_AWARDS_PER_TOOLTIP = 5
 _MAX_QUESTS_PER_TOOLTIP = 4
 _MAX_BONUSES_PER_QUEST = 2
 _RENT_TYPES = ('rentDays', 'rentBattles', 'rentWins')
+
 
 class _StringTokenBonusFormatter(TokenBonusFormatter):
 
@@ -58,13 +61,11 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
         self._setMargins(afterBlock=0)
         self._setWidth(297)
 
-    def _getQuests(self, vehicle):
-        return sorted(self._questController.getCurrentModeQuestsForVehicle(vehicle, True), key=events_helpers.questsSortFunc)
-
     def _packBlocks(self, *args, **kwargs):
         items = super(QuestsPreviewTooltipData, self)._packBlocks()
         vehicle = g_currentVehicle.item
-        quests = self._getQuests(vehicle)
+        quests = sorted(self._questController.getCurrentModeQuestsForVehicle(vehicle, True),
+                        key=events_helpers.questsSortFunc)
         if quests:
             items.append(self._getHeader(len(quests), vehicle.shortUserName, R.strings.tooltips.hangar.header.quests.description.vehicle()))
             for quest in quests:
@@ -73,7 +74,7 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
                     break
 
             rest = len(quests) - len(items) + 1
-            if rest > 0 and self._isShowBottom(vehicle):
+            if rest > 0:
                 items.append(self._getBottom(rest))
         elif not self.__battleRoyaleController.isBattleRoyaleMode():
 
@@ -87,8 +88,7 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
             else:
                 items.append(self._getHeader(len(quests), vehicle.shortUserName, R.strings.tooltips.hangar.header.quests.description()))
                 items.append(self._getBody(TOOLTIPS.HANGAR_HEADER_QUESTS_EMPTY))
-            if self._isShowBottom(vehicle):
-                items.append(self._getBottom(0))
+            items.append(self._getBottom(0))
         return items
 
     def __getQuestItem(self, quest):
@@ -154,9 +154,6 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
 
     def _getBody(self, text):
         return formatters.packBuildUpBlockData([formatters.packTextBlockData(text=text_styles.main(text), padding=formatters.packPadding(left=20, top=-10, bottom=10))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
-
-    def _isShowBottom(self, vehicle=None):
-        return True
 
 
 class ScheduleQuestTooltipData(BlocksTooltipData):

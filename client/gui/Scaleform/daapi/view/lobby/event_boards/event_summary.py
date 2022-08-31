@@ -1,26 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_summary.py
-from helpers.time_utils import ONE_MINUTE
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationTextWithIcon, \
+    formatVehicleNationAndTypeIcon, vehicleTypeText, getFullName, formatTimeAndDate, formatUpdateTime
+from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
+from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, \
+    EVENT_TYPE as _et, WOODEN_RIBBON
+from gui.shared.formatters import text_styles
+from gui.shared.utils.functions import makeTooltip
 from helpers import dependency
 from helpers import int2roman
 from helpers.i18n import makeString as _ms
-from gui.shared.formatters import text_styles
-from gui.shared.utils.functions import makeTooltip
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationTextWithIcon, formatVehicleNationAndTypeIcon, vehicleTypeText, getFullName, formatTimeAndDate, formatUpdateTime
-from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, EVENT_TYPE as _et, WOODEN_RIBBON
+from helpers.time_utils import ONE_MINUTE
 from skeletons.gui.shared import IItemsCache
+
 _PARAMETER_VALUE_GETTER = {_op.ORIGINALXP: 'getExp',
- _op.XP: 'getExp',
- _op.DAMAGEDEALT: 'getDamage',
- _op.DAMAGEASSISTED: 'getAssistedDamage',
- _op.WINS: 'getWinRate'}
+                           _op.XP: 'getExp',
+                           _op.DAMAGEDEALT: 'getDamage',
+                           _op.DAMAGEASSISTED: 'getAssistedDamage',
+                           _op.WINS: 'getWinRate'}
 _AVERAGE_ICON_BY_PARAMETER = {_op.ORIGINALXP: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_EXP_POPUP,
- _op.XP: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_EXP_POPUP,
- _op.DAMAGEDEALT: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_DAMAGE_POPUP,
+                              _op.XP: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_EXP_POPUP,
+                              _op.DAMAGEDEALT: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_DAMAGE_POPUP,
  _op.DAMAGEASSISTED: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_ASSIST_POPUP,
  _op.WINS: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_WIN_POPUP}
 _MAX_ICON_BY_PARAMETER = {_op.ORIGINALXP: RES_ICONS.MAPS_ICONS_EVENTBOARDS_POPUPICONS_EXP_MAX_POPUP,
@@ -196,7 +199,7 @@ class _SummaryMax(_Summary):
         inSquad = info.getIsInSquad()
         squadInfo = _ms(EVENT_BOARDS.SUMMARY_FIGHTINSQUAAD) if inSquad else _ms(EVENT_BOARDS.SUMMARY_FIGHTNOTINSQUAAD)
         result = _ms(EVENT_BOARDS.summary_result(info.getBattleResult()))
-        return '{}. {} {}'.format(result, squadInfo, date)
+        return u'{}. {} {}'.format(result, squadInfo, date)
 
 
 class _SummarySumAll(_Summary):

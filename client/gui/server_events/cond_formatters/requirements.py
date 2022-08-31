@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/cond_formatters/requirements.py
 import types
+
 import nations
 from constants import EVENT_TYPE, IGR_TYPE, IS_CHINA
 from gui import makeHtmlString
@@ -19,6 +20,7 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 
+
 def packTokens(tokens):
     return {'tokens': tokens,
      'isNeedShowIcon': False}
@@ -31,7 +33,7 @@ def relate(relation, value, label):
         value = value
     relation = backport.text(R.strings.quests.details.requirementsRelation.dyn(relation)())
     rlabel = backport.text(R.strings.quests.details.requirements.relation(), relation=relation, value=value)
-    return '{}{}'.format(label, rlabel)
+    return u'{}{}'.format(label, rlabel)
 
 
 def prepareAccountConditionsGroup(conditions, event):

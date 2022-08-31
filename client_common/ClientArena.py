@@ -3,31 +3,32 @@
 import cPickle
 import zlib
 from collections import namedtuple, defaultdict
+
 import ArenaType
 import BigWorld
 import CGF
 import Event
 import Math
-import arena_component_system.client_arena_component_assembler as assembler
-from battle_modifiers.battle_modifiers import BattleModifiers
-from battle_modifiers.battle_modifier_constants import EXT_DATA_MODIFIERS_KEY
+from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD, ARENA_UPDATE
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV
 from helpers.bots import preprocessBotName
 from items import vehicles
-from PlayerEvents import g_playerEvents
-from post_progression_common import EXT_DATA_PROGRESSION_KEY, EXT_DATA_SLOT_KEY
 from visual_script.misc import ASPECT
 from visual_script.multi_plan_provider import makeMultiPlanProvider, CallableProviderType
+
+import arena_component_system.client_arena_component_assembler as assembler
+
 TeamBaseProvider = namedtuple('TeamBaseProvider', ('points', 'invadersCnt', 'capturingStopped'))
+
 
 class ClientArena(object):
     __onUpdate = {ARENA_UPDATE.SETTINGS: '_ClientArena__onArenaSettingsUpdate',
-     ARENA_UPDATE.VEHICLE_LIST: '_ClientArena__onVehicleListUpdate',
-     ARENA_UPDATE.VEHICLE_ADDED: '_ClientArena__onVehicleAddedUpdate',
-     ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate',
-     ARENA_UPDATE.STATISTICS: '_ClientArena__onStatisticsUpdate',
-     ARENA_UPDATE.VEHICLE_STATISTICS: '_ClientArena__onVehicleStatisticsUpdate',
+                  ARENA_UPDATE.VEHICLE_LIST: '_ClientArena__onVehicleListUpdate',
+                  ARENA_UPDATE.VEHICLE_ADDED: '_ClientArena__onVehicleAddedUpdate',
+                  ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate',
+                  ARENA_UPDATE.STATISTICS: '_ClientArena__onStatisticsUpdate',
+                  ARENA_UPDATE.VEHICLE_STATISTICS: '_ClientArena__onVehicleStatisticsUpdate',
      ARENA_UPDATE.VEHICLE_KILLED: '_ClientArena__onVehicleKilled',
      ARENA_UPDATE.AVATAR_READY: '_ClientArena__onAvatarReady',
      ARENA_UPDATE.BASE_POINTS: '_ClientArena__onBasePointsUpdate',
@@ -98,8 +99,6 @@ class ClientArena(object):
         self.bonusType = arenaBonusType
         self.guiType = arenaGuiType
         self.extraData = arenaExtraData
-        battleModifiersDescr = arenaExtraData.get('battleModifiersDescr', ()) if arenaExtraData else ()
-        self.battleModifiers = BattleModifiers(battleModifiersDescr)
         self.__arenaBBCollider = None
         self.__spaceBBCollider = None
         if spaceID == 0:
@@ -230,9 +229,8 @@ class ClientArena(object):
     def __onVehicleDescrUpdate(self, argStr):
         vehID, compactDescr, maxHealth = cPickle.loads(argStr)
         info = self.__vehicles[vehID]
-        extVehicleTypeData = {EXT_DATA_PROGRESSION_KEY: info['vehPostProgression'],
-         EXT_DATA_SLOT_KEY: info['customRoleSlotTypeId'],
-         EXT_DATA_MODIFIERS_KEY: self.battleModifiers}
+        extVehicleTypeData = {'vehPostProgression': info['vehPostProgression'],
+                              'customRoleSlotTypeId': info['customRoleSlotTypeId']}
         self.__vehicles[vehID]['vehicleType'] = self.__getVehicleType(compactDescr, extVehicleTypeData)
         self.__vehicles[vehID]['maxHealth'] = maxHealth
         self.onVehicleUpdated(vehID)
@@ -351,19 +349,18 @@ class ClientArena(object):
         self.__vehicleIndexToId = dict(zip(range(len(vehs)), sorted(vehs.keys())))
 
     def __vehicleInfoAsDict(self, info):
-        extVehicleTypeData = {EXT_DATA_PROGRESSION_KEY: info[25],
-         EXT_DATA_SLOT_KEY: info[26],
-         EXT_DATA_MODIFIERS_KEY: self.battleModifiers}
+        extVehicleTypeData = {'vehPostProgression': info[25],
+                              'customRoleSlotTypeId': info[26]}
         infoAsDict = {'vehicleType': self.__getVehicleType(info[1], extVehicleTypeData),
-         'name': info[2],
-         'team': info[3],
-         'isAlive': info[4],
-         'isAvatarReady': info[5],
-         'isTeamKiller': info[6],
-         'accountDBID': info[7],
-         'clanAbbrev': info[8],
-         'clanDBID': info[9],
-         'prebattleID': int(info[10]),
+                      'name': info[2],
+                      'team': info[3],
+                      'isAlive': info[4],
+                      'isAvatarReady': info[5],
+                      'isTeamKiller': info[6],
+                      'accountDBID': info[7],
+                      'clanAbbrev': info[8],
+                      'clanDBID': info[9],
+                      'prebattleID': int(info[10]),
          'isPrebattleCreator': bool(info[11]),
          'forbidInBattleInvitations': bool(info[12]),
          'events': info[13],

@@ -3,18 +3,20 @@
 import logging
 import weakref
 from collections import defaultdict
-import BigWorld
-import Math
+
 import AnimationSequence
+import BigWorld
 import CGF
+import Math
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
-from cgf_script.bonus_caps_rules import bonusCapsManager
-from helpers import dependency
 from battleground.component_loading import loadComponentSystem, Loader, CompositeLoaderMixin, loadResourceMapping
 from battleground.components import TerrainAreaGameObject, CompoundSequenceObject, SmartSequenceObject
+from cgf_script.bonus_caps_rules import bonusCapsManager
 from gui.shared.utils.graphics import isRendererPipelineDeferred
+from helpers import dependency
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 _logger = logging.getLogger(__name__)
 
 @dependency.replace_none_kwargs(dynamicObjectsCache=IBattleDynamicObjectsCache, battleSession=IBattleSessionProvider)
@@ -134,7 +136,9 @@ class SteelHunterDynamicObjectsCachingManager(CGF.ComponentManager):
     def __init__(self):
         super(SteelHunterDynamicObjectsCachingManager, self).__init__()
         self.__lootCache = {}
-        self.__cachingQueue = defaultdict(lambda : [])
+        self.__cachingQueue = defaultdict(lambda: [])
+        self.__cachedConfig = None
+        return
 
     def hasCachedLoot(self, lootType):
         return lootType in self.__lootCache
@@ -145,7 +149,7 @@ class SteelHunterDynamicObjectsCachingManager(CGF.ComponentManager):
 
     def activate(self):
         self.__lootCache = {}
-        config = self.__dynamicObjectsCache.getConfig(BigWorld.player().arenaGuiType)
+        config = self.__getConfig()
         loots = config.getLoots().iteritems()
         for lootType, loot in loots:
             self.__orderLootCache(lootType, loot)
@@ -199,3 +203,8 @@ class SteelHunterDynamicObjectsCachingManager(CGF.ComponentManager):
                 _loadLootForeground(reference, self.spaceID, lootDesc)
 
         del self.__cachingQueue[lootType]
+
+    def __getConfig(self):
+        if self.__cachedConfig is None:
+            self.__cachedConfig = self.__dynamicObjectsCache.getConfig(BigWorld.player().arenaGuiType)
+        return self.__cachedConfig

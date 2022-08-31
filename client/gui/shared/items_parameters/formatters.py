@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/shared/items_parameters/formatters.py
 from collections import namedtuple
 from itertools import chain
+
 from constants import BonusTypes
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -15,10 +16,14 @@ from gui.shared.gui_items import KPI, kpiFormatValue
 from gui.shared.items_parameters import RELATIVE_PARAMS
 from gui.shared.items_parameters.comparator import PARAM_STATE
 from gui.shared.items_parameters.params_helper import hasGroupPenalties, getCommonParam, PARAMS_GROUPS
-from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_ON_TIME, WHEELED_SWITCH_OFF_TIME, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, DUAL_GUN_RATE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME, CHASSIS_REPAIR_TIME_YOH
+from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_ON_TIME, \
+    WHEELED_SWITCH_OFF_TIME, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, DUAL_GUN_RATE_TIME, \
+    TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, \
+    TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME, CHASSIS_REPAIR_TIME_YOH
 from helpers.i18n import makeString
 from items import vehicles, artefacts, getTypeOfCompactDescr, ITEM_TYPES
 from web_stubs import i18n
+
 ChangeCondition = namedtuple('ChangeCondition', ('predicate', 'alternativeParameter'))
 MEASURE_UNITS = {'aimingTime': MENU.TANK_PARAMS_S,
  'areaRadius': MENU.TANK_PARAMS_M,
@@ -276,35 +281,37 @@ _plusPercentFormat = {'rounder': lambda v: '+%d%%' % v}
 def _autoReloadPreprocessor(reloadTimes, rowStates):
     times = []
     states = []
-    for idx, slotTime in enumerate(reloadTimes):
-        if isinstance(slotTime, (float, int)) or slotTime is None:
-            times.append(slotTime)
-            if rowStates:
-                states.append(rowStates[idx])
-            continue
-        if isinstance(slotTime, tuple):
-            minSlotTime, maxSlotTime = slotTime
-            if minSlotTime == maxSlotTime:
-                times.append(minSlotTime)
-                if rowStates:
-                    states.append(rowStates[idx][0])
-            else:
-                LOG_ERROR('Different auto-reload times for same gun and slot')
-                return
-
-    if len(times) > _COUNT_OF_AUTO_RELOAD_SLOTS_TIMES_TO_SHOW_IN_INFO:
-        if states:
-            minTime, maxTime = min(times), max(times)
-            minState, maxState = (None, None)
-            for idx, time in enumerate(times):
-                if time == minTime:
-                    minState = states[idx]
-                if time == maxTime:
-                    maxState = states[idx]
-
-            return ((min(times), max(times)), _DASH, (minState, maxState))
-        return ((min(times), max(times)), _DASH, None)
+    if not hasattr(reloadTimes, '__iter__'):
+        return (times, _SLASH, states if states else None)
     else:
+        for idx, slotTime in enumerate(reloadTimes):
+            if isinstance(slotTime, (float, int)) or slotTime is None:
+                times.append(slotTime)
+                if rowStates:
+                    states.append(rowStates[idx])
+                continue
+            if isinstance(slotTime, tuple):
+                minSlotTime, maxSlotTime = slotTime
+                if minSlotTime == maxSlotTime:
+                    times.append(minSlotTime)
+                    if rowStates:
+                        states.append(rowStates[idx][0])
+                else:
+                    LOG_ERROR('Different auto-reload times for same gun and slot')
+                    return
+
+        if len(times) > _COUNT_OF_AUTO_RELOAD_SLOTS_TIMES_TO_SHOW_IN_INFO:
+            if states:
+                minTime, maxTime = min(times), max(times)
+                minState, maxState = (None, None)
+                for idx, time in enumerate(times):
+                    if time == minTime:
+                        minState = states[idx]
+                    if time == maxTime:
+                        maxState = states[idx]
+
+                return ((min(times), max(times)), _DASH, (minState, maxState))
+            return ((min(times), max(times)), _DASH, None)
         return (times, _SLASH, states if states else None)
 
 
@@ -475,7 +482,7 @@ def simplifiedDeltaParameter(parameter, isSituational=False, isApproximately=Fal
 def _applyFormat(value, state, settings, doSmartRound, colorScheme):
     if doSmartRound:
         value = _cutDigits(value)
-    if isinstance(value, str):
+    if isinstance(value, (str, unicode)):
         paramStr = value
     elif value is None:
         paramStr = '--'

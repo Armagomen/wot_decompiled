@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/shared.py
 import logging
-from collections import namedtuple, Counter
 import struct
+from collections import namedtuple, Counter
 from itertools import ifilter
-import typing
+
 import BigWorld
 import Math
 import nations
@@ -17,10 +17,12 @@ from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import QUANTITY_LIMITED_CUSTOMIZATION_TYPES, appliedToFromSlotsIds, C11nId, PurchaseItem, AdditionalPurchaseGroups, isVehicleCanBeCustomized, getAvailableRegions, EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, EDITABLE_STYLE_IRREMOVABLE_TYPES
+from gui.customization.shared import QUANTITY_LIMITED_CUSTOMIZATION_TYPES, appliedToFromSlotsIds, C11nId, PurchaseItem, \
+    AdditionalPurchaseGroups, isVehicleCanBeCustomized, getAvailableRegions, EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, \
+    EDITABLE_STYLE_IRREMOVABLE_TYPES
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
 from gui.shared.formatters import icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_TAGS
@@ -41,8 +43,9 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_outfit.containers import SlotData
-from vehicle_outfit.outfit import Area, Outfit
+from vehicle_outfit.outfit import Area
 from vehicle_outfit.packers import ProjectionDecalPacker
+
 _logger = logging.getLogger(__name__)
 EMPTY_PERSONAL_NUMBER = ''
 
@@ -105,23 +108,32 @@ APPLIED_TO_TYPES = (GUI_ITEM_TYPE.EMBLEM,
  GUI_ITEM_TYPE.CAMOUFLAGE)
 SCALE_SIZE = (VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_SMALL, VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_NORMAL, VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_LARGE)
 TYPES_ORDER = (GUI_ITEM_TYPE.PAINT,
- GUI_ITEM_TYPE.CAMOUFLAGE,
- GUI_ITEM_TYPE.PROJECTION_DECAL,
- GUI_ITEM_TYPE.EMBLEM,
- GUI_ITEM_TYPE.PERSONAL_NUMBER,
- GUI_ITEM_TYPE.INSCRIPTION,
- GUI_ITEM_TYPE.MODIFICATION,
- GUI_ITEM_TYPE.STYLE)
+               GUI_ITEM_TYPE.CAMOUFLAGE,
+               GUI_ITEM_TYPE.PROJECTION_DECAL,
+               GUI_ITEM_TYPE.EMBLEM,
+               GUI_ITEM_TYPE.PERSONAL_NUMBER,
+               GUI_ITEM_TYPE.INSCRIPTION,
+               GUI_ITEM_TYPE.MODIFICATION,
+               GUI_ITEM_TYPE.STYLE)
 SEASON_TYPE_TO_INFOTYPE_MAP = {SeasonType.SUMMER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_SUMMER,
- SeasonType.DESERT: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_DESERT,
- SeasonType.WINTER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_WINTER}
+                               SeasonType.DESERT: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_DESERT,
+                               SeasonType.WINTER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_WINTER}
+
+
+class BillPopoverButtons(object):
+    CUSTOMIZATION_CLEAR = 'customizationClear'
+    CUSTOMIZATION_CLEAR_LOCKED = 'customizationClearLocked'
+    ALL = (CUSTOMIZATION_CLEAR, CUSTOMIZATION_CLEAR_LOCKED)
+
+
 OutfitInfo = namedtuple('OutfitInfo', ('original', 'modified'))
 CustomizationSlotUpdateVO = namedtuple('CustomizationSlotUpdateVO', ('slotId', 'itemIntCD', 'uid'))
+
 
 @dependency.replace_none_kwargs(c11nService=ICustomizationService)
 def getCustomPurchaseItems(season, modifiedOutfits, c11nService=None):
     purchaseItems = []
-    seasonOrder = [season] + [ s for s in SeasonType.COMMON_SEASONS if s != season ]
+    seasonOrder = [season] + [s for s in SeasonType.COMMON_SEASONS if s != season]
     vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
     inventoryCounts = __getInventoryCounts(modifiedOutfits, vehicleCD)
     for s in seasonOrder:

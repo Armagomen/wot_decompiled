@@ -1,41 +1,44 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/CompoundAppearance.py
-from functools import partial
 import logging
 import math
+from functools import partial
 from math import tan
-import typing
-import BigWorld
-import Math
-import constants
-import items.vehicles
+
 import BattleReplay
-import SoundGroups
-from Event import Event
-from debug_utils import LOG_ERROR
-from aih_constants import ShakeReason
-from shared_utils import findFirst
-from items.components.component_constants import MAIN_TRACK_PAIR_IDX
-from vehicle_systems.components.terrain_circle_component import TerrainCircleComponent
-from vehicle_systems.components import engine_state
-from vehicle_systems.stricted_loading import makeCallbackWeak, loadingPriority
-from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames, TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
-from vehicle_systems.components.highlighter import Highlighter
-from vehicle_systems.components.tutorial_mat_kinds_controller import TutorialMatKindsController
-from helpers.CallbackDelayer import CallbackDelayer
-from helpers.EffectsList import SpecialKeyPointNames
-from vehicle_systems import camouflages
-from cgf_obsolete_script.script_game_object import ComponentDescriptor
-from vehicle_systems import model_assembler
-from VehicleEffects import DamageFromShotDecoder
-from common_tank_appearance import CommonTankAppearance
+import BigWorld
 import CGF
 import GenericComponents
+import Math
+import SoundGroups
+import constants
+import items.vehicles
+from Event import Event
+from VehicleEffects import DamageFromShotDecoder
+from aih_constants import ShakeReason
+from cgf_obsolete_script.script_game_object import ComponentDescriptor
+from common_tank_appearance import CommonTankAppearance
+from debug_utils import LOG_ERROR
+from helpers.CallbackDelayer import CallbackDelayer
+from helpers.EffectsList import SpecialKeyPointNames
+from items.components.component_constants import MAIN_TRACK_PAIR_IDX
+from shared_utils import findFirst
+from vehicle_systems import camouflages
+from vehicle_systems import model_assembler
+from vehicle_systems.components import engine_state
+from vehicle_systems.components.highlighter import Highlighter
+from vehicle_systems.components.terrain_circle_component import TerrainCircleComponent
+from vehicle_systems.components.tutorial_mat_kinds_controller import TutorialMatKindsController
+from vehicle_systems.stricted_loading import makeCallbackWeak, loadingPriority
+from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames, TankPartNames, TankPartIndexes, \
+    TankSoundObjectsIndexes
+
 _ROOT_NODE_NAME = 'V'
 _GUN_RECOIL_NODE_NAME = 'G'
 _PERIODIC_TIME_ENGINE = 0.1
 _PERIODIC_TIME_DIRT = ((0.05, 0.25), (10.0, 400.0))
-_DIRT_ALPHA = tan((_PERIODIC_TIME_DIRT[0][1] - _PERIODIC_TIME_DIRT[0][0]) / (_PERIODIC_TIME_DIRT[1][1] - _PERIODIC_TIME_DIRT[1][0]))
+_DIRT_ALPHA = tan(
+    (_PERIODIC_TIME_DIRT[0][1] - _PERIODIC_TIME_DIRT[0][0]) / (_PERIODIC_TIME_DIRT[1][1] - _PERIODIC_TIME_DIRT[1][0]))
 _MOVE_THROUGH_WATER_SOUND = '/vehicles/tanks/water'
 _CAMOUFLAGE_MIN_INTENSITY = 1.0
 _PITCH_SWINGING_MODIFIERS = (0.9, 1.88, 0.3, 4.0, 1.0, 1.0)
@@ -439,10 +442,11 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             return
         super(CompoundAppearance, self).receiveShotImpulse(direction, impulse)
 
-    def addCrashedTrack(self, isLeft, pairIndex=0):
+    def addCrashedTrack(self, isLeft, pairIndex=0, index=None):
         if not self._vehicle.isAlive():
             return
-        self._addCrashedTrack(isLeft, pairIndex, self.isLeftSideFlying if isLeft else self.isRightSideFlying)
+        self._addCrashedTrack(isLeft, pairIndex, self.isLeftSideFlying if isLeft else self.isRightSideFlying,
+                              self._vehicle.getExtraHitPoint(index))
         self.onChassisDestroySound(isLeft, True, trackPairIdx=pairIndex)
 
     def delCrashedTrack(self, isLeft, pairIndex=0):

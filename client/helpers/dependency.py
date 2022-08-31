@@ -4,8 +4,10 @@ import functools
 import inspect
 import logging
 import typing
+
 from ids_generators import SequenceIDGenerator
 from soft_exception import SoftException
+
 InterfaceType = typing.TypeVar('InterfaceType')
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
@@ -162,7 +164,7 @@ class _DependencyItem(object):
         super(_DependencyItem, self).__init__()
         self._order = order
         self._service = service
-        if finalizer is not None and not callable(finalizer) and not isinstance(finalizer, str):
+        if finalizer is not None and not callable(finalizer) and not isinstance(finalizer, basestring):
             raise DependencyError('Finalizer {} is invalid'.format(finalizer))
         self._finalizer = finalizer
         return

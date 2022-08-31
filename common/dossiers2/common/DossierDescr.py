@@ -2,7 +2,9 @@
 # Embedded file name: scripts/common/dossiers2/common/DossierDescr.py
 import struct
 from array import array
+
 from dossiers2.custom.records import PLATFORM_ACHIEVEMENTS
+
 
 class DossierDescr(object):
 

@@ -1,37 +1,43 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/common_tank_appearance.py
+import logging
 import math
 import random
-import logging
+
 import BigWorld
 import CGF
-import GenericComponents
-import Triggers
-import Math
 import DataLinks
-import Vehicular
+import GenericComponents
+import Math
 import NetworkFilters
+import Triggers
+import Vehicular
 import material_kinds
-from constants import IS_EDITOR, VEHICLE_SIEGE_STATE
 from CustomEffectManager import CustomEffectManager, EffectSettings
-from helpers.EffectMaterialCalculation import calcEffectMaterialIndex
-from VehicleStickers import VehicleStickers
-from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
-from cgf_obsolete_script.auto_properties import AutoProperty
-from vehicle_systems import model_assembler
-from vehicle_systems import camouflages
-from vehicle_systems.vehicle_damage_state import VehicleDamageState
-from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes, TankNodeNames, TankRenderMode, CgfTankNodes
-from vehicle_systems.components.CrashedTracks import CrashedTrackController
-from vehicle_systems.components.vehicleDecal import VehicleDecal
-from vehicle_systems.components.siegeEffectsController import SiegeEffectsController
-from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
-from helpers import bound_effects, gEffectsDisabled
-from vehicle_outfit.outfit import Outfit
-from items.battle_royale import isSpawnedBot
-from helpers import isPlayerAvatar
 from ModelHitTester import ModelStatus
+from VehicleStickers import VehicleStickers
+from constants import IS_EDITOR, VEHICLE_SIEGE_STATE
+from helpers import bound_effects, gEffectsDisabled
+from helpers import isPlayerAvatar
+from helpers.EffectMaterialCalculation import calcEffectMaterialIndex
+from items.battle_royale import isSpawnedBot
+from items.components.component_constants import MAIN_TRACK_PAIR_IDX
+from items.vehicle_items import CHASSIS_ITEM_TYPE
+from vehicle_systems import camouflages
+from vehicle_systems import model_assembler
+from vehicle_systems.components.CrashedTracks import CrashedTrackController
 from vehicle_systems.components.debris_crashed_tracks import TrackCrashWithDebrisComponent
+from vehicle_systems.components.siegeEffectsController import SiegeEffectsController
+from vehicle_systems.components.vehicleDecal import VehicleDecal
+from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
+from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, \
+    TankPartIndexes, TankNodeNames, TankRenderMode, CgfTankNodes
+from vehicle_systems.vehicle_damage_state import VehicleDamageState
+
+from cgf_obsolete_script.auto_properties import AutoProperty
+from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
+from vehicle_outfit.outfit import Outfit
+
 _logger = logging.getLogger(__name__)
 DEFAULT_STICKERS_ALPHA = 1.0
 MATKIND_COUNT = 3
@@ -835,34 +841,66 @@ class CommonTankAppearance(ScriptGameObject):
             self.shellAnimator.throwShell(self.typeDescriptor.shot.shell.animation)
         return
 
-    def __isRequireTrackDebrisGeneration(self, isLeft, pairIndex):
-        tracks = self.typeDescriptor.chassis.tracks
-        return tracks is not None and tracks.trackPairs[pairIndex].tracksDebris is not None
+    def __shouldCreatePhysicalDestroyedTracks(self):
+        quality = BigWorld.trackPhysicsQuality()
+        if BigWorld.isForwardPipeline() or quality >= len(TrackCrashWithDebrisComponent.MAX_DEBRIS_COUNT):
+            return False
+        maxDebrisCount = TrackCrashWithDebrisComponent.MAX_DEBRIS_COUNT[quality]
+        debrisCount = TrackCrashWithDebrisComponent.CURRENT_DEBRIS_COUNT
+        return False if debrisCount >= maxDebrisCount and not self._vehicle.isPlayerVehicle else True
 
-    def _addCrashedTrack(self, isLeft, pairIndex, isSideFlying):
-        if not self.__isRequireTrackDebrisGeneration(isLeft, pairIndex):
+    def __shouldUseTrackCrashWithDebris(self, pairIndex, shouldCreateDebris):
+        chassisType = self.typeDescriptor.chassis.chassisType
+        if chassisType == CHASSIS_ITEM_TYPE.TRACK_WITHIN_TRACK and pairIndex != MAIN_TRACK_PAIR_IDX:
+            return True
+        else:
+            tracks = self.typeDescriptor.chassis.tracks
+            return tracks is not None and tracks.trackPairs[pairIndex].tracksDebris is not None and shouldCreateDebris
+
+    def _getTrackPairIndicesToDestroy(self, pairIndex):
+        chassis = self.typeDescriptor.chassis
+        if chassis.chassisType == CHASSIS_ITEM_TYPE.MONOLITHIC:
+            pairsCount = len(chassis.tracks.trackPairs) if chassis.tracks is not None else 1
+            return xrange(pairsCount)
+        else:
+            return (pairIndex,)
+
+    def _addCrashedTrack(self, isLeft, pairIndex, isSideFlying, hitPoint):
+        indices = self._getTrackPairIndicesToDestroy(pairIndex)
+        shouldCreateDebris = self.__shouldCreatePhysicalDestroyedTracks()
+        if not self.__shouldUseTrackCrashWithDebris(pairIndex, shouldCreateDebris):
             if self.crashedTracksController is not None:
-                self.crashedTracksController.addTrack(isLeft, isSideFlying)
+                for idx in indices:
+                    self.crashedTracksController.addCrashedTrack(isLeft, idx, isSideFlying)
+
             return
         else:
-            track = self.tracks.getTrackGameObject(isLeft, pairIndex)
-            debris = track.createComponent(TrackCrashWithDebrisComponent, isLeft, pairIndex, self.typeDescriptor, self.gameObject, self.boundEffects)
-            debris.isTopPriority = self._vehicle.isPlayerVehicle
-            debris.isPlayer = self._vehicle.isPlayerVehicle
-            debris.isFlying = isSideFlying
+            for idx in indices:
+                track = self.tracks.getTrackGameObject(isLeft, idx)
+                track.createComponent(TrackCrashWithDebrisComponent, isLeft, idx, self.typeDescriptor, self.gameObject,
+                                      self.boundEffects, self.filter, self._vehicle.isPlayerVehicle, shouldCreateDebris,
+                                      hitPoint)
+                if self.crashedTracksController is not None:
+                    self.crashedTracksController.addDebrisCrashedTrack(isLeft, idx)
+
             return
 
     def _delCrashedTrack(self, isLeft, pairIndex):
-        if not self.__isRequireTrackDebrisGeneration(isLeft, pairIndex):
-            if self.crashedTracksController is not None:
-                self.crashedTracksController.delTrack(isLeft)
-            return
-        elif self.tracks is None:
-            return
-        else:
-            track = self.tracks.getTrackGameObject(isLeft, pairIndex)
-            debris = track.findComponentByType(TrackCrashWithDebrisComponent)
-            if debris is not None:
-                debris.markAsRepaired()
-                track.removeComponent(debris)
-            return
+        indices = self._getTrackPairIndicesToDestroy(pairIndex)
+        foundCrashedTrackWithDebris = False
+        if self.tracks is not None:
+            for idx in indices:
+                track = self.tracks.getTrackGameObject(isLeft, idx)
+                if track.isValid():
+                    debris = track.findComponentByType(TrackCrashWithDebrisComponent)
+                    if debris is not None:
+                        track.removeComponent(debris)
+                        foundCrashedTrackWithDebris = True
+                        if self.crashedTracksController is not None:
+                            self.crashedTracksController.delDebrisCrashedTrack(isLeft, idx)
+
+        if not foundCrashedTrackWithDebris and self.crashedTracksController is not None:
+            for idx in indices:
+                self.crashedTracksController.delCrashedTrack(isLeft, idx)
+
+        return

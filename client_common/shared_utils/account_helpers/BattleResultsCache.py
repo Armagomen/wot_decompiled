@@ -1,18 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/account_helpers/BattleResultsCache.py
-import os
-import cPickle
-import zlib
 import base64
+import cPickle
+import os
+import zlib
 from functools import partial
-import BigWorld
+
 import AccountCommands
-from battle_results_shared import VehicleInteractionDetails
-from battle_results import unpackClientBattleResults
-from debug_utils import LOG_CURRENT_EXCEPTION
+import BigWorld
 import constants
+from battle_results import unpackClientBattleResults
+from battle_results_shared import VehicleInteractionDetails
+from debug_utils import LOG_CURRENT_EXCEPTION
+from external_strings_utils import unicode_from_utf8
+
 BATTLE_RESULTS_VERSION = 1
-CACHE_DIR = os.path.join(os.path.dirname(unicode(BigWorld.wg_getPreferencesFilePath() if not constants.IS_BOT else '.', 'utf-8', errors='ignore')), 'battle_results')
+CACHE_DIR = os.path.join(
+    os.path.dirname(unicode_from_utf8(BigWorld.wg_getPreferencesFilePath() if not constants.IS_BOT else '.')[1]),
+    'battle_results')
+
 
 class BattleResultsCache(object):
 

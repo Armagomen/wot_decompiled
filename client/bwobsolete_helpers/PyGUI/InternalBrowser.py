@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/InternalBrowser.py
 import BigWorld
-import Math
-import types
-import GUI
-from PyGUIBase import PyGUIBase
-from VisualStateComponent import VisualState, VisualStateComponent
-import Utils
-import Keys
-import LLMozlibKeys
 import FantasyDemo
+import GUI
+import Keys
+
+import LLMozlibKeys
+import Utils
 from FocusManager import setFocusedComponent, isFocusedComponent
+from PyGUIBase import PyGUIBase
+
 
 class InternalBrowser(PyGUIBase):
     factoryString = 'PyGUI.InternalBrowser'
@@ -40,7 +39,7 @@ class InternalBrowser(PyGUIBase):
         self.component.moveFocus = True
         self.component.crossFocus = True
         self.component.texture = self.webPage.texture()
-        self.component.materialFX = 'SOLID'
+        self.component.materialFX = GUI.Simple.eMaterialFX.SOLID
 
     def __del__(self):
         FantasyDemo.rds.fdgui.removeResolutionOverrideHandler(self)

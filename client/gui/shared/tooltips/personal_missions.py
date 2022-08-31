@@ -1,12 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/personal_missions.py
 from __future__ import absolute_import
+
 from CurrentVehicle import g_currentVehicle
 from gui import GUI_NATIONS
 from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.daapi.view.lobby.hangar.hangar_header import HANGAR_HEADER_QUESTS_TO_PM_BRANCH
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
-from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import TooltipOperationAwardComposer, TooltipPostponedOperationAwardComposer
+from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import TooltipOperationAwardComposer, \
+    TooltipPostponedOperationAwardComposer
 from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import getNationsForChain
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.HANGAR_HEADER_QUESTS import HANGAR_HEADER_QUESTS
@@ -27,8 +29,8 @@ from gui.shared.tooltips import TOOLTIP_TYPE, formatters
 from gui.shared.tooltips.common import BlocksTooltipData
 from gui.shared.utils import getPlayerName
 from helpers import dependency
-from helpers.i18n import makeString as _ms
 from helpers.i18n import doesTextExist
+from helpers.i18n import makeString as _ms
 from nations import ALLIANCES_TAGS_ORDER, ALLIANCE_IDS
 from personal_missions import PM_BRANCH
 from potapov_quests import PM_BRANCH_TO_FREE_TOKEN_NAME
@@ -36,6 +38,7 @@ from shared_utils import first, findFirst
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
+
 
 class UniqueCamouflageTooltip(BlocksTooltipData):
 
@@ -125,15 +128,30 @@ class BadgeTooltipData(BlocksTooltipData):
         self._setWidth(364)
 
     def _packBlocks(self, badgeID):
-        blocks = super(BadgeTooltipData, self)._packBlocks()
         badge = self.__itemsCache.items.getBadges()[badgeID]
-        tooltipData = [formatters.packTextBlockData(text_styles.highTitle(badge.getUserName())), formatters.packImageBlockData(badge.getAwardBadgeIcon(ICONS_SIZES.X220), BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))]
+        blocks = [formatters.packTextBlockData(text_styles.highTitle(badge.getUserName()),
+                                               padding=formatters.packPadding(bottom=10))]
+        imgBlock = self.__getImageBlock(badge)
+        if imgBlock is not None:
+            blocks.append(imgBlock)
         if g_currentVehicle.isPresent():
             vehicle = g_currentVehicle.item
-            tooltipData.append(formatters.packBadgeInfoBlockData(badge.getAwardBadgeIcon(ICONS_SIZES.X24), vehicle.iconContour, text_styles.bonusPreviewText(getPlayerName()), text_styles.bonusPreviewText(vehicle.shortUserName)))
-        blocks.append(formatters.packBuildUpBlockData(tooltipData))
-        blocks.append(formatters.packTextBlockData(text_styles.main(backport.text(R.strings.badge.dyn('badge_{}_descr'.format(badgeID))()))))
-        return blocks
+            blocks.append(
+                formatters.packBadgeInfoBlockData(badge.getAwardBadgeIcon(ICONS_SIZES.X24), vehicle.iconContour,
+                                                  text_styles.bonusPreviewText(getPlayerName()),
+                                                  text_styles.bonusPreviewText(vehicle.shortUserName),
+                                                  padding=formatters.packPadding(bottom=25,
+                                                                                 top=0 if imgBlock is not None else 15)))
+        blocks.append(formatters.packTextBlockData(
+            text_styles.main(backport.text(R.strings.badge.dyn('badge_{}_descr'.format(badgeID))()))))
+        return [formatters.packBuildUpBlockData(blocks)]
+
+    @staticmethod
+    def __getImageBlock(badge):
+        badgeIcon = badge.getAwardBadgeIcon(ICONS_SIZES.X220)
+        return formatters.packImageBlockData(badgeIcon, BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER,
+                                             padding=formatters.packPadding(top=-5,
+                                                                            bottom=11)) if badgeIcon is not None else None
 
 
 class LoyalServiceTooltipData(BadgeTooltipData):

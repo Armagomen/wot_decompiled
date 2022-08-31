@@ -2,9 +2,10 @@
 # Embedded file name: scripts/client/gui/battle_control/battle_session.py
 import weakref
 from collections import namedtuple
+
+import BattleReplay
 import BigWorld
 import Event
-import BattleReplay
 from PlayerEvents import g_playerEvents
 from adisp import async
 from debug_utils import LOG_DEBUG
@@ -23,6 +24,7 @@ from gui.battle_control.requests import AvatarRequestsController
 from gui.battle_control.view_components import createComponentsBridge
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 BattleExitResult = namedtuple('BattleExitResult', 'isDeserter playerInfo')
 
 class BattleSessionProvider(IBattleSessionProvider):
@@ -124,25 +126,20 @@ class BattleSessionProvider(IBattleSessionProvider):
         if ctrl is not None:
             ctrl.clear(False)
         vehicle.ownVehicle.initialUpdate(force=True)
-        self.updateVehicleEffects()
+        self.updateVehicleEffects(vehicle)
         self.onUpdateObservedVehicleData(vehicle.id, None)
         return
 
-    def updateVehicleEffects(self):
-        if not self.__sharedRepo.vehicleState:
-            return
-        else:
-            vehicle = self.__sharedRepo.vehicleState.getControllingVehicle()
-            if vehicle is not None:
-                if vehicle.debuff > 0:
-                    vehicle.onDebuffEffectApplied(True)
-                if vehicle.stunInfo > 0.0:
-                    vehicle.updateStunInfo()
-                if vehicle.inspired:
-                    vehicle.set_inspired()
-                if vehicle.healing:
-                    vehicle.set_healing()
-            return
+    def updateVehicleEffects(self, vehicle):
+        if vehicle is not None:
+            vehicle.onDebuffEffectApplied(vehicle.debuff > 0)
+            if vehicle.stunInfo > 0.0:
+                vehicle.updateStunInfo()
+            if vehicle.inspired:
+                vehicle.set_inspired()
+            if vehicle.healing:
+                vehicle.set_healing()
+        return
 
     def getArenaDP(self):
         return self.__arenaDP

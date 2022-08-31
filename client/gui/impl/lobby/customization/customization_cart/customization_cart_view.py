@@ -1,60 +1,61 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/customization/customization_cart/customization_cart_view.py
-from collections import namedtuple
 import logging
 import typing
-from frameworks.wulf import ViewFlags, ViewSettings
+from collections import namedtuple
+
+from CurrentVehicle import g_currentVehicle
+from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from adisp import process as adisp_process
 from async import async, await
-from CurrentVehicle import g_currentVehicle
+from frameworks.wulf import ViewFlags, ViewSettings
 from frameworks.wulf import WindowFlags
 from gui import DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsMultiItemsMeta
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsSingleItemMeta
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import InfoItemBase
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.customization.constants import CustomizationModes
-from gui.impl.dialogs import dialogs
-from gui.impl.dialogs.builders import ResSimpleDialogBuilder
-from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
-from gui.impl.pub import ViewImpl
-from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_model import CartModel
-from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_slot_model import CartSlotModel
-from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_season_model import CartSeasonModel
-from gui.shop import showBuyGoldForCustomization
-from gui.customization.processors.cart import SeparateItemsProcessor, StyleItemsProcessor, EditableStyleItemsProcessor
 from gui.customization.processors.cart import ProcessorSelector, ItemsType
+from gui.customization.processors.cart import SeparateItemsProcessor, StyleItemsProcessor, EditableStyleItemsProcessor
 from gui.customization.shared import SEASON_TYPE_TO_NAME, SEASONS_ORDER, MoneyForPurchase, getTotalPurchaseInfo
 from gui.customization.shared import containsVehicleBound, getPurchaseMoneyState, isTransactionValid
-from gui.customization.shared import CartExchangeCreditsInfoItem
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsSingleItemMeta
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsMultiItemsMeta
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from gui.impl.backport import createTooltipData, BackportTooltipWindow
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.builders import ResSimpleDialogBuilder
+from gui.impl.gen import R
+from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
+from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_model import CartModel
+from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_slot_model import CartSlotModel
+from gui.impl.pub import ViewImpl
 from gui.shared.event_dispatcher import tryToShowReplaceExistingStyleDialog
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization import CustomizationTooltipContext
-from shared_utils import first
-from vehicle_outfit.outfit import Area
 from gui.shared.money import Currency
 from gui.shared.utils.graphics import isRendererPipelineDeferred
-from items.components.c11n_constants import SeasonType
+from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.shop import showBuyGoldForCustomization
 from helpers import dependency, uniprof
+from items.components.c11n_constants import SeasonType
+from shared_utils import first
+from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from skeletons.account_helpers.settings_core import ISettingsCore
-from account_helpers.settings_core.settings_constants import OnceOnlyHints
-from gui.impl.backport import createTooltipData, BackportTooltipWindow
-from gui.impl.gen import R
 from tutorial.hints_manager import HINT_SHOWN_STATUS
+from vehicle_outfit.outfit import Area
+
 if typing.TYPE_CHECKING:
-    from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_seasons_model import CartSeasonsModel
+    pass
 _logger = logging.getLogger(__name__)
 _SelectItemData = namedtuple('_SelectItemData', ('season',
- 'quantity',
- 'purchaseIndices',
- 'idx',
- 'intCD',
- 'dependents',
+                                                 'quantity',
+                                                 'purchaseIndices',
+                                                 'idx',
+                                                 'intCD',
+                                                 'dependents',
  'dependentOn'))
 
 def _getSeasonModel(seasonType, seasons):
@@ -69,8 +70,30 @@ def _getSeasonModel(seasonType, seasons):
         return season
 
 
+class CartExchangeCreditsInfoItem(InfoItemBase):
+
+    @property
+    def itemTypeName(self):
+        pass
+
+    @property
+    def userName(self):
+        pass
+
+    @property
+    def itemTypeID(self):
+        return GUI_ITEM_TYPE.CUSTOMIZATION
+
+    def getExtraIconInfo(self):
+        return None
+
+    def getGUIEmblemID(self):
+        pass
+
+
 class CustomizationCartView(ViewImpl):
-    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters', '__items', '__blur', '__moneyState', '__isProlongStyleRent')
+    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters', '__items', '__blur', '__moneyState',
+                 '__isProlongStyleRent')
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __service = dependency.descriptor(ICustomizationService)
@@ -225,7 +248,7 @@ class CustomizationCartView(ViewImpl):
 
     def __removeListeners(self):
         model = self.viewModel
-        model.onCloseAction += self.__onWindowClose
+        model.onCloseAction -= self.__onWindowClose
         model.seasons.onSelectItem -= self.__onSelectItem
         model.rent.onSelectAutoRent -= self.__onSelectAutoRent
         model.purchase.onBuyAction -= self.__onBuy

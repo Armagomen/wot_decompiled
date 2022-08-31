@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/gui/customization.py
-from Event import Event
 
 class ICustomizationService(object):
     onRegionHighlighted = None
@@ -134,4 +133,13 @@ class ICustomizationService(object):
 
     @staticmethod
     def removeAdditionalProgressionData(outfit, style, vehCD, season):
+        raise NotImplementedError
+
+    def getQuestsForProgressionItem(self, itemCD):
+        raise NotImplementedError
+
+    def getItemCDByQuestID(self, eventID):
+        raise NotImplementedError
+
+    def isProgressionQuests(self, eventID):
         raise NotImplementedError

@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/material_kinds.py
 import ResMgr
+
 from constants import IS_EDITOR
 from soft_exception import SoftException
+
 _MATERIAL_KINDS_FILE = 'system/data/material_kinds.xml'
 _EFFECT_MATERIALS_FILE = 'system/data/effect_materials.xml'
 IDS_BY_NAMES = None
@@ -94,5 +96,10 @@ def _raiseWrongXml(fileName, msg):
 def getWaterMatKind():
     return EFFECT_MATERIAL_IDS_BY_NAMES['water'][0]
 
+
+if IS_EDITOR:
+    def needToWriteZeroMaterial(matKind):
+        name = NAMES_BY_IDS.get(matKind)
+        return True if 'armor_' in name or 'gunBreech' in name else False
 
 _init()

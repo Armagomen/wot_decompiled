@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_buy_rewards_view_model.py
 from enum import IntEnum
+
 from frameworks.wulf import ViewModel
-from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
+from gui.impl.wrappers.user_list_model import UserListModel
+
 
 class PackageType(IntEnum):
     BATTLEPASS = 0
@@ -14,7 +16,7 @@ class PackageType(IntEnum):
 class BattlePassBuyRewardsViewModel(ViewModel):
     __slots__ = ()
 
-    def __init__(self, properties=7, commands=0):
+    def __init__(self, properties=6, commands=0):
         super(BattlePassBuyRewardsViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -57,12 +59,6 @@ class BattlePassBuyRewardsViewModel(ViewModel):
     def setChapterID(self, value):
         self._setNumber(5, value)
 
-    def getFinalReward(self):
-        return self._getString(6)
-
-    def setFinalReward(self, value):
-        self._setString(6, value)
-
     def _initialize(self):
         super(BattlePassBuyRewardsViewModel, self)._initialize()
         self._addViewModelProperty('nowRewards', UserListModel())
@@ -71,4 +67,3 @@ class BattlePassBuyRewardsViewModel(ViewModel):
         self._addNumberProperty('toLevel', 0)
         self._addNumberProperty('packageState')
         self._addNumberProperty('chapterID', 0)
-        self._addStringProperty('finalReward', '')

@@ -1,27 +1,30 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/ShopRequester.py
-import weakref
-from collections import namedtuple
-from abc import ABCMeta, abstractmethod
 import logging
+import weakref
+from abc import ABCMeta, abstractmethod
+from collections import namedtuple
+
 import BigWorld
 from adisp import async
 from constants import WIN_XP_FACTOR_MODE, ARENA_BONUS_TYPE
-from items import ItemsPrices
 from goodies.goodie_constants import GOODIE_VARIETY, GOODIE_TARGET_TYPE, GOODIE_RESOURCE_TYPE
 from goodies.goodie_helpers import getPremiumCost, getPriceWithDiscount, GoodieData
+from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Money, MONEY_UNDEFINED, Currency
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
+from items import ItemsPrices
 from items.item_price import getNextSlotPrice, getNextBerthPackPrice
 from post_progression_common import CUSTOM_ROLE_SLOT_CHANGE_PRICE
 from post_progression_prices_common import getPostProgressionPrice
 from skeletons.gui.shared.utils.requesters import IShopCommonStats, IShopRequester
-from gui.shared.gui_items.gui_item_economics import ItemPrice
+
 _logger = logging.getLogger(__name__)
 _DEFAULT_EXCHANGE_RATE = 400
 _DEFAULT_CRYSTAL_EXCHANGE_RATE = 200
 _DEFAULT_SELL_PRICE_MODIF = 0.5
 _DEFAULT_CLAN_CREATION_COST = 2500
+_PREMIUM_CREW_IDX = 2
 _VehiclesRestoreConfig = namedtuple('_VehiclesRestoreConfig', 'restoreDuration restoreCooldown restorePriceModif')
 _TankmenRestoreConfig = namedtuple('_TankmenRestoreConfig', 'freeDuration billableDuration cost limit')
 _TargetData = namedtuple('_TargetData', 'targetType, targetValue, limit')
@@ -415,18 +418,22 @@ class ShopRequester(AbstractSyncDataRequester, ShopCommonStats, IShopRequester):
             price = getPriceWithDiscount(price, bestGoody.resource)
         return ItemPrice(price=Money.makeFrom(Currency.GOLD, price), defPrice=Money.makeFrom(Currency.GOLD, defPrice))
 
-    def getTankmanCostItemPrices(self):
+    def getTankmanCostItemPrices(self, vehLevel):
         result = []
         defaultCost = self.defaults.tankmanCost
         countItems = len(defaultCost)
-        if countItems == len(self.tankmanCostWithGoodyDiscount):
+        tankmanCostWithGoodyDiscount = self.getTankmanCostWithGoodyDiscount(vehLevel)
+        if countItems == len(tankmanCostWithGoodyDiscount):
             for idx in xrange(countItems):
                 commanderLevelsPrices = {}
                 commanderLevelsDefPrices = {}
                 for currency in Currency.ALL:
                     defPriceCurrency = defaultCost[idx].get(currency, None)
                     if defPriceCurrency:
-                        commanderLevelsPrices[currency] = self.tankmanCostWithGoodyDiscount[idx].get(currency, None)
+                        if idx == _PREMIUM_CREW_IDX and BigWorld.player().freePremiumCrew.get(vehLevel):
+                            commanderLevelsPrices[currency] = 0
+                        else:
+                            commanderLevelsPrices[currency] = tankmanCostWithGoodyDiscount[idx].get(currency, None)
                         commanderLevelsDefPrices[currency] = defPriceCurrency
 
                 price = Money(**commanderLevelsPrices)
@@ -435,13 +442,16 @@ class ShopRequester(AbstractSyncDataRequester, ShopCommonStats, IShopRequester):
                 result.append(itemPrice)
 
         else:
-            _logger.error('len(self.tankmanCost) must be equal to len(self.tankmanCostWithGoodyDiscount)')
+            _logger.error('len(self.tankmanCost) must be equal to len(self.getTankmanCostWithGoodyDiscount(vehLevel))')
         return result
 
-    @property
-    def tankmanCostWithGoodyDiscount(self):
-        prices = self.tankmanCost
+    def getTankmanCostWithGoodyDiscount(self, vehLevel):
+        prices = self.tankmanCost[:]
         tankmanGoodies = self.personalTankmanDiscounts
+        if BigWorld.player().freePremiumCrew.get(vehLevel):
+            premiumPrice = prices[_PREMIUM_CREW_IDX].copy()
+            prices = prices[:_PREMIUM_CREW_IDX] + (premiumPrice,)
+            premiumPrice[Currency.GOLD] = 0
         if tankmanGoodies:
             bestGoody = self.bestGoody(tankmanGoodies)
             return self.__applyGoodyToStudyCost(prices, bestGoody)

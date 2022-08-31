@@ -1,14 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/notification/decorators.py
 import typing
-from copy import deepcopy
+
 import BigWorld
 from debug_utils import LOG_ERROR
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.locale.INVITES import INVITES
 from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import currentHangarIsBattleRoyale
-from gui.clans.formatters import ClanSingleNotificationHtmlTextFormatter, ClanMultiNotificationsHtmlTextFormatter, ClanAppActionHtmlTextFormatter
+from gui.Scaleform.locale.INVITES import INVITES
+from gui.clans.formatters import ClanSingleNotificationHtmlTextFormatter, ClanMultiNotificationsHtmlTextFormatter, \
+    ClanAppActionHtmlTextFormatter
 from gui.clans.settings import CLAN_APPLICATION_STATES, CLAN_INVITE_STATES
 from gui.customization.shared import isVehicleCanBeCustomized
 from gui.impl import backport
@@ -17,13 +18,11 @@ from gui.prb_control import prbInvitesProperty
 from gui.prb_control.formatters.invites import getPrbInviteHtmlFormatter
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import ViewEventType, HangarSpacesSwitcherEvent
-from gui.shared.formatters.ranges import toRomanRangeString
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.notifications import NotificationPriorityLevel, NotificationGuiSettings, NotificationGroup
 from gui.shared.utils.functions import makeTooltip
 from gui.wgnc.settings import WGNC_DEFAULT_ICON, WGNC_POP_UP_BUTTON_WIDTH
 from helpers import dependency
-from helpers import i18n, int2roman
 from helpers import time_utils
 from messenger import g_settings
 from messenger.formatters.users_messages import makeFriendshipRequestText
@@ -32,11 +31,12 @@ from messenger.proto import proto_getter
 from messenger.proto.xmpp.xmpp_constants import XMPP_ITEM_TYPE
 from notification.settings import NOTIFICATION_TYPE, NOTIFICATION_BUTTON_STATE
 from notification.settings import makePathToIcon
-from skeletons.gui.game_control import IBattlePassController, IMapboxController, IResourceWellController, IFunRandomController, ICNLootBoxesController
+from skeletons.gui.game_control import IBattlePassController, IMapboxController, IResourceWellController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
+
 if typing.TYPE_CHECKING:
-    from gui.shared.events import LoadViewEvent
+    pass
 
 def _makeShowTime():
     return BigWorld.time()
@@ -46,14 +46,6 @@ _ICONS_FIELDS = ('icon', 'defaultIcon', 'bgIcon')
 
 def _getClanName(clanInfo):
     return '[{}] {}'.format(clanInfo[1], clanInfo[0])
-
-
-@dependency.replace_none_kwargs(funRandomCtrl=IFunRandomController)
-def _getDisabledFunRandomTooltip(tooltipStr, funRandomCtrl=None):
-    availableLevels = funRandomCtrl.getModeSettings().levels
-    minLevel, maxLevel = min(availableLevels), max(availableLevels)
-    levels = int2roman(minLevel) if minLevel == maxLevel else toRomanRangeString(availableLevels)
-    return backport.text(tooltipStr, levels=levels)
 
 
 class _NotificationDecorator(object):
@@ -356,7 +348,6 @@ class C11nMessageDecorator(LockButtonMessageDecorator):
 
 
 class PrbInviteDecorator(_NotificationDecorator):
-    __funRandomCtrl = dependency.descriptor(IFunRandomController)
     __slots__ = ('_createdAt',)
 
     @prbInvitesProperty
@@ -418,24 +409,11 @@ class PrbInviteDecorator(_NotificationDecorator):
          'defaultIcon': makePathToIcon('prebattleInviteIcon'),
          'buttonsStates': {'submit': submitState,
                            'cancel': cancelState}})
-        message = self.__updateTooltips(canAccept, message)
         self._vo = {'typeID': self.getType(),
          'entityID': self.getID(),
          'message': message,
          'notify': self.isNotify(),
          'auxData': []}
-
-    def __updateTooltips(self, canAccept, message):
-        if 'buttonsLayout' not in message:
-            return message
-        tooltip = ''
-        message = deepcopy(message)
-        buttonsLayout = message.get('buttonsLayout')
-        if not canAccept and self.__funRandomCtrl.isAvailable() and not self.__funRandomCtrl.canGoToMode():
-            tooltipStr = R.strings.invites.invites.tooltip.funRandom.noVehicles()
-            tooltip = makeTooltip(body=_getDisabledFunRandomTooltip(tooltipStr))
-        buttonsLayout[0]['tooltip'] = tooltip
-        return message
 
 
 class FriendshipRequestDecorator(_NotificationDecorator):
@@ -524,10 +502,10 @@ class WGNCPopUpDecorator(_NotificationDecorator):
         if settings:
             self._settings = settings
         layout, states = self._makeButtonsLayout(item)
-        topic = i18n.encodeUtf8(item.getTopic())
+        topic = item.getTopic()
         if topic:
             topic = g_settings.htmlTemplates.format('notificationsCenterTopic', ctx={'topic': topic})
-        body = i18n.encodeUtf8(item.getBody())
+        body = item.getBody()
         note = item.getNote()
         if note:
             body += g_settings.htmlTemplates.format('notificationsCenterNote', ctx={'note': note})
@@ -1035,85 +1013,3 @@ class ResourceWellStartDecorator(ResourceWellLockButtonDecorator):
 
     def __makeSettings(self):
         return NotificationGuiSettings(isNotify=True, priorityLevel=NotificationPriorityLevel.LOW)
-
-
-class FunRandomButtonDecorator(MessageDecorator):
-    __funRandomCtrl = dependency.descriptor(IFunRandomController)
-    __STR_PATH = R.strings.fun_random.message.startEvent
-    __TEMPLATE = 'FunRandomStarted'
-
-    def __init__(self, entityId):
-        super(FunRandomButtonDecorator, self).__init__(entityId, entity=g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'text': backport.text(self.__STR_PATH.text())}, data={'buttonsStates': {'submit': self.__isActive()}}), settings=NotificationGuiSettings(isNotify=True, priorityLevel=NotificationPriorityLevel.MEDIUM))
-
-    def _make(self, formatted=None, settings=None):
-        self.__updateButtons()
-        super(FunRandomButtonDecorator, self)._make(formatted, settings)
-
-    def __updateButtons(self):
-        if self._entity is None:
-            return
-        else:
-            buttonsLayout = self._entity.get('buttonsLayout')
-            buttonsStates = self._entity.get('buttonsStates')
-            if not buttonsLayout or buttonsStates is None:
-                return
-            if self.__funRandomCtrl.isFunRandomPrbActive():
-                state, tooltip = NOTIFICATION_BUTTON_STATE.HIDDEN, ''
-            elif self.__isActive():
-                state, tooltip = NOTIFICATION_BUTTON_STATE.DEFAULT, ''
-            else:
-                state = NOTIFICATION_BUTTON_STATE.VISIBLE
-                tooltip = self.__getDisabledTooltip()
-            buttonsStates['submit'] = state
-            buttonsLayout[0]['tooltip'] = tooltip
-            return
-
-    def __isActive(self):
-        return self.__funRandomCtrl.isAvailable() and self.__funRandomCtrl.canGoToMode()
-
-    def __getDisabledTooltip(self):
-        if self.__funRandomCtrl.isAvailable() and not self.__funRandomCtrl.canGoToMode():
-            tooltipText = _getDisabledFunRandomTooltip(self.__STR_PATH.disabledButton.noVehicles.tooltip())
-        else:
-            tooltipText = backport.text(self.__STR_PATH.disabledButton.disabledEvent.tooltip())
-        return makeTooltip(body=tooltipText)
-
-
-class ChinaLootBoxesDecorator(MessageDecorator):
-    __cnLootBoxes = dependency.descriptor(ICNLootBoxesController)
-
-    def __init__(self, entityID, message, model):
-        super(ChinaLootBoxesDecorator, self).__init__(entityID, self.__makeEntity(message), self.__makeSettings(), model)
-        self.__cnLootBoxes.onStatusChange += self.__update
-        self.__cnLootBoxes.onAvailabilityChange += self.__update
-
-    def clear(self):
-        self.__cnLootBoxes.onStatusChange -= self.__update
-        self.__cnLootBoxes.onAvailabilityChange -= self.__update
-
-    def _make(self, formatted=None, settings=None):
-        self.__updateEntityButtons()
-        super(ChinaLootBoxesDecorator, self)._make(formatted, settings)
-
-    def __makeEntity(self, message):
-        return g_settings.msgTemplates.format('ChinaLootBoxStartSysMessage', ctx=message)
-
-    def __makeSettings(self):
-        return NotificationGuiSettings(isNotify=True, priorityLevel=NotificationPriorityLevel.MEDIUM)
-
-    def __updateEntityButtons(self):
-        if self._entity is None:
-            return
-        else:
-            if self.__cnLootBoxes.isActive() and self.__cnLootBoxes.isLootBoxesAvailable():
-                state = NOTIFICATION_BUTTON_STATE.DEFAULT
-            else:
-                state = NOTIFICATION_BUTTON_STATE.VISIBLE
-            self._entity['buttonsStates'] = {'submit': state}
-            return
-
-    def __update(self, *_):
-        self.__updateEntityButtons()
-        if self._model is not None:
-            self._model.updateNotification(self.getType(), self._entityID, self._entity, False)
-        return

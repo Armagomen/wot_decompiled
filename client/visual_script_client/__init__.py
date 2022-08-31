@@ -3,9 +3,12 @@
 from constants import IS_UE_EDITOR, IS_VS_EDITOR
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
-from contexts.sound_notifications_context import SoundNotificationsContext
+
 from contexts.cgf_context import CGFGameObjectContext
+from contexts.sound_notifications_context import SoundNotificationsContext
+
 g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.HANGAR)
+
 
 def registerContext():
     g_blockRegistrar.regContext(SoundNotificationsContext)
@@ -44,9 +47,6 @@ def registerForGeneral():
     g_blockRegistrar.regBlocksFromModule(hangar_blocks)
     g_blockRegistrar.regBlocksFromModule(hint_blocks)
 
-
-g_blockRegistrar.regContext(SoundNotificationsContext)
-g_blockRegistrar.regContext(CGFGameObjectContext)
 
 def registerForUEEditor():
     registerContext()

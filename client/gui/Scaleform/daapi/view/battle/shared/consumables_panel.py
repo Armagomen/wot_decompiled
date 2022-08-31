@@ -5,22 +5,21 @@ import math
 from functools import partial
 from types import NoneType
 from typing import TYPE_CHECKING
+
 import BigWorld
 import CommandMapping
-from battle_modifiers.battle_modifier_constants import BattleParams
 from constants import EQUIPMENT_STAGES, SHELL_TYPES
-from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
-from items import vehicles
 from gui import GUI_SETTINGS
 from gui import TANKMEN_ROLES_ORDER_DICT
 from gui.Scaleform.daapi.view.battle.shared.timers_common import PythonTimer
 from gui.Scaleform.daapi.view.meta.ConsumablesPanelMeta import ConsumablesPanelMeta
-from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
+from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.battle_control.battle_constants import VEHICLE_DEVICE_IN_COMPLEX_ITEM, CROSSHAIR_VIEW_ID
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, DEVICE_STATE_DESTROYED
+from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
 from gui.battle_control.controllers.consumables.equipment_ctrl import IgnoreEntitySelection
 from gui.battle_control.controllers.consumables.equipment_ctrl import NeedEntitySelection, InCooldownError
 from gui.impl import backport
@@ -31,12 +30,14 @@ from gui.shared.formatters import text_styles
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from items import vehicles
 from items.artefacts import SharedCooldownConsumableConfigReader
 from shared_utils import forEach
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
+
 if TYPE_CHECKING:
-    from gui.battle_control.controllers.consumables.equipment_ctrl import _OrderItem
+    pass
 _logger = logging.getLogger(__name__)
 R_AMMO_ICON = R.images.gui.maps.icons.ammopanel.battle_ammo
 NO_AMMO_ICON = 'NO_{}'
@@ -239,8 +240,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
                 cdSecVal = descriptor.cooldownTime
             else:
                 cdSecVal = descriptor.cooldownSeconds
-            battleModifiers = self.sessionProvider.arenaVisitor.getArenaModifiers()
-            cooldownSeconds = str(int(battleModifiers(BattleParams.EQUIPMENT_COOLDOWN, cdSecVal)))
+            cooldownSeconds = str(int(cdSecVal))
             paramsString = backport.text(tooltipStr, cooldownSeconds=cooldownSeconds)
             body = '\n\n'.join((body, paramsString))
         toolTip = TOOLTIP_FORMAT.format(descriptor.userString, body)

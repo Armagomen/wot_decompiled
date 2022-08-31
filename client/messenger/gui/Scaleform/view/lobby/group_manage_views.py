@@ -2,13 +2,15 @@
 # Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/group_manage_views.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from helpers import i18n
+from messenger import normalizeGroupId
+from messenger.ext import passCensor
 from messenger.gui.Scaleform.meta.BaseManageContactViewMeta import BaseManageContactViewMeta
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.proto.xmpp.xmpp_constants import CONTACT_LIMIT
 from messenger.proto.xmpp.xmpp_string_utils import validateRosterItemGroup
 from messenger.storage import storage_getter
-from messenger.ext import passCensor
+
 
 class GroupManageView(BaseManageContactViewMeta):
 
@@ -55,7 +57,7 @@ class GroupManageView(BaseManageContactViewMeta):
 class GroupCreateView(GroupManageView):
 
     def onOk(self, data):
-        name = passCensor(data.currValue.strip()).encode('utf-8')
+        name = normalizeGroupId(passCensor(data.currValue.strip()))
         resultSuccess = self.proto.contacts.addGroup(name)
         if resultSuccess:
             self.as_closeViewS()
@@ -72,8 +74,9 @@ class GroupRenameView(GroupManageView):
         self.__isInited = False
 
     def onOk(self, data):
-        name = passCensor(data.currValue.strip()).encode('utf-8')
-        successResult = self.proto.contacts.renameGroup(data.defValue, name)
+        name = normalizeGroupId(passCensor(data.currValue.strip()))
+        prevName = normalizeGroupId(data.defValue)
+        successResult = self.proto.contacts.renameGroup(prevName, name)
         if successResult:
             self.as_closeViewS()
 

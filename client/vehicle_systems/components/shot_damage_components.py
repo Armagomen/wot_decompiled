@@ -1,13 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/components/shot_damage_components.py
+import BigWorld
+import CGF
+import GenericComponents
+import Math
 from cgf_script.component_meta_class import CGFComponent, ComponentProperty, CGFMetaTypes
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
-import CGF
-import Math
-import BigWorld
-import GenericComponents
 from items import vehicles
 from vehicle_systems.tankStructure import TankPartNames
+
 
 class ShotDamageComponent(object):
 
@@ -25,7 +26,8 @@ class DamageStickerComponent(CGFComponent):
 
     def __init__(self):
         super(DamageStickerComponent, self).__init__()
-        self.stickerModel = BigWorld.WGStickerModel()
+        self.stickerModel = None
+        return
 
 
 @autoregister(presentInAllWorlds=True)
@@ -33,6 +35,9 @@ class DamageStickerManager(CGF.ComponentManager):
 
     @onAddedQuery(ShotDamageComponent, DamageStickerComponent, GenericComponents.TransformComponent)
     def onAddedSticker(self, shotDamage, damageSticker, transform):
+        if shotDamage.partName == TankPartNames.CHASSIS:
+            return
+        damageSticker.stickerModel = BigWorld.WGStickerModel(self.spaceID)
         geometryLink = shotDamage.compound.getPartGeometryLink(TankPartNames.getIdx(shotDamage.partName))
         m = Math.Matrix()
         m.setIdentity()
@@ -49,5 +54,9 @@ class DamageStickerManager(CGF.ComponentManager):
 
     @onRemovedQuery(ShotDamageComponent, DamageStickerComponent)
     def onRemovedSticker(self, shotDamage, damageSticker):
-        node = shotDamage.compound.node(shotDamage.partName)
-        node.detach(damageSticker.stickerModel)
+        if damageSticker.stickerModel is None:
+            return
+        else:
+            node = shotDamage.compound.node(shotDamage.partName)
+            node.detach(damageSticker.stickerModel)
+            return

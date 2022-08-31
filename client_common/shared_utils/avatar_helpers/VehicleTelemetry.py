@@ -1,14 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/avatar_helpers/VehicleTelemetry.py
 import cPickle
-import zlib
+import datetime
 import math
 import os.path
-import datetime
+import zlib
+
 import ResMgr
-from debug_utils import LOG_WARNING, LOG_ERROR, LOG_CODEPOINT_WARNING
 from constants import ENABLE_DEBUG_DYNAMICS_INFO
+from debug_utils import LOG_WARNING, LOG_ERROR, LOG_CODEPOINT_WARNING
 from physics_shared import G
+
 
 class VehicleTelemetry(object):
 
@@ -38,7 +40,7 @@ class VehicleTelemetry(object):
             return
 
     try:
-        DYNAMICS_LOG_DIR = ResMgr.appDirectory() + 'dynamics_log'
+        DYNAMICS_LOG_DIR = ResMgr.appDirectory() + '../dynamics_log'
     except AttributeError:
         DYNAMICS_LOG_DIR = 'dynamics_log'
 
@@ -56,7 +58,7 @@ class VehicleTelemetry(object):
         logName = VehicleTelemetry.NAME_DELIMITER.join((vehicleName, self.scenarioName, timestamp))
         return logName
 
-    def recordVehicleDynamics(self, scenarioName, cmd, isRapidMode=True, saveTextLog=False):
+    def recordVehicleDynamics(self, scenarioName, cmd, rapidModeSpeedup=1, saveTextLog=False):
         if not self.avatar.inWorld:
             LOG_WARNING('Avatar.base is not available yet on Avatar client')
             LOG_CODEPOINT_WARNING()
@@ -65,7 +67,7 @@ class VehicleTelemetry(object):
         self.saveTextLog = saveTextLog
         self.logName = self.__generateDynamicsLogName()
         cmd = cmd.strip()
-        zippedArg = zlib.compress(cPickle.dumps((isRapidMode, cmd)), 9)
+        zippedArg = zlib.compress(cPickle.dumps((rapidModeSpeedup, cmd)), 9)
         self.__completionFlag = False
         self.avatar.base.setDevelopmentFeature(0, 'record_vehicle_dynamics', 0, zippedArg)
 
@@ -73,6 +75,7 @@ class VehicleTelemetry(object):
         return self.__completionFlag
 
     def __openDynamicsLog(self, refTime, refDist):
+        self.__checkDynLogDir()
         if self.dynamicsLog:
             self.__closeDynamicsLog()
         self.logPath = os.path.join(VehicleTelemetry.DYNAMICS_LOG_DIR, self.logName)
@@ -136,17 +139,17 @@ class VehicleTelemetry(object):
             velocity *= 3.6
             acceleration *= 1 / G
             data = {'t': time,
-             'dist': dist,
-             'Vz': velocity.z,
-             'Vx': velocity.x,
-             'Az': acceleration.z,
-             'Ax': acceleration.x,
-             'X': position.x,
-             'Y': position.y,
-             'Z': position.z,
-             'w': angularVelocity,
-             'wcc': angularAcceleration,
-             'yaw': yaw,
+                    'dist': dist,
+                    'Vz': velocity.z,
+                    'Vx': velocity.x,
+                    'Az': acceleration.z,
+                    'Ax': acceleration.x,
+                    'X': position.x,
+                    'Y': position.y,
+                    'Z': position.z,
+                    'w': angularVelocity,
+                    'wcc': angularAcceleration,
+                    'yaw': yaw,
              'pitch': pitch,
              'roll': roll,
              'r': r,
@@ -157,20 +160,20 @@ class VehicleTelemetry(object):
              'rtp': getSnapshotValue(snapshot, 'rTrackPressure'),
              'lte': getSnapshotValue(snapshot, 'lTrackEnergy'),
              'rte': getSnapshotValue(snapshot, 'rTrackEnergy'),
-             'hle': getSnapshotValue(snapshot, 'hullEnergy'),
-             'dhh': getSnapshotValue(snapshot, 'dmg_hh'),
-             'dlt': getSnapshotValue(snapshot, 'dmg_lt'),
-             'drt': getSnapshotValue(snapshot, 'dmg_rt'),
-             'lthp': getSnapshotValue(snapshot, 'lthp'),
-             'rthp': getSnapshotValue(snapshot, 'rthp'),
-             'hdm': getSnapshotValue(snapshot, 'hull_dmgmp'),
-             'hrc': getSnapshotValue(snapshot, 'hull_react'),
-             'Vy': velocity.y,
-             'Ay': acceleration.y,
-             'ltslp': getSnapshotValue(snapshot, 'trackScrolling', default=-20.0),
-             'rtslp': getSnapshotValue(snapshot, 'trackScrolling', default=-30.0),
-             'ltbf': getSnapshotValue(snapshot, 'ltbf'),
-             'rtbf': getSnapshotValue(snapshot, 'rtbf')}
+                    'hle': getSnapshotValue(snapshot, 'hullEnergy'),
+                    'dhh': getSnapshotValue(snapshot, 'dmg_hh'),
+                    'dlt': getSnapshotValue(snapshot, 'dmg_lt'),
+                    'drt': getSnapshotValue(snapshot, 'dmg_rt'),
+                    'lthp': getSnapshotValue(snapshot, 'lthp'),
+                    'rthp': getSnapshotValue(snapshot, 'rthp'),
+                    'hdm': getSnapshotValue(snapshot, 'hull_dmgmp'),
+                    'hrc': getSnapshotValue(snapshot, 'hull_react'),
+                    'Vy': velocity.y,
+                    'Ay': acceleration.y,
+                    'ltslp': getSnapshotValue(snapshot, 'lTrackScrolling', default=-20.0),
+                    'rtslp': getSnapshotValue(snapshot, 'rTrackScrolling', default=-30.0),
+                    'ltbf': getSnapshotValue(snapshot, 'ltbf'),
+                    'rtbf': getSnapshotValue(snapshot, 'rtbf')}
             for key, value in data.iteritems():
                 self.dynamicsData.setdefault(key, []).append(value)
 

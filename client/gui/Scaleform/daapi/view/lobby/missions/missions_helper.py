@@ -3,12 +3,12 @@
 import operator
 import time
 from collections import namedtuple
-import typing
+
 import constants
 from debug_utils import LOG_WARNING
-from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.Scaleform.daapi.view.lobby.missions import cards_formatters
-from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import CurtailingAwardsComposer, AwardsWindowComposer, DetailedCardAwardComposer, PersonalMissionsAwardComposer, LinkedSetAwardsComposer
+from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import CurtailingAwardsComposer, AwardsWindowComposer, \
+    DetailedCardAwardComposer, PersonalMissionsAwardComposer, LinkedSetAwardsComposer
 from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import getChainVehTypeAndLevelRestrictions
 from gui.Scaleform.genConsts.PERSONAL_MISSIONS_ALIASES import PERSONAL_MISSIONS_ALIASES
 from gui.Scaleform.genConsts.PERSONAL_MISSIONS_BUTTONS import PERSONAL_MISSIONS_BUTTONS
@@ -20,13 +20,14 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.server_events.awards_formatters import AWARDS_SIZES, getEpicAwardFormatter, EPIC_AWARD_SIZE
-from gui.server_events.bonuses import SimpleBonus
 from gui.server_events.cond_formatters.prebattle import MissionsPreBattleConditionsFormatter
 from gui.server_events.cond_formatters.requirements import AccountRequirementsFormatter, TQAccountRequirementsFormatter
 from gui.server_events.conditions import GROUP_TYPE
-from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, EPIC_BATTLE_GROUPS_ID, FUN_RANDOM_GROUP_ID
-from gui.server_events.events_helpers import MISSIONS_STATES, QuestInfoModel, AWARDS_PER_SINGLE_PAGE, isMarathon, AwardSheetPresenter, isPremium
+from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, EPIC_BATTLE_GROUPS_ID
+from gui.server_events.events_helpers import MISSIONS_STATES, QuestInfoModel, AWARDS_PER_SINGLE_PAGE, isMarathon, \
+    AwardSheetPresenter, isPremium
 from gui.server_events.formatters import DECORATION_SIZES
 from gui.server_events.personal_progress import formatters
 from gui.shared.formatters import text_styles, icons, time_formatters
@@ -38,9 +39,10 @@ from personal_missions import PM_BRANCH
 from potapov_quests import PM_BRANCH_TO_FREE_TOKEN_NAME
 from quest_xml_source import MAX_BONUS_LIMIT
 from shared_utils import first
+from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, IEpicBattleMetaGameController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, IEpicBattleMetaGameController
+
 CARD_AWARDS_COUNT = 6
 CARD_AWARDS_BIG_COUNT = 5
 CARD_AWARDS_EPIC_COUNT = 4
@@ -422,7 +424,7 @@ class _MissionInfo(QuestInfoModel):
         bonuses = self.event.getBonuses()
         substitutes = []
         for bonus in bonuses:
-            if bonus.getName() == 'customizations':
+            if bonus.getName() == 'customizations' and bonus.hasAnyCustomCompensations():
                 bonuses.remove(bonus)
                 substitutes.extend(bonus.compensation())
 
@@ -504,7 +506,8 @@ class _BattleRoyaleDailyMissionInfo(_EventDailyMissionInfo):
         return self.__battleRoyaleController
 
     def _getCompleteKey(self):
-        return backport.text(R.strings.battle_royale.questsTooltip.mission_info.timeLeft()) if not self._controller.isDailyQuestsRefreshAvailable() else super(_BattleRoyaleDailyMissionInfo, self)._getCompleteKey()
+        return R.strings.battle_royale.questsTooltip.mission_info.timeLeft() if not self._controller.isDailyQuestsRefreshAvailable() else super(
+            _BattleRoyaleDailyMissionInfo, self)._getCompleteKey()
 
 
 class _RankedMissionInfo(_MissionInfo):
@@ -797,10 +800,6 @@ class _EpicBattleDetailedMissionInfo(_EventDailyDetailedMissionInfo, _EpicBattle
 
 
 class _BattleRoyaleDetailedMissionInfo(_EventDailyDetailedMissionInfo, _BattleRoyaleDailyMissionInfo):
-    pass
-
-
-class _FunRandomDetailedMissionInfo(_DetailedMissionInfo):
     pass
 
 
@@ -1314,8 +1313,6 @@ def getDetailedMissionData(event):
         return _BattleRoyaleDetailedMissionInfo(event)
     elif isRankedQuestID(event.getID()):
         return _RankedDetailedMissionInfo(event)
-    elif event.getGroupID() == FUN_RANDOM_GROUP_ID:
-        return _FunRandomDetailedMissionInfo(event)
     else:
         return _DetailedMissionInfo(event) if event.getType() in constants.EVENT_TYPE.LIKE_BATTLE_QUESTS else None
 

@@ -3,11 +3,12 @@
 import logging
 import typing
 from collections import namedtuple
+
 from gui.shared.event_bus import SharedEvent
 from shared_utils import CONST_CONTAINER
+
 if typing.TYPE_CHECKING:
-    from gui.Scaleform.framework.managers.loaders import GuiImplViewLoadParams
-    from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+    pass
 __all__ = ('ArgsEvent', 'ComponentEvent', 'LoadViewEvent', 'LoadGuiImplViewEvent', 'ShowDialogEvent', 'LoginEvent', 'LoginEventEx', 'LobbySimpleEvent', 'FightButtonDisablingEvent', 'FightButtonEvent', 'CloseWindowEvent', 'BrowserEvent', 'HangarVehicleEvent', 'HangarCustomizationEvent', 'GameEvent', 'BootcampEvent', 'ViewEventType', 'OpenLinkEvent', 'ChannelManagementEvent', 'PreBattleChannelEvent', 'AmmunitionSetupViewEvent', 'HasCtxEvent', 'DogTagsEvent', 'FullscreenModeSelectorEvent', 'ModeSelectorPopoverEvent')
 _logger = logging.getLogger(__name__)
 
@@ -58,11 +59,9 @@ class GameEvent(HasCtxEvent):
     SHOW_EXTERNAL_COMPONENTS = 'game/showExternalComponents'
     HIDE_EXTERNAL_COMPONENTS = 'game/hideExternalComponents'
     ON_BACKGROUND_ALPHA_CHANGE = 'game/onBackgroundAlphaChange'
-    HIDE_AUTO_AIM_MARKER = 'game/hideAutoIamMarker'
     HIDE_LOBBY_SUB_CONTAINER_ITEMS = 'game/hideLobbySubContainerItems'
     REVEAL_LOBBY_SUB_CONTAINER_ITEMS = 'game/revealLobbySubContainerItems'
     BATTLE_LOADING = 'game/battleLoading'
-    ADD_AUTO_AIM_MARKER = 'game/addAutoIamMarker'
     SHOW_BTN_HINT = 'game/showBtnHint'
     HIDE_BTN_HINT = 'game/hideBtnHint'
     DESTROY_TIMERS_PANEL = 'game/destroyTimersPanel'
@@ -82,6 +81,7 @@ class GameEvent(HasCtxEvent):
     COMMANDER_HINT = 'game/commanderHint'
     CHANGE_AMMUNITION_SETUP = 'game/changeAmmunitionSetup'
     TOGGLE_DEBUG_PIERCING_PANEL = 'game/toggleDebugPiercingPanel'
+    ON_TARGET_VEHICLE_CHANGED = 'game/onTargetVehicleChanged'
 
 
 class GUICommonEvent(SharedEvent):
@@ -776,7 +776,3 @@ class GunMarkerEvent(HasCtxEvent):
 class ResourceWellLoadingViewEvent(HasCtxEvent):
     LOAD = 'load'
     DESTROY = 'destroy'
-
-
-class WotAnniversaryEvent(HasCtxEvent):
-    ON_WIDGET_STATE_UPDATED = 'onWidgetStateUpdated'

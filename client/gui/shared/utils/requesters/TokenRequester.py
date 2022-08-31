@@ -1,15 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/TokenRequester.py
-import time
 import cPickle
+import time
 from functools import partial
+
 import BigWorld
 from adisp import async, process
 from constants import REQUEST_COOLDOWN, TOKEN_TYPE
 from debug_utils import LOG_CURRENT_EXCEPTION
-from TokenResponse import TokenResponse
-from ids_generators import SequenceIDGenerator
 from helpers import isPlayerAccount
+from ids_generators import SequenceIDGenerator
+
+from TokenResponse import TokenResponse
+
 
 def _getAccountRepository():
     import Account
@@ -17,6 +20,7 @@ def _getAccountRepository():
 
 
 _tokenRqs = {}
+
 
 def getTokenRequester(tokenType):
     global _tokenRqs
@@ -60,7 +64,7 @@ class TokenRequester(object):
         self.__callback = None
         repository = _getAccountRepository()
         if repository:
-            repository.onTokenReceived -= self.__onTokenReceived
+            repository.onTokenReceived -= self._onTokenReceived
         self.__lastResponse = None
         self.__requestID = 0
         self.__clearTimeoutCb()
@@ -100,7 +104,7 @@ class TokenRequester(object):
                 self.__loadTimeout(self.__requestID, self.__tokenType, max(timeout, 0.0))
             repository = _getAccountRepository()
             if repository and self.canAllowRequest():
-                repository.onTokenReceived += self.__onTokenReceived
+                repository.onTokenReceived += self._onTokenReceived
                 requester(self.__requestID, self.__tokenType)
             elif self.__callback:
                 self.__callback(None)
@@ -109,13 +113,13 @@ class TokenRequester(object):
     def _getRequester(self):
         return getattr(BigWorld.player(), 'requestToken', None)
 
-    def __onTokenReceived(self, requestID, tokenType, data):
+    def _onTokenReceived(self, requestID, tokenType, data):
         if self.__requestID != requestID or tokenType != self.__tokenType:
             return
         else:
             repository = _getAccountRepository()
             if repository:
-                repository.onTokenReceived -= self.__onTokenReceived
+                repository.onTokenReceived -= self._onTokenReceived
             try:
                 self.__lastResponse = self.__wrapper(**cPickle.loads(data))
             except TypeError:
@@ -141,4 +145,4 @@ class TokenRequester(object):
 
     def __onTimeout(self, requestID, tokenType):
         self.__clearTimeoutCb()
-        self.__onTokenReceived(requestID, tokenType, cPickle.dumps({'error': 'TIMEOUT'}, -1))
+        self._onTokenReceived(requestID, tokenType, cPickle.dumps({'error': 'TIMEOUT'}, -1))

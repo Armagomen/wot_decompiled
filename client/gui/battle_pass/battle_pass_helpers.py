@@ -1,8 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_pass/battle_pass_helpers.py
 import logging
-from collections import namedtuple
 import typing
+from collections import namedtuple
+
 from account_helpers.AccountSettings import AccountSettings, IS_BATTLE_PASS_EXTRA_STARTED, LAST_BATTLE_PASS_POINTS_SEEN
 from account_helpers.settings_core.settings_constants import BattlePassStorageKeys
 from battle_pass_common import BattlePassState
@@ -23,10 +24,9 @@ from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IBattlePassController
+
 if typing.TYPE_CHECKING:
-    from typing import Dict, List
-    from gui.server_events.bonuses import TmanTemplateTokensBonus
-    from gui.shared.gui_items.customization.c11n_items import Customization
+    pass
 _logger = logging.getLogger(__name__)
 _CUSTOMIZATION_BONUS_NAME = 'customizations'
 _TANKMAN_BONUS_NAME = 'tmanToken'
@@ -101,7 +101,12 @@ def getIntroSlidesNames():
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
 def getChaptersOrder(battlePass=None):
-    return dict(zip(battlePass.getChapterIDs(), GUI_SETTINGS.battlePass.get('chaptersOrder')))
+    chapterIDs = [chapter for chapter in battlePass.getChapterIDs() if not battlePass.isExtraChapter(chapter)]
+    chapterIDs.sort()
+    extraChapterID = battlePass.getExtraChapterID()
+    if extraChapterID:
+        chapterIDs.append(extraChapterID)
+    return dict(zip(chapterIDs, GUI_SETTINGS.battlePass.get('chaptersOrder')))
 
 
 def getSupportedArenaBonusTypeFor(queueType, isInUnit):

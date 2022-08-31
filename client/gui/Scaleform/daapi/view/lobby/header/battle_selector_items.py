@@ -2,12 +2,12 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 import logging
 import typing
-from battle_royale.gui.constants import BattleRoyalePerfProblems
+
 from CurrentVehicle import g_currentVehicle
 from account_helpers import isDemonstrator
 from account_helpers import isDemonstratorExpert
 from adisp import process
-from battle_selector_item import SelectorItem
+from battle_royale.gui.constants import BattleRoyalePerfProblems
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, ACCOUNT_ATTR
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.lobby.mapbox import mapbox_helpers
@@ -23,15 +23,20 @@ from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.prb_getters import areSpecBattlesHidden
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
-from gui.shared import event_dispatcher
 from gui.shared.formatters import text_styles, icons
 from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
 from gui.shared.utils.functions import makeTooltip
 from helpers import time_utils, dependency, int2roman
-from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, IBattleRoyaleTournamentController, IFunRandomController, IMapboxController, IMapsTrainingController, IEpicBattleMetaGameController, IEventBattlesController
+from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, \
+    IBattleRoyaleTournamentController, IMapboxController, IMapsTrainingController, IEpicBattleMetaGameController, \
+    IEventBattlesController
 from skeletons.gui.lobby_context import ILobbyContext
+
+from battle_selector_item import SelectorItem
+
 if typing.TYPE_CHECKING:
     from skeletons.gui.game_control import ISeasonProvider
+
     cycleStrGetter = typing.Callable[[ISeasonProvider, str, typing.Optional[typing.Callable[[int], str]]], str]
 _logger = logging.getLogger(__name__)
 _R_HEADER_BUTTONS = R.strings.menu.headerButtons
@@ -442,8 +447,8 @@ class _BattleSelectorItems(object):
         _logger.error('Action not found: %s', action)
         return False
 
-    def hasNewVisible(self):
-        return any((item.isShowNewIndicator() and item.isVisible() for item in self.allItems))
+    def hasNew(self):
+        return any((item.isShowNewIndicator() and item.isVisible() and not item.isDisabled() for item in self.allItems))
 
     @property
     def isDemoButtonEnabled(self):
@@ -584,26 +589,6 @@ class _MapboxSquadItem(_SpecialSquadItem):
         return backport.image(_R_ICONS.battleTypes.c_40x40.mapboxSquad())
 
 
-class _FunRandomSquadItem(_SpecialSquadItem):
-    __funRandomController = dependency.descriptor(IFunRandomController)
-
-    def __init__(self, label, data, order, selectorType=None, isVisible=True):
-        super(_FunRandomSquadItem, self).__init__(label, data, order, selectorType, isVisible)
-        self._prebattleType = PREBATTLE_TYPE.FUN_RANDOM
-        self._isVisible = self.__funRandomController.isEnabled()
-        self._isDisabled = self._isDisabled or not self.__funRandomController.isInPrimeTime()
-
-    @property
-    def squadIcon(self):
-        return backport.image(_R_ICONS.battleTypes.c_40x40.funRandomSquad())
-
-    def _update(self, state):
-        super(_FunRandomSquadItem, self)._update(state)
-        self._isSelected = self.__funRandomController.isFunRandomPrbActive()
-        self._isVisible = self.__funRandomController.isEnabled()
-        self._isDisabled = self._isDisabled or not self.__funRandomController.isInPrimeTime()
-
-
 class _RankedItem(_SelectorItem):
     rankedController = dependency.descriptor(IRankedBattlesController)
 
@@ -693,10 +678,7 @@ class _BattleRoyaleItem(SelectorItem):
             nextCycle = currentSeason.getNextByTimeCycle(time_utils.getCurrentLocalServerTimestamp())
             if isActiveCycle or nextCycle:
                 self.__battleRoyaleController.setDefaultHangarEntryPoint()
-                isSuccess = yield dispatcher.doSelectAction(PrbAction(self._data))
-                if isSuccess and self._isNew:
-                    selectorUtils.setBattleTypeAsKnown(self._selectorType)
-                    self.__battleRoyaleController.showIntroWindow()
+                yield dispatcher.doSelectAction(PrbAction(self._data))
             return
 
     def _update(self, state):
@@ -871,38 +853,6 @@ class EpicBattleItem(SelectorItem):
         return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText if attentionText and iconPath else None
 
 
-class _FunRandomItem(SelectorItem):
-    __funRandomCtrl = dependency.descriptor(IFunRandomController)
-
-    def __init__(self, label, data, order, selectorType=None, isVisible=True):
-        super(_FunRandomItem, self).__init__(label, data, order, selectorType, isVisible)
-        self._isVisible = self.__getIsVisible()
-
-    def getSpecialBGIcon(self):
-        return backport.image(_R_ICONS.buttons.selectorRendererBGEvent()) if self.__funRandomCtrl.isAvailable() else ''
-
-    @process
-    def _doSelect(self, dispatcher):
-        if self.__funRandomCtrl.getCurrentSeason() is None and self.__funRandomCtrl.getNextSeason() is not None:
-            event_dispatcher.showFunRandomInfoPage()
-        elif self.__funRandomCtrl.isAvailable():
-            isSuccess = yield dispatcher.doSelectAction(PrbAction(self._data))
-            if isSuccess:
-                selectorUtils.setBattleTypeAsKnown(self._selectorType)
-        return
-
-    def _update(self, state):
-        isDisabled = self.__funRandomCtrl.getCurrentSeason() is not None and self.__funRandomCtrl.isFrozen()
-        self._isDisabled = state.hasLockedState or isDisabled
-        self._isVisible = self.__getIsVisible()
-        self._isSelected = state.isQueueSelected(QUEUE_TYPE.FUN_RANDOM)
-        return
-
-    def __getIsVisible(self):
-        hasSeasons = bool(self.__funRandomCtrl.getCurrentSeason() or self.__funRandomCtrl.getNextSeason())
-        return self.__funRandomCtrl.isEnabled() and hasSeasons
-
-
 _g_items = None
 _g_squadItems = None
 _DEFAULT_PAN = PREBATTLE_ACTION_NAME.RANDOM
@@ -926,10 +876,6 @@ def _addRoyaleBattleType(items):
 
 def _addMapboxBattleType(items):
     items.append(_MapboxItem(backport.text(_R_BATTLE_TYPES.mapbox()), PREBATTLE_ACTION_NAME.MAPBOX, 2, SELECTOR_BATTLE_TYPES.MAPBOX))
-
-
-def _addFunRandomBattleType(items):
-    items.append(_FunRandomItem(backport.text(_R_BATTLE_TYPES.funRandom()), PREBATTLE_ACTION_NAME.FUN_RANDOM, 2, SELECTOR_BATTLE_TYPES.FUN_RANDOM))
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -992,17 +938,16 @@ def _addEventBattlesType(items):
 
 
 BATTLES_SELECTOR_ITEMS = {PREBATTLE_ACTION_NAME.RANDOM: _addRandomBattleType,
- PREBATTLE_ACTION_NAME.RANKED: _addRankedBattleType,
- PREBATTLE_ACTION_NAME.E_SPORT: _addCommandBattleType,
- PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST: _addStrongholdsBattleType,
- PREBATTLE_ACTION_NAME.TRAININGS_LIST: _addTrainingBattleType,
- PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST: _addEpicTrainingBattleType,
- PREBATTLE_ACTION_NAME.BATTLE_ROYALE: _addRoyaleBattleType,
- PREBATTLE_ACTION_NAME.MAPBOX: _addMapboxBattleType,
- PREBATTLE_ACTION_NAME.MAPS_TRAINING: _addMapsTrainingBattleType,
- PREBATTLE_ACTION_NAME.EPIC: _addEpicBattleType,
- PREBATTLE_ACTION_NAME.EVENT_BATTLE: _addEventBattlesType,
- PREBATTLE_ACTION_NAME.FUN_RANDOM: _addFunRandomBattleType}
+                          PREBATTLE_ACTION_NAME.RANKED: _addRankedBattleType,
+                          PREBATTLE_ACTION_NAME.E_SPORT: _addCommandBattleType,
+                          PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST: _addStrongholdsBattleType,
+                          PREBATTLE_ACTION_NAME.TRAININGS_LIST: _addTrainingBattleType,
+                          PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST: _addEpicTrainingBattleType,
+                          PREBATTLE_ACTION_NAME.BATTLE_ROYALE: _addRoyaleBattleType,
+                          PREBATTLE_ACTION_NAME.MAPBOX: _addMapboxBattleType,
+                          PREBATTLE_ACTION_NAME.MAPS_TRAINING: _addMapsTrainingBattleType,
+                          PREBATTLE_ACTION_NAME.EPIC: _addEpicBattleType,
+                          PREBATTLE_ACTION_NAME.EVENT_BATTLE: _addEventBattlesType}
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def _createItems(lobbyContext=None):
@@ -1025,7 +970,6 @@ def _createSquadSelectorItems():
     _addBattleRoyaleSquadType(items)
     _addEventSquadType(items)
     _addMapboxSquadType(items)
-    _addFunRandomSquadType(items)
     return _SquadSelectorItems(items)
 
 
@@ -1044,10 +988,6 @@ def _addEventSquadType(items):
 
 def _addMapboxSquadType(items):
     items.append(_MapboxSquadItem(text_styles.middleTitle(backport.text(_R_BATTLE_TYPES.mapboxSquad())), PREBATTLE_ACTION_NAME.MAPBOX_SQUAD, 2))
-
-
-def _addFunRandomSquadType(items):
-    items.append(_FunRandomSquadItem(text_styles.middleTitle(backport.text(_R_BATTLE_TYPES.funRandomSquad())), PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD, 2))
 
 
 def _getCycleEndsInStr(modeCtrl, modeName, timeLeftStrGetter=time_utils.getTillTimeString):

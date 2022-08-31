@@ -1,71 +1,73 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/settings_core/options.py
-from enum import Enum
-from typing import TYPE_CHECKING
 import base64
 import cPickle
-import random
-import sys
 import fractions
 import itertools
+import logging
+import random
+import sys
 import weakref
 from collections import namedtuple
+from enum import Enum
 from operator import itemgetter
-import logging
-from aih_constants import CTRL_MODE_NAME
-import GUI
-from AvatarInputHandler.cameras import FovExtended
-import BigWorld
-import ResMgr
-import Keys
+from typing import TYPE_CHECKING
+
+import ArenaType
 import BattleReplay
-import VOIP
+import BigWorld
+import CommandMapping
+import GUI
+import Keys
+import ResMgr
 import Settings
 import SoundGroups
-import ArenaType
+import VOIP
 import WWISE
+import nations
+from AvatarInputHandler import INPUT_HANDLER_CFG, AvatarInputHandler
+from AvatarInputHandler.DynamicCameras import ArcadeCamera, SniperCamera, StrategicCamera, ArtyCamera, DualGunCamera
+from AvatarInputHandler.cameras import FovExtended
+from AvatarInputHandler.control_modes import PostMortemControlMode, SniperControlMode
+from Event import Event
+from account_helpers.AccountSettings import AccountSettings, SPEAKERS_DEVICE
+from account_helpers.settings_core.settings_constants import SOUND, SPGAimEntranceModeOptions
+from aih_constants import CTRL_MODE_NAME
 from constants import CONTENT_TYPE, IS_CHINA
+from debug_utils import LOG_NOTE, LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
+from gui import GUI_SETTINGS
+from gui import makeHtmlString
 from gui.Scaleform.genConsts.ACOUSTICS import ACOUSTICS
+from gui.Scaleform.locale.SETTINGS import SETTINGS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
 from gui.app_loader import app_getter
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import event_dispatcher
+from gui.shared.formatters import icons, text_styles
+from gui.shared.utils import graphics, functions, getPlayerDatabaseID
+from gui.shared.utils.functions import makeTooltip, clamp
+from gui.shared.utils.key_mapping import getScaleformKey, getBigworldKey, getBigworldNameFromKey
+from gui.shared.utils.monitor_settings import g_monitorSettings
 from gui.sounds.sound_constants import SPEAKERS_CONFIG
 from helpers import dependency
+from helpers import i18n
 from helpers import isPlayerAvatar
 from helpers.i18n import makeString
-import nations
-import CommandMapping
-from helpers import i18n
-from Event import Event
-from AvatarInputHandler import INPUT_HANDLER_CFG, AvatarInputHandler
-from AvatarInputHandler.DynamicCameras import ArcadeCamera, SniperCamera, StrategicCamera, ArtyCamera, DualGunCamera
-from AvatarInputHandler.control_modes import PostMortemControlMode, SniperControlMode
-from debug_utils import LOG_NOTE, LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
-from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
 from messenger import g_settings as messenger_settings
-from account_helpers.AccountSettings import AccountSettings, SPEAKERS_DEVICE
-from account_helpers.settings_core.settings_constants import SOUND, SPGAimEntranceModeOptions
-from messenger.storage import storage_getter
-from shared_utils import CONST_CONTAINER, forEach
-from gui import GUI_SETTINGS
-from gui.shared.utils import graphics, functions, getPlayerDatabaseID
-from gui.shared.utils.monitor_settings import g_monitorSettings
-from gui.shared.utils.key_mapping import getScaleformKey, getBigworldKey, getBigworldNameFromKey
-from gui.Scaleform.locale.SETTINGS import SETTINGS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.shared.formatters import icons, text_styles
-from gui.shared.utils.functions import makeTooltip, clamp
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
+from messenger.storage import storage_getter
+from shared_utils import CONST_CONTAINER, forEach
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
+from skeletons.gui.game_control import ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.sounds import ISoundsController
-from gui import makeHtmlString
-from skeletons.gui.game_control import ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController
+
 if TYPE_CHECKING:
-    from typing import Tuple as TTuple
+    pass
 _logger = logging.getLogger(__name__)
 
 class APPLY_METHOD(object):
@@ -952,7 +954,7 @@ class GraphicSetting(SettingAbstract):
         return True
 
     def getApplyMethod(self, value):
-        return BigWorld.getGraphicsSettingApplyMethod(self.name, value)
+        return BigWorld.getGraphicsSettingApplyMethod(self.name, int(value))
 
     def refresh(self):
         self._currentValue = graphics.getGraphicsSetting(self.name)

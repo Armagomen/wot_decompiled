@@ -5,49 +5,52 @@ import math
 import random
 import weakref
 from collections import namedtuple
+
 import BigWorld
-import Math
-import Health
-import WoT
-import AreaDestructibles
-import BattleReplay
+import CGF
 import DestructiblesCache
-import TriggersManager
+import GenericComponents
+import Health
+import Math
+import Projectiles
+import WoT
 import constants
 import physics_shared
-from account_helpers.settings_core.settings_constants import GAME
-from TriggersManager import TRIGGER_TYPE
-from VehicleEffects import DamageFromShotDecoder
-from aih_constants import ShakeReason
+from Event import Event
 from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
 from constants import SPT_MATKIND
 from constants import VEHICLE_HIT_EFFECT, VEHICLE_SIEGE_STATE, ATTACK_REASON_INDICES, ATTACK_REASON
 from debug_utils import LOG_DEBUG_DEV
-from Event import Event
+from gun_rotation_shared import decodeGunAngles
+from items import vehicles
+from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES, EFFECT_MATERIALS
+from shared_utils.vehicle_utils import createWheelFilters
+from soft_exception import SoftException
+
+import AreaDestructibles
+import BattleReplay
+import TriggersManager
+from TriggersManager import TRIGGER_TYPE
+from VehicleEffects import DamageFromShotDecoder
+from account_helpers.settings_core.settings_constants import GAME
+from aih_constants import ShakeReason
 from gui.battle_control import vehicle_getter, avatar_getter
 from gui.battle_control.avatar_getter import getSoundNotifications
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _GUI_EVENT_ID, VEHICLE_VIEW_STATE
-from gun_rotation_shared import decodeGunAngles
 from helpers import dependency
 from helpers.EffectMaterialCalculation import calcSurfaceMaterialNearPoint
 from helpers.EffectsList import SoundStartParam
-from items import vehicles
-from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES, EFFECT_MATERIALS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.game_control import ISpecialSoundCtrl, IBattleRoyaleController
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.vehicle_appearance_cache import IAppearanceCache
-from soft_exception import SoftException
+from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
 from vehicle_systems.components.shot_damage_components import ShotDamageComponent
 from vehicle_systems.entity_components.battle_abilities_component import BattleAbilitiesComponent
 from vehicle_systems.model_assembler import collisionIdxToTrackPairIdx
 from vehicle_systems.tankStructure import TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
-from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
-from shared_utils.vehicle_utils import createWheelFilters
-import GenericComponents
-import Projectiles
-import CGF
+
 _logger = logging.getLogger(__name__)
 LOW_ENERGY_COLLISION_D = 0.3
 HIGH_ENERGY_COLLISION_D = 0.6
@@ -112,7 +115,11 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
     @property
     def isWheeledTech(self):
-        return 'wheeledVehicle' in self.typeDescriptor.type.tags
+        return self.typeDescriptor.type.isWheeledVehicle
+
+    @property
+    def isScout(self):
+        return 'scout' in self.typeDescriptor.type.tags
 
     @property
     def isTrackWithinTrack(self):
@@ -121,7 +128,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
     @property
     def wheelsScrollSmoothed(self):
         if self.__wheelsScrollFilter is not None:
-            return [ scrollFilter.output(BigWorld.time()) for scrollFilter in self.__wheelsScrollFilter ]
+            return [scrollFilter.output(BigWorld.time()) for scrollFilter in self.__wheelsScrollFilter]
         else:
             return
 
@@ -144,10 +151,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
     def maxHealth(self):
         return self.publicInfo.maxHealth
 
-    @property
-    def battleModifiers(self):
-        return self.guiSessionProvider.arenaVisitor.getArenaModifiers()
-
     def getBounds(self, partIdx):
         return self.appearance.getBounds(partIdx) if self.appearance is not None else (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0)
 
@@ -163,6 +166,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
         self.proxy = weakref.proxy(self)
         self.extras = {}
+        self.extrasHitPoint = dict()
         self.typeDescriptor = None
         self.appearance = None
         self.onAppearanceReady = Event()
@@ -657,13 +661,21 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             ctrl.setDisabledSwitches(self.id, self.disabledSwitches)
         return
 
+    def onExtraHitted(self, extraIndex, hitPoint):
+        self.extrasHitPoint[extraIndex] = hitPoint
+
+    def getExtraHitPoint(self, extraIndex):
+        return Math.Vector3(0.0, 10.0, 0.0) if extraIndex is None or extraIndex not in self.extrasHitPoint else \
+        self.extrasHitPoint[extraIndex]
+
     def onHealthChanged(self, newHealth, oldHealth, attackerID, attackReasonID):
         if newHealth > 0 and self.health <= 0:
             self.health = newHealth
             self.__prevHealth = newHealth
             return
         else:
-            self.guiSessionProvider.setVehicleHealth(self.isPlayerVehicle, self.id, newHealth, attackerID, attackReasonID)
+            self.guiSessionProvider.setVehicleHealth(self.isPlayerVehicle, self.id, newHealth, attackerID,
+                                                     attackReasonID)
             if not self.isStarted:
                 self.__prevHealth = newHealth
                 return
@@ -946,8 +958,11 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             drawFlags = BigWorld.ShadowPassBit
         if self.isStarted:
             va = self.appearance
+            if va.tracks is not None:
+                va.tracks.setPhysicalDestroyedTracksVisible(show)
             va.changeDrawPassVisibility(drawFlags)
             va.showStickers(show)
+        return
 
     def addCameraCollider(self):
         if self.appearance is not None:

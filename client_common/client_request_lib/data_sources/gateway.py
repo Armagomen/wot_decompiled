@@ -1,12 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/data_sources/gateway.py
-import zlib
 import json
 import urllib
+import zlib
 from base64 import b64encode
 from datetime import datetime, timedelta, time as dt_time
+
 from client_request_lib import exceptions
 from client_request_lib.data_sources import base
+
 EXAMPLES = {}
 DEFAULT_SINCE_DELAY = timedelta(days=1)
 SUCCESS_STATUSES = [200, 201, 304]
@@ -186,11 +188,13 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         return self._request_data(callback, url, get_data=get_params, converters={'joined_at': from_iso})
 
     def get_clan_favorite_attributes(self, callback, clan_id, fields=None):
-        url = '/clans/%s/favorite_attributes/' % clan_id
-        return self._request_data(callback, url, converters={'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time(),
-         'favorite_arena_6': int,
-         'favorite_arena_8': int,
-         'favorite_arena_10': int})
+        get_params = {'clan_id': clan_id}
+        url = '/cwh/gm/clans/favorite_attributes'
+        return self._request_data(callback, url, get_data=get_params, converters={
+            'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time(),
+            'favorite_arena_6': int,
+            'favorite_arena_8': int,
+            'favorite_arena_10': int})
 
     def get_accounts_clans(self, callback, account_ids, fields=None):
         get_params = {'fields': fields,
@@ -614,16 +618,12 @@ class GatewayDataAccessor(base.BaseDataAccessor):
     def post_gift_system_gift(self, callback, entitlement_code, receiver_id, meta_info):
         url = '/giftsystem/gift'
         post_data = {'entitlement_code': entitlement_code,
-         'receiver_id': receiver_id}
+                     'receiver_id': receiver_id}
         post_data.update(meta_info)
         return self._request_data(callback, url, method='POST', post_data=post_data)
 
-    def get_inventory_entitlements(self, callback, entitlement_codes):
-        url = '/shop/inventory_entitlements/'
-        if entitlement_codes:
-            urlencoded_string = urllib.urlencode([ ('entitlement_codes', code) for code in entitlement_codes ])
-            url = '{}?{}'.format(url, urlencoded_string)
-        return self._request_data(callback, url, method='GET')
+    def get_uilogging_session(self, callback):
+        return self._request_data(callback, '/uilogging/session', method='GET')
 
     def _get_formatted_language_code(self):
         return self.client_lang.replace('_', '-')

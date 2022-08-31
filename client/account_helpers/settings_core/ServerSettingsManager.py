@@ -2,9 +2,11 @@
 # Embedded file name: scripts/client/account_helpers/settings_core/ServerSettingsManager.py
 import weakref
 from collections import namedtuple
+
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.migrations import migrateToVersion
-from account_helpers.settings_core.settings_constants import TUTORIAL, VERSION, GuiSettingsBehavior, OnceOnlyHints, SPGAim, CONTOUR
+from account_helpers.settings_core.settings_constants import TUTORIAL, VERSION, GuiSettingsBehavior, OnceOnlyHints, \
+    SPGAim, CONTOUR
 from adisp import process, async
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui.battle_pass.battle_pass_helpers import updateBattlePassSettings
@@ -12,6 +14,7 @@ from gui.server_events.pm_constants import PM_TUTOR_FIELDS
 from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCache
+
 GUI_START_BEHAVIOR = 'guiStartBehavior'
 
 class SETTINGS_SECTIONS(CONST_CONTAINER):
@@ -55,7 +58,7 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     BATTLE_BORDER_MAP = 'FEEDBACK_BORDER_MAP'
     QUESTS_PROGRESS = 'QUESTS_PROGRESS'
     UI_STORAGE = 'UI_STORAGE'
-    LINKEDSET_QUESTS = 'LINKEDSET_QUESTS'
+    BATTLE_MATTERS_QUESTS = 'BATTLE_MATTERS_QUESTS'
     SESSION_STATS = 'SESSION_STATS'
     BATTLE_PASS_STORAGE = 'BATTLE_PASS_STORAGE'
     BATTLE_COMM = 'BATTLE_COMM'
@@ -64,7 +67,6 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     BATTLE_HUD = 'BATTLE_HUD'
     SPG_AIM = 'SPG_AIM'
     CONTOUR = 'CONTOUR'
-    WOT_ANNIVERSARY_STORAGE = 'WOT_ANNIVERSARY_STORAGE'
     ONCE_ONLY_HINTS_GROUP = (ONCE_ONLY_HINTS, ONCE_ONLY_HINTS_2)
 
 
@@ -103,7 +105,6 @@ class ServerSettingsManager(object):
     BATTLE_COMM = settings_constants.BattleCommStorageKeys
     BATTLE_PASS = settings_constants.BattlePassStorageKeys
     SCORE_PANEL = settings_constants.ScorePanelStorageKeys
-    WOT_ANNIVERSARY = settings_constants.WotAnniversaryStorageKeys
     SECTIONS = {SETTINGS_SECTIONS.GAME: Section(masks={GAME.ENABLE_OL_FILTER: 0,
                               GAME.ENABLE_SPAM_FILTER: 1,
                               GAME.INVITES_FROM_FRIENDS: 2,
@@ -174,8 +175,6 @@ class ServerSettingsManager(object):
                                  SPGAim.AUTO_CHANGE_AIM_MODE: 3}, offsets={SPGAim.AIM_ENTRANCE_MODE: Offset(4, 48)}),
      SETTINGS_SECTIONS.CONTOUR: Section(masks={CONTOUR.ENHANCED_CONTOUR: 0}, offsets={CONTOUR.CONTOUR_PENETRABLE_ZONE: Offset(1, 6),
                                  CONTOUR.CONTOUR_IMPENETRABLE_ZONE: Offset(3, 24)}),
-     SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE: Section(masks={WOT_ANNIVERSARY.WOT_ANNIVERSARY_INTRO_SHOWED: 0,
-                                                 WOT_ANNIVERSARY.WOT_ANNIVERSARY_WELCOME_SHOWED: 1}, offsets={}),
      SETTINGS_SECTIONS.MARKERS: Section(masks={'markerBaseIcon': 0,
                                  'markerBaseLevel': 1,
                                  'markerBaseHpIndicator': 2,
@@ -399,40 +398,43 @@ class ServerSettingsManager(object):
                                          OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: 29,
                                          OnceOnlyHints.CRYSTAL_BTN_HINT: 30}, offsets={}),
      SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2: Section(masks={OnceOnlyHints.AMMUNITION_PANEL_HINT: 0,
-                                           OnceOnlyHints.AMMUNITION_FILTER_HINT: 1,
-                                           OnceOnlyHints.OPT_DEV_DRAG_AND_DROP_HINT: 2,
-                                           OnceOnlyHints.DOGTAG_HANGAR_HINT: 3,
-                                           OnceOnlyHints.DOGTAG_PROFILE_HINT: 4,
-                                           OnceOnlyHints.PLATOON_BTN_HINT: 5,
-                                           OnceOnlyHints.MODE_SELECTOR_WIDGETS_BTN_HINT: 6,
-                                           OnceOnlyHints.HANGAR_MANUAL_HINT: 7,
-                                           OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT: 8,
-                                           OnceOnlyHints.AMUNNITION_PANEL_EPIC_BATTLE_ABILITIES_HINT: 9,
-                                           OnceOnlyHints.VEHICLE_PREVIEW_POST_PROGRESSION_BUTTON_HINT: 10,
-                                           OnceOnlyHints.VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 11,
-                                           OnceOnlyHints.HERO_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 12,
-                                           OnceOnlyHints.SWITCH_EQUIPMENT_AUXILIARY_LOADOUT_HINT: 13,
-                                           OnceOnlyHints.SWITCH_EQUIPMENT_ESSENTIALS_LOADOUT_HINT: 14,
-                                           OnceOnlyHints.COMPARE_MODIFICATIONS_PANEL_HINT: 15,
-                                           OnceOnlyHints.COMPARE_SPECIALIZATION_BUTTON_HINT: 16,
-                                           OnceOnlyHints.TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 17,
-                                           OnceOnlyHints.PERSONAL_TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 18,
-                                           OnceOnlyHints.RESEARCH_POST_PROGRESSION_ENTRY_POINT_HINT: 19,
-                                           OnceOnlyHints.WOTPLUS_HANGAR_HINT: 20,
-                                           OnceOnlyHints.WOTPLUS_PROFILE_HINT: 21,
-                                           OnceOnlyHints.HANGAR_HAVE_NEW_BADGE_HINT: 22,
-                                           OnceOnlyHints.HANGAR_HAVE_NEW_SUFFIX_BADGE_HINT: 23,
-                                           OnceOnlyHints.APPLY_ABILITIES_TO_TYPE_CHECKBOX_HINT: 24}, offsets={}),
-     SETTINGS_SECTIONS.DAMAGE_INDICATOR: Section(masks={DAMAGE_INDICATOR.TYPE: 0,
-                                          DAMAGE_INDICATOR.PRESET_CRITS: 1,
-                                          DAMAGE_INDICATOR.DAMAGE_VALUE: 2,
-                                          DAMAGE_INDICATOR.VEHICLE_INFO: 3,
-                                          DAMAGE_INDICATOR.ANIMATION: 4,
-                                          DAMAGE_INDICATOR.DYNAMIC_INDICATOR: 5,
-                                          DAMAGE_INDICATOR.PRESET_ALLIES: 6}, offsets={}),
-     SETTINGS_SECTIONS.DAMAGE_LOG: Section(masks={DAMAGE_LOG.TOTAL_DAMAGE: 0,
-                                    DAMAGE_LOG.BLOCKED_DAMAGE: 1,
-                                    DAMAGE_LOG.ASSIST_DAMAGE: 2,
+                                                         OnceOnlyHints.AMMUNITION_FILTER_HINT: 1,
+                                                         OnceOnlyHints.OPT_DEV_DRAG_AND_DROP_HINT: 2,
+                                                         OnceOnlyHints.DOGTAG_HANGAR_HINT: 3,
+                                                         OnceOnlyHints.DOGTAG_PROFILE_HINT: 4,
+                                                         OnceOnlyHints.PLATOON_BTN_HINT: 5,
+                                                         OnceOnlyHints.MODE_SELECTOR_WIDGETS_BTN_HINT: 6,
+                                                         OnceOnlyHints.HANGAR_MANUAL_HINT: 7,
+                                                         OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT: 8,
+                                                         OnceOnlyHints.AMUNNITION_PANEL_EPIC_BATTLE_ABILITIES_HINT: 9,
+                                                         OnceOnlyHints.VEHICLE_PREVIEW_POST_PROGRESSION_BUTTON_HINT: 10,
+                                                         OnceOnlyHints.VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 11,
+                                                         OnceOnlyHints.HERO_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 12,
+                                                         OnceOnlyHints.SWITCH_EQUIPMENT_AUXILIARY_LOADOUT_HINT: 13,
+                                                         OnceOnlyHints.SWITCH_EQUIPMENT_ESSENTIALS_LOADOUT_HINT: 14,
+                                                         OnceOnlyHints.COMPARE_MODIFICATIONS_PANEL_HINT: 15,
+                                                         OnceOnlyHints.COMPARE_SPECIALIZATION_BUTTON_HINT: 16,
+                                                         OnceOnlyHints.TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 17,
+                                                         OnceOnlyHints.PERSONAL_TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 18,
+                                                         OnceOnlyHints.RESEARCH_POST_PROGRESSION_ENTRY_POINT_HINT: 19,
+                                                         OnceOnlyHints.WOTPLUS_HANGAR_HINT: 20,
+                                                         OnceOnlyHints.WOTPLUS_PROFILE_HINT: 21,
+                                                         OnceOnlyHints.HANGAR_HAVE_NEW_BADGE_HINT: 22,
+                                                         OnceOnlyHints.HANGAR_HAVE_NEW_SUFFIX_BADGE_HINT: 23,
+                                                         OnceOnlyHints.APPLY_ABILITIES_TO_TYPE_CHECKBOX_HINT: 24,
+                                                         OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT: 25,
+                                                         OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT: 26},
+                                                  offsets={}),
+                SETTINGS_SECTIONS.DAMAGE_INDICATOR: Section(masks={DAMAGE_INDICATOR.TYPE: 0,
+                                                                   DAMAGE_INDICATOR.PRESET_CRITS: 1,
+                                                                   DAMAGE_INDICATOR.DAMAGE_VALUE: 2,
+                                                                   DAMAGE_INDICATOR.VEHICLE_INFO: 3,
+                                                                   DAMAGE_INDICATOR.ANIMATION: 4,
+                                                                   DAMAGE_INDICATOR.DYNAMIC_INDICATOR: 5,
+                                                                   DAMAGE_INDICATOR.PRESET_ALLIES: 6}, offsets={}),
+                SETTINGS_SECTIONS.DAMAGE_LOG: Section(masks={DAMAGE_LOG.TOTAL_DAMAGE: 0,
+                                                             DAMAGE_LOG.BLOCKED_DAMAGE: 1,
+                                                             DAMAGE_LOG.ASSIST_DAMAGE: 2,
                                     DAMAGE_LOG.ASSIST_STUN: 3}, offsets={DAMAGE_LOG.SHOW_DETAILS: Offset(4, 48),
                                     DAMAGE_LOG.SHOW_EVENT_TYPES: Offset(6, 192),
                                     DAMAGE_LOG.EVENT_POSITIONS: Offset(8, 768)}),
@@ -458,36 +460,39 @@ class ServerSettingsManager(object):
      SETTINGS_SECTIONS.BATTLE_BORDER_MAP: Section(masks={}, offsets={BATTLE_BORDER_MAP.MODE_SHOW_BORDER: Offset(0, 3),
                                            BATTLE_BORDER_MAP.TYPE_BORDER: Offset(2, 12)}),
      SETTINGS_SECTIONS.UI_STORAGE: Section(masks={PM_TUTOR_FIELDS.GREETING_SCREEN_SHOWN: 0,
-                                    PM_TUTOR_FIELDS.FIRST_ENTRY_AWARDS_SHOWN: 1,
-                                    PM_TUTOR_FIELDS.ONE_FAL_SHOWN: 7,
-                                    PM_TUTOR_FIELDS.MULTIPLE_FAL_SHOWN: 8,
-                                    UI_STORAGE_KEYS.AUTO_RELOAD_MARK_IS_SHOWN: 9,
-                                    UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP: 13,
-                                    UI_STORAGE_KEYS.FIELD_POST_HINT_IS_SHOWN: 14,
-                                    PM_TUTOR_FIELDS.PM2_ONE_FAL_SHOWN: 15,
-                                    PM_TUTOR_FIELDS.PM2_MULTIPLE_FAL_SHOWN: 16,
-                                    UI_STORAGE_KEYS.REFERRAL_BUTTON_CIRCLES_SHOWN: 17,
-                                    UI_STORAGE_KEYS.DUAL_GUN_MARK_IS_SHOWN: 18,
-                                    UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING: 22,
-                                    UI_STORAGE_KEYS.TURBOSHAFT_MARK_IS_SHOWN: 26,
-                                    UI_STORAGE_KEYS.OPTIONAL_DEVICE_SETUP_INTRO_SHOWN: 27,
-                                    UI_STORAGE_KEYS.EPIC_BATTLE_ABILITIES_INTRO_SHOWN: 28,
-                                    UI_STORAGE_KEYS.POST_PROGRESSION_INTRO_SHOWN: 29,
-                                    UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN: 30}, offsets={PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: Offset(2, 124),
-                                    UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER: Offset(10, 7168),
-                                    UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER: Offset(19, 3670016),
-                                    UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER: Offset(23, 58720256)}),
-     SETTINGS_SECTIONS.LINKEDSET_QUESTS: Section(masks={}, offsets={'shown': Offset(0, 4294967295L)}),
-     SETTINGS_SECTIONS.QUESTS_PROGRESS: Section(masks={}, offsets={QUESTS_PROGRESS.VIEW_TYPE: Offset(0, 3),
-                                         QUESTS_PROGRESS.DISPLAY_TYPE: Offset(2, 12)}),
-     SETTINGS_SECTIONS.SESSION_STATS: Section(masks={SESSION_STATS.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY: 0,
-                                       SESSION_STATS.IS_NEEDED_SAVE_CURRENT_TAB: 1,
-                                       SESSION_STATS.CURRENT_TAB: 2,
-                                       SESSION_STATS.ECONOMIC_BLOCK_VIEW: 3,
-                                       SESSION_STATS.SHOW_WTR: 4,
-                                       SESSION_STATS.SHOW_RATIO_DAMAGE: 5,
-                                       SESSION_STATS.SHOW_RATIO_KILL: 6,
-                                       SESSION_STATS.SHOW_WINS: 7,
+                                                  PM_TUTOR_FIELDS.FIRST_ENTRY_AWARDS_SHOWN: 1,
+                                                  PM_TUTOR_FIELDS.ONE_FAL_SHOWN: 7,
+                                                  PM_TUTOR_FIELDS.MULTIPLE_FAL_SHOWN: 8,
+                                                  UI_STORAGE_KEYS.AUTO_RELOAD_MARK_IS_SHOWN: 9,
+                                                  UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP: 13,
+                                                  UI_STORAGE_KEYS.FIELD_POST_HINT_IS_SHOWN: 14,
+                                                  PM_TUTOR_FIELDS.PM2_ONE_FAL_SHOWN: 15,
+                                                  PM_TUTOR_FIELDS.PM2_MULTIPLE_FAL_SHOWN: 16,
+                                                  UI_STORAGE_KEYS.REFERRAL_BUTTON_CIRCLES_SHOWN: 17,
+                                                  UI_STORAGE_KEYS.DUAL_GUN_MARK_IS_SHOWN: 18,
+                                                  UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING: 22,
+                                                  UI_STORAGE_KEYS.TURBOSHAFT_MARK_IS_SHOWN: 26,
+                                                  UI_STORAGE_KEYS.OPTIONAL_DEVICE_SETUP_INTRO_SHOWN: 27,
+                                                  UI_STORAGE_KEYS.EPIC_BATTLE_ABILITIES_INTRO_SHOWN: 28,
+                                                  UI_STORAGE_KEYS.POST_PROGRESSION_INTRO_SHOWN: 29,
+                                                  UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN: 30},
+                                           offsets={PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: Offset(2, 124),
+                                                    UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER: Offset(10, 7168),
+                                                    UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER: Offset(19, 3670016),
+                                                    UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER: Offset(23,
+                                                                                                          58720256)}),
+                SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS: Section(masks={}, offsets={'shown': Offset(0, 255)}),
+                SETTINGS_SECTIONS.QUESTS_PROGRESS: Section(masks={}, offsets={QUESTS_PROGRESS.VIEW_TYPE: Offset(0, 3),
+                                                                              QUESTS_PROGRESS.DISPLAY_TYPE: Offset(2,
+                                                                                                                   12)}),
+                SETTINGS_SECTIONS.SESSION_STATS: Section(masks={SESSION_STATS.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY: 0,
+                                                                SESSION_STATS.IS_NEEDED_SAVE_CURRENT_TAB: 1,
+                                                                SESSION_STATS.CURRENT_TAB: 2,
+                                                                SESSION_STATS.ECONOMIC_BLOCK_VIEW: 3,
+                                                                SESSION_STATS.SHOW_WTR: 4,
+                                                                SESSION_STATS.SHOW_RATIO_DAMAGE: 5,
+                                                                SESSION_STATS.SHOW_RATIO_KILL: 6,
+                                                                SESSION_STATS.SHOW_WINS: 7,
                                        SESSION_STATS.SHOW_AVERAGE_DAMAGE: 8,
                                        SESSION_STATS.SHOW_HELP_DAMAGE: 9,
                                        SESSION_STATS.SHOW_BLOCKED_DAMAGE: 10,
@@ -775,20 +780,14 @@ class ServerSettingsManager(object):
     def getDisableAnimTooltipFlag(self):
         return self.getUIStorage().get(UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP) == 1
 
-    def isLinkedSetQuestWasShowed(self, questID, missionID):
-        section = self.getSectionSettings(SETTINGS_SECTIONS.LINKEDSET_QUESTS, 'shown')
-        return bool(section & self._getMaskForLinkedSetQuest(questID, missionID)) if section else False
+    def getBattleMattersQuestWasShowed(self):
+        return self.getSectionSettings(SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, 'shown', 0)
 
-    def setLinkedSetQuestWasShowed(self, questID, missionID):
-        mask = self._getMaskForLinkedSetQuest(questID, missionID)
-        newValue = self.getSectionSettings(SETTINGS_SECTIONS.LINKEDSET_QUESTS, 'shown', 0) | mask
-        return self.setSectionSettings(SETTINGS_SECTIONS.LINKEDSET_QUESTS, {'shown': newValue})
+    def setBattleMattersQuestWasShowed(self, count):
+        return self.setSectionSettings(SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, {'shown': count})
 
     def setQuestProgressSettings(self, settings):
         self.setSectionSettings(SETTINGS_SECTIONS.QUESTS_PROGRESS, settings)
-
-    def _getMaskForLinkedSetQuest(self, questID, missionID):
-        return 1 << questID - 1 + (missionID - 1) * 10
 
     def _buildAimSettings(self, settings):
         settingToServer = {}
@@ -993,7 +992,6 @@ class ServerSettingsManager(object):
          SETTINGS_SECTIONS.CONTOUR: {},
          SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1: {},
          SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2: {},
-         SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE: {},
          'clear': {},
          'delete': []}
         yield migrateToVersion(currentVersion, self._core, data)
@@ -1027,10 +1025,6 @@ class ServerSettingsManager(object):
         clearGraphics = clear.get(SETTINGS_SECTIONS.GRAPHICS, 0)
         if graphicsData or clearGraphics:
             settings[SETTINGS_SECTIONS.GRAPHICS] = self._buildSectionSettings(SETTINGS_SECTIONS.GRAPHICS, graphicsData) ^ clearGraphics
-        wotAnniversaryData = data.get(SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE, {})
-        clearWotAnniversary = clear.get(SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE, 0)
-        if wotAnniversaryData or clearWotAnniversary:
-            settings[SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE] = self._buildSectionSettings(SETTINGS_SECTIONS.WOT_ANNIVERSARY_STORAGE, wotAnniversaryData) ^ clearWotAnniversary
         aimData = data.get('aimData', {})
         if aimData:
             settings.update(self._buildAimSettings(aimData))
@@ -1111,15 +1105,23 @@ class ServerSettingsManager(object):
         contourData = data.get(SETTINGS_SECTIONS.CONTOUR, {})
         clearContourData = clear.get(SETTINGS_SECTIONS.CONTOUR, 0)
         if contourData or clearContourData:
-            settings[SETTINGS_SECTIONS.CONTOUR] = self._buildSectionSettings(SETTINGS_SECTIONS.CONTOUR, contourData) ^ clearContourData
+            settings[SETTINGS_SECTIONS.CONTOUR] = self._buildSectionSettings(SETTINGS_SECTIONS.CONTOUR,
+                                                                             contourData) ^ clearContourData
         royaleFilterCarousel1 = data.get(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, {})
         clearRoyaleFilterCarousel1 = clear.get(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, 0)
         if royaleFilterCarousel1 or clearRoyaleFilterCarousel1:
-            settings[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1] = self._buildSectionSettings(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, royaleFilterCarousel1) ^ clearRoyaleFilterCarousel1
+            settings[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, royaleFilterCarousel1) ^ clearRoyaleFilterCarousel1
         royaleFilterCarousel2 = data.get(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2, {})
         clearRoyaleFilterCarousel2 = clear.get(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2, 0)
         if royaleFilterCarousel2 or clearRoyaleFilterCarousel2:
-            settings[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2] = self._buildSectionSettings(SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2, royaleFilterCarousel2) ^ clearRoyaleFilterCarousel2
+            settings[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2, royaleFilterCarousel2) ^ clearRoyaleFilterCarousel2
+        battleMatters = data.get(SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, {})
+        clearBattleMatters = clear.get(SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, 0)
+        if battleMatters or clearBattleMatters:
+            settings[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, battleMatters) ^ clearBattleMatters
         version = data.get(VERSION)
         if version is not None:
             settings[VERSION] = version

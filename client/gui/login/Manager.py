@@ -1,19 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/login/Manager.py
+import logging
 import pickle
 import time
-import typing
-import logging
+
 import BigWorld
-import WGC
 import Settings
+import WGC
 import constants
+from Event import Event
+from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import GAME
 from connection_mgr import CONNECTION_METHOD
-from Preferences import Preferences
-from Servers import Servers, DevelopmentServers
+from connection_mgr import LOGIN_STATUS
 from debug_utils import LOG_DEBUG
 from gui import SystemMessages, makeHtmlString, GUI_SETTINGS
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -24,13 +27,14 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.login_manager import ILoginManager
 from soft_exception import SoftException
-from gui.Scaleform.Waiting import Waiting
-from Event import Event
-from PlayerEvents import g_playerEvents
-from connection_mgr import LOGIN_STATUS
+
+from Preferences import Preferences
+from Servers import Servers, DevelopmentServers
+
 _PERIPHERY_DEFAULT_LIFETIME = 15 * ONE_MINUTE
 _LIMIT_LOGIN_COUNT = 5
 _logger = logging.getLogger(__name__)
+
 
 class Manager(ILoginManager):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -68,8 +72,10 @@ class Manager(ILoginManager):
         else:
             self.__servers = Servers(self._preferences)
         self.connectionMgr.onLoggedOn += self._onLoggedOn
+        g_clientUpdateManager.addCallbacks({'serverSettings.periphery_routing_config': self.__onServerSettingsChanged})
 
     def fini(self):
+        g_clientUpdateManager.removeObjectCallbacks(self)
         self.connectionMgr.onLoggedOn -= self._onLoggedOn
         self._preferences = None
         self.__servers.fini()
@@ -254,6 +260,17 @@ class Manager(ILoginManager):
 
     def checkWgcCouldRetry(self, status):
         return self.__wgcManager.checkWgcCouldRetry(status) if self.wgcAvailable else False
+
+    def __onServerSettingsChanged(self, diff):
+        if 'isEnabled' in diff and not diff['isEnabled']:
+            self.connectionMgr.setPeripheryRoutingGroup(None, None)
+            return
+        else:
+            if 'peripheryRoutingGroups' in diff:
+                self.connectionMgr.setPeripheryRoutingGroup(self.connectionMgr.peripheryRoutingGroup,
+                                                            diff['peripheryRoutingGroups'].get(
+                                                                self.connectionMgr.peripheryRoutingGroup))
+            return
 
 
 class _WgcModeManager(object):

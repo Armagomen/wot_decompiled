@@ -3,9 +3,9 @@
 import copy
 import functools
 import logging
-import types
-from collections import namedtuple
 import typing
+from collections import namedtuple
+
 import constants
 import post_progression_common
 from BonusCaps import BonusCapsConst
@@ -14,7 +14,8 @@ from UnitBase import PREBATTLE_TYPE_TO_UNIT_ASSEMBLER, UNIT_ASSEMBLER_IMPL_TO_CO
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from battle_pass_common import BATTLE_PASS_CONFIG_NAME, BattlePassConfig
 from collector_vehicle import CollectorVehicleConsts
-from constants import BATTLE_NOTIFIER_CONFIG, ClansConfig, Configs, DAILY_QUESTS_CONFIG, DOG_TAGS_CONFIG, IS_TUTORIAL_ENABLED, MAGNETIC_AUTO_AIM_CONFIG, MISC_GUI_SETTINGS, PremiumConfigs, RENEWABLE_SUBSCRIPTION_CONFIG
+from constants import BATTLE_NOTIFIER_CONFIG, ClansConfig, Configs, DAILY_QUESTS_CONFIG, DOG_TAGS_CONFIG, \
+    IS_TUTORIAL_ENABLED, MAGNETIC_AUTO_AIM_CONFIG, MISC_GUI_SETTINGS, PremiumConfigs, RENEWABLE_SUBSCRIPTION_CONFIG
 from debug_utils import LOG_DEBUG, LOG_WARNING
 from gifts.gifts_common import ClientReqStrategy, GiftEventID, GiftEventState
 from gui import GUI_SETTINGS, SystemMessages
@@ -26,12 +27,12 @@ from personal_missions import PM_BRANCH
 from post_progression_common import FEATURE_BY_GROUP_ID, ROLESLOT_FEATURE
 from ranked_common import SwitchState
 from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION
-from shared_utils import makeTupleByDict, updateDict, first, findFirst
+from shared_utils import makeTupleByDict, updateDict
 from telecom_rentals_common import TELECOM_RENTALS_CONFIG
 from trade_in_common.constants_types import CONFIG_NAME as TRADE_IN_CONFIG_NAME
-from wot_anniversary_common import WOT_ANNIVERSARY_CONFIG_NAME
+
 if typing.TYPE_CHECKING:
-    from typing import Callable, Dict, List, Sequence
+    pass
 _logger = logging.getLogger(__name__)
 _CLAN_EMBLEMS_SIZE_MAPPING = {16: 'clan_emblems_16',
  32: 'clan_emblems_small',
@@ -118,6 +119,8 @@ class _FileServerSettings(object):
         return self.__getUrl('missions_token_image', size, tokenID)
 
     def getMissionsTokenDescrsUrl(self, langID):
+        if isinstance(langID, unicode):
+            langID = str(langID)
         return self.__getUrl('missions_token_descrs', langID)
 
     def getMissionsDecorationUrl(self, decorationID, size):
@@ -215,6 +218,17 @@ class _Wgnp(namedtuple('_Wgnp', ('enabled', 'url', 'renameApiEnabled'))):
     @classmethod
     def defaults(cls):
         return cls(False, '', False)
+
+
+class _UILogging(namedtuple('_UILogging', ('enabled',))):
+    __slots__ = ()
+
+    def isEnabled(self):
+        return self.enabled
+
+    @classmethod
+    def defaults(cls):
+        return cls(False)
 
 
 class _EULA(namedtuple('_EULA', ('enabled', 'demoAccEnabled', 'steamAccEnabled'))):
@@ -674,9 +688,6 @@ class _crystalRewardsConfig(namedtuple('_crystalRewardsConfig', ('limits', 'rewa
 
         return results
 
-    def isCrystalEarnPossible(self, arenaType):
-        return findFirst(lambda item: item.arenaType == arenaType, self.getRewardInfoData(), None) is not None
-
 
 class _ReactiveCommunicationConfig(object):
     __slots__ = ('__isEnabled', '__url')
@@ -764,7 +775,7 @@ class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', ('isPos
 
     @classmethod
     def defaults(cls):
-        return cls(False, frozenset(), frozenset(), frozenset())
+        return cls(False, frozenset(), frozenset(), frozenset)
 
     @property
     def isEnabled(self):
@@ -931,87 +942,17 @@ class ResourceWellConfig(namedtuple('_ResourceWellConfig', ('isEnabled',
         data['rewards'] = {rewardId:makeTupleByDict(_WellRewardConfig, reward) for rewardId, reward in data['rewards'].iteritems()}
 
 
-class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled',
- 'events',
- 'eventID',
- 'peripheryIDs',
- 'seasons',
- 'primeTimes',
- 'cycleTimes',
- 'levels',
- 'forbiddenClassTags',
- 'forbiddenVehTypes',
- 'battleModifiersDescr',
- 'infoPageUrl'))):
+class _BattleMattersConfig(namedtuple('_BattleMattersConfig', ('isEnabled',
+                                                               'isPaused',
+                                                               'delayedRewardOfferVisibilityToken',
+                                                               'delayedRewardOfferCurrencyToken'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, events={}, eventID='', peripheryIDs={}, seasons={}, primeTimes={}, cycleTimes=(), levels=(), forbiddenClassTags=set(), forbiddenVehTypes=set(), battleModifiersDescr=(), infoPageUrl='')
+        defaults = dict(isEnabled=False, isPaused=False, delayedRewardOfferVisibilityToken='BattleMattersEmptyToken',
+                        delayedRewardOfferCurrencyToken='BattleMattersEmptyCurrencyToken')
         defaults.update(kwargs)
-        cls.__repackEventConfigs(defaults, defaults.viewkeys())
-        return super(FunRandomConfig, cls).__new__(cls, **defaults)
-
-    @classmethod
-    def defaults(cls):
-        return cls(False, {}, '', set(), {}, {}, (), (), set(), set(), (), '')
-
-    def asDict(self):
-        return self._asdict()
-
-    def replace(self, data):
-        allowedFields = set(self._fields)
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
-        self.__repackEventConfigs(dataToUpdate, allowedFields)
-        return self._replace(**dataToUpdate)
-
-    @classmethod
-    def __repackEventConfigs(cls, data, allowedFields):
-        events = data.get('events', {}).itervalues()
-        eventData = first(sorted(events, key=lambda event: not event.get('isEnabled', False)), {})
-        data.update(((k, eventData[k]) for k in allowedFields & eventData.viewkeys()))
-
-
-CN_LOOT_BOXES_EVENT_CONFIG = 'cn_loot_boxes_event_config'
-
-class _CNLootBoxesEventConfig(object):
-    __slots__ = ('__isEnabled', '__startDateInUTC', '__finishDateInUTC', '__lootBoxBuyDayLimit', '__externalShopUrl')
-
-    def __init__(self, **kwargs):
-        super(_CNLootBoxesEventConfig, self).__init__()
-        self.__isEnabled = kwargs.get('enabled', False)
-        self.__startDateInUTC = kwargs.get('startDateInUTC', 0)
-        self.__finishDateInUTC = kwargs.get('finishDateInUTC', 0)
-        self.__lootBoxBuyDayLimit = kwargs.get('lootBoxBuyDayLimit', 0)
-        self.__externalShopUrl = kwargs.get('externalShopUrl', '')
-
-    @property
-    def isEnabled(self):
-        return self.__isEnabled
-
-    @property
-    def lootBoxBuyDayLimit(self):
-        return self.__lootBoxBuyDayLimit
-
-    @property
-    def externalShopUrl(self):
-        return self.__externalShopUrl
-
-    def getEventActiveTime(self):
-        return (self.__startDateInUTC, self.__finishDateInUTC)
-
-
-class _WotAnniversaryConfig(namedtuple('_WotAnniversaryConfig', ('isEnabled',
- 'isActive',
- 'startTime',
- 'endTime',
- 'bigQuestPeriod',
- 'anniversaryUrls'))):
-    __slots__ = ()
-
-    def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, isActive=False, startTime=0, endTime=0, bigQuestPeriod=0, anniversaryUrls={})
-        defaults.update(kwargs)
-        return super(_WotAnniversaryConfig, cls).__new__(cls, **defaults)
+        return super(_BattleMattersConfig, cls).__new__(cls, **defaults)
 
     def asDict(self):
         return self._asdict()
@@ -1026,6 +967,24 @@ class _WotAnniversaryConfig(namedtuple('_WotAnniversaryConfig', ('isEnabled',
         return cls()
 
 
+class PeripheryRoutingConfig(namedtuple('_PeripheryRoutingConfig', ('isEnabled', 'peripheryRoutingGroups'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(isEnabled=False, peripheryRoutingGroups={})
+        defaults.update(kwargs)
+        return super(PeripheryRoutingConfig, cls).__new__(cls, **defaults)
+
+    @classmethod
+    def defaults(cls):
+        return cls({})
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+
 class ServerSettings(object):
 
     def __init__(self, serverSettings):
@@ -1037,6 +996,7 @@ class ServerSettings(object):
         self.__eSportCurrentSeason = _ESportCurrentSeason.defaults()
         self.__wgcg = _Wgcg.defaults()
         self.__wgnp = _Wgnp.defaults()
+        self.__uiLogging = _UILogging.defaults()
         self.__eula = _EULA.defaults()
         self.__clanProfile = _ClanProfile.defaults()
         self.__spgRedesignFeatures = _SpgRedesignFeatures.defaults()
@@ -1061,9 +1021,8 @@ class ServerSettings(object):
         self.__eventBattlesConfig = _EventBattlesConfig()
         self.__giftSystemConfig = GiftSystemConfig()
         self.__resourceWellConfig = ResourceWellConfig()
-        self.__funRandomConfig = FunRandomConfig()
-        self.__cnLootBoxesEventConfig = _CNLootBoxesEventConfig()
-        self.__wotAnniversaryConfig = _WotAnniversaryConfig()
+        self.__battleMattersConfig = _BattleMattersConfig()
+        self.__peripheryRoutingConfig = PeripheryRoutingConfig()
         self.set(serverSettings)
 
     def set(self, serverSettings):
@@ -1084,12 +1043,15 @@ class ServerSettings(object):
             self.__updateWgcg(self.__serverSettings)
         if 'wgnp' in self.__serverSettings:
             self.__updateWgnp(self.__serverSettings)
+        if Configs.UI_LOGGING.value in self.__serverSettings:
+            self.__updateUILogging(self.__serverSettings)
         if 'eula_config' in self.__serverSettings:
             self.__updateEULA(self.__serverSettings)
         if 'clanProfile' in self.__serverSettings:
             self.__updateClanProfile(self.__serverSettings)
         if 'spgRedesignFeatures' in self.__serverSettings:
-            self.__spgRedesignFeatures = makeTupleByDict(_SpgRedesignFeatures, self.__serverSettings['spgRedesignFeatures'])
+            self.__spgRedesignFeatures = makeTupleByDict(_SpgRedesignFeatures,
+                                                         self.__serverSettings['spgRedesignFeatures'])
         if 'strongholdSettings' in self.__serverSettings:
             settings = self.__serverSettings['strongholdSettings']
             self.__strongholdSettings = _StrongholdSettings(settings.get('wgshHostUrl', ''))
@@ -1141,7 +1103,6 @@ class ServerSettings(object):
         if _crystalRewardsConfig.CONFIG_NAME in self.__serverSettings:
             self.__crystalRewardsConfig = makeTupleByDict(_crystalRewardsConfig, self.__serverSettings[_crystalRewardsConfig.CONFIG_NAME])
         self.__updateReactiveCommunicationConfig(self.__serverSettings)
-        self.__updateCNLootBoxesEventConfig(self.__serverSettings)
         if BonusCapsConst.CONFIG_NAME in self.__serverSettings:
             BONUS_CAPS.OVERRIDE_BONUS_CAPS = self.__serverSettings[BonusCapsConst.CONFIG_NAME]
         else:
@@ -1158,19 +1119,25 @@ class ServerSettings(object):
         if 'productsCatalog' in self.__serverSettings:
             self.__bwProductCatalog = makeTupleByDict(_BwProductCatalog, self.__serverSettings['productsCatalog'])
         if post_progression_common.SERVER_SETTINGS_KEY in self.__serverSettings:
-            self.__vehiclePostProgressionConfig = makeTupleByDict(VehiclePostProgressionConfig, self.__serverSettings[post_progression_common.SERVER_SETTINGS_KEY])
+            self.__vehiclePostProgressionConfig = makeTupleByDict(VehiclePostProgressionConfig, self.__serverSettings[
+                post_progression_common.SERVER_SETTINGS_KEY])
         if 'event_battles_config' in self.__serverSettings:
-            self.__eventBattlesConfig = makeTupleByDict(_EventBattlesConfig, self.__serverSettings['event_battles_config'])
+            self.__eventBattlesConfig = makeTupleByDict(_EventBattlesConfig,
+                                                        self.__serverSettings['event_battles_config'])
         else:
             self.__eventBattlesConfig = _EventBattlesConfig.defaults()
         if Configs.GIFTS_CONFIG.value in self.__serverSettings:
-            self.__giftSystemConfig = makeTupleByDict(GiftSystemConfig, {'events': self.__serverSettings[Configs.GIFTS_CONFIG.value]})
+            self.__giftSystemConfig = makeTupleByDict(GiftSystemConfig,
+                                                      {'events': self.__serverSettings[Configs.GIFTS_CONFIG.value]})
         if Configs.RESOURCE_WELL.value in self.__serverSettings:
-            self.__resourceWellConfig = makeTupleByDict(ResourceWellConfig, self.__serverSettings[Configs.RESOURCE_WELL.value])
-        if Configs.FUN_RANDOM_CONFIG.value in self.__serverSettings:
-            self.__funRandomConfig = makeTupleByDict(FunRandomConfig, self.__serverSettings[Configs.FUN_RANDOM_CONFIG.value])
-        if WOT_ANNIVERSARY_CONFIG_NAME in self.__serverSettings:
-            self.__wotAnniversaryConfig = makeTupleByDict(_WotAnniversaryConfig, self.__serverSettings[WOT_ANNIVERSARY_CONFIG_NAME])
+            self.__resourceWellConfig = makeTupleByDict(ResourceWellConfig,
+                                                        self.__serverSettings[Configs.RESOURCE_WELL.value])
+        if Configs.BATTLE_MATTERS_CONFIG.value in self.__serverSettings:
+            self.__battleMattersConfig = makeTupleByDict(_BattleMattersConfig,
+                                                         self.__serverSettings[Configs.BATTLE_MATTERS_CONFIG.value])
+        if Configs.PERIPHERY_ROUTING_CONFIG.value in self.__serverSettings:
+            self.__peripheryRoutingConfig = makeTupleByDict(PeripheryRoutingConfig, self.__serverSettings[
+                Configs.PERIPHERY_ROUTING_CONFIG.value])
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1178,7 +1145,8 @@ class ServerSettings(object):
         if 'clanProfile' in serverSettingsDiff:
             self.__updateClanProfile(serverSettingsDiff)
         if 'spgRedesignFeatures' in self.__serverSettings:
-            self.__spgRedesignFeatures = makeTupleByDict(_SpgRedesignFeatures, self.__serverSettings['spgRedesignFeatures'])
+            self.__spgRedesignFeatures = makeTupleByDict(_SpgRedesignFeatures,
+                                                         self.__serverSettings['spgRedesignFeatures'])
         if 'ranked_config' in serverSettingsDiff:
             self.__updateRanked(serverSettingsDiff)
         if 'hallOfFame' in serverSettingsDiff:
@@ -1187,6 +1155,8 @@ class ServerSettings(object):
             self.__updateWgcg(serverSettingsDiff)
         if 'wgnp' in serverSettingsDiff:
             self.__updateWgnp(serverSettingsDiff)
+        if Configs.UI_LOGGING.value in serverSettingsDiff:
+            self.__updateUILogging(serverSettingsDiff)
         if 'eula_config' in serverSettingsDiff:
             self.__updateEULA(serverSettingsDiff)
         if 'advent_calendar_config' in serverSettingsDiff:
@@ -1236,24 +1206,28 @@ class ServerSettings(object):
             self.__serverSettings[BATTLE_PASS_CONFIG_NAME] = serverSettingsDiff[BATTLE_PASS_CONFIG_NAME]
             self.__battlePassConfig = BattlePassConfig(self.__serverSettings.get(BATTLE_PASS_CONFIG_NAME, {}))
         if CollectorVehicleConsts.CONFIG_NAME in serverSettingsDiff:
-            self.__serverSettings[CollectorVehicleConsts.CONFIG_NAME] = serverSettingsDiff[CollectorVehicleConsts.CONFIG_NAME]
+            self.__serverSettings[CollectorVehicleConsts.CONFIG_NAME] = serverSettingsDiff[
+                CollectorVehicleConsts.CONFIG_NAME]
         if _crystalRewardsConfig.CONFIG_NAME in serverSettingsDiff:
-            self.__crystalRewardsConfig = makeTupleByDict(_crystalRewardsConfig, serverSettingsDiff[_crystalRewardsConfig.CONFIG_NAME])
+            self.__crystalRewardsConfig = makeTupleByDict(_crystalRewardsConfig,
+                                                          serverSettingsDiff[_crystalRewardsConfig.CONFIG_NAME])
         if post_progression_common.SERVER_SETTINGS_KEY in serverSettingsDiff:
             self.__updateVehiclePostProgressionConfig(serverSettingsDiff)
         if Configs.GIFTS_CONFIG.value in serverSettingsDiff:
             self.__updateGiftSystemConfig(serverSettingsDiff)
-        if WOT_ANNIVERSARY_CONFIG_NAME in serverSettingsDiff:
-            self.__updateWotAnniversaryConfig(serverSettingsDiff)
+        if Configs.BATTLE_MATTERS_CONFIG.value in serverSettingsDiff:
+            self.__updateBattleMatters(serverSettingsDiff)
         if TRADE_IN_CONFIG_NAME in serverSettingsDiff:
             self.__serverSettings[TRADE_IN_CONFIG_NAME] = serverSettingsDiff[TRADE_IN_CONFIG_NAME]
         if Configs.RESOURCE_WELL.value in serverSettingsDiff:
             self.__updateResourceWellConfig(serverSettingsDiff)
-        if Configs.FUN_RANDOM_CONFIG.value in serverSettingsDiff:
-            self.__updateFunRandomConfig(serverSettingsDiff)
+        if Configs.PERIPHERY_ROUTING_CONFIG.value in serverSettingsDiff:
+            self.__updatePeripheryRoutingConfig(serverSettingsDiff)
         self.__updateBlueprintsConvertSaleConfig(serverSettingsDiff)
         self.__updateReactiveCommunicationConfig(serverSettingsDiff)
-        self.__updateCNLootBoxesEventConfig(serverSettingsDiff)
+        if Configs.CUSTOMIZATION_QUESTS.value in serverSettingsDiff:
+            key = Configs.CUSTOMIZATION_QUESTS.value
+            self.__serverSettings[key] = serverSettingsDiff[key]
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1289,6 +1263,10 @@ class ServerSettings(object):
     @property
     def wgnp(self):
         return self.__wgnp
+
+    @property
+    def uiLogging(self):
+        return self.__uiLogging
 
     @property
     def eula(self):
@@ -1371,12 +1349,12 @@ class ServerSettings(object):
         return self.__resourceWellConfig
 
     @property
-    def funRandomConfig(self):
-        return self.__funRandomConfig
+    def battleMattersConfig(self):
+        return self.__battleMattersConfig
 
     @property
-    def wotAnniversaryConfig(self):
-        return self.__wotAnniversaryConfig
+    def peripheryRoutingConfig(self):
+        return self.__peripheryRoutingConfig
 
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
@@ -1467,9 +1445,6 @@ class ServerSettings(object):
     def isBootcampEnabled(self):
         return self.__getGlobalSetting('isBootcampEnabled', False)
 
-    def isLinkedSetEnabled(self):
-        return self.__getGlobalSetting('isLinkedSetEnabled', False)
-
     def getBootcampBonuses(self):
         return self.__getGlobalSetting('bootcampBonuses', {})
 
@@ -1497,14 +1472,19 @@ class ServerSettings(object):
     def getDogTagsConfig(self):
         return self.__getGlobalSetting(DOG_TAGS_CONFIG, {})
 
+    def getCustomizationQuestsConfig(self):
+        return self.__getGlobalSetting(Configs.CUSTOMIZATION_QUESTS.value, {})
+
     def isDogTagEnabled(self):
         return self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enabled', True)
 
     def isDogTagCustomizationScreenEnabled(self):
-        return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableDogTagsCustomizationScreen', True)
+        return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get(
+            'enableDogTagsCustomizationScreen', True)
 
     def isSkillComponentsEnabled(self):
-        return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableSkillComponents', True)
+        return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableSkillComponents',
+                                                                                           True)
 
     def isDogTagInBattleEnabled(self):
         return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableDogTagsInBattle', True)
@@ -1583,6 +1563,12 @@ class ServerSettings(object):
 
     def getMaxSPGinSquads(self):
         return self.__getGlobalSetting('maxSPGinSquads', 0)
+
+    def getMaxScoutInSquads(self):
+        return self.__getGlobalSetting('maxScoutInSquads', 0)
+
+    def getMaxScoutInSquadsLevels(self):
+        return self.__getGlobalSetting('maxScoutInSquadsLevels', [])
 
     def getRandomMapsForDemonstrator(self):
         return self.__getGlobalSetting('randomMapsForDemonstrator', {})
@@ -1689,9 +1675,6 @@ class ServerSettings(object):
     def getTradeInConfig(self):
         return self.__getGlobalSetting(TRADE_IN_CONFIG_NAME, {})
 
-    def getCNLootBoxesEventConfig(self):
-        return self.__cnLootBoxesEventConfig
-
     def __getGlobalSetting(self, settingsName, default=None):
         return self.__serverSettings.get(settingsName, default)
 
@@ -1701,15 +1684,23 @@ class ServerSettings(object):
 
     def __updateWgcg(self, targetSettings):
         cProfile = targetSettings['wgcg']
-        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''), cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False), cProfile.get('isJwtAuthorizationEnabled', True))
+        self.__wgcg = _Wgcg(cProfile.get('isEnabled', False), cProfile.get('gateUrl', ''),
+                            cProfile.get('type', 'gateway'), cProfile.get('loginOnStart', False),
+                            cProfile.get('isJwtAuthorizationEnabled', True))
 
     def __updateWgnp(self, targetSettings):
         cProfile = targetSettings['wgnp']
-        self.__wgnp = _Wgnp(cProfile.get('enabled', False), cProfile.get('url', ''), cProfile.get('renameApiEnabled', False))
+        self.__wgnp = _Wgnp(cProfile.get('enabled', False), cProfile.get('url', ''),
+                            cProfile.get('renameApiEnabled', False))
+
+    def __updateUILogging(self, targetSettings):
+        settings = targetSettings[Configs.UI_LOGGING.value]
+        self.__uiLogging = _UILogging(settings.get('enabled', False))
 
     def __updateEULA(self, targetSettings):
         cProfile = targetSettings['eula_config']
-        self.__eula = _EULA(cProfile.get('enabled', False), cProfile.get('demoAccEnabled', False), cProfile.get('steamAccEnabled', False))
+        self.__eula = _EULA(cProfile.get('enabled', False), cProfile.get('demoAccEnabled', False),
+                            cProfile.get('steamAccEnabled', False))
 
     def __updateAdventCalendar(self, targetSettings):
         self.__adventCalendar = self.__adventCalendar.replace(targetSettings['advent_calendar_config'])
@@ -1774,28 +1765,19 @@ class ServerSettings(object):
         self.__eventBattlesConfig = self.__eventBattlesConfig.replace(targetSettings['event_battles_config'])
 
     def __updateGiftSystemConfig(self, serverSettingsDiff):
-        self.__giftSystemConfig = self.__giftSystemConfig.replace({'events': serverSettingsDiff[Configs.GIFTS_CONFIG.value]})
+        self.__giftSystemConfig = self.__giftSystemConfig.replace(
+            {'events': serverSettingsDiff[Configs.GIFTS_CONFIG.value]})
 
     def __updateResourceWellConfig(self, diff):
         self.__resourceWellConfig = self.__resourceWellConfig.replace(diff[Configs.RESOURCE_WELL.value])
 
-    def __updateWotAnniversaryConfig(self, serverSettingsDiff):
-        self.__wotAnniversaryConfig = self.__wotAnniversaryConfig.replace(serverSettingsDiff[WOT_ANNIVERSARY_CONFIG_NAME])
+    def __updateBattleMatters(self, targetSettings):
+        self.__battleMattersConfig = self.__battleMattersConfig.replace(
+            targetSettings[Configs.BATTLE_MATTERS_CONFIG.value])
 
-    def __updateFunRandomConfig(self, serverSettingsDiff):
-        self.__funRandomConfig = self.__funRandomConfig.replace(serverSettingsDiff[Configs.FUN_RANDOM_CONFIG.value])
-
-    def __updateCNLootBoxesEventConfig(self, settings):
-        if CN_LOOT_BOXES_EVENT_CONFIG in settings:
-            config = settings[CN_LOOT_BOXES_EVENT_CONFIG]
-            if config is None:
-                self.__cnLootBoxesEventConfig = _CNLootBoxesEventConfig()
-            elif isinstance(config, dict):
-                self.__cnLootBoxesEventConfig = _CNLootBoxesEventConfig(**config)
-            else:
-                _logger.error('Unexpected format of subscriptions service config: %r', config)
-                self.__cnLootBoxesEventConfig = _CNLootBoxesEventConfig()
-        return
+    def __updatePeripheryRoutingConfig(self, diff):
+        self.__peripheryRoutingConfig = self.__peripheryRoutingConfig.replace(
+            diff[Configs.PERIPHERY_ROUTING_CONFIG.value])
 
 
 def serverSettingsChangeListener(*configKeys):

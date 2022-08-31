@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/BrowserController.py
 import logging
+
 import BigWorld
 import Event
 from WebBrowser import WebBrowser
@@ -20,6 +21,7 @@ from ids_generators import SequenceIDGenerator
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBrowserController
 from soft_exception import SoftException
+
 _logger = logging.getLogger(__name__)
 
 class BrowserController(IBrowserController):
@@ -72,9 +74,14 @@ class BrowserController(IBrowserController):
     def removeFilterHandler(self, handler):
         self.__filters.discard(handler)
 
+    def nextBrowserID(self):
+        return self.__browserIDGenerator.next()
+
     @async
     @process
-    def load(self, url=None, title=None, showActionBtn=True, showWaiting=True, browserID=None, isAsync=False, browserSize=None, isDefault=True, callback=None, showCloseBtn=False, useBrowserWindow=True, isModal=False, showCreateWaiting=False, handlers=None, showBrowserCallback=None, isSolidBorder=False):
+    def load(self, url=None, title=None, showActionBtn=True, showWaiting=True, browserID=None, isAsync=False,
+             browserSize=None, isDefault=True, callback=None, showCloseBtn=False, useBrowserWindow=True, isModal=False,
+             showCreateWaiting=False, handlers=None, showBrowserCallback=None, isSolidBorder=False):
         if showCreateWaiting:
             Waiting.show('browser/init')
         url = yield self.__urlMacros.parse(url or GUI_SETTINGS.browser.url)
@@ -108,7 +115,7 @@ class BrowserController(IBrowserController):
             app = appLoader.getApp()
             if app is None:
                 raise SoftException('Application can not be None')
-            browser = WebBrowser(webBrowserID, app, size, url, handlers=self.__filters)
+            browser = WebBrowser(webBrowserID, app, url, handlers=self.__filters)
             self.__browsers[browserID] = browser
             if self.__isCreatingBrowser():
                 _logger.info('CTRL: Queueing a browser creation: %r - %s', browserID, url)

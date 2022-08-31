@@ -1,25 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/model_assembler.py
+import logging
 import math
 from collections import namedtuple
-import logging
-import Vehicular
-import DataLinks
-import WWISE
+
 import BigWorld
+import CGF
+import DataLinks
+import GenericComponents
 import Math
+import Vehicular
+import WWISE
 import WoT
 import material_kinds
-import CGF
-import GenericComponents
-from constants import IS_DEVELOPMENT, IS_EDITOR
-from soft_exception import SoftException
 import math_utils
+from constants import IS_DEVELOPMENT, IS_EDITOR
 from helpers import DecalMap
 from items.components import shared_components, component_constants
-from vehicle_systems.vehicle_damage_state import VehicleDamageState
-from vehicle_systems.tankStructure import getPartModelsFromDesc, getCollisionModelsFromDesc, TankNodeNames, TankPartNames, TankPartIndexes, TankRenderMode, TankCollisionPartNames
+from soft_exception import SoftException
 from vehicle_systems.components.hull_aiming_controller import HullAimingController
+from vehicle_systems.tankStructure import getPartModelsFromDesc, getCollisionModelsFromDesc, TankNodeNames, \
+    TankPartNames, TankPartIndexes, TankRenderMode, TankCollisionPartNames, TankSoundObjectsIndexes
+from vehicle_systems.vehicle_damage_state import VehicleDamageState
+
 _logger = logging.getLogger(__name__)
 DEFAULT_MAX_LOD_PRIORITY = None
 _INFINITY = 10000
@@ -449,6 +452,7 @@ def assembleSuspensionSound(appearance, lodLink, isPlayer):
         if hullNode is None:
             return
         suspensionSound = appearance.createComponent(Vehicular.SuspensionSound, appearance.id)
+        suspensionSound.setSoundObject(appearance.engineAudition.getSoundObject(TankSoundObjectsIndexes.CHASSIS))
         for sound in suspensionSoundParams.sounds:
             if isPlayer:
                 suspensionSound.setSoundsForState(sound.state, sound.underLimitSounds.PC, sound.overLimitSounds.PC)

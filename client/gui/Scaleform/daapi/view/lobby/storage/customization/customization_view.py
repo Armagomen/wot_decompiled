@@ -1,29 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/customization/customization_view.py
 import math
-from typing import Optional
+
 import nations
 from adisp import process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nSellMeta
+from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText, isC11nEnabled
 from gui.Scaleform.daapi.view.lobby.event_boards.event_helpers import LEVELS_RANGE
+from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO, customizationPreview, \
+    getAvailableForSellCustomizationCount
+from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell
+from gui.Scaleform.daapi.view.meta.StorageCategoryCustomizationViewMeta import StorageCategoryCustomizationViewMeta
 from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import event_dispatcher
-from helpers import dependency
-from helpers.i18n import makeString as _ms
-from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO, customizationPreview, getAvailableForSellCustomizationCount
-from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell
-from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText, isC11nEnabled
-from gui.Scaleform.daapi.view.meta.StorageCategoryCustomizationViewMeta import StorageCategoryCustomizationViewMeta
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from gui.shared.utils.functions import makeTooltip
-from skeletons.gui.customization import ICustomizationService
+from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from helpers import dependency
+from helpers.i18n import makeString as _ms
 from shared_utils import CONST_CONTAINER
+from skeletons.gui.customization import ICustomizationService
+
 
 class _CustomizationFilterBit(CONST_CONTAINER):
     STYLE = 1
@@ -180,7 +182,6 @@ class StorageCategoryCustomizationView(StorageCategoryCustomizationViewMeta):
 
     def _getInvVehicleCriteria(self):
         criteria = REQ_CRITERIA.INVENTORY
-        criteria |= ~REQ_CRITERIA.VEHICLE.EXPIRED_RENT
         criteria |= ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED
         criteria |= ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
         criteria |= ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING

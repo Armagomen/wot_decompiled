@@ -2,10 +2,12 @@
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_members_view.py
 import logging
 from enum import Enum
+
 import BigWorld
 import VOIP
 from CurrentVehicle import g_currentVehicle
 from UnitBase import UNDEFINED_ESTIMATED_TIME
+from adisp import process
 from constants import PREBATTLE_TYPE, PremiumConfigs
 from frameworks.wulf import WindowFlags, ViewSettings, WindowStatus
 from gui.Scaleform.daapi.view.lobby.cyberSport import PLAYER_GUI_STATUS
@@ -22,6 +24,7 @@ from gui.impl.gen.view_models.views.lobby.platoon.bonus_model import BonusModel
 from gui.impl.gen.view_models.views.lobby.platoon.members_window_model import MembersWindowModel
 from gui.impl.gen.view_models.views.lobby.platoon.slot_label_element_model import SlotLabelElementModel, Types
 from gui.impl.gen.view_models.views.lobby.platoon.slot_model import SlotModel
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
 from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, removeNationFromTechName
 from gui.impl.lobby.platoon.tooltip.platoon_alert_tooltip import AlertTooltip
 from gui.impl.lobby.platoon.tooltip.platoon_wtr_tooltip import WTRTooltip
@@ -31,6 +34,7 @@ from gui.impl.lobby.platoon.view.subview.platoon_tiers_filter_subview import Set
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
 from gui.impl.pub import ViewImpl
+from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.prb_control import prb_getters
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, REQUEST_TYPE, SELECTOR_BATTLE_TYPES
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
@@ -39,18 +43,16 @@ from gui.shared.gui_items.badge import Badge
 from gui.shared.utils.functions import replaceHyphenToUnderscore
 from helpers import i18n, dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from messenger.ext import channel_num_gen
 from messenger.m_constants import PROTO_TYPE
+from messenger.m_constants import USER_TAG
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from skeletons.gui.game_control import IPlatoonController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-from messenger.m_constants import USER_TAG
-from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
-from gui.impl.pub.tooltip_window import SimpleTooltipContent
-from messenger.ext import channel_num_gen
-from adisp import process
+
 _logger = logging.getLogger(__name__)
 _strButtons = R.strings.platoon.buttons
 
@@ -713,24 +715,6 @@ class MapboxMembersView(SquadMembersView):
             model.setShouldShowFindPlayersButton(value=False)
 
 
-class FunRandomMembersView(SquadMembersView):
-    _battleType = SELECTOR_BATTLE_TYPES.FUN_RANDOM
-
-    def _addSubviews(self):
-        self._addSubviewToLayout(ChatSubview())
-
-    def _onFindPlayers(self):
-        pass
-
-    def _getTitle(self):
-        title = ''.join((i18n.makeString(backport.text(R.strings.platoon.squad())), i18n.makeString(backport.text(R.strings.platoon.members.header.funRandom()))))
-        return title
-
-    def _updateFindPlayersButton(self, *args):
-        with self.viewModel.transaction() as model:
-            model.setShouldShowFindPlayersButton(value=False)
-
-
 class MembersWindow(PreloadableWindow):
     __platoonCtrl = dependency.descriptor(IPlatoonController)
 
@@ -747,8 +731,6 @@ class MembersWindow(PreloadableWindow):
             content = BattleRoyalMembersView()
         elif prbType == PREBATTLE_TYPE.MAPBOX:
             content = MapboxMembersView()
-        elif prbType == PREBATTLE_TYPE.FUN_RANDOM:
-            content = FunRandomMembersView()
         if content is None:
             _logger.debug('PrbType is unknown %d', prbType)
         super(MembersWindow, self).__init__(wndFlags=WindowFlags.WINDOW, content=content)

@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/rewards_selection_view.py
 from functools import partial
+
 from AccountCommands import RES_SUCCESS
 from frameworks.wulf import WindowFlags
 from gui import SystemMessages
@@ -14,6 +15,7 @@ from gui.selectable_reward.common import BattlePassSelectableRewardManager
 from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
+
 
 class RewardsSelectionView(SelectableRewardBase):
     __slots__ = ('__chapterID', '__level', '__onRewardsReceivedCallback', '__onCloseCallback')
@@ -36,8 +38,6 @@ class RewardsSelectionView(SelectableRewardBase):
         with self.viewModel.transaction() as tx:
             tx.setChapterID(self.__chapterID)
             tx.setLevel(self.__level)
-            if self.__chapterID:
-                tx.setFinalReward(self.__battlePassController.getRewardType(self.__chapterID).value)
 
     def _initialize(self, *args, **kwargs):
         super(RewardsSelectionView, self)._initialize(*args, **kwargs)

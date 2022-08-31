@@ -5,32 +5,36 @@ import functools
 import locale
 import sys
 import zlib
-import AreaDestructibles
+
 import BigWorld
-import CommandMapping
 import GUI
+import constants
+from async import async, await
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
+
+import Account
+import AreaDestructibles
+import CommandMapping
 import MusicControllerWWISE
 import Settings
 import SoundGroups
 import TriggersManager
 import VOIP
 import WebBrowser
-import constants
 import services_config
 from MemoryCriticalController import g_critMemHandler
 from bootcamp.Bootcamp import g_bootcamp
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
 from gui import CLIENT_ENCODING, onRepeatKeyEvent, g_keyEventHandlers, g_mouseEventHandlers, InputHandler
 from gui.Scaleform.game_loading import GameLoading
+from gui.impl.dialogs import dialogs
 from gui.shared import personality as gui_personality
 from helpers import RSSDownloader, OfflineMode, LightingGenerationMode
 from helpers import dependency, log
 from messenger import MessengerEntry
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gameplay import IGameplayLogic
-from async import async, await
-from gui.impl.dialogs import dialogs
 from system_events import g_systemEvents
+
 loadingScreenClass = GameLoading
 __import__('__main__').GameLoading = loadingScreenClass
 try:
@@ -80,8 +84,6 @@ def init(scriptConfig, engineConfig, userPreferences, loadingScreenGUI=None):
         g_bootcamp.replayCallbackSubscribe()
         import nation_change
         nation_change.init()
-        import battle_modifiers
-        battle_modifiers.init()
         import items
         items.init(True, None if not constants.IS_DEVELOPMENT else {})
         import battle_results
@@ -98,6 +100,8 @@ def init(scriptConfig, engineConfig, userPreferences, loadingScreenGUI=None):
         personal_missions.init()
         import motivation_quests
         motivation_quests.init()
+        import customization_quests
+        customization_quests.init()
         BigWorld.worldDrawEnabled(False)
         manager = dependency.configure(services_config.getClientServicesConfig)
         g_systemEvents.onDependencyConfigReady(manager)
@@ -315,6 +319,10 @@ def onDisconnected():
     VOIP.getVOIPManager().onDisconnected()
 
 
+def onFini():
+    Account.delAccountRepository()
+
+
 def onCameraChange(oldCamera):
     pass
 
@@ -329,6 +337,9 @@ def handleAxisEvent(event):
 
 
 def handleKeyEvent(event):
+    if constants.HAS_DEV_RESOURCES:
+        from development.dev_input_handler import g_devInputHandlerInstance
+        g_devInputHandlerInstance.handleKeyEvent(event)
     if OfflineMode.handleKeyEvent(event):
         return True
     elif LightingGenerationMode.handleKeyEvent(event):
@@ -520,5 +531,5 @@ def checkBotNet():
     from path_manager import g_pathManager
     g_pathManager.setPathes()
     from scenario_player import g_scenarioPlayer
-    rpycPort = sys.argv[sys.argv.index(botArg) + 1]
-    g_scenarioPlayer.initScenarioPlayer(rpycPort)
+    rpycPort = int(sys.argv[sys.argv.index(botArg) + 1])
+    g_scenarioPlayer.delayedInitScenarioPlayer(rpycPort)

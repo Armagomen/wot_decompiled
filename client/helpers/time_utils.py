@@ -1,13 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/time_utils.py
-import re
 import calendar
 import datetime
+import re
 import time
+
 import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from helpers.i18n import makeString as _ms
 from soft_exception import SoftException
+
 ONE_SECOND = 1
 DAYS_IN_YEAR = 365
 HOURS_IN_DAY = 24
@@ -132,6 +134,10 @@ def getTimeDeltaFromNowInLocal(t):
 
 def getTimestampFromNow(t):
     return t - getCurrentTimestamp() if t > 0 and t > getCurrentTimestamp() else 0
+
+
+def getServerTimeDiffInLocal(t):
+    return t - getCurrentLocalServerTimestamp() if t > 0 and t > getCurrentLocalServerTimestamp() else 0
 
 
 def getTimeDeltaTillNow(t):

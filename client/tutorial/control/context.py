@@ -1,14 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/context.py
 from abc import ABCMeta, abstractmethod
+
+import Event
+import SoundGroups
 from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.game_control import IBootcampController
+from skeletons.gui.lobby_context import ILobbyContext
 from tutorial.control import TutorialProxyHolder
 from tutorial.logger import LOG_MEMORY, LOG_ERROR
-import SoundGroups
-import Event
+
 __all__ = ('StartReqs', 'BonusesRequester', 'SoundPlayer', 'GlobalStorage')
+
 
 class StartReqs(object):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -155,19 +158,21 @@ class GLOBAL_FLAG(object):
     VEH_POST_PROGRESSION_ENABLED = '_VehPostProgressionEnabled'
     VEH_POST_PROGRESSION_PURCHASABLE = '_VehPostProgressionPurchasable'
     WOTPLUS_ENABLED = '_WotPlusEnabled'
+    BATTLE_MATTERS_ENTRY_POINT = '_BattleMattersEntryPoint'
     ALL = (IS_FLAGS_RESET,
-     SHOW_HISTORY,
-     HISTORY_NOT_AVAILABLE,
-     IN_QUEUE,
-     ALL_BONUSES_RECEIVED,
-     MAY_PAWN_PERSONAL_MISSION,
-     HAVE_NEW_BADGE,
-     HAVE_NEW_SUFFIX_BADGE,
-     BADGE_PAGE_HAS_NEW_SUFFIX_BADGE,
-     CREW_BOOKS_ENABLED,
-     COLLECTIBLE_VEHICLE_PREVIEW_ENABLED,
-     DOGTAGS_ENABLED,
-     WOTPLUS_ENABLED)
+           SHOW_HISTORY,
+           HISTORY_NOT_AVAILABLE,
+           IN_QUEUE,
+           ALL_BONUSES_RECEIVED,
+           MAY_PAWN_PERSONAL_MISSION,
+           HAVE_NEW_BADGE,
+           HAVE_NEW_SUFFIX_BADGE,
+           BADGE_PAGE_HAS_NEW_SUFFIX_BADGE,
+           CREW_BOOKS_ENABLED,
+           COLLECTIBLE_VEHICLE_PREVIEW_ENABLED,
+           DOGTAGS_ENABLED,
+           WOTPLUS_ENABLED,
+           BATTLE_MATTERS_ENTRY_POINT)
 
 
 class GlobalStorage(object):

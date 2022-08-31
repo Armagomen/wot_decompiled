@@ -1,34 +1,33 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/offer_gift_vehicle_preview.py
 import logging
-import typing
+from functools import partial
+
 from CurrentVehicle import g_currentPreviewVehicle
 from constants import RentType
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import getDataOneVehicle, addBuiltInEquipment
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
-from gui.Scaleform.framework.entities import BaseDAAPIComponent
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.impl.lobby.offers.offer_gift_dialog import RENT_VALUE_DESCR_BY_TYPE
 from gui.shared import event_dispatcher, formatters
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
-from skeletons.gui.shared import IItemsCache
 from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeGroup
-from gui.impl import backport
-from gui.impl.gen import R
+
 _logger = logging.getLogger(__name__)
 CREW_LVL_BY_TYPE = {ItemPackType.CREW_50: '50%',
- ItemPackType.CREW_75: '75%',
+                    ItemPackType.CREW_75: '75%',
  ItemPackType.CREW_100: '100%',
  ItemPackType.CUSTOM_CREW_100: '100%'}
 
 class OfferGiftVehiclePreview(VehiclePreview):
     __offersProvider = dependency.descriptor(IOffersDataProvider)
     __lobbyContext = dependency.descriptor(ILobbyContext)
-    __itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, ctx):
         if any((key not in ctx for key in ['offerID', 'giftID', 'confirmCallback'])):
@@ -36,11 +35,16 @@ class OfferGiftVehiclePreview(VehiclePreview):
         self._offer = self.__offersProvider.getOffer(ctx['offerID'])
         self._gift = self._offer.getGift(ctx['giftID'])
         self._vehicle = self._gift.bonus.displayedItem
+        customCallbacks = ctx.get('customCallbacks', {})
+        self._customCallbacks = customCallbacks if customCallbacks is not None else {}
         ctx['itemCD'] = self._vehicle.intCD
+        ctx['previewBackCb'] = self._customCallbacks.get('previewBackCb',
+                                                         partial(event_dispatcher.showOfferGiftsWindow, self._offer.id))
         super(OfferGiftVehiclePreview, self).__init__(ctx)
         self._confirmCallback = ctx.get('confirmCallback')
         self.__itemsPack = self._generateItemsPack()
-        addBuiltInEquipment(self.__itemsPack, self.__itemsCache, self._vehicleCD)
+        addBuiltInEquipment(self.__itemsPack, self._itemsCache, self._vehicleCD)
+        return
 
     def setBottomPanel(self):
         self.as_setBottomPanelS(VEHPREVIEW_CONSTANTS.BOTTOM_PANEL_OFFER_GIFT_LINKAGE)
@@ -101,11 +105,8 @@ class OfferGiftVehiclePreview(VehiclePreview):
         return {'title': formatters.text_styles.superPromoTitle(self._getPreviewDescription()),
          'buyButtonLabel': backport.text(self._getButtonLabel())}
 
-    def _processBackClick(self, ctx=None):
-        event_dispatcher.showOfferGiftsWindow(self._offer.id)
-
     def _getBackBtnLabel(self):
-        return VEHICLE_PREVIEW.HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM
+        return self._backBtnLabel or VEHICLE_PREVIEW.HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM
 
     def _populate(self):
         super(OfferGiftVehiclePreview, self)._populate()
@@ -134,7 +135,7 @@ class OfferGiftVehiclePreview(VehiclePreview):
             if self.__offersProvider.getAvailableOffers(onlyVisible=True):
                 event_dispatcher.showStorage(defaultSection=STORAGE_CONSTANTS.OFFERS)
             else:
-                event_dispatcher.showHangar()
+                self._customCallbacks.get('offerEndedCb', event_dispatcher.showHangar)()
         return
 
     @classmethod

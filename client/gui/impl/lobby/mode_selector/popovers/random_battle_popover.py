@@ -1,20 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/popovers/random_battle_popover.py
 from collections import OrderedDict
+
 from account_helpers.settings_core.settings_constants import GAME
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.mode_selector.popovers.random_battle_popover_item_model import RandomBattlePopoverItemModel
-from gui.impl.gen.view_models.views.lobby.mode_selector.popovers.random_battle_popover_model import RandomBattlePopoverModel
+from gui.impl.gen.view_models.views.lobby.mode_selector.popovers.random_battle_popover_item_model import \
+    RandomBattlePopoverItemModel
+from gui.impl.gen.view_models.views.lobby.mode_selector.popovers.random_battle_popover_model import \
+    RandomBattlePopoverModel
 from gui.impl.lobby.mode_selector.tooltips.mode_selector_alert_tooltip import AlertTooltip
 from gui.impl.pub.view_impl import PopOverViewImpl
 from gui.shared import g_eventBus
 from gui.shared.events import ModeSelectorPopoverEvent
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-from uilogging.mode_selector.constants import LOG_KEYS, LOG_ACTIONS
-from uilogging.mode_selector.loggers import BaseModeSelectorLogger
+
 _GAMEPLAY_STANDARD = 'gameplay_standard'
 _subLocaleBySettingID = OrderedDict()
 _subLocaleBySettingID[_GAMEPLAY_STANDARD] = 'default'
@@ -24,7 +26,6 @@ _subLocaleBySettingID[GAME.GAMEPLAY_EPIC_STANDARD] = 'epicStandard'
 
 class RandomBattlePopover(PopOverViewImpl):
     __slots__ = ('__initialItems', '__currentItems')
-    uiLogger = BaseModeSelectorLogger(LOG_KEYS.RANDOM_CARD_FILTER)
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
@@ -46,7 +47,6 @@ class RandomBattlePopover(PopOverViewImpl):
             self.__initialItems[setting] = self.__currentItems[setting] = self.settingsCore.getSetting(setting)
 
         self._update()
-        self.uiLogger.log(LOG_ACTIONS.OPENED)
 
     def _initialize(self, *args):
         super(RandomBattlePopover, self)._initialize()
@@ -89,5 +89,4 @@ class RandomBattlePopover(PopOverViewImpl):
         setting = str(event.get('type'))
         newValue = not self.__currentItems[setting]
         self.__currentItems[setting] = newValue
-        self.uiLogger.log(LOG_ACTIONS.CHANGED, isSelected=newValue, details=setting)
         self._update()

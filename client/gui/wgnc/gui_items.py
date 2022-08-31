@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/wgnc/gui_items.py
 from collections import namedtuple
 from functools import partial
+
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.promo.promo_logger import PromoLogSourceType
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -14,6 +15,7 @@ from gui.wgnc.settings import WGNC_GUI_TYPE, WGNC_GUI_INVALID_SEQS, convertToLoc
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
 from skeletons.gui.game_control import IPromoController
+
 _ButtonData = namedtuple('_ButtonData', ['label',
  'action',
  'visible',
@@ -23,7 +25,7 @@ _ButtonData = namedtuple('_ButtonData', ['label',
 class _GUIItem(object):
     __slots__ = ('_name', '_topic', '_body', '_note', '_buttons', '_hidden')
 
-    def __init__(self, name, body, topic='', buttons=None, hidden=True):
+    def __init__(self, name, body, topic=u'', buttons=None, hidden=True):
         super(_GUIItem, self).__init__()
         self._name = name
         self._body = body
@@ -136,7 +138,7 @@ class PopUpItem(_GUIItem):
 class WindowItem(_GUIItem):
     __slots__ = ('_modal',)
 
-    def __init__(self, name, body, topic='', buttons=None, modal=False, hidden=True):
+    def __init__(self, name, body, topic=u'', buttons=None, modal=False, hidden=True):
         super(WindowItem, self).__init__(name, body, topic, buttons, hidden)
         self._modal = modal
 
@@ -179,7 +181,7 @@ class BrowserItem(_GUIItem):
     promoCtrl = dependency.descriptor(IPromoController)
     _CLOSE_CALLBACK_KEY = 'close_window'
 
-    def __init__(self, name, body, topic='', handlers=None, buttons=None, hidden=True):
+    def __init__(self, name, body, topic=u'', handlers=None, buttons=None, hidden=True):
         super(BrowserItem, self).__init__(name, body, topic, buttons, hidden)
         self._handlers = handlers
         if handlers:

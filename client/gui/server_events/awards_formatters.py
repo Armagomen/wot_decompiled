@@ -3,7 +3,7 @@
 import logging
 from collections import namedtuple
 from math import ceil
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, Callable
 from constants import LOOTBOX_TOKEN_PREFIX, PREMIUM_ENTITLEMENTS, RESOURCE_TOKEN_PREFIX
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -37,7 +37,6 @@ from skeletons.gui.shared import IItemsCache
 if TYPE_CHECKING:
     from account_helpers.offers.events_data import OfferEventData
     from gui.goodies.goodie_items import Booster
-    from gui.server_events.bonuses import SimpleBonus, CrystalBonus, GoodiesBonus, PlusPremiumDaysBonus, EpicSelectTokensBonus
     from gui.server_events.cond_formatters.formatters import ConditionFormatter
     from gui.shared.gui_items.crew_book import CrewBook
 _logger = logging.getLogger(__name__)
@@ -809,7 +808,7 @@ class TokenBonusFormatter(SimpleBonusFormatter):
     def __getBattleBonusX5Images():
         images = {}
         for size in AWARDS_SIZES.ALL():
-            bonusBattleTaskRes = R.images.gui.maps.icons.quests.bonuses.dyn(size).dyn('bonus_battle_task')
+            bonusBattleTaskRes = R.images.gui.maps.icons.quests.bonuses.dyn(size).dyn('battle_bonus_x5')
             images[size] = backport.image(bonusBattleTaskRes()) if bonusBattleTaskRes else None
 
         return images
@@ -1375,9 +1374,9 @@ class InstructionEpicBattleBonusFormatter(SimpleBonusFormatter):
 
         giftsCount = 0
         for bonusOffer in bonusOffers:
-            gift = bonusOffer.getFirstGift()
-            if gift is not None:
-                giftsCount += gift.giftCount
+            if bonusOffer and hasattr(bonusOffer, 'getFirstGift'):
+                gift = bonusOffer.getFirstGift()
+                giftsCount += gift.giftCount if gift is not None else 0
 
         return giftsCount
 

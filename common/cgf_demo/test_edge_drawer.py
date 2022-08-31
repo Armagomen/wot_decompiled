@@ -2,10 +2,11 @@
 # Embedded file name: scripts/common/cgf_demo/test_edge_drawer.py
 import CGF
 import Triggers
-from cgf_demo.demo_category import DEMO_CATEGORY
-from cgf_script.component_meta_class import CGFComponent, ComponentProperty, CGFMetaTypes
-from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister, onProcessQuery
 from EdgeDrawer import HighlightComponent
+from cgf_demo.demo_category import DEMO_CATEGORY
+from cgf_script.component_meta_class import CGFComponent
+from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery
+
 
 class _Stage(object):
     Empty = 0
@@ -16,18 +17,25 @@ class _Stage(object):
 class TestEdgeDrawerComponent(CGFComponent):
     category = DEMO_CATEGORY
 
+    def __init__(self):
+        super(TestEdgeDrawerComponent, self).__init__()
+        self.callbackID = None
+        return
+
 
 class TestEdgeDrawerComponentManager(CGF.ComponentManager):
     _ALLY_COLOR = 2
     _ENEMY_COLOR = 1
 
     @onAddedQuery(TestEdgeDrawerComponent, Triggers.TimeTriggerComponent)
-    def onAdded(self, _, trigger):
-        trigger.addFireReaction(self.__triggerReaction)
+    def onAdded(self, testComponent, trigger):
+        testComponent.callbackID = trigger.addFireReaction(self.__triggerReaction)
 
     @onRemovedQuery(TestEdgeDrawerComponent, Triggers.TimeTriggerComponent)
-    def onRemoved(self, _, trigger):
-        trigger.removeFireReaction(self.__triggerReaction)
+    def onRemoved(self, testComponent, trigger):
+        if testComponent.callbackID is not None:
+            trigger.removeFireReaction(testComponent.callbackID)
+        return
 
     def __triggerReaction(self, gameObject):
         if not gameObject.isValid():

@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_awards_view_model.py
 from enum import Enum
+
 from frameworks.wulf import Array
-from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.common_view_model import CommonViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
+from gui.impl.wrappers.user_list_model import UserListModel
+
 
 class RewardReason(Enum):
     BUY_BATTLE_PASS = 'buyBattlePassReason'
@@ -17,7 +19,7 @@ class RewardReason(Enum):
 class BattlePassAwardsViewModel(CommonViewModel):
     __slots__ = ('onBuyClick',)
 
-    def __init__(self, properties=15, commands=2):
+    def __init__(self, properties=14, commands=2):
         super(BattlePassAwardsViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -88,12 +90,6 @@ class BattlePassAwardsViewModel(CommonViewModel):
     def setIsExtra(self, value):
         self._setBool(13, value)
 
-    def getFinalReward(self):
-        return self._getString(14)
-
-    def setFinalReward(self, value):
-        self._setString(14, value)
-
     def _initialize(self):
         super(BattlePassAwardsViewModel, self)._initialize()
         self._addViewModelProperty('mainRewards', UserListModel())
@@ -106,5 +102,4 @@ class BattlePassAwardsViewModel(CommonViewModel):
         self._addBoolProperty('seasonStopped', False)
         self._addArrayProperty('wideRewardsIDs', Array())
         self._addBoolProperty('isExtra', False)
-        self._addStringProperty('finalReward', '')
         self.onBuyClick = self._addCommand('onBuyClick')

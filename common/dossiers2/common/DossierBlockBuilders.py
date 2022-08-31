@@ -1,11 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/common/DossierBlockBuilders.py
-import struct
-from dossiers2.custom.records import RECORDS, RECORD_INDICES, BIT_STORAGES
+import typing
+from typing import Union
+
 from dossiers2.common.DossierBlocks import *
+from dossiers2.custom.records import RECORDS, RECORD_INDICES, BIT_STORAGES
+
+if typing.TYPE_CHECKING:
+    from dossiers2.common.DossierDescr import DossierDescr
+
+    EVENT_HANDLERS_TYPE = Iterable[Callable[[DossierDescr, SerializableBlockDescr, [str, Any, Any]], None]]
 _SUPPORTED_FORMATS = frozenset('cbBhHiIlLqQfd')
 
-class StaticSizeBlockBuilder(object):
+
+class IBlockBuilderWithRecordsLayout(object):
+    name = None
+    recordsLayout = []
+
+    def build(self, dossierDescr, compDescr=''):
+        raise NotImplementedError
+
+
+class StaticSizeBlockBuilder(IBlockBuilderWithRecordsLayout):
 
     def __init__(self, name, recordsLayout, eventsHandlers, popUpRecords, logRecords=None):
         self.name = name
@@ -13,7 +29,7 @@ class StaticSizeBlockBuilder(object):
         self.__eventsHandlers = eventsHandlers
         self.__popUpRecords = set(popUpRecords)
         self.__logRecords = set(logRecords) if logRecords else popUpRecords
-        self.__layout = layout = [ (record, {}) for record in recordsLayout ]
+        self.__layout = layout = [(record, {}) for record in recordsLayout]
         self.__packing = dict(layout)
         self.__format = '<'
         self.__initialData = initial = {}
@@ -67,7 +83,7 @@ class ListBlockBuilder(object):
         return ListDossierBlockDescr(name=self.name, dossierDescr=dossierDescr, compDescr=compDescr, eventsHandlers=self.__eventsHandlers, itemFormat=self.__itemFormat)
 
 
-class BinarySetDossierBlockBuilder(object):
+class BinarySetDossierBlockBuilder(IBlockBuilderWithRecordsLayout):
 
     def __init__(self, name, valueNames, eventHandlers, popUpRecords, logRecords=None):
         self.name = name
@@ -78,7 +94,8 @@ class BinarySetDossierBlockBuilder(object):
         self.__logRecords = set(logRecords) if logRecords else popUpRecords
 
     def build(self, dossierDescr, compDescr=''):
-        return BinarySetDossierBlockDescr(self.name, dossierDescr, compDescr, self.__eventHandlers, self.__popUpRecords, self.recordsLayout, self.__valueToPosition, self.__logRecords)
+        return BinarySetDossierBlockDescr(self.name, dossierDescr, compDescr, self.__eventHandlers, self.__popUpRecords,
+                                          self.recordsLayout, self.__valueToPosition, self.__logRecords)
 
     def __buildValueToPosition(self, valueNames):
         valToPos = {}
@@ -87,3 +104,23 @@ class BinarySetDossierBlockBuilder(object):
             valToPos[name] = (byteNum, 1 << bitNum)
 
         return valToPos
+
+
+class SerializableBlockBuilder(IBlockBuilderWithRecordsLayout):
+
+    def __init__(self, name, componentClass, parserCallback, eventHandlers, popUpRecords, logRecords):
+        self.name = name
+        self.componentClass = componentClass
+        self.parserCallback = parserCallback
+        self.recordsLayout = list(self.componentClass.fields.keys())
+        self.__eventHandlers = eventHandlers
+        self.__popUpRecords = set(popUpRecords)
+        self.__logRecords = set(logRecords) if logRecords else set(popUpRecords)
+
+    def build(self, dossierDescr, compDescr=''):
+        return SerializableBlockDescr(self.name, dossierDescr, self.componentClass, self.parserCallback, compDescr,
+                                      self.__eventHandlers, self.__popUpRecords, self.__logRecords)
+
+
+TYPE_BLOCK_BUILDER = Union[
+    StaticSizeBlockBuilder, DictBlockBuilder, ListBlockBuilder, BinarySetDossierBlockBuilder, SerializableBlockBuilder]

@@ -4,9 +4,9 @@ import BattleReplay
 from ReplayEvents import g_replayEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import SELECTED_QUEST_IN_REPLAY
-from gui.Scaleform.daapi.view.meta.TabbedFullStatsMeta import TabbedFullStatsMeta
 from account_helpers.settings_core.options import QuestsProgressViewType
 from account_helpers.settings_core.settings_constants import QUESTS_PROGRESS
+from gui.Scaleform.daapi.view.meta.TabbedFullStatsMeta import TabbedFullStatsMeta
 from gui.Scaleform.genConsts.QUESTSPROGRESS import QUESTSPROGRESS
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
@@ -19,6 +19,7 @@ from helpers.i18n import makeString
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
+
 
 class IFullStatsComponent(object):
 
@@ -40,7 +41,7 @@ class FullStatsComponent(TabbedFullStatsMeta, IFullStatsComponent):
 
     @property
     def hasTabs(self):
-        return self.sessionProvider.shared.questProgress.areQuestsEnabledForArena()
+        return True
 
     def setActiveTabIndex(self, index):
         if index is not None:
@@ -76,15 +77,13 @@ class FullStatsComponent(TabbedFullStatsMeta, IFullStatsComponent):
             if qProgressCtrl.isInited():
                 self.__setNoQuestsDescription()
                 self.__setQuestTrackingData()
-            tabs = []
-            if qProgressCtrl.areQuestsEnabledForArena():
-                tabs = [{'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header())}]
-                if self.lobbyContext.getServerSettings().isPersonalMissionsEnabled():
-                    tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header())})
-            self.as_updateTabsS(tabs)
         if BattleReplay.g_replayCtrl.isPlaying:
             g_replayEvents.onTimeWarpStart += self.__onReplayTimeWarpStart
             g_replayEvents.onTimeWarpFinish += self.__onReplayTimeWarpFinished
+        tabs = [{'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header())}]
+        if self.lobbyContext.getServerSettings().isPersonalMissionsEnabled():
+            tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header())})
+        self.as_updateTabsS(tabs)
         return
 
     def _dispose(self):

@@ -4,6 +4,7 @@ import logging
 import math
 from collections import defaultdict, namedtuple
 from enum import IntEnum
+
 import BattleReplay
 import BigWorld
 from AvatarInputHandler import gun_marker_ctrl, aih_global_binding
@@ -25,7 +26,8 @@ from gui.Scaleform.genConsts.DUAL_GUN_MARKER_STATE import DUAL_GUN_MARKER_STATE
 from gui.Scaleform.genConsts.GUN_MARKER_VIEW_CONSTANTS import GUN_MARKER_VIEW_CONSTANTS as _VIEW_CONSTANTS
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
-from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, CROSSHAIR_VIEW_ID, SHELL_QUANTITY_UNKNOWN, ENTITY_IN_FOCUS_TYPE
+from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, CROSSHAIR_VIEW_ID, SHELL_QUANTITY_UNKNOWN, \
+    ENTITY_IN_FOCUS_TYPE
 from gui.battle_control.battle_constants import SHELL_SET_RESULT, VEHICLE_VIEW_STATE, NET_TYPE_OVERRIDE
 from gui.battle_control.controllers import crosshair_proxy
 from gui.battle_control.controllers.consumables.ammo_ctrl import AutoReloadingBoostStates
@@ -36,10 +38,11 @@ from gui.shared.events import GameEvent
 from gui.shared.utils.TimeInterval import TimeInterval
 from gui.shared.utils.plugins import IPlugin
 from helpers import dependency
+from helpers.time_utils import MS_IN_SECOND
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from soft_exception import SoftException
-from helpers.time_utils import MS_IN_SECOND
+
 _logger = logging.getLogger(__name__)
 _SETTINGS_KEY_TO_VIEW_ID = {AIM.ARCADE: CROSSHAIR_VIEW_ID.ARCADE,
  AIM.SNIPER: CROSSHAIR_VIEW_ID.SNIPER}
@@ -1266,11 +1269,12 @@ class SpeedometerWheeledTech(CrosshairPlugin):
             return
         else:
             if diff[GAME.ENABLE_SPEEDOMETER]:
-                vStateCtrl = self.sessionProvider.shared.vehicleState
-                if vStateCtrl is not None:
-                    vehicle = vStateCtrl.getControllingVehicle()
-                    if vehicle is not None and vehicle.isWheeledTech:
-                        self.__onVehicleControlling(vehicle)
+                if self.sessionProvider.shared.crosshair.getViewID() != CROSSHAIR_VIEW_ID.SNIPER:
+                    vStateCtrl = self.sessionProvider.shared.vehicleState
+                    if vStateCtrl is not None:
+                        vehicle = vStateCtrl.getControllingVehicle()
+                        if vehicle is not None and vehicle.isWheeledTech:
+                            self.__onVehicleControlling(vehicle)
             else:
                 self.parentObj.as_removeSpeedometerS()
             return

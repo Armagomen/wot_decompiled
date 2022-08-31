@@ -3,13 +3,14 @@
 import itertools
 import logging
 from collections import defaultdict
-import typing
+
 import ResMgr
 from constants import IS_CLIENT, IS_BOT, ITEM_DEFS_PATH, IS_EDITOR, DeviceRepairMode
 from items import _xml, getTypeInfoByName
+from items.components import c11n_constants
 from items.components import component_constants
 from items.components import shared_components
-from items.components import c11n_constants
+
 _ALLOWED_EMBLEM_SLOTS = component_constants.ALLOWED_EMBLEM_SLOTS
 _ALLOWED_SLOTS_ANCHORS = component_constants.ALLOWED_SLOTS_ANCHORS
 _ALLOWED_MISC_SLOTS = component_constants.ALLOWED_MISC_SLOTS
@@ -60,7 +61,7 @@ def _readProjectionDecalSlot(ctx, subsection, slotType):
 
 def _readCompatibleModels(subsection, ctx):
     compatibleModels = component_constants.EMPTY_TUPLE
-    if IS_CLIENT:
+    if IS_CLIENT or IS_EDITOR:
         if subsection.has_key('compatibleModels'):
             compatibleModels = _xml.readTupleOfStrings(ctx, subsection, 'compatibleModels')
     return compatibleModels

@@ -2,24 +2,27 @@
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/StrategicCamera.py
 import math
 from collections import namedtuple
+
+import BattleReplay
 import BigWorld
 import Math
-from Math import Vector2, Vector3
-import BattleReplay
 import Settings
 import constants
 import math_utils
 from AvatarInputHandler import cameras, aih_global_binding
-from AvatarInputHandler.AimingSystems.StrategicAimingSystem import StrategicAimingSystem
-from AvatarInputHandler.AimingSystems.StrategicAimingSystemRemote import StrategicAimingSystemRemote
-from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, SPGScrollSmoother
-from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
+from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, \
+    SPGScrollSmoother
+from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, \
+    SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
 from AvatarInputHandler.cameras import getWorldRayAndPoint, readFloat, readVec2, ImpulseReason, FovExtended
+from BigWorld import StrategicAimingSystem, StrategicAimingSystemRemote
 from ClientArena import Plane
+from Math import Vector2, Vector3
 from account_helpers.settings_core import settings_constants
 from aih_constants import CTRL_MODE_NAME
 from debug_utils import LOG_WARNING
 from helpers.CallbackDelayer import CallbackDelayer
+
 _DistRangeSetting = namedtuple('_DistRangeSetting', ['minArenaSize',
  'distRange',
  'scrollMultiplier',
@@ -128,11 +131,11 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         self.__scrollSmoother.start(self.__camDist)
         self.__enableSwitchers()
         camTarget = Math.MatrixProduct()
-        camTarget.b = self.__aimingSystem.matrix
+        camTarget.b = self.__aimingSystem.matrixProvider
         self.__cam.target = camTarget
         self.__cam.forceUpdate()
         BigWorld.camera(self.__cam)
-        BigWorld.player().positionControl.moveTo(self.__aimingSystem.matrix.translation)
+        BigWorld.player().positionControl.moveTo(self.__aimingSystem.matrixProvider.translation)
         BigWorld.player().positionControl.followCamera(True)
         FovExtended.instance().enabled = False
         BigWorld.projection().fov = StrategicCamera.ABSOLUTE_VERTICAL_FOV
@@ -345,7 +348,7 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
     def __calcAimOffset(self):
         if not self.isAimOffsetEnabled:
             return Vector2(0.0, 0.0)
-        aimWorldPos = self.__aimingSystem.matrix.applyPoint(Vector3(0, -self.__aimingSystem.height, 0))
+        aimWorldPos = self.__aimingSystem.matrixProvider.applyPoint(Vector3(0, -self.__aimingSystem.height, 0))
         aimOffset = cameras.projectPoint(aimWorldPos)
         return Vector2(math_utils.clamp(-0.95, 0.95, aimOffset.x), math_utils.clamp(-0.95, 0.95, aimOffset.y))
 

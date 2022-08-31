@@ -1,24 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/__init__.py
 import imghdr
-import itertools
-import sys
 import inspect
-import uuid
+import itertools
 import struct
+import sys
+import uuid
 from collections import namedtuple
-import BigWorld
+
 import AccountCommands
+import BigWorld
 import Settings
 import constants
+from account_helpers import getAccountDatabaseID
+from account_helpers.AccountSettings import AccountSettings
+from avatar_helpers import getAvatarDatabaseID
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG, LOG_WARNING
 from gui.impl import backport
 from gui.impl.gen import R
-from helpers import getLanguageCode, i18n
+from helpers import getLanguageCode
 from items import vehicles as vehs_core
-from account_helpers import getAccountDatabaseID
-from account_helpers.AccountSettings import AccountSettings
-from avatar_helpers import getAvatarDatabaseID, getAvatarSessionID
+
 SHELLS_COUNT_PROP_NAME = 'shellsCount'
 RELOAD_TIME_SECS_PROP_NAME = 'reloadTimeSecs'
 RELOAD_TIME_PROP_NAME = 'reloadTime'
@@ -143,7 +145,8 @@ _REPLACEMENTS = {'el': (u'\u0386\u0388\u038a\u0389\u038e\u038c\u038f', u'\u0391\
 def changeStringCasing(string, isUpper):
     langID = getLanguageCode()
     try:
-        string = string.decode('utf-8')
+        if not isinstance(string, unicode):
+            string = string.decode('utf-8')
         if langID is not None:
             langID = str(langID).lower()
             if langID in _STR_CASING_OPTIONS:
@@ -158,7 +161,7 @@ def changeStringCasing(string, isUpper):
     except Exception:
         LOG_CURRENT_EXCEPTION()
 
-    return i18n.encodeUtf8(string)
+    return string
 
 
 def toLower(string):

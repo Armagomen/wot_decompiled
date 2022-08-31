@@ -1,14 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/DossierCache.py
+import base64
 import cPickle
 import os
-import base64
-import BigWorld
+
 import AccountCommands
-from SyncController import SyncController
+import BigWorld
 from PlayerEvents import g_playerEvents as events
 from constants import DOSSIER_TYPE
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION
+from external_strings_utils import unicode_from_utf8
+
+from SyncController import SyncController
+
 
 class DossierCache(object):
 
@@ -16,7 +20,7 @@ class DossierCache(object):
         self.__account = None
         self.__syncController = None
         p = os.path
-        prefsFilePath = unicode(BigWorld.wg_getPreferencesFilePath(), 'utf-8', errors='ignore')
+        prefsFilePath = unicode_from_utf8(BigWorld.wg_getPreferencesFilePath())[1]
         self.__cacheDir = p.join(p.dirname(prefsFilePath), 'dossier_cache')
         self.__cacheFileName = p.join(self.__cacheDir, '%s.dat' % base64.b32encode('%s;%s;%s' % (str(BigWorld.server()), accountName, accountClassName)))
         self.__cache = {}

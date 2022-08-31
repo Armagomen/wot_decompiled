@@ -2,18 +2,20 @@
 # Embedded file name: scripts/client/bootcamp/states/StateInBattle.py
 import BattleReplay
 import BigWorld
-from AbstractState import AbstractState
-from bootcamp.aop.in_battle import weave
+from PlayerEvents import g_playerEvents
 from bootcamp.Assistant import BattleAssistant
 from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.states import STATE
+from bootcamp.Bootcamp import g_bootcamp
 from bootcamp.BootcampConstants import UI_STATE, BOOTCAMP_BATTLE_RESULT_MESSAGE
+from bootcamp.aop.in_battle import weave
+from bootcamp.states import STATE
 from gui.Scaleform.daapi.view.bootcamp.BCBattleSpaceEnv import BCBattleSpaceEnv
+from helpers import dependency, aop
 from skeletons.gui.app_loader import GuiGlobalSpaceID
 from skeletons.gui.sounds import ISoundsController
-from helpers import dependency, aop
-from PlayerEvents import g_playerEvents
-from bootcamp.Bootcamp import g_bootcamp
+
+from AbstractState import AbstractState
+
 
 class StateInBattle(AbstractState):
     soundController = dependency.descriptor(ISoundsController)
@@ -67,7 +69,7 @@ class StateInBattle(AbstractState):
         elif cameraName == 'postmortem':
             g_bootcampEvents.onUIStateChanged(UI_STATE.STOP)
 
-    def __onRoundFinished(self, winnerTeam, reason):
+    def __onRoundFinished(self, winnerTeam, reason, extraData):
         if BattleReplay.g_replayCtrl.isPlaying:
             return
         g_bootcampEvents.onUIStateChanged(UI_STATE.STOP)

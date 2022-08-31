@@ -4,8 +4,8 @@ from constants import WG_GAMES
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
 from gui.Scaleform.locale.MESSENGER import MESSENGER as I18N_MESSENGER
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from helpers import dependency
 from helpers import i18n
 from helpers.html import escape
@@ -15,6 +15,7 @@ from messenger.storage import storage_getter
 from predefined_hosts import g_preDefinedHosts
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
+
 _CATEGORY_I18N_KEY = {CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FRIENDS,
  CONTACTS_ALIASES.GROUP_FORMATIONS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FORMATIONS,
  CONTACTS_ALIASES.GROUP_OTHER_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_OTHER}
@@ -33,7 +34,7 @@ class _WOT_GAME_RESOURCE(object):
 def makeClanFullName(clanAbbrev):
     formatted = ''
     if clanAbbrev:
-        formatted = '{0} [{1}]'.format(i18n.makeString(I18N_MESSENGER.DIALOGS_CONTACTS_TREE_CLAN), clanAbbrev)
+        formatted = u'{0} [{1}]'.format(i18n.makeString(I18N_MESSENGER.DIALOGS_CONTACTS_TREE_CLAN), clanAbbrev)
     return formatted
 
 

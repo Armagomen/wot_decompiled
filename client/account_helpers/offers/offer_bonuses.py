@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/offers/offer_bonuses.py
-from operator import itemgetter
 import typing
+from operator import itemgetter
+
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentTypes import getFragmentType
 from constants import PREMIUM_ENTITLEMENTS
@@ -11,7 +12,9 @@ from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.Scaleform.locale.RES_SHOP import RES_SHOP
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.server_events.bonuses import CreditsBonus, GoldBonus, CrystalBonus, FreeXpBonus, PlusPremiumDaysBonus, VehiclesBonus, CrewBooksBonus, ItemsBonus, CustomizationsBonus, CrewSkinsBonus, ItemsBonusFactory, CrewSkinsBonusFactory, VehicleBlueprintBonus, IntelligenceBlueprintBonus, NationalBlueprintBonus
+from gui.server_events.bonuses import CreditsBonus, GoldBonus, CrystalBonus, FreeXpBonus, PlusPremiumDaysBonus, \
+    VehiclesBonus, CrewBooksBonus, ItemsBonus, CustomizationsBonus, CrewSkinsBonus, ItemsBonusFactory, \
+    CrewSkinsBonusFactory, VehicleBlueprintBonus, IntelligenceBlueprintBonus, NationalBlueprintBonus
 from gui.server_events.formatters import tagText
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import getTypeUserName
@@ -20,7 +23,11 @@ from gui.shared.utils.functions import stripHTMLTags
 from gui.shared.utils.requesters.blueprints_requester import getVehicleCDForIntelligence, getVehicleCDForNational
 from helpers import int2roman, dependency
 from skeletons.gui.customization import ICustomizationService
+
+if typing.TYPE_CHECKING:
+    pass
 EXTRA_PARAMS_JOINER = ', '
+
 
 def _canCustomizationBeAdded(c11nItem, count):
     maxNumber = c11nItem.descriptor.maxNumber

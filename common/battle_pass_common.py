@@ -3,15 +3,17 @@
 import bisect
 import struct
 import time
-from collections import namedtuple
 import typing
+from collections import namedtuple
 from enum import Enum, unique
+
 from battle_pass_integration import getBattlePassByGameMode
 from constants import ARENA_BONUS_TYPE, MAX_VEHICLE_LEVEL, OFFER_TOKEN_PREFIX
 from debug_utils import LOG_ERROR
 from items import parseIntCompactDescr, vehicles
+
 if typing.TYPE_CHECKING:
-    from typing import Dict, Generator, Sequence, Tuple, Union, List
+    pass
 BATTLE_PASS_TOKEN_PREFIX = 'battle_pass:'
 BATTLE_PASS_TOKEN_PASS = BATTLE_PASS_TOKEN_PREFIX + 'pass:'
 BATTLE_PASS_ENTITLEMENT_PASS = BATTLE_PASS_TOKEN_PASS.replace(':', '_')
@@ -419,7 +421,7 @@ class BattlePassConfig(object):
         return (fromLevel, toLevel)
 
     def getChapterIDs(self):
-        return sorted(self.chapters.iterkeys())
+        return list(self.chapters.iterkeys())
 
     def getAvailableStyles(self):
         return tuple((chapter['styleId'] for chapter in self.chapters.itervalues()))

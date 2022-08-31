@@ -1,15 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/avatar_components/AvatarObserver.py
-from collections import defaultdict
 import logging
+from collections import defaultdict
+
 import BigWorld
 import Math
+from AvatarInputHandler.subfilters_constants import AVATAR_SUBFILTERS, FILTER_INTERPOLATION_TYPE
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
-from AvatarInputHandler.subfilters_constants import AVATAR_SUBFILTERS, FILTER_INTERPOLATION_TYPE
 from helpers.CallbackDelayer import CallbackDelayer
 from soft_exception import SoftException
+
 _logger = logging.getLogger(__name__)
 _OBSERVABLE_VIEWS = (CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.SNIPER,
@@ -35,6 +37,7 @@ class AvatarObserver(CallbackDelayer):
         CallbackDelayer.__init__(self)
         self.__observedVehicleID = None
         self.__observedVehicleData = defaultdict(ObservedVehicleData)
+        self.__previousObservedVehicleID = None
         self.__isFPVModeSwitching = False
         return
 
@@ -93,8 +96,11 @@ class AvatarObserver(CallbackDelayer):
                 if self.gunRotator is not None:
                     self.gunRotator.start()
                 self.updateObservedVehicleData()
+                if self.__previousObservedVehicleID and self.vehicle.id != self.__previousObservedVehicleID:
+                    self.guiSessionProvider.updateVehicleEffects(BigWorld.entity(self.__previousObservedVehicleID))
                 self.vehicle.set_dotEffect()
                 self.vehicle.refreshBuffEffects()
+                self.__previousObservedVehicleID = self.__observedVehicleID
                 if hasattr(self.vehicle.filter, 'enableStabilisedMatrix'):
                     self.vehicle.filter.enableStabilisedMatrix(True)
                 if not self.guiSessionProvider.shared.vehicleState.isInPostmortem:

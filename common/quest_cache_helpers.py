@@ -1,14 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/quest_cache_helpers.py
 import time
+
+import quest_xml_source
 from constants import EVENT_TYPE, IS_CLIENT
 from debug_utils import LOG_WARNING
-import quest_xml_source
 from soft_exception import SoftException
+
 if IS_CLIENT:
     from helpers import i18n
 else:
     from web_stubs import i18n
+
 
 def makeI18nString(string):
     return i18n.makeString(string)
@@ -41,7 +44,7 @@ def readQuestsFromFile(filePath, eventType):
                 continue
             questName = questData.get('name', None)
             if questName:
-                questName = makeI18nString(questName['key'])
+                questName = makeI18nString(questName.get('key', ''))
             questDescr = questData.get('description', None)
             if questDescr:
                 questDescr = makeI18nString(questDescr['key'])

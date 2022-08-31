@@ -2,39 +2,42 @@
 # Embedded file name: scripts/client/gui/game_control/bootcamp_controller.py
 from collections import namedtuple
 from functools import partial
+
 import AccountCommands
 import BigWorld
-from constants import QUEUE_TYPE
-from async import async, await
-from account_helpers.AccountSettings import CURRENT_VEHICLE, AccountSettings
+from PlayerEvents import g_playerEvents
 from account_helpers import isLongDisconnectedFromCenter
+from account_helpers.AccountSettings import AccountSettings, BOOTCAMP_VEHICLE
+from async import async, await
+from bootcamp.BootCampEvents import g_bootcampEvents
+from bootcamp.Bootcamp import g_bootcamp
+from constants import QUEUE_TYPE
+from debug_utils import LOG_ERROR
 from frameworks.wulf import WindowLayer
+from gui import DialogsInterface, makeHtmlString
+from gui.Scaleform.Waiting import Waiting
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.bootcamp.disabled_settings import BCDisabledSettings
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.bootcamp.bootcamp_exit_view import BootcampExitWindow
-from gui.prb_control.prb_getters import getQueueType
-from helpers import dependency
-from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
-from skeletons.gui.battle_session import IBattleSessionProvider
-from skeletons.gui.lobby_context import ILobbyContext
-from gui.Scaleform.Waiting import Waiting
-from gui.Scaleform.daapi.view.bootcamp.disabled_settings import BCDisabledSettings
-from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.Bootcamp import g_bootcamp
-from PlayerEvents import g_playerEvents
-from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.prb_control import prbDispatcherProperty
 from gui.prb_control.entities.base.ctx import PrbAction
+from gui.prb_control.prb_getters import getQueueType
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-from gui import DialogsInterface, makeHtmlString
-from debug_utils import LOG_ERROR
+from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showResSimpleDialog
+from helpers import dependency
+from skeletons.gui.app_loader import IAppLoader
+from skeletons.gui.battle_session import IBattleSessionProvider
+from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-BootcampDialogConstants = namedtuple('BootcampDialogConstants', 'dialogType dialogKey focusedID needAwarding premiumType')
+
+BootcampDialogConstants = namedtuple('BootcampDialogConstants',
+                                     'dialogType dialogKey focusedID needAwarding premiumType')
 _GREEN = 'green'
 _YELLOW = 'yellow'
 _GRAY = 'gray'
@@ -148,8 +151,8 @@ class BootcampController(IBootcampController):
     def getAwardVehicles(self):
         return [self.nationData['vehicle_first'], self.nationData['vehicle_second']] if self.nationData else []
 
-    def isEnableDamageIcon(self):
-        return g_bootcamp.isEnableDamageIcon()
+    def isEnableCriticalDamageIcon(self):
+        return g_bootcamp.isEnableCriticalDamageIcon()
 
     def getCheckpoint(self):
         return g_bootcamp.getCheckpoint()
@@ -191,7 +194,7 @@ class BootcampController(IBootcampController):
         BigWorld.player().startBootcampCmd()
 
     def __doStopBootcamp(self):
-        BigWorld.player().base.requestBootcampQuit(AccountSettings.getFavorites(CURRENT_VEHICLE))
+        BigWorld.player().base.requestBootcampQuit(AccountSettings.getFavorites(BOOTCAMP_VEHICLE))
 
     def __onBootcampBecomePlayer(self):
         self.__inBootcampAccount = True

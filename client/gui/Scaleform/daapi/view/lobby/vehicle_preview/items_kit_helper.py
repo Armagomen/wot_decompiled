@@ -1,38 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/items_kit_helper.py
 import itertools
-import typing
 from collections import Container, namedtuple
 from sys import maxint
+
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.COMMON import COMMON
 from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
 from gui.Scaleform.locale.QUESTS import QUESTS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.RES_SHOP import RES_SHOP
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.shared.formatters import text_styles, icons
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items import vehicle_adjusters
 from gui.shared.gui_items.Tankman import CrewTypes
 from gui.shared.money import Currency, Money, MONEY_ZERO_GOLD
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.impl import backport
-from gui.impl.gen import R
+from helpers import dependency
+from helpers.i18n import makeString as _ms
 from items import makeIntCompactDescrByID as makeCD
 from items.components.c11n_constants import CustomizationType
 from items.vehicles import MAX_OPTIONAL_DEVICES_SLOTS, NUM_SHELLS_SLOTS
 from shared_utils import findFirst, first, CONST_CONTAINER
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.goodies import IGoodiesCache
-from web.web_client_api.common import ItemPackType, ItemPackTypeGroup, ItemPackEntry
-from gui.shared.gui_items import vehicle_adjusters
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from skeletons.gui.shared import IItemsCache
-from helpers import dependency
-from helpers.i18n import makeString as _ms
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.shared.formatters import text_styles, icons
+from web.web_client_api.common import ItemPackType, ItemPackTypeGroup, ItemPackEntry
+
 
 class ItemSortRule(CONST_CONTAINER):
     REGULAR = 'regular'
@@ -71,58 +72,56 @@ _UNCOUNTABLE_ITEM_TYPE = {ItemPackType.CUSTOM_PREMIUM,
  ItemPackType.CUSTOM_BPCOIN}
 _PACK_ITEMS_SORT_ORDER = list(itertools.chain(ItemPackTypeGroup.DISCOUNT, ItemPackTypeGroup.CUSTOM, ItemPackTypeGroup.TOKEN, ItemPackTypeGroup.GOODIE, ItemPackTypeGroup.CREW, ItemPackTypeGroup.STYLE, ItemPackTypeGroup.CAMOUFLAGE, ItemPackTypeGroup.DECAL, ItemPackTypeGroup.MODIFICATION, ItemPackTypeGroup.PAINT, ItemPackTypeGroup.ITEM, ItemPackTypeGroup.OFFER))
 _TOOLTIP_TYPE = {ItemPackType.ITEM_DEVICE: TOOLTIPS_CONSTANTS.SHOP_MODULE,
- ItemPackType.ITEM_EQUIPMENT: TOOLTIPS_CONSTANTS.SHOP_MODULE,
- ItemPackType.ITEM_SHELL: TOOLTIPS_CONSTANTS.SHOP_SHELL,
- ItemPackType.GOODIE_CREDITS: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
- ItemPackType.GOODIE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
- ItemPackType.GOODIE_CREW_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
- ItemPackType.GOODIE_FREE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
- ItemPackType.GOODIE_FRONTLINE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
- ItemPackType.VEHICLE: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.VEHICLE_MEDIUM: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.VEHICLE_HEAVY: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.VEHICLE_LIGHT: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.VEHICLE_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.VEHICLE_AT_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
- ItemPackType.STYLE: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PAINT_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PAINT_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PAINT_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PAINT_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.DECAL_1: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.DECAL_2: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PROJECTION_DECAL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.PERSONAL_NUMBER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.MODIFICATION: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.CAMOUFLAGE_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.CAMOUFLAGE_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.CAMOUFLAGE_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.CAMOUFLAGE_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
- ItemPackType.ACHIEVEMENT: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
- ItemPackType.SINGLE_ACHIEVEMENTS: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
- ItemPackType.BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
- ItemPackType.REFERRAL_BADGE: TOOLTIPS_CONSTANTS.REFERRAL_BADGE,
- ItemPackType.PLAYER_BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
- ItemPackType.TRADE_IN_INFO: TOOLTIPS_CONSTANTS.TRADE_IN_INFO,
- ItemPackType.CREW_BUNDLE: TOOLTIPS_CONSTANTS.SHOP_CREW_BUNDLE,
- ItemPackType.CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.CREW_BOOK_BROCHURE: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.CREW_BOOK_GUIDE: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.CREW_BOOK_CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.CREW_BOOK_PERSONAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.CREW_BOOK_UNIVERSAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
- ItemPackType.BLUEPRINT: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
- ItemPackType.BLUEPRINT_NATIONAL: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
- ItemPackType.BLUEPRINT_INTELEGENCE_DATA: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
- ItemPackType.BLUEPRINT_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_INFO,
- ItemPackType.REFERRAL_AWARDS: TOOLTIPS_CONSTANTS.REFERRAL_AWARDS,
- ItemPackType.DEMOUNT_KIT: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT,
- ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS,
- ItemPackType.GOODIE_RECERTIFICATIONFORM: TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP,
- ItemPackType.OFFER_BROCHURE: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
- ItemPackType.OFFER_BATTLE_BOOSTER: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
- ItemPackType.BLUEPRINT_NATIONAL_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_NATIONAL_INFO,
- ItemPackType.DEMOUNT_KITS: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT}
+                 ItemPackType.ITEM_EQUIPMENT: TOOLTIPS_CONSTANTS.SHOP_MODULE,
+                 ItemPackType.ITEM_SHELL: TOOLTIPS_CONSTANTS.SHOP_SHELL,
+                 ItemPackType.GOODIE_CREDITS: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+                 ItemPackType.GOODIE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+                 ItemPackType.GOODIE_CREW_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+                 ItemPackType.GOODIE_FREE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+                 ItemPackType.GOODIE_FRONTLINE_EXPERIENCE: TOOLTIPS_CONSTANTS.SHOP_BOOSTER,
+                 ItemPackType.VEHICLE: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.VEHICLE_MEDIUM: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.VEHICLE_HEAVY: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.VEHICLE_LIGHT: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.VEHICLE_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.VEHICLE_AT_SPG: TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                 ItemPackType.STYLE: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PAINT_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PAINT_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PAINT_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PAINT_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.DECAL_1: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.DECAL_2: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PROJECTION_DECAL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.PERSONAL_NUMBER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.MODIFICATION: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.CAMOUFLAGE_ALL: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.CAMOUFLAGE_DESERT: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.CAMOUFLAGE_SUMMER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.CAMOUFLAGE_WINTER: TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM,
+                 ItemPackType.ACHIEVEMENT: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
+                 ItemPackType.SINGLE_ACHIEVEMENTS: TOOLTIPS_CONSTANTS.SHOP_ACHIEVEMENT,
+                 ItemPackType.BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
+                 ItemPackType.REFERRAL_BADGE: TOOLTIPS_CONSTANTS.REFERRAL_BADGE,
+                 ItemPackType.PLAYER_BADGE: TOOLTIPS_CONSTANTS.SHOP_BADGE,
+                 ItemPackType.TRADE_IN_INFO: TOOLTIPS_CONSTANTS.TRADE_IN_INFO,
+                 ItemPackType.CREW_BUNDLE: TOOLTIPS_CONSTANTS.SHOP_CREW_BUNDLE,
+                 ItemPackType.CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.CREW_BOOK_BROCHURE: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.CREW_BOOK_GUIDE: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.CREW_BOOK_CREW_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.CREW_BOOK_PERSONAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.CREW_BOOK_UNIVERSAL_BOOK: TOOLTIPS_CONSTANTS.CREW_BOOK,
+                 ItemPackType.BLUEPRINT: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+                 ItemPackType.BLUEPRINT_NATIONAL: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+                 ItemPackType.BLUEPRINT_INTELEGENCE_DATA: TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO,
+                 ItemPackType.BLUEPRINT_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_INFO,
+                 ItemPackType.REFERRAL_AWARDS: TOOLTIPS_CONSTANTS.REFERRAL_AWARDS,
+                 ItemPackType.DEMOUNT_KIT: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT,
+                 ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS,
+                 ItemPackType.GOODIE_RECERTIFICATIONFORM: TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP,
+                 ItemPackType.OFFER_BROCHURE: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
+                 ItemPackType.OFFER_BATTLE_BOOSTER: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP}
 _ICONS = {ItemPackType.CAMOUFLAGE_ALL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_WINTER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_SUMMER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
@@ -251,7 +250,7 @@ def getItemIcon(rawItem, item):
     icon = rawItem.iconSource
     if not icon:
         if item is not None:
-            icon = _ICONS.get(rawItem.type, item.icon)
+            icon = _ICONS.get(rawItem.type, item.getBonusIcon())
         elif rawItem.type == ItemPackType.CUSTOM_PREMIUM:
             icon = _PREM_ICONS.get(rawItem.count, '')
         elif rawItem.type == ItemPackType.CUSTOM_PREMIUM_PLUS:
@@ -270,7 +269,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
             if tooltipKey:
                 title = _ms(tooltipKey, group=item.userType, value=item.userName)
                 title = title.replace(_DOUBLE_OPEN_QUOTES, _OPEN_QUOTES).replace(_DOUBLE_CLOSE_QUOTES, _CLOSE_QUOTES)
-    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SEVERAL_SLOTS):
+    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
         title = _ms(key=TOOLTIPS.AWARDITEM_SLOTS_HEADER)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         title = _ms(key=QUESTS.BONUSES_GOLD_DESCRIPTION, value=rawItem.count)
@@ -299,10 +298,6 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
              ItemPackType.CUSTOM_CREW_100: CrewTypes.SKILL_100}.get(rawItem.type))
         else:
             title = _ms(TOOLTIPS.CREW_HEADER)
-    elif rawItem.type == ItemPackType.CUSTOM_X5_BATTLE_BONUS:
-        title = backport.text(R.strings.tooltips.quests.bonuses.token.battle_bonus_x5.header())
-    elif rawItem.type == ItemPackType.CREW_BOOK_RANDOM:
-        title = backport.text(R.strings.tooltips.awardItem.randomBooklet.header())
     else:
         title = rawItem.title or ''
     return title
@@ -311,7 +306,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
 def getItemDescription(rawItem, item):
     if item is not None:
         description = item.fullDescription
-    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SEVERAL_SLOTS):
+    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
         description = _ms(TOOLTIPS.AWARDITEM_SLOTS_BODY)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         description = _ms(TOOLTIPS.AWARDITEM_GOLD_BODY)
@@ -339,10 +334,6 @@ def getItemDescription(rawItem, item):
              ItemPackType.CREW_75: CrewTypes.SKILL_75,
              ItemPackType.CREW_100: CrewTypes.SKILL_100,
              ItemPackType.CUSTOM_CREW_100: CrewTypes.SKILL_100}.get(rawItem.type))
-    elif rawItem.type == ItemPackType.CUSTOM_X5_BATTLE_BONUS:
-        description = backport.text(R.strings.tooltips.quests.bonuses.token.battle_bonus_x5.body())
-    elif rawItem.type == ItemPackType.CREW_BOOK_RANDOM:
-        description = backport.text(R.strings.tooltips.awardItem.randomBooklet.body())
     else:
         description = rawItem.description or ''
     return description

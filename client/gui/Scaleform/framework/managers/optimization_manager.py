@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/framework/managers/optimization_manager.py
 import logging
+
 import GUI
 import Math
 from debug_utils import LOG_ERROR
@@ -10,6 +11,7 @@ from gui.shared.event_bus import EVENT_BUS_SCOPE
 from helpers import dependency
 from ids_generators import Int32IDGenerator
 from skeletons.account_helpers.settings_core import ISettingsCore
+
 _PERMANENT_SETTING_ID = ''
 _logger = logging.getLogger(__name__)
 
@@ -64,6 +66,7 @@ class GraphicsOptimizationManager(GraphicsOptimizationManagerMeta):
         return optimizationID
 
     def unregisterOptimizationArea(self, optimizationID):
+        optimizationID = int(optimizationID)
         if optimizationID in self.__cache:
             self.__cache.pop(optimizationID)
             self.__optimizer.unregisterRect(optimizationID)
@@ -71,6 +74,7 @@ class GraphicsOptimizationManager(GraphicsOptimizationManagerMeta):
             LOG_ERROR('Graphics optimization ID is not found', optimizationID)
 
     def updateOptimizationArea(self, optimizationID, x, y, width, height):
+        optimizationID = int(optimizationID)
         if optimizationID in self.__cache:
             bounds = _getRectBounds(x, y, width, height)
             oldBounds = self.__cache[optimizationID]

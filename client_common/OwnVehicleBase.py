@@ -2,12 +2,14 @@
 # Embedded file name: scripts/client_common/OwnVehicleBase.py
 from collections import namedtuple
 from functools import partial
+
 import BigWorld
 from constants import VEHICLE_SETTING, DAMAGE_INFO_CODES, DAMAGE_INFO_INDICES
 from items import vehicles, ITEM_TYPES
 from math_common import roundToPower10
 from time_converters import time2decisec
 from wotdecorators import noexcept
+
 Cooldowns = namedtuple('Cooldows', ['id', 'leftTime', 'baseTime'])
 _DO_LOG = False
 
@@ -34,7 +36,10 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         self.__onDestroy()
 
     def __onDestroy(self):
+        if self.targetVehicleID:
+            self.update_targetVehicleID(None)
         self.__dict__.clear()
+        return
 
     @noexcept
     def update_vehicleAmmoList(self, ammoList):
@@ -194,12 +199,15 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
             return
         avatar.onSmoke(smokeInfo)
 
+    @noneAccepted
     @noexcept
     def update_targetVehicleID(self, targetVehicleID):
         avatar = self._avatar()
         if not avatar:
             return
-        avatar.updateTargetVehicleID(targetVehicleID.targetID)
+        else:
+            avatar.updateTargetVehicleID(targetVehicleID.targetID if targetVehicleID else None)
+            return
 
     @noexcept
     def update_targetingInfo(self, data):
@@ -349,6 +357,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         self.set_burnoutUnavailable()
         self.set_isOtherVehicleDamagedDevicesVisible()
         self.set_overturnLevel()
+        self.set_drownLevel()
         self.set_smokeInfo()
         self.set_targetVehicleID()
         self.set_targetingInfo()

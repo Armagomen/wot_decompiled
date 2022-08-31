@@ -1,15 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/mapbox/mapbox_survey_helper.py
-from enum import Enum
-import logging
 import json
-import typing
+import logging
+from enum import Enum
+
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_question_model import QuestionType
 from gui.shared.utils.functions import replaceHyphenToUnderscore
 from helpers import dependency
-from skeletons.gui.game_control import IMapboxController
 from shared_utils import findFirst, first
+from skeletons.gui.game_control import IMapboxController
+
 _logger = logging.getLogger(__name__)
 _STR_PATH = R.strings.mapbox.survey
 
@@ -63,6 +64,12 @@ class IQuestion(object):
     def isMultipleChoice(self):
         pass
 
+    def isSyncronizedAnswers(self):
+        pass
+
+    def synchronizeAnswers(self, *args, **kwargs):
+        pass
+
     def clear(self):
         pass
 
@@ -96,6 +103,12 @@ class Question(IQuestion):
     def isMultipleChoice(self):
         return self.__isMultiple
 
+    def isUsingIcons(self):
+        return self.__guiParameters.showIcons if self.__guiParameters is not None else False
+
+    def isReadyToShow(self):
+        return self.__condition is None or self.__condition.isValid()
+
     def getImage(self):
         if self.__guiParameters.useMapId:
             return '%s_%s' % (self.__guiParameters.image, self._mapboxCtrl.surveyManager.getMapId())
@@ -106,9 +119,6 @@ class Question(IQuestion):
                     choice = first(self._mapboxCtrl.surveyManager.getSelectedAnswers(sourceQuestionId))
                     return '%s_%s' % (self.__guiParameters.image, replaceHyphenToUnderscore(choice))
             return self.__guiParameters.image if self.__guiParameters is not None else ''
-
-    def isUsingIcons(self):
-        return self.__guiParameters.showIcons if self.__guiParameters is not None else False
 
     def getTitleParameters(self):
         if not self.__linkedParameters:
@@ -122,9 +132,6 @@ class Question(IQuestion):
 
     def getAnswers(self):
         return self.__answers.variants if self.__answers is not None else []
-
-    def isReadyToShow(self):
-        return self.__condition is None or self.__condition.isValid()
 
     def convertAnswers(self, answers, optionId):
         if len(answers) > 1:
@@ -233,11 +240,12 @@ class _TextQuestion(Question):
 
 
 class AlternativeQuestion(IQuestion):
-    __slots__ = ('__questionId', '__alternatives')
+    __slots__ = ('__questionId', '_alternatives', '__isSynchronizedAnswers')
 
     def __init__(self, *args, **kwargs):
         self.__questionId = kwargs.get('questionId', None)
-        self.__alternatives = kwargs.get('alternatives', [])
+        self._alternatives = kwargs.get('alternatives', [])
+        self.__isSynchronizedAnswers = kwargs.get('isSynchronizedAnswers', False)
         return
 
     def getQuestionType(self):
@@ -247,41 +255,88 @@ class AlternativeQuestion(IQuestion):
         return self.__questionId
 
     def isRequired(self):
-        return all((q.isRequired() for q in self.__alternatives))
+        return all((q.isRequired() for q in self._alternatives))
+
+    def isSyncronizedAnswers(self):
+        return self.__isSynchronizedAnswers
 
     def selectAlternative(self):
-        question = findFirst(lambda q: q.isReadyToShow(), self.__alternatives)
+        question = findFirst(lambda q: q.isReadyToShow(), self._alternatives)
         return question
 
     def getAlternative(self, questionId):
-        return findFirst(lambda q: q.getQuestionId() == questionId, self.__alternatives)
+        return findFirst(lambda q: q.getQuestionId() == questionId, self._alternatives)
 
     def getLinkedQuestionId(self):
-        for q in self.__alternatives:
+        for q in self._alternatives:
             if q.getLinkedQuestionId():
                 return q.getLinkedQuestionId()
 
         return None
 
     def getAlternatives(self):
-        return self.__alternatives
+        return self._alternatives
 
     def isReadyToShow(self):
-        return any((q.isReadyToShow() for q in self.__alternatives))
+        return any((q.isReadyToShow() for q in self._alternatives))
 
     def clear(self):
-        for question in self.__alternatives:
+        for question in self._alternatives:
             question.clear()
 
-        self.__alternatives = []
+        self._alternatives = []
+
+
+class AlternativeOneManyQuestion(AlternativeQuestion):
+    __slots__ = ()
+    __CHOICES_IN_SIMPLE_QUESTION = 1
+    __MIN_CHOICES_IN_TABLE_QUESTION = 2
+
+    def synchronizeAnswers(self, surveyData, altQuestion, newAnswers):
+        choices = set([choice for answer in newAnswers for choice in answer.get('choices', [])])
+        simpleQuestion = findFirst(lambda q: q.getQuestionType() == QuestionType.IMAGE, self._alternatives)
+        tableQuestion = findFirst(lambda q: q.getQuestionType() == QuestionType.TABLE, self._alternatives)
+        if simpleQuestion is None or tableQuestion is None:
+            _logger.error('Invalid alternatives for the question')
+            return
+        else:
+            tableQuestId = tableQuestion.getQuestionId()
+            simpleQuestId = simpleQuestion.getQuestionId()
+            if len(choices) == self.__CHOICES_IN_SIMPLE_QUESTION:
+                self.__moveCommonAnswers(tableQuestId, simpleQuestId, surveyData, choices)
+            elif len(choices) == self.__MIN_CHOICES_IN_TABLE_QUESTION and surveyData.get(simpleQuestId, []):
+                self.__moveCommonAnswers(simpleQuestId, tableQuestId, surveyData, choices)
+            else:
+                leftAnswers = self.__findSavedAnswers(tableQuestId, surveyData, choices)
+                self.__updateAnswers(tableQuestId, surveyData, leftAnswers)
+            return
+
+    def __moveCommonAnswers(self, qId1, qId2, surveyData, choices):
+        leftAnswers = self.__findSavedAnswers(qId1, surveyData, choices)
+        self.__updateAnswers(qId2, surveyData, leftAnswers)
+        surveyData.pop(qId1, None)
+        return
+
+    @staticmethod
+    def __updateAnswers(qId, surveyData, leftAnswers):
+        if leftAnswers:
+            surveyData[qId] = leftAnswers
+        else:
+            surveyData.pop(qId, None)
+        return
+
+    @staticmethod
+    def __findSavedAnswers(qId, surveyData, choices):
+        return [answer for answer in surveyData.get(qId, []) if answer.get('optionId') in choices]
 
 
 _SUPPORTED_QUESTION_TYPES = {QuestionType.IMAGE.value: _ImageQuestion,
- QuestionType.VEHICLE.value: _VehicleQuestion,
- QuestionType.TABLE.value: _TableQuestion,
- QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion,
- QuestionType.TEXT.value: _TextQuestion,
- QuestionType.ALTERNATIVE.value: AlternativeQuestion}
+                             QuestionType.VEHICLE.value: _VehicleQuestion,
+                             QuestionType.TABLE.value: _TableQuestion,
+                             QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion,
+                             QuestionType.TEXT.value: _TextQuestion,
+                             QuestionType.ALTERNATIVE.value: AlternativeQuestion}
+
 
 def getQuestionClass(questionType):
     return _SUPPORTED_QUESTION_TYPES.get(questionType)

@@ -1,22 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/battle_selector_item.py
 import logging
+
 from adisp import process
-from gui.prb_control.entities.base.ctx import PrbAction
-from gui.prb_control.dispatcher import g_prbLoader
-from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
 from constants import PREBATTLE_TYPE
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.prb_control.dispatcher import g_prbLoader
+from gui.prb_control.entities.base.ctx import PrbAction
 from gui.shared.formatters import text_styles
 from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
+from helpers import dependency
+from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
 _R_HEADER_BUTTONS = R.strings.menu.headerButtons
 _R_ICONS = R.images.gui.maps.icons
 
+
 class SelectorItem(object):
-    __slots__ = ('_label', '_data', '_order', '_selectorType', '_isVisible', '_isExtra', '_isSelected', '_isNew', '_isDisabled', '_isLocked')
+    __slots__ = (
+    '_label', '_data', '_order', '_selectorType', '_isVisible', '_isExtra', '_isSelected', '_isNew', '_isDisabled',
+    '_isLocked')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, label, data, order, selectorType=None, isVisible=True, isExtra=False):
@@ -81,7 +86,9 @@ class SelectorItem(object):
         return False
 
     def isInSquad(self, state):
-        return state.isInUnit(PREBATTLE_TYPE.SQUAD) or state.isInUnit(PREBATTLE_TYPE.EVENT) or state.isInUnit(PREBATTLE_TYPE.EPIC) or state.isInUnit(PREBATTLE_TYPE.BATTLE_ROYALE) or state.isInUnit(PREBATTLE_TYPE.MAPBOX) or state.isInUnit(PREBATTLE_TYPE.FUN_RANDOM)
+        return state.isInUnit(PREBATTLE_TYPE.SQUAD) or state.isInUnit(PREBATTLE_TYPE.EVENT) or state.isInUnit(
+            PREBATTLE_TYPE.EPIC) or state.isInUnit(PREBATTLE_TYPE.BATTLE_ROYALE) or state.isInUnit(
+            PREBATTLE_TYPE.MAPBOX)
 
     def setLocked(self, value):
         self._isLocked = value

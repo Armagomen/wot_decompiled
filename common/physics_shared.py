@@ -1,22 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/physics_shared.py
-import BigWorld
-import ResMgr
-import Math
-import math
-import material_kinds
 import collections
-from items import vehicles, vehicle_items
-from items.components.component_constants import KMH_TO_MS
-from items.vehicles import VEHICLE_PHYSICS_TYPE, VehicleDescriptor, VehicleDescrType
-from math import pi
-from constants import IS_CLIENT, IS_EDITOR, IS_CELLAPP, VEHICLE_PHYSICS_MODE, SERVER_TICK_LENGTH
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_DEBUG_DEV
 import copy
-from items.components import gun_components
-from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES
+import math
+
+import BigWorld
+import Math
+
+from constants import IS_CLIENT, IS_EDITOR, SERVER_TICK_LENGTH
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR
 from gun_rotation_shared import encodeRestrictedValueToUint, decodeRestrictedValueFromUint
-from typing import Dict, Any
+from items.components.component_constants import KMH_TO_MS
+from items.vehicles import VEHICLE_PHYSICS_TYPE
+
 G = 9.81
 GRAVITY_FACTOR = 1.25
 WEIGHT_SCALE = 0.001
@@ -76,9 +72,9 @@ CONTACT_PENETRATION = 0.1
 TRACKS_PENETRATION = 0.01
 CONTACT_ENERGY_POW = 3.0
 CONTACT_ENERGY_POW2 = 0.75
-SLOPE_FRICTION_FUNC_DEF = tuple((math.pi * ang / 180.0 for ang in (34.0, 50.0, 70.0)))
-SLOPE_FRICTION_FUNC_VAL = (0.4, 2.0, 5.0)
-SLOPE_FRICTION_MODELS_FUNC_VAL = (0.4, 0.45, 0.5)
+SLOPE_FRICTION_FUNC_DEF = Math.Vector3(tuple((math.pi * ang / 180.0 for ang in (34.0, 50.0, 70.0))))
+SLOPE_FRICTION_FUNC_VAL = Math.Vector3(0.4, 2.0, 5.0)
+SLOPE_FRICTION_MODELS_FUNC_VAL = Math.Vector3(0.4, 0.45, 0.5)
 CONTACT_FRICTION_TERRAIN = 1.0
 CONTACT_FRICTION_STATICS = 0.05
 CONTACT_FRICTION_EXTRA = 0.3

@@ -1,13 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_buy_confirm_any_number_view_model.py
 from frameworks.wulf import ViewModel
-from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
+from gui.impl.wrappers.user_list_model import UserListModel
+
 
 class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
     __slots__ = ('onCloseClick', 'onBuyClick', 'onShowRewardsClick', 'onChangeSelectedLevels')
 
-    def __init__(self, properties=9, commands=4):
+    def __init__(self, properties=8, commands=4):
         super(BattlePassBuyConfirmAnyNumberViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -60,12 +61,6 @@ class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
     def setBackBtnText(self, value):
         self._setString(7, value)
 
-    def getFinalReward(self):
-        return self._getString(8)
-
-    def setFinalReward(self, value):
-        self._setString(8, value)
-
     def _initialize(self):
         super(BattlePassBuyConfirmAnyNumberViewModel, self)._initialize()
         self._addViewModelProperty('rewards', UserListModel())
@@ -76,7 +71,6 @@ class BattlePassBuyConfirmAnyNumberViewModel(ViewModel):
         self._addNumberProperty('levelsSelected', 0)
         self._addNumberProperty('chapterID', 0)
         self._addStringProperty('backBtnText', '')
-        self._addStringProperty('finalReward', '')
         self.onCloseClick = self._addCommand('onCloseClick')
         self.onBuyClick = self._addCommand('onBuyClick')
         self.onShowRewardsClick = self._addCommand('onShowRewardsClick')

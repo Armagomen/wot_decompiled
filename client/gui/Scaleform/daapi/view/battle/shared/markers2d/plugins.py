@@ -3,6 +3,7 @@
 import logging
 from collections import defaultdict
 from functools import partial
+
 import BattleReplay
 import BigWorld
 import Math
@@ -15,16 +16,19 @@ from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.options import VehicleMarkerSetting
 from account_helpers.settings_core.settings_constants import MARKERS, GRAPHICS
 from battleground.location_point_manager import g_locationPointManager, COMMAND_NAME_TO_LOCATION_MARKER_SUBTYPE
-from chat_commands_consts import getUniqueTeamOrControlPointID, INVALID_MARKER_SUBTYPE, INVALID_MARKER_ID, LocationMarkerSubType, MarkerType, DefaultMarkerSubType, INVALID_COMMAND_ID
+from chat_commands_consts import getUniqueTeamOrControlPointID, INVALID_MARKER_SUBTYPE, INVALID_MARKER_ID, \
+    LocationMarkerSubType, MarkerType, DefaultMarkerSubType, INVALID_COMMAND_ID
 from gui.Scaleform.daapi.view.battle.shared.markers2d import markers
 from gui.Scaleform.daapi.view.battle.shared.markers2d import settings
-from gui.Scaleform.daapi.view.battle.shared.markers2d.markers import LocationMarker, BaseMarker, Marker, ReplyStateForMarker
+from gui.Scaleform.daapi.view.battle.shared.markers2d.markers import LocationMarker, BaseMarker, ReplyStateForMarker
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from gui.doc_loaders import GuiColorsLoader
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared import g_eventBus
 from gui.shared.events import GameEvent
 from gui.shared.utils.plugins import IPlugin
@@ -34,8 +38,7 @@ from messenger.proto.bw_chat2.battle_chat_cmd import AUTOCOMMIT_COMMAND_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from gui.impl import backport
-from gui.impl.gen import R
+
 _logger = logging.getLogger(__name__)
 _LOCATION_SUBTYPE_TO_FLASH_SYMBOL_NAME = {LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE: settings.MARKER_SYMBOL_NAME.STATIC_ARTY_MARKER,
  LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER,
@@ -333,8 +336,7 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
             ctrl.onVehicleMarkerRemoved += self.onVehicleMarkerRemoved
             ctrl.onVehicleFeedbackReceived += self.onVehicleFeedbackReceived
         add = g_eventBus.addListener
-        add(GameEvent.ADD_AUTO_AIM_MARKER, self.__addAutoAimMarker, scope=settings.SCOPE)
-        add(GameEvent.HIDE_AUTO_AIM_MARKER, self._hideAllMarkers, scope=settings.SCOPE)
+        add(GameEvent.ON_TARGET_VEHICLE_CHANGED, self._handleAutoAimMarker, scope=settings.SCOPE)
         add(GameEvent.SHOW_EXTENDED_INFO, self.__showExtendedInfo, scope=settings.SCOPE)
         self.__baseMarker = self.settingsCore.getSetting(MARKERS.ENEMY).get(self.__markerBaseAimMarker2D)
         self.__altMarker = self.settingsCore.getSetting(MARKERS.ENEMY).get(self.__markerAltAimMarker2D)
@@ -354,8 +356,7 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
             ctrl.onVehicleMarkerRemoved -= self.onVehicleMarkerRemoved
             ctrl.onVehicleFeedbackReceived -= self.onVehicleFeedbackReceived
         remove = g_eventBus.removeListener
-        remove(GameEvent.ADD_AUTO_AIM_MARKER, self.__addAutoAimMarker, scope=settings.SCOPE)
-        remove(GameEvent.HIDE_AUTO_AIM_MARKER, self._hideAllMarkers, scope=settings.SCOPE)
+        remove(GameEvent.ON_TARGET_VEHICLE_CHANGED, self._handleAutoAimMarker, scope=settings.SCOPE)
         remove(GameEvent.SHOW_EXTENDED_INFO, self.__showExtendedInfo, scope=settings.SCOPE)
         self.__baseMarker = None
         self.__altMarker = None
@@ -398,6 +399,14 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
             self.__addMarkerToPool(vehicleID, vProxy)
         return
 
+    def _handleAutoAimMarker(self, event):
+        vehicleID = event.ctx.get('vehicleID')
+        if vehicleID is not None and vehicleID != 0:
+            self.__addAutoAimMarker(vehicleID)
+        else:
+            self._hideAllMarkers()
+        return
+
     def _addMarker(self, vehicleID):
         if self._vehicleID is not None:
             self._hideAllMarkers()
@@ -406,7 +415,7 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
         return
 
     def _hideAllMarkers(self, event=None, clearVehicleID=True):
-        if event and not event.ctx.get('vehicle'):
+        if event and not event.ctx.get('vehicleID'):
             self._vehicleID = None
         for vehicleID in self._markers:
             self._hideVehicleMarker(vehicleID, clearVehicleID)
@@ -437,15 +446,13 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
         self._markers[vehicleID] = marker
         return
 
-    def __addAutoAimMarker(self, event):
-        vehicle = event.ctx.get('vehicle')
-        self._vehicleID = vehicle.id if vehicle is not None else None
+    def __addAutoAimMarker(self, vehicleID):
+        self._vehicleID = vehicleID
         if self._showExtendedInfo:
             if self.__altMarker:
                 self._addMarker(self._vehicleID)
         elif self.__baseMarker:
             self._addMarker(self._vehicleID)
-        return
 
     def __onVehicleStateUpdated(self, state, value):
         if state in (VEHICLE_VIEW_STATE.DESTROYED, VEHICLE_VIEW_STATE.CREW_DEACTIVATED):
@@ -480,19 +487,16 @@ class VehicleMarkerTargetPluginReplayPlaying(VehicleMarkerTargetPlugin):
         if BattleReplay.g_replayCtrl.isPlaying:
             BattleReplay.g_replayCtrl.setDataCallback(CallbackDataNames.SHOW_AUTO_AIM_MARKER, self._addMarker)
             BattleReplay.g_replayCtrl.setDataCallback(CallbackDataNames.HIDE_AUTO_AIM_MARKER, self._hideVehicleMarker)
+            BattleReplay.g_replayCtrl.setDataCallback(CallbackDataNames.ON_TARGET_VEHICLE_CHANGED,
+                                                      self._handleAutoAimMarker)
 
 
 class VehicleMarkerTargetPluginReplayRecording(VehicleMarkerTargetPlugin):
 
-    def _addMarker(self, vehicleID):
-        super(VehicleMarkerTargetPluginReplayRecording, self)._addMarker(vehicleID)
+    def _handleAutoAimMarker(self, event):
+        super(VehicleMarkerTargetPluginReplayRecording, self)._handleAutoAimMarker(event)
         if BattleReplay.g_replayCtrl.isRecording:
-            BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.SHOW_AUTO_AIM_MARKER, (vehicleID,))
-
-    def _hideVehicleMarker(self, vehicleID, clearVehicleID=True):
-        if BattleReplay.g_replayCtrl.isRecording:
-            BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.HIDE_AUTO_AIM_MARKER, (vehicleID, clearVehicleID))
-        super(VehicleMarkerTargetPluginReplayRecording, self)._hideVehicleMarker(vehicleID, clearVehicleID)
+            BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.ON_TARGET_VEHICLE_CHANGED, (event,))
 
 
 _EQUIPMENT_DEFAULT_INTERVAL = 1.0

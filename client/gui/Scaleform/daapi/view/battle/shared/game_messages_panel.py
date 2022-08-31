@@ -1,14 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/game_messages_panel.py
 from collections import namedtuple
+
 import BattleReplay
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.Scaleform.daapi.view.meta.GameMessagesPanelMeta import GameMessagesPanelMeta
 from gui.Scaleform.genConsts.GAME_MESSAGES_CONSTS import GAME_MESSAGES_CONSTS
 from gui.battle_control import avatar_getter
 from gui.battle_results.components.common import makeRegularFinishResultLabel
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.utils import toUpper
+
 
 class PlayerMessageData(namedtuple('playerMessageData', ('messageType', 'length', 'priority', 'msgData'))):
 
@@ -41,17 +43,24 @@ class GameMessagesPanel(GameMessagesPanelMeta):
     def onMessageHiding(self, msgType, msgID):
         pass
 
-    def sendEndGameMessage(self, winningTeam, reason):
-        messageType = GAME_MESSAGES_CONSTS.DRAW
-        if winningTeam != 0:
-            isWinner = avatar_getter.getPlayerTeam() == winningTeam
-            if isWinner:
-                messageType = GAME_MESSAGES_CONSTS.WIN
-            else:
-                messageType = GAME_MESSAGES_CONSTS.DEFEAT
-        endGameMsgData = {'title': toUpper(backport.text(R.strings.menu.finalStatistic.commonStats.resultlabel.dyn(messageType)())),
-         'subTitle': makeRegularFinishResultLabel(reason, messageType)}
-        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH, GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
+    def sendEndGameMessage(self, winningTeam, reason, extraData):
+        battleGoalCompleted = extraData.get('battleGoalCompleted', False)
+        isWinner = avatar_getter.getPlayerTeam() == winningTeam
+        if winningTeam == 0:
+            messageType = GAME_MESSAGES_CONSTS.DRAW
+        elif isWinner:
+            messageType = GAME_MESSAGES_CONSTS.WIN
+        else:
+            messageType = GAME_MESSAGES_CONSTS.DEFEAT
+        titleRes = R.strings.menu.finalStatistic.commonStats.resultlabel.dyn(messageType)()
+        isTechnicalWin = battleGoalCompleted and not isWinner
+        if isTechnicalWin:
+            messageType = GAME_MESSAGES_CONSTS.DRAW
+            titleRes = R.strings.bootcamp.resultlabel.complete()
+        endGameMsgData = {'title': toUpper(backport.text(titleRes)),
+                          'subTitle': makeRegularFinishResultLabel(reason, messageType)}
+        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH,
+                                GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
         self._addMessage(msg.getDict())
 
     def setFlashObject(self, movieClip, autoPopulate=True, setScript=True):

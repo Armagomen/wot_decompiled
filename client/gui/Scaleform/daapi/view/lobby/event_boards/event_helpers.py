@@ -1,34 +1,42 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_helpers.py
-from io import BufferedIOBase, TextIOWrapper
 from functools import wraps
+from io import BufferedIOBase, TextIOWrapper
+
 from ResMgr import DataSection
+from bonus_readers import readBonusSection
 from constants import ARENA_GUI_TYPE, MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL
 from debug_utils import LOG_ERROR, LOG_DEBUG
-from gui.impl import backport
-from helpers.i18n import makeString as _ms
-from helpers import xmltodict, int2roman, dependency
-from nations import NAMES as NationNames
-from bonus_readers import readBonusSection
-from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.shared import IItemsCache
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.formatters import text_styles, icons
-from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
-from gui.server_events.bonuses import getEventBoardsBonusObj
-from gui.event_boards import event_boards_timer
-from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, EVENT_TYPE as _et, PLAYER_STATE_REASON as _psr, EVENT_STATE as _es, EVENT_DATE_TYPE, WOODEN_RIBBON
+from gui import GUI_NATIONS
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeCantJoinReasonTextVO, \
+    makeParameterTooltipVO, makePrimeTimesTooltipVO
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationEmblemIcon, \
+    getNationBigFlagIcon, getNationText, vehicleTypeText, formatTimeToEnd, formatErrorTextWithIcon, \
+    formatOkTextWithIcon, formatTimeAndDate, formatUpdateTime, formatAllertTextWithIcon, formatAttentionTextWithIcon, \
+    timeEndStyle, getLevelBackgroundIcon
 from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
 from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeCantJoinReasonTextVO, makeParameterTooltipVO, makePrimeTimesTooltipVO
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationEmblemIcon, getNationBigFlagIcon, getNationText, vehicleTypeText, formatTimeToEnd, formatErrorTextWithIcon, formatOkTextWithIcon, formatTimeAndDate, formatUpdateTime, formatAllertTextWithIcon, formatAttentionTextWithIcon, timeEndStyle, getLevelBackgroundIcon
-from gui import GUI_NATIONS
+from gui.event_boards import event_boards_timer
+from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, \
+    EVENT_TYPE as _et, PLAYER_STATE_REASON as _psr, EVENT_STATE as _es, EVENT_DATE_TYPE, WOODEN_RIBBON
+from gui.impl import backport
+from gui.server_events.bonuses import getEventBoardsBonusObj
+from gui.shared.formatters import text_styles, icons
+from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
+from gui.shared.utils.functions import makeTooltip
+from helpers import xmltodict, int2roman, dependency
+from helpers.i18n import makeString as _ms
 from helpers.time_utils import ONE_MINUTE
+from nations import NAMES as NationNames
+from skeletons.connection_mgr import IConnectionManager
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+
 LEVELS_RANGE = range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)
+
 
 class _Task(object):
 
@@ -136,7 +144,7 @@ class _BattleTypeCondition(_Condition):
         cType = _ms(EVENT_BOARDS.CONDITION_BATTLETYPE_RANDOM)
         squadAlloweed = self._event.getIsSquadAllowed()
         squadInfo = _ms(EVENT_BOARDS.CONDITION_BATTLETYPE_SQUADALLOWED) if squadAlloweed else _ms(EVENT_BOARDS.CONDITION_BATTLETYPE_SQUADNOTALLOWED)
-        return text_styles.main('{0}. {1}'.format(cType, squadInfo))
+        return text_styles.main(u'{0}. {1}'.format(cType, squadInfo))
 
     def getTooltip(self):
         return makeTooltip(body=TOOLTIPS.ELEN_CONDITION_BATTLETYPE_RANDOM) if self._event.getBattleType() == ARENA_GUI_TYPE.RANDOM else makeTooltip(body=TOOLTIPS.ELEN_CONDITION_BATTLETYPE_NOTRANDOM)
@@ -155,7 +163,7 @@ class _PrimeTimeCondition(_Condition):
             pt = primeTimes[0]
             periphery = int(pt.getServer())
             name = self._lobbyContext.getPeripheryName(periphery, False)
-            result = '{0} {1}-{2}'.format(name, pt.getStartLocalTime(), pt.getEndLocalTime())
+            result = u'{0} {1}-{2}'.format(name, pt.getStartLocalTime(), pt.getEndLocalTime())
         else:
             result = _ms(EVENT_BOARDS.CONDITION_PRIMETIME_CHOSEN)
         return text_styles.main(result)
@@ -191,12 +199,12 @@ class _VehiclesCondition(_Condition):
             vehicleName = formatVehicleNameWithTypeIcon(vehicle, 'html_templates:lobby/elen/objective')
             result = _ms(EVENT_BOARDS.CONDITION_VEHICLE_SINGLE, vehicle=vehicleName)
             if vehicleMissing:
-                result = '{}. {}'.format(result, text_styles.error(_ms(EVENT_BOARDS.CONDITION_VEHICLE_MISSING)))
+                result = u'{}. {}'.format(result, text_styles.error(_ms(EVENT_BOARDS.CONDITION_VEHICLE_MISSING)))
             else:
-                result = '{}. {}'.format(result, _ms(EVENT_BOARDS.CONDITION_VEHICLE_EXIST))
+                result = u'{}. {}'.format(result, _ms(EVENT_BOARDS.CONDITION_VEHICLE_EXIST))
         else:
             myCount = text_styles.error(str(available)) if vehicleMissing else text_styles.neutral(str(available))
-            result = '{} {}/{}'.format(info, myCount, allCount)
+            result = u'{} {}/{}'.format(info, myCount, allCount)
         return text_styles.main(result)
 
     def getTooltip(self):
@@ -324,14 +332,16 @@ class _TopLeaderboard(object):
             return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTPARTICIPATED))
         if self.__notFull:
             return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTFULL))
-        return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTINTOP)) if self.__notInTop else text_styles.main('{} {}'.format(_ms(EVENT_BOARDS.TOP_POSITION), self._top.getMyPosition()))
+        return text_styles.neutral(
+            _ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTINTOP)) if self.__notInTop else text_styles.main(
+            u'{} {}'.format(_ms(EVENT_BOARDS.TOP_POSITION), self._top.getMyPosition()))
 
     def __getStatusValue(self):
         event = self._event
         if self.__notFull and not event.isFinished():
             count = text_styles.stats(str(event.getCardinality() - self._top.getBattlesCount()))
             text = text_styles.standard(_ms(EVENT_BOARDS.TOP_REASON_NOTFULL))
-            return '{} {}'.format(text, count)
+            return u'{} {}'.format(text, count)
         else:
             return None
 
@@ -587,7 +597,7 @@ class EventHeader(object):
                 formatedText = timeEndStyle(text)
             else:
                 formatedText = text_styles.vehicleStatusInfoText(text)
-            return '{} {}'.format(iconPath, formatedText)
+            return u'{} {}'.format(iconPath, formatedText)
 
         event = self._event
         sday, smonth, _ = event_boards_timer.getDayMonthYear(event.getStartDate())
@@ -595,17 +605,25 @@ class EventHeader(object):
         finished = event.isFinished()
         if not finished:
             icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_DATE_ICON)
-            timePeriod = '{} {} {} - {} {} {}'.format(str(sday), _ms(MENU.datetime_months(str(smonth))), event_boards_timer.getShortTimeString(event.getStartDate()), str(eday), _ms(MENU.datetime_months(str(emonth))), event_boards_timer.getShortTimeString(event.getEndDate()))
-            result = '{} {}    '.format(icon, text_styles.vehicleStatusInfoText(timePeriod))
+            timePeriod = u'{} {} {} - {} {} {}'.format(unicode(sday), _ms(MENU.datetime_months(str(smonth))),
+                                                       event_boards_timer.getShortTimeString(event.getStartDate()),
+                                                       unicode(eday), _ms(MENU.datetime_months(str(emonth))),
+                                                       event_boards_timer.getShortTimeString(event.getEndDate()))
+            result = u'{} {}    '.format(icon, text_styles.vehicleStatusInfoText(timePeriod))
             startSoon = event.isStartSoon()
             if startSoon:
-                result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON, EVENT_BOARDS.TIME_TIMETO_START, EVENT_DATE_TYPE.START, startSoon)
+                result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON,
+                                      EVENT_BOARDS.TIME_TIMETO_START, EVENT_DATE_TYPE.START, startSoon)
             elif not self._joined and not event.isRegistrationFinished():
                 finishSoon = event.isRegistrationFinishSoon()
                 if finishSoon:
-                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON, EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE, finishSoon)
+                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON,
+                                          EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE,
+                                          finishSoon)
                 else:
-                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_ICON_FLAG, EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE, finishSoon)
+                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_ICON_FLAG,
+                                          EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE,
+                                          finishSoon)
             else:
                 endSoon = event.isEndSoon()
                 if endSoon:

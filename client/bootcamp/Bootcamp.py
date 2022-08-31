@@ -3,38 +3,43 @@
 import base64
 import cPickle
 from collections import namedtuple
-import BigWorld
+
 import BattleReplay
+import BigWorld
+import MusicControllerWWISE as MC
 import TriggersManager
 import WWISE
-import MusicControllerWWISE as MC
-from constants import PREMIUM_ENTITLEMENTS, SPA_ATTRS
-from account_helpers.AccountSettings import CURRENT_VEHICLE, AccountSettings
-from account_helpers.settings_core.settings_constants import BATTLE_EVENTS
-from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
-from account_helpers.settings_core import ISettingsCore
-from account_helpers.counter_settings import dropCounters as dropNewSettingsCounters
-from adisp import process, async
-from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
 from PlayerEvents import g_playerEvents
+from account_helpers.AccountSettings import AccountSettings, BOOTCAMP_VEHICLE
+from account_helpers.counter_settings import dropCounters as dropNewSettingsCounters
+from account_helpers.settings_core import ISettingsCore
+from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+from account_helpers.settings_core.settings_constants import BATTLE_EVENTS
+from adisp import process, async
 from bootcamp_shared import BOOTCAMP_BATTLE_ACTION
+from constants import PREMIUM_ENTITLEMENTS, SPA_ATTRS
+from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
+from frameworks.wulf import Array
 from gui import makeHtmlString
 from gui.ClientHangarSpace import g_clientHangarSpaceOverride
-from gui.Scaleform.daapi.view.lobby.referral_program.referral_program_helpers import isReferralProgramEnabled, isCurrentUserRecruit
+from gui.Scaleform.Waiting import Waiting
+from gui.Scaleform.daapi.view.lobby.referral_program.referral_program_helpers import isReferralProgramEnabled, \
+    isCurrentUserRecruit
+from gui.Scaleform.daapi.view.login.EULADispatcher import EULADispatcher
+from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.battle_control.arena_info import player_format
 from gui.impl import backport
 from gui.impl.backport import createTooltipData
 from gui.impl.gen import R
-from gui.prb_control.dispatcher import g_prbLoader
-from gui.Scaleform.Waiting import Waiting
-from gui.Scaleform.daapi.view.login.EULADispatcher import EULADispatcher
-from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
+from gui.impl.gen.view_models.views.bootcamp.bootcamp_lesson_model import BootcampLessonModel
+from gui.impl.gen.view_models.views.bootcamp.bootcamp_reward_item_model import BootcampRewardItemModel
 from gui.prb_control import prbEntityProperty
-from gui.shared.items_cache import CACHE_SYNC_REASON
+from gui.prb_control.dispatcher import g_prbLoader
 from gui.shared.event_dispatcher import showInterludeVideoWindow
-from gui.battle_control.arena_info import player_format
+from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.tooltips.bootcamp import BootcampStatuses
 from helpers import dependency, aop, i18n
 from skeletons.connection_mgr import IConnectionManager
@@ -42,23 +47,22 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
 from skeletons.gui.shared import IItemsCache
-from gui.impl.gen.view_models.views.bootcamp.bootcamp_lesson_model import BootcampLessonModel
-from gui.impl.gen.view_models.views.bootcamp.bootcamp_reward_item_model import BootcampRewardItemModel
-from frameworks.wulf import Array
 from skeletons.tutorial import ITutorialLoader
-from .BootcampGUI import BootcampGUI
-from .BootcampReplayController import BootcampReplayController
-from .BootcampConstants import BOOTCAMP_BATTLE_RESULT_MESSAGE
+
+from . import GAME_SETTINGS_NEWBIE, GAME_SETTINGS_COMMON
 from .BootCampEvents import g_bootcampEvents
-from .BootcampSettings import getBattleSettings
+from .BootcampConstants import BOOTCAMP_BATTLE_RESULT_MESSAGE
+from .BootcampGUI import BootcampGUI
 from .BootcampGarageLessons import GarageLessons
+from .BootcampReplayController import BootcampReplayController
+from .BootcampSettings import getBattleSettings
 from .ReloadLobbyHelper import ReloadLobbyHelper
+from .aop.common import weave
 from .states import STATE
 from .states.StateInGarage import StateInGarage
 from .states.StateInitial import StateInitial
 from .states.StateResultScreen import StateResultScreen
-from .aop.common import weave
-from . import GAME_SETTINGS_NEWBIE, GAME_SETTINGS_COMMON
+
 DISABLED_TANK_LEVELS = (1,)
 
 class ICON_SIZE(object):
@@ -474,7 +478,7 @@ class Bootcamp(EventSystemEntity):
     def onInterludeVideoStarted(self, index):
         messageVO = self.getInterludeVideoPageData(index)
         player = BigWorld.player()
-        if not player.spaFlags.getFlag(SPA_ATTRS.BOOTCAMP_VIDEO_DISABLED) and self.__battleResults.type == BOOTCAMP_BATTLE_RESULT_MESSAGE.VICTORY and messageVO:
+        if not player.spaFlags.getFlag(SPA_ATTRS.BOOTCAMP_VIDEO_DISABLED) and messageVO:
             showInterludeVideoWindow(messageVO=messageVO)
 
     def __onAvatarBecomeNonPlayer(self):
@@ -524,7 +528,7 @@ class Bootcamp(EventSystemEntity):
 
     def onGarageLessonFinished(self, lessonId):
         LOG_DEBUG_DEV_BOOTCAMP('onGarageLessonFinished', lessonId)
-        self.__account.base.completeBootcampLesson(0)
+        self.__account.base.completeBootcampLesson()
         lastLesson = self.getContextIntParameter('lastLessonNum')
         if self.__lessonId == lastLesson:
             LOG_DEBUG_DEV_BOOTCAMP('Finished last lesson', lessonId)
@@ -535,7 +539,7 @@ class Bootcamp(EventSystemEntity):
 
     def onRequestBootcampFinish(self):
         LOG_DEBUG_DEV_BOOTCAMP('onRequestBootcampFinish')
-        self.__account.base.requestBootcampQuit(AccountSettings.getFavorites(CURRENT_VEHICLE))
+        self.__account.base.requestBootcampQuit(AccountSettings.getFavorites(BOOTCAMP_VEHICLE))
 
     def finishBootcamp(self):
         LOG_DEBUG_DEV_BOOTCAMP('finishBootcamp', self.__currentState.id())
@@ -671,7 +675,7 @@ class Bootcamp(EventSystemEntity):
     def isResearchFreeLesson(self):
         return self.getLessonNum() >= self.getContextIntParameter('researchFreeLesson')
 
-    def isEnableDamageIcon(self):
+    def isEnableCriticalDamageIcon(self):
         return self.getLessonNum() >= self.getContextIntParameter('enableDamageIconLesson')
 
     def checkBigConsumablesIconsLesson(self):

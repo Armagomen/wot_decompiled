@@ -4,18 +4,19 @@ import logging
 from collections import namedtuple
 from enum import Enum
 from typing import TYPE_CHECKING
+
 import BigWorld
 import Event
 import SoundGroups
 import VOIP
 from CurrentVehicle import g_currentVehicle
+from PlatoonTank import PlatoonTankInfo
 from UnitBase import UNIT_ROLE, UnitAssemblerSearchFlags, extendTiersFilter
-from constants import EPlatoonButtonState, MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
-from PlatoonTank import PlatoonTank, PlatoonTankInfo
 from account_helpers.AccountSettings import AccountSettings, UNIT_FILTER, GUI_START_BEHAVIOR
 from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
 from account_helpers.settings_core.settings_constants import GAME, GuiSettingsBehavior, OnceOnlyHints
 from adisp import process, async
+from constants import EPlatoonButtonState, MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from constants import QUEUE_TYPE
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleVO
@@ -23,6 +24,7 @@ from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.impl.lobby.platoon.platoon_helpers import convertTierFilterToList
 from gui.impl.lobby.platoon.view.platoon_members_view import MembersWindow
 from gui.impl.lobby.platoon.view.platoon_search_view import SearchWindow
 from gui.impl.lobby.platoon.view.platoon_welcome_view import SelectionWindow
@@ -31,11 +33,17 @@ from gui.prb_control import settings
 from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.base.unit.ctx import AutoSearchUnitCtx
+from gui.prb_control.entities.base.unit.entity import UnitEntity
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.formatters import messages
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME, PREBATTLE_TYPE
+from gui.prb_control.settings import REQUEST_TYPE
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
+from gui.shared.formatters.ranges import toRomanRangeString
+from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils import functions
+from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers.statistics import HARDWARE_SCORE_PARAMS
@@ -48,32 +56,22 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME, PREBATTLE_TYPE
-from gui.prb_control.entities.base.unit.permissions import UnitPermissions
-from gui.prb_control.entities.base.unit.entity import UnitEntity
-from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shared.gui_items.Vehicle import Vehicle
-from gui.shared.formatters.ranges import toRomanRangeString
-from gui.impl.lobby.platoon.platoon_helpers import convertTierFilterToList
-from gui.prb_control.settings import REQUEST_TYPE
+
 if TYPE_CHECKING:
-    from typing import Optional as TOptional, Tuple as TTuple
-    from UnitBase import ProfileVehicle
+    pass
 _logger = logging.getLogger(__name__)
 _QUEUE_TYPE_TO_PREBATTLE_ACTION_NAME = {QUEUE_TYPE.EVENT_BATTLES: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.RANDOMS: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.EPIC: PREBATTLE_ACTION_NAME.SQUAD,
- QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD,
- QUEUE_TYPE.MAPBOX: PREBATTLE_ACTION_NAME.MAPBOX_SQUAD,
- QUEUE_TYPE.FUN_RANDOM: PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD}
+                                        QUEUE_TYPE.RANDOMS: PREBATTLE_ACTION_NAME.SQUAD,
+                                        QUEUE_TYPE.EPIC: PREBATTLE_ACTION_NAME.SQUAD,
+                                        QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD,
+                                        QUEUE_TYPE.MAPBOX: PREBATTLE_ACTION_NAME.MAPBOX_SQUAD}
 _QUEUE_TYPE_TO_PREBATTLE_TYPE = {QUEUE_TYPE.EVENT_BATTLES: PREBATTLE_TYPE.EVENT,
- QUEUE_TYPE.RANDOMS: PREBATTLE_TYPE.SQUAD,
- QUEUE_TYPE.EPIC: PREBATTLE_TYPE.EPIC,
- QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE,
- QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT,
- QUEUE_TYPE.MAPBOX: PREBATTLE_TYPE.MAPBOX,
- QUEUE_TYPE.MAPS_TRAINING: PREBATTLE_TYPE.MAPS_TRAINING,
- QUEUE_TYPE.FUN_RANDOM: PREBATTLE_TYPE.FUN_RANDOM}
+                                 QUEUE_TYPE.RANDOMS: PREBATTLE_TYPE.SQUAD,
+                                 QUEUE_TYPE.EPIC: PREBATTLE_TYPE.EPIC,
+                                 QUEUE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE,
+                                 QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT,
+                                 QUEUE_TYPE.MAPBOX: PREBATTLE_TYPE.MAPBOX,
+                                 QUEUE_TYPE.MAPS_TRAINING: PREBATTLE_TYPE.MAPS_TRAINING}
 _RANDOM_VEHICLE_CRITERIA = ~(REQ_CRITERIA.VEHICLE.EPIC_BATTLE ^ REQ_CRITERIA.VEHICLE.BATTLE_ROYALE ^ REQ_CRITERIA.VEHICLE.EVENT_BATTLE ^ REQ_CRITERIA.VEHICLE.MAPS_TRAINING)
 _PREBATTLE_TYPE_TO_VEH_CRITERIA = {PREBATTLE_TYPE.SQUAD: _RANDOM_VEHICLE_CRITERIA,
  PREBATTLE_TYPE.EPIC: ~(REQ_CRITERIA.VEHICLE.BATTLE_ROYALE ^ REQ_CRITERIA.VEHICLE.EVENT_BATTLE),
@@ -484,7 +482,7 @@ class PlatoonController(IPlatoonController, IGlobalListener, CallbackDelayer):
         if state and state.isInPreQueue(queueType):
             if queueType in _QUEUE_TYPE_TO_PREBATTLE_TYPE:
                 return _QUEUE_TYPE_TO_PREBATTLE_TYPE[queueType]
-            _logger.warning('Queuetype %d is not mapped to prebattletype', queueType)
+            return PREBATTLE_TYPE.NONE
         return self.prbEntity.getEntityType() if self.prbEntity else PREBATTLE_TYPE.NONE
 
     def isUnitWithPremium(self):

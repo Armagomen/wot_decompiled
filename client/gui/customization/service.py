@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/customization/service.py
 import math
 import logging
+from itertools import chain
 import typing
 import BigWorld
 import Windowing
@@ -9,19 +10,23 @@ import Event
 import adisp
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.server_events.events_helpers import getC11nQuestsConfig, isC11nQuest
 from gui.shared.event_dispatcher import hideVehiclePreview
-from helpers import dependency
+from helpers import dependency, time_utils
+from customization_quests_common import CustQuestsCache, deserelizeToken
 from gui import SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, HighlightingMode, C11nId
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.gui_items import GUI_ITEM_TYPE, ItemsCollection
 from gui.shared.gui_items.customization.c11n_items import Customization
-from items.customizations import CustomizationOutfit, createNationalEmblemComponents
+from items import vehicles
+from items.customizations import createNationalEmblemComponents
+from serializable_types.customizations import CustomizationOutfit
 from skeletons.gui.lobby_context import ILobbyContext
-from vehicle_outfit.outfit import Outfit, Area
+from skeletons.gui.server_events import IEventsCache
+from vehicle_outfit.outfit import Area
 from gui.shared.gui_items.processors.common import CustomizationsBuyer, CustomizationsSeller
-from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.utils.decorators import process
 from gui.shared.utils.requesters import REQ_CRITERIA, RequestCriteria
 from items.vehicles import makeIntCompactDescrByID, VehicleDescr
@@ -29,14 +34,12 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
-from items.components.c11n_constants import SeasonType, ApplyArea, CUSTOM_STYLE_POOL_ID, OUTFIT_POOL_EMPTY_STUB
+from items.components.c11n_constants import ApplyArea, CUSTOM_STYLE_POOL_ID, OUTFIT_POOL_EMPTY_STUB
 from vehicle_systems.stricted_loading import makeCallbackWeak
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 if typing.TYPE_CHECKING:
-    from gui.customization.constants import CustomizationModeSource
-    from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs
-    from gui.shared.gui_items.customization.c11n_items import Style
+    pass
 _logger = logging.getLogger(__name__)
 
 class _ServiceItemShopMixin(object):
@@ -68,6 +71,7 @@ class _ServiceHelpersMixin(object):
     itemsFactory = dependency.descriptor(IGuiItemsFactory)
     itemsCache = dependency.descriptor(IItemsCache)
     hangarSpace = dependency.descriptor(IHangarSpace)
+    eventsCache = dependency.descriptor(IEventsCache)
 
     def getEmptyOutfit(self, vehicleCD=''):
         vehicleCD = vehicleCD or self._getVehicleCD()
@@ -191,18 +195,24 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
         g_eventBus.addListener(events.LobbySimpleEvent.NOTIFY_CURSOR_DRAGGING, self.__onNotifyCursorDragging)
         g_eventBus.addListener(events.CustomizationEvent.SHOW, self.__onShowCustomization, scope=EVENT_BUS_SCOPE.LOBBY)
         g_currentVehicle.onChanged += self.__onVehicleChanged
+        self.eventsCache.onSyncCompleted += self.__onSyncCompleted
         self.hangarSpace.onSpaceDestroy += self.__onSpaceDestroy
         self.hangarSpace.onSpaceCreate += self.__onSpaceCreate
         Windowing.addWindowAccessibilitynHandler(self.__onWindowAccessibilityChanged)
         self._isOver3dScene = False
         self._isDraggingInProcess = False
         self._notHandleHighlighterEvent = False
+        self.__progressionQuestCache = None
+        self.__progressionQuestIDs = None
+        return
 
     def fini(self):
         g_eventBus.removeListener(events.LobbySimpleEvent.NOTIFY_CURSOR_OVER_3DSCENE, self.__onNotifyCursorOver3dScene)
         g_eventBus.removeListener(events.LobbySimpleEvent.NOTIFY_CURSOR_DRAGGING, self.__onNotifyCursorDragging)
-        g_eventBus.removeListener(events.CustomizationEvent.SHOW, self.__onShowCustomization, scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.removeListener(events.CustomizationEvent.SHOW, self.__onShowCustomization,
+                                  scope=EVENT_BUS_SCOPE.LOBBY)
         g_currentVehicle.onChanged -= self.__onVehicleChanged
+        self.eventsCache.onSyncCompleted -= self.__onSyncCompleted
         self.hangarSpace.onSpaceDestroy -= self.__onSpaceDestroy
         self.hangarSpace.onSpaceCreate -= self.__onSpaceCreate
         Windowing.removeWindowAccessibilityHandler(self.__onWindowAccessibilityChanged)
@@ -210,6 +220,8 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
         self._eventsManager.clear()
         self.__cleanupSuspendHighlighterCallback()
         self.__showCustomizationKwargs = None
+        self.__progressionQuestCache = None
+        self.__progressionQuestIDs = None
         if self.__showCustomizationCallbackId is not None:
             BigWorld.cancelCallback(self.__showCustomizationCallbackId)
             self.__showCustomizationCallbackId = None
@@ -552,3 +564,56 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
             if additionalOutfit is not None:
                 return outfit.discard(additionalOutfit)
         return outfit
+
+    def getQuestsForProgressionItem(self, itemCD):
+        if self.__progressionQuestCache is None:
+            self.__updateProgressionQuests()
+        return self.__progressionQuestCache.get(itemCD, None)
+
+    def getItemCDByQuestID(self, eventID):
+        if self.__progressionQuestCache is None:
+            self.__updateProgressionQuests()
+        for itemCD, quests in self.__progressionQuestCache.iteritems():
+            if eventID in (quest.getID() for quest in quests):
+                return itemCD
+
+        return
+
+    def isProgressionQuests(self, eventID):
+        if self.__progressionQuestIDs is None:
+            self.__updateProgressionQuests()
+        return eventID in self.__progressionQuestIDs
+
+    def __updateProgressionQuests(self):
+        cache = vehicles.g_cache.customization20()
+        self.__progressionQuestCache = {}
+        self.__progressionQuestIDs = set()
+        questsConfig = getC11nQuestsConfig()
+        if not questsConfig:
+            return
+        questIDs = set()
+        for levels in questsConfig.itervalues():
+            for level in levels:
+                questIDs |= {idn for idn in chain(*level.get('questIds', {}).values())}
+
+        self.__progressionQuestIDs = questIDs
+        filterFunc = lambda quest: isC11nQuest(quest.getID()) and quest.getFinishTimeLeft()
+        c11nQuests = self.eventsCache.getHiddenQuests(filterFunc)
+        styles = cache.getQuestProgressionStyles()
+        for token, level, _, finishTime, idn in CustQuestsCache(questsConfig):
+            if idn in c11nQuests:
+                styleId, __ = deserelizeToken(token)
+                if styleId in styles:
+                    style = styles[styleId]
+                    items = style.questsProgression.getItemsForGroup(token)
+                    finishTimeLocal = time_utils.makeLocalServerTime(finishTime)
+                    if time_utils.getServerTimeDiffInLocal(finishTimeLocal) == 0:
+                        continue
+                    for itemType, ids in items[level].iteritems():
+                        for itemId in ids:
+                            compactDescr = makeIntCompactDescrByID('customizationItem', itemType, itemId)
+                            item = self.getItemByCD(compactDescr)
+                            self.__progressionQuestCache.setdefault(item.intCD, []).append(c11nQuests[idn])
+
+    def __onSyncCompleted(self):
+        self.__updateProgressionQuests()

@@ -1,15 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/readers/chassis_readers.py
 import math
-import ResMgr
+
+from constants import IS_EDITOR, IS_CLIENT, IS_UE_EDITOR
+from debug_utils import LOG_ERROR
 from items import _xml
 from items.components import chassis_components
 from items.components import component_constants
 from items.components.chassis_components import SplineTrackPairDesc
-from items.components.shared_components import LodSettings
 from items.readers import shared_readers
-from debug_utils import LOG_ERROR
-from constants import IS_EDITOR
+
+if IS_UE_EDITOR or IS_CLIENT:
+    import Vehicular
+
 
 def readWheelsAndGroups(xmlCtx, section):
     wheelGroups = []
@@ -19,7 +22,11 @@ def readWheelsAndGroups(xmlCtx, section):
     for sname, subsection in _xml.getChildren(xmlCtx, section, 'wheels'):
         if sname == 'group':
             ctx = (xmlCtx, 'wheels/group')
-            group = chassis_components.WheelGroup(isLeft=_xml.readBool(ctx, subsection, 'isLeft'), template=intern(_xml.readNonEmptyString(ctx, subsection, 'template')), count=_xml.readInt(ctx, subsection, 'count', 1), startIndex=subsection.readInt('startIndex', 0), radius=_xml.readPositiveFloat(ctx, subsection, 'radius'))
+            group = chassis_components.WheelGroup(isLeft=_xml.readBool(ctx, subsection, 'isLeft'),
+                                                  template=intern(_xml.readNonEmptyString(ctx, subsection, 'template')),
+                                                  count=_xml.readInt(ctx, subsection, 'count', 1),
+                                                  startIndex=subsection.readInt('startIndex', 0),
+                                                  radius=_xml.readPositiveFloat(ctx, subsection, 'radius'))
             wheelGroups.append(group)
         if sname == 'wheel':
             from items.vehicles import _readHitTester, _readArmor
@@ -156,8 +163,7 @@ def __readDebrisParams(xmlCtx, section, cache):
         destructionEffect = _xml.readStringOrEmpty(ctx, subSection, 'destructionEffect')
         physicalParams = None
         if subSection['physicalParams'] is not None:
-            hingeJointStiffness = _xml.readFloat(ctx, subSection, 'physicalParams/hingeJointStiffness')
-            physicalParams = chassis_components.PhysicalTrackDebrisParams(hingeJointStiffness)
+            physicalParams = Vehicular.PhysicalDestroyedTrackConfig(subSection['physicalParams'])
         nodesRemap = {}
         for key, value in subSection.items():
             if key == 'remapNode':

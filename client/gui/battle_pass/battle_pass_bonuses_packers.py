@@ -23,9 +23,7 @@ from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
 from shared_utils import first
 from skeletons.gui.offers import IOffersDataProvider
 if typing.TYPE_CHECKING:
-    from gui.server_events.bonuses import BattlePassQuestChainTokensBonus, SimpleBonus, TmanTemplateTokensBonus, CustomizationsBonus, PlusPremiumDaysBonus, DossierBonus, BattlePassSelectTokensBonus, BattlePassStyleProgressTokenBonus, VehicleBlueprintBonus
-    from account_helpers.offers.events_data import OfferEventData, OfferGift
-    from gui.shared.gui_items.Vehicle import Vehicle
+    pass
 _logger = logging.getLogger(__name__)
 
 def getBattlePassBonusPacker():
@@ -48,11 +46,12 @@ def getBattlePassBonusPacker():
     return BonusUIPacker(mapping)
 
 
-def packBonusModelAndTooltipData(bonuses, bonusModelsList, tooltipData=None):
+def packBonusModelAndTooltipData(bonuses, bonusModelsList, tooltipData=None, packer=None):
+    if packer is None:
+        packer = getBattlePassBonusPacker()
     bonusIndexTotal = 0
     if tooltipData is not None:
         bonusIndexTotal = len(tooltipData)
-    packer = getBattlePassBonusPacker()
     for bonus in bonuses:
         if bonus.isShowInGUI():
             bonusList = packer.pack(bonus)

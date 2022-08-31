@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/AccountUnitAPI.py
-from typing import Optional as TOptional
 import constants
-from constants import PREBATTLE_TYPE
 from UnitBase import UNIT_SLOT, CLIENT_UNIT_CMD, INV_ID_CLEAR_VEHICLE
-from unit_roster_config import UnitRosterSlot
+from constants import PREBATTLE_TYPE
 from debug_utils import *
+from unit_roster_config import UnitRosterSlot
+
 
 class UNIT_API:
     NONE = 0
@@ -91,9 +91,6 @@ class UnitClientAPI(object):
 
     def createMapboxSquad(self):
         return self._doCreate(PREBATTLE_TYPE.MAPBOX)
-
-    def createFunRandomSquad(self):
-        return self._doCreate(PREBATTLE_TYPE.FUN_RANDOM)
 
     def join(self, unitMgrID, slotIdx=UNIT_SLOT.ANY):
         self._callAPI('join', unitMgrID, slotIdx)

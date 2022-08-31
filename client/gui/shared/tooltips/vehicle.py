@@ -3,11 +3,9 @@
 import collections
 import logging
 import typing
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+
 import constants
-from gui.impl.gen import R
-from gui.impl.gen_utils import INVALID_RES_ID
-from gui.impl import backport
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from gui.Scaleform.daapi.view.lobby.techtree.settings import UnlockProps
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
@@ -16,8 +14,10 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.impl.gen_utils import INVALID_RES_ID
 from gui.shared.formatters import getItemUnlockPricesVO, getItemRestorePricesVO, getItemSellPricesVO, getMoneyVO
-from gui.shared.gui_items.gui_item_economics import getMinRentItemPrice
 from gui.shared.formatters import text_styles, moneyWithIcon, icons, getItemPricesVO
 from gui.shared.formatters.time_formatters import RentLeftFormatter, getTimeLeftInfo
 from gui.shared.gui_items import GUI_ITEM_ECONOMY_CODE, KPI
@@ -25,28 +25,31 @@ from gui.shared.gui_items.Tankman import Tankman, getRoleUserName, CrewTypes
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
 from gui.shared.gui_items.Vehicle import Vehicle, getBattlesLeft, getTypeBigIconPath
 from gui.shared.gui_items.fitting_item import RentalInfoProvider
+from gui.shared.gui_items.gui_item_economics import getMinRentItemPrice
 from gui.shared.items_parameters import RELATIVE_PARAMS, params_helper
 from gui.shared.items_parameters import formatters as param_formatter
 from gui.shared.items_parameters.bonus_helper import isSituationalBonus
 from gui.shared.items_parameters.comparator import PARAM_STATE
 from gui.shared.items_parameters.formatters import isRelativeParameter, SITUATIONAL_SCHEME, EXTRACTED_BONUS_SCHEME
-from gui.shared.items_parameters.params_helper import SimplifiedBarVO
 from gui.shared.items_parameters.param_name_helper import getVehicleParameterText
+from gui.shared.items_parameters.params_helper import SimplifiedBarVO
 from gui.shared.money import Currency
 from gui.shared.tooltips import formatters, ToolTipBaseData
 from gui.shared.tooltips import getComplexStatus, getUnlockPrice, TOOLTIP_TYPE
 from gui.shared.tooltips.common import BlocksTooltipData, makeCompoundPriceBlock, CURRENCY_SETTINGS
-from gui.shared.utils import MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, CHASSIS_REPAIR_TIME, isRomanNumberForbidden
+from gui.shared.utils import MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, \
+    DUAL_GUN_CHARGE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, CHASSIS_REPAIR_TIME, isRomanNumberForbidden
 from helpers import i18n, time_utils, int2roman, dependency
 from helpers.i18n import makeString as _ms
+from items import perks, vehicles
 from post_progression_common import ACTION_TYPES
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import ITradeInController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from items import perks, vehicles
+
 if typing.TYPE_CHECKING:
-    from gui.shared.tooltips.contexts import ExtendedAwardContext
+    pass
 _logger = logging.getLogger(__name__)
 _EQUIPMENT = 'equipment'
 _OPTION_DEVICE = 'optionalDevice'
@@ -169,7 +172,7 @@ class VehicleInfoTooltipData(BlocksTooltipData):
             headerBlockItems.append(formatters.packBuildUpBlockData(telecomBlock, padding=leftRightPadding))
         self.__createStatusBlock(vehicle, headerBlockItems, statsConfig, paramsConfig, valueWidth)
         items.append(formatters.packBuildUpBlockData(headerBlockItems, gap=-4, padding=formatters.packPadding(bottom=-8)))
-        if vehicle.isEarnCrystals and statsConfig.showEarnCrystals:
+        if vehicle.isEarnCrystals:
             crystalBlock, linkage = CrystalBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct()
             if crystalBlock:
                 items.append(formatters.packBuildUpBlockData(crystalBlock, linkage=linkage, padding=leftRightPadding))
@@ -560,10 +563,23 @@ class VehicleAdvancedParametersTooltipData(BaseVehicleAdvancedParametersTooltipD
             for bnsId, bnsType in sorted(self._extendedData.possibleBonuses, cmp=_bonusCmp):
                 if bnsType == constants.BonusTypes.PERK and not self._hasPerksBonuses:
                     continue
+                if bnsType == constants.BonusTypes.OPTIONAL_DEVICE:
+                    if not item.optDevices.layoutCapacity:
+                        continue
+                if bnsType == constants.BonusTypes.EQUIPMENT:
+                    if not item.consumables.layoutCapacity:
+                        continue
+                if bnsType == constants.BonusTypes.BATTLE_BOOSTER:
+                    if not item.battleBoosters.layoutCapacity:
+                        continue
                 formattedBnsId = _getBonusID(bnsType, bnsId)
                 isEnabled = (formattedBnsId, bnsType) in bonuses if bnsType in _CREW_TYPES else False
                 unmatchedDependency = inactiveBonuses.get((bnsId, bnsType), None)
-                result.append(self.__packBonusField(formattedBnsId, _packBonusName(bnsType, formattedBnsId, enabled=isEnabled, unmatchedDependency=unmatchedDependency), bnsType, isDisabled=True, levelIcon=self.__getLevelIcon(bnsId, bnsType, vehPostProgressionBonusLevels)))
+                result.append(self.__packBonusField(formattedBnsId,
+                                                    _packBonusName(bnsType, formattedBnsId, enabled=isEnabled,
+                                                                   unmatchedDependency=unmatchedDependency), bnsType,
+                                                    isDisabled=True, levelIcon=self.__getLevelIcon(bnsId, bnsType,
+                                                                                                   vehPostProgressionBonusLevels)))
 
             return (result, hasSituational)
 

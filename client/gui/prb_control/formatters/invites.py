@@ -1,19 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/formatters/invites.py
 import logging
+
 from constants import PREBATTLE_TYPE_NAMES, PREBATTLE_TYPE
 from constants import QUEUE_TYPE_NAMES
 from gui import makeHtmlString
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.prb_control.formatters import getPrebattleFullDescription, getPrebattleStartTimeString
 from gui.prb_control import prbDispatcherProperty, prbAutoInvitesProperty, prbInvitesProperty
+from gui.prb_control.formatters import getPrebattleFullDescription, getPrebattleStartTimeString
 from gui.prb_control.settings import PRB_INVITE_STATE
 from helpers import dependency
 from helpers.html import escape as htmlEscape
 from messenger.ext import passCensor
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
 QUEUE_LEAVE_PREFIX = 'QUEUE_'
 PREBATTLE_LEAVE_PREFIX = 'PREBATTLE_'
@@ -221,8 +223,9 @@ class AutoInviteTextFormatter(InviteFormatter):
         return note
 
     def getText(self, invite):
-        startTimeStr = '{} {}'.format(backport.text(R.strings.prebattle.title.battleSession.startTime()), getPrebattleStartTimeString(invite.startTime))
-        return u'{}, {}'.format(unicode(getPrebattleFullDescription(invite.description), 'utf-8'), unicode(startTimeStr, 'utf-8'))
+        startTimeStr = u'{} {}'.format(backport.text(R.strings.prebattle.title.battleSession.startTime()),
+                                       getPrebattleStartTimeString(invite.startTime))
+        return u'{}, {}'.format(getPrebattleFullDescription(invite.description), startTimeStr)
 
 
 class _PrbInviteInfo(object):

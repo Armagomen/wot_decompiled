@@ -7,10 +7,11 @@ from gui.impl import backport
 from gui.impl.auxiliary.resource_well_helper import fillVehicleCounter
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.resource_well.resource_model import ResourceModel
-from gui.impl.gen.view_models.views.lobby.resource_well.resources_loading_view_model import ResourcesLoadingViewModel, ProgressionState
+from gui.impl.gen.view_models.views.lobby.resource_well.resources_loading_view_model import ResourcesLoadingViewModel, \
+    ProgressionState
 from gui.impl.gen.view_models.views.lobby.resource_well.resources_tab_model import ResourcesTabModel
-from gui.impl.lobby.resource_well.tooltips.progress_tooltip import ProgressTooltip
 from gui.impl.lobby.resource_well.tooltips.max_progress_tooltip import MaxProgressTooltip
+from gui.impl.lobby.resource_well.tooltips.progress_tooltip import ProgressTooltip
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
@@ -26,26 +27,24 @@ from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.game_control import IResourceWellController
 from skeletons.gui.shared import IItemsCache
-from uilogging.resource_well.loggers import ResourceWellLoadingScreenLogger
+
 _FULL_PROGRESS = 100
 _PROGRESSION_STATE_MAPPING = {resource_well_constants.ProgressionState.ACTIVE: ProgressionState.ACTIVE,
  resource_well_constants.ProgressionState.NO_PROGRESS: ProgressionState.NOPROGRESS,
  resource_well_constants.ProgressionState.NO_VEHICLES: ProgressionState.NOVEHICLES}
 
 class ResourcesLoadingView(ViewImpl):
-    __slots__ = ('__resources', '__tooltips', '__parentScreen')
+    __slots__ = ('__resources', '__tooltips')
     _COMMON_SOUND_SPACE = RESOURCE_WELL_SOUND_SPACE
     __itemsCache = dependency.descriptor(IItemsCache)
     __resourceWell = dependency.descriptor(IResourceWellController)
-    __uiLogger = ResourceWellLoadingScreenLogger()
 
-    def __init__(self, layoutID, parentScreen):
+    def __init__(self, layoutID):
         settings = ViewSettings(layoutID)
         settings.model = ResourcesLoadingViewModel()
         super(ResourcesLoadingView, self).__init__(settings)
         self.__resources = processResourcesConfig(self.__resourceWell.getResources())
         self.__tooltips = []
-        self.__parentScreen = parentScreen
 
     @property
     def viewModel(self):
@@ -68,6 +67,7 @@ class ResourcesLoadingView(ViewImpl):
             return super(ResourcesLoadingView, self).createToolTip(event)
 
     def _onLoading(self, *args, **kwargs):
+        super(ResourcesLoadingView, self)._onLoading(*args, **kwargs)
         self.__resourceWell.startNumberRequesters()
         with self.viewModel.transaction() as model:
             self.__fillProgression(model=model)
@@ -78,11 +78,9 @@ class ResourcesLoadingView(ViewImpl):
     def _onLoaded(self, *args, **kwargs):
         super(ResourcesLoadingView, self)._onLoaded(*args, **kwargs)
         g_eventBus.handleEvent(events.ResourceWellLoadingViewEvent(events.ResourceWellLoadingViewEvent.LOAD), EVENT_BUS_SCOPE.LOBBY)
-        self.__uiLogger.onViewOpened(parentScreen=self.__parentScreen)
 
     def _finalize(self):
         g_eventBus.handleEvent(events.ResourceWellLoadingViewEvent(events.ResourceWellLoadingViewEvent.DESTROY), EVENT_BUS_SCOPE.LOBBY)
-        self.__uiLogger.onViewClosed()
         self.__resourceWell.stopNumberRequesters()
         super(ResourcesLoadingView, self)._finalize()
 
@@ -208,5 +206,7 @@ class ResourcesLoadingView(ViewImpl):
 class ResourcesLoadingWindow(LobbyWindow):
     __slots__ = ()
 
-    def __init__(self, parentScreen):
-        super(ResourcesLoadingWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=ResourcesLoadingView(R.views.lobby.resource_well.ResourcesLoadingView(), parentScreen=parentScreen))
+    def __init__(self):
+        super(ResourcesLoadingWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN,
+                                                     content=ResourcesLoadingView(
+                                                         R.views.lobby.resource_well.ResourcesLoadingView()))

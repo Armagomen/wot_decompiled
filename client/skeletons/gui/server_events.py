@@ -2,9 +2,7 @@
 # Embedded file name: scripts/client/skeletons/gui/server_events.py
 import typing
 if typing.TYPE_CHECKING:
-    from typing import Optional, Dict, Callable, Union
-    from Event import Event
-    from gui.server_events.event_items import DailyEpicTokenQuest, Quest, DailyQuest, PremiumQuest
+    pass
 
 class IEventsCache(object):
     onSyncStarted = None
@@ -58,9 +56,6 @@ class IEventsCache(object):
         raise NotImplementedError
 
     def getMotiveQuests(self, filterFunc=None):
-        raise NotImplementedError
-
-    def getLinkedSetQuests(self, filterFunc=None):
         raise NotImplementedError
 
     def getPremiumQuests(self, filterFunc=None):

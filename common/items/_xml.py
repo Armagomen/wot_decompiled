@@ -1,18 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/_xml.py
-from typing import *
+import collections
 from functools import wraps, partial
-from soft_exception import SoftException
+from typing import *
+
 import constants
 from constants import SEASON_TYPE_BY_NAME, RentType
 from debug_utils import LOG_ERROR
+from soft_exception import SoftException
+
 import type_traits
-import collections
+
 if TYPE_CHECKING:
-    import ResMgr
+    pass
 _g_floats = {'count': 0}
 _g_intTuples = {'count': 0}
 _g_floatTuples = {'count': 0}
+
 
 def cacheTuple(f, valueStorage, tupleStorage):
 
@@ -272,7 +276,7 @@ def readVector3(xmlCtx, section, subsectionName, defaultValue=None):
 def readVector3OrNone(xmlCtx, section, subsectionName):
     wrongVal = (-1000000.0, -1000000.0, -1000000.0)
     v = section.readVector3(subsectionName, wrongVal)
-    if wrongVal == tuple(v):
+    if wrongVal == v.tuple():
         return None
     else:
         if v[0] < wrongVal[0] + 1.0:

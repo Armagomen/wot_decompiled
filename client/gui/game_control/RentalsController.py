@@ -1,20 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/RentalsController.py
+import copy
 from operator import itemgetter
 from sys import maxint
-import copy
-import typing
+
 import BigWorld
 import Event
 from constants import RentType, SEASON_NAME_BY_TYPE, IS_RENTALS_ENABLED
-from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from gui.shared.money import Money
+from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from helpers import time_utils
+from rent_common import SeasonRentDuration, calculateSeasonRentPrice
 from skeletons.gui.game_control import IRentalsController, ISeasonsController, IEpicBattleMetaGameController
 from skeletons.gui.shared import IItemsCache
-from rent_common import SeasonRentDuration, calculateSeasonRentPrice
-from season_common import GameSeason
+
 RENT_TYPE_WEIGHTS = {RentType.TIME_RENT: 0,
  RentType.SEASON_CYCLE_RENT: 1,
  RentType.SEASON_RENT: 2}
@@ -126,6 +126,8 @@ class RentalsController(IRentalsController):
 
     @staticmethod
     def getDeltaPeriod(delta):
+        if delta == float('inf'):
+            return time_utils.ONE_DAY
         if delta > time_utils.ONE_DAY:
             period = time_utils.ONE_DAY
         elif delta > time_utils.ONE_HOUR:

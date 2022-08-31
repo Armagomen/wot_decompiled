@@ -1,19 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/respawn_ammunition_panel_inject.py
-from battle_modifiers.battle_modifier_constants import EXT_DATA_MODIFIERS_KEY
-from gui.battle_control.controllers.respawn_ctrl import IRespawnView
-from gui.battle_control.controllers.epic_respawn_ctrl import IEpicRespawnView
-from gui.veh_post_progression.helpers import getInstalledShells, updateInvInstalled, setFeatures, setDisabledSwitches
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor, hasAliveInject
-from gui.shared.gui_items.artefacts import BattleAbility
-from gui.shared.gui_items.Vehicle import Vehicle
+from gui.battle_control.controllers.epic_respawn_ctrl import IEpicRespawnView
+from gui.battle_control.controllers.respawn_ctrl import IRespawnView
 from gui.impl.battle.battle_page.ammunition_panel.respawn_ammunition_panel_view import RespawnAmmunitionPanelView
+from gui.shared.gui_items.Vehicle import Vehicle
+from gui.shared.gui_items.artefacts import BattleAbility
+from gui.veh_post_progression.helpers import getInstalledShells, updateInvInstalled, setFeatures, setDisabledSwitches
 from gui.veh_post_progression.sounds import playSound, Sounds
 from helpers import dependency
 from post_progression_common import EXT_DATA_SLOT_KEY, EXT_DATA_PROGRESSION_KEY, VehicleState
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
+
 
 class RespawnAmmunitionPanelInject(InjectComponentAdaptor, IRespawnView):
     __slots__ = ('_vehicle',)
@@ -60,21 +60,22 @@ class RespawnAmmunitionPanelInject(InjectComponentAdaptor, IRespawnView):
         actualSetupIndexes = vehicleInfo.vehSetupsIndexes.copy()
         actualSetupIndexes.update(setupIndexes)
         invData = {'battleCrewCDs': vehicleInfo.crewDescrs,
-         'shells': getInstalledShells(shellsCDs, vehicleInfo.vehSetups['shellsSetups']),
-         'shellsLayout': {shellsLayoutKey: vehicleInfo.vehSetups['shellsSetups']},
-         'eqsLayout': vehicleInfo.vehSetups['eqsSetups'],
-         'boostersLayout': vehicleInfo.vehSetups['boostersSetups'],
-         'devicesLayout': vehicleInfo.vehSetups['devicesSetups'],
-         'layoutIndexes': actualSetupIndexes}
+                   'shells': getInstalledShells(shellsCDs, vehicleInfo.vehSetups['shellsSetups']),
+                   'shellsLayout': {shellsLayoutKey: vehicleInfo.vehSetups['shellsSetups']},
+                   'eqsLayout': vehicleInfo.vehSetups['eqsSetups'],
+                   'boostersLayout': vehicleInfo.vehSetups['boostersSetups'],
+                   'devicesLayout': vehicleInfo.vehSetups['devicesSetups'],
+                   'layoutIndexes': actualSetupIndexes}
         updateInvInstalled(invData, actualSetupIndexes)
         vehState = VehicleState()
         setFeatures(vehState, vehicleInfo.vehPostProgression)
         setDisabledSwitches(vehState, vehicleInfo.disabledSwitchGroupIDs)
-        extData = {EXT_DATA_PROGRESSION_KEY: vehState,
-         EXT_DATA_SLOT_KEY: vehicleInfo.customRoleSlotTypeId,
-         EXT_DATA_MODIFIERS_KEY: self.__sessionProvider.arenaVisitor.getArenaModifiers()}
+        extData = {EXT_DATA_SLOT_KEY: vehicleInfo.customRoleSlotTypeId,
+                   EXT_DATA_PROGRESSION_KEY: vehState}
         vehicle = self._vehicle = Vehicle(strCompactDescr=vehicleInfo.strCD, extData=extData.copy(), invData=invData)
-        vehicle.installPostProgressionItem(self.__itemsFactory.createVehPostProgression(vehicle.compactDescr, extData[EXT_DATA_PROGRESSION_KEY], vehicle.typeDescr))
+        vehicle.installPostProgressionItem(
+            self.__itemsFactory.createVehPostProgression(vehicle.compactDescr, extData[EXT_DATA_PROGRESSION_KEY],
+                                                         vehicle.typeDescr))
 
     def __onSwitchLayout(self, vehCD, groupID, layoutIdx):
         self.__sessionProvider.dynamic.respawn.switchVehSetupsLayout(vehCD, groupID, layoutIdx)

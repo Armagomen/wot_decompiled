@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/messenger/gui/gameface/channels/GFChannelController.py
 import logging
 import typing
+
 from gui import SystemMessages
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MessengerEvent
@@ -12,11 +13,11 @@ from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.proto.bw_chat2.wrappers import UnitMessageVO
 from messenger_common_chat2 import MESSENGER_LIMITS
+
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    from messenger.proto.entities import ChannelEntity
-    from typing import List, Union
-    from messenger.gui.gameface.view.gf_channel_view_interface import GFChannelViewInterface
+    pass
+
 
 class GFChannelController(IChannelController):
 
@@ -92,8 +93,8 @@ class GFChannelController(IChannelController):
 
     def addMessage(self, message, doFormatting=True, isHistoryMessage=False):
         if self.__channel:
-            if isinstance(message, str):
-                message = UnitMessageVO(0, -1, message, '')
+            if isinstance(message, (str, unicode)):
+                message = UnitMessageVO(0, -1, message, u'')
             if doFormatting:
                 message.text = self.__formatText(message.text)
             self.__channel.addMessage(message)

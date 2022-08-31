@@ -3,17 +3,19 @@
 import importlib
 from collections import namedtuple
 from functools import partial
+
 import nations
 import resource_helper
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
-from items import _xml, vehicles
 from helpers.html import translation
-from tutorial.data import chapter as tutorial_chapter
-from tutorial.data import effects
-from tutorial.data import conditions as tut_conditions
-from tutorial.data.events import GuiEventType
+from items import _xml, vehicles
 from tutorial.control.context import SOUND_EVENT
+from tutorial.data import chapter as tutorial_chapter
+from tutorial.data import conditions as tut_conditions
+from tutorial.data import effects
+from tutorial.data.events import GuiEventType
 from tutorial.logger import LOG_ERROR
+
 _EFFECT_TYPE = effects.EFFECT_TYPE
 _COND_STATE = tut_conditions.CONDITION_STATE
 _CheckedComponentState = namedtuple('CheckedComponentState', ('state', 'value'))
@@ -952,13 +954,16 @@ _Padding = namedtuple('_Padding', ('left', 'top', 'right', 'bottom'))
 def parseHint(xmlCtx, section):
     sectionInfo = dict()
     sectionInfo['hintID'] = parseID(xmlCtx, section, 'Specify a hint ID')
-    if 'item-id' in section.keys():
+    tags = section.keys()
+    if 'item-id' in tags:
         sectionInfo['itemID'] = parseID(xmlCtx, section['item-id'], 'Specify a item ID')
     else:
         _xml.raiseWrongXml(xmlCtx, section.name, 'Specify a item ID')
         return
-    tags = section.keys()
-    sectionInfo['text'] = translation(_xml.readString(xmlCtx, section, 'text'))
+    if 'text' in tags:
+        sectionInfo['text'] = translation(_xml.readString(xmlCtx, section, 'text'))
+    else:
+        sectionInfo['text'] = ''
     if 'arrow' in tags:
         subSec = section['arrow']
         direction = _xml.readString(xmlCtx, subSec, 'direction')

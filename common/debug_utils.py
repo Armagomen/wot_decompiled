@@ -1,24 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/debug_utils.py
 import sys
-import BigWorld
-import excepthook
 import time
 import traceback
-from GarbageCollectionDebug import gcDump, getGarbageGraph
-from functools import wraps
 from collections import defaultdict
-from warnings import warn_explicit
+from contextlib import contextmanager
+from functools import wraps
+from threading import RLock
 from traceback import format_exception
+from warnings import warn_explicit
+
+import BigWorld
+
+import excepthook
+from GarbageCollectionDebug import gcDump
 from constants import IS_CLIENT, IS_CELLAPP, IS_BASEAPP, CURRENT_REALM, IS_DEVELOPMENT, IS_BOT
 from constants import LEAKS_DETECTOR_MAX_EXECUTION_TIME
-from contextlib import contextmanager
-from threading import RLock
 from soft_exception import SoftException
+
 _src_file_trim_to = ('res/wot/scripts/', len('res/wot/scripts/'))
 _g_logMapping = {}
 _g_logLock = RLock()
 GCDUMP_CROWBAR_SWITCH = False
+
 
 class LOG_LEVEL:
     DEV = 1
@@ -240,9 +244,9 @@ def _doLog(category, msg, args=None, kwargs={}, frameDepth=2):
     if not logFunc:
         logFunc = BigWorld.logDebug
     if args:
-        output = ' '.join(map(str, [header, msg, args]))
+        output = u' '.join(map(unicode, [header, msg, args]))
     else:
-        output = ' '.join(map(str, [header, msg]))
+        output = u' '.join(map(unicode, [header, msg]))
     tags = kwargs.pop('tags', None)
     logFunc(category, _addTagsToMsg(tags, output), None)
     if kwargs.get('stack', False):
@@ -267,7 +271,7 @@ def _doLogFmt(prefix, fmt, *args):
 
 
 def _addTagsToMsg(tags, msg):
-    return '{0} {1}'.format(' '.join(tags), msg) if tags else msg
+    return u'{0} {1}'.format(u' '.join(tags), msg) if tags else msg
 
 
 def makeFuncLocationString(func):

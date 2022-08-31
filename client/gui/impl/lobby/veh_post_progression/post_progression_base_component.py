@@ -11,7 +11,6 @@ from gui.impl.gen.view_models.views.lobby.post_progression.base_step_model impor
 from gui.impl.gen.view_models.views.lobby.post_progression.step_model import ActionState
 from gui.impl.gen.view_models.views.lobby.post_progression.multi_step_model import MultiStepModel
 from gui.impl.gen.view_models.views.lobby.post_progression.single_step_model import SingleStepModel
-from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_grid_model import PostProgressionGridModel
 from gui.impl.pub import ViewImpl
 from gui.shared.items_parameters.functions import aggregateKpi
 from gui.veh_post_progression.models.modifications import PostProgressionActionState, PostProgressionActionTooltip
@@ -19,15 +18,12 @@ from gui.veh_post_progression.models.progression import PostProgressionAvailabil
 from items.components.supply_slot_categories import SlotCategories
 from post_progression_common import ACTION_TYPES, VehicleState
 if typing.TYPE_CHECKING:
-    from frameworks.wulf import Array, ViewEvent
     from gui.veh_post_progression.models.modifications import SimpleModItem
     from gui.veh_post_progression.models.progression import PostProgressionItem
     from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
     from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
-    from gui.impl.gen.view_models.views.lobby.post_progression.restrictions_model import RestrictionsModel
     from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_base_view_model import PostProgressionBaseViewModel
     from gui.shared.gui_items import KPI
-    from items.artefacts_helpers import VehicleFilter
 _NOT_SELECTED_IDX = -1
 _ACTION_TYPE_MAP = {ACTION_TYPES.MODIFICATION: ActionType.MODIFICATION,
  ACTION_TYPES.PAIR_MODIFICATION: ActionType.PAIRMODIFICATION,
@@ -322,13 +318,13 @@ class PostProgressionBaseComponentView(ViewImpl):
         mainSelectedIdx = -1
         for step in postProgression.iterOrderedSteps():
             if step.action.isMultiAction():
-                multiStep = multiSteps[multiStepsIdx] or MultiStepModel()
+                multiStep = MultiStepModel() if multiStepsIdx >= len(multiSteps) else multiSteps[multiStepsIdx]
                 with multiStep.transaction() as model:
                     self._fillMultiStepModel(model, step, multiSelection.get(step.stepID))
                 if multiStepsIdx >= len(multiSteps):
                     multiSteps.addViewModel(multiStep)
                 multiStepsIdx += 1
-            singleStep = mainSteps[mainStepsIdx] or SingleStepModel()
+            singleStep = SingleStepModel() if mainStepsIdx >= len(mainSteps) else mainSteps[mainStepsIdx]
             with singleStep.transaction() as model:
                 self._fillSingleStepModel(model, step)
             if mainStepsIdx >= len(mainSteps):
@@ -342,7 +338,7 @@ class PostProgressionBaseComponentView(ViewImpl):
 
     def __fillModificationsArray(self, modsArray, modifications):
         for idx, modification in enumerate(modifications):
-            modificationModel = modsArray[idx] or ModificationModel()
+            modificationModel = ModificationModel() if idx >= len(modsArray) else modsArray[idx]
             with modificationModel.transaction() as model:
                 self._fillModification(model, modification)
             if idx >= len(modsArray):

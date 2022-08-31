@@ -4,6 +4,8 @@ import binascii
 import logging
 import struct
 from collections import namedtuple
+
+from CurrentVehicle import g_currentVehicle
 from constants import EVENT_TYPE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
@@ -14,6 +16,7 @@ from helpers import dependency
 from helpers import int2roman
 from helpers.i18n import makeString as _ms
 from skeletons.gui.shared import IItemsCache
+
 _logger = logging.getLogger(__name__)
 
 def makeEventID(itemIntCD, vehicleIntCD):
@@ -56,6 +59,7 @@ def getProgressionPostBattleInfo(itemIntCD, vehicleIntCD, progressionData, items
 
 C11nProgressionLinkBtnParams = namedtuple('C11nProgressionLinkBtnParams', ('isLinkEnabled', 'linkBtnTooltip'))
 
+
 def getC11nProgressionLinkBtnParams(vehicle):
     isLinkEnabled = vehicle.isCustomizationEnabled()
     linkBtnTooltip = R.strings.tooltips.quests.linkBtn.customizationProgression
@@ -63,14 +67,21 @@ def getC11nProgressionLinkBtnParams(vehicle):
     return C11nProgressionLinkBtnParams(isLinkEnabled, linkBtnTooltip)
 
 
+def getC11n2dProgressionLinkBtnParams():
+    return getC11nProgressionLinkBtnParams(g_currentVehicle.item)
+
+
 def __makeAwardsVO(item, level, vehicleIntCD):
     count = item.descriptor.progression.autoGrantCount
     if count < 1:
         return []
     if level > 1:
-        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.newLevel(), name=item.userName, level=level)
+        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.newLevel(), name=item.userName,
+                                  level=level)
     else:
-        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.received(), name=item.userName, count=backport.text(R.strings.vehicle_customization.elementBonus.factor(), count=count))
+        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.received(), name=item.userName,
+                                  count=backport.text(R.strings.vehicle_customization.elementBonus.factor(),
+                                                      count=count))
     award = {'intCD': item.intCD,
      'texture': item.icon,
      'value': count,

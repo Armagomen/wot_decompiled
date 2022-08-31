@@ -4,7 +4,7 @@ import cPickle
 import logging
 import math
 from collections import namedtuple, defaultdict
-from helpers.i18n import makeString
+
 import ArenaType
 import ResMgr
 import constants
@@ -32,8 +32,8 @@ from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
 from gui.impl.gen import R
 from gui.impl.lobby.battle_pass.tooltips.battle_pass_completed_tooltip_view import BattlePassCompletedTooltipView
 from gui.impl.lobby.battle_pass.tooltips.battle_pass_in_progress_tooltip_view import BattlePassInProgressTooltipView
-from gui.impl.lobby.battle_pass.tooltips.battle_pass_not_started_tooltip_view import BattlePassNotStartedTooltipView
 from gui.impl.lobby.battle_pass.tooltips.battle_pass_no_chapter_tooltip_view import BattlePassNoChapterTooltipView
+from gui.impl.lobby.battle_pass.tooltips.battle_pass_not_started_tooltip_view import BattlePassNotStartedTooltipView
 from gui.impl.lobby.battle_pass.tooltips.vehicle_points_tooltip_view import VehiclePointsTooltipView
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
 from gui.impl.lobby.subscription.wot_plus_tooltip import WotPlusTooltip
@@ -56,7 +56,9 @@ from gui.shared.tooltips import formatters
 from gui.shared.view_helpers import UsersInfoHelper
 from helpers import dependency
 from helpers import i18n, time_utils, html, int2roman
-from messenger.gui.Scaleform.data.contacts_vo_converter import ContactConverter, makeClanFullName, makeContactStatusDescription
+from helpers.i18n import makeString
+from messenger.gui.Scaleform.data.contacts_vo_converter import ContactConverter, makeClanFullName, \
+    makeContactStatusDescription
 from messenger.m_constants import USER_TAG
 from messenger.storage import storage_getter
 from predefined_hosts import g_preDefinedHosts, HOST_AVAILABILITY, PING_STATUSES, PingData
@@ -70,6 +72,7 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.techtree_events import ITechTreeEventsListener
 from skeletons.gui.web import IWebController
 from soft_exception import SoftException
+
 _logger = logging.getLogger(__name__)
 _UNAVAILABLE_DATA_PLACEHOLDER = '--'
 _PARENTHESES_OPEN = '('
@@ -1051,7 +1054,8 @@ def getFormattedNeededValue(settings, neededValue):
     return neededText
 
 
-def makePriceBlock(price, currencySetting, neededValue=None, oldPrice=None, percent=0, valueWidth=-1, leftPadding=61, forcedText='', iconRightOffset=-1):
+def makePriceBlock(price, currencySetting, neededValue=None, oldPrice=None, percent=0, valueWidth=-1, leftPadding=61,
+                   forcedText='', iconRightOffset=-1, gap=0):
     _int = backport.getIntegralFormat
     oldPriceText = ''
     hasAction = percent != 0
@@ -1078,7 +1082,10 @@ def makePriceBlock(price, currencySetting, neededValue=None, oldPrice=None, perc
          'oldPrice': oldPrice.toMoneyTuple(),
          'valuePadding': -2}, actionStyle='alignTop', padding=formatters.packPadding(left=leftPadding), currency=newPrice.getCurrency())
     else:
-        return formatters.packTextParameterWithIconBlockData(name=text, value=valueFormatted, icon=settings.frame, valueWidth=valueWidth, padding=formatters.packPadding(left=-5), nameOffset=iconRightOffset, gap=0)
+        return formatters.packTextParameterWithIconBlockData(name=text, value=valueFormatted, icon=settings.frame,
+                                                             valueWidth=valueWidth,
+                                                             padding=formatters.packPadding(left=-5),
+                                                             nameOffset=iconRightOffset, gap=gap)
 
 
 def makeRemovalPriceBlock(price, currencySetting, neededValue=None, oldPrice=None, percent=0, valueWidth=-1, leftPadding=61, forcedText='', isDeluxe=False, gap=15):

@@ -1,17 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/components/CrashedTracks.py
 import weakref
-import math_utils
-import Math
+
 import BigWorld
+import Math
+import math_utils
 from cgf_obsolete_script.auto_properties import AutoProperty
 from cgf_obsolete_script.py_component import Component
+from constants import IS_EDITOR
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from items.vehicle_items import CHASSIS_ITEM_TYPE
 from vehicle_systems import model_assembler
-from vehicle_systems.tankStructure import getPartModelsFromDesc, TankPartNames, ModelsSetParams
 from vehicle_systems.stricted_loading import loadingPriority, makeCallbackWeak
-from constants import IS_EDITOR
+from vehicle_systems.tankStructure import getPartModelsFromDesc, TankPartNames, ModelsSetParams
+
 
 class CrashedTrackController(Component):
     baseTracksComponent = AutoProperty()
@@ -22,19 +24,34 @@ class CrashedTrackController(Component):
         self.__modelsSet = modelsSet
         self.__baseTrackFashion = trackFashion
         self.baseTracksComponent = None
-        self.__flags = 0
+        if self.__vehicleDesc.chassis.tracks is not None:
+            pairsCount = len(self.__vehicleDesc.chassis.tracks.trackPairs)
+        else:
+            pairsCount = 1
+        self.__crashedTracks = {'left': [False] * pairsCount,
+                                'right': [False] * pairsCount}
         self.__model = None
         self.__fashion = None
         self.__loading = False
         self.__isActive = False
         self.__visibilityMask = 15
+        self.__debrisCrashedTracks = {'left': [False] * pairsCount,
+                                      'right': [False] * pairsCount}
         return
 
     def isLeftTrackBroken(self):
-        return self.__flags & 1
+        for isTrackCrashed in self.__crashedTracks['left']:
+            if isTrackCrashed:
+                return True
+
+        return False
 
     def isRightTrackBroken(self):
-        return self.__flags & 2
+        for isTrackCrashed in self.__crashedTracks['right']:
+            if isTrackCrashed:
+                return True
+
+        return False
 
     def setVehicle(self, entity):
         self.__entity = weakref.proxy(entity)
@@ -68,6 +85,14 @@ class CrashedTrackController(Component):
         self.__applyVisibilityMask()
         self.__setupTracksHiding()
 
+    def addDebrisCrashedTrack(self, isLeft, pairIndex):
+        side = 'left' if isLeft else 'right'
+        self.__debrisCrashedTracks[side][pairIndex] = True
+
+    def delDebrisCrashedTrack(self, isLeft, pairIndex):
+        side = 'left' if isLeft else 'right'
+        self.__debrisCrashedTracks[side][pairIndex] = False
+
     def __setupTrackAssembler(self, entity):
         modelNames = getPartModelsFromDesc(self.__vehicleDesc, ModelsSetParams(self.__modelsSet, 'destroyed', []))
         compoundAssembler = BigWorld.CompoundAssembler()
@@ -76,14 +101,20 @@ class CrashedTrackController(Component):
         compoundAssembler.spaceID = entity.spaceID
         return compoundAssembler
 
-    def addTrack(self, isLeft, isFlying=False):
+    def __hasCrashedTracks(self):
+        for side in self.__crashedTracks.values():
+            for isTrackCrashed in side:
+                if isTrackCrashed:
+                    return True
+
+        return False
+
+    def addCrashedTrack(self, isLeft, pairIndex, isFlying=False):
         if self.__entity is None:
             return
         else:
-            if isLeft:
-                self.__flags |= 1
-            else:
-                self.__flags |= 2
+            side = 'left' if isLeft else 'right'
+            self.__crashedTracks[side][pairIndex] = True
             trackAssembler = self.__setupTrackAssembler(self.__entity)
             if self.__model is None and not isFlying:
                 if not self.__loading:
@@ -94,23 +125,23 @@ class CrashedTrackController(Component):
 
     def __loadModel(self, trackAssembler):
         if not IS_EDITOR:
-            BigWorld.loadResourceListBG((trackAssembler,), makeCallbackWeak(self.__onModelLoaded), loadingPriority(self.__entity.id))
+            BigWorld.loadResourceListBG((trackAssembler,), makeCallbackWeak(self.__onModelLoaded),
+                                        loadingPriority(self.__entity.id))
             self.__loading = True
         else:
             self.__loading = True
-            resourceRefs = BigWorld.loadResourceListFG((trackAssembler,))
+            resourceRefs = BigWorld.loadResourceListFG([trackAssembler])
             self.__onModelLoaded(resourceRefs)
 
-    def delTrack(self, isLeft):
-        if isLeft:
-            self.__flags &= -2
-        else:
-            self.__flags &= -3
-        self.__loading = bool(self.__flags) and self.__loading
+    def delCrashedTrack(self, isLeft, pairIndex):
+        side = 'left' if isLeft else 'right'
+        self.__crashedTracks[side][pairIndex] = False
+        hasCrashedTracks = self.__hasCrashedTracks()
+        self.__loading = hasCrashedTracks and self.__loading
         if self.__entity is None:
             return
         else:
-            if self.__flags == 0 and self.__model is not None:
+            if not hasCrashedTracks and self.__model is not None:
                 if self.__model.isInWorld:
                     self.__entity.delModel(self.__model)
                 self.__model = None
@@ -125,7 +156,14 @@ class CrashedTrackController(Component):
         if self.__entity is None:
             return
         else:
-            self.__flags = 0
+            if self.__vehicleDesc.chassis.tracks is not None:
+                pairsCount = len(self.__vehicleDesc.chassis.tracks.trackPairs)
+            else:
+                pairsCount = 1
+            self.__crashedTracks = {'left': [False] * pairsCount,
+                                    'right': [False] * pairsCount}
+            self.__debrisCrashedTracks = {'left': [False] * pairsCount,
+                                          'right': [False] * pairsCount}
             if self.__model is not None:
                 if self.__model.isInWorld:
                     self.__entity.delModel(self.__model)
@@ -136,25 +174,26 @@ class CrashedTrackController(Component):
 
     def __setupTracksHiding(self):
         force = self.__visibilityMask == 0
-        if force:
-            hideLeftTrack = True
-            hideRightTrack = True
-        else:
-            hideLeftTrack, hideRightTrack = self.__flags & 1, self.__flags & 2
-        trackIndicies = []
+        trackIndices = []
         tracksPresent = self.__vehicleDesc.chassis.tracks is not None
         if self.__vehicleDesc.chassis.chassisType == CHASSIS_ITEM_TYPE.MONOLITHIC and tracksPresent:
-            trackIndicies = list(xrange(len(self.__vehicleDesc.chassis.tracks.trackPairs)))
+            trackIndices = list(xrange(len(self.__vehicleDesc.chassis.tracks.trackPairs)))
         elif tracksPresent:
-            trackIndicies = [MAIN_TRACK_PAIR_IDX]
+            trackIndices = [MAIN_TRACK_PAIR_IDX]
         if self.baseTracksComponent is not None and self.baseTracksComponent.valid:
-            for i in trackIndicies:
+            for i in trackIndices:
+                hideLeftTrack = force or self.__crashedTracks['left'][i] or self.__debrisCrashedTracks['left'][i]
+                hideRightTrack = force or self.__crashedTracks['right'][i] or self.__debrisCrashedTracks['right'][i]
                 self.baseTracksComponent.disableTrack(hideLeftTrack, hideRightTrack, i)
 
         if self.__fashion is not None:
-            for i in trackIndicies:
-                self.__fashion.changeTrackVisibility(True, hideLeftTrack, i)
-                self.__fashion.changeTrackVisibility(False, hideRightTrack, i)
+            for i in trackIndices:
+                showLeftDestroyed = force or self.__crashedTracks['left'][i] and not self.__debrisCrashedTracks['left'][
+                    i]
+                showRightDestroyed = force or self.__crashedTracks['right'][i] and not \
+                self.__debrisCrashedTracks['right'][i]
+                self.__fashion.changeTrackVisibility(True, showLeftDestroyed, i)
+                self.__fashion.changeTrackVisibility(False, showRightDestroyed, i)
 
         return
 

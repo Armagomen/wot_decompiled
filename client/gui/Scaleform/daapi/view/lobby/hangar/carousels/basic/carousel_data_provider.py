@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/basic/carousel_data_provider.py
 import typing
+
 import BigWorld
-from account_helpers.renewable_subscription import RenewableSubscription
-from account_helpers.telecom_rentals import TelecomRentals
+from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform import MENU
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import CarouselDataProvider
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import getStatusStrings
@@ -15,12 +15,12 @@ from gui.shared.money import Money
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
 from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.ClientUpdateManager import g_clientUpdateManager
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from telecom_rentals_common import ROSTER_EXPIRATION_TOKEN_NAME, PARTNERSHIP_TOKEN_NAME
+
 if typing.TYPE_CHECKING:
-    from typing import Set
+    pass
 
 class _FRONT_SUPPLY_ITEMS(object):
     RENT_TANK = 0
@@ -277,8 +277,9 @@ class BCCarouselDataProvider(CarouselDataProvider):
         pass
 
     def selectVehicle(self, idx):
+        realIdx = self._filteredIndices[idx]
         self._selectedIdx = idx
-        self._currentVehicle.selectVehicle(self._vehicles[idx].invID)
+        self._currentVehicle.selectVehicle(self._vehicles[realIdx].invID)
 
     def _buildVehicle(self, vehicle):
         vehicle.dailyXPFactor = 1

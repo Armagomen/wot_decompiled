@@ -6,6 +6,7 @@ from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
+from messenger import normalizeGroupId
 from messenger.gui.Scaleform.meta.ContactsListPopoverMeta import ContactsListPopoverMeta
 from messenger.gui.Scaleform.view.lobby.ContactsCMListener import ContactsCMListener
 from messenger.m_constants import PROTO_TYPE
@@ -14,6 +15,7 @@ from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
     settingsCore = dependency.descriptor(ISettingsCore)
@@ -36,9 +38,9 @@ class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
 
     def changeGroup(self, contactDbID, contactName, groupData):
         contactDbID = long(contactDbID)
-        targetGroup = groupData.targetGroup
-        excludeGroup = groupData.excludeGroup
-        targetParentGroup = groupData.targetParentGroup
+        targetGroup = normalizeGroupId(groupData.targetGroup)
+        excludeGroup = normalizeGroupId(groupData.excludeGroup)
+        targetParentGroup = normalizeGroupId(groupData.targetParentGroup)
         if targetGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or targetParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID:
             if excludeGroup in CONTACTS_ALIASES.CAN_MOVE_TO_FRIENDS_GROUPS_IDS:
                 self.__moveToFriendProcess(contactDbID, contactName, targetGroup)
@@ -53,11 +55,13 @@ class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
             LOG_WARNING('Action can not be resolved', contactDbID, targetGroup, excludeGroup, targetParentGroup)
 
     def copyIntoGroup(self, dbID, groupData):
-        targetGroup = groupData.targetGroup
-        excludeGroup = groupData.excludeGroup
-        excludeParentGroup = groupData.excludeParentGroup
-        targetParentGroup = groupData.targetParentGroup
-        if (targetGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or targetParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID) and (excludeGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or excludeParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID):
+        targetGroup = normalizeGroupId(groupData.targetGroup)
+        excludeGroup = normalizeGroupId(groupData.excludeGroup)
+        excludeParentGroup = normalizeGroupId(groupData.excludeParentGroup)
+        targetParentGroup = normalizeGroupId(groupData.targetParentGroup)
+        if (
+                targetGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or targetParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID) and (
+                excludeGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or excludeParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID):
             if targetGroup != excludeGroup:
                 self.__moveToGroupProcess(dbID, targetGroup, None)
         return

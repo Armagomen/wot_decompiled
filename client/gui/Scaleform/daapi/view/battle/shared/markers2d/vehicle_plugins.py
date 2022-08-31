@@ -2,11 +2,11 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/markers2d/vehicle_plugins.py
 from collections import defaultdict
 from functools import partial
+
 import BattleReplay
 import BigWorld
 import Math
 import constants
-import settings
 from AvatarInputHandler import AvatarInputHandler
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import GAME
@@ -14,7 +14,8 @@ from aih_constants import CTRL_MODE_NAME
 from arena_components.advanced_chat_component import _DEFAULT_ACTIVE_COMMAND_TIME, TARGET_CHAT_CMD_FLAG
 from chat_commands_consts import INVALID_MARKER_SUBTYPE, MarkerType, DefaultMarkerSubType, INVALID_MARKER_ID
 from gui.Scaleform.daapi.view.battle.shared.markers2d import markers
-from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import MarkerPlugin, ChatCommunicationComponent, MAX_DISTANCE_TEMP_STICKY
+from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import MarkerPlugin, ChatCommunicationComponent, \
+    MAX_DISTANCE_TEMP_STICKY
 from gui.Scaleform.daapi.view.battle.shared.markers2d.timer import MarkerTimer
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 from gui.battle_control import avatar_getter
@@ -23,7 +24,6 @@ from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID, ENTITY_IN_FOCUS_TYPE
 from gui.battle_control.battle_constants import MARKER_HIT_STATE, PLAYER_GUI_PROPS, MARKER_CRITICAL_HIT_STATES
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
-from gui.battle_control.controllers.feedback_adaptor import EntityInFocusData
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
@@ -32,13 +32,16 @@ from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from skeletons.gui.game_control import IBootcampController
+
+import settings
+
 _STATUS_EFFECTS_PRIORITY = (BATTLE_MARKER_STATES.REPAIRING_STATE,
- BATTLE_MARKER_STATES.ENGINEER_STATE,
- BATTLE_MARKER_STATES.HEALING_STATE,
- BATTLE_MARKER_STATES.INSPIRING_STATE,
- BATTLE_MARKER_STATES.DEBUFF_STATE,
- BATTLE_MARKER_STATES.STUN_STATE,
- BATTLE_MARKER_STATES.INSPIRED_STATE)
+                            BATTLE_MARKER_STATES.ENGINEER_STATE,
+                            BATTLE_MARKER_STATES.HEALING_STATE,
+                            BATTLE_MARKER_STATES.INSPIRING_STATE,
+                            BATTLE_MARKER_STATES.DEBUFF_STATE,
+                            BATTLE_MARKER_STATES.STUN_STATE,
+                            BATTLE_MARKER_STATES.INSPIRED_STATE)
 _VEHICLE_MARKER_MIN_SCALE = 0.0
 _VEHICLE_MARKER_CULL_DISTANCE = 1000000
 _VEHICLE_MARKER_BOUNDS = Math.Vector4(50, 50, 80, 65)
@@ -48,7 +51,9 @@ _HELP_ME_STATE = 'help_me'
 
 class VehicleMarkerPlugin(MarkerPlugin, ChatCommunicationComponent, IArenaVehiclesController):
     bootcamp = dependency.descriptor(IBootcampController)
-    __slots__ = ('_markers', '_markersStates', '_clazz', '__playerVehicleID', '_isSquadIndicatorEnabled', '__showDamageIcon', '_markerTimers', '__callbackIDs', '__targetedTankMarkerID', '__targetedMarkerFromCppID')
+    __slots__ = ('_markers', '_markersStates', '_clazz', '_isSquadIndicatorEnabled', '_markerTimers', '__callbackIDs',
+                 '__playerVehicleID', '__showDamageIcon', '__hiddenEvents', '__targetedTankMarkerID',
+                 '__targetedMarkerFromCppID')
 
     def __init__(self, parentObj, clazz=markers.VehicleMarker):
         super(VehicleMarkerPlugin, self).__init__(parentObj)
@@ -59,6 +64,7 @@ class VehicleMarkerPlugin(MarkerPlugin, ChatCommunicationComponent, IArenaVehicl
         self._isSquadIndicatorEnabled = False
         self._playerVehicleID = 0
         self.__showDamageIcon = False
+        self.__hiddenEvents = set()
         self.__callbackIDs = {}
         self.__targetedTankMarkerID = -1
         self.__targetedMarkerFromCppID = -1
@@ -72,10 +78,9 @@ class VehicleMarkerPlugin(MarkerPlugin, ChatCommunicationComponent, IArenaVehicl
         super(VehicleMarkerPlugin, self).start()
         self._playerVehicleID = self.sessionProvider.getArenaDP().getPlayerVehicleID()
         self.sessionProvider.addArenaCtrl(self)
-        settingsDamageIcon = self.settingsCore.getSetting(GAME.SHOW_DAMAGE_ICON)
-        isInBootcamp = self.bootcamp.isInBootcamp()
-        enableInBootcamp = isInBootcamp and self.bootcamp.isEnableDamageIcon()
-        self.__showDamageIcon = settingsDamageIcon and (not isInBootcamp or enableInBootcamp)
+        self.__showDamageIcon = self.settingsCore.getSetting(GAME.SHOW_DAMAGE_ICON)
+        if self.bootcamp.isInBootcamp() and not self.bootcamp.isEnableCriticalDamageIcon():
+            self.__hiddenEvents = MARKER_CRITICAL_HIT_STATES
         handler = avatar_getter.getInputHandler()
         if handler is not None:
             if isinstance(handler, AvatarInputHandler):
@@ -243,7 +248,7 @@ class VehicleMarkerPlugin(MarkerPlugin, ChatCommunicationComponent, IArenaVehicl
             return
         marker = self._markers[vehicleID]
         handle = marker.getMarkerID()
-        if eventID in MARKER_HIT_STATE and (eventID not in MARKER_CRITICAL_HIT_STATES or self.__showDamageIcon):
+        if eventID in MARKER_HIT_STATE and self.__showDamageIcon and eventID not in self.__hiddenEvents:
             newState, stateText, iconAnimation = self.__getHitStateVO(eventID, MARKER_HIT_STATE)
             self.__updateMarkerState(handle, newState, value, stateText, iconAnimation)
         elif eventID == _EVENT_ID.VEHICLE_DEAD:
@@ -501,6 +506,8 @@ class VehicleMarkerPlugin(MarkerPlugin, ChatCommunicationComponent, IArenaVehicl
         else:
             vehicleID = vInfo.vehicleID
             accountDBID = vInfo.player.accountDBID
+            if BigWorld.player().observedVehicleID == vehicleID and BigWorld.player().isObserverFPV:
+                return
             if vehicleID in self._markers:
                 marker = self._markers[vInfo.vehicleID]
                 if marker.setActive(True):

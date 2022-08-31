@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/components/engine_state.py
 from random import uniform
+
 import BigWorld
 from constants import ARENA_PERIOD
+
 
 class EngineState(object):
     NORMAL = 0
@@ -41,4 +43,4 @@ def notifyEngineOnArenaPeriodChange(detailedEngineState, period):
         maxTime = periodEndTime - serverTime
         maxTime = maxTime * 0.7 if maxTime > 0.0 else 1.0
         time = uniform(0.0, maxTime)
-        detailedEngineState.startEngineWithDelay(time, True)
+        detailedEngineState.startEngineWithDelay(time)

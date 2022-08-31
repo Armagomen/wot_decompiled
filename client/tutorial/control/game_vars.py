@@ -1,19 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/game_vars.py
 import types
+
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.techtree.settings import RESEARCH_ITEMS
 from gui.Scaleform.daapi.view.lobby.techtree.techtree_dp import g_techTreeDP
-from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.money import Money, MONEY_UNDEFINED, Currency
+from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.ItemsRequester import RESEARCH_CRITERIA
 from helpers import dependency
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.game_control import IBootcampController
-from tutorial.logger import LOG_ERROR
+from skeletons.gui.shared import IItemsCache
 from tutorial.data.conditions import CONDITION_STATE
-__all__ = ('getTutorialsCompleted', 'getRandomBattlesCount', 'getUnlockedItems', 'getFreeVehiclesSlots', 'getFreeXP', 'getItemByIntCD', 'getVehicleByIntCD', 'getVehiclesByLevel', 'getPremiumExpiryTime', 'getCurrentVehicleLevel', 'isCurrentVehiclePremium', 'getCurrentVehicleViewState', 'getTankmanCurrentPrice', 'getTankmanDefaultPrice', 'getItemStateGetter', 'getAttribute')
+from tutorial.logger import LOG_ERROR
+
+__all__ = ('getTutorialsCompleted', 'getRandomBattlesCount', 'getUnlockedItems', 'getFreeVehiclesSlots', 'getFreeXP',
+           'getItemByIntCD', 'getVehicleByIntCD', 'getVehiclesByLevel', 'getPremiumExpiryTime',
+           'getCurrentVehicleLevel', 'isCurrentVehiclePremium', 'getCurrentVehicleViewState', 'getTankmanCurrentPrice',
+           'getTankmanDefaultPrice', 'getItemStateGetter', 'getAttribute')
+
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getTutorialsCompleted(itemsCache=None):
@@ -103,8 +109,9 @@ def _getTankmanPrice(index, prices):
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
-def getTankmanCurrentPrice(index, itemsCache=None):
-    return _getTankmanPrice(index, itemsCache.items.shop.tankmanCostWithGoodyDiscount) if itemsCache is not None else MONEY_UNDEFINED
+def getTankmanCurrentPrice(index, itemsCache=None, vehLevel=1):
+    return _getTankmanPrice(index, itemsCache.items.shop.getTankmanCostWithGoodyDiscount(
+        vehLevel)) if itemsCache is not None else MONEY_UNDEFINED
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)

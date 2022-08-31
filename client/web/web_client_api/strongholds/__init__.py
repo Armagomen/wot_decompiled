@@ -2,23 +2,26 @@
 # Embedded file name: scripts/client/web/web_client_api/strongholds/__init__.py
 import logging
 from functools import partial
+
 from adisp import process
 from constants import JOIN_FAILURE, PREBATTLE_TYPE
 from debug_utils import LOG_CURRENT_EXCEPTION
-from helpers import dependency
 from gui import DialogsInterface
 from gui.SystemMessages import pushMessage, SM_TYPE
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.entities.base.ctx import PrbAction, LeavePrbAction
-from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import CreateBaseExternalUnitCtx, JoinBaseExternalUnitCtx
+from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import CreateBaseExternalUnitCtx, \
+    JoinBaseExternalUnitCtx
 from gui.prb_control.formatters import messages
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from gui.shared import actions
 from gui.shared.items_parameters import params_helper, formatters
+from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IReloginController
 from skeletons.gui.shared import IItemsCache
 from web.web_client_api import w2capi, w2c, W2CSchema, Field
+
 _logger = logging.getLogger(__name__)
 
 class _StrongholdsJoinBattleSchema(W2CSchema):
@@ -33,6 +36,7 @@ class _GetReserveParamsSchema(W2CSchema):
 @w2capi(name='strongholds_battle', key='action')
 class StrongholdsWebApi(object):
     __itemsCache = dependency.descriptor(IItemsCache)
+    __connectionMgr = dependency.descriptor(IConnectionManager)
 
     @w2c(W2CSchema, 'open_list')
     @process
@@ -100,6 +104,11 @@ class StrongholdsWebApi(object):
                 _logger.warning('There is not a reserve with intCD=(%s)', intCD)
                 continue
             rawParams = params_helper.getParameters(item)
-            result[intCD] = {pName:pValue for pName, pValue in formatters.getFormattedParamsList(item.descriptor, rawParams)}
+            result[intCD] = {pName: pValue for pName, pValue in
+                             formatters.getFormattedParamsList(item.descriptor, rawParams)}
 
         return result
+
+    @w2c(W2CSchema, 'get_available_peripheries')
+    def getAvailablePeripheries(self, _):
+        return [p.peripheryID for p in self.__connectionMgr.availableHosts]

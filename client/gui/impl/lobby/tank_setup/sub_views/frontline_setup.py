@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/frontline_setup.py
+from CurrentVehicle import g_currentVehicle
 from gui.game_control.epic_meta_game_ctrl import EpicBattleScreens
 from gui.impl.lobby.tank_setup.configurations.epic_battle_ability import EpicBattleTabsController, EpicBattleDealPanel
 from gui.impl.lobby.tank_setup.sub_views.base_equipment_setup import BaseEquipmentSetupSubView
@@ -9,20 +10,21 @@ from helpers import dependency
 from shared_utils import first
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IEpicBattleMetaGameController
-from CurrentVehicle import g_currentVehicle
-from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions, EpicBattleLogButtons, EpicBattleLogAdditionalInfo
+from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions, EpicBattleLogButtons, \
+    EpicBattleLogAdditionalInfo
 from uilogging.epic_battle.loggers import EpicBattleTooltipLogger
+
 
 class EpicBattleSetupSubView(BaseEquipmentSetupSubView):
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
-    __uiEpicBattleLogger = EpicBattleTooltipLogger()
     _appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__currentCategory', '__tooltipMgr')
+    __slots__ = ('__currentCategory', '__tooltipMgr', '__uiEpicBattleLogger')
 
     def __init__(self, viewModel, interactor):
         super(EpicBattleSetupSubView, self).__init__(viewModel, interactor)
         self.__currentCategory = ''
         self.__tooltipMgr = None
+        self.__uiEpicBattleLogger = EpicBattleTooltipLogger()
         app = self._appLoader.getApp()
         if app is not None:
             self.__tooltipMgr = app.getToolTipMgr()
@@ -59,7 +61,8 @@ class EpicBattleSetupSubView(BaseEquipmentSetupSubView):
     def _onDealConfirmed(self, _=None):
         super(EpicBattleSetupSubView, self)._onDealConfirmed(_)
         info = EpicBattleLogAdditionalInfo.APPLY_TO_CLASS.value if self._viewModel.getIsTypeSelected() else EpicBattleLogAdditionalInfo.APPLY_TO_VEHICLE.value
-        self.__uiEpicBattleLogger.log(EpicBattleLogActions.CLICK.value, item=EpicBattleLogButtons.CONFIRM.value, parentScreen=EpicBattleLogKeys.SETUP_VIEW.value, additionalInfo=info)
+        self.__uiEpicBattleLogger.log(EpicBattleLogActions.CLICK.value, item=EpicBattleLogButtons.CONFIRM.value,
+                                      parentScreen=EpicBattleLogKeys.SETUP_VIEW.value, info=info)
 
     def _onDealCancelled(self, _=None):
         super(EpicBattleSetupSubView, self)._onDealCancelled(_)

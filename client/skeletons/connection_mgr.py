@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/connection_mgr.py
-from Event import Event
 
 class DisconnectReason(object):
     UNDEFINED = 0
@@ -18,6 +17,7 @@ class IConnectionManager(object):
     onKickedFromServer = None
     onKickWhileLoginReceived = None
     onQueued = None
+    onPeripheryRoutingGroupUpdated = None
 
     @property
     def serverUserName(self):
@@ -55,6 +55,17 @@ class IConnectionManager(object):
     def connectionMethod(self):
         raise NotImplementedError
 
+    @property
+    def peripheryRoutingGroup(self):
+        raise NotImplementedError
+
+    @property
+    def availableHosts(self):
+        raise NotImplementedError
+
+    def isAvailablePeriphery(self, peripheryID=None):
+        raise NotImplementedError
+
     def initiateConnection(self, params, password, serverName):
         raise NotImplementedError
 
@@ -80,4 +91,7 @@ class IConnectionManager(object):
         raise NotImplementedError
 
     def setLastLogin(self, email):
+        raise NotImplementedError
+
+    def setPeripheryRoutingGroup(self, routingGroup, availableHosts):
         raise NotImplementedError

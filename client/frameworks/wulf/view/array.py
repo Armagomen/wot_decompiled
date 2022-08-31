@@ -2,8 +2,10 @@
 # Embedded file name: scripts/client/frameworks/wulf/view/array.py
 import typing
 from contextlib import contextmanager
+
 from ..py_object_binder import PyObjectEntity
 from ..py_object_wrappers import PyObjectArray
+
 T = typing.TypeVar('T')
 
 class Array(PyObjectEntity, typing.Iterable[T]):
@@ -14,6 +16,9 @@ class Array(PyObjectEntity, typing.Iterable[T]):
 
     def __repr__(self):
         return 'Array(size={})'.format(self.proxy.getSize() if self.proxy is not None else 0)
+
+    def __str__(self):
+        return self.proxy.toString()
 
     def __len__(self):
         return self.proxy.getSize()

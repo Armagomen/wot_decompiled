@@ -1,10 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/xml/gui_parsers.py
 from debug_utils import LOG_WARNING
+from gui.wgnc import gui_items
 from gui.wgnc.settings import WGNC_POP_UP_PRIORITIES
 from gui.wgnc.xml.format_by_tags import formatText
 from gui.wgnc.xml.shared_parsers import ParsersCollection, SectionParser
-from gui.wgnc import gui_items
+
 
 class _ButtonsParser(SectionParser):
 
@@ -63,7 +64,7 @@ class _PopUpParser(SectionParser):
         if priority not in WGNC_POP_UP_PRIORITIES:
             LOG_WARNING('Priority of pop up is not valid, uses default priority', priority)
             priority = 'medium'
-        topic = formatText(section.readString('topic', ''))
+        topic = formatText(section.readWideString('topic', u''))
         icon = section.readString('icon', '')
         bg = section.readString('bg', '')
         group = section.readString('group', 'info')
@@ -120,7 +121,9 @@ class _BrowserParser(SectionParser):
             handlers = sub.parse(section[sub.getTagName()])
         else:
             handlers = None
-        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section), handlers=handlers, hidden=section.readBool('hidden', True), topic=section.readString('topic', ''))
+        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section),
+                                     handlers=handlers, hidden=section.readBool('hidden', True),
+                                     topic=section.readWideString('topic', u''))
 
 
 class _GUIItemsParser(ParsersCollection):

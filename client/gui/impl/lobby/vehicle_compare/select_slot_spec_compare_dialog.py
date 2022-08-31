@@ -1,25 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/select_slot_spec_compare_dialog.py
 import typing
+
 from BWUtil import AsyncReturn
 from async import async, await
 from frameworks.wulf import ViewSettings
+from gui.Scaleform.Waiting import Waiting
 from gui.impl.dialogs.dialogs import showSingleDialogWithResultData
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_spec_model import SelectSlotSpecDialogSpecModel
-from gui.impl.gen.view_models.views.lobby.vehicle_compare.select_slot_spec_compare_dialog_model import SelectSlotSpecCompareDialogModel
+from gui.impl.gen.view_models.views.lobby.vehicle_compare.select_slot_spec_compare_dialog_model import \
+    SelectSlotSpecCompareDialogModel
 from gui.impl.lobby.common.select_slot_spec_dialog import SelectSlotSpecDialogMainContent
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
 from helpers import dependency
 from items.components.supply_slot_categories import SlotCategories
 from skeletons.gui.game_control import IVehicleComparisonBasket
-from uilogging.veh_post_progression.constants import LogGroups, ParentScreens
-from uilogging.veh_post_progression.loggers import VehPostProgressionLogger
-from gui.Scaleform.Waiting import Waiting
+
 _SLOT_IS_NOT_SELECTED_IDX = 0
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.Vehicle import Vehicle
-    from frameworks.wulf import Window
+    pass
+
 
 class SelectSlotSpecCompareDialogMainContent(SelectSlotSpecDialogMainContent):
 
@@ -82,10 +83,6 @@ class SelectSlotSpecCompareDialog(FullScreenDialogView):
         self.__vehicleComparisonBasket.onSwitchChange -= self.__serverSettingsChange
         self.__vehicleComparisonBasket.onParametersChange -= self.__serverSettingsChange
         super(SelectSlotSpecCompareDialog, self)._finalize()
-
-    def _onAccept(self):
-        super(SelectSlotSpecCompareDialog, self)._onAccept()
-        VehPostProgressionLogger(LogGroups.CONFIRM_BUTTON).logClick(parentScreen=ParentScreens.ROLE_SLOT_SELECTION_DIALOG)
 
     def __serverSettingsChange(self, *_):
         if not self.__vehicleComparisonBasket.isEnabled() or not self.__vehicle.isRoleSlotExists():

@@ -1,10 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_tests/Fonts.py
-import BigWorld
-import ResMgr
-import GUI
 import math
+
+import BigWorld
+import GUI
+import ResMgr
+
 fontTestGUIs = []
+
 
 def removeAll():
     global fontTestGUIs
@@ -19,18 +22,18 @@ def _showFont(fontName, pos=(-1, -1, 0.5), size=(2, 2)):
     s = GUI.Simple('')
     GUI.addRoot(s)
     fontTestGUIs.append(s)
-    s.materialFX = 'BLEND'
+    s.materialFX = GUI.Simple.eMaterialFX.BLEND
     s.textureName = fontName.lower() + '.dds'
     s.position = pos
-    s.verticalAnchor = 'BOTTOM'
-    s.horizontalAnchor = 'LEFT'
-    s.filterType = 'LINEAR'
+    s.verticalAnchor = GUI.Simple.eVAnchor.BOTTOM
+    s.horizontalAnchor = GUI.Simple.eHAnchor.LEFT
+    s.filterType = GUI.Simple.eFilterType.LINEAR
     s.size = size
     s.label = GUI.Text(fontName.lower())
-    s.label.verticalAnchor = 'TOP'
-    s.label.horizontalAnchor = 'LEFT'
+    s.label.verticalAnchor = GUI.Simple.eVAnchor.TOP
+    s.label.horizontalAnchor = GUI.Simple.eHAnchor.LEFT
     s.label.font = 'system_small.font'
-    s.label.materialFX = 'BLEND'
+    s.label.materialFX = GUI.Simple.eMaterialFX.BLEND
     s.label.colour = (255, 192, 128, 255)
     s.label.position = s.position + (0, size[1], -0.01)
     return s
@@ -71,14 +74,14 @@ def showFont(idx):
     removeAll()
     fonts = getAllFontNames()
     s = _showFont(fonts[idx % len(fonts)], (0, 0, 0.5), (0, 0))
-    s.filterType = 'POINT'
+    s.filterType = GUI.Simple.eFilterType.POINT
 
 
 def showFDFont():
     s = GUI.Simple('')
     s.position = (0, 0, 0)
     GUI.addRoot(s)
-    s.materialFX = 'SOLID'
+    s.materialFX = GUI.Simple.eMaterialFX.SOLID
     s.textureName = 'fantasydemofont_20_font_rt'
     s.size = (2, 2)
 
@@ -88,7 +91,7 @@ def testResize1():
     t.font = 'resize.font'
     GUI.addRoot(t)
     fontTestGUIs.append(t)
-    t.verticalAnchor = 'BOTTOM'
+    t.verticalAnchor = GUI.Simple.eVAnchor.BOTTOM
     _showFont('resize.font')
     return t
 
@@ -97,7 +100,7 @@ def testResize2():
     t2 = GUI.Text('resizebgman')
     t2.font = 'resize.font'
     GUI.addRoot(t2)
-    t2.verticalAnchor = 'TOP'
+    t2.verticalAnchor = GUI.Simple.eVAnchor.TOP
     fontTestGUIs.append(t2)
     return t2
 

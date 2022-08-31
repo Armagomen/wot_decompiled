@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_buy_view.py
 import logging
+
 import SoundGroups
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
@@ -25,6 +26,7 @@ from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IWalletController
 from skeletons.gui.shared import IItemsCache
+
 WINDOW_IS_NOT_OPENED = -1
 _CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
  ChapterState.COMPLETED: ChapterStates.COMPLETED,
@@ -203,7 +205,6 @@ class BattlePassBuyView(ViewImpl):
         with self.viewModel.rewards.transaction() as tx:
             tx.nowRewards.clearItems()
             tx.futureRewards.clearItems()
-            tx.setFinalReward(self.__battlePass.getRewardType(chapterID).value)
             tx.setFromLevel(fromLevel)
             tx.setToLevel(toLevel)
             tx.setChapterID(chapterID)
@@ -249,7 +250,6 @@ class BattlePassBuyView(ViewImpl):
             item.setChapterState(_CHAPTER_STATES.get(package.getChapterState()))
             item.setCurrentLevel(package.getCurrentLevel() + 1)
             item.setExpireTime(self.__battlePass.getChapterRemainingTime(package.getChapterID()))
-            item.setFinalReward(self.__battlePass.getRewardType(packageID).value)
             model.packages.addViewModel(item)
 
         model.packages.invalidate()

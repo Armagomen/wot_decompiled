@@ -2,26 +2,28 @@
 # Embedded file name: scripts/client/gui/Scaleform/app_factory.py
 import logging
 import weakref
+
 import BattleReplay
 from constants import ARENA_GUI_TYPE
-from gui import GUI_SETTINGS
 from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
-from gui.shared.system_factory import collectScaleformBattlePackages, collectScaleformLobbyPackages
+from gui import GUI_SETTINGS
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.Scaleform.daapi.settings import config as sf_config
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.waiting_worker import WaitingWorker
 from gui.Scaleform.framework.package_layout import PackageImporter
 from gui.Scaleform.lobby_entry import LobbyEntry
 from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
+from gui.Scaleform.waiting_worker import WaitingWorker
 from gui.app_loader import settings as app_settings
 from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.shared.system_factory import collectScaleformBattlePackages, collectScaleformLobbyPackages
 from helpers import dependency
 from shared_utils import AlwaysValidObject
 from skeletons.gui.app_loader import IAppFactory
 from skeletons.gui.game_control import IBootcampController
+
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _SPACE = app_settings.APP_NAME_SPACE
@@ -251,9 +253,10 @@ class AS3_AppFactory(IAppFactory):
             return
         app = self.getApp(appNS=appNS)
         libs = ['guiControlsLobbyBattleDynamic.swf',
-         'guiControlsLobbyDynamic.swf',
-         'popovers.swf',
-         'iconLibrary.swf']
+                'guiControlsLobbyDynamic.swf',
+                'guiControlsLobbyDynamic2.swf',
+                'popovers.swf',
+                'iconLibrary.swf']
         if self.bootcampCtrl.isInBootcamp():
             libs.extend(['BCGuiControlsLobbyBattle.swf', 'BCGuiControlsLobby.swf'])
         app.as_loadLibrariesS(libs)

@@ -1,25 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/IngameSoundNotifications.py
-from random import randrange
-from functools import partial
 from collections import namedtuple
-from debug_utils import LOG_WARNING
-import Math
-import BigWorld
-import ResMgr
+from functools import partial
+from random import randrange
+
 import BattleReplay
+import BigWorld
 import Event
+import Math
+import ResMgr
 import SoundGroups
 import VSE
-from visual_script_client.contexts.sound_notifications_context import SoundNotificationsContext
+from debug_utils import LOG_WARNING
 from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
+from visual_script_client.contexts.sound_notifications_context import SoundNotificationsContext
+
 
 class IngameSoundNotifications(CallbackDelayer, TimeDeltaMeter):
     __EVENTS_PATH = 'gui/sound_notifications.xml'
     __CIRCUMSTANCES_PATH = 'gui/sound_circumstances.xml'
     __DEFAULT_LIFETIME = 3.0
     __TICK_DELAY = 0.5
-    QueueItem = namedtuple('QueueItem', ('eventName', 'priority', 'time', 'vehicleID', 'checkFn', 'position', 'boundVehicleID'))
+    QueueItem = namedtuple('QueueItem',
+                           ('eventName', 'priority', 'time', 'vehicleID', 'checkFn', 'position', 'boundVehicleID'))
     PlayingEvent = namedtuple('PlayingEvent', ('eventName', 'vehicle', 'position', 'boundVehicle', 'is2D'))
 
     def __init__(self):
@@ -275,7 +278,7 @@ class IngameSoundNotifications(CallbackDelayer, TimeDeltaMeter):
             index = circSec.readString('index')
             self.__circumstances[index] = {}
             for infoSec in circSec.values():
-                self.__circumstances[index][infoSec.name] = infoSec.asString
+                self.__circumstances[index][infoSec.name] = infoSec.asWideString
 
         return
 

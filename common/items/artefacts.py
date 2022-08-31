@@ -3,25 +3,26 @@
 import math
 import os
 from re import findall
-from typing import TYPE_CHECKING, NamedTuple, Set, Dict, Optional, Any, Tuple
+from typing import TYPE_CHECKING, NamedTuple
+
 import items
 import nations
-from ResMgr import DataSection
-from constants import IS_CLIENT, IS_CELLAPP, IS_WEB, VEHICLE_TTC_ASPECTS, ATTACK_REASON, ATTACK_REASON_INDICES, SERVER_TICK_LENGTH
+from Math import Vector3
+from constants import IS_CLIENT, IS_CELLAPP, IS_WEB, VEHICLE_TTC_ASPECTS, ATTACK_REASON, ATTACK_REASON_INDICES
 from debug_utils import LOG_DEBUG_DEV
-from items import ITEM_OPERATION, PREDEFINED_HEAL_GROUPS
+from items import ITEM_OPERATION
 from items import _xml, vehicles
 from items.artefacts_helpers import VehicleFilter, _ArtefactFilter, readKpi
 from items.basic_item import BasicItem
 from items.components import shared_components, component_constants
 from items.components.supply_slot_categories import SupplySlotFilter, LevelsFactor, AttrsOperation, SlotCategories
-from items.vehicles import VehicleDescriptor
 from soft_exception import SoftException
+
 from tankmen import MAX_SKILL_LEVEL
 from vehicles import _readPriceForOperation
-from Math import Vector3
+
 if TYPE_CHECKING:
-    from ResMgr import DataSection
+    pass
 if IS_CLIENT:
     from helpers import i18n
     from gui.impl.backport import text
@@ -489,6 +490,9 @@ class Equipment(Artefact):
         if 'builtin' not in self.tags:
             inventoryCallback(self.compactDescr)
 
+    def doesDependOnOptionalDevice(self):
+        return False
+
 
 class ExtraHealthReserve(StaticOptionalDevice):
     __slots__ = ('chassisMaxLoadFactor',)
@@ -496,7 +500,9 @@ class ExtraHealthReserve(StaticOptionalDevice):
     def weightOnVehicle(self, vehicleDescr):
         chassis = vehicleDescr.chassis
         level = self.defineActiveLevel(vehicleDescr)
-        return super(ExtraHealthReserve, self).weightOnVehicle(vehicleDescr) if level is None else (self._vehWeightFraction, self._weight, chassis.maxLoad * (self.chassisMaxLoadFactor.getActiveValue(level) - 1.0))
+        return super(ExtraHealthReserve, self).weightOnVehicle(vehicleDescr) if level is None else (
+        self._vehWeightFraction, self._weight,
+        chassis.maxLoad * (self.chassisMaxLoadFactor.getActiveValue(level) - 1.0))
 
     def updateVehicleDescrAttrs(self, vehicleDescr):
         super(ExtraHealthReserve, self).updateVehicleDescrAttrs(vehicleDescr)
@@ -1231,6 +1237,9 @@ class DynamicEquipment(Equipment):
                 return levelID
 
         return None
+
+    def doesDependOnOptionalDevice(self):
+        return True
 
     def getLevelParamsForDevice(self, optionalDevice):
         for levelFilter, levelParams in self._config:

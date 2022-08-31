@@ -1,22 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/ScrollableText.py
+import StringIO
+import re
+
 import BigWorld
 import GUI
-import re
-from PyGUIBase import PyGUIBase
-from Helpers.PyGUI.Utils import getHPixelScalar, WHITESPACE
 from Helpers.PyGUI.Listeners import registerDeviceListener
+from Helpers.PyGUI.Utils import getHPixelScalar, WHITESPACE
+
 import Utils
-import StringIO
-import string
+from PyGUIBase import PyGUIBase
+
 _colourTagLen = len('\\cABCDEFGH;')
 _colourTagRE = re.compile('\\\\[cC][0-9a-fA-F]{8};')
 
+
 def _packColourTag(colour):
     return '\\c%.2x%.2x%.2x%.2x;' % (int(colour[0]),
-     int(colour[1]),
-     int(colour[2]),
-     int(colour[3]))
+                                     int(colour[1]),
+                                     int(colour[2]),
+                                     int(colour[3]))
 
 
 def _findStartOfWord(s, offset):
@@ -73,13 +76,13 @@ class ScrollableText(PyGUIBase):
         if component == None:
             self.component = GUI.Window('system/maps/col_white.bmp')
             self.component.colour = (128, 128, 128, 255)
-            self.component.widthMode = 'CLIP'
-            self.component.heightMode = 'CLIP'
+            self.component.widthMode = GUI.Simple.eSizeMode.CLIP
+            self.component.heightMode = GUI.Simple.eSizeMode.CLIP
             self.component.addChild(GUI.Text(''), 'text')
-            self.component.text.horizontalAnchor = 'LEFT'
-            self.component.text.horizontalPositionMode = 'CLIP'
-            self.component.text.verticalAnchor = 'BOTTOM'
-            self.component.text.verticalPositionMode = 'CLIP'
+            self.component.text.horizontalAnchor = GUI.Simple.eHAnchor.LEFT
+            self.component.text.horizontalPositionMode = GUI.Simple.ePositionMode.CLIP
+            self.component.text.verticalAnchor = GUI.Simple.eVAnchor.BOTTOM
+            self.component.text.verticalPositionMode = GUI.Simple.ePositionMode.CLIP
             self.component.text.position = (-1.0, -1.0, 0.5)
             self.component.text.multiline = True
             self.component.text.richFormatting = True
@@ -181,7 +184,7 @@ class ScrollableText(PyGUIBase):
 
     def _widthInPixels(self):
         widthMode = self.component.widthMode
-        self.component.widthMode = 'PIXEL'
+        self.component.widthMode = GUI.Simple.eSizeMode.PIXEL
         w = self.component.width
         self.component.widthMode = widthMode
         return w / getHPixelScalar()

@@ -1,35 +1,40 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/MapCaseMode.py
-import weakref
 import logging
-from ArtilleryEquipment import ArtilleryEquipment
-from AvatarInputHandler import gun_marker_ctrl
-from CombatSelectedArea import CombatSelectedArea
-from aih_constants import GUN_MARKER_TYPE, CTRL_MODE_NAME, MAP_CASE_MODES
-from extension_utils import importClass
-from gui.sounds.epic_sound_constants import EPIC_SOUND
-from helpers import dependency
-from helpers.CallbackDelayer import CallbackDelayer
-from items.artefacts import ArcadeEquipmentConfigReader
-from skeletons.gui.battle_session import IBattleSessionProvider
-from AvatarInputHandler.DynamicCameras import StrategicCamera, ArcadeCamera
+import weakref
+
 import BattleReplay
 import BigWorld
 import CommandMapping
 import GUI
 import Keys
 import Math
-from Math import Vector2, Vector3
-from AvatarInputHandler.control_modes import IControlMode
-from AvatarInputHandler import AimingSystems
 import SoundGroups
+from ArtilleryEquipment import ArtilleryEquipment
+from AvatarInputHandler import AimingSystems
+from AvatarInputHandler import gun_marker_ctrl
+from AvatarInputHandler.DynamicCameras import StrategicCamera, ArcadeCamera
+from AvatarInputHandler.control_modes import IControlMode
+from CombatSelectedArea import CombatSelectedArea
+from Math import Vector2, Vector3
+from aih_constants import GUN_MARKER_TYPE, CTRL_MODE_NAME, MAP_CASE_MODES
+from constants import AIMING_MODE
 from constants import SERVER_TICK_LENGTH
 from debug_utils import LOG_ERROR, LOG_WARNING
-from items import vehicles as vehs_core, artefacts
-from constants import AIMING_MODE
+from extension_utils import importClass
+from gui.sounds.epic_sound_constants import EPIC_SOUND
+from helpers import dependency
+from helpers.CallbackDelayer import CallbackDelayer
 from items import makeIntCompactDescrByID
+from items import vehicles as vehs_core, artefacts
+from items.artefacts import ArcadeEquipmentConfigReader
 from nations import NONE_INDEX
+from skeletons.gui.battle_session import IBattleSessionProvider
+
+from DynamicCameras.ArcadeCamera import ArcadeCameraState
+
 _logger = logging.getLogger(__name__)
+
 
 class _DefaultStrikeSelector(CallbackDelayer):
     _TICK_DELAY = 0.1
@@ -567,6 +572,8 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
     _PREFERED_POSITION = 0
     _MODE_NAME = 1
     _AIM_MODE = 2
+    _DISTANCE = 3
+    _ZOOMSWICHER_STATE = 4
 
     def __init__(self, dataSection, avatarInputHandler):
         CallbackDelayer.__init__(self)
@@ -580,7 +587,11 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
         self.__equipmentID = None
         self.__aimingMode = 0
         self.__aimingModeUserDisabled = False
-        self.__class__.prevCtlMode = [Vector3(0, 0, 0), '', 0]
+        self.__class__.prevCtlMode = [Vector3(0, 0, 0),
+                                      '',
+                                      0,
+                                      None,
+                                      None]
         return
 
     def create(self):
@@ -776,16 +787,24 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
             self.__class__.deactivateCallback()
             self.__class__.deactivateCallback = None
         prevMode = self.__class__.prevCtlMode
-        if BigWorld.player().observerSeesAll() and (not prevMode[self._MODE_NAME] or prevMode[self._MODE_NAME] == self.__aih.ctrlModeName):
+        if BigWorld.player().observerSeesAll() and (
+                not prevMode[self._MODE_NAME] or prevMode[self._MODE_NAME] == self.__aih.ctrlModeName):
             LOG_WARNING('Skip switching to previouse mode', prevMode[self._MODE_NAME])
             return
         if not self.__aimingModeUserDisabled:
             self.__aimingMode &= -1 - AIMING_MODE.USER_DISABLED
-        pos = self._getPreferedPositionOnQuit()
         arcadeState = None
         if self.acceptsArcadeState:
-            arcadeState = self.__aih.ctrl.camera.cloneState()
-        self.__aih.onControlModeChanged(prevMode[self._MODE_NAME], preferredPos=pos, aimingMode=self.__aimingMode, saveDist=False, saveZoom=True, arcadeState=arcadeState)
+            pos = prevMode[self._PREFERED_POSITION]
+            if prevMode[self._DISTANCE] is not None:
+                arcadeState = self.__aih.ctrl.camera.cloneState(distance=prevMode[self._DISTANCE],
+                                                                state=prevMode[self._ZOOMSWICHER_STATE])
+        else:
+            pos = self._getPreferedPositionOnQuit()
+        if not arcadeState and prevMode[self._DISTANCE] and prevMode[self._ZOOMSWICHER_STATE]:
+            arcadeState = ArcadeCameraState(prevMode[self._DISTANCE], prevMode[self._ZOOMSWICHER_STATE])
+        self.__aih.onControlModeChanged(prevMode[self._MODE_NAME], preferredPos=pos, aimingMode=self.__aimingMode,
+                                        saveDist=False, saveZoom=True, arcadeState=arcadeState)
         self.stopCallback(self.__tick)
         self.__cam.update(0.0, 0.0, 0.0, False)
         replayCtrl = BattleReplay.g_replayCtrl
@@ -820,8 +839,8 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
             replayCtrl = BattleReplay.g_replayCtrl
             if replayCtrl.isRecording:
                 replayCtrl.setEquipmentID(equipmentID)
-            isVisible = isinstance(BigWorld.player().inputHandler.ctrl, MapCaseControlModeBase)
-            self.setGUIVisible(isVisible)
+            if not isinstance(BigWorld.player().inputHandler.ctrl, MapCaseControlModeBase):
+                self.setGUIVisible(False)
             return
 
     def __tick(self):
@@ -898,8 +917,19 @@ def activateMapCase(equipmentID, deactivateCallback, controlMode):
                 pos = camera.aimingSystem.getDesiredShotPoint()
             if pos is None:
                 pos = Vector3(0.0, 0.0, 0.0)
-        controlMode.prevCtlMode = [pos, currentMode, inputHandler.ctrl.aimingMode]
-        inputHandler.onControlModeChanged(controlMode.MODE_NAME, preferredPos=pos, aimingMode=inputHandler.ctrl.aimingMode, equipmentID=equipmentID, saveDist=False, arcadeState=arcadeState)
+        camDist = None
+        zoomSwitcherState = None
+        if arcadeState:
+            camDist = arcadeState.camDist
+            zoomSwitcherState = arcadeState.zoomSwitcherState
+        controlMode.prevCtlMode = [pos,
+                                   currentMode,
+                                   inputHandler.ctrl.aimingMode,
+                                   camDist,
+                                   zoomSwitcherState]
+        inputHandler.onControlModeChanged(controlMode.MODE_NAME, preferredPos=pos,
+                                          aimingMode=inputHandler.ctrl.aimingMode, equipmentID=equipmentID,
+                                          saveDist=False, arcadeState=arcadeState)
     return
 
 

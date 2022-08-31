@@ -1,13 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/battle_royale.py
 import logging
-from collections import defaultdict
 import typing
+from collections import defaultdict
+
+from ValueReplay import ValueReplay, ValueReplayConnector
+from battle_results import g_config as battleResultsConfig
 from constants import ARENA_BONUS_TYPE, DEATH_REASON_ALIVE
 from gui.battle_control.battle_constants import WinStatus
 from gui.battle_results.components import base
 from gui.battle_results.components.personal import PersonalVehiclesBlock
 from gui.battle_results.components.progress import isQuestCompleted
+from gui.battle_results.reusable import records
 from gui.battle_results.reusable import sort_keys
 from gui.impl import backport
 from gui.impl.gen import R
@@ -18,12 +22,9 @@ from gui.shared.utils.functions import replaceHyphenToUnderscore
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IBattleRoyaleController
-from ValueReplay import ValueReplay, ValueReplayConnector
-from battle_results import g_config as battleResultsConfig
-from gui.battle_results.reusable import records
+
 if typing.TYPE_CHECKING:
-    from typing import Dict
-    from gui.battle_results.reusable import _ReusableInfo
+    pass
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _THE_BEST_RANK = 1
@@ -362,7 +363,9 @@ class BattleRoyaleRewardsBlock(base.StatsBlock):
 
 
 class BattlePassBlock(base.StatsBlock):
-    __slots__ = ('currentLevel', 'maxPoints', 'earnedPoints', 'currentLevelPoints', 'isDone', 'hasBattlePass', 'battlePassComplete', 'chapterID', 'pointsTotal', 'basePointsDiff', 'pointsAux')
+    __slots__ = (
+    'currentLevel', 'maxPoints', 'earnedPoints', 'currentLevelPoints', 'isDone', 'hasBattlePass', 'battlePassComplete',
+    'chapterID', 'pointsTotal', 'basePointsDiff', 'pointsAux', 'availablePoints')
 
     def __init__(self, meta=None, field='', *path):
         super(BattlePassBlock, self).__init__(meta, field, *path)
@@ -377,6 +380,7 @@ class BattlePassBlock(base.StatsBlock):
         self.pointsTotal = 0
         self.basePointsDiff = 0
         self.pointsAux = 0
+        self.availablePoints = 0
 
     def setRecord(self, result, reusable):
         hasProgress = reusable.battlePassProgress.hasProgress
@@ -393,6 +397,7 @@ class BattlePassBlock(base.StatsBlock):
             self.pointsTotal = reusable.battlePassProgress.pointsTotal
             self.basePointsDiff = reusable.battlePassProgress.basePointsDiff
             self.pointsAux = reusable.battlePassProgress.pointsAux
+            self.availablePoints = reusable.battlePassProgress.availablePoints
 
 
 class BattleRoyalePlayerBlock(base.StatsBlock):

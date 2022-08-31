@@ -1,20 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/vehicle_items.py
 import functools
-import Math
+
 import nations
+from constants import ATTACK_REASON
 from constants import SHELL_TYPES
 from items import ITEM_TYPES, ITEM_TYPE_NAMES, makeIntCompactDescrByID
 from items.basic_item import BasicItem
-from items.components import chassis_components
 from items.components import component_constants
-from items.components import gun_components
 from items.components import shared_components
-from items.components import shell_components
-from items.components import sound_components
 from soft_exception import SoftException
 from wrapped_reflection_framework import ReflectionMetaclass
-from constants import ATTACK_REASON
+
 
 class VEHICLE_ITEM_STATUS(object):
     UNDEFINED = 0
@@ -361,7 +358,9 @@ class Hull(BasicItem):
 
 
 class Shell(BasicItem):
-    __slots__ = ('caliber', 'isTracer', 'isForceTracer', 'damage', 'damageRandomization', 'piercingPowerRandomization', 'icon', 'iconName', 'isGold', 'type', 'stun', 'effectsIndex', 'tags', 'secondaryAttackReason', 'useAltDamageRandomization')
+    __slots__ = (
+    'caliber', 'isTracer', 'isForceTracer', 'damage', 'damageRandomization', 'piercingPowerRandomization', 'icon',
+    'iconName', 'isGold', 'type', 'stun', 'effectsIndex', 'tags', 'secondaryAttackReason')
 
     def __init__(self, typeID, componentID, componentName, compactDescr):
         super(Shell, self).__init__(typeID, componentID, componentName, compactDescr)
@@ -378,7 +377,6 @@ class Shell(BasicItem):
         self.icon = None
         self.iconName = None
         self.secondaryAttackReason = ATTACK_REASON.NONE
-        self.useAltDamageRandomization = False
         return
 
     def __repr__(self):

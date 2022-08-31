@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/pub/view_impl.py
 import typing
-from frameworks.wulf import View, ViewEvent, ViewModel, Window, WindowLayer
+
+from frameworks.wulf import View, ViewModel, WindowLayer
 from gui.impl.gen.resources import R
 from gui.impl.pub.context_menu_window import ContextMenuContent, ContextMenuWindow
 from gui.impl.pub.pop_over_window import PopOverWindow
@@ -10,14 +11,15 @@ from helpers import dependency
 from helpers.events_handler import EventsHandler
 from skeletons.gui.impl import IGuiLoader
 from soft_exception import SoftException
+
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 
 class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
     __slots__ = ()
     gui = dependency.descriptor(IGuiLoader)
 
-    def _initialize(self, *args, **kwargs):
-        super(ViewImpl, self)._initialize(*args, **kwargs)
+    def _onLoading(self, *args, **kwargs):
+        super(ViewImpl, self)._onLoading(*args, **kwargs)
         self._subscribe()
 
     def _finalize(self):

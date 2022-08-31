@@ -23,7 +23,6 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
-    from gui.customization.shared import C11nId, PurchaseItem
     from gui.customization.constants import CustomizationModeSource
 _logger = logging.getLogger(__name__)
 
@@ -280,7 +279,7 @@ class CustomizationContext(object):
     def applyItems(self, purchaseItems, callback):
         self._itemsCache.onSyncCompleted -= self.__onCacheResync
         yield self.mode.applyItems(purchaseItems, self.isModeChanged)
-        self.__onCacheResync()
+        self.__onCacheResync(-1, {})
         self._itemsCache.onSyncCompleted += self.__onCacheResync
         callback(None)
         return
@@ -304,14 +303,14 @@ class CustomizationContext(object):
         items = [ (g_currentVehicle.item.intCD, intCD) for intCD in items ]
         resetC11nItemsNovelty(items=items)
 
-    def __onCacheResync(self, *_):
+    def __onCacheResync(self, reason, items):
         if g_currentVehicle.isPresent():
             for mode in self.__modes.itervalues():
                 if mode.isInited:
                     mode.updateOutfits(preserve=True)
 
             self.refreshOutfit()
-        self.events.onCacheResync()
+        self.events.onCacheResync(reason, items)
 
     def __onVehicleChanged(self):
         if self._vehicle is None or not g_currentVehicle.isPresent():

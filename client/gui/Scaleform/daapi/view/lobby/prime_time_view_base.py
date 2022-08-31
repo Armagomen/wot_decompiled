@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prime_time_view_base.py
 import time
+
 import constants
 from adisp import process
 from gui import GUI_SETTINGS
@@ -11,9 +12,9 @@ from gui.Scaleform.daapi.view.meta.PrimeTimeMeta import PrimeTimeMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.periodic_battles.models import PrimeTimeStatus
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.base.pre_queue.listener import IPreQueueListener
-from gui.periodic_battles.models import PrimeTimeStatus
 from gui.shared import actions, event_dispatcher
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
@@ -24,6 +25,7 @@ from helpers import dependency, time_utils
 from predefined_hosts import g_preDefinedHosts, REQUEST_RATE, HOST_AVAILABILITY
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IReloginController
+
 _PING_MAX_VALUE = 999
 
 def _emptyFmt(*_):
@@ -55,14 +57,6 @@ class ServerListItemPresenter(object):
         self.__invalidatePrimeTimeStatus()
         self.invalidatePingData()
         return
-
-    @classmethod
-    def deltaFormatter(cls, delta):
-        return text_styles.neutral(backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft))
-
-    @classmethod
-    def statusDeltaFormatter(cls, delta):
-        return backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft)
 
     def asDict(self):
         return {'label': self.__name,
@@ -108,15 +102,18 @@ class ServerListItemPresenter(object):
         pingValue, self.__pingStatus = g_preDefinedHosts.getHostPingData(self.__hostName)
         self.__pingValue = min(pingValue, _PING_MAX_VALUE)
 
+    def deltaFormatter(self, delta):
+        return text_styles.neutral(backport.getTillTimeStringByRClass(delta, self._RES_ROOT.timeLeft))
+
     def _buildTooltip(self, peripheryID):
         periodInfo = self._periodsController.getPeriodInfo(peripheryID=peripheryID)
         params = periodInfo.getVO(withBNames=True, deltaFmt=self.deltaFormatter)
         params['serverName'] = self.getName()
         tooltip = backport.text(self._RES_ROOT.dyn(periodInfo.periodType.value, self._RES_ROOT.undefined)(), **params)
         return {'tooltip': text_styles.main(tooltip),
-         'specialArgs': [],
-         'specialAlias': None,
-         'isSpecial': None}
+                'specialArgs': [],
+                'specialAlias': None,
+                'isSpecial': None}
 
     def _getIsAvailable(self):
         self.__invalidatePrimeTimeStatus()
@@ -232,7 +229,8 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         resSection = self._RES_ROOT.statusText
         periodInfo = self._getController().getPeriodInfo()
         timeFmt = backport.getShortTimeFormat if periodInfo.primeDelta < time_utils.ONE_DAY else None
-        params = periodInfo.getVO(withBNames=True, deltaFmt=self._serverPresenterClass.statusDeltaFormatter, timeFmt=timeFmt or _emptyFmt, dateFmt=backport.getShortDateFormat if timeFmt is None else _emptyFmt)
+        dateFmt = backport.getShortDateFormat if timeFmt is None else _emptyFmt
+        params = periodInfo.getVO(withBNames=True, timeFmt=timeFmt or _emptyFmt, dateFmt=dateFmt)
         params['serverName'] = self._connectionMgr.serverUserNameShort
         return backport.text(resSection.dyn(periodInfo.periodType.value, resSection.undefined)(), **params)
 

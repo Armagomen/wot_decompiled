@@ -2,19 +2,21 @@
 # Embedded file name: scripts/client/gui/game_control/AwardController.py
 import logging
 import types
+import typing
 import weakref
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from functools import partial
 from itertools import chain, ifilter
-import typing
+
 import ArenaType
 import BigWorld
 import async
 import gui.awards.event_dispatcher as shared_events
 import personal_missions
 from PlayerEvents import g_playerEvents
-from account_helpers.AccountSettings import AWARDS, AccountSettings, RANKED_CURRENT_AWARDS_BUBBLE_YEAR_REACHED, RANKED_YEAR_POSITION, SPEAKERS_DEVICE
+from account_helpers.AccountSettings import AWARDS, AccountSettings, RANKED_CURRENT_AWARDS_BUBBLE_YEAR_REACHED, \
+    RANKED_YEAR_POSITION, SPEAKERS_DEVICE
 from account_helpers.settings_core.settings_constants import SOUND
 from account_shared import getFairPlayViolationName
 from adisp import process
@@ -55,18 +57,22 @@ from gui.ranked_battles import ranked_helpers
 from gui.ranked_battles.constants import YEAR_AWARD_SELECTABLE_OPT_DEVICE_PREFIX
 from gui.server_events import awards, events_dispatcher as quests_events, recruit_helper
 from gui.server_events.bonuses import getServiceBonuses
-from gui.server_events.events_dispatcher import showCurrencyReserveAwardWindow, showLootboxesAward, showMissionsBattlePass, showPiggyBankRewardWindow, showSubscriptionAwardWindow
+from gui.server_events.events_dispatcher import showCurrencyReserveAwardWindow, showLootboxesAward, \
+    showMissionsBattlePass, showPiggyBankRewardWindow, showSubscriptionAwardWindow
 from gui.server_events.events_helpers import isACEmailConfirmationQuest, isDailyQuest
-from gui.server_events.finders import CHAMPION_BADGES_BY_BRANCH, CHAMPION_BADGE_AT_OPERATION_ID, PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID, getBranchByOperationId
+from gui.server_events.finders import CHAMPION_BADGES_BY_BRANCH, CHAMPION_BADGE_AT_OPERATION_ID, \
+    PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID, getBranchByOperationId
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
-from gui.shared.event_dispatcher import showBadgeInvoiceAwardWindow, showBattlePassAwardsWindow, showBattlePassVehicleAwardWindow, showDedicationRewardWindow, showEliteWindow, showMultiAwardWindow, showProgressionRequiredStyleUnlockedWindow, showProgressiveItemsRewardWindow, showProgressiveRewardAwardWindow, showRankedSeasonCompleteView, showRankedSelectableReward, showRankedYearAwardWindow, showRankedYearLBAwardWindow, showResourceWellAwardWindow, showSeniorityRewardAwardWindow
+from gui.shared.event_dispatcher import showBadgeInvoiceAwardWindow, showBattlePassAwardsWindow, \
+    showBattlePassVehicleAwardWindow, showDedicationRewardWindow, showEliteWindow, showMultiAwardWindow, \
+    showProgressionRequiredStyleUnlockedWindow, showProgressiveItemsRewardWindow, showProgressiveRewardAwardWindow, \
+    showRankedSeasonCompleteView, showRankedSelectableReward, showRankedYearAwardWindow, showRankedYearLBAwardWindow, \
+    showSeniorityRewardAwardWindow, showResourceWellAwardWindow
 from gui.shared.events import PersonalMissionsEvent
 from gui.shared.gui_items.dossier.factories import getAchievementFactory
 from gui.shared.utils import isPopupsWindowsOpenDisabled
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.sounds.sound_constants import SPEAKERS_CONFIG
-from gui.wot_anniversary import wot_anniversary_helpers
-from gui.wot_anniversary.wot_anniversary_helpers import showWotAnniversaryAwardWindow
 from helpers import dependency, i18n
 from items import ITEM_TYPE_INDICES, getTypeOfCompactDescr, vehicles as vehicles_core
 from items.components.crew_books_constants import CREW_BOOK_DISPLAYED_AWARDS_COUNT
@@ -78,19 +84,23 @@ from nations import NAMES
 from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import IAwardController, IBattlePassController, IBootcampController, IMapboxController, IRankedBattlesController
+from skeletons.gui.battle_matters import IBattleMattersController
+from skeletons.gui.game_control import IAwardController, IBattlePassController, IBootcampController, IMapboxController, \
+    IRankedBattlesController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader, INotificationWindowController
-from skeletons.gui.linkedset import ILinkedSetController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from skeletons.gui.sounds import ISoundsController
+from skeletons.gui.system_messages import ISystemMessages
+
 if typing.TYPE_CHECKING:
-    from gui.platform.catalog_service.controller import _PurchaseDescriptor
+    pass
 _logger = logging.getLogger(__name__)
+
 
 class QUEST_AWARD_POSTFIX(object):
     CREW_SKINS = 'awardcrewskin'
@@ -153,50 +163,49 @@ class AwardController(IAwardController, IGlobalListener):
 
     def __init__(self):
         self.__handlers = [BattleQuestsAutoWindowHandler(self),
-         QuestBoosterAwardHandler(self),
-         BoosterAfterBattleAwardHandler(self),
-         PunishWindowHandler(self),
-         TokenQuestsWindowHandler(self),
-         MotiveQuestsWindowHandler(self),
-         VehiclesResearchHandler(self),
-         VictoryHandler(self),
-         BattlesCountHandler(self),
-         PveBattlesCountHandler(self),
-         PersonalMissionBonusHandler(self),
-         PersonalMissionWindowAfterBattleHandler(self),
-         PersonalMissionAutoWindowHandler(self),
-         PersonalMissionByAwardListHandler(self),
-         PersonalMissionOperationAwardHandler(self),
-         PersonalMissionOperationUnlockedHandler(self),
-         GoldFishHandler(self),
-         TelecomHandler(self),
-         MarkByInvoiceHandler(self),
-         MarkByQuestHandler(self),
-         CrewSkinsQuestHandler(self),
-         CrewBooksQuestHandler(self),
-         RecruitHandler(self),
-         SoundDeviceHandler(self),
-         EliteWindowHandler(self),
-         LootBoxByInvoiceHandler(self),
-         ProgressiveRewardHandler(self),
-         PiggyBankOpenHandler(self),
-         SeniorityAwardsWindowHandler(self),
-         RankedQuestsHandler(self),
-         BattlePassRewardHandler(self),
-         BattlePassStyleRecievedHandler(self),
-         BattlePassBuyEmptyHandler(self),
-         BattlePassCapHandler(self),
-         VehicleCollectorAchievementHandler(self),
-         DynamicBonusHandler(self),
-         ProgressiveItemsRewardHandler(self),
-         DedicationReward(self),
-         BadgesInvoiceHandler(self),
-         MapboxProgressionRewardHandler(self),
-         PurchaseHandler(self),
-         RenewableSubscriptionHandler(self),
-         LinkedSetQuestsHandler(self),
-         ResourceWellRewardHandler(self),
-         WotAnniversaryQuestsHandler(self)]
+                           QuestBoosterAwardHandler(self),
+                           BoosterAfterBattleAwardHandler(self),
+                           PunishWindowHandler(self),
+                           TokenQuestsWindowHandler(self),
+                           MotiveQuestsWindowHandler(self),
+                           VehiclesResearchHandler(self),
+                           VictoryHandler(self),
+                           BattlesCountHandler(self),
+                           PveBattlesCountHandler(self),
+                           PersonalMissionBonusHandler(self),
+                           PersonalMissionWindowAfterBattleHandler(self),
+                           PersonalMissionAutoWindowHandler(self),
+                           PersonalMissionByAwardListHandler(self),
+                           PersonalMissionOperationAwardHandler(self),
+                           PersonalMissionOperationUnlockedHandler(self),
+                           GoldFishHandler(self),
+                           TelecomHandler(self),
+                           MarkByInvoiceHandler(self),
+                           MarkByQuestHandler(self),
+                           CrewSkinsQuestHandler(self),
+                           CrewBooksQuestHandler(self),
+                           RecruitHandler(self),
+                           SoundDeviceHandler(self),
+                           EliteWindowHandler(self),
+                           LootBoxByInvoiceHandler(self),
+                           ProgressiveRewardHandler(self),
+                           PiggyBankOpenHandler(self),
+                           SeniorityAwardsWindowHandler(self),
+                           RankedQuestsHandler(self),
+                           BattlePassRewardHandler(self),
+                           BattlePassStyleRecievedHandler(self),
+                           BattlePassBuyEmptyHandler(self),
+                           BattlePassCapHandler(self),
+                           VehicleCollectorAchievementHandler(self),
+                           DynamicBonusHandler(self),
+                           ProgressiveItemsRewardHandler(self),
+                           DedicationReward(self),
+                           BadgesInvoiceHandler(self),
+                           MapboxProgressionRewardHandler(self),
+                           PurchaseHandler(self),
+                           RenewableSubscriptionHandler(self),
+                           BattleMattersQuestsHandler(self),
+                           ResourceWellRewardHandler(self)]
         super(AwardController, self).__init__()
         self.__delayedHandlers = []
         self.__isLobbyLoaded = False
@@ -1712,26 +1721,30 @@ class PurchaseHandler(ServiceChannelHandler):
                 _logger.debug('Product code is empty! Awards Window will not be shown!')
 
 
-class LinkedSetQuestsHandler(MultiTypeServiceChannelHandler):
-    __linkedSetCtrl = dependency.descriptor(ILinkedSetController)
+class BattleMattersQuestsHandler(MultiTypeServiceChannelHandler):
+    __battleMattersCtrl = dependency.descriptor(IBattleMattersController)
+    __systemMessages = dependency.descriptor(ISystemMessages)
 
     def __init__(self, awardCtrl):
-        super(LinkedSetQuestsHandler, self).__init__((SYS_MESSAGE_TYPE.hangarQuests.index(), SYS_MESSAGE_TYPE.tokenQuests.index()), awardCtrl)
+        super(BattleMattersQuestsHandler, self).__init__((SYS_MESSAGE_TYPE.hangarQuests.index(),
+                                                          SYS_MESSAGE_TYPE.tokenQuests.index(),
+                                                          SYS_MESSAGE_TYPE.battleResults.index()), awardCtrl)
 
-    def _showAward(self, ctx):
+    def _showAward(self, ctx, clientCtx=None):
         _, message = ctx
-        quests = self.__getCompletedQuests(message.data)
-        self.__linkedSetCtrl.showAwardView(quests)
+        if message.type == SYS_MESSAGE_TYPE.battleResults.index():
+            self.__systemMessages.proto.serviceChannel.pushClientMessage(message,
+                                                                         SCH_CLIENT_MSG_TYPE.BATTLE_MATTERS_BATTLE_AWARD)
+        self.__battleMattersCtrl.showAwardView(message.data)
 
     def _needToShowAward(self, ctx):
         _, message = ctx
-        if not super(LinkedSetQuestsHandler, self)._needToShowAward(ctx):
+        if not super(BattleMattersQuestsHandler, self)._needToShowAward(ctx):
             return False
         data = message.data
-        return self.__getCompletedQuests(data)
-
-    def __getCompletedQuests(self, data):
-        return [ qID for qID in data.get('completedQuestIDs', set()) if self.__linkedSetCtrl.isLinkedSetQuestWithAwards(qID) ]
+        return [qID for qID in data.get('completedQuestIDs', set()) if
+                self.__battleMattersCtrl.isRegularBattleMattersQuestID(
+                    qID) or self.__battleMattersCtrl.isIntermediateBattleMattersQuestID(qID)]
 
 
 class ResourceWellRewardHandler(ServiceChannelHandler):
@@ -1742,23 +1755,3 @@ class ResourceWellRewardHandler(ServiceChannelHandler):
     def _showAward(self, ctx):
         _, message = ctx
         showResourceWellAwardWindow(serialNumber=message.data.get('serialNumber', ''))
-
-
-class WotAnniversaryQuestsHandler(MultiTypeServiceChannelHandler):
-
-    def __init__(self, awardCtrl):
-        super(WotAnniversaryQuestsHandler, self).__init__((SYS_MESSAGE_TYPE.battleResults.index(), SYS_MESSAGE_TYPE.tokenQuests.index()), awardCtrl)
-
-    def _showAward(self, ctx):
-        _, message = ctx
-        data = message.data.copy()
-        finalRewardQuestIDs = []
-        for questID in data.get('completedQuestIDs', set()):
-            if wot_anniversary_helpers.isFinalTokenQuest(questID):
-                finalRewardQuestIDs.append(questID)
-
-        for questID in finalRewardQuestIDs:
-            questData = data.get('detailedRewards', {}).get(questID, {})
-            questDataFiltered = {key:val for key, val in questData.items() if key in ('vehicles', 'customizations')}
-            if questDataFiltered:
-                showWotAnniversaryAwardWindow(questID, questDataFiltered, useQueue=True)

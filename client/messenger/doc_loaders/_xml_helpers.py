@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/doc_loaders/_xml_helpers.py
 import types
+
 from helpers.html import translation as html_translation
 from soft_exception import SoftException
+
 
 def _convertVector3ToRGB(xmlCtx, rgb, msg):
     rgb = (int(rgb.x), int(rgb.y), int(rgb.z))
@@ -99,9 +101,9 @@ def readStringItem(xmlCtx, section, settings=None):
 
 
 def readUnicodeItem(xmlCtx, section, settings=None):
-    return readItem(xmlCtx, section, 'readString', converter=lambda value: unicode(value, 'utf-8', 'ignore'), settings=settings)
+    return readItem(xmlCtx, section, 'readWideString', settings=settings)
 
 
 def readI18nStringItem(xmlCtx, section, settings=None):
-    name, value = readItem(xmlCtx, section, 'readString', converter=html_translation, settings=settings)
+    name, value = readItem(xmlCtx, section, 'readWideString', converter=html_translation, settings=settings)
     return (name, value)

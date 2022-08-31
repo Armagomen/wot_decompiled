@@ -1,13 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/data_sources/staging.py
-from itertools import groupby
+import functools
 import json
-from urllib import urlencode
-from functools import wraps
 from datetime import datetime, time as dt_time
+from functools import wraps
+from itertools import groupby
+from urllib import urlencode
+
 from client_request_lib import exceptions
 from client_request_lib.data_sources import base
-import functools
+
 
 def _doResponse(callback, result, status_code, response_code):
     callback(result, status_code, response_code)
@@ -351,27 +353,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
     @convert_data({'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time()})
     @mapped_fields({'favorite_arena_6': 'favorite_arena_6',
-     'favorite_arena_8': 'favorite_arena_8',
-     'favorite_arena_10': 'favorite_arena_10',
-     'clan_id': 'clan_id',
-     'favorite_primetime': 'favorite_primetime'})
+                    'favorite_arena_8': 'favorite_arena_8',
+                    'favorite_arena_10': 'favorite_arena_10',
+                    'clan_id': 'clan_id',
+                    'favorite_primetime': 'favorite_primetime'})
     def get_clan_favorite_attributes(self, callback, clan_id, fields=None):
-        url = '/gm/clans/%s/favorite_attributes' % clan_id
-
-        @preprocess_callback(callback, 'clans')
-        def inner_callback(backend_data):
-            result = {}
-            for field in ['clan_id', 'favorite_primetime']:
-                if field in backend_data:
-                    result[field] = backend_data[field]
-
-            for data in backend_data.get('favorite_arenas', []):
-                if data.get('frontlevel') in (6, 8, 10) and 'arena' in data:
-                    result['favorite_arena_{}'.format(data['frontlevel'])] = data['arena']
-
-            return result
-
-        return self._request_data(inner_callback, 'clans', url)
+        get_params = {'clan_id': clan_id}
+        url = '/gm/clans/favorite_attributes/?%s' % urlencode(get_params)
+        return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
     @convert_data({'joined_at': from_iso,
      'in_clan_cooldown_till': from_iso})

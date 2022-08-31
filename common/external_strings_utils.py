@@ -2,10 +2,13 @@
 # Embedded file name: scripts/common/external_strings_utils.py
 import re
 import string
+
 import unicodedata
-from debug_utils import LOG_CURRENT_EXCEPTION
+
 from constants import CREDENTIALS_RESTRICTION, CREDENTIALS_RESTRICTION_SET
+from debug_utils import LOG_CURRENT_EXCEPTION
 from soft_exception import SoftException
+
 _MAX_NORMALIZED_NAME_BYTES = 96
 
 class TextRestrictionsBasic(object):
@@ -122,8 +125,11 @@ def getClanAbbrevMaxLength():
 CLAN_DESCR_MAX_BYTES = CLAN_DESCR_MAX_LENGTH * 4
 CLAN_MOTTO_MAX_BYTES = CLAN_MOTTO_MAX_LENGTH * 4
 
+
 def unicode_from_utf8(utf8str, unicodeNormalForm='NFKC'):
-    unicodeStr = unicode(utf8str, 'utf8')
+    unicodeStr = utf8str
+    if isinstance(unicodeStr, str):
+        unicodeStr = unicode(unicodeStr, 'utf8')
     return (unicodedata.normalize(unicodeNormalForm, unicodeStr), unicodeStr)
 
 
@@ -142,6 +148,19 @@ def normalized_unicode_trim(utf8str, length, unicodeNormalForm='NFKC'):
         if len(unicodeStr) > max(0, length):
             unicodeStr = unicodeStr[:length]
         return unicodeStr.encode('utf8')
+    except:
+        LOG_CURRENT_EXCEPTION()
+        return None
+
+    return None
+
+
+def normalized_unicode_trim_u(unicodeStr, length, unicodeNormalForm='NFKC'):
+    try:
+        unicodeStr = unicodedata.normalize(unicodeNormalForm, unicodeStr)
+        if len(unicodeStr) > max(0, length):
+            unicodeStr = unicodeStr[:length]
+        return unicodeStr
     except:
         LOG_CURRENT_EXCEPTION()
         return None

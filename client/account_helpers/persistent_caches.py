@@ -1,12 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/persistent_caches.py
-import weakref
+import base64
 import cPickle
 import os
-import base64
+import weakref
+
 import BigWorld
 import constants
+from external_strings_utils import unicode_from_utf8
 from soft_exception import SoftException
+
 
 class SimpleCache(object):
 
@@ -85,7 +88,7 @@ class SimpleCache(object):
 
 def cacheFileName(account, cacheType, cacheName):
     p = os.path
-    prefsFilePath = unicode(BigWorld.wg_getPreferencesFilePath(), 'utf-8', errors='ignore')
+    prefsFilePath = unicode_from_utf8(BigWorld.wg_getPreferencesFilePath())[1]
     cacheDir = p.join(p.dirname(prefsFilePath), cacheType)
     if not os.path.isdir(cacheDir):
         os.makedirs(cacheDir)

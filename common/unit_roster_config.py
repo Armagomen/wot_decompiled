@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/unit_roster_config.py
-from constants import IS_CHINA, VEHICLE_CLASSES
 from UnitRoster import BaseUnitRoster, BaseUnitRosterSlot, BaseUnitRosterLimits
 
 class UnitRosterSlot(BaseUnitRosterSlot):
@@ -35,10 +34,6 @@ class EpicSlot(BaseUnitRosterSlot):
 
 
 class MapboxSlot(BaseUnitRosterSlot):
-    DEFAULT_LEVELS = (8, 10)
-
-
-class FunRandomSlot(BaseUnitRosterSlot):
     DEFAULT_LEVELS = (8, 10)
 
 
@@ -110,12 +105,4 @@ class MapBoxRoster(BaseUnitRoster):
     MAX_EMPTY_SLOTS = 2
     SLOT_TYPE = MapboxSlot
     DEFAULT_SLOT_PACK = MapboxSlot().pack()
-    LIMITS_TYPE = BaseUnitRosterLimits
-
-
-class FunRandomRoster(BaseUnitRoster):
-    MAX_SLOTS = 3
-    MAX_EMPTY_SLOTS = 2
-    SLOT_TYPE = FunRandomSlot
-    DEFAULT_SLOT_PACK = FunRandomSlot().pack()
     LIMITS_TYPE = BaseUnitRosterLimits

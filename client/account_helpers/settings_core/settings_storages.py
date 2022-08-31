@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/account_helpers/settings_core/settings_storages.py
 import functools
 import weakref
-import BigWorld
+
 import BattleReplay
+import BigWorld
 from AvatarInputHandler.cameras import FovExtended
 from adisp import async
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -11,6 +12,7 @@ from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import TimerConfirmDialogMeta
 from gui.shared.utils.monitor_settings import g_monitorSettings
 from messenger import g_settings as messenger_settings
+
 
 class ISettingsStorage(object):
 
@@ -178,7 +180,7 @@ class VideoSettingsStorage(ISettingsStorage):
                 g_monitorSettings.changeBorderlessSize(borderlessSizeWidth, borderlessSizeHeight)
             elif (not monitorChanged or restartApproved) and (videModeChanged or windowModeChanged):
                 deviseRecreated = True
-                BigWorld.changeVideoMode(videoMode.index, windowMode)
+                BigWorld.changeVideoMode(videoMode.index, int(windowMode))
             BigWorld.changeFullScreenAspectRatio(aspectRatio)
             self.clear()
             self._core.isDeviseRecreated = deviseRecreated

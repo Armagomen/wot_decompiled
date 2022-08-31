@@ -1,9 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/quests_controller.py
-import weakref
 import typing
+import weakref
+
 from constants import EVENT_TYPE, PremiumConfigs
 from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.ranked_battles.ranked_helpers import isRankedQuestID
+from gui.server_events.events_helpers import isBattleMattersQuestID, isPremium, isBattleRoyale, isDailyEpic, \
+    isDailyQuest
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
@@ -12,16 +16,10 @@ from skeletons.gui.game_control import IQuestsController, IBattleRoyaleControlle
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-from gui.server_events.events_helpers import isLinkedSet, isPremium, isBattleRoyale, isDailyEpic, isDailyQuest, isFunRandomQuest
-from gui.ranked_battles.ranked_helpers import isRankedQuestID
+
 if typing.TYPE_CHECKING:
-    from Vehicle import Vehicle
-    from gui.server_events.event_items import Quest
+    pass
 _MAX_LVL_FOR_TUTORIAL = 3
-
-def _isAvailableForMode(q):
-    return not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(q.getGroupID()) and not isFunRandomQuest(q.getID())
-
 
 class _QuestCache(object):
     __slots__ = ('__invVehicles', '__cache', '__eventsCache')
@@ -118,7 +116,7 @@ class _QuestCache(object):
             return not event.isCompleted() and event.isAvailable()[0]
         if isPremium(event.getGroupID()) and not cls.lobbyContext.getServerSettings().getPremQuestsConfig().get('enabled', False):
             return False
-        return False if isLinkedSet(event.getGroupID()) else True
+        return False if isBattleMattersQuestID(event.getID()) else True
 
 
 class QuestsController(IQuestsController):
@@ -180,9 +178,15 @@ class QuestsController(IQuestsController):
             if vehicle.isOnlyForBattleRoyaleBattles:
                 return list(self.__battleRoyaleController.getQuests().values())
         if notCompleted:
-            quests = [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() and not q.isCompleted() ]
+            quests = [q for q in self.getQuestForVehicle(vehicle) if
+                      not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(
+                          q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(
+                          q.getGroupID()) and q.shouldBeShown() and not q.isCompleted()]
             return quests
-        return [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() ]
+        return [q for q in self.getQuestForVehicle(vehicle) if
+                not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(
+                    q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(
+                    q.getGroupID()) and q.shouldBeShown()]
 
     def __invalidateEventsData(self, *args):
         self.__quests.invalidate()

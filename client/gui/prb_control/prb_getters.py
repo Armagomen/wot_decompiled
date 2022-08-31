@@ -1,14 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/prb_getters.py
 import BigWorld
+from PlayerEvents import g_playerEvents
 from constants import QUEUE_TYPE, PREBATTLE_TYPE_NAMES, ARENA_GUI_TYPE, PREBATTLE_TYPE, DEFAULT_LANGUAGE, ACCOUNT_ATTR
 from gui.prb_control.settings import makePrebattleSettings, VEHICLE_MAX_LEVEL
 from helpers import dependency
-from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.game_control import IBootcampController
+from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from soft_exception import SoftException
-from PlayerEvents import g_playerEvents
+
 
 def getQueueType():
     return getattr(BigWorld.player(), 'battleQueueType', QUEUE_TYPE.UNKNOWN)
@@ -99,14 +100,13 @@ _ARENA_GUI_TYPE_BY_PRB_TYPE = {PREBATTLE_TYPE.SQUAD: ARENA_GUI_TYPE.RANDOM,
  PREBATTLE_TYPE.TRAINING: ARENA_GUI_TYPE.TRAINING,
  PREBATTLE_TYPE.EVENT: ARENA_GUI_TYPE.EVENT_BATTLES}
 _ARENA_GUI_TYPE_BY_QUEUE_TYPE = {QUEUE_TYPE.RANDOMS: ARENA_GUI_TYPE.RANDOM,
- QUEUE_TYPE.EVENT_BATTLES: ARENA_GUI_TYPE.EVENT_BATTLES,
- QUEUE_TYPE.RANKED: ARENA_GUI_TYPE.RANKED,
- QUEUE_TYPE.EPIC: ARENA_GUI_TYPE.EPIC_BATTLE,
- QUEUE_TYPE.BATTLE_ROYALE: ARENA_GUI_TYPE.BATTLE_ROYALE,
- QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: ARENA_GUI_TYPE.BATTLE_ROYALE,
- QUEUE_TYPE.MAPBOX: ARENA_GUI_TYPE.MAPBOX,
- QUEUE_TYPE.MAPS_TRAINING: ARENA_GUI_TYPE.MAPS_TRAINING,
- QUEUE_TYPE.FUN_RANDOM: ARENA_GUI_TYPE.FUN_RANDOM}
+                                 QUEUE_TYPE.EVENT_BATTLES: ARENA_GUI_TYPE.EVENT_BATTLES,
+                                 QUEUE_TYPE.RANKED: ARENA_GUI_TYPE.RANKED,
+                                 QUEUE_TYPE.EPIC: ARENA_GUI_TYPE.EPIC_BATTLE,
+                                 QUEUE_TYPE.BATTLE_ROYALE: ARENA_GUI_TYPE.BATTLE_ROYALE,
+                                 QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: ARENA_GUI_TYPE.BATTLE_ROYALE,
+                                 QUEUE_TYPE.MAPBOX: ARENA_GUI_TYPE.MAPBOX,
+                                 QUEUE_TYPE.MAPS_TRAINING: ARENA_GUI_TYPE.MAPS_TRAINING}
 
 def getArenaGUIType(prbType=None, queueType=None):
     if prbType is None:

@@ -3,16 +3,18 @@
 import logging
 import operator
 import typing
-from account_helpers.AccountSettings import MAPBOX_SURVEYS
+
 from account_helpers import AccountSettings
+from account_helpers.AccountSettings import MAPBOX_SURVEYS
 from constants import ARENA_BONUS_TYPE
 from gui.doc_loaders.surveys_loader import getSurvey
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_question_model import QuestionType
 from gui.mapbox.mapbox_survey_helper import AlternativeQuestion
 from shared_utils import findFirst, first
 from soft_exception import SoftException
+
 if typing.TYPE_CHECKING:
-    from gui.mapbox.mapbox_survey_helper import IQuestion
+    pass
 _logger = logging.getLogger(__name__)
 
 class MapboxSurveyManager(object):
@@ -77,15 +79,7 @@ class MapboxSurveyManager(object):
             if question.isMultipleChoice():
                 savedAnswers = surveyData.get(questionId, [])
                 answers = question.validateAnswers(answers, savedAnswers) if answers else []
-            for q in self.__questions:
-                if q != question and q.getLinkedQuestionId() == question.getQuestionId():
-                    if q.getQuestionType() == QuestionType.ALTERNATIVE:
-                        for alternative in q.getAlternatives():
-                            surveyData.pop(alternative.getQuestionId(), None)
-
-                    else:
-                        surveyData.pop(q.getQuestionId(), None)
-
+            self.__processLinkedAnswers(surveyData, question, answers)
             if question.getLinkedQuestionId():
                 selectedAnswers = self.getSelectedAnswers(question.getLinkedQuestionId())
                 if len(selectedAnswers) == 1:
@@ -176,3 +170,18 @@ class MapboxSurveyManager(object):
 
     def __isShownAllQuestions(self):
         return self.__currentQuestionIdx >= len(self.__questions)
+
+    def __processLinkedAnswers(self, surveyData, question, newAnswers):
+        linkedQuestions = [q for q in self.__questions if
+                           q != question and q.getLinkedQuestionId() == question.getQuestionId()]
+        for q in linkedQuestions:
+            if q.getQuestionType() == QuestionType.ALTERNATIVE:
+                if q.isSyncronizedAnswers():
+                    q.synchronizeAnswers(surveyData, q, newAnswers)
+                else:
+                    for altQuestion in q.getAlternatives():
+                        surveyData.pop(altQuestion.getQuestionId(), None)
+
+            surveyData.pop(q.getQuestionId(), None)
+
+        return

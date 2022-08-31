@@ -1,16 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/battleground/mines_object.py
+import AnimationSequence
 import BigWorld
 import Math
-import AnimationSequence
 from PlayerEvents import g_playerEvents
-from gui.battle_control import avatar_getter
-from helpers import dependency
 from battleground.component_loading import loadComponentSystem, Loader, CompositeLoaderMixin
 from battleground.components import TerrainAreaGameObject, EffectPlayerObject, SequenceObject, SmartSequenceObject
+from gui.battle_control import avatar_getter
+from helpers import dependency
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 _CONFIG_PATH = 'scripts/dynamic_objects.xml'
+
 
 def _getSequenceResourceMapping(path, spaceId):
     return {'sequence': Loader(AnimationSequence.Loader(path, spaceId))}
@@ -25,18 +27,27 @@ def loadMines(ownerVehicleID, callback, dynamicObjectsCache=None, battleSession=
     loaders = {}
     effDescr = dynamicObjectsCache.getConfig(battleSession.arenaVisitor.getArenaGuiType()).getMinesEffect()
     isAlly = False
-    playerTeam = avatar_getter.getPlayerTeam()
     ownerVehicleInfo = battleSession.getArenaDP().getVehicleInfo(ownerVehicleID)
+    if not avatar_getter.isObserver():
+        playerTeam = avatar_getter.getPlayerTeam()
+    else:
+        observedVehicleID = avatar_getter.getVehicleIDAttached()
+        observedVehicleInfo = battleSession.getArenaDP().getVehicleInfo(observedVehicleID)
+        playerTeam = observedVehicleInfo.team
     if ownerVehicleInfo is not None:
         isAlly = playerTeam == ownerVehicleInfo.team
     idleEff = effDescr.idleEffect.ally if isAlly else effDescr.idleEffect.enemy
     gameObject = MinesObject(isAlly)
     gameObject.prepareCompositeLoader(callback)
     spaceId = BigWorld.player().spaceID
-    loadComponentSystem(gameObject.startEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(effDescr.plantEffect.effectDescr.path, spaceId))
-    loadComponentSystem(gameObject.destroyEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(effDescr.destroyEffect.effectDescr.path, spaceId))
-    loadComponentSystem(gameObject.idleEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(idleEff.path, spaceId))
-    loadComponentSystem(gameObject.blowUpEffectPlayer, gameObject.appendPiece, _getEffectResourceMapping(effDescr.blowUpEffectName))
+    loadComponentSystem(gameObject.startEffectPlayer, gameObject.appendPiece,
+                        _getSequenceResourceMapping(effDescr.plantEffect.effectDescr.path, spaceId))
+    loadComponentSystem(gameObject.destroyEffectPlayer, gameObject.appendPiece,
+                        _getSequenceResourceMapping(effDescr.destroyEffect.effectDescr.path, spaceId))
+    loadComponentSystem(gameObject.idleEffectPlayer, gameObject.appendPiece,
+                        _getSequenceResourceMapping(idleEff.path, spaceId))
+    loadComponentSystem(gameObject.blowUpEffectPlayer, gameObject.appendPiece,
+                        _getEffectResourceMapping(effDescr.blowUpEffectName))
     loadComponentSystem(gameObject.decalEffectPlayer, gameObject.appendPiece, _getEffectResourceMapping('minesDecalEffect'))
     loadComponentSystem(gameObject, gameObject.appendPiece, loaders)
     return gameObject

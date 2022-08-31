@@ -5,27 +5,22 @@ import time
 import weakref
 from collections import namedtuple
 from functools import partial
+
+import BattleReplay
 import BigWorld
+import CommandMapping
 import GUI
 import Keys
 import Math
 import ResMgr
-import BattleReplay
-import CommandMapping
 import SoundGroups
 import TriggersManager
-import VideoCamera
-import cameras
 import constants
 import math_utils
-from AimingSystems import getShotTargetInfo
-from AimingSystems.magnetic_aim import autoAimProcessor, magneticAimProcessor, MagneticAimSettings
 from AvatarInputHandler import AimingSystems, aih_global_binding, gun_marker_ctrl
 from AvatarInputHandler.DynamicCameras.camera_switcher import SwitchToPlaces
 from AvatarInputHandler.StrategicCamerasInterpolator import StrategicCamerasInterpolator
 from AvatarInputHandler.spg_marker_helpers.spg_marker_helpers import getSPGShotResult, getSPGShotFlyTime
-from DynamicCameras import SniperCamera, StrategicCamera, ArcadeCamera, ArtyCamera, DualGunCamera
-from PostmortemDelay import PostmortemDelay
 from ProjectileMover import collideDynamicAndStatic
 from TriggersManager import TRIGGER_TYPE
 from Vehicle import Vehicle as VehicleEntity
@@ -37,15 +32,23 @@ from constants import VEHICLE_SIEGE_STATE
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION
 from gui import GUI_SETTINGS
 from gui.battle_control import avatar_getter, vehicle_getter
-from gui.battle_control import event_dispatcher as gui_event_dispatcher
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
 from helpers import dependency, uniprof
 from items import _xml
 from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
+
+import VideoCamera
+import cameras
+from AimingSystems import getShotTargetInfo
+from AimingSystems.magnetic_aim import magneticAimProcessor, MagneticAimSettings
+from DynamicCameras import SniperCamera, StrategicCamera, ArcadeCamera, ArtyCamera, DualGunCamera
+from PostmortemDelay import PostmortemDelay
+
 _logger = logging.getLogger(__name__)
 _WHEELED_VEHICLE_POSTMORTEM_DELAY = 3
+
 
 class IControlMode(object):
 
@@ -268,7 +271,6 @@ class VideoCameraControlMode(_GunControlMode):
         super(VideoCameraControlMode, self).enable(**args)
         self.__previousArgs = args
         self.__prevModeName = args.get('prevModeName')
-        gui_event_dispatcher.hideAutoAimMarker()
         self._cam.enable(**args)
 
     def getDesiredShotPoint(self, ignoreAimingMode=False):
@@ -550,8 +552,6 @@ class ArcadeControlMode(_GunControlMode):
         if isFiredFreeCamera:
             self.setAimingMode(isDown, AIMING_MODE.USER_DISABLED)
         if isFiredLockTarget and isDown:
-            gui_event_dispatcher.hideAutoAimMarker()
-            autoAimProcessor(target=BigWorld.target())
             BigWorld.player().autoAim(BigWorld.target())
             self.__simpleAimTarget = BigWorld.target()
         if isMagneticAimEnabled and isFiredLockTarget and not isDown:
@@ -562,7 +562,6 @@ class ArcadeControlMode(_GunControlMode):
             BigWorld.player().shoot()
             return True
         elif cmdMap.isFired(CommandMapping.CMD_CM_LOCK_TARGET_OFF, key) and isDown:
-            gui_event_dispatcher.hideAutoAimMarker()
             BigWorld.player().autoAim(None)
             return True
         elif cmdMap.isFired(CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION, key) and isDown:
@@ -1080,14 +1079,12 @@ class SniperControlMode(_GunControlMode):
             if isFiredFreeCamera:
                 self.setAimingMode(isDown, AIMING_MODE.USER_DISABLED)
             if isFiredLockTarget:
-                autoAimProcessor(target=BigWorld.target())
                 BigWorld.player().autoAim(BigWorld.target())
         if cmdMap.isFired(CommandMapping.CMD_CM_SHOOT, key) and isDown:
             BigWorld.player().shoot()
             return True
         elif cmdMap.isFired(CommandMapping.CMD_CM_LOCK_TARGET_OFF, key) and isDown:
             BigWorld.player().autoAim(None)
-            gui_event_dispatcher.hideAutoAimMarker()
             return True
         elif cmdMap.isFired(CommandMapping.CMD_CM_ALTERNATE_MODE, key) and isDown:
             self._aih.onControlModeChanged(CTRL_MODE_NAME.ARCADE, preferredPos=self.camera.aimingSystem.getDesiredShotPoint(), turretYaw=self._cam.aimingSystem.turretYaw, gunPitch=self._cam.aimingSystem.gunPitch, aimingMode=self._aimingMode, closesDist=False)
@@ -1746,8 +1743,8 @@ class _ShellingControl(object):
             result = GUI.Simple(_ShellingControl.__TARGET_POINTER_FILE_NAME)
             result.position[2] = 0.7
             result.size = (2, 2)
-            result.materialFX = 'BLEND_INVERSE_COLOUR'
-            result.filterType = 'LINEAR'
+            result.materialFX = GUI.Simple.eMaterialFX.BLEND_INVERSE_COLOUR
+            result.filterType = GUI.Simple.eFilterType.LINEAR
             result.visible = False
             GUI.addRoot(result)
         elif self.__targetPointer is not None:

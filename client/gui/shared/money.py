@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/money.py
 from collections import namedtuple
+
 from shared_utils import CONST_CONTAINER
 from soft_exception import SoftException
+
 
 class Currency(CONST_CONTAINER):
     CREDITS = 'credits'
@@ -11,11 +13,12 @@ class Currency(CONST_CONTAINER):
     EVENT_COIN = 'eventCoin'
     BPCOIN = 'bpcoin'
     BRCOIN = 'brcoin'
+    FREE_XP = 'freeXP'
     ALL = (CREDITS,
-     GOLD,
-     CRYSTAL,
-     EVENT_COIN,
-     BPCOIN)
+           GOLD,
+           CRYSTAL,
+           EVENT_COIN,
+           BPCOIN)
     BY_WEIGHT = (GOLD,
      CRYSTAL,
      CREDITS,

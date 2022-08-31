@@ -2,24 +2,25 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/elen.py
 import constants
 from CurrentVehicle import g_currentVehicle
-from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
+from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
+from gui.event_boards.event_boards_items import EVENT_DATE_TYPE
+from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
+from gui.prb_control import prb_getters
+from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.formatters import text_styles, icons
 from gui.shared.tooltips import TOOLTIP_TYPE, formatters
 from gui.shared.tooltips.common import BlocksTooltipData
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from gui.prb_control.entities.listener import IGlobalListener
 from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.event_boards_controllers import IEventBoardController
-from gui.event_boards.event_boards_items import EVENT_DATE_TYPE
-from gui.prb_control import prb_getters
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 
 class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
     _eventsController = dependency.descriptor(IEventBoardController)
@@ -72,7 +73,8 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
                 text = '{} {} {} {}'.format(flagIcon, text_styles.tutorial(_ms(msgText)), text_styles.tutorial(time), text_styles.tutorial(timeName))
             else:
                 flagIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_FLAG_ICON)
-                text = '{} {} {} {}'.format(flagIcon, text_styles.main(_ms(msgText)), text_styles.stats(time), text_styles.stats(timeName))
+                text = u'{} {} {} {}'.format(flagIcon, text_styles.main(_ms(msgText)), text_styles.stats(time),
+                                             text_styles.stats(timeName))
         return formatters.packImageTextBlockData(title=text_styles.highTitle(_ms(TOOLTIPS.HANGAR_ELEN_HEADER_NAME, name=currentEvent.getName())), img=currentEvent.getKeyArtSmall(), txtPadding=formatters.packPadding(top=22), txtOffset=20, txtGap=-8, desc=text)
 
     def _getPrimeTimes(self, primeTimes):

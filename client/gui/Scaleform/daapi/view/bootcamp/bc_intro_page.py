@@ -1,30 +1,32 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/bc_intro_page.py
-import WWISE
-import BigWorld
 import BattleReplay
+import BigWorld
+import WWISE
 import Windowing
 from PlayerEvents import g_playerEvents
+from bootcamp.BootCampEvents import g_bootcampEvents
 from bootcamp.Bootcamp import BOOTCAMP_SOUND, BOOTCAMP_UI_COMPONENTS
+from bootcamp.BootcampSettings import getBattleDefaults
 from constants import WOT_GAMEPLAY
+from debug_utils_bootcamp import LOG_ERROR_BOOTCAMP
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.BCIntroVideoPageMeta import BCIntroVideoPageMeta
-from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.app_loader.settings import APP_NAME_SPACE
-from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.BootcampSettings import getBattleDefaults
-from debug_utils_bootcamp import LOG_ERROR_BOOTCAMP
-from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.app_loader.settings import APP_NAME_SPACE
+from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
+
 PATH_BACKGROUNDS = '../maps/icons/bootcamp/loading/{0}_{1}.png'
 PATH_BACKGROUNDS_CORE = '../maps/icons/bootcamp/loading/{0}_{1}_core.png'
 LINKAGE_BACKGROUNDS = '{0}Page{1}UI'
+
 
 class INTRO_HIGHLIGHT_TYPE(object):
     START_BUTTON = 0
@@ -137,7 +139,6 @@ class BCIntroPage(BCIntroVideoPageMeta):
         super(BCIntroPage, self)._dispose()
 
     def _start(self):
-        WWISE.WW_eventGlobal('loginscreen_mute')
         listSmall = []
         listBig = []
         for pageId in self._tutorialPages:
@@ -160,16 +161,23 @@ class BCIntroPage(BCIntroVideoPageMeta):
          'allowSkipButton': self._showSkipOption,
          'selectButtonLabel': label,
          'bufferTime': self._backgroundVideoBufferTime,
-         'rewards': [self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_TANKS, RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_VEHICLES_176X102, [BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_TOOLTIP_TANK,
-                      BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_VEHICLE,
-                      RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCVEHICLESHINE,
-                      50]), self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_PREMIUM, RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_PREM_BIG_176X102, [BOOTCAMP.TOOLTIP_PROGRESSION_LABEL_AWARD,
-                      BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_PREMIUM,
-                      RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCPREMIUMPLUS,
-                      50]), self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_GOLD, RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_GOLD_BIG_176X102, [BOOTCAMP.TOOLTIP_PROGRESSION_LABEL_GOLD,
-                      BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_GOLD,
-                      RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCGOLD,
-                      50])]})
+         'rewards': [self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_TANKS,
+                                     RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_VEHICLES_176X102,
+                                     [BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_TOOLTIP_TANK,
+                                      BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_VEHICLE,
+                                      RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCVEHICLESHINE,
+                                      50]), self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_PREMIUM,
+                                                            RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_PREM_BIG_176X102,
+                                                            [BOOTCAMP.TOOLTIP_PROGRESSION_LABEL_PREMIUM,
+                                                             BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_PREMIUM,
+                                                             RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCPREMIUMPLUS,
+                                                             50]),
+                     self._getReward(BOOTCAMP.WELLCOME_BOOTCAMP_REWARDS_GOLD,
+                                     RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_GOLD_BIG_176X102,
+                                     [BOOTCAMP.TOOLTIP_PROGRESSION_LABEL_GOLD,
+                                      BOOTCAMP.TOOLTIP_PROGRESSION_DESCRIPTION_GOLD,
+                                      RES_ICONS.MAPS_ICONS_BOOTCAMP_REWARDS_TOOLTIPS_BCGOLD,
+                                      50])]})
 
     def _onDisconnected(self):
         self.destroy()

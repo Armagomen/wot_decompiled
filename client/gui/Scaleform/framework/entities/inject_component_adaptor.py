@@ -2,8 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/framework/entities/inject_component_adaptor.py
 import logging
 from functools import wraps
+
 from frameworks.wulf import WindowSettings, Window, WindowStatus, WindowLayer
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
+
 _logger = logging.getLogger(__name__)
 
 def hasAliveInject(deadUnexpected=False):
@@ -80,8 +82,8 @@ class InjectComponentAdaptor(BaseDAAPIComponent):
             settings.content = view
             self.__injected = InjectWindow(settings)
             self.__injected.onStatusChanged += self.__onStatusChanged
-            self.__injected.load()
             self._addInjectContentListeners()
+            self.__injected.load()
             return
 
     def _destroyInjected(self, wasAdded=True):

@@ -2,21 +2,25 @@
 # Embedded file name: scripts/client/connection_mgr.py
 import hashlib
 import json
-import ResMgr
+
 import BigWorld
+import ResMgr
 import constants
 from Event import Event, EventManager
-from PlayerEvents import g_playerEvents
+from account_shared import isValidClientVersion
 from debug_utils import LOG_DEBUG, LOG_NOTE, LOG_WARNING
 from shared_utils import nextTick
-from predefined_hosts import g_preDefinedHosts, AUTO_LOGIN_QUERY_URL
-from helpers import getClientLanguage, uniprof
-from account_shared import isValidClientVersion
+
+from PlayerEvents import g_playerEvents
 from account_helpers import pwd_token
+from helpers import getClientLanguage, uniprof
+from predefined_hosts import g_preDefinedHosts, AUTO_LOGIN_QUERY_URL
 from skeletons.connection_mgr import IConnectionManager
+
 _MIN_RECONNECTION_TIMEOUT = 5
 _RECONNECTION_TIMEOUT_INCREMENT = 5
 _MAX_RECONNECTION_TIMEOUT = 20
+
 
 class CONNECTION_METHOD(object):
     BASIC = 'basic'
@@ -58,6 +62,7 @@ class ConnectionData(object):
         self.inactivityTimeout = None
         self.publicKeyPath = None
         self.clientContext = None
+        self.peripheryRoutingGroup = None
         return
 
 
@@ -70,11 +75,13 @@ class ConnectionManager(IConnectionManager):
         self.__connectionStatus = LOGIN_STATUS.NOT_SET
         self.__lastLoginName = None
         self.__hostItem = g_preDefinedHosts._makeHostItem('', '', '')
+        self.__availableHosts = None
         self.__retryConnectionPeriod = _MIN_RECONNECTION_TIMEOUT
         self.__retryConnectionCallbackID = None
         self.__connectionInProgress = False
         g_playerEvents.onKickWhileLoginReceived += self.__processKick
         g_playerEvents.onLoginQueueNumberReceived += self.__processQueue
+        g_playerEvents.onPeripheryRoutingGroupReceived += self.setPeripheryRoutingGroup
         self.__eManager = EventManager()
         self.onLoggedOn = Event(self.__eManager)
         self.onConnected = Event(self.__eManager)
@@ -83,9 +90,11 @@ class ConnectionManager(IConnectionManager):
         self.onKickedFromServer = Event(self.__eManager)
         self.onKickWhileLoginReceived = Event(self.__eManager)
         self.onQueued = Event(self.__eManager)
+        self.onPeripheryRoutingGroupUpdated = Event(self.__eManager)
         return
 
     def fini(self):
+        g_playerEvents.onPeripheryRoutingGroupReceived -= self.setPeripheryRoutingGroup
         g_playerEvents.onKickWhileLoginReceived -= self.__processKick
         g_playerEvents.onLoginQueueNumberReceived -= self.__processQueue
         self.__eManager.clear()
@@ -138,6 +147,7 @@ class ConnectionManager(IConnectionManager):
     def __serverResponseHandler(self, stage, status, responseDataJSON):
         if constants.IS_DEVELOPMENT:
             LOG_DEBUG('Received server response with stage: {0}, status: {1}, responseData: {2}'.format(stage, status, responseDataJSON))
+        status = str(status)
         self.__connectionInProgress = False
         self.__connectionStatus = status
         try:
@@ -180,11 +190,14 @@ class ConnectionManager(IConnectionManager):
             password = ''
         else:
             password = pwd_token.generate(password)
+        if 'allowed_peripheries' in params:
+            g_preDefinedHosts.setAvailablePeripheriesByRoutingGroup(
+                [int(x) for x in params['allowed_peripheries'].split() if x.isdigit()])
         self.__connectionData.username = username_
         self.__connectionData.password = password
         self.__connectionData.inactivityTimeout = constants.CLIENT_INACTIVITY_TIMEOUT
         self.__connectionData.clientContext = json.dumps({'lang_id': getClientLanguage(),
-         'publication': params.get('publication')})
+                                                          'publication': params.get('publication')})
         if constants.IS_DEVELOPMENT and params['auth_method'] == CONNECTION_METHOD.BASIC and params['login'][0] == '@':
             try:
                 self.__connectionData.username = params['login'][1:]
@@ -265,6 +278,25 @@ class ConnectionManager(IConnectionManager):
     def connectionMethod(self):
         return self.__connectionMethod
 
+    @property
+    def peripheryRoutingGroup(self):
+        return self.__connectionData.peripheryRoutingGroup
+
+    @property
+    def availableHosts(self):
+        if self.peripheryRoutingGroup is not None and self.__availableHosts is not None:
+            return [p for p in g_preDefinedHosts.peripheries() if p.peripheryID in self.__availableHosts]
+        else:
+            return g_preDefinedHosts.hosts()
+
+    def isAvailablePeriphery(self, peripheryID=None):
+        if self.__connectionData.peripheryRoutingGroup is None or self.__availableHosts is None:
+            return True
+        else:
+            if peripheryID is None:
+                peripheryID = self.peripheryID
+            return peripheryID in self.__availableHosts
+
     def disconnect(self):
         BigWorld.disconnect()
 
@@ -282,10 +314,17 @@ class ConnectionManager(IConnectionManager):
         return self.__connectionStatus == LOGIN_STATUS.LOGGED_ON
 
     def checkClientServerVersions(self, clientVersion, serverVersion):
-        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (constants.CONTENT_TYPE.INCOMPLETE, constants.CONTENT_TYPE.TUTORIAL):
+        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (
+        constants.CONTENT_TYPE.INCOMPLETE, constants.CONTENT_TYPE.TUTORIAL):
             LOG_DEBUG('Version mismatch. Client is "%s", server needs "%s".' % (clientVersion, serverVersion))
             self.onRejected(LOGIN_STATUS.LOGIN_BAD_PROTOCOL_VERSION, {})
             BigWorld.disconnect()
 
     def setLastLogin(self, email):
         self.__lastLoginName = email
+
+    def setPeripheryRoutingGroup(self, routingGroup, availableHosts):
+        self.__connectionData.peripheryRoutingGroup = routingGroup
+        self.__availableHosts = availableHosts
+        g_preDefinedHosts.setAvailablePeripheriesByRoutingGroup(availableHosts)
+        self.onPeripheryRoutingGroupUpdated()

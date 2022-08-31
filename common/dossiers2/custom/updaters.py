@@ -1,19 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/custom/updaters.py
-import sys
 import struct
+import sys
 from functools import partial
-from dossiers2.common.updater_utils import getNewStaticSizeBlockValues, getStaticSizeBlockRecordValues
-from dossiers2.common.updater_utils import getDictBlockRecordValues, updateDictRecords
-from dossiers2.common.updater_utils import getNewBinarySetBlockValues, setStaticSizeBlockRecordValues
-from dossiers2.common.updater_utils import addBlock, removeBlock, addRecords, removeRecords, setVersion
-from dossiers2.common.updater_utils import getHeader, getBlockSize, getBlockCompDescr, setBlockCompDescr
-from dossiers2.common.updater_utils import getBinarySetValue, updateStaticSizeBlockRecords
+
 import dossiers2.custom.tankmen_dossier1_updater
-from dossiers2.custom.config import RECORD_CONFIGS
 from VersionUpdater import VersionUpdaterBase
-from wotdecorators import singleton
 from debug_utils import LOG_DEBUG_DEV
+from dossiers2.common.updater_utils import addBlock, removeBlock, addRecords, removeRecords, setVersion
+from dossiers2.common.updater_utils import getBinarySetValue, updateStaticSizeBlockRecords
+from dossiers2.common.updater_utils import getDictBlockRecordValues, updateDictRecords
+from dossiers2.common.updater_utils import getHeader, getBlockSize, getBlockCompDescr, setBlockCompDescr
+from dossiers2.common.updater_utils import getNewBinarySetBlockValues, setStaticSizeBlockRecordValues
+from dossiers2.common.updater_utils import getNewStaticSizeBlockValues, getStaticSizeBlockRecordValues
+from dossiers2.custom.config import RECORD_CONFIGS
+from wotdecorators import singleton
+
 ACCOUNT_DOSSIER_VERSION = 142
 ACCOUNT_DOSSIER_UPDATE_FUNCTION_TEMPLATE = '__updateFromAccountDossier%d'
 VEHICLE_DOSSIER_VERSION = 106

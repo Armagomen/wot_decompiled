@@ -1,10 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/monitor_settings.py
 import math
+
 import BigWorld
 import GUI
+from gui.shared.utils.graphics import getSuitableVideoModes, getSuitableWindowSizes, VideoMode, WindowSize, \
+    BorderlessSize
 from shared_utils import findFirst
-from gui.shared.utils.graphics import getSuitableVideoModes, getSuitableWindowSizes, VideoMode, WindowSize, BorderlessSize
+
 
 class MonitorSettings(object):
 
@@ -75,7 +78,7 @@ class MonitorSettings(object):
         BigWorld.changeVideoMode(-1, BigWorld.WindowModeBorderless)
 
     def setGlyphCache(self, scale=1):
-        textureSize = 1024 * math.ceil(scale)
+        textureSize = int(1024 * math.ceil(scale))
         GUI.wg_setGlyphCacheParams(1, textureSize, textureSize)
 
     @property

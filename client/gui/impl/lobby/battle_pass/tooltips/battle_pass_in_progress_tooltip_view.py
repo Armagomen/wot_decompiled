@@ -1,21 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_in_progress_tooltip_view.py
 from collections import OrderedDict
-from battle_pass_common import BattlePassConsts
+
 import constants
+from battle_pass_common import BattlePassConsts
 from frameworks.wulf import ViewSettings, Array
+from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
+from gui.battle_pass.battle_pass_helpers import isSeasonEndingSoon, getFormattedTimeLeft, \
+    getSupportedCurrentArenaBonusType
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_pass_in_progress_tooltip_view_model import BattlePassInProgressTooltipViewModel
-from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.reward_points_by_place_model import RewardPointsByPlaceModel
+from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_pass_in_progress_tooltip_view_model import \
+    BattlePassInProgressTooltipViewModel
+from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.reward_points_by_place_model import \
+    RewardPointsByPlaceModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.reward_points_model import RewardPointsModel
 from gui.impl.pub import ViewImpl
-from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
-from gui.battle_pass.battle_pass_helpers import isSeasonEndingSoon, getFormattedTimeLeft, getSupportedCurrentArenaBonusType
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.formatters.invites import getPreQueueName
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IBattleRoyaleController
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 class BattlePassInProgressTooltipView(ViewImpl):
     __battlePass = dependency.descriptor(IBattlePassController)
@@ -68,7 +73,6 @@ class BattlePassInProgressTooltipView(ViewImpl):
                 model.setNotChosenRewardCount(self.__battlePass.getNotChosenRewardCount())
                 model.setExpireTime(self.__battlePass.getChapterRemainingTime(chapterID))
                 model.setIsExtra(self.__battlePass.isExtraChapter(chapterID))
-                model.setFinalReward(self.__battlePass.getRewardType(chapterID).value)
                 timeTillEnd = ''
                 if isSeasonEndingSoon() and not isBattlePassPurchased:
                     timeTillEnd = getFormattedTimeLeft(self.__battlePass.getSeasonTimeLeft())

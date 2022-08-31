@@ -2,12 +2,9 @@
 # Embedded file name: scripts/client/gui/Scaleform/lobby_entry.py
 import BigWorld
 from frameworks.wulf import WindowLayer
-from gui.shared.system_factory import collectLobbyTooltipsBuilders
 from gui.Scaleform import SCALEFORM_SWF_PATH_V3
 from gui.Scaleform.daapi.settings.config import ADVANCED_COMPLEX_TOOLTIPS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.tooltip_mgr import ToolTip
-from gui.Scaleform.framework.ui_logging_manager import UILoggerManager
 from gui.Scaleform.framework.application import AppEntry
 from gui.Scaleform.framework.managers import LoaderManager, ContainerManager
 from gui.Scaleform.framework.managers.CacheManager import CacheManager
@@ -19,31 +16,34 @@ from gui.Scaleform.framework.managers.context_menu import ContextMenuManager
 from gui.Scaleform.framework.managers.event_logging import EventLogManager
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.framework.managers.optimization_manager import GraphicsOptimizationManager, OptimizationSetting
+from gui.Scaleform.framework.tooltip_mgr import ToolTip
+from gui.Scaleform.framework.ui_logging_manager import UILoggerManager
 from gui.Scaleform.genConsts.GRAPHICS_OPTIMIZATION_ALIASES import GRAPHICS_OPTIMIZATION_ALIASES
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
 from gui.Scaleform.managers.ColorSchemeManager import ColorSchemeManager
-from gui.Scaleform.managers.cursor_mgr import CursorManager
 from gui.Scaleform.managers.GameInputMgr import GameInputMgr
 from gui.Scaleform.managers.GlobalVarsManager import GlobalVarsManager
 from gui.Scaleform.managers.PopoverManager import PopoverManager
-from gui.sounds.SoundManager import SoundManager
 from gui.Scaleform.managers.TweenSystem import TweenManager
 from gui.Scaleform.managers.UtilsManager import UtilsManager
+from gui.Scaleform.managers.cursor_mgr import CursorManager
 from gui.Scaleform.managers.voice_chat import LobbyVoiceChatManager
 from gui.impl.gen import R
 from gui.shared import EVENT_BUS_SCOPE
+from gui.shared.system_factory import collectLobbyTooltipsBuilders
+from gui.sounds.SoundManager import SoundManager
 from helpers import dependency, uniprof
 from skeletons.gui.app_loader import GuiGlobalSpaceID
 from skeletons.gui.game_control import IBootcampController
+
 LOBBY_OPTIMIZATION_CONFIG = {VIEW_ALIAS.LOBBY_HEADER: OptimizationSetting(),
- VIEW_ALIAS.LOBBY_TECHTREE: OptimizationSetting(),
- VIEW_ALIAS.LOBBY_RESEARCH: OptimizationSetting(),
- HANGAR_ALIASES.TANK_CAROUSEL: OptimizationSetting(),
- HANGAR_ALIASES.RANKED_TANK_CAROUSEL: OptimizationSetting(),
- HANGAR_ALIASES.BATTLEPASS_TANK_CAROUSEL: OptimizationSetting(),
+                             VIEW_ALIAS.LOBBY_TECHTREE: OptimizationSetting(),
+                             VIEW_ALIAS.LOBBY_RESEARCH: OptimizationSetting(),
+                             HANGAR_ALIASES.TANK_CAROUSEL: OptimizationSetting(),
+                             HANGAR_ALIASES.RANKED_TANK_CAROUSEL: OptimizationSetting(),
+                             HANGAR_ALIASES.BATTLEPASS_TANK_CAROUSEL: OptimizationSetting(),
  HANGAR_ALIASES.ROYALE_TANK_CAROUSEL: OptimizationSetting(),
  HANGAR_ALIASES.MAPBOX_TANK_CAROUSEL: OptimizationSetting(),
- HANGAR_ALIASES.FUN_RANDOM_TANK_CAROUSEL: OptimizationSetting(),
  GRAPHICS_OPTIMIZATION_ALIASES.CUSTOMISATION_BOTTOM_PANEL: OptimizationSetting()}
 
 class LobbyEntry(AppEntry):

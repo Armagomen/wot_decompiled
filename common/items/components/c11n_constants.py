@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/c11n_constants.py
-import constants
 from soft_exception import SoftException
 RENT_DEFAULT_BATTLES = 50
 MAX_OUTFIT_LENGTH = 1024
@@ -102,6 +101,7 @@ class ItemTags(object):
     ADD_NATIONAL_EMBLEM = 'addNationalEmblem'
     DISABLE_VERTICAL_MIRROR = 'disableVerticalMirror'
     STYLE_PROGRESSION = 'styleProgression'
+    QUESTS_PROGRESSION = 'questsProgression'
     PROGRESSION_REWIND_ENABLED = 'progression_rewind_enabled'
     ONLY_VERTICAL_MIRROR = 'onlyVerticalMirror'
     HIDE_IF_INCOMPATIBLE = 'hideIfIncompatible'

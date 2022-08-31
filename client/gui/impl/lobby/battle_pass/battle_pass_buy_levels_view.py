@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_buy_levels_view.py
 import logging
+
 import SoundGroups
 from battle_pass_common import BattlePassState
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
@@ -23,6 +24,7 @@ from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IWalletController
 from skeletons.gui.shared import IItemsCache
+
 _rBattlePass = R.strings.battle_pass
 _logger = logging.getLogger(__name__)
 
@@ -161,7 +163,6 @@ class BattlePassBuyLevelView(ViewImpl):
         model.setLevelsStart(startLevel - 1)
         model.setChapterID(self.__chapterID)
         model.setLevelsPassed(self.__package.getCurrentLevel())
-        model.setFinalReward(self.__battlePass.getRewardType(self.__chapterID).value)
         self.__updateConfirmAnyNumberModel(self.__package.getLevelsCount())
 
     def __updateConfirmAnyNumberModel(self, count):
@@ -184,7 +185,6 @@ class BattlePassBuyLevelView(ViewImpl):
             tx.setToLevel(toLevel)
             tx.setPackageState(PackageType.ANYLEVELS)
             tx.setChapterID(self.__chapterID)
-            tx.setFinalReward(self.__battlePass.getRewardType(self.__chapterID).value)
         packBonusModelAndTooltipData(self.__package.getNowAwards(), self.viewModel.rewards.nowRewards, self.__tooltipItems)
 
     def __onBuyBattlePassClick(self):

@@ -1,9 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/base/unit/requester.py
+import weakref
+
 from UnitBase import UNIT_ERROR
 from debug_utils import LOG_ERROR
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.requester import IUnitRequestProcessor
+
 
 class UnitRequestProcessor(IUnitRequestProcessor):
     __slots__ = ('__requests', '__entity')
@@ -11,7 +14,7 @@ class UnitRequestProcessor(IUnitRequestProcessor):
     def __init__(self, entity):
         super(UnitRequestProcessor, self).__init__()
         self.__requests = {}
-        self.__entity = entity
+        self.__entity = weakref.proxy(entity)
 
     def init(self):
         unitMgr = prb_getters.getClientUnitMgr()
@@ -31,7 +34,6 @@ class UnitRequestProcessor(IUnitRequestProcessor):
                 ctx.stopProcessing()
 
         self.__requests.clear()
-        self.__entity = None
         return
 
     def doRequest(self, ctx, methodName, *args, **kwargs):

@@ -1,20 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/manual_controller.py
 import logging
+
+from PlayerEvents import g_playerEvents
 from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.doc_loaders.manual_xml_data_reader import ManualPageTypes
-from helpers import dependency
-from skeletons.gui.game_control import IManualController
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.game_control import IBootcampController
-from gui.app_loader import sf_lobby
-from gui.doc_loaders import manual_xml_data_reader
-from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.app_loader import sf_lobby
+from gui.doc_loaders import manual_xml_data_reader
+from gui.doc_loaders.manual_xml_data_reader import ManualPageTypes
+from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
+from helpers import dependency
+from skeletons.gui.game_control import IBootcampController
+from skeletons.gui.game_control import IManualController
+from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
+
 
 class ManualController(IManualController):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -28,9 +32,11 @@ class ManualController(IManualController):
 
     def init(self):
         g_eventBus.addListener(events.ManualEvent.CHAPTER_CLOSED, self.__onChapterClosed, EVENT_BUS_SCOPE.LOBBY)
+        g_playerEvents.onAccountBecomePlayer += self.__onAccountBecomePlayer
 
     def fini(self):
         g_eventBus.removeListener(events.ManualEvent.CHAPTER_CLOSED, self.__onChapterClosed, EVENT_BUS_SCOPE.LOBBY)
+        g_playerEvents.onAccountBecomePlayer -= self.__onAccountBecomePlayer
 
     @sf_lobby
     def app(self):
@@ -74,20 +80,24 @@ class ManualController(IManualController):
         windowContainer = self.app.containerManager.getContainer(WindowLayer.SUB_VIEW)
         return windowContainer.getView(criteria={POP_UP_CRITERIA.VIEW_ALIAS: VIEW_ALIAS.WIKI_VIEW})
 
-    def show(self, lessonID=None):
+    def show(self, lessonID=None, backCallback=None):
         view = self.getView()
+        ctx = {'backCallback': backCallback}
         if not lessonID:
-            g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW)), EVENT_BUS_SCOPE.LOBBY)
+            g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx),
+                                   EVENT_BUS_SCOPE.LOBBY)
         else:
             for chapterIndex, chapter in enumerate(self.__getChapters()):
-                pageIndex = next((pageIndex for pageIndex, pageID in enumerate(chapter['pageIDs']) if pageID == lessonID), None)
+                pageIndex = next(
+                    (pageIndex for pageIndex, pageID in enumerate(chapter['pageIDs']) if pageID == lessonID), None)
                 if pageIndex is not None:
                     if view:
                         self.showChapterView(chapterIndex, pageIndex)
                     else:
-                        ctx = {'chapterIndex': chapterIndex,
-                         'pageIndex': pageIndex}
-                        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
+                        ctx.update({'chapterIndex': chapterIndex,
+                                    'pageIndex': pageIndex})
+                        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx),
+                                               EVENT_BUS_SCOPE.LOBBY)
                     return
 
             _logger.debug('Cant found page to show lesson with id %d', lessonID)
@@ -106,30 +116,38 @@ class ManualController(IManualController):
         if chapterView:
             chapterView.setData(chapterIndex, pageIndex)
             return
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MANUAL_CHAPTER_VIEW), ctx={'chapterIndex': chapterIndex,
-         'pageIndex': pageIndex}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(
+            events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MANUAL_CHAPTER_VIEW), ctx={'chapterIndex': chapterIndex,
+                                                                                        'pageIndex': pageIndex}),
+            scope=EVENT_BUS_SCOPE.LOBBY)
+
+    def collectUnreadPages(self, chapters):
+        return [chapter['newPageIDs'] for chapter in chapters]
+
+    def getNewContentCount(self):
+        number = self.__countNewContent()
+        return number if number and AccountSettings.getManualData(LOBBY_MENU_MANUAL_TRIGGER_SHOWN) else 0
 
     def __getChapters(self):
         if self.__chapters is None:
             self.__chapters = manual_xml_data_reader.getChapters(self.pageFilter)
         return self.__chapters
 
-    def collectUnreadPages(self, chapters):
-        return [ chapter['newPageIDs'] for chapter in chapters ]
-
-    def countNewContent(self):
-        chapters = AccountSettings.getManualUnreadPages()
-        if chapters is None:
-            chapters = self.collectUnreadPages(self.__getChapters())
-            AccountSettings.setManualUnreadPages(chapters)
-        return sum((len(i) for i in chapters))
-
-    def getNewContentCount(self):
-        number = self.countNewContent()
-        return number if number and AccountSettings.getManualData(LOBBY_MENU_MANUAL_TRIGGER_SHOWN) else 0
-
     def __isBootcampEnabled(self):
         return self.lobbyContext.getServerSettings().isBootcampEnabled()
 
     def __onChapterClosed(self, _):
         self._isChapterViewOnScreen = False
+
+    def __onAccountBecomePlayer(self):
+        self.__initChaptersSettings()
+
+    def __initChaptersSettings(self):
+        chapters = AccountSettings.getManualUnreadPages()
+        if chapters is None:
+            chapters = self.collectUnreadPages(self.__getChapters())
+            AccountSettings.setManualUnreadPages(chapters)
+        return
+
+    def __countNewContent(self):
+        return sum((len(i) for i in AccountSettings.getManualUnreadPages()))

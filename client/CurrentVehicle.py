@@ -1,41 +1,43 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/CurrentVehicle.py
 import BigWorld
-from constants import CustomizationInvData
-from gui.SystemMessages import pushMessagesFromResult
-from items.components.c11n_constants import SeasonType
 from Event import Event, EventManager
 from adisp import process
-from gui import g_tankActiveCamouflage
-from gui.shared.formatters.time_formatters import getTimeLeftStr
-from vehicle_outfit.outfit import Area
-from gui.shared.gui_items.processors.module import getPreviewInstallerProcessor
-from gui.vehicle_view_states import createState4CurrentVehicle
-from helpers import dependency
+from constants import CustomizationInvData
+from items.components.c11n_constants import SeasonType
 from items.vehicles import VehicleDescr
-from helpers import isPlayerAccount, i18n
+from shared_utils import first
+from vehicle_outfit.outfit import Area
+
 from account_helpers.AccountSettings import AccountSettings, BOOTCAMP_VEHICLE, CURRENT_VEHICLE, ROYALE_VEHICLE
+from gui import g_tankActiveCamouflage
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shared.formatters import icons
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Vehicle import Vehicle
-from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
-from shared_utils import first
+from gui.Scaleform.locale.MENU import MENU
+from gui.SystemMessages import pushMessagesFromResult
+from gui.shared.formatters import icons
+from gui.shared.formatters.time_formatters import getTimeLeftStr
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.Vehicle import Vehicle
+from gui.shared.gui_items.processors.module import getPreviewInstallerProcessor
+from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.vehicle_view_states import createState4CurrentVehicle
+from helpers import dependency
+from helpers import isPlayerAccount, i18n
 from skeletons.gui.customization import ICustomizationService
+from skeletons.gui.game_control import IBattleRoyaleController, IBattleRoyaleTournamentController
+from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.game_control import IIGRController, IRentalsController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
-from skeletons.gui.game_control import IBattleRoyaleController, IBattleRoyaleTournamentController
-from skeletons.gui.game_control import IBootcampController
+
 _MODULES_NAMES = ('turret',
- 'chassis',
- 'engine',
- 'gun',
- 'radio')
+                  'chassis',
+                  'engine',
+                  'gun',
+                  'radio')
 
 class _CachedVehicle(object):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -535,8 +537,8 @@ class _CurrentPreviewVehicle(_CachedVehicle):
     def updateVehicleDescriptorInModel(self):
         pass
 
-    def selectVehicle(self, vehicleCD=None, vehicleStrCD=None, style=None):
-        self._selectVehicle(vehicleCD, vehicleStrCD, style)
+    def selectVehicle(self, vehicleCD=None, vehicleStrCD=None, style=None, outfit=None):
+        self._selectVehicle(vehicleCD, vehicleStrCD, style, outfit)
         self.onSelected()
 
     def selectNoVehicle(self):
@@ -647,7 +649,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         super(_CurrentPreviewVehicle, self)._addListeners()
         g_clientUpdateManager.addCallbacks({'stats.unlocks': self._onUpdateUnlocks})
 
-    def _selectVehicle(self, vehicleCD, vehicleStrCD=None, style=None):
+    def _selectVehicle(self, vehicleCD, vehicleStrCD=None, style=None, outfit=None):
         if self.isPresent() and self.item.intCD == vehicleCD:
             return
         else:
@@ -658,8 +660,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
                 self.__item = self.__makePreviewVehicleFromStrCD(vehicleCD, vehicleStrCD)
             else:
                 self.__item = self.__getPreviewVehicle(vehicleCD)
-            outfit = None
-            if style is not None:
+            if style is not None and outfit is None:
                 outfit = self.__getPreviewOutfitByStyle(style)
             if self.__vehAppearance is not None:
                 self.__vehAppearance.refreshVehicle(self.__item, outfit)

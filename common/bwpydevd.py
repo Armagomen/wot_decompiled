@@ -1,16 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/bwpydevd.py
+# Compiled at: 2052-11-24 03:01:40
 import os
 import sys
-import ResMgr
-import BigWorld
 import threading
+
+import BigWorld
+import ResMgr
+
 import bwdebug
+
 REPLACE_PATHS = []
 HAS_BW_CONFIG = False
 if os.name == 'posix':
     try:
         import BWConfig
+
         HAS_BW_CONFIG = True
     except ImportError:
         HAS_BW_CONFIG = False

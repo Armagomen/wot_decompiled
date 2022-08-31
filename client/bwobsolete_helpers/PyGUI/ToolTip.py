@@ -1,16 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/ToolTip.py
+from functools import partial
+
 import BigWorld
 import GUI
-from functools import partial
-from Utils import clipSize
 from bwdebug import ERROR_MSG
-import PyGUIBase
+
+from Utils import clipSize
 from Window import Window
+
 
 class ToolTipInfo(object):
 
-    def __init__(self, component=None, templateName=None, infoDictionary={}, infoArea=None, delayType=None, placement=None):
+    def __init__(self, component=None, templateName=None, infoDictionary={}, infoArea=None, delayType=None,
+                 placement=None):
         if templateName:
             self.templateName = templateName
             self.infoDictionary = infoDictionary
@@ -181,8 +184,8 @@ class ToolTipManager(object):
             toolTipGUI = GUI.load(guiFileName)
             toolTipGUI.horizontalAnchor = 'CENTER'
             toolTipGUI.verticalAnchor = 'CENTER'
-            toolTipGUI.horizontalPositionMode = 'CLIP'
-            toolTipGUI.verticalPositionMode = 'CLIP'
+            toolTipGUI.horizontalPositionMode = GUI.Simple.ePositionMode.CLIP
+            toolTipGUI.verticalPositionMode = GUI.Simple.ePositionMode.CLIP
             toolTipGUI.position.z = self.toolTipZOrder
             self.toolTipGUIs[templateName] = toolTipGUI
         return self.toolTipGUIs[templateName]
