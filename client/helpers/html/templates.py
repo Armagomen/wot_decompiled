@@ -2,11 +2,14 @@
 # Embedded file name: scripts/client/helpers/html/templates.py
 from collections import defaultdict
 from types import DictType
+from typing import TYPE_CHECKING
 
 import ResMgr
 from debug_utils import LOG_WARNING, LOG_ERROR, LOG_CURRENT_EXCEPTION
 from helpers import html
 
+if TYPE_CHECKING:
+    pass
 
 class Template(object):
 
@@ -33,9 +36,9 @@ class Template(object):
             try:
                 text = text % ctx
             except (ValueError,
-                    TypeError,
-                    KeyError,
-                    UnicodeDecodeError):
+             TypeError,
+             KeyError,
+             UnicodeDecodeError):
                 LOG_WARNING('Can not format template (source = %r, ctx = %r)', text, ctx)
                 LOG_CURRENT_EXCEPTION()
 

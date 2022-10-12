@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/avatar_getter.py
 import logging
+
 import BigWorld
 import Math
 from gui import GUI_CTRL_MODE_FLAG
+
 _logger = logging.getLogger(__name__)
 
 def isForcedGuiControlMode(avatar=None):
@@ -450,3 +452,33 @@ def isBecomeObserverAfterDeath(avatar=None):
         result = False
 
     return result
+
+
+def getInBattleVehicleSwitchComponent():
+    avatar = BigWorld.player()
+    try:
+        return avatar.AvatarInBattleVehicleSwitch
+    except AttributeError as error:
+        _logger.exception('Static component "AvatarInBattleVehicleSwitch" not found, exception %s', error.message)
+
+
+def getSpaceID():
+    avatar = BigWorld.player()
+    try:
+        spaceID = avatar.spaceID
+    except AttributeError:
+        _logger.debug('Avatar attribute "spaceID" not found')
+        spaceID = None
+
+    return spaceID
+
+
+def getPlayerVehicle():
+    avatar = BigWorld.player()
+    try:
+        vehicle = avatar.getVehicleAttached()
+    except AttributeError:
+        _logger.debug('Avatar attribute "getVehicleAttached" not found')
+        vehicle = None
+
+    return vehicle

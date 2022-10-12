@@ -5,23 +5,16 @@ from collections import namedtuple
 from items.components import path_builder
 from wrapped_reflection_framework import reflectedNamedTuple, ReflectionMetaclass
 
-__all__ = (
-'Wheel', 'WheelGroup', 'TrackPair', 'TrackNode', 'TrackBasicVisualParams', 'TrackPairParams', 'TrackPairDebris',
-'TrackDebrisParams', 'GroundNode', 'GroundNodeGroup', 'Traces', 'LeveredSuspensionConfig', 'SuspensionLever',
-'SplineSegmentModelSet')
-Wheel = reflectedNamedTuple('Wheel', (
-'index', 'isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle', 'hitTesterManager', 'materials', 'position'))
+__all__ = ('Wheel', 'WheelGroup', 'TrackPair', 'TrackNode', 'TrackBasicVisualParams', 'TrackPairParams', 'TrackPairDebris', 'TrackDebrisParams', 'GroundNode', 'GroundNodeGroup', 'Traces', 'LeveredSuspensionConfig', 'SuspensionLever', 'SplineSegmentModelSet')
+Wheel = reflectedNamedTuple('Wheel', ('index', 'isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle', 'hitTesterManager', 'materials', 'position'))
 Wheel.hitTester = property(lambda self: self.hitTesterManager.activeHitTester)
 WheelGroup = reflectedNamedTuple('WheelGroup', ('isLeft', 'template', 'count', 'startIndex', 'radius'))
 WheelsConfig = reflectedNamedTuple('WheelsConfig', ('groups', 'wheels'))
 TrackPair = namedtuple('TrackPair', ('hitTesterManager', 'materials', 'healthParams', 'breakMode'))
 TrackPair.hitTester = property(lambda self: self.hitTesterManager.activeHitTester)
-TrackNode = reflectedNamedTuple('TrackNode', (
-'name', 'isLeft', 'initialOffset', 'leftNodeName', 'rightNodeName', 'damping', 'elasticity', 'forwardElasticityCoeff',
-'backwardElasticityCoeff'))
+TrackNode = reflectedNamedTuple('TrackNode', ('name', 'isLeft', 'initialOffset', 'leftNodeName', 'rightNodeName', 'damping', 'elasticity', 'forwardElasticityCoeff', 'backwardElasticityCoeff'))
 TrackBasicVisualParams = reflectedNamedTuple('TrackBasicVisualParams', ('lodDist', 'trackPairs'))
-TrackPairParams = reflectedNamedTuple('TrackPairParams',
-                                      ('leftMaterial', 'rightMaterial', 'textureScale', 'tracksDebris'))
+TrackPairParams = reflectedNamedTuple('TrackPairParams', ('leftMaterial', 'rightMaterial', 'textureScale', 'tracksDebris'))
 TrackPairDebris = reflectedNamedTuple('TrackPairDebris', ('left', 'right'))
 TrackDebrisParams = reflectedNamedTuple('TrackDebrisParams', ('destructionEffect', 'physicalParams', 'destructionEffectData', 'nodesRemap'))
 TrackSplineParams = reflectedNamedTuple('TrackSplineParams', ('thickness', 'maxAmplitude', 'maxOffset', 'gravity'))

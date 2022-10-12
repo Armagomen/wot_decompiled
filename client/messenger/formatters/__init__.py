@@ -11,7 +11,6 @@ from messenger import g_settings
 
 _logger = logging.getLogger(__name__)
 
-
 class TimeFormatter(object):
     _messageDateTimeFormat = {0: 'getMessageEmptyFormatU',
      1: 'getMessageShortDateFormat',

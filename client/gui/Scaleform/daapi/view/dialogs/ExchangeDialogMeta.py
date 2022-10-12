@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ExchangeDialogMeta.py
 import math
 import operator
+
 import Event
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from gui import DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
@@ -14,8 +15,8 @@ from gui.Scaleform.genConsts.CONFIRM_EXCHANGE_DIALOG_TYPES import CONFIRM_EXCHAN
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.genConsts.TEXT_MANAGER_STYLES import TEXT_MANAGER_STYLES
 from gui.Scaleform.locale.DIALOGS import DIALOGS
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.managers.ColorSchemeManager import ColorSchemeManager
 from gui.impl import backport
 from gui.shared import events
@@ -29,6 +30,7 @@ from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import i18n, dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
+
 STEP_SIZE = 1
 I18N_NEEDGOLDTEXT_KEY = '{0:>s}/needGoldText'
 I18N_NEEDITEMSTEXT_KEY = '{0:>s}/needItemsText'
@@ -177,8 +179,8 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
         self.onCloseDialog.clear()
         self.__submitter.destroy()
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def submit(self, gold, valueToExchange, callback=None):
         submitter = self._getSubmitter()
         result = yield submitter.submit(gold, valueToExchange)
@@ -398,8 +400,8 @@ class _WebProductExchangeItem(_ExchangeItem):
 class _ExchangeCreditsSubmitter(_ExchangeSubmitterBase):
     itemsCache = dependency.descriptor(IItemsCache)
 
-    @async
-    @decorators.process('transferMoney')
+    @adisp_async
+    @decorators.adisp_process('transferMoney')
     def submit(self, gold, valueToExchange, callback=None):
         result = yield GoldToCreditsExchanger(gold).request()
         if callback is not None:
@@ -572,8 +574,8 @@ class _ExchangeXpSubmitter(_ExchangeSubmitterBase):
         self._xpCost = None
         return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def submit(self, gold, xpToExchange, callback=None):
         isOk, result, xpExchanged = yield DialogsInterface.showDialog(ExchangeDetailedXPDialogMeta(xpToExchange))
         if xpExchanged < xpToExchange:

@@ -1,32 +1,37 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_table_view.py
-from functools import partial
 from collections import namedtuple
+from functools import partial
+
 import BigWorld
-from adisp import process
+from adisp import adisp_process
+from gui.Scaleform.daapi import LobbySubView
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_award_group import EventBoardsAwardGroup
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_maintenance import EventBoardsMaintenance
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_pagination import EventBoardsPagination
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeTableViewHeaderVO, \
+    makeEventBoardsTableDataVO, makeEventBoardsTableViewStatusVO, makeTableHeaderVO, makeTableViewBackgroundVO, \
+    makeCantJoinReasonTextVO, makeAwardGroupDataTooltipVO, makeParameterTooltipVO
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import getStatusTitleStyle, getStatusCountStyle, \
+    formatUpdateTime, formatErrorTextWithIcon, getFullName
+from gui.Scaleform.daapi.view.meta.EventBoardsTableViewMeta import EventBoardsTableViewMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.impl import backport
-from helpers import dependency
+from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
+from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.event_boards.event_boards_items import EVENT_STATE as _es, PLAYER_STATE_REASON as _psr
+from gui.impl import backport
+from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
+from gui.shared.formatters import text_styles, icons
+from gui.shared.utils.functions import makeTooltip
+from helpers import dependency
 from helpers.i18n import makeString as _ms
 from helpers.time_utils import ONE_MINUTE
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.event_boards_controllers import IEventBoardController
 from skeletons.gui.shared import IItemsCache
-from gui.shared.utils.functions import makeTooltip
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_maintenance import EventBoardsMaintenance
-from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
-from gui.shared.formatters import text_styles, icons
-from gui.Scaleform.daapi import LobbySubView
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_award_group import EventBoardsAwardGroup
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_pagination import EventBoardsPagination
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeTableViewHeaderVO, makeEventBoardsTableDataVO, makeEventBoardsTableViewStatusVO, makeTableHeaderVO, makeTableViewBackgroundVO, makeCantJoinReasonTextVO, makeAwardGroupDataTooltipVO, makeParameterTooltipVO
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import getStatusTitleStyle, getStatusCountStyle, formatUpdateTime, formatErrorTextWithIcon, getFullName
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
-from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
-from gui.Scaleform.daapi.view.meta.EventBoardsTableViewMeta import EventBoardsTableViewMeta
-from gui.event_boards.event_boards_items import EVENT_STATE as _es, EventSettings, LeaderBoard, PLAYER_STATE_REASON as _psr
+
 MyInfo = namedtuple('MyInfo', ('fullData', 'pageNumber', 'rank', 'battlesCount'))
 LeaderboardData = namedtuple('LeaderboardData', ('excelItems', 'pageNumber'))
 
@@ -99,7 +104,7 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
                  'excelItem': item}), scope=EVENT_BUS_SCOPE.LOBBY)
                 break
 
-    @process
+    @adisp_process
     def participateStatusClick(self):
         self.__setWaiting(True)
         yield self.eventsController.joinEvent(self.__eventID)
@@ -289,7 +294,7 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
             self.__fetchMyLeaderboardInfo(self.__moveToMyPlace)
         return
 
-    @process
+    @adisp_process
     def __fetchLeaderboardPageData(self, page, rank):
         self.__setWaiting(True)
         leaderboard = yield self.eventsController.getLeaderboard(self.__eventID, self.__leaderboardID, page)
@@ -330,7 +335,7 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
                 self.as_setEmptyDataS(_ms(EVENT_BOARDS.EXCEL_NODATA))
         return
 
-    @process
+    @adisp_process
     def __fetchMyLeaderboardInfo(self, onSuccess):
         self.__setWaiting(True)
         myInfo = yield self.eventsController.getMyLeaderboardInfo(self.__eventID, self.__leaderboardID)

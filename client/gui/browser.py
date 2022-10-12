@@ -10,7 +10,6 @@ if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(__name__)
 
-
 class BrowserViewWebHandlers(object):
     __slots__ = ('__webCommandHandler', '__webEventSender', '__browser')
 

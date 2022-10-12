@@ -1,23 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/dialogs/auxiliary/confirmed_item.py
 import typing
+
 from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
-from gui.impl.lobby.dialogs.auxiliary.confirmed_item_helpers import getHighlightsTypeByItem, getOverlayTypeByItem, ConfirmedItemWarningTypes, DependsOnDevicesWarning, PairModificationsWillBeDemount
+from gui.impl.gen.view_models.views.lobby.common.confirmed_item_model import ConfirmedItemModel
+from gui.impl.lobby.dialogs.auxiliary.confirmed_item_helpers import getHighlightsTypeByItem, getOverlayTypeByItem, \
+    ConfirmedItemWarningTypes, DependsOnDevicesWarning, PairModificationsWillBeDemount
 from gui.impl.wrappers.user_compound_price_model import BuyPriceModelBuilder
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.impl.gen.view_models.views.lobby.common.confirmed_item_model import ConfirmedItemModel
 from helpers import dependency
 from post_progression_common import ACTION_TYPES
 from skeletons.gui.shared import IItemsCache
-from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.fitting_item import FittingItem
-    from gui.shared.gui_items.gui_item_economics import ItemPrice
-    from gui.veh_post_progression.models.modifications import PostProgressionActionItem
+    pass
 SUPPORTED_TYPES = GUI_ITEM_TYPE.ARTEFACTS + GUI_ITEM_TYPE.VEHICLE_MODULES
 CTX_VEHICLE_INV_ID = 'vehicleInvID'
 
@@ -151,7 +152,7 @@ class ConfirmedBattleBooster(ConfirmedArtefact):
 
     def __getBoosterReplaceCriteria(self, vehInvID):
         vehicleToInstall = self.__itemsCache.items.getVehicle(vehInvID)
-        skillLearn = REQ_CRITERIA.CUSTOM(lambda item: not item.isAffectedSkillLearnt(vehicleToInstall))
+        skillLearn = REQ_CRITERIA.CUSTOM(lambda item: not item.isAffectedSkillLearnt(vehicleToInstall) and not item.isBuiltinPerkBooster())
         return {ItemHighlightTypes.BATTLE_BOOSTER_REPLACE: REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | skillLearn,
          ItemHighlightTypes.BATTLE_BOOSTER: (REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | ~skillLearn) ^ REQ_CRITERIA.BATTLE_BOOSTER.OPTIONAL_DEVICE_EFFECT}
 

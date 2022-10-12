@@ -8,7 +8,6 @@ import BigWorld
 from PlayerEvents import g_playerEvents
 from account_helpers import isLongDisconnectedFromCenter
 from account_helpers.AccountSettings import AccountSettings, BOOTCAMP_VEHICLE
-from async import async, await
 from bootcamp.BootCampEvents import g_bootcampEvents
 from bootcamp.Bootcamp import g_bootcamp
 from constants import QUEUE_TYPE
@@ -35,6 +34,7 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from wg_async import wg_async, wg_await
 
 BootcampDialogConstants = namedtuple('BootcampDialogConstants',
                                      'dialogType dialogKey focusedID needAwarding premiumType')
@@ -74,6 +74,10 @@ class BootcampController(IBootcampController):
     @property
     def nation(self):
         return g_bootcamp.nation
+
+    @property
+    def version(self):
+        return g_bootcamp.getVersion()
 
     def startBootcamp(self, inBattle):
         if g_playerEvents.isPlayerEntityChanging:
@@ -225,7 +229,7 @@ class BootcampController(IBootcampController):
     def prbDispatcher(self):
         return None
 
-    @async
+    @wg_async
     def __doBootcamp(self, isSkip):
         isFromLobbyMenu = self.__isLobbyMenuOpened()
         if isFromLobbyMenu:
@@ -246,7 +250,7 @@ class BootcampController(IBootcampController):
             else:
                 rewardStr = _REWARD.format(self.__format(startAcc.reward(), _GREEN))
                 message = self.__format(startAcc.message(), _GRAY, reward=rewardStr)
-            result = yield await(showResSimpleDialog(startAcc, icon, message))
+            result = yield wg_await(showResSimpleDialog(startAcc, icon, message))
             if result:
                 self.__goBootcamp()
             elif isFromLobbyMenu:

@@ -1,20 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/__init__.py
 import typing
+
 from account_helpers.AccountSettings import AccountSettings, MODE_SELECTOR_BATTLE_PASS_SHOWN
 from constants import ARENA_BONUS_TYPE
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import BattlePassState
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IBootcampController
+
 if typing.TYPE_CHECKING:
-    from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import ModeSelectorNormalCardModel
+    pass
 BATTLE_PASS_SEASON_ID = 'seasonId'
 _arenaBonusTypeByModeName = {PREBATTLE_ACTION_NAME.RANDOM: ARENA_BONUS_TYPE.REGULAR,
  PREBATTLE_ACTION_NAME.RANKED: ARENA_BONUS_TYPE.RANKED,
  PREBATTLE_ACTION_NAME.EPIC: ARENA_BONUS_TYPE.EPIC_BATTLE,
  PREBATTLE_ACTION_NAME.BATTLE_ROYALE: ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO,
- PREBATTLE_ACTION_NAME.MAPBOX: ARENA_BONUS_TYPE.MAPBOX}
+ PREBATTLE_ACTION_NAME.MAPBOX: ARENA_BONUS_TYPE.MAPBOX,
+ PREBATTLE_ACTION_NAME.COMP7: ARENA_BONUS_TYPE.COMP7}
 
 def setBattlePassState(itemVM):
     battlePassController = dependency.instance(IBattlePassController)

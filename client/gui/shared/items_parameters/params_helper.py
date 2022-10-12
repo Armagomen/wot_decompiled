@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/items_parameters/params_helper.py
 import copy
-import typing
+
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_WARNING
 from gui import GUI_SETTINGS
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -10,11 +10,15 @@ from gui.shared.items_parameters import params, RELATIVE_PARAMS, MAX_RELATIVE_VA
 from gui.shared.items_parameters.comparator import VehiclesComparator, ItemsComparator, PARAM_STATE
 from gui.shared.items_parameters.functions import getBasicShell
 from gui.shared.items_parameters.params_cache import g_paramsCache
-from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, TURBOSHAFT_SPEED_MODE_SPEED, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME
+from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, TURBOSHAFT_SPEED_MODE_SPEED, \
+    WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, \
+    TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME, \
+    ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS, ROCKET_ACCELERATION_REUSE_AND_DURATION
 from helpers import dependency
 from items import vehicles, ITEM_TYPES
 from shared_utils import findFirst, first
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
+
 RELATIVE_POWER_PARAMS = ('avgDamage',
  'avgPiercingPower',
  'stunMinDuration',
@@ -38,11 +42,14 @@ RELATIVE_ARMOR_PARAMS = ('maxHealth',
 RELATIVE_MOBILITY_PARAMS = ('vehicleWeight',
  'enginePower',
  TURBOSHAFT_ENGINE_POWER,
+ ROCKET_ACCELERATION_ENGINE_POWER,
  'enginePowerPerTon',
  'speedLimits',
  WHEELED_SPEED_MODE_SPEED,
  TURBOSHAFT_SPEED_MODE_SPEED,
+ ROCKET_ACCELERATION_SPEED_LIMITS,
  'chassisRotationSpeed',
+ ROCKET_ACCELERATION_REUSE_AND_DURATION,
  MAX_STEERING_LOCK_ANGLE,
  'switchOnTime',
  'switchOffTime',

@@ -37,8 +37,8 @@ class EpicMessagePanel(GameMessagesPanelMeta):
             messageType = GAME_MESSAGES_CONSTS.WIN if isWinner else GAME_MESSAGES_CONSTS.DEFEAT
             title = EPIC_BATTLE.GAME_VICTORY if isWinner else EPIC_BATTLE.GAME_DEFEAT
         endGameMsgData = {'title': title,
-                          'reason': reason,
-                          'subTitle': makeEpicBattleFinishResultLabel(reason, messageType)}
+         'reason': reason,
+         'subTitle': makeEpicBattleFinishResultLabel(reason, messageType)}
         msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH, GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
         self.__onIngameMessageReady(msg)
         self.__blockNewMessages = True

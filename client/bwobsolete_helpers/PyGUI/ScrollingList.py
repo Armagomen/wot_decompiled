@@ -9,7 +9,6 @@ from PyGUIBase import PyGUIBase
 
 ITEM_MARGIN = 0.05
 
-
 class ScrollingList(PyGUIBase):
     factoryString = 'PyGUI.ScrollingList'
 

@@ -17,8 +17,8 @@ import BigWorld
 import Event
 import Math
 import constants
-from constants import ARENA_BONUS_TYPE
-from constants import ARENA_PERIOD
+from constants import ARENA_BONUS_TYPE, ARENA_GUI_TYPE
+from constants import ARENA_PERIOD, Configs
 from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION
 from post_progression_common import SERVER_SETTINGS_KEY
 from soft_exception import SoftException
@@ -59,6 +59,7 @@ _FORWARD_INPUT_CTRL_MODES = (CTRL_MODE_NAME.POSTMORTEM,
  CTRL_MODE_NAME.VIDEO,
  CTRL_MODE_NAME.CAT,
  CTRL_MODE_NAME.DEATH_FREE_CAM)
+_ARENA_GUI_TYPE_TO_MODE_TAG = {ARENA_GUI_TYPE.COMP7: 'Onslaught'}
 _IGNORED_SWITCHING_CTRL_MODES = (CTRL_MODE_NAME.SNIPER,
  CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.ARTY,
@@ -855,6 +856,7 @@ class BattleReplay(object):
                     arenaInfo['bootcampCtx'] = g_bootcamp.serializeContext()
                 self.__replayCtrl.recMapName = arenaName
                 self.__replayCtrl.recPlayerVehicleName = vehicleName
+                self.__replayCtrl.recBattleModeTag = _ARENA_GUI_TYPE_TO_MODE_TAG.get(arena.guiType, '')
                 self.__replayCtrl.setArenaInfoStr(json.dumps(_JSON_Encode(arenaInfo)))
             else:
                 self.__showInfoMessages()
@@ -1151,6 +1153,7 @@ class BattleReplay(object):
             self.__serverSettings['battle_royale_config'] = serverSettings['battle_royale_config']
             self.__serverSettings['epic_config'] = serverSettings['epic_config']
             self.__serverSettings[SERVER_SETTINGS_KEY] = serverSettings[SERVER_SETTINGS_KEY]
+            self.__serverSettings[Configs.COMP7_CONFIG.value] = serverSettings.get(Configs.COMP7_CONFIG.value)
             if player.databaseID is None:
                 BigWorld.callback(0.1, self.__onAccountBecomePlayer)
             else:
@@ -1222,11 +1225,14 @@ class BattleReplay(object):
         self.__replayCtrl.onSetEquipmentID(value)
 
     def onSetEquipmentId(self, equipmentId):
+        inputHandler = BigWorld.player().inputHandler
         if equipmentId != -1:
             self.__equipmentId = equipmentId
-            BigWorld.player().inputHandler.showGunMarker(False)
+            inputHandler.showGunMarker(False)
+            if self.getControlMode() == CTRL_MODE_NAME.MAP_CASE and inputHandler.ctrl.equipmentID != equipmentId:
+                inputHandler.ctrl.activateEquipment(equipmentId)
         else:
-            BigWorld.player().inputHandler.showGunMarker(True)
+            inputHandler.showGunMarker(True)
             self.__equipmentId = None
         return
 

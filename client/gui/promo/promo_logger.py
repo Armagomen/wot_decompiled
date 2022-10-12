@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/gui/promo/promo_logger.py
 import logging
 from functools import partial
+
 import BigWorld
-from adisp import process
+from adisp import adisp_process
 from gui.macroses import getLanguageCode
 from gui.wgcg.promo_screens.contexts import PromoSendActionLogCtx
 from helpers import dependency, isPlayerAccount, time_utils
@@ -12,6 +13,7 @@ from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.promo import IPromoLogger
 from skeletons.gui.web import IWebController
+
 _logger = logging.getLogger(__name__)
 
 class PromoLogActions(CONST_CONTAINER):
@@ -66,7 +68,7 @@ class PromoLogger(IPromoLogger):
     def __init__(self):
         self.__requestIDs = {}
 
-    @process
+    @adisp_process
     def logAction(self, **kwargs):
         if self.__isEnabled():
             ctx = PromoSendActionLogCtx(self.__packData(kwargs))

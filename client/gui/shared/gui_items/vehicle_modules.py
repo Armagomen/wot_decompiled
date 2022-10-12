@@ -1,6 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/vehicle_modules.py
 import logging
+
+import nations
 from constants import SHELL_TYPES, SHELL_MECHANICS_TYPE
 from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
@@ -8,12 +10,13 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.RES_SHOP_EXT import RES_SHOP_EXT
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.shared.items_parameters.params_cache import g_paramsCache
-import nations
-from items import vehicles as veh_core
 from gui.shared.gui_items.fitting_item import FittingItem, ICONS_MASK
-from gui.shared.utils import GUN_CLIP, GUN_CAN_BE_CLIP, GUN_AUTO_RELOAD, GUN_CAN_BE_AUTO_RELOAD, GUN_DUAL_GUN, GUN_CAN_BE_DUAL_GUN
+from gui.shared.items_parameters.params_cache import g_paramsCache
 from gui.shared.money import Currency
+from gui.shared.utils import GUN_CLIP, GUN_CAN_BE_CLIP, GUN_AUTO_RELOAD, GUN_CAN_BE_AUTO_RELOAD, GUN_DUAL_GUN, \
+    GUN_CAN_BE_DUAL_GUN
+from items import vehicles as veh_core
+
 MODULE_TYPES_ORDER = ('vehicleGun', 'vehicleTurret', 'vehicleEngine', 'vehicleChassis', 'vehicleRadio', 'vehicleFuelTank')
 MODULE_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(MODULE_TYPES_ORDER)))
 SHELL_TYPES_ORDER = (SHELL_TYPES.ARMOR_PIERCING,
@@ -266,6 +269,9 @@ class VehicleEngine(VehicleModule):
     def hasTurboshaftEngine(self):
         return g_paramsCache.hasTurboshaftEngine(self.intCD)
 
+    def hasRocketAcceleration(self):
+        return g_paramsCache.hasRocketAcceleration(self.intCD)
+
     @property
     def icon(self):
         return RES_ICONS.MAPS_ICONS_MODULES_ENGINE
@@ -274,7 +280,10 @@ class VehicleEngine(VehicleModule):
         return self.icon if size == 'small' else backport.image(R.images.gui.maps.icons.modules.engineBig())
 
     def getExtraIconInfo(self, vehDescr=None):
-        return RES_ICONS.MAPS_ICONS_MODULES_TURBINEENGINEICON if self.hasTurboshaftEngine() else None
+        if self.hasTurboshaftEngine():
+            return RES_ICONS.MAPS_ICONS_MODULES_TURBINEENGINEICON
+        else:
+            return RES_ICONS.MAPS_ICONS_MODULES_ROCKETACCELERATIONICON if self.hasRocketAcceleration() else None
 
 
 class VehicleFuelTank(VehicleModule):

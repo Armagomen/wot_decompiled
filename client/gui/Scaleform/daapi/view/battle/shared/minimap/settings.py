@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/settings.py
 from enum import Enum
+
 from account_helpers.settings_core.options import MinimapVehModelsSetting, MinimapHPSettings
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from shared_utils import BitmaskHelper
+
 MINIMAP_COMPONENT_PATH = '_level0.root.{}.main.minimap.entriesContainer'.format(LAYER_NAMES.VIEWS)
 MINIMAP_MIN_SIZE_INDEX = 0
 MINIMAP_MAX_SIZE_INDEX = 5
@@ -71,6 +73,7 @@ class ENTRY_SYMBOL_NAME(object):
     EPIC_DEPLOY_HQ_ENEMY = 'HeadquarterEntryDeploymentEnemy'
     RADAR_ANIM = 'RadarUI'
     DISCOVERED_ITEM_MARKER = 'net.wg.gui.battle.views.minimap.components.entries.battleRoyale.DiscoveredItemMarker'
+    COMP7_RECON = 'Comp7PointReconMinimapEntryUI'
 
 
 class TRANSFORM_FLAG(object):

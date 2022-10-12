@@ -13,7 +13,7 @@ import Event
 from ClientChat import ClientChat
 from ClientUnitMgr import ClientUnitMgr, ClientUnitBrowser
 from account_shared import NotificationItem, readClientServerVersion
-from adisp import process
+from adisp import adisp_process
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE, EVENT_CLIENT_DATA
 from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE, ARENA_GAMEPLAY_MASK_DEFAULT
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_WARNING
@@ -721,7 +721,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         Waiting.hide('login')
         events.onEntityCheckOutEnqueued(self.base.cancelEntityCheckOut)
 
-    @process
+    @adisp_process
     def onBootcampAccountMigrationComplete(self):
         events.onBootcampAccountMigrationComplete()
         settingsCore = dependency.instance(ISettingsCore)
@@ -801,6 +801,14 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def dequeueMapbox(self):
         if not events.isPlayerEntityChanging:
             self.base.doCmdInt(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_FROM_BATTLE_QUEUE, QUEUE_TYPE.MAPBOX)
+
+    def enqueueComp7(self, vehInvID):
+        if not events.isPlayerEntityChanging:
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.COMP7, vehInvID])
+
+    def dequeueComp7(self):
+        if not events.isPlayerEntityChanging:
+            self.base.doCmdInt(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_DEQUEUE_FROM_BATTLE_QUEUE, QUEUE_TYPE.COMP7)
 
     def forceEpicDevStart(self):
         if not events.isPlayerEntityChanging:
@@ -991,7 +999,16 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         return
 
     def activateGoodie(self, goodieID, callback):
-        self._doCmdIntArr(AccountCommands.CMD_ACTIVATE_GOODIE, goodieID, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
+        self._doCmdInt(AccountCommands.CMD_ACTIVATE_GOODIE, goodieID, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
+
+    def removeGoodie(self, goodieID, count, callback):
+        self._doCmdInt2(AccountCommands.CMD_REMOVE_GOODIES_DEV, goodieID, count, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
+
+    def activateClanBooster(self, boosterId, callback):
+        self._doCmdInt(AccountCommands.CMD_ACTIVATE_CLAN_BOOSTER, boosterId, callback)
+
+    def deactivateClanBoosters(self, callback):
+        self._doCmdInt(AccountCommands.CMD_DEACTIVATE_CLAN_BOOSTERS, 0, callback)
 
     def makeDenunciation(self, violatorID, topicID, violatorKind):
         self._doCmdInt3(AccountCommands.CMD_MAKE_DENUNCIATION, violatorID, topicID, violatorKind, None)
@@ -1156,6 +1173,25 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self._doCmdInt(AccountCommands.CMD_FRONTLINE_UNLOCK_RESERVES, 0, None)
         return
 
+    def addEquipment(self, deviceID, count=1):
+        self._doCmdInt2(AccountCommands.CMD_ADD_EQUIPMENT, int(deviceID), count, None)
+        return
+
+    @staticmethod
+    def resetScreenShown(screenName):
+        from constants import CURRENT_REALM
+        if CURRENT_REALM == 'DEV':
+            from account_helpers.AccountSettings import GUI_START_BEHAVIOR
+            settingsCore = dependency.instance(ISettingsCore)
+            defaults = AccountSettings.getFilterDefault(GUI_START_BEHAVIOR)
+            settings = settingsCore.serverSettings.getSection(GUI_START_BEHAVIOR, defaults)
+            settings[screenName] = False
+            settingsCore.serverSettings.setSectionSettings(GUI_START_BEHAVIOR, settings)
+
+    def removeEquipment(self, deviceID, count=-1):
+        self._doCmdInt2(AccountCommands.CMD_ADD_EQUIPMENT, int(deviceID), count, None)
+        return
+
     def _doCmdStr(self, cmd, s, callback):
         return self.__doCmd('doCmdStr', cmd, callback, s)
 
@@ -1232,9 +1268,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self.__synchronizeCacheDict(self.personalMissionsLock, diff.get('cache', None), 'potapovQuestIDs', 'replace', events.onPMLocksChanged)
             self.__synchronizeCacheDict(self.dailyQuests, diff, 'dailyQuests', 'replace', events.onDailyQuestsInfoChange)
             self.__synchronizeCacheSimpleValue('globalRating', diff.get('account', None), 'globalRating', events.onAccountGlobalRatingChanged)
-            self.__synchronizeCacheDict(self.platformBlueprintsConvertSaleLimits, diff,
-                                        'platformBlueprintsConvertSaleLimits', 'replace',
-                                        events.onPlatformBlueprintsConvertSaleLimits)
+            self.__synchronizeCacheDict(self.platformBlueprintsConvertSaleLimits, diff, 'platformBlueprintsConvertSaleLimits', 'replace', events.onPlatformBlueprintsConvertSaleLimits)
             synchronizeDicts(diff.get('freePremiumCrew', {}), self.freePremiumCrew)
             events.onClientUpdated(diff, not triggerEvents)
             if triggerEvents and not isFullSync:

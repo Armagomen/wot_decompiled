@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/sound_ctrls/common.py
-import typing
 import BattleReplay
 import BigWorld
 import SoundGroups
@@ -8,7 +7,9 @@ from Event import EventsSubscriber
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.controllers.interfaces import IBattleController
 from helpers import dependency, isPlayerAvatar
+from shared_utils import nextTick
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 
 class SoundPlayersController(object):
 
@@ -59,7 +60,7 @@ class SoundPlayersBattleController(IBattleController):
 class SoundPlayer(object):
 
     def init(self):
-        self._subscribe()
+        nextTick(self._subscribe)()
 
     def destroy(self):
         self._unsubscribe()

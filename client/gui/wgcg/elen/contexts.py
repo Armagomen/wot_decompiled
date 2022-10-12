@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgcg/elen/contexts.py
-from gui.wgcg.settings import WebRequestDataType
 from gui.shared.utils.requesters import RequestCtx
+from gui.wgcg.settings import WebRequestDataType
+
 
 class EventBoardsRequestCtx(RequestCtx):
     __slots__ = ('_needShowErrorNotification',)
@@ -97,6 +98,9 @@ class EventBoardsGetMyLeaderboardPositionCtx(EventBoardsRequestCtx):
     def getRequestType(self):
         return WebRequestDataType.EVENT_BOARDS_GET_MY_LEADERBOARD_POSITION
 
+    def getSingulizerKey(self):
+        return (self.getRequestType(), self.__eventID, self.__leaderboardID)
+
     def getEventID(self):
         return self.__eventID
 
@@ -116,6 +120,12 @@ class EventBoardsGetLeaderboardCtx(EventBoardsRequestCtx):
 
     def getRequestType(self):
         return WebRequestDataType.EVENT_BOARDS_GET_LEADERBOARD
+
+    def getSingulizerKey(self):
+        return (self.getRequestType(),
+         self.__eventID,
+         self.__leaderboardID,
+         self.__pageNumber)
 
     def getEventID(self):
         return self.__eventID

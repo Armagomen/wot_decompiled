@@ -35,7 +35,6 @@ _PERIPHERY_DEFAULT_LIFETIME = 15 * ONE_MINUTE
 _LIMIT_LOGIN_COUNT = 5
 _logger = logging.getLogger(__name__)
 
-
 class Manager(ILoginManager):
     lobbyContext = dependency.descriptor(ILobbyContext)
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -267,9 +266,7 @@ class Manager(ILoginManager):
             return
         else:
             if 'peripheryRoutingGroups' in diff:
-                self.connectionMgr.setPeripheryRoutingGroup(self.connectionMgr.peripheryRoutingGroup,
-                                                            diff['peripheryRoutingGroups'].get(
-                                                                self.connectionMgr.peripheryRoutingGroup))
+                self.connectionMgr.setPeripheryRoutingGroup(self.connectionMgr.peripheryRoutingGroup, diff['peripheryRoutingGroups'].get(self.connectionMgr.peripheryRoutingGroup))
             return
 
 

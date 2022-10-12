@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dog_tags_common/config/validators.py
 import typing
-from dog_tags_common.config.common import ValidateException, TRIUMPH_GRADES, SKILL_GRADES, STARTING_COMPONENT_TYPES, DEDICATION_GRADES, RANKED_SKILL_GRADES
+
+from dog_tags_common.config.common import ValidateException, TRIUMPH_GRADES, SKILL_GRADES, STARTING_COMPONENT_TYPES, \
+    DEDICATION_GRADES, RANKED_SKILL_GRADES
+
 if typing.TYPE_CHECKING:
-    from dog_tag_framework import ComponentDefinition, StartingComponents
-    from common import ComponentPurpose, ComponentViewType
+    pass
 
 def validateCommon(component):
     if component.isDefault and component.isHidden:
@@ -14,6 +16,8 @@ def validateCommon(component):
 def validateTriumphMedal(component):
     if component.grades is not None and len(component.grades) != 0:
         raise ValidateException(ValidateException.HAS_GRADES, component.componentId, component.grades)
+    if component.unlockKey and component.isExternalUnlockOnly:
+        raise ValidateException(ValidateException.UNLOCK_KEY_AND_EXTERNAL_UNLOCK, component.componentId, component.grades)
     return
 
 
@@ -22,6 +26,8 @@ def validateTriumph(component):
         raise ValidateException(ValidateException.WRONG_NUMBER_OF_GRADES, component.componentId, TRIUMPH_GRADES)
     if component.isDefault and component.grades[0] > 0:
         raise ValidateException(ValidateException.DEFAULT_WRONG_GRADES, component.componentId, component.grades)
+    if component.unlockKey and component.isExternalUnlockOnly:
+        raise ValidateException(ValidateException.UNLOCK_KEY_AND_EXTERNAL_UNLOCK, component.componentId, component.grades)
     return
 
 
@@ -30,6 +36,8 @@ def validateSkill(component):
         raise ValidateException(ValidateException.WRONG_NUMBER_OF_GRADES, component.componentId, SKILL_GRADES)
     if component.isDefault and component.grades[0] > 0:
         raise ValidateException(ValidateException.DEFAULT_WRONG_GRADES, component.componentId, component.grades)
+    if component.unlockKey and component.isExternalUnlockOnly:
+        raise ValidateException(ValidateException.UNLOCK_KEY_AND_EXTERNAL_UNLOCK, component.componentId, component.grades)
     return
 
 
@@ -42,7 +50,7 @@ def validateDedication(component):
 
 
 def validateDedicationUnlock(component):
-    if bool(component.unlockKey) == component.isDefault:
+    if not (component.unlockKey or component.isDefault or component.isExternalUnlockOnly) or component.unlockKey and component.isDefault or component.unlockKey and component.isExternalUnlockOnly or component.isDefault and component.isExternalUnlockOnly:
         raise ValidateException(ValidateException.SHOULD_BE_DEFAULT_OR_HAS_UNLOCK_KEY, component.componentId, component.grades)
 
 

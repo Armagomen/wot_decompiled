@@ -2,12 +2,14 @@
 # Embedded file name: scripts/client/gui/shared/formatters/time_formatters.py
 import math
 import time
+
+from constants import GameSeasonType
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
 from helpers import i18n, time_utils
 from rent_common import SeasonRentDuration
-from constants import GameSeasonType
 from season_common import getDateFromSeasonID
+
 _SEASON_TYPE_KEY = {GameSeasonType.EPIC: 'epic',
  GameSeasonType.RANKED: 'ranked'}
 
@@ -18,6 +20,7 @@ class RentDurationKeys(object):
     TIME = 'time'
     DAYS = 'days'
     HOURS = 'hours'
+    MINUTES = 'minutes'
     BATTLES = 'battles'
     WINS = 'wins'
 
@@ -46,16 +49,13 @@ def getTimeLeftInfo(timeLeft, timeStyle=None):
         return (RentDurationKeys.HOURS, formatTime(timeLeft, time_utils.ONE_HOUR, timeStyle))
 
 
-def getRentEpicSeasonTimeLeft(timeLeft, timeStyle=None):
+def getTimeLeftInfoEx(timeLeft, timeStyle=None):
     if timeLeft > 0 and timeLeft != float('inf'):
         if timeLeft > time_utils.ONE_DAY:
-            fmtKey, timeNum = 'daysLeft', formatTime(timeLeft, time_utils.ONE_DAY, timeStyle)
-        elif timeLeft >= time_utils.ONE_HOUR:
-            fmtKey, timeNum = 'hoursLeft', formatTime(timeLeft, time_utils.ONE_HOUR, timeStyle)
-        else:
-            timeLeft = timeLeft if timeLeft > time_utils.ONE_MINUTE else time_utils.ONE_MINUTE
-            fmtKey, timeNum = 'minsLeft', formatTime(timeLeft, time_utils.ONE_MINUTE, timeStyle)
-        return i18n.makeString('#tooltips:vehicle/rentLeft/epic/%s' % fmtKey, timeNum=timeNum)
+            return (RentDurationKeys.DAYS, formatTime(timeLeft, time_utils.ONE_DAY, timeStyle))
+        if timeLeft > time_utils.ONE_HOUR:
+            return (RentDurationKeys.HOURS, formatTime(timeLeft, time_utils.ONE_HOUR, timeStyle))
+    return (RentDurationKeys.MINUTES, formatTime(timeLeft, time_utils.ONE_MINUTE, timeStyle))
 
 
 def getTimeLeftStr(localization, timeLeft, timeStyle=None, ctx=None, formatter=None):
@@ -106,6 +106,8 @@ class RentLeftFormatter(object):
         activeSeasonRent = self.__rentInfo.getActiveSeasonRent()
         if activeSeasonRent is not None:
             resultStr = self.getRentSeasonLeftStr(activeSeasonRent, localization, formatter, timeStyle, ctx)
+        elif self.__rentInfo.hasEventRule:
+            resultStr = self.getRentBattlesLeftStr(localization, formatter)
         elif self.__rentInfo.getTimeLeft() > 0:
             if strForSpecialTimeFormat:
                 finishTime = self.__rentInfo.getTimeLeft() + time_utils.getCurrentTimestamp()
@@ -137,7 +139,7 @@ class RentLeftFormatter(object):
         if formatter is None:
             formatter = defaultFormatter
         battlesLeft = self.__rentInfo.battlesLeft
-        return formatter(localization, RentDurationKeys.BATTLES, battlesLeft) if battlesLeft > 0 else ''
+        return formatter(localization, RentDurationKeys.BATTLES, battlesLeft) if battlesLeft > 0 or self.__rentInfo.hasEventRule else ''
 
     def getRentWinsLeftStr(self, localization=None, formatter=None):
         if localization is None:

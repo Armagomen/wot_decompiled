@@ -21,7 +21,7 @@ from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeG
 
 _logger = logging.getLogger(__name__)
 CREW_LVL_BY_TYPE = {ItemPackType.CREW_50: '50%',
-                    ItemPackType.CREW_75: '75%',
+ ItemPackType.CREW_75: '75%',
  ItemPackType.CREW_100: '100%',
  ItemPackType.CUSTOM_CREW_100: '100%'}
 
@@ -38,8 +38,7 @@ class OfferGiftVehiclePreview(VehiclePreview):
         customCallbacks = ctx.get('customCallbacks', {})
         self._customCallbacks = customCallbacks if customCallbacks is not None else {}
         ctx['itemCD'] = self._vehicle.intCD
-        ctx['previewBackCb'] = self._customCallbacks.get('previewBackCb',
-                                                         partial(event_dispatcher.showOfferGiftsWindow, self._offer.id))
+        ctx['previewBackCb'] = self._customCallbacks.get('previewBackCb', partial(event_dispatcher.showOfferGiftsWindow, self._offer.id))
         super(OfferGiftVehiclePreview, self).__init__(ctx)
         self._confirmCallback = ctx.get('confirmCallback')
         self.__itemsPack = self._generateItemsPack()

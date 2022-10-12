@@ -11,7 +11,6 @@ preload = BigWorld.Model('helpers/models/hemisphere.model')
 preload2 = BigWorld.Model('helpers/models/entity_arrow.model')
 preload3 = BigWorld.Model('helpers/models/directional_arrow.model')
 
-
 class MatchInfo:
 
     def __init__(self, tuple):

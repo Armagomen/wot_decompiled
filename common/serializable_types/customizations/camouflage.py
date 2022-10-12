@@ -11,14 +11,13 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('CamouflageComponent',)
 
-
 class CamouflageComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.CAMOUFLAGE
     fields = OrderedDict((('id', intField()),
-                          ('patternSize', intField(1)),
-                          ('appliedTo', applyAreaEnumField(ApplyArea.CAMOUFLAGE_REGIONS_VALUE)),
-                          ('palette', intField())))
+     ('patternSize', intField(1)),
+     ('appliedTo', applyAreaEnumField(ApplyArea.CAMOUFLAGE_REGIONS_VALUE)),
+     ('palette', intField())))
     __slots__ = ('id', 'patternSize', 'appliedTo', 'palette')
 
     def __init__(self, id=0, patternSize=1, appliedTo=ApplyArea.CAMOUFLAGE_REGIONS_VALUE, palette=0):

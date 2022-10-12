@@ -1,18 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/links_handlers/ExternalLinksHandler.py
-import typing
 import logging
-from adisp import async, process
+import typing
+
+from adisp import adisp_async, adisp_process
 from gui import GUI_SETTINGS
 from gui.game_control.links import URLMacros
+from gui.game_control.links_handlers import external
 from gui.shared import g_eventBus
 from gui.shared.events import OpenLinkEvent
 from helpers import dependency
 from skeletons.gui.game_control import IExternalLinksController
-from gui.game_control.links_handlers import external
 from skeletons.gui.login_manager import ILoginManager
+
 if typing.TYPE_CHECKING:
-    from gui.game_control.links_handlers.external import ILinksHandler
+    pass
 _logger = logging.getLogger(__name__)
 _LISTENERS = {OpenLinkEvent.SPECIFIED: '_handleSpecifiedURL',
  OpenLinkEvent.PARSED: '_handleParsedURL',
@@ -85,8 +87,8 @@ class ExternalLinksHandler(IExternalLinksController):
         if not handled:
             _logger.error('Cant handle external link: %s', url)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def getURL(self, name, params=None, callback=lambda *args: None):
         urlSettings = GUI_SETTINGS.lookup(name)
         if urlSettings:
@@ -106,7 +108,7 @@ class ExternalLinksHandler(IExternalLinksController):
     def _handleSpecifiedURL(self, event):
         self.open(event.url)
 
-    @process
+    @adisp_process
     def __openParsedUrl(self, urlName, params=None):
         parsedUrl = yield self.getURL(urlName, params)
         self.open(parsedUrl)

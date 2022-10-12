@@ -13,7 +13,6 @@ from items.readers import shared_readers
 if IS_UE_EDITOR or IS_CLIENT:
     import Vehicular
 
-
 def readWheelsAndGroups(xmlCtx, section):
     wheelGroups = []
     wheels = []
@@ -22,11 +21,7 @@ def readWheelsAndGroups(xmlCtx, section):
     for sname, subsection in _xml.getChildren(xmlCtx, section, 'wheels'):
         if sname == 'group':
             ctx = (xmlCtx, 'wheels/group')
-            group = chassis_components.WheelGroup(isLeft=_xml.readBool(ctx, subsection, 'isLeft'),
-                                                  template=intern(_xml.readNonEmptyString(ctx, subsection, 'template')),
-                                                  count=_xml.readInt(ctx, subsection, 'count', 1),
-                                                  startIndex=subsection.readInt('startIndex', 0),
-                                                  radius=_xml.readPositiveFloat(ctx, subsection, 'radius'))
+            group = chassis_components.WheelGroup(isLeft=_xml.readBool(ctx, subsection, 'isLeft'), template=intern(_xml.readNonEmptyString(ctx, subsection, 'template')), count=_xml.readInt(ctx, subsection, 'count', 1), startIndex=subsection.readInt('startIndex', 0), radius=_xml.readPositiveFloat(ctx, subsection, 'radius'))
             wheelGroups.append(group)
         if sname == 'wheel':
             from items.vehicles import _readHitTester, _readArmor

@@ -59,8 +59,4 @@ def _createCloseWindowWebApi(onBrowserClose=None):
 
 
 def createStrongholdsWebHandlers(onBrowserOpen=None, onBrowserClose=None):
-    return webApiCollection(_createCloseWindowWebApi(onBrowserClose=onBrowserClose),
-                            _createOpenWindowWebApi(onBrowserOpen=onBrowserOpen, onBrowserClose=onBrowserClose),
-                            ClansWebApi, ContextMenuWebApi, NotificationWebApi, OpenTabWebApi,
-                            ReactiveCommunicationWebApi, RequestWebApi, StrongholdsWebApi, ShopWebApi, SoundWebApi,
-                            SoundStateWebApi, VehiclesWebApi, ArenasWebApi, UtilWebApi, UILoggingWebApi)
+    return webApiCollection(_createCloseWindowWebApi(onBrowserClose=onBrowserClose), _createOpenWindowWebApi(onBrowserOpen=onBrowserOpen, onBrowserClose=onBrowserClose), ClansWebApi, ContextMenuWebApi, NotificationWebApi, OpenTabWebApi, ReactiveCommunicationWebApi, RequestWebApi, StrongholdsWebApi, ShopWebApi, SoundWebApi, SoundStateWebApi, VehiclesWebApi, ArenasWebApi, UtilWebApi, UILoggingWebApi)

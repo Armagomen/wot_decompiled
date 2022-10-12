@@ -61,8 +61,7 @@ class EpicBattleSetupSubView(BaseEquipmentSetupSubView):
     def _onDealConfirmed(self, _=None):
         super(EpicBattleSetupSubView, self)._onDealConfirmed(_)
         info = EpicBattleLogAdditionalInfo.APPLY_TO_CLASS.value if self._viewModel.getIsTypeSelected() else EpicBattleLogAdditionalInfo.APPLY_TO_VEHICLE.value
-        self.__uiEpicBattleLogger.log(EpicBattleLogActions.CLICK.value, item=EpicBattleLogButtons.CONFIRM.value,
-                                      parentScreen=EpicBattleLogKeys.SETUP_VIEW.value, info=info)
+        self.__uiEpicBattleLogger.log(EpicBattleLogActions.CLICK.value, item=EpicBattleLogButtons.CONFIRM.value, parentScreen=EpicBattleLogKeys.SETUP_VIEW.value, info=info)
 
     def _onDealCancelled(self, _=None):
         super(EpicBattleSetupSubView, self)._onDealCancelled(_)

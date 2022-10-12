@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/main_tank_setup/base.py
 import logging
+
 from BWUtil import AsyncReturn
-from async import async, await, await_callback
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playSectionSelectSound
+from wg_async import wg_async, wg_await, await_callback
+
 _logger = logging.getLogger(__name__)
 
 class MainTankSetupView(BaseSubModelView):
@@ -69,17 +71,17 @@ class MainTankSetupView(BaseSubModelView):
                 currentSubView.update(fullUpdate=fullUpdate)
             return
 
-    @async
+    @wg_async
     def canQuit(self, skipApplyAutoRenewal=None):
         selectedView = self.getCurrentSubView()
         if selectedView is not None:
-            quitResult = yield await(selectedView.canQuit(skipApplyAutoRenewal=skipApplyAutoRenewal))
+            quitResult = yield wg_await(selectedView.canQuit(skipApplyAutoRenewal=skipApplyAutoRenewal))
         else:
             quitResult = True
         raise AsyncReturn(quitResult)
         return
 
-    @async
+    @wg_async
     def switch(self, setupName, slotID):
         if setupName not in self._subViews:
             _logger.error('MainTankSetupView doesnt have sub view by name: %s', setupName)
@@ -89,14 +91,14 @@ class MainTankSetupView(BaseSubModelView):
             self._subViews[setupName].updateSlots(slotID, fullUpdate=False)
             raise AsyncReturn(True)
         if selectedSetup:
-            quitResult = yield await(self._subViews[selectedSetup].canQuit())
+            quitResult = yield wg_await(self._subViews[selectedSetup].canQuit())
         else:
             quitResult = True
         if quitResult:
             yield self._doSwitch(setupName, slotID)
         raise AsyncReturn(quitResult)
 
-    @async
+    @wg_async
     def _doSwitch(self, setupName, slotID):
         subView = self._subViews[setupName]
         if not subView.isLoaded():

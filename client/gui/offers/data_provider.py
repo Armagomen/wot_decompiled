@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/offers/data_provider.py
 import logging
-from functools import wraps
 import typing
-import BigWorld
+from functools import wraps
+
 import adisp
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -23,8 +23,9 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.shared import IItemsCache
+
 if typing.TYPE_CHECKING:
-    from typing import Callable, Optional, Set, Union
+    pass
 _logger = logging.getLogger(__name__)
 _CDN_SYNC_TIMEOUT = 60.0
 
@@ -134,7 +135,7 @@ class OffersDataProvider(IOffersDataProvider):
 
     @_ifFeatureDisabled(lambda callback: callback(CachePrefetchResult.CLOSED))
     @_ifNotSynced(lambda callback: callback(CachePrefetchResult.CLOSED))
-    @adisp.async
+    @adisp.adisp_async
     def isCdnResourcesReady(self, callback=None, timeout=_CDN_SYNC_TIMEOUT):
         _logger.debug('[Offers provider] CDN resources cache ready check')
         self._cdnCache.sync(callback=callback, timeout=timeout)
@@ -212,7 +213,7 @@ class OffersDataProvider(IOffersDataProvider):
         return self._pendingNotify and self._ready and isPlayerAccount()
 
     @_ifFeatureDisabled(None)
-    @adisp.process
+    @adisp.adisp_process
     def _notify(self):
         if self._readyToNotify:
             yield self._states.request()
@@ -222,7 +223,7 @@ class OffersDataProvider(IOffersDataProvider):
                 self._cdnCache.restart()
                 self._pendingNotify = False
                 _logger.debug('[Offers provider] send notification')
-                BigWorld.callback(0.0, self.onOffersUpdated)
+                self.onOffersUpdated()
                 return
         _logger.debug('[Offers provider] can not send notification')
 

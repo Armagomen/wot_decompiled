@@ -3,13 +3,17 @@
 import base64
 import cPickle
 from collections import namedtuple
+
 import BigWorld
 import Settings
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from frameworks.wulf import WindowLayer
+from gui import makeHtmlString
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.app_loader import decorators as ap_decorators
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared import event_dispatcher
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.utils import graphics
@@ -17,9 +21,7 @@ from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import INotifyController
-from gui.impl import backport
-from gui.impl.gen import R
-from gui import makeHtmlString
+
 _Settings = namedtuple('_Settings', ['presetChangingVersion', 'lastBattleAvgFps'])
 
 class NotifyController(INotifyController):
@@ -67,7 +69,7 @@ class NotifyController(INotifyController):
     def _stopPlayingTimeListening(self):
         g_eventBus.removeListener(events.GameEvent.PLAYING_TIME_ON_ARENA, self.__handlePlayingTimeOnArena, scope=EVENT_BUS_SCOPE.BATTLE)
 
-    @process
+    @adisp_process
     def __handleUiUpdated(self, _):
         self._stopUIListening()
         yield lambda callback: callback(True)
@@ -106,7 +108,7 @@ class NotifyController(INotifyController):
         if playingTime >= self.MIN_BATTLE_LENGHT:
             self.__settings = self.__settings._replace(lastBattleAvgFps=avgBattleFps)
 
-    @async
+    @adisp_async
     def __showI18nDialog(self, key, callback, ctx=None):
         from gui import DialogsInterface
         return DialogsInterface.showI18nConfirmDialog(key, callback, ctx)

@@ -3,9 +3,10 @@
 import logging
 from collections import namedtuple, defaultdict, OrderedDict
 from copy import copy
+
 import BigWorld
 import nations
-from adisp import async
+from adisp import adisp_async
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentLayouts import Layout
 from blueprints.FragmentTypes import NationalBlueprintFragment, IntelligenceDataFragment
@@ -15,6 +16,7 @@ from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils.requesters import IBlueprintsRequester
+
 _logger = logging.getLogger(__name__)
 _BlueprintData = namedtuple('BlueprintData', ('filledCount', 'totalCount', 'canConvert'))
 SPECIAL_BLUEPRINT_LEVEL = frozenset([1])
@@ -209,7 +211,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
     def hasBlueprintsOrFragments(self):
         return bool(self.__vehicleFragments) or self.hasUniversalFragments()
 
-    @async
+    @adisp_async
     def _requestCache(self, callback):
         BigWorld.player().blueprints.getCache(lambda resID, value: self._response(resID, value, callback))
 

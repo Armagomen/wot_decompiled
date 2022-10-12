@@ -353,10 +353,10 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
     @convert_data({'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time()})
     @mapped_fields({'favorite_arena_6': 'favorite_arena_6',
-                    'favorite_arena_8': 'favorite_arena_8',
-                    'favorite_arena_10': 'favorite_arena_10',
-                    'clan_id': 'clan_id',
-                    'favorite_primetime': 'favorite_primetime'})
+     'favorite_arena_8': 'favorite_arena_8',
+     'favorite_arena_10': 'favorite_arena_10',
+     'clan_id': 'clan_id',
+     'favorite_primetime': 'favorite_primetime'})
     def get_clan_favorite_attributes(self, callback, clan_id, fields=None):
         get_params = {'clan_id': clan_id}
         url = '/gm/clans/favorite_attributes/?%s' % urlencode(get_params)

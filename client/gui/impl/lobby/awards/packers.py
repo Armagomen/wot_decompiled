@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/gui/impl/lobby/awards/packers.py
 import logging
 import typing
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import RentType, OFFER_TOKEN_PREFIX
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.battle_pass.battle_pass_bonuses_packers import TmanTemplateBonusPacker
@@ -21,8 +21,6 @@ from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
-    from gui.server_events.bonuses import VehiclesBonus, TokensBonus
-    from gui.impl.backport import TooltipData
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
     from gui.shared.gui_items.Vehicle import Vehicle
 VEH_COMP_R_ID = R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent()
@@ -85,8 +83,8 @@ class _MultiAwardTokenBonusUIPacker(BaseBonusUIPacker):
     def isAsync(self):
         return True
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def asyncPack(self, bonus, callback=None):
         yield lambda callback: callback(True)
         result = []
@@ -119,8 +117,8 @@ class _MultiAwardTokenBonusUIPacker(BaseBonusUIPacker):
 
         callback(result)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def asyncGetToolTip(self, bonus, callback=None):
         yield lambda callback: callback(True)
         result = []

@@ -9,7 +9,6 @@ from ..py_object_binder import PyObjectEntity
 
 _logger = logging.getLogger(__name__)
 
-
 class WindowsManager(PyObjectEntity):
     __slots__ = ('__eManager', 'onWindowStatusChanged', 'onViewStatusChanged', '__weakref__')
 

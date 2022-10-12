@@ -1,23 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileSummaryView.py
-from adisp import process
+from adisp import adisp_process
 from constants import IS_CHINA
-from gui.impl import backport
-from helpers import i18n, dependency
-from gui.clans.settings import CLIENT_CLAN_RESTRICTIONS as _RES
-from gui.clans.items import formatField, isValueAvailable, StrongholdStatisticsData
-from gui.clans.clan_helpers import isStrongholdsEnabled
-from gui.clans.formatters import DUMMY_UNAVAILABLE_DATA
-from gui.shared.formatters import icons, text_styles
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.view_helpers.UsersInfoHelper import UsersInfoHelper
-from gui.shared.events import OpenLinkEvent
+from gui.Scaleform.daapi.view.meta.ClanProfileSummaryViewMeta import ClanProfileSummaryViewMeta
 from gui.Scaleform.genConsts.TEXT_MANAGER_STYLES import TEXT_MANAGER_STYLES as _STYLE
 from gui.Scaleform.locale.CLANS import CLANS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.daapi.view.meta.ClanProfileSummaryViewMeta import ClanProfileSummaryViewMeta
+from gui.clans.clan_helpers import isStrongholdsEnabled
+from gui.clans.formatters import DUMMY_UNAVAILABLE_DATA
+from gui.clans.items import formatField, isValueAvailable, StrongholdStatisticsData
+from gui.clans.settings import CLIENT_CLAN_RESTRICTIONS as _RES
+from gui.impl import backport
+from gui.shared.events import OpenLinkEvent
+from gui.shared.formatters import icons, text_styles
 from gui.shared.image_helper import ImagesFetchCoordinator
+from gui.shared.utils.functions import makeTooltip
+from gui.shared.view_helpers.UsersInfoHelper import UsersInfoHelper
+from helpers import i18n, dependency
 from skeletons.gui.lobby_context import ILobbyContext
+
 _DIVISIONS = (6, 8, 10)
 
 def _stateVO(showRequestBtn, mainStatus=None, tooltip='', enabledRequestBtn=False, addStatus=None, showPersonalBtn=False):
@@ -108,7 +109,7 @@ class StrongholdDataReceiver(object):
         self.__imagesFetchCoordinator.fini()
         return
 
-    @process
+    @adisp_process
     def updateStrongholdStatistics(self):
         self.__strongholdStats = yield self.__clanDossier.requestStrongholdStatistics()
         if self.__disposed:
@@ -139,7 +140,7 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
         self._lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
         return
 
-    @process
+    @adisp_process
     def setClanDossier(self, clanDossier):
         super(ClanProfileSummaryView, self).setClanDossier(clanDossier)
         self._showWaiting()
@@ -186,7 +187,7 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
         if clanDbID == self._clanDossier.getDbID():
             self.__updateStatus()
 
-    @process
+    @adisp_process
     def onAccountClanProfileChanged(self, profile):
         clanInfo = yield self._clanDossier.requestClanInfo()
         if not self.isDisposed():
@@ -199,7 +200,7 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
         if emblem:
             self.as_setClanEmblemS(self.getMemoryTexturePath(emblem))
 
-    @process
+    @adisp_process
     def onUserNamesReceived(self, names):
         clanInfo = yield self._clanDossier.requestClanInfo()
         if not self.isDisposed():

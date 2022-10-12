@@ -4,7 +4,6 @@ from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_model import BattleMattersVehicleModel
 
-
 class BattleMattersMainRewardViewModel(ViewModel):
     __slots__ = ('onStart', 'onPreview', 'onBack', 'onClose')
 

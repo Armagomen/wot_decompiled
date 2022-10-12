@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/crew_books/crew_books_view.py
 from CurrentVehicle import g_currentVehicle
-from async import async, await
 from frameworks.wulf import ViewFlags, ViewStatus, ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.framework import ScopeTemplates
@@ -33,6 +32,7 @@ from items.components.crew_books_constants import CREW_BOOK_INVALID_TYPE, CREW_B
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from wg_async import wg_async, wg_await
 
 
 class CrewBooksView(ViewImpl):
@@ -219,8 +219,7 @@ class CrewBooksView(ViewImpl):
         tankmenCompDescr = diff.get('compDescr', {})
         roles = self.__vehicle.descriptor.type.crewRoles
         crew = sortCrew(self.__vehicle.crew, roles)
-        crewDiff = [(i, tankman) for i, (_, tankman) in enumerate(crew) if
-                    tankman is not None and tankman.invID in tankmenCompDescr]
+        crewDiff = [ (i, tankman) for i, (_, tankman) in enumerate(crew) if tankman is not None and tankman.invID in tankmenCompDescr ]
         for slotIdx, tankman in crewDiff:
             tankmanVM = crewListVM[slotIdx]
             tankmanVM.setRoleLevel(str(tankman.roleLevel))
@@ -251,20 +250,20 @@ class CrewBooksView(ViewImpl):
         showHangar()
         self.destroyWindow()
 
-    @async
+    @wg_async
     def __onBuyBtnClick(self, args):
         self.viewModel.setIsDialogOpen(True)
-        yield await(dialogs.buyCrewBook(parent=self, crewBookCD=int(args['compactDesc'])))
+        yield wg_await(dialogs.buyCrewBook(parent=self, crewBookCD=int(args['compactDesc'])))
         self.viewModel.setIsDialogOpen(False)
 
-    @async
+    @wg_async
     def __onBookUse(self):
         if self.__selectedTankmanVM is not None:
             tankmanInvId = self.__selectedTankmanVM.getInvID()
         else:
             tankmanInvId = 0
         self.viewModel.setIsDialogOpen(True)
-        yield await(dialogs.useCrewBook(parent=self, crewBookCD=self.__selectedBookGuiItem.intCD, vehicleIntCD=self.__vehicle.intCD, tankmanInvId=tankmanInvId))
+        yield wg_await(dialogs.useCrewBook(parent=self, crewBookCD=self.__selectedBookGuiItem.intCD, vehicleIntCD=self.__vehicle.intCD, tankmanInvId=tankmanInvId))
         self.viewModel.setIsDialogOpen(False)
         availableBookCount = sum((not book.getIsDisabled() for book in self.viewModel.getCrewBookItemList()))
         if availableBookCount == 0 and self.viewStatus == ViewStatus.LOADED:
@@ -535,14 +534,14 @@ class CrewBooksLackView(ViewImpl):
         showHangar()
         self.destroyWindow()
 
-    @async
+    @wg_async
     def __onBuyBtnClick(self):
         crewBookCD = next((crewBook.intCD for crewBook in self.__existBooks.itervalues() if crewBook.getBookType() == CREW_BOOK_RARITY.CREW_EPIC), None)
         if crewBookCD is None:
             return
         else:
             self.viewModel.setIsDialogOpen(True)
-            result = yield await(dialogs.buyCrewBook(parent=self, crewBookCD=int(crewBookCD)))
+            result = yield wg_await(dialogs.buyCrewBook(parent=self, crewBookCD=int(crewBookCD)))
             self.viewModel.setIsDialogOpen(False)
             if result is True:
                 g_eventBus.handleEvent(events.LoadGuiImplViewEvent(GuiImplViewLoadParams(R.views.lobby.crew_books.crew_books_view.CrewBooksView(), CrewBooksView, ScopeTemplates.LOBBY_SUB_SCOPE)), scope=EVENT_BUS_SCOPE.LOBBY)

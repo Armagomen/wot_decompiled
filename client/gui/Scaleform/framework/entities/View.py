@@ -3,19 +3,21 @@
 import logging
 import typing
 from collections import namedtuple
-from gui.Scaleform.framework.settings import UIFrameworkImpl
+
 from gui.Scaleform.framework.entities.DisposableEntity import EntityState
 from gui.Scaleform.framework.entities.abstract.AbstractViewMeta import AbstractViewMeta
 from gui.Scaleform.framework.entities.view_interface import ViewInterface
+from gui.Scaleform.framework.settings import UIFrameworkImpl
 from gui.doc_loaders import hints_layout
 from gui.shared.events import FocusEvent
+from helpers import dependency, uniprof
 from ids_generators import SequenceIDGenerator
 from skeletons.tutorial import ITutorialLoader
 from soft_exception import SoftException
 from sound_gui_manager import ViewSoundExtension
-from helpers import dependency, uniprof
+
 if typing.TYPE_CHECKING:
-    from frameworks.wulf import Window
+    pass
 _UNIPROF_REGION_COLOR = 3368601
 _logger = logging.getLogger(__name__)
 _view_id_generator = SequenceIDGenerator()
@@ -144,12 +146,12 @@ class View(AbstractViewMeta, ViewInterface):
             _logger.debug('Unique name cannot be set to None: %r', self)
         return
 
-    def setupContextHints(self, hintID):
+    def setupContextHints(self, hintID, hintsArgs=None):
         if hintID is not None:
             hintsData = hints_layout.getLayout(hintID)
             if hintsData is not None:
                 viewTutorialID = self.__tutorialLoader.gui.getViewTutorialID(self.__key.name)
-                self.__tutorialLoader.gui.setupViewContextHints(viewTutorialID, hintsData)
+                self.__tutorialLoader.gui.setupViewContextHints(viewTutorialID, hintsData, hintsArgs=hintsArgs)
             else:
                 _logger.error('Hint layout is not defined %r', hintID)
         return

@@ -3,7 +3,6 @@
 import typing
 
 from BWUtil import AsyncReturn
-from async import async, await
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.Waiting import Waiting
 from gui.impl.dialogs.dialogs import showSingleDialogWithResultData
@@ -16,6 +15,7 @@ from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
 from helpers import dependency
 from items.components.supply_slot_categories import SlotCategories
 from skeletons.gui.game_control import IVehicleComparisonBasket
+from wg_async import wg_async, wg_await
 
 _SLOT_IS_NOT_SELECTED_IDX = 0
 if typing.TYPE_CHECKING:
@@ -89,7 +89,7 @@ class SelectSlotSpecCompareDialog(FullScreenDialogView):
             self._onCancel()
 
 
-@async
+@wg_async
 def showDialog(vehicle, parent=None):
-    result = yield await(showSingleDialogWithResultData(layoutID=R.views.lobby.vehicle_compare.SelectSlotSpecCompareDialog(), parent=parent, wrappedViewClass=SelectSlotSpecCompareDialog, vehicle=vehicle))
+    result = yield wg_await(showSingleDialogWithResultData(layoutID=R.views.lobby.vehicle_compare.SelectSlotSpecCompareDialog(), parent=parent, wrappedViewClass=SelectSlotSpecCompareDialog, vehicle=vehicle))
     raise AsyncReturn(result)

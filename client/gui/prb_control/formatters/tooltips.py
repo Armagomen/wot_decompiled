@@ -25,8 +25,7 @@ def getAbsenceCrewList():
 
 def getCrewNotFullTooltip():
     crewList = getAbsenceCrewList()
-    return makeTooltip('#tooltips:redButton/disabled/crew/notFull/header',
-                       i18n.makeString('#tooltips:redButton/disabled/crew/notFull/body') % crewList)
+    return makeTooltip('#tooltips:redButton/disabled/crew/notFull/header', i18n.makeString('#tooltips:redButton/disabled/crew/notFull/body') % crewList)
 
 
 def getVehicleStateInvalidTooltip(restriction):
@@ -36,9 +35,7 @@ def getVehicleStateInvalidTooltip(restriction):
 def getVehicleClassInvalidTooltip(teamsLimit, restriction):
     classTag = PREBATTLE_RESTRICTION.getVehClassRestrictions().get(restriction)
     minLevel, maxLevel = prb_getters.getClassLevelLimits(teamsLimit, classTag)
-    return makeTooltip(i18n.makeString('#tooltips:redButton/disabled/{0:>s}/header'.format(restriction)),
-                       i18n.makeString('#tooltips:redButton/disabled/{0:>s}/body'.format(restriction), minLevel,
-                                       maxLevel))
+    return makeTooltip(i18n.makeString('#tooltips:redButton/disabled/{0:>s}/header'.format(restriction)), i18n.makeString('#tooltips:redButton/disabled/{0:>s}/body'.format(restriction), minLevel, maxLevel))
 
 
 def getLevelInvalidTooltip(teamLimits, restriction):

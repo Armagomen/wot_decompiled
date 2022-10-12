@@ -124,15 +124,12 @@ def packTextParameterWithIconBlockData(name, value, icon, linkage=BLOCKS_TOOLTIP
     return packBlockDataItem(linkage, data, padding)
 
 
-def packTitleDescParameterWithIconBlockData(title, value='', icon=None, desc=None,
-                                            linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TITLE_DESC_PARAMETER_WITH_ICON_BLOCK_LINKAGE,
-                                            valueAtRight=False, valueWidth=-1, titleWidth=-1, gap=5, titlePadding=None,
-                                            valuePadding=None, iconPadding=None, padding=None, iconAlpha=1):
+def packTitleDescParameterWithIconBlockData(title, value='', icon=None, desc=None, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TITLE_DESC_PARAMETER_WITH_ICON_BLOCK_LINKAGE, valueAtRight=False, valueWidth=-1, titleWidth=-1, gap=5, titlePadding=None, valuePadding=None, iconPadding=None, padding=None, iconAlpha=1):
     data = {'name': title,
-            'value': value,
-            'valueAtRight': valueAtRight,
-            'iconAlpha': iconAlpha,
-            'gap': gap}
+     'value': value,
+     'valueAtRight': valueAtRight,
+     'iconAlpha': iconAlpha,
+     'gap': gap}
     if icon is not None:
         data['icon'] = icon
     if valueWidth != -1:
@@ -313,7 +310,7 @@ def packImageBlockData(img=None, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=
 
 def packQuestRewardItemBlockData(img=None, overlayPath=None, overlayPadding=None, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_REWARD_ITEM_BLOCK_LINKAGE, padding=None):
     data = {'align': align,
-            'alpha': 1.0}
+     'alpha': 1.0}
     if img is not None:
         data['imagePath'] = img
     if overlayPath is not None:
@@ -323,8 +320,7 @@ def packQuestRewardItemBlockData(img=None, overlayPath=None, overlayPadding=None
     return packBlockDataItem(linkage, data, padding)
 
 
-def packQuestProgressBlockData(progress=0, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_PROGRESS_BLOCK_LINKAGE,
-                               padding=None):
+def packQuestProgressBlockData(progress=0, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_PROGRESS_BLOCK_LINKAGE, padding=None):
     data = {'progress': progress}
     return packBlockDataItem(linkage, data, padding)
 
@@ -333,16 +329,14 @@ def packQuestOrConditionBlockData(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_QUEST_OR_
     return packBlockDataItem(linkage, {}, padding)
 
 
-def packBlueprintBlockData(blueprintImg, schemeImg, numCols, numRows, layout, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT,
-                           linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BLUEPRINT_BLOCK_LINKAGE, width=-1, height=-1,
-                           padding=None, alpha=1.0):
+def packBlueprintBlockData(blueprintImg, schemeImg, numCols, numRows, layout, align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BLUEPRINT_BLOCK_LINKAGE, width=-1, height=-1, padding=None, alpha=1.0):
     data = {'blueprintPath': blueprintImg,
-            'blueprintLayout': layout,
-            'imagePath': schemeImg,
-            'numCols': numCols,
-            'numRows': numRows,
-            'align': align,
-            'alpha': alpha}
+     'blueprintLayout': layout,
+     'imagePath': schemeImg,
+     'numCols': numCols,
+     'numRows': numRows,
+     'align': align,
+     'alpha': alpha}
     if width != -1:
         data['width'] = width
     if height != -1:
@@ -528,11 +522,12 @@ def packCounterTextBlockData(countLabel, desc, linkage=BLOCKS_TOOLTIP_TYPES.TOOL
     return packBlockDataItem(linkage, data, padding)
 
 
-def packBadgeInfoBlockData(badgeImgSource, vehImgSource, playerName, vehName, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BADGE_INFO_BLOCK_LINKAGE, padding=None):
+def packBadgeInfoBlockData(badgeImgSource, vehImgSource, playerName, vehName, stripImgSource='', linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BADGE_INFO_BLOCK_LINKAGE, padding=None):
     data = {'badgeImgSource': badgeImgSource,
      'vehImgSource': vehImgSource,
      'playerName': playerName,
-     'vehName': vehName}
+     'vehName': vehName,
+     'stripImgSource': stripImgSource}
     return packBlockDataItem(linkage, data, padding)
 
 
@@ -605,3 +600,15 @@ def packCustomizationCharacteristicBlockData(icon, text, linkage=BLOCKS_TOOLTIP_
 def packImageListIconData(imgSrc, imgAlpha=1):
     return {'imgSrc': imgSrc,
      'imgAlpha': imgAlpha}
+
+
+def getImage(resource, width=16, height=16, vspace=0, hspace=0):
+    return makeHtmlString('html_templates:common', 'image', {'icon': resource,
+     'width': width,
+     'height': height,
+     'vspace': vspace,
+     'hspace': hspace})
+
+
+def packMultipleText(separator=' ', *args, **kwargs):
+    return packTextBlockData(separator.join(args), **kwargs)

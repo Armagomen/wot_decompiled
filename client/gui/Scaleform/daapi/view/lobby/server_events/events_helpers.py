@@ -20,8 +20,7 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.server_events import conditions, formatters, settings as quest_settings
-from gui.server_events.events_helpers import EventInfoModel, MISSIONS_STATES, QuestInfoModel, isDailyQuest, \
-    getDataByC11nQuest
+from gui.server_events.events_helpers import EventInfoModel, MISSIONS_STATES, QuestInfoModel, isDailyQuest, getDataByC11nQuest
 from gui.server_events.personal_progress.formatters import PostBattleConditionsFormatter
 from gui.shared.formatters import icons, text_styles
 from helpers import dependency, i18n, int2roman, time_utils
@@ -34,13 +33,11 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
     pass
 FINISH_TIME_LEFT_TO_SHOW = time_utils.ONE_DAY
 START_TIME_LIMIT = 5 * time_utils.ONE_DAY
 _AWARDS_PER_PAGE = 3
-
 
 class BattlePassProgress(object):
     __battlePassController = dependency.descriptor(IBattlePassController)
@@ -56,7 +53,7 @@ class BattlePassProgress(object):
         self.__hasBattlePass = kwargs.get('hasBattlePass', False)
         self.__questsProgress = kwargs.get('questsProgress', {})
         self.__battlePassComplete = kwargs.get('battlePassComplete', False)
-        self.__availablePoints = kwargs.get('availablePoints', 0)
+        self.__availablePoints = kwargs.get('availablePoints', False)
         self.__prevLevel = 0
         self.__currLevel = 0
         self.__pointsNew = 0
@@ -90,8 +87,7 @@ class BattlePassProgress(object):
 
     @property
     def isLevelMax(self):
-        return self.__chapterID > 0 and self.__currLevel == self.__battlePassController.getMaxLevelInChapter(
-            self.__chapterID)
+        return self.__chapterID > 0 and self.__currLevel == self.__battlePassController.getMaxLevelInChapter(self.__chapterID)
 
     @property
     def hasBattlePass(self):
@@ -194,17 +190,17 @@ class _EventInfo(EventInfoModel):
          'tasksCount': bonusCount,
          'progrBarType': qProgbarType,
          'progrTooltip': tooltip,
-                'maxProgrVal': qProgTot,
-                'currentProgrVal': qProgCur,
-                'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
-                'timerDescription': self.getTimerMsg(),
-                'status': status,
-                'description': self.event.getUserName(),
-                'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
-                'isSelectable': True,
-                'isNew': quest_settings.isNewCommonEvent(self.event),
-                'isAvailable': isAvailable,
-                'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_TASK}
+         'maxProgrVal': qProgTot,
+         'currentProgrVal': qProgCur,
+         'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
+         'timerDescription': self.getTimerMsg(),
+         'status': status,
+         'description': self.event.getUserName(),
+         'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
+         'isSelectable': True,
+         'isNew': quest_settings.isNewCommonEvent(self.event),
+         'isAvailable': isAvailable,
+         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_TASK}
 
     def getPostBattleInfo(self, svrEvents, pCur, pPrev, isProgressReset, isCompleted, progressData):
         index = 0
@@ -443,10 +439,8 @@ def _getEventInfoData(event):
     return _QuestInfo(event) if event.getType() in constants.EVENT_TYPE.QUEST_RANGE else _EventInfo(event)
 
 
-def getEventPostBattleInfo(event, svrEvents=None, pCur=None, pPrev=None, isProgressReset=False, isCompleted=False,
-                           progressData=None):
-    return _getEventInfoData(event).getPostBattleInfo(svrEvents, pCur or {}, pPrev or {}, isProgressReset, isCompleted,
-                                                      progressData)
+def getEventPostBattleInfo(event, svrEvents=None, pCur=None, pPrev=None, isProgressReset=False, isCompleted=False, progressData=None):
+    return _getEventInfoData(event).getPostBattleInfo(svrEvents, pCur or {}, pPrev or {}, isProgressReset, isCompleted, progressData)
 
 
 class Progression2dStyleFormater(object):
@@ -459,36 +453,59 @@ class Progression2dStyleFormater(object):
             if isinstance(cond, conditions._Cumulativable):
                 for _, (curProg, totalProg, diff, _) in cond.getProgressPerGroup(pCur, pPrev).iteritems():
                     label = cond.getUserString()
-                    if not diff and not label:
+                    customDescription = cond.getCustomDescription()
+                    if customDescription is not None:
+                        label = customDescription
+                    for orItem in event.postBattleCond.getConditions().items:
+                        customDescription = orItem.getCustomDescription()
+                        if customDescription is not None:
+                            label = customDescription
+
+                    if not diff or not label:
                         continue
                     state = cls.getStatus(isCompleted) if isCompleted else None
                     progresses.append({'progrTooltip': None,
-                                       'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
-                                       'maxProgrVal': totalProg,
-                                       'currentProgrVal': curProg,
-                                       'description': label,
-                                       'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
-                                       'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
-                                       'questState': state})
+                     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                     'maxProgrVal': totalProg,
+                     'currentProgrVal': curProg,
+                     'description': label,
+                     'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
+                     'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+                     'questState': state})
 
+        firstPostCond = first(event.postBattleCond.getConditions().items)
+        if firstPostCond and not progresses:
+            label = ''
+            customDescription = firstPostCond.getCustomDescription()
+            if customDescription is not None:
+                label = customDescription
+            if label:
+                state = cls.getStatus(True)
+                progresses.append({'progrTooltip': None,
+                 'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                 'maxProgrVal': 1,
+                 'currentProgrVal': 1,
+                 'description': label,
+                 'progressDiff': '+ %s' % backport.getIntegralFormat(0),
+                 'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+                 'questState': state})
         if event.accountReqs.getTokens():
             state = cls.getStatus(isCompleted)
             progresses.append({'progrTooltip': None,
-                               'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
-                               'maxProgrVal': 1,
-                               'currentProgrVal': 1,
-                               'description': event.getDescription(),
-                               'progressDiff': '+ %s' % backport.getIntegralFormat(0),
-                               'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
-                               'questState': state})
+             'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+             'maxProgrVal': 1,
+             'currentProgrVal': 1,
+             'description': event.getDescription(),
+             'progressDiff': '+ %s' % backport.getIntegralFormat(0),
+             'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+             'questState': state})
         title = ''
         itemCD = cls.c11nService.getItemCDByQuestID(event.getID())
         if itemCD:
             item = cls.c11nService.getItemByCD(itemCD)
-            groupID, level = item.getQuestsProgressionInfo()
+            groupID, _ = item.getQuestsProgressionInfo()
             if groupID:
-                title = backport.text(R.strings.vehicle_customization.customization.quests.pbsItem(),
-                                      itemType=item.userType, itemName=item.userName, level=int2roman(level))
+                title = backport.text(R.strings.vehicle_customization.customization.quests.pbsItem(), itemType=item.userType, itemName=item.userName)
         if progresses:
             progresses[0]['title'] = title
         return progresses
@@ -516,10 +533,10 @@ class Progression2dStyleFormater(object):
         if isComplete:
             msg = text_styles.bonusAppliedText(QUESTS.QUESTS_STATUS_DONE)
             return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_DONE,
-                    'statusText': msg}
+             'statusText': msg}
         msg = text_styles.neutral(QUESTS.PERSONALMISSION_STATUS_INPROGRESS)
         return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS,
-                'statusText': msg}
+         'statusText': msg}
 
 
 @dependency.replace_none_kwargs(c11nService=ICustomizationService)
@@ -532,15 +549,17 @@ def get2dProgressionStylePostBattleInfo(styleID, quests, c11nService=None):
         event = eventData[0]
         fromatter = Progression2dStyleFormater
         info = {'awards': [],
-                'alertMsg': '',
-                'questInfo': _getEventInfoData(event).getInfo([]),
-                'questState': fromatter.getStatus(isComplete=False),
-                'questType': event.getType()}
+         'alertMsg': '',
+         'questInfo': _getEventInfoData(event).getInfo([]),
+         'questState': fromatter.getStatus(isComplete=False),
+         'questType': event.getType()}
         filteredQuests = {}
         for eventData in quests:
             questRate = fromatter.getProgressRate(*eventData)
             event = eventData[0]
-            _, branch, level = getDataByC11nQuest(event)
+            progressData = getDataByC11nQuest(event)
+            branch = progressData.branch
+            level = progressData.level
             if branch <= 0 or level <= 0:
                 continue
             if (branch, level) not in filteredQuests:
@@ -550,7 +569,7 @@ def get2dProgressionStylePostBattleInfo(styleID, quests, c11nService=None):
             if questRate > rate:
                 filteredQuests[branch, level] = (questRate, eventData)
 
-        sortedQuests = [eventData for _, (rate, eventData) in sorted(filteredQuests.items(), key=lambda t: t[0])]
+        sortedQuests = [ eventData for _, (rate, eventData) in sorted(filteredQuests.items(), key=lambda t: t[0]) ]
         progressList = []
         for eventData in sortedQuests:
             progressInfo = fromatter.getProgress(*eventData)
@@ -558,11 +577,11 @@ def get2dProgressionStylePostBattleInfo(styleID, quests, c11nService=None):
                 progressList.extend(progressInfo)
 
         info['questInfo'].update({'description': fromatter.getTitle(style),
-                                  'tasksCount': -1})
+         'tasksCount': -1})
         linkBtnEnabled, linkBtnTooltip = getC11n2dProgressionLinkBtnParams()
         info.update({'linkBtnVisible': linkBtnEnabled,
-                     'linkBtnTooltip': backport.text(linkBtnTooltip),
-                     'progressList': progressList})
+         'linkBtnTooltip': backport.text(linkBtnTooltip),
+         'progressList': progressList})
         return info
 
 

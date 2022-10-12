@@ -8,12 +8,11 @@ from wrapped_reflection_framework import ReflectionMetaclass
 
 _DEBUG_WITH_SVG = False
 
-
 class PhysicsTurretShape:
     __metaclass__ = ReflectionMetaclass
     PARAMS_DESC = {'zScale': (0.0, 2.0, 1.0, 0),
-                   'zPos': (-2.0, 2.0, 0.0, 1),
-                   'xScale': (0.0, 2.0, 1.0, 2),
+     'zPos': (-2.0, 2.0, 0.0, 1),
+     'xScale': (0.0, 2.0, 1.0, 2),
      'xPos': (-2.0, 2.0, 0.0, 3),
      'yScale': (0.0, 2.0, 1.0, 4),
      'yPos': (-2.0, 2.0, 0.0, 5),
@@ -30,8 +29,7 @@ class PhysicsTurretShape:
 
     def __init__(self, bbMin=None, bbMax=None):
         self.__polys = None
-        self.__params = dict(
-            zip(PhysicsTurretShape.PARAMS_DESC.iterkeys(), (d[2] for d in PhysicsTurretShape.PARAMS_DESC.itervalues())))
+        self.__params = dict(zip(PhysicsTurretShape.PARAMS_DESC.iterkeys(), (d[2] for d in PhysicsTurretShape.PARAMS_DESC.itervalues())))
         self.__box = None
         if bbMin is not None and bbMax is not None:
             self.__box = (Math.Vector3(bbMin), Math.Vector3(bbMax))

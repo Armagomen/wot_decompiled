@@ -1,18 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicles/dualgun_component.py
 from weakref import proxy
+
 import BattleReplay
 import BigWorld
 from ReplayEvents import g_replayEvents
 from Vehicle import StunInfo
 from aih_constants import CTRL_MODE_NAME
-from constants import ARENA_PERIOD
+from constants import ARENA_PERIOD, RECHARGE_TIME_MULTIPLIER
 from constants import DUALGUN_CHARGER_STATUS
 from constants import DUAL_GUN
 from constants import VEHICLE_MISC_STATUS
 from debug_utils import LOG_WARNING
-from dualgun_sounds import DualGunSounds
-from items.utils import getFirstReloadTime
 from gui.Scaleform.daapi.view.meta.DualGunPanelMeta import DualGunPanelMeta
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, FEEDBACK_EVENT_ID, DestroyTimerViewState
 from gui.battle_control.controllers.prebattle_setups_ctrl import IPrebattleSetupsListener
@@ -20,7 +19,11 @@ from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
 from helpers import dependency
 from helpers.time_utils import MS_IN_SECOND
+from items.utils import getFirstReloadTime
 from skeletons.gui.battle_session import IBattleSessionProvider
+
+from dualgun_sounds import DualGunSounds
+
 
 class GunStatesUI(object):
     EMPTY = 1
@@ -31,7 +34,7 @@ class GunStatesUI(object):
 class DualGunConstants(object):
     LEFT_TIME = 'leftTime'
     BASE_TIME = 'baseTime'
-    TIME_MULTIPLIER = 100
+    TIME_MULTIPLIER = 1000 * RECHARGE_TIME_MULTIPLIER
     CHARGE_TIME_MULTIPLIER = 1000
     COOLDOWN_END_TIME_MULTIPLIER = 10
     CHANGE_GUN_TRANSITION_TIME = 0.4
@@ -123,6 +126,7 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
          VEHICLE_VIEW_STATE.STUN: StunAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.STUN),
          VEHICLE_VIEW_STATE.DESTROY_TIMER: DestroyStateAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DESTROY_TIMER)}
         self.__isEnabled = False
+        self.__isAllowedByContext = True
         self.__chargeState = DUALGUN_CHARGER_STATUS.BEFORE_PREPARING
         self.__prevChargeState = DUALGUN_CHARGER_STATUS.BEFORE_PREPARING
         self.__deferredGunState = None
@@ -166,6 +170,10 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         feedBackCtrl = self.__sessionProvider.shared.feedback
         if feedBackCtrl is not None:
             feedBackCtrl.onVehicleFeedbackReceived += self.__onVehicleFeedbackReceived
+        prbCtrl = self.__sessionProvider.dynamic.comp7PrebattleSetup
+        if prbCtrl is not None:
+            prbCtrl.onBattleStarted += self.__onBattleStarted
+            self.__updateContextAvailability()
         add = g_eventBus.addListener
         add(GameEvent.CHARGE_RELEASED, self.__chargeReleased, scope=EVENT_BUS_SCOPE.BATTLE)
         add(GameEvent.PRE_CHARGE, self.__onPreCharge, scope=EVENT_BUS_SCOPE.BATTLE)
@@ -175,6 +183,9 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         if arena is not None:
             arena.onPeriodChange += self.__onArenaPeriodChange
             self.__onArenaPeriodChange(arena.period, arena.periodEndTime, arena.periodLength, arena.periodAdditionalInfo)
+            player = BigWorld.player()
+            if player is not None and player.inputHandler is not None:
+                player.inputHandler.onCameraChanged += self.__onCameraChanged
         self.as_setChangeGunTweenPropsS(MS_IN_SECOND / 2, MS_IN_SECOND)
         arenaDP = self.__sessionProvider.getArenaDP()
         if arenaDP is not None:
@@ -207,6 +218,9 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         feedBackCtrl = self.__sessionProvider.shared.feedback
         if feedBackCtrl is not None:
             feedBackCtrl.onVehicleFeedbackReceived -= self.__onVehicleFeedbackReceived
+        prbCtrl = self.__sessionProvider.dynamic.comp7PrebattleSetup
+        if prbCtrl is not None:
+            prbCtrl.onBattleStarted -= self.__onBattleStarted
         self.__soundManager.onComponentDisposed()
         remove = g_eventBus.removeListener
         remove(GameEvent.CHARGE_RELEASED, self.__chargeReleased, scope=EVENT_BUS_SCOPE.BATTLE)
@@ -216,6 +230,9 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         arena = self.__sessionProvider.arenaVisitor.getArenaSubscription()
         if arena is not None:
             arena.onPeriodChange -= self.__onArenaPeriodChange
+            player = BigWorld.player()
+            if player is not None and player.inputHandler is not None:
+                player.inputHandler.onCameraChanged -= self.__onCameraChanged
         return
 
     def __onVehicleStateUpdated(self, stateID, value):
@@ -253,7 +270,7 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
             self.__isEnabled = True
         if not vehicle.isAlive() and self.__isObserver:
             self.__isEnabled = False
-        self.as_setVisibleS(self.__isEnabled)
+        self.as_setVisibleS(self.__isEnabled and self.__isAllowedByContext)
         if self.__isObserver:
             self.__soundManager.onObserverSwitched()
         self.__reloadingState.cleanup()
@@ -283,6 +300,18 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         else:
             return GunStatesUI.READY if state == DUAL_GUN.GUN_STATE.READY else None
 
+    def __onBattleStarted(self):
+        self.__updateContextAvailability()
+        self.as_setVisibleS(self.__isAllowedByContext and self.__isEnabled)
+
+    def __updateContextAvailability(self):
+        prebattleCtrl = self.__sessionProvider.dynamic.comp7PrebattleSetup
+        if prebattleCtrl is not None:
+            self.__isAllowedByContext = prebattleCtrl.isVehicleStateIndicatorAllowed()
+        else:
+            self.__isAllowedByContext = True
+        return
+
     def __updateGunState(self, gunID, state, serverCooldownData):
         leftTime = int(serverCooldownData[gunID].leftTime * DualGunConstants.TIME_MULTIPLIER)
         baseTime = int(serverCooldownData[gunID].baseTime * DualGunConstants.TIME_MULTIPLIER)
@@ -295,6 +324,18 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
             self.__reloadEventReceived = True
         if eventID == FEEDBACK_EVENT_ID.VEHICLE_DEAD and self.__isObserver:
             self.as_setVisibleS(False)
+
+    def __onCameraChanged(self, cameraName, currentVehicleId=None):
+        if currentVehicleId is None:
+            return
+        else:
+            if cameraName != 'video':
+                vehicle = BigWorld.entities.get(currentVehicleId)
+                if vehicle and vehicle.isAlive() and vehicle.typeDescriptor.isDualgunVehicle:
+                    self.as_setVisibleS(True)
+            else:
+                self.as_setVisibleS(False)
+            return
 
     def __onDualGunStateUpdated(self, value):
         if self.__chargeState == DUALGUN_CHARGER_STATUS.PREPARING:

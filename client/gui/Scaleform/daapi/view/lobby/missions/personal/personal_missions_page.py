@@ -3,6 +3,7 @@
 import logging
 import operator
 from collections import namedtuple
+
 import BigWorld
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
@@ -19,7 +20,8 @@ from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.server_events.event_items import PersonalMission
-from gui.server_events.events_dispatcher import showPersonalMissionDetails, hidePersonalMissionDetails, showPersonalMissionAwards
+from gui.server_events.events_dispatcher import showPersonalMissionDetails, hidePersonalMissionDetails, \
+    showPersonalMissionAwards
 from gui.server_events.events_helpers import AwardSheetPresenter
 from gui.server_events.personal_missions_navigation import PersonalMissionsNavigation
 from gui.server_events.pm_constants import SOUNDS, PERSONAL_MISSIONS_SOUND_SPACE, PM_TUTOR_FIELDS as _PTF
@@ -34,6 +36,7 @@ from helpers.i18n import makeString as _ms
 from personal_missions import PM_BRANCH, PM_BRANCH_TO_FINAL_PAWN_COST
 from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
+
 _logger = logging.getLogger(__name__)
 _ChainState = namedtuple('_ChainState', ['hasUnlocked',
  'hasVehicle',
@@ -406,7 +409,7 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
 
         return _ChainState(hasUnlocked, hasVehicle, isCompleted, isFullCompleted, questInProgress)
 
-    @decorators.process('updating')
+    @decorators.adisp_process('updating')
     def __pawnMission(self, questInProgress):
         if not questInProgress.isDisabled():
             result = yield quests.PMPawn(questInProgress).request()

@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/shared_components.py
 from collections import namedtuple
+
 from constants import IS_CLIENT, IS_WEB, IS_EDITOR, IS_BOT
 from items.components import component_constants, c11n_constants
 from items.components import path_builder
-from items.components.c11n_constants import ApplyArea
 from soft_exception import SoftException
 from wrapped_reflection_framework import ReflectionMetaclass, reflectedNamedTuple
+
 if IS_CLIENT:
     from helpers import i18n
 elif IS_WEB or IS_BOT:
@@ -20,7 +21,7 @@ else:
             raise SoftException('Unexpected call "i18n.makeString"')
 
 
-__all__ = ('MaterialInfo', 'DEFAULT_MATERIAL_INFO', 'EmblemSlot', 'LodSettings', 'NodesAndGroups', 'Camouflage', 'DEFAULT_CAMOUFLAGE', 'SwingingSettings', 'I18nComponent', 'DeviceHealth', 'ModelStatesPaths')
+__all__ = ('MaterialInfo', 'DEFAULT_MATERIAL_INFO', 'EmblemSlot', 'LodSettings', 'NodesAndGroups', 'Camouflage', 'DEFAULT_CAMOUFLAGE', 'SwingingSettings', 'I18nComponent', 'DeviceHealth', 'ModelStatesPaths', 'RocketAccelerationParams')
 MaterialInfo = reflectedNamedTuple('MaterialInfo', ('kind', 'armor', 'extra', 'multipleExtra', 'vehicleDamageFactor', 'useArmorHomogenization', 'useHitAngle', 'useAntifragmentationLining', 'mayRicochet', 'collideOnceOnly', 'checkCaliberForRichet', 'checkCaliberForHitAngleNorm', 'damageKind', 'chanceToHitByProjectile', 'chanceToHitByExplosion', 'continueTraceIfNoHit'))
 DEFAULT_MATERIAL_INFO = MaterialInfo(0, 0, None, False, 0.0, False, False, False, False, False, False, False, 0, 0.0, 0.0, False)
 EmblemSlot = reflectedNamedTuple('EmblemSlot', ('rayStart', 'rayEnd', 'rayUp', 'size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId', 'slotId', 'applyToFabric', 'compatibleModels'))
@@ -264,3 +265,21 @@ class ModelStatesPaths(object):
         if path is None:
             raise SoftException('State {} is not found'.format(stateName))
         return path
+
+
+class RocketAccelerationParams(object):
+    ImpulseData = namedtuple('ImpulseData', ('magnitude', 'applyPoint', 'duration'))
+    __slots__ = ('deployTime', 'reloadTime', 'reuseCount', 'duration', 'impulse', 'modifiers', 'kpi', 'effectsPrefab')
+
+    def __init__(self, deployTime, reloadTime, reuseCount, duration, impulse, modifiers, kpi, effectsPrefab):
+        self.deployTime = deployTime
+        self.reloadTime = reloadTime
+        self.reuseCount = reuseCount
+        self.duration = duration
+        self.impulse = impulse
+        self.modifiers = modifiers
+        self.kpi = kpi
+        self.effectsPrefab = effectsPrefab
+
+    def __repr__(self):
+        return 'deployTime={}, reloadTime={}, reuseCount={}, duration={}, impulse={}, modifiers={}'.format(self.deployTime, self.reloadTime, self.reuseCount, self.duration, self.impulse, self.modifiers)

@@ -3,7 +3,6 @@
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.settings import WebRequestDataType
 
-
 class UILoggingRequestHandlers(RequestHandlers):
 
     def get(self):

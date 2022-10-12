@@ -17,7 +17,6 @@ from skeletons.gui.system_messages import ISystemMessages
 
 _logger = logging.getLogger(__name__)
 
-
 class ReceiveOfferGiftProcessor(Processor):
 
     def __init__(self, offerID, giftID, cdnTitle='', skipConfirm=False):
@@ -87,9 +86,7 @@ class ReceiveMultipleOfferGiftsProcessor(Processor):
         _logger.debug('Make server request to receive offers gifts. Choices: %s', self.__chosenGifts)
         Waiting.show('loadContent')
         choices = cPickle.dumps(self.__chosenGifts)
-        BigWorld.player().receiveMultipleOfferGifts(choices,
-                                                    lambda requestID, resultID, errStr, ext=None: self._response(
-                                                        resultID, callback, ctx=ext, errStr=errStr))
+        BigWorld.player().receiveMultipleOfferGifts(choices, lambda requestID, resultID, errStr, ext=None: self._response(resultID, callback, ctx=ext, errStr=errStr))
         return
 
 
@@ -98,6 +95,5 @@ class BattleMattersOfferProcessor(ReceiveOfferGiftProcessor):
 
     def _successHandler(self, code, ctx=None):
         Waiting.hide('loadContent')
-        self.__systemMessages.proto.serviceChannel.pushClientMessage(ctx,
-                                                                     SCH_CLIENT_MSG_TYPE.BATTLE_MATTERS_TOKEN_AWARD)
+        self.__systemMessages.proto.serviceChannel.pushClientMessage(ctx, SCH_CLIENT_MSG_TYPE.BATTLE_MATTERS_TOKEN_AWARD)
         return makeSuccess(auxData=ctx)

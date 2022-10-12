@@ -11,7 +11,6 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('AttachmentComponent',)
 
-
 class AttachmentComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.ATTACHMENT
@@ -20,9 +19,9 @@ class AttachmentComponent(SerializableComponent):
     else:
         slotIdFieldType = xmlOnlyIntField(0)
     fields = OrderedDict((('id', intField()),
-                          ('slotId', slotIdFieldType),
-                          ('position', xmlOnlyFloatArrayField()),
-                          ('rotation', xmlOnlyFloatArrayField())))
+     ('slotId', slotIdFieldType),
+     ('position', xmlOnlyFloatArrayField()),
+     ('rotation', xmlOnlyFloatArrayField())))
     __slots__ = ('id', 'slotId', 'position', 'rotation')
 
     def __init__(self, id=0, slotId=0, position=None, rotation=None):

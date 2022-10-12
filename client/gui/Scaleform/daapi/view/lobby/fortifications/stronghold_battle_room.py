@@ -1,15 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/stronghold_battle_room.py
 import weakref
+
 from UnitBase import UNIT_OP
-from adisp import process
+from adisp import adisp_process
 from constants import PREBATTLE_TYPE_NAMES, PREBATTLE_TYPE
 from frameworks.wulf import WindowLayer
 from gui import GUI_SETTINGS
+from gui import makeHtmlString
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.MinimapGrid import MinimapGrid
 from gui.Scaleform.daapi.view.lobby.MinimapLobby import MinimapLobby
-from gui.Scaleform.daapi.view.lobby.fortifications.vo_converters import FILTER_STATE, makeStrongholdsSlotsVOs, makeSortieVO
+from gui.Scaleform.daapi.view.lobby.fortifications.vo_converters import FILTER_STATE, makeStrongholdsSlotsVOs, \
+    makeSortieVO
 from gui.Scaleform.daapi.view.lobby.prb_windows.stronghold_action_button_state_vo import StrongholdActionButtonStateVO
 from gui.Scaleform.daapi.view.lobby.rally import rally_dps
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
@@ -24,17 +27,18 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.clans.clan_helpers import getStrongholdChangeModeUrl
 from gui.impl import backport
 from gui.prb_control import settings
+from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import ChangeVehTypesInSlotFilterCtx, \
+    ChangeVehiclesInSlotFilterCtx
 from gui.prb_control.entities.base.unit.listener import IStrongholdListener
 from gui.prb_control.entities.base.unit.listener import IUnitListener
 from gui.prb_control.entities.stronghold.unit.ctx import SetReserveUnitCtx, UnsetReserveUnitCtx
-from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import ChangeVehTypesInSlotFilterCtx, ChangeVehiclesInSlotFilterCtx
 from gui.prb_control.items.stronghold_items import REQUISITION_TYPE
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, FUNCTIONAL_FLAG
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.functions import getViewName, makeTooltip
 from gui.shared.view_helpers import UsersInfoHelper
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency, i18n
 from helpers import int2roman
 from helpers import time_utils
@@ -46,7 +50,7 @@ from shared_utils import CONST_CONTAINER
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBrowserController
 from skeletons.gui.shared import IItemsCache
-from gui import makeHtmlString
+
 
 class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdListener, UsersInfoHelper):
     browserCtrl = dependency.descriptor(IBrowserController)
@@ -163,7 +167,7 @@ class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdLis
     def chooseVehicleRequest(self):
         self._chooseVehicleRequest(self.prbEntity.getRosterSettings().getLevelsRange())
 
-    @process
+    @adisp_process
     def openConfigureWindow(self):
         url = getStrongholdChangeModeUrl()
         title = i18n.makeString(TOOLTIPS.CYBERSPORT_MODECHANGEFROZEN_HEADER)

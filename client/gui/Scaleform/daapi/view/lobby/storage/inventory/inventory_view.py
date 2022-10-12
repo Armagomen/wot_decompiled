@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/inventory_view.py
 import copy
-from adisp import process
+
+from adisp import adisp_process
+from constants import SwitchState
 from gui import DialogsInterface
 from gui import GUI_NATIONS_ORDER_INDICES
 from gui.Scaleform.daapi.view.dialogs.ConfirmModuleMeta import SellModuleMeta
@@ -15,9 +17,9 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.crew_book import orderCmp as crewBookCmp
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
-from skeletons.gui.storage_novelty import IStorageNovelty
 from skeletons.gui.lobby_context import ILobbyContext
-from constants import SwitchState
+from skeletons.gui.storage_novelty import IStorageNovelty
+
 VERSION = 1
 _TABS_DATA = ({'id': STORAGE_CONSTANTS.INVENTORY_TAB_ALL,
   'label': R.strings.storage.storage.tabs.all,
@@ -203,7 +205,7 @@ class RegularInventoryCategoryTabView(InventoryCategoryView):
         super(RegularInventoryCategoryTabView, self)._dispose()
         self._itemsCache.onSyncCompleted -= self.__onCacheResync
 
-    @process
+    @adisp_process
     def _sellItems(self, itemId):
         yield DialogsInterface.showDialog(SellModuleMeta(int(itemId)))
 

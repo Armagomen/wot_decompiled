@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/expressions.py
-from soft_exception import SoftException
 import cStringIO
-import tokenize
 import token
+import tokenize
+
+from soft_exception import SoftException
+
 
 class ParserException(SoftException):
 
@@ -92,6 +94,12 @@ class ExpressionParser(object):
             tokenizer.match(token.NAME)
             right = self._parseOrExpression(tokenizer)
             return lambda context: left(context) or right(context)
+        elif tokval == 'if':
+            tokenizer.match(token.NAME)
+            condition = self._parseCondition(tokenizer)
+            tokenizer.match(token.NAME)
+            right = self._parseExpression(tokenizer)
+            return lambda context: left(context) if condition(context) else right(context)
         else:
             return left
 

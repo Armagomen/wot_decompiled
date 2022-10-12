@@ -1,15 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/cond_formatters/__init__.py
 from collections import namedtuple
-import nations
-from personal_missions_constants import CONDITION_ICON
-from soft_exception import SoftException
+
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.server_events.conditions import GROUP_TYPE
 from gui.server_events.formatters import RELATIONS_SCHEME, RELATIONS
 from gui.shared.formatters import text_styles
-from helpers import i18n, int2roman
+from helpers import i18n
+from personal_missions_constants import CONDITION_ICON
+from soft_exception import SoftException
+
 MAX_CONDITIONS_IN_OR_SECTION_SUPPORED = 2
 TOP_RANGE_HIGHEST = 1
 TOP_RANGE_LOWEST = 15
@@ -97,7 +98,8 @@ BATTLE_RESULTS_KEYS = {'capturePoints': CONDITION_ICON.BASE_CAPTURE,
  'isAnyOurCrittedInnerModules': CONDITION_ICON.SURVIVE,
  'isNotSpotted': CONDITION_ICON.SURVIVE,
  'rankChange': CONDITION_ICON.RANK_UP,
- 'brPosInBattle': CONDITION_ICON.TOP}
+ 'brPosInBattle': CONDITION_ICON.TOP,
+ 'poiCapturedByOwnTeam': CONDITION_ICON.BASE_CAPTURE}
 BATTLE_RESULTS_AGGREGATED_KEYS = {tuple(sorted(['damagedVehicleCntAssistedTrack', 'damagedVehicleCntAssistedRadio'])): CONDITION_ICON.ASSIST,
  tuple(sorted(['killsAssistedTrack', 'killsAssistedRadio'])): CONDITION_ICON.ASSIST,
  tuple(sorted(['damageAssistedStun', 'damageAssistedTrack'])): CONDITION_ICON.ASSIST,

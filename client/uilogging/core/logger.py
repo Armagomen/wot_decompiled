@@ -16,10 +16,8 @@ from uilogging.core.log import LogRecord
 from uilogging.core.handler import LogHandler
 from uilogging.deprecated.bootcamp.log_record import BootcampLogRecord
 from uilogging.deprecated.logging_constants import FEATURES
-
 if typing.TYPE_CHECKING:
     pass
-
 
 class UILoggingCore(IUILoggingCore):
     _connectionMgr = dependency.descriptor(IConnectionManager)

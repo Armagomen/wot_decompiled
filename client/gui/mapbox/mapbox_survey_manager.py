@@ -172,8 +172,7 @@ class MapboxSurveyManager(object):
         return self.__currentQuestionIdx >= len(self.__questions)
 
     def __processLinkedAnswers(self, surveyData, question, newAnswers):
-        linkedQuestions = [q for q in self.__questions if
-                           q != question and q.getLinkedQuestionId() == question.getQuestionId()]
+        linkedQuestions = [ q for q in self.__questions if q != question and q.getLinkedQuestionId() == question.getQuestionId() ]
         for q in linkedQuestions:
             if q.getQuestionType() == QuestionType.ALTERNATIVE:
                 if q.isSyncronizedAnswers():

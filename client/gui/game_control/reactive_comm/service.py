@@ -1,18 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/reactive_comm/service.py
+import typing
 import weakref
 from collections import deque
-import typing
-import async
-from gui.game_control.reactive_comm.constants import SubscriptionClientStatus
+
+import wg_async
 from gui.game_control.reactive_comm.channel import SubscriptionStatus, ChannelsEventsSender
+from gui.game_control.reactive_comm.constants import SubscriptionClientStatus
 from gui.game_control.reactive_comm.manager import ChannelsManager
 from helpers import dependency
 from skeletons.gui.game_control import IReactiveCommunicationService
 from skeletons.gui.lobby_context import ILobbyContext
+
 if typing.TYPE_CHECKING:
-    from gui.game_control.reactive_comm.channel import Subscription
-    from gui.game_control.reactive_comm.packer import ServiceMessage
+    pass
 
 class ReactiveCommunicationService(IReactiveCommunicationService, ChannelsEventsSender):
     __lobbyContext = dependency.descriptor(ILobbyContext)
@@ -26,13 +27,13 @@ class ReactiveCommunicationService(IReactiveCommunicationService, ChannelsEvents
     def isChannelSubscriptionAvailable(self):
         return self.__manager is not None
 
-    @async.async
+    @wg_async.wg_async
     def subscribeToChannel(self, subscription):
         if self.__manager is not None:
-            result = yield async.await(self.__manager.subscribe(subscription))
+            result = yield wg_async.wg_await(self.__manager.subscribe(subscription))
         else:
             result = SubscriptionStatus(SubscriptionClientStatus.Disabled)
-        raise async.AsyncReturn(result)
+        raise wg_async.AsyncReturn(result)
         return
 
     def unsubscribeFromChannel(self, subscription):

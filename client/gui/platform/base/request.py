@@ -1,26 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/base/request.py
-import typing
 import copy
 import hashlib
 import httplib
 import json
 import urllib
 import urlparse
-from functools import partial
 from enum import Enum
-import adisp
-import async
+from functools import partial
+
 import BigWorld
+import adisp
 import soft_exception
+import wg_async
 from BWUtil import AsyncReturn
 from constants import WG_GAMES, CURRENT_REALM
-from gui.platform.base.settings import REQUEST_TIMEOUT, POLLING_PERIOD, POLLING_REQUEST_TIMEOUT, SOLVE_POW_TIMEOUT, ACCEPTED_HTTP_CODES
 from gui.platform.base import logger
 from gui.platform.base.response import PlatformResponse
+from gui.platform.base.settings import REQUEST_TIMEOUT, POLLING_PERIOD, POLLING_REQUEST_TIMEOUT, SOLVE_POW_TIMEOUT, \
+    ACCEPTED_HTTP_CODES
 from helpers import dependency, getClientVersion
 from skeletons.gui.web import IWebController
 from wotdecorators import noexceptReturn
+
 
 class ContentType(str, Enum):
     JSON = 'application/json'
@@ -120,11 +122,11 @@ class Request(object):
         self.isCanceled = True
         self._logger.debug('Canceled.')
 
-    @async.async
+    @wg_async.wg_async
     def send(self):
         self._logger.debug('Processing %s.', self.params)
         if self.params.auth:
-            accessTokenData = yield async.await_callback(self._getAccessTokenData)()
+            accessTokenData = yield wg_async.await_callback(self._getAccessTokenData)()
             self._logger.debug('Authorization token: %s.', accessTokenData)
             if self.isCanceled:
                 raise AsyncReturn(self.params.response.createRequestCanceled())
@@ -132,13 +134,13 @@ class Request(object):
                 raise AsyncReturn(self.params.response.createAuthorizationError())
             self.params.headers['Authorization'] = 'Bearer {}'.format(accessTokenData.accessToken)
         if self.params.proofOfWorkURL:
-            response = yield async.await_callback(self._fetchUrl)(url=self.params.proofOfWorkURL, headers={'User-Agent': self.params.headers.get('User-Agent')} if self.params.addUserAgentHeader else None)
+            response = yield wg_async.await_callback(self._fetchUrl)(url=self.params.proofOfWorkURL, headers={'User-Agent': self.params.headers.get('User-Agent')} if self.params.addUserAgentHeader else None)
             if self.isCanceled:
                 raise AsyncReturn(self.params.response.createRequestCanceled())
             if not response.isSuccess():
                 raise AsyncReturn(response)
             self._logger.debug('Got pow response=%s.', response)
-            solved, counter = yield async.await(self._solvePoW(response, SOLVE_POW_TIMEOUT))
+            solved, counter = yield wg_async.wg_await(self._solvePoW(response, SOLVE_POW_TIMEOUT))
             if self.isCanceled:
                 raise AsyncReturn(self.params.response.createRequestCanceled())
             if not solved:
@@ -146,28 +148,28 @@ class Request(object):
             self.params.postData['pow'] = counter
             self.params.headers['X-Wg-Challenge-Key'] = response.getHeaders().get('X-Wg-Challenge-Key', '')
         self._logger.debug('Sending with %s.', self.params)
-        response = yield async.await_callback(self._fetchUrl)(self.params.url, self.params.headers.items(), self.params.method, self.params.encodePostData())
+        response = yield wg_async.await_callback(self._fetchUrl)(self.params.url, self.params.headers.items(), self.params.method, self.params.encodePostData())
         raise AsyncReturn(response)
         return
 
-    @adisp.process
+    @adisp.adisp_process
     def _getAccessTokenData(self, callback):
         force = True if not self.webCtrl.isLoggedOn() else False
         self._logger.debug('Getting access token with force=%s.', force)
         accessTokenData = yield self.webCtrl.getAccessTokenData(force=force)
         callback(accessTokenData)
 
-    @async.async
+    @wg_async.wg_async
     def _solvePoW(self, response, timeout=None):
         data = response.getData()['pow']
-        solved, counter = yield async.await_callback(_solvePow)(data['algorithm']['version'], data['complexity'], str(data['timestamp']), data['algorithm']['resourse'], data['algorithm']['extension'], data['random_string'], timeout)
+        solved, counter = yield wg_async.await_callback(_solvePow)(data['algorithm']['version'], data['complexity'], str(data['timestamp']), data['algorithm']['resourse'], data['algorithm']['extension'], data['random_string'], timeout)
         self._logger.debug('Challenge was solved=%s, counter=%s', solved, counter)
         raise AsyncReturn((solved, counter))
 
     def _fetchUrl(self, url, headers=None, method='GET', postData=None, callback=lambda x: x):
         _urlFetcher(url, partial(self._pollResponseCallback, callback), headers, REQUEST_TIMEOUT, method, postData)
 
-    @async.async
+    @wg_async.wg_async
     def _pollResponseCallback(self, callback, response):
         try:
             self._logger.debug('Got url response with code=%s, body=%s, headers=%s.', response.responseCode, response.body, response.headers())
@@ -175,14 +177,14 @@ class Request(object):
                 callback(self.params.response.createRequestCanceled())
                 return
             while response.responseCode == httplib.ACCEPTED:
-                yield async.await(async.delay(POLLING_PERIOD))
+                yield wg_async.wg_await(wg_async.delay(POLLING_PERIOD))
                 if self.isCanceled:
                     callback(self.params.response.createRequestCanceled())
                     return
                 headers, _ = self.__loadResponse(response)
                 self._logger.debug('Sending poll request to %s.', headers['Location'])
                 location, userAgent = headers['Location'], self.params.headers.get('User-Agent')
-                response = yield async.await_callback(_urlFetcher)(url=location, headers={'User-Agent': userAgent} if userAgent else None, timeout=POLLING_REQUEST_TIMEOUT)
+                response = yield wg_async.await_callback(_urlFetcher)(url=location, headers={'User-Agent': userAgent} if userAgent else None, timeout=POLLING_REQUEST_TIMEOUT)
                 self._logger.debug('Got poll response with code=%s.', response.responseCode)
                 if self.isCanceled:
                     callback(self.params.response.createRequestCanceled())

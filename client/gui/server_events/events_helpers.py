@@ -5,7 +5,8 @@ import time
 import typing
 
 import BigWorld
-from constants import EVENT_TYPE, EMAIL_CONFIRMATION_QUEST_ID, CUSTOMIZATION_PROGRESS_PREFIX
+from constants import EVENT_TYPE, EMAIL_CONFIRMATION_QUEST_ID
+from customization_quests_common import deserializeToken, validateToken
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.MISSIONS_STATES import MISSIONS_STATES
 from gui.Scaleform.locale.LINKEDSET import LINKEDSET
@@ -18,8 +19,9 @@ from gui.server_events import formatters
 from gui.server_events.conditions import getProgressFromQuestWithSingleAccumulative
 from gui.server_events.events_constants import BATTLE_MATTERS_QUEST_ID, MARATHON_GROUP_PREFIX, PREMIUM_GROUP_PREFIX, \
     DAILY_QUEST_ID_PREFIX, RANKED_DAILY_GROUP_ID, RANKED_PLATFORM_GROUP_ID, BATTLE_ROYALE_GROUPS_ID, \
-    EPIC_BATTLE_GROUPS_ID, MAPS_TRAINING_GROUPS_ID, MAPS_TRAINING_QUEST_PREFIX
+    EPIC_BATTLE_GROUPS_ID, MAPS_TRAINING_GROUPS_ID, MAPS_TRAINING_QUEST_PREFIX, FUN_RANDOM_GROUP_ID
 from gui.server_events.personal_missions_navigation import PersonalMissionsNavigation
+from gui.shared.gui_items.customization import C11nStyleProgressData
 from helpers import time_utils, i18n, dependency, isPlayerAccount
 from helpers.i18n import makeString as _ms
 from shared_utils import CONST_CONTAINER, findFirst, first
@@ -35,7 +37,6 @@ FINISH_TIME_LEFT_TO_SHOW = time_utils.ONE_DAY
 START_TIME_LIMIT = 5 * time_utils.ONE_DAY
 AWARDS_PER_PAGE = 3
 AWARDS_PER_SINGLE_PAGE = 5
-
 
 class EventInfoModel(object):
     NO_BONUS_COUNT = -1
@@ -295,6 +296,10 @@ def isBattleRoyale(eventID):
     return eventID.startswith(BATTLE_ROYALE_GROUPS_ID) if eventID else False
 
 
+def isFunRandomQuest(eventID):
+    return eventID.startswith(FUN_RANDOM_GROUP_ID) if eventID else False
+
+
 def isRankedDaily(eventID):
     return eventID.startswith(RANKED_DAILY_GROUP_ID) if eventID else False
 
@@ -323,15 +328,21 @@ def isC11nQuest(eventID, c11nService=None):
 
 def getDataByC11nQuest(quest):
     if not isC11nQuest(quest.getID()):
-        return (-1, -1, -1)
+        return C11nStyleProgressData()
     tokenBonuses = quest.getBonuses('tokens')
-    if tokenBonuses:
-        firstBonus = first(tokenBonuses)
-        token = first(firstBonus.getTokens().values())
-        tokenID = token.id
-        if tokenID.startswith(CUSTOMIZATION_PROGRESS_PREFIX):
-            ws = tokenID[len(CUSTOMIZATION_PROGRESS_PREFIX):].split('_')
-            return (int(ws[0]), int(ws[1]), token.limit)
+    if not tokenBonuses:
+        return C11nStyleProgressData()
+    firstBonus = first(tokenBonuses)
+    token = first(firstBonus.getTokens().values())
+    return parseC11nProgressToken(token)
+
+
+def parseC11nProgressToken(token):
+    tokenID = token.id
+    if not validateToken(tokenID):
+        return C11nStyleProgressData()
+    styleID, branch = deserializeToken(tokenID)
+    return C11nStyleProgressData(styleID=styleID, branch=branch, level=token.limit)
 
 
 def getLocalizedMissionNameForLinkedSet(missionID):
@@ -343,13 +354,11 @@ def getLocalizedMissionNameForLinkedSetQuest(quest):
 
 
 def getLocalizedQuestNameForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)),
-                                            quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def getLocalizedQuestDescForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)),
-                                            quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def hasLocalizedQuestHintNameForLinkedSetQuest(quest):
@@ -357,13 +366,11 @@ def hasLocalizedQuestHintNameForLinkedSetQuest(quest):
 
 
 def getLocalizedQuestHintNameForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(
-        LINKEDSET.getQuestHintName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestHintName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def getLocalizedQuestHintDescForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(
-        LINKEDSET.getQuestHintDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestHintDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def hasLocalizedQuestWinNameForLinkedSetQuest(quest):
@@ -371,8 +378,7 @@ def hasLocalizedQuestWinNameForLinkedSetQuest(quest):
 
 
 def getLocalizedQuestWinNameForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(
-        LINKEDSET.getQuestWinName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestWinName(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def hasLocalizedQuestWinDescForLinkedSetQuest(quest):
@@ -380,8 +386,7 @@ def hasLocalizedQuestWinDescForLinkedSetQuest(quest):
 
 
 def getLocalizedQuestWinDescForLinkedSetQuest(quest):
-    return _getlocalizeLinkedSetQuestString(
-        LINKEDSET.getQuestWinDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
+    return _getlocalizeLinkedSetQuestString(LINKEDSET.getQuestWinDesc(getIdxFromQuest(quest), getLinkedSetQuestID(quest)), quest)
 
 
 def getIdxFromQuest(quest):
@@ -500,6 +505,12 @@ def getRankedDailyGroup(eventsCache=None):
 def getRankedPlatformGroup(eventsCache=None):
     groups = eventsCache.getGroups()
     return findFirst(lambda g: isRankedPlatform(g.getID()), groups.values())
+
+
+@dependency.replace_none_kwargs(eventsCache=IEventsCache)
+def getFunRandomDailyGroup(eventsCache=None):
+    groups = eventsCache.getGroups()
+    return findFirst(lambda g: isFunRandomQuest(g.getID()), groups.values())
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache, lobbyContext=ILobbyContext)

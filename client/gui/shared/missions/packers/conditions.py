@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/shared/missions/packers/conditions.py
 import logging
 import typing
+
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.impl.gen.view_models.common.missions.conditions.condition_group_model import ConditionGroupModel
@@ -9,20 +10,16 @@ from gui.impl.gen.view_models.common.missions.conditions.preformatted_condition_
 from gui.server_events import formatters
 from gui.server_events.cond_formatters import FORMATTER_IDS
 from gui.server_events.cond_formatters import FormattableField
-from gui.server_events.cond_formatters import postbattle
+from gui.server_events.cond_formatters import prebattle, postbattle, vehicle
 from gui.server_events.cond_formatters.bonus import BattlesCountFormatter
 from gui.server_events.cond_formatters.bonus import MissionsBonusConditionsFormatter
-from gui.server_events.formatters import PreFormattedCondition
 from gui.shared.formatters.plain_text import PlainTextFormatter
 from helpers import i18n
 from personal_missions_constants import CONDITION_ICON
 from soft_exception import SoftException
+
 if typing.TYPE_CHECKING:
-    from typing import Optional, Union
-    from gui.server_events.conditions import _Condition
-    from gui.server_events.conditions import _ConditionsGroup
-    from gui.server_events.event_items import ServerEventAbstract
-    from gui.server_events.event_items import Quest
+    pass
 _logger = logging.getLogger(__name__)
 CONDITION_GROUP_AND = 'and'
 CONDITION_GROUP_OR = 'or'
@@ -235,12 +232,20 @@ class PostBattleConditionPacker(UIConditionPacker):
         return packer.pack(playBattleCondition, CONDITION_DEFAULT_NAME)
 
 
-def getDefaultBonusCondsPacker():
+def getDefaultBonusCondPacker():
     return BonusConditionPacker()
+
+
+def getDefaultPreBattleCondFormatter():
+    return prebattle.MissionsPreBattleConditionsFormatter()
 
 
 def getDefaultPostBattleCondFormatter():
     return postbattle.MissionsPostBattleConditionsFormatter()
+
+
+def getDefaultVehicleCondFormatter():
+    return vehicle.MissionsVehicleConditionsFormatter()
 
 
 def getDefaultMissionsBonusConditionsFormatter():

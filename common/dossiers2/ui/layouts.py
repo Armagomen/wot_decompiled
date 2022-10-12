@@ -11,7 +11,6 @@ from dossiers2.ui import achievements
 
 _AB = achievements.ACHIEVEMENT_BLOCK
 
-
 def _7x7(achieveName):
     return (_AB.TEAM_7X7, achieveName)
 

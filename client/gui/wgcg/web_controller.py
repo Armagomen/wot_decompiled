@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgcg/web_controller.py
 from collections import defaultdict
+
 import BigWorld
 from PlayerEvents import g_playerEvents
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from client_request_lib.exceptions import ResponseCodes
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -14,7 +15,8 @@ from gui.clans.settings import CLAN_APPLICATION_STATES, CLAN_DOSSIER_LIFE_TIME
 from gui.clans.settings import CLAN_INVITE_STATES
 from gui.clans.users import UserCache
 from gui.shared.utils.decorators import ReprInjector
-from gui.wgcg.clan.contexts import ClanInfoCtx, ClanGlobalMapStatsCtx, GetClanInvitesCount, GetClanAppsCount, ClanMembersCtx, GetProvincesCtx, ClanFavouriteAttributesCtx, ClanRatingsCtx
+from gui.wgcg.clan.contexts import ClanInfoCtx, ClanGlobalMapStatsCtx, GetClanInvitesCount, GetClanAppsCount, \
+    ClanMembersCtx, GetProvincesCtx, ClanFavouriteAttributesCtx, ClanRatingsCtx
 from gui.wgcg.hof.contexts import HofUserInfoCtx, HofUserExcludeCtx, HofUserRestoreCtx
 from gui.wgcg.settings import WebRequestDataType
 from gui.wgcg.states import UndefinedState
@@ -26,6 +28,7 @@ from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
+
 
 def _showError(result, ctx):
     i18nMsg = clan_formatters.getRequestErrorMsg(result, ctx)
@@ -123,7 +126,7 @@ class _ClanDossier(object):
         self.resyncAppsCount(force=force)
         self.resyncInvitesCount(force=force)
 
-    @process
+    @adisp_process
     def resyncClanInfo(self, force=False):
         if self.__waitForSync & SYNC_KEYS.CLAN_INFO:
             return
@@ -186,12 +189,12 @@ class _ClanDossier(object):
         self.resyncAppsCount()
         return self.__vitalInfo[SYNC_KEYS.APPS]
 
-    @async
+    @adisp_async
     def requestClanInfo(self, callback):
         self.__doRequest(ClanInfoCtx(self.__clanDbID), callback)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def requestClanRatings(self, callback):
         result = yield self.__requestClanRatings()
         if result:
@@ -199,47 +202,47 @@ class _ClanDossier(object):
         else:
             callback(items.ClanRatingsData())
 
-    @async
+    @adisp_async
     def requestGlobalMapStats(self, callback):
         self.__doRequest(ClanGlobalMapStatsCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestStrongholdInfo(self, callback):
         self.__doRequest(StrongholdInfoCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestStrongholdStatistics(self, callback):
         self.__doRequest(StrongholdStatisticsCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestInvitationsCount(self, callback):
         self.__doRequest(GetClanInvitesCount(self.__clanDbID, statuses=[CLAN_INVITE_STATES.ACTIVE]), callback)
 
-    @async
+    @adisp_async
     def requestApplicationsCount(self, callback, isForced):
         self.__doRequest(GetClanAppsCount(self.__clanDbID, not isForced, statuses=[CLAN_INVITE_STATES.ACTIVE]), callback)
 
-    @async
+    @adisp_async
     def requestMembers(self, callback):
         self.__doRequest(ClanMembersCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestProvinces(self, callback):
         self.__doRequest(GetProvincesCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestFavouriteAttributes(self, callback):
         self.__doRequest(ClanFavouriteAttributesCtx(self.__clanDbID), callback)
 
-    @async
+    @adisp_async
     def requestHofUserInfo(self, callback):
         self.__doRequest(HofUserInfoCtx(), callback)
 
-    @async
+    @adisp_async
     def requestHofUserExclude(self, callback):
         self.__doRequest(HofUserExcludeCtx(), callback)
 
-    @async
+    @adisp_async
     def requestHofUserRestore(self, callback):
         self.__doRequest(HofUserRestoreCtx(), callback)
 
@@ -289,11 +292,11 @@ class _ClanDossier(object):
             count += invites
             self.__changeWebInfo(SYNC_KEYS.INVITES, count, 'onClanInvitesCountReceived')
 
-    @async
+    @adisp_async
     def __requestClanRatings(self, callback):
         self.__doRequest(ClanRatingsCtx([self.__clanDbID]), callback)
 
-    @process
+    @adisp_process
     def __doRequest(self, ctx, callback):
         requestType = ctx.getRequestType()
         cachedValue = self.__webCache.get(requestType, None)
@@ -541,8 +544,8 @@ class WebController(WebListeners, IWebController):
             dossier = self.__cache[clanDbID] = _ClanDossier(clanDbID, self, isMy=clanDbID == self.__profile.getClanDbID())
         return dossier
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def login(self, callback):
         yield self.__state.loginAsync()
         callback(True)
@@ -552,8 +555,8 @@ class WebController(WebListeners, IWebController):
         if forceLogin or perms.canHandleClanInvites() and perms.canTrade() and perms.canExchangeMoney():
             self.__state.login()
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def sendRequest(self, ctx, callback=None, allowDelay=None):
         result = yield self.__state.sendRequest(ctx, allowDelay=allowDelay)
         if self.__profile is not None:
@@ -605,8 +608,8 @@ class WebController(WebListeners, IWebController):
     def isLoggedOn(self):
         return self.__state.isLoggedOn()
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def getAccessTokenData(self, force, callback=None):
         accessToken = yield self.__state.getAccessTokenData(force)
         callback(accessToken)
@@ -621,8 +624,8 @@ class WebController(WebListeners, IWebController):
     def getClanCommonData(self, clanDbID):
         return self.__searchDataCache.get(clanDbID, None)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def requestUsers(self, dbIDs, callback):
         result = yield self.__userCache.requestUsers(dbIDs)
         callback(result)

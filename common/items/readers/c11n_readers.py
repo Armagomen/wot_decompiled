@@ -15,7 +15,7 @@ import nations
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS, parseArenaBonusType
 from bonus_readers import readUTC
 from constants import IS_CLIENT, IS_EDITOR, IS_WEB, DEFAULT_QUEST_FINISH_TIME
-from customization_quests_common import serelizeToken, PREFIX
+from customization_quests_common import serializeToken, PREFIX
 from items.components import shared_components
 from items.components.c11n_constants import CustomizationType, CustomizationTypeNames, ProjectionDecalFormTags, \
     CustomizationNamesToTypes, CustomizationDisplayType, EMPTY_ITEM_ID, SeasonType, ApplyArea, DecalType, \
@@ -24,9 +24,9 @@ from realm_utils import ResMgr
 from soft_exception import SoftException
 
 if IS_EDITOR:
+    from items.components.c11n_components import CUSTOMIZATION_CLASSES
     from reflection_framework.unintrusive_weakref import ref as UnintrusiveWeakRef
     from meta_objects.items.components.c11n_components_meta import I18nExposedComponentMeta
-    from items.components.c11n_components import CUSTOMIZATION_CLASSES
 
     @contextmanager
     def storeChangedProperties(obj, props):
@@ -294,6 +294,8 @@ class CamouflageXmlReader(BaseCustomizationItemXmlReader):
                 palettes.append(res)
                 target.palettes = tuple(palettes)
 
+        if section.has_key('style'):
+            target.styleId = section.readInt('style')
         return
 
     def _readClientOnlyFromXml(self, target, xmlCtx, section, cache=None):
@@ -512,12 +514,12 @@ def readCustomizationCacheFromXml(cache, folder):
     __readItemFolder(cc.SequenceItem, folder, 'sequence', cache.sequences)
     __readItemFolder(cc.AttachmentItem, folder, 'attachment', cache.attachments)
     pgFile = os.path.join(folder, 'progression', 'list.xml')
-    for style, questProgression in readQuestProgression(cache, (None, 'progression/list.xml'),
-                                                        ResMgr.openSection(pgFile), 'styleProgress'):
+    for style, questProgression in readQuestProgression(cache, (None, 'progression/list.xml'), ResMgr.openSection(pgFile), 'styleProgress'):
         style.questsProgression = questProgression
 
     ResMgr.purge(pgFile)
     _validateStyles(cache)
+    _validateCamouflages(cache)
     return None
 
 
@@ -562,6 +564,14 @@ def _validateStyles(cache):
 
     if any((item is None or not item.isStyleOnly for item in styleOnlyItemsFromStyles)):
         raise SoftException('Items shall contain styleOnly tag in tags to be used in alternateItems')
+
+
+def _validateCamouflages(cache):
+    for camouflage in cache.camouflages.itervalues():
+        styleId = camouflage.styleId
+        if styleId:
+            if styleId not in cache.styles:
+                raise SoftException('Link style {} in camouflage {} not exist '.format(styleId, camouflage.id))
 
 
 def _readProhibitedNumbers(xmlCtx, section):
@@ -842,7 +852,7 @@ def readQuestProgression(cache, xmlCtx, section, sectionName):
             except:
                 ix.raiseWrongXml(xmlCtx, tname, 'Wrong section format use: {}'.format('cust_progress_{groupID}'))
 
-            token = serelizeToken(styleId, groupId)
+            token = serializeToken(styleId, groupId)
             if token in unlockChains:
                 ix.raiseWrongXml(xmlCtx, tname, 'GroupId dublicate id {}'.format(groupId))
             concurrent = ix.readBool(xmlCtx, psection, 'concurrent', False)
@@ -858,7 +868,7 @@ def readQuestProgression(cache, xmlCtx, section, sectionName):
                     if oSection.has_key('id'):
                         c11nType = CustomizationNamesToTypes[upper(subSectionName)]
                         unlockItems[c11nType] = ix.readTupleOfPositiveInts(xmlCtx, oSection, 'id')
-                        if not all([False for id in unlockItems[c11nType] if id not in cache.itemTypes[c11nType]]):
+                        if not all([ False for id in unlockItems[c11nType] if id not in cache.itemTypes[c11nType] ]):
                             ix.raiseWrongXml(xmlCtx, tname, 'id for {} not in cache'.format(subSectionName))
 
                 if count < 0:

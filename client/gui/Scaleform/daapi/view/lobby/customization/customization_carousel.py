@@ -31,8 +31,7 @@ _logger = logging.getLogger(__name__)
 def comparisonKey(item):
     typeOrder = TYPES_ORDER.index(item.itemTypeID)
     isNationalEmblem = ItemTags.NATIONAL_EMBLEM in item.tags
-    formfactorId = ProjectionDecalFormTags.ALL.index(item.formfactor) if hasattr(item,
-                                                                                 'formfactor') and item.formfactor else 0
+    formfactorId = ProjectionDecalFormTags.ALL.index(item.formfactor) if hasattr(item, 'formfactor') and item.formfactor else 0
     return (typeOrder,
      not isNationalEmblem,
      not item.isRare(),
@@ -228,26 +227,23 @@ class CarouselCache(object):
                             for itemType in itemTypes:
                                 c11nType = C11N_ITEM_TYPE_MAP[itemType]
                                 itemsIdsForType = itemsForLevel.get(c11nType, ())
-                                buf = [self.__service.getItemByID(itemType, itemId) for itemId in itemsIdsForType]
+                                buf = [ self.__service.getItemByID(itemType, itemId) for itemId in itemsIdsForType ]
                                 for item in buf:
                                     if item.itemTypeID in itemTypes and item.season & season:
                                         questItems.append(item)
                                         questItemsIDs.append(item.id)
 
-                filteredItems = [item for item in itemsData.items if
-                                 itemsFilter(item.descriptor) and item.id not in questItemsIDs]
+                filteredItems = [ item for item in itemsData.items if itemsFilter(item.descriptor) and item.id not in questItemsIDs ]
                 alternateItems = []
                 for itemType in itemTypes:
                     c11nType = C11N_ITEM_TYPE_MAP[itemType]
                     alternateItemIds = style.descriptor.alternateItems.get(c11nType, ())
-                    buf = [self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds if
-                           itemId not in questItemsIDs]
-                    alternateItems.extend([i for i in buf if i.itemTypeID in itemTypes and i.season & season])
+                    buf = [ self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds if itemId not in questItemsIDs ]
+                    alternateItems.extend([ i for i in buf if i.itemTypeID in itemTypes and i.season & season ])
 
                 if not any((questItems, alternateItems, filteredItems)):
                     continue
-                baseItems = [item for item in styleBaseItems if
-                             item.itemTypeID in itemTypes and item.season & season and item.id not in questItemsIDs]
+                baseItems = [ item for item in styleBaseItems if item.itemTypeID in itemTypes and item.season & season and item.id not in questItemsIDs ]
                 items = questItems + sorted(set(chain(alternateItems, filteredItems, baseItems)), key=comparisonKey)
                 groups = OrderedDict()
                 for item in items:
@@ -489,14 +485,11 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         return self.__carouselFilters[filterType].isApplied(*alias)
 
     def __initFilters(self):
-        self.__carouselFilters[FilterTypes.HISTORIC] = DisjunctionCarouselFilter(
-            criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL,
-                      FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL,
-                      FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL})
-        self.__carouselFilters[FilterTypes.INVENTORY] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(
-            lambda item: self.__ctx.mode.getItemInventoryCount(item) > 0 and item.isUnlockedByToken()))
-        self.__carouselFilters[FilterTypes.APPLIED] = SimpleCarouselFilter(
-            criteria=REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(isOriginal=False)))
+        self.__carouselFilters[FilterTypes.HISTORIC] = DisjunctionCarouselFilter(criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL,
+         FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL,
+         FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL})
+        self.__carouselFilters[FilterTypes.INVENTORY] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: self.__ctx.mode.getItemInventoryCount(item) > 0 and item.isUnlockedByToken()))
+        self.__carouselFilters[FilterTypes.APPLIED] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(isOriginal=False)))
         self.__carouselFilters[FilterTypes.USED_UP] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: not isItemUsedUp(item)), requirements=lambda : self.__ctx.isItemsOnAnotherVeh, inverse=True)
         self.__carouselFilters[FilterTypes.EDITABLE_STYLES] = DisjunctionCarouselFilter(criteria={FilterAliases.EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: item.canBeEditedForVehicle(g_currentVehicle.item.intCD)),
          FilterAliases.NON_EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: not item.canBeEditedForVehicle(g_currentVehicle.item.intCD))}, requirements=lambda : self.__ctx.mode.tabId == CustomizationTabs.STYLES)
@@ -582,6 +575,7 @@ class FilterAliases(object):
     FANTASTICAL = 'fantastical'
     EDITABLE_STYLES = 'editableStyles'
     NON_EDITABLE_STYLES = 'nonEditableStyles'
+    LOCKED = 'locked'
 
 
 class SimpleCarouselFilter(object):

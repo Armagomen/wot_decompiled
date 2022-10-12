@@ -26,14 +26,12 @@ class MapboxVehiclesWatcher(LimitedLevelVehiclesWatcher, ForbiddenVehiclesWatche
         super(MapboxVehiclesWatcher, self).stop()
 
     def _getUnsuitableVehicles(self, onClear=False):
-        eventVehs = self.__itemsCache.items.getVehicles(
-            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE ^ REQ_CRITERIA.VEHICLE.CLAN_WARS).values()
-        epicVehs = self.__itemsCache.items.getVehicles(
-            REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EPIC_BATTLE).itervalues()
+        eventVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE ^ REQ_CRITERIA.VEHICLE.CLAN_WARS ^ REQ_CRITERIA.VEHICLE.RANDOM_ONLY ^ REQ_CRITERIA.VEHICLE.COMP7).values()
+        epicVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EPIC_BATTLE).itervalues()
         return chain.from_iterable((LimitedLevelVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-                                    ForbiddenVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-                                    eventVehs,
-                                    epicVehs))
+         ForbiddenVehiclesWatcher._getUnsuitableVehicles(self, onClear),
+         eventVehs,
+         epicVehs))
 
     def _getForbiddenVehicleClasses(self):
         return self.__mapboxCtrl.getModeSettings().forbiddenClassTags

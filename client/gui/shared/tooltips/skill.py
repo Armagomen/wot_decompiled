@@ -1,22 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/skill.py
+from typing import TYPE_CHECKING
+
 from debug_utils import LOG_DEBUG
+from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
-from gui.shared.items_parameters import params
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Tankman import getSkillBigIconPath, getRoleMediumIconPath
+from gui.shared.items_parameters import params
+from gui.shared.items_parameters import params_helper, MAX_RELATIVE_VALUE, formatters as params_formatters
 from gui.shared.items_parameters.comparator import VehiclesComparator
 from gui.shared.tooltips import TOOLTIP_TYPE, ToolTipData, ToolTipAttrField, formatters
-from gui.shared.items_parameters import params_helper, MAX_RELATIVE_VALUE, formatters as params_formatters
 from gui.shared.tooltips.common import BlocksTooltipData
 from helpers.i18n import makeString as _ms
 from items import tankmen
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
-from gui import makeHtmlString
+
+if TYPE_CHECKING:
+    pass
+
 
 class SkillTooltipData(ToolTipData):
 
@@ -46,12 +52,18 @@ class SkillTooltipDataBlock(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         items = super(SkillTooltipDataBlock, self)._packBlocks()
+        isFreeSkill = False if len(args) < 3 else args[2]
         item = self.context.buildItem(*args, **kwargs)
-        items.append(formatters.packTextBlockData(text=text_styles.highTitle(item.userName)))
+        isSixthSense = item.name == 'commander_sixthSense'
+        if isSixthSense:
+            items.append(formatters.packImageTextBlockData(img=item.bigIconPath, title=text_styles.highTitle(item.userName), desc=text_styles.main(_ms(TOOLTIPS.SKILLS_COMMANDERFEATURE)), padding=formatters.packPadding(left=-10)))
+        else:
+            items.append(formatters.packTextBlockData(text=text_styles.highTitle(item.userName)))
         infoBlock = formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'mainTextSmall', {'message': item.description}))
         if infoBlock:
             items.append(formatters.packBuildUpBlockData([infoBlock], padding=formatters.packPadding(left=0, right=58, top=-5, bottom=0), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE))
-        items.append(formatters.packTextBlockData(text=text_styles.main(ITEM_TYPES.tankman_skills_type(item.type))))
+        if not isSixthSense and not isFreeSkill:
+            items.append(formatters.packTextBlockData(text=text_styles.main(ITEM_TYPES.tankman_skills_type(item.type))))
         return items
 
 

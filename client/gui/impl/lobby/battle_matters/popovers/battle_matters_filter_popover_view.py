@@ -26,8 +26,11 @@ class BattleMattersFilterPopoverView(PopOverViewImpl):
 
     def onToggleFilter(self, event):
         changesFromEvent = {'Types': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_TYPE, {}),
-                            'Nations': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_NATION, {})}
-        changes = {k: {v: not self.__filters[k][v]} for k, v in changesFromEvent.iteritems() if k and v}
+         'Nations': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_NATION, {})}
+        changes = {k:{v: not self.__filters[k][v]} for k, v in changesFromEvent.iteritems() if k and v}
+        self._updateFilter(changes)
+
+    def updateFilterFromOutside(self, changes):
         self._updateFilter(changes)
 
     def _onLoading(self, *args, **kwargs):

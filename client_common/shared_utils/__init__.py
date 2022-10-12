@@ -1,17 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/__init__.py
 import collections
-import time
 import itertools
 import logging
+import time
 import types
-import weakref
-from functools import partial, wraps
 import typing
+import weakref
+from functools import partial
+
 import BigWorld
-from adisp import async
+from adisp import adisp_async
+
 if typing.TYPE_CHECKING:
-    from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+    from typing import TypeVar
+
     T = TypeVar('T')
     R = TypeVar('R')
 _logger = logging.getLogger(__name__)
@@ -267,7 +270,7 @@ def nextTick(func):
     return wrapper
 
 
-@async
+@adisp_async
 def awaitNextFrame(callback):
     BigWorld.callback(0.0, partial(callback, None))
     return

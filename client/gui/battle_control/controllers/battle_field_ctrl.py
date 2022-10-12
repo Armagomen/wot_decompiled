@@ -1,6 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/battle_field_ctrl.py
+import logging
 import typing
+
 import BigWorld
 import Event
 from gui.battle_control.arena_info import vos_collections
@@ -8,10 +10,11 @@ from gui.battle_control.arena_info.interfaces import IBattleFieldController, IVe
 from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE as _SCOPE, VehicleSpottedStatus, INVALIDATE_OP
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.view_components import ViewComponentsController
+
 if typing.TYPE_CHECKING:
-    from typing import Dict, Iterator, List
-    from Math import Vector3
-    from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
+    pass
+_logger = logging.getLogger(__name__)
+
 
 class IBattleFieldListener(object):
 
@@ -105,9 +108,15 @@ class BattleFieldCtrl(IBattleFieldController, IVehiclesAndPositionsController, V
         self.__updateSpottedStatus(vehicleID, VehicleSpottedStatus.UNSPOTTED)
 
     def addVehicleInfo(self, vInfoVO, arenaDP):
-        if vInfoVO.isAlive():
+        vehicleID = vInfoVO.vehicleID
+        if vInfoVO.isAlive() and vehicleID not in self._aliveAllies and vehicleID not in self._aliveEnemies:
             self.__registerAliveVehicle(vInfoVO, arenaDP)
             self.__updateVehiclesHealth()
+        else:
+            if vehicleID in self._aliveAllies:
+                _logger.error('Vehicle %s already added to %s._aliveAllies', vehicleID, self.__class__.__name__)
+            if vehicleID in self._aliveEnemies:
+                _logger.error('Vehicle %s already added to %s._aliveEnemies', vehicleID, self.__class__.__name__)
 
     def updateVehiclesInfo(self, updated, arenaDP):
         for _, vInfoVO in updated:

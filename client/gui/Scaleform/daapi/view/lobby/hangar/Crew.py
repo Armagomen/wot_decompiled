@@ -1,31 +1,32 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/Crew.py
+import SoundGroups
 from CurrentVehicle import g_currentVehicle
 from gui import SystemMessages
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.shared import events, event_dispatcher as shared_events
-from gui.shared.events import LoadViewEvent
-from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.shared.gui_items import GUI_ITEM_TYPE, Tankman
-from gui.shared.gui_items.crew_skin import localizedFullName
-from gui.shared.gui_items.Tankman import getCrewSkinIconSmallWithoutPath
-from gui.shared.gui_items.processors.tankman import TankmanUnload, TankmanEquip
-from gui.shared.SoundEffectsId import SoundEffectsId
-from gui.shared.utils import decorators
-from gui.impl.gen import R
-from gui.impl import backport
-import SoundGroups
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.CrewMeta import CrewMeta
-from gui.Scaleform.Waiting import Waiting
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.shared import events, event_dispatcher as shared_events
+from gui.shared.SoundEffectsId import SoundEffectsId
+from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.events import LoadViewEvent
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.Tankman import Tankman, getCrewSkinIconSmallWithoutPath, getRoleBigIconPath
+from gui.shared.gui_items.crew_skin import localizedFullName
+from gui.shared.gui_items.processors.tankman import TankmanUnload, TankmanEquip
+from gui.shared.utils import decorators
 from helpers import dependency
+from helpers.i18n import convert, makeString
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from items.tankmen import getSkillsConfig, compareMastery
-from helpers.i18n import convert, makeString
-from gui.ClientUpdateManager import g_clientUpdateManager
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+
 
 class Crew(CrewMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -68,14 +69,13 @@ class Crew(CrewMeta):
                 roles.append({'tankmanID': tman.invID if tman is not None else None,
                  'roleType': role,
                  'role': convert(skillsConfig.getSkill(role).userString),
-                 'roleIcon': Tankman.getRoleBigIconPath(role),
+                 'roleIcon': getRoleBigIconPath(role),
                  'nationID': vehicle.nationID,
                  'typeID': vehicle.innationID,
                  'slot': slotIdx,
                  'vehicleType': vehicle.shortUserName,
                  'tankType': vehicle.type,
-                 'vehicleElite': vehicle.isPremium or vehicle.isPremiumIGR,
-                 'roles': list(vehicle.descriptor.type.crewRoles[slotIdx])})
+                 'vehicleElite': vehicle.isPremium or vehicle.isPremiumIGR})
 
             tankmenData = []
             for tankman in allTankmen.itervalues():
@@ -94,10 +94,12 @@ class Crew(CrewMeta):
                      'level': skill.level,
                      'active': skill.isEnable and skill.isActive})
 
+                newFreeSkillsCount = tankman.newFreeSkillsCount
                 newSkillsCount, lastNewSkillLvl = tankman.newSkillCount
-                if newSkillsCount > 0:
+                if newSkillsCount > 0 or newFreeSkillsCount > 0:
                     skillsList.append({'buy': True,
-                     'buyCount': newSkillsCount - 1,
+                     'buyFreeCount': newFreeSkillsCount,
+                     'buyCount': max(newSkillsCount - 1, 0),
                      'tankmanID': tankman.invID,
                      'level': lastNewSkillLvl})
                 tankmanData = {'fullName': tankman.fullUserName,
@@ -108,7 +110,6 @@ class Crew(CrewMeta):
                  'vehicleType': tankmanVehicle.shortUserName,
                  'iconFile': tankman.icon,
                  'rankIconFile': tankman.iconRank,
-                 'roleIconFile': Tankman.getRoleBigIconPath(tankman.descriptor.role),
                  'contourIconFile': tankmanVehicle.iconContour,
                  'tankmanID': tankman.invID,
                  'nationID': tankman.nationID,
@@ -122,7 +123,9 @@ class Crew(CrewMeta):
                  'isLessMastered': vehicle.crewIndices.get(tankman.invID) == lessMastered and vehicle.isXPToTman,
                  'compact': tankman.strCD,
                  'availableSkillsCount': skills_count,
-                 'skills': skillsList}
+                 'skills': skillsList,
+                 'roles': tankman.roles(),
+                 'hasCommanderFeature': tankman.role == Tankman.ROLES.COMMANDER}
                 self.__updateTankmanDataByCrewSkin(tankman, tankmanData)
                 tankmenData.append(tankmanData)
 
@@ -163,7 +166,7 @@ class Crew(CrewMeta):
     def __playSound(self, soundID):
         SoundGroups.g_instance.playSound2D(self.app.soundManager.sounds.getEffectSound(soundID))
 
-    @decorators.process('equipping')
+    @decorators.adisp_process('equipping')
     def equipTankman(self, tmanInvID, slot):
         tankman = self.itemsCache.items.getTankman(int(tmanInvID))
         result = yield TankmanEquip(tankman, g_currentVehicle.item, int(slot)).request()
@@ -174,11 +177,11 @@ class Crew(CrewMeta):
         self.unloadCrew()
 
     @staticmethod
-    @decorators.process('unloading')
+    @decorators.adisp_process('unloading')
     def unloadCrew():
         result = yield TankmanUnload(g_currentVehicle.item).request()
         if result.userMsg:
             SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
 
-    def openPersonalCase(self, value, tabNumber):
-        shared_events.showPersonalCase(int(value), int(tabNumber), EVENT_BUS_SCOPE.LOBBY)
+    def openPersonalCase(self, value, tabID):
+        shared_events.showPersonalCase(int(value), tabID, EVENT_BUS_SCOPE.LOBBY)

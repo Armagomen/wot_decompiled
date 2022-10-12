@@ -1,36 +1,34 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/anonymizer_fakes_ctrl.py
-import typing
 import logging
+import typing
+
 import BigWorld
 import constants
 from avatar_helpers import getAvatarSessionID
 from constants import BattleUserActions
 from gui.anonymizer.battle_cooldown_manager import BattleCooldownManager
+from gui.battle_control.arena_info.interfaces import IAnonymizerFakesController
 from gui.battle_control.battle_cache.cache_records import RelationsCacheRecord
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from gui.battle_control.arena_info.interfaces import IAnonymizerFakesController
-from messenger.storage import storage_getter
+from messenger.m_constants import USER_TAG, PROTO_TYPE, UserEntityScope, USER_ACTION_ID, CLIENT_ACTION_ID
 from messenger.proto import proto_getter
 from messenger.proto.entities import BattleUserEntity, CurrentBattleUserEntity
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.shared_errors import ChatCoolDownError
-from messenger.m_constants import USER_TAG, PROTO_TYPE, UserEntityScope, USER_ACTION_ID, CLIENT_ACTION_ID
+from messenger.storage import storage_getter
+
 if typing.TYPE_CHECKING:
-    from gui.battle_control.arena_info.arena_dp import ArenaDataProvider
-    from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
+    pass
 _logger = logging.getLogger(__name__)
 _ACTION_BY_TAG = {(USER_TAG.FRIEND, True): USER_ACTION_ID.FRIEND_ADDED,
- (USER_TAG.FRIEND, False): USER_ACTION_ID.FRIEND_REMOVED,
- (USER_TAG.IGNORED, True): USER_ACTION_ID.IGNORED_ADDED,
- (USER_TAG.IGNORED, False): USER_ACTION_ID.IGNORED_REMOVED,
- (USER_TAG.MUTED, True): USER_ACTION_ID.MUTE_SET}
+                  (USER_TAG.FRIEND, False): USER_ACTION_ID.FRIEND_REMOVED,
+                  (USER_TAG.IGNORED, True): USER_ACTION_ID.IGNORED_ADDED,
+                  (USER_TAG.IGNORED, False): USER_ACTION_ID.IGNORED_REMOVED,
+                  (USER_TAG.MUTED, True): USER_ACTION_ID.MUTE_SET}
 _CREATION_UPDATED_TAGS = (USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.MUTED)
 _IGNORED_DEPS_TAGS = [USER_TAG.IGNORED]
 _IGNORE_TMP_DEPS_TAGS = [USER_TAG.IGNORED_TMP]
-if not constants.IS_CHINA:
-    _IGNORED_DEPS_TAGS.append(USER_TAG.MUTED)
-    _IGNORE_TMP_DEPS_TAGS.append(USER_TAG.MUTED)
 
 class _RelationData(object):
     __slots__ = ('vehicleID', 'sessionID', 'databaseID', 'name')
@@ -85,7 +83,7 @@ class AnonymizerFakesController(IAnonymizerFakesController):
         self.usersStorage.addUser(CurrentBattleUserEntity(self.__avatarSessionID, currentInfo.player.getPlayerLabel()))
         self.__fakeIDs.add(self.__avatarSessionID)
         for vInfo in self.__arenaDP.getVehiclesInfoIterator():
-            self.__addBattleUser(_RelationData(vInfo))
+            self.__notifyModification(_RelationData(vInfo))
 
         g_messengerEvents.users.onUsersListReceived({USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.IGNORED_TMP})
 

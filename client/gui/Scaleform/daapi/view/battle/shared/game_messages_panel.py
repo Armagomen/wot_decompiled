@@ -58,9 +58,8 @@ class GameMessagesPanel(GameMessagesPanelMeta):
             messageType = GAME_MESSAGES_CONSTS.DRAW
             titleRes = R.strings.bootcamp.resultlabel.complete()
         endGameMsgData = {'title': toUpper(backport.text(titleRes)),
-                          'subTitle': makeRegularFinishResultLabel(reason, messageType)}
-        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH,
-                                GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
+         'subTitle': makeRegularFinishResultLabel(reason, messageType)}
+        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH, GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
         self._addMessage(msg.getDict())
 
     def setFlashObject(self, movieClip, autoPopulate=True, setScript=True):

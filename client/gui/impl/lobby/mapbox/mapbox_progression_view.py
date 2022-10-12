@@ -3,7 +3,6 @@
 import logging
 
 from ArenaType import g_geometryNamesToIDs
-from async import async, await
 from constants import QUEUE_TYPE
 from frameworks.wulf import ViewSettings, ViewFlags, WindowStatus
 from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
@@ -30,6 +29,7 @@ from helpers import dependency, time_utils
 from shared_utils import first
 from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.impl import IGuiLoader
+from wg_async import wg_async, wg_await
 
 _logger = logging.getLogger(__name__)
 
@@ -65,11 +65,11 @@ class MapboxProgressionView(ViewImpl):
         tooltip = getMapboxRewardTooltip(event, self.__tooltips, self.getParentWindow())
         return tooltip or super(MapboxProgressionView, self).createToolTip(event)
 
-    @async
+    @wg_async
     def _initialize(self, *args, **kwargs):
         super(MapboxProgressionView, self)._initialize(*args, **kwargs)
         Waiting.show('loadContent')
-        result = yield await(self.__mapboxController.forceUpdateProgressData())
+        result = yield wg_await(self.__mapboxController.forceUpdateProgressData())
         Waiting.hide('loadContent')
         if self.viewStatus in (ViewStatus.DESTROYING, ViewStatus.DESTROYED):
             return
@@ -196,9 +196,7 @@ class MapboxProgressionView(ViewImpl):
         itemName = args.get('name')
         if itemIdx is not None and numBattles is not None and itemName is not None:
             progressionData = self.__mapboxController.getProgressionData()
-            crewbook = first(
-                [crewbook for crewbook in progressionData.rewards[int(numBattles)].bonusList[int(itemIdx)].getItems() if
-                 crewbook.name == itemName])
+            crewbook = first([ crewbook for crewbook in progressionData.rewards[int(numBattles)].bonusList[int(itemIdx)].getItems() if crewbook.name == itemName ])
             showMapboxRewardChoice(crewbook)
         return
 

@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/PrebattleWindow.py
 from CurrentVehicle import g_currentVehicle
-from adisp import process
+from adisp import adisp_process
 from constants import MODULE_NAME_SEPARATOR
 from debug_utils import LOG_ERROR
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.meta.PrebattleWindowMeta import PrebattleWindowMeta
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from skeletons.gui.game_control import ICraftmachineController
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
 from gui.Scaleform.managers.windows_stored_data import DATA_TYPE, TARGET_ID
 from gui.Scaleform.managers.windows_stored_data import stored_window
@@ -30,7 +29,9 @@ from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
 from prebattle_shared import decodeRoster
+from skeletons.gui.game_control import ICraftmachineController
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 @stored_window(DATA_TYPE.CAROUSEL_WINDOW, TARGET_ID.CHANNEL_CAROUSEL)
 class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
@@ -66,7 +67,7 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
     def bwProto(self):
         return None
 
-    @process
+    @adisp_process
     def requestToReady(self, value):
         if value:
             waitingID = 'prebattle/player_ready'
@@ -269,7 +270,7 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
                 self.addListener(events.MessengerEvent.PRB_CHANNEL_CTRL_INITED, self.__handlePrbChannelControllerInited, scope=EVENT_BUS_SCOPE.LOBBY)
         return
 
-    @process
+    @adisp_process
     def _doLeave(self, isExit=True):
         yield self.prbDispatcher.doLeaveAction(LeavePrbAction(isExit))
 

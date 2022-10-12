@@ -61,12 +61,10 @@ class MapsTrainingBaseView(ViewImpl):
             return
         else:
             ctx = {'dx': args.get('dx'),
-                   'dy': args.get('dy'),
-                   'dz': args.get('dz')}
-            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx),
-                                   EVENT_BUS_SCOPE.GLOBAL)
-            g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx=ctx),
-                                   EVENT_BUS_SCOPE.GLOBAL)
+             'dy': args.get('dy'),
+             'dz': args.get('dz')}
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
+            g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return
 
     def _isInCustomization(self):

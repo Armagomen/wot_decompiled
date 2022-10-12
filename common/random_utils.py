@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/random_utils.py
-import typing
-import random
 import itertools
+import random
 from copy import deepcopy
+
 
 class wchoices(object):
 
@@ -35,3 +35,7 @@ class wchoices(object):
                     raise LookupError('At least one option must be selected from %s', welist)
 
         return wrapper()
+
+
+def getValueWithDeviationInPercent(value, deviation):
+    return value + value * (random.randint(-deviation, deviation) / 100.0)

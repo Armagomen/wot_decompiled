@@ -4,7 +4,7 @@ import logging
 import typing
 
 import Event
-from adisp import process
+from adisp import adisp_process
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.browser import BrowserViewWebHandlers
 from gui.impl.gen import R
@@ -17,7 +17,6 @@ if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(__name__)
 
-
 class BrowserSettings(ViewSettings):
 
     def __init__(self, layoutID=R.views.common.Browser(), flags=ViewFlags.VIEW, model=None, args=()):
@@ -26,10 +25,8 @@ class BrowserSettings(ViewSettings):
 
 TViewModel = typing.TypeVar('TViewModel', bound=BrowserModel)
 
-
-class Browser(ViewImpl[BrowserModel], typing.Generic[TViewModel]):
-    __slots__ = ('__url', '__browserId', '__browser', '__webCommandHandler', '__webHandlersMap', 'onBrowserObtained',
-                 '__eventManager')
+class Browser(ViewImpl[TViewModel]):
+    __slots__ = ('__url', '__browserId', '__browser', '__webCommandHandler', '__webHandlersMap', 'onBrowserObtained', '__eventManager')
     __browserCtrl = dependency.descriptor(IBrowserController)
 
     def __init__(self, url='', settings=None, webHandlersMap=None, preload=False, *args, **kwargs):
@@ -65,9 +62,7 @@ class Browser(ViewImpl[BrowserModel], typing.Generic[TViewModel]):
             self.getViewModel().setBrowserState(BrowserState.LOADED)
 
     def _getEvents(self):
-        return (
-        (self.getViewModel().createWebView, self.__onCreateVebView), (self.getViewModel().focus, self.__onFocus),
-        (self.getViewModel().unfocus, self.__onUnfocus))
+        return ((self.getViewModel().createWebView, self.__onCreateVebView), (self.getViewModel().focus, self.__onFocus), (self.getViewModel().unfocus, self.__onUnfocus))
 
     def _finalize(self):
         self.__browserCtrl.onBrowserAdded -= self.__onBrowserAddedHandler
@@ -84,7 +79,7 @@ class Browser(ViewImpl[BrowserModel], typing.Generic[TViewModel]):
         self.__eventManager.clear()
         super(Browser, self)._finalize()
 
-    @process
+    @adisp_process
     def __loadBrowser(self):
         self.__browserId = yield self.__browserCtrl.load(url=self.__url, useBrowserWindow=False)
         self.__browser = self.__browserCtrl.getBrowser(self.__browserId)

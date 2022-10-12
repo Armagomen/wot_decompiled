@@ -2,9 +2,10 @@
 # Embedded file name: scripts/client/gui/server_events/personal_missions_cache.py
 import operator
 from collections import defaultdict
+
 import BigWorld
 import personal_missions
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from gui.server_events import event_items
 from gui.server_events.finders import BRANCH_TO_OPERATION_IDS
@@ -20,6 +21,7 @@ from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore, ISettingsCache
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 _SETTINGS_SYNCED = 1
 _EVENTS_CACHE_UPDATED = 2
 _ALL_SYNCED = _SETTINGS_SYNCED | _EVENTS_CACHE_UPDATED
@@ -211,8 +213,8 @@ class PersonalMissionsCache(object):
         questsData = self.__questsData.get(branch, None)
         return questsData.hasQuestsForReward and self.isEnabled(branch) if questsData else False
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def questsProgressRequest(self, callback=None):
         for branch in PM_BRANCH.ACTIVE_BRANCHES:
             qp = self.getQuestsProgress(branch)

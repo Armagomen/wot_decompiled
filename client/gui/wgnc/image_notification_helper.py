@@ -1,13 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/image_notification_helper.py
 import logging
-from adisp import process, async
+
+from WebBrowser import getWebCache
+from adisp import adisp_process, adisp_async
 from gui import SystemMessages
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.image_helper import getTextureLinkByID
 from helpers.CallbackDelayer import CallbackDelayer
-from WebBrowser import getWebCache
+
 _logger = logging.getLogger(__name__)
 
 class WebImageHelper(object):
@@ -22,7 +24,7 @@ class WebImageHelper(object):
         self.__defLocalDirPath = defLocalDirPath
         return
 
-    @async
+    @adisp_async
     def getLocalPath(self, imageUrl, callback=lambda x: None):
         self.__imageUrl = imageUrl
         self.__callbackMethod = callback
@@ -67,14 +69,14 @@ class WebImageHelper(object):
         return
 
 
-@process
+@adisp_process
 def showPaymentMethodLinkNotification(method, imageUrl):
     helper = WebImageHelper()
     localPath = yield helper.getLocalPath(imageUrl)
     SystemMessages.pushMessage(text=backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.titles.paymentMethodLink(), method=method), type=SystemMessages.SM_TYPE.PaymentMethodLinkWgnc, messageData={'imageBlock': _packImageBlock(localPath)})
 
 
-@process
+@adisp_process
 def showPaymentMethodUnlinkNotification(method, imageUrl):
     helper = WebImageHelper()
     localPath = yield helper.getLocalPath(imageUrl)

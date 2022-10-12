@@ -1,11 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serialization/field.py
 from .definitions import FieldTypes, FieldType, FieldFlags
-
-__all__ = ('arrayField', 'intField', 'strField', 'xmlOnlyIntField', 'xmlOnlyFloatField', 'xmlOnlyFloatArrayField',
-           'applyAreaEnumField', 'xmlOnlyApplyAreaEnumField', 'xmlOnlyTagsField', 'optionsEnumField', 'customFieldType',
-           'intArrayField', 'customArrayField')
-
+__all__ = ('arrayField', 'intField', 'strField', 'xmlOnlyIntField', 'xmlOnlyFloatField', 'xmlOnlyFloatArrayField', 'applyAreaEnumField', 'xmlOnlyApplyAreaEnumField', 'xmlOnlyTagsField', 'optionsEnumField', 'customFieldType', 'intArrayField', 'customArrayField')
 
 def arrayField(itemType, default=None, flags=FieldFlags.NONE):
     return FieldType(FieldTypes.TYPED_ARRAY | itemType, default or [], flags)

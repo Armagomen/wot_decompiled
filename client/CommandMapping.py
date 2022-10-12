@@ -1,12 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/CommandMapping.py
 import BigWorld
-import ResMgr
-import Keys
 import Event
-import Settings
-from shared_utils import findFirst
+import ResMgr
 from debug_utils import LOG_DEBUG
+from shared_utils import findFirst
+
+import Keys
+import Settings
+
 g_instance = None
 CMD_MOVE_FORWARD = 1
 CMD_MOVE_FORWARD_SPEC = 2
@@ -85,6 +87,7 @@ CMD_CHAT_SHORTCUT_AFFIRMATIVE = 79
 CMD_COMMANDER_CAM = 80
 CMD_AMMUNITION_SHORTCUT_SWITCH_SETUP_1 = 81
 CMD_AMMUNITION_SHORTCUT_SWITCH_SETUP_2 = 82
+CMD_SHOW_PERSONAL_RESERVES = 83
 
 class CommandMapping(object):
     __DEFAULT_CONFIG_FILE_NAME = 'scripts/command_mapping.xml'

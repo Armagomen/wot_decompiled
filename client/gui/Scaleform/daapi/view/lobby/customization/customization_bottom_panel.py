@@ -40,9 +40,7 @@ from skeletons.gui.shared import IItemsCache
 from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_outfit.outfit import Area
 
-CustomizationCarouselDataVO = namedtuple('CustomizationCarouselDataVO', (
-'displayString', 'isZeroCount', 'shouldShow', 'itemLayoutSize', 'bookmarks', 'arrows', 'showSeparators'))
-
+CustomizationCarouselDataVO = namedtuple('CustomizationCarouselDataVO', ('displayString', 'isZeroCount', 'shouldShow', 'itemLayoutSize', 'bookmarks', 'arrows', 'showSeparators'))
 
 class CustomizationBottomPanel(CustomizationBottomPanelMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -250,16 +248,13 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             itemFilter = lambda item: not item.isStyleOnly
         for tabId in visibleTabs:
             tabItemTypes = CustomizationTabs.ITEM_TYPES[tabId]
-            tabsCounters.append(
-                vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=tabItemTypes, season=season, itemFilter=itemFilter))
+            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=tabItemTypes, season=season, itemFilter=itemFilter))
 
         if self.__ctx.modeId == CustomizationModes.STYLED:
             availableItemTypes = getItemTypesAvailableForVehicle() - {GUI_ITEM_TYPE.STYLE}
-            switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=availableItemTypes,
-                                                                  itemFilter=itemFilter)
+            switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=availableItemTypes, itemFilter=itemFilter)
         else:
-            switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=(GUI_ITEM_TYPE.STYLE,),
-                                                                  itemFilter=itemFilter)
+            switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=(GUI_ITEM_TYPE.STYLE,), itemFilter=itemFilter)
             styles = self._carouselDP.getItemsData(season, CustomizationModes.STYLED, CustomizationTabs.STYLES)
             switchersCounter += getEditableStylesExtraNotificationCounter(styles)
         self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
@@ -340,11 +335,7 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         countStyle = text_styles.error if isZeroCount else text_styles.main
         displayString = text_styles.main('{} / {}'.format(countStyle(str(self._carouselDP.itemCount)), str(self._carouselDP.totalItemCount)))
         shouldShow = self._carouselDP.hasAppliedFilter()
-        return CustomizationCarouselDataVO(displayString, isZeroCount, shouldShow,
-                                           itemLayoutSize=self._carouselDP.getItemSizeData(),
-                                           bookmarks=self._carouselDP.getBookmarskData(),
-                                           arrows=self._carouselDP.getArrowsData(),
-                                           showSeparators=self._carouselDP.getShowSeparatorsData())._asdict()
+        return CustomizationCarouselDataVO(displayString, isZeroCount, shouldShow, itemLayoutSize=self._carouselDP.getItemSizeData(), bookmarks=self._carouselDP.getBookmarskData(), arrows=self._carouselDP.getArrowsData(), showSeparators=self._carouselDP.getShowSeparatorsData())._asdict()
 
     def __setBottomPanelBillData(self, *_):
         purchaseItems = self.__ctx.mode.getPurchaseItems()
@@ -353,22 +344,22 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
         label = _ms(VEHICLE_CUSTOMIZATION.COMMIT_APPLY)
         fromStorageCount = 0
-        hasLockedItems = False
+        hasLockedItemsInStyle = False
         toBuyCount = 0
+        lockedCount = 0
         for pItem in purchaseItems:
             if not pItem.item.isHiddenInUI():
-                if pItem.isFromInventory:
+                if not pItem.item.isUnlockedByToken():
+                    lockedCount += 1
+                elif pItem.isFromInventory:
                     fromStorageCount += 1
                 else:
                     toBuyCount += 1
                 curItem = pItem.item
                 if curItem.isQuestsProgression and curItem.itemTypeID == GUI_ITEM_TYPE.STYLE:
                     totalItems = curItem.descriptor.questsProgression.getTotalCount()
-                    itemsOpened = sum([curItem.descriptor.questsProgression.getUnlockedCount(token,
-                                                                                             self.eventsCache.questsProgress.getTokenCount(
-                                                                                                 token)) for token in
-                                       curItem.descriptor.questsProgression.getGroupTokens()])
-                    hasLockedItems = totalItems != itemsOpened
+                    itemsOpened = sum([ curItem.descriptor.questsProgression.getUnlockedCount(token, self.eventsCache.questsProgress.getTokenCount(token)) for token in curItem.descriptor.questsProgression.getGroupTokens() ])
+                    hasLockedItemsInStyle = totalItems != itemsOpened
 
         for pItem in purchaseItems:
             if pItem.item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
@@ -379,7 +370,7 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         else:
             hasEmptyNumber = False
 
-        hasLockedItems = self.__ctx.mode.isOutfitsHasLockedItems() or hasLockedItems
+        hasLockedItems = self.__ctx.mode.isOutfitsHasLockedItems()
         buyBtnEnabled = self.__ctx.isOutfitsModified()
         if buyBtnEnabled and cartInfo.totalPrice != ITEM_PRICE_EMPTY:
             label = _ms(VEHICLE_CUSTOMIZATION.COMMIT_BUY)
@@ -404,30 +395,19 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             compoundPrice['price'] = getMoneyVO(Money(gold=0))
         fromStorageCount = text_styles.stats('({})'.format(fromStorageCount))
         toBuyCount = text_styles.stats('({})'.format(toBuyCount))
-        billLines = [self.__makeBillLine(
-            text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toBuyCount)),
-            compoundPrice=compoundPrice, isEnoughStatuses=getMoneyVO(Money(True, True, True))), self.__makeBillLine(
-            text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
-            icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON)]
-        buttons = [
-            self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARALL), BillPopoverButtons.CUSTOMIZATION_CLEAR,
-                              RES_ICONS.MAPS_ICONS_CUSTOMIZATION_ICON_CROSS)]
-        if hasLockedItems:
-            count = self.__ctx.mode.getOutfitsLockedItemsCount()
-            lockedCount = text_styles.stats('({})'.format(count))
-            billLines.append(self.__makeBillLine(
-                text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_LOCKED), lockedCount)),
-                icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_LOCK_ICON))
-            buttons.append(self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARLOCKED),
-                                             BillPopoverButtons.CUSTOMIZATION_CLEAR_LOCKED, enabled=count > 0))
+        billLines = [self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toBuyCount)), compoundPrice=compoundPrice, isEnoughStatuses=getMoneyVO(Money(True, True, True))), self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON)]
+        buttons = [self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARALL), BillPopoverButtons.CUSTOMIZATION_CLEAR, RES_ICONS.MAPS_ICONS_CUSTOMIZATION_ICON_CROSS)]
+        if hasLockedItems or hasLockedItemsInStyle:
+            lockedCountText = text_styles.stats('({})'.format(lockedCount))
+            billLines.append(self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_LOCKED), lockedCountText)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_LOCK_ICON))
+            buttons.append(self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARLOCKED), BillPopoverButtons.CUSTOMIZATION_CLEAR_LOCKED, enabled=lockedCount > 0))
         self.as_setBottomPanelPriceStateS({'buyBtnEnabled': buyBtnEnabled and not hasLockedItems,
-                                           'buyBtnLabel': label,
-                                           'buyBtnTooltip': tooltip,
-                                           'customizationDisplayType': self.__ctx.mode.currentOutfit.customizationDisplayType(),
-                                           'billVO': {'title': text_styles.highlightText(
-                                               _ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_RESULT)),
-                                                      'lines': billLines,
-                                                      'buttons': buttons}})
+         'buyBtnLabel': label,
+         'buyBtnTooltip': tooltip,
+         'customizationDisplayType': self.__ctx.mode.currentOutfit.customizationDisplayType(),
+         'billVO': {'title': text_styles.highlightText(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_RESULT)),
+                    'lines': billLines,
+                    'buttons': buttons}})
         itemsPopoverBtnEnabled = False
         for intCD, component, _, _, _ in self.__ctx.mode.currentOutfit.itemsFull():
             if component.isFilled():
@@ -441,15 +421,15 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
 
     def __makeBillLine(self, label, icon=None, compoundPrice=None, isEnoughStatuses=None):
         return {'label': label,
-                'icon': icon,
-                'compoundPrice': compoundPrice,
-                'isEnoughStatuses': isEnoughStatuses}
+         'icon': icon,
+         'compoundPrice': compoundPrice,
+         'isEnoughStatuses': isEnoughStatuses}
 
     def __makeButton(self, label, event, icon=None, enabled=True):
         return {'label': label,
-                'icon': icon,
-                'event': event,
-                'enabled': enabled}
+         'icon': icon,
+         'event': event,
+         'enabled': enabled}
 
     def __showBill(self):
         self.as_showBillS()
@@ -458,8 +438,7 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         self.as_hideBillS()
 
     def __refreshHotFilters(self):
-        self.as_setCarouselFiltersDataS({'hotFilters': [self._carouselDP.isFilterApplied(FilterTypes.INVENTORY),
-                                                        self._carouselDP.isFilterApplied(FilterTypes.APPLIED)]})
+        self.as_setCarouselFiltersDataS({'hotFilters': [self._carouselDP.isFilterApplied(FilterTypes.INVENTORY), self._carouselDP.isFilterApplied(FilterTypes.APPLIED)]})
 
     def __clearFilter(self):
         self._carouselDP.clearFilter()
@@ -496,11 +475,7 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         else:
             autoRentEnabled = False
         isChained, isUnsuitable = self._carouselDP.processDependentParams(item)
-        return buildCustomizationItemDataVO(item=item, count=inventoryCount, isApplied=isApplied, isDarked=isDarked,
-                                            isUsedUp=isUsedUp, autoRentEnabled=autoRentEnabled,
-                                            vehicle=g_currentVehicle.item, showEditableHint=showEditableHint,
-                                            showEditBtnHint=showEditBtnHint, isChained=isChained,
-                                            isUnsuitable=isUnsuitable, isInProgress=item.isQuestInProgress())
+        return buildCustomizationItemDataVO(item=item, count=inventoryCount, isApplied=isApplied, isDarked=isDarked, isUsedUp=isUsedUp, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item, showEditableHint=showEditableHint, showEditBtnHint=showEditBtnHint, isChained=isChained, isUnsuitable=isUnsuitable, isInProgress=item.isQuestInProgress())
 
     def __getItemTabsData(self):
         tabsData = []

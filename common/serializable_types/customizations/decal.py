@@ -11,12 +11,10 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('DecalComponent',)
 
-
 class DecalComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.DECAL
-    fields = OrderedDict(
-        (('id', intField()), ('appliedTo', applyAreaEnumField(ApplyArea.NONE)), ('progressionLevel', intField(0))))
+    fields = OrderedDict((('id', intField()), ('appliedTo', applyAreaEnumField(ApplyArea.NONE)), ('progressionLevel', intField(0))))
     __slots__ = ('id', 'appliedTo', 'progressionLevel')
 
     def __init__(self, id=0, appliedTo=ApplyArea.NONE, progressionLevel=0):

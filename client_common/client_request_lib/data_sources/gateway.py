@@ -176,11 +176,9 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         url = '/accounts/attributes/get_by_prefix/'
         return self._request_data(callback, url, get_data=get_params)
 
-    def freya_v1_fetch_product_list(self, callback, request_data, fields=None):
-        params = request_data
-        params.update({'fields': fields})
-        url = '/freya/server/api/v1/fetchProductListState/'
-        return self._request_data(callback, url, method='POST', post_data=params)
+    def agate_v4_fetch_product_list_state(self, callback, request_data, fields=None):
+        url = '/agate/api/v4/commerce/fetchProductListState/'
+        return self._request_data(callback, url, method='POST', post_data=request_data)
 
     def get_clan_members(self, callback, clan_id, fields=None):
         get_params = {'fields': fields}
@@ -190,11 +188,10 @@ class GatewayDataAccessor(base.BaseDataAccessor):
     def get_clan_favorite_attributes(self, callback, clan_id, fields=None):
         get_params = {'clan_id': clan_id}
         url = '/cwh/gm/clans/favorite_attributes'
-        return self._request_data(callback, url, get_data=get_params, converters={
-            'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time(),
-            'favorite_arena_6': int,
-            'favorite_arena_8': int,
-            'favorite_arena_10': int})
+        return self._request_data(callback, url, get_data=get_params, converters={'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time(),
+         'favorite_arena_6': int,
+         'favorite_arena_8': int,
+         'favorite_arena_10': int})
 
     def get_accounts_clans(self, callback, account_ids, fields=None):
         get_params = {'fields': fields,
@@ -524,43 +521,43 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         return self._request_data(callback, url, get_data={}, converters={}, method='GET')
 
     def join_event(self, callback, event_id, fields=None):
-        url = '/wgelen/v1/join_event'
+        url = '/wgelen/wot/v1/join_event'
         post_data = {'event_id': event_id}
         return self._request_data(callback, url, method='POST', post_data=post_data)
 
     def leave_event(self, callback, event_id, fields=None):
-        url = '/wgelen/v1/leave_event'
+        url = '/wgelen/wot/v1/leave_event'
         post_data = {'event_id': event_id}
         return self._request_data(callback, url, method='POST', post_data=post_data)
 
     def get_events_data(self, callback, fields=None):
-        url = '/wgelen/v1/get_events_data'
+        url = '/wgelen/wot/v1/get_events_data'
         return self._request_data(callback, url, method='GET')
 
     def get_hangar_flag(self, callback, fields=None):
-        url = '/wgelen/v1/get_hangar_flag'
+        url = '/wgelen/wot/v1/get_hangar_flag'
         return self._request_data(callback, url, method='GET')
 
     def get_leaderboard(self, callback, event_id, page_number, leaderboard_id, fields=None):
-        url = '/wgelen/v1/get_leaderboard'
+        url = '/wgelen/wot/v1/get_leaderboard'
         get_data = {'event_id': event_id,
          'page_number': page_number,
          'leaderboard_id': leaderboard_id}
         return self._request_data(callback, url, get_data, 'GET')
 
     def get_my_event_top(self, callback, event_id, fields=None):
-        url = '/wgelen/v1/get_my_event_top'
+        url = '/wgelen/wot/v1/get_my_event_top'
         get_data = {'event_id': event_id}
         return self._request_data(callback, url, get_data, 'GET')
 
     def get_my_leaderboard_position(self, callback, event_id, leaderboard_id, fields=None):
-        url = '/wgelen/v1/get_my_leaderboard_position'
+        url = '/wgelen/wot/v1/get_my_leaderboard_position'
         get_data = {'event_id': event_id,
          'leaderboard_id': leaderboard_id}
         return self._request_data(callback, url, get_data, 'GET')
 
     def get_player_data(self, callback, fields=None):
-        url = '/wgelen/v1/get_player_data'
+        url = '/wgelen/wot/v1/get_player_data'
         return self._request_data(callback, url, method='GET')
 
     def hof_user_info(self, callback):
@@ -618,12 +615,19 @@ class GatewayDataAccessor(base.BaseDataAccessor):
     def post_gift_system_gift(self, callback, entitlement_code, receiver_id, meta_info):
         url = '/giftsystem/gift'
         post_data = {'entitlement_code': entitlement_code,
-                     'receiver_id': receiver_id}
+         'receiver_id': receiver_id}
         post_data.update(meta_info)
         return self._request_data(callback, url, method='POST', post_data=post_data)
 
     def get_uilogging_session(self, callback):
         return self._request_data(callback, '/uilogging/session', method='GET')
+
+    def get_inventory_entitlements(self, callback, entitlement_codes):
+        url = '/shop/inventory_entitlements/'
+        if entitlement_codes:
+            urlencoded_string = urllib.urlencode([ ('entitlement_codes', code) for code in entitlement_codes ])
+            url = '{}?{}'.format(url, urlencoded_string)
+        return self._request_data(callback, url, method='GET')
 
     def _get_formatted_language_code(self):
         return self.client_lang.replace('_', '-')

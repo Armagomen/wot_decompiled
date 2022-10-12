@@ -12,10 +12,9 @@ from skeletons.gui.game_control import IBattlePassController
 _R_TOOLTIPS = R.views.lobby.battle_pass.tooltips
 _R_IMAGES = R.images.gui.maps.icons.library.hangarEntryPoints.battlePass
 _TOOLTIPS = {_R_TOOLTIPS.BattlePassNotStartedTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NOT_STARTED,
-             _R_TOOLTIPS.BattlePassCompletedTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_COMPLETED,
-             _R_TOOLTIPS.BattlePassInProgressTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_IN_PROGRESS,
-             _R_TOOLTIPS.BattlePassNoChapterTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NO_CHAPTER}
-
+ _R_TOOLTIPS.BattlePassCompletedTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_COMPLETED,
+ _R_TOOLTIPS.BattlePassInProgressTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_IN_PROGRESS,
+ _R_TOOLTIPS.BattlePassNoChapterTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NO_CHAPTER}
 
 class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePassEntryPointView):
     __battlePass = dependency.descriptor(IBattlePassController)
@@ -48,8 +47,7 @@ class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePas
         if self.__arenaBonusType is None:
             return
         else:
-            flagIcon = backport.image(_R_IMAGES.dyn('flag_chapter_{}'.format(self.chapterID),
-                                                    default=_R_IMAGES.flag_default)()) if self.chapterID > 0 else None
+            flagIcon = backport.image(_R_IMAGES.dyn('flag_chapter_{}'.format(self.chapterID), default=_R_IMAGES.flag_default)()) if self.chapterID > 0 else None
             gameModeIsEnabled = self.__battlePass.isGameModeEnabled(self.__arenaBonusType)
             isEnabled = gameModeIsEnabled and self.__battlePass.isActive() and self.__battlePass.isEnabled()
             data = {'flagIcon': flagIcon,
@@ -84,8 +82,7 @@ class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePas
         if self.chapterID > 0:
             iconTemplate = 'icon_{}_chapter_{}'
             progressionType = 'gold' if self.isBought else 'silver'
-            icon = _R_IMAGES.dyn(iconTemplate.format(progressionType, self.chapterID),
-                                 default=_R_IMAGES.icon_chapter_empty)()
+            icon = _R_IMAGES.dyn(iconTemplate.format(progressionType, self.chapterID), default=_R_IMAGES.icon_chapter_empty)()
         elif self.isCompleted:
             icon = _R_IMAGES.icon_completed_gold() if self.isBought else _R_IMAGES.icon_completed_silver()
         else:

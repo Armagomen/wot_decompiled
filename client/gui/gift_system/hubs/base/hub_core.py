@@ -8,12 +8,14 @@ from gui.gift_system.hubs.base.gifter import GiftEventBaseGifter
 from gui.gift_system.hubs.base.messenger import GiftEventBaseMessenger
 from gui.gift_system.hubs.base.relations_keeper import GiftEventBaseKeeper
 if typing.TYPE_CHECKING:
-    from gui.gift_system.hubs.base.stamper import IGiftEventStamper
+    from gifts.gifts_common import ClientReqStrategy
     from gui.gift_system.hubs.base.gifter import IGiftEventGifter
     from gui.gift_system.hubs.base.messenger import IGiftEventMessenger
+    from gui.gift_system.hubs.base.relations_keeper import IGiftEventKeeper
 
 
 class IGiftEventHub(object):
+    onHubUpdated = None
 
     def destroy(self):
         pass
@@ -62,9 +64,7 @@ class IGiftEventHub(object):
 
 
 class GiftEventBaseHub(IGiftEventHub):
-    __slots__ = (
-    'onEventHubsCreated', '_eventManager', '_settings', '_isHistoryReceived', '_isWebStateReceived', '_gifter',
-    '_keeper', '_messenger', '_stamper')
+    __slots__ = ('onHubUpdated', '_eventManager', '_settings', '_isHistoryReceived', '_isWebStateReceived', '_gifter', '_keeper', '_messenger', '_stamper')
 
     def __init__(self, eventSettings, isMessagesAllowed):
         self._eventManager = EventManager()

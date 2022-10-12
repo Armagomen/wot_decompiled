@@ -16,11 +16,11 @@ from soft_exception import SoftException
 _MESSAGES_SETTINGS_PATH = 'gui/{}'
 _EXTRA_COLOR_FORMAT = '<font color="#{0:02X}{1:02X}{2:02X}">{3:>s}</font>'
 _COLOR_TO_METHOD = {BATTLE_MESSAGES_CONSTS.COLOR_YELLOW: 'as_showYellowMessageS',
-                    BATTLE_MESSAGES_CONSTS.COLOR_RED: 'as_showRedMessageS',
-                    BATTLE_MESSAGES_CONSTS.COLOR_PURPLE: 'as_showPurpleMessageS',
-                    BATTLE_MESSAGES_CONSTS.COLOR_GREEN: 'as_showGreenMessageS',
-                    BATTLE_MESSAGES_CONSTS.COLOR_GOLD: 'as_showGoldMessageS',
-                    BATTLE_MESSAGES_CONSTS.COLOR_SELF: 'as_showSelfMessageS'}
+ BATTLE_MESSAGES_CONSTS.COLOR_RED: 'as_showRedMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_PURPLE: 'as_showPurpleMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_GREEN: 'as_showGreenMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_GOLD: 'as_showGoldMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_SELF: 'as_showSelfMessageS'}
 
 class FadingMessages(BattleMessageListMeta):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)

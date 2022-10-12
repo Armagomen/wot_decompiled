@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/visual_script/type.py
-from inspect import getmembers
-from enumerations import Enumeration
 from enum import IntEnum
+from inspect import getmembers
+
+from enumerations import Enumeration
+
 from misc import EDITOR_TYPE, ASPECT
-from typing import Any, List
+
 __all__ = ('VScriptType', 'VScriptEnum', 'VScriptStruct', 'VScriptStructField')
 
 class VScriptType(object):
@@ -72,7 +74,7 @@ class VScriptEnum(object):
             for item in enum.all():
                 entriesData[item.name()] = item.index()
 
-        if isinstance(cls.vs_enum(), IntEnum):
+        elif isinstance(cls.vs_enum(), IntEnum):
             enum = cls.vs_enum()
             for item in enum:
                 entriesData[item.name] = item.value

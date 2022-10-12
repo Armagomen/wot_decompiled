@@ -1,6 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_first_entry_view.py
-from adisp import process
+from adisp import adisp_process
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -8,10 +8,10 @@ from gui.Scaleform.daapi.view.meta.PersonalMissionFirstEntryViewMeta import Pers
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.game_control.links import URLMacros
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.server_events.events_dispatcher import showPersonalMissionBrowserView
-from gui.game_control.links import URLMacros
 from gui.server_events.pm_constants import PERSONAL_MISSIONS_SOUND_SPACE, SOUNDS, PM_TUTOR_FIELDS
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
@@ -19,6 +19,7 @@ from gui.shared.formatters import text_styles, icons
 from helpers import i18n, dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from web.web_client_api import webApiCollection, ui as ui_web_api, sound as sound_web_api
+
 
 class PersonalMissionFirstEntryView(LobbySubView, PersonalMissionFirstEntryViewMeta):
     _COMMON_SOUND_SPACE = PERSONAL_MISSIONS_SOUND_SPACE
@@ -92,7 +93,7 @@ class PersonalMissionFirstEntryView(LobbySubView, PersonalMissionFirstEntryViewM
          'notificationLabel': backport.text(item.warning()) if item and 'warning' in item.keys() else ''}
         self.as_setDetailedCardDataS(data)
 
-    @process
+    @adisp_process
     def __showVideo(self):
         url = yield self.__urlMacros.parse(self.__settings.get('url'))
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)

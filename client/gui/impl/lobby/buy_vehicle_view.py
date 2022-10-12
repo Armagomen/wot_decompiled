@@ -64,7 +64,6 @@ from skeletons.gui.shared import IItemsCache
 
 _logger = logging.getLogger(__name__)
 
-
 class VehicleBuyActionTypes(CONST_CONTAINER):
     DEFAULT = 0
     BUY = 1
@@ -195,8 +194,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             emptySlotAvailable = self.__itemsCache.items.inventory.getFreeSlots(self.__stats.vehicleSlots) > 0
             equipmentBlock.setEmtySlotAvailable(emptySlotAvailable)
             equipmentBlock.setIsRestore(isRestore)
-            if self.__vehicle.hasRentPackages and (
-                    not isRestore or self.__actionType == VehicleBuyActionTypes.RENT) and self.__actionType != VehicleBuyActionTypes.BUY:
+            if self.__vehicle.hasRentPackages and (not isRestore or self.__actionType == VehicleBuyActionTypes.RENT) and self.__actionType != VehicleBuyActionTypes.BUY:
                 self.__selectedRentIdx = 0
                 self.__selectedRentID = self.__vehicle.rentPackages[self.__selectedRentIdx]['rentID']
             self.__updateCommanderCards()
@@ -206,8 +204,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             self.__updateRentInfo()
             self.__updateBuyBtnLabel()
             totalPriceArray = equipmentBlock.totalPrice.getItems()
-            self.__addVMsInActionPriceList(totalPriceArray,
-                                           ItemPrice(price=Money(credits=0, gold=0), defPrice=Money(credits=0, gold=0)))
+            self.__addVMsInActionPriceList(totalPriceArray, ItemPrice(price=Money(credits=0, gold=0), defPrice=Money(credits=0, gold=0)))
             self.__updateTotalPrice()
 
     def _finalize(self):
@@ -223,20 +220,20 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
     def _getEvents(self):
         equipmentBlock = self.viewModel.equipmentBlock
         return ((self.__wallet.onWalletStatusChanged, self.__onWalletStatusChanged),
-                (self.viewModel.onCloseBtnClick, self.__onWindowClose),
-                (self.viewModel.onInHangarClick, self.__onInHangar),
-                (self.viewModel.onCheckboxWithoutCrewChanged, self.__onCheckboxWithoutCrewChanged),
-                (self.viewModel.onBuyBtnClick, self.__onBuyBtnClick),
-                (self.viewModel.onCommanderLvlChange, self.__onCommanderLvlChange),
-                (self.viewModel.onBackClick, self.__onWindowClose),
-                (self.viewModel.onDisclaimerClick, self.__onDisclaimerClick),
-                (equipmentBlock.onSelectTradeOffVehicle, self.__onSelectTradeOffVehicle),
-                (equipmentBlock.onCancelTradeOffVehicle, self.__onCancelTradeOffVehicle),
-                (equipmentBlock.slot.onSelectedChange, self.__onSelectedChange),
-                (equipmentBlock.ammo.onSelectedChange, self.__onSelectedChange),
-                (self.__restore.onRestoreChangeNotify, self.__onRestoreChange),
-                (self.__itemsCache.onSyncCompleted, self.__onItemCacheSyncCompleted),
-                (g_playerEvents.onClientUpdated, self.__onClientUpdated))
+         (self.viewModel.onCloseBtnClick, self.__onWindowClose),
+         (self.viewModel.onInHangarClick, self.__onInHangar),
+         (self.viewModel.onCheckboxWithoutCrewChanged, self.__onCheckboxWithoutCrewChanged),
+         (self.viewModel.onBuyBtnClick, self.__onBuyBtnClick),
+         (self.viewModel.onCommanderLvlChange, self.__onCommanderLvlChange),
+         (self.viewModel.onBackClick, self.__onWindowClose),
+         (self.viewModel.onDisclaimerClick, self.__onDisclaimerClick),
+         (equipmentBlock.onSelectTradeOffVehicle, self.__onSelectTradeOffVehicle),
+         (equipmentBlock.onCancelTradeOffVehicle, self.__onCancelTradeOffVehicle),
+         (equipmentBlock.slot.onSelectedChange, self.__onSelectedChange),
+         (equipmentBlock.ammo.onSelectedChange, self.__onSelectedChange),
+         (self.__restore.onRestoreChangeNotify, self.__onRestoreChange),
+         (self.__itemsCache.onSyncCompleted, self.__onItemCacheSyncCompleted),
+         (g_playerEvents.onClientUpdated, self.__onClientUpdated))
 
     def __addListeners(self):
         self.addListener(ShopEvent.CONFIRM_TRADE_IN, self.__onTradeInConfirmed, EVENT_BUS_SCOPE.LOBBY)
@@ -274,13 +271,13 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             self.__updateTotalPrice()
             return
 
-    @adisp.process
+    @adisp.adisp_process
     def __onInHangar(self, *_):
         event_dispatcher.selectVehicleInHangar(self.__vehicle.intCD)
         self.__startTutorial()
         self.__destroyWindow()
         self.fireEvent(events.CloseWindowEvent(events.CloseWindowEvent.BUY_VEHICLE_VIEW_CLOSED, isAgree=True))
-        if self.prbEntity.getEntityType() == QUEUE_TYPE.MAPS_TRAINING:
+        if self.prbEntity.getQueueType() == QUEUE_TYPE.MAPS_TRAINING:
             yield self.prbDispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.RANDOM))
 
     def __onCheckboxWithoutCrewChanged(self, args):
@@ -460,7 +457,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
                 vm.setBtnLbl(R.strings.store.congratulationAnim.showPreviewBtnLabel())
             return
 
-    @decorators.process('buyItem')
+    @decorators.adisp_process('buyItem')
     def __requestForMoneyObtain(self):
         try:
             self.__soundEventChecker.lockPlayingSounds()
@@ -470,8 +467,8 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             self.__soundEventChecker.unlockPlayingSounds()
             self.__tradeInProgress = False
 
-    @adisp.async
-    @adisp.process
+    @adisp.adisp_async
+    @adisp.adisp_process
     def __requestForMoneyObtainImpl(self, callback):
         equipmentBlock = self.viewModel.equipmentBlock
         isTradeIn = self.__isTradeIn() and self.__tradeInVehicleToSell is not None and not self.__isRentVisible
@@ -835,8 +832,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         if not self.__isWithoutCommander:
             commanderItemPrice = self.__getCommanderPrice(self.__selectedCardIdx)
             price += commanderItemPrice.price
-        if self.viewModel.equipmentBlock.slot.getIsSelected() and not (
-                self.__selectedRentIdx >= 0 and self.__isRentVisible):
+        if self.viewModel.equipmentBlock.slot.getIsSelected() and not (self.__selectedRentIdx >= 0 and self.__isRentVisible):
             vehSlots = self.__stats.vehicleSlots
             price += self.__shop.getVehicleSlotsItemPrice(vehSlots).price
         if self.viewModel.equipmentBlock.ammo.getIsSelected():
@@ -922,8 +918,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         return not self.__isBuying()
 
     def __isBuying(self):
-        return self.__selectedRentIdx in (
-        self.__RENT_UNLIM_IDX, self.__RENT_NOT_SELECTED_IDX) or not self.__isRentVisible
+        return self.__selectedRentIdx in (self.__RENT_UNLIM_IDX, self.__RENT_NOT_SELECTED_IDX) or not self.__isRentVisible
 
     def __startTutorial(self):
         if not self.__vehicle.isCollectible:

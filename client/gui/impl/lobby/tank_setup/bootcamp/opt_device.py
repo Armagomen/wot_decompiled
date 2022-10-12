@@ -8,7 +8,6 @@ from gui.impl.lobby.tank_setup.sub_views.opt_device_setup import OptDeviceSetupS
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
 
-
 class _BootcampSimpleOptDeviceProvider(SimpleOptDeviceProvider):
 
     def _fillStatus(self, model, item, slotID):

@@ -1,11 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/TmenXpPanel.py
+from CurrentVehicle import g_currentVehicle
 from debug_utils import LOG_DEBUG
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.meta.TmenXpPanelMeta import TmenXpPanelMeta
 from gui.shared.gui_items.processors.vehicle import VehicleTmenXPAccelerator
 from gui.shared.utils import decorators
-from CurrentVehicle import g_currentVehicle
+
 
 class TmenXpPanel(TmenXpPanelMeta):
 
@@ -18,7 +19,7 @@ class TmenXpPanel(TmenXpPanelMeta):
         g_currentVehicle.onChanged -= self._onVehicleChange
         super(TmenXpPanel, self)._dispose()
 
-    @decorators.process('updateTankmen')
+    @decorators.adisp_process('updateTankmen')
     def accelerateTmenXp(self, selected):
         vehicle = g_currentVehicle.item
         result = yield VehicleTmenXPAccelerator(vehicle, bool(selected)).request()

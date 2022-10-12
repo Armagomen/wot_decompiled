@@ -21,8 +21,7 @@ class IngameSoundNotifications(CallbackDelayer, TimeDeltaMeter):
     __CIRCUMSTANCES_PATH = 'gui/sound_circumstances.xml'
     __DEFAULT_LIFETIME = 3.0
     __TICK_DELAY = 0.5
-    QueueItem = namedtuple('QueueItem',
-                           ('eventName', 'priority', 'time', 'vehicleID', 'checkFn', 'position', 'boundVehicleID'))
+    QueueItem = namedtuple('QueueItem', ('eventName', 'priority', 'time', 'vehicleID', 'checkFn', 'position', 'boundVehicleID'))
     PlayingEvent = namedtuple('PlayingEvent', ('eventName', 'vehicle', 'position', 'boundVehicle', 'is2D'))
 
     def __init__(self):

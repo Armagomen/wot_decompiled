@@ -9,8 +9,8 @@ import zlib
 import BigWorld
 import GUI
 import constants
-from async import async, await
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
+from wg_async import wg_async, wg_await
 
 import Account
 import AreaDestructibles
@@ -423,10 +423,10 @@ def getAuthRealm():
     return constants.AUTH_REALM
 
 
-@async
+@wg_async
 def requestQuit():
     BigWorld.WGWindowsNotifier.onBattleBeginning()
-    isOk = yield await(dialogs.quitGame())
+    isOk = yield wg_await(dialogs.quitGame())
     if isOk:
         BigWorld.quit()
 

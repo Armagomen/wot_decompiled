@@ -9,18 +9,19 @@ from serialization.exceptions import SerializationException
 
 __all__ = ('ComponentXmlDeserializer',)
 
-
 class ComponentXmlDeserializer(object):
     __slots__ = ('customTypes',)
-
+    
     def __init__(self, customTypes):
         self.customTypes = customTypes
         super(ComponentXmlDeserializer, self).__init__()
 
+    
     def decode(self, itemType, xmlCtx, section):
         obj = self._ComponentXmlDeserializer__decodeCustomType(itemType, xmlCtx, section)
         return obj
 
+    
     def _ComponentXmlDeserializer__decodeCustomType(self, customType, ctx, section):
         cls = self.customTypes[customType]
         instance = cls()
@@ -32,7 +33,9 @@ class ComponentXmlDeserializer(object):
                     editorOnlySection = getEditorOnlySection(section)
                     if editorOnlySection is not None and editorOnlySection.has_key(fname):
                         section = editorOnlySection
-
+                    
+                
+            
         ftype = finfo.type
         if ftype == FieldTypes.VARINT:
             value = section.readInt(fname)
@@ -61,6 +64,7 @@ class ComponentXmlDeserializer(object):
             continue
         return instance
 
+    
     def _ComponentXmlDeserializer__decodeArray(self, itemType, ctx, section):
         result = []
         for (iname, isection) in enumerate(section.items()):
@@ -76,8 +80,11 @@ class ComponentXmlDeserializer(object):
                 result.append(self._ComponentXmlDeserializer__decodeCustomType(customType, ictx, isection))
                 continue
             raise SerializationException('Unsupported item type')
-
+        
         return result
 
+    
     def _ComponentXmlDeserializer__decodeEnum(self, value, enum):
         return decodeEnum(value, enum)[0]
+
+

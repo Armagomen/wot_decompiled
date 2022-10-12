@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/crewOperations/CrewOperationsPopOver.py
 from CurrentVehicle import g_currentVehicle
+from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
@@ -8,23 +9,23 @@ from gui.Scaleform.daapi.view.meta.CrewOperationsPopOverMeta import CrewOperatio
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams, GuiImplViewLoadParams
 from gui.Scaleform.locale.CREW_OPERATIONS import CREW_OPERATIONS
+from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.impl.gen import R
 from gui.impl.lobby.crew_books.crew_books_view import CrewBooksView, CrewBooksLackView
-from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.prb_control import prb_getters
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus, events
 from gui.shared.events import LoadViewEvent
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Tankman import TankmenComparator
 from gui.shared.gui_items.processors.tankman import TankmanReturn
+from gui.shared.utils import decorators
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from helpers import i18n
-from gui.shared.utils import decorators
-from gui import SystemMessages
 from items import tankmen
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+
 OPERATION_RETRAIN = 'retrain'
 OPERATION_RETURN = 'return'
 OPERATION_DROP_IN_BARRACK = 'dropInBarrack'
@@ -176,7 +177,7 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
         tmenBerthsCount = self.itemsCache.items.stats.tankmenBerthsCount
         return berthsNeeded > 0 and berthsNeeded > tmenBerthsCount - len(barracksTmen)
 
-    @decorators.process('crewReturning')
+    @decorators.adisp_process('crewReturning')
     def __processReturnCrew(self):
         result = yield TankmanReturn(g_currentVehicle.item).request()
         if result.userMsg:

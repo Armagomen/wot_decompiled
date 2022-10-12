@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/links.py
 import re
-from gui import macroses
+
+from adisp import adisp_process, adisp_async
 from debug_utils import LOG_ERROR
-from adisp import process, async
+from gui import macroses
+
 
 class URLMacros(object):
     __MACROS_PREFIX = '$'
@@ -34,8 +36,8 @@ class URLMacros(object):
     def hasMarcos(self, url):
         return len(self.__filter.findall(url)) > 0
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def parse(self, url, params=None, callback=lambda *args: None):
         for macros in self.__filter.findall(url):
             macroName, _, args = self.__argsFilter.match(macros).groups()
@@ -44,8 +46,8 @@ class URLMacros(object):
 
         callback(url)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _replace(self, macros, args, params, callback):
         result = ''
         if macros in self.__asyncMacroses:

@@ -15,7 +15,6 @@ from soft_exception import SoftException
 _logger = logging.getLogger(__name__)
 _CACHE_WARNING_GAP_IN_MB = 500
 
-
 def _expectDir(path):
     try:
         if not os.path.exists(path):

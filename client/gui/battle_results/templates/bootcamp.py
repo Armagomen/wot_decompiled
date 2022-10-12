@@ -2,10 +2,10 @@
 # Embedded file name: scripts/client/gui/battle_results/templates/bootcamp.py
 from gui.battle_results.components import base, bootcamp
 _BOOTCAMP_VO_META = base.DictMeta({'background': '',
- 'rewards': {'medals': [],
-             'ribbons': [],
-             'unlocks': []},
- 'hasUnlocks': False,
+                                   'rewards': {'medals': [],
+                                               'ribbons': [],
+                                               'unlocks': []},
+                                   'hasUnlocks': False,
                                    'stats': [],
                                    'resultTypeStr': '',
                                    'finishReasonStr': '',

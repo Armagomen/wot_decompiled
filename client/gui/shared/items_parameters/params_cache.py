@@ -1,32 +1,37 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/items_parameters/params_cache.py
-from collections import namedtuple
 import itertools
 import math
-import typing
 import sys
-from constants import BonusTypes
-from gui.shared.items_parameters import calcGunParams, calcShellParams, getEquipmentParameters, isAutoReloadGun, isDualGun
-from gui.shared.items_parameters import xml_reader
-from gui.shared.utils.decorators import debugTime
+import typing
+from collections import namedtuple
+
 import nations
+from constants import BonusTypes
 from debug_utils import LOG_CURRENT_EXCEPTION
+from gui.shared.items_parameters import calcGunParams, calcShellParams, getEquipmentParameters, isAutoReloadGun, \
+    isDualGun
+from gui.shared.items_parameters import xml_reader
+from gui.shared.utils import GUN_NORMAL, GUN_CAN_BE_CLIP, GUN_CLIP, GUN_CAN_BE_AUTO_RELOAD, GUN_AUTO_RELOAD, \
+    GUN_DUAL_GUN, GUN_CAN_BE_DUAL_GUN
+from gui.shared.utils.decorators import debugTime
 from items import vehicles, ITEM_TYPES, EQUIPMENT_TYPES
 from items.vehicles import getVehicleType
-from gui.shared.utils import GUN_NORMAL, GUN_CAN_BE_CLIP, GUN_CLIP, GUN_CAN_BE_AUTO_RELOAD, GUN_AUTO_RELOAD, GUN_DUAL_GUN, GUN_CAN_BE_DUAL_GUN
 from post_progression_common import ACTION_TYPES
 from soft_exception import SoftException
+
 if typing.TYPE_CHECKING:
-    from items.vehicles import VehicleDescriptor
+    pass
 PrecachedShell = namedtuple('PrecachedShell', 'guns params')
 PrecachedEquipment = namedtuple('PrecachedEquipment', 'nations params')
 PrecachedOptionalDevice = namedtuple('PrecachedOptionalDevice', 'weight nations')
 PrecachedChassis = namedtuple('PrecachedChassis', 'isHydraulic, isWheeled, hasAutoSiege, isTrackWithinTrack')
-PrecachedEngine = namedtuple('PrecachedEngine', 'hasTurboshaftEngine')
+PrecachedEngine = namedtuple('PrecachedEngine', 'hasTurboshaftEngine, hasRocketAcceleration')
 
 class _PrecachedEngineTypes(object):
-    DEFAULT = PrecachedEngine(hasTurboshaftEngine=False)
-    TURBOSHAFT = PrecachedEngine(hasTurboshaftEngine=True)
+    DEFAULT = PrecachedEngine(hasTurboshaftEngine=False, hasRocketAcceleration=False)
+    TURBOSHAFT = PrecachedEngine(hasTurboshaftEngine=True, hasRocketAcceleration=False)
+    ROCKET_ACCELERATION = PrecachedEngine(hasTurboshaftEngine=False, hasRocketAcceleration=True)
 
 
 class _PrecachedChassisTypes(object):
@@ -206,6 +211,9 @@ class _ParamsCache(object):
     def hasTurboshaftEngine(self, itemCD):
         return self.getPrecachedParameters(itemCD).hasTurboshaftEngine
 
+    def hasRocketAcceleration(self, itemCD):
+        return self.getPrecachedParameters(itemCD).hasRocketAcceleration
+
     def getSimplifiedCoefficients(self):
         return self.__simplifiedParamsCoefficients
 
@@ -375,6 +383,8 @@ class _ParamsCache(object):
                     engineCD = vEng.compactDescr
                     if vDescr.hasTurboshaftEngine:
                         cachedEngineByNation[engineCD] = _PrecachedEngineTypes.TURBOSHAFT
+                    elif vDescr.hasRocketAcceleration:
+                        cachedEngineByNation[engineCD] = _PrecachedEngineTypes.ROCKET_ACCELERATION
                     else:
                         cachedEngineByNation[engineCD] = _PrecachedEngineTypes.DEFAULT
                     processedItems.add(engineCD)

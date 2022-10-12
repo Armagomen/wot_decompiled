@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/BrowserView.py
 import BigWorld
-from adisp import process
+from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -13,7 +13,9 @@ from gui.shared import events, EVENT_BUS_SCOPE
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController
 from skeletons.gui.lobby_context import ILobbyContext
+
 from sound_constants import BROWSER_VIEW_SOUND_SPACES
+
 
 def makeBrowserParams(waitingMessage=R.invalid(), isModal=False, isHidden=False, bgAlpha=1.0, isCloseBtnVisible=False):
     if not waitingMessage:
@@ -122,7 +124,7 @@ class BrowserView(LobbySubView, BrowserScreenMeta):
         ctx = self.__ctx
         return ctx.get(name, default) if ctx else default
 
-    @process
+    @adisp_process
     def __loadBrowser(self):
         url = self.__getFromCtx('url')
         if url is not None:

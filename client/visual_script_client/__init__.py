@@ -4,11 +4,11 @@ from constants import IS_UE_EDITOR, IS_VS_EDITOR
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
 
+from contexts.ability_context import AbilityContextClient
 from contexts.cgf_context import CGFGameObjectContext
 from contexts.sound_notifications_context import SoundNotificationsContext
 
 g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.HANGAR)
-
 
 def registerContext():
     g_blockRegistrar.regContext(SoundNotificationsContext)
@@ -32,6 +32,7 @@ def registerForGeneral():
     import hangar_blocks
     import battle_hud_block
     import cgf_blocks
+    import bitmask_blocks
     g_blockRegistrar.regBlocksFromModule(event_platform_blocks)
     g_blockRegistrar.regBlocksFromModule(arena_blocks)
     g_blockRegistrar.regBlocksFromModule(vehicle_blocks)
@@ -44,9 +45,12 @@ def registerForGeneral():
     g_blockRegistrar.regBlocksFromModule(game_settings_blocks)
     g_blockRegistrar.regBlocksFromModule(battle_hud_block)
     g_blockRegistrar.regBlocksFromModule(cgf_blocks)
+    g_blockRegistrar.regBlocksFromModule(bitmask_blocks)
     g_blockRegistrar.regBlocksFromModule(hangar_blocks)
     g_blockRegistrar.regBlocksFromModule(hint_blocks)
 
+
+g_blockRegistrar.regContext(AbilityContextClient)
 
 def registerForUEEditor():
     registerContext()

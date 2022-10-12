@@ -12,7 +12,7 @@ import BigWorld
 import ResMgr
 import constants
 from Event import Event, EventManager
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_WARNING
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_WARNING, LOG_NOTE
 from shared_utils import BitmaskHelper
 
 from helpers import i18n
@@ -551,7 +551,7 @@ class _PreDefinedHostList(object):
         return hosts
 
     def isRoamingPeriphery(self, peripheryID):
-        return peripheryID not in [p.peripheryID for p in self.peripheries()]
+        return peripheryID not in [ p.peripheryID for p in self.peripheries() ]
 
     def setAvailablePeripheriesByRoutingGroup(self, availablePeripheries):
         if availablePeripheries is None:
@@ -564,8 +564,7 @@ class _PreDefinedHostList(object):
 
         return
 
-    def _makeHostItem(self, name, shortName, url, urlToken='', urlIterator=None, keyPath=None, areaID=None,
-                      peripheryID=0):
+    def _makeHostItem(self, name, shortName, url, urlToken='', urlIterator=None, keyPath=None, areaID=None, peripheryID=0):
         if not shortName:
             shortName = name
         return _HostItem(name, shortName, url, urlToken, urlIterator, keyPath, areaID, peripheryID)
@@ -574,15 +573,14 @@ class _PreDefinedHostList(object):
         defAvail = HOST_AVAILABILITY.NOT_AVAILABLE
         csisResGetter = self.__csisResponse.get
         if self.__availablePeripheriesByRoutingGroup:
-            peripheries = [host for host in self.peripheries() if
-                           host.peripheryID in self.__availablePeripheriesByRoutingGroup]
+            peripheries = [ host for host in self.peripheries() if host.peripheryID in self.__availablePeripheriesByRoutingGroup ]
         else:
             peripheries = self.peripheries()
-        queryResult = [(host, self.getHostPingData(host.url).value, csisResGetter(host.peripheryID, defAvail)) for host
-                       in peripheries]
-        self.__recommended = [item for item in queryResult if item[2] == HOST_AVAILABILITY.RECOMMENDED]
+        LOG_NOTE('Peripheries for autoconnect: ', peripheries)
+        queryResult = [ (host, self.getHostPingData(host.url).value, csisResGetter(host.peripheryID, defAvail)) for host in peripheries ]
+        self.__recommended = [ item for item in queryResult if item[2] == HOST_AVAILABILITY.RECOMMENDED ]
         if not self.__recommended:
-            self.__recommended = [item for item in queryResult if item[2] == HOST_AVAILABILITY.NOT_RECOMMENDED]
+            self.__recommended = [ item for item in queryResult if item[2] == HOST_AVAILABILITY.NOT_RECOMMENDED ]
         recommendLen = len(self.__recommended)
         if not recommendLen:
             if queryResult:
@@ -599,6 +597,7 @@ class _PreDefinedHostList(object):
                 self.__recommended = self.__filterRecommendedByPing(self.__recommended)
                 LOG_DEBUG('Recommended by ping', self.__recommended)
             result = self.__choiceFromRecommended()
+        LOG_NOTE('Chosen periphery for autoconnect: ', result)
         return result
 
     def __startCsisTimer(self):

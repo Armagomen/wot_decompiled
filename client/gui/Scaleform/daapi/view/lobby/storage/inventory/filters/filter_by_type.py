@@ -2,10 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/filters/filter_by_type.py
 import copy
 import typing
-from helpers import dependency
-from constants import SwitchState
+
 from account_helpers import AccountSettings
-from adisp import process
+from adisp import adisp_process
+from constants import SwitchState
 from gui import DialogsInterface
 from gui import GUI_NATIONS_ORDER_INDICES
 from gui.Scaleform.daapi.view.dialogs.ConfirmModuleMeta import SellModuleMeta
@@ -20,10 +20,12 @@ from gui.shared.event_dispatcher import showBattleBoosterSellDialog
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from helpers import dependency
 from items import UNDEFINED_ITEM_CD
 from skeletons.gui.lobby_context import ILobbyContext
+
 if typing.TYPE_CHECKING:
-    from typing import Dict, Union, Callable
+    pass
 
 def processFilterEntry(item, field, calculator):
     entry = item.get(field, '')
@@ -44,7 +46,7 @@ class FiltrableInventoryCategoryByTypeTabView(ItemsWithTypeFilterTabViewMeta):
     def setActiveState(self, isActive):
         self.setActive(isActive)
 
-    @process
+    @adisp_process
     def sellItem(self, itemId):
         dataCompactId = int(itemId)
         typeID = self._itemsCache.items.getItemByCD(dataCompactId).itemTypeID if dataCompactId else UNDEFINED_ITEM_CD

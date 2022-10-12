@@ -4,7 +4,6 @@ import GUI
 import math_utils
 from constants import DUAL_GUN
 
-
 class ShadowEffect(object):
 
     def __init__(self):

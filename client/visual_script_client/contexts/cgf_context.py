@@ -28,20 +28,15 @@ class CGFGameObjectContext(VScriptContext):
     def onGameObjectClick(self):
         pass
 
-    @vse_event_out((), display_name='OnHoverIn',
-                   description='Reacts on hover over game object                      (only if go have CollisionComponent, VSEComponent)',
-                   aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
+    @vse_event_out((), display_name='OnHoverIn', description='Reacts on hover over game object                      (only if go have CollisionComponent, VSEComponent)', aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
     def onGameObjectHoverIn(self):
         pass
 
-    @vse_event_out((), display_name='OnHoverOut',
-                   description='Reacts on exit from hover over game object                      (only if go have CollisionComponent, VSEComponent)',
-                   aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
+    @vse_event_out((), display_name='OnHoverOut', description='Reacts on exit from hover over game object                      (only if go have CollisionComponent, VSEComponent)', aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
     def onGameObjectHoverOut(self):
         pass
 
-    @vse_event_out(SLOT_TYPE.STR, display_name='OnTrigger', description='Custom triggered event',
-                   aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
+    @vse_event_out(SLOT_TYPE.STR, display_name='OnTrigger', description='Custom triggered event', aspects=[ASPECT.CLIENT, ASPECT.HANGAR])
     def onTriggerEvent(self, eventName):
         pass
 

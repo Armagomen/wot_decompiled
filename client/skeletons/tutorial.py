@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/tutorial.py
 from __future__ import absolute_import
+
 import typing
+
 if typing.TYPE_CHECKING:
-    from tutorial.data.client_triggers import ClientTriggers
-    from tutorial.gui import IGuiImpl
-    from tutorial.core import Tutorial
     ComponentID = str
 
 class IGuiController(object):
@@ -77,7 +76,7 @@ class IGuiController(object):
     def hideBootcampHint(self, componentID):
         raise NotImplementedError
 
-    def setupViewContextHints(self, viewTutorialID, hintsData):
+    def setupViewContextHints(self, viewTutorialID, hintsData, hintsArgs=None):
         raise NotImplementedError
 
     def overrideHangarMenuButtons(self, buttonsList=None):

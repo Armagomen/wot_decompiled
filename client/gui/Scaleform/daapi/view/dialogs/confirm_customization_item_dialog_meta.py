@@ -1,24 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/confirm_customization_item_dialog_meta.py
 import math
+
 import SoundGroups
 from CurrentVehicle import g_currentVehicle
+from gui import SystemMessages
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.framework import ScopeTemplates
-from gui.shared import events
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
-from helpers import i18n
-from gui import SystemMessages
 from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.shared import events
 from gui.shared.gui_items.processors.common import CustomizationsBuyer
 from gui.shared.money import Currency, CurrencyCollection
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
-from gui.shared.utils.decorators import process
+from gui.shared.utils.decorators import adisp_process
+from helpers import dependency
+from helpers import i18n
 from items.components.c11n_constants import MAX_ITEMS_FOR_BUY_OPERATION
 from skeletons.gui.game_control import ISoundEventChecker
 from skeletons.gui.shared import IItemsCache
-from helpers import dependency
+
 
 class Types(object):
     BUY = 0
@@ -44,7 +46,7 @@ class ConfirmC11nBuyMeta(IDialogMeta):
     def destroy(self):
         pass
 
-    @process('buyItem')
+    @adisp_process('buyItem')
     def submit(self, item, count, _, vehicle):
         try:
             self.__soundEventChecker.lockPlayingSounds()

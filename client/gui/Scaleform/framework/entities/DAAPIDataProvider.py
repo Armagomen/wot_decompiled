@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/framework/entities/DAAPIDataProvider.py
 from abc import ABCMeta, abstractmethod, abstractproperty
+
 from gui.Scaleform.framework.entities.BaseDAAPIModule import BaseDAAPIModule
 from gui.shared.utils import sortByFields
+
 
 class DAAPIDataProvider(BaseDAAPIModule):
     __metaclass__ = ABCMeta
@@ -43,7 +45,9 @@ class DAAPIDataProvider(BaseDAAPIModule):
         return self.pyRequestItemRange(startIndex, endIndex)
 
     def refresh(self):
-        self.flashObject.invalidate(self.pyLength())
+        if self.flashObject is not None:
+            self.flashObject.invalidate(self.pyLength())
+        return
 
     def pyLength(self):
         return len(self.collection)

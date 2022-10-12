@@ -11,7 +11,6 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('PaintComponent',)
 
-
 class PaintComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.PAINT
@@ -26,4 +25,4 @@ class PaintComponent(SerializableComponent):
     def toDict(self):
         at = self.appliedTo
         p = self.id
-        return {i: p for i in ApplyArea.RANGE if i & at}
+        return {i:p for i in ApplyArea.RANGE if i & at}

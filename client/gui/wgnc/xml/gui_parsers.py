@@ -121,9 +121,7 @@ class _BrowserParser(SectionParser):
             handlers = sub.parse(section[sub.getTagName()])
         else:
             handlers = None
-        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section),
-                                     handlers=handlers, hidden=section.readBool('hidden', True),
-                                     topic=section.readWideString('topic', u''))
+        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section), handlers=handlers, hidden=section.readBool('hidden', True), topic=section.readWideString('topic', u''))
 
 
 class _GUIItemsParser(ParsersCollection):

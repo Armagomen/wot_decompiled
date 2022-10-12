@@ -1,23 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/QuestsProgressRequester.py
-import functools
-from collections import namedtuple
 import copy
+import functools
 import logging
 import typing
+from collections import namedtuple
+
 import BigWorld
 import personal_missions
 from account_helpers.AccountSettings import QUEST_DELTAS_PROGRESS, QUEST_DELTAS_COMPLETION
-from adisp import async
+from adisp import adisp_async
 from gui.server_events import events_helpers
-from gui.shared.utils.requesters.quest_deltas_settings import QuestDeltasSettings
-from gui.shared.utils.requesters.token import Token
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from gui.shared.utils.requesters.common import BaseDelta
+from gui.shared.utils.requesters.quest_deltas_settings import QuestDeltasSettings
+from gui.shared.utils.requesters.token import Token
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
+
 if typing.TYPE_CHECKING:
-    from gui.server_events.event_items import Quest
+    pass
 _logger = logging.getLogger(__name__)
 
 class _QuestsProgressRequester(AbstractSyncDataRequester):
@@ -36,7 +38,7 @@ class _QuestsProgressRequester(AbstractSyncDataRequester):
     def getTokensData(self):
         return self.itemsCache.items.tokens.getTokens()
 
-    @async
+    @adisp_async
     def _requestCache(self, callback=None):
         BigWorld.player().questProgress.getCache(lambda resID, value: self._response(resID, value, callback))
 

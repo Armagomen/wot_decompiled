@@ -26,7 +26,6 @@ _SNDID_ACHIEVEMENT = 'result_screen_achievements'
 _SNDID_BONUS = 'result_screen_bonus'
 _AMBIENT_SOUND = 'bc_result_screen_ambient'
 
-
 @loggerTarget(logKey=BC_LOG_KEYS.BC_RESULT_SCREEN, loggerCls=BootcampUILogger)
 class BCBattleResult(BCBattleResultMeta):
     battleResults = dependency.descriptor(IBattleResultsService)

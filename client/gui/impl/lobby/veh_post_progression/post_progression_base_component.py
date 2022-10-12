@@ -11,6 +11,7 @@ from gui.impl.gen.view_models.views.lobby.post_progression.base_step_model impor
 from gui.impl.gen.view_models.views.lobby.post_progression.step_model import ActionState
 from gui.impl.gen.view_models.views.lobby.post_progression.multi_step_model import MultiStepModel
 from gui.impl.gen.view_models.views.lobby.post_progression.single_step_model import SingleStepModel
+from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_grid_model import PostProgressionGridModel
 from gui.impl.pub import ViewImpl
 from gui.shared.items_parameters.functions import aggregateKpi
 from gui.veh_post_progression.models.modifications import PostProgressionActionState, PostProgressionActionTooltip
@@ -18,12 +19,9 @@ from gui.veh_post_progression.models.progression import PostProgressionAvailabil
 from items.components.supply_slot_categories import SlotCategories
 from post_progression_common import ACTION_TYPES, VehicleState
 if typing.TYPE_CHECKING:
-    from gui.veh_post_progression.models.modifications import SimpleModItem
     from gui.veh_post_progression.models.progression import PostProgressionItem
-    from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
     from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
-    from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_base_view_model import PostProgressionBaseViewModel
-    from gui.shared.gui_items import KPI
+    from gui.impl.gen.view_models.views.lobby.post_progression.restrictions_model import RestrictionsModel
 _NOT_SELECTED_IDX = -1
 _ACTION_TYPE_MAP = {ACTION_TYPES.MODIFICATION: ActionType.MODIFICATION,
  ACTION_TYPES.PAIR_MODIFICATION: ActionType.PAIRMODIFICATION,

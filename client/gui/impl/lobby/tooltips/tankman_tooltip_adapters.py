@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tooltips/tankman_tooltip_adapters.py
-import typing
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.tooltips.contexts import NotRecruitedTankmanContext
@@ -57,7 +56,7 @@ class TokenTankmanInfoAdapter(TankmanAdapter):
         return [ backport.image(_IMG_PATH.tankmen.skills.big.dyn(skill)()) for skill in self._getSkills() ]
 
     def _getSkills(self):
-        return self._tankmanInfo.getLearntSkills(multiplyNew=True)
+        return self._tankmanInfo.getAllKnownSkills(multiplyNew=True)
 
 
 class TankmanInfoAdapter(TankmanAdapter):

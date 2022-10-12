@@ -16,10 +16,7 @@ from helpers import i18n
 from personal_missions_constants import CONDITION_ICON
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
-    from typing import Dict, List, Optional, Union
-    from gui.server_events.conditions import _Condition, _Cumulativable, _VehsListCondition
-    from gui.server_events.event_items import ServerEventAbstract
-    from gui.server_events.formatters import PreFormattedCondition, ProgressData
+    pass
 
 class ConditionsFormatter(object):
 
@@ -109,6 +106,20 @@ class SimpleMissionsFormatter(MissionFormatter):
 
     def _packGui(self, condition):
         return packMissionIconCondition(self.getTitle(condition), MISSIONS_ALIASES.NONE, self.getDescription(condition), self._getIconKey(condition), sortKey=self._getSortKey(condition), progressID=condition.progressID)
+
+
+class EmptyMissionsFormatter(SimpleMissionsFormatter):
+
+    def _getDescription(self, condition):
+        return packDescriptionField('')
+
+    @classmethod
+    def _getTitle(cls, *args, **kwargs):
+        return packSimpleTitle('')
+
+    @classmethod
+    def _getIconKey(cls, condition=None):
+        return None
 
 
 class MissionsVehicleListFormatter(MissionFormatter):

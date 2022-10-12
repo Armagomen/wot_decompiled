@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_matters/battle_matters_exchange_rewards_model.py
 from frameworks.wulf import ViewModel
 
-
 class BattleMattersExchangeRewardsModel(ViewModel):
     __slots__ = ()
 

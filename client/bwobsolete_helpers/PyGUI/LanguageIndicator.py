@@ -9,7 +9,6 @@ from PyGUIBase import PyGUIBase
 
 _indicators = []
 
-
 def handleIMEEvent(event):
     global _indicators
     if not event.stateChanged:

@@ -3,7 +3,7 @@
 import logging
 import typing
 
-from adisp import process
+from adisp import adisp_process
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.backport import TooltipData
 from gui.selectable_reward.constants import FEATURE_TO_PREFIX, Features
@@ -33,14 +33,14 @@ class SelectableRewardManager(object):
         return tokenID.startswith(FEATURE_TO_PREFIX.get(cls._FEATURE))
 
     @classmethod
-    @process
+    @adisp_process
     def chooseReward(cls, bonus, giftID, callback):
         offer = cls._getBonusOffer(bonus)
         result = yield cls._SINGLE_GIFT_PROCESSOR(offer.id, giftID, skipConfirm=True).request()
         callback(result)
 
     @classmethod
-    @process
+    @adisp_process
     def chooseRewards(cls, bonusChoices, callback):
         choices = {}
         for bonus, giftIDs in bonusChoices:
@@ -158,9 +158,7 @@ class EpicSelectableRewardManager(SelectableRewardManager):
     @classmethod
     def getTabTooltipData(cls, selectableBonus):
         tokenID = selectableBonus.getValue().keys()[0]
-        return TooltipData(tooltip=None, isSpecial=True,
-                           specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
-                           specialArgs=[_getGiftTokenFromOffer(tokenID)]) if cls.isFeatureReward(tokenID) else None
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP, specialArgs=[_getGiftTokenFromOffer(tokenID)]) if cls.isFeatureReward(tokenID) else None
 
 
 class BattleMattersSelectableRewardManager(SelectableRewardManager):

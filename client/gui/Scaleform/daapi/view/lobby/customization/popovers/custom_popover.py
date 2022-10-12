@@ -33,17 +33,13 @@ class CustomPopover(CustomizationItemsPopoverMeta):
 
     def removeAll(self):
         if self.__isHistoric and self.__isNonHistoric and self.__isFantastical:
-            filterMethod = lambda \
-                item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
         elif self.__isHistoric and self.__isNonHistoric:
-            filterMethod = lambda \
-                item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
+            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
         elif self.__isHistoric and self.__isFantastical:
-            filterMethod = lambda \
-                item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
         elif self.__isNonHistoric and self.__isFantastical:
-            filterMethod = lambda \
-                item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
         elif self.__isHistoric:
             filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL
         elif self.__isNonHistoric:
@@ -91,14 +87,11 @@ class CustomPopover(CustomizationItemsPopoverMeta):
 
     def __setHeader(self):
         outfit = self.__ctx.mode.currentOutfit
-        historicItems = [intCD for intCD in outfit.items() if self.__service.getItemByCD(
-            intCD).customizationDisplayType() == CustomizationDisplayType.HISTORICAL]
+        historicItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.HISTORICAL ]
         historicItemsCount = len(historicItems)
-        nonHistoricItems = [intCD for intCD in outfit.items() if self.__service.getItemByCD(
-            intCD).customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL]
+        nonHistoricItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL ]
         nonHistoricItemsCount = len(nonHistoricItems)
-        fantasticalItems = [intCD for intCD in outfit.items() if self.__service.getItemByCD(
-            intCD).customizationDisplayType() == CustomizationDisplayType.FANTASTICAL]
+        fantasticalItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.FANTASTICAL ]
         fantasticalItemsCount = len(fantasticalItems)
         seasonName = SEASON_TYPE_TO_NAME[self.__ctx.season]
         seasonImage = R.images.gui.maps.icons.customization.items_popover.dyn('{}_back_list'.format(seasonName))

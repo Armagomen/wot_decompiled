@@ -23,9 +23,10 @@ from uilogging.core.session import Session
 if typing.TYPE_CHECKING:
     pass
 
-
 def _ifDestroyed(result=None):
+
     def inner(function):
+
         @wraps(function)
         def wrapper(self, *args, **kwargs):
             if self.destroyed:
@@ -196,29 +197,27 @@ class LogHandler(object):
 
     def _send(self, session, logs, wait=True):
         self._logger.debug('Sending %s logs from player=%s.', len(logs), self._playerID)
-        logs = [_log for _log in logs if session.verifyLog(_log) and self._features.verifyLog(_log)]
+        logs = [ _log for _log in logs if session.verifyLog(_log) and self._features.verifyLog(_log) ]
         self._logger.debug('Filtered logs count: %s.', len(logs))
         if not logs:
             return
         else:
             try:
-                jsonData = json.dumps([_log.toDict() for _log in logs])
+                jsonData = json.dumps([ _log.toDict() for _log in logs ])
                 postData = base64.b64encode(zlib.compress(jsonData.encode('utf-8'), DEFAULT_COMPRESSION_LEVEL))
             except (binascii.Error,
-                    zlib.error,
-                    UnicodeError,
-                    TypeError,
-                    ValueError):
+             zlib.error,
+             UnicodeError,
+             TypeError,
+             ValueError):
                 self._logger.exception('Logs compression failed.')
                 return
 
             headers = {HttpHeaders.CONTENT_TYPE.value: 'application/octet-stream',
-                       HttpHeaders.USER_ID.value: str(self._playerID)}
+             HttpHeaders.USER_ID.value: str(self._playerID)}
             if session.token is not None:
                 headers[HttpHeaders.AUTH_TOKEN.value] = str(session.token)
-            BigWorld.fetchURL(url=session.url,
-                              callback=partial(self._receive, session.id, logs) if wait else (lambda x: x),
-                              headers=headers, timeout=HTTP_DEFAULT_TIMEOUT, method='POST', postData=postData)
+            BigWorld.fetchURL(url=session.url, callback=partial(self._receive, session.id, logs) if wait else (lambda x: x), headers=headers, timeout=HTTP_DEFAULT_TIMEOUT, method='POST', postData=postData)
             return
 
     @_ifDestroyed()

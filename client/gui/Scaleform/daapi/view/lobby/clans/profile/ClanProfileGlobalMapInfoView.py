@@ -1,16 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileGlobalMapInfoView.py
 import weakref
-from adisp import process
-from gui.impl import backport
-from helpers import time_utils
-from helpers.i18n import makeString as _ms
-from gui.clans import items
-from gui.shared.formatters import text_styles
+
+from adisp import adisp_process
 from gui.Scaleform.daapi.view.lobby.clans.profile.clan_statistics_vos import FortGlobalMapStatistics
 from gui.Scaleform.daapi.view.meta.ClanProfileGlobalMapInfoViewMeta import ClanProfileGlobalMapInfoViewMeta
-from gui.Scaleform.locale.CLANS import CLANS
 from gui.Scaleform.genConsts.CLANS_ALIASES import CLANS_ALIASES
+from gui.Scaleform.locale.CLANS import CLANS
+from gui.clans import items
+from gui.impl import backport
+from gui.shared.formatters import text_styles
+from helpers import time_utils
+from helpers.i18n import makeString as _ms
+
 
 class ClanProfileGlobalMapInfoView(ClanProfileGlobalMapInfoViewMeta):
 
@@ -20,7 +22,7 @@ class ClanProfileGlobalMapInfoView(ClanProfileGlobalMapInfoViewMeta):
         self._proxy = None
         return
 
-    @process
+    @adisp_process
     def setProxy(self, proxy, clanDossier):
         self._proxy = weakref.proxy(proxy)
         self._clanDossier = clanDossier

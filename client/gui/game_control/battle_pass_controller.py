@@ -4,10 +4,14 @@ import bisect
 import logging
 from collections import namedtuple
 from itertools import groupby
+
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
-from adisp import process
-from battle_pass_common import BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS, BATTLE_PASS_CONFIG_NAME, BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_PDATA_KEY, BATTLE_PASS_SELECT_BONUS_NAME, BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME, BattlePassConfig, BattlePassConsts, BattlePassState, BattlePassStatsCommon, getBattlePassPassTokenName, getMaxAvalable3DStyleProgressInChapter
+from adisp import adisp_process
+from battle_pass_common import BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS, BATTLE_PASS_CONFIG_NAME, \
+    BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_PDATA_KEY, BATTLE_PASS_SELECT_BONUS_NAME, \
+    BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME, BattlePassConsts, BattlePassState, BattlePassStatsCommon, \
+    getBattlePassPassTokenName, getMaxAvalable3DStyleProgressInChapter
 from constants import ARENA_BONUS_TYPE, OFFERS_ENABLED_KEY, QUEUE_TYPE
 from gui.battle_pass.battle_pass_award import BattlePassAwardsManager, awardsFactory
 from gui.battle_pass.battle_pass_constants import ChapterState
@@ -25,6 +29,7 @@ from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.shared import IItemsCache
+
 _logger = logging.getLogger(__name__)
 TopPoints = namedtuple('TopPoints', ['label', 'winPoint', 'losePoint'])
 BattleRoyaleTopPoints = namedtuple('BattleRoyaleTopPoints', ['label', 'points'])
@@ -305,7 +310,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
     def hasActiveChapter(self):
         return bool(self.getCurrentChapterID())
 
-    @process
+    @adisp_process
     def activateChapter(self, chapterID, seasonID=None):
         yield BattlePassActivateChapterProcessor(chapterID, seasonID or self.getSeasonID()).request()
 
@@ -439,7 +444,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
         diffBlock = diffWinList[0]
         bonus = diffBlock[0]
         top = diffBlock[1]
-        textID = getPointsInfoStringID()
+        textID = getPointsInfoStringID(gameMode)
         return PointsDifference(bonus, top, textID)
 
     def getVehicleProgression(self, intCD):

@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/attributes_helpers.py
+from typing import TYPE_CHECKING
+
 from items import _xml
-from typing import Dict, Tuple, Iterable, List, TYPE_CHECKING
+
 if TYPE_CHECKING:
-    import ResMgr
+    pass
 STATIC_ATTR_PREFIX = 'miscAttrs/'
 DYNAMIC_ATTR_PREFIX = 'dynAttrs/'
 ALLOWED_STATIC_ATTRS = {'additiveShotDispersionFactor',
@@ -43,6 +45,7 @@ ALLOWED_STATIC_ATTRS = {'additiveShotDispersionFactor',
  'increaseEnemySpottingTime',
  'invisibilityBaseAdditive',
  'invisibilityAdditiveTerm',
+ 'invisibilityMultFactor',
  'invisibilityFactorAtShot',
  'maxWeight',
  'multShotDispersionFactor',
@@ -87,7 +90,11 @@ ALLOWED_DYNAMIC_ATTRS = {'additiveShotDispersionFactor',
  'stunResistanceEffect',
  'turret/rotationSpeed',
  'vehicle/maxSpeed',
- 'vehicle/rotationSpeed'}
+ 'vehicle/maxSpeed/forward',
+ 'vehicle/maxSpeed/backward',
+ 'vehicle/rotationSpeed',
+ 'vehicle/bkMaxSpeedBonus',
+ 'vehicle/fwMaxSpeedBonus'}
 ALLOWED_ATTRS = {STATIC_ATTR_PREFIX: ALLOWED_STATIC_ATTRS,
  DYNAMIC_ATTR_PREFIX: ALLOWED_DYNAMIC_ATTRS}
 ALLOWED_ATTR_PREFIXES = set(ALLOWED_ATTRS.keys())

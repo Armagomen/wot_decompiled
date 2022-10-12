@@ -3,7 +3,6 @@
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
 
-
 class UILoggingSessionCtx(CommonWebRequestCtx):
 
     def isAuthorizationRequired(self):

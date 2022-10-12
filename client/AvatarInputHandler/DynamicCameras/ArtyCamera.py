@@ -23,7 +23,6 @@ from helpers.CallbackDelayer import CallbackDelayer
 _SEARCH_COLLISION_DEPTH = 1
 _OFFSET_FROM_NEAR_PLANE = 0.01
 
-
 class Hysteresis(object):
     threshold = property(lambda self: self.__threshold)
 

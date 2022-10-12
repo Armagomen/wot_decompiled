@@ -4,7 +4,6 @@ from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComp
 from gui.impl.lobby.battle_matters.battle_matters_entry_point_view import BattleMattersEntryPointView
 from shared_utils import nextTick
 
-
 class BattleMattersEntryPoint(InjectComponentAdaptor):
 
     @nextTick

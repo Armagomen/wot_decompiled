@@ -1,15 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/ammunition_panel.py
-import async as future_async
+import wg_async as future_async
 from frameworks.wulf import ViewSettings, ViewFlags
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.Scaleform.Waiting import Waiting
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
-from gui.impl.gen.view_models.views.lobby.tank_setup.vehicle_compare_ammunition_panel_model import VehicleCompareAmmunitionPanelModel
+from gui.impl.gen.view_models.views.lobby.tank_setup.vehicle_compare_ammunition_panel_model import \
+    VehicleCompareAmmunitionPanelModel
 from gui.impl.lobby.tank_setup.backports.tooltips import getSlotSpecTooltipData
 from gui.impl.lobby.tank_setup.tank_setup_helper import setLastSlotAction, NONE_ID
 from gui.impl.lobby.vehicle_compare.panel import CompareAmmunitionPanel
@@ -17,6 +18,7 @@ from gui.impl.lobby.vehicle_compare.select_slot_spec_compare_dialog import showD
 from gui.impl.lobby.vehicle_compare.tooltips import getCmpSlotTooltipData
 from gui.impl.pub import ViewImpl
 from gui.shared.event_dispatcher import showCompareAmmunitionSelectorView
+
 
 class CompareAmmunitionPanelView(ViewImpl):
     __slots__ = ('__ammunitionPanel', '__vehItem')
@@ -126,11 +128,11 @@ class CompareAmmunitionPanelView(ViewImpl):
             cmp_helpers.getCmpConfiguratorMainView().swapEquipment(leftID, rightID)
             self.__sendDragAndDropSlotAction(sectionName, self.__vehItem.getItem().consumables.layout, leftID, rightID)
 
-    @future_async.async
+    @future_async.wg_async
     def __onSpecializationSelect(self, *_):
         Waiting.show('loadModalWindow', softStart=True)
         cmpConfiguratorView = cmp_helpers.getCmpConfiguratorMainView()
-        result = yield future_async.await(showDialog(cmpConfiguratorView.getCurrentVehicle()))
+        result = yield future_async.wg_await(showDialog(cmpConfiguratorView.getCurrentVehicle()))
         if result.result[0]:
             cmpConfiguratorView.changeDynRoleSlot(result.result[1])
 

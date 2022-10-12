@@ -222,9 +222,7 @@ class ConcealmentBonus(object):
 
 
 class Customization(FittingItem):
-    __slots__ = (
-    '_boundVehicles', '_bonus', '_installedVehicles', '__noveltyData', '__progressingData', '__installedCount',
-    '__boundInventoryCount', '__fullInventoryCount', '__fullCount', '__questProgressInfo')
+    __slots__ = ('_boundVehicles', '_bonus', '_installedVehicles', '__noveltyData', '__progressingData', '__installedCount', '__boundInventoryCount', '__fullInventoryCount', '__fullCount', '__questProgressInfo')
     _service = dependency.descriptor(ICustomizationService)
     eventsCache = dependency.descriptor(IEventsCache)
 
@@ -438,9 +436,9 @@ class Customization(FittingItem):
             if self.intCD in customizationCache.itemToQuestProgressionStyle:
                 styleDescr = customizationCache.itemToQuestProgressionStyle[self.intCD]
                 qProg = styleDescr.questsProgression
-                hasOtherItemsInChain = False
                 for token in sorted(qProg.getGroupTokens()):
-                    groupItems = qProg.getItemsForGroup(token)
+                    groupItems = filter(bool, qProg.getItemsForGroup(token))
+                    hasOtherItemsInChain = False
                     for level, itemsForLevel in enumerate(groupItems, 1):
                         itemsIdsForType = itemsForLevel.get(self.descriptor.itemType, ())
                         if self.id in itemsIdsForType:
@@ -509,8 +507,7 @@ class Customization(FittingItem):
                 return False
             quest = first(quests)
             tokenCount = self.eventsCache.questsProgress.getTokenCount(self.requiredToken)
-            return False if not (
-                        quest and quest.isAvailable() and self.descriptor.requiredTokenCount == tokenCount + 1) else True
+            return False if not (quest and quest.isAvailable() and self.descriptor.requiredTokenCount == tokenCount + 1) else True
 
     def getUnlockingQuests(self):
         return self._getQuestsForToken() if self.requiredToken else None
@@ -1074,8 +1071,7 @@ class Style(Customization):
 
     def getAlternateItem(self, itemType, itemID):
         itemsOfType = self.descriptor.alternateItems.get(itemType)
-        return self._service.getItemByCD(makeIntCompactDescrByID('customizationItem', itemType,
-                                                                 itemID)) if itemsOfType is not None and itemID in itemsOfType else None
+        return self._service.getItemByCD(makeIntCompactDescrByID('customizationItem', itemType, itemID)) if itemsOfType is not None and itemID in itemsOfType else None
 
     def getDescription(self):
         return self.longDescriptionSpecial or self.fullDescription or self.shortDescriptionSpecial or self.shortDescription
@@ -1212,4 +1208,5 @@ class Style(Customization):
                 _logger.error('Merging outfits of different styles is not allowed. ID1: %s ID2: %s', component.styleId, diffComponent.styleId)
             else:
                 component = component.applyDiff(diffComponent)
+        component = self.descriptor.addPartsToOutfit(season, component, vehicleCD)
         return self.itemsFactory.createOutfit(component=component, vehicleCD=vehicleCD)

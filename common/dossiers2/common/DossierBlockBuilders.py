@@ -8,10 +8,8 @@ from dossiers2.custom.records import RECORDS, RECORD_INDICES, BIT_STORAGES
 
 if typing.TYPE_CHECKING:
     from dossiers2.common.DossierDescr import DossierDescr
-
     EVENT_HANDLERS_TYPE = Iterable[Callable[[DossierDescr, SerializableBlockDescr, [str, Any, Any]], None]]
 _SUPPORTED_FORMATS = frozenset('cbBhHiIlLqQfd')
-
 
 class IBlockBuilderWithRecordsLayout(object):
     name = None
@@ -29,7 +27,7 @@ class StaticSizeBlockBuilder(IBlockBuilderWithRecordsLayout):
         self.__eventsHandlers = eventsHandlers
         self.__popUpRecords = set(popUpRecords)
         self.__logRecords = set(logRecords) if logRecords else popUpRecords
-        self.__layout = layout = [(record, {}) for record in recordsLayout]
+        self.__layout = layout = [ (record, {}) for record in recordsLayout ]
         self.__packing = dict(layout)
         self.__format = '<'
         self.__initialData = initial = {}
@@ -94,8 +92,7 @@ class BinarySetDossierBlockBuilder(IBlockBuilderWithRecordsLayout):
         self.__logRecords = set(logRecords) if logRecords else popUpRecords
 
     def build(self, dossierDescr, compDescr=''):
-        return BinarySetDossierBlockDescr(self.name, dossierDescr, compDescr, self.__eventHandlers, self.__popUpRecords,
-                                          self.recordsLayout, self.__valueToPosition, self.__logRecords)
+        return BinarySetDossierBlockDescr(self.name, dossierDescr, compDescr, self.__eventHandlers, self.__popUpRecords, self.recordsLayout, self.__valueToPosition, self.__logRecords)
 
     def __buildValueToPosition(self, valueNames):
         valToPos = {}
@@ -118,9 +115,7 @@ class SerializableBlockBuilder(IBlockBuilderWithRecordsLayout):
         self.__logRecords = set(logRecords) if logRecords else set(popUpRecords)
 
     def build(self, dossierDescr, compDescr=''):
-        return SerializableBlockDescr(self.name, dossierDescr, self.componentClass, self.parserCallback, compDescr,
-                                      self.__eventHandlers, self.__popUpRecords, self.__logRecords)
+        return SerializableBlockDescr(self.name, dossierDescr, self.componentClass, self.parserCallback, compDescr, self.__eventHandlers, self.__popUpRecords, self.__logRecords)
 
 
-TYPE_BLOCK_BUILDER = Union[
-    StaticSizeBlockBuilder, DictBlockBuilder, ListBlockBuilder, BinarySetDossierBlockBuilder, SerializableBlockBuilder]
+TYPE_BLOCK_BUILDER = Union[StaticSizeBlockBuilder, DictBlockBuilder, ListBlockBuilder, BinarySetDossierBlockBuilder, SerializableBlockBuilder]

@@ -3,6 +3,7 @@
 import itertools
 from collections import namedtuple
 from functools import partial
+
 from WeakMethod import WeakMethodProxy
 from gui.impl import backport
 from gui.impl.gen import R
@@ -19,6 +20,7 @@ from web.web_client_api import Field, W2CSchema, w2c
 from web.web_client_api.common import ShopItemType
 from web.web_client_api.shop import formatters
 from web.web_client_api.shop.crew import ShopCrewCriteria, makeTankman
+
 
 class _PremiumPack(object):
 
@@ -79,7 +81,8 @@ _ITEMS_CRITERIA_MAP = {ShopItemType.VEHICLE: {'inventory': REQ_CRITERIA.INVENTOR
                         'trade_off': REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF,
                         'skip_multinational_copies': REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP,
                         'collectible': REQ_CRITERIA.COLLECTIBLE,
-                        'earn_crystals': REQ_CRITERIA.VEHICLE.EARN_CRYSTALS},
+                        'earn_crystals': REQ_CRITERIA.VEHICLE.EARN_CRYSTALS,
+                        'event_battle': REQ_CRITERIA.VEHICLE.EVENT_BATTLE},
  ShopItemType.CREW: {'premium': ShopCrewCriteria.PREMIUM},
  ShopItemType.EQUIPMENT: {'inventory': REQ_CRITERIA.INVENTORY,
                           'secret': REQ_CRITERIA.SECRET,

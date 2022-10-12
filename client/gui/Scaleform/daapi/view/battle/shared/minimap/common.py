@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/common.py
 from functools import partial
+
 import BigWorld
 from aih_constants import CTRL_MODE_NAME
 from gui.Scaleform.daapi.view.battle.shared.minimap import entries, settings
@@ -8,6 +9,7 @@ from gui.shared.utils.plugins import IPlugin
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 
 class SimplePlugin(IPlugin):
     __slots__ = ('__weakref__', '_arenaVisitor', '_arenaDP', '_ctrlMode', '_ctrlVehicleID')
@@ -90,6 +92,9 @@ class SimplePlugin(IPlugin):
 
     def _isInRespawnDeath(self):
         return self._ctrlMode == CTRL_MODE_NAME.RESPAWN_DEATH
+
+    def _isVehicleSelection(self):
+        return self._ctrlMode == CTRL_MODE_NAME.VEHICLES_SELECTION
 
 
 class EntriesPlugin(SimplePlugin):

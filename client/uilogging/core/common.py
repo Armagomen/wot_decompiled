@@ -13,7 +13,7 @@ def getClientBuildVersion():
 def grouper(iterable, batch):
     args = [iter(iterable)] * batch
     for parts in izip_longest(fillvalue=None, *args):
-        yield [part for part in parts if part is not None]
+        yield [ part for part in parts if part is not None ]
 
     return
 

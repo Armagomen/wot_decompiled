@@ -3,16 +3,16 @@
 import logging
 import typing
 from CurrentVehicle import g_currentVehicle
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import CLIENT_COMMAND_SOURCES
 from gui.Scaleform.daapi.view.lobby.customization.context.customization_mode import CustomizationMode
 from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, CustomizationTabs, customizationSlotIdToUid, CustomizationSlotUpdateVO, getStylePurchaseItems, removeItemFromEditableStyle, fitOutfit, getCurrentVehicleAvailableRegionsMap, getEditableStyleOutfitDiff, removeUnselectedItemsFromEditableStyle
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import C11nId, PurchaseItem
+from gui.customization.shared import C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.processors.common import CustomizationsSeller, OutfitApplier
 from gui.shared.gui_items.processors.vehicle import VehicleAutoStyleEquipProcessor
-from gui.shared.utils.decorators import process as wrappedProcess
+from gui.shared.utils.decorators import adisp_process as wrappedProcess
 from items.components.c11n_constants import SeasonType
 from items.customizations import CustomizationOutfit
 from vehicle_outfit.outfit import Area, Outfit
@@ -23,7 +23,7 @@ from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from items.customizations import parseCompDescr
 if typing.TYPE_CHECKING:
-    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
+    from items.customizations import SerializableComponent
 _logger = logging.getLogger(__name__)
 
 class StyledMode(CustomizationMode):
@@ -179,17 +179,14 @@ class StyledMode(CustomizationMode):
             item = self._service.getItemByCD(intCD)
             serverSettings = self._settingsCore.serverSettings
             if item.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
-                wasVisited = bool(
-                    serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT))
+                wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT))
                 if not wasVisited:
-                    serverSettings.setOnceOnlyHintsSettings(
-                        {OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
-                         OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
+                    serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                     OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
             elif item.isEditable:
                 wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT))
                 if not wasVisited and item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
-                    serverSettings.setOnceOnlyHintsSettings(
-                        {OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
+                    serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
             return False
 
     def _unselectItem(self):
@@ -239,7 +236,7 @@ class StyledMode(CustomizationMode):
             vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
             baseOutfit = self.__modifiedStyle.getOutfit(season, vehicleCD=vehicleCD)
             fitOutfit(baseOutfit, getCurrentVehicleAvailableRegionsMap())
-            removeItemFromEditableStyle(outfit, baseOutfit, slotId)
+            self._modifiedOutfits[season] = removeItemFromEditableStyle(outfit, baseOutfit, slotId, season)
             diff = getEditableStyleOutfitDiff(outfit, baseOutfit)
             self._ctx.stylesDiffsCache.saveDiff(self.__modifiedStyle, season, diff)
             return
@@ -248,8 +245,8 @@ class StyledMode(CustomizationMode):
         super(StyledMode, self)._cancelChanges()
         self.__modifiedStyle = self.__originalStyle
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _applyItems(self, purchaseItems, isModeChanged, callback):
         results = []
         style = self.__modifiedStyle
@@ -282,7 +279,7 @@ class StyledMode(CustomizationMode):
         callback(self)
         return
 
-    @async
+    @adisp_async
     @wrappedProcess('sellItem')
     def _sellItem(self, item, count, callback):
         if item.fullInventoryCount(g_currentVehicle.item.intCD) < count:

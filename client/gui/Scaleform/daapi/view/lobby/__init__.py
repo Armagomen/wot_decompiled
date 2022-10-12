@@ -23,12 +23,14 @@ def getContextMenuHandlers():
     return ((CONTEXT_MENU_HANDLER_TYPE.BATTLE_RESULTS_USER, user_cm_handlers.UserVehicleCMHandler),
      (CONTEXT_MENU_HANDLER_TYPE.BASE_USER, user_cm_handlers.BaseUserCMHandler),
      (CONTEXT_MENU_HANDLER_TYPE.UNIT_USER, UnitUserCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.CUSTOM_USER, user_cm_handlers.CustomUserCMHandler))
+     (CONTEXT_MENU_HANDLER_TYPE.CUSTOM_USER, user_cm_handlers.CustomUserCMHandler),
+     (CONTEXT_MENU_HANDLER_TYPE.COMP_LEADERBOARD_USER, user_cm_handlers.Comp7LeaderboardCMHandler))
 
 
 def getViewSettings():
     from gui.impl.lobby.mapbox.map_box_info_overlay import MapBoxInfoOverlay
     from gui.impl.lobby.battle_pass.battle_pass_browser_view import BattlePassBrowserView
+    from gui.impl.lobby.battle_pass.battle_pass_video_browser_view import BattlePassVideoBrowserView
     from gui.impl.lobby.blueprints.blueprints_exchange_view import BlueprintsExchangeView
     from gui.impl.lobby.resource_well.resource_well_browser_view import ResourceWellBrowserView
     from gui.Scaleform.daapi.view.lobby.SandboxQueueDialog import SandboxQueueDialog
@@ -60,10 +62,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.ModuleInfoWindow import ModuleInfoWindow
     from gui.Scaleform.daapi.view.lobby.PersonalCase import PersonalCase
     from gui.Scaleform.daapi.view.lobby.PromoPremiumIgrWindow import PromoPremiumIgrWindow
-    from gui.Scaleform.daapi.view.lobby.recruitWindow.RecruitParamsComponent import RecruitParamsComponent
     from gui.Scaleform.daapi.view.lobby.recruitWindow.RecruitWindow import RecruitWindow
-    from gui.Scaleform.daapi.view.lobby.recruitWindow.QuestsRecruitWindow import QuestsRecruitWindow
-    from gui.Scaleform.daapi.view.lobby.recruitWindow.token_recruit_window import TokenRecruitWindow
     from gui.Scaleform.daapi.view.lobby.RoleChangeWindow import RoleChangeWindow
     from gui.Scaleform.daapi.view.lobby.ServerStats import ServerStats
     from gui.Scaleform.daapi.view.lobby.shared.web_view import WebView
@@ -116,6 +115,7 @@ def getViewSettings():
      ViewSettings(VIEW_ALIAS.BROWSER_OVERLAY, WebView, 'browserScreen.swf', WindowLayer.FULLSCREEN_WINDOW, VIEW_ALIAS.BROWSER_OVERLAY, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.MAP_BOX_INFO_OVERLAY, MapBoxInfoOverlay, 'browserScreen.swf', WindowLayer.FULLSCREEN_WINDOW, VIEW_ALIAS.MAP_BOX_INFO_OVERLAY, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.BATTLE_PASS_BROWSER_VIEW, BattlePassBrowserView, 'browserScreen.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.BATTLE_PASS_BROWSER_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
+     ViewSettings(VIEW_ALIAS.BATTLE_PASS_VIDEO_BROWSER_VIEW, BattlePassVideoBrowserView, 'browserScreen.swf', WindowLayer.FULLSCREEN_WINDOW, VIEW_ALIAS.BATTLE_PASS_VIDEO_BROWSER_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.WOT_PLUS_INFO_VIEW, WotPlusInfoView, 'browserScreen.swf', WindowLayer.FULLSCREEN_WINDOW, VIEW_ALIAS.WOT_PLUS_INFO_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.VEHICLE_RENTAL_VIEW, VehicleRentalView, 'browserScreen.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.VEHICLE_RENTAL_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.TELECOM_RENTAL_VIEW, VehicleTelecomRentalView, 'browserScreen.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.TELECOM_RENTAL_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -148,8 +148,6 @@ def getViewSettings():
      GroupedViewSettings(VIEW_ALIAS.GOODIE_INFO_WINDOW, GoodieInfoWindow, 'goodieInfo.swf', WindowLayer.WINDOW, VIEW_ALIAS.GOODIE_INFO_WINDOW, None, ScopeTemplates.DEFAULT_SCOPE),
      ConditionalViewSettings(VIEW_ALIAS.PERSONAL_CASE, BootcampComponentOverride(PersonalCase, BCPersonalCase), 'personalCase.swf', WindowLayer.WINDOW, 'personalCaseWindow', None, ScopeTemplates.LOBBY_SUB_SCOPE),
      GroupedViewSettings(VIEW_ALIAS.PROMO_PREMIUM_IGR_WINDOW, PromoPremiumIgrWindow, 'promoPremiumIgrWindow.swf', WindowLayer.TOP_WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canDrag=False),
-     GroupedViewSettings(VIEW_ALIAS.QUESTS_RECRUIT_WINDOW, QuestsRecruitWindow, 'questRecruitWindow.swf', WindowLayer.WINDOW, 'questRecruitWindow', None, ScopeTemplates.DEFAULT_SCOPE),
-     GroupedViewSettings(VIEW_ALIAS.TOKEN_RECRUIT_WINDOW, TokenRecruitWindow, 'questRecruitWindow.swf', WindowLayer.WINDOW, 'questRecruitWindow', None, ScopeTemplates.DEFAULT_SCOPE),
      GroupedViewSettings(VIEW_ALIAS.ROLE_CHANGE, RoleChangeWindow, 'roleChangeWindow.swf', WindowLayer.WINDOW, 'roleChangeWindow', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canDrag=False),
      GroupedViewSettings(VIEW_ALIAS.TANKMAN_SKILLS_DROP_WINDOW, SkillDropWindow, 'skillDropWindow.swf', WindowLayer.WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canDrag=False),
      ConditionalViewSettings(VIEW_ALIAS.VEHICLE_BUY_WINDOW, BootcampComponentOverride(VehicleBuyWindow, BCVehicleBuyWindow), BootcampComponentOverride('vehicleBuyWindow.swf', 'BCVehicleBuyWindow.swf'), WindowLayer.TOP_WINDOW, 'vehicleBuyWindow', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canDrag=False),
@@ -166,7 +164,6 @@ def getViewSettings():
      ComponentSettings(VIEW_ALIAS.MINIMAP_LOBBY, MinimapLobby, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.MINIMAP_GRID, MinimapGrid, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.MINI_CLIENT_LINKED, MiniClientComponentMeta, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(VIEW_ALIAS.RECRUIT_PARAMS, RecruitParamsComponent, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.SERVERS_STATS, ServerStats, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.BROWSER, Browser, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.BOOTCAMP_PROGRESS, BootcampProgressComponent, ScopeTemplates.DEFAULT_SCOPE))
@@ -180,65 +177,64 @@ class LobbyPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
         listeners = ((VIEW_ALIAS.ADVENT_CALENDAR, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.AWARD_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.AWARD_WINDOW_MODAL, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BATTLE_QUEUE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BATTLE_STRONGHOLDS_QUEUE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BATTLE_RESULTS, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BROWSER_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BROWSER_WINDOW_MODAL, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BROWSER_OVERLAY, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.MAP_BOX_INFO_OVERLAY, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BATTLE_PASS_BROWSER_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.DEMONSTRATOR_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.GOLD_FISH_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.LOBBY, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.LOBBY_VEHICLE_MARKER_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.LOBBY_CUSTOMIZATION, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.WOT_PLUS_INFO_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_RENTAL_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.TELECOM_RENTAL_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BLUEPRINTS_EXCHANGE_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.STYLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.STYLE_PROGRESSION_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.IMAGE_VIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_COMPARE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_COMPARE_MAIN_CONFIGURATOR, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.LOBBY_MENU, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.MODULE_INFO_WINDOW, self.__moduleWindowHandler),
-                     (VIEW_ALIAS.BOOSTER_INFO_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.GOODIE_INFO_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.PERSONAL_CASE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.PROMO_PREMIUM_IGR_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.QUESTS_RECRUIT_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.TOKEN_RECRUIT_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.ROLE_CHANGE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.TANKMAN_SKILLS_DROP_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_BUY_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_RESTORE_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_SELL_DIALOG, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.VEHICLE_INFO_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.SANDBOX_QUEUE_DIALOG, self.loadViewBySharedEvent),
-                     (VIEW_ALIAS.MISSION_AWARD_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.ACOUSTIC_POPOVER, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.TRADEIN_POPOVER, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.CLAN_NOTIFICATION_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BADGES_PAGE, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.UNBOUND_INJECT_WINDOW, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.BATTLE_PASS_BADGES_DEMO, self.loadViewByCtxEvent),
-                     (VIEW_ALIAS.RESOURCE_WELL_BROWSER_VIEW, self.loadViewByCtxEvent))
+         (VIEW_ALIAS.AWARD_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.AWARD_WINDOW_MODAL, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_QUEUE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_STRONGHOLDS_QUEUE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_RESULTS, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BROWSER_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BROWSER_WINDOW_MODAL, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BROWSER_OVERLAY, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.MAP_BOX_INFO_OVERLAY, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_PASS_BROWSER_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_PASS_VIDEO_BROWSER_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.DEMONSTRATOR_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.GOLD_FISH_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.LOBBY, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.LOBBY_VEHICLE_MARKER_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.LOBBY_CUSTOMIZATION, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.WOT_PLUS_INFO_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_RENTAL_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.TELECOM_RENTAL_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BLUEPRINTS_EXCHANGE_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_PROGRESSION_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.IMAGE_VIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_COMPARE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_COMPARE_MAIN_CONFIGURATOR, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.LOBBY_MENU, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.MODULE_INFO_WINDOW, self.__moduleWindowHandler),
+         (VIEW_ALIAS.BOOSTER_INFO_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.GOODIE_INFO_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.PERSONAL_CASE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.PROMO_PREMIUM_IGR_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.ROLE_CHANGE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.TANKMAN_SKILLS_DROP_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_BUY_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_RESTORE_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_SELL_DIALOG, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_INFO_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.SANDBOX_QUEUE_DIALOG, self.loadViewBySharedEvent),
+         (VIEW_ALIAS.MISSION_AWARD_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.ACOUSTIC_POPOVER, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.TRADEIN_POPOVER, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.CLAN_NOTIFICATION_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BADGES_PAGE, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.UNBOUND_INJECT_WINDOW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.BATTLE_PASS_BADGES_DEMO, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.RESOURCE_WELL_BROWSER_VIEW, self.loadViewByCtxEvent))
         super(LobbyPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)
 
     def __moduleWindowHandler(self, event):

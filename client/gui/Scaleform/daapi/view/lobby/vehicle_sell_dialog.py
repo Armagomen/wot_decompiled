@@ -32,14 +32,7 @@ from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
-    from typing import List, Set, Iterator, Optional, Tuple, Dict, Union, Any
-    from gui.shared.gui_items.fitting_item import FittingItem
-    from gui.shared.gui_items.Vehicle import Vehicle
-    from gui.shared.gui_items.artefacts import OptionalDevice, BattleBooster
-    from gui.shared.gui_items.vehicle_modules import Shell
-    from gui.shared.gui_items.customization.c11n_items import Customization
     from gui.shared.gui_items.gui_item import GUIItem
-    from gui.shared.gui_items.gui_item_economics import ItemPrice
     from gui.shared.money import Money
 _DK_CURRENCY = GOODIE_VARIETY.DEMOUNT_KIT_NAME
 _SETTINGS_KEY = 'vehicleSellDialog'
@@ -439,7 +432,7 @@ class VehicleSellDialog(VehicleSellDialogMeta):
 
         return False
 
-    @decorators.process('sellVehicle')
+    @decorators.adisp_process('sellVehicle')
     def __doSellVehicle(self, vehicle, shells, eqs, optDevicesToSell, inventory, customizationItems, isDismissCrew, itemsForDemountKit, boosters):
         vehicleSeller = VehicleSeller(vehicle, shells, eqs, optDevicesToSell, inventory, customizationItems, boosters, isDismissCrew, itemsForDemountKit)
         currentMoneyGold = self.__itemsCache.items.stats.money.get(Currency.GOLD, 0)

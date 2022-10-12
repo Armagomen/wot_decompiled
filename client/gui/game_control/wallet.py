@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/wallet.py
 import logging
+
 import BigWorld
 import Event
 import constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
-from adisp import process
+from adisp import adisp_process
 from gui import SystemMessages, DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.dialogs.FreeXPInfoDialogMeta import FreeXPInfoMeta
@@ -18,6 +19,7 @@ from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
+
 _logger = logging.getLogger(__name__)
 
 class WalletController(IWalletController):
@@ -184,7 +186,7 @@ class ShowXPInfoDialogAspect(Aspect):
         super(ShowXPInfoDialogAspect, self).__init__()
         self.callback = callBack
 
-    @process
+    @adisp_process
     def atCall(self, cd):
         defaults = AccountSettings.getFilterDefault(GUI_START_BEHAVIOR)
         filters = self.settingsCore.serverSettings.getSection(GUI_START_BEHAVIOR, defaults)

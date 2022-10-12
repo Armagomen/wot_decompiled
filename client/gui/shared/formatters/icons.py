@@ -1,11 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/formatters/icons.py
 from gui import makeHtmlString
+from gui.Scaleform.genConsts.COMPONENTS import COMPONENTS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.money import Currency
 from gui.shared.utils.functions import getAbsoluteUrl
-from gui.Scaleform.genConsts.COMPONENTS import COMPONENTS
+
 __all__ = ('noSeason', 'swords', 'alert', 'arrow', 'xp', 'notAvailable', 'notAvailableRed', 'checkmark', 'info', 'premiumIgrBig', 'premiumIgrSmall', 'freeXP', 'nut', 'clock', 'makeImageTag', 'getRoleIcon') + Currency.ALL
 _IMG_TAG_TPL = "<img src='{0}' width='{1}' height='{2}' vspace='{3}' hspace='{4}'/>"
 
@@ -58,6 +59,10 @@ def creditsBig():
     return _getIcon('creditsBig')
 
 
+def creditsExtraBig():
+    return _getIcon('creditsExtraBig')
+
+
 def notAvailable():
     return _getIcon('notAvailable')
 
@@ -94,6 +99,10 @@ def freeXP():
     return _getIcon('freeXP')
 
 
+def freeXPExtraBig():
+    return _getIcon('freeXPExtraBig')
+
+
 def xpCost():
     return _getIcon('xpCost')
 
@@ -110,12 +119,20 @@ def goldBig():
     return _getIcon('goldBig')
 
 
+def goldExtraBig():
+    return _getIcon('goldExtraBig')
+
+
 def crystal():
     return _getIcon(Currency.CRYSTAL)
 
 
 def crystalBig():
     return _getIcon('crystalBig')
+
+
+def crystalExtraBig():
+    return _getIcon('crystalExtraBig')
 
 
 def eventCoin():
@@ -190,6 +207,10 @@ def starYellow(vspace=-4):
     return _getIcon('starYellow', vspace=vspace)
 
 
+def webLink():
+    return _getIcon('webLink')
+
+
 def makeImageTag(source, width=16, height=16, vSpace=-4, hSpace=0):
     return _IMG_TAG_TPL.format(getAbsoluteUrl(source), width, height, vSpace, hSpace)
 
@@ -204,3 +225,8 @@ def getRoleIcon(role, vSpace=-6, width=24, height=24):
 def lightning(vSpace=-4):
     source = backport.image(R.images.gui.maps.icons.library.lightning())
     return makeImageTag(source, width=10, height=16, vSpace=vSpace)
+
+
+def serverBlockerIcon():
+    source = backport.image(R.images.gui.maps.icons.library.blocker())
+    return makeImageTag(source, width=14, height=14, vSpace=-3)

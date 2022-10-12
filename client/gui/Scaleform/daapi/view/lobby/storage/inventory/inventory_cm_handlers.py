@@ -1,6 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/inventory_cm_handlers.py
-from adisp import process
+from adisp import adisp_process
 from gui import DialogsInterface, shop
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs.ConfirmModuleMeta import SellModuleMeta
@@ -13,8 +13,9 @@ from gui.shared.gui_items.items_actions import factory as ItemsActionsFactory
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
 from items import UNDEFINED_ITEM_CD
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+
 _SOURCE = shop.Source.EXTERNAL
 _ORIGIN = shop.Origin.STORAGE
 
@@ -27,7 +28,7 @@ class ModulesShellsCMHandler(ContextMenu):
         shared_events.showStorageModuleInfo(self._id)
 
     @option(__sqGen.next(), CMLabel.SELL)
-    @process
+    @adisp_process
     def sell(self):
         yield DialogsInterface.showDialog(SellModuleMeta(self._id))
 
@@ -62,7 +63,7 @@ class _ArmingCMHandler(ContextMenu):
         shared_events.showStorageModuleInfo(self._id)
 
     @option(_sqGen.next(), CMLabel.SELL)
-    @process
+    @adisp_process
     def sell(self):
         yield DialogsInterface.showDialog(SellModuleMeta(self._id))
 
@@ -166,7 +167,7 @@ class DemountKitsCMHandler(ContextMenu):
         shared_events.showGoodieInfo(self._id)
 
     @option(__sqGen.next(), CMLabel.SELL)
-    @process
+    @adisp_process
     def sell(self):
         raise NotImplementedError
 
@@ -189,7 +190,7 @@ class RecertificationFormsCMHandler(ContextMenu):
         shared_events.showGoodieInfo(self._id)
 
     @option(__sqGen.next(), CMLabel.SELL)
-    @process
+    @adisp_process
     def sell(self):
         raise NotImplementedError
 

@@ -3,6 +3,7 @@
 import logging
 from functools import partial
 from operator import itemgetter
+
 import SoundGroups
 from PlayerEvents import g_playerEvents
 from account_helpers.AccountSettings import AccountSettings, LAST_BATTLE_PASS_POINTS_SEEN
@@ -11,18 +12,23 @@ from battle_pass_common import BattlePassConsts, CurrencyBP, FinalReward
 from frameworks.wulf import Array, ViewFlags, ViewSettings, ViewStatus
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import getVehicleCDForStyle
-from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBattlePassCoinProductsUrl, getBattlePassPointsProductsUrl
+from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBattlePassCoinProductsUrl, \
+    getBattlePassPointsProductsUrl
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
-from gui.battle_pass.battle_pass_bonuses_packers import changeBonusTooltipData, packBonusModelAndTooltipData, packSpecialTooltipData
+from gui.battle_pass.battle_pass_bonuses_packers import changeBonusTooltipData, packBonusModelAndTooltipData, \
+    packSpecialTooltipData
 from gui.battle_pass.battle_pass_constants import ChapterState, MIN_LEVEL
 from gui.battle_pass.battle_pass_decorators import createBackportTooltipDecorator, createTooltipContentDecorator
-from gui.battle_pass.battle_pass_helpers import chaptersIDsComparator, getDataByTankman, getExtraInfoPageURL, getFormattedTimeLeft, getInfoPageURL, getIntroVideoURL, getStyleForChapter, getTankmanInfo, isSeasonEndingSoon, updateBuyAnimationFlag
+from gui.battle_pass.battle_pass_helpers import chaptersIDsComparator, getDataByTankman, getExtraInfoPageURL, \
+    getFormattedTimeLeft, getInfoPageURL, getIntroVideoURL, getStyleForChapter, getTankmanInfo, isSeasonEndingSoon, \
+    updateBuyAnimationFlag
 from gui.impl import backport
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_progressions_view_model import BattlePassProgressionsViewModel, ButtonStates, ChapterStates
+from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_progressions_view_model import \
+    BattlePassProgressionsViewModel, ButtonStates, ChapterStates
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_level_model import RewardLevelModel
 from gui.impl.gen.view_models.views.lobby.vehicle_preview.top_panel.top_panel_tabs_model import TabID
 from gui.impl.pub import ViewImpl
@@ -30,7 +36,9 @@ from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.server_events.events_dispatcher import showMissionsBattlePass
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.shared.event_dispatcher import showBattlePassBuyLevelWindow, showBattlePassBuyWindow, showBattlePassHowToEarnPointsView, showBattlePassStyleProgressionPreview, showBrowserOverlayView, showHangar, showShop, showStylePreview
+from gui.shared.event_dispatcher import showBattlePassBuyLevelWindow, showBattlePassBuyWindow, \
+    showBattlePassHowToEarnPointsView, showBattlePassStyleProgressionPreview, showBrowserOverlayView, showHangar, \
+    showShop, showStylePreview
 from gui.shared.formatters.time_formatters import formatDate
 from gui.shared.utils.scheduled_notifications import Notifiable, PeriodicNotifier, SimpleNotifier
 from helpers import dependency, int2roman, time_utils
@@ -41,6 +49,7 @@ from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
 from tutorial.control.game_vars import getVehicleByIntCD
 from web.web_client_api.common import ItemPackEntry, ItemPackType
+
 _logger = logging.getLogger(__name__)
 _bpRes = R.strings.battle_pass
 _CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
@@ -121,7 +130,7 @@ class BattlePassProgressionsView(ViewImpl):
 
     def _getListeners(self):
         return ((events.MissionsEvent.ON_TAB_CHANGED, self.__onMissionsTabChanged, EVENT_BUS_SCOPE.LOBBY),
-         (events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose),
+         (events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose, EVENT_BUS_SCOPE.LOBBY),
          (events.BattlePassEvent.ON_PURCHASE_LEVELS, self.__onPurchaseLevels, EVENT_BUS_SCOPE.LOBBY),
          (events.BattlePassEvent.BUYING_THINGS, self.__updateBuyButtonState, EVENT_BUS_SCOPE.LOBBY))
 
@@ -129,7 +138,7 @@ class BattlePassProgressionsView(ViewImpl):
         return (('stats.bpcoin', self.__updateBalance),)
 
     def _onLoading(self, *args, **kwargs):
-        super(BattlePassProgressionsView, self)._onLoading()
+        super(BattlePassProgressionsView, self)._onLoading(*args, **kwargs)
         self.__notifier = Notifiable()
         self.__notifier.addNotificator(PeriodicNotifier(self.__battlePass.getSeasonTimeLeft, self.__updateTimer))
         self.__notifier.addNotificator(SimpleNotifier(self.__battlePass.getFinalOfferTimeLeft, self.__updateTimer))
@@ -427,7 +436,7 @@ class BattlePassProgressionsView(ViewImpl):
         for view in self.__gui.windowsManager.findViews(__isValidSubView):
             view.destroyWindow()
 
-    def __onAwardViewClose(self):
+    def __onAwardViewClose(self, *_):
         self.__setShowBuyAnimations()
 
     def __onBattlePassSettingsChange(self, *_):

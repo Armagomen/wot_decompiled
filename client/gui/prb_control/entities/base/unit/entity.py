@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/base/unit/entity.py
-from typing import TYPE_CHECKING
 import cgi
 import time
+from typing import TYPE_CHECKING
+
 import BigWorld
 import account_helpers
-from ClientUnit import ClientUnit
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
 from UnitBase import UNIT_SLOT, INV_ID_CLEAR_VEHICLE, UNIT_ROLE
@@ -14,9 +14,8 @@ from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui.Scaleform.daapi.view.dialogs import rally_dialog_meta
 from gui.prb_control import prb_getters, settings
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
-from gui.prb_control.entities.base.actions_validator import NotSupportedActionsValidator
-from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.entities.base import lobbyHeaderNavigationPossibleCheck
+from gui.prb_control.entities.base.actions_validator import NotSupportedActionsValidator
 from gui.prb_control.entities.base.entity import BasePrbEntity, BasePrbEntryPoint
 from gui.prb_control.entities.base.unit.actions_handler import UnitActionsHandler
 from gui.prb_control.entities.base.unit.actions_validator import UnitActionsValidator
@@ -26,6 +25,7 @@ from gui.prb_control.entities.base.unit.listener import IUnitListener, IUnitIntr
 from gui.prb_control.entities.base.unit.permissions import IUnitPermissions, UnitIntroPermissions, UnitPermissions
 from gui.prb_control.entities.base.unit.requester import UnitRequestProcessor
 from gui.prb_control.entities.base.unit.vehicles_watcher import UnitVehiclesWatcher
+from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.items import unit_items, ValidationResult
 from gui.prb_control.items.unit_items import DynamicRosterSettings
 from gui.prb_control.settings import FUNCTIONAL_FLAG, CTRL_ENTITY_TYPE
@@ -38,8 +38,9 @@ from messenger.ext import passCensor
 from shared_utils import findFirst
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
+
 if TYPE_CHECKING:
-    from typing import Iterator as TIterator
+    pass
 
 class BaseUnitEntity(BasePrbEntity):
 
@@ -83,6 +84,9 @@ class BaseUnitEntity(BasePrbEntity):
         return (unit_items.SlotInfo(-1, self.getSlotState(-1)),)
 
     def getPlayers(self, unitMgrID=None):
+        return {}
+
+    def getMembers(self, unitMgrID=None):
         return {}
 
     def getCandidates(self, unitMgrID=None):
@@ -611,6 +615,18 @@ class UnitEntity(_UnitEntity):
             players = unit.getPlayers()
             for dbID, data in players.iteritems():
                 result[dbID] = self._buildPlayerInfo(unitMgrID, unit, dbID, slotGetter(dbID), data)
+
+            return result
+
+    def getMembers(self, unitMgrID=None):
+        result = {}
+        unitMgrID, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
+        if unit is None:
+            return super(UnitEntity, self).getMembers(unitMgrID=unitMgrID)
+        else:
+            for member in unit.getMembers().itervalues():
+                dbID = member['accountDBID']
+                result[dbID] = self.getPlayerInfo(dbID, unitMgrID)
 
             return result
 

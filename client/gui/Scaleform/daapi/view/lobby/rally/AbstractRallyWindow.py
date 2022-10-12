@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/AbstractRallyWindow.py
-from adisp import process
+from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.meta.AbstractRallyWindowMeta import AbstractRallyWindowMeta
 from gui.prb_control.entities.base.ctx import LeavePrbAction, PrbAction
 from gui.prb_control.entities.base.listener import IPrbListener
-from gui.shared.events import RallyWindowEvent
 from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.events import RallyWindowEvent
+
 
 class AbstractRallyWindow(AbstractRallyWindowMeta, IPrbListener):
 
@@ -63,11 +64,11 @@ class AbstractRallyWindow(AbstractRallyWindowMeta, IPrbListener):
         super(AbstractRallyWindow, self)._dispose()
         return
 
-    @process
+    @adisp_process
     def _doLeave(self, isExit=True):
         yield self.prbDispatcher.doLeaveAction(LeavePrbAction(isExit=isExit))
 
-    @process
+    @adisp_process
     def _doSelect(self, prebattleActionName, accountsToInvite=None):
         yield self.prbDispatcher.doSelectAction(PrbAction(prebattleActionName, accountsToInvite=accountsToInvite))
 

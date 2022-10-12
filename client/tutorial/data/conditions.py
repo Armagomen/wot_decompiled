@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/data/conditions.py
 import functools
+
 from tutorial.data.has_id import HasID
+
 __all__ = ('CONDITION_TYPE', 'CONDITION_STATE', 'FlagCondition', 'GlobalFlagCondition', 'WindowOnSceneCondition', 'VarDefinedCondition', 'VarCompareCondition', 'EffectTriggeredCondition', 'GameItemSimpleStateCondition', 'GameItemRelateStateCondition', 'BonusReceivedCondition', 'Conditions')
 
 class CONDITION_TYPE(object):
@@ -94,7 +96,7 @@ class CONDITION_STATE(object):
     LEVEL = _StateValue(9)
     MAY_INSTALL = _StateValue(10)
     INSTALLED = _StateValue(11)
-    CREW_HAS_SKILL = _StateValue(12)
+    CREW_HAS_ANY_SKILL = _StateValue(12)
     HAS_REGULAR_CONSUMABLES = _StateValue(13)
     HAS_OPTIONAL_DEVICES = _StateValue(14)
     RANGE = (UNDEFINED,
@@ -109,7 +111,7 @@ class CONDITION_STATE(object):
      LEVEL,
      MAY_INSTALL,
      INSTALLED,
-     CREW_HAS_SKILL,
+     CREW_HAS_ANY_SKILL,
      HAS_REGULAR_CONSUMABLES,
      HAS_OPTIONAL_DEVICES)
     GAME_ITEM_SIMPLE_STATE = (SELECTED,
@@ -123,7 +125,7 @@ class CONDITION_STATE(object):
      LEVEL,
      MAY_INSTALL,
      INSTALLED,
-     CREW_HAS_SKILL)
+     CREW_HAS_ANY_SKILL)
 
 
 class Condition(HasID):

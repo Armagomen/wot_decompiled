@@ -4,7 +4,6 @@ from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.intermediate_quest_model import IntermediateQuestModel
 
-
 class QuestProgressModel(ViewModel):
     __slots__ = ()
 

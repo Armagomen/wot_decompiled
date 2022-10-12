@@ -15,30 +15,25 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('ProjectionDecalComponent',)
 
-
 class ProjectionDecalComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.PROJECTION_DECAL
     fields = OrderedDict((('id', intField()),
-                          ('options', optionsEnumField(Options.NONE)),
-                          ('slotId', intField(0)),
-                          ('scaleFactorId', intField(DEFAULT_SCALE_FACTOR_ID)),
-                          ('showOn', xmlOnlyApplyAreaEnumField(ApplyArea.NONE, FieldFlags.SAVE_AS_STRING)),
-                          ('scale', xmlOnlyFloatArrayField()),
-                          ('rotation', xmlOnlyFloatArrayField()),
-                          ('position', xmlOnlyFloatArrayField()),
-                          ('tintColor', intArrayField(flags=FieldFlags.NON_BIN if not IS_EDITOR else FieldFlags.NONE)),
-                          ('doubleSided', xmlOnlyIntField(0)),
-                          ('tags', xmlOnlyTagsField(())),
-                          ('preview', xmlOnlyIntField(0)),
-                          ('progressionLevel', intField(0))))
-    __slots__ = (
-    'id', 'options', 'slotId', 'scaleFactorId', 'showOn', 'scale', 'rotation', 'position', 'tintColor', 'doubleSided',
-    'tags', 'preview', 'progressionLevel')
+     ('options', optionsEnumField(Options.NONE)),
+     ('slotId', intField(0)),
+     ('scaleFactorId', intField(DEFAULT_SCALE_FACTOR_ID)),
+     ('showOn', xmlOnlyApplyAreaEnumField(ApplyArea.NONE, FieldFlags.SAVE_AS_STRING)),
+     ('scale', xmlOnlyFloatArrayField()),
+     ('rotation', xmlOnlyFloatArrayField()),
+     ('position', xmlOnlyFloatArrayField()),
+     ('tintColor', intArrayField(flags=FieldFlags.NON_BIN if not IS_EDITOR else FieldFlags.NONE)),
+     ('doubleSided', xmlOnlyIntField(0)),
+     ('tags', xmlOnlyTagsField(())),
+     ('preview', xmlOnlyIntField(0)),
+     ('progressionLevel', intField(0))))
+    __slots__ = ('id', 'options', 'slotId', 'scaleFactorId', 'showOn', 'scale', 'rotation', 'position', 'tintColor', 'doubleSided', 'tags', 'preview', 'progressionLevel')
 
-    def __init__(self, id=0, options=Options.NONE, slotId=0, scaleFactorId=DEFAULT_SCALE_FACTOR_ID,
-                 showOn=ApplyArea.NONE, scale=DEFAULT_SCALE, rotation=DEFAULT_ROTATION, position=DEFAULT_POSITION,
-                 tintColor=DEFAULT_DECAL_TINT_COLOR, doubleSided=0, tags=None, preview=False, progressionLevel=0):
+    def __init__(self, id=0, options=Options.NONE, slotId=0, scaleFactorId=DEFAULT_SCALE_FACTOR_ID, showOn=ApplyArea.NONE, scale=DEFAULT_SCALE, rotation=DEFAULT_ROTATION, position=DEFAULT_POSITION, tintColor=DEFAULT_DECAL_TINT_COLOR, doubleSided=0, tags=None, preview=False, progressionLevel=0):
         self.id = id
         self.options = options
         self.slotId = slotId
@@ -55,9 +50,7 @@ class ProjectionDecalComponent(SerializableComponent):
         super(ProjectionDecalComponent, self).__init__()
 
     def __str__(self):
-        return 'ProjectionDecalComponent(id={0}, options={1}, slotId={2}, scaleFactorId={3}, showOn={4}, scale={5}, rotation={6}, position={7}, tintColor={8}, doubleSided={9}, preview={10}, progressionLevel={11})'.format(
-            self.id, self.options, self.slotId, self.scaleFactorId, self.showOn, self.scale, self.rotation,
-            self.position, self.tintColor, self.doubleSided, self.preview, self.progressionLevel)
+        return 'ProjectionDecalComponent(id={0}, options={1}, slotId={2}, scaleFactorId={3}, showOn={4}, scale={5}, rotation={6}, position={7}, tintColor={8}, doubleSided={9}, preview={10}, progressionLevel={11})'.format(self.id, self.options, self.slotId, self.scaleFactorId, self.showOn, self.scale, self.rotation, self.position, self.tintColor, self.doubleSided, self.preview, self.progressionLevel)
 
     def isMirroredHorizontally(self):
         return self.options & Options.MIRRORED_HORIZONTALLY

@@ -6,7 +6,6 @@ from copy import deepcopy
 
 STR_LEN_FOR_INTERN = 20
 
-
 class UnpicklerWithIntern(pickle.Unpickler, object):
 
     def __init__(self, file):

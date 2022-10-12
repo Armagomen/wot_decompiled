@@ -2,32 +2,34 @@
 # Embedded file name: scripts/client/gui/shared/utils/HangarSpace.py
 from Queue import Queue
 from functools import wraps
+
+import AvatarInputHandler
 import BigWorld
-import Math
 import Event
 import Keys
+import Math
 import ResMgr
 import constants
+from AvatarInputHandler.VideoCamera import VideoCamera
+from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV
+from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
+from gui import g_keyEventHandlers
 from gui import g_mouseEventHandlers, InputHandler
-from gui.ClientHangarSpace import ClientHangarSpace, _getHangarPath
+from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.Waiting import Waiting
+from gui.app_loader import settings as app_settings
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
+from gui.prb_control.events_dispatcher import g_eventDispatcher
+from gui.shared import g_eventBus, events
 from helpers import dependency, uniprof
 from helpers.statistics import HANGAR_LOADING_STATE
 from shared_utils import BoundMethodWeakref
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import IGameSessionController, IIGRController
+from skeletons.gui.game_control import IGameSessionController, IIGRController, IHangarSpaceSwitchController
 from skeletons.gui.shared.utils import IHangarSpace
 from skeletons.helpers.statistics import IStatisticsCollector
-from gui import g_keyEventHandlers
-from gui.shared import g_eventBus, events
-from constants import IS_DEVELOPMENT
-import AvatarInputHandler
-from AvatarInputHandler.VideoCamera import VideoCamera
-from gui.app_loader import settings as app_settings
-from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
-from gui.prb_control.events_dispatcher import g_eventDispatcher
+
 _Q_CHECK_DELAY = 0.0
 
 class _execute_after_hangar_space_inited(object):
@@ -142,6 +144,7 @@ class HangarSpace(IHangarSpace):
     gameSession = dependency.descriptor(IGameSessionController)
     igrCtrl = dependency.descriptor(IIGRController)
     statsCollector = dependency.descriptor(IStatisticsCollector)
+    hangarSwitchController = dependency.descriptor(IHangarSpaceSwitchController)
 
     def __init__(self):
         self.__space = None
@@ -355,11 +358,8 @@ class HangarSpace(IHangarSpace):
         self.__space.setVehicleSelectable(flag)
 
     def onPremiumChanged(self, isPremium, attrs, premiumExpiryTime):
-        premiumHangar = _getHangarPath(True, self.__igrSpaceType)
-        defaultHangar = _getHangarPath(False, self.__igrSpaceType)
-        if premiumHangar != defaultHangar:
-            self.refreshSpace(isPremium)
         self.__isSpacePremium = isPremium
+        self.hangarSwitchController.processPossibleSceneChange()
 
     @uniprof.regionDecorator(label='hangar.space.loading', scope='exit')
     def __spaceDone(self):

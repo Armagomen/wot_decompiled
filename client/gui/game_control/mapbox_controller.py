@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/mapbox_controller.py
+import logging
+import random
 from collections import namedtuple
 from functools import partial
-import logging
-import typing
-from account_helpers.AccountSettings import AccountSettings, MAPBOX_PROGRESSION
-from async import async, await, await_callback, BrokenPromiseError
-import adisp
+
 import BigWorld
-from BWUtil import AsyncReturn
-from constants import QUEUE_TYPE, PREBATTLE_TYPE, Configs
 import Event
+import adisp
+from BWUtil import AsyncReturn
+from account_helpers.AccountSettings import AccountSettings, MAPBOX_PROGRESSION
+from constants import QUEUE_TYPE, PREBATTLE_TYPE, Configs
 from gui import SystemMessages
+from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.mapbox.mapbox_helpers import formatMapboxBonuses, convertTimeFromISO
@@ -20,7 +21,6 @@ from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, SELECTOR_BATTLE_TYPES, FUNCTIONAL_FLAG
-from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.server_events import caches
 from gui.shared.event_dispatcher import showMapboxIntro, showMapboxSurvey
 from gui.shared.utils import SelectorBattleTypesUtils
@@ -28,21 +28,24 @@ from gui.shared.utils.SelectorBattleTypesUtils import setBattleTypeAsUnknown
 from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier
 from gui.wgcg.mapbox.contexts import MapboxProgressionCtx, MapboxRequestCrewbookCtx, MapboxCompleteSurveyCtx
 from helpers import dependency, server_settings, time_utils
-from season_provider import SeasonProvider
 from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.web import IWebController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.system_messages import ISystemMessages
+from skeletons.gui.web import IWebController
+from wg_async import wg_async, wg_await, await_callback, BrokenPromiseError
+
+from season_provider import SeasonProvider
+
 _logger = logging.getLogger(__name__)
 ProgressionData = namedtuple('ProgressionData', ('surveys',
- 'rewards',
- 'minRank',
- 'totalBattles',
- 'nextSubstage'))
+                                                 'rewards',
+                                                 'minRank',
+                                                 'totalBattles',
+                                                 'nextSubstage'))
 MapData = namedtuple('MapData', ('progress',
- 'total',
- 'passed',
+                                 'total',
+                                 'passed',
  'available',
  'url'))
 RewardData = namedtuple('RewardData', ('bonusList', 'status'))
@@ -156,7 +159,7 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
     def isMapboxPrbActive(self):
         return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.MAPBOX)
 
-    @adisp.process
+    @adisp.adisp_process
     def selectMapboxBattle(self):
         dispatcher = self.prbDispatcher
         if dispatcher is None:
@@ -172,20 +175,20 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
     def getProgressionRestartTime(self):
         return self.__progressionDataProvider.getProgressionRestartTime()
 
-    @adisp.process
+    @adisp.adisp_process
     def selectCrewbookNation(self, itemID):
         if self.__webCtrl.isAvailable():
             result = yield self.__webCtrl.sendRequest(MapboxRequestCrewbookCtx(itemID))
             if not result.isSuccess():
                 SystemMessages.pushMessage(backport.text(R.strings.messenger.serviceChannelMessages.mapbox.crewbookRequestError()), SystemMessages.SM_TYPE.ErrorSimple)
 
-    @adisp.process
+    @adisp.adisp_process
     def handleSurveyCompleted(self, surveyData):
 
-        @adisp.async
-        @async
+        @adisp.adisp_async
+        @wg_async
         def proxy(callback):
-            result = yield await(self.forceUpdateProgressData())
+            result = yield wg_await(self.forceUpdateProgressData())
             callback(result)
 
         if self.__webCtrl.isAvailable():
@@ -236,9 +239,9 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
     def storeCycle(self):
         self.__settingsManager.storeCycle(self.isActive(), self.getCurrentCycleID())
 
-    @async
+    @wg_async
     def forceUpdateProgressData(self):
-        result = yield await(self.__progressionDataProvider.forceUpdateProgressData())
+        result = yield wg_await(self.__progressionDataProvider.forceUpdateProgressData())
         raise AsyncReturn(result)
 
     def onPrbEntitySwitched(self):
@@ -271,7 +274,7 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
             self.__callbackID = BigWorld.callback(0, partial(self.__doSelectRandomPrb, dispatcher))
             return
 
-    @adisp.process
+    @adisp.adisp_process
     def __doSelectRandomPrb(self, dispatcher):
         self.__callbackID = None
         yield dispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.RANDOM))
@@ -319,7 +322,8 @@ class MapboxProgressionDataProvider(Notifiable):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __mapboxCtrl = dependency.descriptor(IMapboxController)
     __eventsCache = dependency.descriptor(IEventsCache)
-    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown', '__isStarted')
+    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown', '__isStarted',
+                 '__restartNotifier')
 
     def __init__(self):
         super(MapboxProgressionDataProvider, self).__init__()
@@ -327,12 +331,14 @@ class MapboxProgressionDataProvider(Notifiable):
         self.__isSyncing = False
         self.__isShuttingDown = False
         self.__isStarted = False
+        self.__restartNotifier = SimpleNotifier(self.getRestartTimer, self.__timerUpdate)
         self.onProgressionDataUpdated = Event.Event()
         return
 
     def init(self):
         self.__progressionData = {}
         self.addNotificator(SimpleNotifier(self.getTimer, self.__timerUpdate))
+        self.addNotificator(self.__restartNotifier)
 
     def fini(self):
         if self.__isSyncing:
@@ -345,6 +351,7 @@ class MapboxProgressionDataProvider(Notifiable):
             self.onProgressionDataUpdated = None
             self.__progressionData = None
             self.clearNotification()
+            self.__restartNotifier = None
             return
 
     def start(self):
@@ -362,7 +369,12 @@ class MapboxProgressionDataProvider(Notifiable):
         self.__isStarted = False
 
     def getProgressionData(self):
-        return None if not self.__progressionData else ProgressionData({key:MapData(value['progress'], value['total'], value['passed'], value['available'], value['url']) for key, value in self.__progressionData.get('surveys', {}).iteritems()}, {value['battles']:RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'), self.__progressionData.get('total_battles_amount'), self.__convertProgressionRestartTime())
+        return None if not self.__progressionData else ProgressionData(
+            {key: MapData(value['progress'], value['total'], value['passed'], value['available'], value['url']) for
+             key, value in self.__progressionData.get('surveys', {}).iteritems()},
+            {value['battles']: RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in
+             self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'),
+            self.__progressionData.get('total_battles_amount'), self.__convertProgressionRestartTime())
 
     def getProgressionRestartTime(self):
         return self.__convertProgressionRestartTime() if self.__progressionData else _LAST_PERIOD
@@ -370,7 +382,15 @@ class MapboxProgressionDataProvider(Notifiable):
     def getTimer(self):
         return self.__mapboxCtrl.getModeSettings().progressionUpdateInterval
 
-    @async
+    def getRestartTimer(self):
+        endTime = self.getProgressionRestartTime()
+        if endTime:
+            timeLeft = time_utils.getTimeDeltaFromNow(time_utils.makeLocalServerTime(endTime))
+            if timeLeft >= 0:
+                return timeLeft + random.randint(0, 3)
+        return time_utils.ONE_DAY
+
+    @wg_async
     def forceUpdateProgressData(self):
         try:
             result = yield await_callback(self.__request)()
@@ -393,7 +413,7 @@ class MapboxProgressionDataProvider(Notifiable):
         if self.__isShuttingDown:
             self.fini()
 
-    @adisp.process
+    @adisp.adisp_process
     def __request(self, callback):
         data = None
         result = None
@@ -410,6 +430,7 @@ class MapboxProgressionDataProvider(Notifiable):
         if data != self.__progressionData:
             self.__progressionData = data if data is not None else {}
             self.onProgressionDataUpdated()
+            self.__restartNotifier.startNotification()
             self.__eventsCache.onEventsVisited()
         if result is not None:
             callback(result.isSuccess())

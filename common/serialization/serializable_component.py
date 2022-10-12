@@ -10,7 +10,6 @@ from .definitions import FieldTypes, FieldFlags
 
 __all__ = ('SerializableComponent', 'SerializableComponentChildType')
 
-
 class SerializableComponent(object):
     fields = OrderedDict()
     __slots__ = ()

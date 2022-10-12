@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_matters/popovers/filter_control_view_model.py
 from frameworks.wulf import ViewModel
 
-
 class FilterControlViewModel(ViewModel):
     __slots__ = ()
 

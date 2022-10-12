@@ -3,7 +3,7 @@
 import time
 
 import constants
-from adisp import process
+from adisp import adisp_process
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -58,6 +58,14 @@ class ServerListItemPresenter(object):
         self.invalidatePingData()
         return
 
+    @classmethod
+    def deltaFormatter(cls, delta):
+        return text_styles.neutral(backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft))
+
+    @classmethod
+    def statusDeltaFormatter(cls, delta):
+        return backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft)
+
     def asDict(self):
         return {'label': self.__name,
          'id': self.__peripheryID,
@@ -102,18 +110,15 @@ class ServerListItemPresenter(object):
         pingValue, self.__pingStatus = g_preDefinedHosts.getHostPingData(self.__hostName)
         self.__pingValue = min(pingValue, _PING_MAX_VALUE)
 
-    def deltaFormatter(self, delta):
-        return text_styles.neutral(backport.getTillTimeStringByRClass(delta, self._RES_ROOT.timeLeft))
-
     def _buildTooltip(self, peripheryID):
         periodInfo = self._periodsController.getPeriodInfo(peripheryID=peripheryID)
         params = periodInfo.getVO(withBNames=True, deltaFmt=self.deltaFormatter)
         params['serverName'] = self.getName()
         tooltip = backport.text(self._RES_ROOT.dyn(periodInfo.periodType.value, self._RES_ROOT.undefined)(), **params)
         return {'tooltip': text_styles.main(tooltip),
-                'specialArgs': [],
-                'specialAlias': None,
-                'isSpecial': None}
+         'specialArgs': [],
+         'specialAlias': None,
+         'isSpecial': None}
 
     def _getIsAvailable(self):
         self.__invalidatePrimeTimeStatus()
@@ -172,7 +177,8 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         self.__updateServersList()
         self.__updateSelectedServer()
         self.__updateSelectedServerData()
-        self._getController().onUpdated += self.__onControllerUpdated
+        updateEvent = self._getUpdateEvent()
+        updateEvent += self.__onControllerUpdated
         if not constants.IS_CHINA:
             if GUI_SETTINGS.csisRequestRate == REQUEST_RATE.ALWAYS:
                 g_preDefinedHosts.startCSISUpdate()
@@ -184,7 +190,8 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
 
     def _dispose(self):
         self.clearNotification()
-        self._getController().onUpdated -= self.__onControllerUpdated
+        updateEvent = self._getUpdateEvent()
+        updateEvent -= self.__onControllerUpdated
         if not constants.IS_CHINA:
             g_preDefinedHosts.stopCSISUpdate()
             g_preDefinedHosts.onCsisQueryStart -= self.__onServersUpdate
@@ -229,8 +236,7 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         resSection = self._RES_ROOT.statusText
         periodInfo = self._getController().getPeriodInfo()
         timeFmt = backport.getShortTimeFormat if periodInfo.primeDelta < time_utils.ONE_DAY else None
-        dateFmt = backport.getShortDateFormat if timeFmt is None else _emptyFmt
-        params = periodInfo.getVO(withBNames=True, timeFmt=timeFmt or _emptyFmt, dateFmt=dateFmt)
+        params = periodInfo.getVO(withBNames=True, deltaFmt=self._serverPresenterClass.statusDeltaFormatter, timeFmt=timeFmt or _emptyFmt, dateFmt=backport.getShortDateFormat if timeFmt is None else _emptyFmt)
         params['serverName'] = self._connectionMgr.serverUserNameShort
         return backport.text(resSection.dyn(periodInfo.periodType.value, resSection.undefined)(), **params)
 
@@ -261,7 +267,11 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
          'serversDDEnabled': not isSingleServer,
          'serverDDVisible': not isSingleServer}
 
-    @process
+    @adisp_process
+    def _getUpdateEvent(self):
+        return self._getController().onUpdate
+
+    @adisp_process
     def __continue(self):
         result = yield self.prbDispatcher.doSelectAction(PrbAction(self._getPrbForcedActionName()))
         if result:

@@ -4,7 +4,6 @@ from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
 
-
 class IntermediateQuestModel(ViewModel):
     __slots__ = ()
 

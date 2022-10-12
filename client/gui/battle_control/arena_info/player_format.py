@@ -27,6 +27,7 @@ _PLAYER_FULL_NAME_FORMATS = {_FORMAT_MASK.VEHICLE: u'{0:>s} ({2:>s})',
 _PlayerFormatResult = namedtuple('PlayerFormatResult', (
 'playerFullName', 'playerName', 'playerFakeName', 'clanAbbrev', 'regionCode', 'vehicleName'))
 
+
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getRegionCode(accountDBID, lobbyContext=None):
     regionCode = None

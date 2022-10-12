@@ -26,7 +26,6 @@ _SHOW_CLOSE_BTN = False
 _SHOW_BACK_BTN = True
 _logger = logging.getLogger(__name__)
 
-
 class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     __background_alpha__ = 0.0
     __metaclass__ = event_bus_handlers.EventBusListener

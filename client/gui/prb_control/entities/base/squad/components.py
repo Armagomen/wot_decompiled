@@ -11,7 +11,6 @@ from skeletons.gui.lobby_context import ILobbyContext
 if typing.TYPE_CHECKING:
     pass
 
-
 class RestrictedVehicleTagDataProvider(object):
     __slots__ = ('__unitEntity',)
     _VEHICLE_TAG = ''
@@ -55,9 +54,7 @@ class RestrictedVehicleTagDataProvider(object):
 
     def hasSlotForVehicle(self):
         accountDbID = account_helpers.getAccountDatabaseID()
-        return self.getMaxPossibleVehicles() > 0 and (
-                    self.getCurrentVehiclesCount() < self.getMaxPossibleVehicles() or self.__unitEntity.isCommander(
-                accountDbID))
+        return self.getMaxPossibleVehicles() > 0 and (self.getCurrentVehiclesCount() < self.getMaxPossibleVehicles() or self.__unitEntity.isCommander(accountDbID))
 
     def getCurrentVehiclesCount(self):
         enableVehicleCount = 0
@@ -97,3 +94,13 @@ class RestrictedScoutDataProvider(RestrictedVehicleTagDataProvider):
 
     def getMaxPossibleVehicles(self):
         return self.__lobbyContext.getServerSettings().getMaxScoutInSquads()
+
+
+class RestrictedSquadDataProvider(RestrictedVehicleTagDataProvider):
+    _VEHICLE_TAG = 'squad_restricted'
+
+    def getRestrictionLevels(self):
+        return None
+
+    def getMaxPossibleVehicles(self):
+        pass

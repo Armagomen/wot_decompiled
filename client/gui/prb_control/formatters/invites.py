@@ -10,6 +10,7 @@ from gui.impl.gen import R
 from gui.prb_control import prbDispatcherProperty, prbAutoInvitesProperty, prbInvitesProperty
 from gui.prb_control.formatters import getPrebattleFullDescription, getPrebattleStartTimeString
 from gui.prb_control.settings import PRB_INVITE_STATE
+from gui.shared.system_factory import collectPrbInviteHtmlFormatter, registerPrbInvitesHtmlFormatter
 from helpers import dependency
 from helpers.html import escape as htmlEscape
 from messenger.ext import passCensor
@@ -138,6 +139,9 @@ class PrbInviteHtmlTextFormatter(InviteFormatter):
     def prbInvites(self):
         return None
 
+    def canAcceptInvite(self, invite):
+        return self.prbInvites.canAcceptInvite(invite)
+
     def getIconName(self, invite):
         return '{0:>s}InviteIcon'.format(getPrbName(invite.type, True))
 
@@ -156,7 +160,7 @@ class PrbInviteHtmlTextFormatter(InviteFormatter):
         return _formatInvite(_PrbInvitePart.COMMENT, comment)
 
     def getNote(self, invite):
-        if self.prbInvites.canAcceptInvite(invite):
+        if self.canAcceptInvite(invite):
             note = getLeaveOrChangeText(self.prbDispatcher.getFunctionalState(), invite.type, invite.peripheryID) if self.prbDispatcher else ''
         else:
             note = getAcceptNotAllowedText(invite.type, invite.peripheryID, invite.isActive(), invite.alreadyJoined)
@@ -185,16 +189,15 @@ class PrbInviteHtmlTextFormatter(InviteFormatter):
             result.append(text)
         return ''.join(result)
 
+    def updateTooltips(self, invite, canAccept, message):
+        return message
+
 
 class PrbExternalBattleInviteHtmlTextFormatter(PrbInviteHtmlTextFormatter):
 
     def getComment(self, invite):
         comment = passCensor(invite.comment)
         return _formatInvite(_PrbInvitePart.COMMENT, htmlEscape(comment))
-
-
-def getPrbInviteHtmlFormatter(invite):
-    return PrbExternalBattleInviteHtmlTextFormatter() if invite.type in PREBATTLE_TYPE.EXTERNAL_PREBATTLES else PrbInviteHtmlTextFormatter()
 
 
 class PrbInviteTitleFormatter(InviteFormatter):
@@ -223,8 +226,7 @@ class AutoInviteTextFormatter(InviteFormatter):
         return note
 
     def getText(self, invite):
-        startTimeStr = u'{} {}'.format(backport.text(R.strings.prebattle.title.battleSession.startTime()),
-                                       getPrebattleStartTimeString(invite.startTime))
+        startTimeStr = u'{} {}'.format(backport.text(R.strings.prebattle.title.battleSession.startTime()), getPrebattleStartTimeString(invite.startTime))
         return u'{}, {}'.format(getPrebattleFullDescription(invite.description), startTimeStr)
 
 
@@ -262,3 +264,10 @@ class PrbAutoInviteInfo(_PrbInviteInfo):
          'isAcceptVisible': True,
          'isDeclineVisible': False}
         return result
+
+
+registerPrbInvitesHtmlFormatter(PREBATTLE_TYPE.EXTERNAL_PREBATTLES, PrbExternalBattleInviteHtmlTextFormatter)
+
+def getPrbInviteHtmlFormatter(invite):
+    formatter = collectPrbInviteHtmlFormatter(invite.type)
+    return formatter or PrbInviteHtmlTextFormatter()

@@ -17,7 +17,6 @@ from wotdecorators import noexcept
 
 __all__ = ('BootcampUILogger', 'BootcampLogger')
 
-
 class LoggingCacheMeta(type):
     _instance = None
 

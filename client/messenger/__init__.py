@@ -10,13 +10,11 @@ from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     pass
 
-
 class error(SoftException):
     pass
 
 
 g_settings = MessengerSettings()
-
 
 def normalizeGroupId(itemId):
     return unicode_from_utf8(itemId)[1] if isinstance(itemId, StringType) else itemId

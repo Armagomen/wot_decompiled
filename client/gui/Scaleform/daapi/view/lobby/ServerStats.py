@@ -1,26 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/ServerStats.py
 import logging
+
 import BigWorld
 import constants
-from async import await, async
+from gui import GUI_SETTINGS
+from gui.Scaleform.daapi.view.meta.ServerStatsMeta import ServerStatsMeta
 from gui.Scaleform.daapi.view.servers_data_provider import ServersDataProvider
 from gui.impl.dialogs.builders import ResSimpleDialogBuilder
 from gui.impl.dialogs.dialogs import showSimple
 from gui.impl.gen import R
 from gui.impl.pub.dialog_window import DialogFlags
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
+from gui.shared import events
+from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.utils.functions import makeTooltip
 from helpers import dependency
 from helpers import i18n
 from predefined_hosts import g_preDefinedHosts, HOST_AVAILABILITY, REQUEST_RATE
-from gui import GUI_SETTINGS
-from gui.shared import events
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.Scaleform.daapi.view.meta.ServerStatsMeta import ServerStatsMeta
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IServerStatsController, IReloginController
+from wg_async import wg_await, wg_async
+
 _logger = logging.getLogger(__name__)
 
 class ServerStats(ServerStatsMeta, ILegacyListener):
@@ -33,7 +35,7 @@ class ServerStats(ServerStatsMeta, ILegacyListener):
         super(ServerStats, self).__init__()
         self.__isListSelected = False
 
-    @async
+    @wg_async
     def relogin(self, peripheryID):
         confirmationType = 'changePeripheryAndRemember'
         if g_preDefinedHosts.isRoamingPeriphery(peripheryID):
@@ -42,7 +44,7 @@ class ServerStats(ServerStatsMeta, ILegacyListener):
         builder = ResSimpleDialogBuilder()
         builder.setFlags(DialogFlags.TOP_FULLSCREEN_WINDOW)
         builder.setMessagesAndButtons(R.strings.dialogs.dyn(confirmationType))
-        success = yield await(showSimple(builder.buildInLobby()))
+        success = yield wg_await(showSimple(builder.buildInLobby()))
         if success:
             BigWorld.callback(0.0, lambda : self.reloginCtrl.doRelogin(peripheryID, self.__onReloing))
         else:

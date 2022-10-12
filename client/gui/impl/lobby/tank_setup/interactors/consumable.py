@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/consumable.py
-import typing
-from async import async, await_callback
+from adisp import adisp_process
 from gui import shop
-from adisp import process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -12,13 +10,15 @@ from gui.impl.lobby.tank_setup.interactors.base_equipment import BaseEquipmentIn
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.vehicle import VehicleAutoEquipProcessor
 from gui.shared.utils import decorators
+from wg_async import wg_async, await_callback
+
 
 class ConsumableAutoRenewal(BaseAutoRenewal):
 
     def getValue(self):
         return self._vehicle.isAutoEquip
 
-    @decorators.process('techMaintenance')
+    @decorators.adisp_process('techMaintenance')
     def changeValue(self, callback):
         value = self.getLocalValue()
         if value != self.getValue():
@@ -58,13 +58,13 @@ class ConsumableInteractor(BaseConsumableInteractor):
         self.onSlotAction(actionType=BaseSetupModel.REVERT_SLOT_ACTION)
         self.itemUpdated()
 
-    @async
+    @wg_async
     def applyQuit(self, callback, skipApplyAutoRenewal):
         if not self.isPlayerLayout():
             yield await_callback(self.confirm)(skipDialog=True)
         super(ConsumableInteractor, self).applyQuit(callback, skipApplyAutoRenewal)
 
-    @process
+    @adisp_process
     def confirm(self, callback, skipDialog=False):
         action = ActionsFactory.getAction(ActionsFactory.BUY_AND_INSTALL_CONSUMABLES, self.getItem(), confirmOnlyExchange=True, skipConfirm=skipDialog)
         if action is not None:

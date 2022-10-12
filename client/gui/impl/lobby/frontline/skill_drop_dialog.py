@@ -15,6 +15,7 @@ from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import
 from gui.impl.lobby.frontline.dialogs.blank_price_view import BlankPriceView
 from gui.impl.pub.dialog_window import DialogButtons
 from gui.shared.gui_items.gui_item_economics import ItemPrice
+from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.money import Money, Currency
 from gui.shop import showBuyGoldForCrew
 from helpers import dependency
@@ -22,7 +23,6 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.shared import IItemsCache
 from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions
 from uilogging.epic_battle.loggers import EpicBattleTooltipLogger
-
 BLANK_COST_COUNT = 1
 FULL_REUSE = 100
 
@@ -66,7 +66,12 @@ class SkillDropDialog(DialogTemplateView):
         self.__uiEpicBattleLogger.initialize(EpicBattleLogKeys.DROP_SKILL_DIALOG_CONFIRM.value)
         return
 
+    def _initialize(self):
+        super(SkillDropDialog, self)._initialize()
+        self._itemsCache.onSyncCompleted += self.__onSyncCompleted
+
     def _finalize(self):
+        self._itemsCache.onSyncCompleted -= self.__onSyncCompleted
         super(SkillDropDialog, self)._finalize()
         self.__uiEpicBattleLogger.reset()
 
@@ -78,3 +83,8 @@ class SkillDropDialog(DialogTemplateView):
                 showBuyGoldForCrew(self.itemPrice.price.gold)
                 result = DialogButtons.CANCEL
         super(SkillDropDialog, self)._setResult(result)
+
+    def __onSyncCompleted(self, reason, _):
+        if reason != CACHE_SYNC_REASON.CLIENT_UPDATE:
+            return
+        self.destroyWindow()

@@ -176,6 +176,9 @@ class TOOLTIPS(object):
     TEMPLATE_HOURS_SHORT = '#tooltips:template/hours/short'
     TEMPLATE_MINUTES_SHORT = '#tooltips:template/minutes/short'
     TEMPLATE_TIME_LESSTHENMINUTE = '#tooltips:template/time/lessThenMinute'
+    VEHICLE_AFTEREVENTEND_TITLE = '#tooltips:vehicle/afterEventEnd/title'
+    VEHICLE_OVERVIEW_TITLE = '#tooltips:vehicle/overview/title'
+    VEHICLE_OVERVIEW_DESC = '#tooltips:vehicle/overview/desc'
     PREMIUM_DAYS_HEADER = '#tooltips:premium/days/header'
     PREMIUMPLUS_DAYS_HEADER = '#tooltips:premiumPlus/days/header'
     PREMIUM_DAYS_PARAMS_BUY = '#tooltips:premium/days/params/buy'
@@ -776,8 +779,11 @@ class TOOLTIPS(object):
     HANGAR_CREW_RUDY_DOG_POLAND_BODY = '#tooltips:hangar/crew/rudy/dog/poland/body'
     HANGAR_CREW_MORESKILLS = '#tooltips:hangar/crew/moreskills'
     HANGAR_CREW_ASSIGNEDTO = '#tooltips:hangar/crew/assignedTo'
+    HANGAR_CREW_NEW_FREE_SKILL_AVAILABLE_HEADER = '#tooltips:hangar/crew/new_free_skill_available/header'
     HANGAR_CREW_NEW_SKILL_AVAILABLE_HEADER = '#tooltips:hangar/crew/new_skill_available/header'
     HANGAR_CREW_NEW_SKILL_AVAILABLE_TEXT = '#tooltips:hangar/crew/new_skill_available/text'
+    HANGAR_CREW_COMMANDERFEATURE = '#tooltips:hangar/crew/commanderFeature'
+    HANGAR_CREW_FREESKILLS = '#tooltips:hangar/crew/freeSkills'
     HANGAR_CREW_SPECIALTY_SKILLS = '#tooltips:hangar/crew/specialty_skills'
     HANGAR_XPTOTMENCHECKBOX_HEADER = '#tooltips:hangar/xpToTmenCheckbox/header'
     HANGAR_XPTOTMENCHECKBOX_BODY = '#tooltips:hangar/xpToTmenCheckbox/body'
@@ -1161,6 +1167,7 @@ class TOOLTIPS(object):
     VEHICLE_RENTLEFTFUTURE_BATTLES = '#tooltips:vehicle/rentLeftFuture/battles'
     VEHICLE_RENTLEFTFUTURE_WINS = '#tooltips:vehicle/rentLeftFuture/wins'
     VEHICLE_RENTLEFTFUTURE_EPIC_BASE = '#tooltips:vehicle/rentLeftFuture/epic/base'
+    VEHICLE_RENTLEFTFUTURE_OBTAINEDBY = '#tooltips:vehicle/rentLeftFuture/obtainedBy'
     VEHICLE_RENTAVAILABLE = '#tooltips:vehicle/rentAvailable'
     VEHICLE_WOTPLUSRENTING = '#tooltips:vehicle/wotPlusRenting'
     VEHICLE_WOTPLUSRENTING_REMAININGTIME_DAYS = '#tooltips:vehicle/wotPlusRenting/remainingTime/days'
@@ -1180,6 +1187,8 @@ class TOOLTIPS(object):
     BUYSKILL_FULLY = '#tooltips:buySkill/fully'
     BUYSKILL_PARTLY = '#tooltips:buySkill/partly'
     BUYSKILL_HEADER = '#tooltips:buySkill/header'
+    BUYFREESKILL_HEADER = '#tooltips:buyFreeSkill/header'
+    BUYFREESKILL_INFOBUTTON = '#tooltips:buyFreeSkill/infoButton'
     QUESTS_PROGRESS_STRATEGIC = '#tooltips:quests/progress/strategic'
     QUESTS_PROGRESS_CURRENT = '#tooltips:quests/progress/current'
     QUESTS_PROGRESS_EARNEDINBATTLE = '#tooltips:quests/progress/earnedInBattle'
@@ -1720,6 +1729,10 @@ class TOOLTIPS(object):
     HANGARTUTORIAL_PERSONALCASE_SKILLS_SPECIALTYTITLE = '#tooltips:hangarTutorial/personalCase/skills/specialtyTitle'
     HANGARTUTORIAL_PERSONALCASE_SKILLS_SPECIALTYDESCRIPTION = '#tooltips:hangarTutorial/personalCase/skills/specialtyDescription'
     HANGARTUTORIAL_PERSONALCASE_SKILLS_SPECIALTYWARNING = '#tooltips:hangarTutorial/personalCase/skills/specialtyWarning'
+    HANGARTUTORIAL_PERSONALCASE_FREESKILLS_TITLE = '#tooltips:hangarTutorial/personalCase/freeSkills/title'
+    HANGARTUTORIAL_PERSONALCASE_FREESKILLS_HEADERDESCRIPTION = '#tooltips:hangarTutorial/personalCase/freeSkills/headerDescription'
+    HANGARTUTORIAL_PERSONALCASE_FREESKILLS_NEWPERKTITLE = '#tooltips:hangarTutorial/personalCase/freeSkills/newPerkTitle'
+    HANGARTUTORIAL_PERSONALCASE_FREESKILLS_NEWPERKDESCRIPTION = '#tooltips:hangarTutorial/personalCase/freeSkills/newPerkDescription'
     HANGARTUTORIAL_PERSONALCASE_PERKS_TITLE = '#tooltips:hangarTutorial/personalCase/perks/title'
     HANGARTUTORIAL_PERSONALCASE_PERKS_HEADERDESCRIPTION = '#tooltips:hangarTutorial/personalCase/perks/headerDescription'
     HANGARTUTORIAL_PERSONALCASE_PERKS_NEWPERKTITLE = '#tooltips:hangarTutorial/personalCase/perks/newPerkTitle'
@@ -1729,6 +1742,8 @@ class TOOLTIPS(object):
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_RECORDDESCRIPTION = '#tooltips:hangarTutorial/personalCase/additional/recordDescription'
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_TRAININGTITLE = '#tooltips:hangarTutorial/personalCase/additional/trainingTitle'
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_TRAININGDESCRIPTION = '#tooltips:hangarTutorial/personalCase/additional/trainingDescription'
+    HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_FREEPERKSTITLE = '#tooltips:hangarTutorial/personalCase/additional/freePerksTitle'
+    HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_FREEPERKSDESCRIPTION = '#tooltips:hangarTutorial/personalCase/additional/freePerksDescription'
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_PERKSTITLE = '#tooltips:hangarTutorial/personalCase/additional/perksTitle'
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_PERKSDESCRIPTION = '#tooltips:hangarTutorial/personalCase/additional/perksDescription'
     HANGARTUTORIAL_PERSONALCASE_ADDITIONAL_DOCUMENTSTITLE = '#tooltips:hangarTutorial/personalCase/additional/documentsTitle'
@@ -1788,6 +1803,32 @@ class TOOLTIPS(object):
     BOOSTERSWINDOW_BOOSTER_EFFECTTIME_DESCRIPTION = '#tooltips:boostersWindow/booster/effectTime/description'
     BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE = '#tooltips:boostersWindow/booster/activateInfo/title'
     BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_DESCRIPTION = '#tooltips:boostersWindow/booster/activateInfo/description'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BASICRESERVE = '#tooltips:boostersWindow/booster/activateInfo/basicReserve'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_IMPROVEDRESERVE = '#tooltips:boostersWindow/booster/activateInfo/improvedReserve'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_XP = '#tooltips:boostersWindow/booster/activateInfo/title/booster_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_CREDITS = '#tooltips:boostersWindow/booster/activateInfo/title/booster_credits'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_FREE_XP_AND_CREW_XP = '#tooltips:boostersWindow/booster/activateInfo/title/booster_free_xp_and_crew_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_FL_XP = '#tooltips:boostersWindow/booster/activateInfo/title/booster_fl_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_FREE_XP = '#tooltips:boostersWindow/booster/activateInfo/title/booster_free_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_TITLE_BOOSTER_CREW_XP = '#tooltips:boostersWindow/booster/activateInfo/title/booster_crew_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_RECEIVE = '#tooltips:boostersWindow/booster/activateInfo/receive'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_NONPAIDRECEIVEINFO = '#tooltips:boostersWindow/booster/activateInfo/nonPaidReceiveInfo'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_PAIDRECEIVEINFO = '#tooltips:boostersWindow/booster/activateInfo/paidReceiveInfo'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_CLANRESERVERECEIVEINFO = '#tooltips:boostersWindow/booster/activateInfo/clanReserveReceiveInfo'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_ACTIVATION = '#tooltips:boostersWindow/booster/activateInfo/activation'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_ACTIVATIONINFO = '#tooltips:boostersWindow/booster/activateInfo/activationInfo'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSTIMEINFO = '#tooltips:boostersWindow/booster/activateInfo/bonusTimeInfo'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_NOTACTIVATED = '#tooltips:boostersWindow/booster/activateInfo/notActivated'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_INDEPOT = '#tooltips:boostersWindow/booster/activateInfo/inDepot'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUS = '#tooltips:boostersWindow/booster/activateInfo/bonus'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_PURCHASE = '#tooltips:boostersWindow/booster/activateInfo/purchase'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_NOTENOUGH = '#tooltips:boostersWindow/booster/activateInfo/notEnough'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_XP = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_FREE_XP = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_free_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_CREW_XP = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_crew_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_FREE_XP_AND_CREW_XP = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_free_xp_and_crew_xp'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_CREDITS = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_credits'
+    BOOSTERSWINDOW_BOOSTER_ACTIVATEINFO_BONUSVALUETIME_BOOSTER_FL_XP = '#tooltips:boostersWindow/booster/activateInfo/bonusValueTime/booster_fl_xp'
     BOOSTERSPANEL_OPENBOOSTERSWINDOW_BODY = '#tooltips:boostersPanel/openBoostersWindow/body'
     BOOSTERSPANEL_BOOSTERDESCRIPTION_NOTE = '#tooltips:boostersPanel/boosterDescription/note'
     CLANCOMMONINFO_CLANNAME = '#tooltips:clanCommonInfo/ClanName'
@@ -2063,6 +2104,9 @@ class TOOLTIPS(object):
     TANK_PARAMS_DESC_WHEELEDSPEEDMODESPEED = '#tooltips:tank_params/desc/wheeledSpeedModeSpeed'
     TANK_PARAMS_DESC_TURBOSHAFTSPEEDMODESPEED = '#tooltips:tank_params/desc/turboshaftSpeedModeSpeed'
     TANK_PARAMS_DESC_TURBOSHAFTENGINEPOWER = '#tooltips:tank_params/desc/turboshaftEnginePower'
+    TANK_PARAMS_DESC_ROCKETACCELERATIONENGINEPOWER = '#tooltips:tank_params/desc/rocketAccelerationEnginePower'
+    TANK_PARAMS_DESC_ROCKETACCELERATIONSPEEDLIMITS = '#tooltips:tank_params/desc/rocketAccelerationSpeedLimits'
+    TANK_PARAMS_DESC_ROCKETACCELERATIONREUSEANDDURATION = '#tooltips:tank_params/desc/rocketAccelerationReuseAndDuration'
     TANK_PARAMS_DESC_STUNMINDURATION = '#tooltips:tank_params/desc/stunMinDuration'
     TANK_PARAMS_DESC_STUNMAXDURATION = '#tooltips:tank_params/desc/stunMaxDuration'
     TANK_PARAMS_DESC_CHARGETIME = '#tooltips:tank_params/desc/chargeTime'
@@ -2237,6 +2281,7 @@ class TOOLTIPS(object):
     SKILLS_RADIOMAN_FINDER_DESCR = '#tooltips:skills/radioman_finder/descr'
     SKILLS_RADIOMAN_INVENTOR_HEADER = '#tooltips:skills/radioman_inventor/header'
     SKILLS_RADIOMAN_INVENTOR_DESCR = '#tooltips:skills/radioman_inventor/descr'
+    SKILLS_COMMANDERFEATURE = '#tooltips:skills/commanderFeature'
     SKILLS_STATUS_MOMENTAL = '#tooltips:skills/status/momental'
     SKILLS_STATUS_REQUIERSWHOLECREW = '#tooltips:skills/status/requiersWholeCrew'
     SKILLS_STATUS_ISFORROLE = '#tooltips:skills/status/isForRole'
@@ -2276,6 +2321,8 @@ class TOOLTIPS(object):
     HANGAR_HEADER_PERSONALMISSIONS_MISSION_DISABLED_BODY = '#tooltips:hangar/header/personalMissions/mission_disabled/body'
     HANGAR_HEADER_PERSONALMISSIONS_DISABLEDALL_HEADER = '#tooltips:hangar/header/personalMissions/disabledAll/header'
     HANGAR_HEADER_PERSONALMISSIONS_DISABLEDALL_BODY = '#tooltips:hangar/header/personalMissions/disabledAll/body'
+    HANGAR_HEADER_PERSONALMISSIONS_UNAVAILABLE_HEADER = '#tooltips:hangar/header/personalMissions/unavailable/header'
+    HANGAR_HEADER_PERSONALMISSIONS_UNAVAILABLE_BODY = '#tooltips:hangar/header/personalMissions/unavailable/body'
     HANGAR_HEADER_PERSONALMISSIONS_COMPLETEDLOCKEDNEXT_HEADER = '#tooltips:hangar/header/personalMissions/completedLockedNext/header'
     HANGAR_HEADER_PERSONALMISSIONS_COMPLETEDLOCKEDNEXT_BODY = '#tooltips:hangar/header/personalMissions/completedLockedNext/body'
     HANGAR_HEADER_PERSONALMISSIONS_DONELOCKEDNEXT_HEADER = '#tooltips:hangar/header/personalMissions/doneLockedNext/header'
@@ -2840,10 +2887,8 @@ class TOOLTIPS(object):
     XPEXCHANGEWINDOW_GOLD_GOLDAFTEREXCHANGE_BODY = '#tooltips:xpExchangewindow/gold/goldAfterExchange/body'
     STORAGE_FILTER_NORESULTSBTN_HEADER = '#tooltips:storage/filter/noResultsBtn/header'
     STORAGE_FILTER_NORESULTSBTN_BODY = '#tooltips:storage/filter/noResultsBtn/body'
-    STORAGE_FILTER_PERSONALRESERVES_BTNS_DURATION = '#tooltips:storage/filter/personalReserves/btns/duration'
     STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_VEHICLEEXP = '#tooltips:storage/filter/personalReserves/btns/type/vehicleExp'
-    STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_CREWEXP = '#tooltips:storage/filter/personalReserves/btns/type/crewExp'
-    STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_FREEEXP = '#tooltips:storage/filter/personalReserves/btns/type/freeExp'
+    STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_COMBOEXP = '#tooltips:storage/filter/personalReserves/btns/type/comboExp'
     STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_CREDITS = '#tooltips:storage/filter/personalReserves/btns/type/credits'
     STORAGE_FILTER_MODULES_BTNS_TYPE_GUNS = '#tooltips:storage/filter/modules/btns/type/guns'
     STORAGE_FILTER_MODULES_BTNS_TYPE_TOWERS = '#tooltips:storage/filter/modules/btns/type/towers'
@@ -2872,6 +2917,7 @@ class TOOLTIPS(object):
     STORAGE_MAINMENU_OFFERS_BODY = '#tooltips:storage/mainMenu/offers/body'
     NOTRECRUITEDTANKMAN_HOWTOGET = '#tooltips:notrecruitedtankman/howToGet'
     NOTRECRUITEDTANKMAN_SKILLSTITLE = '#tooltips:notrecruitedtankman/skillsTitle'
+    NOTRECRUITEDTANKMAN_FREESKILLSTITLE = '#tooltips:notrecruitedtankman/freeSkillsTitle'
     NOTRECRUITEDTANKMAN_EXPIRETITLE = '#tooltips:notrecruitedtankman/expireTitle'
     NOTRECRUITEDTANKMAN_USEBEFORE = '#tooltips:notrecruitedtankman/useBefore'
     NOTRECRUITEDTANKMAN_BASE_EVENT = '#tooltips:notrecruitedtankman/base/event'
@@ -2887,6 +2933,9 @@ class TOOLTIPS(object):
     NOTRECRUITEDTANKMAN_TANKMAN_LABEL = '#tooltips:notrecruitedtankman/tankman/label'
     NOTRECRUITEDTANKMAN_TANKMAN_DESC = '#tooltips:notrecruitedtankman/tankman/desc'
     NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankman/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_LABEL = '#tooltips:notrecruitedtankman/tankmen/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_DESC = '#tooltips:notrecruitedtankman/tankmen/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen/howToGetInfo'
     NOTRECRUITEDTANKMAN_TWITCH1_LABEL = '#tooltips:notrecruitedtankman/twitch1/label'
     NOTRECRUITEDTANKMAN_TWITCH1_DESC = '#tooltips:notrecruitedtankman/twitch1/desc'
     NOTRECRUITEDTANKMAN_TWITCH3_LABEL = '#tooltips:notrecruitedtankman/twitch3/label'
@@ -3022,8 +3071,14 @@ class TOOLTIPS(object):
     NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_DESC = '#tooltips:notrecruitedtankman/commander_bjornson/desc'
     NOTRECRUITEDTANKMAN_COMMANDER_BINGO_LABEL = '#tooltips:notrecruitedtankman/commander_bingo/label'
     NOTRECRUITEDTANKMAN_COMMANDER_BINGO_DESC = '#tooltips:notrecruitedtankman/commander_bingo/desc'
+    NOTRECRUITEDTANKMAN_COMMANDER_BARONESS_LABEL = '#tooltips:notrecruitedtankman/commander_baroness/label'
+    NOTRECRUITEDTANKMAN_COMMANDER_BARONESS_DESC = '#tooltips:notrecruitedtankman/commander_baroness/desc'
+    NOTRECRUITEDTANKMAN_COMMANDER_COVER_GIRL_LABEL = '#tooltips:notrecruitedtankman/commander_cover_girl/label'
+    NOTRECRUITEDTANKMAN_COMMANDER_COVER_GIRL_DESC = '#tooltips:notrecruitedtankman/commander_cover_girl/desc'
     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_LABEL = '#tooltips:notrecruitedtankman/commander_patricia/label'
     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_DESC = '#tooltips:notrecruitedtankman/commander_patricia/desc'
+    NOTRECRUITEDTANKMAN_COMMANDER_QUICKYBABY_LABEL = '#tooltips:notrecruitedtankman/commander_quickybaby/label'
+    NOTRECRUITEDTANKMAN_COMMANDER_QUICKYBABY_DESC = '#tooltips:notrecruitedtankman/commander_quickybaby/desc'
     NOTRECRUITEDTANKMAN_YHA_COMMANDER_LABEL = '#tooltips:notrecruitedtankman/yha_commander/label'
     NOTRECRUITEDTANKMAN_YHA_COMMANDER_DESC = '#tooltips:notrecruitedtankman/yha_commander/desc'
     NOTRECRUITEDTANKMAN_YHA_DRIVER_LABEL = '#tooltips:notrecruitedtankman/yha_driver/label'
@@ -3082,6 +3137,7 @@ class TOOLTIPS(object):
     FRONTLINERANK_EXPBONUS = '#tooltips:frontlineRank/expBonus'
     SQUADBONUS_TITLE = '#tooltips:squadBonus/title'
     SQUADBONUS_DESCRIPTION = '#tooltips:squadBonus/description'
+    SQUADBONUS_COMP7_DESCRIPTION = '#tooltips:squadBonus/comp7/description'
     SQUADBONUS_CREDITS_HEADER = '#tooltips:squadBonus/credits/header'
     SQUADBONUS_CREDITS_BONUSWITHPREMIUM = '#tooltips:squadBonus/credits/bonusWithPremium'
     SQUADBONUS_CREDITS_BONUSWITHOUTPREMIUM = '#tooltips:squadBonus/credits/bonusWithoutPremium'
@@ -3089,12 +3145,9 @@ class TOOLTIPS(object):
     SQUADBONUS_EXPERIENCE_BONUS = '#tooltips:squadBonus/experience/bonus'
     SQUADBONUS_COMPLEX_HEADER = '#tooltips:squadBonus/complex/header'
     SQUADBONUS_COMPLEX_BODY = '#tooltips:squadBonus/complex/body'
-    PREM_DASHBOARD_HEADER_PERSONALRESERVES_HEADER = '#tooltips:prem/dashboard/header/personalReserves/header'
-    PREM_DASHBOARD_HEADER_PERSONALRESERVES_BODY = '#tooltips:prem/dashboard/header/personalReserves/body'
-    PREM_DASHBOARD_HEADER_CLANRESERVES_HEADER = '#tooltips:prem/dashboard/header/clanReserves/header'
-    PREM_DASHBOARD_HEADER_CLANRESERVES_BODY = '#tooltips:prem/dashboard/header/clanReserves/body'
-    PREM_DASHBOARD_HEADER_PERSONALRESERVES_EMPTYSLOT_BODY = '#tooltips:prem/dashboard/header/personalReserves/emptySlot/body'
-    PREM_DASHBOARD_HEADER_CLANRESERVES_EMPTYSLOT_BODY = '#tooltips:prem/dashboard/header/clanReserves/emptySlot/body'
+    SQUADBONUS_COMPLEX_COMP7_HEADER = '#tooltips:squadBonus/complex/comp7/header'
+    SQUADBONUS_COMPLEX_COMP7_BODY = '#tooltips:squadBonus/complex/comp7/body'
+    SQUADBONUS_COMPLEX_BONUSPERCENT = '#tooltips:squadBonus/complex/bonusPercent'
     PREM_DASHBOARD_HEADER_BADGESLOT = '#tooltips:prem/dashboard/header/badgeSlot'
     PREM_PIGGYBANK_GHOSTBTN_BODY = '#tooltips:prem/piggyBank/ghostBtn/body'
     CREWBOOKS_SCREEN_INVALIDCREW_TITLE = '#tooltips:crewBooks/screen/invalidCrew/title'
@@ -3123,11 +3176,8 @@ class TOOLTIPS(object):
     SENIORITYAWARDS_HANGARENTRYPOINT_TOOLTIP_BODY = '#tooltips:seniorityAwards/hangarEntryPoint/tooltip/body'
     SENIORITYAWARDS_ADDITIONAL_TOOLTIP_HEADER = '#tooltips:seniorityAwards/additional/tooltip/header'
     SENIORITYAWARDS_HANGARSLOT_TOOLTIP_HEADER = '#tooltips:seniorityAwards/hangarSlot/tooltip/header'
-    VEHICLECRYSTAL_LIMITSTATUS_COMMON_TITLE = '#tooltips:vehicleCrystal/limitStatus/common/title'
     VEHICLECRYSTAL_LIMITSTATUS_COMMON_DESCRIPTION = '#tooltips:vehicleCrystal/limitStatus/common/description'
-    VEHICLECRYSTAL_LIMITSTATUS_PROGRESS_TITLE = '#tooltips:vehicleCrystal/limitStatus/progress/title'
     VEHICLECRYSTAL_LIMITSTATUS_PROGRESS_DESCRIPTION = '#tooltips:vehicleCrystal/limitStatus/progress/description'
-    VEHICLECRYSTAL_LIMITSTATUS_LIMITREACHED_TITLE = '#tooltips:vehicleCrystal/limitStatus/limitReached/title'
     VEHICLECRYSTAL_LIMITSTATUS_LIMITREACHED_DESCRIPTION = '#tooltips:vehicleCrystal/limitStatus/limitReached/description'
     ROLEEXP_STATUS_ROLEACTIONS_TITLE = '#tooltips:roleExp/status/roleActions/title'
     ROLEEXP_STATUS_ROLEACTIONS_DISABLED = '#tooltips:roleExp/status/roleActions/disabled'
@@ -3333,6 +3383,8 @@ class TOOLTIPS(object):
     ACCOUNTCOMPLETION_CREDENTIALS_SUBTITLE_BODY = '#tooltips:accountCompletion/credentials/subtitle/body'
     MODE_SELECTOR_UNAVAILABLE_TECHPROBLEMS = '#tooltips:mode_selector/unavailable/techProblems'
     MODE_SELECTOR_UNAVAILABLE_BOOTCAMP = '#tooltips:mode_selector/unavailable/bootcamp'
+    MODE_SELECTOR_UNAVAILABLE_NOTVEHICLES_TEXT = '#tooltips:mode_selector/unavailable/notVehicles/text'
+    MODE_SELECTOR_UNAVAILABLE_NOTVEHICLES_LEVEL = '#tooltips:mode_selector/unavailable/notVehicles/level'
     MODE_SELECTOR_POPOVER_BODY = '#tooltips:mode_selector/popover/body'
     MODE_SELECTOR_POPOVER_DEFAULT_HEADER = '#tooltips:mode_selector/popover/default/header'
     MODE_SELECTOR_POPOVER_DEFAULT_BODY = '#tooltips:mode_selector/popover/default/body'
@@ -3435,6 +3487,7 @@ class TOOLTIPS(object):
     ADDITIONALREWARDS_TANKMENXP = '#tooltips:additionalRewards/tankmenXP'
     ADDITIONALREWARDS_CUSTOMIZATIONS_CAMOUFLAGE = '#tooltips:additionalRewards/customizations/camouflage'
     ADDITIONALREWARDS_CUSTOMIZATIONS_STYLE = '#tooltips:additionalRewards/customizations/style'
+    ADDITIONALREWARDS_CUSTOMIZATIONS_PROGRESSIONSTYLE = '#tooltips:additionalRewards/customizations/progressionStyle'
     ADDITIONALREWARDS_CUSTOMIZATIONS_3D_STYLE = '#tooltips:additionalRewards/customizations/3d_style'
     ADDITIONALREWARDS_CUSTOMIZATIONS_DECAL = '#tooltips:additionalRewards/customizations/decal'
     ADDITIONALREWARDS_CUSTOMIZATIONS_PROJECTIONDECAL = '#tooltips:additionalRewards/customizations/projectionDecal'
@@ -3446,6 +3499,27 @@ class TOOLTIPS(object):
     ADDITIONALREWARDS_PREMIUM_PLUS = '#tooltips:additionalRewards/premium_plus'
     ADDITIONALREWARDS_DOSSIER_ACHIEVEMENT = '#tooltips:additionalRewards/dossier_achievement'
     ADDITIONALREWARDS_DOSSIER_BADGE = '#tooltips:additionalRewards/dossier_badge'
+    SEASONALBATTLESELECTOR_TIMETABLE_TITLE = '#tooltips:seasonalBattleSelector/timeTable/title'
+    SEASONALBATTLESELECTOR_TIMETABLE_TODAY = '#tooltips:seasonalBattleSelector/timeTable/today'
+    SEASONALBATTLESELECTOR_TIMETABLE_TOMORROW = '#tooltips:seasonalBattleSelector/timeTable/tomorrow'
+    SEASONALBATTLESELECTOR_TIMETABLE_INTERVAL = '#tooltips:seasonalBattleSelector/timeTable/interval'
+    SEASONALBATTLESELECTOR_TIMETABLE_EMPTY = '#tooltips:seasonalBattleSelector/timeTable/empty'
+    SEASONALBATTLESELECTOR_TILLEND = '#tooltips:seasonalBattleSelector/tillEnd'
+    TILLTIME_DAYS = '#tooltips:tillTime/days'
+    TILLTIME_HOURS = '#tooltips:tillTime/hours'
+    TILLTIME_MIN = '#tooltips:tillTime/min'
+    TILLTIME_LESSMIN = '#tooltips:tillTime/lessMin'
+    ROLESKILL_DESCRIPTION_ACTIVE = '#tooltips:roleSkill/description/active'
+    ROLESKILL_DESCRIPTION_PASSIVE = '#tooltips:roleSkill/description/passive'
+    ROLESKILL_INFO = '#tooltips:roleSkill/info'
+    PERIODICREWARD_HEADER = '#tooltips:periodicReward/header'
+    PERIODICREWARD_COMP7_BODY = '#tooltips:periodicReward/comp7/body'
+    NOTRECRUITEDTANKMAN_COMMANDER_REBRANDING_DESC = '#tooltips:notrecruitedtankman/commander_rebranding/desc'
+    NOTRECRUITEDTANKMAN_COMMANDER_REBRANDING_LABEL = '#tooltips:notrecruitedtankman/commander_rebranding/label'
+    NOTRECRUITEDTANKMAN_WT22_BOSS_COMMANDER_DESC = '#tooltips:notrecruitedtankman/wt22_boss_commander/desc'
+    NOTRECRUITEDTANKMAN_WT22_BOSS_COMMANDER_LABEL = '#tooltips:notrecruitedtankman/wt22_boss_commander/label'
+    NOTRECRUITEDTANKMAN_WT22_HUNTER_COMMANDER_DESC = '#tooltips:notrecruitedtankman/wt22_hunter_commander/desc'
+    NOTRECRUITEDTANKMAN_WT22_HUNTER_COMMANDER_LABEL = '#tooltips:notrecruitedtankman/wt22_hunter_commander/label'
     ELEN_SUMMARY_RANK_ENUM = (ELEN_SUMMARY_RANK_1,
      ELEN_SUMMARY_RANK_2,
      ELEN_SUMMARY_RANK_3,
@@ -3580,6 +3654,9 @@ class TOOLTIPS(object):
      TANK_PARAMS_DESC_WHEELEDSPEEDMODESPEED,
      TANK_PARAMS_DESC_TURBOSHAFTSPEEDMODESPEED,
      TANK_PARAMS_DESC_TURBOSHAFTENGINEPOWER,
+     TANK_PARAMS_DESC_ROCKETACCELERATIONENGINEPOWER,
+     TANK_PARAMS_DESC_ROCKETACCELERATIONSPEEDLIMITS,
+     TANK_PARAMS_DESC_ROCKETACCELERATIONREUSEANDDURATION,
      TANK_PARAMS_DESC_STUNMINDURATION,
      TANK_PARAMS_DESC_STUNMAXDURATION,
      TANK_PARAMS_DESC_CHARGETIME)
@@ -4006,348 +4083,364 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_OOW21_TANKER_3_COMMANDER_EVENT,
      NOTRECRUITEDTANKMAN_OOW21_TANKER_4_COMMANDER_EVENT)
     NOTRECRUITEDTANKMAN_ALL_LABEL_ENUM = (NOTRECRUITEDTANKMAN_BASE_LABEL,
-                                          NOTRECRUITEDTANKMAN_BUFFON_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKWOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_CZECH_WOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH4_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH5_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH6_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH7_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH8_LABEL,
-                                          NOTRECRUITEDTANKMAN_TWITCH9_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_CESARE_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_STARLIGHT_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_MAEVE_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_DUKE_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_COBRA_LABEL,
-                                          NOTRECRUITEDTANKMAN_YANDEX_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY19MEN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY19WOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_LABEL,
-                                          NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_LABEL,
-                                          NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_MARINA_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_PATRICK_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY20WOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY20MEN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY20SNOWMEN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY21MEN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY21WOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_RU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_RU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_RU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_RU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_EU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_EU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_EU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_EU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_NA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_NA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_ASIA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_ASIA_LABEL,
-                                          NOTRECRUITEDTANKMAN_HW19_COMMANDERS_LABEL,
-                                          NOTRECRUITEDTANKMAN_HW21_COMMANDER1_LABEL,
-                                          NOTRECRUITEDTANKMAN_HW21_COMMANDER2_LABEL,
-                                          NOTRECRUITEDTANKMAN_HW21_COMMANDER4_LABEL,
-                                          NOTRECRUITEDTANKMAN_HW21_COMMANDER5_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_BP1_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_BP2_LABEL,
-                                          NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_CH_COMPENSATION_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_BINGO_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_LABEL,
-                                          NOTRECRUITEDTANKMAN_YHA_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_YHA_DRIVER_LABEL,
-                                          NOTRECRUITEDTANKMAN_YHA_GUNNER_LABEL,
-                                          NOTRECRUITEDTANKMAN_YHA_LOADER_LABEL,
-                                          NOTRECRUITEDTANKMAN_YHA_RADIOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_OOW21_STRATEGIST_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_OOW21_TANKER_1_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_OOW21_TANKER_2_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_OOW21_TANKER_3_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_OOW21_TANKER_4_COMMANDER_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_YUSHA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_VSPISHKA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_AMWAY921_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_KORBENDAILAS_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_LEBWA_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_INSPIRER_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_EVILGRANNY_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_NEARYOU_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU1_CIRCON_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU2_DAKILLZOR_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU3_NEWMULTI2K_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU4_ORZANEL_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA1_CABBAGEMECHANIC_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA2_TRAGICLOSS_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA3_CMDRAF_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA1_MASTERTORTOISE_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA2_SUMMERTIGER_LABEL,
-                                          NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA3_MAHARLIKA_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_COMMANDER_GAGARIN21_LABEL,
-                                          NOTRECRUITEDTANKMAN_WT2021_HUNTER_1_LABEL,
-                                          NOTRECRUITEDTANKMAN_WT2021_HUNTER_2_LABEL,
-                                          NOTRECRUITEDTANKMAN_WT2021_HUNTER_3_LABEL,
-                                          NOTRECRUITEDTANKMAN_WT2021_BOSS_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY22MEN_A_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY22MEN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY22WOMAN_LABEL,
-                                          NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_LABEL)
+     NOTRECRUITEDTANKMAN_BUFFON_LABEL,
+     NOTRECRUITEDTANKMAN_TANKWOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_CZECH_WOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMAN_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH1_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH3_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH4_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH5_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH6_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH7_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH8_LABEL,
+     NOTRECRUITEDTANKMAN_TWITCH9_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_CESARE_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_STARLIGHT_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_MAEVE_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_DUKE_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_COBRA_LABEL,
+     NOTRECRUITEDTANKMAN_YANDEX_1_LABEL,
+     NOTRECRUITEDTANKMAN_NY19MEN_LABEL,
+     NOTRECRUITEDTANKMAN_NY19WOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_LABEL,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_LABEL,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_MARINA_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICK_LABEL,
+     NOTRECRUITEDTANKMAN_NY20WOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_LABEL,
+     NOTRECRUITEDTANKMAN_NY20MEN_LABEL,
+     NOTRECRUITEDTANKMAN_NY20SNOWMEN_LABEL,
+     NOTRECRUITEDTANKMAN_NY21MEN_LABEL,
+     NOTRECRUITEDTANKMAN_NY21WOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_RU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_RU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_RU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_RU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_EU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_EU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_EU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_EU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_NA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_NA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_ASIA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_ASIA_LABEL,
+     NOTRECRUITEDTANKMAN_HW19_COMMANDERS_LABEL,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER1_LABEL,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER2_LABEL,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER4_LABEL,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER5_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP1_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP2_LABEL,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_LABEL,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_LABEL,
+     NOTRECRUITEDTANKMAN_CH_COMPENSATION_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_BINGO_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_BARONESS_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_COVER_GIRL_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_QUICKYBABY_LABEL,
+     NOTRECRUITEDTANKMAN_YHA_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_YHA_DRIVER_LABEL,
+     NOTRECRUITEDTANKMAN_YHA_GUNNER_LABEL,
+     NOTRECRUITEDTANKMAN_YHA_LOADER_LABEL,
+     NOTRECRUITEDTANKMAN_YHA_RADIOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_OOW21_STRATEGIST_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_1_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_2_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_3_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_4_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_YUSHA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_VSPISHKA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_AMWAY921_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_KORBENDAILAS_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_LEBWA_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_INSPIRER_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_EVILGRANNY_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_NEARYOU_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU1_CIRCON_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU2_DAKILLZOR_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU3_NEWMULTI2K_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU4_ORZANEL_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA1_CABBAGEMECHANIC_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA2_TRAGICLOSS_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA3_CMDRAF_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA1_MASTERTORTOISE_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA2_SUMMERTIGER_LABEL,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA3_MAHARLIKA_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_GAGARIN21_LABEL,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_1_LABEL,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_2_LABEL,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_3_LABEL,
+     NOTRECRUITEDTANKMAN_WT2021_BOSS_LABEL,
+     NOTRECRUITEDTANKMAN_NY22MEN_A_LABEL,
+     NOTRECRUITEDTANKMAN_NY22MEN_LABEL,
+     NOTRECRUITEDTANKMAN_NY22WOMAN_LABEL,
+     NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_LABEL,
+     NOTRECRUITEDTANKMAN_COMMANDER_REBRANDING_LABEL,
+     NOTRECRUITEDTANKMAN_WT22_BOSS_COMMANDER_LABEL,
+     NOTRECRUITEDTANKMAN_WT22_HUNTER_COMMANDER_LABEL)
     NOTRECRUITEDTANKMAN_ALL_DESC_ENUM = (NOTRECRUITEDTANKMAN_BASE_DESC,
-                                         NOTRECRUITEDTANKMAN_BUFFON_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKWOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_CZECH_WOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH1_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH3_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH4_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH5_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH6_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH7_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH8_DESC,
-                                         NOTRECRUITEDTANKMAN_TWITCH9_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_CESARE_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_STARLIGHT_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_MAEVE_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_DUKE_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_COBRA_DESC,
-                                         NOTRECRUITEDTANKMAN_YANDEX_1_DESC,
-                                         NOTRECRUITEDTANKMAN_NY19MEN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY19WOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_DESC,
-                                         NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_DESC,
-                                         NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_DESC,
-                                         NOTRECRUITEDTANKMAN_OFFSPRING_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_OFFSPRING_GUNNER_DESC,
-                                         NOTRECRUITEDTANKMAN_OFFSPRING_DRIVER_DESC,
-                                         NOTRECRUITEDTANKMAN_OFFSPRING_LOADER_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_MARINA_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_PATRICK_DESC,
-                                         NOTRECRUITEDTANKMAN_NY20WOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_DESC,
-                                         NOTRECRUITEDTANKMAN_NY20MEN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY20SNOWMEN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY21MEN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY21WOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_RU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_RU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_RU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_RU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_EU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_EU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_EU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_EU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_NA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_NA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_ASIA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_ASIA_DESC,
-                                         NOTRECRUITEDTANKMAN_HW19_COMMANDERS_DESC,
-                                         NOTRECRUITEDTANKMAN_HW21_COMMANDER1_DESC,
-                                         NOTRECRUITEDTANKMAN_HW21_COMMANDER2_DESC,
-                                         NOTRECRUITEDTANKMAN_HW21_COMMANDER4_DESC,
-                                         NOTRECRUITEDTANKMAN_HW21_COMMANDER5_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_BP1_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_BP2_DESC,
-                                         NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_DESC,
-                                         NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_DESC,
-                                         NOTRECRUITEDTANKMAN_CH_COMPENSATION_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_BINGO_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_DESC,
-                                         NOTRECRUITEDTANKMAN_YHA_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_YHA_DRIVER_DESC,
-                                         NOTRECRUITEDTANKMAN_YHA_GUNNER_DESC,
-                                         NOTRECRUITEDTANKMAN_YHA_LOADER_DESC,
-                                         NOTRECRUITEDTANKMAN_YHA_RADIOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_OOW21_STRATEGIST_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_OOW21_TANKER_1_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_OOW21_TANKER_2_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_OOW21_TANKER_3_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_OOW21_TANKER_4_COMMANDER_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_YUSHA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_VSPISHKA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_AMWAY921_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_KORBENDAILAS_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_LEBWA_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_INSPIRER_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_EVILGRANNY_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_NEARYOU_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU1_CIRCON_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU2_DAKILLZOR_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU3_NEWMULTI2K_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU4_ORZANEL_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA1_CABBAGEMECHANIC_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA2_TRAGICLOSS_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA3_CMDRAF_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA1_MASTERTORTOISE_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA2_SUMMERTIGER_DESC,
-                                         NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA3_MAHARLIKA_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_DESC,
-                                         NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_DESC,
-                                         NOTRECRUITEDTANKMAN_COMMANDER_GAGARIN21_DESC,
-                                         NOTRECRUITEDTANKMAN_WT2021_HUNTER_1_DESC,
-                                         NOTRECRUITEDTANKMAN_WT2021_HUNTER_2_DESC,
-                                         NOTRECRUITEDTANKMAN_WT2021_HUNTER_3_DESC,
-                                         NOTRECRUITEDTANKMAN_WT2021_BOSS_DESC,
-                                         NOTRECRUITEDTANKMAN_NY22MEN_A_DESC,
-                                         NOTRECRUITEDTANKMAN_NY22MEN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY22WOMAN_DESC,
-                                         NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_DESC)
+     NOTRECRUITEDTANKMAN_BUFFON_DESC,
+     NOTRECRUITEDTANKMAN_TANKWOMAN_DESC,
+     NOTRECRUITEDTANKMAN_CZECH_WOMAN_DESC,
+     NOTRECRUITEDTANKMAN_TANKMAN_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH1_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH3_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH4_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH5_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH6_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH7_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH8_DESC,
+     NOTRECRUITEDTANKMAN_TWITCH9_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_CESARE_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_STARLIGHT_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_MAEVE_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_OMELIA_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_DUKE_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_COBRA_DESC,
+     NOTRECRUITEDTANKMAN_YANDEX_1_DESC,
+     NOTRECRUITEDTANKMAN_NY19MEN_DESC,
+     NOTRECRUITEDTANKMAN_NY19WOMAN_DESC,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_DESC,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_DESC,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_DESC,
+     NOTRECRUITEDTANKMAN_OFFSPRING_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_OFFSPRING_GUNNER_DESC,
+     NOTRECRUITEDTANKMAN_OFFSPRING_DRIVER_DESC,
+     NOTRECRUITEDTANKMAN_OFFSPRING_LOADER_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_MARINA_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICK_DESC,
+     NOTRECRUITEDTANKMAN_NY20WOMAN_DESC,
+     NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_DESC,
+     NOTRECRUITEDTANKMAN_NY20MEN_DESC,
+     NOTRECRUITEDTANKMAN_NY20SNOWMEN_DESC,
+     NOTRECRUITEDTANKMAN_NY21MEN_DESC,
+     NOTRECRUITEDTANKMAN_NY21WOMAN_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_RU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_RU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_RU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_RU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_EU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_EU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER3_EU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER4_EU_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_NA_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_NA_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER1_ASIA_DESC,
+     NOTRECRUITEDTANKMAN_BOB20_COMMANDER2_ASIA_DESC,
+     NOTRECRUITEDTANKMAN_HW19_COMMANDERS_DESC,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER1_DESC,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER2_DESC,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER4_DESC,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER5_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP1_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP2_DESC,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_DESC,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_DESC,
+     NOTRECRUITEDTANKMAN_CH_COMPENSATION_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_MOCHIZUKI_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_TWITCH_ERMELINDA_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_BJORNSON_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_BINGO_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_BARONESS_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_COVER_GIRL_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_PATRICIA_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_QUICKYBABY_DESC,
+     NOTRECRUITEDTANKMAN_YHA_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_YHA_DRIVER_DESC,
+     NOTRECRUITEDTANKMAN_YHA_GUNNER_DESC,
+     NOTRECRUITEDTANKMAN_YHA_LOADER_DESC,
+     NOTRECRUITEDTANKMAN_YHA_RADIOMAN_DESC,
+     NOTRECRUITEDTANKMAN_OOW21_STRATEGIST_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_1_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_2_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_3_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_OOW21_TANKER_4_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_YUSHA_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU1_VSPISHKA_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_AMWAY921_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU2_KORBENDAILAS_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_LEBWA_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU3_INSPIRER_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_EVILGRANNY_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_RU4_NEARYOU_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU1_CIRCON_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU2_DAKILLZOR_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU3_NEWMULTI2K_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_EU4_ORZANEL_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA1_CABBAGEMECHANIC_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA2_TRAGICLOSS_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_NA3_CMDRAF_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA1_MASTERTORTOISE_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA2_SUMMERTIGER_DESC,
+     NOTRECRUITEDTANKMAN_BOB21_COMMANDER_ASIA3_MAHARLIKA_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_GAGARIN21_DESC,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_1_DESC,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_2_DESC,
+     NOTRECRUITEDTANKMAN_WT2021_HUNTER_3_DESC,
+     NOTRECRUITEDTANKMAN_WT2021_BOSS_DESC,
+     NOTRECRUITEDTANKMAN_NY22MEN_A_DESC,
+     NOTRECRUITEDTANKMAN_NY22MEN_DESC,
+     NOTRECRUITEDTANKMAN_NY22WOMAN_DESC,
+     NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_DESC,
+     NOTRECRUITEDTANKMAN_COMMANDER_REBRANDING_DESC,
+     NOTRECRUITEDTANKMAN_WT22_BOSS_COMMANDER_DESC,
+     NOTRECRUITEDTANKMAN_WT22_HUNTER_COMMANDER_DESC)
     NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20MEN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20SNOWMEN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER5_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_COMMANDER_BP1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_COMMANDER_BP2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_HOWTOGETINFO)
+     NOTRECRUITEDTANKMAN_TANKMEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20MEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20SNOWMEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER5_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_HOWTOGETINFO)
     QUESTS_AWARDS_VEHICLERENT_RENTLEFT_ENUM = (QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTDAYS, QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTBATTLES, QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTWINS)
     NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20MEN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY20SNOWMEN_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_HW21_COMMANDER5_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_COMMANDER_BP1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_COMMANDER_BP2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_HOWTOGETINFO,
-                                                 NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_HOWTOGETINFO)
+     NOTRECRUITEDTANKMAN_TANKMEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_RACE19_COMMANDERC_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20DEFAULTGIRL_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20MEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY20SNOWMEN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_HW21_COMMANDER5_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_COMMANDER_BP2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_BP_COMMANDER_1_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP2_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP3_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP5_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP6_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP7_4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_4_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_5_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_6_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_7_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP8_8_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP9_3_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_1_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_AUC_2_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_NY22DEFAULTGIRL_HOWTOGETINFO)
 
     @classmethod
     def elen_summary_rank(cls, key0):

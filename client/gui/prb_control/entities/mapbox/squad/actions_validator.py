@@ -39,9 +39,9 @@ class MapboxSquadActionsValidator(SquadActionsValidator):
 
     def _createVehiclesValidator(self, entity):
         return ActionsValidatorComposite(entity, validators=[BalancedSquadVehiclesValidator(entity),
-                                                             _MapboxVehicleValidator(entity),
-                                                             SPGForbiddenSquadVehiclesValidator(entity),
-                                                             ScoutForbiddenSquadVehiclesValidator(entity)])
+         _MapboxVehicleValidator(entity),
+         SPGForbiddenSquadVehiclesValidator(entity),
+         ScoutForbiddenSquadVehiclesValidator(entity)])
 
     def _createStateValidator(self, entity):
         return _MapboxStateValidator(entity)

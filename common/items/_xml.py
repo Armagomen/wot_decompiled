@@ -17,7 +17,6 @@ _g_floats = {'count': 0}
 _g_intTuples = {'count': 0}
 _g_floatTuples = {'count': 0}
 
-
 def cacheTuple(f, valueStorage, tupleStorage):
 
     @wraps(f)

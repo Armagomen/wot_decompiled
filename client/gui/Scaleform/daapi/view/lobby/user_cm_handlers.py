@@ -3,7 +3,7 @@
 import math
 
 from Event import Event
-from adisp import process
+from adisp import adisp_process
 from constants import DENUNCIATIONS_PER_DAY, ARENA_GUI_TYPE, IS_CHINA, PREBATTLE_TYPE
 from debug_utils import LOG_DEBUG
 from gui import SystemMessages, DialogsInterface
@@ -34,7 +34,7 @@ from messenger.proto.entities import SharedUserEntity
 from messenger.storage import storage_getter
 from nation_change_helpers.client_nation_change_helper import getValidVehicleCDForNationChange
 from skeletons.gui.game_control import IVehicleComparisonBasket, IBattleRoyaleController, IMapboxController, \
-    IEventBattlesController, IPlatoonController
+    IEventBattlesController, IPlatoonController, IFunRandomController, IEpicBattleMetaGameController, IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
@@ -67,6 +67,8 @@ class USER(object):
     VEHICLE_PREVIEW = 'vehiclePreview'
     END_REFERRAL_COMPANY = 'endReferralCompany'
     CREATE_MAPBOX_SQUAD = 'createMapboxSquad'
+    CREATE_FUN_RANDOM_SQUAD = 'createFunRandomSquad'
+    CREATE_COMP7_SQUAD = 'createComp7Squad'
 
 
 _CM_ICONS = {USER.END_REFERRAL_COMPANY: 'endReferralCompany'}
@@ -80,6 +82,9 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
     __mapboxCtrl = dependency.descriptor(IMapboxController)
     __eventBattlesCtrl = dependency.descriptor(IEventBattlesController)
     __platoonCtrl = dependency.descriptor(IPlatoonController)
+    __funRandomController = dependency.descriptor(IFunRandomController)
+    __epicCtrl = dependency.descriptor(IEpicBattleMetaGameController)
+    __comp7Ctrl = dependency.descriptor(IComp7Controller)
 
     def __init__(self, cmProxy, ctx=None):
         super(BaseUserCMHandler, self).__init__(cmProxy, ctx, handlers=self._getHandlers())
@@ -135,7 +140,7 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
 
         shared_events.requestProfile(self.databaseID, self.userName, successCallback=onDossierReceived)
 
-    @process
+    @adisp_process
     def sendClanInvite(self):
         profile = self.clanCtrl.getAccountProfile()
         userName = self.userName
@@ -182,6 +187,12 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
     def createMapboxSquad(self):
         self._doSelect(PREBATTLE_ACTION_NAME.MAPBOX_SQUAD, (self.databaseID,))
 
+    def createFunRandomSquad(self):
+        self._doSelect(PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD, (self.databaseID,))
+
+    def createComp7Squad(self):
+        self._doSelect(PREBATTLE_ACTION_NAME.COMP7_SQUAD, (self.databaseID,))
+
     def invite(self):
         user = self.usersStorage.getUser(self.databaseID)
         if self.prbEntity.getPermissions().canSendInvite():
@@ -193,20 +204,22 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
 
     def _getHandlers(self):
         handlers = {USER.INFO: 'showUserInfo',
-                    USER.CLAN_INFO: 'showClanInfo',
-                    USER.SEND_CLAN_INVITE: 'sendClanInvite',
-                    USER.CREATE_PRIVATE_CHANNEL: 'createPrivateChannel',
-                    USER.ADD_TO_FRIENDS: 'addFriend',
-                    USER.REMOVE_FROM_FRIENDS: 'removeFriend',
-                    USER.ADD_TO_IGNORED: 'setIgnored',
-                    USER.REMOVE_FROM_IGNORED: 'unsetIgnored',
-                    USER.COPY_TO_CLIPBOARD: 'copyToClipboard',
-                    USER.CREATE_SQUAD: 'createSquad',
-                    USER.CREATE_EVENT_SQUAD: 'createEventSquad',
-                    USER.CREATE_BATTLE_ROYALE_SQUAD: 'createBattleRoyaleSquad',
-                    USER.INVITE: 'invite',
-                    USER.REQUEST_FRIENDSHIP: 'requestFriendship',
-                    USER.CREATE_MAPBOX_SQUAD: 'createMapboxSquad'}
+         USER.CLAN_INFO: 'showClanInfo',
+         USER.SEND_CLAN_INVITE: 'sendClanInvite',
+         USER.CREATE_PRIVATE_CHANNEL: 'createPrivateChannel',
+         USER.ADD_TO_FRIENDS: 'addFriend',
+         USER.REMOVE_FROM_FRIENDS: 'removeFriend',
+         USER.ADD_TO_IGNORED: 'setIgnored',
+         USER.REMOVE_FROM_IGNORED: 'unsetIgnored',
+         USER.COPY_TO_CLIPBOARD: 'copyToClipboard',
+         USER.CREATE_SQUAD: 'createSquad',
+         USER.CREATE_EVENT_SQUAD: 'createEventSquad',
+         USER.CREATE_BATTLE_ROYALE_SQUAD: 'createBattleRoyaleSquad',
+         USER.INVITE: 'invite',
+         USER.REQUEST_FRIENDSHIP: 'requestFriendship',
+         USER.CREATE_MAPBOX_SQUAD: 'createMapboxSquad',
+         USER.CREATE_FUN_RANDOM_SQUAD: 'createFunRandomSquad',
+         USER.CREATE_COMP7_SQUAD: 'createComp7Squad'}
         if not IS_CHINA:
             handlers.update({USER.SET_MUTED: 'setMuted',
              USER.UNSET_MUTED: 'unsetMuted'})
@@ -280,29 +293,31 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
 
     def _addSquadInfo(self, options, isIgnored):
         if not isIgnored and not self.isSquadCreator() and self.prbDispatcher is not None:
-            canCreate = self.prbEntity.getPermissions().canCreateSquad()
-            if not (self.__isSquadAlreadyCreated(PREBATTLE_TYPE.SQUAD) or self.__isSquadAlreadyCreated(
-                    PREBATTLE_TYPE.EPIC)):
-                options.append(self._makeItem(USER.CREATE_SQUAD, MENU.contextmenu(USER.CREATE_SQUAD),
-                                              optInitData={'enabled': canCreate}))
+            canCreate = not self.prbEntity.isInQueue()
+            if not (self.__isSquadAlreadyCreated(PREBATTLE_TYPE.SQUAD) or self.__isSquadAlreadyCreated(PREBATTLE_TYPE.EPIC)):
+                isEnabled = self.__epicCtrl.isCurrentCycleActive() if self.__epicCtrl.isEpicPrbActive() else True
+                options.append(self._makeItem(USER.CREATE_SQUAD, MENU.contextmenu(USER.CREATE_SQUAD), optInitData={'enabled': canCreate and isEnabled}))
             if self.__eventBattlesCtrl.isEnabled() and not self.__isSquadAlreadyCreated(PREBATTLE_TYPE.EVENT):
-                options.append(self._makeItem(USER.CREATE_EVENT_SQUAD, MENU.contextmenu(USER.CREATE_EVENT_SQUAD),
-                                              optInitData={'enabled': canCreate,
-                                                           'textColor': 13347959}))
-            if self.__battleRoyale.isEnabled() and not self.__isSquadAlreadyCreated(
-                    PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT) and not self.__isSquadAlreadyCreated(
-                    PREBATTLE_TYPE.BATTLE_ROYALE):
+                options.append(self._makeItem(USER.CREATE_EVENT_SQUAD, MENU.contextmenu(USER.CREATE_EVENT_SQUAD), optInitData={'enabled': canCreate,
+                 'textColor': 13347959}))
+            if self.__battleRoyale.isEnabled() and not self.__isSquadAlreadyCreated(PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT) and not self.__isSquadAlreadyCreated(PREBATTLE_TYPE.BATTLE_ROYALE):
                 primeTimeStatus, _, _ = self.__battleRoyale.getPrimeTimeStatus()
-                options.append(
-                    self._makeItem(USER.CREATE_BATTLE_ROYALE_SQUAD, MENU.contextmenu(USER.CREATE_BATTLE_ROYALE_SQUAD),
-                                   optInitData={'enabled': canCreate and primeTimeStatus == PrimeTimeStatus.AVAILABLE,
-                                                'textColor': 13347959}))
+                options.append(self._makeItem(USER.CREATE_BATTLE_ROYALE_SQUAD, MENU.contextmenu(USER.CREATE_BATTLE_ROYALE_SQUAD), optInitData={'enabled': canCreate and primeTimeStatus == PrimeTimeStatus.AVAILABLE,
+                 'textColor': 13347959}))
             if self.__mapboxCtrl.isEnabled() and not self.__isSquadAlreadyCreated(PREBATTLE_TYPE.MAPBOX):
                 isOptionEnabled = canCreate and self.__mapboxCtrl.isActive() and self.__mapboxCtrl.isInPrimeTime()
-                options.append(self._makeItem(USER.CREATE_MAPBOX_SQUAD,
-                                              backport.text(R.strings.menu.contextMenu.createMapboxSquad()),
-                                              optInitData={'enabled': isOptionEnabled,
-                                                           'textColor': 13347959}))
+                options.append(self._makeItem(USER.CREATE_MAPBOX_SQUAD, backport.text(R.strings.menu.contextMenu.createMapboxSquad()), optInitData={'enabled': isOptionEnabled,
+                 'textColor': 13347959}))
+            funRandomCtrl = self.__funRandomController
+            if funRandomCtrl.isEnabled() and not self.__isSquadAlreadyCreated(PREBATTLE_TYPE.FUN_RANDOM):
+                isOptionEnabled = canCreate and funRandomCtrl.canGoToMode() and funRandomCtrl.isInPrimeTime()
+                options.append(self._makeItem(USER.CREATE_FUN_RANDOM_SQUAD, backport.text(R.strings.menu.contextMenu.createFunRandomSquad()), optInitData={'enabled': isOptionEnabled,
+                 'textColor': 13347959}))
+            if self.__comp7Ctrl.isEnabled():
+                primeTimeStatus, _, _ = self.__comp7Ctrl.getPrimeTimeStatus()
+                isEnabled = primeTimeStatus == PrimeTimeStatus.AVAILABLE and not self.__comp7Ctrl.isBanned and not self.__comp7Ctrl.isOffline and self.__comp7Ctrl.hasSuitableVehicles()
+                options.append(self._makeItem(USER.CREATE_COMP7_SQUAD, MENU.contextmenu(USER.CREATE_COMP7_SQUAD), optInitData={'enabled': canCreate and isEnabled,
+                 'textColor': 13347959}))
         return options
 
     def _addPrebattleInfo(self, options, userCMInfo):
@@ -353,9 +368,7 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
         return options
 
     def _makeAIBotOptions(self):
-        return [self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO)),
-                self._makeItem(USER.VEHICLE_PREVIEW, MENU.contextmenu(USER.VEHICLE_PREVIEW), optInitData={
-                    'enabled': not self.prbDispatcher.getFunctionalState().isNavigationDisabled()})]
+        return [self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO)), self._makeItem(USER.VEHICLE_PREVIEW, MENU.contextmenu(USER.VEHICLE_PREVIEW), optInitData={'enabled': not self.prbDispatcher.getFunctionalState().isNavigationDisabled()})]
 
     def _doSelect(self, prebattleActionName, accountsToInvite=None):
         action = PrbAction(prebattleActionName, accountsToInvite=accountsToInvite)
@@ -460,8 +473,7 @@ class AppealCMHandler(BaseUserCMHandler):
         return [ make(denunciation, MENU.contextmenu(denunciation), optInitData={'enabled': self._isAppealsForTopicEnabled(denunciation)}) for denunciation in order ]
 
     def _createSubMenuItem(self):
-        labelStr = u'{} {}/{}'.format(i18n.makeString(MENU.CONTEXTMENU_APPEAL),
-                                      self._denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
+        labelStr = u'{} {}/{}'.format(i18n.makeString(MENU.CONTEXTMENU_APPEAL), self._denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
         return self._makeItem(DENUNCIATIONS.APPEAL, labelStr, optInitData={'enabled': self._denunciator.isAppealsEnabled()}, optSubMenu=self._getSubmenuData())
 
 
@@ -533,6 +545,18 @@ class CustomUserCMHandler(BaseUserCMHandler):
     def _excludeOptions(self, options):
         excludedOptions = self.__excludedOptions
         options = [ opt for opt in options if opt['id'] not in excludedOptions ]
+        return options
+
+
+class Comp7LeaderboardCMHandler(BaseUserCMHandler):
+
+    def _generateOptions(self, ctx=None):
+        userCMInfo = self._getUseCmInfo()
+        options = [self._makeItem(USER.INFO, MENU.contextmenu(USER.INFO))]
+        options = self._addFriendshipInfo(options, userCMInfo)
+        options = self._addRemoveFriendInfo(options, userCMInfo)
+        options = self._addChannelInfo(options, userCMInfo)
+        options.append(self._makeItem(USER.COPY_TO_CLIPBOARD, MENU.contextmenu(USER.COPY_TO_CLIPBOARD)))
         return options
 
 

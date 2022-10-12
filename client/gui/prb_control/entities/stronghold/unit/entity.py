@@ -49,7 +49,6 @@ ERROR_MAX_RETRY_COUNT = 3
 SUCCESS_STATUSES = (200, 201, 403, 409)
 DEFAULT_OK_WEB_REQUEST_ID = 0
 
-
 class StrongholdDynamicRosterSettings(DynamicRosterSettings):
 
     def __init__(self, unit, strongholdData):
@@ -252,8 +251,7 @@ class StrongholdEntity(UnitEntity):
 
     def onUnitNotifyReceived(self, unitMgrID, notifyCode, notifyString, argsList):
         if notifyCode == UNIT_ERROR.NO_CLAN_MEMBERS and not self.__leaveInitiator:
-            SystemMessages.pushMessage(backport.text(R.strings.tooltips.stronghold.prebattle.noClanMembers()),
-                                       type=SM_TYPE.Warning)
+            SystemMessages.pushMessage(backport.text(R.strings.tooltips.stronghold.prebattle.noClanMembers()), type=SM_TYPE.Warning)
         elif notifyCode == UNIT_ERROR.FAIL_EXT_UNIT_QUEUE_START and not self.getFlags().isInQueue():
             self.__waitingManager.onResponseError()
 
@@ -346,9 +344,7 @@ class StrongholdEntity(UnitEntity):
         equipRoles = UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS | UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS
         myPInfo = self.getPlayerInfo()
         if not pInfo.isCurrentPlayer() and pInfo.role & equipRoles and myPInfo.isCommander():
-            SystemMessages.pushMessage(
-                backport.text(R.strings.system_messages.unit.notification.PLAYER_BECOME_EQUIPMENT_COMMANDER()),
-                type=SM_TYPE.Warning)
+            SystemMessages.pushMessage(backport.text(R.strings.system_messages.unit.notification.PLAYER_BECOME_EQUIPMENT_COMMANDER()), type=SM_TYPE.Warning)
 
     def unit_onUnitPlayerRoleChanged(self, playerID, prevRoleFlags, nextRoleFlags):
         super(StrongholdEntity, self).unit_onUnitPlayerRoleChanged(playerID, prevRoleFlags, nextRoleFlags)
@@ -364,21 +360,15 @@ class StrongholdEntity(UnitEntity):
             return
         pInfo = self.getPlayerInfo(dbID=playerID)
         if userNoLongerEquipmentCommander and pInfo.isCurrentPlayer():
-            SystemMessages.pushMessage(
-                backport.text(R.strings.system_messages.unit.warnings.ANOTHER_PLAYER_BECOME_EQUIPMENT_COMMANDER()),
-                type=SM_TYPE.Warning)
+            SystemMessages.pushMessage(backport.text(R.strings.system_messages.unit.warnings.ANOTHER_PLAYER_BECOME_EQUIPMENT_COMMANDER()), type=SM_TYPE.Warning)
             return
         if userBecomesEquipmentCommander and pInfo.isCurrentPlayer():
-            SystemMessages.pushMessage(
-                backport.text(R.strings.system_messages.unit.notification.PLAYER_BECOME_EQUIPMENT_COMMANDER()),
-                type=SM_TYPE.Information)
+            SystemMessages.pushMessage(backport.text(R.strings.system_messages.unit.notification.PLAYER_BECOME_EQUIPMENT_COMMANDER()), type=SM_TYPE.Information)
             return
         myPInfo = self.getPlayerInfo()
         userEquipmentRoleChanged = userBecomesEquipmentCommander or userNoLongerEquipmentCommander
         if userEquipmentRoleChanged and not pInfo.isCurrentPlayer() and myPInfo.isCommander():
-            SystemMessages.pushMessage(
-                backport.text(R.strings.system_messages.unit.warnings.ANOTHER_PLAYER_BECOME_EQUIPMENT_COMMANDER()),
-                type=SM_TYPE.Warning)
+            SystemMessages.pushMessage(backport.text(R.strings.system_messages.unit.warnings.ANOTHER_PLAYER_BECOME_EQUIPMENT_COMMANDER()), type=SM_TYPE.Warning)
             return
 
     def unit_onUnitMembersListChanged(self):
@@ -656,6 +646,10 @@ class StrongholdEntity(UnitEntity):
             return
         self.__slotVehicleFilters = response.getData()
         self._invokeListeners('onSlotVehileFiltersChanged')
+
+    @property
+    def _showUnitActionNames(self):
+        return (PREBATTLE_ACTION_NAME.STRONGHOLD,)
 
     def _createActionsValidator(self):
         return StrongholdActionsValidator(self)

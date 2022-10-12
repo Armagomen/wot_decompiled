@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSummaryWindow.py
-from adisp import process
+from adisp import adisp_process
+from gui.Scaleform.daapi.view.meta.ProfileSummaryWindowMeta import ProfileSummaryWindowMeta
+from gui.Scaleform.locale.PROFILE import PROFILE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.impl import backport
-from gui.shared import event_dispatcher as shared_events
-from helpers.i18n import makeString as _ms
 from gui.clans.clan_helpers import ClanListener
 from gui.clans.formatters import getClanRoleString
+from gui.impl import backport
+from gui.shared import event_dispatcher as shared_events
 from gui.shared.ClanCache import ClanInfo
 from gui.shared.formatters import text_styles
 from gui.shared.view_helpers.emblems import ClanEmblemsHelper
-from gui.Scaleform.daapi.view.meta.ProfileSummaryWindowMeta import ProfileSummaryWindowMeta
-from gui.Scaleform.locale.PROFILE import PROFILE
+from helpers.i18n import makeString as _ms
+
 
 class ProfileSummaryWindow(ProfileSummaryWindowMeta, ClanEmblemsHelper, ClanListener):
 
@@ -73,7 +74,7 @@ class ProfileSummaryWindow(ProfileSummaryWindowMeta, ClanEmblemsHelper, ClanList
             self.requestClanEmblem32x32(clanDBID)
         return
 
-    @process
+    @adisp_process
     def _receiveRating(self, databaseID):
         req = self.itemsCache.items.dossiers.getUserDossierRequester(int(databaseID))
         self.__rating = yield req.getGlobalRating()

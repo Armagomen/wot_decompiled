@@ -58,29 +58,29 @@ from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeG
 from preview_selectable_logic import PreviewSelectableLogic
 
 VEHICLE_PREVIEW_ALIASES = (VIEW_ALIAS.VEHICLE_PREVIEW,
-                           VIEW_ALIAS.HERO_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW,
-                           VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
+ VIEW_ALIAS.HERO_VEHICLE_PREVIEW,
+ VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW,
+ VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW,
+ VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW,
+ VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW,
+ VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW,
+ VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW,
+ VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
 _BACK_BTN_LABELS = {VIEW_ALIAS.LOBBY_HANGAR: 'hangar',
-                    VIEW_ALIAS.LOBBY_STORE: 'shop',
-                    VIEW_ALIAS.LOBBY_STORAGE: 'storage',
-                    VIEW_ALIAS.LOBBY_RESEARCH: 'researchTree',
-                    VIEW_ALIAS.LOBBY_TECHTREE: 'researchTree',
-                    VIEW_ALIAS.VEHICLE_COMPARE: 'vehicleCompare',
-                    VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW: 'referralProgram',
-                    VIEW_ALIAS.EPIC_BATTLE_PAGE: 'frontline',
-                    VIEW_ALIAS.RANKED_BATTLE_PAGE: 'ranked',
-                    VIEW_ALIAS.ADVENT_CALENDAR: 'adventCalendar',
-                    VIEW_ALIAS.VEH_POST_PROGRESSION: 'vehPostProgression',
-                    PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS: 'personalAwards',
-                    VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW: None,
-                    VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW: None,
-                    VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell'}
+ VIEW_ALIAS.LOBBY_STORE: 'shop',
+ VIEW_ALIAS.LOBBY_STORAGE: 'storage',
+ VIEW_ALIAS.LOBBY_RESEARCH: 'researchTree',
+ VIEW_ALIAS.LOBBY_TECHTREE: 'researchTree',
+ VIEW_ALIAS.VEHICLE_COMPARE: 'vehicleCompare',
+ VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW: 'referralProgram',
+ VIEW_ALIAS.EPIC_BATTLE_PAGE: 'frontline',
+ VIEW_ALIAS.RANKED_BATTLE_PAGE: 'ranked',
+ VIEW_ALIAS.ADVENT_CALENDAR: 'adventCalendar',
+ VIEW_ALIAS.VEH_POST_PROGRESSION: 'vehPostProgression',
+ PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS: 'personalAwards',
+ VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW: None,
+ VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW: None,
+ VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell'}
 _TABS_DATA = ({'id': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE,
   'label': VEHICLE_PREVIEW.INFOPANEL_TAB_BROWSE_NAME,
   'linkage': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE}, {'id': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE,
@@ -179,14 +179,12 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.__unmodifiedItemsPack = deepcopy(self._itemsPack)
         addBuiltInEquipment(self._itemsPack, self._itemsCache, self._vehicleCD)
         notInteractive = (VIEW_ALIAS.LOBBY_STORE,
-                          VIEW_ALIAS.RANKED_BATTLE_PAGE,
-                          VIEW_ALIAS.VEH_POST_PROGRESSION,
-                          VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW,
-                          VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
-        self._heroInteractive = not (self._itemsPack or self.__offers or ctx.get('offerID',
-                                                                                 0) or self.__topPanelData or self._backAlias in notInteractive)
-        self.__haveCustomCrew = any(
-            (item.type == ItemPackType.CREW_CUSTOM for item in self._itemsPack)) if self._itemsPack else False
+         VIEW_ALIAS.RANKED_BATTLE_PAGE,
+         VIEW_ALIAS.VEH_POST_PROGRESSION,
+         VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW,
+         VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
+        self._heroInteractive = not (self._itemsPack or self.__offers or ctx.get('offerID', 0) or self.__topPanelData or self._backAlias in notInteractive)
+        self.__haveCustomCrew = any((item.type == ItemPackType.CREW_CUSTOM for item in self._itemsPack)) if self._itemsPack else False
         self.__hangarVehicleCD = ctx.get('hangarVehicleCD')
         self.__previewAppearance = ctx.get('previewAppearance')
         if self.__previewAppearance:

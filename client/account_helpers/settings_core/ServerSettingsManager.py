@@ -7,7 +7,7 @@ from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.migrations import migrateToVersion
 from account_helpers.settings_core.settings_constants import TUTORIAL, VERSION, GuiSettingsBehavior, OnceOnlyHints, \
     SPGAim, CONTOUR
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui.battle_pass.battle_pass_helpers import updateBattlePassSettings
 from gui.server_events.pm_constants import PM_TUTOR_FIELDS
@@ -43,6 +43,8 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     MAPBOX_CAROUSEL_FILTER_2 = 'MAPBOX_CAROUSEL_FILTER_2'
     FUN_RANDOM_CAROUSEL_FILTER_1 = 'FUN_RANDOM_CAROUSEL_FILTER_1'
     FUN_RANDOM_CAROUSEL_FILTER_2 = 'FUN_RANDOM_CAROUSEL_FILTER_2'
+    COMP7_CAROUSEL_FILTER_1 = 'COMP7_CAROUSEL_FILTER_1'
+    COMP7_CAROUSEL_FILTER_2 = 'COMP7_CAROUSEL_FILTER_2'
     GUI_START_BEHAVIOR = 'GUI_START_BEHAVIOR'
     EULA_VERSION = 'EULA_VERSION'
     MARKS_ON_GUN = 'MARKS_ON_GUN'
@@ -58,6 +60,7 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     BATTLE_BORDER_MAP = 'FEEDBACK_BORDER_MAP'
     QUESTS_PROGRESS = 'QUESTS_PROGRESS'
     UI_STORAGE = 'UI_STORAGE'
+    UI_STORAGE_2 = 'UI_STORAGE_2'
     BATTLE_MATTERS_QUESTS = 'BATTLE_MATTERS_QUESTS'
     SESSION_STATS = 'SESSION_STATS'
     BATTLE_PASS_STORAGE = 'BATTLE_PASS_STORAGE'
@@ -81,7 +84,9 @@ class UI_STORAGE_KEYS(CONST_CONTAINER):
     DISABLE_EDITABLE_STYLE_REWRITE_WARNING = 'disable_editable_style_rewrite_warning'
     OPTIONAL_DEVICE_SETUP_INTRO_SHOWN = 'optional_device_setup_intro_shown'
     TURBOSHAFT_HIGHLIGHTS_COUNTER = 'turboshaft_highlights_count'
+    ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER = 'rocket_acceleration_highlights_count'
     TURBOSHAFT_MARK_IS_SHOWN = 'turboshaft_mark_shown'
+    ROCKET_ACCELERATION_MARK_IS_SHOWN = 'rocket_acceleration_mark_shown'
     EPIC_BATTLE_ABILITIES_INTRO_SHOWN = 'epic_battle_abilities_intro_shown'
     POST_PROGRESSION_INTRO_SHOWN = 'post_progression_intro_shown'
     VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN = 'veh_preview_post_progression_bullet_shown'
@@ -317,10 +322,10 @@ class ServerSettingsManager(object):
                                                       'level_9': 28,
                                                       'level_10': 29}, offsets={}),
      SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_2: Section(masks={'premium': 0,
-                                                      'elite': 1,
-                                                      'rented': 2,
-                                                      'igr': 3,
-                                                      'gameMode': 4,
+                                                                    'elite': 1,
+                                                                    'rented': 2,
+                                                                    'igr': 3,
+                                                                    'gameMode': 4,
                                                       'favorite': 5,
                                                       'bonus': 6,
                                                       'event': 7,
@@ -331,34 +336,91 @@ class ServerSettingsManager(object):
                                                       'role_HT_universal': 14,
                                                       'role_MT_universal': 15,
                                                       'role_MT_sniper': 16,
-                                                      'role_MT_assault': 17,
-                                                      'role_MT_support': 18,
-                                                      'role_ATSPG_assault': 19,
-                                                      'role_ATSPG_universal': 20,
-                                                      'role_ATSPG_sniper': 21,
-                                                      'role_ATSPG_support': 22,
-                                                      'role_LT_universal': 23,
-                                                      'role_LT_wheeled': 24,
-                                                      'role_SPG': 25}, offsets={}),
-     SETTINGS_SECTIONS.BATTLEPASS_CAROUSEL_FILTER_1: Section(masks={'isCommonProgression': 0}, offsets={}),
-     SETTINGS_SECTIONS.GUI_START_BEHAVIOR: Section(masks={GuiSettingsBehavior.FREE_XP_INFO_DIALOG_SHOWED: 0,
-                                            GuiSettingsBehavior.RANKED_WELCOME_VIEW_SHOWED: 1,
-                                            GuiSettingsBehavior.RANKED_WELCOME_VIEW_STARTED: 2,
-                                            GuiSettingsBehavior.EPIC_RANDOM_CHECKBOX_CLICKED: 3,
-                                            GuiSettingsBehavior.DISPLAY_PLATOON_MEMBER_CLICKED: 25,
-                                            GuiSettingsBehavior.VEH_POST_PROGRESSION_UNLOCK_MSG_NEED_SHOW: 26,
-                                            GuiSettingsBehavior.BIRTHDAY_CALENDAR_INTRO_SHOWED: 27,
-                                            GuiSettingsBehavior.RESOURCE_WELL_INTRO_SHOWN: 28}, offsets={}),
-     SETTINGS_SECTIONS.EULA_VERSION: Section(masks={}, offsets={'version': Offset(0, 4294967295L)}),
-     SETTINGS_SECTIONS.MARKS_ON_GUN: Section(masks={}, offsets={GAME.SHOW_MARKS_ON_GUN: Offset(0, 4294967295L)}),
-     SETTINGS_SECTIONS.CONTACTS: Section(masks={CONTACTS.SHOW_OFFLINE_USERS: 0,
-                                  CONTACTS.SHOW_OTHERS_CATEGORY: 1}, offsets={CONTACTS.ANTISPAM_MESSAGES_COUNTER: Offset(2, 28)}),
-     SETTINGS_SECTIONS.FALLOUT: Section(masks={'isEnabled': 3,
-                                 'isAutomatch': 4,
-                                 'hasVehicleLvl8': 5,
-                                 'hasVehicleLvl10': 6}, offsets={'falloutBattleType': Offset(8, 65280)}),
-     SETTINGS_SECTIONS.TUTORIAL: Section(masks={TUTORIAL.CUSTOMIZATION: 0,
-                                  TUTORIAL.TECHNICAL_MAINTENANCE: 1,
+                                                                    'role_MT_assault': 17,
+                                                                    'role_MT_support': 18,
+                                                                    'role_ATSPG_assault': 19,
+                                                                    'role_ATSPG_universal': 20,
+                                                                    'role_ATSPG_sniper': 21,
+                                                                    'role_ATSPG_support': 22,
+                                                                    'role_LT_universal': 23,
+                                                                    'role_LT_wheeled': 24,
+                                                                    'role_SPG': 25}, offsets={}),
+                SETTINGS_SECTIONS.BATTLEPASS_CAROUSEL_FILTER_1: Section(masks={'isCommonProgression': 0}, offsets={}),
+                SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_1: Section(masks={'ussr': 0,
+                                                                          'germany': 1,
+                                                                          'usa': 2,
+                                                                          'china': 3,
+                                                                          'france': 4,
+                                                                          'uk': 5,
+                                                                          'japan': 6,
+                                                                          'czech': 7,
+                                                                          'sweden': 8,
+                                                                          'poland': 9,
+                                                                          'italy': 10,
+                                                                          'lightTank': 15,
+                                                                          'mediumTank': 16,
+                                                                          'heavyTank': 17,
+                                                                          'SPG': 18,
+                                                                          'AT-SPG': 19,
+                                                                          'level_1': 20,
+                                                                          'level_2': 21,
+                                                                          'level_3': 22,
+                                                                          'level_4': 23,
+                                                                          'level_5': 24,
+                                                                          'level_6': 25,
+                                                                          'level_7': 26,
+                                                                          'level_8': 27,
+                                                                          'level_9': 28,
+                                                                          'level_10': 29}, offsets={}),
+                SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_2: Section(masks={'premium': 0,
+                                                                          'elite': 1,
+                                                                          'rented': 2,
+                                                                          'igr': 3,
+                                                                          'gameMode': 4,
+                                                                          'favorite': 5,
+                                                                          'bonus': 6,
+                                                                          'event': 7,
+                                                                          'crystals': 8,
+                                                                          'comp7': 9,
+                                                                          'role_HT_assault': 11,
+                                                                          'role_HT_break': 12,
+                                                                          'role_HT_support': 13,
+                                                                          'role_HT_universal': 14,
+                                                                          'role_MT_universal': 15,
+                                                                          'role_MT_sniper': 16,
+                                                                          'role_MT_assault': 17,
+                                                                          'role_MT_support': 18,
+                                                                          'role_ATSPG_assault': 19,
+                                                                          'role_ATSPG_universal': 20,
+                                                                          'role_ATSPG_sniper': 21,
+                                                                          'role_ATSPG_support': 22,
+                                                                          'role_LT_universal': 23,
+                                                                          'role_LT_wheeled': 24,
+                                                                          'role_SPG': 25}, offsets={}),
+                SETTINGS_SECTIONS.GUI_START_BEHAVIOR: Section(masks={GuiSettingsBehavior.FREE_XP_INFO_DIALOG_SHOWED: 0,
+                                                                     GuiSettingsBehavior.RANKED_WELCOME_VIEW_SHOWED: 1,
+                                                                     GuiSettingsBehavior.RANKED_WELCOME_VIEW_STARTED: 2,
+                                                                     GuiSettingsBehavior.EPIC_RANDOM_CHECKBOX_CLICKED: 3,
+                                                                     GuiSettingsBehavior.DISPLAY_PLATOON_MEMBER_CLICKED: 25,
+                                                                     GuiSettingsBehavior.VEH_POST_PROGRESSION_UNLOCK_MSG_NEED_SHOW: 26,
+                                                                     GuiSettingsBehavior.BIRTHDAY_CALENDAR_INTRO_SHOWED: 27,
+                                                                     GuiSettingsBehavior.RESOURCE_WELL_INTRO_SHOWN: 28,
+                                                                     GuiSettingsBehavior.CREW_LAMP_WELCOME_SCREEN_SHOWN: 29,
+                                                                     GuiSettingsBehavior.COMP7_INTRO_SHOWN: 30},
+                                                              offsets={}),
+                SETTINGS_SECTIONS.EULA_VERSION: Section(masks={}, offsets={'version': Offset(0, 4294967295L)}),
+                SETTINGS_SECTIONS.MARKS_ON_GUN: Section(masks={},
+                                                        offsets={GAME.SHOW_MARKS_ON_GUN: Offset(0, 4294967295L)}),
+                SETTINGS_SECTIONS.CONTACTS: Section(masks={CONTACTS.SHOW_OFFLINE_USERS: 0,
+                                                           CONTACTS.SHOW_OTHERS_CATEGORY: 1},
+                                                    offsets={CONTACTS.ANTISPAM_MESSAGES_COUNTER: Offset(2, 28)}),
+                SETTINGS_SECTIONS.FALLOUT: Section(masks={'isEnabled': 3,
+                                                          'isAutomatch': 4,
+                                                          'hasVehicleLvl8': 5,
+                                                          'hasVehicleLvl10': 6},
+                                                   offsets={'falloutBattleType': Offset(8, 65280)}),
+                SETTINGS_SECTIONS.TUTORIAL: Section(masks={TUTORIAL.CUSTOMIZATION: 0,
+                                                           TUTORIAL.TECHNICAL_MAINTENANCE: 1,
                                   TUTORIAL.PERSONAL_CASE: 2,
                                   TUTORIAL.RESEARCH: 3,
                                   TUTORIAL.RESEARCH_TREE: 4,
@@ -367,64 +429,66 @@ class ServerSettingsManager(object):
                                   TUTORIAL.FIRE_EXTINGUISHER_USED: 10,
                                   TUTORIAL.WAS_QUESTS_TUTORIAL_STARTED: 11}, offsets={}),
      SETTINGS_SECTIONS.ONCE_ONLY_HINTS: Section(masks={OnceOnlyHints.FALLOUT_QUESTS_TAB: 0,
-                                         OnceOnlyHints.C11N_PROGRESSION_VIEW_HINT: 1,
-                                         OnceOnlyHints.SHOP_TRADE_IN_HINT: 2,
-                                         OnceOnlyHints.VEH_COMPARE_CONFIG_HINT: 3,
-                                         OnceOnlyHints.HOLD_SHEET_HINT: 4,
-                                         OnceOnlyHints.HAVE_NEW_BADGE_HINT: 5,
-                                         OnceOnlyHints.EPIC_RESERVES_SLOT_HINT: 6,
-                                         OnceOnlyHints.SHOW_ABILITIES_BUTTON_HINT: 7,
-                                         OnceOnlyHints.PAUSE_HINT: 8,
-                                         OnceOnlyHints.HAVE_NEW_SUFFIX_BADGE_HINT: 9,
-                                         OnceOnlyHints.BADGE_PAGE_NEW_SUFFIX_BADGE_HINT: 10,
-                                         OnceOnlyHints.C11N_AUTOPROLONGATION_HINT: 11,
-                                         OnceOnlyHints.BLUEPRINTS_SWITCHBUTTON_HINT: 12,
-                                         OnceOnlyHints.BLUEPRINTS_RESEARCH_BUTTON_HINT: 13,
-                                         OnceOnlyHints.BLUEPRINTS_TECHTREE_CONVERT_BUTTON_HINT: 14,
-                                         OnceOnlyHints.BLUEPRINTS_RESEARCH_CONVERT_BUTTON_HINT: 15,
-                                         OnceOnlyHints.BLUEPRINT_SCREEN_CONVERT_FRAGMENT_HINT: 16,
-                                         OnceOnlyHints.ACCOUNT_BUTTON_HINT: 17,
-                                         OnceOnlyHints.SESSION_STATS_OPEN_BTN_HINT: 18,
-                                         OnceOnlyHints.BATTLE_SESSION_UP_BUTTON_TOURNAMENT_HINT: 19,
-                                         OnceOnlyHints.CREW_OPERATION_BTN_HINT: 20,
-                                         OnceOnlyHints.SOUND_BUTTONEX_HINT: 21,
-                                         OnceOnlyHints.SESSION_STATS_SETTINGS_BTN_HINT: 22,
-                                         OnceOnlyHints.VEHICLE_PREVIEW_MODULES_BUTTON_HINT: 23,
-                                         OnceOnlyHints.C11N_EDITABLE_STYLES_HINT: 24,
-                                         OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLES_HINT: 25,
-                                         OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: 26,
-                                         OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: 27,
-                                         OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: 28,
-                                         OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: 29,
-                                         OnceOnlyHints.CRYSTAL_BTN_HINT: 30}, offsets={}),
-     SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2: Section(masks={OnceOnlyHints.AMMUNITION_PANEL_HINT: 0,
-                                                         OnceOnlyHints.AMMUNITION_FILTER_HINT: 1,
-                                                         OnceOnlyHints.OPT_DEV_DRAG_AND_DROP_HINT: 2,
-                                                         OnceOnlyHints.DOGTAG_HANGAR_HINT: 3,
-                                                         OnceOnlyHints.DOGTAG_PROFILE_HINT: 4,
-                                                         OnceOnlyHints.PLATOON_BTN_HINT: 5,
-                                                         OnceOnlyHints.MODE_SELECTOR_WIDGETS_BTN_HINT: 6,
-                                                         OnceOnlyHints.HANGAR_MANUAL_HINT: 7,
-                                                         OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT: 8,
-                                                         OnceOnlyHints.AMUNNITION_PANEL_EPIC_BATTLE_ABILITIES_HINT: 9,
-                                                         OnceOnlyHints.VEHICLE_PREVIEW_POST_PROGRESSION_BUTTON_HINT: 10,
-                                                         OnceOnlyHints.VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 11,
-                                                         OnceOnlyHints.HERO_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 12,
-                                                         OnceOnlyHints.SWITCH_EQUIPMENT_AUXILIARY_LOADOUT_HINT: 13,
-                                                         OnceOnlyHints.SWITCH_EQUIPMENT_ESSENTIALS_LOADOUT_HINT: 14,
-                                                         OnceOnlyHints.COMPARE_MODIFICATIONS_PANEL_HINT: 15,
-                                                         OnceOnlyHints.COMPARE_SPECIALIZATION_BUTTON_HINT: 16,
-                                                         OnceOnlyHints.TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 17,
-                                                         OnceOnlyHints.PERSONAL_TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 18,
-                                                         OnceOnlyHints.RESEARCH_POST_PROGRESSION_ENTRY_POINT_HINT: 19,
-                                                         OnceOnlyHints.WOTPLUS_HANGAR_HINT: 20,
-                                                         OnceOnlyHints.WOTPLUS_PROFILE_HINT: 21,
-                                                         OnceOnlyHints.HANGAR_HAVE_NEW_BADGE_HINT: 22,
-                                                         OnceOnlyHints.HANGAR_HAVE_NEW_SUFFIX_BADGE_HINT: 23,
-                                                         OnceOnlyHints.APPLY_ABILITIES_TO_TYPE_CHECKBOX_HINT: 24,
-                                                         OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT: 25,
-                                                         OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT: 26},
-                                                  offsets={}),
+                                                       OnceOnlyHints.C11N_PROGRESSION_VIEW_HINT: 1,
+                                                       OnceOnlyHints.SHOP_TRADE_IN_HINT: 2,
+                                                       OnceOnlyHints.VEH_COMPARE_CONFIG_HINT: 3,
+                                                       OnceOnlyHints.HOLD_SHEET_HINT: 4,
+                                                       OnceOnlyHints.HAVE_NEW_BADGE_HINT: 5,
+                                                       OnceOnlyHints.EPIC_RESERVES_SLOT_HINT: 6,
+                                                       OnceOnlyHints.SHOW_ABILITIES_BUTTON_HINT: 7,
+                                                       OnceOnlyHints.PAUSE_HINT: 8,
+                                                       OnceOnlyHints.HAVE_NEW_SUFFIX_BADGE_HINT: 9,
+                                                       OnceOnlyHints.BADGE_PAGE_NEW_SUFFIX_BADGE_HINT: 10,
+                                                       OnceOnlyHints.C11N_AUTOPROLONGATION_HINT: 11,
+                                                       OnceOnlyHints.BLUEPRINTS_SWITCHBUTTON_HINT: 12,
+                                                       OnceOnlyHints.BLUEPRINTS_RESEARCH_BUTTON_HINT: 13,
+                                                       OnceOnlyHints.BLUEPRINTS_TECHTREE_CONVERT_BUTTON_HINT: 14,
+                                                       OnceOnlyHints.BLUEPRINTS_RESEARCH_CONVERT_BUTTON_HINT: 15,
+                                                       OnceOnlyHints.BLUEPRINT_SCREEN_CONVERT_FRAGMENT_HINT: 16,
+                                                       OnceOnlyHints.ACCOUNT_BUTTON_HINT: 17,
+                                                       OnceOnlyHints.SESSION_STATS_OPEN_BTN_HINT: 18,
+                                                       OnceOnlyHints.BATTLE_SESSION_UP_BUTTON_TOURNAMENT_HINT: 19,
+                                                       OnceOnlyHints.CREW_OPERATION_BTN_HINT: 20,
+                                                       OnceOnlyHints.SOUND_BUTTONEX_HINT: 21,
+                                                       OnceOnlyHints.SESSION_STATS_SETTINGS_BTN_HINT: 22,
+                                                       OnceOnlyHints.VEHICLE_PREVIEW_MODULES_BUTTON_HINT: 23,
+                                                       OnceOnlyHints.C11N_EDITABLE_STYLES_HINT: 24,
+                                                       OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLES_HINT: 25,
+                                                       OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: 26,
+                                                       OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: 27,
+                                                       OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: 28,
+                                                       OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: 29,
+                                                       OnceOnlyHints.CRYSTAL_BTN_HINT: 30}, offsets={}),
+                SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2: Section(masks={OnceOnlyHints.AMMUNITION_PANEL_HINT: 0,
+                                                                    OnceOnlyHints.AMMUNITION_FILTER_HINT: 1,
+                                                                    OnceOnlyHints.OPT_DEV_DRAG_AND_DROP_HINT: 2,
+                                                                    OnceOnlyHints.DOGTAG_HANGAR_HINT: 3,
+                                                                    OnceOnlyHints.DOGTAG_PROFILE_HINT: 4,
+                                                                    OnceOnlyHints.PLATOON_BTN_HINT: 5,
+                                                                    OnceOnlyHints.MODE_SELECTOR_WIDGETS_BTN_HINT: 6,
+                                                                    OnceOnlyHints.HANGAR_MANUAL_HINT: 7,
+                                                                    OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT: 8,
+                                                                    OnceOnlyHints.AMUNNITION_PANEL_EPIC_BATTLE_ABILITIES_HINT: 9,
+                                                                    OnceOnlyHints.VEHICLE_PREVIEW_POST_PROGRESSION_BUTTON_HINT: 10,
+                                                                    OnceOnlyHints.VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 11,
+                                                                    OnceOnlyHints.HERO_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 12,
+                                                                    OnceOnlyHints.SWITCH_EQUIPMENT_AUXILIARY_LOADOUT_HINT: 13,
+                                                                    OnceOnlyHints.SWITCH_EQUIPMENT_ESSENTIALS_LOADOUT_HINT: 14,
+                                                                    OnceOnlyHints.COMPARE_MODIFICATIONS_PANEL_HINT: 15,
+                                                                    OnceOnlyHints.COMPARE_SPECIALIZATION_BUTTON_HINT: 16,
+                                                                    OnceOnlyHints.TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 17,
+                                                                    OnceOnlyHints.PERSONAL_TRADE_IN_VEHICLE_POST_PROGRESSION_ENTRY_POINT_HINT: 18,
+                                                                    OnceOnlyHints.RESEARCH_POST_PROGRESSION_ENTRY_POINT_HINT: 19,
+                                                                    OnceOnlyHints.WOTPLUS_HANGAR_HINT: 20,
+                                                                    OnceOnlyHints.WOTPLUS_PROFILE_HINT: 21,
+                                                                    OnceOnlyHints.HANGAR_HAVE_NEW_BADGE_HINT: 22,
+                                                                    OnceOnlyHints.HANGAR_HAVE_NEW_SUFFIX_BADGE_HINT: 23,
+                                                                    OnceOnlyHints.APPLY_ABILITIES_TO_TYPE_CHECKBOX_HINT: 24,
+                                                                    OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT: 25,
+                                                                    OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT: 26,
+                                                                    OnceOnlyHints.PERSONAL_RESERVES_HANGAR_HINT: 27,
+                                                                    OnceOnlyHints.PERSONAL_RESERVES_ACTIVATION_HINT: 28},
+                                                             offsets={}),
                 SETTINGS_SECTIONS.DAMAGE_INDICATOR: Section(masks={DAMAGE_INDICATOR.TYPE: 0,
                                                                    DAMAGE_INDICATOR.PRESET_CRITS: 1,
                                                                    DAMAGE_INDICATOR.DAMAGE_VALUE: 2,
@@ -435,52 +499,60 @@ class ServerSettingsManager(object):
                 SETTINGS_SECTIONS.DAMAGE_LOG: Section(masks={DAMAGE_LOG.TOTAL_DAMAGE: 0,
                                                              DAMAGE_LOG.BLOCKED_DAMAGE: 1,
                                                              DAMAGE_LOG.ASSIST_DAMAGE: 2,
-                                    DAMAGE_LOG.ASSIST_STUN: 3}, offsets={DAMAGE_LOG.SHOW_DETAILS: Offset(4, 48),
-                                    DAMAGE_LOG.SHOW_EVENT_TYPES: Offset(6, 192),
-                                    DAMAGE_LOG.EVENT_POSITIONS: Offset(8, 768)}),
-     SETTINGS_SECTIONS.BATTLE_EVENTS: Section(masks={BATTLE_EVENTS.SHOW_IN_BATTLE: 0,
-                                       BATTLE_EVENTS.ENEMY_HP_DAMAGE: 1,
-                                       BATTLE_EVENTS.ENEMY_BURNING: 2,
-                                       BATTLE_EVENTS.ENEMY_RAM_ATTACK: 3,
-                                       BATTLE_EVENTS.BLOCKED_DAMAGE: 4,
-                                       BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE: 5,
-                                       BATTLE_EVENTS.ENEMY_TRACK_DAMAGE: 6,
-                                       BATTLE_EVENTS.ENEMY_DETECTION: 7,
-                                       BATTLE_EVENTS.ENEMY_KILL: 8,
-                                       BATTLE_EVENTS.BASE_CAPTURE_DROP: 9,
-                                       BATTLE_EVENTS.BASE_CAPTURE: 10,
-                                       BATTLE_EVENTS.ENEMY_CRITICAL_HIT: 11,
-                                       BATTLE_EVENTS.EVENT_NAME: 12,
-                                       BATTLE_EVENTS.VEHICLE_INFO: 13,
-                                       BATTLE_EVENTS.ENEMY_WORLD_COLLISION: 14,
-                                       BATTLE_EVENTS.RECEIVED_DAMAGE: 15,
-                                       BATTLE_EVENTS.RECEIVED_CRITS: 16,
-                                       BATTLE_EVENTS.ENEMY_ASSIST_STUN: 17,
-                                       BATTLE_EVENTS.ENEMIES_STUN: 18}, offsets={}),
-     SETTINGS_SECTIONS.BATTLE_BORDER_MAP: Section(masks={}, offsets={BATTLE_BORDER_MAP.MODE_SHOW_BORDER: Offset(0, 3),
-                                           BATTLE_BORDER_MAP.TYPE_BORDER: Offset(2, 12)}),
-     SETTINGS_SECTIONS.UI_STORAGE: Section(masks={PM_TUTOR_FIELDS.GREETING_SCREEN_SHOWN: 0,
-                                                  PM_TUTOR_FIELDS.FIRST_ENTRY_AWARDS_SHOWN: 1,
-                                                  PM_TUTOR_FIELDS.ONE_FAL_SHOWN: 7,
-                                                  PM_TUTOR_FIELDS.MULTIPLE_FAL_SHOWN: 8,
-                                                  UI_STORAGE_KEYS.AUTO_RELOAD_MARK_IS_SHOWN: 9,
-                                                  UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP: 13,
-                                                  UI_STORAGE_KEYS.FIELD_POST_HINT_IS_SHOWN: 14,
-                                                  PM_TUTOR_FIELDS.PM2_ONE_FAL_SHOWN: 15,
-                                                  PM_TUTOR_FIELDS.PM2_MULTIPLE_FAL_SHOWN: 16,
-                                                  UI_STORAGE_KEYS.REFERRAL_BUTTON_CIRCLES_SHOWN: 17,
-                                                  UI_STORAGE_KEYS.DUAL_GUN_MARK_IS_SHOWN: 18,
-                                                  UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING: 22,
-                                                  UI_STORAGE_KEYS.TURBOSHAFT_MARK_IS_SHOWN: 26,
-                                                  UI_STORAGE_KEYS.OPTIONAL_DEVICE_SETUP_INTRO_SHOWN: 27,
-                                                  UI_STORAGE_KEYS.EPIC_BATTLE_ABILITIES_INTRO_SHOWN: 28,
-                                                  UI_STORAGE_KEYS.POST_PROGRESSION_INTRO_SHOWN: 29,
-                                                  UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN: 30},
-                                           offsets={PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: Offset(2, 124),
-                                                    UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER: Offset(10, 7168),
-                                                    UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER: Offset(19, 3670016),
-                                                    UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER: Offset(23,
-                                                                                                          58720256)}),
+                                                             DAMAGE_LOG.ASSIST_STUN: 3},
+                                                      offsets={DAMAGE_LOG.SHOW_DETAILS: Offset(4, 48),
+                                                               DAMAGE_LOG.SHOW_EVENT_TYPES: Offset(6, 192),
+                                                               DAMAGE_LOG.EVENT_POSITIONS: Offset(8, 768)}),
+                SETTINGS_SECTIONS.BATTLE_EVENTS: Section(masks={BATTLE_EVENTS.SHOW_IN_BATTLE: 0,
+                                                                BATTLE_EVENTS.ENEMY_HP_DAMAGE: 1,
+                                                                BATTLE_EVENTS.ENEMY_BURNING: 2,
+                                                                BATTLE_EVENTS.ENEMY_RAM_ATTACK: 3,
+                                                                BATTLE_EVENTS.BLOCKED_DAMAGE: 4,
+                                                                BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE: 5,
+                                                                BATTLE_EVENTS.ENEMY_TRACK_DAMAGE: 6,
+                                                                BATTLE_EVENTS.ENEMY_DETECTION: 7,
+                                                                BATTLE_EVENTS.ENEMY_KILL: 8,
+                                                                BATTLE_EVENTS.BASE_CAPTURE_DROP: 9,
+                                                                BATTLE_EVENTS.BASE_CAPTURE: 10,
+                                                                BATTLE_EVENTS.ENEMY_CRITICAL_HIT: 11,
+                                                                BATTLE_EVENTS.EVENT_NAME: 12,
+                                                                BATTLE_EVENTS.VEHICLE_INFO: 13,
+                                                                BATTLE_EVENTS.ENEMY_WORLD_COLLISION: 14,
+                                                                BATTLE_EVENTS.RECEIVED_DAMAGE: 15,
+                                                                BATTLE_EVENTS.RECEIVED_CRITS: 16,
+                                                                BATTLE_EVENTS.ENEMY_ASSIST_STUN: 17,
+                                                                BATTLE_EVENTS.ENEMIES_STUN: 18}, offsets={}),
+                SETTINGS_SECTIONS.BATTLE_BORDER_MAP: Section(masks={},
+                                                             offsets={BATTLE_BORDER_MAP.MODE_SHOW_BORDER: Offset(0, 3),
+                                                                      BATTLE_BORDER_MAP.TYPE_BORDER: Offset(2, 12)}),
+                SETTINGS_SECTIONS.UI_STORAGE: Section(masks={PM_TUTOR_FIELDS.GREETING_SCREEN_SHOWN: 0,
+                                                             PM_TUTOR_FIELDS.FIRST_ENTRY_AWARDS_SHOWN: 1,
+                                                             PM_TUTOR_FIELDS.ONE_FAL_SHOWN: 7,
+                                                             PM_TUTOR_FIELDS.MULTIPLE_FAL_SHOWN: 8,
+                                                             UI_STORAGE_KEYS.AUTO_RELOAD_MARK_IS_SHOWN: 9,
+                                                             UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP: 13,
+                                                             UI_STORAGE_KEYS.FIELD_POST_HINT_IS_SHOWN: 14,
+                                                             PM_TUTOR_FIELDS.PM2_ONE_FAL_SHOWN: 15,
+                                                             PM_TUTOR_FIELDS.PM2_MULTIPLE_FAL_SHOWN: 16,
+                                                             UI_STORAGE_KEYS.REFERRAL_BUTTON_CIRCLES_SHOWN: 17,
+                                                             UI_STORAGE_KEYS.DUAL_GUN_MARK_IS_SHOWN: 18,
+                                                             UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING: 22,
+                                                             UI_STORAGE_KEYS.TURBOSHAFT_MARK_IS_SHOWN: 26,
+                                                             UI_STORAGE_KEYS.OPTIONAL_DEVICE_SETUP_INTRO_SHOWN: 27,
+                                                             UI_STORAGE_KEYS.EPIC_BATTLE_ABILITIES_INTRO_SHOWN: 28,
+                                                             UI_STORAGE_KEYS.POST_PROGRESSION_INTRO_SHOWN: 29,
+                                                             UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN: 30},
+                                                      offsets={PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: Offset(2, 124),
+                                                               UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER: Offset(
+                                                                   10, 7168),
+                                                               UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER: Offset(19,
+                                                                                                                   3670016),
+                                                               UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER: Offset(23,
+                                                                                                                     58720256)}),
+                SETTINGS_SECTIONS.UI_STORAGE_2: Section(masks={UI_STORAGE_KEYS.ROCKET_ACCELERATION_MARK_IS_SHOWN: 0},
+                                                        offsets={
+                                                            UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER: Offset(
+                                                                1, 14)}),
                 SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS: Section(masks={}, offsets={'shown': Offset(0, 255)}),
                 SETTINGS_SECTIONS.QUESTS_PROGRESS: Section(masks={}, offsets={QUESTS_PROGRESS.VIEW_TYPE: Offset(0, 3),
                                                                               QUESTS_PROGRESS.DISPLAY_TYPE: Offset(2,
@@ -493,16 +565,17 @@ class ServerSettingsManager(object):
                                                                 SESSION_STATS.SHOW_RATIO_DAMAGE: 5,
                                                                 SESSION_STATS.SHOW_RATIO_KILL: 6,
                                                                 SESSION_STATS.SHOW_WINS: 7,
-                                       SESSION_STATS.SHOW_AVERAGE_DAMAGE: 8,
-                                       SESSION_STATS.SHOW_HELP_DAMAGE: 9,
-                                       SESSION_STATS.SHOW_BLOCKED_DAMAGE: 10,
-                                       SESSION_STATS.SHOW_AVERAGE_XP: 11,
-                                       SESSION_STATS.SHOW_WIN_RATE: 12,
-                                       SESSION_STATS.SHOW_AVERAGE_VEHICLE_LEVEL: 13,
-                                       SESSION_STATS.SHOW_AVERAGE_FRAGS: 14,
-                                       SESSION_STATS.SHOW_SURVIVED_RATE: 15,
-                                       SESSION_STATS.SHOW_SPOTTED: 16,
-                                       SESSION_STATS.ONLY_ONCE_HINT_SHOWN_FIELD: 17}, offsets={}),
+                                                                SESSION_STATS.SHOW_AVERAGE_DAMAGE: 8,
+                                                                SESSION_STATS.SHOW_HELP_DAMAGE: 9,
+                                                                SESSION_STATS.SHOW_BLOCKED_DAMAGE: 10,
+                                                                SESSION_STATS.SHOW_AVERAGE_XP: 11,
+                                                                SESSION_STATS.SHOW_WIN_RATE: 12,
+                                                                SESSION_STATS.SHOW_AVERAGE_VEHICLE_LEVEL: 13,
+                                                                SESSION_STATS.SHOW_AVERAGE_FRAGS: 14,
+                                                                SESSION_STATS.SHOW_SURVIVED_RATE: 15,
+                                                                SESSION_STATS.SHOW_SPOTTED: 16,
+                                                                SESSION_STATS.ONLY_ONCE_HINT_SHOWN_FIELD: 17},
+                                                         offsets={}),
      SETTINGS_SECTIONS.BATTLE_PASS_STORAGE: Section(masks={BATTLE_PASS.INTRO_SHOWN: 16,
                                              BATTLE_PASS.EXTRA_CHAPTER_VIDEO_SHOWN: 18,
                                              BATTLE_PASS.EXTRA_CHAPTER_INTRO_SHOWN: 19,
@@ -676,11 +749,12 @@ class ServerSettingsManager(object):
     _MAX_AUTO_RELOAD_HIGHLIGHTS_COUNT = 5
     _MAX_DUAL_GUN_HIGHLIGHTS_COUNT = 5
     _MAX_TURBOSHAFT_HIGHLIGHTS_COUNT = 5
+    _MAX_ROCKET_ACCELERATION_HIGHLIGHTS_COUNT = 5
 
     def __init__(self, core):
         self._core = weakref.proxy(core)
 
-    @process
+    @adisp_process
     def applySettings(self):
         import BattleReplay
         if not BattleReplay.isPlaying():
@@ -748,6 +822,12 @@ class ServerSettingsManager(object):
     def saveInUIStorage(self, fields):
         return self.setSections([SETTINGS_SECTIONS.UI_STORAGE], fields)
 
+    def getUIStorage2(self, defaults=None):
+        return self.getSection(SETTINGS_SECTIONS.UI_STORAGE_2, defaults)
+
+    def saveInUIStorage2(self, fields):
+        return self.setSections([SETTINGS_SECTIONS.UI_STORAGE_2], fields)
+
     def getBPStorage(self, defaults=None):
         if not self.settingsCache.isSynced():
             return {}
@@ -761,18 +841,29 @@ class ServerSettingsManager(object):
             self.setSectionSettings(SETTINGS_SECTIONS.BATTLE_PASS_STORAGE, settings)
 
     def checkAutoReloadHighlights(self, increase=False):
-        return self.__checkUIHighlights(UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER, self._MAX_AUTO_RELOAD_HIGHLIGHTS_COUNT, increase)
+        return self.__checkUIHighlights(UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER,
+                                        self._MAX_AUTO_RELOAD_HIGHLIGHTS_COUNT, increase)
 
     def checkDualGunHighlights(self, increase=False):
-        return self.__checkUIHighlights(UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER, self._MAX_DUAL_GUN_HIGHLIGHTS_COUNT, increase)
+        return self.__checkUIHighlights(UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER,
+                                        self._MAX_DUAL_GUN_HIGHLIGHTS_COUNT, increase)
 
     def checkTurboshaftHighlights(self, increase=False):
-        return self.__checkUIHighlights(UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER, self._MAX_TURBOSHAFT_HIGHLIGHTS_COUNT, increase)
+        return self.__checkUIHighlights(UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER,
+                                        self._MAX_TURBOSHAFT_HIGHLIGHTS_COUNT, increase)
+
+    def checkRocketAccelerationHighlights(self, increase=False):
+        return self.__checkUIHighlights(UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER,
+                                        self._MAX_ROCKET_ACCELERATION_HIGHLIGHTS_COUNT, increase)
 
     def updateUIStorageCounter(self, key, step=1):
         storageSection = self.getSection(SETTINGS_SECTIONS.UI_STORAGE)
         if key in storageSection:
             self.saveInUIStorage({key: storageSection[key] + step})
+        else:
+            storageSection = self.getSection(SETTINGS_SECTIONS.UI_STORAGE_2)
+            if key in storageSection:
+                self.saveInUIStorage2({key: storageSection[key] + step})
 
     def setDisableAnimTooltipFlag(self):
         self.saveInUIStorage({UI_STORAGE_KEYS.DISABLE_ANIMATED_TOOLTIP: 1})
@@ -958,40 +1049,43 @@ class ServerSettingsManager(object):
     def _hasKeyInSection(self, section, key):
         return key in self.SECTIONS[section].masks or key in self.SECTIONS[section].offsets
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _updateToVersion(self, callback=None):
         currentVersion = self.settingsCache.getVersion()
         data = {'gameData': {},
-         'gameExtData': {},
-         'gameExtData2': {},
-         'gameplayData': {},
-         'controlsData': {},
-         'aimData': {},
-         'markersData': {},
-         'graphicsData': {},
-         'marksOnGun': {},
-         'fallout': {},
-         'carousel_filter': {},
-         'feedbackDamageIndicator': {},
-         'feedbackDamageLog': {},
-         'feedbackBattleEvents': {},
-         'onceOnlyHints': {},
-         'onceOnlyHints2': {},
-         'uiStorage': {},
-         'epicCarouselFilter2': {},
-         'rankedCarouselFilter1': {},
-         'rankedCarouselFilter2': {},
-         'sessionStats': {},
-         'battleComm': {},
-         'dogTags': {},
-         'battleHud': {},
-         'spgAim': {},
-         GUI_START_BEHAVIOR: {},
-         'battlePassStorage': {},
-         SETTINGS_SECTIONS.CONTOUR: {},
-         SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1: {},
-         SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2: {},
+                'gameExtData': {},
+                'gameExtData2': {},
+                'gameplayData': {},
+                'controlsData': {},
+                'aimData': {},
+                'markersData': {},
+                'graphicsData': {},
+                'marksOnGun': {},
+                'fallout': {},
+                'carousel_filter': {},
+                'feedbackDamageIndicator': {},
+                'feedbackDamageLog': {},
+                'feedbackBattleEvents': {},
+                'onceOnlyHints': {},
+                'onceOnlyHints2': {},
+                'uiStorage': {},
+                SETTINGS_SECTIONS.UI_STORAGE_2: {},
+                'epicCarouselFilter2': {},
+                'rankedCarouselFilter1': {},
+                'rankedCarouselFilter2': {},
+                'comp7CarouselFilter1': {},
+                'comp7CarouselFilter2': {},
+                'sessionStats': {},
+                'battleComm': {},
+                'dogTags': {},
+                'battleHud': {},
+                'spgAim': {},
+                GUI_START_BEHAVIOR: {},
+                'battlePassStorage': {},
+                SETTINGS_SECTIONS.CONTOUR: {},
+                SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1: {},
+                SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2: {},
          'clear': {},
          'delete': []}
         yield migrateToVersion(currentVersion, self._core, data)
@@ -1044,44 +1138,70 @@ class ServerSettingsManager(object):
         epicFilterCarousel = data.get('epicCarouselFilter2', {})
         clearEpicFilterCarousel = clear.get('epicCarouselFilter2', 0)
         if epicFilterCarousel or clearEpicFilterCarousel:
-            settings[SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_2] = self._buildSectionSettings(SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_2, epicFilterCarousel) ^ clearEpicFilterCarousel
+            settings[SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_2] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_2, epicFilterCarousel) ^ clearEpicFilterCarousel
         rankedFilterCarousel1 = data.get('rankedCarouselFilter1', {})
         clearRankedFilterCarousel1 = clear.get('rankedCarouselFilter1', 0)
         if rankedFilterCarousel1 or clearRankedFilterCarousel1:
-            settings[SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1] = self._buildSectionSettings(SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1, rankedFilterCarousel1) ^ clearRankedFilterCarousel1
+            settings[SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1, rankedFilterCarousel1) ^ clearRankedFilterCarousel1
         rankedFilterCarousel2 = data.get('rankedCarouselFilter2', {})
         clearRankedFilterCarousel2 = clear.get('rankedCarouselFilter2', 0)
         if rankedFilterCarousel2 or clearRankedFilterCarousel2:
-            settings[SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_2] = self._buildSectionSettings(SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_2, rankedFilterCarousel2) ^ clearRankedFilterCarousel2
+            settings[SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_2] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_2, rankedFilterCarousel2) ^ clearRankedFilterCarousel2
+        comp7FilterCarousel1 = data.get('comp7CarouselFilter1', {})
+        clearComp7FilterCarousel1 = clear.get('comp7CarouselFilter1', 0)
+        if comp7FilterCarousel1 or clearComp7FilterCarousel1:
+            settings[SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_1] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_1, comp7FilterCarousel1) ^ clearComp7FilterCarousel1
+        comp7FilterCarousel2 = data.get('comp7CarouselFilter2', {})
+        clearComp7FilterCarousel2 = clear.get('comp7CarouselFilter2', 0)
+        if comp7FilterCarousel2 or clearComp7FilterCarousel2:
+            settings[SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_2] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_2, comp7FilterCarousel2) ^ clearComp7FilterCarousel2
         feedbackDamageIndicator = data.get('feedbackDamageIndicator', {})
         if feedbackDamageIndicator:
-            settings[SETTINGS_SECTIONS.DAMAGE_INDICATOR] = self._buildSectionSettings(SETTINGS_SECTIONS.DAMAGE_INDICATOR, feedbackDamageIndicator)
+            settings[SETTINGS_SECTIONS.DAMAGE_INDICATOR] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.DAMAGE_INDICATOR, feedbackDamageIndicator)
         feedbackDamageLog = data.get('feedbackDamageLog', {})
         if feedbackDamageLog:
-            settings[SETTINGS_SECTIONS.DAMAGE_LOG] = self._buildSectionSettings(SETTINGS_SECTIONS.DAMAGE_LOG, feedbackDamageLog)
+            settings[SETTINGS_SECTIONS.DAMAGE_LOG] = self._buildSectionSettings(SETTINGS_SECTIONS.DAMAGE_LOG,
+                                                                                feedbackDamageLog)
         feedbackBattleEvents = data.get('feedbackBattleEvents', {})
         if feedbackBattleEvents:
-            settings[SETTINGS_SECTIONS.BATTLE_EVENTS] = self._buildSectionSettings(SETTINGS_SECTIONS.BATTLE_EVENTS, feedbackBattleEvents)
+            settings[SETTINGS_SECTIONS.BATTLE_EVENTS] = self._buildSectionSettings(SETTINGS_SECTIONS.BATTLE_EVENTS,
+                                                                                   feedbackBattleEvents)
         onceOnlyHints = data.get('onceOnlyHints', {})
         clearOnceOnlyHints = clear.get('onceOnlyHints', 0)
         if onceOnlyHints or clearOnceOnlyHints:
-            settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, onceOnlyHints) ^ clearOnceOnlyHints
+            settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS,
+                                                                                     onceOnlyHints) ^ clearOnceOnlyHints
         onceOnlyHints2 = data.get('onceOnlyHints2', {})
         clearOnceOnlyHints2 = clear.get('onceOnlyHints2', 0)
         if onceOnlyHints or clearOnceOnlyHints:
-            settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, onceOnlyHints2) ^ clearOnceOnlyHints2
+            settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2] = self._buildSectionSettings(
+                SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, onceOnlyHints2) ^ clearOnceOnlyHints2
         uiStorage = data.get('uiStorage', {})
         clearUIStorage = clear.get('uiStorage', 0)
         if uiStorage or clearUIStorage:
-            settings[SETTINGS_SECTIONS.UI_STORAGE] = self._buildSectionSettings(SETTINGS_SECTIONS.UI_STORAGE, uiStorage) ^ clearUIStorage
+            settings[SETTINGS_SECTIONS.UI_STORAGE] = self._buildSectionSettings(SETTINGS_SECTIONS.UI_STORAGE,
+                                                                                uiStorage) ^ clearUIStorage
+        uiStorage2 = data.get(SETTINGS_SECTIONS.UI_STORAGE_2, {})
+        clearUIStorage2 = clear.get(SETTINGS_SECTIONS.UI_STORAGE_2, 0)
+        if uiStorage2 or clearUIStorage2:
+            settings[SETTINGS_SECTIONS.UI_STORAGE_2] = self._buildSectionSettings(SETTINGS_SECTIONS.UI_STORAGE_2,
+                                                                                  uiStorage2) ^ clearUIStorage2
         sessionStats = data.get('sessionStats', {})
         clearSessionStats = clear.get('sessionStats', 0)
         if sessionStats or clearSessionStats:
-            settings[SETTINGS_SECTIONS.SESSION_STATS] = self._buildSectionSettings(SETTINGS_SECTIONS.SESSION_STATS, sessionStats) ^ clearSessionStats
+            settings[SETTINGS_SECTIONS.SESSION_STATS] = self._buildSectionSettings(SETTINGS_SECTIONS.SESSION_STATS,
+                                                                                   sessionStats) ^ clearSessionStats
         battleComm = data.get('battleComm', {})
         clearBattleComm = clear.get('battleComm', 0)
         if battleComm or clearBattleComm:
-            settings[SETTINGS_SECTIONS.BATTLE_COMM] = self._buildSectionSettings(SETTINGS_SECTIONS.BATTLE_COMM, battleComm) ^ clearBattleComm
+            settings[SETTINGS_SECTIONS.BATTLE_COMM] = self._buildSectionSettings(SETTINGS_SECTIONS.BATTLE_COMM,
+                                                                                 battleComm) ^ clearBattleComm
         dogTags = data.get('dogTags', {})
         clearDogTags = clear.get('dogTags', 0)
         if dogTags or clearDogTags:
@@ -1133,7 +1253,10 @@ class ServerSettingsManager(object):
         return
 
     def __checkUIHighlights(self, key, maxVal, increase):
-        res = self.getUIStorage().get(key) < maxVal
+        storage = self.getUIStorage()
+        if key not in storage:
+            storage = self.getUIStorage2()
+        res = storage.get(key) < maxVal
         if res and increase:
             self.updateUIStorageCounter(key)
         return res

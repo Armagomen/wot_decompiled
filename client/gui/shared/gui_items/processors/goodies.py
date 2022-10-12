@@ -1,15 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/goodies.py
 import logging
-import BigWorld
+import typing
+
 import AccountCommands
+import BigWorld
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.impl import backport
 from gui.shared.formatters import formatPrice
 from gui.shared.gui_items.processors import Processor, makeI18nError, makeI18nSuccess, plugins as proc_plugs
-from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Currency
 from gui.shared.utils import code2str
+
+if typing.TYPE_CHECKING:
+    pass
 _logger = logging.getLogger(__name__)
 
 class BoosterProcessor(Processor):
@@ -52,7 +56,7 @@ class BoosterActivator(BoosterProcessor):
 
     def _request(self, callback):
         _logger.debug('Make server request to activate booster, %s, %s', self.booster.boosterID, self.booster.userName)
-        BigWorld.player().activateGoodie([self.booster.boosterID], lambda code, errStr: self._response(code, callback, errStr=errStr))
+        BigWorld.player().activateGoodie(self.booster.boosterID, lambda code, errStr: self._response(code, callback, errStr=errStr))
 
 
 class BoosterTradeProcessor(BoosterProcessor):

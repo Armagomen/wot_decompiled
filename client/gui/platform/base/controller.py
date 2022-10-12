@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/base/controller.py
 import typing
-import async
+
+import wg_async
 from BWUtil import AsyncReturn
 from gui.platform.base import logger
 from gui.platform.base.requester import PlatformRequester
@@ -9,8 +10,9 @@ from gui.platform.base.settings import REQUEST_TIMEOUT
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.platform.controller import IPlatformRequestController
+
 if typing.TYPE_CHECKING:
-    from gui.platform.base.request import Params
+    pass
 
 class PlatformRequestController(IPlatformRequestController):
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -31,7 +33,7 @@ class PlatformRequestController(IPlatformRequestController):
         self.connectionMgr.onDisconnected -= self._stop
         self._logger.debug('Destroyed.')
 
-    @async.async
+    @wg_async.wg_async
     def _request(self, params, timeout=REQUEST_TIMEOUT, waitingID=None):
         if self._requester is None:
             self._logger.debug('Not started.')

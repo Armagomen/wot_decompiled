@@ -1,19 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/StatsRequester.py
-from collections import namedtuple
 import json
+from collections import namedtuple
+
 import BigWorld
 from account_helpers.premium_info import PremiumInfo
-from adisp import async
+from adisp import adisp_async
+from constants import SPA_ATTRS, MIN_VEHICLE_LEVEL
 from gui.shared.money import Money, Currency, DynamicMoney
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from gui.veh_post_progression.models.ext_money import ExtendedMoney
 from helpers import time_utils, dependency
-from constants import SPA_ATTRS, MIN_VEHICLE_LEVEL
+from nation_change.nation_change_helpers import NationalGroupDataAccumulator
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils.requesters import IStatsRequester
-from nation_change.nation_change_helpers import NationalGroupDataAccumulator
+
 _ADDITIONAL_XP_DATA_KEY = '_additionalXPCache'
 _ControllableXPData = namedtuple('_ControllableXPData', ('vehicleID', 'bonusType', 'extraXP', 'extraFreeXP', 'extraTmenXP', 'isXPToTMan'))
 
@@ -156,7 +158,7 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
 
     @property
     def restrictions(self):
-        return self.getCacheValue('restrictions', set())
+        return self.getCacheValue('restrictions', {})
 
     @property
     def unlocks(self):
@@ -278,6 +280,10 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
         return self.getCacheValue('isSsrPlayEnabled', False)
 
     @property
+    def comp7(self):
+        return self.getCacheValue('comp7', {})
+
+    @property
     def tutorialsCompleted(self):
         return self.getCacheValue('tutorialsCompleted', 0)
 
@@ -311,7 +317,7 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
     def getWeeklyVehicleCrystals(self, vehCD):
         return self.getCacheValue('weeklyVehicleCrystals', {}).get(vehCD, 0)
 
-    @async
+    @adisp_async
     def _requestCache(self, callback):
         BigWorld.player().stats.getCache(lambda resID, value: self._response(resID, value, callback))
 

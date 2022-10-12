@@ -5,7 +5,7 @@ from copy import deepcopy
 from itertools import imap
 
 import BigWorld
-from adisp import async
+from adisp import adisp_async
 from constants import CustomizationInvData, SkinInvData, VEHICLE_NO_INV_ID
 from debug_utils import LOG_DEBUG
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -19,7 +19,6 @@ from post_progression_common import VehiclesPostProgression, EXT_DATA_SLOT_KEY, 
 from skeletons.gui.shared.utils.requesters import IInventoryRequester
 
 _DUMMY_VEH_POST_PROGRESSION = VehiclesPostProgression({VehiclesPostProgression.ROOT_KEY: {}})
-
 
 class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
     VEH_DATA = namedtuple('VEH_DATA', ('compDescr', 'descriptor', 'invID', 'crew'))
@@ -259,7 +258,7 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
     def getDynSlotTypeID(self, vehIntCD):
         return self.getCacheValue(GUI_ITEM_TYPE.VEHICLE, {}).get('customRoleSlots', {}).get(vehIntCD, 0)
 
-    @async
+    @adisp_async
     def _requestCache(self, callback=None):
         BigWorld.player().inventory.getCache(lambda resID, value: self._response(resID, value, callback))
 
@@ -269,8 +268,10 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
             for invID, vCompDescr in invData[GUI_ITEM_TYPE.VEHICLE]['compDescr'].iteritems():
                 self.__vehsCDsByID[invID] = vehicles.makeIntCompactDescrByID('vehicle', *vehicles.parseVehicleCompactDescr(vCompDescr))
 
+            self.__vehPostProgression = VehiclesPostProgression(invData[GUI_ITEM_TYPE.VEHICLE])
+        else:
+            self.__vehPostProgression = _DUMMY_VEH_POST_PROGRESSION
         self.__vehsIDsByCD = dict(((v, k) for k, v in self.__vehsCDsByID.iteritems()))
-        self.__vehPostProgression = VehiclesPostProgression(invData[GUI_ITEM_TYPE.VEHICLE])
         super(InventoryRequester, self)._response(resID, invData, callback)
         return
 
@@ -433,10 +434,7 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
         if itemData is not None:
             c11nProgressionData = {}
             for vehicleIntCD, vehData in itemData.iteritems():
-                progressionData = self.CUSTOMIZATION_PROGRESS_DATA(currentLevel=vehData[C11N_PROGRESS_LEVEL_IDX],
-                                                                   currentProgressOnLevel=vehData[
-                                                                       C11N_PROGRESS_PROGRESS_IDX],
-                                                                   maxProgressOnLevel=vehData[C11N_PROGRESS_VALUE_IDX])
+                progressionData = self.CUSTOMIZATION_PROGRESS_DATA(currentLevel=vehData[C11N_PROGRESS_LEVEL_IDX], currentProgressOnLevel=vehData[C11N_PROGRESS_PROGRESS_IDX], maxProgressOnLevel=vehData[C11N_PROGRESS_VALUE_IDX])
                 c11nProgressionData[vehicleIntCD] = progressionData
                 self.__c11nProgressionForVehicle.setdefault(vehicleIntCD, {})[itemIntCD] = progressionData
 

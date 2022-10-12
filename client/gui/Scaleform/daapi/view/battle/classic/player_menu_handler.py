@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/player_menu_handler.py
+from constants import DENUNCIATIONS_PER_DAY, IS_CHINA
 from gui.Scaleform.daapi.view.lobby.user_cm_handlers import USER
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -8,11 +9,11 @@ from gui.shared import events, EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.denunciator import DENUNCIATIONS, BattleDenunciator, DENUNCIATIONS_MAP
 from helpers import dependency
 from helpers import i18n
-from constants import DENUNCIATIONS_PER_DAY, IS_CHINA
 from messenger.m_constants import PROTO_TYPE, UserEntityScope
 from messenger.proto import proto_getter
 from messenger.storage import storage_getter
 from skeletons.gui.battle_session import IBattleSessionProvider
+
 
 class DYN_SQUAD_OPTION_ID(object):
     SENT_INVITATION = 'sendInvitationToSquad'
@@ -98,8 +99,8 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
         return None
 
     @property
-    def arenaGuiType(self):
-        return self.sessionProvider.arenaVisitor.gui
+    def arenaVisitor(self):
+        return self.sessionProvider.arenaVisitor
 
     def fini(self):
         g_eventBus.removeListener(events.GameEvent.HIDE_CURSOR, self.__handleHideCursor, EVENT_BUS_SCOPE.GLOBAL)
@@ -167,7 +168,7 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
         if self.sessionProvider.isReplayPlaying:
             return options
         if not self.__userInfo.isBot:
-            options = self.__addDyncSquadInfo(options)
+            options = self.__addDynSquadInfo(options)
             options = self.__addFriendshipInfo(options)
             options = self.__addIgnoreInfo(options)
             options = self.__addCommunicationInfo(options)
@@ -187,10 +188,12 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
         return {'enabled': isEnabled,
          'iconType': cls._getOptionIcon(optionID)}
 
-    def __addDyncSquadInfo(self, options):
+    def __addDynSquadInfo(self, options):
         make = self._makeItem
         ctx = self.sessionProvider.getCtx()
-        if not ctx.isInvitationEnabled() or ctx.hasSquadRestrictions():
+        if not self.arenaVisitor.hasDynSquads():
+            return options
+        elif not ctx.isInvitationEnabled() or ctx.hasSquadRestrictions():
             return options
         elif not self.__userInfo.isAlly:
             return options
@@ -235,7 +238,7 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
         return options
 
     def __addCommunicationInfo(self, options):
-        isForbiddenBattleType = self.arenaGuiType.isTrainingBattle() or self.arenaGuiType.isTutorialBattle()
+        isForbiddenBattleType = self.arenaVisitor.gui.isTrainingBattle() or self.arenaVisitor.gui.isTutorialBattle()
         if self.__userInfo.isAlly and not isForbiddenBattleType:
             isEnabled = True
             if self.__userInfo.isTemporaryIgnored:
@@ -249,7 +252,7 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
         return options
 
     def __addMutedInfo(self, options):
-        isVisible = self.bwProto.voipController.isVOIPEnabled() and (self.__userInfo.isAlly or self.arenaGuiType.isTrainingBattle())
+        isVisible = self.bwProto.voipController.isVOIPEnabled() and (self.__userInfo.isAlly or self.arenaVisitor.gui.isTrainingBattle())
         isEnabled = not self.__userInfo.isIgnored or self.__userInfo.isTemporaryIgnored
         if self.__userInfo.isMuted:
             optionID = USER.UNSET_MUTED
@@ -265,7 +268,7 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
 
     def __addDenunciationsInfo(self, options):
         make = self._makeItem
-        if self.__userInfo.isAlly or self.arenaGuiType.isTrainingBattle():
+        if self.__userInfo.isAlly or self.arenaVisitor.gui.isTrainingBattle():
             order = DENUNCIATIONS.ORDER
         else:
             order = DENUNCIATIONS.ENEMY_ORDER

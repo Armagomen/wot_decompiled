@@ -5,7 +5,6 @@ from functools import partial
 import BigWorld
 import VSE
 from PlayerEvents import g_playerEvents
-from async import await, async
 from gui.platform.base.statuses.constants import StatusTypes
 from gui.shared.event_dispatcher import showDemoAccRenamingOverlay
 from helpers import dependency
@@ -18,6 +17,7 @@ from tutorial.control.functional import FunctionalCondition, FunctionalEffect, F
 from tutorial.gui import GUI_EFFECT_NAME
 from tutorial.logger import LOG_DEBUG, LOG_ERROR, LOG_WARNING
 from visual_script import ASPECT
+from wg_async import wg_await, wg_async
 
 
 class FunctionalCheckpointReachedCondition(FunctionalCondition):
@@ -258,9 +258,7 @@ class FunctionalBootcampLobbyChapterContext(FunctionalChapterContext):
 
     def __delayedPlayHintSound(self):
         if self.__requestedExclusiveHintSoundID:
-            self.__exclusiveHintSoundCallback = BigWorld.callback(self._HINT_SOUND_DELAY,
-                                                                  partial(self.__playHintSound, SOUND_EVENT.HINT_SHOWN,
-                                                                          self.__requestedExclusiveHintSoundID))
+            self.__exclusiveHintSoundCallback = BigWorld.callback(self._HINT_SOUND_DELAY, partial(self.__playHintSound, SOUND_EVENT.HINT_SHOWN, self.__requestedExclusiveHintSoundID))
 
     def __playHintSound(self, soundEvent, soundId):
         self.__cancelHintSoundCallback()
@@ -292,13 +290,13 @@ class FunctionalShowDemoAccRenameOverlay(FunctionalEffect):
     def isStillRunning(self):
         return self.__running
 
-    @async
+    @wg_async
     def triggerEffect(self):
         self._gui.release()
         if not self._demoAccController.isDemoAccount:
             return
         self.__running = True
-        status = yield await(self._wgnpDemoAccCtrl.getNicknameStatus(self._WAITING_ID))
+        status = yield wg_await(self._wgnpDemoAccCtrl.getNicknameStatus(self._WAITING_ID))
         if status.typeIs(StatusTypes.ADD_NEEDED):
             if self._hangarSpace.spaceInited:
                 self._showRenameOverlay()

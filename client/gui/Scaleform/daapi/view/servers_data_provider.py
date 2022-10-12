@@ -15,14 +15,13 @@ from skeletons.connection_mgr import IConnectionManager
 
 _logger = logging.getLogger(__name__)
 
-
 class _INDICATOR_STATUSES(object):
     WAITING = -1
     IGNORED = -2
     ALL = (PING_STATUSES.UNDEFINED,
-           PING_STATUSES.HIGH,
-           PING_STATUSES.NORM,
-           PING_STATUSES.LOW,
+     PING_STATUSES.HIGH,
+     PING_STATUSES.NORM,
+     PING_STATUSES.LOW,
      WAITING,
      IGNORED)
 
@@ -130,19 +129,17 @@ class ServersDataProvider(SortableDAAPIDataProvider):
         host = g_preDefinedHosts.byName(serverName)
         haveAccess = not host.peripheryID or self.__connectionManager.isAvailablePeriphery(host.peripheryID)
         vo = {'id': item.get('id', 0),
-              'data': hostName,
-              'csisStatus': csisStatus,
-              'label': serverName,
-              'pingState': pingIndicatorState,
-              'pingValue': pingValueStr,
-              'enabled': enabled and haveAccess,
-              'haveAccess': haveAccess}
+         'data': hostName,
+         'csisStatus': csisStatus,
+         'label': serverName,
+         'pingState': pingIndicatorState,
+         'pingValue': pingValueStr,
+         'enabled': enabled and haveAccess,
+         'haveAccess': haveAccess}
         if not haveAccess:
             vo['tooltip'] = {'tooltip': backport.text(R.strings.tooltips.server.notAccess())}
         elif csisStatus == HOST_AVAILABILITY.NOT_RECOMMENDED:
-            vo['tooltip'] = {
-                'tooltip': backport.text(R.strings.tooltips.server.notRecomended(), icon=icons.serverAlert(),
-                                         server=serverName)}
+            vo['tooltip'] = {'tooltip': backport.text(R.strings.tooltips.server.notRecomended(), icon=icons.serverAlert(), server=serverName)}
         elif 'tooltip' in item:
             vo['tooltip'] = item['tooltip']
         return vo

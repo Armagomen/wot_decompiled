@@ -1,13 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/fitting_slot_vo.py
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
+from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.shared.utils import EXTRA_MODULE_INFO
-from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from helpers import dependency
 from items import ITEM_TYPES
 from skeletons.account_helpers.settings_core import ISettingsCore
+
 
 class _SlotVOConstants(object):
     UNRESOLVED_LIST_INDEX = -1
@@ -74,5 +75,9 @@ class FittingSlotVO(dict):
                 if vehicleModule.hasTurboshaftEngine():
                     uiStorage = dependency.instance(ISettingsCore).serverSettings.getUIStorage()
                     if not uiStorage.get(UI_STORAGE_KEYS.TURBOSHAFT_MARK_IS_SHOWN):
+                        self['counter'] = self.get('counter', 0) + 1
+                if vehicleModule.hasRocketAcceleration():
+                    uiStorage = dependency.instance(ISettingsCore).serverSettings.getUIStorage2()
+                    if not uiStorage.get(UI_STORAGE_KEYS.ROCKET_ACCELERATION_MARK_IS_SHOWN):
                         self['counter'] = self.get('counter', 0) + 1
             return

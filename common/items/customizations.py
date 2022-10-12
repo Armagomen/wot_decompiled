@@ -19,7 +19,6 @@ parseCompDescr = parseC11sComponentDescr
 if TYPE_CHECKING:
     pass
 
-
 def checkItemInCompDescr(item, customizationElementCompDescr):
     item = cn.splitIntDescr(item) if isinstance(item, int) else item
     itemType = item[0]

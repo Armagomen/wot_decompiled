@@ -43,8 +43,7 @@ def clampVectorLength(minLength, maxLength, vector):
         return Math.clampVector2Length(minLength, maxLength, vector)
     if isinstance(minLength, Math.Vector3):
         return Math.clampVector3Length(minLength, maxLength, vector)
-    return Math.clampVector4Length(minLength, maxLength, vector) if isinstance(minLength,
-                                                                               Math.Vector4) else vector * 1.0
+    return Math.clampVector4Length(minLength, maxLength, vector) if isinstance(minLength, Math.Vector4) else vector * 1.0
 
 
 def matrixScale(vector, scaleCoeff):

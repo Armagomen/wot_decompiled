@@ -20,7 +20,6 @@ from skeletons.gui.game_control import IBootcampController
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
 
-
 class BCQuestsView(LobbySubView, MissionDetailsContainerViewMeta):
     __background_alpha__ = 0.8
     _bootcamp = dependency.descriptor(IBootcampController)

@@ -59,9 +59,7 @@ class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
         excludeGroup = normalizeGroupId(groupData.excludeGroup)
         excludeParentGroup = normalizeGroupId(groupData.excludeParentGroup)
         targetParentGroup = normalizeGroupId(groupData.targetParentGroup)
-        if (
-                targetGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or targetParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID) and (
-                excludeGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or excludeParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID):
+        if (targetGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or targetParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID) and (excludeGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID or excludeParentGroup == CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID):
             if targetGroup != excludeGroup:
                 self.__moveToGroupProcess(dbID, targetGroup, None)
         return

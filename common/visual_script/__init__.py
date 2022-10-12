@@ -2,12 +2,18 @@
 # Embedded file name: scripts/common/visual_script/__init__.py
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
+
+import ability_common
+import arena_blocks
+import balance
+import bitmask_blocks_common
+import entity_blocks
 import example
 import general
-import vehicle_blocks
 import qa_blocks
 import qa_education_blocks
-import balance
+import vehicle_blocks
+
 g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.SERVER)
 g_blockRegistrar.regBlocksFromModule(example)
 g_blockRegistrar.regTypesFromModule(example)
@@ -17,3 +23,13 @@ g_blockRegistrar.regBlocksFromModule(balance)
 g_blockRegistrar.regTypesFromModule(balance)
 g_blockRegistrar.regBlocksFromModule(general)
 g_blockRegistrar.regBlocksFromModule(vehicle_blocks)
+g_blockRegistrar.regBlocksFromModule(ability_common)
+g_blockRegistrar.regType(ability_common.Stage)
+g_blockRegistrar.regType(ability_common.EquipmentErrorState)
+g_blockRegistrar.regBlock(bitmask_blocks_common.BitwiseNOT)
+g_blockRegistrar.regBlock(bitmask_blocks_common.BitwiseAND)
+g_blockRegistrar.regBlock(bitmask_blocks_common.BitwiseOR)
+g_blockRegistrar.regBlock(bitmask_blocks_common.BitwiseXOR)
+g_blockRegistrar.regBlock(bitmask_blocks_common.BitwiseEQUAL)
+g_blockRegistrar.regBlocksFromModule(entity_blocks)
+g_blockRegistrar.regBlock(arena_blocks.GetFlyDirection)

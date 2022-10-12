@@ -2,14 +2,16 @@
 # Embedded file name: scripts/client/gui/shared/utils/requesters/abstract.py
 import logging
 from collections import namedtuple
+
 import BigWorld
 from AccountCommands import isCodeValid, RES_FAILURE, RES_SUCCESS
+from adisp import adisp_async, adisp_process
+from gui.Scaleform.Waiting import Waiting
+from gui.shared.utils import code2str
+from gui.shared.utils.decorators import ReprInjector
 from helpers import isPlayerAccount
 from ids_generators import Int32IDGenerator
-from gui.shared.utils import code2str
-from adisp import async, process
-from gui.Scaleform.Waiting import Waiting
-from gui.shared.utils.decorators import ReprInjector
+
 _logger = logging.getLogger(__name__)
 
 class AbstractRequester(object):
@@ -18,8 +20,8 @@ class AbstractRequester(object):
         self._data = self._getDefaultDataValue()
         self.__synced = False
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def request(self, callback):
         _logger.debug('Prepare requester %s', self.__class__.__name__)
         self.__synced = False
@@ -49,7 +51,7 @@ class AbstractRequester(object):
             callback(self._preprocessValidData(value))
         return
 
-    @async
+    @adisp_async
     def _requestCache(self, callback):
         self._response(0, self._getDefaultDataValue(), callback)
 
@@ -92,6 +94,9 @@ class RequestCtx(object):
 
     def getRequestType(self):
         pass
+
+    def getSingulizerKey(self):
+        return None
 
     def getWaitingID(self):
         return self._waitingID
@@ -204,6 +209,9 @@ class RequestsByIDProcessor(object):
         else:
             _logger.error('Name of method is invalid: %r', methodName)
         return result
+
+    def stopWithFailure(self, ctx, reason, callback=None):
+        self._stopProcessing(ctx, reason, callback)
 
     def _startProcessing(self, requestID, ctx, callback=None):
         ctx.startProcessing(callback)

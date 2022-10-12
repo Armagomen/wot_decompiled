@@ -78,15 +78,20 @@ class _SquadFinder(ISquadFinder):
     def findSquadSizes(self):
         raise NotImplementedError
 
+    @classmethod
+    def _getSquadRange(cls):
+        return settings.SQUAD_RANGE_TO_SHOW
+
 
 SquadSizeDescription = namedtuple('SquadSizeDescription', ('teamID', 'squadID', 'squadSize'))
+
 
 class TeamScopeNumberingFinder(_SquadFinder):
     __slots__ = ('_teamsSquadIndices',)
 
     def __init__(self, teams):
         super(TeamScopeNumberingFinder, self).__init__(teams)
-        self._teamsSquadIndices = {team:{} for team in teams}
+        self._teamsSquadIndices = {team: {} for team in teams}
 
     def clear(self):
         for indices in self._teamsSquadIndices.itervalues():
@@ -98,7 +103,7 @@ class TeamScopeNumberingFinder(_SquadFinder):
         return sum((max(indices.itervalues()) for indices in self._teamsSquadIndices.itervalues() if indices))
 
     def findSquadSizes(self):
-        squadRange = settings.SQUAD_RANGE_TO_SHOW
+        squadRange = self._getSquadRange()
         for teamID, team in self._prbStats.iteritems():
             squadIndices = self._teamsSquadIndices[teamID]
             squads = [ item for item in team.iteritems() if len(item[1]) in squadRange ]
@@ -114,7 +119,7 @@ class TeamScopeNumberingFinder(_SquadFinder):
                 yield SquadSizeDescription(teamID, squadIndices[prebattleID], len(vehiclesIDs))
 
     def findSquads(self):
-        squadRange = settings.SQUAD_RANGE_TO_SHOW
+        squadRange = self._getSquadRange()
         for teamID, team in self._prbStats.iteritems():
             squadIndices = self._teamsSquadIndices[teamID]
             squads = [ item for item in team.iteritems() if len(item[1]) in squadRange ]
@@ -129,6 +134,14 @@ class TeamScopeNumberingFinder(_SquadFinder):
                         squadIndices[prebattleID] = 1
                 for vehicleID in vehiclesIDs:
                     yield (vehicleID, squadIndices[prebattleID])
+
+
+class Comp7TeamScopeNumberingFinder(TeamScopeNumberingFinder):
+    __slots__ = ()
+
+    @classmethod
+    def _getSquadRange(cls):
+        return xrange(2, 8)
 
 
 class ContinuousNumberingFinder(_SquadFinder):
@@ -146,7 +159,7 @@ class ContinuousNumberingFinder(_SquadFinder):
         return max(self._squadIndices.itervalues()) if self._squadIndices else 0
 
     def findSquads(self):
-        squadRange = settings.SQUAD_RANGE_TO_SHOW
+        squadRange = self._getSquadRange()
         for _, team in self._prbStats.iteritems():
             for prebattleID, vehiclesIDs in team.iteritems():
                 if not vehiclesIDs or len(vehiclesIDs) not in squadRange:
@@ -166,8 +179,10 @@ class ContinuousNumberingFinder(_SquadFinder):
 def createSquadFinder(arenaVisitor):
     teams = arenaVisitor.type.getTeamsOnArenaRange()
     guiVisitor = arenaVisitor.gui
-    if guiVisitor.isRandomBattle() or guiVisitor.isEventBattle() or guiVisitor.isEpicBattle() or guiVisitor.isBattleRoyale() or guiVisitor.isMapbox():
+    if guiVisitor.isRandomBattle() or guiVisitor.isEventBattle() or guiVisitor.isEpicBattle() or guiVisitor.isBattleRoyale() or guiVisitor.isMapbox() or guiVisitor.isFunRandom():
         finder = TeamScopeNumberingFinder(teams)
+    elif guiVisitor.isComp7Battle():
+        finder = Comp7TeamScopeNumberingFinder(teams)
     elif guiVisitor.isMultiTeam():
         finder = ContinuousNumberingFinder(teams)
     else:

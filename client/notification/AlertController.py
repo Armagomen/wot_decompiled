@@ -1,10 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/notification/AlertController.py
+import Event
+from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.SystemMessageMeta import SystemMessageMeta
 from notification.BaseMessagesController import BaseMessagesController
-import Event
-from adisp import process
+
 
 class AlertController(BaseMessagesController):
 
@@ -13,7 +14,7 @@ class AlertController(BaseMessagesController):
         self.__actualDisplayingAlerts = 0
         self.onAllAlertsClosed = Event.Event()
 
-    @process
+    @adisp_process
     def showAlertMessage(self, notification):
         self.__actualDisplayingAlerts += 1
         yield DialogsInterface.showDialog(SystemMessageMeta(notification))

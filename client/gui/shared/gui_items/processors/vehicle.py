@@ -6,7 +6,7 @@ from itertools import chain
 import AccountCommands
 import BigWorld
 from AccountCommands import VEHICLE_SETTINGS_FLAG
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from constants import RentType, SEASON_NAME_BY_TYPE, CLIENT_COMMAND_SOURCES
 from gui import SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -45,8 +45,7 @@ from soft_exception import SoftException
 
 _logger = logging.getLogger(__name__)
 _SEASON_RENT_DURATION_KEY = {RentType.SEASON_RENT: 'season',
-                             RentType.SEASON_CYCLE_RENT: 'cycle'}
-
+ RentType.SEASON_CYCLE_RENT: 'cycle'}
 
 def getCrewAndShellsSumPrice(result, vehicle, crewType, buyShells):
     if crewType != -1:
@@ -639,8 +638,8 @@ class VehicleRepairer(ItemProcessor):
         return makeI18nSuccess(sysMsgKey='vehicle_repair/success', vehName=self.item.userName, money=formatPrice(self._repairCost), type=SM_TYPE.Repair)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def tryToLoadDefaultShellsLayout(vehicle, callback=None):
     defaultLayout = []
     for shell in vehicle.shells.layout.getItems():

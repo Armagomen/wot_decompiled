@@ -52,12 +52,11 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         self.__listMapping = {}
         self._sort = (('level', False),)
         self.__sortMapping = {'check': lambda v: v['selected'],
-                              'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]],
-                              'type': lambda v: VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
-                              'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[
-                                  nations.NAMES[v['nationID']]] << 8 | VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
-                              'name': lambda v: v['shortUserName'],
-                              'hangar': lambda v: v['inHangar']}
+         'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]],
+         'type': lambda v: VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
+         'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]] << 8 | VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
+         'name': lambda v: v['shortUserName'],
+         'hangar': lambda v: v['inHangar']}
         return
 
     @property

@@ -14,7 +14,6 @@ CLASS = TypeVar('CLASS')
 if not IS_CLIENT and not IS_BOT and not IS_CGF_DUMP:
     from insights.common import incrTickOverspends
 
-
 def _argsToLogID(args):
     for arg in args:
         if hasattr(arg, '__getattribute__') or hasattr(arg, '__getattr__'):

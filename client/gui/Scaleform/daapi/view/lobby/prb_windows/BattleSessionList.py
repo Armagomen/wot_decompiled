@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BattleSessionList.py
 import typing
-from adisp import process
+
+from adisp import adisp_process
 from constants import PREBATTLE_TYPE
 from gui.Scaleform.daapi.view.lobby.prb_windows.PrebattlesListWindow import PrebattlesListWindow
 from gui.Scaleform.daapi.view.meta.BattleSessionListMeta import BattleSessionListMeta
@@ -22,8 +23,9 @@ from messenger.ext import channel_num_gen
 from messenger.m_constants import LAZY_CHANNEL
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
+
 if typing.TYPE_CHECKING:
-    from gui.prb_control.items.prb_seqs import AutoInviteItem
+    pass
 
 @stored_window(DATA_TYPE.CAROUSEL_WINDOW, TARGET_ID.CHANNEL_CAROUSEL)
 class BattleSessionList(PrebattlesListWindow, BattleSessionListMeta):
@@ -61,7 +63,7 @@ class BattleSessionList(PrebattlesListWindow, BattleSessionListMeta):
     def __hideWindow(self, _):
         self.destroy()
 
-    @process
+    @adisp_process
     def __requestToJoin(self, prbID, prbType):
         yield self.prbDispatcher.join(JoinBattleSessionCtx(prbID, prbType, 'prebattle/join'))
 

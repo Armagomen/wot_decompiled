@@ -1,18 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/dialogs/dialog_template_view_model.py
 from frameworks.wulf import Array
-from gui.impl.gen import R
 from frameworks.wulf import ViewModel
+from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.dialog_focus_view_model import DialogFocusViewModel
 from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import DialogTemplateButtonViewModel
-from gui.impl.gen.view_models.views.dialogs.dialog_template_place_holder_view_model import DialogTemplatePlaceHolderViewModel
+from gui.impl.gen.view_models.views.dialogs.dialog_template_place_holder_view_model import \
+    DialogTemplatePlaceHolderViewModel
+
 
 class DialogTemplateViewModel(ViewModel):
     __slots__ = ('onButtonClicked', 'onCloseClicked')
     DEFAULT = 'default'
     ESCAPE = 'escape'
 
-    def __init__(self, properties=5, commands=2):
+    def __init__(self, properties=6, commands=2):
         super(DialogTemplateViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -49,11 +51,21 @@ class DialogTemplateViewModel(ViewModel):
     def setBackground(self, value):
         self._setResource(3, value)
 
-    def getIsBackgroundDimmed(self):
-        return self._getBool(4)
+    def getDimmerAlpha(self):
+        return self._getReal(4)
 
-    def setIsBackgroundDimmed(self, value):
-        self._setBool(4, value)
+    def setDimmerAlpha(self, value):
+        self._setReal(4, value)
+
+    def getDisplayFlags(self):
+        return self._getArray(5)
+
+    def setDisplayFlags(self, value):
+        self._setArray(5, value)
+
+    @staticmethod
+    def getDisplayFlagsType():
+        return str
 
     def _initialize(self):
         super(DialogTemplateViewModel, self)._initialize()
@@ -61,6 +73,7 @@ class DialogTemplateViewModel(ViewModel):
         self._addArrayProperty('buttons', Array())
         self._addArrayProperty('placeHolders', Array())
         self._addResourceProperty('background', R.invalid())
-        self._addBoolProperty('isBackgroundDimmed', True)
+        self._addRealProperty('dimmerAlpha', 0.0)
+        self._addArrayProperty('displayFlags', Array())
         self.onButtonClicked = self._addCommand('onButtonClicked')
         self.onCloseClicked = self._addCommand('onCloseClicked')

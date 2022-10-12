@@ -1,25 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/ArenaType.py
 import os
-from realm_utils import ResMgr
-from constants import IS_BOT, IS_WEB, IS_CLIENT, ARENA_TYPE_XML_PATH
-from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA, HAS_DEV_RESOURCES
-from constants import IS_CELLAPP, IS_BASEAPP
+from collections import defaultdict
+
+from Math import Vector2
+
+from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory, SpaceVisibilityFlags
+from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA
 from constants import CHAT_COMMAND_FLAGS
+from constants import IS_BOT, IS_WEB, IS_CLIENT, ARENA_TYPE_XML_PATH
+from constants import IS_CELLAPP, IS_BASEAPP
 from coordinate_system import AXIS_ALIGNED_DIRECTION
-from items.vehicles import CAMOUFLAGE_KINDS
+from data_structures import DictObj
 from debug_utils import LOG_CURRENT_EXCEPTION
 from items import _xml
-from typing import Dict
+from items.vehicles import CAMOUFLAGE_KINDS
+from realm_utils import ResMgr
 from soft_exception import SoftException
-from collections import defaultdict
-from data_structures import DictObj
 from visual_script.misc import ASPECT, VisualScriptTag, readVisualScriptPlanParams, readVisualScriptPlans
-from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory, SpaceVisibilityFlags
-from Math import Vector2
+
 if IS_CLIENT:
     from helpers import i18n
-    import WWISE
 elif IS_WEB:
     from web_stubs import *
 if IS_CELLAPP or IS_BASEAPP:
@@ -245,6 +246,8 @@ def __readBonusTypeCfgs(geometryName, section, defaultXml, bonusType):
                 cfg['maxPlayersInTeam'] = __readMaxPlayersInTeam(bonusOverrides, defaultXml)
             if __hasKey('runDelay', bonusOverrides, defaultXml):
                 cfg['runDelay'] = _readInt('runDelay', bonusOverrides, defaultXml)
+            if __hasKey('runDelayDev', bonusOverrides, defaultXml):
+                cfg['runDelayDev'] = _readInt('runDelayDev', bonusOverrides, defaultXml)
         except Exception as e:
             LOG_CURRENT_EXCEPTION()
             raise SoftException("wrong %s bonusTypeOverrides section '%s' : %s" % (geometryName, bonusType, e))
@@ -348,6 +351,8 @@ def __readCommonCfg(section, defaultXml, raiseIfMissing, geometryCfg):
         cfg['minTeamsInArena'] = __readTeamsCount('minTeamsInArena', section, defaultXml)
     if raiseIfMissing or __hasKey('runDelay', section, defaultXml):
         cfg['runDelay'] = _readInt('runDelay', section, defaultXml)
+    if raiseIfMissing or __hasKey('runDelayDev', section, defaultXml):
+        cfg['runDelayDev'] = _readInt('runDelayDev', section, defaultXml)
     if raiseIfMissing or __hasKey('roundLength', section, defaultXml):
         cfg['roundLength'] = _readInt('roundLength', section, defaultXml)
     if raiseIfMissing or __hasKey('winnerIfTimeout', section, defaultXml):
@@ -437,6 +442,7 @@ def __readCommonCfg(section, defaultXml, raiseIfMissing, geometryCfg):
         cfg['controlPoints'] = __readControlPoints(section)
         cfg['teamLowLevelSpawnPoints'] = __readTeamSpawnPoints(section, maxTeamsInArena, nodeNameTemplate='team%d_low', required=False)
         cfg['botPoints'] = __readBotPoints(section)
+        cfg['pointsOfInterest'] = __readPointsOfInterest(section)
     if not IS_CLIENT:
         if raiseIfMissing or __hasKey('battleScenarios', section, defaultXml):
             cfg['battleScenarios'] = __readBattleScenarios(section, defaultXml)
@@ -909,6 +915,20 @@ def __readBotPoints(section):
             res[index] = pos
 
     return res if res else None
+
+
+def __readPointsOfInterest(section):
+    res = []
+    pointsSection = section['pointsOfInterestUDO']
+    if pointsSection is not None:
+        for name, value in pointsSection.items():
+            if name == 'point':
+                pointType = value.readInt('type')
+                pointPosition = value.readVector2('position')
+                res.append({'type': pointType,
+                 'position': pointPosition})
+
+    return res
 
 
 def __readTeamBasePositions(section, maxTeamsInArena):

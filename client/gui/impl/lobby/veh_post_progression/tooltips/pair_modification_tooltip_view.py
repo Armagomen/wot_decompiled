@@ -14,7 +14,6 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Array
-    from gui.shared.gui_items.Vehicle import Vehicle
 
 
 class BasePairModificationTooltipView(ViewImpl):

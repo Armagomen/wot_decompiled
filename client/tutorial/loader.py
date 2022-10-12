@@ -1,27 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/loader.py
 import logging
-import weakref
 import typing
+import weakref
+
 import BigWorld
 import account_helpers
-from skeletons.tutorial import ITutorialLoader
-from tutorial.gui.Scaleform.gui_impl import ScaleformGuiImpl
-from tutorial.gui.controller import GuiController
-from tutorial.gui.impl import WulfGuiImpl
+from constants import BootcampVersion
 from helpers import dependency
+from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
+from skeletons.tutorial import ITutorialLoader
+from soft_exception import SoftException
+from tutorial import cache as _cache
 from tutorial import core
 from tutorial import settings as _settings
-from tutorial import cache as _cache
 from tutorial.control.context import GLOBAL_FLAG, GlobalStorage
 from tutorial.control.listener import AppLoaderListener
 from tutorial.doc_loader import loadDescriptorData
+from tutorial.gui.Scaleform.gui_impl import ScaleformGuiImpl
+from tutorial.gui.controller import GuiController
+from tutorial.gui.impl import WulfGuiImpl
 from tutorial.hints_manager import HintsManager
-from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
-from soft_exception import SoftException
+
 if typing.TYPE_CHECKING:
-    from tutorial.core import Tutorial
-    from skeletons.tutorial import IGuiController
+    pass
 _SETTINGS = _settings.TUTORIAL_SETTINGS
 _LOBBY_DISPATCHER = _settings.TUTORIAL_LOBBY_DISPATCHER
 _BATTLE_DISPATCHER = _settings.TUTORIAL_BATTLE_DISPATCHER
@@ -185,7 +187,11 @@ class TutorialLoader(ITutorialLoader):
         bootcampController = dependency.instance(IBootcampController)
         isInBootcampAccount = bootcampController.isInBootcampAccount()
         if isInBootcampAccount and not self.demoAccController.isInDemoAccRegistration:
-            selectedSettings = self.__doAutoRun((_SETTINGS.OFFBATTLE, _SETTINGS.QUESTS, _SETTINGS.BOOTCAMP_LOBBY), state)
+            if bootcampController.version == BootcampVersion.SHORT:
+                lobbySetting = _SETTINGS.SHORT_BOOTCAMP_LOBBY
+            else:
+                lobbySetting = _SETTINGS.BOOTCAMP_LOBBY
+            selectedSettings = self.__doAutoRun((_SETTINGS.OFFBATTLE, _SETTINGS.QUESTS, lobbySetting), state)
         else:
             selectedSettings = None
         if selectedSettings is None or selectedSettings.hintsEnabled:

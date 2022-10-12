@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/uilogging/helpers.py
 import typing
-
 if typing.TYPE_CHECKING:
     pass
-
 
 class _LazyLoggerDescriptor(object):
     __slots__ = ('__class', '__args', '__kwargs', '__instance')

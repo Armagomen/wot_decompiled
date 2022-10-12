@@ -6,7 +6,7 @@ import weakref
 import BattleReplay
 import BigWorld
 from AvatarInputHandler.cameras import FovExtended
-from adisp import async
+from adisp import adisp_async
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import TimerConfirmDialogMeta
@@ -201,7 +201,7 @@ class VideoSettingsStorage(ISettingsStorage):
 
                     return revert
 
-                @async
+                @adisp_async
                 def confirmator(callback=None):
                     BigWorld.callback(0.0, lambda : DialogsInterface.showI18nConfirmDialog('graphicsChangeConfirmation', callback, meta=TimerConfirmDialogMeta('graphicsChangeConfirmation', timer=15)))
 

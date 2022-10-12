@@ -11,7 +11,6 @@ C11N_QUESTS_PROGRESSION_SOURCE_PATH = ['scripts/item_defs/customization/progress
 CustomizationQuest = namedtuple('CustomizationQuest', ('questID', 'questName', 'questDescr', 'questClientData'))
 g_cust_cache = None
 
-
 def customizationQuestsFromFile(pathToFiles):
     quests = {}
     for pathToFile in pathToFiles:
@@ -26,7 +25,6 @@ def customizationQuestsFromFile(pathToFiles):
 def init():
     global g_cust_cache
     if g_cust_cache is None:
-        customizationQuestSectionList = list(
-            itertools.chain.from_iterable((collectSections(path) for path in C11N_QUESTS_PROGRESSION_SOURCE_PATH)))
+        customizationQuestSectionList = list(itertools.chain.from_iterable((collectSections(path) for path in C11N_QUESTS_PROGRESSION_SOURCE_PATH)))
         g_cust_cache = customizationQuestsFromFile(customizationQuestSectionList)
     return

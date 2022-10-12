@@ -28,7 +28,6 @@ if typing.TYPE_CHECKING:
     pass
 EXTRA_PARAMS_JOINER = ', '
 
-
 def _canCustomizationBeAdded(c11nItem, count):
     maxNumber = c11nItem.descriptor.maxNumber
     return False if maxNumber != 0 and c11nItem.fullCount() + count > maxNumber else True

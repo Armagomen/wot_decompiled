@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/resource_well/resources_loading_view.py
 from PlayerEvents import g_playerEvents
-from adisp import process
+from adisp import adisp_process
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.auxiliary.resource_well_helper import fillVehicleCounter
@@ -151,7 +151,7 @@ class ResourcesLoadingView(ViewImpl):
                 resource = findFirst(lambda r, m=resourceModel: m.getType() == r.guiName, resources)
                 resourceModel.setInventoryCount(resource.inventoryCount)
 
-    @process
+    @adisp_process
     def __loadResources(self, args):
         self.__updateLoadingError(isError=False)
         resources = {resource:int(count) for resource, count in args.iteritems()}
@@ -163,7 +163,7 @@ class ResourcesLoadingView(ViewImpl):
         else:
             self.__onLoadResources(result, processor.responseCtx)
 
-    @process
+    @adisp_process
     def __showNoTopRewardConfirm(self, resources):
         self.__updateLoadingError(isError=True)
         processor = ResourceWellNoTopVehiclesProcessor(resources)
@@ -207,6 +207,4 @@ class ResourcesLoadingWindow(LobbyWindow):
     __slots__ = ()
 
     def __init__(self):
-        super(ResourcesLoadingWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN,
-                                                     content=ResourcesLoadingView(
-                                                         R.views.lobby.resource_well.ResourcesLoadingView()))
+        super(ResourcesLoadingWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=ResourcesLoadingView(R.views.lobby.resource_well.ResourcesLoadingView()))

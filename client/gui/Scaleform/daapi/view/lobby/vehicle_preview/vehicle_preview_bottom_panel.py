@@ -2,9 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview_bottom_panel.py
 import time
 from collections import namedtuple
+
 import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from collector_vehicle import CollectorVehicleConsts
 from constants import GameSeasonType, RentType
 from gui import DialogsInterface
@@ -31,7 +32,8 @@ from gui.referral_program import showGetVehiclePage
 from gui.shared import event_dispatcher, events, g_eventBus
 from gui.shared.event_dispatcher import showVehicleRentDialog
 from gui.shared.events import HasCtxEvent
-from gui.shared.formatters import chooseItemPriceVO, formatPrice, getItemPricesVO, getItemUnlockPricesVO, icons, text_styles, time_formatters
+from gui.shared.formatters import chooseItemPriceVO, formatPrice, getItemPricesVO, getItemUnlockPricesVO, icons, \
+    text_styles, time_formatters
 from gui.shared.gui_items.gui_item_economics import ActualPrice, ITEM_PRICE_EMPTY, ItemPrice, getPriceTypeAndValue
 from gui.shared.gui_items.items_actions import factory
 from gui.shared.money import Currency, MONEY_UNDEFINED, Money
@@ -41,14 +43,18 @@ from gui.shared.utils.functions import makeTooltip
 from gui.shop import canBuyGoldForVehicleThroughWeb, showBuyGoldForBundle, showBuyProductOverlay
 from helpers import dependency, int2roman, time_utils
 from helpers.i18n import makeString as _ms
-from items_kit_helper import BOX_TYPE, OFFER_CHANGED_EVENT, getActiveOffer, lookupItem, mayObtainForMoney, mayObtainWithMoneyExchange, showItemTooltip
 from shared_utils import findFirst
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import ICalendarController, IExternalLinksController, IHeroTankController, IMarathonEventsController, IRestoreController, ITradeInController, IVehicleComparisonBasket
+from skeletons.gui.game_control import ICalendarController, IExternalLinksController, IHeroTankController, \
+    IMarathonEventsController, IRestoreController, ITradeInController, IVehicleComparisonBasket
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from web.web_client_api.common import ItemPackEntry, ItemPackTypeGroup
+
+from items_kit_helper import BOX_TYPE, OFFER_CHANGED_EVENT, getActiveOffer, lookupItem, mayObtainForMoney, \
+    mayObtainWithMoneyExchange, showItemTooltip
+
 _ButtonState = namedtuple('_ButtonState', ('enabled', 'itemPrice', 'label', 'icon', 'iconAlign', 'isAction', 'actionTooltip', 'tooltip', 'title', 'isMoneyEnough', 'isUnlock', 'isPrevItemsUnlock', 'customOffer', 'isShowSpecial'))
 
 def _buildBuyButtonTooltip(key):
@@ -347,7 +353,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
                     g_currentPreviewVehicle.previewStyle(style)
             return
 
-    @process
+    @adisp_process
     def __updateBtnState(self, *_):
         item = g_currentPreviewVehicle.item
         if item is None:
@@ -605,7 +611,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
             self.__startTimer(gmTime.tm_sec + 1)
         return
 
-    @process
+    @adisp_process
     def __purchasePackage(self):
         if self.__items is not None:
             product = self.__title if self.__couponInfo is None else g_currentPreviewVehicle.item.shortUserName
@@ -638,7 +644,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
     def __purchaseSingleVehicle(self, vehicle):
         event_dispatcher.showVehicleBuyDialog(vehicle, returnAlias=self.__backAlias, returnCallback=self.__backCallback)
 
-    @process
+    @adisp_process
     def __purchaseHeroTank(self):
         if self._heroTanks.isAdventHero():
             self.__calendarController.showWindow(invokedFrom=CalendarInvokeOrigin.HANGAR)
@@ -650,8 +656,8 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
             url = yield self.__urlMacros.parse(self._heroTanks.getCurrentRelatedURL())
             self.fireEvent(events.OpenLinkEvent(events.OpenLinkEvent.SPECIFIED, url=url))
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def __hasExternalLink(self, callback=None):
         url = ''
         if self._marathonEvent and not self._marathonEvent.hasIgbLink():
@@ -661,7 +667,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
                 url = self._heroTanks.getCurrentRelatedURL()
         callback(self.__linksCtrl.externalAllowed(url) if url else False)
 
-    @process
+    @adisp_process
     def __purchaseMarathonPackage(self):
         if self._marathonEvent.hasIgbLink():
             url = yield self._marathonEvent.getMarathonVehicleUrlIgb()

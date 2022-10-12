@@ -1,17 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/year_position_provider.py
 import logging
+
 import BigWorld
+import constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import RANKED_YEAR_POSITION
-from adisp import process
-import constants
-from gui.wgcg.rank.contexts import RankedYearPositionCtx
+from adisp import adisp_process
 from gui.ranked_battles.constants import YEAR_STRIPE_CLIENT_TOKEN, YEAR_STRIPE_SERVER_TOKEN
+from gui.wgcg.rank.contexts import RankedYearPositionCtx
 from helpers import dependency, isPlayerAccount
 from helpers.time_utils import ONE_MINUTE
-from skeletons.gui.web import IWebController
 from skeletons.gui.shared import IItemsCache
+from skeletons.gui.web import IWebController
+
 _logger = logging.getLogger(__name__)
 _WEB_AVAILABLE_SYNC_TIME = 2
 _POSITION_SYNC_TIME = 2 * ONE_MINUTE
@@ -54,7 +56,7 @@ class RankedYearPositionProvider(object):
         if constants.IS_DEVELOPMENT:
             self.__fakePosition = position
 
-    @process
+    @adisp_process
     def __invoke(self):
         self.__callbackID = None
         if self.__fakePosition is None or not constants.IS_DEVELOPMENT:

@@ -1,17 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/view_helpers/blur_manager.py
 import logging
-import weakref
 import typing
+import weakref
 from collections import deque
+
 import GUI
 from gui.app_loader import sf_lobby, sf_battle
 from helpers import dependency
 from ids_generators import Int32IDGenerator
 from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
+
 if typing.TYPE_CHECKING:
-    from Math import Vector4
+    pass
 _DEFAULT_BLUR_ANIM_REPEAT_COUNT = 10
 _logger = logging.getLogger(__name__)
 _idsGenerator = Int32IDGenerator()
@@ -178,7 +180,7 @@ class _BlurManager(object):
         if self._lobby is not None:
             self._lobby.blurBackgroundViews(blur.ownLayer, blur.blurAnimRepeatCount)
         elif self._battle is not None:
-            self._battle.blurBackgroundViews()
+            self._battle.blurBackgroundViews(blur.ownLayer, blur.blurAnimRepeatCount)
         return
 
     def _resetGlobalBlur(self):

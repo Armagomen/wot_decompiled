@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/formatters/text_styles.py
 import types
+
 from gui import makeHtmlString
 from gui.shared.money import Currency
 from helpers import i18n
 from soft_exception import SoftException
+
 __all__ = ('standard',
  'main',
  'mainBig',
@@ -56,9 +58,12 @@ __all__ = ('standard',
  'grandTitle',
  'grandTitleYellow',
  'grandTitleTK',
+ 'grandTitleRed',
  'textEpic',
  'yellowText',
- 'greenText')
+ 'greenText',
+ 'poiCapturedBoldText',
+ 'poiCapturedRegularText')
 
 def _getStyle(style, ctx=None):
     if ctx is None:
@@ -110,6 +115,10 @@ def standartPing(text):
 
 def stats(text):
     return _formatText('statsText', text)
+
+
+def h15ParSecondary(text):
+    return _formatText('h15ParSecondary', text)
 
 
 def statInfo(text):
@@ -410,6 +419,10 @@ def grandTitleTK(text):
     return _formatText('grandTitleTK', text)
 
 
+def grandTitleRed(text):
+    return _formatText('grandTitleRed', text)
+
+
 def failedStatusText(text):
     return _formatText('failedStatusText', text)
 
@@ -424,6 +437,30 @@ def greenText(text):
 
 def discountText(text):
     return _formatText('discountText', text)
+
+
+def goldTitle(text):
+    return _formatText('goldTitle', text)
+
+
+def creditsTitle(text):
+    return _formatText('creditsTitle', text)
+
+
+def crystalTitle(text):
+    return _formatText('crystalTitle', text)
+
+
+def expTitle(text):
+    return _formatText('expTitle', text)
+
+
+def poiCapturedBoldText(text):
+    return _formatText('poiCapturedBoldText', text)
+
+
+def poiCapturedRegularText(text):
+    return _formatText('poiCapturedRegularText', text)
 
 
 def getRawStyles(names):

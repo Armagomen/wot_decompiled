@@ -20,7 +20,6 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 _SHOW_HINT_TIME = 5
 _SHOW_COOLDOWN_TIME = 5
 
-
 class _CALLBACK_HIDE(object):
     ALL = 0
     HINT = 1

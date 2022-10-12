@@ -11,12 +11,10 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('PersonalNumberComponent',)
 
-
 class PersonalNumberComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.PERSONAL_NUMBER
-    fields = OrderedDict(
-        (('id', intField()), ('number', strField()), ('appliedTo', applyAreaEnumField(ApplyArea.NONE))))
+    fields = OrderedDict((('id', intField()), ('number', strField()), ('appliedTo', applyAreaEnumField(ApplyArea.NONE))))
     __slots__ = ('id', 'number', 'appliedTo')
 
     def __init__(self, id=0, number=None, appliedTo=ApplyArea.NONE):

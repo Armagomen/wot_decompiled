@@ -10,7 +10,6 @@ from web.web_client_api import w2c, W2CSchema, Field
 
 _logger = logging.getLogger(__name__)
 
-
 class _ResourceWellTabSchema(W2CSchema):
     back_to_shop = Field(required=False, type=bool, default=True)
 

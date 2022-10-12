@@ -1,19 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmModuleMeta.py
 import math
-from gui.Scaleform.daapi.view.dialogs import IDialogMeta
+
 import Event
-from gui.Scaleform.framework import ScopeTemplates
-from gui.shared import events
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
-from helpers import i18n
-from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.shared.utils.decorators import process
+from gui.Scaleform.daapi.view.dialogs import IDialogMeta
+from gui.Scaleform.framework import ScopeTemplates
+from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.shared import events
 from gui.shared.gui_items.processors.module import ModuleBuyer, ModuleSeller
 from gui.shared.money import MONEY_UNDEFINED, Currency, Money, CurrencyCollection
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
-from gui import SystemMessages
+from gui.shared.utils.decorators import adisp_process
+from helpers import i18n
+
 MAX_ITEMS_FOR_OPERATION = 1000000
 
 class ConfirmModuleMeta(IDialogMeta):
@@ -79,7 +81,7 @@ class SellModuleMeta(ConfirmModuleMeta):
     def getDefaultValue(self, module):
         return module.inventoryCount
 
-    @process('sellItem')
+    @adisp_process('sellItem')
     def submit(self, item, count, currency):
         result = yield ModuleSeller(item, min(count, MAX_ITEMS_FOR_OPERATION)).request()
         if result.userMsg:
@@ -144,7 +146,7 @@ class BuyModuleMeta(ConfirmModuleMeta):
         defaultPrices = self.getDefaultPrices(module)
         return packActionTooltipData(ACTION_TOOLTIPS_TYPE.ITEM, str(module.intCD), True, prices, defaultPrices)
 
-    @process('buyItem')
+    @adisp_process('buyItem')
     def submit(self, item, count, currency):
         result = yield ModuleBuyer(item, count, currency).request()
         if result.userMsg:

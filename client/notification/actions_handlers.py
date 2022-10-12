@@ -5,14 +5,13 @@ from collections import defaultdict
 
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from adisp import process
-from async import async, await
+from adisp import adisp_process
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui import DialogsInterface, SystemMessages, makeHtmlString
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
-from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getPlayerSeniorityAwardsUrl, \
-    getBattlePassPointsProductsUrl
+from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBattlePassPointsProductsUrl, \
+    getIntegratedAuctionUrl, getPlayerSeniorityAwardsUrl
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.BARRACKS_CONSTANTS import BARRACKS_CONSTANTS
 from gui.Scaleform.genConsts.FORTIFICATION_ALIASES import FORTIFICATION_ALIASES
@@ -28,10 +27,11 @@ from gui.ranked_battles import ranked_helpers
 from gui.server_events.events_dispatcher import showMissionsBattlePass, showMissionsMapboxProgression, \
     showPersonalMission
 from gui.shared import EVENT_BUS_SCOPE, actions, event_dispatcher as shared_events, events, g_eventBus
-from gui.shared.event_dispatcher import showBlueprintsSalePage, showProgressiveRewardWindow, showRankedYearAwardWindow, \
-    showShop, showSteamConfirmEmailOverlay, hideWebBrowserOverlay, showEpicBattlesAfterBattleWindow, \
-    showResourceWellProgressionWindow, showDelayedReward
+from gui.shared.event_dispatcher import hideWebBrowserOverlay, showBlueprintsSalePage, showDelayedReward, \
+    showEpicBattlesAfterBattleWindow, showPersonalReservesConversion, showProgressiveRewardWindow, \
+    showRankedYearAwardWindow, showResourceWellProgressionWindow, showShop, showSteamConfirmEmailOverlay
 from gui.shared.notifications import NotificationPriorityLevel
+from gui.shared.system_factory import collectAllNotificationsActionsHandlers, registerNotificationsActionsHandlers
 from gui.shared.utils import decorators
 from gui.wgcg.clan import contexts as clan_ctxs
 from gui.wgnc import g_wgncProvider
@@ -43,18 +43,18 @@ from notification.tutorial_helper import TUTORIAL_GLOBAL_VAR, TutorialGlobalStor
 from predefined_hosts import g_preDefinedHosts
 from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.game_control import IBattleRoyaleController, IBrowserController, IMapboxController, \
-    IRankedBattlesController, IBattlePassController
+from skeletons.gui.game_control import IBattlePassController, IBattleRoyaleController, IBrowserController, \
+    ICNLootBoxesController, IMapboxController, IRankedBattlesController
 from skeletons.gui.impl import INotificationWindowController
 from skeletons.gui.platform.wgnp_controllers import IWGNPSteamAccRequestController
 from skeletons.gui.web import IWebController
 from soft_exception import SoftException
 from web.web_client_api import webApiCollection
 from web.web_client_api.sound import HangarSoundWebApi
+from wg_async import wg_async, wg_await
 
 if typing.TYPE_CHECKING:
     pass
-
 
 class _ActionHandler(object):
 
@@ -71,14 +71,14 @@ class _ActionHandler(object):
             raise SoftException('Handler does not handle action {0}'.format(action))
 
 
-class _NavigationDisabledActionHandler(_ActionHandler):
+class NavigationDisabledActionHandler(_ActionHandler):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
         pass
 
     def handleAction(self, model, entityID, action):
-        super(_NavigationDisabledActionHandler, self).handleAction(model, entityID, action)
+        super(NavigationDisabledActionHandler, self).handleAction(model, entityID, action)
         if not self._canNavigate():
             return
         self.doAction(model, entityID, action)
@@ -231,7 +231,7 @@ class _AcceptClanAppHandler(_ClanAppHandler):
     def getActions(cls):
         pass
 
-    @process
+    @adisp_process
     def handleAction(self, model, entityID, action):
         super(_AcceptClanAppHandler, self).handleAction(model, entityID, action)
         yield self.clanCtrl.sendRequest(clan_ctxs.AcceptApplicationCtx(self._getApplicationID(model, entityID)), allowDelay=True)
@@ -247,7 +247,7 @@ class _DeclineClanAppHandler(_ClanAppHandler):
     def getActions(cls):
         pass
 
-    @process
+    @adisp_process
     def handleAction(self, model, entityID, action):
         super(_DeclineClanAppHandler, self).handleAction(model, entityID, action)
         yield self.clanCtrl.sendRequest(clan_ctxs.DeclineApplicationCtx(self._getApplicationID(model, entityID)), allowDelay=True)
@@ -291,7 +291,7 @@ class _AcceptClanInviteHandler(_ClanInviteHandler):
     def getActions(cls):
         pass
 
-    @process
+    @adisp_process
     def handleAction(self, model, entityID, action):
         super(_AcceptClanInviteHandler, self).handleAction(model, entityID, action)
         entity = model.getNotification(self.getNotType(), entityID).getEntity()
@@ -312,7 +312,7 @@ class _DeclineClanInviteHandler(_ClanInviteHandler):
     def getActions(cls):
         pass
 
-    @process
+    @adisp_process
     def handleAction(self, model, entityID, action):
         super(_DeclineClanInviteHandler, self).handleAction(model, entityID, action)
         yield self.clanCtrl.sendRequest(clan_ctxs.DeclineInviteCtx(self._getInviteID(model, entityID)), allowDelay=True)
@@ -451,7 +451,7 @@ class ShowBattleResultsHandler(_ShowArenaResultHandler):
     def getActions(cls):
         pass
 
-    @decorators.process('loadStats')
+    @decorators.adisp_process('loadStats')
     def _showWindow(self, notification, arenaUniqueID):
         uniqueID = long(arenaUniqueID)
         result = yield self.battleResults.requestResults(RequestResultsContext(uniqueID, showImmediately=False, showIfPosted=True, resetCache=False))
@@ -522,7 +522,7 @@ class OpenPollHandler(_ActionHandler):
             return
         self.__doOpen(link, title)
 
-    @process
+    @adisp_process
     def __doOpen(self, link, title):
         browserID = yield self.browserCtrl.load(link, title, showActionBtn=False, handlers=webApiCollection(HangarSoundWebApi))
         browser = self.browserCtrl.getBrowser(browserID)
@@ -549,7 +549,7 @@ class AcceptPrbInviteHandler(_ActionHandler):
     def getActions(cls):
         pass
 
-    @process
+    @adisp_process
     def handleAction(self, model, entityID, action):
         super(AcceptPrbInviteHandler, self).handleAction(model, entityID, action)
         yield lambda callback: callback(None)
@@ -790,7 +790,7 @@ class _OpenMissingEventsHandler(_ActionHandler):
         SystemMessages.pushI18nMessage(backport.text(R.strings.system_messages.queue.isInQueue()), type=SystemMessages.SM_TYPE.Error, priority=NotificationPriorityLevel.HIGH)
 
 
-class _OpenNotrecruitedHandler(_NavigationDisabledActionHandler):
+class _OpenNotrecruitedHandler(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -811,7 +811,7 @@ class _OpenNotrecruitedSysMessageHandler(_OpenNotrecruitedHandler):
         return NOTIFICATION_TYPE.MESSAGE
 
 
-class _OpenConfirmEmailHandler(_NavigationDisabledActionHandler):
+class _OpenConfirmEmailHandler(NavigationDisabledActionHandler):
     __wgnpSteamAccCtrl = dependency.descriptor(IWGNPSteamAccRequestController)
 
     @classmethod
@@ -822,9 +822,9 @@ class _OpenConfirmEmailHandler(_NavigationDisabledActionHandler):
     def getActions(cls):
         pass
 
-    @async
+    @wg_async
     def doAction(self, model, entityID, action):
-        status = yield await(self.__wgnpSteamAccCtrl.getEmailStatus())
+        status = yield wg_await(self.__wgnpSteamAccCtrl.getEmailStatus())
         if status.typeIs(StatusTypes.ADDED):
             showSteamConfirmEmailOverlay(email=status.email)
 
@@ -847,7 +847,7 @@ class OpenPersonalMissionHandler(_ActionHandler):
         return
 
 
-class _OpenLootBoxesHandler(_NavigationDisabledActionHandler):
+class _OpenLootBoxesHandler(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -865,7 +865,7 @@ class _OpenLootBoxesHandler(_NavigationDisabledActionHandler):
         return
 
 
-class _LootBoxesAutoOpenHandler(_NavigationDisabledActionHandler):
+class _LootBoxesAutoOpenHandler(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -883,7 +883,7 @@ class _LootBoxesAutoOpenHandler(_NavigationDisabledActionHandler):
         return
 
 
-class _OpenProgressiveRewardView(_NavigationDisabledActionHandler):
+class _OpenProgressiveRewardView(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -897,7 +897,7 @@ class _OpenProgressiveRewardView(_NavigationDisabledActionHandler):
         showProgressiveRewardWindow()
 
 
-class _OpenBattlePassProgressionView(_NavigationDisabledActionHandler):
+class _OpenBattlePassProgressionView(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -918,7 +918,7 @@ class _OpenBattlePassProgressionView(_NavigationDisabledActionHandler):
         return
 
 
-class _OpenBattlePassChapterChoiceView(_NavigationDisabledActionHandler):
+class _OpenBattlePassChapterChoiceView(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -932,7 +932,7 @@ class _OpenBattlePassChapterChoiceView(_NavigationDisabledActionHandler):
         showMissionsBattlePass(R.views.lobby.battle_pass.ChapterChoiceView())
 
 
-class _OpenBPExtraWillEndSoon(_NavigationDisabledActionHandler):
+class _OpenBPExtraWillEndSoon(NavigationDisabledActionHandler):
     __battlePassController = dependency.descriptor(IBattlePassController)
 
     @classmethod
@@ -949,7 +949,7 @@ class _OpenBPExtraWillEndSoon(_NavigationDisabledActionHandler):
             showMissionsBattlePass(R.views.lobby.battle_pass.BattlePassProgressionsView(), chapterID)
 
 
-class _OpentBlueprintsConvertSale(_NavigationDisabledActionHandler):
+class _OpentBlueprintsConvertSale(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -963,7 +963,7 @@ class _OpentBlueprintsConvertSale(_NavigationDisabledActionHandler):
         showBlueprintsSalePage()
 
 
-class _OpenMapboxProgression(_NavigationDisabledActionHandler):
+class _OpenMapboxProgression(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -977,7 +977,7 @@ class _OpenMapboxProgression(_NavigationDisabledActionHandler):
         showMissionsMapboxProgression()
 
 
-class _OpenMapboxSurvey(_NavigationDisabledActionHandler):
+class _OpenMapboxSurvey(NavigationDisabledActionHandler):
     __mapboxCtrl = dependency.descriptor(IMapboxController)
 
     @classmethod
@@ -997,7 +997,7 @@ class _OpenMapboxSurvey(_NavigationDisabledActionHandler):
         return
 
 
-class _OpenDelayedReward(_NavigationDisabledActionHandler):
+class _OpenDelayedReward(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1011,7 +1011,7 @@ class _OpenDelayedReward(_NavigationDisabledActionHandler):
         showDelayedReward()
 
 
-class _OpenPsaShop(_NavigationDisabledActionHandler):
+class _OpenPsaShop(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1025,7 +1025,7 @@ class _OpenPsaShop(_NavigationDisabledActionHandler):
         showShop(getPlayerSeniorityAwardsUrl())
 
 
-class _OpenBattlePassPointsShop(_NavigationDisabledActionHandler):
+class _OpenBattlePassPointsShop(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1046,7 +1046,7 @@ class _OpenChapterChoiceView(_OpenBattlePassProgressionView):
         return NOTIFICATION_TYPE.BATTLE_PASS_SWITCH_CHAPTER_REMINDER
 
 
-class _OpenEpicBattlesAfterBattleWindow(_NavigationDisabledActionHandler):
+class _OpenEpicBattlesAfterBattleWindow(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1062,7 +1062,7 @@ class _OpenEpicBattlesAfterBattleWindow(_NavigationDisabledActionHandler):
         showEpicBattlesAfterBattleWindow(levelUpInfo)
 
 
-class _OpenResourceWellProgressionStartWindow(_NavigationDisabledActionHandler):
+class _OpenResourceWellProgressionStartWindow(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1076,7 +1076,7 @@ class _OpenResourceWellProgressionStartWindow(_NavigationDisabledActionHandler):
         showResourceWellProgressionWindow()
 
 
-class _OpenResourceWellProgressionNoVehiclesWindow(_NavigationDisabledActionHandler):
+class _OpenResourceWellProgressionNoVehiclesWindow(NavigationDisabledActionHandler):
 
     @classmethod
     def getNotType(cls):
@@ -1090,7 +1090,7 @@ class _OpenResourceWellProgressionNoVehiclesWindow(_NavigationDisabledActionHand
         showResourceWellProgressionWindow()
 
 
-class _OpenCustomizationStylesSection(_NavigationDisabledActionHandler):
+class _OpenCustomizationStylesSection(NavigationDisabledActionHandler):
     __customizationService = dependency.descriptor(ICustomizationService)
 
     @classmethod
@@ -1113,57 +1113,145 @@ class _OpenCustomizationStylesSection(_NavigationDisabledActionHandler):
         cls.__customizationService.getCtx().changeMode(CustomizationModes.STYLED, CustomizationTabs.STYLES)
 
 
+class _OpenIntegratedAuction(NavigationDisabledActionHandler):
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.MESSAGE
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+    def doAction(self, model, entityID, action):
+        showShop(getIntegratedAuctionUrl())
+
+
+class _OpenIntegratedAuctionStart(_OpenIntegratedAuction):
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.AUCTION_STAGE_START
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+
+class _OpenIntegratedAuctionFinish(_OpenIntegratedAuction):
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.AUCTION_STAGE_FINISH
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+
+class _OpenPersonalReservesConversion(NavigationDisabledActionHandler):
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.MESSAGE
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+    def doAction(self, model, entityID, action):
+        showPersonalReservesConversion()
+
+
+class _OpenPersonalReservesHandler(NavigationDisabledActionHandler):
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.MESSAGE
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+    def doAction(self, model, entityID, action):
+        shared_events.showPersonalReservesPage()
+
+
+class _OpenCNLootBoxesExternalShopHandler(NavigationDisabledActionHandler):
+    __cnLootBoxes = dependency.descriptor(ICNLootBoxesController)
+
+    @classmethod
+    def getNotType(cls):
+        return NOTIFICATION_TYPE.MESSAGE
+
+    @classmethod
+    def getActions(cls):
+        pass
+
+    def doAction(self, model, entityID, action):
+        if self.__cnLootBoxes.isActive():
+            self.__cnLootBoxes.openShop()
+
+
 _AVAILABLE_HANDLERS = (ShowBattleResultsHandler,
-                       ShowTutorialBattleHistoryHandler,
-                       ShowFortBattleResultsHandler,
-                       OpenPollHandler,
-                       AcceptPrbInviteHandler,
-                       DeclinePrbInviteHandler,
-                       ApproveFriendshipHandler,
-                       CancelFriendshipHandler,
-                       WGNCActionsHandler,
-                       SecurityLinkHandler,
-                       ClanRulesHandler,
-                       ShowRankedSeasonCompleteHandler,
-                       ShowRankedFinalYearHandler,
-                       ShowRankedYearPositionHandler,
-                       ShowRankedBattlePageHandler,
-                       SelectBattleRoyaleMode,
-                       _ShowClanAppsHandler,
-                       _ShowClanInvitesHandler,
-                       _AcceptClanAppHandler,
-                       _DeclineClanAppHandler,
-                       _ShowClanAppUserInfoHandler,
-                       _ShowClanProfileHandler,
-                       _ShowClanSettingsFromAppsHandler,
-                       _ShowClanSettingsFromInvitesHandler,
-                       _AcceptClanInviteHandler,
-                       _DeclineClanInviteHandler,
-                       _OpenEventBoardsHandler,
-                       OpenCustomizationHandler,
-                       _OpenNotrecruitedHandler,
-                       OpenPersonalMissionHandler,
-                       _OpenLootBoxesHandler,
-                       _LootBoxesAutoOpenHandler,
-                       _OpenProgressiveRewardView,
-                       ProlongStyleRent,
-                       _OpenBattlePassProgressionView,
-                       _OpenBattlePassChapterChoiceView,
-                       _OpenBPExtraWillEndSoon,
-                       _OpenMissingEventsHandler,
-                       _OpenNotrecruitedSysMessageHandler,
-                       _OpentBlueprintsConvertSale,
-                       _OpenConfirmEmailHandler,
-                       _OpenMapboxProgression,
-                       _OpenMapboxSurvey,
-                       _OpenDelayedReward,
-                       _OpenPsaShop,
-                       _OpenBattlePassPointsShop,
-                       _OpenChapterChoiceView,
-                       _OpenEpicBattlesAfterBattleWindow,
-                       _OpenResourceWellProgressionStartWindow,
-                       _OpenResourceWellProgressionNoVehiclesWindow,
-                       _OpenCustomizationStylesSection)
+ ShowTutorialBattleHistoryHandler,
+ ShowFortBattleResultsHandler,
+ OpenPollHandler,
+ AcceptPrbInviteHandler,
+ DeclinePrbInviteHandler,
+ ApproveFriendshipHandler,
+ CancelFriendshipHandler,
+ WGNCActionsHandler,
+ SecurityLinkHandler,
+ ClanRulesHandler,
+ ShowRankedSeasonCompleteHandler,
+ ShowRankedFinalYearHandler,
+ ShowRankedYearPositionHandler,
+ ShowRankedBattlePageHandler,
+ SelectBattleRoyaleMode,
+ _ShowClanAppsHandler,
+ _ShowClanInvitesHandler,
+ _AcceptClanAppHandler,
+ _DeclineClanAppHandler,
+ _ShowClanAppUserInfoHandler,
+ _ShowClanProfileHandler,
+ _ShowClanSettingsFromAppsHandler,
+ _ShowClanSettingsFromInvitesHandler,
+ _AcceptClanInviteHandler,
+ _DeclineClanInviteHandler,
+ _OpenEventBoardsHandler,
+ OpenCustomizationHandler,
+ _OpenNotrecruitedHandler,
+ OpenPersonalMissionHandler,
+ _OpenLootBoxesHandler,
+ _LootBoxesAutoOpenHandler,
+ _OpenProgressiveRewardView,
+ ProlongStyleRent,
+ _OpenBattlePassProgressionView,
+ _OpenBattlePassChapterChoiceView,
+ _OpenBPExtraWillEndSoon,
+ _OpenMissingEventsHandler,
+ _OpenNotrecruitedSysMessageHandler,
+ _OpentBlueprintsConvertSale,
+ _OpenConfirmEmailHandler,
+ _OpenMapboxProgression,
+ _OpenMapboxSurvey,
+ _OpenDelayedReward,
+ _OpenPsaShop,
+ _OpenBattlePassPointsShop,
+ _OpenChapterChoiceView,
+ _OpenEpicBattlesAfterBattleWindow,
+ _OpenResourceWellProgressionStartWindow,
+ _OpenResourceWellProgressionNoVehiclesWindow,
+ _OpenCustomizationStylesSection,
+ _OpenIntegratedAuction,
+ _OpenIntegratedAuctionStart,
+ _OpenIntegratedAuctionFinish,
+ _OpenPersonalReservesConversion,
+ _OpenPersonalReservesHandler,
+ _OpenMissingEventsHandler,
+ _OpenCNLootBoxesExternalShopHandler)
+registerNotificationsActionsHandlers(_AVAILABLE_HANDLERS)
 
 class NotificationsActionsHandlers(object):
     __slots__ = ('__single', '__multi')
@@ -1173,7 +1261,7 @@ class NotificationsActionsHandlers(object):
         self.__single = {}
         self.__multi = defaultdict(set)
         if not handlers:
-            handlers = _AVAILABLE_HANDLERS
+            handlers = collectAllNotificationsActionsHandlers()
         for clazz in handlers:
             actionsList = clazz.getActions()
             if actionsList:

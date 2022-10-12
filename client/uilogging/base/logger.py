@@ -9,18 +9,18 @@ from helpers import dependency
 from skeletons.ui_logging import IUILoggingCore
 from uilogging.constants import LogLevels, DEFAULT_LOGGER_NAME
 from wotdecorators import noexcept
-
 if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(DEFAULT_LOGGER_NAME)
-
 
 def createPartnerID():
     return str(uuid.uuid4())
 
 
 def ifUILoggingEnabled(result=None):
+
     def inner(func):
+
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.disabled:
@@ -120,18 +120,13 @@ class MetricsLogger(_BaseLogger):
         super(MetricsLogger, self).__init__(feature, group='metrics')
 
     def log(self, action, item, parentScreen=None, itemState=None, info=None, partnerID=None, loglevel=LogLevels.INFO):
-        self._log(action, loglevel=loglevel, item=item, parent_screen=parentScreen, item_state=itemState,
-                  additional_info=info, partnerID=partnerID)
+        self._log(action, loglevel=loglevel, item=item, parent_screen=parentScreen, item_state=itemState, additional_info=info, partnerID=partnerID)
 
-    def logOnce(self, action, item, parentScreen=None, itemState=None, info=None, partnerID=None,
-                loglevel=LogLevels.INFO):
-        self._logOnce(action, loglevel=loglevel, item=item, parent_screen=parentScreen, item_state=itemState,
-                      additional_info=info, partnerID=partnerID)
+    def logOnce(self, action, item, parentScreen=None, itemState=None, info=None, partnerID=None, loglevel=LogLevels.INFO):
+        self._logOnce(action, loglevel=loglevel, item=item, parent_screen=parentScreen, item_state=itemState, additional_info=info, partnerID=partnerID)
 
-    def stopAction(self, action, item, parentScreen=None, itemState=None, info=None, partnerID=None,
-                   loglevel=LogLevels.INFO, timeLimit=0.0):
-        self._stopAction(action, loglevel=loglevel, timeLimit=timeLimit, item=item, parent_screen=parentScreen,
-                         item_state=itemState, additional_info=info, partnerID=partnerID)
+    def stopAction(self, action, item, parentScreen=None, itemState=None, info=None, partnerID=None, loglevel=LogLevels.INFO, timeLimit=0.0):
+        self._stopAction(action, loglevel=loglevel, timeLimit=timeLimit, item=item, parent_screen=parentScreen, item_state=itemState, additional_info=info, partnerID=partnerID)
 
 
 class FlowLogger(_BaseLogger):
@@ -141,17 +136,13 @@ class FlowLogger(_BaseLogger):
         super(FlowLogger, self).__init__(feature, group='flow')
 
     def log(self, action, sourceItem, destinationItem, transitionMethod, partnerID=None, loglevel=LogLevels.INFO):
-        self._log(action, loglevel=loglevel, source_item=sourceItem, destination_item=destinationItem,
-                  transition_method=transitionMethod, partnerID=partnerID)
+        self._log(action, loglevel=loglevel, source_item=sourceItem, destination_item=destinationItem, transition_method=transitionMethod, partnerID=partnerID)
 
     def logOnce(self, action, sourceItem, destinationItem, transitionMethod, partnerID=None, loglevel=LogLevels.INFO):
-        self._logOnce(action, loglevel=loglevel, source_item=sourceItem, destination_item=destinationItem,
-                      transition_method=transitionMethod, partnerID=partnerID)
+        self._logOnce(action, loglevel=loglevel, source_item=sourceItem, destination_item=destinationItem, transition_method=transitionMethod, partnerID=partnerID)
 
-    def stopAction(self, action, sourceItem, destinationItem, transitionMethod, partnerID=None, loglevel=LogLevels.INFO,
-                   timeLimit=0.0):
-        self._stopAction(action, loglevel=loglevel, timeLimit=timeLimit, source_item=sourceItem,
-                         destination_item=destinationItem, transition_method=transitionMethod, partnerID=partnerID)
+    def stopAction(self, action, sourceItem, destinationItem, transitionMethod, partnerID=None, loglevel=LogLevels.INFO, timeLimit=0.0):
+        self._stopAction(action, loglevel=loglevel, timeLimit=timeLimit, source_item=sourceItem, destination_item=destinationItem, transition_method=transitionMethod, partnerID=partnerID)
 
 
 LOGGERS_TYPING = typing.Union[FlowLogger, MetricsLogger]

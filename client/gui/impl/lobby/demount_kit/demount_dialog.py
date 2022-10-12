@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_dialog.py
 import typing
+
 from gui.goodies.demount_kit import getDemountKitForOptDevice
-from gui.goodies.goodie_items import DemountKit
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
@@ -11,16 +11,16 @@ from gui.impl.dialogs.sub_views.title.simple_text_title import SimpleTextTitle
 from gui.impl.dialogs.sub_views.top_right.money_balance import MoneyBalance
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
+from gui.impl.gen.view_models.views.dialogs.template_settings.default_dialog_template_settings import DisplayFlags
 from gui.impl.lobby.demount_kit.demount_kit_utils import getDemountDialogTitle
 from gui.impl.pub.dialog_window import DialogButtons
-from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shop import showBuyGoldForEquipment
 from helpers import dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
+
 if typing.TYPE_CHECKING:
-    from typing import Optional
-    from gui.shared.gui_items.artefacts import OptionalDevice
+    pass
 NOTHING = -1
 DEMOUNT_KIT = 0
 GOLD = 1
@@ -40,6 +40,7 @@ class DemountOptionalDeviceDialog(DialogTemplateView):
         return
 
     def _onLoading(self, *args, **kwargs):
+        self.setDisplayFlags(DisplayFlags.RESPONSIVEHEADER.value)
         self.setSubView(Placeholder.TOP_RIGHT, MoneyBalance())
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(getDemountDialogTitle(self.__item, self.__forFitting)))
         self.__selector = content = SelectOptionContent()

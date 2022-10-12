@@ -41,11 +41,11 @@ class LinkedSetHintsView(LinkedSetHintsViewMeta):
 
     def _getViewCtxFromMessage(self, message):
         return {'icon': '',
-                'title': message.get('title', ''),
-                'description': message.get('description', ''),
-                'buttonLabel': message.get('buttonLabel', ''),
-                'back': message.get('back', 'red'),
-                'awards': self._getAwards(message.get('bonuses', []))}
+         'title': message.get('title', ''),
+         'description': message.get('description', ''),
+         'buttonLabel': message.get('buttonLabel', ''),
+         'back': message.get('back', 'red'),
+         'awards': self._getAwards(message.get('bonuses', []))}
 
     def _getAwards(self, bonuses):
         return [ {'icon': award['imgSource'],

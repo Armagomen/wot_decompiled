@@ -1,21 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ribbons_panel.py
 import logging
+
 from account_helpers.settings_core.settings_constants import BATTLE_EVENTS, GRAPHICS
-from gui.battle_control.battle_constants import BonusRibbonLabel as _BRL
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.Scaleform.daapi.view.battle.shared import ribbons_aggregator
+from gui.Scaleform.daapi.view.battle.shared.ribbons_aggregator import DAMAGE_SOURCE
 from gui.Scaleform.daapi.view.meta.RibbonsPanelMeta import RibbonsPanelMeta
 from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES as _BET
 from gui.battle_control import avatar_getter
+from gui.battle_control.battle_constants import BonusRibbonLabel as _BRL
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
 from helpers import dependency
+from items.battle_royale import isSpawnedBot, isBattleRoyale
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from gui.Scaleform.daapi.view.battle.shared.ribbons_aggregator import DAMAGE_SOURCE
-from items.battle_royale import isSpawnedBot, isBattleRoyale
+
 _logger = logging.getLogger(__name__)
 _RIBBON_SOUNDS_ENABLED = True
 _SHOW_RIBBON_SOUND_NAME = 'show_ribbon'
@@ -252,7 +254,7 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
         return
 
     def _shouldShowRibbon(self, ribbon):
-        return self.__checkUserPreferences(ribbon)
+        return self.__checkUserPreferences(ribbon) and self.__checkControllingOwnVehicle()
 
     def __playSound(self, eventName):
         if not self.__isVisible or not _RIBBON_SOUNDS_ENABLED:
@@ -321,6 +323,9 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
 
     def __checkUserPreferences(self, ribbon):
         return self.__userPreferences.get(ribbon.getType(), True)
+
+    def __checkControllingOwnVehicle(self):
+        return avatar_getter.getPlayerVehicleID() == self.sessionProvider.shared.vehicleState.getControllingVehicleID()
 
     def __setupView(self):
         self.as_setupS([[_BET.ARMOR, backport.text(R.strings.ingame_gui.efficiencyRibbons.armor())],

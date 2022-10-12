@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleMattersAnimLoaderViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
-
 class BattleMattersAnimLoaderViewMeta(View):
 
     def onClose(self):

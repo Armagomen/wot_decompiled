@@ -1,31 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/custom_mode.py
 import logging
-from copy import copy
 import typing
+from copy import copy
+
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.customization.context.customization_mode import CustomizationMode
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, isSlotFilled, isItemsQuantityLimitReached, fitPersonalNumber, formatPersonalNumber, EMPTY_PERSONAL_NUMBER, customizationSlotIdToUid, CustomizationSlotUpdateVO, getCustomPurchaseItems
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, isSlotFilled, \
+    isItemsQuantityLimitReached, fitPersonalNumber, formatPersonalNumber, EMPTY_PERSONAL_NUMBER, \
+    customizationSlotIdToUid, CustomizationSlotUpdateVO, getCustomPurchaseItems
 from gui.Scaleform.daapi.view.lobby.customization.shared import getOutfitWithoutItems
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import C11nId, PurchaseItem, getAvailableRegions
+from gui.customization.shared import C11nId, getAvailableRegions
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization import isNeedToMirrorProjectionDecal
 from gui.shared.gui_items.processors.common import OutfitApplier, CustomizationsSeller
-from gui.shared.utils.decorators import process as wrappedProcess
+from gui.shared.utils.decorators import adisp_process as wrappedProcess
 from items.components.c11n_components import isPersonalNumberAllowed
 from items.components.c11n_constants import SeasonType, DEFAULT_PALETTE, Options, SLOT_DEFAULT_ALLOWED_MODEL
 from items.customizations import CamouflageComponent, ProjectionDecalComponent, PersonalNumberComponent
 from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Area
+
 if typing.TYPE_CHECKING:
-    from items.customizations import SerializableComponent
-    from gui.shared.gui_items.customization.c11n_items import Customization
-    from vehicle_outfit.outfit import Outfit
-    from vehicle_outfit.containers import SlotData
-    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
+    pass
 _logger = logging.getLogger(__name__)
 
 class CustomMode(CustomizationMode):
@@ -83,12 +83,13 @@ class CustomMode(CustomizationMode):
         for areaId in Area.TANK_PARTS:
             regionsIndexes = getAvailableRegions(areaId, slotType)
             multiSlot = self._modifiedOutfits[season].getContainer(areaId).slotFor(slotType)
+            isLast = areaId == Area.TANK_PARTS[-1]
             for regionIdx in regionsIndexes:
                 otherSlotData = multiSlot.getSlotData(regionIdx)
                 df = slotData.weakDiff(otherSlotData)
                 if not otherSlotData.intCD or df.intCD:
                     slotId = C11nId(areaId=areaId, slotType=slotType, regionIdx=regionIdx)
-                    res = self.installItem(intCD=slotData.intCD, slotId=slotId, season=season, component=slotData.component)
+                    res = self.installItem(intCD=slotData.intCD, slotId=slotId, season=season, component=slotData.component, refresh=isLast)
                     if res:
                         additionallyAppliedItems += 1
 
@@ -318,8 +319,8 @@ class CustomMode(CustomizationMode):
         multiSlot.remove(slotId.regionIdx)
         return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _applyItems(self, purchaseItems, isModeChanged, callback):
         modifiedOutfits = {season:outfit.copy() for season, outfit in self._modifiedOutfits.iteritems()}
         originalOutfits = self._ctx.startMode.getOriginalOutfits()
@@ -347,7 +348,7 @@ class CustomMode(CustomizationMode):
             self._events.onItemsBought(originalOutfits, purchaseItems, results)
         callback(self)
 
-    @async
+    @adisp_async
     @wrappedProcess('sellItem')
     def _sellItem(self, item, count, callback):
         if item.fullInventoryCount(g_currentVehicle.item.intCD) < count:

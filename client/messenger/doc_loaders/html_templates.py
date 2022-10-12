@@ -60,15 +60,15 @@ class MessageTemplates(templates.XMLCollection):
     def _make(self, source):
         sourceID = source.name
         data = {'type': source.readString('type'),
-                'linkage': source.readString('linkage'),
-                'timestamp': -1,
-                'savedData': None,
-                'bgIcon': self._makeBgIconsData(source['bgIcon']),
-                'bgIconSizeAuto': source.readBool('bgIconSizeAuto'),
-                'icon': source.readString('icon'),
-                'defaultIcon': source.readString('defaultIcon'),
-                'filters': [],
-                'buttonsLayout': []}
+         'linkage': source.readString('linkage'),
+         'timestamp': -1,
+         'savedData': None,
+         'bgIcon': self._makeBgIconsData(source['bgIcon']),
+         'bgIconSizeAuto': source.readBool('bgIconSizeAuto'),
+         'icon': source.readString('icon'),
+         'defaultIcon': source.readString('defaultIcon'),
+         'filters': [],
+         'buttonsLayout': []}
         priority = source.readString('priority', NotificationPriorityLevel.MEDIUM)
         if priority not in NotificationPriorityLevel.RANGE:
             LOG_WARNING('Priority is invalid', sourceID, priority)

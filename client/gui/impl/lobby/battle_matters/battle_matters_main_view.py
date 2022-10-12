@@ -16,8 +16,7 @@ from gui.Scaleform.daapi.view.meta.BattleMattersViewMeta import BattleMattersVie
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_view_model import \
-    BattleMattersMainViewModel
+from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_view_model import BattleMattersMainViewModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.intermediate_quest_model import IntermediateQuestModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.quest_view_model import QuestViewModel, State
 from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import getBattleMattersBonusPacker, bonusesSort
@@ -39,11 +38,10 @@ from skeletons.gui.game_control import IManualController, IBootcampController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
+    from typing import List, Union
     from gui.impl.gen.view_models.views.lobby.battle_matters.quest_progress_model import QuestProgressModel
 _logger = logging.getLogger(__name__)
-
 
 class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMeta):
     __slots__ = ()
@@ -71,8 +69,7 @@ class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMet
             return BattleMattersMainView()
         if openVehicleSelection or self.__battleMattersController.isFinished() and self.__battleMattersController.hasDelayedRewards():
             return BattleMattersVehicleSelectionView()
-        return BattleMattersMainRewardView() if not AccountSettings.getCounters(
-            BATTLEMATTERS_SEEN) or openMainRewardView else BattleMattersMainView()
+        return BattleMattersMainRewardView() if not AccountSettings.getCounters(BATTLEMATTERS_SEEN) or openMainRewardView else BattleMattersMainView()
 
     def _onPopulate(self):
         self.__battleMattersController.onStateChanged += self.__onStateChanged
@@ -112,8 +109,7 @@ class BattleMattersMainView(ViewImpl):
     __settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
-        settings = ViewSettings(R.views.lobby.battle_matters.BattleMattersMainView(), flags=ViewFlags.COMPONENT,
-                                model=BattleMattersMainViewModel())
+        settings = ViewSettings(R.views.lobby.battle_matters.BattleMattersMainView(), flags=ViewFlags.COMPONENT, model=BattleMattersMainViewModel())
         self.__tooltips = {}
         self.__questCardsDescriptions = {}
         super(BattleMattersMainView, self).__init__(settings)
@@ -136,9 +132,13 @@ class BattleMattersMainView(ViewImpl):
             questIdx = int(event.getArgument(BattleMattersMainViewModel.ARG_QUEST_ID, 1))
             quest = self.__battleMattersController.getQuestByIdx(questIdx - 1)
             bonuses = sorted(quest.getBonuses(), cmp=bonusesSort)
-            return AdditionalRewardsTooltip(bonuses[showCount + 1:], bonusPacker=getBattleMattersBonusPacker())
-        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(
-            BattleMattersMainView, self).createToolTipContent(event, contentID)
+            packer = getBattleMattersBonusPacker()
+            packed = []
+            for bonus in bonuses[showCount + 1:]:
+                packed.extend(packer.pack(bonus))
+
+            return AdditionalRewardsTooltip(packed)
+        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(BattleMattersMainView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(BattleMattersMainView, self)._onLoading()
@@ -147,13 +147,13 @@ class BattleMattersMainView(ViewImpl):
 
     def _getEvents(self):
         return ((self.viewModel.onShowManual, self.__onShowManual),
-                (self.viewModel.onRunBootcamp, self.__onRunBootcamp),
-                (self.viewModel.onShowMainReward, self.__onShowMainReward),
-                (self.viewModel.onShowManualForQuest, self.__onShowManualForQuest),
-                (self.viewModel.onShowAnimForQuest, self.__onAnimForQuest),
-                (self.viewModel.onSelectDelayedReward, self.__onSelectDelayedReward),
-                (self.viewModel.onClose, showHangar),
-                (self.__eventsCache.onSyncCompleted, self.__onSyncCompleted))
+         (self.viewModel.onRunBootcamp, self.__onRunBootcamp),
+         (self.viewModel.onShowMainReward, self.__onShowMainReward),
+         (self.viewModel.onShowManualForQuest, self.__onShowManualForQuest),
+         (self.viewModel.onShowAnimForQuest, self.__onAnimForQuest),
+         (self.viewModel.onSelectDelayedReward, self.__onSelectDelayedReward),
+         (self.viewModel.onClose, showHangar),
+         (self.__eventsCache.onSyncCompleted, self.__onSyncCompleted))
 
     @classmethod
     def __getMissionPage(cls):
@@ -225,8 +225,7 @@ class BattleMattersMainView(ViewImpl):
         intermediateQuestModel = IntermediateQuestModel()
         intermediateQuestModel.setQuestIdx(quest.getOrder())
         rewardsModel = intermediateQuestModel.getRewards()
-        packBonusModelAndTooltipData(quest.getBonuses(), rewardsModel, self.__tooltips,
-                                     packer=getBattleMattersBonusPacker())
+        packBonusModelAndTooltipData(quest.getBonuses(), rewardsModel, self.__tooltips, packer=getBattleMattersBonusPacker())
         return intermediateQuestModel
 
     def __updateQuests(self, model, quests):
@@ -258,8 +257,7 @@ class BattleMattersMainView(ViewImpl):
         questModel.setCurrentProgress(currentProgress)
         questModel.setMaxProgress(maxProgress)
         bonuses = sorted(quest.getBonuses(), cmp=bonusesSort)
-        packBonusModelAndTooltipData(bonuses, questModel.getRewards(), self.__tooltips,
-                                     packer=getBattleMattersBonusPacker())
+        packBonusModelAndTooltipData(bonuses, questModel.getRewards(), self.__tooltips, packer=getBattleMattersBonusPacker())
         return questModel
 
     def __onShowManual(self):

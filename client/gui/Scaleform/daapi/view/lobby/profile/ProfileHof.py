@@ -1,24 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileHof.py
 from functools import partial
+
 import BigWorld
-from adisp import process
+from adisp import adisp_process
 from debug_utils import LOG_WARNING, LOG_ERROR
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.impl import backport
-from gui.impl.gen import R
-from helpers import dependency, i18n
-from gui.Scaleform import MENU
-from gui.shared.formatters import icons
-from skeletons.gui.web import IWebController
-from skeletons.gui.server_events import IEventsCache
 from gui import DialogsInterface
+from gui.Scaleform import MENU
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofAchievementsRatingUrl, getHofVehiclesRatingUrl, isHofButtonNew, setHofButtonOld, getHofDisabledKeys, onServerSettingsChange
+from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofAchievementsRatingUrl, getHofVehiclesRatingUrl, \
+    isHofButtonNew, setHofButtonOld, getHofDisabledKeys, onServerSettingsChange
 from gui.Scaleform.daapi.view.lobby.hof.web_handlers import createHofWebHandlers
 from gui.Scaleform.daapi.view.meta.ProfileHofMeta import ProfileHofMeta
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.PROFILE_CONSTANTS import PROFILE_CONSTANTS
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.shared.formatters import icons
+from helpers import dependency, i18n
+from skeletons.gui.server_events import IEventsCache
+from skeletons.gui.web import IWebController
+
 
 class ProfileHof(ProfileHofMeta):
     _eventsCache = dependency.descriptor(IEventsCache)
@@ -53,7 +56,7 @@ class ProfileHof(ProfileHofMeta):
         setHofButtonOld(PROFILE_CONSTANTS.HOF_VEHICLES_BUTTON)
         self.__openHofBrowserView(getHofVehiclesRatingUrl())
 
-    @process
+    @adisp_process
     def changeStatus(self):
         if self.__status == PROFILE_CONSTANTS.HOF_RESULTS_SHOW:
             success = yield DialogsInterface.showI18nConfirmDialog('hof/excludeRating')
@@ -109,7 +112,7 @@ class ProfileHof(ProfileHofMeta):
 
         self.__makeRequest(self._clansController.getClanDossier().requestHofUserInfo, PROFILE_CONSTANTS.HOF_RESULTS_SHOW, handleError)
 
-    @process
+    @adisp_process
     def __makeRequest(self, requestFunc, successStatus, errorCallback):
         if self.__retriesCount == 0:
             if not self.__isMaintenance:

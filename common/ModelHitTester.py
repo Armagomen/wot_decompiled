@@ -15,7 +15,6 @@ from wrapped_reflection_framework import ReflectionMetaclass
 
 _logger = logging.getLogger(__name__)
 
-
 class ModelStatus:
     NORMAL = 0
     CRASHED = 1

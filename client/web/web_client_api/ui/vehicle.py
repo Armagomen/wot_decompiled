@@ -43,13 +43,13 @@ from web.web_client_api.common import CompensationSpec, CompensationType, ItemPa
 
 _logger = getLogger(__name__)
 REQUIRED_ITEM_FIELDS = {'type',
-                        'id',
-                        'count',
-                        'groupID'}
+ 'id',
+ 'count',
+ 'groupID'}
 REQUIRED_COMPENSATION_FIELDS = {'type', 'value'}
 REQUIRED_CUSTOMCREW_FIELDS = {'extra'}
 REQUIRED_TANKMAN_FIELDS = {'isPremium',
-                           'role',
+ 'role',
  'roleLevel',
  'gId',
  'nationID',
@@ -550,14 +550,11 @@ class VehiclePreviewWebApiMixin(object):
         outfit = None
         if cmd.alternate_item:
             alternateItemTypeName, alternateItemID = cmd.alternate_item
-            outfit = styleInfo.getAlteredOutfit(CustomizationNamesToTypes[alternateItemTypeName.upper()],
-                                                alternateItemID, vehicle.descriptor.makeCompactDescr())
+            outfit = styleInfo.getAlteredOutfit(CustomizationNamesToTypes[alternateItemTypeName.upper()], alternateItemID, vehicle.descriptor.makeCompactDescr())
         if vehicle is not None and not vehicle.isOutfitLocked and styleInfo.mayInstall(vehicle):
             showStyle = _getStylePreviewShowFunc(styleInfo, cmd.price)
             descrLabelResPath = R.strings.vehicle_preview.header.backBtn.descrLabel
-            showStyle(vehicleCD, styleInfo, styleInfo.getDescription(), self._getVehicleStylePreviewCallback(cmd),
-                      backport.text(descrLabelResPath.dyn(cmd.back_btn_descr or 'hangar')()), styleLevel=cmd.level,
-                      price=cmd.price, buyParams=cmd.buy_params, outfit=outfit)
+            showStyle(vehicleCD, styleInfo, styleInfo.getDescription(), self._getVehicleStylePreviewCallback(cmd), backport.text(descrLabelResPath.dyn(cmd.back_btn_descr or 'hangar')()), styleLevel=cmd.level, price=cmd.price, buyParams=cmd.buy_params, outfit=outfit)
             return True
         else:
             return False

@@ -3,12 +3,13 @@
 from collections import namedtuple
 from functools import partial
 from time import sleep, time
-import typing
+
 import BigWorld
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
-from async import async, await, AsyncScope, AsyncEvent, BrokenPromiseError
 from debug_utils import LOG_DEBUG
+from wg_async import wg_async, wg_await, AsyncScope, AsyncEvent, BrokenPromiseError
+
 
 def callback(delay, obj, methodName, *args):
     return BigWorld.callback(delay, partial(callMethod, obj, methodName, *args))
@@ -108,18 +109,18 @@ class CooldownCaller(object):
         callParams = CallParams(args=args, kwargs=kwargs)
         self.__delayedCalls.append(callParams)
 
-    @async
+    @wg_async
     def __doCall(self, *args, **kwargs):
         with self.__lock:
             self.__call(*args, **kwargs)
-            result = yield await(self.__waitForCooldown())
+            result = yield wg_await(self.__waitForCooldown())
             if not result:
                 self.__delayedCalls = []
         if self.__delayedCalls:
             callParams = self.__mergeDelayedCalls()
             self(*callParams.args, **callParams.kwargs)
 
-    @async
+    @wg_async
     def __waitForCooldown(self):
         scope = AsyncScope()
         event = AsyncEvent(scope=scope)
@@ -127,7 +128,7 @@ class CooldownCaller(object):
         try:
             try:
                 g_playerEvents.onDisconnected += scope.destroy
-                yield await(event.wait())
+                yield wg_await(event.wait())
                 result = True
             except BrokenPromiseError:
                 BigWorld.cancelCallback(callbackId)

@@ -2,17 +2,19 @@
 # Embedded file name: scripts/client/gui/impl/lobby/awards/prefetch.py
 import logging
 import typing
-from adisp import async, process
-from gui.impl.lobby.awards import SupportedTokenTypes
-from helpers import dependency
+
 from WebBrowser import getWebCache
+from adisp import adisp_async, adisp_process
+from gui.impl.lobby.awards import SupportedTokenTypes
 from gui.impl.lobby.offers import getGfImagePath
 from gui.wgnc.image_notification_helper import WebImageHelper
+from helpers import dependency
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
+
 _LOCAL_FOLDER_NAME = 'multiple_awards'
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    from gui.platform.catalog_service.controller import _PurchaseDescriptor
+    pass
 
 class _IPrefetcher(object):
 
@@ -27,8 +29,8 @@ class _IPrefetcher(object):
 class TokenDataPrefetcher(_IPrefetcher):
     __purchaseCache = dependency.descriptor(IPurchaseCache)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def prefetch(self, bonus, callback):
         for tID in bonus.getTokens():
             iconSmallPath, iconBigPath = yield self.getImageData(tID)
@@ -43,8 +45,8 @@ class TokenDataPrefetcher(_IPrefetcher):
 
         callback(True)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def getImageData(self, tID, callback=None):
         purchase = yield self.__purchaseCache.requestPurchaseByID(self._productID)
         tokenData = purchase.getTokenData(tID)

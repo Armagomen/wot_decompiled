@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/dog_tags_ctrl.py
 import logging
 import weakref
+
 import BigWorld
 import Event
 from account_helpers.settings_core.settings_constants import GAME
@@ -12,6 +13,7 @@ from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
 
 class DogTagsController(IBattleController):
@@ -44,7 +46,8 @@ class DogTagsController(IBattleController):
         victimsDogTags = self._extendDogTagInfo(victimsDogTags)
         self._updateArenaVehicleVictimsDogTags(victimsDogTags)
         for victimDogTag in victimsDogTags:
-            self.onVictimDogTagSet(victimDogTag)
+            if victimDogTag['dogTag']['playerName']:
+                self.onVictimDogTagSet(victimDogTag)
 
     def _initDogTagsInfo(self, vehicle):
         if not self.__isEnabled:

@@ -25,7 +25,7 @@ from gui.server_events.awards_formatters import AWARDS_SIZES, getEpicAwardFormat
 from gui.server_events.cond_formatters.prebattle import MissionsPreBattleConditionsFormatter
 from gui.server_events.cond_formatters.requirements import AccountRequirementsFormatter, TQAccountRequirementsFormatter
 from gui.server_events.conditions import GROUP_TYPE
-from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, EPIC_BATTLE_GROUPS_ID
+from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, EPIC_BATTLE_GROUPS_ID, FUN_RANDOM_GROUP_ID
 from gui.server_events.events_helpers import MISSIONS_STATES, QuestInfoModel, AWARDS_PER_SINGLE_PAGE, isMarathon, \
     AwardSheetPresenter, isPremium
 from gui.server_events.formatters import DECORATION_SIZES
@@ -506,8 +506,7 @@ class _BattleRoyaleDailyMissionInfo(_EventDailyMissionInfo):
         return self.__battleRoyaleController
 
     def _getCompleteKey(self):
-        return R.strings.battle_royale.questsTooltip.mission_info.timeLeft() if not self._controller.isDailyQuestsRefreshAvailable() else super(
-            _BattleRoyaleDailyMissionInfo, self)._getCompleteKey()
+        return R.strings.battle_royale.questsTooltip.mission_info.timeLeft() if not self._controller.isDailyQuestsRefreshAvailable() else super(_BattleRoyaleDailyMissionInfo, self)._getCompleteKey()
 
 
 class _RankedMissionInfo(_MissionInfo):
@@ -800,6 +799,10 @@ class _EpicBattleDetailedMissionInfo(_EventDailyDetailedMissionInfo, _EpicBattle
 
 
 class _BattleRoyaleDetailedMissionInfo(_EventDailyDetailedMissionInfo, _BattleRoyaleDailyMissionInfo):
+    pass
+
+
+class _FunRandomDetailedMissionInfo(_DetailedMissionInfo):
     pass
 
 
@@ -1313,6 +1316,8 @@ def getDetailedMissionData(event):
         return _BattleRoyaleDetailedMissionInfo(event)
     elif isRankedQuestID(event.getID()):
         return _RankedDetailedMissionInfo(event)
+    elif event.getGroupID() == FUN_RANDOM_GROUP_ID:
+        return _FunRandomDetailedMissionInfo(event)
     else:
         return _DetailedMissionInfo(event) if event.getType() in constants.EVENT_TYPE.LIKE_BATTLE_QUESTS else None
 

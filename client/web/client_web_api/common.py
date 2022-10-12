@@ -37,12 +37,12 @@ class WebEventSender(object):
 
     def _createHandlers(self):
         return (BalanceEventHandler(self),
-                UnifiedTradeInEventHandler(self),
-                VehicleCompareEventHandler(self),
-                VehicleStateEventHandler(self),
-                ReactiveCommunicationEventHandler(self),
-                PlatformEventHandler(self),
-                RankedEventHandler(self),
-                BrowsersBridgeC2W(self),
-                TelecomTokenEventHandler(self),
-                BattlePassEventHandler(self))
+         UnifiedTradeInEventHandler(self),
+         VehicleCompareEventHandler(self),
+         VehicleStateEventHandler(self),
+         ReactiveCommunicationEventHandler(self),
+         PlatformEventHandler(self),
+         RankedEventHandler(self),
+         BrowsersBridgeC2W(self),
+         TelecomTokenEventHandler(self),
+         BattlePassEventHandler(self))

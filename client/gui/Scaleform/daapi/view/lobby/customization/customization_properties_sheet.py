@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_properties_sheet.py
+import logging
 from collections import namedtuple
 from itertools import islice
-import logging
+
 from CurrentVehicle import g_currentVehicle
-from async import await, async
 from constants import CLIENT_COMMAND_SOURCES
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
@@ -16,7 +16,8 @@ from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
-from gui.customization.shared import getAvailableRegions, C11nId, getCustomizationTankPartName, EDITABLE_STYLE_IRREMOVABLE_TYPES, getAncestors
+from gui.customization.shared import getAvailableRegions, C11nId, getCustomizationTankPartName, \
+    EDITABLE_STYLE_IRREMOVABLE_TYPES, getAncestors
 from gui.impl import backport
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
@@ -33,6 +34,8 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_outfit.outfit import Area
+from wg_async import wg_await, wg_async
+
 _logger = logging.getLogger(__name__)
 CustomizationCamoSwatchVO = namedtuple('CustomizationCamoSwatchVO', 'paletteIcon selected')
 _MAX_PALETTES = 3
@@ -347,7 +350,7 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             self._isItemAppliedToAll = False
         self.__update()
 
-    @async
+    @wg_async
     def __showApplyToOtherSeasonsDialog(self, lockedSeasons):
         seasonMask = reduce(int.__or__, lockedSeasons, SeasonType.UNDEFINED)
         season = _ms(_SEASONS_REMOVE_TEXT.get(seasonMask, '')).decode('utf-8').upper()
@@ -359,7 +362,7 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         builder.setMessageArgs(fmtArgs=[FmtArgs(season, 'season', R.styles.AlertTextStyle()), FmtArgs(removed, 'removed', R.styles.AlertTextStyle()), FmtArgs(this, 'this')])
         builder.setMessagesAndButtons(message, focused=DialogButtons.CANCEL)
         subview = self.app.containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-        result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+        result = yield wg_await(dialogs.showSimple(builder.build(parent=subview)))
         self.__installProjectionDecalToAllSeasonsDialogCallback(result)
 
     def __installProjectionDecalToAllSeasonsDialogCallback(self, confirmed):

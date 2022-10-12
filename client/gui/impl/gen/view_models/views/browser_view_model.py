@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/browser_view_model.py
 from gui.impl.gen.view_models.common.browser_model import BrowserModel
 
-
 class BrowserViewModel(BrowserModel):
     __slots__ = ('onClose',)
 

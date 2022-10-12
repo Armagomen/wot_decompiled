@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/framework/entities/sf_window.py
 import logging
-import weakref
 import typing
-from async import async, await, AsyncReturn
+import weakref
+
 import Event
 from frameworks.wulf import WindowSettings, Window, WindowStatus, WindowFlags
 from gui.Scaleform.framework import g_entitiesFactories
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from soft_exception import SoftException
+from wg_async import wg_async, wg_await, AsyncReturn
+
 if typing.TYPE_CHECKING:
-    from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-    from gui.Scaleform.framework.entities.View import View
+    pass
 _logger = logging.getLogger(__name__)
 
 class SFWindow(Window):
@@ -74,10 +75,10 @@ class SFWindow(Window):
         self.onContentLoaded(self)
         self.onStatusChanged(WindowStatus.LOADED)
 
-    @async
+    @wg_async
     def wait(self):
         _wait = getattr(self.content, 'wait')
-        result = yield await(_wait())
+        result = yield wg_await(_wait())
         raise AsyncReturn(result)
 
     def _finalize(self):

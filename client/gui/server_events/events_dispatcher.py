@@ -10,12 +10,12 @@ from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.PERSONAL_MISSIONS_ALIASES import PERSONAL_MISSIONS_ALIASES
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.impl.lobby.reward_window import GiveAwayRewardWindow, PiggyBankRewardWindow, TwitchRewardWindow
-from gui.impl.pub.notification_commands import WindowNotificationCommand
+from gui.impl.pub.notification_commands import WindowNotificationCommand, EventNotificationCommand, NotificationEvent
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.server_events import anniversary_helper, awards, events_helpers, recruit_helper
 from gui.server_events.events_helpers import getLootboxesFromBonuses, isC11nQuest
 from gui.shared import EVENT_BUS_SCOPE, event_dispatcher as shared_events, events, g_eventBus
-from gui.shared.event_dispatcher import showProgressiveItemsView, hideWebBrowserOverlay
+from gui.shared.event_dispatcher import showProgressiveItemsView, hideWebBrowserOverlay, showBrowserOverlayView
 from gui.shared.events import PersonalMissionsEvent
 from helpers import dependency
 from shared_utils import first
@@ -27,41 +27,42 @@ from skeletons.gui.server_events import IEventsCache
 OPERATIONS = {PERSONAL_MISSIONS_ALIASES.PERONAL_MISSIONS_OPERATIONS_SEASON_1_ID: PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATIONS_PAGE_ALIAS,
  PERSONAL_MISSIONS_ALIASES.PERONAL_MISSIONS_OPERATIONS_SEASON_2_ID: PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS2_OPERATIONS_PAGE_ALIAS}
 _EVENTS_REWARD_WINDOW = {recruit_helper.RecruitSourceID.TWITCH_0: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_1: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_2: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_3: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_4: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_5: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_6: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_7: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_8: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_9: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_10: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_11: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_12: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_13: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_14: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_15: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_16: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_17: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_18: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_19: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_20: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_21: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_22: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_23: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_24: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_25: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_26: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_27: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_28: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_29: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_30: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_31: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.TWITCH_32: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.COMMANDER_MARINA: TwitchRewardWindow,
-                         recruit_helper.RecruitSourceID.COMMANDER_PATRICK: TwitchRewardWindow,
-                         anniversary_helper.ANNIVERSARY_EVENT_PREFIX: GiveAwayRewardWindow}
+ recruit_helper.RecruitSourceID.TWITCH_1: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_2: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_3: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_4: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_5: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_6: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_7: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_8: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_9: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_10: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_11: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_12: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_13: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_14: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_15: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_16: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_17: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_18: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_19: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_20: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_21: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_22: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_23: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_24: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_25: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_26: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_27: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_28: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_29: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_30: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_31: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_32: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.TWITCH_33: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.COMMANDER_MARINA: TwitchRewardWindow,
+ recruit_helper.RecruitSourceID.COMMANDER_PATRICK: TwitchRewardWindow,
+ anniversary_helper.ANNIVERSARY_EVENT_PREFIX: GiveAwayRewardWindow}
 _PIGGY_BANK_EVENT_NAME = 'piggyBank'
 
 def showPQSeasonAwardsWindow(questsType):
@@ -167,6 +168,7 @@ def showBattleMattersMainReward():
 
 
 def showMissionsBattlePass(layoutID=None, chapterID=0):
+
     def __battleQueueViewPredicate(window):
         return window.content is not None and getattr(window.content, 'alias', None) == VIEW_ALIAS.BATTLE_QUEUE
 
@@ -225,7 +227,7 @@ def showMission(eventID, eventType=None):
         itemIntCD, vehicleIntCD = parseEventID(eventID)
         service = dependency.instance(ICustomizationService)
         vehicle = service.getItemByCD(vehicleIntCD)
-        service.showCustomization(vehicle.invID, lambda: showProgressiveItemsView(itemIntCD))
+        service.showCustomization(vehicle.invID, lambda : showProgressiveItemsView(itemIntCD))
         return
     elif isC11nQuest(eventID):
         service = dependency.instance(ICustomizationService)
@@ -276,11 +278,9 @@ def showMotiveAward(quest):
 
 
 def showTankwomanAward(questID, tankmanData):
-    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.QUESTS_RECRUIT_WINDOW), ctx={'questID': questID,
-     'isPremium': tankmanData.isPremium,
-     'fnGroup': tankmanData.fnGroupID,
-     'lnGroup': tankmanData.lnGroupID,
-     'iGroupID': tankmanData.iGroupID}), EVENT_BUS_SCOPE.LOBBY)
+    ctx = {'isFemale': tankmanData.isFemale,
+     'questID': questID}
+    shared_events.showTankwomanRecruitAwardDialog(ctx)
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
@@ -293,8 +293,8 @@ def showRecruitWindow(recruitID, eventsCache=None):
         if needToGetTankman and bonus.tankman is not None:
             showTankwomanAward(quest.getID(), first(bonus.tankman.getTankmenData()))
     else:
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.TOKEN_RECRUIT_WINDOW), ctx={'tokenName': recruitID,
-         'tokenData': recruitData}), EVENT_BUS_SCOPE.LOBBY)
+        shared_events.showTokenRecruitDialog({'tokenName': recruitID,
+         'tokenData': recruitData})
     return
 
 
@@ -339,6 +339,12 @@ def showPiggyBankRewardWindow(creditsValue, isPremActive):
      'isPremActive': isPremActive}
     rewardWindow = PiggyBankRewardWindow(ctx)
     rewardWindow.load()
+
+
+def showMetaBonusOverlayView(url, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, forcedSkipEscape=False, browserParams=None):
+    notificationMgr = dependency.instance(INotificationWindowController)
+    event = NotificationEvent(method=showBrowserOverlayView, url=url, alias=alias, forcedSkipEscape=forcedSkipEscape, browserParams=browserParams)
+    notificationMgr.append(EventNotificationCommand(event))
 
 
 @dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)

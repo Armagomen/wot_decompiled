@@ -37,8 +37,7 @@ _ROOT_NODE_NAME = 'V'
 _GUN_RECOIL_NODE_NAME = 'G'
 _PERIODIC_TIME_ENGINE = 0.1
 _PERIODIC_TIME_DIRT = ((0.05, 0.25), (10.0, 400.0))
-_DIRT_ALPHA = tan(
-    (_PERIODIC_TIME_DIRT[0][1] - _PERIODIC_TIME_DIRT[0][0]) / (_PERIODIC_TIME_DIRT[1][1] - _PERIODIC_TIME_DIRT[1][0]))
+_DIRT_ALPHA = tan((_PERIODIC_TIME_DIRT[0][1] - _PERIODIC_TIME_DIRT[0][0]) / (_PERIODIC_TIME_DIRT[1][1] - _PERIODIC_TIME_DIRT[1][0]))
 _MOVE_THROUGH_WATER_SOUND = '/vehicles/tanks/water'
 _CAMOUFLAGE_MIN_INTENSITY = 1.0
 _PITCH_SWINGING_MODIFIERS = (0.9, 1.88, 0.3, 4.0, 1.0, 1.0)
@@ -445,8 +444,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     def addCrashedTrack(self, isLeft, pairIndex=0, index=None):
         if not self._vehicle.isAlive():
             return
-        self._addCrashedTrack(isLeft, pairIndex, self.isLeftSideFlying if isLeft else self.isRightSideFlying,
-                              self._vehicle.getExtraHitPoint(index))
+        self._addCrashedTrack(isLeft, pairIndex, self.isLeftSideFlying if isLeft else self.isRightSideFlying, self._vehicle.getExtraHitPoint(index))
         self.onChassisDestroySound(isLeft, True, trackPairIdx=pairIndex)
 
     def delCrashedTrack(self, isLeft, pairIndex=0):
@@ -778,18 +776,18 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         else:
             return 0
 
+    def __vehicleUpdated(self, vehicleId):
+        if self._vehicle is not None and self._vehicle.id == vehicleId and self.__engineStarted:
+            self.__setTurbochargerSound(self._vehicle.getOptionalDevices())
+        return
+
     def __setTurbochargerSound(self, optDevices):
         isEnabled = findFirst(lambda d: d is not None and d.groupName == 'turbocharger', optDevices) is not None
         if isEnabled == self.__turbochargerSoundPlaying:
             return
         else:
-            engineSoundObject = self.engineAudition.getSoundObject(TankSoundObjectsIndexes.ENGINE)
             if self.engineAudition is not None:
+                engineSoundObject = self.engineAudition.getSoundObject(TankSoundObjectsIndexes.ENGINE)
                 engineSoundObject.play('cons_turbine_start' if isEnabled else 'cons_turbine_stop')
                 self.__turbochargerSoundPlaying = isEnabled
             return
-
-    def __vehicleUpdated(self, vehicleId):
-        if self._vehicle is not None and self._vehicle.id == vehicleId and self.__engineStarted:
-            self.__setTurbochargerSound(self._vehicle.getOptionalDevices())
-        return

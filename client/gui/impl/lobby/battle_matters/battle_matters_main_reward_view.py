@@ -26,7 +26,6 @@ if typing.TYPE_CHECKING:
     pass
 _BATTLEMATTERS_VEHICLES_ORDER = ('Pl19_CS_52_LIS', 'R165_Object_703_II', 'A122_TS-5')
 
-
 def _vehiclesSortOrder(firstModel, secondModel):
     firstIdx = secondIdx = len(_BATTLEMATTERS_VEHICLES_ORDER)
     firstName = firstModel.getVehName()
@@ -62,9 +61,7 @@ class BattleMattersMainRewardView(ViewImpl):
         if findFirst(lambda v: v.getVehCD() == vehCD, self.viewModel.getVehicles()).getIsInHangar():
             selectVehicleInHangar(vehCD)
         else:
-            showVehiclePreviewWithoutBottomPanel(vehCD, backCallback=showBattleMattersMainReward, itemsPack=[
-                ItemPackEntry(type=ItemPackType.CREW_100, count=1, groupID=1)],
-                                                 backBtnLabel=VEHICLE_PREVIEW.HEADER_BACKBTN_DESCRLABEL_BATTLEMATTERSMAINREWARD)
+            showVehiclePreviewWithoutBottomPanel(vehCD, backCallback=showBattleMattersMainReward, itemsPack=[ItemPackEntry(type=ItemPackType.CREW_100, count=1, groupID=1)], backBtnLabel=VEHICLE_PREVIEW.HEADER_BACKBTN_DESCRLABEL_BATTLEMATTERSMAINREWARD)
 
     @staticmethod
     def onStart():
@@ -85,11 +82,11 @@ class BattleMattersMainRewardView(ViewImpl):
 
     def _getEvents(self):
         return ((self.viewModel.onPreview, self.onPreview),
-                (self.viewModel.onStart, self.onStart),
-                (self.viewModel.onBack, self.onBack),
-                (self.viewModel.onClose, self.onClose),
-                (self.__battleMattersController.onStateChanged, self.onStateChanged),
-                (self.__eventsCache.onSyncCompleted, self.__update))
+         (self.viewModel.onStart, self.onStart),
+         (self.viewModel.onBack, self.onBack),
+         (self.viewModel.onClose, self.onClose),
+         (self.__battleMattersController.onStateChanged, self.onStateChanged),
+         (self.__eventsCache.onSyncCompleted, self.__update))
 
     def __update(self):
         finalQuest = self.__battleMattersController.getFinalQuest()

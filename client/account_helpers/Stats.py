@@ -2,16 +2,18 @@
 # Embedded file name: scripts/client/account_helpers/Stats.py
 import cPickle
 from functools import partial, wraps
+
 import AccountCommands
 import constants
 import items
 from account_helpers.premium_info import PremiumInfo
 from debug_utils import LOG_DEBUG_DEV, LOG_WARNING, LOG_ERROR
+from gui.shared.money import Currency
 from helpers import time_utils
+from items import vehicles
 from piggy_bank_common.settings_constants import PIGGY_BANK_PDATA_KEY
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
-from items import vehicles
-from gui.shared.money import Currency
+
 _VEHICLE = items.ITEM_TYPE_INDICES['vehicle']
 _CHASSIS = items.ITEM_TYPE_INDICES['vehicleChassis']
 _TURRET = items.ITEM_TYPE_INDICES['vehicleTurret']
@@ -27,7 +29,7 @@ _SIMPLE_VALUE_STATS = ('fortResource', 'slots', 'berths', 'freeXP', 'dossier', '
 _DICT_STATS = ('vehTypeXP', 'vehTypeLocks', 'restrictions', 'globalVehicleLocks', 'dummySessionStats', 'maxResearchedLevelByNation', 'weeklyVehicleCrystals')
 _GROWING_SET_STATS = ('unlocks', 'eliteVehicles', 'multipliedXPVehs', 'multipliedRankedBattlesVehs')
 _ACCOUNT_STATS = ('clanDBID', 'attrs', 'premiumExpiryTime', 'autoBanTime', 'globalRating')
-_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs', 'isSsrPlayEnabled')
+_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs', 'isSsrPlayEnabled', 'comp7')
 _PREFERRED_MAPS_KEY = 'preferredMaps'
 _ADDITIONAL_XP_CACHE_KEY = '_additionalXPCache'
 

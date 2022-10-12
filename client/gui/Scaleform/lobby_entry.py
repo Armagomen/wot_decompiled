@@ -37,13 +37,15 @@ from skeletons.gui.app_loader import GuiGlobalSpaceID
 from skeletons.gui.game_control import IBootcampController
 
 LOBBY_OPTIMIZATION_CONFIG = {VIEW_ALIAS.LOBBY_HEADER: OptimizationSetting(),
-                             VIEW_ALIAS.LOBBY_TECHTREE: OptimizationSetting(),
-                             VIEW_ALIAS.LOBBY_RESEARCH: OptimizationSetting(),
-                             HANGAR_ALIASES.TANK_CAROUSEL: OptimizationSetting(),
-                             HANGAR_ALIASES.RANKED_TANK_CAROUSEL: OptimizationSetting(),
-                             HANGAR_ALIASES.BATTLEPASS_TANK_CAROUSEL: OptimizationSetting(),
+ VIEW_ALIAS.LOBBY_TECHTREE: OptimizationSetting(),
+ VIEW_ALIAS.LOBBY_RESEARCH: OptimizationSetting(),
+ HANGAR_ALIASES.TANK_CAROUSEL: OptimizationSetting(),
+ HANGAR_ALIASES.RANKED_TANK_CAROUSEL: OptimizationSetting(),
+ HANGAR_ALIASES.BATTLEPASS_TANK_CAROUSEL: OptimizationSetting(),
  HANGAR_ALIASES.ROYALE_TANK_CAROUSEL: OptimizationSetting(),
  HANGAR_ALIASES.MAPBOX_TANK_CAROUSEL: OptimizationSetting(),
+ HANGAR_ALIASES.FUN_RANDOM_TANK_CAROUSEL: OptimizationSetting(),
+ HANGAR_ALIASES.COMP7_TANK_CAROUSEL: OptimizationSetting(),
  GRAPHICS_OPTIMIZATION_ALIASES.CUSTOMISATION_BOTTOM_PANEL: OptimizationSetting()}
 
 class LobbyEntry(AppEntry):

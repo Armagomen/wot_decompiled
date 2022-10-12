@@ -14,7 +14,6 @@ from gui.shared.gui_items.Vehicle import getNationLessName
 if typing.TYPE_CHECKING:
     pass
 
-
 class BattleMattersDelayedBonusDialog(DialogTemplateView):
     __slots__ = ('__vehicleUserName', '__vehicleName')
 
@@ -24,8 +23,7 @@ class BattleMattersDelayedBonusDialog(DialogTemplateView):
         self.__vehicleName = getNationLessName(vehicle.name)
 
     def _onLoading(self, *args, **kwargs):
-        self.setSubView(Placeholder.TITLE, SimpleTextTitle(
-            backport.text(R.strings.battle_matters.bonusDelayed.dialog.title(), vehicleName=self.__vehicleUserName)))
+        self.setSubView(Placeholder.TITLE, SimpleTextTitle(backport.text(R.strings.battle_matters.bonusDelayed.dialog.title(), vehicleName=self.__vehicleUserName)))
         content = BattleMattersExchangeRewards(self.__vehicleName, self.__vehicleUserName)
         self.setSubView(Placeholder.CONTENT, content)
         self.addButton(ConfirmButton(R.strings.offers.giftDialog.submit()))

@@ -1,46 +1,47 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/TrainingRoomBase.py
-import BigWorld
 import ArenaType
-from adisp import process
+import BigWorld
+from adisp import adisp_process
+from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES, PREBATTLE_ERRORS, PREBATTLE_TYPE
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages, GUI_SETTINGS
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.BATTLE_TYPES import BATTLE_TYPES
-from gui.Scaleform.settings import ICONS_SIZES
-from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.trainings import formatters
+from gui.Scaleform.daapi.view.lobby.trainings.sound_constants import TRAININGS_SOUND_SPACE
 from gui.Scaleform.daapi.view.meta.TrainingRoomBaseMeta import TrainingRoomBaseMeta
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.genConsts.BATTLE_TYPES import BATTLE_TYPES
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
-from gui.prb_control.events_dispatcher import g_eventDispatcher
+from gui.Scaleform.settings import ICONS_SIZES
+from gui.impl import backport
 from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.base.legacy.ctx import SetTeamStateCtx, AssignLegacyCtx, SwapTeamsCtx, SetPlayerStateCtx
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
 from gui.prb_control.entities.epic_battle_training.ctx import SetPlayerObserverStateCtx, ChangeArenaVoipCtx
+from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.items.prb_items import getPlayersComparator
 from gui.prb_control.settings import PREBATTLE_ROSTER, PREBATTLE_SETTING_NAME
 from gui.prb_control.settings import REQUEST_TYPE, CTRL_ENTITY_TYPE
-from gui.Scaleform.daapi.view.lobby.trainings.sound_constants import TRAININGS_SOUND_SPACE
 from gui.shared import events, EVENT_BUS_SCOPE
+from gui.shared.events import CoolDownEvent
 from gui.shared.formatters import text_styles
 from gui.sounds.ambients import LobbySubViewEnv
+from helpers import dependency
 from helpers import int2roman, i18n
-from gui.impl import backport
+from helpers.statistics import HANGAR_LOADING_STATE
 from messenger.ext import passCensor
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
 from prebattle_shared import decodeRoster
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.helpers.statistics import IStatisticsCollector
-from helpers.statistics import HANGAR_LOADING_STATE
-from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES, PREBATTLE_ERRORS, PREBATTLE_TYPE
-from gui.shared.events import CoolDownEvent
+
 BATTLE_TYPES_ICONS = {PREBATTLE_TYPE.TRAINING: BATTLE_TYPES.TRAINING,
  PREBATTLE_TYPE.EPIC_TRAINING: BATTLE_TYPES.EPIC_TRAINING}
 
@@ -165,7 +166,7 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
         if VIEW_ALIAS.MINIMAP_LOBBY in self.components:
             self.components[VIEW_ALIAS.MINIMAP_LOBBY].swapTeams(team)
 
-    @process
+    @adisp_process
     def changeTeam(self, accID, slot):
         roster = int(slot)
         if not slot:
@@ -177,13 +178,13 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
         if not result:
             self._showActionErrorMessage(ctx.getLastErrorString())
 
-    @process
+    @adisp_process
     def swapTeams(self):
         result = yield self.prbDispatcher.sendPrbRequest(SwapTeamsCtx(waitingID='prebattle/swap'))
         if not result:
             self._showActionErrorMessage()
 
-    @process
+    @adisp_process
     def selectObserver(self, isObserver):
         if not isObserver:
             playersCount = 0
@@ -208,7 +209,7 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
             self.as_setObserverS(False)
             self._showActionErrorMessage()
 
-    @process
+    @adisp_process
     def selectCommonVoiceChat(self, index):
         result = yield self.prbDispatcher.sendPrbRequest(ChangeArenaVoipCtx(int(index), waitingID='prebattle/change_arena_voip'))
         if not result:
@@ -336,11 +337,11 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
         self.__changeTrainingRoomSettings(event.ctx.get('settings', None))
         return
 
-    @process
+    @adisp_process
     def _doLeave(self, isExit=True):
         yield self.prbDispatcher.doLeaveAction(LeavePrbAction(isExit=isExit))
 
-    @process
+    @adisp_process
     def __changeTrainingRoomSettings(self, settings):
         if settings and settings.areSettingsChanged(self.prbEntity.getSettings()):
             settings.setWaitingID('prebattle/change_settings')
@@ -427,7 +428,7 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
                 self.as_setPlayerTagsInOtherS(dbID, tags)
             return
 
-    @process
+    @adisp_process
     def __doStartTraining(self):
         result = yield self.prbDispatcher.sendPrbRequest(SetTeamStateCtx(1, True))
         if result:
@@ -439,7 +440,7 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
             self.as_disableControlsS(False)
             self._updateStartButton(self.prbEntity)
 
-    @process
+    @adisp_process
     def __currentPlayerEntered(self):
         if self.__currentPlayerIsOut:
             if self.prbEntity.storage.isObserver:

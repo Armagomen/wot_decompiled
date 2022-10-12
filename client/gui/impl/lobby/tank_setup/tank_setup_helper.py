@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/tank_setup_helper.py
 import logging
-from async import async, await, await_callback
+
 from BWUtil import AsyncReturn
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playSlotActionSound
 from items.components.supply_slot_categories import SlotCategories
+from wg_async import wg_async, wg_await, await_callback
+
 _logger = logging.getLogger(__name__)
 NONE_ID = -1
 _CATEGORY_MASK = {category:1 << idx for idx, category in enumerate(SlotCategories.ORDER)}
@@ -46,12 +48,12 @@ class TankSetupAsyncCommandLock(object):
     def isLocked(self):
         return self.__inProcess
 
-    @async
+    @wg_async
     def tryAsyncCommand(self, func, *args, **kwargs):
         if not self.__inProcess:
             try:
                 self._lock()
-                result = yield await(func(*args, **kwargs))
+                result = yield wg_await(func(*args, **kwargs))
                 raise AsyncReturn(result)
             finally:
                 self._unlock()
@@ -61,7 +63,7 @@ class TankSetupAsyncCommandLock(object):
             raise AsyncReturn(None)
         return
 
-    @async
+    @wg_async
     def tryAsyncCommandWithCallback(self, func, *args, **kwargs):
         if not self.__inProcess:
             try:

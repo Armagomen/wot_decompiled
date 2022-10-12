@@ -1,11 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/xml/proxy_data_parsers.py
-import logging
 import json
+import logging
+
 from gui.wgcg.promo_screens.parsers import PromoDataParser
 from gui.wgnc import proxy_data
 from gui.wgnc.wgnc_helpers import parseSize
 from gui.wgnc.xml.shared_parsers import ParsersCollection, SectionParser
+
 _logger = logging.getLogger(__name__)
 
 class _ClanApplicationParser(SectionParser):
@@ -277,6 +279,34 @@ class _MapboxRewardReceivedParser(SectionParser):
          'isFinal': section.readBool('is_last_reward')})
 
 
+class _IntegratedAuctionRateErrorParser(SectionParser):
+
+    def getTagName(self):
+        pass
+
+    def parse(self, section):
+        return proxy_data.ShowAuctionRateErrorMessage()
+
+
+class _IntegratedAuctionBelowCompetitiveRateParser(SectionParser):
+
+    def getTagName(self):
+        pass
+
+    def parse(self, section):
+        return proxy_data.ShowAuctionBelowCompetitiveRateMessage()
+
+
+class _IntegratedAuctionLostRateParser(SectionParser):
+
+    def getTagName(self):
+        pass
+
+    def parse(self, section):
+        messageData = json.loads(section['data'].asString)
+        return proxy_data.ShowAuctionLostRateMessage(messageData=messageData)
+
+
 class ProxyDataItemParser_v2(_ProxyDataItemsParser):
 
     def __init__(self):
@@ -300,4 +330,7 @@ class ProxyDataItemParser_v2(_ProxyDataItemsParser):
          _MapboxSurveyAvailableParser(),
          _MapboxEventStartedParser(),
          _MapboxEventEndedParser(),
-         _MapboxRewardReceivedParser()))
+         _MapboxRewardReceivedParser(),
+         _IntegratedAuctionRateErrorParser(),
+         _IntegratedAuctionBelowCompetitiveRateParser(),
+         _IntegratedAuctionLostRateParser()))

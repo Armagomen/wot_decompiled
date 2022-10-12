@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/premacc/maps_blacklist_view.py
 import logging
+
 import ArenaType
-from async import await, async
 from constants import PREMIUM_TYPE, EMPTY_GEOMETRY_ID, PremiumConfigs
 from frameworks.wulf import View, ViewSettings, ViewFlags
 from gui import SystemMessages
@@ -13,13 +13,13 @@ from gui.impl.dialogs import dialogs
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_info_tooltip_model import MapsBlacklistInfoTooltipModel
 from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_map_filter_model import MapsBlacklistMapFilterModel
-from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_slot_states import MapsBlacklistSlotStates
 from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_slot_model import MapsBlacklistSlotModel
+from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_slot_states import MapsBlacklistSlotStates
 from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_view_model import MapsBlacklistViewModel
 from gui.impl.lobby.premacc.premacc_helpers import SoundViewMixin
-from gui.shared.utils import decorators
 from gui.impl.pub import ViewImpl
 from gui.shared.gui_items.processors.common import MapsBlackListSetter, MapsBlackListChanger, MapsBlackListRemover
+from gui.shared.utils import decorators
 from gui.shared.utils.scheduled_notifications import AcyclicNotifier, Notifiable
 from helpers import dependency
 from helpers import i18n
@@ -28,6 +28,8 @@ from items.vehicles import CAMOUFLAGE_KINDS
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from wg_async import wg_await, wg_async
+
 _logger = logging.getLogger(__name__)
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext, itemsCache=IItemsCache)
@@ -273,7 +275,7 @@ class MapsBlacklistView(ViewImpl, SoundViewMixin):
 
         return None
 
-    @async
+    @wg_async
     def __showMapConfirmDialog(self, mapId):
         changeableMaps = []
         for item in self.viewModel.disabledMaps.getItems():
@@ -284,11 +286,11 @@ class MapsBlacklistView(ViewImpl, SoundViewMixin):
                 break
 
         cooldown = self.__lobbyContext.getServerSettings().getPreferredMapsConfig()['slotCooldown']
-        result, choice = yield await(dialogs.mapsBlacklistConfirm(mapId, cooldown, changeableMaps, self))
+        result, choice = yield wg_await(dialogs.mapsBlacklistConfirm(mapId, cooldown, changeableMaps, self))
         if result:
             self.__sendMapChangingRequest(mapId, choice)
 
-    @decorators.process('updating')
+    @decorators.adisp_process('updating')
     def __sendMapChangingRequest(self, mapToSet, mapToChange):
         serverSettings = self.__lobbyContext.getServerSettings()
         cooldown = time_utils.getTillTimeString(serverSettings.getPreferredMapsConfig()['slotCooldown'], MENU.MAPBLACKLIST_TIMELEFTSHORT, isRoundUp=True, removeLeadingZeros=True)
@@ -309,7 +311,7 @@ class MapsBlacklistView(ViewImpl, SoundViewMixin):
              'time': cooldown}, type=result.sysMsgType)
         return
 
-    @decorators.process('updating')
+    @decorators.adisp_process('updating')
     def __sendMapRemovingRequest(self, removeMapName):
         yield MapsBlackListRemover(self.__mapNameToID(removeMapName)).request()
 

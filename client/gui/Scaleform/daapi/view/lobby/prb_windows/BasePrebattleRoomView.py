@@ -1,16 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BasePrebattleRoomView.py
 from CurrentVehicle import g_currentVehicle
-from adisp import process
+from adisp import adisp_process
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.meta.BasePrebattleRoomViewMeta import BasePrebattleRoomViewMeta
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
-from gui.prb_control.formatters import messages
 from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.base.legacy.ctx import SetPlayerStateCtx
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
+from gui.prb_control.formatters import messages
 from gui.prb_control.items import prb_items
 from gui.prb_control.settings import CTRL_ENTITY_TYPE
 from gui.shared import events, EVENT_BUS_SCOPE
@@ -20,13 +20,14 @@ from messenger import g_settings
 from messenger.ext import channel_num_gen
 from messenger.gui import events_dispatcher
 from messenger.gui.Scaleform.view.lobby import MESSENGER_VIEW_ALIAS
+from messenger.m_constants import PROTO_TYPE
 from messenger.m_constants import USER_GUI_TYPE
+from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
-from messenger.m_constants import PROTO_TYPE
-from messenger.proto import proto_getter
 from prebattle_shared import decodeRoster
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -50,7 +51,7 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
     def bwProto(self):
         return None
 
-    @process
+    @adisp_process
     def requestToReady(self, value):
         if value:
             waitingID = 'prebattle/player_ready'
@@ -225,6 +226,6 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
         if alias == MESSENGER_VIEW_ALIAS.CHANNEL_COMPONENT:
             events_dispatcher.rqDeactivateChannel(self.__clientID)
 
-    @process
+    @adisp_process
     def _doLeave(self, isExit=True):
         yield self.prbDispatcher.doLeaveAction(LeavePrbAction(isExit))

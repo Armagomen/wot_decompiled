@@ -1,16 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/ClientUnit.py
-from typing import TYPE_CHECKING
 import struct
 from collections import namedtuple
-from constants import PREBATTLE_TYPE
-from debug_utils import LOG_ERROR, LOG_DEBUG_DEV
+from typing import TYPE_CHECKING
+
 import Event
 from UnitBase import UnitBase, UNIT_OP, UNIT_ROLE, LEADER_SLOT, UNDEFINED_ESTIMATED_TIME
+from constants import PREBATTLE_TYPE
+from debug_utils import LOG_ERROR, LOG_DEBUG_DEV
+
 from shared_utils import makeTupleByDict
+
 if TYPE_CHECKING:
-    from typing import Dict as TDict
-    from UnitBase import ProfileVehicle as TProfileVehicle
+    pass
 PLAYER_ID_CHR = '<q'
 VEH_LEN_CHR = '<H'
 VEH_LEN_SIZE = struct.calcsize(VEH_LEN_CHR)
@@ -39,6 +41,7 @@ class ClientUnit(UnitBase):
         self.onUnitEstimateInQueueChanged = Event.SuspendedEvent(self.__eManager)
         self.onUnitSearchFlagsChanged = Event.SuspendedEvent(self.__eManager)
         self.onUnitExtraChanged = Event.SuspendedEvent(self.__eManager)
+        self.onSquadSizeChanged = Event.SuspendedEvent(self.__eManager)
         self.onUnitUpdated = Event.SuspendedEvent(self.__eManager)
         self._creatorDBID = 0
         UnitBase.__init__(self, limitsDefs or {}, slotDefs or {}, slotCount, packedRoster, extrasInit, packedUnit)
@@ -197,6 +200,8 @@ class ClientUnit(UnitBase):
             self.onUnitRosterChanged()
         if {UNIT_OP.EXTRAS_UPDATE, UNIT_OP.EXTRAS_RESET} & invokedOps:
             self.onUnitExtraChanged(self._extras)
+        if {UNIT_OP.SQUAD_SIZE} & invokedOps:
+            self.onSquadSizeChanged()
 
     def updateUnitExtras(self, updateStr):
         UnitBase.updateUnitExtras(self, updateStr)

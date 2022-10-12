@@ -1,34 +1,36 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/base_hangar.py
+import adisp
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
 from Event import Event
-import adisp
-from async import async, await
-from gui.shared.gui_items.items_actions import factory as ActionsFactory
+from frameworks.wulf import ViewSettings, ViewFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
 from gui.impl.gen import R
-from frameworks.wulf import ViewSettings, ViewFlags
 from gui.impl.gen.view_models.views.lobby.tank_setup.ammunition_setup_view_model import AmmunitionSetupViewModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.tank_setup.ammunition_setup.base import BaseAmmunitionSetupView
 from gui.impl.lobby.tank_setup.backports.context_menu import getContextMenuData
+from gui.impl.lobby.tank_setup.backports.tooltips import getSlotTooltipData, getShellsPriceDiscountTooltipData, \
+    getSlotSpecTooltipData
 from gui.impl.lobby.tank_setup.interactors.base import InteractingItem
-from gui.impl.lobby.tank_setup.backports.tooltips import getSlotTooltipData, getShellsPriceDiscountTooltipData, getSlotSpecTooltipData
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playEnterTankSetupView, playExitTankSetupView
 from gui.prb_control import prbDispatcherProperty
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.close_confiramtor_helper import CloseConfirmatorsHelper
 from gui.shared.events import AmmunitionSetupViewEvent, PrbActionEvent
+from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from post_progression_common import TANK_SETUP_GROUPS, TankSetupGroupsId
 from skeletons.gui.lobby_context import ILobbyContext
 from soft_exception import SoftException
+from wg_async import wg_async, wg_await
+
 
 class TankSetupCloseConfirmatorsHelper(CloseConfirmatorsHelper):
 
@@ -176,13 +178,13 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
         self.viewModel.ammunitionPanel.onSpecializationSelect -= self.__onSpecializationSelect
         g_eventBus.removeListener(AmmunitionSetupViewEvent.CLOSE_VIEW, self.__onCloseView, EVENT_BUS_SCOPE.LOBBY)
 
-    @async
+    @wg_async
     def _onClose(self):
-        quitResult = yield await(self._tankSetup.canQuit())
+        quitResult = yield wg_await(self._tankSetup.canQuit())
         if quitResult:
             self.__closeWindow()
 
-    @adisp.process
+    @adisp.adisp_process
     def __onSpecializationSelect(self, args=None):
         action = ActionsFactory.getAction(ActionsFactory.SET_EQUIPMENT_SLOT_TYPE, self._vehItem.getItem())
         if action is not None:
@@ -297,11 +299,11 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
             playExitTankSetupView()
         return
 
-    @async
+    @wg_async
     def __closeConfirmator(self):
         if self.__isClosed:
             raise AsyncReturn(True)
-        result = yield await(self._tankSetup.canQuit())
+        result = yield wg_await(self._tankSetup.canQuit())
         if result:
             self.__closeWindow()
         raise AsyncReturn(result)

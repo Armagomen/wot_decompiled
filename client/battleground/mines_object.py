@@ -13,7 +13,6 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 
 _CONFIG_PATH = 'scripts/dynamic_objects.xml'
 
-
 def _getSequenceResourceMapping(path, spaceId):
     return {'sequence': Loader(AnimationSequence.Loader(path, spaceId))}
 
@@ -48,7 +47,8 @@ def loadMines(ownerVehicleID, callback, dynamicObjectsCache=None, battleSession=
                         _getSequenceResourceMapping(idleEff.path, spaceId))
     loadComponentSystem(gameObject.blowUpEffectPlayer, gameObject.appendPiece,
                         _getEffectResourceMapping(effDescr.blowUpEffectName))
-    loadComponentSystem(gameObject.decalEffectPlayer, gameObject.appendPiece, _getEffectResourceMapping('minesDecalEffect'))
+    loadComponentSystem(gameObject.decalEffectPlayer, gameObject.appendPiece,
+                        _getEffectResourceMapping('minesDecalEffect'))
     loadComponentSystem(gameObject, gameObject.appendPiece, loaders)
     return gameObject
 

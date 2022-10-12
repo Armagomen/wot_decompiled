@@ -2,20 +2,19 @@
 # Embedded file name: scripts/client/gui/prb_control/entities/epic/squad/entity.py
 import account_helpers
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, VEHICLE_CLASS_INDICES
-from gui.prb_control.entities.epic.squad.actions_validator import EpicSquadActionsValidator
-from gui.prb_control.events_dispatcher import g_eventDispatcher
-from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
-from gui.prb_control.items import SelectResult
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
-from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
-from helpers import dependency
-from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
-from skeletons.gui.server_events import IEventsCache
-from skeletons.gui.lobby_context import ILobbyContext
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.prb_control.entities.random.squad.actions_handler import BalancedSquadActionsHandler
-from gui.prb_control.storages import prequeue_storage_getter
+from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
+from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
 from gui.prb_control.entities.epic.pre_queue.vehicles_watcher import EpicVehiclesWatcher
+from gui.prb_control.entities.epic.squad.actions_validator import EpicSquadActionsValidator
+from gui.prb_control.entities.random.squad.actions_handler import BalancedSquadActionsHandler
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
+from gui.prb_control.storages import prequeue_storage_getter
+from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
+from helpers import dependency
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.server_events import IEventsCache
+
 
 class EpicSquadEntryPoint(SquadEntryPoint):
 
@@ -72,14 +71,9 @@ class EpicSquadEntity(SquadEntity):
     def getQueueType(self):
         return QUEUE_TYPE.EPIC
 
-    def doSelectAction(self, action):
-        name = action.actionName
-        if name == PREBATTLE_ACTION_NAME.SQUAD:
-            g_eventDispatcher.showUnitWindow(self._prbType)
-            if action.accountsToInvite:
-                self._actionsHandler.processInvites(action.accountsToInvite)
-            return SelectResult(True)
-        return super(EpicSquadEntity, self).doSelectAction(action)
+    @property
+    def _showUnitActionNames(self):
+        return (PREBATTLE_ACTION_NAME.SQUAD,)
 
     def getMaxSPGCount(self):
         return self.lobbyContext.getServerSettings().getMaxSPGinSquads()

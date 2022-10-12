@@ -3,10 +3,11 @@
 from gui.Scaleform.daapi.view.battle.shared.consumables_panel import ConsumablesPanel
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from helpers.epic_game import searchRankForSlot
-from items.vehicles import getVehicleClassFromVehicleType
 from gui.impl import backport
 from gui.impl.gen import R
+from helpers.epic_game import searchRankForSlot
+from items.vehicles import getVehicleClassFromVehicleType
+
 
 class EpicBattleConsumablesPanel(ConsumablesPanel):
     _EMPTY_LOCKED_SLOT = -1
@@ -38,8 +39,8 @@ class EpicBattleConsumablesPanel(ConsumablesPanel):
                 self.__addLockedInformationToEpicEquipment(idx)
             return
 
-    def _getEquipmentIcon(self, idx, icon):
-        return backport.image(self._R_EPIC_EQUIPMENT_ICON.dyn(icon)()) if idx in self.__battleReserveSlots else super(EpicBattleConsumablesPanel, self)._getEquipmentIcon(idx, icon)
+    def _getEquipmentIcon(self, idx, item, icon):
+        return backport.image(self._R_EPIC_EQUIPMENT_ICON.dyn(icon)()) if idx in self.__battleReserveSlots else super(EpicBattleConsumablesPanel, self)._getEquipmentIcon(idx, item, icon)
 
     def _resetEquipmentSlot(self, idx, intCD, item):
         super(EpicBattleConsumablesPanel, self)._resetEquipmentSlot(idx, intCD, item)

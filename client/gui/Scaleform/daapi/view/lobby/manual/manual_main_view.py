@@ -12,7 +12,6 @@ from gui.shared import events, EVENT_BUS_SCOPE, event_dispatcher as shared_event
 
 _logger = logging.getLogger(__name__)
 
-
 class ManualMainView(ManualViewBase, ManualMainViewMeta):
 
     def __init__(self, ctx=None):

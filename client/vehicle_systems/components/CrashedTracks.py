@@ -29,14 +29,14 @@ class CrashedTrackController(Component):
         else:
             pairsCount = 1
         self.__crashedTracks = {'left': [False] * pairsCount,
-                                'right': [False] * pairsCount}
+         'right': [False] * pairsCount}
         self.__model = None
         self.__fashion = None
         self.__loading = False
         self.__isActive = False
         self.__visibilityMask = 15
         self.__debrisCrashedTracks = {'left': [False] * pairsCount,
-                                      'right': [False] * pairsCount}
+         'right': [False] * pairsCount}
         return
 
     def isLeftTrackBroken(self):
@@ -125,8 +125,7 @@ class CrashedTrackController(Component):
 
     def __loadModel(self, trackAssembler):
         if not IS_EDITOR:
-            BigWorld.loadResourceListBG((trackAssembler,), makeCallbackWeak(self.__onModelLoaded),
-                                        loadingPriority(self.__entity.id))
+            BigWorld.loadResourceListBG((trackAssembler,), makeCallbackWeak(self.__onModelLoaded), loadingPriority(self.__entity.id))
             self.__loading = True
         else:
             self.__loading = True
@@ -161,9 +160,9 @@ class CrashedTrackController(Component):
             else:
                 pairsCount = 1
             self.__crashedTracks = {'left': [False] * pairsCount,
-                                    'right': [False] * pairsCount}
+             'right': [False] * pairsCount}
             self.__debrisCrashedTracks = {'left': [False] * pairsCount,
-                                          'right': [False] * pairsCount}
+             'right': [False] * pairsCount}
             if self.__model is not None:
                 if self.__model.isInWorld:
                     self.__entity.delModel(self.__model)
@@ -188,10 +187,8 @@ class CrashedTrackController(Component):
 
         if self.__fashion is not None:
             for i in trackIndices:
-                showLeftDestroyed = force or self.__crashedTracks['left'][i] and not self.__debrisCrashedTracks['left'][
-                    i]
-                showRightDestroyed = force or self.__crashedTracks['right'][i] and not \
-                self.__debrisCrashedTracks['right'][i]
+                showLeftDestroyed = force or self.__crashedTracks['left'][i] and not self.__debrisCrashedTracks['left'][i]
+                showRightDestroyed = force or self.__crashedTracks['right'][i] and not self.__debrisCrashedTracks['right'][i]
                 self.__fashion.changeTrackVisibility(True, showLeftDestroyed, i)
                 self.__fashion.changeTrackVisibility(False, showRightDestroyed, i)
 

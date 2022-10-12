@@ -1,14 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/messenger_bar.py
 from account_helpers.settings_core.settings_constants import SESSION_STATS
-from adisp import process
+from adisp import adisp_process
 from constants import PREBATTLE_TYPE, IS_DEVELOPMENT
 from frameworks.wulf import WindowLayer
-from gui import makeHtmlString
 from gui import SystemMessages
+from gui import makeHtmlString
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.referral_program.referral_program_helpers import isReferralProgramEnabled
-from gui.Scaleform.daapi.view.lobby.session_stats.session_stats_settings_controller import SessionStatsSettingsController
+from gui.Scaleform.daapi.view.lobby.session_stats.session_stats_settings_controller import \
+    SessionStatsSettingsController
 from gui.Scaleform.daapi.view.meta.MessengerBarMeta import MessengerBarMeta
 from gui.Scaleform.framework import g_entitiesFactories
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
@@ -22,15 +23,16 @@ from gui.prb_control import prbDispatcherProperty
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.shared.utils.functions import makeTooltip
 from gui.shared.gui_items.processors.session_stats import ResetSessionStatsProcessor
+from gui.shared.utils.functions import makeTooltip
 from gui.ui_spam.custom_aliases import SESSION_STATS_HINT
 from helpers import int2roman, dependency
 from messenger.gui.Scaleform.view.lobby import MESSENGER_VIEW_ALIAS
 from skeletons.gui.game_control import IVehicleComparisonBasket, IReferralProgramController, IUISpamController
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-from skeletons.gui.lobby_context import ILobbyContext
+
 
 def _formatIcon(iconName, width=32, height=32, path='html_templates:lobby/messengerBar'):
     return makeHtmlString(path, 'iconTemplate', {'iconName': iconName,
@@ -202,7 +204,7 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
     def __updateSessionStatsHint(self, visible):
         self.as_setSessionStatsButtonSettingsUpdateS(visible, '!')
 
-    @process
+    @adisp_process
     def __updateSessionStatsBtn(self):
         dispatcher = self.prbDispatcher
         if dispatcher is not None:

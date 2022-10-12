@@ -1,12 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/auxiliary/crew_books_helper.py
 from collections import defaultdict
+
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_BOOKS_VIEWED
-from adisp import async
-from nations import INDICES, NONE_INDEX
+from adisp import adisp_async
 from frameworks.wulf.view.array import Array
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew_books.crew_book_skill_model import CrewBookSkillModel
@@ -16,12 +16,14 @@ from gui.shared.gui_items.Vehicle import getIconResourceName
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers.dependency import descriptor, replace_none_kwargs
-from items.components.crew_books_constants import CREW_BOOK_RARITY
-from items.components import skills_constants
 from items import tankmen
+from items.components import skills_constants
+from items.components.crew_books_constants import CREW_BOOK_RARITY
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
+from nations import INDICES, NONE_INDEX
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 MIN_ROLE_LEVEL = 100
 MAX_SKILL_VIEW_COUNT = 4
 _g_crewBooksViewedCache = None
@@ -79,7 +81,7 @@ class _CrewBooksViewedCache(object):
 
             return False
 
-    @async
+    @adisp_async
     def onCrewBooksUpdated(self, diff, callback):
         inventory = diff.get('inventory', {})
         if GUI_ITEM_TYPE.CREW_BOOKS in inventory:
@@ -132,7 +134,7 @@ def gainedLevels(tankmanInvId, crewBookCD, itemsCache=None):
 
         def _newSkillsCount(descr):
             if tankman.role == tankman.ROLES.COMMANDER:
-                skillsList = list(skills_constants.ACTIVE_SKILLS)
+                skillsList = list(skills_constants.LEARNABLE_ACTIVE_SKILLS)
             else:
                 skillsList = list(tankman._NON_COMMANDER_SKILLS)
             i = 0

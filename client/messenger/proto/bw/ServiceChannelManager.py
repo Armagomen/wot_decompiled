@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/proto/bw/ServiceChannelManager.py
 from collections import deque
+
 import BigWorld
+from adisp import adisp_process
 from chat_shared import CHAT_ACTIONS
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_WARNING
@@ -12,7 +14,7 @@ from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 from messenger.proto.bw.ChatActionsListener import ChatActionsListener
 from messenger.proto.bw.wrappers import ServiceChannelMessage
 from messenger.proto.events import g_messengerEvents
-from adisp import process
+
 
 class ServiceChannelManager(ChatActionsListener):
 
@@ -89,7 +91,7 @@ class ServiceChannelManager(ChatActionsListener):
         else:
             serviceChannel.onClientMessageReceived(clientID, formatted, settings)
 
-    @process
+    @adisp_process
     def __addServerMessage(self, message):
         yield lambda callback: callback(True)
         formatter = collections_by_type.SERVER_FORMATTERS.get(message.type)

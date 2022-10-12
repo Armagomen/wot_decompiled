@@ -18,11 +18,11 @@ from gui.veh_post_progression.models.progression_step import PostProgressionStep
 if typing.TYPE_CHECKING:
     pass
 _SINGLE_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED,
-                          PostProgressionStepState.LOCKED: StepState.AVAILABLEPURCHASE,
-                          PostProgressionStepState.RECEIVED: StepState.AVAILABLEPURCHASE,
-                          PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
+ PostProgressionStepState.LOCKED: StepState.AVAILABLEPURCHASE,
+ PostProgressionStepState.RECEIVED: StepState.AVAILABLEPURCHASE,
+ PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
 _MULTI_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED,
-                         PostProgressionStepState.LOCKED: StepState.RECEIVED,
+ PostProgressionStepState.LOCKED: StepState.RECEIVED,
  PostProgressionStepState.RECEIVED: StepState.RECEIVED,
  PostProgressionStepState.UNLOCKED: StepState.RECEIVED}
 

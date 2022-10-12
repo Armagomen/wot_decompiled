@@ -1,15 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/bootcamp/lobby/queries.py
 from math import ceil
-from constants import PREMIUM_ENTITLEMENTS
-from gui.impl.gen import R
-from gui.impl import backport
+
+from constants import PREMIUM_ENTITLEMENTS, BootcampVersion
 from gui.Scaleform.genConsts.BOOTCAMP_MESSAGE_ALIASES import BOOTCAMP_MESSAGE_ALIASES
+from gui.impl import backport
+from gui.impl.gen import R
 from helpers import i18n, dependency, time_utils
 from nations import NAMES as NATION_NAMES
+from skeletons.gui.game_control import IBootcampController
 from tutorial.control import ContentQuery
 from tutorial.logger import LOG_ERROR
-from skeletons.gui.game_control import IBootcampController
+
 _PRESET_RENDERERS = {'FINISH': BOOTCAMP_MESSAGE_ALIASES.RENDERER_FIN_UI,
  'ORANGE': BOOTCAMP_MESSAGE_ALIASES.RENDERER_ORANGE_UI,
  'BLUE': BOOTCAMP_MESSAGE_ALIASES.RENDERER_BLUE,
@@ -79,6 +81,9 @@ class MessageDialogContentQuery(ContentQuery):
             if 'bonuses' not in ctx:
                 return
             lessonBonuses = ctx['bonuses']['battle'][self.bootcampController.getLessonNum() - 1]
+            version = self.bootcampController.version
+            lastBattleField = 'last_battle_short' if version == BootcampVersion.SHORT else 'last_battle'
+            lessonBonuses.update(ctx['bonuses'][lastBattleField]['bonus'])
             if labelFormat == 'getCredits':
                 nationId = ctx['nation']
                 nationsData = lessonBonuses.get('nations', None)

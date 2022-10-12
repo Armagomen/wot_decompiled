@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/arena_components/player_data_component.py
-from arena_component_system.client_arena_component_system import ClientArenaComponent
 import Event
 import player_ranks
-from debug_utils import LOG_DEBUG_DEV
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
-from gui.battle_control import avatar_getter
+from arena_component_system.client_arena_component_system import ClientArenaComponent
 from constants import ARENA_SYNC_OBJECTS, PLAYER_RANK
+from debug_utils import LOG_DEBUG_DEV
+from gui.battle_control import avatar_getter
+
 
 class PlayerDataComponent(ClientArenaComponent):
     playerGroups = property(lambda self: self.__getPlayerGroups())
@@ -69,7 +70,7 @@ class PlayerDataComponent(ClientArenaComponent):
         if arena is not None:
             key = 'playerGroup'
             gameModeStats = dict(((vehID, {key: playerGroup}) for vehID, playerGroup in args.iteritems()))
-            arena.onGameModeSpecifcStats(True, gameModeStats)
+            arena.onGameModeSpecificStats(True, gameModeStats)
         self.onPlayerGroupsUpdated(args)
         return
 
@@ -103,7 +104,7 @@ class PlayerDataComponent(ClientArenaComponent):
                 if playerVehicleId in ranksPerTeam:
                     self.__playerRank = ranksPerTeam[playerVehicleId]
                 gameModeStats = dict(((vehID, {key: rank}) for vehID, rank in ranksPerTeam.iteritems()))
-                arena.onGameModeSpecifcStats(False, gameModeStats)
+                arena.onGameModeSpecificStats(False, gameModeStats)
 
         self.onVehicleRanksUpdated(args)
         return

@@ -296,6 +296,7 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLERESULTS_EPICABILITYPOINTS = '#messenger:serviceChannelMessages/battleResults/epicAbilityPoints'
     SERVICECHANNELMESSAGES_BATTLERESULTS_EVENTCOIN = '#messenger:serviceChannelMessages/battleResults/eventCoin'
     SERVICECHANNELMESSAGES_BATTLERESULTS_BPCOIN = '#messenger:serviceChannelMessages/battleResults/bpcoin'
+    SERVICECHANNELMESSAGES_BATTLERESULTS_RATINGPOINTS = '#messenger:serviceChannelMessages/battleResults/ratingPoints'
     SERVICECHANNELMESSAGES_BATTLERESULTS_DOUBLEXPFACTOR = '#messenger:serviceChannelMessages/battleResults/doubleXpFactor'
     SERVICECHANNELMESSAGES_BATTLERESULTS_PENALTYFORDAMAGEALLIES = '#messenger:serviceChannelMessages/battleResults/penaltyForDamageAllies'
     SERVICECHANNELMESSAGES_BATTLERESULTS_CONTRIBUTIONFORDAMAGEALLIES = '#messenger:serviceChannelMessages/battleResults/contributionForDamageAllies'
@@ -490,6 +491,13 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_PREMIUMPLUSCHANGED = '#messenger:serviceChannelMessages/premiumPlusChanged'
     SERVICECHANNELMESSAGES_PREMIUMPLUSEXPIRED = '#messenger:serviceChannelMessages/premiumPlusExpired'
     SERVICECHANNELMESSAGES_BOOSTEREXPIRED = '#messenger:serviceChannelMessages/boosterExpired'
+    SERVICECHANNELMESSAGES_BOOSTERADDITIONALMESSAGE = '#messenger:serviceChannelMessages/boosterAdditionalMessage'
+    SERVICECHANNELMESSAGES_TORESERVES = '#messenger:serviceChannelMessages/toReserves'
+    SERVICECHANNELMESSAGES_BOOSTEREXPIREDTOTALTEMPLATE_TOTAL = '#messenger:serviceChannelMessages/boosterExpiredTotalTemplate/total'
+    SERVICECHANNELMESSAGES_BOOSTEREXPIREDRESOURCENAME_XP = '#messenger:serviceChannelMessages/boosterExpiredResourceName/xp'
+    SERVICECHANNELMESSAGES_BOOSTEREXPIREDRESOURCENAME_FREEXP = '#messenger:serviceChannelMessages/boosterExpiredResourceName/freeXP'
+    SERVICECHANNELMESSAGES_BOOSTEREXPIREDRESOURCENAME_TMENXP = '#messenger:serviceChannelMessages/boosterExpiredResourceName/tmenXP'
+    SERVICECHANNELMESSAGES_BOOSTEREXPIREDRESOURCENAME_CREDITS = '#messenger:serviceChannelMessages/boosterExpiredResourceName/credits'
     SERVICECHANNELMESSAGES_BOOSTERDISABLED = '#messenger:serviceChannelMessages/boosterDisabled'
     SERVICECHANNELMESSAGES_DEMOUNTKITENABLED = '#messenger:serviceChannelMessages/demountKitEnabled'
     SERVICECHANNELMESSAGES_DEMOUNTKITDISABLED = '#messenger:serviceChannelMessages/demountKitDisabled'
@@ -985,6 +993,8 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_DOGTAGS_GRADINGMESSAGE_LEVELUPTOTEXT = '#messenger:serviceChannelMessages/dogTags/gradingMessage/levelUpToText'
     SERVICECHANNELMESSAGES_DOGTAGS_VIEWTYPE_ENGRAVING = '#messenger:serviceChannelMessages/dogTags/viewType/engraving'
     SERVICECHANNELMESSAGES_DOGTAGS_VIEWTYPE_BACKGROUND = '#messenger:serviceChannelMessages/dogTags/viewType/background'
+    SERVICECHANNELMESSAGES_DOGTAGS_BONUS_ENGRAVING = '#messenger:serviceChannelMessages/dogTags/bonus/engraving'
+    SERVICECHANNELMESSAGES_DOGTAGS_BONUS_BACKGROUND = '#messenger:serviceChannelMessages/dogTags/bonus/background'
     SERVICECHANNELMESSAGES_DEDICATIONREWARD_HEADER = '#messenger:serviceChannelMessages/dedicationReward/header'
     SERVICECHANNELMESSAGES_DEDICATIONREWARD_TEXT = '#messenger:serviceChannelMessages/dedicationReward/text'
     SERVICECHANNELMESSAGES_BRBATTLERESULTS_VICTORY = '#messenger:serviceChannelMessages/BRbattleResults/victory'
@@ -1111,20 +1121,35 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_PROGRESSION2D_INSCRIPTION = '#messenger:serviceChannelMessages/progression2d/inscription'
     SERVICECHANNELMESSAGES_PROGRESSION2D_EMBLEM = '#messenger:serviceChannelMessages/progression2d/emblem'
     SERVICECHANNELMESSAGES_PROGRESSION2D_ITEM = '#messenger:serviceChannelMessages/progression2d/item'
+    SERVICECHANNELMESSAGES_PROGRESSION2D_LEVEL = '#messenger:serviceChannelMessages/progression2d/level'
     SERVICECHANNELMESSAGES_PROGRESSION2D_RECEIVED = '#messenger:serviceChannelMessages/progression2d/received'
     SERVICECHANNELMESSAGES_PROGRESSION2D_ITEMCOUNT = '#messenger:serviceChannelMessages/progression2d/itemCount'
     SERVICECHANNELMESSAGES_PROGRESSION2D_TITLE = '#messenger:serviceChannelMessages/progression2d/title'
     SERVICECHANNELMESSAGES_PROGRESSION2D_BUTTON = '#messenger:serviceChannelMessages/progression2d/button'
+    SERVICECHANNELMESSAGES_FUNRANDOM_STARTEVENT_BUTTON = '#messenger:serviceChannelMessages/funRandom/startEvent/button'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_BUTTON = '#messenger:serviceChannelMessages/integratedAuction/button'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_STAGESTART_TITLE = '#messenger:serviceChannelMessages/integratedAuction/stageStart/title'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_STAGESTART_TEXT = '#messenger:serviceChannelMessages/integratedAuction/stageStart/text'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_STAGEFINISH_TITLE = '#messenger:serviceChannelMessages/integratedAuction/stageFinish/title'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_STAGEFINISH_TEXT = '#messenger:serviceChannelMessages/integratedAuction/stageFinish/text'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_RATEERROR_HEADER = '#messenger:serviceChannelMessages/integratedAuction/rateError/header'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_RATEERROR_TEXT = '#messenger:serviceChannelMessages/integratedAuction/rateError/text'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_BELOWCOMPETITIVERATE_HEADER = '#messenger:serviceChannelMessages/integratedAuction/belowCompetitiveRate/header'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_BELOWCOMPETITIVERATE_TEXT = '#messenger:serviceChannelMessages/integratedAuction/belowCompetitiveRate/text'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_LOSTRATE_HEADER = '#messenger:serviceChannelMessages/integratedAuction/lostRate/header'
+    SERVICECHANNELMESSAGES_INTEGRATEDAUCTION_LOSTRATE_TEXT = '#messenger:serviceChannelMessages/integratedAuction/lostRate/text'
+    SERVICECHANNELMESSAGES_PERSONALRESERVESTITLE = '#messenger:serviceChannelMessages/personalReservesTitle'
+    SERVICECHANNELMESSAGES_PERSONALRESERVESCONVERTED = '#messenger:serviceChannelMessages/personalReservesConverted'
     CLIENT_ERROR_SHARED_ENUM = (CLIENT_ERROR_SHARED_TRY_LATER,
-                                CLIENT_ERROR_SHARED_GENERIC,
-                                CLIENT_ERROR_SHARED_LOCKED,
-                                CLIENT_ERROR_SHARED_NOT_CONNECTED,
-                                CLIENT_ERROR_SHARED_WRONG_ARGS,
-                                CLIENT_ERROR_SHARED_NOT_SUPPORTED,
-                                CLIENT_ERROR_SHARED_DBID_INVALID,
-                                CLIENT_ERROR_SHARED_NAME_EMPTY,
-                                CLIENT_ERROR_SHARED_NAME_INVALID,
-                                CLIENT_ERROR_SHARED_WAITING_BEFORE_START)
+     CLIENT_ERROR_SHARED_GENERIC,
+     CLIENT_ERROR_SHARED_LOCKED,
+     CLIENT_ERROR_SHARED_NOT_CONNECTED,
+     CLIENT_ERROR_SHARED_WRONG_ARGS,
+     CLIENT_ERROR_SHARED_NOT_SUPPORTED,
+     CLIENT_ERROR_SHARED_DBID_INVALID,
+     CLIENT_ERROR_SHARED_NAME_EMPTY,
+     CLIENT_ERROR_SHARED_NAME_INVALID,
+     CLIENT_ERROR_SHARED_WAITING_BEFORE_START)
     CLIENT_ERROR_CONTACT_ENUM = (CLIENT_ERROR_CONTACT_CONTACT_ITEM_NOT_FOUND,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_EXISTS,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_NOT_FOUND,

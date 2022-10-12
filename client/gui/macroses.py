@@ -2,14 +2,16 @@
 # Embedded file name: scripts/client/gui/macroses.py
 import base64
 from urllib import quote_plus
+
 import BigWorld
 import constants
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from helpers import getClientLanguage, dependency
 from helpers.http.url_formatters import addParamsToUrlQuery
-from skeletons.gui.web import IWebController
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IMarathonEventsController
+from skeletons.gui.web import IWebController
+
 
 def getLanguageCode(args=None):
     code = getClientLanguage()
@@ -141,7 +143,7 @@ def getSyncMacroses():
      'STYLE_PACKAGE_ID': getMarathonStylePackage}
 
 
-@async
+@adisp_async
 def getWgniToken(proxy, args, params, callback):
 
     def _cbWrapper(response):
@@ -159,8 +161,8 @@ def getWgniToken(proxy, args, params, callback):
     return
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def getTargetURL(proxy, args, params, callback):
     result = args or ''
     if result:
@@ -169,8 +171,8 @@ def getTargetURL(proxy, args, params, callback):
     callback(result)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def getUrlParams(proxy, args, params, callback):
     result = args or ''
     params = params or {}

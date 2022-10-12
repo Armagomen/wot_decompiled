@@ -2,36 +2,39 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/postmortem_panel.py
 import logging
 import typing
-import WWISE
+
 import BattleReplay
 import BigWorld
+import WWISE
+from account_helpers.settings_core.settings_constants import GRAPHICS
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
+from constants import ATTACK_REASON_INDICES, ATTACK_REASON
+from debug_utils import LOG_CURRENT_EXCEPTION
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.components_packer import unpack_component, pack_component
-from gui.Scaleform.daapi.view.battle.shared.formatters import normalizeHealthPercent
-from gui.Scaleform.settings import ICONS_SIZES
-from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
-from gui.doc_loaders import messages_panel_reader
-from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
-from gui.impl.gen import R
-from gui.impl import backport
+from dog_tags_common.player_dog_tag import PlayerDogTag, DisplayableDogTag
 from gui import makeHtmlString
+from gui.Scaleform.daapi.view.battle.shared.formatters import normalizeHealthPercent
 from gui.Scaleform.daapi.view.meta.PostmortemPanelMeta import PostmortemPanelMeta
+from gui.Scaleform.settings import ICONS_SIZES
+from gui.battle_control import avatar_getter
+from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
+from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
+from gui.battle_control.dog_tag_composer import layoutComposer
+from gui.doc_loaders import messages_panel_reader
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.badges import buildBadge
 from gui.shared.gui_items import Vehicle
-from constants import ATTACK_REASON_INDICES, ATTACK_REASON
-from account_helpers.settings_core.settings_constants import GRAPHICS
-from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.shared.view_helpers import UsersInfoHelper
 from helpers import dependency
 from helpers import int2roman
 from items import vehicles
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from gui.battle_control.dog_tag_composer import layoutComposer
-from dog_tags_common.player_dog_tag import PlayerDogTag, DisplayableDogTag
+
 if typing.TYPE_CHECKING:
-    from typing import Iterable, Optional
+    pass
 _logger = logging.getLogger(__name__)
 _POSTMORTEM_PANEL_SETTINGS_PATH = 'gui/postmortem_panel.xml'
 _VEHICLE_SMALL_ICON_RES_PATH = '../maps/icons/vehicle/small/{0}.png'
@@ -120,15 +123,17 @@ class _BasePostmortemPanel(PostmortemPanelMeta):
          'device': device}
         self._deathInfoReceived()
 
-    def _onShowVehicleMessageByCode(self, code, postfix, entityID, extra, equipmentID):
+    def _onShowVehicleMessageByCode(self, code, postfix, entityID, extra, equipmentID, ignoreMessages):
         device = self._getDevice(extra)
         if equipmentID:
             equipment = vehicles.g_cache.equipments().get(equipmentID)
             if code in _ALLOWED_EQUIPMENT_DEATH_CODES:
                 pass
             elif equipment is not None:
-                code = '_'.join((code, equipment.name.split('_')[0].upper()))
-                entityID = 0
+                if not self.sessionProvider.arenaVisitor.gui.isComp7Battle():
+                    entityID = 0
+                name = equipment.code if equipment.code else equipment.name
+                code = '_'.join((code, name.split('_')[0].upper()))
         elif postfix:
             extCode = '{0}_{1}'.format(code, postfix)
             if extCode in self.__messages:
@@ -205,7 +210,8 @@ class PostmortemPanel(_SummaryPostmortemPanel):
         self._deathAlreadySet = False
         self.__isColorBlind = self.settingsCore.getSetting('isColorBlind')
         self.__userInfoHelper = UsersInfoHelper()
-        self.__arenaInfo = BigWorld.player().arena.arenaInfo
+        arena = avatar_getter.getArena()
+        self.__arenaInfo = arena.arenaInfo if arena is not None else None
         return
 
     def _populate(self):

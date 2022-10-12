@@ -3,7 +3,7 @@
 from functools import partial
 import typing
 import adisp
-from adisp import process
+from adisp import adisp_process
 from constants import QUEUE_TYPE
 from frameworks.wulf import ViewSettings, ViewFlags, WindowLayer, WindowStatus, ViewStatus
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -25,6 +25,8 @@ from gui.impl.lobby.mode_selector.mode_selector_data_provider import ModeSelecto
 from gui.impl.lobby.mode_selector.popovers.random_battle_popover import RandomBattlePopover
 from gui.impl.lobby.mode_selector.sound_constants import MODE_SELECTOR_SOUND_SPACE
 from gui.impl.lobby.mode_selector.tooltips.simply_format_tooltip import SimplyFormatTooltipView
+from gui.impl.lobby.comp7.tooltips.main_widget_tooltip import MainWidgetTooltip
+from gui.impl.lobby.comp7.tooltips.rank_inactivity_tooltip import RankInactivityTooltip
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
@@ -38,7 +40,6 @@ from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
-
 if typing.TYPE_CHECKING:
     pass
 _BACKGROUND_ALPHA = 0.7
@@ -46,10 +47,8 @@ _R_SIMPLE_TOOLTIP = R.views.common.tooltip_window.simple_tooltip_content.SimpleT
 _R_BACKPORT_TOOLTIP = R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent
 _CLOSE_LAYERS = (WindowLayer.SUB_VIEW, WindowLayer.TOP_SUB_VIEW)
 
-
 class ModeSelectorView(ViewImpl):
-    __slots__ = ('__blur', '__dataProvider', '__prevAppBackgroundAlpha', '__isEventEnabled', '__isClickProcessing',
-                 '__prevOptimizationEnabled', '__isGraphicsRestored')
+    __slots__ = ('__blur', '__dataProvider', '__prevAppBackgroundAlpha', '__isEventEnabled', '__isClickProcessing', '__prevOptimizationEnabled', '__isGraphicsRestored')
     uiBootcampLogger = BootcampLogger(BC_LOG_KEYS.MS_WINDOW)
     _COMMON_SOUND_SPACE = MODE_SELECTOR_SOUND_SPACE
     __appLoader = dependency.descriptor(IAppLoader)
@@ -58,7 +57,9 @@ class ModeSelectorView(ViewImpl):
     __gui = dependency.descriptor(IGuiLoader)
     __tooltipByContentID = {R.views.lobby.battle_pass.tooltips.BattlePassNotStartedTooltipView(): BattlePassNotStartedTooltipView,
      R.views.lobby.battle_pass.tooltips.BattlePassCompletedTooltipView(): BattlePassCompletedTooltipView,
-     R.views.lobby.battle_pass.tooltips.BattlePassInProgressTooltipView(): partial(BattlePassInProgressTooltipView, battleType=QUEUE_TYPE.RANDOMS)}
+     R.views.lobby.battle_pass.tooltips.BattlePassInProgressTooltipView(): partial(BattlePassInProgressTooltipView, battleType=QUEUE_TYPE.RANDOMS),
+     R.views.lobby.comp7.tooltips.MainWidgetTooltip(): MainWidgetTooltip,
+     R.views.lobby.comp7.tooltips.RankInactivityTooltip(): RankInactivityTooltip}
     layoutID = R.views.lobby.mode_selector.ModeSelectorView()
     _areWidgetsVisible = False
 
@@ -98,23 +99,21 @@ class ModeSelectorView(ViewImpl):
                     body = modeSelectorItem.calendarTooltipText
                 return self.__createSimpleTooltip(event, body=body)
             if tooltipId == ModeSelectorTooltipsConstants.RANDOM_BP_PAUSED_TOOLTIP:
-                return self.__createSimpleTooltip(event, header=backport.text(
-                    R.strings.battle_pass.tooltips.entryPoint.disabled.header()), body=backport.text(
-                    R.strings.battle_pass.tooltips.entryPoint.disabled.body()))
+                return self.__createSimpleTooltip(event, header=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.header()), body=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.body()))
             if tooltipId in [ModeSelectorTooltipsConstants.RANKED_CALENDAR_DAY_INFO_TOOLTIP,
-                             ModeSelectorTooltipsConstants.RANKED_STEP_TOOLTIP,
-                             ModeSelectorTooltipsConstants.RANKED_BATTLES_LEAGUE_TOOLTIP,
-                             ModeSelectorTooltipsConstants.RANKED_BATTLES_EFFICIENCY_TOOLTIP,
-                             ModeSelectorTooltipsConstants.RANKED_BATTLES_POSITION_TOOLTIP,
-                             ModeSelectorTooltipsConstants.RANKED_BATTLES_BONUS_TOOLTIP,
-                             ModeSelectorTooltipsConstants.MAPBOX_CALENDAR_TOOLTIP,
-                             ModeSelectorTooltipsConstants.EPIC_BATTLE_CALENDAR_TOOLTIP]:
-                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True,
-                                                          specialArgs=(None,))
+             ModeSelectorTooltipsConstants.RANKED_STEP_TOOLTIP,
+             ModeSelectorTooltipsConstants.RANKED_BATTLES_LEAGUE_TOOLTIP,
+             ModeSelectorTooltipsConstants.RANKED_BATTLES_EFFICIENCY_TOOLTIP,
+             ModeSelectorTooltipsConstants.RANKED_BATTLES_POSITION_TOOLTIP,
+             ModeSelectorTooltipsConstants.RANKED_BATTLES_BONUS_TOOLTIP,
+             ModeSelectorTooltipsConstants.MAPBOX_CALENDAR_TOOLTIP,
+             ModeSelectorTooltipsConstants.EPIC_BATTLE_CALENDAR_TOOLTIP,
+             ModeSelectorTooltipsConstants.FUN_RANDOM_CALENDAR_TOOLTIP,
+             ModeSelectorTooltipsConstants.COMP7_CALENDAR_DAY_EXTENDED_INFO]:
+                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=(None,))
             if tooltipId == ModeSelectorTooltipsConstants.RANKED_BATTLES_RANK_TOOLTIP:
                 rankID = int(event.getArgument('rankID'))
-                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True,
-                                                          specialArgs=(rankID,))
+                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=(rankID,))
             if tooltipId == ModeSelectorTooltipsConstants.EPIC_BATTLE_WIDGET_INFO:
                 return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=[])
         return super(ModeSelectorView, self).createToolTip(event)
@@ -224,7 +223,7 @@ class ModeSelectorView(ViewImpl):
 
         cards.invalidate()
 
-    @process
+    @adisp_process
     def __itemClickHandler(self, event):
         self.__isClickProcessing = True
         navigationPossible = yield self.__lobbyContext.isHeaderNavigationPossible()
@@ -282,7 +281,7 @@ class ModeSelectorView(ViewImpl):
                     self.close()
         return
 
-    @adisp.async
+    @adisp.adisp_async
     def __handleHeaderNavigation(self, callback):
         if self.viewStatus not in (ViewStatus.DESTROYED, ViewStatus.DESTROYING) and not self.__isClickProcessing:
             self.close()

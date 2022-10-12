@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/overlay.py
 import typing
+
 import GUI
-from async import async, await, AsyncEvent
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.lobby_entry import LobbyEntry
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents, CameraMovementStates
 from gui.shared import g_eventBus
 from helpers import dependency
@@ -12,15 +11,17 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IOverlayController, IHeroTankController
 from skeletons.gui.shared.utils import IHangarSpace
+from wg_async import wg_async, wg_await, AsyncEvent
+
 if typing.TYPE_CHECKING:
     pass
 _ANIMATION_DURATION = 300
 _LAYERS = (WindowLayer.MARKER,
- WindowLayer.VIEW,
- WindowLayer.WINDOW,
- WindowLayer.WAITING,
- WindowLayer.SYSTEM_MESSAGE,
- WindowLayer.FULLSCREEN_WINDOW)
+           WindowLayer.VIEW,
+           WindowLayer.WINDOW,
+           WindowLayer.WAITING,
+           WindowLayer.SYSTEM_MESSAGE,
+           WindowLayer.FULLSCREEN_WINDOW)
 
 class OverlayController(IOverlayController):
     _hangarSpace = dependency.descriptor(IHangarSpace)
@@ -47,11 +48,11 @@ class OverlayController(IOverlayController):
         self._showEvent.set()
         self._showEvent.destroy()
 
-    @async
+    @wg_async
     def waitShow(self):
         if self._canShow():
             return
-        yield await(self._showEvent.wait())
+        yield wg_await(self._showEvent.wait())
 
     @property
     def isActive(self):

@@ -8,7 +8,6 @@ import ResMgr
 
 fontTestGUIs = []
 
-
 def removeAll():
     global fontTestGUIs
     for i in fontTestGUIs:

@@ -1,22 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/tankman.py
 import logging
+
 import BigWorld
 from constants import EQUIP_TMAN_CODE
-from gui.impl import backport
-from items.components.crew_skins_constants import NO_CREW_SKIN_ID
+from gui import makeHtmlString
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.game_control.restore_contoller import getTankmenRestoreInfo
+from gui.impl import backport
 from gui.shared.formatters import formatPrice, formatPriceForCurrency
 from gui.shared.gui_items import GUI_ITEM_TYPE, Tankman
-from gui.shared.gui_items.processors import Processor, ItemProcessor, makeI18nSuccess, makeSuccess, makeI18nError, plugins, makeCrewSkinCompensationMessage
+from gui.shared.gui_items.processors import Processor, ItemProcessor, makeI18nSuccess, makeSuccess, makeI18nError, \
+    plugins, makeCrewSkinCompensationMessage
 from gui.shared.money import Money, MONEY_UNDEFINED, Currency
 from helpers import dependency
-from gui import makeHtmlString
 from items import tankmen, makeIntCompactDescrByID
+from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from items.tankmen import SKILL_INDICES, SKILL_NAMES, getSkillsConfig
 from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
 
 def _getSysMsgType(price):
@@ -417,6 +420,23 @@ class TankmanAddSkill(ItemProcessor):
     def _request(self, callback):
         _logger.debug('Make server request to add tankman skill: %s, %s', self.item, self.skillName)
         BigWorld.player().inventory.addTankmanSkill(self.item.invID, self.skillName, lambda code: self._response(code, callback))
+
+
+class TankmanLearnFreeSkill(ItemProcessor):
+
+    def __init__(self, tankman, skillName):
+        super(TankmanLearnFreeSkill, self).__init__(tankman, (plugins.TankmanLearnFreeSkillValidator(tankman.descriptor, skillName),))
+        self.skillName = skillName
+
+    def _errorHandler(self, code, errStr='', ctx=None):
+        return makeI18nError(sysMsgKey='learn_tankman_free_skill/{}'.format(errStr), defaultSysMsgKey='learn_tankman_free_skill/server_error')
+
+    def _successHandler(self, code, ctx=None):
+        return makeI18nSuccess(sysMsgKey='learn_tankman_free_skill/success', type=SM_TYPE.Information)
+
+    def _request(self, callback):
+        _logger.debug('Make server request to add tankman skill: %s, %s', self.item, self.skillName)
+        BigWorld.player().inventory.learnTankmanFreeSkill(self.item.invID, self.skillName, lambda code: self._response(code, callback))
 
 
 class TankmanChangeRole(ItemProcessor):

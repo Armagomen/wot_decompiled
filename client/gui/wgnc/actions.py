@@ -1,21 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/actions.py
 import BigWorld
-from adisp import process
+from adisp import adisp_process
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_WARNING, LOG_DEBUG
+from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS
 from gui.game_control.links import URLMacros
 from gui.promo.promo_logger import PromoLogSourceType
 from gui.shared.event_dispatcher import showStrongholds
 from gui.shared.utils.decorators import ReprInjector
+from gui.wgnc.common import WebHandlersContainer
 from gui.wgnc.custom_actions_keeper import CustomActionsKeeper
 from gui.wgnc.events import g_wgncEvents
 from gui.wgnc.settings import WGNC_GUI_TYPE
-from gui.wgnc.common import WebHandlersContainer
-from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController, IPromoController, IRankedBattlesController
-from web.web_client_api.sound import HangarSoundWebApi
 from web.web_client_api import webApiCollection
+from web.web_client_api.sound import HangarSoundWebApi
+
 
 @ReprInjector.simple(('_name', 'name'))
 class _Action(object):
@@ -96,7 +97,7 @@ class OpenInternalBrowser(_OpenBrowser, WebHandlersContainer):
         predefinedHandlers = self.getWebHandler(self._webHandlerName) or []
         return predefinedHandlers + webApiCollection(HangarSoundWebApi)
 
-    @process
+    @adisp_process
     def _doInvoke(self, title):
         self._browserID = yield self.browserCtrl.load(self._url, browserID=self._browserID, title=title, browserSize=self._size, showActionBtn=self._showRefresh, handlers=self._getHandlers(), isSolidBorder=self._isSolidBorder)
         browser = self.browserCtrl.getBrowser(self._browserID)
@@ -134,7 +135,7 @@ class OpenRankedBrowser(OpenInternalBrowser):
 @ReprInjector.withParent()
 class OpenExternalBrowser(_OpenBrowser):
 
-    @process
+    @adisp_process
     def invoke(self, notID, actor=None):
         processedUrl = yield URLMacros().parse(self._url)
         try:

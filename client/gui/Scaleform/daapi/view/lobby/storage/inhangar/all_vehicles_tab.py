@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/all_vehicles_tab.py
-from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_filter import CriteriesGroup
@@ -12,12 +11,13 @@ from gui.Scaleform.locale.STORAGE import STORAGE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.shared import event_dispatcher as shared_events
+from gui.shared.event_dispatcher import showShop
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.game_control import IIGRController
-from gui.shared.event_dispatcher import showShop
+
 
 class _AllVehiclesTabCriteriesGroup(CriteriesGroup):
 
@@ -65,7 +65,7 @@ class AllVehiclesTabView(AllVehiclesTabViewMeta, StorageCarouselEnvironment):
         super(AllVehiclesTabView, self).clear()
 
     def _createDataProvider(self):
-        return StorageCarouselDataProvider(StorageCarouselFilter((_AllVehiclesTabCriteriesGroup(),)), self._itemsCache, g_currentVehicle)
+        return StorageCarouselDataProvider(StorageCarouselFilter((_AllVehiclesTabCriteriesGroup(),)), self._itemsCache)
 
     def __onViewLoaded(self, view, *args, **kwargs):
         if view.settings is not None and view.settings.alias == VIEW_ALIAS.STORAGE_VEHICLES_FILTER_POPOVER:

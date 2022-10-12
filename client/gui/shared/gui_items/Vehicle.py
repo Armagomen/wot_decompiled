@@ -54,10 +54,7 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from vehicle_outfit.outfit import Area, REGIONS_BY_SLOT_TYPE, ANCHOR_TYPE_TO_SLOT_TYPE_MAP
 if typing.TYPE_CHECKING:
-    from skeletons.gui.shared import IItemsRequester
     from items.components.c11n_components import StyleItem
-    from vehicle_outfit.outfit import Outfit
-    from post_progression_common import VehicleState
 _logger = logging.getLogger(__name__)
 
 class VEHICLE_CLASS_NAME(CONST_CONTAINER):
@@ -76,7 +73,7 @@ VEHICLE_TYPES_ORDER = (VEHICLE_CLASS_NAME.LIGHT_TANK,
 EmblemSlotHelper = namedtuple('EmblemSlotHelper', ['tankAreaSlot', 'tankAreaId'])
 SlotHelper = namedtuple('SlotHelper', ['tankAreaSlot', 'tankAreaId'])
 VEHICLE_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(VEHICLE_TYPES_ORDER)))
-VEHICLE_TYPES_ORDER_INDICES_REVERSED = {n: i for i, n in enumerate(reversed(VEHICLE_TYPES_ORDER))}
+VEHICLE_TYPES_ORDER_INDICES_REVERSED = {n:i for i, n in enumerate(reversed(VEHICLE_TYPES_ORDER))}
 UNKNOWN_VEHICLE_CLASS_ORDER = 100
 
 def compareByVehTypeName(vehTypeA, vehTypeB):
@@ -160,6 +157,7 @@ class VEHICLE_TAGS(CONST_CONTAINER):
     MAPS_TRAINING = 'maps_training'
     T34_DISCLAIMER = 't34_disclaimer'
     CLAN_WARS_BATTLES = 'clanWarsBattles'
+    COMP7_BATTLES = 'comp7'
 
 
 DISCLAIMER_TAGS = frozenset((VEHICLE_TAGS.T34_DISCLAIMER,))
@@ -186,6 +184,7 @@ class Vehicle(FittingItem):
         AMMO_NOT_FULL_EVENTS = 'ammoNotFullEvents'
         SERVER_RESTRICTION = 'serverRestriction'
         RENTAL_IS_OVER = 'rentalIsOver'
+        RENTAL_IS_OVER_BATTLE = 'rentalBattleIsOver'
         IGR_RENTAL_IS_OVER = 'igrRentalIsOver'
         IN_PREMIUM_IGR_ONLY = 'inPremiumIgrOnly'
         GROUP_IS_NOT_READY = 'group_is_not_ready'
@@ -1027,6 +1026,14 @@ class Vehicle(FittingItem):
         return checkForTags(self.tags, 'scout')
 
     @property
+    def isSquadRestricted(self):
+        return checkForTags(self.tags, 'squad_restricted')
+
+    @property
+    def isOnlyForRandomBattles(self):
+        return checkForTags(self.tags, 'random_only')
+
+    @property
     def isTrackWithinTrack(self):
         return self._descriptor.isTrackWithinTrack
 
@@ -1085,6 +1092,8 @@ class Vehicle(FittingItem):
             ms = Vehicle.VEHICLE_STATE.NOT_PRESENT
         if self.isInBattle:
             ms = Vehicle.VEHICLE_STATE.BATTLE
+        elif self.rentInfo.hasEventRule and self.rentalIsOver and self.rentInfo.getTimeLeft() > 0:
+            ms = Vehicle.VEHICLE_STATE.RENTAL_IS_OVER_BATTLE
         elif self.rentalIsOver:
             ms = Vehicle.VEHICLE_STATE.RENTAL_IS_OVER
             if self.isPremiumIGR:
@@ -1157,6 +1166,7 @@ class Vehicle(FittingItem):
          Vehicle.VEHICLE_STATE.DESTROYED,
          Vehicle.VEHICLE_STATE.SERVER_RESTRICTION,
          Vehicle.VEHICLE_STATE.RENTAL_IS_OVER,
+         Vehicle.VEHICLE_STATE.RENTAL_IS_OVER_BATTLE,
          Vehicle.VEHICLE_STATE.IGR_RENTAL_IS_OVER,
          Vehicle.VEHICLE_STATE.TOO_HEAVY,
          Vehicle.VEHICLE_STATE.AMMO_NOT_FULL,
@@ -1357,6 +1367,10 @@ class Vehicle(FittingItem):
     @property
     def isOnlyForClanWarsBattles(self):
         return checkForTags(self.tags, VEHICLE_TAGS.CLAN_WARS_BATTLES)
+
+    @property
+    def isOnlyForComp7Battles(self):
+        return checkForTags(self.tags, VEHICLE_TAGS.COMP7_BATTLES)
 
     @property
     def isTelecom(self):
@@ -1822,8 +1836,7 @@ class Vehicle(FittingItem):
 
     def __getCustomOutfitComponent(self, proxy, season):
         customOutfitData = proxy.inventory.getOutfitData(self.intCD, season)
-        return customizations.parseC11sComponentDescr(
-            customOutfitData) if customOutfitData is not None else self.__getEmptyOutfitComponent()
+        return customizations.parseC11sComponentDescr(customOutfitData) if customOutfitData is not None else self.__getEmptyOutfitComponent()
 
     def __getStyledOutfitComponent(self, proxy, style, styleProgressionLevel, styleSerialNumber, season):
         component = deepcopy(style.outfits.get(season))
@@ -1846,13 +1859,16 @@ class Vehicle(FittingItem):
             component.decals.extend(emblems)
         diff = proxy.inventory.getOutfitData(self.intCD, season)
         if diff is None:
+            component = style.addPartsToOutfit(season, component, self._descriptor.makeCompactDescr())
             return component.copy()
         else:
             diffComponent = customizations.parseC11sComponentDescr(diff)
             if component.styleId != diffComponent.styleId:
                 _logger.error('Merging outfits of different styles is not allowed. ID1: %s ID2: %s', component.styleId, diffComponent.styleId)
                 return component.copy()
-            return component.applyDiff(diffComponent)
+            component = component.applyDiff(diffComponent)
+            component = style.addPartsToOutfit(season, component, self._descriptor.makeCompactDescr())
+            return component.copy()
 
     def __getEmptyOutfitComponent(self):
         if self.descriptor.type.hasCustomDefaultCamouflage:
@@ -2027,6 +2043,7 @@ _VEHICLE_STATE_TO_ICON = {Vehicle.VEHICLE_STATE.BATTLE: RES_ICONS.MAPS_ICONS_VEH
  Vehicle.VEHICLE_STATE.EXPLODED: RES_ICONS.MAPS_ICONS_VEHICLESTATES_DAMAGED,
  Vehicle.VEHICLE_STATE.CREW_NOT_FULL: RES_ICONS.MAPS_ICONS_VEHICLESTATES_CREWNOTFULL,
  Vehicle.VEHICLE_STATE.RENTAL_IS_OVER: RES_ICONS.MAPS_ICONS_VEHICLESTATES_RENTALISOVER,
+ Vehicle.VEHICLE_STATE.RENTAL_IS_OVER_BATTLE: RES_ICONS.MAPS_ICONS_VEHICLESTATES_UNSUITABLETOUNIT,
  Vehicle.VEHICLE_STATE.UNSUITABLE_TO_UNIT: RES_ICONS.MAPS_ICONS_VEHICLESTATES_UNSUITABLETOUNIT,
  Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE: RES_ICONS.MAPS_ICONS_VEHICLESTATES_UNSUITABLETOUNIT,
  Vehicle.VEHICLE_STATE.GROUP_IS_NOT_READY: RES_ICONS.MAPS_ICONS_VEHICLESTATES_GROUP_IS_NOT_READY,

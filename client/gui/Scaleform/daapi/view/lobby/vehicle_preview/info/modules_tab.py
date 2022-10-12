@@ -3,11 +3,11 @@
 from CurrentVehicle import g_currentPreviewVehicle
 from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
 from gui.Scaleform.daapi.view.lobby.shared.fitting_slot_vo import FittingSlotVO
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.Scaleform.daapi.view.meta.ModulesPanelMeta import ModulesPanelMeta
 from gui.Scaleform.daapi.view.meta.VehiclePreviewModulesTabMeta import VehiclePreviewModulesTabMeta
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared import event_dispatcher as shared_events
 from gui.shared.formatters import text_styles, icons
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE_INDICES
@@ -17,6 +17,7 @@ from helpers import dependency
 from items import ITEM_TYPES
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared import IItemsCache
+
 _MODULE_SLOTS = (GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleChassis],
  GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleTurret],
  GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleGun],
@@ -122,9 +123,8 @@ class ModulesPanel(ModulesPanelMeta):
         return
 
     def __onSettingsChanged(self, diff):
-        if SETTINGS_SECTIONS.UI_STORAGE not in diff:
-            return
-        self._update()
+        if SETTINGS_SECTIONS.UI_STORAGE in diff or SETTINGS_SECTIONS.UI_STORAGE_2 in diff:
+            self._update()
 
 
 def _makeStatusText(textRes, iconRes, style):

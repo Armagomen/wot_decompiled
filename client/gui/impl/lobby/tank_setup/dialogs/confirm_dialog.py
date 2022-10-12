@@ -19,7 +19,7 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 
 _logger = logging.getLogger(__name__)
 _SECTION_TO_FITTING_TYPE = {TankSetupConstants.BATTLE_BOOSTERS: FittingTypes.BOOSTER,
-                            TankSetupConstants.CONSUMABLES: FittingTypes.EQUIPMENT,
+ TankSetupConstants.CONSUMABLES: FittingTypes.EQUIPMENT,
  TankSetupConstants.OPT_DEVICES: FittingTypes.OPTIONAL_DEVICE,
  TankSetupConstants.BATTLE_ABILITIES: FittingTypes.BATTLE_ABILITY}
 
@@ -53,8 +53,7 @@ class TankSetupConfirmDialog(BuyAndExchange):
     def _onLoading(self, *args, **kwargs):
         super(TankSetupConfirmDialog, self)._onLoading(*args, **kwargs)
         vehicle = self._itemsCache.items.getVehicle(self.__vehicleInvID)
-        self._buyContent = AmmunitionBuyBottomContent(viewModel=self.viewModel.dealPanel, vehicle=vehicle,
-                                                      items=self.__items)
+        self._buyContent = AmmunitionBuyBottomContent(viewModel=self.viewModel.dealPanel, vehicle=vehicle, items=self.__items)
         self._buyContent.onLoading()
         if self.__startState == BuyAndExchangeStateEnum.EXCHANGE_CONTENT:
             filterItems = REQ_CRITERIA.INVENTORY
@@ -135,5 +134,4 @@ class TankSetupExitConfirmDialog(TankSetupConfirmDialog):
         return self._itemsType == _SECTION_TO_FITTING_TYPE[TankSetupConstants.OPT_DEVICES]
 
     def __isChangedInInventory(self):
-        return any((cachedItem.isInInventory != self._itemsCache.items.getItemByCD(cachedItem.intCD).isInInventory for
-                    cachedItem in self.items))
+        return any((cachedItem.isInInventory != self._itemsCache.items.getItemByCD(cachedItem.intCD).isInInventory for cachedItem in self.items))

@@ -18,7 +18,7 @@ from gui.Scaleform.waiting_worker import WaitingWorker
 from gui.app_loader import settings as app_settings
 from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.system_factory import collectScaleformBattlePackages, collectScaleformLobbyPackages
+from gui.shared.system_factory import collectScaleformLobbyPackages, collectScaleformBattlePackages
 from helpers import dependency
 from shared_utils import AlwaysValidObject
 from skeletons.gui.app_loader import IAppFactory
@@ -96,10 +96,9 @@ class AS3_AppFactory(IAppFactory):
         if lobby is None:
             lobby = LobbyEntry(_SPACE.SF_LOBBY, self.__ctrlModeFlags[_SPACE.SF_LOBBY])
             self.__apps[_SPACE.SF_LOBBY] = lobby
-            self.__packages[_SPACE.SF_LOBBY] = sf_config.LOBBY_PACKAGES
-            self.__importer.load(lobby.proxy, sf_config.COMMON_PACKAGES + sf_config.LOBBY_PACKAGES)
-            collectedPackages = collectScaleformLobbyPackages()
-            self.__packages[_SPACE.SF_LOBBY] += tuple(collectedPackages)
+            lobbyPackages = tuple(collectScaleformLobbyPackages())
+            self.__packages[_SPACE.SF_LOBBY] = lobbyPackages
+            self.__importer.load(lobby.proxy, sf_config.COMMON_PACKAGES + lobbyPackages)
             self.__packages[_SPACE.SF_LOBBY] += tuple(g_overrideScaleFormViewsConfig.lobbyPackages)
             self.__importer.load(lobby.proxy, g_overrideScaleFormViewsConfig.lobbyPackages, None, True)
         lobby.active(True)
@@ -110,7 +109,8 @@ class AS3_AppFactory(IAppFactory):
         _logger.info('Reload app: %s', _SPACE.SF_LOBBY)
         lobby = self.__apps[_SPACE.SF_LOBBY]
         if lobby is not None:
-            self.__importer.load(lobby.proxy, sf_config.COMMON_PACKAGES + sf_config.LOBBY_PACKAGES)
+            lobbyPackages = tuple(collectScaleformLobbyPackages())
+            self.__importer.load(lobby.proxy, sf_config.COMMON_PACKAGES + lobbyPackages)
             self.__importer.load(lobby.proxy, g_overrideScaleFormViewsConfig.lobbyPackages, None, True)
         return
 
@@ -253,10 +253,10 @@ class AS3_AppFactory(IAppFactory):
             return
         app = self.getApp(appNS=appNS)
         libs = ['guiControlsLobbyBattleDynamic.swf',
-                'guiControlsLobbyDynamic.swf',
-                'guiControlsLobbyDynamic2.swf',
-                'popovers.swf',
-                'iconLibrary.swf']
+         'guiControlsLobbyDynamic.swf',
+         'guiControlsLobbyDynamic2.swf',
+         'popovers.swf',
+         'iconLibrary.swf']
         if self.bootcampCtrl.isInBootcamp():
             libs.extend(['BCGuiControlsLobbyBattle.swf', 'BCGuiControlsLobby.swf'])
         app.as_loadLibrariesS(libs)
@@ -318,6 +318,8 @@ class AS3_AppFactory(IAppFactory):
             event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MAPS_TRAINING_PAGE))
         elif arenaGuiType in ARENA_GUI_TYPE.STRONGHOLD_RANGE:
             event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.STRONGHOLD_BATTLE_PAGE))
+        elif arenaGuiType == ARENA_GUI_TYPE.COMP7:
+            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.COMP7_BATTLE_PAGE))
         else:
             event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.CLASSIC_BATTLE_PAGE))
         g_eventBus.handleEvent(event, EVENT_BUS_SCOPE.BATTLE)

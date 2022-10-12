@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/gui/clans/clan_account_profile.py
 import weakref
 from collections import namedtuple, defaultdict
+
 from account_helpers import getAccountDatabaseID
-from adisp import process
+from adisp import adisp_process
 from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_DEBUG
 from gui.awards.event_dispatcher import showClanJoinAward
@@ -17,8 +18,9 @@ from gui.wgnc.settings import WGNC_DATA_PROXY_TYPE
 from helpers import dependency
 from messenger.ext import passCensor
 from shared_utils import CONST_CONTAINER
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.game_control import IClanNotificationController
+from skeletons.gui.shared import IItemsCache
+
 
 class SYNC_KEYS(CONST_CONTAINER):
     INVITES = 1
@@ -138,7 +140,7 @@ class ClanAccountProfile(object):
         if self.isInClan():
             self.getClanDossier().resync(force=force)
 
-    @process
+    @adisp_process
     def resyncWebClanInfo(self, force=False):
         if self._waitForSync & SYNC_KEYS.CLAN_INFO:
             return

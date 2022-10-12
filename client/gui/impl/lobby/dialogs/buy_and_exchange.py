@@ -2,19 +2,22 @@
 # Embedded file name: scripts/client/gui/impl/lobby/dialogs/buy_and_exchange.py
 import logging
 import typing
-from gui.impl.gen.view_models.views.lobby.common.exchange_dialog_state import ExchangeDialogState
-from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContentResult
-from gui.impl.lobby.tank_setup.dialogs.bottom_content.bottom_contents import ExchangePriceBottomContent
-from gui.shared.utils import decorators
+
+from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import \
+    BuyAndExchangeBottomContentType
 from gui.impl.gen.view_models.views.lobby.common.dialog_with_exchange import DialogWithExchange
+from gui.impl.gen.view_models.views.lobby.common.exchange_dialog_state import ExchangeDialogState
+from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum, \
+    BuyAndExchangeStateMachine, BuyAndExchangeEventEnum
+from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContentResult
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
-from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum, BuyAndExchangeStateMachine, BuyAndExchangeEventEnum
+from gui.impl.lobby.tank_setup.dialogs.bottom_content.bottom_contents import ExchangePriceBottomContent
 from gui.shared.gui_items.fitting_item import canBuyWithGoldExchange
 from gui.shared.money import Currency
-from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import BuyAndExchangeBottomContentType
+from gui.shared.utils import decorators
+
 if typing.TYPE_CHECKING:
-    from frameworks.wulf import ViewSettings
-    from gui.shared.money import Money
+    pass
 TViewModel = typing.TypeVar('TViewModel', bound=DialogWithExchange)
 _logger = logging.getLogger(__name__)
 
@@ -137,7 +140,7 @@ class BuyAndExchange(FullScreenDialogView, typing.Generic[TViewModel]):
     def _getCurrentDialogState(self):
         return self.__stateMachine.getCurrentState()
 
-    @decorators.process('transferMoney')
+    @decorators.adisp_process('transferMoney')
     def __exchange(self):
         result = yield self._exchangeContent.exchange()
         self._exchangeComplete(result)

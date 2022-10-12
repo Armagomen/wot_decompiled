@@ -4,8 +4,7 @@ import BigWorld
 import nations
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEHICLES_WITH_BLUEPRINT_CONFIRM, STORAGE_BLUEPRINTS_CAROUSEL_FILTER
-from adisp import process
-from async import async, await
+from adisp import adisp_process
 from blueprints.BlueprintTypes import BlueprintTypes
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.gui_constants import ViewFlags, ViewStatus
@@ -19,7 +18,8 @@ from gui.impl.backport import createTooltipData, BackportTooltipWindow
 from gui.impl.dialogs import dialogs
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_model import BlueprintScreenModel
-from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_scheme_item_model import BlueprintScreenSchemeItemModel
+from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_scheme_item_model import \
+    BlueprintScreenSchemeItemModel
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_tooltips import BlueprintScreenTooltips
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_value_price import BlueprintValuePrice
 from gui.impl.lobby.blueprints import getBlueprintTooltipData
@@ -36,6 +36,8 @@ from helpers import dependency, int2roman
 from helpers.blueprint_generator import g_blueprintGenerator
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.shared import IItemsCache
+from wg_async import wg_async, wg_await
+
 
 class BlueprintScreen(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -155,16 +157,16 @@ class BlueprintScreen(ViewImpl):
         self.viewModel.onOpenVehicleViewBtnClicked -= self.__onOpenVehicleViewBtnClicked
         g_clientUpdateManager.removeObjectCallbacks(self)
 
-    @async
+    @wg_async
     def __onGoToConversionScreen(self, args):
-        isResearchClicked, (usedFragmentsData, fragmentCount) = yield await(dialogs.blueprintsConversion(parent=self.getParentWindow(), vehicleCD=self.__vehicle.intCD))
+        isResearchClicked, (usedFragmentsData, fragmentCount) = yield wg_await(dialogs.blueprintsConversion(parent=self.getParentWindow(), vehicleCD=self.__vehicle.intCD))
         if isResearchClicked and self.viewStatus == ViewStatus.LOADED:
             layoutId = int(args['value'])
             factory.doAction(factory.CONVERT_BLUEPRINT_FRAGMENT, self.__vehicle.intCD, fragmentCount, layoutId, usedNationalFragments=usedFragmentsData)
 
-    @async
+    @wg_async
     def __onGoToAllConversion(self, _=None):
-        isResearchClicked, (usedFragmentsData, fragmentCount) = yield await(dialogs.blueprintsConversion(parent=self.getParentWindow(), vehicleCD=self.__vehicle.intCD, fragmentCount=self.viewModel.getMaxConvertibleFragmentCount()))
+        isResearchClicked, (usedFragmentsData, fragmentCount) = yield wg_await(dialogs.blueprintsConversion(parent=self.getParentWindow(), vehicleCD=self.__vehicle.intCD, fragmentCount=self.viewModel.getMaxConvertibleFragmentCount()))
         if isResearchClicked and self.viewStatus == ViewStatus.LOADED:
             factory.doAction(factory.CONVERT_BLUEPRINT_FRAGMENT, self.__vehicle.intCD, fragmentCount, usedNationalFragments=usedFragmentsData)
 
@@ -182,7 +184,7 @@ class BlueprintScreen(ViewImpl):
     def __onOpenVehicleViewBtnClicked(self):
         event_dispatcher.showResearchView(self.__vehicle.intCD, exitEvent=events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_TECHTREE), ctx={'nation': self.__vehicle.nationName}))
 
-    @process
+    @adisp_process
     def __onResearchVehicle(self, _=None):
         self.viewModel.setBlueprintAnimPaused(True)
         result = yield UnlockItemActionWithResult(self.__vehicle.intCD, g_techTreeDP.getUnlockProps(self.__vehicle.intCD, self.__vehicle.level)).doAsyncAction()

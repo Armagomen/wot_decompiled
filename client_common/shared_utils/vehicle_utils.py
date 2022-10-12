@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/vehicle_utils.py
-import NetworkFilters
 import BigWorld
-from adisp import process
+import NetworkFilters
+from adisp import adisp_process
 from debug_utils import LOG_DEBUG
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.processors.module import getPreviewInstallerProcessor
@@ -10,6 +10,7 @@ from gui.shared.items_parameters.params_cache import g_paramsCache
 from helpers import dependency
 from items import getTypeOfCompactDescr
 from skeletons.gui.shared import IItemsCache
+
 _MODULES_INSTALL_ORDER = (GUI_ITEM_TYPE.CHASSIS,
  GUI_ITEM_TYPE.TURRET,
  GUI_ITEM_TYPE.GUN,
@@ -124,7 +125,7 @@ class ModuleDependencies(object):
         self.__hasConflicted = False
         self.__conflictedModulesCD = [ [] for _ in GUI_ITEM_TYPE.VEHICLE_MODULES ]
 
-    @process
+    @adisp_process
     def _installModule(self, vehicle, module):
         yield getPreviewInstallerProcessor(vehicle, module).request()
 

@@ -18,7 +18,6 @@ if typing.TYPE_CHECKING:
     pass
 MessageData = namedtuple('MessageData', 'data, settings')
 
-
 def getRewardsForBoxes(message, boxIDs):
     data = message.data or {}
     resultRewards = {}
@@ -74,7 +73,6 @@ def getCustomizationItemData(itemId, customizationName):
 
 _CustomizationItemData = namedtuple('_CustomizationItemData', ('guiItemType', 'userName'))
 
-
 def getDefaultMessage(normal='', bold=''):
     return g_settings.msgTemplates.format(DEFAULT_MESSAGE, {'normal': normal,
-                                                            'bold': bold})
+     'bold': bold})

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleMattersViewMeta.py
 from gui.Scaleform.daapi.view.meta.MissionsViewBaseMeta import MissionsViewBaseMeta
 
-
 class BattleMattersViewMeta(MissionsViewBaseMeta):
 
     def as_showViewS(self):

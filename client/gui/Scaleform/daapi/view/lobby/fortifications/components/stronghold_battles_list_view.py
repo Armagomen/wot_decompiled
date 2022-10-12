@@ -1,20 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/components/stronghold_battles_list_view.py
 import BigWorld
-from adisp import process
-from frameworks.wulf import WindowLayer
-from helpers import dependency
-from skeletons.gui.game_control import IBrowserController
+from adisp import adisp_process
 from debug_utils import LOG_ERROR
-from gui.shared import events
-from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.clans.clan_helpers import getStrongholdBattlesListUrl
+from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
 from gui.Scaleform.daapi.view.lobby.strongholds.web_handlers import createStrongholdsWebHandlers
 from gui.Scaleform.daapi.view.meta.StrongholdBattlesListViewMeta import StrongholdBattlesListViewMeta
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
+from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
+from gui.clans.clan_helpers import getStrongholdBattlesListUrl
+from gui.shared import events
+from gui.shared.event_bus import EVENT_BUS_SCOPE
+from helpers import dependency
 from shared_utils import BoundMethodWeakref
+from skeletons.gui.game_control import IBrowserController
+
 
 class StrongholdBattlesListView(StrongholdBattlesListViewMeta):
     browserCtrl = dependency.descriptor(IBrowserController)
@@ -66,7 +67,7 @@ class StrongholdBattlesListView(StrongholdBattlesListViewMeta):
             viewPy.init(self.__browserId, createStrongholdsWebHandlers(onBrowserOpen=BoundMethodWeakref(self.addChildBrowserAlias)))
             self.__browserCreated = True
 
-    @process
+    @adisp_process
     def __loadBrowser(self, width, height):
         battlesListUrl = getStrongholdBattlesListUrl()
         if battlesListUrl is not None:

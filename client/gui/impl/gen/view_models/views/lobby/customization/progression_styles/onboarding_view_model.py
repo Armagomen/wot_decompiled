@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/progression_styles/onboarding_view_model.py
 from frameworks.wulf import ViewModel
 
-
 class OnboardingViewModel(ViewModel):
     __slots__ = ('onClose', 'onGotoStyle')
 

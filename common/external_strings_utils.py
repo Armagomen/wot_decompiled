@@ -125,7 +125,6 @@ def getClanAbbrevMaxLength():
 CLAN_DESCR_MAX_BYTES = CLAN_DESCR_MAX_LENGTH * 4
 CLAN_MOTTO_MAX_BYTES = CLAN_MOTTO_MAX_LENGTH * 4
 
-
 def unicode_from_utf8(utf8str, unicodeNormalForm='NFKC'):
     unicodeStr = utf8str
     if isinstance(unicodeStr, str):

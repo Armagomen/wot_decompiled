@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/awards/items_collection_provider.py
 import logging
-from copy import deepcopy
 import typing
-from adisp import async, process
+from copy import deepcopy
+
+from adisp import adisp_async, adisp_process
 from gui.battle_pass.battle_pass_award import awardsFactory
 from gui.impl.lobby.awards.packers import getMultipleAwardsBonusPacker
 from gui.impl.lobby.awards.prefetch import PREFETCHERS
@@ -11,12 +12,9 @@ from gui.server_events.bonuses import mergeBonuses
 from helpers import dependency
 from items.components.component_constants import EMPTY_TUPLE
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
+
 if typing.TYPE_CHECKING:
-    from gui.server_events.bonuses import SimpleBonus
-    from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
-    from gui.impl.backport import TooltipData
-    from gui.platform.catalog_service.controller import _PurchaseDescriptor
-    from gui.platform.catalog_service.controller import _ProductExtraData
+    pass
 _logger = logging.getLogger(__name__)
 
 def _addCompensation(compensation, toUpdate):
@@ -118,8 +116,8 @@ class _OrderHelper(object):
         return None
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def packBonusModelAndTooltipData(bonuses, productCode, callback=None):
     bonusIndexTotal = 0
     tooltipData = {}
@@ -156,8 +154,8 @@ def packBonusModelAndTooltipData(bonuses, productCode, callback=None):
 class MultipleAwardRewardsMainPacker(object):
     __purchaseCache = dependency.descriptor(IPurchaseCache)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def getWholeBonusesData(self, invoiceData, productCode, callback=None):
         yield lambda callback: callback(True)
         metaData = invoiceData.get('meta', {})

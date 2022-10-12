@@ -1,20 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/gui/controller.py
-import typing
 import logging
+import typing
 from functools import partial
+
 from gui.Scaleform.genConsts.TUTORIAL_EFFECT_TYPES import TUTORIAL_EFFECT_TYPES as _EFFECT_TYPES
 from gui.Scaleform.genConsts.TUTORIAL_TRIGGER_TYPES import TUTORIAL_TRIGGER_TYPES
 from gui.impl.gen import R
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
-from tutorial.gui import GuiType, ComponentDescr, IGuiImpl
 from skeletons.tutorial import IGuiController
 from soft_exception import SoftException
 from tutorial.doc_loader import gui_config
+from tutorial.gui import GuiType, ComponentDescr
+
 if typing.TYPE_CHECKING:
-    from gui.impl.gen_utils import DynAccessor
-    from tutorial.data.client_triggers import ClientTriggers
-    from skeletons.tutorial import ComponentID
+    pass
 _logger = logging.getLogger(__name__)
 _Event = events.TutorialEvent
 _TRIGGER_TYPES = TUTORIAL_TRIGGER_TYPES
@@ -229,12 +229,19 @@ class GuiController(IGuiController):
         _logger.debug('hideBootcampHint: %r', componentID)
         self.__doHideEffect(componentID, _EFFECT_TYPES.BOOTCAMP_HINT)
 
-    def setupViewContextHints(self, viewTutorialID, hintsData):
+    def setupViewContextHints(self, viewTutorialID, hintsData, hintsArgs=None):
         hintsDataCopy = hintsData.copy()
+        for hint in hintsDataCopy.get('hints', []):
+            hintArgs = hintsArgs.get(hint.get('tooltipSpecial'))
+            if hintArgs is not None:
+                hint['args'] = hintArgs
+
         builder = hintsDataCopy.pop('builderLnk', '')
         effectType = _EFFECT_TYPES.DEFAULT_OVERLAY
         for gui in self.__guiImpls:
             gui.showEffect('', viewTutorialID, effectType, hintsDataCopy, builder)
+
+        return
 
     def overrideHangarMenuButtons(self, buttonsList=None):
         if buttonsList != self.__hangarMenuButtonsOverride:

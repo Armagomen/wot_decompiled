@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/bootcamp/consumable.py
+from bootcamp.Bootcamp import g_bootcamp
 from gui.impl.lobby.tank_setup.array_providers.consumable import ConsumableDeviceProvider
 from gui.impl.lobby.tank_setup.configurations.consumable import ConsumableTabsController, ConsumableTabs
 from gui.impl.lobby.tank_setup.sub_views.consumable_setup import ConsumableSetupSubView
@@ -29,12 +30,18 @@ class BootcampConsumableSetupSubView(ConsumableSetupSubView):
         super(BootcampConsumableSetupSubView, self).onLoading(currentSlotID, *args, **kwargs)
         if any(self._interactor.getCurrentLayout()):
             return
-        items = self._provider.getItemsList()
-        for item in items:
-            if item.isInInventory:
-                self._onSelectItem({'intCD': item.intCD,
-                 'isAutoSelect': True})
-                break
+        itemCD = g_bootcamp.getNationData()['consumable']
+        item = self._itemsCache.items.getItemByCD(itemCD)
+        if item.isInInventory:
+            self._onSelectItem({'intCD': itemCD,
+             'isAutoSelect': True})
+        else:
+            items = self._provider.getItemsList()
+            for item in items:
+                if item.isInInventory:
+                    self._onSelectItem({'intCD': item.intCD,
+                     'isAutoSelect': True})
+                    break
 
     def finalize(self):
         if self._currentTabName:

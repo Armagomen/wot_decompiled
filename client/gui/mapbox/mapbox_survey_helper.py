@@ -293,7 +293,7 @@ class AlternativeOneManyQuestion(AlternativeQuestion):
     __MIN_CHOICES_IN_TABLE_QUESTION = 2
 
     def synchronizeAnswers(self, surveyData, altQuestion, newAnswers):
-        choices = set([choice for answer in newAnswers for choice in answer.get('choices', [])])
+        choices = set([ choice for answer in newAnswers for choice in answer.get('choices', []) ])
         simpleQuestion = findFirst(lambda q: q.getQuestionType() == QuestionType.IMAGE, self._alternatives)
         tableQuestion = findFirst(lambda q: q.getQuestionType() == QuestionType.TABLE, self._alternatives)
         if simpleQuestion is None or tableQuestion is None:
@@ -327,16 +327,15 @@ class AlternativeOneManyQuestion(AlternativeQuestion):
 
     @staticmethod
     def __findSavedAnswers(qId, surveyData, choices):
-        return [answer for answer in surveyData.get(qId, []) if answer.get('optionId') in choices]
+        return [ answer for answer in surveyData.get(qId, []) if answer.get('optionId') in choices ]
 
 
 _SUPPORTED_QUESTION_TYPES = {QuestionType.IMAGE.value: _ImageQuestion,
-                             QuestionType.VEHICLE.value: _VehicleQuestion,
-                             QuestionType.TABLE.value: _TableQuestion,
-                             QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion,
-                             QuestionType.TEXT.value: _TextQuestion,
-                             QuestionType.ALTERNATIVE.value: AlternativeQuestion}
-
+ QuestionType.VEHICLE.value: _VehicleQuestion,
+ QuestionType.TABLE.value: _TableQuestion,
+ QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion,
+ QuestionType.TEXT.value: _TextQuestion,
+ QuestionType.ALTERNATIVE.value: AlternativeQuestion}
 
 def getQuestionClass(questionType):
     return _SUPPORTED_QUESTION_TYPES.get(questionType)

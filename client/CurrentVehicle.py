@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/CurrentVehicle.py
 import BigWorld
 from Event import Event, EventManager
-from adisp import process
+from adisp import adisp_process
 from constants import CustomizationInvData
 from items.components.c11n_constants import SeasonType
 from items.vehicles import VehicleDescr
@@ -34,10 +34,10 @@ from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
 
 _MODULES_NAMES = ('turret',
-                  'chassis',
-                  'engine',
-                  'gun',
-                  'radio')
+ 'chassis',
+ 'engine',
+ 'gun',
+ 'radio')
 
 class _CachedVehicle(object):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -273,6 +273,12 @@ class _CurrentVehicle(_CachedVehicle):
 
     def isOnlyForEpicBattles(self):
         return self.isPresent() and self.item.isOnlyForEpicBattles
+
+    def isOnlyForComp7Battles(self):
+        return self.isPresent() and self.item.isOnlyForComp7Battles
+
+    def isOnlyForRandomBattles(self):
+        return self.isPresent() and self.item.isOnlyForRandomBattles
 
     def isOutfitLocked(self):
         return self.isPresent() and self.item.isOutfitLocked
@@ -595,7 +601,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
 
         return False
 
-    @process
+    @adisp_process
     def installComponent(self, newId):
         newComponentItem = self.itemsCache.items.getItemByCD(newId)
         Waiting.show('applyModule', overlapsUI=False)

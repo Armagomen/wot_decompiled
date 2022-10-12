@@ -15,7 +15,6 @@ _ENABLE_VALUE_TRACKER_ENGINE = False
 _ENABLE_PIXIE_TRACKER = False
 _VEHICLE_DIRECTION_THRESHOLD = 0.1
 
-
 class CustomEffectManager(Component):
     _LEFT_TRACK = 0
     _RIGHT_TRACK = 1

@@ -59,9 +59,8 @@ def getProgressionPostBattleInfo(itemIntCD, vehicleIntCD, progressionData, items
 
 C11nProgressionLinkBtnParams = namedtuple('C11nProgressionLinkBtnParams', ('isLinkEnabled', 'linkBtnTooltip'))
 
-
 def getC11nProgressionLinkBtnParams(vehicle):
-    isLinkEnabled = vehicle.isCustomizationEnabled()
+    isLinkEnabled = vehicle.isCustomizationEnabled() if vehicle is not None else False
     linkBtnTooltip = R.strings.tooltips.quests.linkBtn.customizationProgression
     linkBtnTooltip = linkBtnTooltip.enabled() if isLinkEnabled else linkBtnTooltip.disabled()
     return C11nProgressionLinkBtnParams(isLinkEnabled, linkBtnTooltip)
@@ -76,12 +75,9 @@ def __makeAwardsVO(item, level, vehicleIntCD):
     if count < 1:
         return []
     if level > 1:
-        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.newLevel(), name=item.userName,
-                                  level=level)
+        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.newLevel(), name=item.userName, level=level)
     else:
-        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.received(), name=item.userName,
-                                  count=backport.text(R.strings.vehicle_customization.elementBonus.factor(),
-                                                      count=count))
+        bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.received(), name=item.userName, count=backport.text(R.strings.vehicle_customization.elementBonus.factor(), count=count))
     award = {'intCD': item.intCD,
      'texture': item.icon,
      'value': count,

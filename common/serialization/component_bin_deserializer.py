@@ -9,7 +9,6 @@ from serialization.exceptions import SerializationException, FoundItemException
 
 __all__ = ('ComponentBinDeserializer',)
 
-
 class ComponentBinDeserializer(object):
 
     def __init__(self, customTypes):
@@ -85,13 +84,13 @@ class ComponentBinDeserializer(object):
         io = self.__stream
         n = varint.decode_stream(io)
         if itemType == FieldTypes.VARINT:
-            array = [varint.decode_stream(io) for _ in xrange(n)]
+            array = [ varint.decode_stream(io) for _ in xrange(n) ]
             if path and path[1] is None and path[0] == k and wanted in array:
                 raise FoundItemException()
             return array
         elif itemType >= FieldTypes.CUSTOM_TYPE_OFFSET:
             customType = itemType / FieldTypes.CUSTOM_TYPE_OFFSET
-            return [self.__decodeCustomType(customType, next, wanted) for _ in xrange(n)]
+            return [ self.__decodeCustomType(customType, next, wanted) for _ in xrange(n) ]
         else:
             raise SerializationException('Unsupported item type')
             return

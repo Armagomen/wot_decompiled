@@ -7,7 +7,6 @@ from uilogging.base.logger import MetricsLogger
 from uilogging.epic_battle.constants import FEATURE, EpicBattleLogActions
 from wotdecorators import noexcept
 
-
 class EpicBattleLogger(MetricsLogger):
     __slots__ = ()
 
@@ -54,8 +53,7 @@ class EpicBattleTooltipLogger(EpicBattleLogger):
     def __onHideTooltip(self, tooltip, *_):
         if self._openedTooltip and self._openedTooltip == tooltip:
             self._openedTooltip = None
-            self.stopAction(EpicBattleLogActions.TOOLTIP_WATCHED.value, tooltip, self._parentScreen,
-                            info=self._additionalInfo, timeLimit=self.TIME_LIMIT)
+            self.stopAction(EpicBattleLogActions.TOOLTIP_WATCHED.value, tooltip, self._parentScreen, info=self._additionalInfo, timeLimit=self.TIME_LIMIT)
         return
 
     @noexcept

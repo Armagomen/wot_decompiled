@@ -1,19 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/invite_windows.py
 from PlayerEvents import g_playerEvents
-from adisp import process
+from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.meta.ReceivedInviteWindowMeta import ReceivedInviteWindowMeta
 from gui.prb_control import prbPeripheriesHandlerProperty, prbAutoInvitesProperty
-from gui.prb_control.formatters.invites import PrbAutoInviteInfo
 from gui.prb_control.entities.battle_session.legacy.ctx import JoinBattleSessionCtx
 from gui.prb_control.entities.listener import IGlobalListener
+from gui.prb_control.formatters.invites import PrbAutoInviteInfo
 from gui.prb_control.prb_getters import getPrebattleAutoInvites
 from gui.shared import actions
 from messenger.ext import channel_num_gen
 from messenger.gui import events_dispatcher
 from messenger.m_constants import LAZY_CHANNEL
 from predefined_hosts import g_preDefinedHosts
+
 __author__ = 'd_savitski'
 
 class _DisableNotify(actions.Action):
@@ -77,7 +78,7 @@ class AutoInviteWindow(_InviteWindow):
     def prbAutoInvites(self):
         return None
 
-    @process
+    @adisp_process
     def acceptInvite(self):
         yield lambda callback: callback(None)
         prbID = self._inviteInfo.getID()

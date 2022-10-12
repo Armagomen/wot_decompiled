@@ -1,13 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/wgm_balance_info_requester.py
 from functools import partial
-import BigWorld
+
 import AccountCommands
-from adisp import async, process
-from gui.shared.utils.requesters.common import RequestProcessor
-from gui.shared.money import Currency
+import BigWorld
+from adisp import adisp_async, adisp_process
 from debug_utils import LOG_WARNING
+from gui.shared.money import Currency
+from gui.shared.utils.requesters.common import RequestProcessor
 from helpers import isPlayerAccount
+
 _REQUEST_COOLDOWN = 5.0
 _TOKEN_CURRENCY_CODE = 'currency_code'
 _TOKEN_IS_PAID = 'is_paid'
@@ -42,7 +44,7 @@ class WGMBalanceInfoRequester(object):
             self.__request.cancel()
         del self.__callbacks[:]
 
-    @process
+    @adisp_process
     def requestInfo(self, callback):
         if callback not in self.__callbacks:
             self.__callbacks.append(callback)
@@ -53,7 +55,7 @@ class WGMBalanceInfoRequester(object):
 
             self.__callbacks = []
 
-    @async
+    @adisp_async
     def __requestWGMBalanceInfo(self, callback):
         proxy = partial(self.__processResponse, callback)
         self.__request = RequestProcessor(self.__nextRequestTime(), lambda : self.__cooldownCallback(proxy))

@@ -2,17 +2,19 @@
 # Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/exchange_content.py
 import logging
 from enum import Enum
+
 import Event
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.auxiliary.exchanger import Exchanger
-from gui.impl.gen.view_models.common.exchange_panel_model import ExchangePanelModel
 from gui.impl.common.base_sub_model_view import BaseSubModelView
+from gui.impl.gen.view_models.common.exchange_panel_model import ExchangePanelModel
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
+
 _logger = logging.getLogger(__name__)
 
 class ExchangeContentResult(Enum):
@@ -55,8 +57,8 @@ class ExchangeContent(BaseSubModelView):
             fromItemCount, toItemCount = self.__exchanger.calculateFromItemCount(self.__needItem)
         self.__fillItemsModel(fromItemCount, toItemCount)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def exchange(self, callback=None):
         if not self.__validateCount():
             if callback is not None:

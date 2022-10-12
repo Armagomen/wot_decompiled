@@ -2,14 +2,16 @@
 # Embedded file name: scripts/client/gui/prb_control/entities/ranked/pre_queue/vehicles_watcher.py
 import typing
 from itertools import chain
+
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL
 from gui.prb_control.entities.base.pre_queue.vehicles_watcher import ForbiddenVehiclesWatcher
 from gui.shared.utils.requesters import REQ_CRITERIA
+from helpers import dependency, server_settings
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from helpers import dependency, server_settings
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.Vehicle import Vehicle
+    pass
 
 class RankedVehiclesWatcher(ForbiddenVehiclesWatcher):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -33,7 +35,9 @@ class RankedVehiclesWatcher(ForbiddenVehiclesWatcher):
         epicVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EPIC_BATTLE).itervalues()
         battleRoyaleVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.BATTLE_ROYALE).itervalues()
         clanWarsVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLAN_WARS).itervalues()
-        return chain(vehs, baseVehs, eventVehs, epicVehs, battleRoyaleVehs, clanWarsVehs) if not onClear else allVehs
+        comp7Vehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.COMP7).itervalues()
+        randomOnlyVehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.RANDOM_ONLY).itervalues()
+        return chain(vehs, baseVehs, eventVehs, epicVehs, battleRoyaleVehs, clanWarsVehs, comp7Vehs, randomOnlyVehs) if not onClear else allVehs
 
     def _getForbiddenVehicleClasses(self):
         return self.__lobbyContext.getServerSettings().rankedBattles.forbiddenClassTags

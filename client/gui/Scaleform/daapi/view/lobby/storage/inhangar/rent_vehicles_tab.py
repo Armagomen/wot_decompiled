@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/rent_vehicles_tab.py
-from CurrentVehicle import g_currentVehicle
 from gui.Scaleform import MENU
 from gui.Scaleform.daapi.view.lobby.storage.inhangar import StorageCarouselDataProvider, StorageCarouselFilter
 from gui.Scaleform.daapi.view.meta.RentVehiclesTabViewMeta import RentVehiclesTabViewMeta
@@ -9,12 +8,13 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared import event_dispatcher as shared_events
 from gui.shared.formatters.time_formatters import RentLeftFormatter
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from helpers.i18n import makeString as _ms
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
+from helpers.i18n import makeString as _ms
 from skeletons.gui.game_control import IRentalsController
 from skeletons.gui.shared import IItemsCache
+
 
 class _RentStorageCarouselFilter(StorageCarouselFilter):
 
@@ -29,8 +29,8 @@ class _RentStorageCarouselFilter(StorageCarouselFilter):
 
 class _RentVehiclesDataProvider(StorageCarouselDataProvider):
 
-    def __init__(self, carouselFilter, itemsCache, currentVehicle):
-        super(_RentVehiclesDataProvider, self).__init__(carouselFilter, itemsCache, currentVehicle)
+    def __init__(self, carouselFilter, itemsCache):
+        super(_RentVehiclesDataProvider, self).__init__(carouselFilter, itemsCache)
         self._baseCriteria = REQ_CRITERIA.VEHICLE.RENT ^ REQ_CRITERIA.VEHICLE.WOTPLUS_RENT ^ REQ_CRITERIA.VEHICLE.TELECOM_RENT | REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.TELECOM
 
     def _addCriteria(self):
@@ -82,7 +82,7 @@ class RentVehiclesTabView(RentVehiclesTabViewMeta):
         pass
 
     def _createDataProvider(self):
-        return _RentVehiclesDataProvider(_RentStorageCarouselFilter(), self._itemsCache, g_currentVehicle)
+        return _RentVehiclesDataProvider(_RentStorageCarouselFilter(), self._itemsCache)
 
     def __onCacheResync(self, reason, diff):
         forceUpdateReasons = (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.DOSSIER_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE)

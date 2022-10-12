@@ -31,7 +31,6 @@ from skeletons.gui.game_control import IBootcampController
 
 _logger = logging.getLogger(__name__)
 
-
 def getCameraAsSettingsHolder(settingsDataSec):
     return ArcadeCamera(settingsDataSec, None)
 
@@ -222,7 +221,9 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         if BigWorld.player().isObserver():
             self.__onChangeControlMode = None
             aimingSystemClass = ArcadeAimingSystemRemote
-        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'], self._cfg['focusRadius'], self.__calcAimMatrix(), self._cfg['angleRange'], not postmortemMode and smartPointCalculator)
+        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'],
+                                                self._cfg['focusRadius'], self.__calcAimMatrix(),
+                                                self._cfg['angleRange'], not postmortemMode and smartPointCalculator)
         if self.__adCfg['enable']:
             self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
             for group_name in VOLUME_GROUPS_NAMES:
@@ -348,9 +349,9 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             if cameraTransitionDuration > 0:
                 self.__setupCameraTransition(cameraTransitionDuration)
             else:
-                BigWorld.camera(self.__cam)
+                self.__setCamera()
         else:
-            BigWorld.camera(self.__cam)
+            self.__setCamera()
         self.__cameraUpdate()
         self.delayCallback(0.0, self.__cameraUpdate)
         from gui import g_guiResetters
@@ -358,6 +359,12 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         self.__updateAdvancedCollision()
         self.__updateLodBiasForTanks()
         return
+
+    def __setCamera(self):
+        if self.__cameraTransition.isInTransition():
+            self.__cameraTransition.finish()
+        else:
+            BigWorld.camera(self.__cam)
 
     def __setupCameraTransition(self, duration):
         self.__cameraTransition.start(BigWorld.camera().matrix, self.__cam, duration)
@@ -918,15 +925,21 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
                                                                                 Vector3(0.01, 0.0, 0.01)))
         self.__noiseOscillator = createOscillatorFromSection(dynamicsSection['randomNoiseOscillatorSpherical'])
         self.__dynamicCfg.readImpulsesConfig(dynamicsSection)
-        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000, 1000, 0.1)
-        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000,
+                                                                 1000, 0.1)
+        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(
+            readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(
+            readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(
+            readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
         accelerationThreshold = readFloat(dynamicsSection, 'accelerationThreshold', 0.0, 1000.0, 0.1)
         self.__dynamicCfg['accelerationThreshold'] = accelerationThreshold
         self.__dynamicCfg['accelerationMax'] = readFloat(dynamicsSection, 'accelerationMax', 0.0, 1000.0, 0.1)
-        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0, 10.0)
-        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance', 0.0, 1000.0, 10.0)
+        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0,
+                                                                10.0)
+        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance',
+                                                                     0.0, 1000.0, 10.0)
         self.__dynamicCfg['zoomExposure'] = readFloat(dynamicsSection, 'zoomExposure', 0.0, 1000.0, 0.25)
         accelerationFilter = math_utils.RangeFilter(self.__dynamicCfg['accelerationThreshold'],
                                                     self.__dynamicCfg['accelerationMax'], 100.0,

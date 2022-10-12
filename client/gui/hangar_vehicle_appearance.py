@@ -425,19 +425,15 @@ class HangarVehicleAppearance(ScriptGameObject):
         if buildInd != self.__curBuildInd:
             return
         self.__clearModelAnimators()
-        self.__modelAnimators = camouflages.getModelAnimators(outfit, self.__vDesc, self.__spaceId, resourceRefs,
-                                                              self.compoundModel)
+        self.__modelAnimators = camouflages.getModelAnimators(outfit, self.__vDesc, self.__spaceId, resourceRefs, self.compoundModel)
         for modelAnimator in self.__modelAnimators:
             modelAnimator.animator.setEnabled(True)
             modelAnimator.animator.start()
 
         if not self.__isVehicleDestroyed:
-            self.__modelAnimators.extend(
-                camouflages.getAttachmentsAnimators(self.__attachments, self.__spaceId, resourceRefs,
-                                                    self.compoundModel))
+            self.__modelAnimators.extend(camouflages.getAttachmentsAnimators(self.__attachments, self.__spaceId, resourceRefs, self.compoundModel))
         from vehicle_systems import model_assembler
-        model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments,
-                                                      self.__modelAnimators)
+        model_assembler.assembleCustomLogicComponents(self, self.__vEntity.typeDescriptor, self.__attachments, self.__modelAnimators)
         for modelAnimator in self.__modelAnimators:
             modelAnimator.animator.start()
 
@@ -542,7 +538,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         return
 
     def _getThisVehicleDossierInsigniaRank(self):
-        if self.__vDesc:
+        if self.__vDesc and self.__showMarksOnGun:
             vehicleDossier = self.itemsCache.items.getVehicleDossier(self.__vDesc.type.compactDescr)
             return vehicleDossier.getRandomStats().getAchievement(MARK_ON_GUN_RECORD).getValue()
 
@@ -791,10 +787,7 @@ class HangarVehicleAppearance(ScriptGameObject):
     def __updateDecals(self, outfit):
         if self.__vehicleStickers is not None:
             self.__vehicleStickers.detach()
-        insigniaRank = 0
-        if self.__showMarksOnGun:
-            insigniaRank = self._getThisVehicleDossierInsigniaRank()
-        self.__vehicleStickers = VehicleStickers.VehicleStickers(self.__spaceId, self.__vDesc, insigniaRank, outfit)
+        self.__vehicleStickers = VehicleStickers.VehicleStickers(self.__spaceId, self.__vDesc, self._getThisVehicleDossierInsigniaRank(), outfit)
         self.__vehicleStickers.alpha = self.__currentEmblemsAlpha
         self.__vehicleStickers.attach(self.__vEntity.model, self.__isVehicleDestroyed, False)
         self._requestClanDBIDForStickers(self.__onClanDBIDRetrieved)

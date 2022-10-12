@@ -1,25 +1,30 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/web_client_api/ui/util.py
 import typing
+
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NEW_LOBBY_TAB_COUNTER
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HEADER_BUTTONS_COUNTERS_CHANGED_EVENT
-from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip, getCDFromId, canInstallStyle, showAwardsTooltip
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as TC
 from gui.Scaleform.daapi.view.lobby.header import battle_selector_items
+from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HEADER_BUTTONS_COUNTERS_CHANGED_EVENT
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip, getCDFromId, \
+    canInstallStyle, showAwardsTooltip
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as TC
 from gui.server_events.bonuses import getNonQuestBonuses
 from gui.shared import g_eventBus
+from gui.shared.event_dispatcher import runSalesChain
 from gui.shared.events import HasCtxEvent
 from gui.shared.gui_items.dossier import dumpDossier
 from gui.shared.gui_items.dossier.achievements.abstract import isRareAchievement
 from gui.shared.utils import showInvitationInWindowsBar
-from gui.shared.event_dispatcher import runSalesChain
-from gui.shared.view_helpers import UsersInfoHelper
 from gui.shared.utils.functions import makeTooltip
-from helpers import time_utils
+from gui.shared.view_helpers import UsersInfoHelper
+from gui.wgcg.utils.contexts import SPAAccountAttributeCtx, PlatformFetchProductListCtx
 from helpers import dependency
+from helpers import time_utils
+from items import makeIntCompactDescrByID
+from items.components.crew_books_constants import CrewBookCacheType
 from messenger.storage import storage_getter
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IExternalLinksController
@@ -28,12 +33,10 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
 from web.web_client_api import w2c, W2CSchema, Field, WebCommandException
 from web.web_client_api.common import ItemPackType, ItemPackEntry, SPA_ID_TYPES
-from gui.wgcg.utils.contexts import SPAAccountAttributeCtx, PlatformFetchProductListCtx
 from web.web_client_api.ui.vehicle import _VehicleCustomizationPreviewSchema
-from items import makeIntCompactDescrByID
-from items.components.crew_books_constants import CrewBookCacheType
+
 if typing.TYPE_CHECKING:
-    from gui.Scaleform.framework.entities.abstract.ToolTipMgrMeta import ToolTipMgrMeta
+    pass
 _COUNTER_IDS_MAP = {'shop': VIEW_ALIAS.LOBBY_STORE}
 
 def _itemTypeValidator(itemType, _=None):
@@ -234,7 +237,8 @@ class UtilWebApiMixin(object):
         ctx = PlatformFetchProductListCtx(cmd)
         response = yield self._webCtrl.sendRequest(ctx=ctx)
         if response.isSuccess():
-            yield {'result': response.getData()}
+            data = response.getData()
+            yield {'result': {'body': data}}
         else:
             yield {'error': self.__getErrorResponse(response.data, 'Unable to fetch product list.')}
 

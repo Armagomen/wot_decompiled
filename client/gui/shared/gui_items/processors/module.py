@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/module.py
-import typing
 import logging
+import typing
+
 import AccountCommands
 import BigWorld
 from constants import EquipSideEffect
@@ -15,8 +16,10 @@ from gui.shared.formatters import formatPrice, icons, getBWFormatter
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.gui_items.gui_item_economics import getItemBuyPrice
-from gui.shared.gui_items.processors import ItemProcessor, makeI18nSuccess, makeI18nError, VehicleItemProcessor, plugins, makeSuccess, Processor
-from gui.shared.gui_items.processors.messages.items_processor_messages import OptDevicesDemountProcessorMessage, OptDeviceRemoveProcessorMessage, ItemDestroyProcessorMessage
+from gui.shared.gui_items.processors import ItemProcessor, makeI18nSuccess, makeI18nError, VehicleItemProcessor, \
+    plugins, makeSuccess, Processor
+from gui.shared.gui_items.processors.messages.items_processor_messages import OptDevicesDemountProcessorMessage, \
+    OptDeviceRemoveProcessorMessage, ItemDestroyProcessorMessage
 from gui.shared.gui_items.vehicle_modules import VehicleTurret, VehicleGun
 from gui.shared.money import Currency
 from helpers import dependency
@@ -24,6 +27,7 @@ from items import vehicles
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
+
 if typing.TYPE_CHECKING:
     pass
 MULTIPLE_SELLING_TEMPLATE = 'multipleSelling/{}'
@@ -220,7 +224,7 @@ class OptDeviceInstaller(ModuleInstallProcessor):
         return
 
     def _response(self, code, callback, errStr='', ctx=None):
-        super(OptDeviceInstaller, self)._response(code, callback, errStr, ctx)
+        super(OptDeviceInstaller, self)._response(code, callback, errStr=errStr, ctx=ctx)
         from gui.Scaleform.Waiting import Waiting
         Waiting.hide('applyModule')
 

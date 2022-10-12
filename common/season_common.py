@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/season_common.py
-from typing import Dict, Optional, Any, List
 from collections import namedtuple
 
 class CycleStatus(object):
@@ -239,7 +238,7 @@ def getDateFromSeasonID(seasonID):
 def getSeasonNumber(config, seasonID):
     seasons = config.get('seasons', {})
     if not seasons:
-        return
+        return None
     else:
-        seasonData = seasons.get(seasonID, None)
+        seasonData = seasons.get(seasonID, {})
         return seasonData.get('number', None)

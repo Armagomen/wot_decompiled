@@ -3,6 +3,7 @@
 import operator
 import weakref
 from collections import namedtuple
+
 import BigWorld
 from constants import ARENA_PERIOD, FINISH_REASON
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -13,6 +14,7 @@ from gui.battle_control.battle_constants import WinStatus
 from gui.prb_control import prbInvitesProperty
 from messenger.m_constants import USER_ACTION_ID, USER_TAG
 from messenger.proto.events import g_messengerEvents
+
 
 class _PeriodAdditionalInfo(namedtuple('_PeriodAdditionalInfo', ['winStatus', 'winnerTeam', 'finishReason'])):
 
@@ -115,7 +117,7 @@ class ArenaVehiclesListener(_Listener):
             arena.onVehicleStatisticsUpdate += self.__arena_onVehicleStatisticsUpdate
             arena.onTeamKiller += self.__arena_onTeamKiller
             arena.onInteractiveStats += self.__arena_onInteractiveStats
-            arena.onGameModeSpecifcStats += self.__arena_onGameModeSpecifcStats
+            arena.onGameModeSpecificStats += self.__arena_onGameModeSpecificStats
             arena.onFogOfWarEnabled += self.__arena_onFogOfWarEnabled
             arena.onChatCommandTargetUpdate += self.__arena_onChatCommandTargetUpdate
             arena.onChatCommandTriggered += self.__arena_onChatCommandTriggered
@@ -135,7 +137,7 @@ class ArenaVehiclesListener(_Listener):
             arena.onVehicleStatisticsUpdate -= self.__arena_onVehicleStatisticsUpdate
             arena.onTeamKiller -= self.__arena_onTeamKiller
             arena.onInteractiveStats -= self.__arena_onInteractiveStats
-            arena.onGameModeSpecifcStats -= self.__arena_onGameModeSpecifcStats
+            arena.onGameModeSpecificStats -= self.__arena_onGameModeSpecificStats
             arena.onFogOfWarEnabled -= self.__arena_onFogOfWarEnabled
             arena.onChatCommandTargetUpdate -= self.__arena_onChatCommandTargetUpdate
             arena.onChatCommandTriggered -= self.__arena_onChatCommandTriggered
@@ -209,7 +211,7 @@ class ArenaVehiclesListener(_Listener):
         if stats:
             self._invokeListenersMethod('updateVehiclesStats', stats, self._arenaDP)
 
-    def __arena_onGameModeSpecifcStats(self, isStatic, stats):
+    def __arena_onGameModeSpecificStats(self, isStatic, stats):
         for vehicleID, vehicleStats in stats.iteritems():
             flags, vo = self._arenaDP.updateGameModeSpecificStats(vehicleID, isStatic, vehicleStats)
             if isStatic:

@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/linked_set/linkedset_details_overlay.py
 import BigWorld
-from adisp import process
+from adisp import adisp_process
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatErrorTextWithIcon, formatOkTextWithIcon
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
@@ -33,10 +33,10 @@ from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.server_events import IEventsCache
 
 _QUESTS_MOVIE_ROUTES = {(2, 1): 'X2',
-                        (2, 2): 'Module',
-                        (2, 3): 'Bullets',
-                        (2, 4): 'Store',
-                        (2, 5): 'Consumables',
+ (2, 2): 'Module',
+ (2, 3): 'Bullets',
+ (2, 4): 'Store',
+ (2, 5): 'Consumables',
  (2, 6): 'Exterior',
  (2, 7): 'Equipment',
  (2, 8): 'Reserves'}
@@ -165,7 +165,7 @@ class LinkedSetDetailsOverlay(LinkedSetDetailsOverlayMeta):
                 self._selectedQuestID = 0
             self._updateView()
 
-    @process
+    @adisp_process
     def _goToBootcamp(self):
         if self.isPlayBootcampMission() and self.prbDispatcher is not None and self.battleMatters.isEnabled():
             yield self.prbDispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.BOOTCAMP))

@@ -6,7 +6,7 @@ import BigWorld
 import Event
 import personal_missions
 from Account import PlayerAccount
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import ARENA_BONUS_TYPE, PREMIUM_TYPE
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_WARNING
 from gui import SystemMessages
@@ -29,7 +29,6 @@ from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 
 _logger = logging.getLogger(__name__)
-
 
 class BattleResultsService(IBattleResultsService):
     battleMatters = dependency.descriptor(IBattleMattersController)
@@ -63,8 +62,8 @@ class BattleResultsService(IBattleResultsService):
 
         self.__eventsManager.clear()
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def requestResults(self, ctx, callback=None):
         arenaUniqueID = ctx.getArenaUniqueID()
         if ctx.needToShowImmediately():
@@ -91,7 +90,7 @@ class BattleResultsService(IBattleResultsService):
             callback(isSuccess)
         return
 
-    @async
+    @adisp_async
     def requestEmblem(self, ctx, callback=None):
         fetcher = emblems.createFetcher(ctx)
         if fetcher is not None:
@@ -140,7 +139,7 @@ class BattleResultsService(IBattleResultsService):
     def saveStatsSorting(self, bonusType, iconType, sortDirection):
         stored_sorting.writeStatsSorting(bonusType, iconType, sortDirection)
 
-    @decorators.process('updating')
+    @decorators.adisp_process('updating')
     def applyAdditionalBonus(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
         if arenaInfo is None:
@@ -265,7 +264,7 @@ class BattleResultsService(IBattleResultsService):
     def __getAdditionalXPBattles(self):
         return self.itemsCache.items.stats.additionalXPCache
 
-    @process
+    @adisp_process
     def __showResults(self, ctx):
         yield self.requestResults(ctx)
 
@@ -291,8 +290,8 @@ class BattleResultsService(IBattleResultsService):
             battleCtx.lastArenaBonusType = None
         return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def __updateComposer(self, arenaUniqueID, xpBonusData, callback):
         results = yield BattleResultsGetter(arenaUniqueID).request()
         if results.success:
@@ -342,13 +341,13 @@ class BattleResultsService(IBattleResultsService):
     def __onAddXPBonusChanged(self):
         g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED))
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def waitForBattleResults(self, arenaUniqueID, callback=None):
 
-        @async
+        @adisp_async
         def wait(t, callback):
-            BigWorld.callback(t, lambda : callback(None))
+            BigWorld.callback(t, lambda: callback(None))
 
         isSuccess = False
         results = None

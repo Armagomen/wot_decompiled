@@ -1,22 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/page.py
-from gui.Scaleform.daapi.view.battle.classic.page import DynamicAliases as ClassicDynAliases
-from gui.Scaleform.daapi.view.battle.shared.start_countdown_sound_player import StartCountdownSoundPlayer
-from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from gui.Scaleform.daapi.view.meta.EpicBattlePageMeta import EpicBattlePageMeta
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
-from gui.battle_control.controllers.sound_ctrls.epic_battle_sounds import EpicBattleSoundController
-from gui.shared import EVENT_BUS_SCOPE, events
-from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
-from gui.Scaleform.daapi.view.battle.epic import markers2d
-from gui.Scaleform.daapi.view.battle.shared import crosshair
-from gui.Scaleform.daapi.view.battle.epic import finish_sound_player, drone_music_player
-from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
+import BigWorld
 import CommandMapping
 from constants import ARENA_PERIOD
-import BigWorld
+from gui.Scaleform.daapi.view.battle.classic.page import DynamicAliases as ClassicDynAliases
+from gui.Scaleform.daapi.view.battle.epic import finish_sound_player, drone_music_player
+from gui.Scaleform.daapi.view.battle.epic import markers2d
+from gui.Scaleform.daapi.view.battle.shared import crosshair
 from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
+from gui.Scaleform.daapi.view.battle.shared.start_countdown_sound_player import StartCountdownSoundPlayer
+from gui.Scaleform.daapi.view.meta.EpicBattlePageMeta import EpicBattlePageMeta
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
+from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
+from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
+from gui.battle_control.battle_constants import BATTLE_CTRL_ID
+from gui.battle_control.controllers.sound_ctrls.epic_battle_sounds import EpicBattleSoundController
+from gui.shared import EVENT_BUS_SCOPE, events
 from shared_utils import CONST_CONTAINER
+
 
 class DynamicAliases(CONST_CONTAINER):
     EPIC_FINISH_SOUND_PLAYER = 'epicFinishSoundPlayer'
@@ -83,6 +84,7 @@ _GAME_UI = {BATTLE_VIEW_ALIASES.VEHICLE_ERROR_MESSAGES,
  BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,
  BATTLE_VIEW_ALIASES.RECOVERY_PANEL,
  BATTLE_VIEW_ALIASES.SIEGE_MODE_INDICATOR,
+ BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR,
  BATTLE_VIEW_ALIASES.STATUS_NOTIFICATIONS_PANEL,
  BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL,
  BATTLE_VIEW_ALIASES.SUPER_PLATOON_PANEL,
@@ -139,6 +141,7 @@ _STATE_TO_UI = {PageStates.GAME: _GAME_UI,
                         BATTLE_VIEW_ALIASES.EPIC_MISSIONS_PANEL,
                         BATTLE_VIEW_ALIASES.BATTLE_TIMER,
                         BATTLE_VIEW_ALIASES.SIEGE_MODE_INDICATOR,
+                        BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR,
                         BATTLE_VIEW_ALIASES.DUAL_GUN_PANEL})}
 _EPIC_EXTERNAL_COMPONENTS = (crosshair.CrosshairPanelContainer, markers2d.EpicMarkersManager)
 
@@ -192,6 +195,13 @@ class EpicBattlePage(EpicBattlePageMeta, BattleGUIKeyHandler):
                 elif BATTLE_VIEW_ALIASES.DUAL_GUN_PANEL in hiddenUI:
                     visibleUI.add(BATTLE_VIEW_ALIASES.DUAL_GUN_PANEL)
                     hiddenUI.remove(BATTLE_VIEW_ALIASES.DUAL_GUN_PANEL)
+                if not vehicle.typeDescriptor.hasRocketAcceleration:
+                    if BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR in visibleUI:
+                        visibleUI.remove(BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR)
+                        hiddenUI.add(BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR)
+                elif BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR in hiddenUI:
+                    visibleUI.add(BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR)
+                    hiddenUI.remove(BATTLE_VIEW_ALIASES.ROCKET_ACCELERATOR_INDICATOR)
             ctrl = self.sessionProvider.dynamic.maps
             if ctrl and BATTLE_VIEW_ALIASES.EPIC_OVERVIEW_MAP_SCREEN in visibleUI:
                 ctrl.setOverviewMapScreenVisibility(True)
@@ -285,7 +295,7 @@ class EpicBattlePage(EpicBattlePageMeta, BattleGUIKeyHandler):
             self._invalidateState()
             return
 
-    def _toggleFullStats(self, isShown, permanent=None, tabIndex=None):
+    def _toggleFullStats(self, isShown, permanent=None, tabAlias=None):
         if not isShown and self.__topState == PageStates.TABSCREEN:
             self.__topState = PageStates.NONE
         elif isShown and self.__topState != PageStates.RADIAL:

@@ -1,14 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/opt_device.py
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel
-from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
-from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
+from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, \
+    BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
+from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from ids_generators import SequenceIDGenerator
+
 
 class OptDeviceItemContextMenu(BaseEquipmentItemContextMenu):
     _sqGen = SequenceIDGenerator(BaseEquipmentItemContextMenu._sqGen.currSequenceID)
@@ -106,7 +108,7 @@ class HangarOptDeviceSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
         super(HangarOptDeviceSlotContextMenu, self)._initFlashValues(ctx)
         self._slotsCount = self._getVehicleItems().installed.getCapacity()
 
-    @process
+    @adisp_process
     def _demountProcess(self, isDestroy=False, everywhere=True):
         item = self._itemsCache.items.getItemByCD(self._intCD)
         action = ActionsFactory.getAction(ActionsFactory.REMOVE_OPT_DEVICE, self._getVehicle(), item, self._installedSlotId, isDestroy, forFitting=False, everywhere=everywhere)
@@ -126,8 +128,8 @@ class HangarOptDeviceSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
         layout = copyVehicle.optDevices.layout
         self._makePutOnAction(TankSetupConstants.OPT_DEVICES, onId, copyVehicle, layout)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _doPutOnAction(self, vehicle, callback):
         action = ActionsFactory.getAction(ActionsFactory.BUY_AND_INSTALL_OPT_DEVICES, vehicle, confirmOnlyExchange=True)
         result = yield ActionsFactory.asyncDoAction(action)

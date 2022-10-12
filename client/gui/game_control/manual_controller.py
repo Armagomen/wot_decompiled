@@ -19,7 +19,6 @@ from skeletons.gui.lobby_context import ILobbyContext
 
 _logger = logging.getLogger(__name__)
 
-
 class ManualController(IManualController):
     lobbyContext = dependency.descriptor(ILobbyContext)
     bootcamp = dependency.descriptor(IBootcampController)

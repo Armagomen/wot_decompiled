@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_single_price_dialog.py
 import typing
+
 from gui.goodies.demount_kit import getDemountKitForOptDevice
-from gui.goodies.goodie_items import DemountKit
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, CheckMoneyButton
 from gui.impl.dialogs.sub_views.content.simple_text_content import SimpleTextContent
@@ -13,14 +13,16 @@ from gui.impl.dialogs.sub_views.top_right.money_balance import MoneyBalance
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
 from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import CurrencySize
+from gui.impl.gen.view_models.views.dialogs.template_settings.default_dialog_template_settings import DisplayFlags
 from gui.impl.lobby.demount_kit.demount_kit_utils import getDemountDialogTitle
 from gui.impl.pub.dialog_window import DialogButtons
 from gui.shared.money import Currency
 from gui.shop import showBuyGoldForEquipment
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.gui_item_economics import ItemPrice
+    pass
 
 class DemountOptionalDeviceSinglePriceDialog(DialogTemplateView):
     __slots__ = ('__forFitting', '__item', '__dkAppeared')
@@ -38,6 +40,7 @@ class DemountOptionalDeviceSinglePriceDialog(DialogTemplateView):
 
     def _onLoading(self, *args, **kwargs):
         rDK = R.strings.demount_kit
+        self.setDisplayFlags(DisplayFlags.RESPONSIVEHEADER.value)
         self.setSubView(Placeholder.TOP_RIGHT, MoneyBalance())
         self.setSubView(Placeholder.ICON, ItemIcon(self.__item.intCD))
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(getDemountDialogTitle(self.__item, self.__forFitting)))

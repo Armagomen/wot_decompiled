@@ -7,8 +7,7 @@ import BigWorld
 import WWISE
 import constants
 from PlayerEvents import g_playerEvents
-from adisp import process
-from async import async, await
+from adisp import adisp_process
 from connection_mgr import LOGIN_STATUS
 from external_strings_utils import isAccountLoginValid, isPasswordValid
 from frameworks.wulf import WindowFlags, WindowStatus
@@ -39,16 +38,15 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.login_manager import ILoginManager
 from skeletons.helpers.statistics import IStatisticsCollector
+from wg_async import wg_async, wg_await
 
 from login_modes import createLoginMode
 from login_modes.base_mode import INVALID_FIELDS
 
-_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda: INVALID_FIELDS.ALL_VALID, {
-    LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.PWD_INVALID,
-    LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
-    LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,
-    LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
-
+_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda : INVALID_FIELDS.ALL_VALID, {LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.PWD_INVALID,
+ LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
+ LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,
+ LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
 
 class CustomLoginStatuses(CONST_CONTAINER):
     ANOTHER_PERIPHERY = 'another_periphery'
@@ -59,8 +57,7 @@ class CustomLoginStatuses(CONST_CONTAINER):
 
 
 def DialogPredicate(window):
-    return window.windowStatus in (
-    WindowStatus.LOADING, WindowStatus.LOADED) and window.windowFlags & WindowFlags.DIALOG
+    return window.windowStatus in (WindowStatus.LOADING, WindowStatus.LOADED) and window.windowFlags & WindowFlags.DIALOG
 
 
 class LoginView(LoginPageMeta):
@@ -92,13 +89,13 @@ class LoginView(LoginPageMeta):
     def onSetRememberPassword(self, rememberUser):
         self._loginMode.setRememberPassword(rememberUser)
 
-    @async
+    @wg_async
     def onLogin(self, userName, password, serverName, isSocialToken2Login):
         if self._loginMode.showRememberServerWarning:
             builder = ResSimpleDialogBuilder()
             builder.setFlags(WindowFlags.DIALOG | WindowFlags.WINDOW_FULLSCREEN)
             builder.setMessagesAndButtons(R.strings.dialogs.dyn('loginToPeripheryAndRemember'))
-            success = yield await(showSimple(builder.build(self)))
+            success = yield wg_await(showSimple(builder.build(self)))
             if not success:
                 return
         self._loginMode.doLogin(userName, password, serverName, isSocialToken2Login)
@@ -164,8 +161,8 @@ class LoginView(LoginPageMeta):
     def startListenCsisUpdate(self, startListenCsis):
         self.loginManager.servers.startListenCsisQuery(startListenCsis)
 
-    def doUpdate(self):
-        pass
+    def onLoginNameUpdated(self):
+        self.__clearPeripheryRouting()
 
     @uniprof.regionDecorator(label='offline.login', scope='enter')
     def _populate(self):
@@ -247,12 +244,9 @@ class LoginView(LoginPageMeta):
         elif peripheryID == -4:
             self.__customLoginStatus = CustomLoginStatuses.ACCESS_FORBIDDEN_TO_PERIPHERY
         if not self.__loginRetryDialogShown and peripheryID >= 0:
-            self.__showLoginRetryDialog(
-                {'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()),
-                 'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()),
-                 'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(),
-                                          self.__getServerText(self.__customLoginStatus,
-                                                               self.connectionMgr.serverUserName))})
+            self.__showLoginRetryDialog({'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()),
+             'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()),
+             'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(), self.__getServerText(self.__customLoginStatus, self.connectionMgr.serverUserName))})
 
     def _onHandleQueue(self, queueNumber):
         serverName = self.connectionMgr.serverUserName
@@ -330,7 +324,7 @@ class LoginView(LoginPageMeta):
         if invalidField == INVALID_FIELDS.PWD_INVALID:
             self.as_resetPasswordS()
 
-    @process
+    @adisp_process
     def __loginRejectedUpdateNeeded(self):
         success = yield DialogsInterface.showI18nConfirmDialog('updateNeeded')
         if success and not BigWorld.wg_quitAndStartLauncher():
@@ -419,16 +413,15 @@ class LoginView(LoginPageMeta):
         for window in self.__gui.windowsManager.findWindows(DialogPredicate):
             window.destroy()
 
-    @async
+    @wg_async
     def __showExitDialog(self):
-        isOk = yield await(dialogs.quitGame(self.getParentWindow()))
+        isOk = yield wg_await(dialogs.quitGame(self.getParentWindow()))
         if isOk:
             self.destroy()
             BigWorld.quit()
 
     def __getServerText(self, key, serverName):
-        return makeHtmlString('html_templates:login/server-state', key, {
-            'message': backport.text(R.strings.waiting.message.server.dyn(key)(), server=serverName)})
+        return makeHtmlString('html_templates:login/server-state', key, {'message': backport.text(R.strings.waiting.message.server.dyn(key)(), server=serverName)})
 
     def __onBootcampStartChoice(self):
         WWISE.WW_eventGlobal('loginscreen_mute')

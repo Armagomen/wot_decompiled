@@ -18,7 +18,6 @@ if not IS_CGF_DUMP:
     from CustomEffectManager import CustomEffectManager
 _logger = logging.getLogger(__name__)
 
-
 class TrackCrashWithDebrisComponent(object):
     MAX_DEBRIS_COUNT = (14, 10, 4)
     CURRENT_DEBRIS_COUNT = 0
@@ -47,8 +46,11 @@ class TrackCrashWithDebrisComponent(object):
     def isPlayer(self):
         return self.__isPlayer
 
-    def __init__(self, isLeft, pairIndex, vehicleDescriptor, wheelsGameObject, boundEffects, vehicleFilter,
-                 isPlayerVehicle, shouldCreateDebris, hitPoint):
+    @property
+    def modelsSet(self):
+        return self.__modelsSet
+
+    def __init__(self, isLeft, pairIndex, vehicleDescriptor, wheelsGameObject, boundEffects, vehicleFilter, isPlayerVehicle, shouldCreateDebris, hitPoint, modelsSet='default'):
         self.__isLeft = isLeft
         self.__pairIndex = pairIndex
         self.__vehicleDescriptor = vehicleDescriptor
@@ -58,6 +60,7 @@ class TrackCrashWithDebrisComponent(object):
         self.__isPlayer = isPlayerVehicle
         self.__shouldCreateDebris = shouldCreateDebris
         self.__hitPoint = hitPoint
+        self.__modelsSet = modelsSet
         self.__debrisGameObject = None
         if shouldCreateDebris:
             TrackCrashWithDebrisComponent.CURRENT_DEBRIS_COUNT += 1
@@ -132,8 +135,7 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
             effectData = debrisDesc.destructionEffectData
             if effectData is not None:
                 keyPoints, effects, _ = random.choice(effectData)
-                debris.boundEffects.addNewToNode(tankStructure.TankPartNames.CHASSIS, math_utils.createIdentityMatrix(),
-                                                 effects, keyPoints, isPlayerVehicle=debris.isPlayer)
+                debris.boundEffects.addNewToNode(tankStructure.TankPartNames.CHASSIS, math_utils.createIdentityMatrix(), effects, keyPoints, isPlayerVehicle=debris.isPlayer)
             return
 
     def __remapNodes(self, debris):
@@ -195,8 +197,7 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
             trackGO = vehicleTracks.getTrackGameObject(debrisComponent.isLeft, debrisComponent.pairIndex)
             go = debrisComponent.createDebrisGameObject(self.spaceID)
             go.createComponent(GenericComponents.HierarchyComponent, trackGO)
-            track.createDebris(go, debrisComponent.hitPoint, debrisComponent.vehicleFilter,
-                               debrisComponent.debrisDesc.physicalParams, debrisComponent.isPlayer)
+            track.createDebris(go, debrisComponent.hitPoint, debrisComponent.vehicleFilter, debrisComponent.debrisDesc.physicalParams, debrisComponent.modelsSet, debrisComponent.isPlayer)
             go.activate()
             return
 

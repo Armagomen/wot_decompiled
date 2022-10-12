@@ -3,17 +3,18 @@
 import logging
 import typing
 from functools import partial
-import async
+
+import wg_async
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, WindowFlags
-from frameworks.wulf import Window
 from gui.impl.gen.view_models.views.lobby.common.info_view_model import InfoViewModel
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IUISpamController
+
 _logger = logging.getLogger(__name__)
 
 class InfoView(ViewImpl):
@@ -113,10 +114,10 @@ class _InfoWindowProcessor(IInfoWindowProcessor):
             self.__uiSpamController.setVisited(self.hintKey)
         return
 
-    @async.async
+    @wg_async.wg_async
     def show(self, parent=None):
         if self.showAllowed():
-            yield async.await_callback(partial(self.__loadWindow, parent))()
+            yield wg_async.await_callback(partial(self.__loadWindow, parent))()
         raise AsyncReturn(None)
         return
 

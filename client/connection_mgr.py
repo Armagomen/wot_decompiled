@@ -6,13 +6,13 @@ import json
 import BigWorld
 import ResMgr
 import constants
+import pwd_token
 from Event import Event, EventManager
 from account_shared import isValidClientVersion
 from debug_utils import LOG_DEBUG, LOG_NOTE, LOG_WARNING
 from shared_utils import nextTick
 
 from PlayerEvents import g_playerEvents
-from account_helpers import pwd_token
 from helpers import getClientLanguage, uniprof
 from predefined_hosts import g_preDefinedHosts, AUTO_LOGIN_QUERY_URL
 from skeletons.connection_mgr import IConnectionManager
@@ -20,7 +20,6 @@ from skeletons.connection_mgr import IConnectionManager
 _MIN_RECONNECTION_TIMEOUT = 5
 _RECONNECTION_TIMEOUT_INCREMENT = 5
 _MAX_RECONNECTION_TIMEOUT = 20
-
 
 class CONNECTION_METHOD(object):
     BASIC = 'basic'
@@ -191,13 +190,14 @@ class ConnectionManager(IConnectionManager):
         else:
             password = pwd_token.generate(password)
         if 'allowed_peripheries' in params:
-            g_preDefinedHosts.setAvailablePeripheriesByRoutingGroup(
-                [int(x) for x in params['allowed_peripheries'].split() if x.isdigit()])
+            g_preDefinedHosts.setAvailablePeripheriesByRoutingGroup([ int(x) for x in params['allowed_peripheries'].split() if x.isdigit() ])
+        else:
+            LOG_NOTE('Not found allowed_peripheries in params: ', params)
         self.__connectionData.username = username_
         self.__connectionData.password = password
         self.__connectionData.inactivityTimeout = constants.CLIENT_INACTIVITY_TIMEOUT
         self.__connectionData.clientContext = json.dumps({'lang_id': getClientLanguage(),
-                                                          'publication': params.get('publication')})
+         'publication': params.get('publication')})
         if constants.IS_DEVELOPMENT and params['auth_method'] == CONNECTION_METHOD.BASIC and params['login'][0] == '@':
             try:
                 self.__connectionData.username = params['login'][1:]
@@ -285,7 +285,7 @@ class ConnectionManager(IConnectionManager):
     @property
     def availableHosts(self):
         if self.peripheryRoutingGroup is not None and self.__availableHosts is not None:
-            return [p for p in g_preDefinedHosts.peripheries() if p.peripheryID in self.__availableHosts]
+            return [ p for p in g_preDefinedHosts.peripheries() if p.peripheryID in self.__availableHosts ]
         else:
             return g_preDefinedHosts.hosts()
 
@@ -314,8 +314,7 @@ class ConnectionManager(IConnectionManager):
         return self.__connectionStatus == LOGIN_STATUS.LOGGED_ON
 
     def checkClientServerVersions(self, clientVersion, serverVersion):
-        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (
-        constants.CONTENT_TYPE.INCOMPLETE, constants.CONTENT_TYPE.TUTORIAL):
+        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (constants.CONTENT_TYPE.INCOMPLETE, constants.CONTENT_TYPE.TUTORIAL):
             LOG_DEBUG('Version mismatch. Client is "%s", server needs "%s".' % (clientVersion, serverVersion))
             self.onRejected(LOGIN_STATUS.LOGIN_BAD_PROTOCOL_VERSION, {})
             BigWorld.disconnect()

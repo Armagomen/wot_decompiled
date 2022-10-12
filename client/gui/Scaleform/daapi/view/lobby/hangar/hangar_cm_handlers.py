@@ -1,13 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/hangar_cm_handlers.py
 from logging import getLogger
+
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from adisp import process
+from account_helpers import AccountSettings
+from account_helpers.AccountSettings import NATION_CHANGE_VIEWED
+from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getTradeInVehiclesUrl
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler, CM_BUY_COLOR
+from gui.Scaleform.genConsts.PERSONALCASECONST import PERSONALCASECONST
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl.lobby.buy_vehicle_view import VehicleBuyActionTypes
 from gui.prb_control import prbDispatcherProperty
@@ -23,8 +27,7 @@ from items import UNDEFINED_ITEM_CD
 from skeletons.gui.game_control import IVehicleComparisonBasket, IEpicBattleMetaGameController, ITradeInController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from account_helpers import AccountSettings
-from account_helpers.AccountSettings import NATION_CHANGE_VIEWED
+
 _logger = getLogger(__name__)
 
 class CREW(object):
@@ -73,9 +76,9 @@ class CrewContextMenuHandler(AbstractContextMenuHandler, EventSystemEntity):
          CREW.UNLOAD: 'unloadTankman'})
 
     def showPersonalCase(self):
-        shared_events.showPersonalCase(self._tankmanID, 0, EVENT_BUS_SCOPE.LOBBY)
+        shared_events.showPersonalCase(self._tankmanID, PERSONALCASECONST.STATS_TAB_ID, EVENT_BUS_SCOPE.LOBBY)
 
-    @decorators.process('unloading')
+    @decorators.adisp_process('unloading')
     def unloadTankman(self):
         tankman = self.itemsCache.items.getTankman(self._tankmanID)
         result = yield TankmanUnload(g_currentVehicle.item, tankman.vehicleSlotIdx).request()
@@ -308,7 +311,7 @@ class VehicleContextMenuHandler(SimpleVehicleCMHandler):
         if self._comparisonBasket.isEnabled():
             options.append(self._makeItem(VEHICLE.COMPARE, MENU.contextmenu(VEHICLE.COMPARE), {'enabled': self._comparisonBasket.isReadyToAdd(vehicle)}))
 
-    @process
+    @adisp_process
     def __favoriteVehicle(self, isFavorite):
         vehicle = self.itemsCache.items.getVehicle(self.getVehInvID())
         if vehicle is not None:

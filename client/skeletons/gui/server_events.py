@@ -2,7 +2,8 @@
 # Embedded file name: scripts/client/skeletons/gui/server_events.py
 import typing
 if typing.TYPE_CHECKING:
-    pass
+    from Event import Event
+
 
 class IEventsCache(object):
     onSyncStarted = None

@@ -12,8 +12,4 @@ from .field import arrayField, intField, strField, xmlOnlyIntField, xmlOnlyFloat
 from .serializable_component import SerializableComponent
 from .utils import makeCompDescr, parseCompDescr
 
-__all__ = ('ComponentBinSerializer', 'ComponentBinDeserializer', 'ComponentXmlDeserializer', 'SerializableComponent',
-           'SerializationException', 'FoundItemException', 'EmptyComponent', 'FieldType', 'FieldTypes', 'FieldFlags',
-           'arrayField', 'intField', 'strField', 'xmlOnlyIntField', 'xmlOnlyFloatField', 'xmlOnlyFloatArrayField',
-           'applyAreaEnumField', 'xmlOnlyApplyAreaEnumField', 'xmlOnlyTagsField', 'optionsEnumField', 'customFieldType',
-           'intArrayField', 'customArrayField', 'makeCompDescr', 'parseCompDescr')
+__all__ = ('ComponentBinSerializer', 'ComponentBinDeserializer', 'ComponentXmlDeserializer', 'SerializableComponent', 'SerializationException', 'FoundItemException', 'EmptyComponent', 'FieldType', 'FieldTypes', 'FieldFlags', 'arrayField', 'intField', 'strField', 'xmlOnlyIntField', 'xmlOnlyFloatField', 'xmlOnlyFloatArrayField', 'applyAreaEnumField', 'xmlOnlyApplyAreaEnumField', 'xmlOnlyTagsField', 'optionsEnumField', 'customFieldType', 'intArrayField', 'customArrayField', 'makeCompDescr', 'parseCompDescr')

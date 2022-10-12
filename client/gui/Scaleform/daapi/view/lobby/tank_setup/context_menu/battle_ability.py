@@ -1,13 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/battle_ability.py
-from adisp import process, async
+from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option, CMLabel
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel
-from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
+from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, \
+    BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
+from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
-from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from ids_generators import SequenceIDGenerator
+
 
 class BattleAbilityItemContextMenu(BaseEquipmentItemContextMenu):
     _sqGen = SequenceIDGenerator(BaseEquipmentItemContextMenu._sqGen.currSequenceID)
@@ -53,7 +55,7 @@ class HangarBattleAbilitySlotContextMenu(BaseHangarEquipmentSlotContextMenu):
     _sqGen = SequenceIDGenerator(BaseHangarEquipmentSlotContextMenu._sqGen.currSequenceID)
 
     @option(_sqGen.next(), TankSetupCMLabel.TAKE_OFF)
-    @process
+    @adisp_process
     def takeOff(self):
         copyVehicle = self._getCopyVehicle()
         copyVehicle.battleAbilities.layout[self._installedSlotId] = None
@@ -81,8 +83,8 @@ class HangarBattleAbilitySlotContextMenu(BaseHangarEquipmentSlotContextMenu):
             return False
         return False if label == TankSetupCMLabel.TAKE_OFF else super(HangarBattleAbilitySlotContextMenu, self)._isVisible(label)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def _doPutOnAction(self, vehicle, callback):
         action = ActionsFactory.getAction(ActionsFactory.INSTALL_BATTLE_ABILITIES, vehicle)
         result = yield ActionsFactory.asyncDoAction(action)

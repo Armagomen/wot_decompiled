@@ -6,15 +6,16 @@ from gui.Scaleform.genConsts.NOTIFICATIONS_CONSTANTS import NOTIFICATIONS_CONSTA
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.shared.formatters import icons
+from gui.shared.notifications import NotificationGroup
+from helpers import dependency
+from helpers.i18n import makeString as _ms
 from messenger.formatters import TimeFormatter
 from notification import NotificationMVC
 from notification.BaseNotificationView import BaseNotificationView
 from notification.settings import LIST_SCROLL_STEP_FACTOR, NOTIFICATION_STATE
-from gui.shared.formatters import icons
-from gui.shared.notifications import NotificationGroup
-from helpers.i18n import makeString as _ms
-from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 class NotificationListView(NotificationsListMeta, BaseNotificationView):
     _lobbyContext = dependency.descriptor(ILobbyContext)

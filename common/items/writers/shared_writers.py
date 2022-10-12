@@ -10,10 +10,9 @@ from items.components.component_constants import ALLOWED_PROJECTION_DECALS_ANCHO
 if IS_UE_EDITOR:
     from combined_data_section import CombinedDataSection
 
-
 def getPrecedingSectionIndex(sectionItems, beforeSubsectionName):
     precedingSectionIndex = None
-    for index in [index for index, item in enumerate(sectionItems) if item[0] == beforeSubsectionName]:
+    for index in [ index for index, item in enumerate(sectionItems) if item[0] == beforeSubsectionName ]:
         precedingSectionIndex = index - 1
         break
 

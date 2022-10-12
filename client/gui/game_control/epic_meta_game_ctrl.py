@@ -1,50 +1,53 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/epic_meta_game_ctrl.py
-from operator import itemgetter
-import typing
 import logging
+import typing
+from operator import itemgetter
+
 import BigWorld
-import WWISE
 import Event
+import WWISE
+from CurrentVehicle import g_currentVehicle
+from account_helpers.AccountSettings import AccountSettings, GUI_START_BEHAVIOR
+from account_helpers.settings_core.settings_constants import GRAPHICS
+from adisp import adisp_async, adisp_process
 from constants import ARENA_BONUS_TYPE, PREBATTLE_TYPE, QUEUE_TYPE, Configs
+from epic_constants import EPIC_SELECT_BONUS_NAME, EPIC_CHOICE_REWARD_OFFER_GIFT_TOKENS, LEVELUP_TOKEN_TEMPLATE
+from gui import DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import EpicBattleScreens
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.game_control.links import URLMacros
-from gui.shared import event_dispatcher, EVENT_BUS_SCOPE, events, g_eventBus
-from gui.shared.utils.functions import getUniqueViewName
-from helpers import dependency, i18n, time_utils
-from items import vehicles
-from skeletons.gui.game_control import IEpicBattleMetaGameController
-from skeletons.gui.game_control import IBootcampController
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.shared import IItemsCache
-from season_provider import SeasonProvider
-from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from CurrentVehicle import g_currentVehicle
-from items.vehicles import getVehicleClassFromVehicleType
 from gui.prb_control.dispatcher import g_prbLoader
-from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, PeriodicNotifier
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.settings import FUNCTIONAL_FLAG
+from gui.shared import event_dispatcher, EVENT_BUS_SCOPE, events, g_eventBus
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.utils.functions import getUniqueViewName
+from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, PeriodicNotifier
+from helpers import dependency, i18n, time_utils
 from helpers.statistics import HARDWARE_SCORE_PARAMS
-from account_helpers.AccountSettings import AccountSettings, GUI_START_BEHAVIOR
-from gui import DialogsInterface
-from adisp import async, process
-from account_helpers.settings_core.settings_constants import GRAPHICS
+from items import vehicles
+from items.vehicles import getVehicleClassFromVehicleType
 from player_ranks import getSettings as getRankSettings
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_results import IBattleResultsService
-from skeletons.gui.server_events import IEventsCache
+from skeletons.gui.game_control import IBootcampController
+from skeletons.gui.game_control import IEpicBattleMetaGameController
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
-from epic_constants import EPIC_SELECT_BONUS_NAME, EPIC_CHOICE_REWARD_OFFER_GIFT_TOKENS, LEVELUP_TOKEN_TEMPLATE
+from skeletons.gui.server_events import IEventsCache
+from skeletons.gui.shared import IItemsCache
+
+from season_provider import SeasonProvider
+
 if typing.TYPE_CHECKING:
-    from helpers.server_settings import EpicGameConfig
-    from season_common import GameSeasonCycle
+    pass
 _logger = logging.getLogger(__name__)
 _VALID_PREBATTLE_TYPES = [PREBATTLE_TYPE.EPIC, PREBATTLE_TYPE.EPIC_TRAINING]
+
 
 class EPIC_PERF_GROUP(object):
     HIGH_RISK = 1
@@ -368,7 +371,7 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
     def getStats(self):
         return self.__itemsCache.items.epicMetaGame
 
-    @process
+    @adisp_process
     def openURL(self, url=None):
         requestUrl = url or self.getModeSettings().url
         if requestUrl:
@@ -626,8 +629,8 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
             _FrontLineSounds.onChange(isEpicSoundMode)
             self.__isEpicSoundMode = isEpicSoundMode
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def __confirmFightButtonPressEnabled(self, callback):
         if not self.__isInValidPrebattle():
             callback(True)

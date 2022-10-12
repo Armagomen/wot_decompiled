@@ -22,7 +22,6 @@ from helpers.CallbackDelayer import CallbackDelayer
 
 _logger = logging.getLogger(__name__)
 
-
 def getCameraAsSettingsHolder(settingsDataSec):
     return SniperCamera(settingsDataSec)
 

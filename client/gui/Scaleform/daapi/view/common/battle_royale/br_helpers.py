@@ -2,14 +2,17 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/battle_royale/br_helpers.py
 import logging
 import math
+
 import BigWorld
 import CommandMapping
+from constants import BATTLE_ROYALE_SCENE
+from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList, getHotKeyVkList
 from helpers import dependency
 from items import vehicles
 from skeletons.gui.game_control import IBattleRoyaleController
-from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList, getHotKeyVkList
-from skeletons.gui.shared.hangar_spaces_switcher import IHangarSpacesSwitcher
+from skeletons.gui.game_control import IHangarSpaceSwitchController
 from skeletons.gui.lobby_context import ILobbyContext
+
 _logger = logging.getLogger(__name__)
 
 def getEquipmentById(equipmentId):
@@ -89,9 +92,9 @@ def canVehicleSpawnBot(vehicleName, brCtrl=None):
     return any((eqID for eqID in vehicleEquipmentIDs if hasattr(equipments[eqID], 'botType')))
 
 
-@dependency.replace_none_kwargs(hangarSwitcher=IHangarSpacesSwitcher)
-def currentHangarIsBattleRoyale(hangarSwitcher=None):
-    return hangarSwitcher.currentItem == hangarSwitcher.itemsToSwitch.BATTLE_ROYALE
+@dependency.replace_none_kwargs(hangarSwitchController=IHangarSpaceSwitchController)
+def currentHangarIsBattleRoyale(hangarSwitchController=None):
+    return hangarSwitchController.currentSceneName == BATTLE_ROYALE_SCENE
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)

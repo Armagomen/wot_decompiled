@@ -18,12 +18,11 @@ from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     pass
 _CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND,
-                 CURSOR_TYPES.Pointer: CursorManager.ARROW,
-                 CURSOR_TYPES.IBeam: CursorManager.IBEAM,
-                 CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN,
-                 CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE,
-                 CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
-
+ CURSOR_TYPES.Pointer: CursorManager.ARROW,
+ CURSOR_TYPES.IBeam: CursorManager.IBEAM,
+ CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN,
+ CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE,
+ CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
 
 def _getCursorType(cursorType):
     return _CURSOR_TYPES.get(cursorType) or CursorManager.ARROW
@@ -57,8 +56,7 @@ class Browser(BrowserMeta):
             self.__browser = self.__browserCtrl.getBrowser(self.__browserID)
             if self.__browser is None:
                 raise SoftException('Cannot find browser')
-            self.__webCommandHandler = BrowserViewWebHandlers(self.__browser, self.__browserID, self, webHandlersMap,
-                                                              alias)
+            self.__webCommandHandler = BrowserViewWebHandlers(self.__browser, self.__browserID, self, webHandlersMap, alias)
             if not self.__browser.hasBrowser:
                 self.addListener(BrowserEvent.BROWSER_CREATED, self.__handleBrowserCreated)
             else:

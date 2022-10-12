@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/gui/shared/utils/__init__.py
 import typing
+
 from skeletons.gui.shared.utils import requesters
+
 if typing.TYPE_CHECKING:
-    from gui.veh_post_progression.models.progression import PostProgressionItem
-    from items.vehicles import VehicleType
+    pass
+
 
 class IItemsRequester(requesters.IRequester):
 
@@ -294,7 +296,7 @@ class IHangarSpaceReloader(object):
     def destroy(self):
         raise NotImplementedError
 
-    def changeHangarSpace(self, spaceName, waitingMessage=None, backgroundImage=None):
+    def changeHangarSpace(self, spaceName, visibilityMask, waitingMessage=None, backgroundImage=None):
         raise NotImplementedError
 
     @property

@@ -6,7 +6,7 @@ import types
 
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import IGR_TYPE
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui import SystemMessages, GUI_SETTINGS
@@ -91,8 +91,8 @@ class _PreBattleDispatcher(ListenersCollection):
         factory = self.__factories.get(self.__entity.getCtrlType())
         return factory.createStateEntity(self.__entity) if factory is not None else FunctionalState()
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def create(self, ctx, callback=None):
         if ctx.getRequestType() != _RQ_TYPE.CREATE:
             LOG_ERROR('Invalid context to create prebattle/unit', ctx)
@@ -131,8 +131,8 @@ class _PreBattleDispatcher(ListenersCollection):
             entry.create(ctx, callback=callback)
             return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def join(self, ctx, callback=None):
         if ctx.getRequestType() != _RQ_TYPE.JOIN:
             LOG_ERROR('Invalid context to join prebattle/unit', ctx)
@@ -166,7 +166,7 @@ class _PreBattleDispatcher(ListenersCollection):
             entry.join(ctx, callback=callback)
             return
 
-    @async
+    @adisp_async
     def leave(self, ctx, callback=None, ignoreConfirmation=False):
         if ctx.getRequestType() != _RQ_TYPE.LEAVE:
             LOG_ERROR('Invalid context to leave prebattle/unit', ctx)
@@ -216,8 +216,8 @@ class _PreBattleDispatcher(ListenersCollection):
             entity.leave(ctx, callback=callback)
             return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def unlock(self, unlockCtx, callback=None):
         if isinstance(self.__entity, NotSupportedEntity):
             if callback is not None:
@@ -238,8 +238,8 @@ class _PreBattleDispatcher(ListenersCollection):
                 callback(result)
             return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def select(self, entry, callback=None):
         ctx = entry.makeDefCtx()
         ctx.addFlags(entry.getModeFlags() & FUNCTIONAL_FLAG.LOAD_PAGE | FUNCTIONAL_FLAG.SWITCH)
@@ -262,7 +262,7 @@ class _PreBattleDispatcher(ListenersCollection):
             entry.select(ctx, callback=callback)
             return
 
-    @async
+    @adisp_async
     def sendPrbRequest(self, ctx, callback=None):
         self.__entity.request(ctx, callback=callback)
 
@@ -277,8 +277,8 @@ class _PreBattleDispatcher(ListenersCollection):
         LOG_DEBUG('Do GUI action', action)
         return self.__entity.doAction(action)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def doSelectAction(self, action, callback=None):
         selectResult = self.__entity.doSelectAction(action)
         if selectResult.isProcessed:
@@ -291,6 +291,8 @@ class _PreBattleDispatcher(ListenersCollection):
         else:
             entry = self.__factories.createEntryByAction(action)
             if entry is not None:
+                if hasattr(entry, 'configure'):
+                    entry.configure(action)
                 result = yield self.select(entry)
                 if callback is not None:
                     callback(result)
@@ -299,8 +301,8 @@ class _PreBattleDispatcher(ListenersCollection):
                 callback(False)
             return
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def doLeaveAction(self, action, callback=None):
         factory = self.__factories.get(self.__entity.getCtrlType())
         if factory is None:
@@ -647,11 +649,11 @@ class _PreBattleDispatcher(ListenersCollection):
         g_eventDispatcher.updateUI()
         return ctx.getFlags()
 
-    @process
+    @adisp_process
     def __onDoSelectAction(self, event):
         yield self.doSelectAction(event.action)
 
-    @process
+    @adisp_process
     def __onDoLeaveAction(self, event):
         yield self.doLeaveAction(event.action)
 
@@ -724,7 +726,7 @@ class _PrbPeripheriesHandler(object):
             self.__joinCtx = None
         return
 
-    @process
+    @adisp_process
     def __doJoin(self, ctx):
         dispatcher = self.__loader.getDispatcher()
         if dispatcher:

@@ -2,15 +2,16 @@
 # Embedded file name: scripts/client/account_helpers/Inventory.py
 import collections
 import logging
-import typing
 from array import array
 from functools import partial
 from itertools import chain
+
 import AccountCommands
 import items
-from shared_utils.account_helpers.diff_utils import synchronizeDicts
-from items import vehicles, tankmen
 from account_helpers.abilities import AbilitiesHelper
+from items import vehicles, tankmen
+from shared_utils.account_helpers.diff_utils import synchronizeDicts
+
 _logger = logging.getLogger(__name__)
 _VEHICLE = items.ITEM_TYPE_INDICES['vehicle']
 _CHASSIS = items.ITEM_TYPE_INDICES['vehicleChassis']
@@ -362,13 +363,29 @@ class Inventory(object):
             self.__account._doCmdInt3(AccountCommands.CMD_TMAN_ADD_SKILL, tmanInvID, skillIdx, 0, proxy)
             return
 
+    def learnTankmanFreeSkill(self, tmanInvID, skillName, callback):
+        if self.__ignore:
+            if callback is not None:
+                callback(AccountCommands.RES_NON_PLAYER)
+            return
+        else:
+            skillIdx = tankmen.SKILL_INDICES[skillName]
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt2(AccountCommands.CMD_LEARN_TMAN_FREE_SKILL, tmanInvID, skillIdx, proxy)
+            return
+
     def dropTankmanSkills(self, tmanInvID, dropSkillsCostIdx, useRecertificationForm, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
         else:
-            self.__account.shop.waitForSync(partial(self.__dropSkillsTmanOnShopSynced, tmanInvID, dropSkillsCostIdx, useRecertificationForm, callback))
+            self.__account.shop.waitForSync(
+                partial(self.__dropSkillsTmanOnShopSynced, tmanInvID, dropSkillsCostIdx, useRecertificationForm,
+                        callback))
             return
 
     def respecTankman(self, tmanInvID, vehTypeCompDescr, tmanCostTypeIdx, callback):
@@ -524,9 +541,8 @@ class Inventory(object):
             self.__account._doCmdStr(AccountCommands.CMD_OBTAIN_VEHICLE, name, proxy)
             return
 
-    def addGoodie(self, goodieID, amount):
-        self.__account._doCmdInt2(AccountCommands.CMD_ADD_GOODIE, goodieID, amount, callback=None)
-        return
+    def addGoodie(self, goodieID, amount, callback=None):
+        self.__account._doCmdInt2(AccountCommands.CMD_ADD_GOODIE, goodieID, amount, callback)
 
     def equipOptDevsSequence(self, vehInvID, devices, callback):
         if self.__ignore:
@@ -534,7 +550,8 @@ class Inventory(object):
                 callback(AccountCommands.RES_NON_PLAYER, '', {})
             return
         else:
-            self.__account.shop.waitForSync(partial(self.__equipOptDevsSequenceOnShopSynced, vehInvID, devices, callback))
+            self.__account.shop.waitForSync(
+                partial(self.__equipOptDevsSequenceOnShopSynced, vehInvID, devices, callback))
             return
 
     def __onGetItemsResponse(self, itemTypeIdx, callback, resultID):

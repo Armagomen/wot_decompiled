@@ -13,9 +13,9 @@ from items.tankmen import TankmanDescr, generateCompactDescr, getNationConfig
 from shared_utils import first
 from web.web_client_api.common import TManGender, TManLocation
 if typing.TYPE_CHECKING:
-    from typing import Generator, Set, Tuple, Union
+    from typing import Generator, Set, Tuple
     from gui.server_events.recruit_helper import _BaseRecruitInfo
-    from items.components.tankmen_components import NationConfig, NationGroup
+
     TManPassport = Tuple[int, bool, bool, str, str, str]
 _NEW_SKILL = 'new_skill'
 _NEWBIE = 'newbie'
@@ -145,7 +145,7 @@ def makeTankman(crewItem):
 def _recruit(recruitInfo):
     iterNationGroups = ((nationID, set(_iterNationGroups(config, recruitInfo.getIsPremium(), recruitInfo.getGroupName()))) for nationID, config in _iterNationsConfigs())
     currentNationGroup = first(((nationID, first(nationGroups)) for nationID, nationGroups in iterNationGroups if nationGroups))
-    return Tankman(TankmanDescr(generateCompactDescr(passport=_makePassport(recruitInfo, currentNationGroup), vehicleTypeID=VEHICLE_TYPES_ORDER_INDICES[VEHICLE_CLASS_NAME.MEDIUM_TANK], role=Tankman.ROLES.COMMANDER, roleLevel=recruitInfo.getRoleLevel(), skills=[ s for s in recruitInfo.getLearntSkills() if s != _NEW_SKILL ], lastSkillLevel=recruitInfo.getLastSkillLevel())).makeCompactDescr())
+    return Tankman(TankmanDescr(generateCompactDescr(passport=_makePassport(recruitInfo, currentNationGroup), vehicleTypeID=VEHICLE_TYPES_ORDER_INDICES[VEHICLE_CLASS_NAME.MEDIUM_TANK], role=Tankman.ROLES.COMMANDER, roleLevel=recruitInfo.getRoleLevel(), skills=[ s for s in recruitInfo.getAllKnownSkills() if s != _NEW_SKILL ], lastSkillLevel=recruitInfo.getLastSkillLevel())).makeCompactDescr())
 
 
 def _iterNationGroups(config, isPremium, groupName):

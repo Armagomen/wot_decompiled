@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/game_restrictions_requester.py
-import typing
 import BigWorld
-from adisp import async
+from adisp import adisp_async
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IGameRestrictionsRequester
 
@@ -23,6 +22,6 @@ class GameRestrictionsRequester(AbstractSyncDataRequester, IGameRestrictionsRequ
     def settings(self):
         return self.getCacheValue('settings', {})
 
-    @async
+    @adisp_async
     def _requestCache(self, callback):
         BigWorld.player().gameRestrictions.getCache(lambda resID, value: self._response(resID, value, callback))

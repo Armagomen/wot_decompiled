@@ -53,22 +53,20 @@ class TankSetupGroupsId(object):
     OPTIONAL_DEVICES_AND_BOOSTERS = 2
 
 
-TANK_SETUP_GROUPS = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: (
-TankSetupLayouts.OPTIONAL_DEVICES, TankSetupLayouts.BATTLE_BOOSTERS),
-                     TankSetupGroupsId.EQUIPMENT_AND_SHELLS: (TankSetupLayouts.EQUIPMENT, TankSetupLayouts.SHELLS)}
+TANK_SETUP_GROUPS = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: (TankSetupLayouts.OPTIONAL_DEVICES, TankSetupLayouts.BATTLE_BOOSTERS),
+ TankSetupGroupsId.EQUIPMENT_AND_SHELLS: (TankSetupLayouts.EQUIPMENT, TankSetupLayouts.SHELLS)}
 MAX_LAYOUTS_NUMBER_ON_VEHICLE = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 2,
-                                 TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 2}
-GROUP_ID_BY_LAYOUT = {layout: groupName for groupName, layouts in TANK_SETUP_GROUPS.iteritems() for layout in layouts}
+ TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 2}
+GROUP_ID_BY_LAYOUT = {layout:groupName for groupName, layouts in TANK_SETUP_GROUPS.iteritems() for layout in layouts}
 FEATURE_BY_GROUP_ID = {TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 'shells_consumables_switch',
-                       TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 'opt_dev_boosters_switch'}
-GROUP_ID_BY_FEATURE = {feature: groupID for groupID, feature in FEATURE_BY_GROUP_ID.iteritems()}
+ TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 'opt_dev_boosters_switch'}
+GROUP_ID_BY_FEATURE = {feature:groupID for groupID, feature in FEATURE_BY_GROUP_ID.iteritems()}
 DEFAULT_LAYOUT_CAPACITY = 1
 SWITCH_LAYOUT_CAPACITY = 2
 POST_PROGRESSION_UNLOCKS_IDX = 0
 POST_PROGRESSION_PAIRS_IDX = 1
 POST_PROGRESSION_FEATURES_IDX = 2
 POST_PROGRESSION_DISABLED_SWITCHES_IDX = 3
-
 
 def extractSelectedSetup(setups, setupsIndexes):
     selectedSetup = {}
@@ -248,9 +246,9 @@ class VehicleState(object):
 
     def toRawData(self):
         return [self._unlocks,
-                self._pairs,
-                self._features,
-                self._disabledSwitches]
+         self._pairs,
+         self._features,
+         self._disabledSwitches]
 
     def toggleSwitchLayout(self, groupID):
         if self.isSwitchDisabled(groupID):
@@ -261,9 +259,9 @@ class VehicleState(object):
     @staticmethod
     def getDefaultState():
         return [VehicleState.__getDefaultUnlocksState(),
-                VehicleState.__getDefaultPairsState(),
-                VehicleState.__getDefaultFeaturesState(),
-                VehicleState.__getDefaultDisabledSwitchesState()]
+         VehicleState.__getDefaultPairsState(),
+         VehicleState.__getDefaultFeaturesState(),
+         VehicleState.__getDefaultDisabledSwitchesState()]
 
     @staticmethod
     def __getDefaultUnlocksState():

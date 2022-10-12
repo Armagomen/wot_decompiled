@@ -60,12 +60,12 @@ def _formatQuestBonuses(quest):
 
 def _questAsDict(quest):
     return {'id': quest.getID(),
-            'description': quest.getDescription(),
-            'name': quest.getUserName(),
-            'conditions': _formatQuestConditions(quest),
-            'bonuses': _formatQuestBonuses(quest),
-            'is_completed': quest.isCompleted(),
-            'priority': quest.getPriority()}
+     'description': quest.getDescription(),
+     'name': quest.getUserName(),
+     'conditions': _formatQuestConditions(quest),
+     'bonuses': _formatQuestBonuses(quest),
+     'is_completed': quest.isCompleted(),
+     'priority': quest.getPriority()}
 
 
 @w2capi(name='user_data', key='action')
@@ -90,8 +90,7 @@ class QuestsWebApi(W2CSchema):
 
         else:
             filterFunc = None
-        data = {qID: _questAsDict(quest) for qID, quest in
-                self._eventsCache.getActiveQuests(filterFunc=filterFunc).iteritems()}
+        data = {qID:_questAsDict(quest) for qID, quest in self._eventsCache.getActiveQuests(filterFunc=filterFunc).iteritems()}
         return data
 
     @w2c(_QuestsSchema, 'get_quests_old')

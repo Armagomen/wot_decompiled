@@ -27,7 +27,6 @@ else:
 if IS_EDITOR:
     from items.customizations import getEditorOnlySection
 
-
 def findOrCreate(section, subsectionName):
     if not section.has_key(subsectionName):
         return section.createSection(subsectionName)

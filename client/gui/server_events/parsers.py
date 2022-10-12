@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/parsers.py
 import weakref
-from typing import Union
 from gui.server_events import formatters, conditions
-from gui.server_events.conditions import _Cumulativable, CumulativeResult, _ConditionsGroup
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
@@ -181,7 +179,9 @@ class VehicleRequirements(ConditionsParser):
             return conditions.VehicleDescr(uniqueName, data)
         if name == 'installedModules':
             return conditions.InstalledModulesOnVehicle(uniqueName, data)
-        return conditions.CorrespondedCamouflage(uniqueName, data) if name == 'correspondedCamouflage' else None
+        if name == 'correspondedCamouflage':
+            return conditions.CorrespondedCamouflage(uniqueName, data)
+        return conditions.Customization(uniqueName, data) if name == 'customization' else None
 
 
 class PreBattleConditions(ConditionsParser):
@@ -236,7 +236,9 @@ class PostBattleConditions(ConditionsParser):
             return conditions.CritsGroup(uniqueName, data)
         if name == 'unit':
             return conditions.UnitResults(uniqueName, data, self.__preBattleCond)
-        return conditions.MultiStunEvent(uniqueName, data) if name == 'multiStunEvent' else None
+        if name == 'multiStunEvent':
+            return conditions.MultiStunEvent(uniqueName, data)
+        return conditions.FirstBlood(uniqueName, data) if name == 'isFirstBlood' else None
 
 
 class BonusConditions(ConditionsParser):
@@ -312,6 +314,7 @@ class BonusConditions(ConditionsParser):
                 result.append(conditions.CumulativeResult('%s%d' % (uniqueName, idx), (element,) + description, self))
 
             return result
+        return conditions.CumulativeSum(uniqueName, data, self) if name == 'cumulativeSum' else None
 
     def isGroupProgressCompleted(self, groupByKey):
         progress = {}

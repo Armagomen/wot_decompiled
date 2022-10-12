@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/wot_plus_vehicle_preview.py
 import BigWorld
+import wg_async as future_async
 from CurrentVehicle import g_currentPreviewVehicle
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatDate
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
 from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelWotPlusMeta import VehiclePreviewBottomPanelWotPlusMeta
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from gui.impl import backport
 from gui.impl.gen import R
-import async as future_async
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatDate
 from gui.shared.event_dispatcher import showWotPlusRentDialog
 from gui.shared.gui_items.Vehicle import getIconResourceName, getNationLessName
 from gui.shop import showRentProductOverlay
+
 
 class WotPlusVehiclePreview(VehiclePreview):
 
@@ -32,7 +33,7 @@ class VehiclePreviewBottomPanelWotPlus(VehiclePreviewBottomPanelWotPlusMeta):
     def setOffers(self, offers):
         self.__buyParams = offers[0].buyParams
 
-    @future_async.async
+    @future_async.wg_async
     def __purchaseSubRent(self):
 
         def successCallback():
@@ -49,4 +50,4 @@ class VehiclePreviewBottomPanelWotPlus(VehiclePreviewBottomPanelWotPlusMeta):
         description = backport.text(R.strings.dialogs.wotPlusRental.description()) % date
         iconName = getIconResourceName(getNationLessName(g_currentPreviewVehicle.item.name))
         icon = R.images.gui.maps.shop.vehicles.c_360x270.dyn(iconName)()
-        yield future_async.await(showWotPlusRentDialog(title, description, icon, successCallback))
+        yield future_async.wg_await(showWotPlusRentDialog(title, description, icon, successCallback))

@@ -5,7 +5,6 @@ from .component_bin_serializer import ComponentBinSerializer
 
 __all__ = ('makeCompDescr', 'parseCompDescr')
 
-
 def makeCompDescr(customizationItem):
     return ComponentBinSerializer().serialize(customizationItem)
 

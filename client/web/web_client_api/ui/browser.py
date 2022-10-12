@@ -1,6 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/web_client_api/ui/browser.py
-from adisp import process
+from adisp import adisp_process
 from frameworks import wulf
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -52,8 +52,7 @@ class OpenBrowserWindowWebApiMixin(object):
 
     @w2c(_OpenBrowserWindowSchema, 'browser')
     def browser(self, cmd):
-        self.__loadBrowser(cmd.url, cmd.title, cmd.width, cmd.height, cmd.is_modal, cmd.show_refresh,
-                           cmd.show_create_waiting)
+        self.__loadBrowser(cmd.url, cmd.title, cmd.width, cmd.height, cmd.is_modal, cmd.show_refresh, cmd.show_create_waiting)
 
     def _onBrowserOpen(self, alias):
         pass
@@ -61,7 +60,7 @@ class OpenBrowserWindowWebApiMixin(object):
     def _createHandlers(self):
         return []
 
-    @process
+    @adisp_process
     def __loadBrowser(self, url, title, width, height, isModal, showRefresh, showCreateWaiting):
         browserCtrl = dependency.instance(IBrowserController)
         browserId = yield browserCtrl.load(url=url, title=title, browserSize=(width, height), isModal=isModal, showActionBtn=showRefresh, showCreateWaiting=showCreateWaiting, handlers=self._createHandlers())
@@ -88,27 +87,22 @@ class CloseBrowserWindowWebApiMixin(object):
             app = appLoader.getApp()
             if app is not None and app.containerManager is not None:
                 supportedBrowserLayers = (WindowLayer.WINDOW,
-                                          WindowLayer.FULLSCREEN_WINDOW,
-                                          WindowLayer.TOP_WINDOW,
-                                          WindowLayer.OVERLAY,
-                                          WindowLayer.TOP_SUB_VIEW)
+                 WindowLayer.FULLSCREEN_WINDOW,
+                 WindowLayer.TOP_WINDOW,
+                 WindowLayer.OVERLAY,
+                 WindowLayer.TOP_SUB_VIEW)
                 browserWindow = None
                 for layer in supportedBrowserLayers:
-                    browserWindow = app.containerManager.getView(layer,
-                                                                 criteria={POP_UP_CRITERIA.UNIQUE_NAME: windowAlias})
+                    browserWindow = app.containerManager.getView(layer, criteria={POP_UP_CRITERIA.UNIQUE_NAME: windowAlias})
                     if browserWindow is not None:
                         break
 
                 if browserWindow is not None:
                     browserWindow.destroy()
                 else:
-                    raise WebCommandException(
-                        'Browser window could not be found! May be alias "{}" is wrong or probably browser has unsupported layer.'.format(
-                            windowAlias))
+                    raise WebCommandException('Browser window could not be found! May be alias "{}" is wrong or probably browser has unsupported layer.'.format(windowAlias))
         else:
-            raise WebCommandException(
-                'Unable to close Browser Window! view alias: {}, id: {}, instance: {}'.format(browserAlias, browserId,
-                                                                                              browserView))
+            raise WebCommandException('Unable to close Browser Window! view alias: {}, id: {}, instance: {}'.format(browserAlias, browserId, browserView))
         self._onBrowserClose()
         return
 
@@ -128,8 +122,7 @@ class CloseBrowserViewWebApiMixin(object):
             appLoader = dependency.instance(IAppLoader)
             app = appLoader.getApp()
             if app is not None and app.containerManager is not None:
-                browserView = app.containerManager.getView(WindowLayer.SUB_VIEW,
-                                                           criteria={POP_UP_CRITERIA.VIEW_ALIAS: browserAlias})
+                browserView = app.containerManager.getView(WindowLayer.SUB_VIEW, criteria={POP_UP_CRITERIA.VIEW_ALIAS: browserAlias})
                 if browserView is not None:
                     browserView.onCloseView()
                     return

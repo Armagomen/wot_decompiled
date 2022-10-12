@@ -1,30 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/trainings_list_base.py
 import ArenaType
-from adisp import process
+from adisp import adisp_process
 from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.settings import ICONS_SIZES
-from helpers import dependency
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi import LobbySubView
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.trainings import formatters
 from gui.Scaleform.daapi.view.lobby.trainings.sound_constants import TRAININGS_SOUND_SPACE
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.TrainingFormMeta import TrainingFormMeta
-from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
-from gui.shared.utils.functions import getArenaFullName
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.settings import ICONS_SIZES
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
 from gui.prb_control.events_dispatcher import g_eventDispatcher
-from gui.prb_control.entities.base.ctx import LeavePrbAction
-from gui.sounds.ambients import LobbySubViewEnv
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.formatters import text_styles
-from gui.impl import backport
-from gui.impl.gen import R
+from gui.shared.utils.functions import getArenaFullName
+from gui.sounds.ambients import LobbySubViewEnv
+from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
+
 
 class TrainingsListBase(LobbySubView, TrainingFormMeta, ILegacyListener):
     __sound_env__ = LobbySubViewEnv
@@ -99,7 +100,7 @@ class TrainingsListBase(LobbySubView, TrainingFormMeta, ILegacyListener):
     def _getViewData(self):
         raise NotImplementedError('Data should be implemented. Must be overridden in subclass')
 
-    @process
+    @adisp_process
     def _createTrainingRoom(self, event):
         settings = event.ctx.get('settings', None)
         if settings:
@@ -112,6 +113,6 @@ class TrainingsListBase(LobbySubView, TrainingFormMeta, ILegacyListener):
         if info:
             self.as_setInfoS(info)
 
-    @process
+    @adisp_process
     def __doLeave(self, isExit=True):
         yield self.prbDispatcher.doLeaveAction(LeavePrbAction(isExit=isExit))

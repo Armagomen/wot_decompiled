@@ -1,5 +1,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/minimap.py
 import logging
+
 import BattleReplay
 import BigWorld
 import CommandMapping
@@ -8,20 +9,23 @@ import Math
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.settings_core import settings_constants
-from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, getBaseTeamAndIDFromUniqueID, MarkerType, getUniqueTeamOrControlPointID
+from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, getBaseTeamAndIDFromUniqueID, MarkerType, \
+    getUniqueTeamOrControlPointID
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG
 from gui import GUI_SETTINGS, g_repeatKeyHandlers
 from gui.Scaleform.daapi.view.battle.shared.minimap import common, plugins
 from gui.Scaleform.daapi.view.battle.shared.minimap import component
 from gui.Scaleform.daapi.view.battle.shared.minimap import settings
-from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import _LOCATION_PING_RANGE, _BASE_PING_RANGE, _EMinimapMouseKey
+from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import _LOCATION_PING_RANGE, _BASE_PING_RANGE, \
+    _EMinimapMouseKey
 from gui.Scaleform.genConsts.BATTLE_MINIMAP_CONSTS import BATTLE_MINIMAP_CONSTS
 from gui.battle_control import minimap_utils, avatar_getter
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from messenger import MessengerEntry
 from messenger.proto.bw_chat2.battle_chat_cmd import BASE_CMD_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
+
 _C_NAME = settings.CONTAINER_NAME
 _S_NAME = settings.ENTRY_SYMBOL_NAME
 _MIN_BASE_SCALE = 1.0
@@ -49,14 +53,14 @@ class ClassicMinimapComponent(component.MinimapComponent):
 
 
 class GlobalSettingsPlugin(common.SimplePlugin):
-    __slots__ = ('__currentSizeSettings', '__isVisible', '__sizeIndex', '__canChangeAlpha')
+    __slots__ = ('_currentSizeSettings', '__isVisible', '_sizeIndex', '__canChangeAlpha')
     _AccountSettingsClass = AccountSettings
 
     def __init__(self, parentObj):
         super(GlobalSettingsPlugin, self).__init__(parentObj)
-        self.__currentSizeSettings = 'minimapSize'
+        self._currentSizeSettings = 'minimapSize'
         self.__isVisible = True
-        self.__sizeIndex = 0
+        self._sizeIndex = 0
         self.__canChangeAlpha = parentObj.canChangeAlpha()
 
     def start(self):
@@ -72,10 +76,10 @@ class GlobalSettingsPlugin(common.SimplePlugin):
         super(GlobalSettingsPlugin, self).stop()
 
     def setSettings(self):
-        newSize = settings.clampMinimapSizeIndex(self._AccountSettingsClass.getSettings(self.__currentSizeSettings))
-        if self.__sizeIndex != newSize:
-            self.__sizeIndex = newSize
-            self._parentObj.as_setSizeS(self.__sizeIndex)
+        newSize = settings.clampMinimapSizeIndex(self._AccountSettingsClass.getSettings(self._currentSizeSettings))
+        if self._sizeIndex != newSize:
+            self._sizeIndex = newSize
+            self._parentObj.as_setSizeS(self._sizeIndex)
         self.__updateAlpha()
 
     def updateSettings(self, diff):
@@ -84,14 +88,14 @@ class GlobalSettingsPlugin(common.SimplePlugin):
 
     def applyNewSize(self, sizeIndex):
         LOG_DEBUG('Size index of minimap is changed', sizeIndex)
-        self.__sizeIndex = sizeIndex
-        self.__saveSettings()
+        self._sizeIndex = sizeIndex
+        self._saveSettings()
 
     def _changeSizeSettings(self, newSizeSettings):
-        if newSizeSettings == self.__currentSizeSettings:
+        if newSizeSettings == self._currentSizeSettings:
             return newSizeSettings
-        previousSettings = self.__currentSizeSettings
-        self.__currentSizeSettings = newSizeSettings
+        previousSettings = self._currentSizeSettings
+        self._currentSizeSettings = newSizeSettings
         self.setSettings()
         return previousSettings
 
@@ -99,12 +103,12 @@ class GlobalSettingsPlugin(common.SimplePlugin):
         self.__isVisible = not self.__isVisible
         self._parentObj.as_setVisibleS(self.__isVisible)
 
-    def __saveSettings(self):
-        self._AccountSettingsClass.setSettings(self.__currentSizeSettings, self.__sizeIndex)
+    def _saveSettings(self):
+        self._AccountSettingsClass.setSettings(self._currentSizeSettings, self._sizeIndex)
 
     def __setSizeByStep(self, step):
-        newIndex = settings.clampMinimapSizeIndex(self.__sizeIndex + step)
-        if self.__sizeIndex != newIndex:
+        newIndex = settings.clampMinimapSizeIndex(self._sizeIndex + step)
+        if self._sizeIndex != newIndex:
             LOG_DEBUG('Try to change size index of minimap by step', newIndex)
             self._parentObj.as_setSizeS(newIndex)
 

@@ -1,17 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/invitations.py
 import BattleReplay
-from adisp import process
-from constants import INVITATION_TYPE
 from BattleReplay import CallbackDataNames
+from adisp import adisp_process
+from constants import INVITATION_TYPE
 from gui.battle_control.arena_info.settings import INVITATION_DELIVERY_STATUS as _STATUS
 from gui.battle_control.requests.context import SendInvitesCtx
 from gui.prb_control import prbInvitesProperty
+from helpers import dependency
 from ids_generators import SequenceIDGenerator
+from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.battle_session import ISquadInvitationsHandler
 from unit_roster_config import SquadRoster, EpicRoster
-from helpers import dependency
-from skeletons.gui.battle_session import IBattleSessionProvider
+
 
 class SquadInvitationsFilter(object):
     __slots__ = ('__arenaUniqueID', '__isReceivingProhibited', '__isSendingProhibited', '__received', '__sent')
@@ -163,7 +164,7 @@ class _SquadInvitationsHandler(ISquadInvitationsHandler):
             self.prbInvites.declineInvite(inviteID)
         return
 
-    @process
+    @adisp_process
     def __onSendInviteToSquad(self, sessionID):
         vehicleID = self.__sessionProvider.getCtx().getVehIDBySessionID(sessionID)
         yield self.__sessionProvider.sendRequest(SendInvitesCtx(playerIDs=(vehicleID,)))

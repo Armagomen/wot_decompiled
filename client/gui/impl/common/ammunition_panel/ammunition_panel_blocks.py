@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/common/ammunition_panel/ammunition_panel_blocks.py
 import typing
+
 from account_helpers.settings_core.options import KeyboardSetting
 from constants import PLAYER_RANK
 from frameworks.wulf import Array
@@ -8,7 +9,8 @@ from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.base_ammunition_slot import BaseAmmunitionSlot
-from gui.impl.gen.view_models.views.lobby.tank_setup.common.battle_ability_ammunition_slot import BattleAbilityAmmunitionSlot
+from gui.impl.gen.view_models.views.lobby.tank_setup.common.battle_ability_ammunition_slot import \
+    BattleAbilityAmmunitionSlot
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.opt_device_ammunition_slot import OptDeviceAmmunitionSlot
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.shell_ammunition_slot import ShellAmmunitionSlot
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.specialization_model import SpecializationModel
@@ -17,10 +19,11 @@ from gui.impl.lobby.tank_setup.tank_setup_helper import getCategoriesMask, NONE_
 from helpers import dependency
 from helpers.epic_game import searchRankForSlot
 from items.components.supply_slot_categories import SlotCategories
-from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.battle_session import IBattleSessionProvider
+from skeletons.gui.game_control import IEpicBattleMetaGameController
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items import Vehicle
+    pass
 EMPTY_NAME = 'empty'
 
 class BaseBlock(object):
@@ -291,7 +294,7 @@ class BattleBoostersBlock(BaseBlock):
         affectsAtTTC = slotItem.isAffectsOnVehicle(self._vehicle)
         slotModel.setWithAttention(not affectsAtTTC)
         if slotItem.isCrewBooster():
-            isPerkReplace = not slotItem.isAffectedSkillLearnt(self._vehicle)
+            isPerkReplace = not slotItem.isAffectedSkillLearnt(self._vehicle) and not slotItem.isBuiltinPerkBooster()
             if isPerkReplace:
                 slotModel.setOverlayType(ItemHighlightTypes.BATTLE_BOOSTER_REPLACE)
             else:

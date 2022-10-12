@@ -1,13 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/custom/battle_statistics_layouts.py
 from dossiers2.common.DossierBlockBuilders import *
-from dossiers2.custom.dependencies import VEH_TYPE_FRAGS_DEPENDENCIES
-from dossiers2.custom.dependencies import A15X15_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import CLAN_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import A7X7_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import HISTORICAL_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import FORT_BATTLES_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import FORT_SORTIES_STATS_DEPENDENCIES
+
 A15X15_BLOCK_LAYOUT = ['xp',
  'battlesCount',
  'wins',
@@ -374,8 +368,50 @@ EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT = ['xp',
  'stunNum',
  'damageAssistedStun',
  'deathCount']
+COMP7_BLOCK_LAYOUT = ['xp',
+ 'battlesCount',
+ 'wins',
+ 'losses',
+ 'survivedBattles',
+ 'frags',
+ 'shots',
+ 'directHits',
+ 'spotted',
+ 'damageDealt',
+ 'damageReceived',
+ 'capturePoints',
+ 'droppedCapturePoints',
+ 'originalXP',
+ 'damageAssistedTrack',
+ 'damageAssistedRadio',
+ 'directHitsReceived',
+ 'noDamageDirectHitsReceived',
+ 'piercingsReceived',
+ 'explosionHitsReceived',
+ 'explosionHits',
+ 'piercings',
+ 'winAndSurvived',
+ 'potentialDamageReceived',
+ 'damageBlockedByArmor',
+ 'battlesOnStunningVehicles',
+ 'stunNum',
+ 'damageAssistedStun',
+ 'winSeries',
+ 'squadWinSeries',
+ 'comp7PrestigePoints',
+ 'roleSkillUsed',
+ 'healthRepair',
+ 'poiCapturable']
 EPIC_BATTLE_BLOCK_LAYOUT = EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT
 MAX_BLOCK_LAYOUT = ['maxXP', 'maxFrags', 'maxDamage']
 MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + ['maxXPVehicle', 'maxFragsVehicle', 'maxDamageVehicle']
 MAX_FALLOUT_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + ['maxWinPoints', 'maxCoins']
 MAX_FALLOUT_BLOCK_LAYOUT_WITH_AVATAR = MAX_FALLOUT_BLOCK_LAYOUT + ['maxFragsWithAvatar', 'maxDamageWithAvatar']
+MAX_COMP7_BLOCK_LAYOUT = MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT + ['maxComp7PrestigePoints',
+ 'maxComp7PrestigePointsVehicle',
+ 'maxEquipmentDamageDealt',
+ 'maxEquipmentDamageDealtVehicle',
+ 'maxHealthRepair',
+ 'maxHealthRepairVehicle',
+ 'maxWinSeries',
+ 'maxSquadWinSeries']

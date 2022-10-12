@@ -1,30 +1,32 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/common/select_slot_spec_dialog.py
 import typing
+
 from BWUtil import AsyncReturn
-from async import async, await
 from frameworks.wulf import ViewSettings
+from gui.Scaleform.Waiting import Waiting
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.dialogs.dialogs import showSingleDialogWithResultData
-from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import BuyAndExchangeBottomContentType
-from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_content_model import SelectSlotSpecDialogContentModel
+from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import \
+    BuyAndExchangeBottomContentType
+from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_content_model import \
+    SelectSlotSpecDialogContentModel
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_model import SelectSlotSpecDialogModel
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_slot_model import SelectSlotSpecDialogSlotModel
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_spec_model import SelectSlotSpecDialogSpecModel
 from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
 from gui.impl.lobby.dialogs.buy_and_exchange import BuyAndExchange
 from gui.impl.wrappers.user_compound_price_model import PriceModelBuilder
-from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
-from gui.shared.money import Money
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-from gui.Scaleform.Waiting import Waiting
+from wg_async import wg_async, wg_await
+
 if typing.TYPE_CHECKING:
-    from gui.shared.gui_items.Vehicle import Vehicle
-    from frameworks.wulf import Window
+    pass
 TContentModel = SelectSlotSpecDialogContentModel
 
 class SelectSlotSpecDialog(BuyAndExchange[SelectSlotSpecDialogModel]):
@@ -164,7 +166,7 @@ class SelectSlotSpecDialogMainContent(BaseSubModelView[TContentModel]):
         model.setSelectedSpecIdx(self._startIdx)
 
 
-@async
+@wg_async
 def showDialog(vehicle, parent=None):
-    result = yield await(showSingleDialogWithResultData(layoutID=R.views.lobby.common.SelectSlotSpecDialog(), parent=parent, wrappedViewClass=SelectSlotSpecDialog, vehicle=vehicle))
+    result = yield wg_await(showSingleDialogWithResultData(layoutID=R.views.lobby.common.SelectSlotSpecDialog(), parent=parent, wrappedViewClass=SelectSlotSpecDialog, vehicle=vehicle))
     raise AsyncReturn(result)

@@ -9,28 +9,27 @@ from items.components.c11n_components import CustomizationType
 SEPARATOR = '_'
 TEMPLATE = PREFIX + SEPARATOR.join(['{styleId}', '{groupID}'])
 
-
 def validateToken(token):
     if not token.startswith(PREFIX):
         return False
     words = token[len(PREFIX):].split(SEPARATOR)
-    return False if len([int(x) for x in words if x.isdigit()]) != 2 else True
+    return False if len([ int(x) for x in words if x.isdigit() ]) != 2 else True
 
 
-def serelizeToken(styleId, group):
+def serializeToken(styleId, group):
     return TEMPLATE.format(styleId=styleId, groupID=group)
 
 
-def deserelizeToken(token):
+def deserializeToken(token):
     ws = token[len(PREFIX):].split(SEPARATOR)
     return (int(ws[0]), int(ws[1]))
 
 
 def validateCustomizationQuestToken(id, token):
     if validateToken(id):
-        if not ('limit' in token and token['limit'] == token['count']):
-            return (False, 'Use limits equale count for token: {}'.format(id))
-        styleId, groupId = deserelizeToken(id)
+        if token['count'] > 0 and not ('limit' in token and token['limit'] == token['count']):
+            return (False, 'Use limits equale count for token: {}, count {}'.format(id, token['count']))
+        styleId, groupId = deserializeToken(id)
         questStyles = vehicles.g_cache.customization20().getQuestProgressionStyles()
         if styleId not in questStyles:
             return (False, 'Invalid styleId token format: {}'.format(id))
@@ -49,9 +48,8 @@ class CustQuestsCache(object):
             for _, style in cache.getQuestProgressionStyles().iteritems():
                 qp = style.questsProgression
                 for tokenId in qp.getGroupTokens():
-                    groupByToken[tokenId] = [{'finishTime': finishTime,
-                                              'questIds': {et: [] for et in EVENT_TYPE.QUEST_USE_FOR_C11N_PROGRESS}} for
-                                             finishTime in qp.getFinishTimes(tokenId)]
+                    groupByToken[tokenId] = [ {'finishTime': finishTime,
+                     'questIds': {et:[] for et in EVENT_TYPE.QUEST_USE_FOR_C11N_PROGRESS}} for finishTime in qp.getFinishTimes(tokenId) ]
 
         else:
             self._groupByToken = groupByToken
@@ -64,7 +62,7 @@ class CustQuestsCache(object):
         groupByToken = self._groupByToken
         for tokenId, info in quest['bonus'].get('tokens', {}).iteritems():
             if validateToken(tokenId):
-                styleId, groupId = deserelizeToken(tokenId)
+                styleId, groupId = deserializeToken(tokenId)
                 if tokenId not in groupByToken:
                     continue
                 qp = cache.itemTypes[CustomizationType.STYLE][styleId].questsProgression
@@ -83,10 +81,10 @@ class CustQuestsCache(object):
                 for et, questIds in level['questIds'].iteritems():
                     for id in questIds:
                         yield (token,
-                               i,
-                               et,
-                               level['finishTime'],
-                               id)
+                         i,
+                         et,
+                         level['finishTime'],
+                         id)
 
     def asDict(self):
         return self._groupByToken

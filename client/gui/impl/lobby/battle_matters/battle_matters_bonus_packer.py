@@ -31,22 +31,21 @@ if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(__name__)
 _REWARDS_ORDER = ('vehicles',
-                  'battleToken',
-                  'tokens',
-                  'crewBooks',
-                  'customizations',
-                  'items',
-                  PREMIUM_ENTITLEMENTS.PLUS,
-                  PREMIUM_ENTITLEMENTS.BASIC,
-                  Currency.CRYSTAL,
-                  Currency.GOLD,
-                  'freeXP',
-                  Currency.CREDITS,
-                  'blueprintsAny',
-                  BlueprintBonusTypes.BLUEPRINTS,
-                  'goodies',
-                  'slots')
-
+ 'battleToken',
+ 'tokens',
+ 'crewBooks',
+ 'customizations',
+ 'items',
+ PREMIUM_ENTITLEMENTS.PLUS,
+ PREMIUM_ENTITLEMENTS.BASIC,
+ Currency.CRYSTAL,
+ Currency.GOLD,
+ 'freeXP',
+ Currency.CREDITS,
+ 'blueprintsAny',
+ BlueprintBonusTypes.BLUEPRINTS,
+ 'goodies',
+ 'slots')
 
 def bonusesSort(firstBonus, secondBonus):
     firstBonusName = firstBonus.getName()
@@ -79,16 +78,15 @@ def blueprintsCmp(firstBonus, secondBonus):
 
 
 def _blueprintsNationCmp(firstBonus, secondBonus):
-    return cmp(GUI_NATIONS_ORDER_INDEX.get(firstBonus.getImageCategory(), NONE_INDEX),
-               GUI_NATIONS_ORDER_INDEX.get(secondBonus.getImageCategory(), NONE_INDEX))
+    return cmp(GUI_NATIONS_ORDER_INDEX.get(firstBonus.getImageCategory(), NONE_INDEX), GUI_NATIONS_ORDER_INDEX.get(secondBonus.getImageCategory(), NONE_INDEX))
 
 
 def getBattleMattersBonusPacker():
     mapping = getDefaultBonusPackersMap()
     mapping.update({VehiclesBonus.VEHICLES_BONUS: BattleMattersVehiclesBonusUIPacker(),
-                    BlueprintBonusTypes.BLUEPRINTS: BattleMattersBlueprintBonusUIPacker(),
-                    SELECTABLE_BONUS_NAME: BattleMattersTokenBonusUIPacker(),
-                    'entitlements': BattleMattersEntitlementsBonusUIPacker()})
+     BlueprintBonusTypes.BLUEPRINTS: BattleMattersBlueprintBonusUIPacker(),
+     SELECTABLE_BONUS_NAME: BattleMattersTokenBonusUIPacker(),
+     'entitlements': BattleMattersEntitlementsBonusUIPacker()})
     return BonusUIPacker(mapping)
 
 
@@ -134,8 +132,7 @@ class BattleMattersTokenBonusUIPacker(SelectableBonusPacker):
     def _getToolTip(cls, bonus):
         if cls.__isVehicleReceived():
             vehicle = cls.__battleMattersController.getSelectedVehicle()
-            return [backport.createTooltipData(isSpecial=True, specialArgs=(vehicle.intCD,),
-                                               specialAlias=TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE)]
+            return [backport.createTooltipData(isSpecial=True, specialArgs=(vehicle.intCD,), specialAlias=TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE)]
 
     @classmethod
     def __isVehicleReceived(cls):

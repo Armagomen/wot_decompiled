@@ -1,37 +1,41 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/customization/progressive_items_view/progressive_items_view.py
 import logging
+
 import BigWorld
-from adisp import process
 from CurrentVehicle import g_currentVehicle
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
+from adisp import adisp_process
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui import GUI_SETTINGS
-from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.Scaleform.daapi.view.lobby.customization.shared import getProgressionItemStatusText
 from gui.game_control.links import URLMacros
-from gui.server_events.events_dispatcher import showProgressiveItemsBrowserView
 from gui.impl.backport import BackportTooltipWindow, createTooltipData
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.item_level_info_model import \
+    ItemLevelInfoModel
 from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.item_model import ItemModel
-from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.item_level_info_model import ItemLevelInfoModel
-from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.progressive_items_view_model import ProgressiveItemsViewModel
+from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.progressive_items_view_model import \
+    ProgressiveItemsViewModel
 from gui.impl.pub import ViewImpl
-from gui.Scaleform.daapi.view.lobby.customization.shared import getProgressionItemStatusText
+from gui.server_events.events_dispatcher import showProgressiveItemsBrowserView
 from gui.shared.gui_items.customization import CustomizationTooltipContext
+from gui.shared.utils.graphics import isRendererPipelineDeferred
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency, int2roman
 from helpers.i18n import makeString as _ms
 from items import vehicles
+from items.components.c11n_constants import CustomizationType
 from items.components.c11n_constants import ProjectionDecalFormTags
+from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from skeletons.account_helpers.settings_core import ISettingsCore
 from tutorial.hints_manager import HINT_SHOWN_STATUS
 from web.web_client_api import webApiCollection, ui as ui_web_api, sound as sound_web_api
-from gui.shared.utils.graphics import isRendererPipelineDeferred
-from items.components.c11n_constants import CustomizationType
+
 _logger = logging.getLogger(__name__)
 _PREVIEW_ICON_SIZE = (512, 512)
 _PREVIEW_ICON_INNER_SIZE_DEFAULT = (504, 504)
@@ -141,7 +145,7 @@ class ProgressiveItemsView(ViewImpl):
     def _showVideoPage(self, args=None):
         self.__showVideo()
 
-    @process
+    @adisp_process
     def __showVideo(self):
         url = yield self.__urlMacros.parse(self.__guiSettings.get('url'))
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)

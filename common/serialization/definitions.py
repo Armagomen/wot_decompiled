@@ -12,7 +12,6 @@ if IS_EDITOR:
 else:
     FieldType = namedtuple('FieldType', 'type default flags')
 
-
 class FieldTypes(object):
     VARINT = 2
     TAGS = 4

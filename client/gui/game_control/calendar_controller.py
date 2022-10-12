@@ -4,9 +4,10 @@ import functools
 import logging
 from collections import namedtuple
 from enum import Enum
+
 import BigWorld
 from account_helpers.AccountSettings import AccountSettings, LAST_CALENDAR_SHOW_TIMESTAMP
-from adisp import process
+from adisp import adisp_process
 from frameworks.wulf import WindowLayer
 from gui.Scaleform import MENU
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -22,14 +23,16 @@ from helpers.time_utils import ONE_HOUR
 from skeletons.gui.app_loader import IAppLoader, GuiGlobalSpaceID
 from skeletons.gui.game_control import ICalendarController, IBrowserController
 from skeletons.gui.game_window_controller import GameWindowController
-from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.web import IWebController
 from web.web_client_api import w2capi, webApiCollection, w2c, W2CSchema
 from web.web_client_api.request import RequestWebApi
 from web.web_client_api.shop import ShopWebApi
 from web.web_client_api.sound import SoundWebApi
-from web.web_client_api.ui import OpenWindowWebApi, CloseWindowWebApi, NotificationWebApi, ShopWebApiMixin, UtilWebApi, VehiclePreviewWebApiMixin
+from web.web_client_api.ui import OpenWindowWebApi, CloseWindowWebApi, NotificationWebApi, ShopWebApiMixin, UtilWebApi, \
+    VehiclePreviewWebApiMixin
+
 
 @w2capi(name='open_tab', key='tab_id')
 class _OpenTabWebApi(ShopWebApiMixin, VehiclePreviewWebApiMixin):
@@ -103,7 +106,7 @@ class _HeroAdventActionHelper(object):
             self.__timer = None
         return
 
-    @process
+    @adisp_process
     def __fetchInfo(self):
         if self.__isByServerSwitchEnabled():
             response = yield self.__webController.sendRequest(ctx=AdventCalendarFetchHeroTankInfoCtx())
@@ -291,7 +294,7 @@ class CalendarController(GameWindowController, ICalendarController):
         self.__heroAdventHelper = None
         return
 
-    @process
+    @adisp_process
     def __openBrowser(self, browserID, url, browserSize, invokedFrom):
         browserHandlers = webApiCollection(NotificationWebApi, RequestWebApi, ShopWebApi, SoundWebApi, UtilWebApi, _CloseWindowWebApi, _OpenTabWebApi, OpenWindowWebApi)
 

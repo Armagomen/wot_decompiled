@@ -1,7 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_pass/state_machine/states.py
-from functools import partial
 import typing
+from functools import partial
+
 from battle_pass_common import BattlePassRewardReason, get3DStyleProgressToken
 from frameworks.state_machine import ConditionTransition, State, StateEvent, StateFlags
 from gui.battle_pass.battle_pass_helpers import getStyleInfoForChapter, showVideo, getStyleForChapter
@@ -11,14 +12,16 @@ from gui.impl.gen import R
 from gui.impl.lobby.battle_pass.battle_pass_buy_view import WINDOW_IS_NOT_OPENED, g_BPBuyViewStates
 from gui.server_events.events_dispatcher import showMissionsBattlePass
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
-from gui.shared.event_dispatcher import showBattlePassAwardsWindow, showBattlePassBuyWindow, showBattlePassRewardsSelectionWindow
+from gui.shared.event_dispatcher import showBattlePassAwardsWindow, showBattlePassBuyWindow, \
+    showBattlePassRewardsSelectionWindow
 from gui.shared.events import LobbySimpleEvent
 from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.impl import INotificationWindowController
+
 if typing.TYPE_CHECKING:
-    from gui.battle_pass.state_machine.machine import BattlePassStateMachine
+    pass
 
 class BattlePassRewardStateID(CONST_CONTAINER):
     LOBBY = 'lobby'
@@ -117,16 +120,6 @@ class ChoiceItemState(State):
             else:
                 machine.post(StateEvent())
         return
-
-
-class ChoiceStyleState(State):
-    __slots__ = ()
-
-    def __init__(self):
-        super(ChoiceStyleState, self).__init__(stateID=BattlePassRewardStateID.CHOICE_STYLE)
-
-    def _onEntered(self):
-        pass
 
 
 class PreviewState(State):

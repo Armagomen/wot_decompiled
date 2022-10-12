@@ -16,6 +16,7 @@ from gui.battle_results.settings import PLAYER_TEAM_RESULT
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
+from helpers.bots import preprocessBotName
 from helpers.i18n import makeString
 from shared_utils import first
 from skeletons.gui.game_control import IBootcampController
@@ -38,7 +39,6 @@ _PREMIUM_RESOURCES = {
                                     R.images.gui.maps.icons.bootcamp.rewards.tooltips.bcPremiumPlus()),
                                 'label': backport.text(R.strings.bootcamp.result.award.premiumPlus.label()),
                                 'description': backport.text(R.strings.bootcamp.result.award.premiumPlus.text())}}
-
 
 def isTechnicalWin(record, reusable):
     teamResult = reusable.getPersonalTeamResult()
@@ -70,9 +70,9 @@ class RewardsBlock(base.StatsBlock):
         goldPremuimExtras = []
         showPremium = lessonNum == lastLessonNum and bootcampController.needAwarding()
         if showPremium:
-            premiumType = g_bootcamp.getPremiumType(lessonNum)
+            premiumType = g_bootcamp.getPremiumType()
             if premiumType not in _PREMIUM_RESOURCES:
-                _logger.error('Premium type %s is not supported or it is not in the bonuses')
+                _logger.error('Premium type %s is not supported or it is not in the bonuses', premiumType)
             else:
                 goldPremuimExtras.append({'id': premiumType,
                  'label': _PREMIUM_RESOURCES[premiumType]['label'],
@@ -178,8 +178,7 @@ class PlayerResultItem(base.StatsItem):
         if killerID not in record['common']['bots']:
             return makeHtmlString('html_templates:bootcamp/player_status', 'dead', ctx=ctx)
         killerName = record['common']['bots'][killerID][1]
-        killerName = makeString('#bootcamp:' + killerName)
-        ctx['killer'] = killerName
+        ctx['killer'] = preprocessBotName(killerName)
         return makeHtmlString('html_templates:bootcamp/player_status', 'killed', ctx=ctx)
 
 

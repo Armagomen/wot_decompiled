@@ -1,10 +1,42 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/gui/goodies.py
-from typing import TYPE_CHECKING, Optional, Dict
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from gui.goodies.goodie_items import RecertificationForm, DemountKit
+    from gui.shared.money import Money
 
-class IGoodiesCache(object):
+
+class IBoostersStateProvider(object):
+
+    @property
+    def personalGoodies(self):
+        raise NotImplementedError
+
+    def getBoosters(self, criteria=None):
+        raise NotImplementedError
+
+    def getBooster(self, boosterID):
+        raise NotImplementedError
+
+    def getActiveResources(self):
+        raise NotImplementedError
+
+    def getActiveBoosterTypes(self):
+        raise NotImplementedError
+
+    def getBoosterPriceData(self, boosterID):
+        raise NotImplementedError
+
+    def isBoosterHidden(self, boosterID):
+        raise NotImplementedError
+
+    def haveBooster(self, boosterID):
+        raise NotImplementedError
+
+    def getClanReserves(self):
+        raise NotImplementedError
+
+
+class IGoodiesCache(IBoostersStateProvider):
 
     def init(self):
         raise NotImplementedError
@@ -15,23 +47,7 @@ class IGoodiesCache(object):
     def clear(self):
         raise NotImplementedError
 
-    @property
-    def personalGoodies(self):
-        raise NotImplementedError
-
-    def getBoosterPriceData(self, boosterID):
-        raise NotImplementedError
-
     def getItemByTargetValue(self, targetValue):
-        raise NotImplementedError
-
-    def getActiveBoostersTypes(self):
-        raise NotImplementedError
-
-    def getBooster(self, boosterID):
-        raise NotImplementedError
-
-    def haveBooster(self, boosterID):
         raise NotImplementedError
 
     def getDiscount(self, discoutID):
@@ -46,16 +62,10 @@ class IGoodiesCache(object):
     def getGoodieByID(self, goodieID):
         raise NotImplementedError
 
-    def getBoosters(self, criteria=None):
-        raise NotImplementedError
-
     def getDiscounts(self, criteria=None):
         raise NotImplementedError
 
     def getDemountKits(self, criteria=None):
-        raise NotImplementedError
-
-    def getClanReserves(self):
         raise NotImplementedError
 
     def getRecertificationForm(self, recertificationFormID=None, currency=None):

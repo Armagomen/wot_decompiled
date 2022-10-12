@@ -7,8 +7,7 @@ from frameworks.wulf import ViewSettings, WindowFlags
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_rewards_view_model import \
-    BattleMattersRewardsViewModel, State, RewardType
+from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_rewards_view_model import BattleMattersRewardsViewModel, State, RewardType
 from gui.impl.lobby.battle_matters.tooltips.battle_matters_token_tooltip_view import BattleMattersTokenTooltipView
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyNotificationWindow
@@ -16,22 +15,18 @@ from gui.server_events.bonuses import getNonQuestBonuses, getMergedBonusesFromDi
 from gui.server_events.events_dispatcher import showBattleMatters
 from gui.shared.event_dispatcher import showDelayedReward, selectVehicleInHangar, showHangar
 from gui.shared.missions.packers.bonus import packBonusModelAndTooltipData
-from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import getBattleMattersBonusPacker, indexesCmp, \
-    bonusesSort, blueprintsCmp
+from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import getBattleMattersBonusPacker, indexesCmp, bonusesSort, blueprintsCmp
 from helpers import dependency
 from sound_gui_manager import CommonSoundSpaceSettings
 from shared_utils import first
 from skeletons.gui.battle_matters import IBattleMattersController
-
 if typing.TYPE_CHECKING:
-    from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
-    from Event import Event
+    from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_model import BattleMattersVehicleModel
+    from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
 _logger = logging.getLogger(__name__)
 _CUSTOMIZATIONS_ORDER = ('style', 'emblem', 'camouflage', 'modification', 'decal', 'inscription', 'paint')
-_DEVICES_TYPES_ORDER = (
-SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS, SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY, SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT)
+_DEVICES_TYPES_ORDER = (SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS, SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY, SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT)
 _ITEMS_NAMES_ORDER = ('optionalDevice', 'battleBooster', 'equipment')
-
 
 def _vehiclesCmp(firstModel, secondModel):
     return cmp(firstModel.getLevel(), secondModel.getLevel())
@@ -53,31 +48,25 @@ def _customSort(rewardType):
 
 
 _CUSTOM_SORT = {'vehicles': _vehiclesCmp,
-                'customizations': _customizationsCmp,
-                'items': _itemsCmp}
+ 'customizations': _customizationsCmp,
+ 'items': _itemsCmp}
 _CLIENT_REWARD_IDX = -1
 
-
 class BattleMattersRewardsView(ViewImpl):
-    __slots__ = (
-    '__cds', '__questOrder', '__isPairQuest', '__isWithDelayed', '__delayedReward', '__intermediateQuestID',
-    '__intermediateRewards', '__regularQuestID', '__regularRewards', '__tooltipData')
-    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name='battle_matters', entranceStates={}, exitStates={},
-                                                   persistentSounds=(), stoppableSounds=(), priorities=(),
-                                                   autoStart=True, enterEvent='bm_reward', exitEvent='', parentSpace='')
+    __slots__ = ('__cds', '__questOrder', '__isPairQuest', '__isWithDelayed', '__delayedReward', '__intermediateQuestID', '__intermediateRewards', '__regularQuestID', '__regularRewards', '__tooltipData')
+    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name='battle_matters', entranceStates={}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='bm_reward', exitEvent='', parentSpace='')
     __battleMattersController = dependency.descriptor(IBattleMattersController)
 
     def __init__(self, ctx):
-        settings = ViewSettings(layoutID=R.views.lobby.battle_matters.BattleMattersRewardsView(),
-                                model=BattleMattersRewardsViewModel())
+        settings = ViewSettings(layoutID=R.views.lobby.battle_matters.BattleMattersRewardsView(), model=BattleMattersRewardsViewModel())
         self.__cds = []
         self.__intermediateQuestID = ''
         self.__intermediateRewards = OrderedDict()
         self.__regularQuestID = ''
         self.__regularRewards = OrderedDict()
         self.__tooltipData = {RewardType.REGULAR: {},
-                              RewardType.VEHICLE: {},
-                              RewardType.INTERMEDIATE: {}}
+         RewardType.VEHICLE: {},
+         RewardType.INTERMEDIATE: {}}
         self.__questOrder = ctx.keys()[0]
         questData = ctx[self.__questOrder]
         self.__isPairQuest = questData.get('isInPair', False)
@@ -102,8 +91,7 @@ class BattleMattersRewardsView(ViewImpl):
         return super(BattleMattersRewardsView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(
-            BattleMattersRewardsView, self).createToolTipContent(event, contentID)
+        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(BattleMattersRewardsView, self).createToolTipContent(event, contentID)
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
@@ -135,10 +123,8 @@ class BattleMattersRewardsView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(BattleMattersRewardsView, self)._onLoading(args, kwargs)
         vehicles = self.__processVehicles()
-        regularBonuses = sorted(self.__getBonuses(self.__regularRewards),
-                                cmp=bonusesSort) if self.__regularQuestID else []
-        intermediateBonuses = sorted(self.__getBonuses(self.__intermediateRewards),
-                                     cmp=bonusesSort) if self.__intermediateQuestID else []
+        regularBonuses = sorted(self.__getBonuses(self.__regularRewards), cmp=bonusesSort) if self.__regularQuestID else []
+        intermediateBonuses = sorted(self.__getBonuses(self.__intermediateRewards), cmp=bonusesSort) if self.__intermediateQuestID else []
         self.__processBlueprints(regularBonuses)
         self.__processBlueprints(intermediateBonuses)
         packer = getBattleMattersBonusPacker()
@@ -151,9 +137,9 @@ class BattleMattersRewardsView(ViewImpl):
 
     def _getEvents(self):
         return ((self.viewModel.onClose, self.onClose),
-                (self.viewModel.onChooseVehicle, self.onChooseVehicle),
-                (self.viewModel.onNextTask, self.onNextTask),
-                (self.viewModel.onShowVehicle, self.onShowVehicle))
+         (self.viewModel.onChooseVehicle, self.onChooseVehicle),
+         (self.viewModel.onNextTask, self.onNextTask),
+         (self.viewModel.onShowVehicle, self.onShowVehicle))
 
     @staticmethod
     def __getBonuses(rewards):
@@ -168,32 +154,28 @@ class BattleMattersRewardsView(ViewImpl):
     def __fillVehicles(self, model, vehicles, packer):
         vehiclesModel = model.getVehicles()
         vehiclesModel.clear()
-        packBonusModelAndTooltipData(vehicles, packer, vehiclesModel, self.__tooltipData[RewardType.VEHICLE],
-                                     sort=_customSort)
+        packBonusModelAndTooltipData(vehicles, packer, vehiclesModel, self.__tooltipData[RewardType.VEHICLE], sort=_customSort)
         vehiclesModel.invalidate()
 
     def __fillIntermediate(self, model, bonuses, packer):
         intermediateModel = model.getIntermediateRewards()
         intermediateModel.clear()
-        packBonusModelAndTooltipData(bonuses, packer, intermediateModel, self.__tooltipData[RewardType.INTERMEDIATE],
-                                     sort=_customSort)
+        packBonusModelAndTooltipData(bonuses, packer, intermediateModel, self.__tooltipData[RewardType.INTERMEDIATE], sort=_customSort)
         intermediateModel.invalidate()
 
     def __fillRegular(self, model, bonuses, packer):
         regularModel = model.getRegularRewards()
         regularModel.clear()
-        packBonusModelAndTooltipData(bonuses, packer, regularModel, self.__tooltipData[RewardType.REGULAR],
-                                     sort=_customSort)
+        packBonusModelAndTooltipData(bonuses, packer, regularModel, self.__tooltipData[RewardType.REGULAR], sort=_customSort)
         regularModel.invalidate()
 
     def __processVehicles(self):
-        vehicles = [{'vehicles': self.__regularRewards.pop('vehicles', {})},
-                    {'vehicles': self.__intermediateRewards.pop('vehicles', {})}]
+        vehicles = [{'vehicles': self.__regularRewards.pop('vehicles', {})}, {'vehicles': self.__intermediateRewards.pop('vehicles', {})}]
         if self.__delayedReward:
             vehicles.append(self.__delayedReward)
         vehicles = getMergedBonusesFromDicts(vehicles)
         for v in vehicles.get('vehicles', []):
-            exclude = [vehCD for vehCD in v if v[vehCD].get('compensatedNumber', 0) > 0]
+            exclude = [ vehCD for vehCD in v if v[vehCD].get('compensatedNumber', 0) > 0 ]
             for vehCD in exclude:
                 v.pop(vehCD)
 
@@ -221,7 +203,7 @@ class BattleMattersRewardsView(ViewImpl):
             return self.__tooltipData[rewardType].get(index)
 
     def __processBlueprints(self, bonuses):
-        blueprints = [b for b in bonuses if b.getName() == 'blueprints']
+        blueprints = [ b for b in bonuses if b.getName() == 'blueprints' ]
         firstIdx = bonuses.index(blueprints[0]) if blueprints else 0
         secondIdx = firstIdx + len(blueprints)
         if secondIdx:
@@ -232,6 +214,4 @@ class BattleMattersRewardsViewWindow(LobbyNotificationWindow):
     __slots__ = ()
 
     def __init__(self, parent=None, ctx=None):
-        super(BattleMattersRewardsViewWindow, self).__init__(
-            wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=BattleMattersRewardsView(ctx=ctx),
-            parent=parent)
+        super(BattleMattersRewardsViewWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=BattleMattersRewardsView(ctx=ctx), parent=parent)

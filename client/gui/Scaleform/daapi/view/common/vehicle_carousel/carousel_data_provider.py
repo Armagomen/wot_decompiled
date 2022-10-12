@@ -1,25 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_data_provider.py
 import typing
+
+from CurrentVehicle import g_currentVehicle
 from constants import SEASON_NAME_BY_TYPE
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
 from gui import GUI_NATIONS_ORDER_INDEX, makeHtmlString
 from gui.Scaleform import getButtonsAssetPath
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
 from gui.shared.formatters import icons, text_styles
 from gui.shared.formatters.time_formatters import RentLeftFormatter
-from gui.shared.gui_items.Vehicle import Vehicle, VEHICLE_TYPES_ORDER_INDICES, getVehicleStateIcon, getVehicleStateAddIcon, getBattlesLeft, getSmallIconPath, getIconPath
+from gui.shared.gui_items.Vehicle import Vehicle, VEHICLE_TYPES_ORDER_INDICES, getVehicleStateIcon, \
+    getVehicleStateAddIcon, getBattlesLeft, getSmallIconPath, getIconPath
 from gui.shared.gui_items.dossier.achievements import isMarkOfMasteryAchieved
 from gui.shared.utils.requesters import REQ_CRITERIA
-from helpers.i18n import makeString as ms
 from helpers import dependency
+from helpers.i18n import makeString as ms
 from skeletons.gui.game_control import IBattleRoyaleController
+
 if typing.TYPE_CHECKING:
-    from skeletons.gui.shared import IItemsCache
+    pass
 
 def sortedIndices(seq, getter, reverse=False):
     return sorted(range(len(seq)), key=lambda idx: getter(seq[idx]), reverse=reverse)
@@ -132,12 +136,12 @@ def getVehicleDataVO(vehicle):
 class CarouselDataProvider(SortableDAAPIDataProvider):
     _battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
 
-    def __init__(self, carouselFilter, itemsCache, currentVehicle):
+    def __init__(self, carouselFilter, itemsCache):
         super(CarouselDataProvider, self).__init__()
         self._setBaseCriteria()
         self._filter = carouselFilter
         self._itemsCache = itemsCache
-        self._currentVehicle = currentVehicle
+        self._currentVehicleInvID = g_currentVehicle.invID
         self._vehicles = []
         self._vehicleItems = []
         self._filteredIndices = []
@@ -201,23 +205,27 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
         vehicle = self._vehicles[realIdx]
         if vehicle.isInInventory:
             self._selectedIdx = filteredIdx
-            self._currentVehicle.selectVehicle(vehicle.invID)
+            self._currentVehicleInvID = vehicle.invID
+        return self._currentVehicleInvID
 
     def updateVehicles(self, vehiclesCDs=None, filterCriteria=None, forceUpdate=False):
-        isFullResync = vehiclesCDs is None and filterCriteria is None
-        filterCriteria = filterCriteria or REQ_CRITERIA.EMPTY
-        if vehiclesCDs:
-            filterCriteria |= REQ_CRITERIA.IN_CD_LIST(vehiclesCDs)
-        criteria = self._baseCriteria | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP
-        newVehiclesCollection = self._itemsCache.items.getVehicles(criteria | filterCriteria)
-        oldVehiclesCDs = [ vehicle.intCD for vehicle in self._vehicles ]
-        isVehicleRemoved = not set(vehiclesCDs or ()).issubset(newVehiclesCollection.viewkeys())
-        isVehicleAdded = not set(vehiclesCDs or ()).issubset(oldVehiclesCDs)
-        if isFullResync or isVehicleAdded or isVehicleRemoved:
-            self.buildList()
+        if self._itemsCache is None:
+            return
         else:
-            self._updateVehicleItems(newVehiclesCollection.values(), forceUpdate)
-        return
+            isFullResync = vehiclesCDs is None and filterCriteria is None
+            filterCriteria = filterCriteria or REQ_CRITERIA.EMPTY
+            if vehiclesCDs:
+                filterCriteria |= REQ_CRITERIA.IN_CD_LIST(vehiclesCDs)
+            criteria = self._baseCriteria | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP
+            newVehiclesCollection = self._itemsCache.items.getVehicles(criteria | filterCriteria)
+            oldVehiclesCDs = [ vehicle.intCD for vehicle in self._vehicles ]
+            isVehicleRemoved = not set(vehiclesCDs or ()).issubset(newVehiclesCollection.viewkeys())
+            isVehicleAdded = not set(vehiclesCDs or ()).issubset(oldVehiclesCDs)
+            if isFullResync or isVehicleAdded or isVehicleRemoved:
+                self.buildList()
+            else:
+                self._updateVehicleItems(newVehiclesCollection.values(), forceUpdate)
+            return
 
     def setShowStats(self, showVehicleStats):
         self._showVehicleStats = showVehicleStats
@@ -241,14 +249,13 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
         prevSelectedIdx = self._selectedIdx
         self._filteredIndices = self._getFrontAdditionalItemsIndexes()
         self._selectedIdx = -1
-        currentVehicleInvID = self._currentVehicle.invID
         visibleVehiclesIntCDs = [ vehicle.intCD for vehicle in self._getCurrentVehicles() ]
         sortedVehicleIndices = self._getSortedIndices()
         for idx in sortedVehicleIndices:
             vehicle = self._vehicles[idx]
             if vehicle.intCD in visibleVehiclesIntCDs:
                 self._filteredIndices.append(idx)
-                if currentVehicleInvID == vehicle.invID:
+                if self._currentVehicleInvID == vehicle.invID:
                     self._selectedIdx = len(self._filteredIndices) - 1
 
         self._filteredIndices += self._getAdditionalItemsIndexes()
@@ -260,7 +267,9 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
         self._baseCriteria = REQ_CRITERIA.INVENTORY
 
     def _filterByIndices(self):
-        self.flashObject.as_setFilter(self._filteredIndices)
+        if self.flashObject is not None:
+            self.flashObject.as_setFilter(self._filteredIndices)
+        return
 
     def _getSortedIndices(self):
         return self._getCachedSortedIndices(False)
@@ -273,7 +282,6 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
     def _dispose(self):
         self._filter = None
         self._itemsCache = None
-        self._currentVehicle = None
         self._randomStats = None
         super(CarouselDataProvider, self)._dispose()
         return
@@ -363,8 +371,10 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
 
         if updateVehicles:
             self.__resetSortedIndices()
-        self.flashObject.invalidateItems(updateIndices, updateVehicles)
+        if self.flashObject is not None:
+            self.flashObject.invalidateItems(updateIndices, updateVehicles)
         self.applyFilter(forceApply=forceUpdate)
+        return
 
     def _getCurrentVehicles(self):
         return self._getFilteredVehicles(self._filter.apply)

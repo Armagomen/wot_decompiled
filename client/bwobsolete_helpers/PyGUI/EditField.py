@@ -5,7 +5,6 @@ import copy
 import BigWorld
 import GUI
 import Keys
-import bwobsolete_helpers.PyGUI.IME
 import Utils
 from Helpers.PyGUI.Listeners import registerDeviceListener
 from Helpers.PyGUI.Utils import BlinkingCursor

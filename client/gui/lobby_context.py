@@ -1,19 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/lobby_context.py
-from helpers.server_settings import ServerSettings
 import BigWorld
 from Event import Event, EventManager
 from account_helpers import isRoamingEnabled
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from constants import CURRENT_REALM
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.lobby_ctx_listener import LobbyContextChangeListener
 from helpers import dependency
+from helpers.server_settings import ServerSettings
 from ids_generators import Int32IDGenerator
 from predefined_hosts import g_preDefinedHosts
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+
 
 class LobbyContext(ILobbyContext):
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -189,8 +190,8 @@ class LobbyContext(ILobbyContext):
         if confirmator in self.__headerNavigationConfirmators:
             self.__headerNavigationConfirmators.remove(confirmator)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def isHeaderNavigationPossible(self, callback=None):
         for confirmator in set(self.__headerNavigationConfirmators):
             confirmed = yield confirmator()
@@ -206,8 +207,8 @@ class LobbyContext(ILobbyContext):
         if confirmator in self.__fightButtonConfirmators:
             self.__fightButtonConfirmators.remove(confirmator)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def isFightButtonPressPossible(self, callback=None):
         for confirmator in self.__fightButtonConfirmators:
             confirmed = yield confirmator()
@@ -223,8 +224,8 @@ class LobbyContext(ILobbyContext):
         if confirmator in self.__platoonCreationConfirmators:
             self.__platoonCreationConfirmators.remove(confirmator)
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def isPlatoonCreationPossible(self, callback=None):
         for confirmator in self.__platoonCreationConfirmators:
             confirmed = yield confirmator()

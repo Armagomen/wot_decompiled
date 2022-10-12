@@ -1,32 +1,33 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/RoleChangeWindow.py
 import constants
-from gui.impl import backport
-from gui.shop import showBuyGoldForCrew
-from gui.shared.gui_items.Tankman import getCrewSkinIconBig
-from gui.shared.money import Money
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
-from gui.shared.tooltips.formatters import packActionTooltipData
-from gui.shared.utils.functions import makeTooltip
-from helpers import dependency
-from helpers.i18n import makeString as _ms
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.meta.RoleChangeMeta import RoleChangeMeta
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.shared.gui_items import Tankman
-from gui.shared.gui_items.crew_skin import localizedFullName
-from gui.shared.gui_items.serializers import packTankman
-from gui.shared.gui_items.processors.tankman import TankmanChangeRole
-from gui.shared.money import Currency
-from gui.shared.utils import decorators, isVehicleObserver
-from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from gui.impl import backport
 from gui.shared.formatters import icons, text_styles
+from gui.shared.gui_items import Tankman
+from gui.shared.gui_items.Tankman import getCrewSkinIconBig
+from gui.shared.gui_items.crew_skin import localizedFullName
+from gui.shared.gui_items.processors.tankman import TankmanChangeRole
+from gui.shared.gui_items.serializers import packTankman
+from gui.shared.money import Currency
+from gui.shared.money import Money
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
+from gui.shared.tooltips.formatters import packActionTooltipData
+from gui.shared.utils import decorators, isVehicleObserver
+from gui.shared.utils.functions import makeTooltip
+from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from gui.shop import showBuyGoldForCrew
+from helpers import dependency
+from helpers.i18n import makeString as _ms
 from items import tankmen
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from nations import NAMES
-from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+
 
 def _getTankmanVO(tankman):
     packedTankman = packTankman(tankman, isCountPermanentSkills=False)
@@ -136,7 +137,7 @@ class RoleChangeWindow(RoleChangeMeta):
 
         self.as_setRolesS(data)
 
-    @decorators.process('changingRole')
+    @decorators.adisp_process('changingRole')
     def changeRole(self, role, vehicleId):
         changeRoleCost = self.itemsCache.items.shop.changeRoleCost
         actualGold = self.itemsCache.items.stats.gold

@@ -1,11 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/festivity/base.py
-from collections import namedtuple
 import logging
+from collections import namedtuple
 from pprint import pformat
+
 import BigWorld
-from adisp import async
+from adisp import adisp_async
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
+
 _logger = logging.getLogger(__name__)
 
 def _defaultLogger(*args):
@@ -22,7 +24,7 @@ FestivityQuestsHangarFlag = namedtuple('FestivityQuestsHangarFlag', 'icon, iconD
 class BaseFestivityRequester(AbstractSyncDataRequester):
     dataKey = None
 
-    @async
+    @adisp_async
     def _requestCache(self, callback):
         BigWorld.player().festivities.getCache(lambda resID, value: self._response(resID, value, callback))
 

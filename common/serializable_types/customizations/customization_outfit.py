@@ -27,7 +27,6 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('CustomizationOutfit', 'getAllItemsFromOutfit')
 
-
 def _setComponentsRegion(component, region):
     if hasattr(component, 'appliedTo'):
         setattr(component, 'appliedTo', region)
@@ -46,8 +45,7 @@ def __ignoreItem(itemId, cache, ignoreEmpty, ignoreStyleOnly):
     return False
 
 
-def getAllItemsFromOutfit(cc, outfit, ignoreHiddenCamouflage=True, ignoreEmpty=True, ignoreStyleOnly=True,
-                          skipStyle=False):
+def getAllItemsFromOutfit(cc, outfit, ignoreHiddenCamouflage=True, ignoreEmpty=True, ignoreStyleOnly=True, skipStyle=False):
     result = defaultdict(int)
     for i in outfit.modifications:
         if __ignoreItem(i, cc.modifications, ignoreEmpty, ignoreStyleOnly):
@@ -102,24 +100,20 @@ class CustomizationOutfit(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.OUTFIT
     fields = OrderedDict((('modifications', intArrayField()),
-                          ('paints', customArrayField(PaintComponent.customType)),
-                          ('camouflages', customArrayField(CamouflageComponent.customType)),
-                          ('decals', customArrayField(DecalComponent.customType)),
-                          ('styleId', intField(nonXml=True)),
-                          ('projection_decals', customArrayField(ProjectionDecalComponent.customType)),
-                          ('insignias', customArrayField(InsigniaComponent.customType)),
-                          ('personal_numbers', customArrayField(PersonalNumberComponent.customType)),
-                          ('sequences', customArrayField(SequenceComponent.customType)),
-                          ('attachments', customArrayField(AttachmentComponent.customType)),
-                          ('styleProgressionLevel', intField()),
-                          ('serial_number', strField())))
-    __slots__ = (
-    'modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals', 'insignias', 'personal_numbers',
-    'sequences', 'attachments', 'styleProgressionLevel', 'serial_number')
+     ('paints', customArrayField(PaintComponent.customType)),
+     ('camouflages', customArrayField(CamouflageComponent.customType)),
+     ('decals', customArrayField(DecalComponent.customType)),
+     ('styleId', intField(nonXml=True)),
+     ('projection_decals', customArrayField(ProjectionDecalComponent.customType)),
+     ('insignias', customArrayField(InsigniaComponent.customType)),
+     ('personal_numbers', customArrayField(PersonalNumberComponent.customType)),
+     ('sequences', customArrayField(SequenceComponent.customType)),
+     ('attachments', customArrayField(AttachmentComponent.customType)),
+     ('styleProgressionLevel', intField()),
+     ('serial_number', strField())))
+    __slots__ = ('modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals', 'insignias', 'personal_numbers', 'sequences', 'attachments', 'styleProgressionLevel', 'serial_number')
 
-    def __init__(self, modifications=None, paints=None, camouflages=None, decals=None, projection_decals=None,
-                 personal_numbers=None, styleId=0, insignias=None, sequences=None, attachments=None,
-                 styleProgressionLevel=0, serial_number=None):
+    def __init__(self, modifications=None, paints=None, camouflages=None, decals=None, projection_decals=None, personal_numbers=None, styleId=0, insignias=None, sequences=None, attachments=None, styleProgressionLevel=0, serial_number=None):
         self.modifications = modifications or []
         self.paints = paints or []
         self.camouflages = camouflages or []
@@ -299,7 +293,7 @@ class CustomizationOutfit(SerializableComponent):
 
     def dismountComponents(self, applyArea, dismountTypes=CustomizationType.DISMOUNT_TYPE):
         toMove = defaultdict(int)
-        areas = [i for i in ApplyArea.RANGE if i & applyArea]
+        areas = [ i for i in ApplyArea.RANGE if i & applyArea ]
         for c11nType in dismountTypes:
             if c11nType is CustomizationType.STYLE:
                 continue
@@ -313,7 +307,7 @@ class CustomizationOutfit(SerializableComponent):
                                 continue
                             toMove[(c11nType, component.id)] += 1
 
-                components[:] = [c for c in components if c.appliedTo != 0]
+                components[:] = [ c for c in components if c.appliedTo != 0 ]
             if c11nType == CustomizationType.PROJECTION_DECAL:
                 for projectionDecal in self.projection_decals:
                     toMove[(CustomizationType.PROJECTION_DECAL, projectionDecal.id)] += 1
@@ -342,9 +336,9 @@ class CustomizationOutfit(SerializableComponent):
             if toMove:
                 self.projection_decals = newProjectionDecals
         for regionValue, vehiclePart in ((ApplyArea.HULL_REGIONS_VALUE, vehDescr.hull),
-                                         (ApplyArea.CHASSIS_REGIONS_VALUE, vehDescr.chassis),
-                                         (ApplyArea.TURRET_REGIONS_VALUE, vehDescr.turret),
-                                         (ApplyArea.GUN_REGIONS_VALUE, vehDescr.gun)):
+         (ApplyArea.CHASSIS_REGIONS_VALUE, vehDescr.chassis),
+         (ApplyArea.TURRET_REGIONS_VALUE, vehDescr.turret),
+         (ApplyArea.GUN_REGIONS_VALUE, vehDescr.gun)):
             for componentName, (area, _) in vehiclePart.customizableVehicleAreas.iteritems():
                 components = getattr(self, '{}s'.format(lower(componentName)))
                 componentType = getattr(CustomizationType, upper(componentName))
@@ -373,9 +367,9 @@ class CustomizationOutfit(SerializableComponent):
             if typeId == CustomizationType.STYLE and self.styleId == componentId:
                 result += 1
             elif typeId == CustomizationType.PROJECTION_DECAL:
-                result += len([component for component in self.projection_decals if componentId == component.id])
+                result += len([ component for component in self.projection_decals if componentId == component.id ])
             elif typeId == CustomizationType.PERSONAL_NUMBER:
-                result += len([component for component in self.personal_numbers if componentId == component.id])
+                result += len([ component for component in self.personal_numbers if componentId == component.id ])
             elif typeId == CustomizationType.MODIFICATION and componentId in self.modifications:
                 result += 1
         return result
@@ -399,7 +393,7 @@ class CustomizationOutfit(SerializableComponent):
                         break
 
                 if count != countBefore:
-                    setattr(self, attr, [component for component in outfitComponents if component.appliedTo])
+                    setattr(self, attr, [ component for component in outfitComponents if component.appliedTo ])
             elif typeId in CustomizationType.SIMPLE_TYPES:
                 if typeId == CustomizationType.STYLE and self.styleId == componentId:
                     self.styleId = 0
@@ -428,8 +422,7 @@ class CustomizationOutfit(SerializableComponent):
             item = cache.itemTypes[cid][itemId]
             if cid == CustomizationType.STYLE and item.isRent or item.isProgressive():
                 isNeedRemove = True
-            elif not (
-                    vehType is not None and cid == CustomizationType.DECAL and itemId == vehType.defaultPlayerEmblemID):
+            elif not (vehType is not None and cid == CustomizationType.DECAL and itemId == vehType.defaultPlayerEmblemID):
                 try:
                     getGroupedComponentPrice(gameParams, itemDescr, True)
                 except SoftException:

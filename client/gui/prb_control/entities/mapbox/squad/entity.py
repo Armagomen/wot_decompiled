@@ -10,8 +10,6 @@ from gui.prb_control.entities.mapbox.pre_queue.vehicles_watcher import MapboxVeh
 from gui.prb_control.entities.mapbox.scheduler import MapboxScheduler
 from gui.prb_control.entities.mapbox.squad.action_handler import MapboxSquadActionsHandler
 from gui.prb_control.entities.mapbox.squad.actions_validator import MapboxSquadActionsValidator
-from gui.prb_control.events_dispatcher import g_eventDispatcher
-from gui.prb_control.items import SelectResult
 from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
 from gui.prb_control.storages import prequeue_storage_getter
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
@@ -27,8 +25,7 @@ class MapboxSquadEntryPoint(SquadEntryPoint):
         super(MapboxSquadEntryPoint, self).__init__(FUNCTIONAL_FLAG.MAPBOX, accountsToInvite)
 
     def makeDefCtx(self):
-        return SquadSettingsCtx(PREBATTLE_TYPE.MAPBOX, waitingID='prebattle/create',
-                                accountsToInvite=self._accountsToInvite)
+        return SquadSettingsCtx(PREBATTLE_TYPE.MAPBOX, waitingID='prebattle/create', accountsToInvite=self._accountsToInvite)
 
     def _doCreate(self, unitMgr, ctx):
         unitMgr.createMapboxSquad()
@@ -84,15 +81,6 @@ class MapboxSquadEntity(SquadEntity):
     def getQueueType(self):
         return QUEUE_TYPE.MAPBOX
 
-    def doSelectAction(self, action):
-        name = action.actionName
-        if name == PREBATTLE_ACTION_NAME.MAPBOX_SQUAD:
-            g_eventDispatcher.showUnitWindow(self._prbType)
-            if action.accountsToInvite:
-                self._actionsHandler.processInvites(action.accountsToInvite)
-            return SelectResult(True)
-        return super(MapboxSquadEntity, self).doSelectAction(action)
-
     def getMaxSPGCount(self):
         return self.__restrictedSPGDataProvider.getMaxPossibleVehicles()
 
@@ -135,6 +123,10 @@ class MapboxSquadEntity(SquadEntity):
         if playerID == account_helpers.getAccountDatabaseID():
             self.unit_onUnitRosterChanged()
 
+    @property
+    def _showUnitActionNames(self):
+        return (PREBATTLE_ACTION_NAME.MAPBOX_SQUAD,)
+
     def _createActionsHandler(self):
         return MapboxSquadActionsHandler(self)
 
@@ -147,8 +139,7 @@ class MapboxSquadEntity(SquadEntity):
     def _vehicleStateCondition(self, v):
         if self._isUseSPGValidateRule and v.type == VEHICLE_CLASS_NAME.SPG:
             return self.__restrictedSPGDataProvider.isTagVehicleAvailable()
-        return self.__restrictedScoutDataProvider.isTagVehicleAvailable() if self._isUseScoutValidateRule and v.isScout and v.level in self.getMaxScoutLevels() else super(
-            MapboxSquadEntity, self)._vehicleStateCondition(v)
+        return self.__restrictedScoutDataProvider.isTagVehicleAvailable() if self._isUseScoutValidateRule and v.isScout and v.level in self.getMaxScoutLevels() else super(MapboxSquadEntity, self)._vehicleStateCondition(v)
 
     def _onServerSettingChanged(self, *args, **kwargs):
         self.invalidateVehicleStates()

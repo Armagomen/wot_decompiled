@@ -9,7 +9,6 @@ ZONES_X = 10
 ZONES_Y = 10
 DEATH_ZONE_IDS = range(0, ZONES_X * ZONES_Y)
 
-
 def getZoneIdFromPosition(arenaTypeID, position):
     return Math.getZoneIdFromPosition(*(ArenaType.g_cache[arenaTypeID].boundingBox + (position,)))
 

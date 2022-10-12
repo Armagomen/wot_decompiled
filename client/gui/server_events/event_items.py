@@ -59,8 +59,7 @@ def getGroupTypeByID(groupID):
         return DEFAULTS_GROUPS.MARATHON_QUESTS
     if events_helpers.isPremium(groupID):
         return DEFAULTS_GROUPS.PREMIUM_QUESTS
-    return DEFAULTS_GROUPS.LINKEDSET_QUESTS if events_helpers.isBattleMattersQuestID(
-        groupID) else DEFAULTS_GROUPS.REGULAR_GROUPED_QUESTS
+    return DEFAULTS_GROUPS.LINKEDSET_QUESTS if events_helpers.isBattleMattersQuestID(groupID) else DEFAULTS_GROUPS.REGULAR_GROUPED_QUESTS
 
 
 class CONTITIONS_SCOPE(object):
@@ -421,9 +420,9 @@ class Quest(ServerEventAbstract):
             customization = vehData.get('customization', None)
             if customization is not None:
                 styleData = {'value': 1,
-                             'custType': 'style',
-                             'id': customization.get('styleId', -1),
-                             'customCompensation': customization.get('customCompensation', None)}
+                 'custType': 'style',
+                 'id': customization.get('styleId', -1),
+                 'customCompensation': customization.get('customCompensation', None)}
                 stylesData.append(styleData)
 
         return stylesData
@@ -445,6 +444,10 @@ class Quest(ServerEventAbstract):
 
     def getSuitableVehicles(self):
         return self.vehicleReqs.getSuitableVehicles()
+
+    def hasBonusType(self, bonusType):
+        bonusTypesCond = self.preBattleCond.getConditions().find('bonusTypes')
+        return bonusTypesCond is None or bonusType in bonusTypesCond.getValue()
 
     @staticmethod
     def _bonusDecorator(bonus):

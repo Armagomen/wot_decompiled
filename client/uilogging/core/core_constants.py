@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/uilogging/core/core_constants.py
 from enum import Enum
 
-
 class HttpHeaders(str, Enum):
     AUTH_TOKEN = 'X-TOKEN'
     USER_ID = 'X-SPA-ID'

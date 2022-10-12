@@ -1,18 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/daily_quest_widget.py
-import typing
 from constants import QUEUE_TYPE, DAILY_QUESTS_CONFIG
+from gui.Scaleform.daapi.view.meta.DailyQuestMeta import DailyQuestMeta
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
+from gui.Scaleform.managers import UtilsManager
+from gui.impl.lobby.missions.daily_quests_widget_view import DailyQuestsWidgetView
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.server_events.events_helpers import isDailyQuestsEnable
-from gui.impl.lobby.missions.daily_quests_widget_view import DailyQuestsWidgetView
-from gui.Scaleform.daapi.view.meta.DailyQuestMeta import DailyQuestMeta
-from gui.Scaleform.managers import UtilsManager
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.game_control import IPromoController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
+
 
 class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -27,7 +27,7 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
         return
 
     def onPrbEntitySwitched(self):
-        if not (self._isRandomBattleSelected() or self._isMapboxSelected()):
+        if not (self._isRandomBattleSelected() or self._isMapboxSelected() or self._isComp7Selected()):
             self.__animateHide()
         else:
             self.__showOrHide()
@@ -54,6 +54,9 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
 
     def _isMapboxSelected(self):
         return self.__isQueueSelected(QUEUE_TYPE.MAPBOX)
+
+    def _isComp7Selected(self):
+        return self.__isQueueSelected(QUEUE_TYPE.COMP7)
 
     def __isQueueSelected(self, queueType):
         return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType) if self.prbDispatcher is not None else False
@@ -93,7 +96,7 @@ class DailyQuestWidget(InjectComponentAdaptor, DailyQuestMeta, IGlobalListener):
         self.as_setEnabledS(isEnabled)
 
     def __shouldHide(self):
-        return not isDailyQuestsEnable() or self.promoController.isTeaserOpen() or not (self._isRandomBattleSelected() or self._isMapboxSelected())
+        return not isDailyQuestsEnable() or self.promoController.isTeaserOpen() or not (self._isRandomBattleSelected() or self._isMapboxSelected() or self._isComp7Selected())
 
     def __hasIncompleteQuests(self):
         for quest in self.eventsCache.getDailyQuests().values():

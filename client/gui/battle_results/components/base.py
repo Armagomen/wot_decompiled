@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/base.py
-import typing
-from collections import defaultdict, namedtuple
 import inspect
 import operator
-from soft_exception import SoftException
+from collections import defaultdict, namedtuple
+
 from debug_utils import LOG_WARNING
 from gui.shared.utils.decorators import ReprInjector
+from soft_exception import SoftException
+
 
 class StatsComponent(object):
     __slots__ = ()
@@ -107,6 +108,9 @@ class VOMeta(object):
     def bind(self, clazz):
         setattr(clazz, '__vo_meta__', self.clone())
 
+    def addMeta(self, meta):
+        pass
+
     def getDefault(self, field):
         return None
 
@@ -179,6 +183,9 @@ class DictMeta(VOMeta):
                 vo.update(value)
 
         return vo
+
+    def addMeta(self, meta):
+        self._meta.update(meta)
 
 
 class ListMeta(VOMeta):

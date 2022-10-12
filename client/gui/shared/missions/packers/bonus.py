@@ -3,7 +3,7 @@
 import logging
 import typing
 import constants
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from gui.dog_tag_composer import dogTagComposer
 from gui.impl import backport
 from gui.impl.backport import TooltipData, createTooltipData
@@ -33,8 +33,6 @@ VEHICLE_RENT_ICON_POSTFIX = '_rent'
 BACKPORT_TOOLTIP_CONTENT_ID = R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent()
 if typing.TYPE_CHECKING:
     from frameworks.wulf.view.array import Array
-    from gui.goodies.goodie_items import BoosterUICommon
-    from gui.shared.gui_items.fitting_item import FittingItem
     from gui.shared.gui_items.Vehicle import Vehicle
 _logger = logging.getLogger(__name__)
 
@@ -180,6 +178,8 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
         for tokenID, _ in bonusTokens.iteritems():
             complexToken = parseComplexToken(tokenID)
             tokenType = cls._getTokenBonusType(tokenID, complexToken)
+            if tokenType == '':
+                continue
             tooltipPacker = tooltipPackers.get(tokenType)
             if tooltipPacker is None:
                 _logger.warning('There is not a tooltip creator for a token bonus %s', tokenType)
@@ -201,8 +201,8 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _getTokenBonusPackers(cls):
         return {BATTLE_BONUS_X5_TOKEN: cls.__packBattleBonusX5Token,
-                COMPLEX_TOKEN: cls.__packComplexToken,
-                YEAR_POINTS_TOKEN: cls.__packRankedToken}
+         COMPLEX_TOKEN: cls.__packComplexToken,
+         YEAR_POINTS_TOKEN: cls.__packRankedToken}
 
     @classmethod
     def _packToken(cls, bonusPacker, bonus, *args):
@@ -221,7 +221,7 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def __getTooltipsPackers(cls):
         return {BATTLE_BONUS_X5_TOKEN: TokenBonusFormatter.getBattleBonusX5Tooltip,
-                COMPLEX_TOKEN: cls.__getComplexToolTip,
+         COMPLEX_TOKEN: cls.__getComplexToolTip,
          YEAR_POINTS_TOKEN: cls.__getRankedPointToolTip}
 
     @classmethod
@@ -324,7 +324,7 @@ class GoodiesBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _packSingleBoosterBonus(cls, bonus, booster, count):
-        return cls._packIconBonusModel(bonus, booster.boosterGuiType, count, booster.fullUserName)
+        return cls._packIconBonusModel(bonus, booster.getFullNameForResource(), count, booster.fullUserName)
 
     @classmethod
     def _packSingleDemountKitBonus(cls, bonus, demountkit, count):
@@ -478,12 +478,16 @@ class CustomizationBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _packSingleBonus(cls, bonus, item, label):
-        model = IconBonusModel()
+        model = cls._getBonusModel()
         cls._packCommon(bonus, model)
         model.setValue(str(item.get('value', 0)))
         model.setIcon(str(bonus.getC11nItem(item).itemTypeName))
         model.setLabel(label)
         return model
+
+    @classmethod
+    def _getBonusModel(cls):
+        return IconBonusModel()
 
     @classmethod
     def _getToolTip(cls, bonus):
@@ -524,12 +528,24 @@ class DossierBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _pack(cls, bonus):
         result = []
+        result += cls._packAchievements(bonus)
+        result += cls._packBadges(bonus)
+        return result
+
+    @classmethod
+    def _packAchievements(cls, bonus):
+        result = []
         for achievement in bonus.getAchievements():
             dossierIconName = achievement.getName()
             dossierValue = achievement.getValue()
             dossierLabel = achievement.getUserName()
             result.append(cls._packSingleBonus(bonus, dossierIconName, DOSSIER_ACHIEVEMENT_POSTFIX, dossierValue, dossierLabel))
 
+        return result
+
+    @classmethod
+    def _packBadges(cls, bonus):
+        result = []
         for badge in bonus.getBadges():
             dossierIconName = DOSSIER_BADGE_ICON_PREFIX + str(badge.badgeID)
             dossierValue = 0
@@ -551,9 +567,21 @@ class DossierBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _getToolTip(cls, bonus):
         tooltipData = []
+        tooltipData += cls._getAchievementTooltip(bonus)
+        tooltipData += cls._getBadgeTooltip(bonus)
+        return tooltipData
+
+    @classmethod
+    def _getAchievementTooltip(cls, bonus):
+        tooltipData = []
         for achievement in bonus.getAchievements():
             tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS, specialArgs=[achievement.getBlock(), achievement.getName(), achievement.getValue()]))
 
+        return tooltipData
+
+    @classmethod
+    def _getBadgeTooltip(cls, bonus):
+        tooltipData = []
         for badge in bonus.getBadges():
             tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[badge.badgeID]))
 
@@ -692,7 +720,7 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
         model = BonusModel()
         model.setName(cls._createUIName(bonus, isRent))
         model.setIsCompensation(bonus.isCompensation())
-        model.setLabel(vehicle.userName)
+        model.setLabel(cls._getLabel(vehicle))
         return model
 
     @classmethod
@@ -702,6 +730,10 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _createUIName(cls, bonus, isRent):
         return bonus.getName() + VEHICLE_RENT_ICON_POSTFIX if isRent else bonus.getName()
+
+    @classmethod
+    def _getLabel(cls, vehicle):
+        return vehicle.userName
 
 
 class DogTagComponentsUIPacker(BaseBonusUIPacker):
@@ -799,8 +831,8 @@ class BonusUIPacker(object):
 
 class AsyncBonusUIPacker(BonusUIPacker):
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def requestData(self, bonus, callback=None):
         packer = self._getBonusPacker(bonus.getName())
         if packer:
@@ -812,8 +844,8 @@ class AsyncBonusUIPacker(BonusUIPacker):
         else:
             callback([])
 
-    @async
-    @process
+    @adisp_async
+    @adisp_process
     def requestToolTip(self, bonus, callback=None):
         packer = self._getBonusPacker(bonus.getName())
         if packer.isAsync():

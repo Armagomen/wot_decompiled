@@ -3,7 +3,7 @@
 import logging
 from collections import namedtuple
 from math import ceil
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, List
 from constants import LOOTBOX_TOKEN_PREFIX, PREMIUM_ENTITLEMENTS, RESOURCE_TOKEN_PREFIX
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -35,8 +35,6 @@ from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 if TYPE_CHECKING:
-    from account_helpers.offers.events_data import OfferEventData
-    from gui.goodies.goodie_items import Booster
     from gui.server_events.cond_formatters.formatters import ConditionFormatter
     from gui.shared.gui_items.crew_book import CrewBook
 _logger = logging.getLogger(__name__)
@@ -1430,7 +1428,7 @@ class GoodiesBonusFormatter(SimpleBonusFormatter):
     def _getImages(cls, booster):
         result = {}
         for size in AWARDS_SIZES.ALL():
-            result[size] = RES_ICONS.getBonusIcon(size, booster.boosterGuiType)
+            result[size] = RES_ICONS.getBonusIcon(size, booster.getFullNameForResource())
 
         return result
 
@@ -1457,7 +1455,7 @@ class GoodiesEpicBonusFormatter(GoodiesBonusFormatter):
 
     @classmethod
     def _getImages(cls, booster):
-        return cls._getIcon(booster.boosterGuiType)
+        return cls._getIcon(booster.getFullNameForResource())
 
     @classmethod
     def _getDemountKitImages(cls, demountKit):

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/uilogging/deprecated/bootcamp/log_record.py
 from uilogging.core.log import LogRecord
 
-
 class BootcampLogRecord(LogRecord):
     __slots__ = ()
 

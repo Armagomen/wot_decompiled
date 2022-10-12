@@ -23,7 +23,6 @@ _g_logMapping = {}
 _g_logLock = RLock()
 GCDUMP_CROWBAR_SWITCH = False
 
-
 class LOG_LEVEL:
     DEV = 1
     ST = 2

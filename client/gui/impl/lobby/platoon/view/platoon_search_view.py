@@ -2,25 +2,27 @@
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_search_view.py
 import logging
 import time
-from gui.prb_control import prb_getters
-from helpers.CallbackDelayer import CallbackDelayer
-from skeletons.gui.game_control import IPlatoonController
-from helpers import dependency
-from gui.impl.gen.view_models.views.lobby.platoon.searching_dropdown_model import SearchingDropdownModel
-from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
-from gui.impl.pub import ViewImpl
-from frameworks.wulf import ViewSettings, WindowFlags
-from gui.impl.gen import R
-from gui.impl import backport
-from gui.shared import g_eventBus
-from gui.shared.events import PlatoonDropdownEvent
-from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
-from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, getQueueInfoByQueueType, Position
+
 from PlayerEvents import g_playerEvents
 from UnitBase import UNDEFINED_ESTIMATED_TIME
-from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
-from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
 from constants import QUEUE_TYPE
+from frameworks.wulf import ViewSettings, WindowFlags
+from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.platoon.searching_dropdown_model import SearchingDropdownModel
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
+from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, getQueueInfoByQueueType, Position
+from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
+from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
+from gui.impl.pub import ViewImpl
+from gui.prb_control import prb_getters
+from gui.shared import g_eventBus
+from gui.shared.events import PlatoonDropdownEvent
+from helpers import dependency
+from helpers.CallbackDelayer import CallbackDelayer
+from skeletons.gui.game_control import IPlatoonController
+
 _logger = logging.getLogger(__name__)
 
 class SearchView(ViewImpl, CallbackDelayer):
@@ -31,7 +33,11 @@ class SearchView(ViewImpl, CallbackDelayer):
     def __init__(self):
         settings = ViewSettings(layoutID=R.views.lobby.platoon.SearchingDropdown(), model=SearchingDropdownModel())
         self.__tiersLimitSubview = TiersLimitSubview()
+        self.__prbEntityType = self.__platoonCtrl.getPrbEntityType()
         super(SearchView, self).__init__(settings)
+
+    def getPrbEntityType(self):
+        return self.__prbEntityType
 
     @staticmethod
     def resetState():
@@ -110,15 +116,15 @@ class SearchView(ViewImpl, CallbackDelayer):
     def _setBackgroundImage(self):
         queueType = self.__platoonCtrl.getQueueType()
         backgrounds = R.images.gui.maps.icons.platoon.dropdown_backgrounds
+        background = backgrounds.squad()
         with self.viewModel.transaction() as model:
             if queueType == QUEUE_TYPE.EVENT_BATTLES:
-                model.setBackgroundImage(backport.image(backgrounds.event()))
+                background = backgrounds.event()
             elif queueType == QUEUE_TYPE.EPIC:
-                model.setBackgroundImage(backport.image(backgrounds.epic()))
+                background = backgrounds.epic()
             elif queueType == QUEUE_TYPE.BATTLE_ROYALE:
-                model.setBackgroundImage(backport.image(backgrounds.battle_royale()))
-            else:
-                model.setBackgroundImage(backport.image(backgrounds.standard()))
+                background = backgrounds.battle_royale()
+        model.setBackgroundImage(backport.image(background))
 
 
 class SearchWindow(PreloadableWindow):

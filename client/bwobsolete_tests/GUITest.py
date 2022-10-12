@@ -13,7 +13,6 @@ BigWorld.camera(BigWorld.CursorCamera())
 BigWorld.setCursor(GUI.mcursor())
 GUI.mcursor().visible = True
 
-
 def clear():
     for x in GUI.roots():
         GUI.delRoot(x)

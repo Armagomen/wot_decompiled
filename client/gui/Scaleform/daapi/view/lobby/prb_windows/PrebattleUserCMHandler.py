@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/PrebattleUserCMHandler.py
-from adisp import process
-from gui.Scaleform.locale.MENU import MENU
+from adisp import adisp_process
 from gui.Scaleform.daapi.view.lobby.user_cm_handlers import AppealCMHandler, USER
+from gui.Scaleform.locale.MENU import MENU
 from gui.prb_control.entities.base.legacy.ctx import KickPlayerCtx
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
+
 KICK_FROM_PREBATTLE = 'kickPlayerFromPrebattle'
 
 class PrebattleUserCMHandler(AppealCMHandler, ILegacyListener):
@@ -54,7 +55,7 @@ class PrebattleUserCMHandler(AppealCMHandler, ILegacyListener):
         team = self.prbEntity.getPlayerTeam(playerInfo.accID)
         return self.prbEntity.getPermissions().canKick(team)
 
-    @process
+    @adisp_process
     def _kickPlayerFromPrebattle(self, databaseID):
         playerInfo = self.prbEntity.getPlayerInfoByDbID(databaseID)
         yield self.prbDispatcher.sendPrbRequest(KickPlayerCtx(playerInfo.accID, 'prebattle/kick'))

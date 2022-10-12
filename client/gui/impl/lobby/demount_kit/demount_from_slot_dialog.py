@@ -5,10 +5,12 @@ from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
 from gui.impl.dialogs.sub_views.content.simple_text_content import SimpleTextContent
 from gui.impl.dialogs.sub_views.title.simple_text_title import SimpleTextTitle
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
+from gui.impl.gen.view_models.views.dialogs.template_settings.default_dialog_template_settings import DisplayFlags
 from gui.impl.lobby.demount_kit.demount_kit_utils import getDemountDialogTitle
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
+
 
 class DemountOptionalDeviceFromSlotDialog(DialogTemplateView):
     __slots__ = ('__item', '__forFitting', '__vehicle')
@@ -22,6 +24,7 @@ class DemountOptionalDeviceFromSlotDialog(DialogTemplateView):
 
     def _onLoading(self, *args, **kwargs):
         rDK = R.strings.demount_kit
+        self.setDisplayFlags(DisplayFlags.RESPONSIVEHEADER.value)
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(getDemountDialogTitle(self.__item, forFitting=self.__forFitting, fromSlot=True)))
         self.setSubView(Placeholder.CONTENT, SimpleTextContent(rDK.equipmentDemountFromSlot.confirmation.description))
         self.addButton(ConfirmButton(label=rDK.equipmentDemountFromSlot.confirmation.submit()))

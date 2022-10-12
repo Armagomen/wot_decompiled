@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/gui/impl/lobby/dialogs/full_screen_dialog_view.py
 import logging
 import typing
+
 from PlayerEvents import g_playerEvents
-from async import AsyncScope, AsyncEvent, await, async, BrokenPromiseError, AsyncReturn
+from frameworks.wulf import WindowLayer
 from gui.impl.backport.backport_tooltip import BackportTooltipWindow, createTooltipData
 from gui.impl.dialogs.dialog_template_utils import getCurrencyTooltipAlias
 from gui.impl.gen import R
@@ -17,8 +18,10 @@ from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
+from wg_async import AsyncScope, AsyncEvent, wg_await, wg_async, BrokenPromiseError, AsyncReturn
+
 if typing.TYPE_CHECKING:
-    from frameworks import wulf
+    pass
 TViewModel = typing.TypeVar('TViewModel', bound=FullScreenDialogWindowModel)
 _logger = logging.getLogger(__name__)
 
@@ -32,10 +35,10 @@ class FullScreenDialogBaseView(ViewImpl):
         self.__event = AsyncEvent(scope=self.__scope)
         self.__result = DialogButtons.CANCEL
 
-    @async
+    @wg_async
     def wait(self):
         try:
-            yield await(self.__event.wait())
+            yield wg_await(self.__event.wait())
         except BrokenPromiseError:
             _logger.debug('%s has been destroyed without user decision', self)
 
@@ -147,8 +150,8 @@ class FullScreenDialogWindowWrapper(LobbyWindow):
     __slots__ = ('_wrappedView', '_blur', '_doBlur')
     __gui = dependency.descriptor(IGuiLoader)
 
-    def __init__(self, wrappedView, parent=None, doBlur=True):
-        super(FullScreenDialogWindowWrapper, self).__init__(DialogFlags.TOP_FULLSCREEN_WINDOW, content=wrappedView, parent=parent)
+    def __init__(self, wrappedView, parent=None, doBlur=True, layer=WindowLayer.UNDEFINED):
+        super(FullScreenDialogWindowWrapper, self).__init__(DialogFlags.TOP_FULLSCREEN_WINDOW, content=wrappedView, parent=parent, layer=layer)
         self._wrappedView = wrappedView
         self._blur = None
         self._doBlur = doBlur

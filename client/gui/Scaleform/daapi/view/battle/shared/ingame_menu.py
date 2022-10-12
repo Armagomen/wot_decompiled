@@ -3,15 +3,18 @@
 from functools import partial
 
 import BattleReplay
+import BigWorld
 import constants
 from account_helpers.counter_settings import getCountNewSettings
-from adisp import process
+from adisp import adisp_process
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from bootcamp.Bootcamp import g_bootcamp
 from gui import DialogsInterface, GUI_SETTINGS
 from gui import makeHtmlString
+from gui.Scaleform.daapi.view.battle.shared.premature_leave import showLeaverAliveWindow, showExitWindow, \
+    showLeaverReplayWindow, showComp7LeaverAliveWindow
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
-from gui.Scaleform.daapi.view.dialogs.deserter_meta import IngameDeserterDialogMeta
 from gui.Scaleform.daapi.view.meta.IngameMenuMeta import IngameMenuMeta
 from gui.Scaleform.genConsts.GLOBAL_VARS_MGR_CONSTS import GLOBAL_VARS_MGR_CONSTS
 from gui.Scaleform.genConsts.INTERFACE_STATES import INTERFACE_STATES
@@ -21,6 +24,7 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.battle_control import event_dispatcher as battle_event_dispatcher
+from gui.battle_control.event_dispatcher import showIngameMenu
 from gui.impl.lobby.bootcamp.bootcamp_exit_view import BootcampExitWindow
 from gui.shared import event_dispatcher as shared_event_dispatcher
 from gui.shared import events
@@ -31,6 +35,7 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IServerStatsController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
+from wg_async import wg_async, wg_await
 
 
 class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
@@ -134,47 +139,58 @@ class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
             bootcampLabel = BOOTCAMP.REQUEST_BOOTCAMP_START
         self.as_setMenuButtonsLabelsS(MENU.INGAME_MENU_BUTTONS_HELP, MENU.INGAME_MENU_BUTTONS_SETTINGS, MENU.INGAME_MENU_BUTTONS_BACK, quitLabel, bootcampLabel, bootcampIconSource)
 
-    @process
+    @adisp_process
     def __doLeaveTutorial(self):
         result = yield DialogsInterface.showDialog(I18nConfirmDialogMeta('refuseTraining', focusedID=DIALOG_BUTTON_ID.CLOSE))
         if result:
             self.fireEvent(events.TutorialEvent(events.TutorialEvent.STOP_TRAINING))
             self.destroy()
 
-    @process
+    @wg_async
     def __doLeaveArena(self):
+        self.as_setVisibilityS(False)
         exitResult = self.sessionProvider.getExitResult()
         if exitResult.isDeserter:
-            quitBattleKey = self.__getQuitBattleKey(exitResult.playerInfo)
-            result = yield DialogsInterface.showDialog(IngameDeserterDialogMeta(quitBattleKey + '/deserter', focusedID=DIALOG_BUTTON_ID.CLOSE))
+            isPlayerIGR = self.__isPlayerIGR(exitResult.playerInfo)
+            result = yield wg_await(self.__showLeaverAliveWindow(isPlayerIGR))
         elif BattleReplay.isPlaying():
-            result = yield DialogsInterface.showDialog(I18nConfirmDialogMeta('quitReplay', focusedID=DIALOG_BUTTON_ID.CLOSE))
+            result = yield wg_await(showLeaverReplayWindow())
         else:
-            result = yield DialogsInterface.showDialog(I18nConfirmDialogMeta('quitBattle', focusedID=DIALOG_BUTTON_ID.CLOSE))
+            result = yield wg_await(showExitWindow())
         if result:
             self.__doExit()
+        else:
+            self.destroy()
 
     def __doExit(self):
         self.sessionProvider.exit()
         self.destroy()
 
     @staticmethod
-    def __getQuitBattleKey(playerInfo):
-        igrType = playerInfo.igrType if playerInfo else constants.IGR_TYPE.NONE
-        return 'quitBattleIGR' if constants.IS_KOREA and GUI_SETTINGS.igrEnabled and igrType != constants.IGR_TYPE.NONE else 'quitBattle'
+    def __showLeaverAliveWindow(isPlayerIGR):
+        return showComp7LeaverAliveWindow() if ARENA_BONUS_TYPE_CAPS.checkAny(BigWorld.player().arenaBonusType, ARENA_BONUS_TYPE_CAPS.COMP7) else showLeaverAliveWindow(isPlayerIGR)
 
-    def showBootcampExitWindow(self):
-        window = BootcampExitWindow(partial(self.bootcampController.stopBootcamp, True), True)
-        window.load()
-
-    @process
+    @wg_async
     def __doLeaveBootcamp(self):
-        if g_bootcamp.getLessonNum() == g_bootcamp.getContextIntParameter('lastLessonNum') - 1:
+        if g_bootcamp.getLessonNum() == g_bootcamp.getContextIntParameter('lastLessonNum') - 1 and g_bootcamp.getVersion() != constants.BootcampVersion.SHORT:
+            self.as_setVisibilityS(False)
             exitResult = self.sessionProvider.getExitResult()
-            quitBattleKey = self.__getQuitBattleKey(exitResult.playerInfo)
-            result = yield DialogsInterface.showDialog(IngameDeserterDialogMeta(quitBattleKey + '/deserter', focusedID=DIALOG_BUTTON_ID.CLOSE))
+            if exitResult.isDeserter:
+                isPlayerIGR = self.__isPlayerIGR(exitResult.playerInfo)
+                result = yield wg_await(showLeaverAliveWindow(isPlayerIGR))
+            else:
+                result = yield wg_await(showExitWindow())
             if result:
-                self.showBootcampExitWindow()
+                self.__showBootcampExitWindow()
         else:
-            self.showBootcampExitWindow()
+            self.__showBootcampExitWindow()
         self.destroy()
+
+    @staticmethod
+    def __isPlayerIGR(playerInfo):
+        igrType = playerInfo.igrType if playerInfo else constants.IGR_TYPE.NONE
+        return True if constants.IS_KOREA and GUI_SETTINGS.igrEnabled and igrType != constants.IGR_TYPE.NONE else False
+
+    def __showBootcampExitWindow(self):
+        window = BootcampExitWindow(partial(self.bootcampController.stopBootcamp, True), True, showIngameMenu)
+        window.load()

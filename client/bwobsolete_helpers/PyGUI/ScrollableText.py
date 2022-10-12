@@ -14,7 +14,6 @@ from PyGUIBase import PyGUIBase
 _colourTagLen = len('\\cABCDEFGH;')
 _colourTagRE = re.compile('\\\\[cC][0-9a-fA-F]{8};')
 
-
 def _packColourTag(colour):
     return '\\c%.2x%.2x%.2x%.2x;' % (int(colour[0]),
                                      int(colour[1]),

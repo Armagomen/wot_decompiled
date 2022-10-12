@@ -1,8 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/GoodieResources.py
+from typing import TYPE_CHECKING, TypeVar
 
+from GoodieValue import GoodieValue
+
+if TYPE_CHECKING:
+    pass
 
 class GoodieResource(object):
+    __slots__ = ('_value',)
 
     def __init__(self, value):
         self._value = value
@@ -19,6 +25,13 @@ class GoodieResource(object):
     @property
     def value(self):
         return self._value
+
+    @classmethod
+    def provideCompatibleValueDescr(cls, actualVal, isPercent):
+        return GoodieValue.percent(actualVal) if isPercent else GoodieValue.absolute(actualVal)
+
+    def iterate(self):
+        yield self
 
 
 class Gold(GoodieResource):
@@ -51,15 +64,10 @@ class FreeExperience(GoodieResource):
         super(FreeExperience, self).__init__(value)
 
 
-class ResourceDescription(object):
-    __slots__ = ['resource', 'value']
-
-    def __init__(self, resource, value):
-        self.resource = resource
-        self.value = value
-
-
 class FrontlineExperience(GoodieResource):
 
     def __init__(self, value):
         super(FrontlineExperience, self).__init__(value)
+
+
+GoodieResourceType = TypeVar('GoodieResourceType', bound=GoodieResource)

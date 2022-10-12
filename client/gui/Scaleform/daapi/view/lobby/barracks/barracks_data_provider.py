@@ -8,8 +8,7 @@ from gui.game_control.restore_contoller import getTankmenRestoreInfo
 from gui.impl import backport
 from gui.server_events import recruit_helper
 from gui.shared.formatters import text_styles
-from gui.shared.gui_items import Tankman
-from gui.shared.gui_items.Tankman import getCrewSkinIconSmallWithoutPath
+from gui.shared.gui_items.Tankman import Tankman, getCrewSkinIconSmallWithoutPath
 from gui.shared.gui_items.crew_skin import localizedFullName
 from gui.shared.money import Currency
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
@@ -70,7 +69,6 @@ def _packTankmanData(tankman, itemsCache=None, lobbyContext=None):
      'vehicleType': tankmanVehicle.shortUserName,
      'iconFile': tankman.icon,
      'rankIconFile': tankman.iconRank,
-     'roleIconFile': Tankman.getRoleBigIconPath(tankman.descriptor.role),
      'contourIconFile': tankmanVehicle.iconContour,
      'tankmanID': tankman.invID,
      'nationID': tankman.nationID,
@@ -88,7 +86,9 @@ def _packTankmanData(tankman, itemsCache=None, lobbyContext=None):
      'lockMessage': msg,
      'isInSelfVehicleClass': isInSelfVehicleType,
      'isInSelfVehicleType': isInSelfVehicle,
-     'notRecruited': False}
+     'notRecruited': False,
+     'hasCommanderFeature': tankman.role == Tankman.ROLES.COMMANDER,
+     'roles': tankman.roles()}
     if tankman.skinID != NO_CREW_SKIN_ID and lobbyContext.getServerSettings().isCrewSkinsEnabled():
         skinItem = itemsCache.items.getCrewSkin(tankman.skinID)
         iconFile = getCrewSkinIconSmallWithoutPath(skinItem.getIconID())
@@ -107,7 +107,6 @@ def _packNotRecruitedTankman(recruitInfo):
      'role': text_styles.counter(recruitInfo.getLabel()),
      'vehicleType': '',
      'iconFile': recruitInfo.getBarracksIcon(),
-     'roleIconFile': Tankman.getRoleBigIconPath(roleType) if roleType else '',
      'rankIconFile': '',
      'contourIconFile': '',
      'tankmanID': -1,
@@ -181,7 +180,7 @@ def _packBuyBerthsSlot(itemsCache=None):
 
 
 def _packActiveTankman(tankman):
-    if isinstance(tankman, Tankman.Tankman):
+    if isinstance(tankman, Tankman):
         tankmanData = _packTankmanData(tankman)
         if tankman.isInTank:
             actionBtnLabel = MENU.BARRACKS_BTNUNLOAD

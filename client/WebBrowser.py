@@ -208,10 +208,10 @@ class WebBrowser(object):
             def injectBrowserKeyEvent(me, e):
                 if _BROWSER_KEY_LOGGING:
                     _logger.debug('injectBrowserKeyEvent: %s', (e.key,
-                                                                e.isKeyDown(),
-                                                                e.isAltDown(),
-                                                                e.isShiftDown(),
-                                                                e.isCtrlDown()))
+                     e.isKeyDown(),
+                     e.isAltDown(),
+                     e.isShiftDown(),
+                     e.isCtrlDown()))
                 me.__browser.injectKeyEvent(e)
 
             def injectKeyDown(me, e):
@@ -611,13 +611,12 @@ class WebBrowser(object):
 
     def __onConsoleMessage(self, level, message, lineNumber, source, viewId):
         try:
-            levelEnum = [l for l in LogSeverity if l.value == level][0]
+            levelEnum = [ l for l in LogSeverity if l.value == level ][0]
         except IndexError:
             levelEnum = LogSeverity.disable
 
         if levelEnum != LogSeverity.disable:
-            _webAppLogger.log(_LOG_SEVERITY_TO_LOG_LEVEL_MAP[levelEnum], '%s, line %s, viewId %s: %s', source,
-                              lineNumber, viewId, message)
+            _webAppLogger.log(_LOG_SEVERITY_TO_LOG_LEVEL_MAP[levelEnum], '%s, line %s, viewId %s: %s', source, lineNumber, viewId, message)
 
     def __onChangeAddressBar(self, url):
         self.onChangeAddressBar(url)
@@ -774,7 +773,6 @@ class WebBrowserManager(object):
 
 
 g_mgr = WebBrowserManager()
-
 
 class LL_KEYS(object):
     VK_CANCEL = 3

@@ -1,11 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dog_tags_common/player_dog_tag.py
 import typing
+
 from dog_tags_common.components_config import componentConfigAdapter
-from dog_tags_common.config.common import ComponentViewType
 from soft_exception import SoftException
+
 if typing.TYPE_CHECKING:
-    import Dict
+    pass
 
 class DogTagComponent(object):
 

@@ -37,8 +37,7 @@ class BattleMattersEntryTooltipView(ViewImpl):
             tx.setCurrentQuest(currentQuest.getOrder() if currentQuest else questsCount + 1)
             tx.setQuestsCount(questsCount)
             if isWithToken and self.__battleMattersController.isFinished():
-                tx.setEndDate(self.__itemsCache.items.tokens.getTokenInfo(
-                    self.__battleMattersController.getDelayedRewardCurrencyToken())[0])
+                tx.setEndDate(self.__itemsCache.items.tokens.getTokenInfo(self.__battleMattersController.getDelayedRewardCurrencyToken())[0])
             if currentQuest is not None:
                 tx.setTitle(currentQuest.getUserName())
                 tx.setCondition(currentQuest.getConditionLbl())

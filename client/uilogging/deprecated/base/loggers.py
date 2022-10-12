@@ -6,9 +6,7 @@ from skeletons.ui_logging import IUILoggingCore
 from uilogging.base.logger import _BaseLogger
 from uilogging.constants import LogLevels
 from wotdecorators import noexcept
-
 __all__ = ('BaseLogger', 'isUILoggingEnabled', 'CommonLogger')
-
 
 def isUILoggingEnabled(feature):
     uiLoggingCore = dependency.instance(IUILoggingCore)

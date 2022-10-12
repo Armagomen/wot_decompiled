@@ -13,7 +13,6 @@ from ..view.view import View
 
 _logger = logging.getLogger(__name__)
 
-
 class WindowSettings(object):
     __slots__ = ('__proxy',)
 

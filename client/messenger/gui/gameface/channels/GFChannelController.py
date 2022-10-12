@@ -18,7 +18,6 @@ _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     pass
 
-
 class GFChannelController(IChannelController):
 
     def __init__(self, channel):

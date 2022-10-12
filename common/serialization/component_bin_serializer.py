@@ -4,9 +4,7 @@ import varint
 from constants import IS_EDITOR
 from serialization.definitions import FieldFlags, FieldTypes
 from serialization.exceptions import SerializationException
-
 __all__ = ('ComponentBinSerializer',)
-
 
 class ComponentBinSerializer(object):
 
@@ -40,7 +38,7 @@ class ComponentBinSerializer(object):
         return ''.join(result)
 
     def __serializeArray(self, value, itemType):
-        result = [self.__serialize(item, itemType) for item in value]
+        result = [ self.__serialize(item, itemType) for item in value ]
         return varint.encode(len(value)) + ''.join(result)
 
     def __serializeString(self, value):

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/uilogging/types.py
 import typing
 from enum import Enum
-
 FeatureType = typing.Union[str, Enum]
 GroupType = typing.Union[str, Enum]
 ActionType = typing.Union[str, Enum]

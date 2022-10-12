@@ -1,14 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/goodies_config.py
-import time
 import calendar
 import datetime
+import time
+
 import XmlConfigReader
 from debug_utils import LOG_WARNING
-from goodie_constants import GOODIE_VARIETY
-from . import goodie_helpers
 from items.vehicles import makeVehicleTypeCompDescrByName
 from soft_exception import SoftException
+
+from goodie_constants import GOODIE_VARIETY
+from . import goodie_helpers
+
 _CONFIG_FILE = 'scripts/server_xml/goodies.xml'
 g_cache = None
 
@@ -127,7 +130,7 @@ def _readGoodies(reader, subsectionName):
              autostart,
              condition,
              resource)
-            if price:
+            if price is not None:
                 goodies['prices'][uid] = price
             if notInShop or price is None:
                 goodies['notInShop'].add(uid)

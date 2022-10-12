@@ -2,9 +2,7 @@
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_matters/popovers/battle_matters_filter_popover_view_model.py
 from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
-from gui.impl.gen.view_models.views.lobby.battle_matters.popovers.filter_control_view_model import \
-    FilterControlViewModel
-
+from gui.impl.gen.view_models.views.lobby.battle_matters.popovers.filter_control_view_model import FilterControlViewModel
 
 class BattleMattersFilterPopoverViewModel(ViewModel):
     __slots__ = ('onToggleFilter',)

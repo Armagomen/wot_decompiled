@@ -1,8 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/ClientGoodies.py
 from functools import partial
+
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
+
 
 class ClientGoodies(object):
 
@@ -34,6 +36,9 @@ class ClientGoodies(object):
         if 'cache' in diff:
             clanReservesDiff = diff['cache'].get('activeOrders', {})
             synchronizeDicts(clanReservesDiff, self.__cache.setdefault('clanReserves', {}))
+        pr2ConversionResult = diff.get('pr2_conversion')
+        if pr2ConversionResult is not None:
+            self.__cache['pr2_conversion'] = pr2ConversionResult
         return
 
     def getCache(self, callback=None):

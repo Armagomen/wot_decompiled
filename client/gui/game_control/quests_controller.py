@@ -7,7 +7,7 @@ from constants import EVENT_TYPE, PremiumConfigs
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.server_events.events_helpers import isBattleMattersQuestID, isPremium, isBattleRoyale, isDailyEpic, \
-    isDailyQuest
+    isDailyQuest, isFunRandomQuest
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
@@ -20,6 +20,10 @@ from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     pass
 _MAX_LVL_FOR_TUTORIAL = 3
+
+def _isAvailableForMode(q):
+    return not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(q.getGroupID()) and not isFunRandomQuest(q.getGroupID())
+
 
 class _QuestCache(object):
     __slots__ = ('__invVehicles', '__cache', '__eventsCache')
@@ -178,15 +182,9 @@ class QuestsController(IQuestsController):
             if vehicle.isOnlyForBattleRoyaleBattles:
                 return list(self.__battleRoyaleController.getQuests().values())
         if notCompleted:
-            quests = [q for q in self.getQuestForVehicle(vehicle) if
-                      not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(
-                          q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(
-                          q.getGroupID()) and q.shouldBeShown() and not q.isCompleted()]
+            quests = [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() and not q.isCompleted() ]
             return quests
-        return [q for q in self.getQuestForVehicle(vehicle) if
-                not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(
-                    q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(
-                    q.getGroupID()) and q.shouldBeShown()]
+        return [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() ]
 
     def __invalidateEventsData(self, *args):
         self.__quests.invalidate()

@@ -1,12 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/dialogs/dialog_template_focus.py
 import typing
-from gui.impl.gen.view_models.views.dialogs.dialog_base_focus_view_model import DialogBaseFocusViewModel
+
 from gui.impl.gen.view_models.views.dialogs.dialog_focus_view_model import DialogFocusViewModel
 from gui.impl.pub import ViewImpl
+
 if typing.TYPE_CHECKING:
-    from typing import List, Optional, Union, Dict
-    from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
+    pass
 
 def clampFocusIndex(value, topLimit):
     return -1 if not -1 < value < topLimit else value
@@ -60,7 +60,7 @@ class DialogTemplateFocusingSystem(object):
         self.__currentFocusIndex = DialogFocusViewModel.DEFAULT_FOCUSED_INDEX
         self.__buttonFocusing = None
         self.__indexShifting = {}
-        self.__maxIndex = -1
+        self.__maxIndex = DialogFocusViewModel.NOT_FOCUSED_INDEX
         self.__isStarted = False
         self.__buttonFocusing = ButtonFocusingHandler(self.__dialogTemplateViewModel)
         self.addFocusPresenter(self.__buttonFocusing)
@@ -111,8 +111,10 @@ class DialogTemplateFocusingSystem(object):
             hasFocused = self.__next(isShiftPressed)
 
     def __next(self, backwards):
-        self.__currentFocusIndex = (self.__currentFocusIndex - (int(backwards) * 2 - 1)) % (self.__maxIndex + 1)
         hasFocusedItem = False
+        if self.__maxIndex == DialogFocusViewModel.NOT_FOCUSED_INDEX:
+            return hasFocusedItem
+        self.__currentFocusIndex = (self.__currentFocusIndex - (int(backwards) * 2 - 1)) % (self.__maxIndex + 1)
         for presenter in self.__presenters:
             hasFocusedItem |= self.__setFocus(presenter, self.__currentFocusIndex)
 

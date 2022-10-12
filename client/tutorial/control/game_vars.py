@@ -15,11 +15,7 @@ from skeletons.gui.shared import IItemsCache
 from tutorial.data.conditions import CONDITION_STATE
 from tutorial.logger import LOG_ERROR
 
-__all__ = ('getTutorialsCompleted', 'getRandomBattlesCount', 'getUnlockedItems', 'getFreeVehiclesSlots', 'getFreeXP',
-           'getItemByIntCD', 'getVehicleByIntCD', 'getVehiclesByLevel', 'getPremiumExpiryTime',
-           'getCurrentVehicleLevel', 'isCurrentVehiclePremium', 'getCurrentVehicleViewState', 'getTankmanCurrentPrice',
-           'getTankmanDefaultPrice', 'getItemStateGetter', 'getAttribute')
-
+__all__ = ('getTutorialsCompleted', 'getRandomBattlesCount', 'getUnlockedItems', 'getFreeVehiclesSlots', 'getFreeXP', 'getItemByIntCD', 'getVehicleByIntCD', 'getVehiclesByLevel', 'getPremiumExpiryTime', 'getCurrentVehicleLevel', 'isCurrentVehiclePremium', 'getCurrentVehicleViewState', 'getTankmanCurrentPrice', 'getTankmanDefaultPrice', 'getItemStateGetter', 'getAttribute')
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getTutorialsCompleted(itemsCache=None):
@@ -110,8 +106,7 @@ def _getTankmanPrice(index, prices):
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getTankmanCurrentPrice(index, itemsCache=None, vehLevel=1):
-    return _getTankmanPrice(index, itemsCache.items.shop.getTankmanCostWithGoodyDiscount(
-        vehLevel)) if itemsCache is not None else MONEY_UNDEFINED
+    return _getTankmanPrice(index, itemsCache.items.shop.getTankmanCostWithGoodyDiscount(vehLevel)) if itemsCache is not None else MONEY_UNDEFINED
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -295,7 +290,7 @@ def _isItemInInventory(intCD):
         return vehicle.invID != -1 if vehicle is not None else False
 
 
-def _isCrewSkillLearned(intCD, tankmanRole, skillName):
+def _isAnyCrewSkillLearned(intCD, tankmanRole):
     if intCD is None:
         return False
     else:
@@ -304,10 +299,8 @@ def _isCrewSkillLearned(intCD, tankmanRole, skillName):
             for _, tman in vehicle.crew:
                 if tman.isInTank and tman.vehicleInvID != vehicle.invID:
                     continue
-                if tman.descriptor.role == tankmanRole:
-                    for skill in tman.skills:
-                        if skill.name == skillName:
-                            return True
+                if tman.descriptor.role == tankmanRole and tman.skills:
+                    return True
 
         return False
 
@@ -388,7 +381,7 @@ _ITEM_STATES = {CONDITION_STATE.SELECTED: _isItemSelected,
  CONDITION_STATE.PREMIUM: _isItemPremium,
  CONDITION_STATE.UNLOCKED: _isItemUnlocked,
  CONDITION_STATE.IN_INVENTORY: _isItemInInventory,
- CONDITION_STATE.CREW_HAS_SKILL: _isCrewSkillLearned,
+ CONDITION_STATE.CREW_HAS_ANY_SKILL: _isAnyCrewSkillLearned,
  CONDITION_STATE.XP_ENOUGH: _isItemXPEnough,
  CONDITION_STATE.MONEY_ENOUGH: _isItemMoneyEnough,
  CONDITION_STATE.LEVEL: _isItemLevelEqual,

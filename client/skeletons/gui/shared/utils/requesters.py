@@ -3,7 +3,8 @@
 import typing
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.gui_item_economics import ItemPrice
-    from post_progression_common import VehicleState
+    from gui.shared.utils.requesters import InventoryRequester
+    from gui.veh_post_progression.models.ext_money import ExtendedMoney
 
 
 class IRequester(object):
@@ -357,6 +358,10 @@ class IStatsRequester(IRequester):
         raise NotImplementedError
 
     @property
+    def comp7(self):
+        raise NotImplementedError
+
+    @property
     def tutorialsCompleted(self):
         raise NotImplementedError
 
@@ -707,6 +712,10 @@ class IGoodiesRequester(IRequester):
 
     @property
     def goodies(self):
+        raise NotImplementedError
+
+    @property
+    def pr2ConversionResult(self):
         raise NotImplementedError
 
     def getActiveClanReserves(self):

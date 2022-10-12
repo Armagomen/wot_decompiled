@@ -1,6 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattleTraining/epic_battles_list.py
-from adisp import process
+from adisp import adisp_process
 from constants import PREBATTLE_TYPE
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.lobby.trainings.trainings_list_base import TrainingsListBase
@@ -8,13 +8,14 @@ from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.BATTLE_TYPES import BATTLE_TYPES
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
+from gui.prb_control.entities.epic_battle_training.ctx import JoinEpicBattleTrainingCtx
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
-from gui.prb_control.entities.epic_battle_training.ctx import JoinEpicBattleTrainingCtx
-from gui.impl import backport
-from gui.impl.gen import R
+
 
 class EpicBattlesList(TrainingsListBase):
 
@@ -40,7 +41,7 @@ class EpicBattlesList(TrainingsListBase):
          'descr': backport.text(R.strings.menu.training.description()),
          'battleTypeID': BATTLE_TYPES.EPIC_TRAINING}
 
-    @process
+    @adisp_process
     def joinTrainingRequest(self, prbID):
         yield self.prbDispatcher.join(JoinEpicBattleTrainingCtx(prbID, waitingID='prebattle/join'))
 

@@ -6,27 +6,25 @@ import constants
 from helpers import time_utils
 from uilogging.core.common import getClientBuildVersion, convertEnum
 from uilogging.constants import LogLevels, DEFAULT_LOGGER_NAME
-
 if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(DEFAULT_LOGGER_NAME)
-
 
 class LogRecord(object):
     __slots__ = ('_properties',)
 
     def __init__(self, feature, group, action, level, params):
-        params = {k: convertEnum(v) for k, v in dict(params).iteritems()}
+        params = {k:convertEnum(v) for k, v in dict(params).iteritems()}
         _time = time_utils.getServerUTCTime()
         properties = {'client_version': getClientBuildVersion(),
-                      'key': convertEnum(group),
-                      'loglevel': convertEnum(level),
-                      'time_spent': params.pop('timeSpent', 0),
-                      'action': convertEnum(action),
-                      'realm': constants.CURRENT_REALM,
-                      'feature': convertEnum(feature),
-                      'time': int(_time) if params.pop('__intTime__', False) else _time,
-                      'partner_id': params.pop('partnerID', None)}
+         'key': convertEnum(group),
+         'loglevel': convertEnum(level),
+         'time_spent': params.pop('timeSpent', 0),
+         'action': convertEnum(action),
+         'realm': constants.CURRENT_REALM,
+         'feature': convertEnum(feature),
+         'time': int(_time) if params.pop('__intTime__', False) else _time,
+         'partner_id': params.pop('partnerID', None)}
         duplicates = set(properties) & set(params)
         if duplicates:
             _logger.error('Reserved keys: %s in additional log params.', duplicates)

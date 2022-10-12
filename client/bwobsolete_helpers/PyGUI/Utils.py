@@ -8,7 +8,6 @@ import Math
 
 WHITESPACE = string.whitespace.decode('latin_1')
 
-
 def autoSelectFont(fonts, idealCharactersPerLine, regionWidth, textComponent):
     desiredWidth = regionWidth / float(idealCharactersPerLine)
     smalledDistanceSoFar = 99999999

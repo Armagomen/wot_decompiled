@@ -1,13 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSection.py
+from gui.Scaleform.daapi.view.meta.ProfileSectionMeta import ProfileSectionMeta
+from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
+from gui.Scaleform.locale.PROFILE import PROFILE
 from helpers import dependency
 from helpers import i18n
-from gui.Scaleform.daapi.view.meta.ProfileSectionMeta import ProfileSectionMeta
-from gui.Scaleform.locale.PROFILE import PROFILE
-from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
+
 
 class ProfileSection(ProfileSectionMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -43,7 +44,8 @@ class ProfileSection(ProfileSectionMeta):
          PROFILE_DROPDOWN_KEYS.RANKED_10X10: (False, 'getRanked10x10Stats'),
          PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: (False, 'getEpicRandomStats'),
          PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: (False, 'getBattleRoyaleSoloStats'),
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: (False, 'getBattleRoyaleSquadStats')}
+         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: (False, 'getBattleRoyaleSquadStats'),
+         PROFILE_DROPDOWN_KEYS.COMP7: (False, 'getComp7Stats')}
 
     def __getData(self, battleType, obj):
         data = self.__battleTypeHandlers.get(battleType)

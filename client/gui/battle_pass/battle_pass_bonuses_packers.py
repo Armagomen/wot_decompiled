@@ -23,7 +23,8 @@ from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
 from shared_utils import first
 from skeletons.gui.offers import IOffersDataProvider
 if typing.TYPE_CHECKING:
-    pass
+    from account_helpers.offers.events_data import OfferEventData, OfferGift
+    from gui.shared.gui_items.Vehicle import Vehicle
 _logger = logging.getLogger(__name__)
 
 def getBattlePassBonusPacker():

@@ -2,9 +2,11 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/hint_panel/hint_panel_plugin.py
 from collections import namedtuple
 from datetime import datetime
-from helpers import time_utils
+
 from account_helpers.AccountSettings import HINTS_LEFT, NUM_BATTLES, LAST_DISPLAY_DAY
 from gui.shared.utils.plugins import IPlugin
+from helpers import time_utils
+
 HintData = namedtuple('HintData', ['vKey',
  'key',
  'messageLeft',
@@ -21,8 +23,9 @@ class HintPriority(object):
     HELP = 2
     BATTLE_COMMUNICATION = 3
     QUESTS = 4
-    RADAR = 5
-    SIEGE = 6
+    RESERVES = 5
+    RADAR = 6
+    SIEGE = 7
 
 
 class HintPanelPlugin(IPlugin):

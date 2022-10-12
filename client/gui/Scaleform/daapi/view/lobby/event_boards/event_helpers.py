@@ -37,7 +37,6 @@ from skeletons.gui.shared import IItemsCache
 
 LEVELS_RANGE = range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)
 
-
 class _Task(object):
 
     def __init__(self, event):
@@ -332,9 +331,7 @@ class _TopLeaderboard(object):
             return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTPARTICIPATED))
         if self.__notFull:
             return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTFULL))
-        return text_styles.neutral(
-            _ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTINTOP)) if self.__notInTop else text_styles.main(
-            u'{} {}'.format(_ms(EVENT_BOARDS.TOP_POSITION), self._top.getMyPosition()))
+        return text_styles.neutral(_ms(EVENT_BOARDS.TOP_PARTICIPATION_NOTINTOP)) if self.__notInTop else text_styles.main(u'{} {}'.format(_ms(EVENT_BOARDS.TOP_POSITION), self._top.getMyPosition()))
 
     def __getStatusValue(self):
         event = self._event
@@ -605,25 +602,17 @@ class EventHeader(object):
         finished = event.isFinished()
         if not finished:
             icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_DATE_ICON)
-            timePeriod = u'{} {} {} - {} {} {}'.format(unicode(sday), _ms(MENU.datetime_months(str(smonth))),
-                                                       event_boards_timer.getShortTimeString(event.getStartDate()),
-                                                       unicode(eday), _ms(MENU.datetime_months(str(emonth))),
-                                                       event_boards_timer.getShortTimeString(event.getEndDate()))
+            timePeriod = u'{} {} {} - {} {} {}'.format(unicode(sday), _ms(MENU.datetime_months(str(smonth))), event_boards_timer.getShortTimeString(event.getStartDate()), unicode(eday), _ms(MENU.datetime_months(str(emonth))), event_boards_timer.getShortTimeString(event.getEndDate()))
             result = u'{} {}    '.format(icon, text_styles.vehicleStatusInfoText(timePeriod))
             startSoon = event.isStartSoon()
             if startSoon:
-                result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON,
-                                      EVENT_BOARDS.TIME_TIMETO_START, EVENT_DATE_TYPE.START, startSoon)
+                result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON, EVENT_BOARDS.TIME_TIMETO_START, EVENT_DATE_TYPE.START, startSoon)
             elif not self._joined and not event.isRegistrationFinished():
                 finishSoon = event.isRegistrationFinishSoon()
                 if finishSoon:
-                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON,
-                                          EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE,
-                                          finishSoon)
+                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON, EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE, finishSoon)
                 else:
-                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_ICON_FLAG,
-                                          EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE,
-                                          finishSoon)
+                    result += formatToEnd(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_ICON_FLAG, EVENT_BOARDS.TIME_TIMETO_ENDREGISTRATION, EVENT_DATE_TYPE.PARTICIPANTS_FREEZE, finishSoon)
             else:
                 endSoon = event.isEndSoon()
                 if endSoon:

@@ -6,8 +6,7 @@ from collections import namedtuple
 
 from CurrentVehicle import g_currentVehicle
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
-from adisp import process as adisp_process
-from async import async, await
+from adisp import adisp_process
 from frameworks.wulf import ViewFlags, ViewSettings
 from frameworks.wulf import WindowFlags
 from gui import DialogsInterface
@@ -46,16 +45,17 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_outfit.outfit import Area
+from wg_async import wg_async, wg_await
 
 if typing.TYPE_CHECKING:
     pass
 _logger = logging.getLogger(__name__)
 _SelectItemData = namedtuple('_SelectItemData', ('season',
-                                                 'quantity',
-                                                 'purchaseIndices',
-                                                 'idx',
-                                                 'intCD',
-                                                 'dependents',
+ 'quantity',
+ 'purchaseIndices',
+ 'idx',
+ 'intCD',
+ 'dependents',
  'dependentOn'))
 
 def _getSeasonModel(seasonType, seasons):
@@ -92,8 +92,7 @@ class CartExchangeCreditsInfoItem(InfoItemBase):
 
 
 class CustomizationCartView(ViewImpl):
-    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters', '__items', '__blur', '__moneyState',
-                 '__isProlongStyleRent')
+    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters', '__items', '__blur', '__moneyState', '__isProlongStyleRent')
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __service = dependency.descriptor(ICustomizationService)
@@ -328,9 +327,9 @@ class CustomizationCartView(ViewImpl):
         self.__setTotalData(model)
         return
 
-    @async
+    @wg_async
     def __onBuy(self):
-        positive = yield await(tryToShowReplaceExistingStyleDialog(self))
+        positive = yield wg_await(tryToShowReplaceExistingStyleDialog(self))
         if not positive:
             return
         if self.__moneyState is MoneyForPurchase.NOT_ENOUGH:
@@ -345,7 +344,7 @@ class CustomizationCartView(ViewImpl):
             builder = ResSimpleDialogBuilder()
             builder.setPreset(DialogPresets.CUSTOMIZATION_INSTALL_BOUND)
             builder.setMessagesAndButtons(R.strings.dialogs.customization.buy_install_bound)
-            isOk = yield await(dialogs.showSimple(builder.build(self)))
+            isOk = yield wg_await(dialogs.showSimple(builder.build(self)))
             self.__onBuyConfirmed(isOk)
             return
         self.__onBuyConfirmed(True)

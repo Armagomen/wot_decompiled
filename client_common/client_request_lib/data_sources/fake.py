@@ -12,7 +12,6 @@ from helpers import time_utils
 
 EXAMPLES = {}
 
-
 def _doResponse(callback, result, status_code, response_code):
     callback(result, status_code, response_code, None)
     return
@@ -70,8 +69,8 @@ def get_gift_system_state(req_event_ids):
      'execution_time': current_time - time_utils.ONE_SECOND,
      'expiration_time': current_time + time_utils.ONE_MINUTE,
      'expiration_delta': 5 * time_utils.ONE_MINUTE,
-                  'state': []}
-    return {event_id: event_stub for event_id in req_event_ids}
+     'state': []}
+    return {event_id:event_stub for event_id in req_event_ids}
 
 
 def post_gift_system_gift(*_):
@@ -82,10 +81,10 @@ def post_gift_system_gift(*_):
 
 def get_uilogging_session(*_, **__):
     return {'auth': {'token': 'uilogging_token_stub',
-                     'expiration': time.time() + 86400},
-            'logging': {'max_logs_count': 50,
-                        'max_log_properties_count': 250,
-                        'url': 'https://localhost:81/logging'}}
+              'expiration': time.time() + 86400},
+     'logging': {'max_logs_count': 50,
+                 'max_log_properties_count': 250,
+                 'url': 'https://localhost:81/logging'}}
 
 
 class FakeDataAccessor(base.BaseDataAccessor):
@@ -693,3 +692,12 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def get_uilogging_session(self):
         self._storage.get('uilogging_session', {}).clear()
         return self._request_data('uilogging_session', None)
+
+    @fake_method(example={'data': {'balance': [{'code': 'fake_code',
+                           'amount': 0,
+                           'expires_at': '1970-01-01T00:00:00Z'}],
+              'balance_version': 0,
+              'on_hold': {'granted': [],
+                          'consumed': []}}})
+    def get_inventory_entitlements(self, entitlement_codes):
+        return self._request_data('inventory_entitlements', None)

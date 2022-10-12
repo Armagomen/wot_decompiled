@@ -1,12 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/base_equipment.py
-from async import await, async
 from BWUtil import AsyncReturn
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
 from gui.impl.lobby.tank_setup.interactors.base import BaseInteractor
 from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
 from gui.shared.event_dispatcher import showTankSetupExitConfirmDialog
+from wg_async import wg_await, wg_async
+
 
 class BaseEquipmentInteractor(BaseInteractor):
     __slots__ = ('_installedIndices', '_playerLayout')
@@ -53,9 +54,9 @@ class BaseEquipmentInteractor(BaseInteractor):
     def buyMore(self, itemCD):
         pass
 
-    @async
+    @wg_async
     def showExitConfirmDialog(self):
-        result = yield await(showTankSetupExitConfirmDialog(items=self.getChangedList(), vehicle=self.getItem(), fromSection=self.getName(), startState=BuyAndExchangeStateEnum.BUY_NOT_REQUIRED if not self.getChangedList() else None))
+        result = yield wg_await(showTankSetupExitConfirmDialog(items=self.getChangedList(), vehicle=self.getItem(), fromSection=self.getName(), startState=BuyAndExchangeStateEnum.BUY_NOT_REQUIRED if not self.getChangedList() else None))
         raise AsyncReturn(result)
         return
 

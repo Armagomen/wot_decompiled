@@ -1,14 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/common.py
 import typing
+
 from gui.battle_pass.battle_pass_constants import ChapterState
 from gui.game_control.wallet import WalletController
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
-from skeletons.gui.shared.utils.requesters import IStatsRequester
+
 if typing.TYPE_CHECKING:
-    from typing import Dict
+    pass
 _BATTLE_PASS_CHAPTER_STATE_NAME = {ChapterState.NOT_STARTED: 'not_started',
  ChapterState.PAUSED: 'paused',
  ChapterState.ACTIVE: 'active',
@@ -18,6 +19,7 @@ def formatBalance(stats):
     actualMoney = stats.actualMoney.toDict()
     balanceData = {Currency.currencyExternalName(currency):actualMoney.get(currency, 0) for currency in Currency.ALL}
     balanceData.update(stats.dynamicCurrencies)
+    balanceData['free_xp'] = stats.freeXP
     return balanceData
 
 

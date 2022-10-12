@@ -17,6 +17,5 @@ class MapsTrainingGameMessagesPanel(GameMessagesPanel):
             else:
                 messageType = GAME_MESSAGES_CONSTS.DEFEAT
         endGameMsgData = {'title': backport.text(R.strings.maps_training.finalBattleScreen.dyn(messageType)())}
-        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH,
-                                GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
+        msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH, GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
         self._addMessage(msg.getDict())

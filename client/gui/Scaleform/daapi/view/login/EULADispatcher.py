@@ -1,22 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/EULADispatcher.py
 import ResMgr
+from Event import Event
+from adisp import adisp_async
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION
+from gui import makeHtmlString, GUI_SETTINGS
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.doc_loaders.EULAVersionLoader import EULAVersionLoader
 from gui.shared import EVENT_BUS_SCOPE
+from gui.shared.events import CloseWindowEvent, LoadViewEvent
 from helpers import dependency
 from helpers import getClientLanguage
-from gui import makeHtmlString, GUI_SETTINGS
-from gui.shared.events import CloseWindowEvent, LoadViewEvent
-from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
-from Event import Event
-from adisp import async
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import ISteamCompletionController, IDemoAccCompletionController
 from skeletons.gui.lobby_context import ILobbyContext
+
 VERSION_TAG = 'showLicense'
 EULA_TEMPLATES_FILE_PATH = 'gui/EULA_templates.xml'
 EULA_FILE_PATH = 'text/EULA.xml'
@@ -58,7 +59,7 @@ class EULADispatcher(EventSystemEntity):
         else:
             self.fini()
 
-    @async
+    @adisp_async
     def processLicense(self, callback=None):
         self.EULACallback = callback
         from account_helpers.AccountSettings import AccountSettings, EULA_VERSION

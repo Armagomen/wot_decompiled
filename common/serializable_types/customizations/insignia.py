@@ -11,7 +11,6 @@ from ..types import C11nSerializationTypes
 
 __all__ = ('InsigniaComponent',)
 
-
 class InsigniaComponent(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.INSIGNIA
