@@ -13,9 +13,7 @@ from gui.shared import events, EVENT_BUS_SCOPE
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController
 from skeletons.gui.lobby_context import ILobbyContext
-
 from sound_constants import BROWSER_VIEW_SOUND_SPACES
-
 
 def makeBrowserParams(waitingMessage=R.invalid(), isModal=False, isHidden=False, bgAlpha=1.0, isCloseBtnVisible=False):
     if not waitingMessage:

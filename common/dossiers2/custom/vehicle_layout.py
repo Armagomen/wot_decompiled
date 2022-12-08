@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/custom/vehicle_layout.py
 from dossiers2.common.DossierBlockBuilders import *
-from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
+from battle_statistics_layouts import *
 from dossiers2.custom.dependencies import ACHIEVEMENT15X15_DEPENDENCIES
 from dossiers2.custom.dependencies import ACHIEVEMENT7X7_DEPENDENCIES
 from dossiers2.custom.dependencies import FALLOUT_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import FORT_ACHIEVEMENTS_DEPENDENCIES
 from dossiers2.custom.dependencies import GLOBAL_MAP_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
-
-from battle_statistics_layouts import *
-
+from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
+from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
 TOTAL_BLOCK_LAYOUT = ['creationTime',
  'lastBattleTime',
  'battleLifeTime',

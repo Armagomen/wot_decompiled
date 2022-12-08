@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/visual_script_client/contexts/cgf_context.py
 import weakref
-
 import BigWorld
-from visual_script.context import VScriptContext, vse_get_property, vse_event_out
 from visual_script.misc import ASPECT
 from visual_script.slot_types import SLOT_TYPE
-
+from visual_script.context import VScriptContext, vse_get_property, vse_event_out
 
 class GameObjectWrapper(object):
 

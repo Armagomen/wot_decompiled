@@ -2,8 +2,8 @@
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/base.py
 import typing
 if typing.TYPE_CHECKING:
-    pass
-
+    from typing import Union
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.account_dashboard_model import AccountDashboardModel
 
 class FeatureItem(object):
 

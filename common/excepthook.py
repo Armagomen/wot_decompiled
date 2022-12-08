@@ -1,14 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/excepthook.py
-import linecache
+import BigWorld
 import sys
+import linecache
 from functools import partial
 from traceback import format_exception_only
-
-import BigWorld
-
 from constants import IS_BASEAPP
-
 _MAX_OBJECT_SIZE = 16384
 _MAX_DEPTH = 10
 _SEQUENCE_TYPES = (list, set, tuple)

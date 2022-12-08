@@ -2,12 +2,10 @@
 # Embedded file name: scripts/client/gui/shared/utils/decorators.py
 import time
 from string import join
-
-import BigWorld
 import adisp
+import BigWorld
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.Waiting import Waiting
-
 
 class adisp_process(object):
 

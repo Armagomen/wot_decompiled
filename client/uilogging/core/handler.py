@@ -1,27 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/uilogging/core/handler.py
+import typing
+import json
+import zlib
 import base64
 import binascii
-import json
-import typing
-import zlib
 from functools import wraps, partial
-
 import BigWorld
 from Event import SafeEvent
-from PlayerEvents import g_playerEvents as playerEvents
 from helpers import isPlayerAccount
 from helpers.log.adapters import getWithContext
+from PlayerEvents import g_playerEvents as playerEvents
 from shared_utils import safeCancelCallback
 from uilogging.constants import DEFAULT_LOGGER_NAME, LogLevels
+from uilogging.core.core_constants import LOGS_SEND_PERIOD, LOGS_FORCE_SEND_PERIOD, LOGS_MAX_QUEUE_SIZE, HTTP_DEFAULT_TIMEOUT, HTTP_OK_STATUS, HTTP_SESSION_EXPIRED, DEFAULT_COMPRESSION_LEVEL, FINAL_FLUSH_TIMEOUT, HttpHeaders
+from uilogging.core.log import LogRecord
 from uilogging.core.common import grouper
-from uilogging.core.core_constants import LOGS_SEND_PERIOD, LOGS_FORCE_SEND_PERIOD, LOGS_MAX_QUEUE_SIZE, \
-    HTTP_DEFAULT_TIMEOUT, HTTP_OK_STATUS, HTTP_SESSION_EXPIRED, DEFAULT_COMPRESSION_LEVEL, FINAL_FLUSH_TIMEOUT, \
-    HttpHeaders
 from uilogging.core.session import Session
-
 if typing.TYPE_CHECKING:
-    pass
+    from uilogging.core.session import SessionData
 
 def _ifDestroyed(result=None):
 

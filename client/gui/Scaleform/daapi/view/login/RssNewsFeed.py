@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/RssNewsFeed.py
 import logging
 import uuid
-
 import BigWorld
 import ResMgr
 from adisp import adisp_process, adisp_async
@@ -12,7 +11,6 @@ from gui.game_control.links import URLMacros
 from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.game_control import IExternalLinksController, IBrowserController
-
 _logger = logging.getLogger(__name__)
 
 class RssNewsFeed(RssNewsFeedMeta):

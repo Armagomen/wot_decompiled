@@ -1,34 +1,30 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_bonus_packer.py
-import logging
 import typing
-
+import logging
 from constants import PREMIUM_ENTITLEMENTS
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.impl import backport
 from gui.impl.auxiliary.rewards_helper import BlueprintBonusTypes
+from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
-from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_view_model import \
-    BattleMattersMainViewModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_model import BattleMattersVehicleModel
-from gui.selectable_reward.bonus_packers import SelectableBonusPacker
+from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_view_model import BattleMattersMainViewModel
 from gui.selectable_reward.constants import SELECTABLE_BONUS_NAME
-from gui.server_events.bonuses import VehiclesBonus, BlueprintsBonusSubtypes
+from gui.selectable_reward.bonus_packers import SelectableBonusPacker
+from gui.shared.missions.packers.bonus import VehiclesBonusUIPacker, getDefaultBonusPackersMap, BonusUIPacker, BlueprintBonusUIPacker
 from gui.shared.gui_items.Vehicle import getIconResourceName
 from gui.shared.gui_items.Vehicle import getNationLessName
-from gui.shared.missions.packers.bonus import BaseBonusUIPacker
-from gui.shared.missions.packers.bonus import VehiclesBonusUIPacker, getDefaultBonusPackersMap, BonusUIPacker, \
-    BlueprintBonusUIPacker
 from gui.shared.money import Currency
-from helpers import dependency
+from gui.server_events.bonuses import VehiclesBonus, BlueprintsBonusSubtypes
 from nations import NONE_INDEX
-from shared_utils import first
+from helpers import dependency
 from skeletons.gui.battle_matters import IBattleMattersController
-
+from shared_utils import first
+from gui.shared.missions.packers.bonus import BaseBonusUIPacker
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.gui_items.Vehicle import Vehicle
 _logger = logging.getLogger(__name__)
 _REWARDS_ORDER = ('vehicles',
  'battleToken',

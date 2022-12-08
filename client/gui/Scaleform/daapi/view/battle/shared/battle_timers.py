@@ -1,23 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/battle_timers.py
 import logging
-
-import CommandMapping
 import SoundGroups
-from PlayerEvents import g_playerEvents
+import CommandMapping
 from constants import ARENA_GUI_TYPE
+from PlayerEvents import g_playerEvents
 from gui.Scaleform.daapi.view.meta.BattleTimerMeta import BattleTimerMeta
 from gui.Scaleform.daapi.view.meta.PrebattleTimerMeta import PrebattleTimerMeta
 from gui.Scaleform.genConsts.PREBATTLE_TIMER import PREBATTLE_TIMER
-from gui.battle_control.battle_constants import COUNTDOWN_STATE
-from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.battle_control.battle_constants import COUNTDOWN_STATE
+from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.shared import events, EVENT_BUS_SCOPE
-from gui.shared.utils.key_mapping import getReadableKey
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.shared.utils.key_mapping import getReadableKey
 
 class _WWISE_EVENTS(object):
     BATTLE_ENDING_SOON = 'time_buzzer_02'

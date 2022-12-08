@@ -4,15 +4,13 @@ import logging
 import time
 import typing
 import weakref
-
 import BigWorld
 import SoundGroups
-import wg_async as future_async
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
-from account_helpers.account_validator import ValidationCodes, InventoryVehiclesValidator, InventoryOutfitValidator, \
-    InventoryTankmenValidator
+from account_helpers.account_validator import ValidationCodes, InventoryVehiclesValidator, InventoryOutfitValidator, InventoryTankmenValidator
 from adisp import adisp_process
+import wg_async as future_async
 from constants import HAS_DEV_RESOURCES
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG
 from gui import SystemMessages, g_guiResetters, miniclient
@@ -32,7 +30,7 @@ from gui.shared.items_parameters.params_cache import g_paramsCache
 from gui.shared.utils import requesters
 from gui.shared.view_helpers.UsersInfoHelper import UsersInfoHelper
 from gui.wgnc import g_wgncProvider
-from helpers import isPlayerAccount, time_utils, dependency
+from helpers import isPlayerAccount, time_utils, dependency, uniprof
 from helpers.blueprint_generator import g_blueprintGenerator
 from helpers.statistics import HANGAR_LOADING_STATE
 from skeletons.account_helpers.settings_core import ISettingsCache, ISettingsCore
@@ -52,9 +50,8 @@ from skeletons.gui.shared.utils import IHangarSpace, IRaresCache
 from skeletons.gui.sounds import ISoundsController
 from skeletons.gui.web import IWebController
 from skeletons.helpers.statistics import IStatisticsCollector
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.goodies.booster_state_provider import BoosterStateProvider
 _logger = logging.getLogger(__name__)
 try:
     from gui import mods
@@ -223,6 +220,8 @@ def onShopResync():
 
 
 def onCenterIsLongDisconnected(isLongDisconnected):
+    if not BigWorld.player():
+        return
     isAvailable = not BigWorld.player().isLongDisconnectedFromCenter
     if isAvailable and not isLongDisconnected:
         SystemMessages.pushI18nMessage(MENU.CENTERISAVAILABLE, type=SystemMessages.SM_TYPE.Information)
@@ -320,6 +319,7 @@ def fini():
 
 
 def onConnected():
+    uniprof.enterToRegion('client.loading')
     ServicesLocator.statsCollector.noteHangarLoadingState(HANGAR_LOADING_STATE.CONNECTED)
     guiModsSendEvent('onConnected')
     ServicesLocator.gameState.onConnected()

@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/persistent_caches.py
-import base64
+import weakref
 import cPickle
 import os
-import weakref
-
+import base64
 import BigWorld
 import constants
-from external_strings_utils import unicode_from_utf8
 from soft_exception import SoftException
-
+from external_strings_utils import unicode_from_utf8
 
 class SimpleCache(object):
 

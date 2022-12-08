@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/shop.py
 import logging
 from collections import namedtuple
-
 from adisp import adisp_process
 from constants import GameSeasonType, RentType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -19,7 +18,6 @@ from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.game_control import ITradeInController
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 _ProductInfo = namedtuple('_ProductInfo', ('price', 'href', 'method'))
 SHOP_RENT_TYPE_MAP = {RentType.NO_RENT: 'none',

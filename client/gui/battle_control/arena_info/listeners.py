@@ -3,7 +3,6 @@
 import operator
 import weakref
 from collections import namedtuple
-
 import BigWorld
 from constants import ARENA_PERIOD, FINISH_REASON
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -14,7 +13,6 @@ from gui.battle_control.battle_constants import WinStatus
 from gui.prb_control import prbInvitesProperty
 from messenger.m_constants import USER_ACTION_ID, USER_TAG
 from messenger.proto.events import g_messengerEvents
-
 
 class _PeriodAdditionalInfo(namedtuple('_PeriodAdditionalInfo', ['winStatus', 'winnerTeam', 'finishReason'])):
 

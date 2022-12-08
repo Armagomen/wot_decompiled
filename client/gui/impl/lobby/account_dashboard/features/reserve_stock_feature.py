@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/reserve_stock_feature.py
 import typing
-
 from constants import PremiumConfigs, PREMIUM_TYPE
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.lobby.account_dashboard.features.base import FeatureItem
@@ -12,9 +11,8 @@ from helpers import dependency
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.reserve_stock_model import ReserveStockModel
 
 class ReserveStockFeature(FeatureItem):
     _itemsCache = dependency.descriptor(IItemsCache)

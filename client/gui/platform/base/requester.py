@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/base/requester.py
-import sys
 import typing
-
+import sys
 import wg_async
 from BWUtil import AsyncReturn
 from gui.Scaleform.Waiting import Waiting
@@ -10,9 +9,8 @@ from gui.platform.base import logger
 from gui.platform.base.request import Request
 from gui.platform.base.settings import REQUEST_TIMEOUT
 from ids_generators import SequenceIDGenerator
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.base.request import Params
 
 class Pending(object):
     __slots__ = ('_event', '_request', '_response', '_logger')

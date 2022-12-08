@@ -2,23 +2,23 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/offer_gift_vehicle_preview.py
 import logging
 from functools import partial
-
+import typing
 from CurrentVehicle import g_currentPreviewVehicle
 from constants import RentType
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import getDataOneVehicle, addBuiltInEquipment
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
+from gui.Scaleform.framework.entities import BaseDAAPIComponent
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.impl.lobby.offers.offer_gift_dialog import RENT_VALUE_DESCR_BY_TYPE
 from gui.shared import event_dispatcher, formatters
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeGroup
-
+from gui.impl import backport
+from gui.impl.gen import R
 _logger = logging.getLogger(__name__)
 CREW_LVL_BY_TYPE = {ItemPackType.CREW_50: '50%',
  ItemPackType.CREW_75: '75%',

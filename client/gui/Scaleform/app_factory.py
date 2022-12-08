@@ -2,28 +2,28 @@
 # Embedded file name: scripts/client/gui/Scaleform/app_factory.py
 import logging
 import weakref
-
 import BattleReplay
 from constants import ARENA_GUI_TYPE
-from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
+from frameworks.wulf import WindowFlags
 from gui import GUI_SETTINGS
+from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
+from gui.shared.system_factory import collectScaleformLobbyPackages, collectScaleformBattlePackages
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.Scaleform.daapi.settings import config as sf_config
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.waiting_worker import WaitingWorker
 from gui.Scaleform.framework.package_layout import PackageImporter
 from gui.Scaleform.lobby_entry import LobbyEntry
 from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
-from gui.Scaleform.waiting_worker import WaitingWorker
 from gui.app_loader import settings as app_settings
 from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.system_factory import collectScaleformLobbyPackages, collectScaleformBattlePackages
 from helpers import dependency
 from shared_utils import AlwaysValidObject
 from skeletons.gui.app_loader import IAppFactory
 from skeletons.gui.game_control import IBootcampController
-
+from skeletons.gui.impl import IGuiLoader
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _SPACE = app_settings.APP_NAME_SPACE
@@ -55,8 +55,9 @@ class EmptyAppFactory(AlwaysValidObject, IAppFactory):
 
 
 class AS3_AppFactory(IAppFactory):
-    __slots__ = ('__apps', '__packages', '__importer', '__waiting', '__ctrlModeFlags', '__weakref__')
+    __slots__ = ('__apps', '__packages', '__importer', '__waiting', '__ctrlModeFlags', '__weakref__', '__gui')
     bootcampCtrl = dependency.descriptor(IBootcampController)
+    __gui = dependency.descriptor(IGuiLoader)
 
     def __init__(self):
         super(AS3_AppFactory, self).__init__()
@@ -256,12 +257,16 @@ class AS3_AppFactory(IAppFactory):
          'guiControlsLobbyDynamic.swf',
          'guiControlsLobbyDynamic2.swf',
          'popovers.swf',
-         'iconLibrary.swf']
+         'iconLibrary.swf',
+         'ub_lootboxes.swf',
+         'ub_newYear1.swf',
+         'animations/fadeWindow/fadeWindow.swf']
         if self.bootcampCtrl.isInBootcamp():
             libs.extend(['BCGuiControlsLobbyBattle.swf', 'BCGuiControlsLobby.swf'])
         app.as_loadLibrariesS(libs)
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY)), EVENT_BUS_SCOPE.LOBBY)
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_VEHICLE_MARKER_VIEW)), EVENT_BUS_SCOPE.LOBBY)
+        mainWindow = self.getMainWindow()
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY, parent=mainWindow)), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_VEHICLE_MARKER_VIEW, parent=mainWindow)), EVENT_BUS_SCOPE.LOBBY)
 
     def loadBattlePage(self, appNS, arenaGuiType=ARENA_GUI_TYPE.UNKNOWN):
         if appNS != _SPACE.SF_BATTLE:
@@ -298,30 +303,40 @@ class AS3_AppFactory(IAppFactory):
             app.setVisible(isActive)
             app.active(isActive)
 
+    @classmethod
+    def getMainWindow(cls):
+        windows = cls.__gui.windowsManager.findWindows(lambda w: w.typeFlag == WindowFlags.MAIN_WINDOW)
+        if not windows:
+            _logger.error('The mian window does not exist')
+            return None
+        else:
+            return windows[0]
+
     @staticmethod
     def _loadBattlePage(arenaGuiType):
         if arenaGuiType == ARENA_GUI_TYPE.TUTORIAL:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.TUTORIAL_BATTLE_PAGE))
+            alias = VIEW_ALIAS.TUTORIAL_BATTLE_PAGE
         elif arenaGuiType in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING):
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.EPIC_RANDOM_PAGE))
+            alias = VIEW_ALIAS.EPIC_RANDOM_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.RANKED:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.RANKED_BATTLE_PAGE))
+            alias = VIEW_ALIAS.RANKED_BATTLE_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.BATTLE_ROYALE:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BATTLE_ROYALE_PAGE))
+            alias = VIEW_ALIAS.BATTLE_ROYALE_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.BOOTCAMP:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BOOTCAMP_BATTLE_PAGE))
+            alias = VIEW_ALIAS.BOOTCAMP_BATTLE_PAGE
         elif arenaGuiType in ARENA_GUI_TYPE.EPIC_RANGE:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.EPIC_BATTLE_PAGE))
+            alias = VIEW_ALIAS.EPIC_BATTLE_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.EVENT_BATTLES:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.EVENT_BATTLE_PAGE))
+            alias = VIEW_ALIAS.EVENT_BATTLE_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.MAPS_TRAINING:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MAPS_TRAINING_PAGE))
+            alias = VIEW_ALIAS.MAPS_TRAINING_PAGE
         elif arenaGuiType in ARENA_GUI_TYPE.STRONGHOLD_RANGE:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.STRONGHOLD_BATTLE_PAGE))
+            alias = VIEW_ALIAS.STRONGHOLD_BATTLE_PAGE
         elif arenaGuiType == ARENA_GUI_TYPE.COMP7:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.COMP7_BATTLE_PAGE))
+            alias = VIEW_ALIAS.COMP7_BATTLE_PAGE
         else:
-            event = events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.CLASSIC_BATTLE_PAGE))
+            alias = VIEW_ALIAS.CLASSIC_BATTLE_PAGE
+        event = events.LoadViewEvent(SFViewLoadParams(alias, parent=AS3_AppFactory.getMainWindow()))
         g_eventBus.handleEvent(event, EVENT_BUS_SCOPE.BATTLE)
 
     @staticmethod

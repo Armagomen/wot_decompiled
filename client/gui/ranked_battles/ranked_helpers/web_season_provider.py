@@ -1,18 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/web_season_provider.py
+from collections import namedtuple
 import logging
 import time
-from collections import namedtuple
-
 import BigWorld
 import Event
 import constants
 from adisp import adisp_process
-from gui.wgcg.rank.contexts import RankedPositionCtx
 from helpers import dependency
 from helpers.time_utils import ONE_MINUTE
 from skeletons.gui.web import IWebController
-
+from gui.wgcg.rank.contexts import RankedPositionCtx
 _logger = logging.getLogger(__name__)
 _WEB_AVAILABLE_SYNC_TIME = 2
 _LEAGUE_SYNC_TIME = 2 * ONE_MINUTE

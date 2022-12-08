@@ -3,21 +3,19 @@
 import logging
 import re
 import typing
-
 import BigWorld
 from Event import Event
+from wg_async import wg_async, wg_await, AsyncScope, AsyncEvent, BrokenPromiseError
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.account_completion.common.field_name_model import FieldNameModel, \
-    NameStateEnum
+from gui.impl.gen.view_models.views.lobby.account_completion.common.field_name_model import FieldNameModel, NameStateEnum
 from gui.impl.lobby.account_completion.common import errors
 from gui.impl.lobby.account_completion.common.field_presenters import BaseFieldPresenter
 from helpers import dependency
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
-from wg_async import wg_async, wg_await, AsyncScope, AsyncEvent, BrokenPromiseError
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, List
+    from gui.platform.wgnp.demo_account.request import ValidateNicknameParams
 _NAME_PATTERN = re.compile('^[a-z0-9_]+$', re.I)
 _VALIDATION_DELAY = 3.0
 _VALIDATE_NOW_DELAY = 0.1

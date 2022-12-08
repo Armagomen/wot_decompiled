@@ -3,23 +3,20 @@
 import logging
 import typing
 from collections import namedtuple
-
 import BigWorld
-import adisp
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
 from Event import Event
 from Math import Matrix
-from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION, CAROUSEL_ARROWS_HINT_SHOWN_FIELD, \
-    IS_CUSTOMIZATION_INTRO_VIEWED
-from constants import NC_MESSAGE_PRIORITY
+from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION, CAROUSEL_ARROWS_HINT_SHOWN_FIELD, IS_CUSTOMIZATION_INTRO_VIEWED
+import adisp
+from wg_async import wg_async, wg_await
 from gui import g_tankActiveCamouflage, SystemMessages
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
-from gui.Scaleform.daapi.view.lobby.customization.shared import getEmptyRegions, checkSlotsFilling, CustomizationTabs, \
-    getItemTypesAvailableForVehicle, BillPopoverButtons
+from gui.Scaleform.daapi.view.lobby.customization.shared import getEmptyRegions, checkSlotsFilling, CustomizationTabs, getItemTypesAvailableForVehicle, BillPopoverButtons
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS, C11N_SOUND_SPACE
 from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HeaderMenuVisibilityState
 from gui.Scaleform.daapi.view.meta.CustomizationMainViewMeta import CustomizationMainViewMeta
@@ -33,8 +30,7 @@ from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import chooseMode, appliedToFromSlotsIds, C11nId, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, \
-    SEASON_TYPE_TO_IDX, SEASONS_ORDER, getTotalPurchaseInfo, containsVehicleBound, isVehicleCanBeCustomized
+from gui.customization.shared import chooseMode, appliedToFromSlotsIds, C11nId, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, SEASON_TYPE_TO_IDX, SEASONS_ORDER, getTotalPurchaseInfo, containsVehicleBound, isVehicleCanBeCustomized
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl import backport
 from gui.impl.dialogs import dialogs
@@ -66,10 +62,9 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_outfit.outfit import Area
-from wg_async import wg_async, wg_await
-
+from constants import NC_MESSAGE_PRIORITY
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 _logger = logging.getLogger(__name__)
 
 class _ModalWindowsPopupHandler(IViewLifecycleHandler):
@@ -311,7 +306,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
                 self.__initAnchorsPositionsCallback = BigWorld.callback(0.0, self.__initAnchorsPositions)
                 return
         self.__setAnchorsInitData()
-        self.__locateCameraToCustomizationPreview(updateTankCentralPoint=True, forceLocate=True)
+        if not self.__styleInfo.visible:
+            self.__resetCustomizationCamera()
         return
 
     def onBuyConfirmed(self, isOk):
@@ -321,7 +317,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             self.__applyItems(purchaseItems)
         else:
             self.changeVisible(True)
-            self.__locateCameraToCustomizationPreview()
+            self.__resetCustomizationCamera()
             self.service.resumeHighlighter()
 
     def onButtonPressed(self, name):
@@ -424,7 +420,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             highlightingMode = chooseMode(slotType, modeId, g_currentVehicle.item)
             self.service.startHighlighter(highlightingMode)
         if self.__ctx.c11nCameraManager is not None:
-            self.__locateCameraToCustomizationPreview(preserveAngles=True)
+            self.__resetCustomizationCamera()
         self.__setAnchorsInitData()
         self.__updateAnchorsData()
         self.__updateDnd()
@@ -604,11 +600,11 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
                 self.__ctx.vehicleAnchorsUpdater.onCameraLocated(self.__selectedSlot)
             return
 
-    def __locateCameraToCustomizationPreview(self, **kwargs):
+    def __resetCustomizationCamera(self):
         if self.__ctx.c11nCameraManager is None:
             return
         else:
-            self.__ctx.c11nCameraManager.locateCameraToCustomizationPreview(**kwargs)
+            self.__ctx.c11nCameraManager.resetCustomizationCamera()
             self.__selectedSlot = C11nId()
             self.__propertiesSheet.locateToCustomizationPreview()
             self.__ctx.vehicleAnchorsUpdater.onCameraLocated()
@@ -742,6 +738,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         self.__ctx.events.onHideStyleInfo += self.__onHideStyleInfo
         self.__ctx.events.onEditModeEnabled += self.__onEditModeEnabled
         self.__ctx.events.onGetItemBackToHand += self.__onGetItemBackToHand
+        self.__ctx.events.onCloseWindow += self.onCloseWindow
         self.__ctx.events.onSlotSelected += self.__onSlotSelected
         self.__ctx.events.onSlotUnselected += self.__onSlotUnselected
         self.__ctx.events.onAnchorsStateChanged += self.__onAnchorsStateChanged
@@ -764,8 +761,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
          'setIdle': True,
          'setParallax': True}), scope=EVENT_BUS_SCOPE.LOBBY)
         self.fireEvent(events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.TOGGLE_VISIBILITY, ctx={'state': HeaderMenuVisibilityState.ONLINE_COUNTER}), EVENT_BUS_SCOPE.LOBBY)
-        if self.__ctx.c11nCameraManager is not None:
-            self.__ctx.c11nCameraManager.locateCameraToCustomizationPreview(forceLocate=True)
         self.__renderEnv = BigWorld.CustomizationEnvironment()
         self.__renderEnv.enable(True)
         if self.__ctx.vehicleAnchorsUpdater is not None:
@@ -799,13 +794,10 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         if entity and entity.appearance:
             entity.appearance.loadState.unsubscribe(self.__onVehicleLoadFinished, self.__onVehicleLoadStarted)
             entity.appearance.turretRotator.onTurretRotated -= self.__onTurretAndGunRotated
-        self.fireEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.RESET_VEHICLE_MODEL_TRANSFORM), scope=EVENT_BUS_SCOPE.LOBBY)
         self.fireEvent(events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.TOGGLE_VISIBILITY, ctx={'state': HeaderMenuVisibilityState.ALL}), EVENT_BUS_SCOPE.LOBBY)
         self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False,
          'setIdle': True,
          'setParallax': True}), scope=EVENT_BUS_SCOPE.LOBBY)
-        if self.__ctx.c11nCameraManager is not None:
-            self.__ctx.c11nCameraManager.locateCameraToStartState()
         if self.__styleInfo is not None:
             self.__styleInfo.disableBlur()
             self.__disableStyleInfoSound()
@@ -847,6 +839,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         self.__ctx.events.onHideStyleInfo -= self.__onHideStyleInfo
         self.__ctx.events.onEditModeEnabled -= self.__onEditModeEnabled
         self.__ctx.events.onGetItemBackToHand -= self.__onGetItemBackToHand
+        self.__ctx.events.onCloseWindow -= self.onCloseWindow
         self.__ctx.events.onSlotSelected -= self.__onSlotSelected
         self.__ctx.events.onSlotUnselected -= self.__onSlotUnselected
         self.__ctx.events.onAnchorsStateChanged -= self.__onAnchorsStateChanged
@@ -856,6 +849,9 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
         if self.__initAnchorsPositionsCallback is not None:
             BigWorld.cancelCallback(self.__initAnchorsPositionsCallback)
             self.__initAnchorsPositionsCallback = None
+        exitCallback = self.__ctx.getExitCallback()
+        if exitCallback is not None:
+            exitCallback.destroy()
         super(MainView, self)._dispose()
         self.__ctx = None
         self.service.closeCustomization()
@@ -989,15 +985,13 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             item = self.__ctx.mode.getItemFromSlot(slotId)
             if item is not None:
                 self.__locateCameraOnAnchor(slotId)
-            else:
-                self.__locateCameraToCustomizationPreview(preserveAngles=True)
         else:
             self.__locateCameraOnAnchor(slotId)
         self.__updateDnd()
         return
 
     def __onSlotUnselected(self):
-        self.__locateCameraToCustomizationPreview(preserveAngles=True)
+        self.__resetCustomizationCamera()
         self.__updateAnchorsData()
         if self.__ctx.mode.isRegion:
             self.service.selectRegions(ApplyArea.NONE)
@@ -1160,7 +1154,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             if toBuyWindow:
                 self.changeVisible(False)
             else:
-                self.__locateCameraToCustomizationPreview()
+                self.__resetCustomizationCamera()
                 self.service.resumeHighlighter()
             self.__styleInfo.hide()
             return
@@ -1194,7 +1188,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
             self.__ctx.mode.unselectItem()
             self.__ctx.mode.unselectSlot()
             if self.__ctx.c11nCameraManager is not None and self.__ctx.c11nCameraManager.isStyleInfo():
-                self.__locateCameraToCustomizationPreview(preserveAngles=True)
+                self.__resetCustomizationCamera()
             self.service.resumeHighlighter()
             return
 

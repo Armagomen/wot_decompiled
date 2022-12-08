@@ -1,53 +1,51 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/epic_meta_game_ctrl.py
-import logging
-import typing
 from operator import itemgetter
-
+import typing
+import logging
 import BigWorld
-import Event
 import WWISE
-from CurrentVehicle import g_currentVehicle
-from account_helpers.AccountSettings import AccountSettings, GUI_START_BEHAVIOR
-from account_helpers.settings_core.settings_constants import GRAPHICS
-from adisp import adisp_async, adisp_process
+import Event
 from constants import ARENA_BONUS_TYPE, PREBATTLE_TYPE, QUEUE_TYPE, Configs
-from epic_constants import EPIC_SELECT_BONUS_NAME, EPIC_CHOICE_REWARD_OFFER_GIFT_TOKENS, LEVELUP_TOKEN_TEMPLATE
-from gui import DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import EpicBattleScreens
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.game_control.links import URLMacros
-from gui.prb_control.dispatcher import g_prbLoader
-from gui.prb_control.entities.listener import IGlobalListener
-from gui.prb_control.settings import FUNCTIONAL_FLAG
 from gui.shared import event_dispatcher, EVENT_BUS_SCOPE, events, g_eventBus
-from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.utils import SelectorBattleTypesUtils
 from gui.shared.utils.functions import getUniqueViewName
-from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, PeriodicNotifier
 from helpers import dependency, i18n, time_utils
-from helpers.statistics import HARDWARE_SCORE_PARAMS
 from items import vehicles
+from skeletons.gui.game_control import IEpicBattleMetaGameController
+from skeletons.gui.game_control import IBootcampController
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+from season_provider import SeasonProvider
+from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from CurrentVehicle import g_currentVehicle
 from items.vehicles import getVehicleClassFromVehicleType
+from gui.prb_control.dispatcher import g_prbLoader
+from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, PeriodicNotifier
+from gui.prb_control.entities.listener import IGlobalListener
+from gui.prb_control.settings import FUNCTIONAL_FLAG, SELECTOR_BATTLE_TYPES
+from helpers.statistics import HARDWARE_SCORE_PARAMS
+from account_helpers.AccountSettings import AccountSettings, GUI_START_BEHAVIOR, EPIC_LAST_CYCLE_ID
+from gui import DialogsInterface
+from adisp import adisp_async, adisp_process
+from account_helpers.settings_core.settings_constants import GRAPHICS
 from player_ranks import getSettings as getRankSettings
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_results import IBattleResultsService
-from skeletons.gui.game_control import IBootcampController
-from skeletons.gui.game_control import IEpicBattleMetaGameController
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.server_events import IEventsCache
-from skeletons.gui.shared import IItemsCache
-
-from season_provider import SeasonProvider
-
+from skeletons.gui.offers import IOffersDataProvider
+from epic_constants import EPIC_SELECT_BONUS_NAME, EPIC_CHOICE_REWARD_OFFER_GIFT_TOKENS, LEVELUP_TOKEN_TEMPLATE
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.server_settings import EpicGameConfig
+    from season_common import GameSeasonCycle
 _logger = logging.getLogger(__name__)
 _VALID_PREBATTLE_TYPES = [PREBATTLE_TYPE.EPIC, PREBATTLE_TYPE.EPIC_TRAINING]
-
 
 class EPIC_PERF_GROUP(object):
     HIGH_RISK = 1
@@ -168,7 +166,7 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
     def onLobbyInited(self, ctx):
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__updateEpicMetaGameSettings
         g_currentVehicle.onChanged += self.__invalidateBattleAbilities
-        self.__itemsCache.onSyncCompleted += self.__invalidateBattleAbilities
+        self.__itemsCache.onSyncCompleted += self.__onSyncCompleted
         g_clientUpdateManager.addCallbacks({'epicMetaGame': self.__updateEpic,
          'inventory': self.__onInventoryUpdate,
          'tokens': self.__onTokensUpdate})
@@ -365,6 +363,8 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
         return BigWorld.player().epicMetaGame.getStoredDiscount()
 
     def getEventTimeLeft(self):
+        if not self.isEnabled():
+            return 0
         timeLeft = self.getSeasonTimeRange()[1] - time_utils.getCurrentLocalServerTimestamp()
         return timeLeft + 1 if timeLeft > 0 else time_utils.ONE_MINUTE
 
@@ -453,6 +453,16 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
 
         return result
 
+    def storeCycle(self):
+        lastCycleID = AccountSettings.getSettings(EPIC_LAST_CYCLE_ID)
+        cycleID = self.getCurrentCycleID()
+        if not self.isEnabled() or cycleID is None:
+            AccountSettings.setSettings(EPIC_LAST_CYCLE_ID, None)
+        elif lastCycleID != cycleID and self.isCurrentCycleActive():
+            AccountSettings.setSettings(EPIC_LAST_CYCLE_ID, cycleID)
+            SelectorBattleTypesUtils.setBattleTypeAsUnknown(SELECTOR_BATTLE_TYPES.EPIC)
+        return
+
     def __getReceivedGift(self, bonus):
         if bonus.getName() == EPIC_SELECT_BONUS_NAME:
             bonus.updateContext({'isReceived': False})
@@ -466,6 +476,11 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
                                 return offer.getGift(giftId)
 
         return None
+
+    def __onSyncCompleted(self, _, invalidItems):
+        if not invalidItems or GUI_ITEM_TYPE.BATTLE_ABILITY in invalidItems:
+            self.__invalidateBattleAbilityItems()
+        self.__invalidateBattleAbilitiesForVehicle()
 
     def __invalidateBattleAbilities(self, *_):
         if not self.__itemsCache.isSynced():
@@ -505,7 +520,7 @@ class EpicBattleMetaGameController(Notifiable, SeasonProvider, IEpicBattleMetaGa
         self.stopGlobalListening()
         self.__lobbyContext.getServerSettings().onServerSettingsChange -= self.__updateEpicMetaGameSettings
         g_currentVehicle.onChanged -= self.__invalidateBattleAbilities
-        self.__itemsCache.onSyncCompleted -= self.__invalidateBattleAbilities
+        self.__itemsCache.onSyncCompleted -= self.__onSyncCompleted
         g_clientUpdateManager.removeObjectCallbacks(self)
         if self.getPerformanceGroup() == EPIC_PERF_GROUP.HIGH_RISK:
             self.__lobbyContext.deleteFightButtonConfirmator(self.__confirmFightButtonPressEnabled)

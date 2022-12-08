@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/vos_collections.py
-from gui.battle_control.arena_info.arena_vos import EPIC_RANDOM_KEYS, EPIC_BATTLE_KEYS, Comp7Keys
 from gui.shared.sort_key import SortKey
-
+from gui.battle_control.arena_info.arena_vos import EPIC_RANDOM_KEYS, EPIC_BATTLE_KEYS, Comp7Keys
 
 class VehicleInfoSortKey(SortKey):
     __slots__ = ('vInfoVO', 'vStatsVO')

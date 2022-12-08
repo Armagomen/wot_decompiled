@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/restore_vehicles_tab.py
-from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import RestoreExchangeCreditsMeta
 from gui.Scaleform.daapi.view.lobby.storage.inhangar import StorageCarouselDataProvider, StorageCarouselFilter
@@ -15,7 +14,7 @@ from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.game_control import IRestoreController
-
+from adisp import adisp_process
 
 class _RestoreStorageCarouselFilter(StorageCarouselFilter):
 

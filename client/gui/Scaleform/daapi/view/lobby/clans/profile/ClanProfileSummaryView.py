@@ -2,23 +2,22 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileSummaryView.py
 from adisp import adisp_process
 from constants import IS_CHINA
-from gui.Scaleform.daapi.view.meta.ClanProfileSummaryViewMeta import ClanProfileSummaryViewMeta
+from gui.impl import backport
+from helpers import i18n, dependency
+from gui.clans.settings import CLIENT_CLAN_RESTRICTIONS as _RES
+from gui.clans.items import formatField, isValueAvailable, StrongholdStatisticsData
+from gui.clans.clan_helpers import isStrongholdsEnabled
+from gui.clans.formatters import DUMMY_UNAVAILABLE_DATA
+from gui.shared.formatters import icons, text_styles
+from gui.shared.utils.functions import makeTooltip
+from gui.shared.view_helpers.UsersInfoHelper import UsersInfoHelper
+from gui.shared.events import OpenLinkEvent
 from gui.Scaleform.genConsts.TEXT_MANAGER_STYLES import TEXT_MANAGER_STYLES as _STYLE
 from gui.Scaleform.locale.CLANS import CLANS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.clans.clan_helpers import isStrongholdsEnabled
-from gui.clans.formatters import DUMMY_UNAVAILABLE_DATA
-from gui.clans.items import formatField, isValueAvailable, StrongholdStatisticsData
-from gui.clans.settings import CLIENT_CLAN_RESTRICTIONS as _RES
-from gui.impl import backport
-from gui.shared.events import OpenLinkEvent
-from gui.shared.formatters import icons, text_styles
+from gui.Scaleform.daapi.view.meta.ClanProfileSummaryViewMeta import ClanProfileSummaryViewMeta
 from gui.shared.image_helper import ImagesFetchCoordinator
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.view_helpers.UsersInfoHelper import UsersInfoHelper
-from helpers import i18n, dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
 _DIVISIONS = (6, 8, 10)
 
 def _stateVO(showRequestBtn, mainStatus=None, tooltip='', enabledRequestBtn=False, addStatus=None, showPersonalBtn=False):
@@ -93,7 +92,7 @@ class StrongholdDataReceiver(object):
         else:
             excludes = ('rageLevel6', 'rageLevel8') if IS_CHINA else ()
         return [ {'local': key,
-         'value': DUMMY_UNAVAILABLE_DATA if elo is None else elo,
+         'value': DUMMY_UNAVAILABLE_DATA if elo is None or not isStrongholdsEnabled() else elo,
          'timeExpired': True if elo is None else not actual,
          'tooltip': tooltip,
          'isHidden': False} for key, elo, actual, tooltip in rows if key not in excludes ]
@@ -174,11 +173,8 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
         self.as_updateGeneralBlockS(self.__makeGeneralBlock(clanInfo, syncUserInfo=True))
         self.as_updateGlobalMapBlockS(self.__makeGlobalMapBlock(globalMapStats, ratings))
         self.__updateStatus()
-        if isStrongholdsEnabled():
-            self.__strongholdStatsVOReceiver = StrongholdDataReceiver(clanDossier, self.__updateStrongholdBlock)
-            self.__strongholdStatsVOReceiver.updateStrongholdStatistics()
-        else:
-            self._hideWaiting()
+        self.__strongholdStatsVOReceiver = StrongholdDataReceiver(clanDossier, self.__updateStrongholdBlock)
+        self.__strongholdStatsVOReceiver.updateStrongholdStatistics()
 
     def onAccountWebVitalInfoChanged(self, fieldName, value):
         self.__updateStatus()

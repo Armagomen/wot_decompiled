@@ -1,23 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/page.py
-import BigWorld
-import CommandMapping
-from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.battle.classic.page import DynamicAliases as ClassicDynAliases
-from gui.Scaleform.daapi.view.battle.epic import finish_sound_player, drone_music_player
-from gui.Scaleform.daapi.view.battle.epic import markers2d
-from gui.Scaleform.daapi.view.battle.shared import crosshair
-from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
 from gui.Scaleform.daapi.view.battle.shared.start_countdown_sound_player import StartCountdownSoundPlayer
+from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.Scaleform.daapi.view.meta.EpicBattlePageMeta import EpicBattlePageMeta
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
-from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
-from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
-from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.controllers.sound_ctrls.epic_battle_sounds import EpicBattleSoundController
 from gui.shared import EVENT_BUS_SCOPE, events
+from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
+from gui.Scaleform.daapi.view.battle.epic import markers2d
+from gui.Scaleform.daapi.view.battle.shared import crosshair
+from gui.Scaleform.daapi.view.battle.epic import finish_sound_player, drone_music_player
+from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
+import CommandMapping
+from constants import ARENA_PERIOD
+import BigWorld
+from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
 from shared_utils import CONST_CONTAINER
-
 
 class DynamicAliases(CONST_CONTAINER):
     EPIC_FINISH_SOUND_PLAYER = 'epicFinishSoundPlayer'

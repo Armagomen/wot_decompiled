@@ -13,7 +13,7 @@ from gui.shared.tooltips.common import BlocksTooltipData
 from gui.shared.tooltips.module import ModuleTooltipBlockConstructor
 from gui.shared.utils.functions import stripColorTagDescrTags
 if typing.TYPE_CHECKING:
-    pass
+    from items.artefacts import Equipment, VisualScriptEquipment
 _logger = logging.getLogger(__name__)
 
 class RoleSkillBattleTooltipData(BlocksTooltipData):

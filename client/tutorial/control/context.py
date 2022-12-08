@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/context.py
 from abc import ABCMeta, abstractmethod
-
-import Event
-import SoundGroups
 from helpers import dependency
-from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.game_control import IBootcampController
 from tutorial.control import TutorialProxyHolder
 from tutorial.logger import LOG_MEMORY, LOG_ERROR
-
+import SoundGroups
+import Event
 __all__ = ('StartReqs', 'BonusesRequester', 'SoundPlayer', 'GlobalStorage')
 
 class StartReqs(object):
@@ -155,10 +153,12 @@ class GLOBAL_FLAG(object):
     COLLECTIBLE_VEHICLE_PREVIEW_ENABLED = '_CollectibleVehiclePreviewEnabled'
     DOGTAGS_ENABLED = '_DogTagsEnabled'
     VEH_POST_PROGRESSION_ENABLED = '_VehPostProgressionEnabled'
-    VEH_POST_PROGRESSION_PURCHASABLE = '_VehPostProgressionPurchasable'
+    HANGAR_VEH_POST_PROGRESSION_PURCHASABLE = '_HangarVehPostProgressionPurchasable'
+    RESEARCH_VEH_POST_PROGRESSION_PURCHASABLE = '_ResearchVehPostProgressionPurchasable'
     WOTPLUS_ENABLED = '_WotPlusEnabled'
     BATTLE_MATTERS_ENTRY_POINT = '_BattleMattersEntryPoint'
     PERSONAL_RESERVES_AVAILABLE = '_Personal_reserves_available'
+    NY_NAVIGATION_DISABLED = '_NY_navigation_disabled'
     ALL = (IS_FLAGS_RESET,
      SHOW_HISTORY,
      HISTORY_NOT_AVAILABLE,
@@ -173,7 +173,8 @@ class GLOBAL_FLAG(object):
      DOGTAGS_ENABLED,
      WOTPLUS_ENABLED,
      BATTLE_MATTERS_ENTRY_POINT,
-     PERSONAL_RESERVES_AVAILABLE)
+     PERSONAL_RESERVES_AVAILABLE,
+     NY_NAVIGATION_DISABLED)
 
 
 class GlobalStorage(object):

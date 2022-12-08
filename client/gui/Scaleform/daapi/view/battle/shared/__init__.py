@@ -1,20 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/__init__.py
 import typing
-
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.shared import personal_reserves_tab
+from gui.Scaleform.daapi.view.battle.shared.page import SharedPage
 from gui.Scaleform.daapi.view.bootcamp.BCVehicleMessages import BCVehicleMessages
 from gui.Scaleform.daapi.view.bootcamp.component_override import BootcampComponentOverride
 from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings, ConditionalViewSettings
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.app_loader import settings as app_settings
-from gui.shared import EVENT_BUS_SCOPE
-
+from gui.shared import EVENT_BUS_SCOPE, events
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.events import LoadViewEvent
 __all__ = ('SharedPage',)
 
 def getContextMenuHandlers():

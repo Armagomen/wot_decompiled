@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/avatar_helpers/VehicleTelemetry.py
 import cPickle
-import datetime
+import zlib
 import math
 import os.path
-import zlib
-
+import datetime
 import ResMgr
-from constants import ENABLE_DEBUG_DYNAMICS_INFO
 from debug_utils import LOG_WARNING, LOG_ERROR, LOG_CODEPOINT_WARNING
+from constants import ENABLE_DEBUG_DYNAMICS_INFO
 from physics_shared import G
-
 
 class VehicleTelemetry(object):
 
@@ -40,7 +38,7 @@ class VehicleTelemetry(object):
             return
 
     try:
-        DYNAMICS_LOG_DIR = ResMgr.appDirectory() + '../dynamics_log'
+        DYNAMICS_LOG_DIR = ResMgr.appDirectory() + 'dynamics_log'
     except AttributeError:
         DYNAMICS_LOG_DIR = 'dynamics_log'
 

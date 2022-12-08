@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/markers2d.py
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
-from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins, vehicle_plugins, MarkersManager
 from gui.battle_control import avatar_getter
-
+from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins, vehicle_plugins, MarkersManager
 
 class _MapsTrainingVehicleMarkerPlugin(vehicle_plugins.VehicleMarkerPlugin):
     __slots__ = ('__localGoals',)

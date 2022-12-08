@@ -2,10 +2,8 @@
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/comp7_bonus_packer.py
 import logging
 import typing
-
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.config.common import ComponentViewType
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.backport import TooltipData
 from gui.impl.gen import R
@@ -15,16 +13,14 @@ from gui.impl.lobby.comp7.comp7_bonus_helpers import BonusTypes, getBonusType
 from gui.impl.lobby.comp7.comp7_c11n_helpers import getComp7ProgressionStyleCamouflage
 from gui.server_events.bonuses import mergeBonuses, splitBonuses, C11nProgressTokenBonus
 from gui.shared.gui_items.customization import CustomizationTooltipContext
-from gui.shared.missions.packers.bonus import DossierBonusUIPacker, DogTagComponentsUIPacker, BonusUIPacker, \
-    BaseBonusUIPacker, BACKPORT_TOOLTIP_CONTENT_ID, SimpleBonusUIPacker, CustomizationBonusUIPacker, \
-    VehiclesBonusUIPacker
+from gui.shared.missions.packers.bonus import DossierBonusUIPacker, DogTagComponentsUIPacker, BonusUIPacker, BaseBonusUIPacker, BACKPORT_TOOLTIP_CONTENT_ID, SimpleBonusUIPacker, CustomizationBonusUIPacker, VehiclesBonusUIPacker
 from gui.shared.missions.packers.bonus import getDefaultBonusPackersMap
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.server_events.bonuses import SimpleBonus
 _logger = logging.getLogger(__name__)
 _DOG_TAG_VIEW_TYPE_TO_DOG_TAG_TYPE_ENUM = {ComponentViewType.ENGRAVING: DogTagType.ENGRAVING,
  ComponentViewType.BACKGROUND: DogTagType.BACKGROUND}

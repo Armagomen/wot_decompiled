@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ammunition_panel.py
-from CurrentVehicle import g_currentVehicle
-from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from adisp import adisp_process
+from account_helpers.settings_core.settings_constants import OnceOnlyHints
+from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
-from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.Scaleform.daapi.view.lobby.customization.shared import getEditableStylesExtraNotificationCounter, \
-    getItemTypesAvailableForVehicle
-from gui.Scaleform.daapi.view.meta.AmmunitionPanelMeta import AmmunitionPanelMeta
-from gui.customization.shared import isVehicleCanBeCustomized
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.lobby.tank_setup.dialogs.main_content.main_contents import NeedRepairMainContent
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.Scaleform.daapi.view.lobby.customization.shared import getEditableStylesExtraNotificationCounter, getItemTypesAvailableForVehicle
+from gui.Scaleform.daapi.view.meta.AmmunitionPanelMeta import AmmunitionPanelMeta
 from gui.impl.lobby.tank_setup.dialogs.need_repair import NeedRepair
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared import event_dispatcher as shared_events
@@ -25,7 +22,8 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IBootcampController, IUISpamController
 from skeletons.gui.shared import IItemsCache
-
+from gui.customization.shared import isVehicleCanBeCustomized
+from gui.impl.lobby.tank_setup.dialogs.main_content.main_contents import NeedRepairMainContent
 
 class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
     __slots__ = ('__hangarMessage',)

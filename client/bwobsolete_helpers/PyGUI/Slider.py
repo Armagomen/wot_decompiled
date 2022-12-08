@@ -1,16 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/Slider.py
-import math
-
-import BigWorld
-import GUI
+import BigWorld, GUI
 import Keys
-
-from DraggableComponent import DraggableComponent
+import math
 from PyGUIBase import PyGUIBase
+from DraggableComponent import DraggableComponent
 from Utils import clipPosition, clipSize, applyMapping
 from VisualStateComponent import VisualState, VisualStateComponent
-
 
 class SliderVisualState(VisualState):
 

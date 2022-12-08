@@ -2,23 +2,22 @@
 # Embedded file name: scripts/client/gui/selectable_reward/common.py
 import logging
 import typing
-
 from adisp import adisp_process
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.backport import TooltipData
 from gui.selectable_reward.constants import FEATURE_TO_PREFIX, Features
 from gui.server_events.bonuses import SelectableBonus
 from gui.shared.gui_items.processors import makeError
-from gui.shared.gui_items.processors.offers import ReceiveMultipleOfferGiftsProcessor, ReceiveOfferGiftProcessor, \
-    BattleMattersOfferProcessor
+from gui.shared.gui_items.processors.offers import ReceiveMultipleOfferGiftsProcessor, ReceiveOfferGiftProcessor, BattleMattersOfferProcessor
 from helpers import dependency
 from shared_utils import first
 from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, Dict, List, Tuple
+    from account_helpers.offers.events_data import OfferEventData
+    from gui.SystemMessages import ResultMsg
 _logger = logging.getLogger(__name__)
 
 class SelectableRewardManager(object):

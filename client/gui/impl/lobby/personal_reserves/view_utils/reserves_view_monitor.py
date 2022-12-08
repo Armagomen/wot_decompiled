@@ -6,8 +6,7 @@ from gui.impl.auxiliary.view_monitor import ViewMonitor
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
 from gui.shared import EVENT_BUS_SCOPE
-from gui.shared.events import ViewEventType
-
+from gui.shared.events import ViewEventType, LoadViewEvent
 
 class ReservesViewMonitor(ViewImpl, EventSystemEntity):
     __slots__ = ('__viewMonitor',)

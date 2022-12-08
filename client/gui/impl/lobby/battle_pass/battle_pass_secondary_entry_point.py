@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_secondary_entry_point.py
 from gui.Scaleform.daapi.view.meta.SecondaryEntryPointMeta import SecondaryEntryPointMeta
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.Scaleform.locale.BATTLE_PASS import BATTLE_PASS
-from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.lobby.battle_pass.battle_pass_entry_point_view import BaseBattlePassEntryPointView
+from gui.impl import backport
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
-
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.Scaleform.locale.BATTLE_PASS import BATTLE_PASS
+from gui.impl.lobby.battle_pass.battle_pass_entry_point_view import BaseBattlePassEntryPointView
 _R_TOOLTIPS = R.views.lobby.battle_pass.tooltips
 _R_IMAGES = R.images.gui.maps.icons.library.hangarEntryPoints.battlePass
 _TOOLTIPS = {_R_TOOLTIPS.BattlePassNotStartedTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NOT_STARTED,

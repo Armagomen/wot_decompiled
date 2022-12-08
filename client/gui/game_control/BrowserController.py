@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/BrowserController.py
 import logging
-
+import typing
 import BigWorld
 import Event
 from WebBrowser import WebBrowser
@@ -21,7 +21,6 @@ from ids_generators import SequenceIDGenerator
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBrowserController
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 
 class BrowserController(IBrowserController):
@@ -79,9 +78,7 @@ class BrowserController(IBrowserController):
 
     @adisp_async
     @adisp_process
-    def load(self, url=None, title=None, showActionBtn=True, showWaiting=True, browserID=None, isAsync=False,
-             browserSize=None, isDefault=True, callback=None, showCloseBtn=False, useBrowserWindow=True, isModal=False,
-             showCreateWaiting=False, handlers=None, showBrowserCallback=None, isSolidBorder=False):
+    def load(self, url=None, title=None, showActionBtn=True, showWaiting=True, browserID=None, isAsync=False, browserSize=None, isDefault=True, callback=None, showCloseBtn=False, useBrowserWindow=True, isModal=False, showCreateWaiting=False, handlers=None, showBrowserCallback=None, isSolidBorder=False):
         if showCreateWaiting:
             Waiting.show('browser/init')
         url = yield self.__urlMacros.parse(url or GUI_SETTINGS.browser.url)

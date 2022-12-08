@@ -1,11 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/PhysicsTurretShape.py
-import collections
-
 import Math
-
+import collections
 from wrapped_reflection_framework import ReflectionMetaclass
-
 _DEBUG_WITH_SVG = False
 
 class PhysicsTurretShape:

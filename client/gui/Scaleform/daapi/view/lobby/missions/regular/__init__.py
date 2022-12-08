@@ -3,16 +3,16 @@
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.missions.regular.daily_quests_injector_view import DailyQuestsInjectorView
+from gui.Scaleform.daapi.view.lobby.missions.regular.missions_tab_bar import MissionsTabBarComponent
 from gui.Scaleform.framework import ComponentSettings, GroupedViewSettings, ScopeTemplates, ViewSettings
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.app_loader import settings as app_settings
-from gui.impl.lobby.battle_matters.battle_matters_main_view import BattleMattersMissionComponent
 from gui.impl.lobby.battle_pass.battle_pass_view import BattlePassViewsHolderComponent
 from gui.impl.lobby.mapbox.mapbox_progression_view import MapboxProgressionsComponent
+from gui.impl.lobby.battle_matters.battle_matters_main_view import BattleMattersMissionComponent
 from gui.shared import EVENT_BUS_SCOPE
-
 
 def getContextMenuHandlers():
     pass

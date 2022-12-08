@@ -1,15 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/RocketAccelerationController.py
 import logging
-
 import BigWorld
 import CGF
 from Event import Event
 from constants import ROCKET_ACCELERATION_STATE
 from wotdecorators import noexcept
-
 from vehicle_systems.model_assembler import loadAppearancePrefab
-
 _logger = logging.getLogger(__name__)
 
 class RocketAccelerationController(BigWorld.DynamicScriptComponent):

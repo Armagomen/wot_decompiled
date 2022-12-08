@@ -2,10 +2,9 @@
 # Embedded file name: scripts/client/messenger/ext/channel_num_gen.py
 import BigWorld
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
+from shared_utils import CONST_CONTAINER
 from ids_generators import SequenceIDGenerator
 from messenger.m_constants import LAZY_CHANNEL, BATTLE_CHANNEL, PRIMARY_CHANNEL_ORDER
-from shared_utils import CONST_CONTAINER
-
 _CHANNEL_LAZY_ORDER = {LAZY_CHANNEL.COMMON: 1,
  LAZY_CHANNEL.XMPP_COMMON: 2,
  LAZY_CHANNEL.SPECIAL_BATTLES: 3}

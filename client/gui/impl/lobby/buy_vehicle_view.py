@@ -3,65 +3,61 @@
 import logging
 from collections import namedtuple
 from functools import partial
-
 import BigWorld
 import adisp
-import constants
 import nations
+import constants
 from CurrentVehicle import g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
 from constants import QUEUE_TYPE
-from frameworks.wulf import WindowFlags, ViewStatus, ViewSettings
+from gui.impl import backport
+from gui.impl.pub.lobby_window import LobbyWindow
+from gui.prb_control.entities.base.ctx import PrbAction
+from gui.prb_control.entities.base.listener import IPrbListener
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME
+from items import UNDEFINED_ITEM_CD
+from rent_common import parseRentID
 from gui import SystemMessages
-from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.DialogsInterface import showI18nConfirmDialog
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.shop import showBuyGoldForVehicleWebOverlay, showTradeOffOverlay
+from gui.Scaleform.locale.RES_SHOP import RES_SHOP
+from gui.Scaleform.locale.STORE import STORE
+from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta, DIALOG_BUTTON_ID
 from gui.Scaleform.framework import g_entitiesFactories
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.Scaleform.locale.RES_SHOP import RES_SHOP
-from gui.Scaleform.locale.STORE import STORE
-from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
-from gui.impl import backport
+from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
+from gui.impl.pub import ViewImpl
 from gui.impl.backport import BackportTooltipWindow, getIntegralFormat, createTooltipData
 from gui.impl.gen.resources import R
-from gui.impl.gen.view_models.views.buy_vehicle_view.commander_slot_model import CommanderSlotModel
 from gui.impl.gen.view_models.views.buy_vehicle_view_model import BuyVehicleViewModel
-from gui.impl.pub import ViewImpl
-from gui.impl.pub.lobby_window import LobbyWindow
-from gui.prb_control.entities.base.ctx import PrbAction
-from gui.prb_control.entities.base.listener import IPrbListener
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME
+from gui.impl.gen.view_models.views.buy_vehicle_view.commander_slot_model import CommanderSlotModel
 from gui.shared import event_dispatcher, events, g_eventBus
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.events import ShopEvent, VehicleBuyEvent, OpenLinkEvent
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
+from gui.shared.gui_items.Tankman import CrewTypes
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.money import ZERO_MONEY
+from gui.shared.gui_items.Vehicle import getTypeUserName, getSmallIconPath, getLevelSmallIconPath, getTypeSmallIconPath
+from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.formatters import updateActionInViewModel
 from gui.shared.formatters.tankmen import getItemPricesViewModel
 from gui.shared.formatters.text_styles import neutral
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Tankman import CrewTypes
-from gui.shared.gui_items.Vehicle import getTypeUserName, getSmallIconPath, getLevelSmallIconPath, getTypeSmallIconPath
-from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
-from gui.shared.gui_items.gui_item_economics import ItemPrice
-from gui.shared.gui_items.processors.vehicle import VehicleBuyer, VehicleSlotBuyer, VehicleRenter, \
-    VehicleTradeInProcessor, VehicleRestoreProcessor, showVehicleReceivedResultMessages
 from gui.shared.money import Currency, Money
-from gui.shared.money import ZERO_MONEY
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
+from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.utils import decorators
 from gui.shared.utils.vehicle_collector_helper import getCollectibleVehiclesInInventory
-from gui.shop import showBuyGoldForVehicleWebOverlay, showTradeOffOverlay
+from gui.shared.gui_items.processors.vehicle import VehicleBuyer, VehicleSlotBuyer, VehicleRenter, VehicleTradeInProcessor, VehicleRestoreProcessor, showVehicleReceivedResultMessages
 from helpers import i18n, dependency, int2roman, func_utils
-from items import UNDEFINED_ITEM_CD
-from rent_common import parseRentID
 from shared_utils import CONST_CONTAINER
-from skeletons.gui.game_control import IRentalsController, ITradeInController, IRestoreController, IBootcampController, \
-    IWalletController, ISoundEventChecker
+from skeletons.gui.game_control import IRentalsController, ITradeInController, IRestoreController, IBootcampController, IWalletController, ISoundEventChecker
 from skeletons.gui.shared import IItemsCache
-
+from frameworks.wulf import WindowFlags, ViewStatus, ViewSettings
 _logger = logging.getLogger(__name__)
 
 class VehicleBuyActionTypes(CONST_CONTAINER):

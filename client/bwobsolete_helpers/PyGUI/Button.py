@@ -3,12 +3,10 @@
 import BigWorld
 import GUI
 import Keys
-
 import TextStyles
-import Utils
 from PyGUIBase import PyGUIBase
 from VisualStateComponent import VisualState, VisualStateComponent
-
+import Utils
 
 def _getRadioParent(parent, groupDepth):
     while groupDepth > 1 and parent is not None:

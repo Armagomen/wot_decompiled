@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/BCLoginQueue.py
-from PlayerEvents import g_playerEvents
-from adisp import adisp_process
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.prb_control import prbDispatcherProperty
 from gui.prb_control.entities.base.ctx import LeavePrbAction
-from gui.shared.event_bus import EVENT_BUS_SCOPE
+from PlayerEvents import g_playerEvents
 from gui.shared.events import ArgsEvent, BCLoginEvent
-
+from gui.shared.event_bus import EVENT_BUS_SCOPE
+from adisp import adisp_process
 
 class BCLoginQueue(LoginQueueWindowMeta):
 

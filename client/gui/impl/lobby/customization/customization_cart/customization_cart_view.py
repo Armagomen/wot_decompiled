@@ -1,54 +1,53 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/customization/customization_cart/customization_cart_view.py
+from collections import namedtuple
 import logging
 import typing
-from collections import namedtuple
-
-from CurrentVehicle import g_currentVehicle
-from account_helpers.settings_core.settings_constants import OnceOnlyHints
-from adisp import adisp_process
 from frameworks.wulf import ViewFlags, ViewSettings
+from adisp import adisp_process
+from wg_async import wg_async, wg_await
+from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import WindowFlags
 from gui import DialogsInterface
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsMultiItemsMeta
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsSingleItemMeta
-from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import InfoItemBase
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.customization.constants import CustomizationModes
-from gui.customization.processors.cart import ProcessorSelector, ItemsType
-from gui.customization.processors.cart import SeparateItemsProcessor, StyleItemsProcessor, EditableStyleItemsProcessor
-from gui.customization.shared import SEASON_TYPE_TO_NAME, SEASONS_ORDER, MoneyForPurchase, getTotalPurchaseInfo
-from gui.customization.shared import containsVehicleBound, getPurchaseMoneyState, isTransactionValid
-from gui.impl.backport import createTooltipData, BackportTooltipWindow
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import ResSimpleDialogBuilder
-from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
+from gui.impl.pub import ViewImpl
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_model import CartModel
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_slot_model import CartSlotModel
-from gui.impl.pub import ViewImpl
-from gui.shared.event_dispatcher import tryToShowReplaceExistingStyleDialog
+from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_season_model import CartSeasonModel
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import InfoItemBase
+from gui.shop import showBuyGoldForCustomization
+from gui.customization.processors.cart import SeparateItemsProcessor, StyleItemsProcessor, EditableStyleItemsProcessor
+from gui.customization.processors.cart import ProcessorSelector, ItemsType
+from gui.customization.shared import SEASON_TYPE_TO_NAME, SEASONS_ORDER, MoneyForPurchase, getTotalPurchaseInfo
+from gui.customization.shared import containsVehicleBound, getPurchaseMoneyState, isTransactionValid
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsSingleItemMeta
+from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsMultiItemsMeta
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from gui.shared.event_dispatcher import tryToShowReplaceExistingStyleDialog
 from gui.shared.gui_items.customization import CustomizationTooltipContext
+from shared_utils import first
+from vehicle_outfit.outfit import Area
 from gui.shared.money import Currency
 from gui.shared.utils.graphics import isRendererPipelineDeferred
-from gui.shared.view_helpers.blur_manager import CachedBlur
-from gui.shop import showBuyGoldForCustomization
-from helpers import dependency, uniprof
 from items.components.c11n_constants import SeasonType
-from shared_utils import first
-from skeletons.account_helpers.settings_core import ISettingsCore
+from helpers import dependency, uniprof
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from skeletons.account_helpers.settings_core import ISettingsCore
+from account_helpers.settings_core.settings_constants import OnceOnlyHints
+from gui.impl.backport import createTooltipData, BackportTooltipWindow
+from gui.impl.gen import R
 from tutorial.hints_manager import HINT_SHOWN_STATUS
-from vehicle_outfit.outfit import Area
-from wg_async import wg_async, wg_await
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_seasons_model import CartSeasonsModel
 _logger = logging.getLogger(__name__)
 _SelectItemData = namedtuple('_SelectItemData', ('season',
  'quantity',
@@ -463,10 +462,8 @@ class _ItemUIDataPacker(_BaseUIDataPacker):
             model.setIcon(item.iconUrl)
         else:
             model.setIcon(item.iconUrl)
-        if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION:
-            model.setShowUnsupportedAlert(not isRendererPipelineDeferred())
-        else:
-            model.setShowUnsupportedAlert(False)
+        canShow = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION or item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL and item.isProgressive
+        model.setShowUnsupportedAlert(canShow and not isRendererPipelineDeferred())
         isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) and not item.isProgressionAutoBound or item.isLimited and item.buyCount > 0
         model.setIsSpecial(isSpecial)
         return model

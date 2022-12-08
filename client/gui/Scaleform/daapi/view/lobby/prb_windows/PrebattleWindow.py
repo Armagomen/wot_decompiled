@@ -8,6 +8,7 @@ from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.meta.PrebattleWindowMeta import PrebattleWindowMeta
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from skeletons.gui.game_control import ICraftmachineController
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
 from gui.Scaleform.managers.windows_stored_data import DATA_TYPE, TARGET_ID
 from gui.Scaleform.managers.windows_stored_data import stored_window
@@ -29,9 +30,7 @@ from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
 from prebattle_shared import decodeRoster
-from skeletons.gui.game_control import ICraftmachineController
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 @stored_window(DATA_TYPE.CAROUSEL_WINDOW, TARGET_ID.CHANNEL_CAROUSEL)
 class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):

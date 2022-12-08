@@ -1,26 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/prefetcher.py
-import itertools
 import json
+import itertools
 import weakref
-
 import BigWorld
 import ResMgr
+from wg_async import wg_async, wg_await, await_callback, AsyncScope, AsyncSemaphore
 from constants import DailyQuestDecorationMap, EVENT_TYPE
 from debug_utils import LOG_WARNING
 from gui import GUI_SETTINGS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.server_events.events_helpers import isMarathon, isDailyQuest, isPremium
 from gui.server_events.formatters import TOKEN_SIZES, DECORATION_SIZES
+from gui.server_events.events_helpers import isMarathon, isDailyQuest, isPremium
 from gui.shared.utils import mapTextureToTheMemory, getImageSize
 from helpers import getClientLanguage, dependency
 from helpers.i18n import makeString as ms
 from skeletons.gui.lobby_context import ILobbyContext
 from soft_exception import SoftException
-from wg_async import wg_async, wg_await, await_callback, AsyncScope, AsyncSemaphore
-
 _DEFAULT_TOKENS_STYLES = [ title.split('/')[-1] for title in QUESTS.TOKEN_DEFAULT_ENUM ]
 _DEFAULT_DECORATIONS = [ title.split('_')[-1].replace('.png', '') for title in RES_ICONS.MAPS_ICONS_MISSIONS_DECORATIONS_DECORATION_ENUM ]
 

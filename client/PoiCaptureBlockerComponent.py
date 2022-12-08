@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/PoiCaptureBlockerComponent.py
 import logging
-
-from points_of_interest_shared import PoiBlockReasons
-
+import typing
 from PoiBaseComponent import PoiBaseComponent
 from helpers import fixed_dict
 from points_of_interest.components import PoiCaptureBlockerStateComponent
-
+from points_of_interest_shared import PoiBlockReasons
 _logger = logging.getLogger(__name__)
 
 class PoiCaptureBlockerComponent(PoiBaseComponent):

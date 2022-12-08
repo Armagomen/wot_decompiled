@@ -1,22 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/battle_selector_item.py
 from __future__ import absolute_import
-
-import logging
 from builtins import object
 from functools import total_ordering
-
+import logging
 from adisp import adisp_process
+from gui.prb_control.entities.base.ctx import PrbAction
+from gui.prb_control.dispatcher import g_prbLoader
+from helpers import dependency
+from skeletons.gui.lobby_context import ILobbyContext
 from constants import PREBATTLE_TYPE
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.prb_control.dispatcher import g_prbLoader
-from gui.prb_control.entities.base.ctx import PrbAction
 from gui.shared.formatters import text_styles
 from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
-from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
-
 _logger = logging.getLogger(__name__)
 _R_HEADER_BUTTONS = R.strings.menu.headerButtons
 _R_ICONS = R.images.gui.maps.icons

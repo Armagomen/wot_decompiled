@@ -2,15 +2,12 @@
 # Embedded file name: scripts/common/resource_helper.py
 import importlib
 import inspect
-import types
-from collections import namedtuple
 from contextlib import contextmanager
-
 import ResMgr
-
+from collections import namedtuple
+import types
 from debug_utils import LOG_CURRENT_EXCEPTION
 from soft_exception import SoftException
-
 
 class RESOURCE_ITEM_TYPE(object):
     BOOL = 'bool'

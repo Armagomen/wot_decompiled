@@ -1,25 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/StrongholdView.py
 from typing import TYPE_CHECKING
-
 import BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
-from gui.Scaleform.daapi import LobbySubView
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.shared.web_view import WebView
-from gui.Scaleform.daapi.view.lobby.strongholds.sound_constants import STRONGHOLD_SOUND_SPACE, \
-    STRONGHOLD_ADS_SOUND_SPACE
-from gui.Scaleform.daapi.view.lobby.strongholds.web_handlers import createStrongholdsWebHandlers
-from gui.Scaleform.daapi.view.meta.StrongholdViewMeta import StrongholdViewMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.clans.clan_helpers import getStrongholdUrl
-from gui.shared import events, EVENT_BUS_SCOPE
 from helpers import dependency
+from gui.shared import events, EVENT_BUS_SCOPE
+from gui.clans.clan_helpers import getStrongholdUrl
+from gui.Scaleform.daapi import LobbySubView
+from gui.Scaleform.daapi.view.lobby.shared.web_view import WebView
+from gui.Scaleform.daapi.view.meta.StrongholdViewMeta import StrongholdViewMeta
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.lobby.strongholds.web_handlers import createStrongholdsWebHandlers
+from gui.Scaleform.daapi.view.lobby.strongholds.sound_constants import STRONGHOLD_SOUND_SPACE, STRONGHOLD_ADS_SOUND_SPACE
 from skeletons.gui.game_control import IBrowserController
-
 if TYPE_CHECKING:
-    pass
+    from typing import Optional, Dict
 
 class StrongholdView(LobbySubView, StrongholdViewMeta):
     __background_alpha__ = 1.0

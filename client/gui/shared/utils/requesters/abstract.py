@@ -2,16 +2,14 @@
 # Embedded file name: scripts/client/gui/shared/utils/requesters/abstract.py
 import logging
 from collections import namedtuple
-
 import BigWorld
 from AccountCommands import isCodeValid, RES_FAILURE, RES_SUCCESS
-from adisp import adisp_async, adisp_process
-from gui.Scaleform.Waiting import Waiting
-from gui.shared.utils import code2str
-from gui.shared.utils.decorators import ReprInjector
 from helpers import isPlayerAccount
 from ids_generators import Int32IDGenerator
-
+from gui.shared.utils import code2str
+from adisp import adisp_async, adisp_process
+from gui.Scaleform.Waiting import Waiting
+from gui.shared.utils.decorators import ReprInjector
 _logger = logging.getLogger(__name__)
 
 class AbstractRequester(object):

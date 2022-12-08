@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/StatsRequester.py
-import json
 from collections import namedtuple
-
+import json
 import BigWorld
 from account_helpers.premium_info import PremiumInfo
 from adisp import adisp_async
-from constants import SPA_ATTRS, MIN_VEHICLE_LEVEL
 from gui.shared.money import Money, Currency, DynamicMoney
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from gui.veh_post_progression.models.ext_money import ExtendedMoney
 from helpers import time_utils, dependency
-from nation_change.nation_change_helpers import NationalGroupDataAccumulator
+from constants import SPA_ATTRS, MIN_VEHICLE_LEVEL
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils.requesters import IStatsRequester
-
+from nation_change.nation_change_helpers import NationalGroupDataAccumulator
 _ADDITIONAL_XP_DATA_KEY = '_additionalXPCache'
 _ControllableXPData = namedtuple('_ControllableXPData', ('vehicleID', 'bonusType', 'extraXP', 'extraFreeXP', 'extraTmenXP', 'isXPToTMan'))
 
@@ -56,8 +54,12 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
         return max(self.actualBpcoin, 0)
 
     @property
+    def equipCoin(self):
+        return max(self.actualEquipCoin, 0)
+
+    @property
     def money(self):
-        return Money(credits=self.credits, gold=self.gold, crystal=self.crystal, eventCoin=self.eventCoin, bpcoin=self.bpcoin)
+        return Money(credits=self.credits, gold=self.gold, crystal=self.crystal, eventCoin=self.eventCoin, bpcoin=self.bpcoin, equipCoin=self.equipCoin)
 
     @property
     def actualCredits(self):
@@ -80,8 +82,12 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
         return self.getCacheValue(Currency.BPCOIN, 0)
 
     @property
+    def actualEquipCoin(self):
+        return self.getCacheValue(Currency.EQUIP_COIN, 0)
+
+    @property
     def actualMoney(self):
-        return Money(credits=self.actualCredits, gold=self.actualGold, crystal=self.actualCrystal, eventCoin=self.actualEventCoin, bpcoin=self.actualBpcoin)
+        return Money(credits=self.actualCredits, gold=self.actualGold, crystal=self.actualCrystal, eventCoin=self.actualEventCoin, bpcoin=self.actualBpcoin, equipCoin=self.actualEquipCoin)
 
     @property
     def freeXP(self):

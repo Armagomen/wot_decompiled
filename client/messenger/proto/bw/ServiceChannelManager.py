@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/proto/bw/ServiceChannelManager.py
 from collections import deque
-
 import BigWorld
-from adisp import adisp_process
 from chat_shared import CHAT_ACTIONS
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_WARNING
+from gui.shared.system_factory import collectMessengerClientFormatter
 from ids_generators import SequenceIDGenerator
 from messenger.formatters import collections_by_type
 from messenger.m_constants import MESSENGER_SCOPE, SCH_MSGS_MAX_LENGTH
@@ -14,7 +13,7 @@ from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 from messenger.proto.bw.ChatActionsListener import ChatActionsListener
 from messenger.proto.bw.wrappers import ServiceChannelMessage
 from messenger.proto.events import g_messengerEvents
-
+from adisp import adisp_process
 
 class ServiceChannelManager(ChatActionsListener):
 
@@ -129,7 +128,7 @@ class ServiceChannelManager(ChatActionsListener):
         if auxData is None:
             auxData = []
         clientID = 0
-        formatter = collections_by_type.CLIENT_FORMATTERS.get(msgType)
+        formatter = collectMessengerClientFormatter(msgType)
         if formatter:
             try:
                 messagesListData = formatter.format(message, auxData)

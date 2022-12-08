@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/gift_system/hubs/base/gifter.py
 import typing
-
 from account_helpers import isLongDisconnectedFromCenter
 from adisp import adisp_async, adisp_process
 from gui.gift_system.constants import GifterResponseState
@@ -9,9 +8,8 @@ from gui.gift_system.hubs.subsystems import BaseHubSubsystem
 from gui.wgcg.gift_system.contexts import GiftSystemSendGiftCtx
 from helpers import dependency
 from skeletons.gui.web import IWebController
-
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.server_settings import GiftEventConfig
 
 class IGiftEventGifter(BaseHubSubsystem):
 

@@ -9,10 +9,12 @@ from gui.gift_system.hubs.base.messenger import GiftEventBaseMessenger
 from gui.gift_system.hubs.base.relations_keeper import GiftEventBaseKeeper
 if typing.TYPE_CHECKING:
     from gifts.gifts_common import ClientReqStrategy
+    from gui.gift_system.hubs.base.stamper import IGiftEventStamper
     from gui.gift_system.hubs.base.gifter import IGiftEventGifter
     from gui.gift_system.hubs.base.messenger import IGiftEventMessenger
     from gui.gift_system.hubs.base.relations_keeper import IGiftEventKeeper
-
+    from gui.gift_system.wrappers import GiftsHistoryData, GiftsWebState, IncomeSysMessage, SendGiftResponse
+    from helpers.server_settings import GiftEventConfig
 
 class IGiftEventHub(object):
     onHubUpdated = None

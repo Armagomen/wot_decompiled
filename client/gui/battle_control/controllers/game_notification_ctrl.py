@@ -1,23 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/game_notification_ctrl.py
 from collections import defaultdict
-
-import BigWorld
 import Event
 import SoundGroups
-import TriggersManager
-from PlayerEvents import g_playerEvents
-from arena_component_system.sector_base_arena_component import ID_TO_BASENAME
+import BigWorld
 from debug_utils import LOG_DEBUG, LOG_ERROR
+from gui.sounds.epic_sound_constants import EPIC_SOUND, EPIC_OVERTIME_SOUND_NOTIFICATIONS
+from gui.sounds.epic_sound_constants import BF_EB_MAIN_OBJECTIVES_SOUND_NOTIFICATIONS
+from gui.battle_control.view_components import IViewComponentsController
+from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from gui.Scaleform.genConsts.GAME_MESSAGES_CONSTS import GAME_MESSAGES_CONSTS
 from gui.battle_control import avatar_getter
-from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from gui.battle_control.view_components import IViewComponentsController
-from gui.sounds.epic_sound_constants import BF_EB_MAIN_OBJECTIVES_SOUND_NOTIFICATIONS
-from gui.sounds.epic_sound_constants import EPIC_SOUND, EPIC_OVERTIME_SOUND_NOTIFICATIONS
 from shared_utils import CONST_CONTAINER
-
+from arena_component_system.sector_base_arena_component import ID_TO_BASENAME
+import TriggersManager
+from PlayerEvents import g_playerEvents
 
 class GameNotificationsController(IViewComponentsController, TriggersManager.ITriggerListener):
     __slots__ = ('_notificationMap', 'onGameNotificationRecieved', '__eManager', '__ui', '_sessionProvider')
@@ -25,7 +23,7 @@ class GameNotificationsController(IViewComponentsController, TriggersManager.ITr
     def __init__(self, setup):
         super(GameNotificationsController, self).__init__()
         self._sessionProvider = setup.sessionProvider
-        self._notificationMap = defaultdict(lambda: -1)
+        self._notificationMap = defaultdict(lambda : -1)
         self._setupNotificationMap()
         self.__ui = None
         self.__eManager = Event.EventManager()

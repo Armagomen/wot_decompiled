@@ -13,7 +13,7 @@ from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.battle_constants import DestroyTimerViewState, DeathZoneTimerViewState
 
 class LocalizationProvider(object):
 

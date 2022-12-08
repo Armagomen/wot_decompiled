@@ -1,23 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/dog_tags/dog_tag_composer.py
 import logging
-import typing
 from collections import defaultdict
+import typing
 from enum import Enum
-
 from dog_tags_common.components_config import componentConfigAdapter as componentConfig, SourceData, DictIterator
 from dog_tags_common.config.common import ComponentViewType, ComponentPurpose, NO_PROGRESS
 from dog_tags_common.number_formatter import formatComponentValue, customRound
 from gui.dog_tag_composer import DogTagComposerClient
+from gui.impl.gen.view_models.views.lobby.account_dashboard.dog_tags_model import DogTagsModel
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_component import DtComponent
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_grid_section import DtGridSection
 from helpers import dependency
 from helpers import getLanguageCode
 from skeletons.gui.game_control import IUISpamController
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Iterable
+    from account_helpers.dog_tags import DogTags
+    from dog_tags_common.config.dog_tag_framework import ComponentDefinition
+    from dog_tags_common.player_dog_tag import DisplayableDogTag
+    from frameworks.wulf import Array
+    from gui.impl.gen.view_models.views.lobby.dog_tags.dt_dog_tag import DtDogTag
+    from gui.impl.gen.view_models.views.lobby.dog_tags.dog_tags_view_model import DogTagsViewModel
 _logger = logging.getLogger(__name__)
 
 class TooltipPurposeGroup(Enum):

@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/festivity/base.py
-import logging
 from collections import namedtuple
+import logging
 from pprint import pformat
-
 import BigWorld
 from adisp import adisp_async
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
-
 _logger = logging.getLogger(__name__)
 
 def _defaultLogger(*args):
@@ -43,6 +41,10 @@ class BaseFestivityProcessor(object):
     def setCommandProxy(self, account):
         self.__commandProxy = account
 
-    def _perform(self, command, callback=None, *args):
-        cmdArgs = list(args) + [_getProxy(callback)]
-        self.__commandProxy.perform(command, *cmdArgs)
+    def _perform(self, command, argsList, callback=None):
+        if self.__commandProxy is not None:
+            cmdArgs = argsList + (_getProxy(callback) if callback else _defaultLogger,)
+            self.__commandProxy.perform(command, *cmdArgs)
+        else:
+            _logger.info('Festivity command can not be invoked due to proxy is not defined: cmd = %d, args = %r', command, argsList)
+        return

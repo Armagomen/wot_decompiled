@@ -5,22 +5,27 @@ import time
 import weakref
 from collections import namedtuple
 from functools import partial
-
-import BattleReplay
 import BigWorld
-import CommandMapping
 import GUI
 import Keys
 import Math
 import ResMgr
+import BattleReplay
+import CommandMapping
 import SoundGroups
 import TriggersManager
+import VideoCamera
+import cameras
 import constants
 import math_utils
+from AimingSystems import getShotTargetInfo
+from AimingSystems.magnetic_aim import magneticAimProcessor, MagneticAimSettings
 from AvatarInputHandler import AimingSystems, aih_global_binding, gun_marker_ctrl
 from AvatarInputHandler.DynamicCameras.camera_switcher import SwitchToPlaces
 from AvatarInputHandler.StrategicCamerasInterpolator import StrategicCamerasInterpolator
 from AvatarInputHandler.spg_marker_helpers.spg_marker_helpers import getSPGShotResult, getSPGShotFlyTime
+from DynamicCameras import SniperCamera, StrategicCamera, ArcadeCamera, ArtyCamera, DualGunCamera
+from PostmortemDelay import PostmortemDelay
 from ProjectileMover import collideDynamicAndStatic
 from TriggersManager import TRIGGER_TYPE
 from Vehicle import Vehicle as VehicleEntity
@@ -30,7 +35,7 @@ from aih_constants import CTRL_MODE_NAME, GUN_MARKER_FLAG, STRATEGIC_CAMERA, CTR
 from constants import AIMING_MODE
 from constants import VEHICLE_SIEGE_STATE
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION
-from gui import GUI_SETTINGS
+from gui import GUI_SETTINGS, g_repeatKeyHandlers
 from gui.battle_control import avatar_getter, vehicle_getter
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
 from helpers import dependency, uniprof
@@ -38,14 +43,6 @@ from items import _xml
 from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
-import VideoCamera
-import cameras
-from AimingSystems import getShotTargetInfo
-from AimingSystems.magnetic_aim import magneticAimProcessor, MagneticAimSettings
-from DynamicCameras import SniperCamera, StrategicCamera, ArcadeCamera, ArtyCamera, DualGunCamera
-from PostmortemDelay import PostmortemDelay
-
 _logger = logging.getLogger(__name__)
 _WHEELED_VEHICLE_POSTMORTEM_DELAY = 3
 
@@ -512,11 +509,7 @@ class ArcadeControlMode(_GunControlMode):
     def enable(self, **args):
         super(ArcadeControlMode, self).enable(**args)
         SoundGroups.g_instance.changePlayMode(0)
-        self._cam.enable(args.get('preferredPos'), args.get('closesDist', False), turretYaw=args.get('turretYaw', None),
-                         gunPitch=args.get('gunPitch', None),
-                         initialVehicleMatrix=args.get('initialVehicleMatrix', None),
-                         arcadeState=args.get('arcadeState', None),
-                         camTransitionParams=args.get('camTransitionParams', {}))
+        self._cam.enable(args.get('preferredPos'), args.get('closesDist', False), turretYaw=args.get('turretYaw', None), gunPitch=args.get('gunPitch', None), initialVehicleMatrix=args.get('initialVehicleMatrix', None), arcadeState=args.get('arcadeState', None), camTransitionParams=args.get('camTransitionParams', {}))
         player = BigWorld.player()
         if player.isObserver() and not player.observerSeesAll():
             player.updateObservedVehicleData()
@@ -532,18 +525,15 @@ class ArcadeControlMode(_GunControlMode):
         if self._cam.handleKeyEvent(isDown, key, mods, event):
             return True
         elif BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and constants.HAS_DEV_RESOURCES and isDown and key == Keys.KEY_F1:
-            self._aih.onControlModeChanged(CTRL_MODE_NAME.DEBUG, prevModeName=CTRL_MODE_NAME.ARCADE,
-                                           camMatrix=self._cam.camera.matrix)
+            self._aih.onControlModeChanged(CTRL_MODE_NAME.DEBUG, prevModeName=CTRL_MODE_NAME.ARCADE, camMatrix=self._cam.camera.matrix)
             return True
         elif BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and constants.HAS_DEV_RESOURCES and isDown and key == Keys.KEY_F2:
             self._aih.onControlModeChanged(CTRL_MODE_NAME.CAT, camMatrix=self._cam.camera.matrix)
             return True
-        elif BigWorld.isKeyDown(
-                Keys.KEY_CAPSLOCK) and isDown and key == Keys.KEY_F3 and self.__videoControlModeAvailable:
+        elif BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and isDown and key == Keys.KEY_F3 and self.__videoControlModeAvailable:
             if not self._aih.isControlModeChangeAllowed():
                 return
-            self._aih.onControlModeChanged(CTRL_MODE_NAME.VIDEO, prevModeName=CTRL_MODE_NAME.ARCADE,
-                                           camMatrix=self._cam.camera.matrix)
+            self._aih.onControlModeChanged(CTRL_MODE_NAME.VIDEO, prevModeName=CTRL_MODE_NAME.ARCADE, camMatrix=self._cam.camera.matrix)
             return True
         else:
             isMagneticAimEnabled = self._aih.isMagneticAimEnabled
@@ -564,8 +554,7 @@ class ArcadeControlMode(_GunControlMode):
             if isMagneticAimEnabled and isFiredLockTarget and not isDown:
                 if self.__lockKeyPressedTime is not None and self.__lockKeyUpTime is not None:
                     if self.__lockKeyUpTime - self.__lockKeyPressedTime <= MagneticAimSettings.KEY_DELAY_SEC:
-                        self.__magneticAimTarget = magneticAimProcessor(self.__simpleAimTarget,
-                                                                        self.__magneticAimTarget)
+                        self.__magneticAimTarget = magneticAimProcessor(self.__simpleAimTarget, self.__magneticAimTarget)
             if cmdMap.isFired(CommandMapping.CMD_CM_SHOOT, key) and isDown:
                 BigWorld.player().shoot()
                 return True
@@ -576,11 +565,11 @@ class ArcadeControlMode(_GunControlMode):
                 self._aih.switchAutorotation(True)
                 return True
             elif cmdMap.isFiredList((CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT,
-                                     CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT,
-                                     CommandMapping.CMD_CM_CAMERA_ROTATE_UP,
-                                     CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN,
-                                     CommandMapping.CMD_CM_INCREASE_ZOOM,
-                                     CommandMapping.CMD_CM_DECREASE_ZOOM), key):
+             CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT,
+             CommandMapping.CMD_CM_CAMERA_ROTATE_UP,
+             CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN,
+             CommandMapping.CMD_CM_INCREASE_ZOOM,
+             CommandMapping.CMD_CM_DECREASE_ZOOM), key):
                 dx = dy = dz = 0.0
                 if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT):
                     dx = -1.0
@@ -965,6 +954,14 @@ class StrategicControlMode(_TrajectoryControlMode):
     def enable(self, **args):
         super(StrategicControlMode, self).enable(**args)
         AccountSettings.setSettings(LAST_ARTY_CTRL_MODE, CTRL_MODE_NAME.STRATEGIC)
+        g_repeatKeyHandlers.add(self.__handleRepeatKeyEvent)
+
+    def disable(self):
+        super(StrategicControlMode, self).disable()
+        g_repeatKeyHandlers.discard(self.__handleRepeatKeyEvent)
+
+    def __handleRepeatKeyEvent(self, event):
+        return self.handleKeyEvent(event.isKeyDown(), event.key, 0)
 
 
 class ArtyControlMode(_TrajectoryControlMode):

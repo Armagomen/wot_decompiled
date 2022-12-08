@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/veh_post_progression_cfg_view.py
 from functools import partial
-
 from adisp import adisp_process
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -21,7 +20,6 @@ from helpers import dependency
 from nation_change.nation_change_helpers import iterVehTypeCDsInNationGroup
 from skeletons.gui.game_control import IVehicleComparisonBasket, IHeroTankController
 from skeletons.gui.shared import IItemsCache
-
 _HERO_PREVIEW_ALIASES = (VIEW_ALIAS.HERO_VEHICLE_PREVIEW, VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
 
 def _defaultExitEvent():

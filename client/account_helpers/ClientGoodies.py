@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/ClientGoodies.py
 from functools import partial
-
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
-
 
 class ClientGoodies(object):
 

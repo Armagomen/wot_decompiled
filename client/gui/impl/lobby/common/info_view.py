@@ -3,18 +3,17 @@
 import logging
 import typing
 from functools import partial
-
 import wg_async
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, WindowFlags
+from frameworks.wulf import Window
 from gui.impl.gen.view_models.views.lobby.common.info_view_model import InfoViewModel
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IUISpamController
-
 _logger = logging.getLogger(__name__)
 
 class InfoView(ViewImpl):

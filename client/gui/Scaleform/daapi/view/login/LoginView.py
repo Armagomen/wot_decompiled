@@ -2,12 +2,12 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/LoginView.py
 import json
 from collections import defaultdict
-
 import BigWorld
 import WWISE
 import constants
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
+from wg_async import wg_async, wg_await
 from connection_mgr import LOGIN_STATUS
 from external_strings_utils import isAccountLoginValid, isPasswordValid
 from frameworks.wulf import WindowFlags, WindowStatus
@@ -31,6 +31,8 @@ from helpers import getFullClientVersion, dependency, uniprof
 from helpers.i18n import makeString as _ms
 from helpers.statistics import HANGAR_LOADING_STATE
 from helpers.time_utils import makeLocalServerTime
+from login_modes import createLoginMode
+from login_modes.base_mode import INVALID_FIELDS
 from predefined_hosts import AUTO_LOGIN_QUERY_URL, AUTO_LOGIN_QUERY_ENABLED, g_preDefinedHosts
 from shared_utils import CONST_CONTAINER
 from skeletons.connection_mgr import IConnectionManager
@@ -38,11 +40,6 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.login_manager import ILoginManager
 from skeletons.helpers.statistics import IStatisticsCollector
-from wg_async import wg_async, wg_await
-
-from login_modes import createLoginMode
-from login_modes.base_mode import INVALID_FIELDS
-
 _STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda : INVALID_FIELDS.ALL_VALID, {LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.PWD_INVALID,
  LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
  LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,

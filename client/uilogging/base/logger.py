@@ -10,7 +10,7 @@ from skeletons.ui_logging import IUILoggingCore
 from uilogging.constants import LogLevels, DEFAULT_LOGGER_NAME
 from wotdecorators import noexcept
 if typing.TYPE_CHECKING:
-    pass
+    from uilogging.types import FeatureType, GroupType, ActionType, LogLevelType, PartnerIdType, TimeLimitType, ItemType, ItemStateType, ParentScreenType, InfoType, SourceItemType, DestinationItemType, TransitionMethodType
 _logger = logging.getLogger(DEFAULT_LOGGER_NAME)
 
 def createPartnerID():

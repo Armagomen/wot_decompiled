@@ -2,14 +2,12 @@
 # Embedded file name: scripts/client/VisualScriptEquipment.py
 import BigWorld
 from constants import EQUIPMENT_STAGES as STAGES
-from items import vehicles
-from visual_script.misc import ASPECT
-
 from helpers import dependency
 from helpers.fixed_dict import getVisualScriptEquipmentState
+from items import vehicles
 from skeletons.gui.battle_session import IBattleSessionProvider
+from visual_script.misc import ASPECT
 from visual_script_client.contexts.ability_context import AbilityContextClient
-
 
 class VisualScriptEquipment(BigWorld.DynamicScriptComponent):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)

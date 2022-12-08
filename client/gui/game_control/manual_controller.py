@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/manual_controller.py
 import logging
-
-from PlayerEvents import g_playerEvents
 from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader import sf_lobby
-from gui.doc_loaders import manual_xml_data_reader
 from gui.doc_loaders.manual_xml_data_reader import ManualPageTypes
-from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from helpers import dependency
-from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.game_control import IManualController
 from skeletons.gui.lobby_context import ILobbyContext
-
+from skeletons.gui.game_control import IBootcampController
+from gui.app_loader import sf_lobby
+from gui.doc_loaders import manual_xml_data_reader
+from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from PlayerEvents import g_playerEvents
+from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 _logger = logging.getLogger(__name__)
 
 class ManualController(IManualController):
@@ -83,20 +81,17 @@ class ManualController(IManualController):
         view = self.getView()
         ctx = {'backCallback': backCallback}
         if not lessonID:
-            g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx),
-                                   EVENT_BUS_SCOPE.LOBBY)
+            g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
         else:
             for chapterIndex, chapter in enumerate(self.__getChapters()):
-                pageIndex = next(
-                    (pageIndex for pageIndex, pageID in enumerate(chapter['pageIDs']) if pageID == lessonID), None)
+                pageIndex = next((pageIndex for pageIndex, pageID in enumerate(chapter['pageIDs']) if pageID == lessonID), None)
                 if pageIndex is not None:
                     if view:
                         self.showChapterView(chapterIndex, pageIndex)
                     else:
                         ctx.update({'chapterIndex': chapterIndex,
-                                    'pageIndex': pageIndex})
-                        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx),
-                                               EVENT_BUS_SCOPE.LOBBY)
+                         'pageIndex': pageIndex})
+                        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WIKI_VIEW), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
                     return
 
             _logger.debug('Cant found page to show lesson with id %d', lessonID)
@@ -115,13 +110,11 @@ class ManualController(IManualController):
         if chapterView:
             chapterView.setData(chapterIndex, pageIndex)
             return
-        g_eventBus.handleEvent(
-            events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MANUAL_CHAPTER_VIEW), ctx={'chapterIndex': chapterIndex,
-                                                                                        'pageIndex': pageIndex}),
-            scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MANUAL_CHAPTER_VIEW), ctx={'chapterIndex': chapterIndex,
+         'pageIndex': pageIndex}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def collectUnreadPages(self, chapters):
-        return [chapter['newPageIDs'] for chapter in chapters]
+        return [ chapter['newPageIDs'] for chapter in chapters ]
 
     def getNewContentCount(self):
         number = self.__countNewContent()

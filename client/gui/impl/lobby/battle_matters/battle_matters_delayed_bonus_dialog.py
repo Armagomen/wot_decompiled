@@ -1,18 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_delayed_bonus_dialog.py
 import typing
-
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import ConfirmButton, CancelButton
 from gui.impl.dialogs.sub_views.title.simple_text_title import SimpleTextTitle
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
 from gui.impl.lobby.battle_matters.battle_matters_exchange_rewards import BattleMattersExchangeRewards
 from gui.shared.gui_items.Vehicle import getNationLessName
-
+from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders as Placeholder
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.gui_items.Vehicle import Vehicle
 
 class BattleMattersDelayedBonusDialog(DialogTemplateView):
     __slots__ = ('__vehicleUserName', '__vehicleName')

@@ -16,6 +16,9 @@ class TankSetupConstants(ViewModel):
     APPLY_VEHICLE = 'applyVehicle'
     APPLY_TYPE = 'applyType'
     SPECIAL_SETUP_INFO_SLOT_TOOLTIP = 'specialSetupInfoSlotTooltip'
+    EQUIP_COIN_INFO_TOOLTIP = 'equipCoinInfo'
+    TAB_SIMPLE = 'simple'
+    TAB_MODERNIZED = 'modernized'
 
     def __init__(self, properties=0, commands=0):
         super(TankSetupConstants, self).__init__(properties=properties, commands=commands)

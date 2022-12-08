@@ -4,7 +4,6 @@ import cPickle
 import time
 import zlib
 from functools import wraps
-
 import constants
 from Event import Event
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
@@ -14,7 +13,6 @@ from enumerations import Enumeration, AttributeEnumItem
 from messenger_common_chat2 import BATTLE_CHAT_COMMANDS_BY_NAMES
 from soft_exception import SoftException
 from wotdecorators import noexcept
-
 __all__ = ['CHAT_ACTIONS', 'SYS_MESSAGE_TYPE']
 NOTIFICATION_GROUP = Enumeration('Group of members for notification', ['All',
  'NONE',
@@ -1287,8 +1285,11 @@ SYS_MESSAGE_TYPE = Enumeration('systemMessageType', ['serverReboot',
  'prbVehicleMaxScoutKick',
  'personalReservesHaveBeenConverted',
  'changeSquadSize',
- 'fairplay'])
+ 'fairplay',
+ 'autoCollectingNotification',
+ 'nyErrorNotification'])
 SYS_MESSAGE_IMPORTANCE = Enumeration('systemMessageImportance', ['normal', 'high'])
+NY_ERROR_TYPE = Enumeration('nyErrorType', ['levelUpRewardsError'])
 SM_REQUEST_PERSONAL_MESSAGES_FLAG = 1
 SM_REQUEST_SYSTEM_MESSAGES_FLAG = 2
 SM_REQUEST_INTERNAL_SYS_MESSAGES_FLAG = 4

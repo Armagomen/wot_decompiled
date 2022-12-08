@@ -2,27 +2,25 @@
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_search_view.py
 import logging
 import time
-
-from PlayerEvents import g_playerEvents
-from UnitBase import UNDEFINED_ESTIMATED_TIME
-from constants import QUEUE_TYPE
-from frameworks.wulf import ViewSettings, WindowFlags
-from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.platoon.searching_dropdown_model import SearchingDropdownModel
-from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
-from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, getQueueInfoByQueueType, Position
-from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
-from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
-from gui.impl.pub import ViewImpl
 from gui.prb_control import prb_getters
-from gui.shared import g_eventBus
-from gui.shared.events import PlatoonDropdownEvent
-from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.game_control import IPlatoonController
-
+from helpers import dependency
+from gui.impl.gen.view_models.views.lobby.platoon.searching_dropdown_model import SearchingDropdownModel
+from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
+from gui.impl.pub import ViewImpl
+from frameworks.wulf import ViewSettings, WindowFlags
+from gui.impl.gen import R
+from gui.impl import backport
+from gui.shared import g_eventBus
+from gui.shared.events import PlatoonDropdownEvent
+from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
+from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, getQueueInfoByQueueType, Position
+from PlayerEvents import g_playerEvents
+from UnitBase import UNDEFINED_ESTIMATED_TIME
+from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
+from constants import QUEUE_TYPE
 _logger = logging.getLogger(__name__)
 
 class SearchView(ViewImpl, CallbackDelayer):

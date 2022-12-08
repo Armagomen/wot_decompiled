@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/formatters/service_channel_helpers.py
-import logging
 import typing
+import logging
 from collections import namedtuple
-
-from helpers import dependency
 from items import makeIntCompactDescrByID
-from items.components.c11n_constants import CustomizationNamesToTypes
-from messenger import g_settings
 from optional_bonuses import BONUS_MERGERS
 from skeletons.gui.shared import IItemsCache
-
+from items.components.c11n_constants import CustomizationNamesToTypes
+from helpers import dependency
+from messenger import g_settings
 _logger = logging.getLogger(__name__)
 EOL = '\n'
 DEFAULT_MESSAGE = 'defaultMessage'
 if typing.TYPE_CHECKING:
-    pass
+    from messenger.proto.bw.wrappers import ServiceChannelMessage
 MessageData = namedtuple('MessageData', 'data, settings')
 
 def getRewardsForBoxes(message, boxIDs):

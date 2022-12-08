@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/vehicles_selection_mode.py
-import logging
 import math
+import logging
 import weakref
-
 import BigWorld
 import Math
 import math_utils
@@ -20,9 +19,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
 from vehicle_systems.tankStructure import TankPartIndexes
-
 _logger = logging.getLogger(__name__)
-
 
 class _CameraManager(object):
     CAMERA_TRANSITION_DURATION = 2
@@ -91,16 +88,13 @@ class _CameraManager(object):
                 targetPos += vehMatrix.translation
                 hullBB = vehicle.appearance.collisions.getBoundingBox(TankPartIndexes.HULL)
                 vehiclesBBPoints.extend([vehMatrix.applyPoint(hullBB[0]), vehMatrix.applyPoint(hullBB[1])])
-                vehiclesBBPoints.extend(
-                    _makeAdditionalPoints(vehMatrix.applyPoint(hullBB[0]), vehMatrix.applyPoint(hullBB[1])))
-                vehiclesBBPoints.extend(
-                    _makeAdditionalPoints(vehMatrix.applyPoint(hullBB[1]), vehMatrix.applyPoint(hullBB[0])))
+                vehiclesBBPoints.extend(_makeAdditionalPoints(vehMatrix.applyPoint(hullBB[0]), vehMatrix.applyPoint(hullBB[1])))
+                vehiclesBBPoints.extend(_makeAdditionalPoints(vehMatrix.applyPoint(hullBB[1]), vehMatrix.applyPoint(hullBB[0])))
                 yawSum += vehMatrix.yaw + 2 * math.pi if vehMatrix.yaw < 0 else vehMatrix.yaw
                 numVehs += 1
 
         if self.__pendingVehicles:
-            _logger.info('Not all vehicles are in the world at the moment of camera setup. Skipped vehicles IDS: %s',
-                         self.__pendingVehicles)
+            _logger.info('Not all vehicles are in the world at the moment of camera setup. Skipped vehicles IDS: %s', self.__pendingVehicles)
             BigWorld.player().onVehicleEnterWorld += self.__onVehicleEnteredWorld
         if numVehs == 0:
             return
@@ -111,7 +105,7 @@ class _CameraManager(object):
             targetPosition = targetPos.scale(1.0 / numVehs)
             yawMatrix = math_utils.createRTMatrix((averageYaw, self.__CAMERA_PITCH, 0), targetPosition)
             yawMatrix.invert()
-            rotatedPoints = [yawMatrix.applyPoint(p) for p in vehiclesBBPoints]
+            rotatedPoints = [ yawMatrix.applyPoint(p) for p in vehiclesBBPoints ]
             maxX = max((p.x for p in rotatedPoints))
             minX = min((p.x for p in rotatedPoints))
             maxZ = max((p.z for p in rotatedPoints))
@@ -184,15 +178,11 @@ class _CameraMover(CallbackDelayer):
         adjustedStartYaw = startYaw if startYaw > 0 else math.pi + (math.pi - abs(startYaw))
         adjustedFinalYaw = finalYaw if finalYaw > 0 else math.pi + (math.pi - abs(finalYaw))
         adjustedDiff = adjustedFinalYaw - adjustedStartYaw
-        return 0 if adjustedDiff == 0 else min(adjustedDiff,
-                                               math.copysign(1, -1 * adjustedDiff) * (2 * math.pi - abs(adjustedDiff)),
-                                               key=abs)
+        return 0 if adjustedDiff == 0 else min(adjustedDiff, math.copysign(1, -1 * adjustedDiff) * (2 * math.pi - abs(adjustedDiff)), key=abs)
 
     def __getNewValueForParameter(self, paramName, timePassed, totalTime):
         totalChange = self.__totalChanges[paramName]
-        return self.__finalParams[paramName] if timePassed > totalTime or totalChange == 0 else self.__startParams[
-                                                                                                    paramName] + math_utils.easeInOutCubic(
-            timePassed, totalChange, totalTime)
+        return self.__finalParams[paramName] if timePassed > totalTime or totalChange == 0 else self.__startParams[paramName] + math_utils.easeInOutCubic(timePassed, totalChange, totalTime)
 
 
 class VehiclesSelectionControlMode(IControlMode):
@@ -233,8 +223,7 @@ class VehiclesSelectionControlMode(IControlMode):
 
     def handleKeyEvent(self, isDown, key, mods, event=None):
         prbCtrl = self.__guiSessionProvider.dynamic.comp7PrebattleSetup
-        return True if (prbCtrl is None or prbCtrl.isSelectionConfirmed()) and keys_handlers.processAmmoSelection(
-            key) else None
+        return True if (prbCtrl is None or prbCtrl.isSelectionConfirmed()) and keys_handlers.processAmmoSelection(key) else None
 
     def handleMouseEvent(self, dx, dy, dz):
         if self.__lockedState:
@@ -253,8 +242,7 @@ class VehiclesSelectionControlMode(IControlMode):
     def __onLockedState(self):
         self.__lockedState = True
         g_eventBus.handleEvent(GameEvent(GameEvent.PREBATTLE_INPUT_STATE_LOCKED), scope=EVENT_BUS_SCOPE.BATTLE)
-        self.__aih.ctrls[CTRL_MODE_NAME.ARCADE].camera.enable(
-            camTransitionParams={'cameraTransitionDuration': self.__camManager.CAMERA_TRANSITION_DURATION})
+        self.__aih.ctrls[CTRL_MODE_NAME.ARCADE].camera.enable(camTransitionParams={'cameraTransitionDuration': self.__camManager.CAMERA_TRANSITION_DURATION})
 
     def __onArenaPeriodChanged(self, period, periodEndTime, *_):
         self.__updateArenaPeriod(period, periodEndTime)

@@ -3,24 +3,21 @@
 import cPickle
 import zlib
 from collections import namedtuple, defaultdict
-
 import ArenaType
 import BigWorld
 import CGF
 import Event
 import Math
-from PlayerEvents import g_playerEvents
+import arena_component_system.client_arena_component_assembler as assembler
 from battle_modifiers_common import BattleModifiers, EXT_DATA_MODIFIERS_KEY
 from constants import ARENA_PERIOD, ARENA_UPDATE
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV
 from helpers.bots import preprocessBotName
 from items import vehicles
+from PlayerEvents import g_playerEvents
 from post_progression_common import EXT_DATA_PROGRESSION_KEY, EXT_DATA_SLOT_KEY
 from visual_script.misc import ASPECT
 from visual_script.multi_plan_provider import makeMultiPlanProvider, CallableProviderType
-
-import arena_component_system.client_arena_component_assembler as assembler
-
 TeamBaseProvider = namedtuple('TeamBaseProvider', ('points', 'invadersCnt', 'capturingStopped'))
 
 class ClientArena(object):

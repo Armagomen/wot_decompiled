@@ -145,8 +145,8 @@ class PrbInviteWrapper(_PrbInviteData):
     def getExpiryTime(self):
         return int(time_utils.makeLocalServerTime(self.expiryTime)) if self.expiryTime is not None else None
 
-    def getExtraData(self, key=None):
-        return self.extraData.get(key) if key is not None else self.extraData
+    def getExtraData(self, key=None, default=None):
+        return self.extraData.get(key, default) if key is not None else self.extraData
 
     def isCreatedInBattle(self):
         return not self.isFromHangar()

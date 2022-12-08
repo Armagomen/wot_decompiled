@@ -1,20 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/stats_exchange.py
-import enum
 import logging
+import enum
 import typing
-
 import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiEquipmentByType
 from helpers import dependency
 from points_of_interest.mixins import PointsOfInterestListener
 from points_of_interest_shared import ENEMY_VEHICLE_ID
-from points_of_interest_shared import PoiStatus
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from points_of_interest_shared import PoiStatus
 if typing.TYPE_CHECKING:
-    pass
+    from points_of_interest.components import PoiStateComponent
 _logger = logging.getLogger(__name__)
 
 class PoiStatusItemUpdateResult(enum.IntEnum):

@@ -1,18 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/style_popover.py
+import typing
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.Scaleform.daapi.view.meta.CustomizationKitPopoverMeta import CustomizationKitPopoverMeta
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.customization.shared import SEASON_TYPE_TO_NAME, SEASONS_ORDER
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-
 
 class StylePopover(CustomizationKitPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)

@@ -2,17 +2,16 @@
 # Embedded file name: scripts/client/gui/shared/missions/missions_provider.py
 import BigWorld
 from adisp import adisp_process
-from gui import DialogsInterface
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui import DialogsInterface
 from gui.Scaleform.framework import g_entitiesFactories
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
-from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.personality import ServicesLocator
+from gui.prb_control.entities.listener import IGlobalListener
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
+from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
+from gui.shared.personality import ServicesLocator
 TIME_TO_UPDATE_HANGAR_FLAG = 60
 
 class ClientMissionsProvider(IGlobalListener):

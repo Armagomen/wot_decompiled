@@ -9,15 +9,14 @@ from gui.shared.utils import getPlayerDatabaseID
 from messenger import g_settings
 from messenger.ext import passCensor
 from messenger.m_constants import LAZY_CHANNEL, MESSENGER_SCOPE, USER_TAG, PROTO_TYPE
-from messenger.proto.bw import entities
-from messenger.proto.bw import find_criteria, limits
 from messenger.proto.bw.ChatActionsListener import ChatActionsListener
+from messenger.proto.bw import entities
 from messenger.proto.bw.errors import ChannelNotFound, ChannelLimitReachedError
+from messenger.proto.bw import find_criteria, limits
 from messenger.proto.bw.wrappers import ChatActionWrapper
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.xmpp.log_output import g_logOutput, CLIENT_LOG_AREA
 from messenger.storage import storage_getter
-
 
 class ChannelsManager(ChatActionsListener):
 

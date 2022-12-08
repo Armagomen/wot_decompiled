@@ -1,28 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/fitting_item.py
 from collections import namedtuple
-
 import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui import GUI_SETTINGS
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_ECONOMY_CODE
-from gui.shared.gui_items.gui_item import GUIItem, HasIntCD
 from gui.shared.gui_items.gui_item_economics import ItemPrice, ItemPrices, ITEM_PRICE_EMPTY, ITEM_PRICES_EMPTY
+from gui.shared.gui_items.gui_item import GUIItem, HasIntCD
 from gui.shared.items_parameters import params_helper, formatters
 from gui.shared.money import Money, Currency, MONEY_UNDEFINED
 from gui.shared.utils.functions import getShortDescr, stripColorTagDescrTags
-from helpers import i18n, time_utils, dependency
-from items import vehicles, getTypeInfoByName
-from renewable_subscription_common.settings_constants import RENT_KEY as WOTPLUS_RENT_KEY
-from rent_common import SeasonRentDuration
 from shared_utils import first
 from skeletons.gui.game_control import ISeasonsController
+from helpers import i18n, time_utils, dependency
+from items import vehicles, getTypeInfoByName
+from rent_common import SeasonRentDuration
+from renewable_subscription_common.settings_constants import RENT_KEY as WOTPLUS_RENT_KEY
 from telecom_rentals_common import TELECOM_RENTALS_RENT_KEY
-
 ICONS_MASK = '../maps/icons/%(type)s/%(subtype)s%(unicName)s.png'
-_RentalInfoProvider = namedtuple('RentalInfoProvider', ('rentExpiryTime', 'compensations', 'hasEventRule', 'battlesLeft', 'winsLeft', 'seasonRent', 'isRented', 'isWotPlus', 'isTelecomRent'))
+_RentalInfoProvider = namedtuple('RentalInfoProvider', ('rentExpiryTime', 'compensations', 'battlesLeft', 'winsLeft', 'seasonRent', 'isRented', 'isWotPlus', 'isTelecomRent'))
 SeasonRentInfo = namedtuple('SeasonRentInfo', ('seasonType', 'seasonID', 'duration', 'expiryTime'))
 _BIG_HIGHLIGHT_TYPES_MAP = {SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE_BIG,
  SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_BIG,
@@ -31,14 +29,16 @@ _BIG_HIGHLIGHT_TYPES_MAP = {SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: SL
  SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT: SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BIG,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC_BIG,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED_BIG}
+ SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED_BIG,
+ SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG}
 SLOT_HIGHLIGHT_TO_ITEM_HIGHLIGHT_TYPES = {SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: ItemHighlightTypes.TROPHY,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: ItemHighlightTypes.TROPHY_BASIC,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: ItemHighlightTypes.TROPHY_UPGRADED,
  SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: ItemHighlightTypes.BATTLE_BOOSTER,
  SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: ItemHighlightTypes.BATTLE_BOOSTER_REPLACE,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS: ItemHighlightTypes.EQUIPMENT_PLUS,
- SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: ItemHighlightTypes.BUILT_IN_EQUIPMENT}
+ SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: ItemHighlightTypes.BUILT_IN_EQUIPMENT,
+ SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: ItemHighlightTypes.MODERNIZED}
 
 def canBuyWithGoldExchange(price, money, exchangeRate):
     money = money.exchange(Currency.GOLD, Currency.CREDITS, exchangeRate, default=0)
@@ -55,10 +55,9 @@ class RentalInfoProvider(_RentalInfoProvider):
             compensations = Money.makeFromMoneyTuple(additionalData['compensation'])
         else:
             compensations = MONEY_UNDEFINED
-        specialRental = 'hasEventRule' in additionalData
         isWotPlus = WOTPLUS_RENT_KEY in additionalData
         isTelecomRent = TELECOM_RENTALS_RENT_KEY in additionalData
-        result = _RentalInfoProvider.__new__(cls, time, compensations, specialRental, battles, wins, seasonRent or {}, isRented, isWotPlus, isTelecomRent)
+        result = _RentalInfoProvider.__new__(cls, time, compensations, battles, wins, seasonRent or {}, isRented, isWotPlus, isTelecomRent)
         return result
 
     def canRentRenewForSeason(self, seasonType):
@@ -109,7 +108,7 @@ class RentalInfoProvider(_RentalInfoProvider):
         return float('inf')
 
     def getExpiryState(self):
-        return self.rentExpiryTime != float('inf') and (self.battlesLeft <= 0 or self.getTimeLeft() <= 0) if self.hasEventRule else self.rentExpiryTime != float('inf') and self.battlesLeft <= 0 and self.winsLeft <= 0 and self.getTimeLeft() <= 0 and not self.getActiveSeasonRent()
+        return self.rentExpiryTime != float('inf') and self.battlesLeft <= 0 and self.winsLeft <= 0 and self.getTimeLeft() <= 0 and not self.getActiveSeasonRent()
 
     def getRentalPeriodInCycles(self):
         activeSeasonRentInfo = self.getActiveSeasonRent()

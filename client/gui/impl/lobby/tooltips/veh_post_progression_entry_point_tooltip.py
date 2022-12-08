@@ -9,6 +9,7 @@ from helpers import dependency
 from items import filterIntCDsByItemType, ITEM_TYPES
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
+    from gui.shared.gui_items.Vehicle import Vehicle, EliteStatusProgress
     from gui.impl.gen_utils import DynAccessor
 
 class VehPostProgressionEntryPointTooltip(ViewImpl):

@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/resource_well.py
 from functools import partial
-
 import BigWorld
 from adisp import adisp_async, adisp_process
 from gui import SystemMessages
@@ -17,7 +16,6 @@ from gui.shared.gui_items.processors.plugins import MessageConfirmator, SyncVali
 from helpers import dependency
 from skeletons.gui.game_control import IResourceWellController
 from skeletons.gui.shared import IItemsCache
-
 _RESOURCE_WELL_MESSAGES = R.strings.system_messages.resourceWell
 
 class ResourceWellLoadingConfirmator(MessageConfirmator):

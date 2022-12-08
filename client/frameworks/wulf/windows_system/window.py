@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/frameworks/wulf/windows_system/window.py
 import logging
-
+import typing
 import Event
 from soft_exception import SoftException
-
-from ..gui_constants import WindowStatus, WindowFlags, ViewStatus
 from ..py_object_binder import PyObjectEntity, getProxy, getObject
-from ..py_object_wrappers import PyObjectWindow
 from ..py_object_wrappers import PyObjectWindowSettings
+from ..py_object_wrappers import PyObjectWindow
 from ..view.view import View
-
+from ..view.view_model import ViewModel
+from ..gui_constants import WindowStatus, WindowFlags, ViewStatus
 _logger = logging.getLogger(__name__)
 
 class WindowSettings(object):
@@ -234,6 +233,9 @@ class Window(PyObjectEntity):
 
     def isHidden(self):
         return self.proxy.isHidden()
+
+    def canBeClosed(self):
+        return self.content.canBeClosed() if self.content is not None else True
 
     def _getDecoratorViewModel(self):
         decorator = self.decorator

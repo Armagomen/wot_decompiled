@@ -2,12 +2,9 @@
 # Embedded file name: scripts/common/serialization/serializable_component.py
 from cStringIO import StringIO
 from collections import OrderedDict
-from typing import TypeVar
-
+from typing import MutableMapping, Any, TypeVar
 import Math
-
-from .definitions import FieldTypes, FieldFlags
-
+from .definitions import FieldTypes, FieldFlags, FieldType
 __all__ = ('SerializableComponent', 'SerializableComponentChildType')
 
 class SerializableComponent(object):

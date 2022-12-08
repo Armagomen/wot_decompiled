@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/recycle_bin_requester.py
 from collections import namedtuple
-
 import BigWorld
 from ItemRestore import RESTORE_VEHICLE_TYPE
 from adisp import adisp_async
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from helpers import time_utils
 from skeletons.gui.shared.utils.requesters import IRecycleBinRequester
-
 _VehicleRestoreInfo = namedtuple('_VehicleRestoreInfo', ('restoreType', 'changedAt', 'restoreDuration', 'restoreCooldown'))
 
 class VehicleRestoreInfo(_VehicleRestoreInfo):

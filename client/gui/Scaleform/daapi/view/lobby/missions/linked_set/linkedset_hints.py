@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/linked_set/linkedset_hints.py
-from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
 from gui.Scaleform.daapi.view.meta.LinkedSetHintsViewMeta import LinkedSetHintsViewMeta
-from gui.server_events.bonuses import mergeBonuses
 from gui.sounds.ambients import BattleResultsEnv
-
+from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
+from gui.server_events.bonuses import mergeBonuses
 
 class LinkedSetHintsView(LinkedSetHintsViewMeta):
     __sound_env__ = BattleResultsEnv

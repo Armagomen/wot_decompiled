@@ -5,22 +5,22 @@ import math
 from functools import partial
 from types import NoneType
 from typing import TYPE_CHECKING
-
 import BigWorld
 import CommandMapping
 from battle_modifiers_common import BattleParams
 from constants import EQUIPMENT_STAGES, SHELL_TYPES
+from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
+from items import vehicles
 from gui import GUI_SETTINGS
 from gui import TANKMEN_ROLES_ORDER_DICT
 from gui.Scaleform.daapi.view.battle.shared.timers_common import PythonTimer
 from gui.Scaleform.daapi.view.meta.ConsumablesPanelMeta import ConsumablesPanelMeta
-from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
+from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.battle_control.battle_constants import VEHICLE_DEVICE_IN_COMPLEX_ITEM, CROSSHAIR_VIEW_ID
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, DEVICE_STATE_DESTROYED
-from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
 from gui.battle_control.controllers.consumables.equipment_ctrl import IgnoreEntitySelection
 from gui.battle_control.controllers.consumables.equipment_ctrl import NeedEntitySelection, InCooldownError
 from gui.impl import backport
@@ -31,14 +31,12 @@ from gui.shared.formatters import text_styles
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
-from items import vehicles
 from items.artefacts import SharedCooldownConsumableConfigReader
 from shared_utils import forEach
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
 if TYPE_CHECKING:
-    pass
+    from gui.battle_control.controllers.consumables.equipment_ctrl import _OrderItem
 _logger = logging.getLogger(__name__)
 R_AMMO_ICON = R.images.gui.maps.icons.ammopanel.battle_ammo
 NO_AMMO_ICON = 'NO_{}'
@@ -222,7 +220,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
         self._cds[idx] = intCD
         keyCode, sfKeyCode = self._genKey(idx)
         self._extraKeys[idx] = self._keys[keyCode] = partial(self.__handleAmmoPressed, intCD)
-        tooltipText = self.__makeShellTooltip(descriptor, int(gunSettings.getPiercingPower(intCD)), gunSettings.getShotSpeed(intCD))
+        tooltipText = self.__makeShellTooltip(descriptor, int(round(gunSettings.getPiercingPower(intCD))), gunSettings.getShotSpeed(intCD))
         icon = descriptor.icon[0]
         iconName = icon.split('.png')[0]
         shellIconPath = backport.image(R_AMMO_ICON.dyn(iconName)())
@@ -526,7 +524,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
             params = [backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=backport.getNiceNumberFormat(descriptor.damage[0]))]
             if piercingPower != 0:
                 params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.piercingPower(), value=backport.getNiceNumberFormat(piercingPower)))
-            params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.shotSpeed(), value=backport.getIntegralFormat(shotSpeed / projSpeedFactor)))
+            params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.shotSpeed(), value=backport.getIntegralFormat(int(round(shotSpeed / projSpeedFactor)))))
             if kind == SHELL_TYPES.HIGH_EXPLOSIVE and descriptor.type.explosionRadius > 0.0:
                 params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.explosionRadius(), value=backport.getNiceNumberFormat(descriptor.type.explosionRadius)))
             if descriptor.hasStun and self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():

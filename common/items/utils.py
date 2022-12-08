@@ -2,18 +2,16 @@
 # Embedded file name: scripts/common/items/utils.py
 import copy
 from operator import sub
-
-import ResMgr
+from typing import Any, Dict, Tuple
+from VehicleDescrCrew import VehicleDescrCrew
 from constants import VEHICLE_TTC_ASPECTS
 from debug_utils import *
 from items import tankmen
 from items import vehicles
 from items.components.c11n_constants import CUSTOMIZATION_SLOTS_VEHICLE_PARTS
 from items.tankmen import MAX_SKILL_LEVEL, MIN_ROLE_LEVEL
-from items.vehicles import vehicleAttributeFactors
-
-from VehicleDescrCrew import VehicleDescrCrew
-
+from items.vehicles import vehicleAttributeFactors, VehicleDescriptor
+import ResMgr
 __defaultGlossTexture = None
 
 def getDefaultGlossTexture():

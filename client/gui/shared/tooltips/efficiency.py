@@ -5,10 +5,9 @@ from gui.Scaleform.locale.BATTLE_RESULTS import BATTLE_RESULTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.shared.formatters import text_styles
 from gui.shared.tooltips import formatters
 from helpers.i18n import makeString as ms
-
+from gui.shared.formatters import text_styles
 
 def makeHtmlText(pattern, text):
     return makeHtmlString('html_templates:lobby/battle_results', pattern, {'text': text})

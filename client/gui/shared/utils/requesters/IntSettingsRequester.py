@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/IntSettingsRequester.py
 import logging
-from copy import copy
 from functools import wraps
-
+from copy import copy
+from account_helpers.AccountSettings import MAPBOX_CAROUSEL_FILTER_1, MAPBOX_CAROUSEL_FILTER_2, FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2, COMP7_CAROUSEL_FILTER_1, COMP7_CAROUSEL_FILTER_2
 import BigWorld
 import constants
-from account_helpers.AccountSettings import MAPBOX_CAROUSEL_FILTER_1, MAPBOX_CAROUSEL_FILTER_2, \
-    FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2, COMP7_CAROUSEL_FILTER_1, COMP7_CAROUSEL_FILTER_2
 from adisp import adisp_async, adisp_process
 from debug_utils import LOG_ERROR
 from gui.shared.utils import code2str
-
 _logger = logging.getLogger(__name__)
 
 def requireSync(func):
@@ -72,6 +69,11 @@ class IntSettingsRequester(object):
      'EPICBATTLE_CAROUSEL_FILTER_2': 88,
      'BATTLE_MATTERS_QUESTS': constants.USER_SERVER_SETTINGS.BATTLE_MATTERS_QUESTS,
      'QUESTS_PROGRESS': constants.USER_SERVER_SETTINGS.QUESTS_PROGRESS,
+     'LOOT_BOX_VIEWED': 91,
+     'LOOT_BOX_ORIENTAL': 92,
+     'LOOT_BOX_NEW_YEAR': 93,
+     'LOOT_BOX_FAIRYTALE': 94,
+     'LOOT_BOX_CHRISTMAS': 95,
      'SESSION_STATS': constants.USER_SERVER_SETTINGS.SESSION_STATS,
      'BATTLEPASS_CAROUSEL_FILTER_1': 97,
      'BATTLE_PASS_STORAGE': 98,
@@ -82,6 +84,7 @@ class IntSettingsRequester(object):
      'SPG_AIM': constants.USER_SERVER_SETTINGS.SPG_AIM,
      MAPBOX_CAROUSEL_FILTER_1: 103,
      MAPBOX_CAROUSEL_FILTER_2: 104,
+     'NEW_YEAR': 105,
      'CONTOUR': constants.USER_SERVER_SETTINGS.CONTOUR,
      FUN_RANDOM_CAROUSEL_FILTER_1: 107,
      FUN_RANDOM_CAROUSEL_FILTER_2: 108,

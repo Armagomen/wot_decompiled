@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_buy_view.py
 import logging
-
 import SoundGroups
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
@@ -26,7 +25,6 @@ from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IWalletController
 from skeletons.gui.shared import IItemsCache
-
 WINDOW_IS_NOT_OPENED = -1
 _CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
  ChapterState.COMPLETED: ChapterStates.COMPLETED,

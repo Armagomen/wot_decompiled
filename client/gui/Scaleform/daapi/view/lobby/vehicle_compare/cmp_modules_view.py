@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_modules_view.py
 import logging
-
 import BigWorld
 from adisp import adisp_process
 from gui.Scaleform.daapi.view.lobby.techtree import dumpers, nodes
@@ -10,7 +9,6 @@ from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.daapi.view.lobby.vehicle_compare.cmp_configurator_base import VehicleCompareConfiguratorBaseView
 from gui.Scaleform.daapi.view.meta.VehicleModulesViewMeta import VehicleModulesViewMeta
 from gui.Scaleform.genConsts.NODE_STATE_FLAGS import NODE_STATE_FLAGS
-from gui.Scaleform.genConsts.VEHICLE_COMPARE_CONSTANTS import VEHICLE_COMPARE_CONSTANTS
 from gui.Scaleform.locale.VEH_COMPARE import VEH_COMPARE
 from gui.game_control.veh_comparison_basket import getInstalledModulesCDs
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -20,9 +18,9 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items import getTypeOfCompactDescr
 from nations import AVAILABLE_NAMES
+from gui.Scaleform.genConsts.VEHICLE_COMPARE_CONSTANTS import VEHICLE_COMPARE_CONSTANTS
 from shared_utils.vehicle_utils import ModuleDependencies as ModulesInstaller
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 class _MODULES_TYPES(object):

@@ -2,16 +2,14 @@
 # Embedded file name: scripts/client/cgf_components/rocket_acceleration_component.py
 import logging
 from functools import partial
-
-import BigWorld
 import CGF
-from GameplayDebug import DebugTextComponent
-from GenericComponents import VSEComponent
+import BigWorld
 from cgf_script.component_meta_class import CGFComponent, CGFMetaTypes, ComponentProperty
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery, tickGroup
+from GameplayDebug import DebugTextComponent
 from constants import IS_CLIENT, IS_DEVELOPMENT
 from constants import ROCKET_ACCELERATION_STATE
-
+from GenericComponents import VSEComponent
 if IS_CLIENT:
     from RocketAccelerationController import RocketAccelerationController
 else:
@@ -19,8 +17,8 @@ else:
     class RocketAccelerationController(object):
         pass
 
-_logger = logging.getLogger(__name__)
 
+_logger = logging.getLogger(__name__)
 
 class SoundEvents(object):
     ROCKET_ACCELERATION_READY = 'ev_rocket_accel_ready'
@@ -52,20 +50,13 @@ class RocketAccelerationStateListener(CGFComponent):
     sound_r = ComponentProperty(type=CGFMetaTypes.LINK, editorName='Right Sound', value=CGF.GameObject)
     startDuration = ComponentProperty(type=CGFMetaTypes.FLOAT, editorName='Start Duration', value=0.2)
     endDuration = ComponentProperty(type=CGFMetaTypes.FLOAT, editorName='End Duration', value=0.2)
-    soundReady = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Ready sound',
-                                   value=SoundEvents.ROCKET_ACCELERATION_READY)
-    soundActivePC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Active PC sound',
-                                      value=SoundEvents.ROCKET_ACCELERATION_ACTIVE_PC)
-    soundActiveNPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Active NPC sound',
-                                       value=SoundEvents.ROCKET_ACCELERATION_ACTIVE_NPC)
-    soundStopPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Stop PC sound',
-                                    value=SoundEvents.ROCKET_ACCELERATION_STOP_PC)
-    soundStopNPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Stop NPC sound',
-                                     value=SoundEvents.ROCKET_ACCELERATION_STOP_NPC)
-    soundDisable = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Disable sound',
-                                     value=SoundEvents.ROCKET_ACCELERATION_DISABLE)
-    soundEmpty = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Empty sound',
-                                   value=SoundEvents.ROCKET_ACCELERATION_EMPTY)
+    soundReady = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Ready sound', value=SoundEvents.ROCKET_ACCELERATION_READY)
+    soundActivePC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Active PC sound', value=SoundEvents.ROCKET_ACCELERATION_ACTIVE_PC)
+    soundActiveNPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Active NPC sound', value=SoundEvents.ROCKET_ACCELERATION_ACTIVE_NPC)
+    soundStopPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Stop PC sound', value=SoundEvents.ROCKET_ACCELERATION_STOP_PC)
+    soundStopNPC = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Stop NPC sound', value=SoundEvents.ROCKET_ACCELERATION_STOP_NPC)
+    soundDisable = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Disable sound', value=SoundEvents.ROCKET_ACCELERATION_DISABLE)
+    soundEmpty = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Empty sound', value=SoundEvents.ROCKET_ACCELERATION_EMPTY)
 
 
 @autoregister(presentInAllWorlds=True)
@@ -134,8 +125,7 @@ if IS_DEVELOPMENT:
         def __updateState(self, root, link, value, status):
             if status.timeLeft > 0.0:
                 self.__updateTextWithDuration(link, value, status.reuseCount, status.endTime)
-                self.__texts[root] = partial(self.__updateTextWithDuration, link, value, status.reuseCount,
-                                             status.endTime)
+                self.__texts[root] = partial(self.__updateTextWithDuration, link, value, status.reuseCount, status.endTime)
             else:
                 self.__updateText(link, value, status.reuseCount)
                 self.__texts.pop(root, None)

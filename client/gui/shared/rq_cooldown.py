@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/rq_cooldown.py
 import math
-
 import BigWorld
 from debug_utils import LOG_WARNING
 from gui import SystemMessages
@@ -9,7 +8,6 @@ from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES as I18N_SYSTEM_
 from gui.impl import backport
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from helpers import i18n
-
 DEFAULT_COOLDOWN_TO_REQUEST = 5.0
 
 class REQUEST_SCOPE(object):

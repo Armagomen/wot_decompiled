@@ -5,14 +5,13 @@ from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.backport import createTooltipData
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.comp7.views.no_vehicles_screen_model import ErrorReason
 from gui.impl.gen.view_models.views.lobby.comp7.views.no_vehicles_screen_model import NoVehiclesScreenModel
+from gui.impl.gen.view_models.views.lobby.comp7.views.no_vehicles_screen_model import ErrorReason
 from gui.impl.lobby.comp7 import comp7_model_helpers
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
 from helpers import dependency
 from skeletons.gui.game_control import IComp7Controller
-
 
 class NoVehiclesScreen(ViewImpl):
     __comp7Controller = dependency.descriptor(IComp7Controller)

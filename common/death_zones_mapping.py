@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/death_zones_mapping.py
-import Math
-from Math import Vector2
-
 import ArenaType
-
+from Math import Vector2
+import Math
 ZONES_X = 10
 ZONES_Y = 10
 DEATH_ZONE_IDS = range(0, ZONES_X * ZONES_Y)

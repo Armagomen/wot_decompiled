@@ -2,14 +2,12 @@
 # Embedded file name: scripts/client/gui/__init__.py
 import logging
 from collections import defaultdict
-
 import nations
 from constants import IS_DEVELOPMENT, HAS_DEV_RESOURCES
 from gui import promo
 from gui.GuiSettings import GuiSettings as _GuiSettings
-from gui.active_vehicle import ActiveVehicleSeasonType
 from helpers.html.templates import XMLCollection
-
+from gui.active_vehicle import ActiveVehicleSeasonType
 _logger = logging.getLogger(__name__)
 g_guiResetters = set()
 g_repeatKeyHandlers = set()

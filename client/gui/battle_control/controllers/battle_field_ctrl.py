@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/battle_field_ctrl.py
 import logging
 import typing
-
 import BigWorld
 import Event
 from gui.battle_control.arena_info import vos_collections
@@ -10,11 +9,11 @@ from gui.battle_control.arena_info.interfaces import IBattleFieldController, IVe
 from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE as _SCOPE, VehicleSpottedStatus, INVALIDATE_OP
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.view_components import ViewComponentsController
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Iterator, List
+    from Math import Vector3
+    from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 _logger = logging.getLogger(__name__)
-
 
 class IBattleFieldListener(object):
 

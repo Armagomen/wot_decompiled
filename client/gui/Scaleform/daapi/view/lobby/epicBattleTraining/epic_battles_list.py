@@ -8,14 +8,13 @@ from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.BATTLE_TYPES import BATTLE_TYPES
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
-from gui.prb_control.entities.epic_battle_training.ctx import JoinEpicBattleTrainingCtx
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-
+from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
+from gui.prb_control.entities.epic_battle_training.ctx import JoinEpicBattleTrainingCtx
+from gui.impl import backport
+from gui.impl.gen import R
 
 class EpicBattlesList(TrainingsListBase):
 

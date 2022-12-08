@@ -34,7 +34,9 @@ from helpers.time_utils import getCurrentLocalServerTimestamp, getTimeStructInLo
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Callable, Optional, Union
+    from account_helpers.dog_tags import DogTags as DogTagsAccountHelper
+    from frameworks.wulf import View, ViewEvent
 _logger = logging.getLogger(__name__)
 DEFAULT_DOG_TAGS_TAB = ComponentViewType.ENGRAVING.getTabIdx()
 DOG_TAG_INFO_PAGE_KEY = 'infoPage'

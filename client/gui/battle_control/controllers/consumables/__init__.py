@@ -2,13 +2,11 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/consumables/__init__.py
 from constants import ARENA_BONUS_TYPE
 from gui.battle_control.controllers.consumables import ammo_ctrl
-from gui.battle_control.controllers.consumables import comp7_equipment_ctrl
 from gui.battle_control.controllers.consumables import equipment_ctrl
 from gui.battle_control.controllers.consumables import opt_devices_ctrl
-
+from gui.battle_control.controllers.consumables import comp7_equipment_ctrl
 _EQUIPMENT_CONTROLLERS = {ARENA_BONUS_TYPE.COMP7: comp7_equipment_ctrl.Comp7EquipmentController}
 _REPLAY_EQUIPMENT_CONTROLLERS = {ARENA_BONUS_TYPE.COMP7: comp7_equipment_ctrl.Comp7ReplayEquipmentController}
-
 
 def createAmmoCtrl(setup):
     if setup.isReplayRecording:

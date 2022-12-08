@@ -2,20 +2,17 @@
 # Embedded file name: scripts/client/battleground/BorderVisual.py
 import math
 from collections import namedtuple
-
 import BigWorld
 import ResMgr
-import math_utils
-from Math import Matrix, Vector3
 from epic_constants import SECTOR_EDGE_STATE
 from items import _xml
-
+from Math import Matrix, Vector3
+import math_utils
 CONFIG_FILE = 'scripts/dynamic_objects.xml'
 BORDER_VISUAL_TAG = 'SectorBorderVisual'
 VisualSetting = namedtuple('VisualSetting', ('modelPath', 'overTerrainHeight', 'modelSettings'))
 ModelSetting = namedtuple('ModelSetting', ('scale', 'spacing', 'color'))
 DashesParams = namedtuple('DashesParams', ('size', 'color', 'shift', 'offset'))
-
 
 def _readModelSetting(ctx, section):
     return ModelSetting(scale=_xml.readVector3(ctx, section, 'scale'), spacing=_xml.readFloat(ctx, section, 'spacing'), color=int(_xml.readString(ctx, section, 'color'), 0))
@@ -79,8 +76,7 @@ class BorderVisual(object):
                 self.__modelOffsets[idx] = offset = Matrix()
                 self.__attachNodes[idx] = attachNode = rootModel.node('', offset)
                 attachNode.attach(area)
-                area.setup(g_borderVisualSettings.modelPath, dashesParams.size,
-                           g_borderVisualSettings.overTerrainHeight, dashesParams.color)
+                area.setup(g_borderVisualSettings.modelPath, dashesParams.size, g_borderVisualSettings.overTerrainHeight, dashesParams.color)
                 area.enableYCutOff(False)
                 area.enableAccurateCollision(False)
                 offset.translation = dashesParams.offset

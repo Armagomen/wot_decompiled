@@ -1,25 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/dialogs/gf_builders.py
 import typing
-
 from frameworks.wulf import WindowLayer
 from gui.impl.dialogs.dialog_template import DialogTemplateView, DEFAULT_DIMMER_ALPHA
+from gui.impl.dialogs.sub_views.content.text_warning_content import TextWithWarning
 from gui.impl.dialogs.dialog_template_button import ButtonPresenter, CancelButton, ConfirmButton
 from gui.impl.dialogs.dialog_template_utils import toString
 from gui.impl.dialogs.sub_views.content.simple_text_content import SimpleTextContent
-from gui.impl.dialogs.sub_views.content.text_warning_content import TextWithWarning
 from gui.impl.dialogs.sub_views.icon.icon_set import IconSet
 from gui.impl.dialogs.sub_views.title.simple_text_title import SimpleTextTitle
 from gui.impl.dialogs.sub_views.top_right.money_balance import MoneyBalance
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import DefaultDialogPlaceHolders
-from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import ButtonType
 from gui.impl.gen.view_models.views.dialogs.sub_views.icon_set_view_model import IconPositionLogicEnum
+from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import ButtonType
+from gui.impl.gen_utils import DynAccessor
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogWindowWrapper
 from gui.impl.pub.dialog_window import DialogButtons
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Optional, List, Union
 
 class BuilderDialogTemplateView(DialogTemplateView):
     __slots__ = ()
@@ -30,12 +29,14 @@ class BuilderDialogTemplateView(DialogTemplateView):
 
 
 class BaseDialogBuilder(object):
-    __slots__ = ('__title', '__description', '__icon', '__buttons', '__uniqueID', '__backgroundID', '__dimmerAlpha', '__layoutID', '__selectedButtonID', '__doBlur', '__layer', '__displayFlags')
+    __slots__ = ('__title', '__description', '__icon', '__buttons', '__uniqueID', '__backgroundID', '__backgroundDimmed', '__dimmerAlpha', '__layoutID', '__selectedButtonID', '__doBlur', '__layer', '__displayFlags', '__titleImageSubstitutions', '__descriptionImageSubstitutions')
 
     def __init__(self, uniqueID=None):
         super(BaseDialogBuilder, self).__init__()
         self.__title = None
+        self.__titleImageSubstitutions = None
         self.__description = None
+        self.__descriptionImageSubstitutions = None
         self.__icon = None
         self.__buttons = []
         self.__uniqueID = uniqueID
@@ -51,9 +52,9 @@ class BaseDialogBuilder(object):
     def buildView(self):
         template = BuilderDialogTemplateView(layoutID=self.__layoutID, uniqueID=self.__uniqueID)
         if self.__title:
-            template.setSubView(DefaultDialogPlaceHolders.TITLE, SimpleTextTitle(self.__title))
+            template.setSubView(DefaultDialogPlaceHolders.TITLE, SimpleTextTitle(self.__title, self.__titleImageSubstitutions))
         if self.__description:
-            template.setSubView(DefaultDialogPlaceHolders.CONTENT, SimpleTextContent(self.__description))
+            template.setSubView(DefaultDialogPlaceHolders.CONTENT, SimpleTextContent(self.__description, self.__descriptionImageSubstitutions))
         if self.__icon:
             template.setSubView(DefaultDialogPlaceHolders.ICON, IconSet(**self.__icon))
         if self.__buttons:
@@ -75,11 +76,15 @@ class BaseDialogBuilder(object):
     def build(self):
         return FullScreenDialogWindowWrapper(self.buildView(), doBlur=self.__doBlur, layer=self.__layer)
 
-    def setTitle(self, text):
+    def setTitle(self, text, imageSubstitutions=None):
         self.__title = toString(text)
+        if imageSubstitutions:
+            self.__titleImageSubstitutions = imageSubstitutions
 
-    def setDescription(self, text):
+    def setDescription(self, text, imageSubstitutions=None):
         self.__description = toString(text)
+        if imageSubstitutions:
+            self.__descriptionImageSubstitutions = imageSubstitutions
 
     def setIcon(self, mainIcon, backgrounds=None, overlays=None, layoutID=None, iconPositionLogic=IconPositionLogicEnum.CENTREDANDTHROUGHCONTENT.value):
         self.__icon = {'iconResID': mainIcon,

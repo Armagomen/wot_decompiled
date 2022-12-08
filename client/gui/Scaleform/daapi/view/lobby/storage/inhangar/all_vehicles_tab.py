@@ -11,13 +11,12 @@ from gui.Scaleform.locale.STORAGE import STORAGE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.shared import event_dispatcher as shared_events
-from gui.shared.event_dispatcher import showShop
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.game_control import IIGRController
-
+from gui.shared.event_dispatcher import showShop
 
 class _AllVehiclesTabCriteriesGroup(CriteriesGroup):
 

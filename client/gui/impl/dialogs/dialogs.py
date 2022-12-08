@@ -1,28 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/dialogs/dialogs.py
-import typing
 from collections import namedtuple
-
+import typing
 from BWUtil import AsyncReturn
-from frameworks.wulf import WindowStatus
+from wg_async import wg_async, wg_await
+from helpers import dependency
 from gui.impl.gen import R
 from gui.impl.lobby.battle_pass.trophy_device_confirm_view import TrophyDeviceUpgradeConfirmView
 from gui.impl.lobby.blueprints.blueprints_conversion_view import BlueprintsConversionView
-from gui.impl.lobby.crew.free_skill_confirmation_dialog import FreeSkillConfirmationDialog
 from gui.impl.lobby.crew_books.crew_books_buy_dialog import CrewBooksBuyDialog
 from gui.impl.lobby.crew_books.crew_books_dialog import CrewBooksDialog
 from gui.impl.lobby.dialogs.exchange_with_items import ExchangeToBuyItems, ExchangeToUpgradeDevice
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogWindowWrapper
 from gui.impl.lobby.dialogs.quit_game_dialog import QuitGameDialogWindow
-from gui.impl.lobby.frontline.skill_drop_dialog import SkillDropDialog
 from gui.impl.lobby.premacc.maps_blacklist_confirm_view import MapsBlacklistConfirmView
-from gui.impl.pub.dialog_window import DialogButtons
-from helpers import dependency
+from gui.impl.lobby.frontline.skill_drop_dialog import SkillDropDialog
+from gui.impl.lobby.crew.free_skill_confirmation_dialog import FreeSkillConfirmationDialog
+from gui.impl.lobby.tank_setup.upgradable_device.UpgradeDeviceView import UpgradableDeviceUpgradeConfirmView
+from gui.impl.pub.dialog_window import DialogButtons, DialogWindow
 from skeletons.gui.impl import IGuiLoader
-from wg_async import wg_async, wg_await
-
+from frameworks.wulf import WindowStatus
+from gui.impl.pub.wait_view_impl import WaitWindowWrapper
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Any, Optional, Iterable, Union
+    from frameworks.wulf import View
 SingleDialogResult = namedtuple('SingleDialogResult', ('busy', 'result'))
 
 @wg_async
@@ -79,6 +80,12 @@ def trophyDeviceUpgradeConfirm(trophyBasicModule, parent=None):
     result = yield wg_await(show(dialog))
     raise AsyncReturn((result.result == DialogButtons.SUBMIT, result.data))
     return
+
+
+@wg_async
+def modernizedDeviceUpgradeConfirm(currentModule, vehicle=None, onDeconstructed=None, parent=None):
+    _, result = yield wg_await(showSingleDialogWithResultData(currentModule=currentModule, vehicle=vehicle, onDeconstructed=onDeconstructed, layoutID=UpgradableDeviceUpgradeConfirmView.LAYOUT_ID, wrappedViewClass=UpgradableDeviceUpgradeConfirmView, parent=parent))
+    raise AsyncReturn(result)
 
 
 @wg_async

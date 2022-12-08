@@ -1,32 +1,28 @@
 # Embedded file name: scripts/common/items/components/c11n_components.py
 import itertools
 import operator
-from bisect import bisect
-from copy import deepcopy
-from string import lower, upper
-from typing import TypeVar, TYPE_CHECKING
-
+from backports.functools_lru_cache import lru_cache
 import Math
 import items
 import items.vehicles as iv
 import nations
-from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
-from backports.functools_lru_cache import lru_cache
-from constants import IS_EDITOR, ARENA_BONUS_TYPE_NAMES, DEFAULT_QUEST_START_TIME
 from debug_utils import LOG_CURRENT_EXCEPTION
 from items import vehicles
-from items.components.c11n_constants import ApplyArea, SeasonType, Options, ItemTags, CustomizationType, \
-    MAX_CAMOUFLAGE_PATTERN_SIZE, DecalType, HIDDEN_CAMOUFLAGE_ID, PROJECTION_DECALS_SCALE_ID_VALUES, \
-    MAX_USERS_PROJECTION_DECALS, CustomizationTypeNames, DecalTypeNames, ProjectionDecalFormTags, \
-    DEFAULT_SCALE_FACTOR_ID, CUSTOMIZATION_SLOTS_VEHICLE_PARTS, CamouflageTilingType, SLOT_TYPE_NAMES, EMPTY_ITEM_ID, \
-    SLOT_DEFAULT_ALLOWED_MODEL, EDITING_STYLE_REASONS, CustomizationDisplayType
+from items.components import shared_components
 from soft_exception import SoftException
+from items.components.c11n_constants import ApplyArea, SeasonType, Options, ItemTags, CustomizationType, MAX_CAMOUFLAGE_PATTERN_SIZE, DecalType, HIDDEN_CAMOUFLAGE_ID, PROJECTION_DECALS_SCALE_ID_VALUES, MAX_USERS_PROJECTION_DECALS, CustomizationTypeNames, DecalTypeNames, ProjectionDecalFormTags, DEFAULT_SCALE_FACTOR_ID, CUSTOMIZATION_SLOTS_VEHICLE_PARTS, CamouflageTilingType, SLOT_TYPE_NAMES, EMPTY_ITEM_ID, SLOT_DEFAULT_ALLOWED_MODEL, EDITING_STYLE_REASONS, CustomizationDisplayType
+from typing import List, Dict, Type, Tuple, Optional, TypeVar, FrozenSet, Iterable, Callable, TYPE_CHECKING
+from string import lower, upper
+from copy import deepcopy
+from bisect import bisect
 from wrapped_reflection_framework import ReflectionMetaclass
-
+from constants import IS_EDITOR, ARENA_BONUS_TYPE_NAMES, DEFAULT_QUEST_START_TIME
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 if IS_EDITOR:
     from editor_copy import edCopy
 if TYPE_CHECKING:
-    pass
+    from account_helpers import Tokens
+    from serializable_types.customizations import CustomizationOutfit
 Item = TypeVar('TypeVar')
 
 class BaseCustomizationItem(object):
@@ -286,11 +282,12 @@ class SequenceItem(BaseCustomizationItem):
 class AttachmentItem(BaseCustomizationItem):
     __metaclass__ = ReflectionMetaclass
     itemType = CustomizationType.ATTACHMENT
-    __slots__ = ('modelName', 'sequenceId', 'attachmentLogic', 'initialVisibility')
+    __slots__ = ('modelName', 'hangarModelName', 'sequenceId', 'attachmentLogic', 'initialVisibility')
     allSlots = BaseCustomizationItem.__slots__ + __slots__
 
     def __init__(self, parentGroup = None):
         self.modelName = None
+        self.hangarModelName = None
         self.sequenceId = None
         self.attachmentLogic = None
         self.initialVisibility = True

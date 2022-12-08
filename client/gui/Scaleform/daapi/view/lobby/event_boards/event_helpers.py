@@ -1,40 +1,33 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_helpers.py
-from functools import wraps
 from io import BufferedIOBase, TextIOWrapper
-
+from functools import wraps
 from ResMgr import DataSection
-from bonus_readers import readBonusSection
 from constants import ARENA_GUI_TYPE, MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL
 from debug_utils import LOG_ERROR, LOG_DEBUG
-from gui import GUI_NATIONS
-from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeCantJoinReasonTextVO, \
-    makeParameterTooltipVO, makePrimeTimesTooltipVO
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationEmblemIcon, \
-    getNationBigFlagIcon, getNationText, vehicleTypeText, formatTimeToEnd, formatErrorTextWithIcon, \
-    formatOkTextWithIcon, formatTimeAndDate, formatUpdateTime, formatAllertTextWithIcon, formatAttentionTextWithIcon, \
-    timeEndStyle, getLevelBackgroundIcon
+from gui.impl import backport
+from helpers.i18n import makeString as _ms
+from helpers import xmltodict, int2roman, dependency
+from nations import NAMES as NationNames
+from bonus_readers import readBonusSection
+from skeletons.connection_mgr import IConnectionManager
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
+from gui.shared.utils.functions import makeTooltip
+from gui.shared.formatters import text_styles, icons
+from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
+from gui.server_events.bonuses import getEventBoardsBonusObj
+from gui.event_boards import event_boards_timer
+from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, EVENT_TYPE as _et, PLAYER_STATE_REASON as _psr, EVENT_STATE as _es, EVENT_DATE_TYPE, WOODEN_RIBBON
 from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
 from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.event_boards import event_boards_timer
-from gui.event_boards.event_boards_items import CALCULATION_METHODS as _cm, OBJECTIVE_PARAMETERS as _op, \
-    EVENT_TYPE as _et, PLAYER_STATE_REASON as _psr, EVENT_STATE as _es, EVENT_DATE_TYPE, WOODEN_RIBBON
-from gui.impl import backport
-from gui.server_events.bonuses import getEventBoardsBonusObj
-from gui.shared.formatters import text_styles, icons
-from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
-from gui.shared.utils.functions import makeTooltip
-from helpers import xmltodict, int2roman, dependency
-from helpers.i18n import makeString as _ms
+from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeCantJoinReasonTextVO, makeParameterTooltipVO, makePrimeTimesTooltipVO
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatVehicleNameWithTypeIcon, getNationEmblemIcon, getNationBigFlagIcon, getNationText, vehicleTypeText, formatTimeToEnd, formatErrorTextWithIcon, formatOkTextWithIcon, formatTimeAndDate, formatUpdateTime, formatAllertTextWithIcon, formatAttentionTextWithIcon, timeEndStyle, getLevelBackgroundIcon
+from gui import GUI_NATIONS
 from helpers.time_utils import ONE_MINUTE
-from nations import NAMES as NationNames
-from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.shared import IItemsCache
-
 LEVELS_RANGE = range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)
 
 class _Task(object):

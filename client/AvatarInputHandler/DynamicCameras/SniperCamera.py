@@ -2,24 +2,22 @@
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/SniperCamera.py
 import logging
 import math
-
-import BattleReplay
 import BigWorld
 import GUI
+from Math import Vector2, Vector3, Matrix
+import BattleReplay
 import Settings
 import constants
 import math_utils
 from AvatarInputHandler import AimingSystems
 from AvatarInputHandler import cameras, aih_global_binding
+from BigWorld import SniperAimingSystem, SniperAimingSystemRemote
 from AvatarInputHandler.DynamicCameras import CameraDynamicConfig, CameraWithSettings, calcYawPitchDelta
 from AvatarInputHandler.DynamicCameras import createCrosshairMatrix, createOscillatorFromSection, AccelerationSmoother
 from AvatarInputHandler.cameras import readFloat, readVec3, ImpulseReason, FovExtended
 from BattleReplay import CallbackDataNames
-from BigWorld import SniperAimingSystem, SniperAimingSystemRemote
-from Math import Vector2, Vector3, Matrix
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from helpers.CallbackDelayer import CallbackDelayer
-
 _logger = logging.getLogger(__name__)
 
 def getCameraAsSettingsHolder(settingsDataSec):
@@ -328,8 +326,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
         self.__aimOffset = aimOffset
         self.__binoculars.setMaskCenter(binocularsOffset.x, binocularsOffset.y)
         player = BigWorld.player()
-        if allowModeChange and (self.__isPositionUnderwater(
-                self.__aimingSystem.matrixProvider.translation) or player.isGunLocked and not player.isObserverFPV):
+        if allowModeChange and (self.__isPositionUnderwater(self.__aimingSystem.matrixProvider.translation) or player.isGunLocked and not player.isObserverFPV):
             self.__onChangeControlMode(False)
             return -1
 
@@ -368,8 +365,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
             self.__impulseOscillator.reset()
             self.__movementOscillator.reset()
             self.__noiseOscillator.reset()
-            return (math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero),
-                    math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero))
+            return (math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero), math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero))
         oscillatorAcceleration = self.__calcCurOscillatorAcceleration(deltaTime)
         self.__movementOscillator.externalForce += oscillatorAcceleration
         self.__impulseOscillator.update(deltaTime)

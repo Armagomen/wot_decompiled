@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/script_component/DynamicScriptComponent.py
 import logging
-
 import BigWorld
 from PlayerEvents import g_playerEvents
 from shared_utils import nextTick
-
 _logger = logging.getLogger(__name__)
 
 class DynamicScriptComponent(BigWorld.DynamicScriptComponent):

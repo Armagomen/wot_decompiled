@@ -1,24 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/events_handler.py
 import typing
-
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared import g_eventBus
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, Optional, Tuple
+    from Event import Event
 
 class EventsHandler(object):
     __slots__ = ()
 
     def _getCallbacks(self):
-        pass
+        return tuple()
 
     def _getListeners(self):
-        pass
+        return tuple()
 
     def _getEvents(self):
-        pass
+        return tuple()
 
     def _subscribe(self):
         g_clientUpdateManager.addCallbacks(dict(self._getCallbacks()))

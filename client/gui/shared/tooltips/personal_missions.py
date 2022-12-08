@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/personal_missions.py
 from __future__ import absolute_import
-
 from CurrentVehicle import g_currentVehicle
 from gui import GUI_NATIONS
 from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.daapi.view.lobby.hangar.hangar_header import HANGAR_HEADER_QUESTS_TO_PM_BRANCH
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
-from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import TooltipOperationAwardComposer, \
-    TooltipPostponedOperationAwardComposer
+from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import TooltipOperationAwardComposer, TooltipPostponedOperationAwardComposer
 from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import getNationsForChain
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.HANGAR_HEADER_QUESTS import HANGAR_HEADER_QUESTS
@@ -29,8 +27,8 @@ from gui.shared.tooltips import TOOLTIP_TYPE, formatters
 from gui.shared.tooltips.common import BlocksTooltipData
 from gui.shared.utils import getPlayerName
 from helpers import dependency
-from helpers.i18n import doesTextExist
 from helpers.i18n import makeString as _ms
+from helpers.i18n import doesTextExist
 from nations import ALLIANCES_TAGS_ORDER, ALLIANCE_IDS
 from personal_missions import PM_BRANCH
 from potapov_quests import PM_BRANCH_TO_FREE_TOKEN_NAME
@@ -38,7 +36,6 @@ from shared_utils import first, findFirst
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 
 class UniqueCamouflageTooltip(BlocksTooltipData):
 

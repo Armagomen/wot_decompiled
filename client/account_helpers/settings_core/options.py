@@ -1,73 +1,71 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/settings_core/options.py
+from enum import Enum
+from typing import TYPE_CHECKING
 import base64
 import cPickle
-import fractions
-import itertools
-import logging
 import random
 import sys
+import fractions
+import itertools
 import weakref
 from collections import namedtuple
-from enum import Enum
 from operator import itemgetter
-from typing import TYPE_CHECKING
-
-import ArenaType
-import BattleReplay
-import BigWorld
-import CommandMapping
+import logging
+from aih_constants import CTRL_MODE_NAME
 import GUI
-import Keys
+from AvatarInputHandler.cameras import FovExtended
+import BigWorld
 import ResMgr
+import Keys
+import BattleReplay
+import VOIP
 import Settings
 import SoundGroups
-import VOIP
+import ArenaType
 import WWISE
-import nations
-from AvatarInputHandler import INPUT_HANDLER_CFG, AvatarInputHandler
-from AvatarInputHandler.DynamicCameras import ArcadeCamera, SniperCamera, StrategicCamera, ArtyCamera, DualGunCamera
-from AvatarInputHandler.cameras import FovExtended
-from AvatarInputHandler.control_modes import PostMortemControlMode, SniperControlMode
-from Event import Event
-from account_helpers.AccountSettings import AccountSettings, SPEAKERS_DEVICE
-from account_helpers.settings_core.settings_constants import SOUND, SPGAimEntranceModeOptions
-from aih_constants import CTRL_MODE_NAME
 from constants import CONTENT_TYPE, IS_CHINA
-from debug_utils import LOG_NOTE, LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
-from gui import GUI_SETTINGS
-from gui import makeHtmlString
 from gui.Scaleform.genConsts.ACOUSTICS import ACOUSTICS
-from gui.Scaleform.locale.SETTINGS import SETTINGS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
 from gui.app_loader import app_getter
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import event_dispatcher
-from gui.shared.formatters import icons, text_styles
-from gui.shared.utils import graphics, functions, getPlayerDatabaseID
-from gui.shared.utils.functions import makeTooltip, clamp
-from gui.shared.utils.key_mapping import getScaleformKey, getBigworldKey, getBigworldNameFromKey
-from gui.shared.utils.monitor_settings import g_monitorSettings
 from gui.sounds.sound_constants import SPEAKERS_CONFIG
 from helpers import dependency
-from helpers import i18n
 from helpers import isPlayerAvatar
 from helpers.i18n import makeString
+import nations
+import CommandMapping
+from helpers import i18n
+from Event import Event
+from AvatarInputHandler import INPUT_HANDLER_CFG, AvatarInputHandler
+from AvatarInputHandler.DynamicCameras import ArcadeCamera, SniperCamera, StrategicCamera, ArtyCamera, DualGunCamera
+from AvatarInputHandler.control_modes import PostMortemControlMode, SniperControlMode
+from debug_utils import LOG_NOTE, LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
+from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData
 from messenger import g_settings as messenger_settings
-from messenger.m_constants import PROTO_TYPE
-from messenger.proto import proto_getter
+from account_helpers.AccountSettings import AccountSettings, SPEAKERS_DEVICE
+from account_helpers.settings_core.settings_constants import SOUND, SPGAimEntranceModeOptions
 from messenger.storage import storage_getter
 from shared_utils import CONST_CONTAINER, forEach
+from gui import GUI_SETTINGS
+from gui.shared.utils import graphics, functions, getPlayerDatabaseID
+from gui.shared.utils.monitor_settings import g_monitorSettings
+from gui.shared.utils.key_mapping import getScaleformKey, getBigworldKey, getBigworldNameFromKey
+from gui.Scaleform.locale.SETTINGS import SETTINGS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.shared.formatters import icons, text_styles
+from gui.shared.utils.functions import makeTooltip, clamp
+from messenger.m_constants import PROTO_TYPE
+from messenger.proto import proto_getter
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.game_control import ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.sounds import ISoundsController
-
+from gui import makeHtmlString
+from skeletons.gui.game_control import ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController
 if TYPE_CHECKING:
-    pass
+    from typing import Tuple as TTuple
 _logger = logging.getLogger(__name__)
 
 class APPLY_METHOD(object):
@@ -1906,35 +1904,33 @@ class KeyboardSetting(ControlSetting):
 
 class KeyboardSettings(SettingsContainer):
     KEYS_LAYOUT = (('movement', (('forward', 'CMD_MOVE_FORWARD'),
-                                 ('backward', 'CMD_MOVE_BACKWARD'),
-                                 ('left', 'CMD_ROTATE_LEFT'),
-                                 ('right', 'CMD_ROTATE_RIGHT'),
-                                 ('auto_rotation', 'CMD_CM_VEHICLE_SWITCH_AUTOROTATION'),
-                                 ('block_tracks', 'CMD_BLOCK_TRACKS'))),
-                   ('cruis_control', (
-                   ('forward_cruise', 'CMD_INCREMENT_CRUISE_MODE'), ('backward_cruise', 'CMD_DECREMENT_CRUISE_MODE'),
-                   ('stop_fire', 'CMD_STOP_UNTIL_FIRE'))),
-                   ('firing', (('fire', 'CMD_CM_SHOOT'),
-                               ('chargeFire', 'CMD_CM_CHARGE_SHOT'),
-                               ('lock_target', 'CMD_CM_LOCK_TARGET'),
-                               ('lock_target_off', 'CMD_CM_LOCK_TARGET_OFF'),
-                               ('alternate_mode', 'CMD_CM_ALTERNATE_MODE'),
-                               ('trajectory_view', 'CMD_CM_TRAJECTORY_VIEW'),
-                               ('reloadPartialClip', 'CMD_RELOAD_PARTIAL_CLIP'))),
-                   ('vehicle_other', (('showHUD', 'CMD_TOGGLE_GUI'),
-                                      ('showQuestProgress', 'CMD_QUEST_PROGRESS_SHOW'),
-                                      ('frontlineSelfDestruction', 'CMD_REQUEST_RECOVERY'),
-                                      ('showPersonalReserves', 'CMD_SHOW_PERSONAL_RESERVES'))),
-                   ('equipment', (('item01', 'CMD_AMMO_CHOICE_1'),
-                                  ('item02', 'CMD_AMMO_CHOICE_2'),
-                                  ('item03', 'CMD_AMMO_CHOICE_3'),
-                                  ('item04', 'CMD_AMMO_CHOICE_4'),
-                                  ('item05', 'CMD_AMMO_CHOICE_5'),
-                                  ('item06', 'CMD_AMMO_CHOICE_6'),
-                                  ('item07', 'CMD_AMMO_CHOICE_7'),
-                                  ('item08', 'CMD_AMMO_CHOICE_8'),
-                                  ('item09', 'CMD_AMMO_CHOICE_9'),
-                                  ('item00', 'CMD_AMMO_CHOICE_0'))),
+       ('backward', 'CMD_MOVE_BACKWARD'),
+       ('left', 'CMD_ROTATE_LEFT'),
+       ('right', 'CMD_ROTATE_RIGHT'),
+       ('auto_rotation', 'CMD_CM_VEHICLE_SWITCH_AUTOROTATION'),
+       ('block_tracks', 'CMD_BLOCK_TRACKS'))),
+     ('cruis_control', (('forward_cruise', 'CMD_INCREMENT_CRUISE_MODE'), ('backward_cruise', 'CMD_DECREMENT_CRUISE_MODE'), ('stop_fire', 'CMD_STOP_UNTIL_FIRE'))),
+     ('firing', (('fire', 'CMD_CM_SHOOT'),
+       ('chargeFire', 'CMD_CM_CHARGE_SHOT'),
+       ('lock_target', 'CMD_CM_LOCK_TARGET'),
+       ('lock_target_off', 'CMD_CM_LOCK_TARGET_OFF'),
+       ('alternate_mode', 'CMD_CM_ALTERNATE_MODE'),
+       ('trajectory_view', 'CMD_CM_TRAJECTORY_VIEW'),
+       ('reloadPartialClip', 'CMD_RELOAD_PARTIAL_CLIP'))),
+     ('vehicle_other', (('showHUD', 'CMD_TOGGLE_GUI'),
+       ('showQuestProgress', 'CMD_QUEST_PROGRESS_SHOW'),
+       ('frontlineSelfDestruction', 'CMD_REQUEST_RECOVERY'),
+       ('showPersonalReserves', 'CMD_SHOW_PERSONAL_RESERVES'))),
+     ('equipment', (('item01', 'CMD_AMMO_CHOICE_1'),
+       ('item02', 'CMD_AMMO_CHOICE_2'),
+       ('item03', 'CMD_AMMO_CHOICE_3'),
+       ('item04', 'CMD_AMMO_CHOICE_4'),
+       ('item05', 'CMD_AMMO_CHOICE_5'),
+       ('item06', 'CMD_AMMO_CHOICE_6'),
+       ('item07', 'CMD_AMMO_CHOICE_7'),
+       ('item08', 'CMD_AMMO_CHOICE_8'),
+       ('item09', 'CMD_AMMO_CHOICE_9'),
+       ('item00', 'CMD_AMMO_CHOICE_0'))),
      ('team_communication', (('highlightLocation', 'CMD_CHAT_SHORTCUT_CONTEXT_COMMAND'),
        ('highlightTarget', 'CMD_CHAT_SHORTCUT_CONTEXT_COMMIT'),
        ('showRadialMenu', 'CMD_RADIAL_MENU_SHOW'),

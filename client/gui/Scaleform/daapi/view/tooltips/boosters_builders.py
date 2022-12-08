@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/boosters_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.shared.tooltips import advanced
+from gui.shared.tooltips import contexts, common
 from gui.shared.tooltips import battle_booster
 from gui.shared.tooltips import boosters
-from gui.shared.tooltips import contexts, common
+from gui.shared.tooltips import advanced
 from gui.shared.tooltips.builders import DataBuilder, AdvancedDataBuilder
-
 __all__ = ('getTooltipBuilders',)
 
 def _advancedBlockCondition(context):

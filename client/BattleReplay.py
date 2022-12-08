@@ -1,48 +1,45 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/BattleReplay.py
 import base64
-import cPickle as pickle
-import copy
-import datetime
-import httplib
-import json
-import logging
 import os
+import datetime
+import json
+import copy
+import cPickle as pickle
+import logging
+import httplib
 from collections import defaultdict
 from functools import partial
-
-import ArenaType
-import BWReplay
-import BigWorld
-import Event
 import Math
-import constants
-from constants import ARENA_BONUS_TYPE, ARENA_GUI_TYPE
-from constants import ARENA_PERIOD, Configs
-from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION
-from post_progression_common import SERVER_SETTINGS_KEY
-from soft_exception import SoftException
-
-import AreaDestructibles
-import CommandMapping
-import Keys
+import BigWorld
+import ArenaType
 import Settings
+import CommandMapping
+import constants
+import Keys
+import Event
+import AreaDestructibles
+import BWReplay
 import TriggersManager
-from PlayerEvents import g_playerEvents
-from ReplayEvents import g_replayEvents
 from aih_constants import CTRL_MODE_NAME
+from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION
 from gui import GUI_CTRL_MODE_FLAG
 from gui.SystemMessages import pushI18nMessage, SM_TYPE
-from gui.app_loader import settings
 from helpers import EffectsList, isPlayerAvatar, isPlayerAccount, getFullClientVersion
+from PlayerEvents import g_playerEvents
+from ReplayEvents import g_replayEvents
+from constants import ARENA_PERIOD, Configs
 from helpers import dependency
+from gui.app_loader import settings
+from post_progression_common import SERVER_SETTINGS_KEY
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gameplay import IGameplayLogic, ReplayEventID
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
+from soft_exception import SoftException
+from constants import ARENA_BONUS_TYPE, ARENA_GUI_TYPE
 _logger = logging.getLogger(__name__)
 g_replayCtrl = None
 REPLAY_FILE_EXTENSION = '.wotreplay'
@@ -59,7 +56,8 @@ _FORWARD_INPUT_CTRL_MODES = (CTRL_MODE_NAME.POSTMORTEM,
  CTRL_MODE_NAME.VIDEO,
  CTRL_MODE_NAME.CAT,
  CTRL_MODE_NAME.DEATH_FREE_CAM)
-_ARENA_GUI_TYPE_TO_MODE_TAG = {ARENA_GUI_TYPE.COMP7: 'Onslaught'}
+_ARENA_GUI_TYPE_TO_MODE_TAG = {ARENA_GUI_TYPE.COMP7: 'Onslaught',
+ ARENA_GUI_TYPE.FUN_RANDOM: 'Arcade'}
 _IGNORED_SWITCHING_CTRL_MODES = (CTRL_MODE_NAME.SNIPER,
  CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.ARTY,
@@ -67,6 +65,7 @@ _IGNORED_SWITCHING_CTRL_MODES = (CTRL_MODE_NAME.SNIPER,
  CTRL_MODE_NAME.DUAL_GUN,
  CTRL_MODE_NAME.MAP_CASE,
  CTRL_MODE_NAME.MAP_CASE_ARCADE,
+ CTRL_MODE_NAME.MAP_CASE_EPIC,
  CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD)
 
 class CallbackDataNames(object):
@@ -1147,13 +1146,15 @@ class BattleReplay(object):
             serverSettings = player.serverSettings
             self.__serverSettings['roaming'] = serverSettings['roaming']
             self.__serverSettings['isPotapovQuestEnabled'] = serverSettings.get('isPotapovQuestEnabled', False)
-            if 'spgRedesignFeatures' in serverSettings:
-                self.__serverSettings['spgRedesignFeatures'] = serverSettings['spgRedesignFeatures']
             self.__serverSettings['ranked_config'] = serverSettings['ranked_config']
             self.__serverSettings['battle_royale_config'] = serverSettings['battle_royale_config']
             self.__serverSettings['epic_config'] = serverSettings['epic_config']
             self.__serverSettings[SERVER_SETTINGS_KEY] = serverSettings[SERVER_SETTINGS_KEY]
             self.__serverSettings[Configs.COMP7_CONFIG.value] = serverSettings.get(Configs.COMP7_CONFIG.value)
+            if Configs.FUN_RANDOM_CONFIG.value in serverSettings:
+                self.__serverSettings[Configs.FUN_RANDOM_CONFIG.value] = serverSettings[Configs.FUN_RANDOM_CONFIG.value]
+            if 'spgRedesignFeatures' in serverSettings:
+                self.__serverSettings['spgRedesignFeatures'] = serverSettings['spgRedesignFeatures']
             if player.databaseID is None:
                 BigWorld.callback(0.1, self.__onAccountBecomePlayer)
             else:

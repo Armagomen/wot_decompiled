@@ -3,10 +3,10 @@
 import BigWorld
 import constants
 from PlayerEvents import g_playerEvents as events
-from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN, \
-    LOBBY_MENU_BOOTCAMP_TRIGGER_SHOWN
+from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN, LOBBY_MENU_BOOTCAMP_TRIGGER_SHOWN
 from account_helpers.counter_settings import getCountNewSettings
 from adisp import adisp_process
+from wg_async import wg_async, wg_await
 from gui import DialogsInterface, SystemMessages
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 from gui.Scaleform.daapi.view.meta.LobbyMenuMeta import LobbyMenuMeta
@@ -29,8 +29,6 @@ from skeletons.gui.game_control import IPromoController
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from tutorial.control.context import GLOBAL_FLAG
-from wg_async import wg_async, wg_await
-
 
 def _getVersionMessage():
     return ('{0} {1}'.format(text_styles.main(i18n.makeString(MENU.PROMO_PATCH_MESSAGE)), text_styles.stats(getShortClientVersion())),)

@@ -1,18 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_utils.py
 import typing
-
-from goodies.goodie_constants import GOODIE_STATE
+from frameworks.wulf import Array
+from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE
 from gui.goodies.goodies_constants import BoosterCategory
-from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER, \
-    EVENT_RESOURCE_ORDER, CLAN_RESOURCE_ORDER_BY_GROUP, getAllBoosterIds
-from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import getSummedBoosterCount, \
-    addBoosterModel
+from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER, EVENT_RESOURCE_ORDER, CLAN_RESOURCE_ORDER_BY_GROUP, getAllBoosterIds
+from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import getSummedBoosterCount, addBoosterModel
 from gui.shared.utils.requesters import REQ_CRITERIA
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from typing import List, Union, Dict
+    from skeletons.gui.goodies import IGoodiesCache
+    from skeletons.gui.shared import IItemsCache
+    from skeletons.gui.web import IWebController
+    from gui.goodies.goodie_items import BoostersType
 
 def getActiveBoosters(goodiesCache, webController):
     criteria = REQ_CRITERIA.BOOSTER.ACTIVE

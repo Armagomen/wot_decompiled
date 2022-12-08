@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/local_cache.py
 import base64
-import cPickle
-import os
 import shelve
-import types
-import zlib
 from collections import defaultdict
 from contextlib import contextmanager
+import os
+import cPickle
 from threading import Lock, Thread
-
+import types
+import zlib
 import BigWorld
 import Event
 from debug_utils import LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_ERROR
-from external_strings_utils import unicode_from_utf8
 from soft_exception import SoftException
-
+from external_strings_utils import unicode_from_utf8
 
 class CacheIO(object):
 

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/meta_view/meta_root_view.py
 import logging
 import typing
-
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -14,7 +13,6 @@ from gui.impl.gen.view_models.views.lobby.comp7.meta_view.root_view_model import
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.tab_model import Tabs, TabModel
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.comp7 import comp7_model_helpers
-from gui.impl.lobby.comp7.comp7_lobby_sounds import getComp7MetaSoundSpace
 from gui.impl.lobby.comp7.meta_view.pages.leaderboard_page import LeaderboardPage
 from gui.impl.lobby.comp7.meta_view.pages.progression_page import ProgressionPage
 from gui.impl.lobby.comp7.meta_view.pages.rank_rewards_page import RankRewardsPage
@@ -27,9 +25,9 @@ from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 from gui.shared.event_dispatcher import showBrowserOverlayView
 from helpers import dependency
 from skeletons.gui.game_control import IComp7Controller
-
+from gui.impl.lobby.comp7.comp7_lobby_sounds import getComp7MetaSoundSpace
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.lobby.comp7.meta_view.pages import PageSubModelPresenter
 _logger = logging.getLogger(__name__)
 
 class MetaRootView(ViewImpl, IGlobalListener):

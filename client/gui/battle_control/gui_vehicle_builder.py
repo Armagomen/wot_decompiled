@@ -1,11 +1,10 @@
 # Embedded file name: scripts/client/gui/battle_control/gui_vehicle_builder.py
-from battle_modifiers_common import EXT_DATA_MODIFIERS_KEY
 from gui.veh_post_progression.helpers import getInstalledShells, setFeatures, setDisabledSwitches, updateInvInstalled
 from helpers import dependency
 from items import vehicles
+from battle_modifiers_common import EXT_DATA_MODIFIERS_KEY
 from post_progression_common import EXT_DATA_PROGRESSION_KEY, EXT_DATA_SLOT_KEY, VehicleState
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 
 class VehicleBuilder(object):
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
@@ -30,17 +29,17 @@ class VehicleBuilder(object):
         shellsCDs = vehicles.getDefaultAmmoForGun(gunDescr)[::2]
         shellsLayoutKey = (vehDescr.turret.compactDescr, gunDescr.compactDescr)
         self.__updateInvData({'shells': getInstalledShells(shellsCDs, vehSetups['shellsSetups']),
-                              'shellsLayout': {shellsLayoutKey: vehSetups['shellsSetups']}})
+         'shellsLayout': {shellsLayoutKey: vehSetups['shellsSetups']}})
 
     def setAmmunitionSetups(self, vehSetups, setupIndexes):
         self.__assertNotSet(self.__invData, {'eqsLayout',
-                                             'boostersLayout',
-                                             'devicesLayout',
-                                             'layoutIndexes'})
+         'boostersLayout',
+         'devicesLayout',
+         'layoutIndexes'})
         setupData = {'eqsLayout': vehSetups['eqsSetups'],
-                     'boostersLayout': vehSetups['boostersSetups'],
-                     'devicesLayout': vehSetups['devicesSetups'],
-                     'layoutIndexes': setupIndexes}
+         'boostersLayout': vehSetups['boostersSetups'],
+         'devicesLayout': vehSetups['devicesSetups'],
+         'layoutIndexes': setupIndexes}
         updateInvInstalled(setupData, setupIndexes)
         self.__updateInvData(setupData)
 
@@ -67,10 +66,7 @@ class VehicleBuilder(object):
         extData = self.__extData.copy() if self.__extData is not None else None
         vehicle = self.__itemsFactory.createVehicle(self.__strCD, extData=extData, invData=self.__invData)
         if self.__extData and EXT_DATA_PROGRESSION_KEY in self.__extData:
-            vehicle.installPostProgressionItem(self.__itemsFactory.createVehPostProgression(vehicle.compactDescr,
-                                                                                            self.__extData[
-                                                                                                EXT_DATA_PROGRESSION_KEY],
-                                                                                            vehicle.typeDescr))
+            vehicle.installPostProgressionItem(self.__itemsFactory.createVehPostProgression(vehicle.compactDescr, self.__extData[EXT_DATA_PROGRESSION_KEY], vehicle.typeDescr))
         return vehicle
 
     def __setInvData(self, key, value):

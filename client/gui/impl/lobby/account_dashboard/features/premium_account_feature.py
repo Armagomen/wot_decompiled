@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/premium_account_feature.py
 import typing
-
 from constants import PREMIUM_TYPE
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl
@@ -12,9 +11,8 @@ from helpers import dependency, time_utils
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.premium_account_model import PremiumAccountModel
 
 class PremiumAccountFeature(FeatureItem):
     __slots__ = ()

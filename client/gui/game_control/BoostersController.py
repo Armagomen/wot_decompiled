@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/BoostersController.py
 import logging
-from operator import itemgetter
 from typing import TYPE_CHECKING
-
+from operator import itemgetter
 import BigWorld
 import Event
 from adisp import adisp_process
-from constants import Configs
+from constants import Configs, IS_DEVELOPMENT
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.listener import IGlobalListener
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
 from gui.shared.tutorial_helper import getTutorialGlobalStorage
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from gui.shared.utils.scheduled_notifications import Notifiable, PeriodicNotifier
@@ -22,11 +21,15 @@ from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from tutorial.control.context import GLOBAL_FLAG
-
 if TYPE_CHECKING:
-    pass
+    from typing import Dict, TypeVar
+    from helpers.server_settings import ServerSettings
+    from gui.lobby_context import LobbyContext
+    from gui.shared.items_cache import ItemsCache
+    from gui.goodies.goodies_cache import GoodiesCache
+    from gui.prb_control.entities.base.entity import BasePrbEntryPoint
+    PrbEntityType = TypeVar(bound=BasePrbEntryPoint)
 _logger = logging.getLogger(__name__)
-
 
 class BoostersController(IBoostersController, IGlobalListener):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -60,7 +63,7 @@ class BoostersController(IBoostersController, IGlobalListener):
     def updateGameModeStatus(self):
         if self.prbDispatcher is not None:
             prbEntity = self.prbDispatcher.getEntity()
-            enabled = prbEntity.getQueueType() in self.__supportedQueueTypes
+            enabled = prbEntity.getQueueType() in self.__supportedQueueTypes or self._isDevTrainingPrb(prbEntity)
             if self.__gameModeSupported != enabled:
                 self.__gameModeSupported = enabled
                 self.toggleHangarHint(enabled)
@@ -83,8 +86,7 @@ class BoostersController(IBoostersController, IGlobalListener):
     def onLobbyInited(self, event):
         self.startGlobalListening()
         self.itemsCache.onSyncCompleted += self._update
-        self.__notificatorManager.addNotificator(
-            PeriodicNotifier(self.__timeTillNextReserveTick, self.onReserveTimerTick, (time_utils.ONE_MINUTE,)))
+        self.__notificatorManager.addNotificator(PeriodicNotifier(self.__timeTillNextReserveTick, self.onReserveTimerTick, (time_utils.ONE_MINUTE,)))
         self.__notificatorManager.startNotification()
         if self.__boosterNotifyTimeCallback is None:
             self.__startBoosterTimeNotifyCallback()
@@ -166,3 +168,6 @@ class BoostersController(IBoostersController, IGlobalListener):
     def __timeTillNextReserveTick(self):
         clanReserves = self.goodiesCache.getClanReserves().values()
         return min((reserve.getUsageLeftTime() for reserve in clanReserves)) + 1 if clanReserves else 0
+
+    def _isDevTrainingPrb(self, prbEntity):
+        return IS_DEVELOPMENT and prbEntity.getModeFlags() == FUNCTIONAL_FLAG.TRAINING

@@ -3,13 +3,12 @@
 from collections import namedtuple
 from functools import partial
 from time import sleep, time
-
+import typing
 import BigWorld
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
-from debug_utils import LOG_DEBUG
 from wg_async import wg_async, wg_await, AsyncScope, AsyncEvent, BrokenPromiseError
-
+from debug_utils import LOG_DEBUG
 
 def callback(delay, obj, methodName, *args):
     return BigWorld.callback(delay, partial(callMethod, obj, methodName, *args))

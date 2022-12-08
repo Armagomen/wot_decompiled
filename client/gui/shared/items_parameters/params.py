@@ -35,7 +35,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescriptor, CompositeVehicleDescriptor
 _logger = logging.getLogger(__name__)
 MAX_VISION_RADIUS = 500
 MIN_VISION_RADIUS = 150
@@ -143,7 +143,7 @@ def _isStunParamVisible(shellDict):
 
 
 def _timesToSecs(timesPerMinutes):
-    return round(time_utils.ONE_MINUTE / timesPerMinutes, 3)
+    return time_utils.ONE_MINUTE / timesPerMinutes
 
 
 def _getMaxSteeringLockAngle(axleSteeringLockAngles):
@@ -706,7 +706,8 @@ class VehicleParams(_ParameterBase):
          CHASSIS_REPAIR_TIME,
          ROCKET_ACCELERATION_ENGINE_POWER,
          ROCKET_ACCELERATION_SPEED_LIMITS,
-         ROCKET_ACCELERATION_REUSE_AND_DURATION)
+         ROCKET_ACCELERATION_REUSE_AND_DURATION,
+         'chassisRotationSpeed')
         stunConditionParams = ('stunMaxDuration', 'stunMinDuration')
         result = _ParamsDictProxy(self, preload, conditions=((conditionalParams, lambda v: v is not None), (stunConditionParams, lambda s: _isStunParamVisible(self._itemDescr.shot.shell))))
         return result
@@ -828,7 +829,7 @@ class VehicleParams(_ParameterBase):
         return len(vDescr.hull.fakeTurrets['lobby']) != len(vDescr.turrets)
 
     def __hasHydraulicSiegeMode(self):
-        return self._itemDescr.hasSiegeMode and (self._itemDescr.hasHydraulicChassis or self._itemDescr.hasAutoSiegeMode)
+        return self._itemDescr.hasHydraulicChassis and self._itemDescr.hasSiegeMode
 
     def __hasWheeledSwitchMode(self):
         return self._itemDescr.isWheeledVehicle and self._itemDescr.hasSiegeMode

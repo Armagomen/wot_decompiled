@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/account_helpers/Stats.py
 import cPickle
 from functools import partial, wraps
-
 import AccountCommands
 import constants
 import items
 from account_helpers.premium_info import PremiumInfo
 from debug_utils import LOG_DEBUG_DEV, LOG_WARNING, LOG_ERROR
-from gui.shared.money import Currency
 from helpers import time_utils
-from items import vehicles
 from piggy_bank_common.settings_constants import PIGGY_BANK_PDATA_KEY
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
-
+from items import vehicles
+from gui.shared.money import Currency
 _VEHICLE = items.ITEM_TYPE_INDICES['vehicle']
 _CHASSIS = items.ITEM_TYPE_INDICES['vehicleChassis']
 _TURRET = items.ITEM_TYPE_INDICES['vehicleTurret']
@@ -132,6 +130,9 @@ class Stats(object):
             spaDiff = cacheDiff.get('SPA', None)
             if spaDiff:
                 synchronizeDicts(spaDiff, cache.setdefault('SPA', dict()))
+            dynamicCurrenciesDiff = cacheDiff.get('dynamicCurrencies', None)
+            if dynamicCurrenciesDiff:
+                synchronizeDicts(dynamicCurrenciesDiff, cache.setdefault('dynamicCurrencies', dict()))
             entitlementsDiff = cacheDiff.get('entitlements', None)
             if entitlementsDiff is not None:
                 synchronizeDicts(entitlementsDiff, cache.setdefault('entitlements', {}))
@@ -233,7 +234,7 @@ class Stats(object):
             self.__account._doCmdIntArr(AccountCommands.CMD_SET_MAPS_BLACK_LIST, selectedMaps, None if callback is None else (lambda reqID, resID, errorStr, ext={}: callback(resID, errorStr, ext)))
             return
 
-    def setMoney(self, credit, gold=0, freeXP=0, crystal=0, eventCoin=0, bpcoin=0, callback=None):
+    def setMoney(self, credit, gold=0, freeXP=0, crystal=0, eventCoin=0, bpcoin=0, equipCoin=0, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
@@ -248,7 +249,8 @@ class Stats(object):
              freeXP,
              crystal,
              eventCoin,
-             bpcoin], proxy)
+             bpcoin,
+             equipCoin], proxy)
             return
 
     def setPremium(self, premType=constants.PREMIUM_TYPE.PLUS, seconds=time_utils.ONE_DAY, callback=None):

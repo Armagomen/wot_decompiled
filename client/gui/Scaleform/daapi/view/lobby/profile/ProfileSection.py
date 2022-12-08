@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSection.py
-from gui.Scaleform.daapi.view.meta.ProfileSectionMeta import ProfileSectionMeta
-from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
-from gui.Scaleform.locale.PROFILE import PROFILE
 from helpers import dependency
 from helpers import i18n
+from gui.Scaleform.daapi.view.meta.ProfileSectionMeta import ProfileSectionMeta
+from gui.Scaleform.locale.PROFILE import PROFILE
+from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
 
 class ProfileSection(ProfileSectionMeta):
     itemsCache = dependency.descriptor(IItemsCache)

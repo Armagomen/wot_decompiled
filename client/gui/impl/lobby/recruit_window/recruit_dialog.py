@@ -1,27 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/recruit_window/recruit_dialog.py
-from gui import SystemMessages
-from gui.impl.dialogs.dialog_template import DialogTemplateView
-from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
-from gui.impl.gen.resources import R
-from gui.impl.gen.view_models.views.lobby.recruit_window.recruit_dialog_template_view_model import \
-    RecruitDialogTemplateViewModel
 from gui.impl.lobby.recruit_window.recruit_content import DEFAULT_VALUE, RecruitContent
-from gui.impl.lobby.recruit_window.recruit_dialog_utils import getIcon, getTitle, getIconBackground, getIconName
-from gui.impl.pub.dialog_window import DialogButtons
+from gui.impl.gen.view_models.views.lobby.recruit_window.recruit_dialog_template_view_model import RecruitDialogTemplateViewModel
 from gui.server_events import recruit_helper
-from gui.server_events.pm_constants import SOUNDS, PERSONAL_MISSIONS_SILENT_SOUND_SPACE
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.gui_items.processors.quests import PMGetTankwomanReward
+from items import vehicles
+from gui.impl.lobby.recruit_window.recruit_dialog_utils import getIcon, getTitle, getIconBackground, getIconName
+from gui.impl.dialogs.dialog_template import DialogTemplateView
+from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
+from gui.impl.pub.dialog_window import DialogButtons
+from gui.impl.gen.resources import R
+from gui import SystemMessages
 from gui.shared.gui_items.processors.tankman import TankmanTokenRecruit
 from gui.shared.utils import decorators
-from gui.sounds.filters import States, StatesGroup
 from helpers import dependency
-from items import vehicles
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from sound_gui_manager import CommonSoundSpaceSettings
-
+from gui.server_events.pm_constants import SOUNDS, PERSONAL_MISSIONS_SILENT_SOUND_SPACE
+from gui.sounds.filters import States, StatesGroup
 
 class BaseRecruitDialog(DialogTemplateView):
     __slots__ = ('_selectedNation', '_selectedVehType', '_selectedVehicle', '_selectedSpecialization', '_recruitContent')

@@ -12,7 +12,8 @@ from gui.shared.utils.functions import makeTooltip
 from helpers import time_utils
 from shared_utils import collapseIntervals, findFirst, first, CONST_CONTAINER
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen_utils import DynAccessor
+    from season_common import GameSeason, GameSeasonCycle
 _logger = logging.getLogger(__name__)
 
 class PrimeTimeStatus(CONST_CONTAINER):

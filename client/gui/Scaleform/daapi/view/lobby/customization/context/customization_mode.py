@@ -1,29 +1,32 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/customization_mode.py
 import logging
-import typing
 from copy import copy, deepcopy
 from functools import partial
-
+import typing
 from adisp import adisp_process, adisp_async
 from gui import SystemMessages
-from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, getItemAppliedCount, isItemLimitReached, \
-    getComponentFromSlot, getItemInventoryCount, getPurchaseLimit, CustomizationTabs, getItemFromSlot, \
-    getSlotDataFromSlot, getCurrentVehicleAvailableRegionsMap, fitOutfit, ITEM_TYPE_TO_SLOT_TYPE, removeItemsFromOutfit
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, getItemAppliedCount, isItemLimitReached, getComponentFromSlot, getItemInventoryCount, getPurchaseLimit, CustomizationTabs, getItemFromSlot, getSlotDataFromSlot, getCurrentVehicleAvailableRegionsMap, fitOutfit, ITEM_TYPE_TO_SLOT_TYPE, removeItemsFromOutfit
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
 from gui.customization.shared import SeasonType, C11nId
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.utils.decorators import adisp_process as wrappedProcess
 from helpers import dependency
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import ISoundEventChecker
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.hangar_vehicle_appearance import AnchorParams
+    from gui.customization.shared import PurchaseItem
+    from gui.shared.gui_items.customization.c11n_items import Customization
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from items.customizations import SerializableComponent
+    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
+    from vehicle_outfit.containers import SlotData
+    from vehicle_outfit.outfit import Outfit
 _logger = logging.getLogger(__name__)
 
 class CustomizationMode(object):

@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/formatters/icons.py
 from gui import makeHtmlString
-from gui.Scaleform.genConsts.COMPONENTS import COMPONENTS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.money import Currency
 from gui.shared.utils.functions import getAbsoluteUrl
-
+from gui.Scaleform.genConsts.COMPONENTS import COMPONENTS
 __all__ = ('noSeason', 'swords', 'alert', 'arrow', 'xp', 'notAvailable', 'notAvailableRed', 'checkmark', 'info', 'premiumIgrBig', 'premiumIgrSmall', 'freeXP', 'nut', 'clock', 'makeImageTag', 'getRoleIcon') + Currency.ALL
 _IMG_TAG_TPL = "<img src='{0}' width='{1}' height='{2}' vspace='{3}' hspace='{4}'/>"
 
@@ -207,8 +206,8 @@ def starYellow(vspace=-4):
     return _getIcon('starYellow', vspace=vspace)
 
 
-def webLink():
-    return _getIcon('webLink')
+def equipCoin():
+    return _getIcon('equipIcon')
 
 
 def makeImageTag(source, width=16, height=16, vSpace=-4, hSpace=0):

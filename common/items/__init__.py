@@ -76,6 +76,8 @@ class ItemsPrices(object):
                 info['eventCoin'] = prices[3]
             if len(prices) > 4:
                 info['bpcoin'] = prices[4]
+            if len(prices) > 5:
+                info['equipCoin'] = prices[5]
             self._itemsPriceInfo[descriptor] = info
         elif isinstance(prices, dict):
             self._itemsPriceInfo[descriptor] = prices
@@ -166,6 +168,9 @@ def init(preloadEverything, pricesToCollect=None):
     tankmen.init(preloadEverything, pricesToCollect)
     from items import perks
     perks.init(preloadEverything)
+    from items import new_year, collectibles
+    collectibles.init()
+    new_year.init()
     return
 
 

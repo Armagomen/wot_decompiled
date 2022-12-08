@@ -1,24 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/CustomFilesCache.py
-import base64
-import binascii
 import os
+import time
+import base64
+import urllib2
+import binascii
+import threading
 import random
 import shelve as provider
-import threading
-import time
-import urllib2
-from Queue import Queue
 from functools import partial
+from Queue import Queue
 from pickle import HIGHEST_PROTOCOL as HIGHEST_PICKLE_PROTOCOL, UnpicklingError
-
 import BigWorld
 from debug_utils import LOG_WARNING, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_DEBUG_DEV
-from external_strings_utils import unicode_from_utf8
 from helpers import getFullClientVersion
-from helpers import isPlayerAccount
 from soft_exception import SoftException
-
+from helpers import isPlayerAccount
+from external_strings_utils import unicode_from_utf8
 INFINITE_QUEUE_SIZE = 0
 _MIN_LIFE_TIME = 900
 _MAX_LIFE_TIME = 86400

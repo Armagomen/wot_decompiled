@@ -1,17 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/wgnp/steam_account/controller.py
+import typing
 import time
-
 import wg_async
 from BWUtil import AsyncReturn
 from constants import EMAIL_CONFIRMATION_TOKEN_NAME
-from gui.platform.base.statuses.constants import StatusTypes, DEFAULT_CONTEXT
 from gui.platform.base.statuses.controller_mixin import StatusesMixin
+from gui.platform.base.statuses.constants import StatusTypes, DEFAULT_CONTEXT
 from gui.platform.wgnp.base.controller import WGNPRequestController
 from gui.platform.wgnp.steam_account.request import EmailStatusParams, AddEmailParams, ConfirmEmailParams
 from gui.platform.wgnp.steam_account.statuses import SteamAccEmailStatus, createEmailStatusFromResponse
 from skeletons.gui.platform.wgnp_controllers import IWGNPSteamAccRequestController
-
 
 class WGNPSteamAccRequestController(StatusesMixin, WGNPRequestController, IWGNPSteamAccRequestController):
 

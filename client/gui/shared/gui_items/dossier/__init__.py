@@ -1,22 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/dossier/__init__.py
-import cPickle
 import math
-
+import cPickle
+from typing import Dict, List, Optional
 import BigWorld
 import dossiers2
 from constants import DOSSIER_TYPE
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
-from gui.shared.gui_items.dossier import stats
-from gui.shared.gui_items.gui_item import GUIItem
+from gui.shared.gui_items.Tankman import Tankman
 from helpers import dependency, time_utils
-from helpers import i18n
 from items import tankmen
+from helpers import i18n
+from gui.shared.gui_items.gui_item import GUIItem
+from gui.shared.gui_items.dossier import stats
+from gui.shared.gui_items.dossier.factories import getAchievementFactory
+from account_helpers.renewable_subscription import RenewableSubscription
 from renewable_subscription_common.passive_xp import CrewValidator
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 def loadDossier(dumpData):
     args = cPickle.loads(dumpData)

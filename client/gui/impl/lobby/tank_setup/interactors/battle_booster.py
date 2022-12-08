@@ -1,17 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/battle_booster.py
+import typing
 from adisp import adisp_process
+from wg_async import wg_async, await_callback
 from gui import shop
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.tank_setup.interactors.base import BaseAutoRenewal
 from gui.impl.lobby.tank_setup.interactors.base_equipment import BaseEquipmentInteractor
-from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.vehicle import VehicleAutoBattleBoosterEquipProcessor
 from gui.shared.utils import decorators
-from wg_async import wg_async, await_callback
-
+from gui.shared.gui_items.items_actions import factory as ActionsFactory
 
 class BattleBoosterAutoRenewal(BaseAutoRenewal):
     __slots__ = ()

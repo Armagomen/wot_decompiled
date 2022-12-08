@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/comp7/tooltips/comp7_calendar_day_extended_tooltip.py
 from datetime import datetime
-
-from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_calendar_day_tooltip import Comp7CalendarDayTooltip
-from gui.Scaleform.daapi.view.lobby.formatters.tooltips import packCalendarBlock
 from gui.impl import backport
-from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 from gui.shared.formatters import text_styles
 from gui.shared.tooltips import TOOLTIP_TYPE, formatters
+from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_calendar_day_tooltip import Comp7CalendarDayTooltip
+from gui.Scaleform.daapi.view.lobby.formatters.tooltips import packCalendarBlock
 from helpers import time_utils
-
+from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 _TOOLTIP_MIN_WIDTH = 210
 
 class Comp7CalendarDayExtendedTooltip(Comp7CalendarDayTooltip):

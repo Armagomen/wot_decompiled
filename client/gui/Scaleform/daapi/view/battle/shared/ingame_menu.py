@@ -1,42 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ingame_menu.py
-from functools import partial
-
-import BattleReplay
 import BigWorld
+from functools import partial
 import constants
-from account_helpers.counter_settings import getCountNewSettings
+import BattleReplay
 from adisp import adisp_process
-from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
+from gui.battle_control.event_dispatcher import showIngameMenu
+from wg_async import wg_async, wg_await
 from bootcamp.Bootcamp import g_bootcamp
 from gui import DialogsInterface, GUI_SETTINGS
 from gui import makeHtmlString
-from gui.Scaleform.daapi.view.battle.shared.premature_leave import showLeaverAliveWindow, showExitWindow, \
-    showLeaverReplayWindow, showComp7LeaverAliveWindow
+from account_helpers.counter_settings import getCountNewSettings
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
 from gui.Scaleform.daapi.view.meta.IngameMenuMeta import IngameMenuMeta
 from gui.Scaleform.genConsts.GLOBAL_VARS_MGR_CONSTS import GLOBAL_VARS_MGR_CONSTS
 from gui.Scaleform.genConsts.INTERFACE_STATES import INTERFACE_STATES
-from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
-from gui.Scaleform.locale.MENU import MENU
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.battle_control import event_dispatcher as battle_event_dispatcher
-from gui.battle_control.event_dispatcher import showIngameMenu
 from gui.impl.lobby.bootcamp.bootcamp_exit_view import BootcampExitWindow
 from gui.shared import event_dispatcher as shared_event_dispatcher
 from gui.shared import events
-from gui.shared.formatters import icons
 from gui.shared.utils.functions import makeTooltip
+from gui.shared.formatters import icons
 from helpers import i18n, dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_session import IBattleSessionProvider
-from skeletons.gui.game_control import IServerStatsController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
-from wg_async import wg_async, wg_await
-
+from skeletons.gui.game_control import IServerStatsController, IBootcampController
+from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.daapi.view.battle.shared.premature_leave import showLeaverAliveWindow, showExitWindow, showLeaverReplayWindow, showComp7LeaverAliveWindow
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 
 class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
     serverStats = dependency.descriptor(IServerStatsController)

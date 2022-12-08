@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/ui/layouts.py
 from collections import defaultdict
-
 import nations
 from constants import DOSSIER_TYPE
 from dossiers2.common.DossierBlockBuilders import IBlockBuilderWithRecordsLayout
 from dossiers2.custom import layouts as com_layouts, records
 from dossiers2.custom.vehicle_layout import FALLOUT_ACHIEVEMENTS_BLOCK_LAYOUT
 from dossiers2.ui import achievements
-
 _AB = achievements.ACHIEVEMENT_BLOCK
 
 def _7x7(achieveName):

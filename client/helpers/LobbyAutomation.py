@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/LobbyAutomation.py
 import BigWorld
-from AccountCommands import CMD_PRB_TEAM_READY
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.app_loader import settings as app_settings
+from AccountCommands import CMD_PRB_TEAM_READY
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.app_loader import IAppLoader
-
 
 def _getLobby():
     appLoader = dependency.instance(IAppLoader)

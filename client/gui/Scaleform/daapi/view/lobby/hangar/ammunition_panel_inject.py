@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ammunition_panel_inject.py
+from shared_utils import nextTick
 from frameworks.wulf import ViewFlags
 from gui.Scaleform.daapi.view.meta.AmmunitionPanelInjectMeta import AmmunitionPanelInjectMeta
 from gui.impl.lobby.tank_setup.ammunition_panel.hangar_view import HangarAmmunitionPanelView
@@ -7,9 +8,7 @@ from gui.impl.lobby.tank_setup.bootcamp.ammunition_panel import BootcampAmmuniti
 from gui.impl.lobby.tank_setup.comp7.ammunition_panel import Comp7AmmunitionPanelView
 from gui.prb_control.entities.listener import IGlobalListener
 from helpers import dependency
-from shared_utils import nextTick
 from skeletons.gui.game_control import IBootcampController, IComp7Controller
-
 
 class AmmunitionPanelInject(AmmunitionPanelInjectMeta, IGlobalListener):
     __bootcampController = dependency.descriptor(IBootcampController)

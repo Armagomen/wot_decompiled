@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/events_handler.py
 from inspect import isfunction, ismethod, getmembers
-from operator import attrgetter
-
 from metaclass import Metaclass
-
+from typing import Callable
+from operator import attrgetter
 
 def eventHandler(func):
     func.isEventHandler = True

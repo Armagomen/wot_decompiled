@@ -2,15 +2,16 @@
 # Embedded file name: scripts/common/goodies/Goodies.py
 import collections
 from typing import TYPE_CHECKING
-
 from WeakMethod import WeakMethod
 from debug_utils import LOG_WARNING
-from soft_exception import SoftException
-
 from goodie_constants import GOODIE_STATE, MAX_ACTIVE_BOOSTERS, GOODIE_NOTIFICATION_TYPE
-
+from soft_exception import SoftException
+from GoodieResources import GoodieResource
+from GoodieTargets import GoodieTarget
 if TYPE_CHECKING:
-    pass
+    from typing import Type, Dict, Optional, Callable
+    from goodies.Goodie import Goodie
+    from goodies.GoodieDefinition import GoodieDefinition
 
 class GoodieException(SoftException):
     pass

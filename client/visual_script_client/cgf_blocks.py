@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/visual_script_client/cgf_blocks.py
-import logging
 import weakref
-
 import BigWorld
-from constants import ROCKET_ACCELERATION_STATE
+import logging
 from visual_script.block import Block, Meta
-from visual_script.dependency import dependencyImporter
-from visual_script.misc import ASPECT, errorVScript
 from visual_script.slot_types import SLOT_TYPE
-
+from visual_script.misc import ASPECT, errorVScript
+from visual_script.dependency import dependencyImporter
 from contexts.cgf_context import GameObjectWrapper
-
+from constants import ROCKET_ACCELERATION_STATE
 Vehicle, CGF, tankStructure, RAC = dependencyImporter('Vehicle', 'CGF', 'vehicle_systems.tankStructure', 'cgf_components.rocket_acceleration_component')
 _logger = logging.getLogger(__name__)
 

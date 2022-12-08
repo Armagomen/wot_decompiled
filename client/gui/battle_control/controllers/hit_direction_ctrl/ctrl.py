@@ -2,14 +2,14 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/ctrl.py
 import logging
 import weakref
-
+import typing
 from account_helpers.settings_core import settings_constants
 from gui.battle_control import avatar_getter
-from gui.battle_control.battle_constants import BATTLE_CTRL_ID
+from gui.battle_control.battle_constants import HIT_INDICATOR_MAX_ON_SCREEN, BATTLE_CTRL_ID
 from gui.battle_control.controllers.hit_direction_ctrl.base import HitType
 from gui.battle_control.controllers.hit_direction_ctrl.components import BaseHitComponent, HitDamageComponent
-from gui.battle_control.controllers.hit_direction_ctrl.hit_data import HitData, SimpleHitData
 from gui.battle_control.controllers.hit_direction_ctrl.pulls import HitDamagePull, ArtyHitPredictionPull
+from gui.battle_control.controllers.hit_direction_ctrl.hit_data import HitData, SimpleHitData
 from gui.battle_control.view_components import IViewComponentsController
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
@@ -17,7 +17,6 @@ from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
 _logger = logging.getLogger(__name__)
 
 class HitDirectionController(IViewComponentsController):

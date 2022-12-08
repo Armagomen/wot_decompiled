@@ -3,19 +3,17 @@
 import importlib
 from collections import namedtuple
 from functools import partial
-
 import nations
 import resource_helper
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
-from helpers.html import translation
 from items import _xml, vehicles
-from tutorial.control.context import SOUND_EVENT
+from helpers.html import translation
 from tutorial.data import chapter as tutorial_chapter
-from tutorial.data import conditions as tut_conditions
 from tutorial.data import effects
+from tutorial.data import conditions as tut_conditions
 from tutorial.data.events import GuiEventType
+from tutorial.control.context import SOUND_EVENT
 from tutorial.logger import LOG_ERROR
-
 _EFFECT_TYPE = effects.EFFECT_TYPE
 _COND_STATE = tut_conditions.CONDITION_STATE
 _CheckedComponentState = namedtuple('CheckedComponentState', ('state', 'value'))

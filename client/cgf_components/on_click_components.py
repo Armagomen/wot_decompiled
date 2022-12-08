@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/cgf_components/on_click_components.py
 import logging
-
 import CGF
 import Event
 from GenericComponents import VSEComponent
@@ -12,9 +11,7 @@ from constants import MarathonConfig, IS_CLIENT
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils import IHangarSpace
-
 from hover_component import IsHovered
-
 if IS_CLIENT:
     from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
     from gui.game_control.links import URLMacros

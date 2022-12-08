@@ -1,25 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/ArtyCamera.py
 from math import pi, copysign, atan2, sqrt
-
-import BattleReplay
 import BigWorld
+from Math import slerp, Vector2, Vector3, Matrix, MatrixProduct
+import BattleReplay
 import Settings
 import math_utils
 from AvatarInputHandler import aih_global_binding, cameras
-from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, \
-    SPGScrollSmoother
-from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, \
-    SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
-from AvatarInputHandler.cameras import readFloat, readVec2, ImpulseReason
 from BigWorld import ArtyAimingSystem, ArtyAimingSystemRemote
-from Math import slerp, Vector2, Vector3, Matrix, MatrixProduct
+from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, SPGScrollSmoother
+from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
+from AvatarInputHandler.cameras import readFloat, readVec2, ImpulseReason
 from ProjectileMover import collideDynamicAndStatic
 from account_helpers.settings_core.settings_constants import GAME, SPGAim
 from aih_constants import CTRL_MODE_NAME
 from debug_utils import LOG_WARNING
 from helpers.CallbackDelayer import CallbackDelayer
-
 _SEARCH_COLLISION_DEPTH = 1
 _OFFSET_FROM_NEAR_PLANE = 0.01
 

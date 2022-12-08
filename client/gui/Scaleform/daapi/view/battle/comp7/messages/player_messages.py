@@ -2,11 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/messages/player_messages.py
 from comp7_common import ROLE_EQUIPMENT_TAG
 from constants import EQUIPMENT_STAGES, ROLE_TYPE_TO_LABEL
-from gui.Scaleform.daapi.view.battle.shared.messages import PlayerMessages
 from helpers import dependency
+from gui.Scaleform.daapi.view.battle.shared.messages import PlayerMessages
 from points_of_interest_shared import ENEMY_VEHICLE_ID
 from skeletons.gui.game_control import IComp7Controller
-
 _ROLE_EQUIPMENT_READY = 'ROLE_EQUIPMENT_READY'
 _POI_EQUIPMENT_USED = 'POI_EQUIPMENT_USED'
 _POI_EQUIPMENT_USED_BY_ENEMY = 'POI_EQUIPMENT_USED_BY_ENEMY'

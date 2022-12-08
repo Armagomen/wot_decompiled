@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/goodie_multiple_resources.py
 from typing import TYPE_CHECKING
-
 import GoodieResources as res
 from GoodieValue import GoodieValue
-
 if TYPE_CHECKING:
-    from typing import TypeVar
+    from typing import Generator, TypeVar
     GoodieResource = TypeVar('GoodieResource', bound=res.GoodieResource)
 
 class GoodieMultiValueDescr(GoodieValue):

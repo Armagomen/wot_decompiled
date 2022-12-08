@@ -2,12 +2,11 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/BCPersonalCase.py
 from gui.Scaleform.daapi.view.lobby.PersonalCase import PersonalCaseDataProvider, PersonalCase
 from gui.Scaleform.genConsts.PERSONALCASECONST import PERSONALCASECONST
-from gui.Scaleform.locale.MENU import MENU
 from gui.shared.utils.functions import makeTooltip
+from gui.Scaleform.locale.MENU import MENU
+from uilogging.deprecated.decorators import loggerTarget, loggerEntry, simpleLog
 from uilogging.deprecated.bootcamp.constants import BC_LOG_ACTIONS, BC_LOG_KEYS
 from uilogging.deprecated.bootcamp.loggers import BootcampUILogger
-from uilogging.deprecated.decorators import loggerTarget, loggerEntry, simpleLog
-
 PERSONAL_CASE_SKILLS = 'PersonalCaseSkills'
 
 class BCPersonalCaseDataProvider(PersonalCaseDataProvider):

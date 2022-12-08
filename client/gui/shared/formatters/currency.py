@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/formatters/currency.py
 import logging
-
 from gui.impl import backport
 from gui.shared.formatters import text_styles
 from gui.shared.money import Currency
-
 _logger = logging.getLogger(__name__)
 _CURRENCY_TO_BW_FORMATTER = {Currency.CREDITS: backport.getIntegralFormat,
  Currency.GOLD: backport.getGoldFormat,
@@ -13,14 +11,16 @@ _CURRENCY_TO_BW_FORMATTER = {Currency.CREDITS: backport.getIntegralFormat,
  Currency.EVENT_COIN: backport.getIntegralFormat,
  Currency.BPCOIN: backport.getIntegralFormat,
  Currency.BRCOIN: backport.getIntegralFormat,
- Currency.FREE_XP: backport.getIntegralFormat}
+ Currency.FREE_XP: backport.getIntegralFormat,
+ Currency.EQUIP_COIN: backport.getIntegralFormat}
 _CURRENCY_TO_TEXT_STYLE = {Currency.CREDITS: text_styles.credits,
  Currency.GOLD: text_styles.gold,
  Currency.CRYSTAL: text_styles.crystal,
  Currency.EVENT_COIN: text_styles.eventCoin,
  Currency.BPCOIN: text_styles.bpcoin,
  Currency.BRCOIN: text_styles.brcoin,
- Currency.FREE_XP: text_styles.expText}
+ Currency.FREE_XP: text_styles.expText,
+ Currency.EQUIP_COIN: text_styles.equipCoin}
 
 def getBWFormatter(currency):
     if currency in _CURRENCY_TO_BW_FORMATTER:

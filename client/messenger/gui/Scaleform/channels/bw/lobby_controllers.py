@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw/lobby_controllers.py
 import types
-
 import BigWorld
 import constants
 from chat_shared import CHAT_MEMBER_GROUP
@@ -19,7 +18,6 @@ from messenger.proto import proto_getter
 from messenger.proto.bw import cooldown
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
-
 
 class _ChannelController(LobbyLayout):
 

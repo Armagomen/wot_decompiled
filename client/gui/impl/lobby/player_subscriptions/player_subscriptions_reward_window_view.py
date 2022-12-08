@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/lobby/player_subscriptions/player_subscriptions_reward_window_view.py
 import logging
 import typing
-
 from constants import OFFER_TOKEN_PREFIX
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getMissionInfoData
 from gui.battle_pass.battle_pass_bonuses_packers import TmanTemplateBonusPacker
@@ -19,12 +18,12 @@ from gui.shared.missions.packers.bonus import getDefaultBonusPackersMap, TokenBo
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.offers import IOffersDataProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.player_subscriptions.subscription_reward_view_model import SubscriptionRewardViewModel
+    from gui.shared.missions.packers.bonus import BaseBonusUIPacker
+    from frameworks.wulf import Array
 _logger = logging.getLogger(__name__)
 BASE_EVENT_NAME = 'base'
-BACKGROUND_POSTFIX = '_background'
 MAIN_REWARD_PREFIX = 'mainReward_'
 
 class PlayerSubscriptionRewardWindowView(ViewImpl):
@@ -80,7 +79,9 @@ class PlayerSubscriptionRewardWindowView(ViewImpl):
         res = R.strings.ingame_gui.rewardWindow.dyn(self._eventName, None)
         if res:
             title = backport.text(res.dyn('headerText')())
+            desc = backport.text(res.dyn('descText')())
             self.viewModel.setSubscriptionTitle(title)
+            self.viewModel.setDescText(desc)
             offer = self.__getOffer()
             self.viewModel.setHasSelectiveRewards(offer is not None)
         return

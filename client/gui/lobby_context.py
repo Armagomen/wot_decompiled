@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/lobby_context.py
+from helpers.server_settings import ServerSettings
 import BigWorld
 from Event import Event, EventManager
 from account_helpers import isRoamingEnabled
@@ -8,13 +9,11 @@ from constants import CURRENT_REALM
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.lobby_ctx_listener import LobbyContextChangeListener
 from helpers import dependency
-from helpers.server_settings import ServerSettings
 from ids_generators import Int32IDGenerator
 from predefined_hosts import g_preDefinedHosts
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 class LobbyContext(ILobbyContext):
     connectionMgr = dependency.descriptor(IConnectionManager)

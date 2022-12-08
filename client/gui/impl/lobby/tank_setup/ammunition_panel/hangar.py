@@ -2,15 +2,14 @@
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_panel/hangar.py
 import adisp
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
-from gui.impl.common.ammunition_panel.ammunition_groups_controller import GROUPS_MAP
-from gui.impl.common.ammunition_panel.base import BaseAmmunitionPanel
 from gui.impl.lobby.tank_setup.ammunition_panel.groups_controller import HangarAmmunitionGroupsController
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
+from gui.impl.common.ammunition_panel.base import BaseAmmunitionPanel
+from gui.impl.common.ammunition_panel.ammunition_groups_controller import GROUPS_MAP
 from gui.veh_post_progression.sounds import playSound, Sounds
 from helpers import dependency
 from post_progression_common import TankSetupGroupsId
 from skeletons.account_helpers.settings_core import ISettingsCore
-
 
 class HangarAmmunitionPanel(BaseAmmunitionPanel):
     _settingsCore = dependency.descriptor(ISettingsCore)

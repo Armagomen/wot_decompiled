@@ -4,7 +4,6 @@ import BigWorld
 import CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 
-
 class RocketAccelerationControl(InputHandlerCommand):
 
     def handleKeyEvent(self, isDown, key, mods, event=None):

@@ -3,7 +3,6 @@
 import base64
 import cPickle as pickle
 from typing import TYPE_CHECKING
-
 import BigWorld
 import SoundGroups
 from PlayerEvents import g_playerEvents
@@ -30,9 +29,8 @@ from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.battle_control import avatar_getter, minimap_utils
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-
 if TYPE_CHECKING:
-    pass
+    from gui.Scaleform.daapi.view.battle.shared.indicators import SixthSenseIndicator
 _BOOTCAMP_EXTERNAL_COMPONENTS = (CrosshairPanelContainer, BootcampMarkersComponent)
 _BOOTCAMP_MINIMAP_SIZE_SETTINGS_KEY = 'bootcampMinimapSize'
 

@@ -1,24 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/ShopRequester.py
-import logging
+import typing
 import weakref
-from abc import ABCMeta, abstractmethod
 from collections import namedtuple
-
+from abc import ABCMeta, abstractmethod
+import logging
 import BigWorld
 from adisp import adisp_async
 from constants import WIN_XP_FACTOR_MODE, ARENA_BONUS_TYPE
+from items import ItemsPrices
 from goodies.goodie_constants import GOODIE_VARIETY, GOODIE_TARGET_TYPE, GOODIE_RESOURCE_TYPE
 from goodies.goodie_helpers import getPremiumCost, getPriceWithDiscount, GoodieData
-from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Money, MONEY_UNDEFINED, Currency
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
-from items import ItemsPrices
 from items.item_price import getNextSlotPrice, getNextBerthPackPrice
 from post_progression_common import CUSTOM_ROLE_SLOT_CHANGE_PRICE
 from post_progression_prices_common import getPostProgressionPrice
 from skeletons.gui.shared.utils.requesters import IShopCommonStats, IShopRequester
-
+from gui.shared.gui_items.gui_item_economics import ItemPrice
 _logger = logging.getLogger(__name__)
 _DEFAULT_EXCHANGE_RATE = 400
 _DEFAULT_CRYSTAL_EXCHANGE_RATE = 200
@@ -137,6 +136,10 @@ class ShopCommonStats(IShopCommonStats):
     @property
     def paidTrophyUpgradedRemovalCost(self):
         cost = self.getValue('paidTrophyUpgradedRemovalCost', {Currency.GOLD: 10})
+        return Money(**cost)
+
+    def getPaidModernizedRemovalCost(self, level):
+        cost = self.getValue(self._getModernizedKey(level), {Currency.EQUIP_COIN: 10})
         return Money(**cost)
 
     @property
@@ -324,6 +327,9 @@ class ShopCommonStats(IShopCommonStats):
 
     def getEmblemCost(self, days=0):
         return self.playerEmblemCost.get(days)
+
+    def _getModernizedKey(self, level):
+        return ''.join(('paidModernized', str(level), 'RemovalCost'))
 
     def __getRestoreConfig(self):
         return self.getValue('restore_config', {})
@@ -615,6 +621,9 @@ class DefaultShopRequester(ShopCommonStats):
     def paidDeluxeRemovalCost(self):
         cost = self.getValue('paidDeluxeRemovalCost')
         return self.__proxy.paidDeluxeRemovalCost if cost is None else Money(**cost)
+
+    def getPaidModernizedRemovalCost(self, level):
+        return self.__proxy.getPaidModernizedRemovalCost(level)
 
     @property
     def paidTrophyBasicRemovalCost(self):

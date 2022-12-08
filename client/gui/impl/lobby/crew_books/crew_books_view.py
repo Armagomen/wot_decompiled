@@ -1,6 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/crew_books/crew_books_view.py
 from CurrentVehicle import g_currentVehicle
+from gui.shared.event_dispatcher import showHangar
+from wg_async import wg_async, wg_await
 from frameworks.wulf import ViewFlags, ViewStatus, ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.framework import ScopeTemplates
@@ -20,7 +22,6 @@ from gui.impl.pub import ViewImpl
 from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgModel
 from gui.shared import events, g_eventBus, event_dispatcher
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.shared.event_dispatcher import showHangar
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import sortCrew, getIconResourceName
 from gui.shared.gui_items.crew_book import sortItems
@@ -32,8 +33,6 @@ from items.components.crew_books_constants import CREW_BOOK_INVALID_TYPE, CREW_B
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await
-
 
 class CrewBooksView(ViewImpl):
     __itemsCache = descriptor(IItemsCache)

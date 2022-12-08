@@ -12,15 +12,14 @@ from gui.Scaleform.daapi.view.meta.TankCarouselMeta import TankCarouselMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.locale.TANK_CAROUSEL_FILTER import TANK_CAROUSEL_FILTER
+from gui.shop import showBuyGoldForSlot
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showStorage, showVehicleRentalPage, showTelecomRentalPage
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
-from gui.shop import showBuyGoldForSlot
 from helpers import dependency
 from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 class TankCarousel(TankCarouselMeta):
     itemsCache = dependency.descriptor(IItemsCache)

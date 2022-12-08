@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/doc_loaders/html_templates.py
 import types
-
 from debug_utils import LOG_WARNING
 from gui.shared.notifications import NotificationPriorityLevel, NotificationGroup
 from helpers.html import translation as html_translation, templates
-
 
 class _MessageTemplate(templates.Template):
 
@@ -28,6 +26,8 @@ class _MessageTemplate(templates.Template):
                 vo['buttonsStates'] = {}
             if 'bgIconHeight' in data:
                 vo['bgIconHeight'] = data['bgIconHeight']
+            if 'linkageData' in data:
+                vo['linkageData'] = data['linkageData']
         vo['message'] = super(_MessageTemplate, self).format(ctx=ctx, sourceKey='message')
         return vo
 
@@ -68,7 +68,9 @@ class MessageTemplates(templates.XMLCollection):
          'icon': source.readString('icon'),
          'defaultIcon': source.readString('defaultIcon'),
          'filters': [],
-         'buttonsLayout': []}
+         'buttonsStates': {},
+         'buttonsLayout': [],
+         'buttonsAlign': source.readString('buttonsAlign', default='left')}
         priority = source.readString('priority', NotificationPriorityLevel.MEDIUM)
         if priority not in NotificationPriorityLevel.RANGE:
             LOG_WARNING('Priority is invalid', sourceID, priority)

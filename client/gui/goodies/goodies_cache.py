@@ -12,8 +12,10 @@ from helpers import dependency
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 if TYPE_CHECKING:
-    pass
-
+    from typing import Optional, Dict, Tuple, List, Union
+    from gui.shared.utils.requesters.GoodiesRequester import GoodieVariable
+    from gui.goodies.goodie_items import _Goodie, _PersonalDiscount
+    from gui.shared.utils.requesters.ShopRequester import _NamedGoodieData, _ResourceData
 
 def _createBooster(boosterID, boosterDescription, proxy):
     return Booster(boosterID, boosterDescription, proxy)

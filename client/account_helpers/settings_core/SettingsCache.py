@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/settings_core/SettingsCache.py
 from Event import Event
-from account_helpers.settings_core.settings_constants import VERSION
 from adisp import adisp_async
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared.utils.requesters.IntSettingsRequester import IntSettingsRequester
+from account_helpers.settings_core.settings_constants import VERSION
 from skeletons.account_helpers.settings_core import ISettingsCache
-
 
 class SettingsCache(ISettingsCache):
 

@@ -1,18 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/framework/entities/sf_window.py
 import logging
-import typing
 import weakref
-
+import typing
+from wg_async import wg_async, wg_await, AsyncReturn
 import Event
 from frameworks.wulf import WindowSettings, Window, WindowStatus, WindowFlags
 from gui.Scaleform.framework import g_entitiesFactories
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from soft_exception import SoftException
-from wg_async import wg_async, wg_await, AsyncReturn
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+    from gui.Scaleform.framework.entities.View import View
 _logger = logging.getLogger(__name__)
 
 class SFWindow(Window):

@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/products_fetcher/controller.py
+import typing
 import json
 import logging
 from functools import partial
-
 import BigWorld
 import wg_async
 from BWUtil import AsyncReturn
@@ -17,7 +17,6 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.platform.product_fetch_controller import IProductFetchController
 from skeletons.gui.web import IWebController
 from web.cache.web_downloader import WebDownloader
-
 _logger = logging.getLogger(__name__)
 
 class _PlatformProductListParams(object):

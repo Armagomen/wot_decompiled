@@ -6,12 +6,11 @@ from gui.Scaleform.daapi.view.battle.comp7.page import Comp7BattlePage
 from gui.Scaleform.daapi.view.battle.epic import SETTINGS_WINDOW_SCOPE
 from gui.Scaleform.daapi.view.battle.shared.page import BattlePageBusinessHandler
 from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings, GroupedViewSettings
-from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.Scaleform.genConsts.BATTLE_CONTEXT_MENU_HANDLER_TYPE import BATTLE_CONTEXT_MENU_HANDLER_TYPE
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
+from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.app_loader.settings import APP_NAME_SPACE
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler

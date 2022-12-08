@@ -1,32 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/views/rewards_screen.py
-import typing
 from collections import namedtuple
-
+import typing
 from frameworks.wulf import ViewSettings, WindowFlags
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.comp7.views.rewards_screen_model import Type, Rank, RewardsScreenModel
-from gui.impl.lobby.comp7 import comp7_shared
 from gui.impl.lobby.comp7.comp7_bonus_packer import packRanksRewardsQuestBonuses, packWinsRewardsQuestBonuses
-from gui.impl.lobby.comp7.comp7_quest_helpers import parseComp7RanksQuestID, parseComp7WinsQuestID, \
-    parseComp7PeriodicQuestID, getComp7WinsQuests
+from gui.impl.lobby.comp7.comp7_quest_helpers import parseComp7RanksQuestID, parseComp7WinsQuestID, parseComp7PeriodicQuestID, getComp7WinsQuests
 from gui.impl.lobby.tooltips.additional_rewards_tooltip import AdditionalRewardsTooltip
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from shared_utils import findFirst
-
+from gui.impl.lobby.comp7 import comp7_shared
 if typing.TYPE_CHECKING:
-    pass
+    from comp7_ranks_common import Comp7Division
+    from frameworks.wulf.view.view_event import ViewEvent
+    from gui.server_events.event_items import TokenQuest
 _RANKS_MAIN_REWARDS_COUNT = {Rank.FIRST: 1,
  Rank.SECOND: 3,
  Rank.THIRD: 2,
- Rank.FOURTH: 2,
+ Rank.FOURTH: 3,
  Rank.FIFTH: 2,
  Rank.SIXTH: 3,
  Rank.SEVENTH: 4}
-_WINS_MAIN_REWARDS_COUNT = (4, 3, 4, 4, 4, 4, 4, 4)
+_WINS_MAIN_REWARDS_COUNT = (4, 3, 4, 4, 4, 3, 4, 4)
 _BonusData = namedtuple('_BonusData', ('bonus', 'tooltip'))
 
 class _BaseRewardsView(ViewImpl):

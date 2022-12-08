@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/replay_components.py
 import logging
-
 import BattleReplay
 from ReplayEvents import g_replayEvents
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.components import StatusNotificationContainer
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.sn_items import TimerSN, TimeSnapshotHandler
 from gui.Scaleform.daapi.view.battle.shared.timers_common import PrecisePythonTimer
-
 _logger = logging.getLogger(__name__)
 
 class CallbackPrecisePythonTimer(object):

@@ -2,28 +2,26 @@
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_main_reward_view.py
 import logging
 import typing
-
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import BATTLEMATTERS_SEEN
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_reward_view_model import \
-    BattleMattersMainRewardViewModel
-from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersVehiclesBonusUIPacker
+from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_reward_view_model import BattleMattersMainRewardViewModel
 from gui.impl.pub import ViewImpl
-from gui.server_events.bonuses import VehiclesBonus
 from gui.server_events.events_dispatcher import showBattleMatters, showBattleMattersMainReward
+from gui.server_events.bonuses import VehiclesBonus
 from gui.shared.event_dispatcher import showVehiclePreviewWithoutBottomPanel, showHangar, selectVehicleInHangar
+from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersVehiclesBonusUIPacker
 from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.server_events import IEventsCache
 from web.web_client_api.common import ItemPackEntry, ItemPackType
-
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Tuple, Sequence, Callable, Optional
+    from Event import Event
 _BATTLEMATTERS_VEHICLES_ORDER = ('Pl19_CS_52_LIS', 'R165_Object_703_II', 'A122_TS-5')
 
 def _vehiclesSortOrder(firstModel, secondModel):
@@ -76,8 +74,8 @@ class BattleMattersMainRewardView(ViewImpl):
     def onClose():
         showHangar()
 
-    def _onLoading(self, *args, **kwargs):
-        super(BattleMattersMainRewardView, self)._onLoading()
+    def _initialize(self, *args, **kwargs):
+        super(BattleMattersMainRewardView, self)._initialize(*args, **kwargs)
         self.__update()
 
     def _getEvents(self):

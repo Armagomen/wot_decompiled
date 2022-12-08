@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/status_notifications/panel.py
 import logging
-
 import GUI
 from gui.Scaleform.daapi.view.battle.comp7.status_notifications import sn_items as comp7_sn_items
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
@@ -17,7 +16,6 @@ from gui.shared.items_parameters import isAutoReloadGun
 from gui.shared.utils.MethodsRules import MethodsRules
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-
 _logger = logging.getLogger(__name__)
 
 class Comp7BattleHighPriorityGroup(components.StatusNotificationsGroup):

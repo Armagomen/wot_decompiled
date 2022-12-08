@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/settings.py
 from collections import namedtuple
-
 from soft_exception import SoftException
-
 TUTORIAL_VERSION = '0.3.7'
 DOC_DIRECTORY = 'scripts/tutorial_docs'
 GLOBAL_REFS_FILE_PATH = '{0:>s}/global-refs.xml'.format(DOC_DIRECTORY)

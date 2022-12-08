@@ -2,11 +2,11 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/markers2d/vehicle_plugins.py
 from collections import defaultdict, namedtuple
 from functools import partial
-
 import BattleReplay
 import BigWorld
 import Math
 import constants
+import settings
 from AvatarInputHandler import AvatarInputHandler
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import GAME
@@ -14,8 +14,7 @@ from aih_constants import CTRL_MODE_NAME
 from arena_components.advanced_chat_component import _DEFAULT_ACTIVE_COMMAND_TIME, TARGET_CHAT_CMD_FLAG
 from chat_commands_consts import INVALID_MARKER_SUBTYPE, MarkerType, DefaultMarkerSubType, INVALID_MARKER_ID
 from gui.Scaleform.daapi.view.battle.shared.markers2d import markers
-from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import MarkerPlugin, ChatCommunicationComponent, \
-    MAX_DISTANCE_TEMP_STICKY
+from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import MarkerPlugin, ChatCommunicationComponent, MAX_DISTANCE_TEMP_STICKY
 from gui.Scaleform.daapi.view.battle.shared.markers2d.timer import MarkerTimer
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 from gui.battle_control import avatar_getter
@@ -24,6 +23,7 @@ from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID, ENTITY_IN_FOCUS_TYPE
 from gui.battle_control.battle_constants import MARKER_HIT_STATE, PLAYER_GUI_PROPS, MARKER_CRITICAL_HIT_STATES
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
+from gui.battle_control.controllers.feedback_adaptor import EntityInFocusData
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
@@ -32,9 +32,6 @@ from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from skeletons.gui.game_control import IBootcampController
-
-import settings
-
 _STATUS_EFFECTS_PRIORITY = (BATTLE_MARKER_STATES.REPAIRING_STATE,
  BATTLE_MARKER_STATES.ENGINEER_STATE,
  BATTLE_MARKER_STATES.HEALING_STATE,

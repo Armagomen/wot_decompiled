@@ -2,13 +2,11 @@
 # Embedded file name: scripts/client/gui/impl/lobby/player_subscriptions/player_subscriptions_view.py
 import logging
 import typing
-
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.player_subscriptions.player_subscriptions_model import \
-    PlayerSubscriptionsModel
+from gui.impl.gen.view_models.views.lobby.player_subscriptions.player_subscriptions_model import PlayerSubscriptionsModel
 from gui.impl.gen.view_models.views.lobby.player_subscriptions.subscription import Subscription
 from gui.impl.pub import ViewImpl
 from gui.shared.event_dispatcher import showOfferGiftsWindow, showBrowserOverlayView
@@ -17,10 +15,9 @@ from skeletons.gui.game_control import IExternalLinksController, ISteamCompletio
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.product_fetch_controller import ISubscriptionsFetchController
 from skeletons.gui.platform.wgnp_controllers import IWGNPSteamAccRequestController
-
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.products_fetcher.subscriptions.subscriptions_descriptor import SubscriptionDescriptor
 _PLAYER_SUBSCRIPTIONS_URL = 'playerSubscriptionsURL'
 
 class PlayerSubscriptionsView(ViewImpl):

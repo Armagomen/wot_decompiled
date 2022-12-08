@@ -1,20 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/IngameSoundNotifications.py
-from collections import namedtuple
-from functools import partial
 from random import randrange
-
-import BattleReplay
-import BigWorld
-import Event
+from functools import partial
+from collections import namedtuple
+from debug_utils import LOG_WARNING
 import Math
+import BigWorld
 import ResMgr
+import BattleReplay
+import Event
 import SoundGroups
 import VSE
-from debug_utils import LOG_WARNING
-from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 from visual_script_client.contexts.sound_notifications_context import SoundNotificationsContext
-
+from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 
 class IngameSoundNotifications(CallbackDelayer, TimeDeltaMeter):
     __EVENTS_PATH = 'gui/sound_notifications.xml'

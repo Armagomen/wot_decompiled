@@ -1,18 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/loot_box.py
 from enum import Enum
-
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items.gui_item import GUIItem
 from shared_utils import CONST_CONTAINER
 
-
 class NewYearLootBoxes(CONST_CONTAINER):
     PREMIUM = 'newYear_premium'
-    SPECIAL = 'newYear_special'
     SPECIAL_AUTO = 'newYear_special_auto'
-    COMMON = 'newYear_usual'
 
 
 class NewYearCategories(CONST_CONTAINER):
@@ -20,6 +16,10 @@ class NewYearCategories(CONST_CONTAINER):
     CHRISTMAS = 'Christmas'
     ORIENTAL = 'Oriental'
     FAIRYTALE = 'Fairytale'
+    SETTINGS = (NEWYEAR,
+     CHRISTMAS,
+     ORIENTAL,
+     FAIRYTALE)
 
 
 class EventCategories(CONST_CONTAINER):
@@ -38,17 +38,10 @@ class LunarNYLootBoxTypes(Enum):
     SPECIAL = 'lunar_special'
 
 
-class ChinaLootBoxes(CONST_CONTAINER):
-    PREMIUM = 'china_premium'
-    COMMON = 'china_common'
-
-
 ALL_LUNAR_NY_LOOT_BOX_TYPES = ('lunar_base', 'lunar_simple', 'lunar_special')
 LUNAR_NY_LOOT_BOXES_CATEGORIES = 'LunarNY'
-CHINA_LOOT_BOXES_CATEGORIES = 'chinaLootBoxes'
 SENIORITY_AWARDS_LOOT_BOXES_TYPE = 'seniorityAwards'
-GUI_ORDER_NY = (NewYearLootBoxes.COMMON, NewYearLootBoxes.PREMIUM)
-CATEGORIES_GUI_ORDER_NY = (NewYearCategories.NEWYEAR,
+CATEGORIES_GUI_ORDER = (NewYearCategories.NEWYEAR,
  NewYearCategories.CHRISTMAS,
  NewYearCategories.ORIENTAL,
  NewYearCategories.FAIRYTALE)
@@ -93,7 +86,7 @@ class LootBox(GUIItem):
         return self.__category
 
     def isFree(self):
-        return self.__type == NewYearLootBoxes.COMMON
+        return self.__type != NewYearLootBoxes.PREMIUM
 
     def getGuaranteedFrequency(self):
         return self.__guaranteedFrequency
@@ -115,5 +108,7 @@ class LootBox(GUIItem):
         for limitName, limit in limitsCfg.iteritems():
             if 'useBonusProbabilityAfter' in limit:
                 return (limitName, limit['useBonusProbabilityAfter'] + 1)
+            if 'guaranteedFrequency' in limit:
+                return (limitName, limit['guaranteedFrequency'])
 
         return (None, 0)

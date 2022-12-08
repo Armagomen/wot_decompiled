@@ -1,23 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/daily_quests.py
 import logging
-
-import AccountCommands
 import BigWorld
+import AccountCommands
 import wg_async
-from gui.impl import backport
-from gui.impl.dialogs import dialogs
-from gui.impl.dialogs.builders import WarningDialogBuilder, ResSimpleDialogBuilder
-from gui.impl.gen import R
-from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgModel as FmtArgs
-from gui.server_events.events_helpers import isRerollEnabled, getRerollTimeout
-from gui.shared.gui_items.processors import Processor, makeI18nError, makeI18nSuccess
-from gui.shared.gui_items.processors.plugins import AwaitConfirmator
-from gui.shared.gui_items.processors.plugins import SyncValidator, makeSuccess, makeError
-from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency, time_utils
 from skeletons.gui.server_events import IEventsCache
-
+from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.gui_items.processors.plugins import SyncValidator, makeSuccess, makeError
+from gui.shared.gui_items.processors.plugins import AwaitConfirmator
+from gui.shared.gui_items.processors import Processor, makeI18nError, makeI18nSuccess
+from gui.server_events.events_helpers import isRerollEnabled, getRerollTimeout
+from gui.impl import backport
+from gui.impl.dialogs import dialogs
+from gui.impl.gen import R
+from gui.impl.dialogs.builders import WarningDialogBuilder, ResSimpleDialogBuilder
+from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgModel as FmtArgs
 _logger = logging.getLogger(__name__)
 
 class DQRerollEnabledValidator(SyncValidator):

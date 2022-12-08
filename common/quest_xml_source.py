@@ -1,25 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/quest_xml_source.py
 import time
+import ArenaType
+import ResMgr
+import nations
+from items.components.ny_constants import CurrentNYConstants, PREV_NY_TOYS_BONUSES
+from soft_exception import SoftException
 from copy import deepcopy
 from pprint import pformat
-
-import ResMgr
-
-import ArenaType
-import nations
-from battle_results import getBattleResultsNames
 from bonus_readers import readBonusSection, readUTC, timeDataToUTC
-from constants import VEHICLE_CLASS_INDICES, ARENA_BONUS_TYPE, EVENT_TYPE, IGR_TYPE, ATTACK_REASONS, QUEST_RUN_FLAGS, \
-    DEFAULT_QUEST_START_TIME, DEFAULT_QUEST_FINISH_TIME, ROLE_LABEL_TO_TYPE, ACCOUNT_ATTR, QUESTS_SUPPORTED_EXCLUDE_TAGS
+from constants import VEHICLE_CLASS_INDICES, ARENA_BONUS_TYPE, EVENT_TYPE, IGR_TYPE, ATTACK_REASONS, QUEST_RUN_FLAGS, DEFAULT_QUEST_START_TIME, DEFAULT_QUEST_FINISH_TIME, ROLE_LABEL_TO_TYPE, ACCOUNT_ATTR, QUESTS_SUPPORTED_EXCLUDE_TAGS
 from debug_utils import LOG_WARNING
-from dossiers2.custom.layouts import accountDossierLayout, vehicleDossierLayout, StaticSizeBlockBuilder, \
-    BinarySetDossierBlockBuilder
+from dossiers2.custom.layouts import accountDossierLayout, vehicleDossierLayout, StaticSizeBlockBuilder, BinarySetDossierBlockBuilder
 from dossiers2.custom.records import RECORD_DB_IDS
 from items import vehicles
 from optional_bonuses import StripVisitor
-from soft_exception import SoftException
-
+from battle_results import getBattleResultsNames
 _WEEKDAYS = {'Mon': 1,
  'Tue': 2,
  'Wed': 3,
@@ -526,11 +522,14 @@ class Source(object):
          'entitlement',
          'rankedDailyBattles',
          'rankedBonusBattles',
+         'equipCoin',
          'dogTagComponent',
          'battlePassPoints',
          'currency',
          'freePremiumCrew',
-         'entitlementList'}
+         'entitlementList',
+         CurrentNYConstants.TOY_BONUS}
+        bonusTypes.update(PREV_NY_TOYS_BONUSES)
         if eventType in (EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST, EVENT_TYPE.NT_QUEST):
             bonusTypes.update(('xp', 'tankmenXP', 'xpFactor', 'creditsFactor', 'freeXPFactor', 'tankmenXPFactor'))
         if eventType in (EVENT_TYPE.NT_QUEST,):

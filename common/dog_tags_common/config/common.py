@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dog_tags_common/config/common.py
 from enum import Enum
-
 from soft_exception import SoftException
-
 DOG_TAGS_FILE = 'scripts/item_defs/dog_tags/dog_tags.xml'
 DOG_TAGS_SCHEMA_FILE = 'scripts/item_defs/dog_tags/dog_tags_schema.xsd'
 DEFAULT_GRADE = 0

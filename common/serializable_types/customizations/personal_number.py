@@ -1,14 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serializable_types/customizations/personal_number.py
 from collections import OrderedDict
-
 from items.components.c11n_constants import ApplyArea
 from serialization.field import intField, strField, applyAreaEnumField
 from serialization.serializable_component import SerializableComponent
 from wrapped_reflection_framework import ReflectionMetaclass
-
 from ..types import C11nSerializationTypes
-
 __all__ = ('PersonalNumberComponent',)
 
 class PersonalNumberComponent(SerializableComponent):

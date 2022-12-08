@@ -2,13 +2,12 @@
 # Embedded file name: scripts/client/points_of_interest/components.py
 import enum
 import typing
-
 import BigWorld
 import CGF
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from points_of_interest_shared import PoiType
+    from helpers.fixed_dict import StatusWithTimeInterval
+    from points_of_interest.mixins import PointsOfInterestListener
 
 @enum.unique
 class PoiStateUpdateMask(enum.IntEnum):

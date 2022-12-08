@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/battle_notifier_ctrl.py
 import logging
-
 from PlayerEvents import g_playerEvents
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.view_components import ViewComponentsController
 from helpers import dependency
 from messenger.proto.events import g_messengerEvents
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 
 class IBattleNotifierListener(object):

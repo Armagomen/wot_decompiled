@@ -13,11 +13,10 @@ from gui.shared.gui_items.items_actions import factory as ItemsActionsFactory
 from helpers import dependency
 from items import getTypeOfCompactDescr
 from skeletons.tutorial import ITutorialLoader
-from uilogging.deprecated.bootcamp.constants import BC_LOG_ACTIONS, BC_LOG_KEYS, LIMITS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-from uilogging.deprecated.bootcamp.loggers import BootcampUILogger
 from uilogging.deprecated.decorators import loggerTarget, loggerEntry, simpleLog
-
+from uilogging.deprecated.bootcamp.constants import BC_LOG_ACTIONS, BC_LOG_KEYS, LIMITS
+from uilogging.deprecated.bootcamp.loggers import BootcampUILogger
 
 class BCResearchItemsData(ResearchItemsData):
 

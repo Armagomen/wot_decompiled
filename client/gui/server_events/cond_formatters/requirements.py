@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/cond_formatters/requirements.py
 import types
-
 import nations
 from constants import EVENT_TYPE, IGR_TYPE, IS_CHINA
 from gui import makeHtmlString
@@ -19,7 +18,6 @@ from shared_utils import first
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
 
 def packTokens(tokens):
     return {'tokens': tokens,

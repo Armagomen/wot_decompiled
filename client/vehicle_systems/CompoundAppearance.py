@@ -1,38 +1,36 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/CompoundAppearance.py
+from functools import partial
 import logging
 import math
-from functools import partial
 from math import tan
-
-import BattleReplay
+import typing
 import BigWorld
-import CGF
-import GenericComponents
 import Math
-import SoundGroups
 import constants
 import items.vehicles
+import BattleReplay
+import SoundGroups
 from Event import Event
-from VehicleEffects import DamageFromShotDecoder
-from aih_constants import ShakeReason
-from cgf_obsolete_script.script_game_object import ComponentDescriptor
-from common_tank_appearance import CommonTankAppearance
 from debug_utils import LOG_ERROR
+from aih_constants import ShakeReason
+from shared_utils import findFirst
+from items.components.component_constants import MAIN_TRACK_PAIR_IDX
+from vehicle_systems.components.terrain_circle_component import TerrainCircleComponent
+from vehicle_systems.components import engine_state
+from vehicle_systems.stricted_loading import makeCallbackWeak, loadingPriority
+from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames, TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
+from vehicle_systems.components.highlighter import Highlighter
+from vehicle_systems.components.tutorial_mat_kinds_controller import TutorialMatKindsController
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers.EffectsList import SpecialKeyPointNames
-from items.components.component_constants import MAIN_TRACK_PAIR_IDX
-from shared_utils import findFirst
 from vehicle_systems import camouflages
+from cgf_obsolete_script.script_game_object import ComponentDescriptor
 from vehicle_systems import model_assembler
-from vehicle_systems.components import engine_state
-from vehicle_systems.components.highlighter import Highlighter
-from vehicle_systems.components.terrain_circle_component import TerrainCircleComponent
-from vehicle_systems.components.tutorial_mat_kinds_controller import TutorialMatKindsController
-from vehicle_systems.stricted_loading import makeCallbackWeak, loadingPriority
-from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames, TankPartNames, TankPartIndexes, \
-    TankSoundObjectsIndexes
-
+from VehicleEffects import DamageFromShotDecoder
+from common_tank_appearance import CommonTankAppearance
+import CGF
+import GenericComponents
 _ROOT_NODE_NAME = 'V'
 _GUN_RECOIL_NODE_NAME = 'G'
 _PERIODIC_TIME_ENGINE = 0.1
@@ -86,6 +84,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     tutorialMatKindsController = ComponentDescriptor()
     compoundHolder = ComponentDescriptor()
     partsGameObjects = ComponentDescriptor()
+    prefabLoaded = False
 
     def __init__(self):
         CallbackDelayer.__init__(self)
@@ -173,7 +172,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             self.__activated = True
             return
 
-    def deactivate(self, stopEffects=True):
+    def deactivate(self, stopEffects=True, restoreFilter=True):
         if not self.__activated:
             return
         else:
@@ -187,7 +186,8 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
                 BigWorld.removeCameraCollider(self.collisions.getColliderID())
             self.turretMatrix.target = None
             self.gunMatrix.target = None
-            self._vehicle.filter = self.__originalFilter
+            if restoreFilter:
+                self._vehicle.filter = self.__originalFilter
             self.filter.reset()
             self.__originalFilter = None
             self.__showCircleDelayed = None
@@ -295,6 +295,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         self.partsGameObjects = None
         self._destroySystems()
         self._loadingQueue = []
+        self._destroyStickers()
         return
 
     def destroy(self):

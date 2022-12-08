@@ -1,19 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_filter.py
 import copy
-
 import BattleReplay
 import constants
 import nations
 from account_helpers.AccountSettings import AccountSettings, CAROUSEL_FILTER_1, CAROUSEL_FILTER_2
 from account_helpers.AccountSettings import CAROUSEL_FILTER_CLIENT_1
 from gui.prb_control.settings import VEHICLE_LEVELS
-from gui.shared.gui_items.Vehicle import VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME
 from gui.shared.utils import makeSearchableString
 from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.gui_items.Vehicle import VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-
 
 def _filterDict(dictionary, keys):
     return {key:value for key, value in dictionary.iteritems() if key in keys}

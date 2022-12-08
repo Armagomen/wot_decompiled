@@ -3,35 +3,31 @@
 import logging
 import typing
 from functools import partial
-
 from CurrentVehicle import g_currentVehicle
-from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from adisp import adisp_process, adisp_async
-from gui.Scaleform.daapi.view.lobby.customization import shared
+from gui.shared.gui_items.processors.common import OutfitApplier, CustomizationsSeller
 from gui.Scaleform.daapi.view.lobby.customization.context.custom_mode import CustomMode
 from gui.Scaleform.daapi.view.lobby.customization.context.styled_mode import StyledMode
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, customizationSlotIdToUid, \
-    CustomizationSlotUpdateVO, getStylePurchaseItems, correctSlot, getCurrentVehicleAvailableRegionsMap, fitOutfit, \
-    removeItemFromEditableStyle, getEditableStyleOutfitDiff, getItemInventoryCount, getOutfitWithoutItemsNoDiff, \
-    getOutfitWithoutItems, ITEM_TYPE_TO_SLOT_TYPE, removeUnselectedItemsFromEditableStyle, getUnsuitableDependentData, \
-    changePartsOutfit
+from gui.Scaleform.daapi.view.lobby.customization import shared
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, customizationSlotIdToUid, CustomizationSlotUpdateVO, getStylePurchaseItems, correctSlot, getCurrentVehicleAvailableRegionsMap, fitOutfit, removeItemFromEditableStyle, getEditableStyleOutfitDiff, getItemInventoryCount, getOutfitWithoutItemsNoDiff, getOutfitWithoutItems, ITEM_TYPE_TO_SLOT_TYPE, removeUnselectedItemsFromEditableStyle, getUnsuitableDependentData, changePartsOutfit
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import getAvailableRegions, EDITABLE_STYLE_IRREMOVABLE_TYPES, \
-    EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, C11nId
+from gui.customization.shared import PurchaseItem, getAvailableRegions, EDITABLE_STYLE_IRREMOVABLE_TYPES, EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.processors.common import OutfitApplier, CustomizationsSeller
 from gui.shared.utils.decorators import adisp_process as wrapperdProcess
-from helpers import dependency
 from items import makeIntCompactDescrByID
 from items.components.c11n_constants import SeasonType, MAX_USERS_PROJECTION_DECALS, CustomizationType
-from items.customizations import CustomizationOutfit
-from skeletons.account_helpers.settings_core import ISettingsCore
-from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_outfit.containers import SlotData
 from vehicle_outfit.outfit import Area, Outfit
-
+from helpers import dependency
+from account_helpers.settings_core.settings_constants import OnceOnlyHints
+from skeletons.account_helpers.settings_core import ISettingsCore
+from tutorial.hints_manager import HINT_SHOWN_STATUS
+from items.customizations import CustomizationOutfit
 if typing.TYPE_CHECKING:
-    pass
+    from items.customizations import SerializableComponent
+    from gui.hangar_vehicle_appearance import AnchorParams
+    from gui.shared.gui_items.customization.c11n_items import Customization
+    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 _logger = logging.getLogger(__name__)
 
 class EditableStyleMode(CustomMode):
@@ -43,6 +39,7 @@ class EditableStyleMode(CustomMode):
         super(EditableStyleMode, self).__init__(ctx)
         self.__style = None
         self.__baseOutfits = {}
+        self.__isCanceled = False
         return
 
     @property
@@ -212,6 +209,7 @@ class EditableStyleMode(CustomMode):
             return
         self._isInited = False
         self.__style = style
+        self.__isCanceled = False
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
         availableRegionsMap = getCurrentVehicleAvailableRegionsMap()
         for season in SeasonType.COMMON_SEASONS:
@@ -235,14 +233,19 @@ class EditableStyleMode(CustomMode):
         super(EditableStyleMode, self)._onStart()
 
     def _onStop(self):
-        diffs = {}
-        for season in SeasonType.COMMON_SEASONS:
-            outfit = self._modifiedOutfits[season]
-            baseOutfit = self.__baseOutfits[season]
-            diffs[season] = getEditableStyleOutfitDiff(outfit, baseOutfit)
+        if not self.__isCanceled:
+            diffs = {}
+            for season in SeasonType.COMMON_SEASONS:
+                outfit = self._modifiedOutfits[season]
+                baseOutfit = self.__baseOutfits[season]
+                diffs[season] = getEditableStyleOutfitDiff(outfit, baseOutfit)
 
-        self._ctx.stylesDiffsCache.saveDiffs(self.__style, diffs)
+            self._ctx.stylesDiffsCache.saveDiffs(self.__style, diffs)
         super(EditableStyleMode, self)._onStop()
+
+    def _cancelChanges(self):
+        super(EditableStyleMode, self)._cancelChanges()
+        self.__isCanceled = True
 
     @adisp_async
     @adisp_process

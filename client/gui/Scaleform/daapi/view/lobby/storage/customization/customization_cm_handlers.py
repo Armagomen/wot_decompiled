@@ -1,21 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/customization/customization_cm_handlers.py
 import math
-
 from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nSellMeta
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option, CMLabel, ContextMenu
+from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell, getAvailableForSellCustomizationCount
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import customizationPreview
-from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell, \
-    getAvailableForSellCustomizationCount
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
-
 
 class CustomizationCMHandler(ContextMenu, EventSystemEntity):
     __service = dependency.descriptor(ICustomizationService)

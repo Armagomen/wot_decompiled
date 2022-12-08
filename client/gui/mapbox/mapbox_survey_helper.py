@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/mapbox/mapbox_survey_helper.py
-import json
-import logging
 from enum import Enum
-
+import logging
+import json
+import typing
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_question_model import QuestionType
 from gui.shared.utils.functions import replaceHyphenToUnderscore
 from helpers import dependency
-from shared_utils import findFirst, first
 from skeletons.gui.game_control import IMapboxController
-
+from shared_utils import findFirst, first
 _logger = logging.getLogger(__name__)
 _STR_PATH = R.strings.mapbox.survey
 

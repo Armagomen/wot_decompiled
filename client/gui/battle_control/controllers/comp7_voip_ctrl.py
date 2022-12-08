@@ -2,12 +2,11 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/comp7_voip_ctrl.py
 import logging
 import typing
-
 import BigWorld
 import CommandMapping
 import Keys
 import VOIP
-from constants import ARENA_PERIOD, IS_CHINA, REQUEST_COOLDOWN
+from constants import ARENA_PERIOD, IS_CHINA, REQUEST_COOLDOWN, ARENA_BONUS_TYPE
 from gui import g_keyEventHandlers
 from gui.battle_control import event_dispatcher
 from gui.battle_control.arena_info.interfaces import IComp7VOIPController
@@ -20,11 +19,9 @@ from messenger.proto.events import g_messengerEvents
 from messenger.proto.shared_messages import ClientActionMessage
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IComp7Controller
-
 if typing.TYPE_CHECKING:
-    pass
+    from VOIP.VOIPManager import VOIPManager
 _logger = logging.getLogger(__name__)
-
 
 class Comp7VOIPController(IComp7VOIPController):
     __slots__ = ('__messageShown', '__cooldownCallback')
@@ -87,9 +84,8 @@ class Comp7VOIPController(IComp7VOIPController):
             return
         else:
             _logger.info('toggleChannelConnection')
-            event_dispatcher.toggleVoipChannelEnabled()
-            self.__cooldownCallback = BigWorld.callback(REQUEST_COOLDOWN.POST_PROGRESSION_CELL + 1.0,
-                                                        self.__clearCooldown)
+            event_dispatcher.toggleVoipChannelEnabled(ARENA_BONUS_TYPE.COMP7)
+            self.__cooldownCallback = BigWorld.callback(REQUEST_COOLDOWN.POST_PROGRESSION_CELL + 1.0, self.__clearCooldown)
             return
 
     def __subscribe(self):

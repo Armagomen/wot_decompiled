@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/wgcg/requests.py
 import types
 import weakref
-
 from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.clans import formatters as clan_fmts
@@ -11,21 +10,20 @@ from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 from gui.shared.utils.requesters.RequestsController import RequestsController
 from gui.shared.utils.requesters.abstract import Response, ClientRequestsByIDProcessor
 from gui.wgcg.advent_calendar.handlers import AdventCalendarRequestHandlers
-from gui.wgcg.agate.handlers import AgateRequestHandlers
 from gui.wgcg.base.handlers import BaseRequestHandlers
 from gui.wgcg.clan.handlers import ClanRequestHandlers
-from gui.wgcg.craftmachine.handlers import CraftmachineRequestHandlers
 from gui.wgcg.elen.handlers import ElenRequestHandlers
-from gui.wgcg.external_battle_handlers import BaseExternalBattleUnitRequestHandlers
-from gui.wgcg.gift_system.handlers import GiftSystemRequestHandlers
+from gui.wgcg.utils.handlers import UtilsRequestHandlers
 from gui.wgcg.hof.handlers import HofRequestHandlers
 from gui.wgcg.mapbox.handlers import MapboxRequestHandlers
 from gui.wgcg.promo_screens.handlers import PromoScreensRequestHandlers
 from gui.wgcg.rank.handlers import RankRequestHandlers
 from gui.wgcg.settings import WebRequestDataType
+from gui.wgcg.external_battle_handlers import BaseExternalBattleUnitRequestHandlers
+from gui.wgcg.craftmachine.handlers import CraftmachineRequestHandlers
+from gui.wgcg.gift_system.handlers import GiftSystemRequestHandlers
+from gui.wgcg.friends_service.handlers import FriendServiceRequestHandlers
 from gui.wgcg.uilogging.handlers import UILoggingRequestHandlers
-from gui.wgcg.utils.handlers import UtilsRequestHandlers
-
 
 class WgcgRequestResponse(Response):
 
@@ -108,8 +106,8 @@ class WgcgRequestsController(RequestsController):
         self.__handlers.update(CraftmachineRequestHandlers(requester).get())
         self.__handlers.update(MapboxRequestHandlers(requester).get())
         self.__handlers.update(GiftSystemRequestHandlers(requester).get())
+        self.__handlers.update(FriendServiceRequestHandlers(requester).get())
         self.__handlers.update(UILoggingRequestHandlers(requester).get())
-        self.__handlers.update(AgateRequestHandlers(requester).get())
 
     def fini(self):
         super(WgcgRequestsController, self).fini()

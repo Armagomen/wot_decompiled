@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/gun_components.py
+from collections import namedtuple
 from items.components import legacy_stuff
 from soft_exception import SoftException
-from wrapped_reflection_framework import ReflectionMetaclass
 from wrapped_reflection_framework import reflectedNamedTuple
-
+from wrapped_reflection_framework import ReflectionMetaclass
 RecoilEffect = reflectedNamedTuple('RecoilEffect', ('lodDist', 'amplitude', 'backoffTime', 'returnTime'))
 
 class GunShot(legacy_stuff.LegacyStuff):

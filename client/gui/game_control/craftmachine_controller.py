@@ -1,21 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/craftmachine_controller.py
 import logging
-
 from adisp import adisp_process
 from constants import EnhancementsConfig as config
 from constants import MAX_VEHICLE_LEVEL
-from gui.shared.utils.requesters import REQ_CRITERIA
+from helpers import dependency
 from gui.wgcg.craftmachine.contexts import CraftmachineModulesInfoCtx
 from gui.wgcg.states import WebControllerStates
-from helpers import dependency
-from skeletons.gui.game_control import ICraftmachineController
-from skeletons.gui.lobby_context import ILobbyContext
+from gui.shared.utils.requesters import REQ_CRITERIA
 from skeletons.gui.shared import IItemsCache
+from skeletons.gui.game_control import ICraftmachineController
 from skeletons.gui.web import IWebController
-
+from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
-
 
 @dependency.replace_none_kwargs(craftMachineController=ICraftmachineController)
 def getCraftMachineEntryPointIsActive(craftMachineController=None):

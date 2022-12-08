@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/comp7_shared.py
 import typing
-
 from gui.impl.gen.view_models.views.lobby.comp7.division_info_model import Division
 from gui.impl.gen.view_models.views.lobby.comp7.views.main_widget_model import Rank
 from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.game_control import IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from comp7_ranks_common import Comp7Division
+    from helpers.server_settings import Comp7PrestigeRanksConfig
 
 @dependency.replace_none_kwargs(lobbyCtx=ILobbyContext)
 def getDivisionEnumValue(division, lobbyCtx=None):

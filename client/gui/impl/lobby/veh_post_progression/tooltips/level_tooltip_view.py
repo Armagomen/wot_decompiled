@@ -1,18 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/tooltips/level_tooltip_view.py
 import typing
-
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.bonus_model import BonusModel
 from gui.impl.gen.view_models.common.bonus_value_model import BonusValueModel
-from gui.impl.gen.view_models.views.lobby.post_progression.tooltip.post_progression_level_tooltip_view_model import \
-    PostProgressionLevelTooltipViewModel, ModificationType
+from gui.impl.gen.view_models.views.lobby.post_progression.tooltip.post_progression_level_tooltip_view_model import PostProgressionLevelTooltipViewModel, ModificationType
 from gui.impl.pub import ViewImpl
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from frameworks.wulf import Array
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from gui.veh_post_progression.models.modifications import SimpleModItem
+    from gui.veh_post_progression.models.progression import PostProgressionItem
+    from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
 
 class BaseProgressionLevelTooltipView(ViewImpl):
     __slots__ = ()

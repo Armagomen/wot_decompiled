@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/PersonalCase.py
 import operator
-
 import BigWorld
 import SoundGroups
 import constants
@@ -10,6 +9,7 @@ from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_SKINS_VIEWED, CREW_SKINS_HISTORICAL_VISIBLE
 from account_helpers.settings_core.settings_constants import TUTORIAL, GAME
 from adisp import adisp_async
+from wg_async import wg_await, wg_async
 from debug_utils import LOG_ERROR
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -18,48 +18,44 @@ from gui.Scaleform.daapi.view.AchievementsUtils import AchievementsUtils
 from gui.Scaleform.daapi.view.meta.PersonalCaseMeta import PersonalCaseMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.PERSONALCASECONST import PERSONALCASECONST
-from gui.Scaleform.locale.CREW_SKINS import CREW_SKINS
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.CREW_SKINS import CREW_SKINS
 from gui.Scaleform.locale.NATIONS import NATIONS
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.impl import backport
-from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.dialogs import showFreeSkillConfirmationDialog
-from gui.impl.dialogs.gf_builders import ResDialogBuilder
-from gui.impl.gen import R
+from gui.shop import showBuyGoldForCrew
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared import EVENT_BUS_SCOPE, events
+from gui.shared.gui_items.Tankman import getCrewSkinIconSmall, getCrewSkinRolePath, getCrewSkinNationPath, Tankman
+from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.events import LoadViewEvent
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Tankman import getCrewSkinIconSmall, getCrewSkinRolePath, getCrewSkinNationPath, Tankman
+from gui.shared.gui_items.dossier import dumpDossier, TankmanDossier
 from gui.shared.gui_items.crew_skin import localizedFullName, GenderRestrictionsLocales
-from gui.shared.gui_items.dossier import dumpDossier
-from gui.shared.gui_items.processors.tankman import TankmanDismiss, TankmanUnload, TankmanRetraining, TankmanAddSkill, \
-    TankmanLearnFreeSkill, TankmanChangePassport, CrewSkinEquip, CrewSkinUnequip
+from gui.shared.gui_items.processors.tankman import TankmanDismiss, TankmanUnload, TankmanRetraining, TankmanAddSkill, TankmanLearnFreeSkill, TankmanChangePassport, CrewSkinEquip, CrewSkinUnequip
 from gui.shared.gui_items.serializers import packTankman, packVehicle, packTraining, repackTankmanWithSkinData
-from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.money import Money
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
 from gui.shared.utils import decorators, roundByModulo
 from gui.shared.utils.functions import getViewName, makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shop import showBuyGoldForCrew
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.gf_builders import ResDialogBuilder
+from gui.impl.gen import R
+from gui.impl import backport
 from helpers import dependency
 from helpers import i18n, strcmp
 from items import tankmen
-from items.components.crew_skins_constants import CREW_SKIN_PROPERTIES_MASKS, NO_CREW_SKIN_ID, NO_CREW_SKIN_SOUND_SET, \
-    TANKMAN_SEX
-from skeletons.account_helpers.settings_core import ISettingsCore
+from items.components.crew_skins_constants import CREW_SKIN_PROPERTIES_MASKS, NO_CREW_SKIN_ID, NO_CREW_SKIN_SOUND_SET, TANKMAN_SEX
 from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_await, wg_async
-
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from skeletons.account_helpers.settings_core import ISettingsCore
 
 class CrewSkinsCache(object):
     settingsCore = dependency.descriptor(ISettingsCore)

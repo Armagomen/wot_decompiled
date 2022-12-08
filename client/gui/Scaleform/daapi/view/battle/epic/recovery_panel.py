@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/recovery_panel.py
 from functools import partial
-
+from gui.battle_control.avatar_getter import getSoundNotifications
+from gui.Scaleform.daapi.view.meta.RecoveryPanelMeta import RecoveryPanelMeta
+from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID
 import BigWorld
 import CommandMapping
-from PlayerEvents import g_playerEvents
-from constants import RM_STATE
-from gui.Scaleform.daapi.view.meta.RecoveryPanelMeta import RecoveryPanelMeta
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-from gui.battle_control import avatar_getter
-from gui.battle_control.avatar_getter import getSoundNotifications
-from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID
 from gui.shared.utils.key_mapping import getReadableKey
-from gui.sounds.epic_sound_constants import EPIC_SOUND
 from helpers import dependency
-from helpers import time_utils, i18n
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from helpers import time_utils, i18n
+from constants import RM_STATE
+from gui.sounds.epic_sound_constants import EPIC_SOUND
+from gui.battle_control import avatar_getter
+from PlayerEvents import g_playerEvents
 _SHOW_HINT_TIME = 5
 _SHOW_COOLDOWN_TIME = 5
 

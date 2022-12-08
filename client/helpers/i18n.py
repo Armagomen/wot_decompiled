@@ -4,9 +4,7 @@ import json
 import logging
 import types
 from encodings import utf_8
-
 from frameworks import wulf
-
 _logger = logging.getLogger(__name__)
 
 def convert(utf8String):

@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/fitting_select/module_extenders.py
 import typing
-
-from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
+from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS, ServerSettingsManager
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.vehicle_modules import VehicleEngine, VehicleGun
 from gui.shared.utils import TURBOSHAFT_ENGINE_POWER, ROCKET_ACCELERATION_ENGINE_POWER
-
+from gui.shared.gui_items.vehicle_modules import VehicleEngine, VehicleGun
 if typing.TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescriptor
+    from gui.shared.gui_items.vehicle_modules import VehicleModule
 _ModuleParamExtendInfo = typing.NamedTuple('_ModuleParamsExtenderData', (('param', str), ('replaceParam', str)))
 
 class ModuleParamsExtender(object):

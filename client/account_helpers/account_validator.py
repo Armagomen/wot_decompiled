@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/account_validator.py
 import logging
-
 import BigWorld
-import constants
 import wg_async
+import constants
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from items import vehicles, tankmen, ITEM_TYPE_NAMES
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 
 class ValidateException(SoftException):
@@ -82,9 +80,7 @@ class InventoryVehiclesValidator(AccountValidator):
                 except Exception as e:
                     raise ValidateException(e.message, ValidationCodes.VEHICLE_MISMATCH, _packItemData(GUI_ITEM_TYPE.VEHICLE, (invID, vehCompDescr)))
 
-        yield wg_async.wg_await(
-            wg_async.distributeLoopOverTicks(createVehicleDescrAsync(), minPerTick=10, maxPerTick=100,
-                                             logID='createVehicleDescrAsync', tickLength=0.0))
+        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(createVehicleDescrAsync(), minPerTick=10, maxPerTick=100, logID='createVehicleDescrAsync', tickLength=0.0))
 
         def validateTankmanAsync():
             for vehInvData in inventory.getItemsData(GUI_ITEM_TYPE.VEHICLE).values():
@@ -97,8 +93,7 @@ class InventoryVehiclesValidator(AccountValidator):
 
             return
 
-        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(validateTankmanAsync(), minPerTick=10, maxPerTick=100,
-                                                                 logID='validateTankmanAsync', tickLength=0.0))
+        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(validateTankmanAsync(), minPerTick=10, maxPerTick=100, logID='validateTankmanAsync', tickLength=0.0))
 
 
 class InventoryOutfitValidator(AccountValidator):
@@ -129,8 +124,7 @@ class InventoryOutfitValidator(AccountValidator):
 
             return
 
-        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(validateOutfitsAsync(), minPerTick=10, maxPerTick=100,
-                                                                 logID='validateOutfitsAsync', tickLength=0.0))
+        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(validateOutfitsAsync(), minPerTick=10, maxPerTick=100, logID='validateOutfitsAsync', tickLength=0.0))
 
 
 class InventoryTankmenValidator(AccountValidator):
@@ -153,6 +147,4 @@ class InventoryTankmenValidator(AccountValidator):
 
             return
 
-        yield wg_async.wg_await(
-            wg_async.distributeLoopOverTicks(validateInventoryTankmenAsync(), minPerTick=10, maxPerTick=100,
-                                             logID='validateOutfitsAsync', tickLength=0.0))
+        yield wg_async.wg_await(wg_async.distributeLoopOverTicks(validateInventoryTankmenAsync(), minPerTick=10, maxPerTick=100, logID='validateOutfitsAsync', tickLength=0.0))

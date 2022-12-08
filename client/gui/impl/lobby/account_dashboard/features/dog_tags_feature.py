@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/dog_tags_feature.py
 import BigWorld
 from constants import DOG_TAGS_CONFIG
+from gui.impl.gen.view_models.views.lobby.account_dashboard.dog_tags_model import DogTagsModel
 from gui.impl.lobby.account_dashboard.features.base import FeatureItem
 from gui.impl.lobby.dog_tags.dog_tag_composer import DogTagComposerLobby
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel

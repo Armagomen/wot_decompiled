@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/components/browser_view_page.py
 import logging
-
 import BigWorld
+from gui.impl import backport
+from gui.impl.gen import R
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.BrowserViewStackExPaddingMeta import BrowserViewStackExPaddingMeta
-from gui.impl import backport
-from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController
-
 _logger = logging.getLogger(__name__)
 
 class BrowserPageComponent(BrowserViewStackExPaddingMeta):

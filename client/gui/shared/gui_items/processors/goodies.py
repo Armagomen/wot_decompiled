@@ -2,18 +2,17 @@
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/goodies.py
 import logging
 import typing
-
-import AccountCommands
 import BigWorld
+import AccountCommands
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.impl import backport
 from gui.shared.formatters import formatPrice
 from gui.shared.gui_items.processors import Processor, makeI18nError, makeI18nSuccess, plugins as proc_plugs
+from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Currency
 from gui.shared.utils import code2str
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.SystemMessages import ResultMsg
 _logger = logging.getLogger(__name__)
 
 class BoosterProcessor(Processor):

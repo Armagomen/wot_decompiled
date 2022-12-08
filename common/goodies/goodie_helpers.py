@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/goodie_helpers.py
+from typing import TYPE_CHECKING, Type
 from collections import namedtuple
 from copy import deepcopy
-from typing import TYPE_CHECKING
-
-from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
-
 from GoodieConditions import MaxVehicleLevel
 from GoodieDefinition import GoodieDefinition
 from GoodieResources import Gold, Credits, Experience, CrewExperience, FreeExperience, FrontlineExperience
-from GoodieTargets import BuyPremiumAccount, BuySlot, PostBattle, BuyGoldTankmen, FreeExperienceConversion, BuyVehicle, \
-    EpicMeta, DemountOptionalDevice, EpicPostBattle, DropSkill
-from Goodies import GoodieException
-from goodie_constants import GOODIE_TARGET_TYPE, GOODIE_CONDITION_TYPE, GOODIE_RESOURCE_TYPE
+from GoodieTargets import BuyPremiumAccount, BuySlot, PostBattle, BuyGoldTankmen, FreeExperienceConversion, BuyVehicle, EpicMeta, DemountOptionalDevice, EpicPostBattle, DropSkill
 from goodie_multiple_resources import FreeXpCrewXpMultiResourceList, FreeXpMainXpMultiResourceList
-
+from Goodies import GoodieException
+from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
+from goodie_constants import GOODIE_TARGET_TYPE, GOODIE_CONDITION_TYPE, GOODIE_RESOURCE_TYPE
 if TYPE_CHECKING:
-    pass
+    from typing import Tuple, Dict
+    from goodies.Goodies import Goodies
+    from goodies.GoodieResources import GoodieResourceType
 GoodieData = namedtuple('GoodieData', 'variety target enabled lifetime useby counter autostart condition resource')
 _CONDITIONS = {GOODIE_CONDITION_TYPE.MAX_VEHICLE_LEVEL: MaxVehicleLevel}
 _TARGETS = {GOODIE_TARGET_TYPE.ON_BUY_PREMIUM: BuyPremiumAccount,

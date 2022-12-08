@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/tutorial.py
-from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.locale.RES_COMMON import RES_COMMON
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.shared.formatters import text_styles
+from gui.shared.tooltips.common import BlocksTooltipData
 from gui.shared.tooltips import TOOLTIP_TYPE
 from gui.shared.tooltips import formatters
-from gui.shared.tooltips.common import BlocksTooltipData
+from gui.shared.formatters import text_styles
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-
 
 class HangarTutorialTooltipData(BlocksTooltipData):
 

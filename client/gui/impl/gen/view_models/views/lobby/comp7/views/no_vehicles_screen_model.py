@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/comp7/views/no_vehicles_screen_model.py
 from enum import Enum
-
 from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.comp7.schedule_info_model import ScheduleInfoModel
-
 
 class ErrorReason(Enum):
     DEFAULT = 'vehicleUnavailable'

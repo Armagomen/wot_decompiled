@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/base_equipment.py
+from wg_async import wg_await, wg_async
 from BWUtil import AsyncReturn
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
 from gui.impl.lobby.tank_setup.interactors.base import BaseInteractor
 from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
 from gui.shared.event_dispatcher import showTankSetupExitConfirmDialog
-from wg_async import wg_await, wg_async
-
 
 class BaseEquipmentInteractor(BaseInteractor):
     __slots__ = ('_installedIndices', '_playerLayout')

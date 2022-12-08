@@ -1,20 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/links_handlers/ExternalLinksHandler.py
-import logging
 import typing
-
+import logging
 from adisp import adisp_async, adisp_process
 from gui import GUI_SETTINGS
 from gui.game_control.links import URLMacros
-from gui.game_control.links_handlers import external
 from gui.shared import g_eventBus
 from gui.shared.events import OpenLinkEvent
 from helpers import dependency
 from skeletons.gui.game_control import IExternalLinksController
+from gui.game_control.links_handlers import external
 from skeletons.gui.login_manager import ILoginManager
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.game_control.links_handlers.external import ILinksHandler
 _logger = logging.getLogger(__name__)
 _LISTENERS = {OpenLinkEvent.SPECIFIED: '_handleSpecifiedURL',
  OpenLinkEvent.PARSED: '_handleParsedURL',

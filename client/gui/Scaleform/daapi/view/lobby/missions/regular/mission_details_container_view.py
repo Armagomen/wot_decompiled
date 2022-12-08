@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/mission_details_container_view.py
+from wg_async import wg_async, wg_await
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
 from gui.Scaleform.daapi.view.lobby.missions.regular.group_packers import getGroupPackerByContextID
 from gui.Scaleform.daapi.view.meta.MissionDetailsContainerViewMeta import MissionDetailsContainerViewMeta
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
-from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, FUN_RANDOM_GROUP_ID
 from gui.server_events.events_helpers import isDailyQuest, isPremium
 from gui.server_events.formatters import parseComplexToken
+from gui.server_events.events_constants import BATTLE_ROYALE_GROUPS_ID, FUN_RANDOM_GROUP_ID
 from gui.shared import events, event_bus_handlers, EVENT_BUS_SCOPE
 from helpers import dependency
-from skeletons.gui.game_control import IBattleRoyaleController
 from skeletons.gui.server_events import IEventsCache
-from wg_async import wg_async, wg_await
-
+from skeletons.gui.game_control import IBattleRoyaleController
 
 class MissionDetailsContainerView(LobbySubView, MissionDetailsContainerViewMeta):
     eventsCache = dependency.descriptor(IEventsCache)

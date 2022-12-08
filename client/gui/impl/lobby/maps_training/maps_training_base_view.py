@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_base_view.py
-from frameworks.wulf import ViewSettings, ViewFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
-from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.pub import ViewImpl
+from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
+from frameworks.wulf import ViewSettings, ViewFlags
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
-
 
 class MapsTrainingBaseView(ViewImpl):
     appLoader = dependency.descriptor(IAppLoader)

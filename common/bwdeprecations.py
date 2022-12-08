@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/bwdeprecations.py
 import functools
+import sys
 import warnings
 
 def deprecatedAlias(method, oldname):
@@ -35,4 +36,4 @@ if BigWorld.component == 'client':
     if not hasattr(BigWorld, 'allEntities'):
         BigWorld.allEntities = BigWorld.entities
 if BigWorld.component == 'cell':
-    pass
+    import OldSpaceData

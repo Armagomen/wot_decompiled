@@ -7,17 +7,16 @@ from gui.prb_control.entities.base.squad.components import RestrictedSPGDataProv
 from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
 from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
 from gui.prb_control.entities.mapbox.pre_queue.vehicles_watcher import MapboxVehiclesWatcher
-from gui.prb_control.entities.mapbox.scheduler import MapboxScheduler
-from gui.prb_control.entities.mapbox.squad.action_handler import MapboxSquadActionsHandler
-from gui.prb_control.entities.mapbox.squad.actions_validator import MapboxSquadActionsValidator
 from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
 from gui.prb_control.storages import prequeue_storage_getter
+from gui.prb_control.entities.mapbox.squad.actions_validator import MapboxSquadActionsValidator
+from gui.prb_control.entities.mapbox.squad.action_handler import MapboxSquadActionsHandler
+from gui.prb_control.entities.mapbox.scheduler import MapboxScheduler
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
 from helpers import dependency
 from skeletons.gui.game_control import IMapboxController
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
-
+from skeletons.gui.lobby_context import ILobbyContext
 
 class MapboxSquadEntryPoint(SquadEntryPoint):
 
@@ -149,7 +148,7 @@ class MapboxSquadEntity(SquadEntity):
     def _onInventoryVehiclesUpdated(self, diff):
         self.invalidateVehicleStates()
 
-    def _onUnitMemberVehiclesChanged(self, accoundDbID):
+    def _onUnitMemberVehiclesChanged(self, accountDBID):
         self.invalidateVehicleStates()
-        if accoundDbID != account_helpers.getAccountDatabaseID():
+        if accountDBID != account_helpers.getAccountDatabaseID():
             self.unit_onUnitRosterChanged()

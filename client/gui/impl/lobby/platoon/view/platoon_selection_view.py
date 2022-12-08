@@ -1,18 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_selection_view.py
 import logging
-
 from constants import PREBATTLE_TYPE
-from frameworks.wulf import WindowFlags, WindowLayer
-from gui.impl.gen import R
-from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
-from gui.impl.lobby.platoon.view.comp7_platoon_welcome_view import Comp7WelcomeView
-from gui.impl.lobby.platoon.view.platoon_welcome_view import WelcomeView
-from gui.shared import g_eventBus
-from gui.shared.events import PlatoonDropdownEvent
 from helpers import dependency
+from gui.impl.gen import R
 from skeletons.gui.game_control import IPlatoonController
-
+from frameworks.wulf import WindowFlags, WindowLayer
+from gui.shared.events import PlatoonDropdownEvent
+from gui.shared import g_eventBus
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
+from gui.impl.lobby.platoon.view.platoon_welcome_view import WelcomeView
+from gui.impl.lobby.platoon.view.comp7_platoon_welcome_view import Comp7WelcomeView
 _logger = logging.getLogger(__name__)
 strButtons = R.strings.platoon.buttons
 

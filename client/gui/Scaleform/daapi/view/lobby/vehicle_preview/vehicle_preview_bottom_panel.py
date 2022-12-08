@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview_bottom_panel.py
 import time
 from collections import namedtuple
-
 import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
 from adisp import adisp_async, adisp_process
@@ -32,8 +31,7 @@ from gui.referral_program import showGetVehiclePage
 from gui.shared import event_dispatcher, events, g_eventBus
 from gui.shared.event_dispatcher import showVehicleRentDialog
 from gui.shared.events import HasCtxEvent
-from gui.shared.formatters import chooseItemPriceVO, formatPrice, getItemPricesVO, getItemUnlockPricesVO, icons, \
-    text_styles, time_formatters
+from gui.shared.formatters import chooseItemPriceVO, formatPrice, getItemPricesVO, getItemUnlockPricesVO, icons, text_styles, time_formatters
 from gui.shared.gui_items.gui_item_economics import ActualPrice, ITEM_PRICE_EMPTY, ItemPrice, getPriceTypeAndValue
 from gui.shared.gui_items.items_actions import factory
 from gui.shared.money import Currency, MONEY_UNDEFINED, Money
@@ -43,18 +41,14 @@ from gui.shared.utils.functions import makeTooltip
 from gui.shop import canBuyGoldForVehicleThroughWeb, showBuyGoldForBundle, showBuyProductOverlay
 from helpers import dependency, int2roman, time_utils
 from helpers.i18n import makeString as _ms
+from items_kit_helper import BOX_TYPE, OFFER_CHANGED_EVENT, getActiveOffer, lookupItem, mayObtainForMoney, mayObtainWithMoneyExchange, showItemTooltip
 from shared_utils import findFirst
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import ICalendarController, IExternalLinksController, IHeroTankController, \
-    IMarathonEventsController, IRestoreController, ITradeInController, IVehicleComparisonBasket
+from skeletons.gui.game_control import ICalendarController, IExternalLinksController, IHeroTankController, IMarathonEventsController, IRestoreController, ITradeInController, IVehicleComparisonBasket
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from web.web_client_api.common import ItemPackEntry, ItemPackTypeGroup
-
-from items_kit_helper import BOX_TYPE, OFFER_CHANGED_EVENT, getActiveOffer, lookupItem, mayObtainForMoney, \
-    mayObtainWithMoneyExchange, showItemTooltip
-
 _ButtonState = namedtuple('_ButtonState', ('enabled', 'itemPrice', 'label', 'icon', 'iconAlign', 'isAction', 'actionTooltip', 'tooltip', 'title', 'isMoneyEnough', 'isUnlock', 'isPrevItemsUnlock', 'customOffer', 'isShowSpecial'))
 
 def _buildBuyButtonTooltip(key):
@@ -533,10 +527,13 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
         _, isXpEnough = g_techTreeDP.isVehicleAvailableToUnlock(nodeCD, self._vehicleLevel)
         unlocks = self._itemsCache.items.stats.unlocks
         isNext2Unlock, unlockProps = g_techTreeDP.isNext2Unlock(nodeCD, unlocked=set(unlocks), xps=stats.vehiclesXPs, freeXP=stats.freeXP, level=self._vehicleLevel)
-        isAvailableToUnlock = isXpEnough and isNext2Unlock
+        walletAvailable = self.__walletAvailableForCurrency('freeXP')
+        isAvailableToUnlock = isXpEnough and isNext2Unlock and walletAvailable
         if not isAvailableToUnlock:
             if not isXpEnough:
                 tooltip = _buildBuyButtonTooltip('notEnoughXp')
+            elif not walletAvailable:
+                tooltip = _buildBuyButtonTooltip('walletUnavailable')
             elif any((bool(cd in unlocks) for cd in g_techTreeDP.getTopLevel(nodeCD))):
                 tooltip = _buildBuyButtonTooltip('parentModuleIsLocked')
             else:

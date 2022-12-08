@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_dialogs.py
 from typing import TYPE_CHECKING
-
+from uilogging.personal_reserves.loggers import BuyAndActivateDialogsLogger
+from wg_async import wg_async
 from adisp import adisp_async
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
+from gui.goodies.goodie_items import Booster
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template_button import ConfirmButton, CancelButton
 from gui.impl.dialogs.gf_builders import ResDialogBuilder
@@ -15,11 +17,13 @@ from gui.impl.gen.view_models.views.dialogs.default_dialog_place_holders import 
 from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import ButtonType
 from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import CurrencySize
 from gui.impl.gen.view_models.views.dialogs.sub_views.icon_set_view_model import IconPositionLogicEnum
+from gui.impl.gen_utils import DynAccessor
+from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogWindowWrapper
 from gui.impl.pub.dialog_window import DialogButtons
-from wg_async import wg_async
-
 if TYPE_CHECKING:
-    pass
+    from typing import Union
+    from gui.impl.dialogs.dialog_template import DialogTemplateView
+    from gui.shared.gui_items.gui_item_economics import ItemPrice
 __all__ = ('getUpgradeBoosterDialog', 'getBuyAndActivateBoosterDialog', 'getBuyGoldDialog')
 BOOSTER_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_xp_premium(),
  GOODIE_RESOURCE_TYPE.CREDITS: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_credits_premium(),
@@ -30,10 +34,15 @@ UPGRADE_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.persona
 
 @adisp_async
 @wg_async
-def showDialog(dialog, callback):
-    from gui.impl.dialogs import dialogs
-    isOk = yield dialogs.showSimple(dialog)
-    callback(isOk)
+def showDialogAndLogInteraction(dialog, dialogLogItem, callback):
+    logger = BuyAndActivateDialogsLogger(dialogLogItem)
+    dialog.load()
+    logger.logOpenDialog()
+    result = yield dialog.wait()
+    buttonClicked = result.result
+    logger.logButtonClick(buttonClicked)
+    dialog.destroy()
+    callback(buttonClicked == DialogButtons.SUBMIT)
 
 
 def getUpgradeBoosterDialog(booster, previousBooster):

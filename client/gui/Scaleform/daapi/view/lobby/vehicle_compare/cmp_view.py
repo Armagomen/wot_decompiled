@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_view.py
-from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -18,11 +17,11 @@ from gui.shared.formatters import text_styles
 from gui.shared.items_parameters.formatters import getAllParametersTitles
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IVehicleComparisonBasket
 from skeletons.gui.shared import IItemsCache
+from skeletons.account_helpers.settings_core import ISettingsCore
+from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from tutorial.hints_manager import HINT_SHOWN_STATUS
-
 _BACK_BTN_LABELS = {VIEW_ALIAS.LOBBY_HANGAR: 'hangar',
  VIEW_ALIAS.LOBBY_STORE: 'shop',
  VIEW_ALIAS.LOBBY_RESEARCH: 'researchTree',

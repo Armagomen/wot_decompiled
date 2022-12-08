@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/search/ClanSearchInfo.py
 import weakref
-
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import HeaderItemsTypes, ProfileUtils
@@ -18,7 +17,6 @@ from gui.shared.utils.functions import makeTooltip
 from gui.shared.view_helpers import ClanEmblemsHelper
 from gui.wgcg.base.contexts import CreateApplicationCtx
 from helpers.i18n import makeString as _ms
-
 
 def _packItemData(text, description, tooltip, icon):
     return {'type': HeaderItemsTypes.COMMON,

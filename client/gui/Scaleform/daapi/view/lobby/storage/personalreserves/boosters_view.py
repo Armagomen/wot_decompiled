@@ -2,7 +2,8 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/personalreserves/boosters_view.py
 import copy
 from functools import partial
-
+from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
+from helpers.i18n import makeString as _ms
 from account_helpers import AccountSettings
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
 from gui import makeHtmlString
@@ -11,9 +12,10 @@ from gui.Scaleform import MENU
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO, isStorageSessionTimeout
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPersonalReservesUrl
-from gui.Scaleform.daapi.view.meta.StorageCategoryPersonalReservesViewMeta import \
-    StorageCategoryPersonalReservesViewMeta
-from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
+from gui.Scaleform.daapi.view.meta.StorageCategoryPersonalReservesViewMeta import StorageCategoryPersonalReservesViewMeta
+from gui.impl.lobby.personal_reserves import boosterActivationFlow
+from gui.shared.formatters.time_formatters import getTimeLeftInfoEx
+from helpers import time_utils
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.STORAGE import STORAGE
@@ -21,20 +23,16 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.goodies.goodie_items import BOOSTERS_ORDERS, MAX_ACTIVE_BOOSTERS_COUNT
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.lobby.personal_reserves import boosterActivationFlow
 from gui.shared.event_dispatcher import showShop, showPersonalReservesIntro, showStorage
 from gui.shared.formatters import text_styles, getItemPricesVO
-from gui.shared.formatters.time_formatters import getTimeLeftInfoEx
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency, func_utils
-from helpers import time_utils
-from helpers.i18n import makeString as _ms
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.game_control import IBoostersController, IEpicBattleMetaGameController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.server_events import IEventsCache
-
+from uilogging.personal_reserves.logging_constants import PersonalReservesLogKeys
 
 class _FilterBit(CONST_CONTAINER):
     XP = 1
@@ -98,7 +96,7 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
 
     def onInfoClicked(self):
         callback = partial(showStorage, defaultSection=STORAGE_CONSTANTS.PERSONAL_RESERVES)
-        showPersonalReservesIntro(callbackOnClose=callback)
+        showPersonalReservesIntro(callbackOnClose=callback, uiLoggingKey=PersonalReservesLogKeys.DEPOT)
 
     def activateReserve(self, boosterID):
         boosterActivationFlow(boosterID)
@@ -131,7 +129,6 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
         super(StorageCategoryPersonalReservesView, self)._populate()
         g_clientUpdateManager.addCallbacks({'goodies': self.__onUpdateBoosters,
          'shop': self.__onUpdateBoosters})
-        self._boostersCtrl.onBoosterChangeNotify += self.__onUpdateBoosters
         self._eventsCache.onSyncCompleted += self.__onQuestsUpdate
         self._epicCtrl.onUpdated += self.__onUpdateBoosters
         self.__onUpdateBoosters()
@@ -139,7 +136,6 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
 
     def _dispose(self):
         g_clientUpdateManager.removeObjectCallbacks(self)
-        self._boostersCtrl.onBoosterChangeNotify -= self.__onUpdateBoosters
         self._eventsCache.onSyncCompleted -= self.__onQuestsUpdate
         self._epicCtrl.onUpdated -= self.__onUpdateBoosters
         self._saveFilters()

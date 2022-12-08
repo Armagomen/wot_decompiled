@@ -1,23 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/ApplicationPoint.py
 import weakref
-
 import BigWorld
 import CGF
+import CombatSelectedArea
 import GenericComponents
 import Math
-from items import vehicles
-from items.artefacts import AoeEffects, AreaShow
-
-import CombatSelectedArea
 import math_utils
-from AreaOfEffect import EffectRunner
-from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
-from gui.shared.gui_items.marker_items import MarkerItem
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from items import vehicles
+from items.artefacts import AoeEffects, AreaShow
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
+from gui.shared.gui_items.marker_items import MarkerItem
+from AreaOfEffect import EffectRunner
 
 def _equipmentEffectFactory(entity):
     equipment = vehicles.g_cache.equipments().get(entity.equipmentID)

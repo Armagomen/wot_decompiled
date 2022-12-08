@@ -1,17 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/respawn_ammunition_panel_inject.py
-from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor, hasAliveInject
-from gui.battle_control.controllers.epic_respawn_ctrl import IEpicRespawnView
 from gui.battle_control.controllers.respawn_ctrl import IRespawnView
+from gui.battle_control.controllers.epic_respawn_ctrl import IEpicRespawnView
 from gui.battle_control.gui_vehicle_builder import VehicleBuilder
-from gui.impl.battle.battle_page.ammunition_panel.respawn_ammunition_panel_view import RespawnAmmunitionPanelView
+from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor, hasAliveInject
 from gui.shared.gui_items.artefacts import BattleAbility
+from gui.impl.battle.battle_page.ammunition_panel.respawn_ammunition_panel_view import RespawnAmmunitionPanelView
 from gui.veh_post_progression.sounds import playSound, Sounds
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 
 class RespawnAmmunitionPanelInject(InjectComponentAdaptor, IRespawnView):
     __slots__ = ('_vehicle',)

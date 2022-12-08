@@ -1,20 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/custom_popover.py
 from itertools import ifilter
-
+import typing
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.customization.popovers import orderKey, C11nPopoverItemData
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot
 from gui.Scaleform.daapi.view.meta.CustomizationItemsPopoverMeta import CustomizationItemsPopoverMeta
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.customization.shared import isOutfitVisuallyEmpty, SEASON_TYPE_TO_NAME, C11nId
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.formatters import text_styles, getItemPricesVO
 from helpers import dependency
 from items.components.c11n_constants import CustomizationDisplayType
 from skeletons.gui.customization import ICustomizationService
-
 
 class CustomPopover(CustomizationItemsPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)

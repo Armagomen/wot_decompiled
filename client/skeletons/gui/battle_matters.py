@@ -2,7 +2,8 @@
 # Embedded file name: scripts/client/skeletons/gui/battle_matters.py
 import typing
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, List, Optional, Union
+    from gui.server_events.event_items import Quest, BattleMattersQuest, BattleMattersTokenQuest
 
 class IBattleMattersController(object):
     onStateChanged = None

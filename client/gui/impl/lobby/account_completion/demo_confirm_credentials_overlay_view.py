@@ -1,22 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_completion/demo_confirm_credentials_overlay_view.py
 import typing
-
 import BigWorld
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
 from gui.impl.lobby.account_completion.common import errors
-from gui.impl.lobby.account_completion.common.base_confirm_credentials_overlay_view import \
-    BaseConfirmCredentialsOverlayView
+from gui.impl.lobby.account_completion.common.base_confirm_credentials_overlay_view import BaseConfirmCredentialsOverlayView
 from gui.impl.lobby.account_completion.utils.common import DISABLE_BUTTON_TIME, AccountCompletionType
 from gui.platform.base.statuses.constants import StatusTypes
-from gui.shared.event_dispatcher import showDemoAddCredentialsOverlay, showDemoCompleteOverlay, \
-    showContactSupportOverlay, showDemoWaitingForTokenOverlayViewOverlay
+from gui.shared.event_dispatcher import showDemoAddCredentialsOverlay, showDemoCompleteOverlay, showContactSupportOverlay, showDemoWaitingForTokenOverlayViewOverlay
 from helpers import dependency
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
-
 if typing.TYPE_CHECKING:
-    pass
+    from wg_async import _Future
+    from gui.platform.wgnp.demo_account.request import ConfirmCredentialsParams
 res = R.strings.dialogs.accountCompletion
 
 class DemoConfirmCredentialsOverlayView(BaseConfirmCredentialsOverlayView):

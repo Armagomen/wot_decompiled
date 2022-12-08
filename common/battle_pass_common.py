@@ -3,17 +3,15 @@
 import bisect
 import struct
 import time
-import typing
 from collections import namedtuple
+import typing
 from enum import Enum, unique
-
 from battle_pass_integration import getBattlePassByGameMode
 from constants import ARENA_BONUS_TYPE, MAX_VEHICLE_LEVEL, OFFER_TOKEN_PREFIX
 from debug_utils import LOG_ERROR
 from items import parseIntCompactDescr, vehicles
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Generator, Sequence, Tuple, Union, List
 BATTLE_PASS_TOKEN_PREFIX = 'battle_pass:'
 BATTLE_PASS_TOKEN_PASS = BATTLE_PASS_TOKEN_PREFIX + 'pass:'
 BATTLE_PASS_ENTITLEMENT_PASS = BATTLE_PASS_TOKEN_PASS.replace(':', '_')

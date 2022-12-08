@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/squad_finder.py
 from collections import defaultdict, namedtuple
-
+from constants import ARENA_GUI_TYPE
 from gui.battle_control.arena_info import settings
+from gui.shared.system_factory import registerArenaSquadFinders, collectArenaSquadFinder
 from soft_exception import SoftException
-
 
 class ISquadFinder(object):
     __slots__ = ()
@@ -85,13 +85,12 @@ class _SquadFinder(ISquadFinder):
 
 SquadSizeDescription = namedtuple('SquadSizeDescription', ('teamID', 'squadID', 'squadSize'))
 
-
 class TeamScopeNumberingFinder(_SquadFinder):
     __slots__ = ('_teamsSquadIndices',)
 
     def __init__(self, teams):
         super(TeamScopeNumberingFinder, self).__init__(teams)
-        self._teamsSquadIndices = {team: {} for team in teams}
+        self._teamsSquadIndices = {team:{} for team in teams}
 
     def clear(self):
         for indices in self._teamsSquadIndices.itervalues():
@@ -176,11 +175,18 @@ class ContinuousNumberingFinder(_SquadFinder):
         raise SoftException('Deprecated class method called - code should not be reached')
 
 
+registerArenaSquadFinders(ARENA_GUI_TYPE.RANDOM_RANGE, TeamScopeNumberingFinder)
+registerArenaSquadFinders([ARENA_GUI_TYPE.EVENT_BATTLES,
+ ARENA_GUI_TYPE.EPIC_BATTLE,
+ ARENA_GUI_TYPE.BATTLE_ROYALE,
+ ARENA_GUI_TYPE.MAPBOX], TeamScopeNumberingFinder)
+
 def createSquadFinder(arenaVisitor):
     teams = arenaVisitor.type.getTeamsOnArenaRange()
+    finderCls = collectArenaSquadFinder(arenaVisitor.gui.guiType)
     guiVisitor = arenaVisitor.gui
-    if guiVisitor.isRandomBattle() or guiVisitor.isEventBattle() or guiVisitor.isEpicBattle() or guiVisitor.isBattleRoyale() or guiVisitor.isMapbox() or guiVisitor.isFunRandom():
-        finder = TeamScopeNumberingFinder(teams)
+    if finderCls is not None:
+        finder = finderCls(teams)
     elif guiVisitor.isComp7Battle():
         finder = Comp7TeamScopeNumberingFinder(teams)
     elif guiVisitor.isMultiTeam():

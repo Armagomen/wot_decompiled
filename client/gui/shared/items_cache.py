@@ -1,35 +1,34 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/items_cache.py
 from Event import Event
-from PlayerEvents import g_playerEvents
 from adisp import adisp_async
 from debug_utils import LOG_DEBUG
-from gui.shared.compat_vehicles_cache import CompatVehiclesCache
+from PlayerEvents import g_playerEvents
+from gui.shared.utils.requesters import ItemsRequester
+from gui.shared.utils.requesters import InventoryRequester
+from gui.shared.utils.requesters import StatsRequester
 from gui.shared.utils.requesters import DossierRequester
 from gui.shared.utils.requesters import GoodiesRequester
-from gui.shared.utils.requesters import InventoryRequester
-from gui.shared.utils.requesters import ItemsRequester
-from gui.shared.utils.requesters import RecycleBinRequester
 from gui.shared.utils.requesters import ShopRequester
-from gui.shared.utils.requesters import StatsRequester
-from gui.shared.utils.requesters import TokensRequester
+from gui.shared.utils.requesters import RecycleBinRequester
 from gui.shared.utils.requesters import VehicleRotationRequester
-from gui.shared.utils.requesters.BattleRoyaleRequester import BattleRoyaleRequester
-from gui.shared.utils.requesters.EpicMetaGameRequester import EpicMetaGameRequester
-from gui.shared.utils.requesters.RankedRequester import RankedRequester
+from gui.shared.utils.requesters import TokensRequester
 from gui.shared.utils.requesters.anonymizer_requester import AnonymizerRequester
 from gui.shared.utils.requesters.badges_requester import BadgesRequester
+from gui.shared.utils.requesters.RankedRequester import RankedRequester
+from gui.shared.utils.requesters.BattleRoyaleRequester import BattleRoyaleRequester
+from gui.shared.utils.requesters.EpicMetaGameRequester import EpicMetaGameRequester
 from gui.shared.utils.requesters.battle_pass_requester import BattlePassRequester
 from gui.shared.utils.requesters.blueprints_requester import BlueprintsRequester
 from gui.shared.utils.requesters.game_restrictions_requester import GameRestrictionsRequester
-from gui.shared.utils.requesters.gift_system_requester import GiftSystemRequester
 from gui.shared.utils.requesters.resource_well_requester import ResourceWellRequester
 from gui.shared.utils.requesters.session_stats_requester import SessionStatsRequester
+from gui.shared.utils.requesters.gift_system_requester import GiftSystemRequester
+from gui.shared.compat_vehicles_cache import CompatVehiclesCache
 from helpers import dependency
 from skeletons.festivity_factory import IFestivityFactory
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
 
 class CACHE_SYNC_REASON(object):
     SHOW_GUI, CLIENT_UPDATE, SHOP_RESYNC, INVENTORY_RESYNC, DOSSIER_RESYNC, STATS_RESYNC = range(1, 7)

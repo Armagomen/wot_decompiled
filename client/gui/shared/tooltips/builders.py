@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/builders.py
 import importlib
 import logging
-
+from typing import Any
 from gui.Scaleform.daapi.settings.config import ADVANCED_COMPLEX_TOOLTIPS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.gui_items.artefacts import OptionalDevice
@@ -11,7 +11,6 @@ from gui.shared.tooltips import contexts, advanced
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 DISABLED_ITEMS_ID = 12793
 

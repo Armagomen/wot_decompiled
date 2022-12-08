@@ -2,27 +2,25 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/entry_points/event_entry_points_container.py
 import json
 import logging
-from itertools import chain
 from operator import attrgetter
-
+from itertools import chain
 from constants import QUEUE_TYPE
 from gui.Scaleform.daapi.view.meta.EventEntryPointsContainerMeta import EventEntryPointsContainerMeta
+from gui.impl.lobby.mapbox.mapbox_entry_point_view import isMapboxEntryPointAvailable
+from gui.impl.lobby.ranked.ranked_entry_point import isRankedEntryPointAvailable
+from gui.impl.lobby.marathon.marathon_entry_point import isMarathonEntryPointAvailable
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
-from gui.game_control.craftmachine_controller import getCraftMachineEntryPointIsActive
-from gui.impl.lobby.mapbox.mapbox_entry_point_view import isMapboxEntryPointAvailable
-from gui.impl.lobby.marathon.marathon_entry_point import isMarathonEntryPointAvailable
-from gui.impl.lobby.ranked.ranked_entry_point import isRankedEntryPointAvailable
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.system_factory import registerEntryPointValidator, collectEntryPointValidator
 from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier
+from gui.game_control.craftmachine_controller import getCraftMachineEntryPointIsActive
 from helpers import dependency
 from helpers.time_utils import getServerUTCTime, ONE_DAY
 from helpers.time_utils import getTimestampByStrDate
 from skeletons.gui.game_control import IEventsNotificationsController, IBootcampController, IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 _HANGAR_ENTRY_POINTS = 'hangarEntryPoints'
 _SECONDS_BEFORE_UPDATE = 2
 _COUNT_VISIBLE_ENTRY_POINTS = 2

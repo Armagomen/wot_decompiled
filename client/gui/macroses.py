@@ -2,16 +2,14 @@
 # Embedded file name: scripts/client/gui/macroses.py
 import base64
 from urllib import quote_plus
-
 import BigWorld
 import constants
 from adisp import adisp_async, adisp_process
 from helpers import getClientLanguage, dependency
 from helpers.http.url_formatters import addParamsToUrlQuery
+from skeletons.gui.web import IWebController
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IMarathonEventsController
-from skeletons.gui.web import IWebController
-
 
 def getLanguageCode(args=None):
     code = getClientLanguage()

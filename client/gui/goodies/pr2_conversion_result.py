@@ -2,16 +2,15 @@
 # Embedded file name: scripts/client/gui/goodies/pr2_conversion_result.py
 from collections import defaultdict
 from typing import TYPE_CHECKING
-
 from debug_utils import LOG_DEBUG
 from goodies.pr2_converter import IPR2ConversionDataBridge, PR2Converter, ADVANCED_ITEMS, postConversionByType
 from helpers import dependency
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
-
 if TYPE_CHECKING:
-    pass
-
+    from typing import Tuple, DefaultDict, List, Dict
+    from gui.goodies.goodie_items import Booster
+    from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
 
 class _PR2ConversionResultDataBridge(IPR2ConversionDataBridge):
     __goodiesCache = dependency.descriptor(IGoodiesCache)

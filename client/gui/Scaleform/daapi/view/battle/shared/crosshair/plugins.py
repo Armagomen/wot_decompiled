@@ -4,7 +4,6 @@ import logging
 import math
 from collections import defaultdict, namedtuple
 from enum import IntEnum
-
 import BattleReplay
 import BigWorld
 from AvatarInputHandler import gun_marker_ctrl, aih_global_binding
@@ -26,8 +25,7 @@ from gui.Scaleform.genConsts.DUAL_GUN_MARKER_STATE import DUAL_GUN_MARKER_STATE
 from gui.Scaleform.genConsts.GUN_MARKER_VIEW_CONSTANTS import GUN_MARKER_VIEW_CONSTANTS as _VIEW_CONSTANTS
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
-from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, CROSSHAIR_VIEW_ID, SHELL_QUANTITY_UNKNOWN, \
-    ENTITY_IN_FOCUS_TYPE
+from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, CROSSHAIR_VIEW_ID, SHELL_QUANTITY_UNKNOWN, ENTITY_IN_FOCUS_TYPE
 from gui.battle_control.battle_constants import SHELL_SET_RESULT, VEHICLE_VIEW_STATE, NET_TYPE_OVERRIDE
 from gui.battle_control.controllers import crosshair_proxy
 from gui.battle_control.controllers.consumables.ammo_ctrl import AutoReloadingBoostStates
@@ -38,11 +36,10 @@ from gui.shared.events import GameEvent
 from gui.shared.utils.TimeInterval import TimeInterval
 from gui.shared.utils.plugins import IPlugin
 from helpers import dependency
-from helpers.time_utils import MS_IN_SECOND
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from soft_exception import SoftException
-
+from helpers.time_utils import MS_IN_SECOND
 _logger = logging.getLogger(__name__)
 _SETTINGS_KEY_TO_VIEW_ID = {AIM.ARCADE: CROSSHAIR_VIEW_ID.ARCADE,
  AIM.SNIPER: CROSSHAIR_VIEW_ID.SNIPER}
@@ -555,7 +552,7 @@ class AmmoPlugin(CrosshairPlugin):
     def __onGunAutoReloadTimeSet(self, state, stunned):
         if not self.__autoReloadCallbackID:
             timeLeft = min(state.getTimeLeft(), state.getActualValue())
-            baseValue = state.getBaseValue()
+            baseValue = round(state.getBaseValue(), 1)
             if self.__shellsInClip == 0:
                 baseValue = self.__reCalcFirstShellAutoReload(baseValue)
             self.__reloadAnimator.setClipAutoLoading(timeLeft, baseValue, isStun=stunned, isTimerOn=True, isRedText=self.__shellsInClip == 0)
@@ -670,6 +667,7 @@ class VehicleStatePlugin(CrosshairPlugin):
             if self.__playerInfo is None:
                 raise SoftException('Player info must be defined at first, see vehicle_state_ctrl')
             if self.__isPlayerVehicle:
+                self._parentObj.setHasAmmo(hasAmmo=True)
                 ctx = {'type': self.__playerInfo.vehicleName}
                 template = 'personal'
             else:
@@ -1218,10 +1216,10 @@ class SpeedometerWheeledTech(CrosshairPlugin):
             siegeVehicleDescr = typeDesc.siegeVehicleDescr
         if siegeVehicleDescr is not None:
             siegeEngineCfg = siegeVehicleDescr.type.xphysics['engines'][typeDesc.engine.name]
-            siegeMaxSpd = siegeEngineCfg['smplFwMaxSpeed']
+            siegeMaxSpd = round(siegeEngineCfg['smplFwMaxSpeed'])
         defaultVehicleCfg = defaultVehicleDescr.type.xphysics['engines'][typeDesc.engine.name]
         normalMaxSpd = defaultVehicleCfg['smplFwMaxSpeed']
-        return (normalMaxSpd, siegeMaxSpd)
+        return (round(normalMaxSpd), siegeMaxSpd)
 
     def __addSpedometer(self, vehicle):
         normalMaxSpd, siegeMaxSpd = self.__getMaxSpeeds(vehicle)

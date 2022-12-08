@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/mapbox_mode_selector_item.py
 import typing
-
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_card_types import ModeSelectorCardTypes
@@ -11,9 +10,8 @@ from gui.impl.lobby.mode_selector.items.items_constants import ModeSelectorRewar
 from gui.shared.event_dispatcher import showMapboxIntro
 from helpers import dependency, time_utils
 from skeletons.gui.game_control import IMapboxController
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import ModeSelectorNormalCardModel
 
 class MapboxModeSelectorItem(ModeSelectorLegacyItem):
     __slots__ = ()

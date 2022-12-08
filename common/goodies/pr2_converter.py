@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/pr2_converter.py
-from math import ceil
 from typing import TYPE_CHECKING
-
+from math import ceil
 if TYPE_CHECKING:
-    from typing import Tuple
+    from typing import List, Tuple
     ConversionDataType = Tuple[int, int, int, int, int]
 XP = 121001
 CRED = 121003

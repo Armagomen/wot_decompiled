@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/consumables/comp7_equipment_ctrl.py
 import typing
-
 import BigWorld
 import CGF
 import Event
@@ -12,10 +11,9 @@ from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from items import vehicles
 from points_of_interest.components import PoiStateComponent
 from points_of_interest_shared import PoiEquipmentNamesByPoiType
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from helpers.fixed_dict import RoleEquipmentState
+    from PoiComponent import PoiComponent
 
 class Comp7EquipmentController(equipment_ctrl.EquipmentsController):
 
@@ -31,17 +29,13 @@ class Comp7EquipmentController(equipment_ctrl.EquipmentsController):
     def startControl(self, *args):
         super(Comp7EquipmentController, self).startControl(*args)
         g_eventBus.addListener(events.PointOfInterestEvent.ADDED, self.__onPoiAdded, scope=EVENT_BUS_SCOPE.BATTLE)
-        g_eventBus.addListener(events.RoleSkillEvent.STATE_CHANGED, self.__onRoleEquipmentStateChanged,
-                               scope=EVENT_BUS_SCOPE.BATTLE)
-        g_eventBus.addListener(events.RoleSkillEvent.COUNTER_CHANGED, self.__onRoleEquipmentCounterChanged,
-                               scope=EVENT_BUS_SCOPE.BATTLE)
+        g_eventBus.addListener(events.RoleSkillEvent.STATE_CHANGED, self.__onRoleEquipmentStateChanged, scope=EVENT_BUS_SCOPE.BATTLE)
+        g_eventBus.addListener(events.RoleSkillEvent.COUNTER_CHANGED, self.__onRoleEquipmentCounterChanged, scope=EVENT_BUS_SCOPE.BATTLE)
 
     def stopControl(self):
         g_eventBus.removeListener(events.PointOfInterestEvent.ADDED, self.__onPoiAdded, scope=EVENT_BUS_SCOPE.BATTLE)
-        g_eventBus.removeListener(events.RoleSkillEvent.STATE_CHANGED, self.__onRoleEquipmentStateChanged,
-                                  scope=EVENT_BUS_SCOPE.BATTLE)
-        g_eventBus.removeListener(events.RoleSkillEvent.COUNTER_CHANGED, self.__onRoleEquipmentCounterChanged,
-                                  scope=EVENT_BUS_SCOPE.BATTLE)
+        g_eventBus.removeListener(events.RoleSkillEvent.STATE_CHANGED, self.__onRoleEquipmentStateChanged, scope=EVENT_BUS_SCOPE.BATTLE)
+        g_eventBus.removeListener(events.RoleSkillEvent.COUNTER_CHANGED, self.__onRoleEquipmentCounterChanged, scope=EVENT_BUS_SCOPE.BATTLE)
         super(Comp7EquipmentController, self).stopControl()
 
     def clear(self, leave=True):
@@ -86,8 +80,7 @@ class Comp7EquipmentController(equipment_ctrl.EquipmentsController):
     def __addPoiByType(self, poiType):
         equipment = self.__getPoiEquipment(poiType)
         if equipment is not None:
-            self.setEquipment(intCD=equipment.compactDescr, quantity=0, stage=EQUIPMENT_STAGES.EXHAUSTED,
-                              timeRemaining=0, totalTime=0)
+            self.setEquipment(intCD=equipment.compactDescr, quantity=0, stage=EQUIPMENT_STAGES.EXHAUSTED, timeRemaining=0, totalTime=0)
         return
 
     def __onRoleEquipmentStateChanged(self, event):

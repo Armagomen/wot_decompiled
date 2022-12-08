@@ -1,12 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/appearance_cache_ctrls/comp7_appearance_cache_ctrl.py
 import logging
-
-from gui.battle_control.controllers.appearance_cache_ctrls.default_appearance_cache_ctrl import \
-    DefaultAppearanceCacheController
-
+from gui.battle_control.controllers.appearance_cache_ctrls.default_appearance_cache_ctrl import DefaultAppearanceCacheController
 _logger = logging.getLogger(__name__)
-
 
 class Comp7AppearanceCacheController(DefaultAppearanceCacheController):
 

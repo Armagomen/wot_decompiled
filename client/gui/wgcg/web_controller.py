@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgcg/web_controller.py
 from collections import defaultdict
-
 import BigWorld
 from PlayerEvents import g_playerEvents
 from adisp import adisp_async, adisp_process
@@ -15,8 +14,7 @@ from gui.clans.settings import CLAN_APPLICATION_STATES, CLAN_DOSSIER_LIFE_TIME
 from gui.clans.settings import CLAN_INVITE_STATES
 from gui.clans.users import UserCache
 from gui.shared.utils.decorators import ReprInjector
-from gui.wgcg.clan.contexts import ClanInfoCtx, ClanGlobalMapStatsCtx, GetClanInvitesCount, GetClanAppsCount, \
-    ClanMembersCtx, GetProvincesCtx, ClanFavouriteAttributesCtx, ClanRatingsCtx
+from gui.wgcg.clan.contexts import ClanInfoCtx, ClanGlobalMapStatsCtx, GetClanInvitesCount, GetClanAppsCount, ClanMembersCtx, GetProvincesCtx, ClanFavouriteAttributesCtx, ClanRatingsCtx
 from gui.wgcg.hof.contexts import HofUserInfoCtx, HofUserExcludeCtx, HofUserRestoreCtx
 from gui.wgcg.settings import WebRequestDataType
 from gui.wgcg.states import UndefinedState
@@ -28,7 +26,6 @@ from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
-
 
 def _showError(result, ctx):
     i18nMsg = clan_formatters.getRequestErrorMsg(result, ctx)

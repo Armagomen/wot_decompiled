@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/uilogging/helpers.py
 import typing
 if typing.TYPE_CHECKING:
-    pass
+    from uilogging.base.logger import LOGGERS_TYPING
 
 class _LazyLoggerDescriptor(object):
     __slots__ = ('__class', '__args', '__kwargs', '__instance')

@@ -1,23 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/InventoryRequester.py
+import typing
+from itertools import imap
 from collections import namedtuple, defaultdict
 from copy import deepcopy
-from itertools import imap
-
 import BigWorld
 from adisp import adisp_async
 from constants import CustomizationInvData, SkinInvData, VEHICLE_NO_INV_ID
 from debug_utils import LOG_DEBUG
+from items import vehicles, tankmen, getTypeOfCompactDescr, parseIntCompactDescr, makeIntCompactDescrByID
+from items.components.c11n_components import C11N_PROGRESS_LEVEL_IDX, C11N_PROGRESS_PROGRESS_IDX, C11N_PROGRESS_VALUE_IDX
+from items.components.c11n_constants import UNBOUND_VEH_KEY
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
-from items import vehicles, tankmen, getTypeOfCompactDescr, parseIntCompactDescr, makeIntCompactDescrByID
-from items.components.c11n_components import C11N_PROGRESS_LEVEL_IDX, C11N_PROGRESS_PROGRESS_IDX, \
-    C11N_PROGRESS_VALUE_IDX
-from items.components.c11n_constants import UNBOUND_VEH_KEY
 from nation_change.nation_change_helpers import activeInNationGroup
-from post_progression_common import VehiclesPostProgression, EXT_DATA_SLOT_KEY, EXT_DATA_PROGRESSION_KEY
+from post_progression_common import VehiclesPostProgression, VehicleState, EXT_DATA_SLOT_KEY, EXT_DATA_PROGRESSION_KEY
 from skeletons.gui.shared.utils.requesters import IInventoryRequester
-
 _DUMMY_VEH_POST_PROGRESSION = VehiclesPostProgression({VehiclesPostProgression.ROOT_KEY: {}})
 
 class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
@@ -244,6 +242,9 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
 
     def getIventoryVehiclesCDs(self):
         return self.__vehsCDsByID.values()
+
+    def getInvIDsIterator(self):
+        return self.__vehsCDsByID.iterkeys()
 
     def getVehPostProgression(self, vehIntCD):
         return self.__vehPostProgression.getVehicleState(vehIntCD)

@@ -7,11 +7,10 @@ from gui.impl import backport
 from gui.impl.auxiliary.resource_well_helper import fillVehicleCounter
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.resource_well.resource_model import ResourceModel
-from gui.impl.gen.view_models.views.lobby.resource_well.resources_loading_view_model import ResourcesLoadingViewModel, \
-    ProgressionState
+from gui.impl.gen.view_models.views.lobby.resource_well.resources_loading_view_model import ResourcesLoadingViewModel, ProgressionState
 from gui.impl.gen.view_models.views.lobby.resource_well.resources_tab_model import ResourcesTabModel
-from gui.impl.lobby.resource_well.tooltips.max_progress_tooltip import MaxProgressTooltip
 from gui.impl.lobby.resource_well.tooltips.progress_tooltip import ProgressTooltip
+from gui.impl.lobby.resource_well.tooltips.max_progress_tooltip import MaxProgressTooltip
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
@@ -27,7 +26,6 @@ from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.game_control import IResourceWellController
 from skeletons.gui.shared import IItemsCache
-
 _FULL_PROGRESS = 100
 _PROGRESSION_STATE_MAPPING = {resource_well_constants.ProgressionState.ACTIVE: ProgressionState.ACTIVE,
  resource_well_constants.ProgressionState.NO_PROGRESS: ProgressionState.NOPROGRESS,

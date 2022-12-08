@@ -1,15 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/CustomEffectManager.py
 import weakref
-
 import Math
 import material_kinds
-from cgf_obsolete_script.py_component import Component
-
-from CustomEffect import EffectSettings
 from helpers.PixieNode import PixieCache
+from CustomEffect import EffectSettings
+from cgf_obsolete_script.py_component import Component
 from vehicle_systems.tankStructure import TankNodeNames
-
 _ENABLE_VALUE_TRACKER = False
 _ENABLE_VALUE_TRACKER_ENGINE = False
 _ENABLE_PIXIE_TRACKER = False

@@ -2,19 +2,17 @@
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/intro_ammunition_setup_view.py
 import logging
 import typing
-
-import wg_async
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
+import wg_async
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
-from gui.impl.lobby.common.info_view import InfoView, getInfoWindowProc, createContentData
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playEnterTankSetupView, playExitTankSetupView
+from gui.impl.lobby.common.info_view import InfoView, getInfoWindowProc, createContentData
 from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.lobby.common.info_view import IInfoWindowProcessor
 _logger = logging.getLogger(__name__)
 
 class _IntroAmmunitionSetupView(InfoView):

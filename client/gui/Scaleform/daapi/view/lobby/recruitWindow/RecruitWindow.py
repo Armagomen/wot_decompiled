@@ -1,29 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/recruitWindow/RecruitWindow.py
-import constants
-import nations
-from adisp import adisp_process, adisp_async
-from gui import GUI_NATIONS, SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.shop import showBuyGoldForCrew
+from gui.shared.gui_items.serializers import packTraining
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
+import nations
+import constants
+from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.Scaleform.locale.MENU import MENU
+from adisp import adisp_process, adisp_async
+from helpers import dependency
+from items.tankmen import getSkillsConfig
+from helpers.i18n import convert
+from gui import GUI_NATIONS, SystemMessages
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.meta.RecruitWindowMeta import RecruitWindowMeta
 from gui.Scaleform.framework.entities.View import View
-from gui.Scaleform.locale.DIALOGS import DIALOGS
-from gui.Scaleform.locale.MENU import MENU
+from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.utils import decorators
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.processors.tankman import TankmanRecruit, TankmanEquip, TankmanRecruitAndEquip
-from gui.shared.gui_items.serializers import packTraining
 from gui.shared.money import Money, Currency
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
-from gui.shared.utils import decorators
-from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shop import showBuyGoldForCrew
-from helpers import dependency
-from helpers.i18n import convert
-from items.tankmen import getSkillsConfig
 from skeletons.gui.shared import IItemsCache
-
 
 class RecruitWindow(RecruitWindowMeta):
     itemsCache = dependency.descriptor(IItemsCache)

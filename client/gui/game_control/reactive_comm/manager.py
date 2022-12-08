@@ -3,16 +3,14 @@
 import itertools
 import logging
 from collections import deque
-
+import typing
 import BigWorld
-import websocket
 import wg_async
+import websocket
+from gui.game_control.reactive_comm import packer
 from gui.game_control.reactive_comm import channel as _ce
 from gui.game_control.reactive_comm import constants
-from gui.game_control.reactive_comm import packer
-
 _logger = logging.getLogger(__name__)
-
 
 class ChannelsManager(object):
     __slots__ = ('__url', '__eventsSender', '__client', '__channels', '__cids', '__pending', '__callbackIDs')
@@ -97,8 +95,7 @@ class ChannelsManager(object):
             if self.__client.status == websocket.ConnectionStatus.Opened:
                 channel.subscribe(self.__client)
             else:
-                _logger.warning('Connection is not opened, waiting for reconnect to subscribe to channel <%s>',
-                                channel.name)
+                _logger.warning('Connection is not opened, waiting for reconnect to subscribe to channel <%s>', channel.name)
             event = wg_async.AsyncEvent()
             self.__pending.append((event, subscription))
             yield wg_async.wg_await(event.wait())

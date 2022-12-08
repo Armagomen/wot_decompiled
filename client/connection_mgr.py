@@ -2,21 +2,18 @@
 # Embedded file name: scripts/client/connection_mgr.py
 import hashlib
 import json
-
-import BigWorld
 import ResMgr
+import BigWorld
 import constants
 import pwd_token
 from Event import Event, EventManager
-from account_shared import isValidClientVersion
+from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG, LOG_NOTE, LOG_WARNING
 from shared_utils import nextTick
-
-from PlayerEvents import g_playerEvents
-from helpers import getClientLanguage, uniprof
 from predefined_hosts import g_preDefinedHosts, AUTO_LOGIN_QUERY_URL
+from helpers import getClientLanguage, uniprof
+from account_shared import isValidClientVersion
 from skeletons.connection_mgr import IConnectionManager
-
 _MIN_RECONNECTION_TIMEOUT = 5
 _RECONNECTION_TIMEOUT_INCREMENT = 5
 _MAX_RECONNECTION_TIMEOUT = 20

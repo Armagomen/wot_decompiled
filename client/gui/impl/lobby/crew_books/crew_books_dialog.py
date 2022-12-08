@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/crew_books/crew_books_dialog.py
 import logging
-
-from frameworks.wulf import Window, WindowStatus, WindowSettings, ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
+from wg_async import wg_async, wg_await, AsyncEvent, AsyncReturn, AsyncScope, BrokenPromiseError
+from frameworks.wulf import Window, WindowStatus, WindowSettings, ViewSettings
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.impl.auxiliary.crew_books_helper import TankmanModelPresenterBase, TankmanSkillListPresenter
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew_books.crew_books_dialog_content_model import CrewBooksDialogContentModel
@@ -12,14 +13,11 @@ from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgMo
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.crew_skin import localizedFullName
 from gui.shared.gui_items.items_actions import factory
-from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers.dependency import descriptor
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await, AsyncEvent, AsyncReturn, AsyncScope, BrokenPromiseError
-
 _logger = logging.getLogger(__name__)
 
 class CrewBooksDialog(Window):

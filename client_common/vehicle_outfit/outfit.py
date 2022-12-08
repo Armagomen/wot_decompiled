@@ -2,21 +2,18 @@
 # Embedded file name: scripts/client_common/vehicle_outfit/outfit.py
 import typing
 from collections import Counter, namedtuple
-
 from constants import IS_EDITOR
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item import HasStrCD
-from items.components.c11n_constants import ApplyArea, CustomizationType, MAX_PROJECTION_DECALS, \
-    CustomizationDisplayType
+from items.components.c11n_constants import ApplyArea, CustomizationType, MAX_PROJECTION_DECALS, CustomizationDisplayType
 from items.customizations import parseOutfitDescr, CustomizationOutfit
 from items.vehicles import makeIntCompactDescrByID, getItemByCompactDescr, VehicleDescr
 from shared_utils import isEmpty
 from soft_exception import SoftException
 from vehicle_outfit.containers import OutfitContainer, MultiSlot, SizableMultiSlot, ProjectionDecalsMultiSlot
 from vehicle_systems.tankStructure import TankPartIndexes
-
 if typing.TYPE_CHECKING:
-    pass
+    from vehicle_outfit.containers import SlotData
 
 class Area(TankPartIndexes):
     MISC = 4

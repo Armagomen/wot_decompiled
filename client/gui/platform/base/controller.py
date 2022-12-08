@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/base/controller.py
 import typing
-
 import wg_async
 from BWUtil import AsyncReturn
 from gui.platform.base import logger
@@ -10,9 +9,8 @@ from gui.platform.base.settings import REQUEST_TIMEOUT
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.platform.controller import IPlatformRequestController
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.base.request import Params
 
 class PlatformRequestController(IPlatformRequestController):
     connectionMgr = dependency.descriptor(IConnectionManager)

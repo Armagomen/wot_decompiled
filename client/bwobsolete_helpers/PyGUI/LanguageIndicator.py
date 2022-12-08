@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/LanguageIndicator.py
-import weakref
-
 import BigWorld
 import GUI
-
 from PyGUIBase import PyGUIBase
-
+import Utils
+import weakref
 _indicators = []
 
 def handleIMEEvent(event):

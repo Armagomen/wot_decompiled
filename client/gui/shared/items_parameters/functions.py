@@ -3,12 +3,10 @@
 import typing
 from collections import defaultdict
 from operator import itemgetter
-
 from gui.shared.gui_items import KPI
 from items import utils, tankmen
-
 if typing.TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescriptor
 
 class _KpiDict(object):
 

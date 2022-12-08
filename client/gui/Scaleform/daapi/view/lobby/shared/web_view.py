@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/web_view.py
 import logging
 import typing
-
 import BigWorld
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -13,9 +12,8 @@ from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.sounds.ambients import HangarOverlayEnv
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.framework.managers import ContainerManager
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 BROWSER_LOAD_CALLBACK_DELAY = 0.01

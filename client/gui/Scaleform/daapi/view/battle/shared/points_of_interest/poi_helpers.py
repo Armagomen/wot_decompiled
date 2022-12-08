@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/poi_helpers.py
 import typing
-
 import BigWorld
 from items import vehicles
 from points_of_interest_shared import PoiEquipmentNamesByPoiType, PoiTypesByPoiEquipmentName
-
 if typing.TYPE_CHECKING:
-    pass
+    from items.artefacts import Equipment
+    from points_of_interest.components import PoiStateComponent
 
 def getPoiCooldownProgress(poiState):
     status = poiState.status

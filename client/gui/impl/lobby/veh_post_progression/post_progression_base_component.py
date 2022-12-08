@@ -19,9 +19,15 @@ from gui.veh_post_progression.models.progression import PostProgressionAvailabil
 from items.components.supply_slot_categories import SlotCategories
 from post_progression_common import ACTION_TYPES, VehicleState
 if typing.TYPE_CHECKING:
+    from frameworks.wulf import Array, ViewEvent
+    from gui.veh_post_progression.models.modifications import SimpleModItem
     from gui.veh_post_progression.models.progression import PostProgressionItem
+    from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
     from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
     from gui.impl.gen.view_models.views.lobby.post_progression.restrictions_model import RestrictionsModel
+    from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_base_view_model import PostProgressionBaseViewModel
+    from gui.shared.gui_items import KPI
+    from items.artefacts_helpers import VehicleFilter
 _NOT_SELECTED_IDX = -1
 _ACTION_TYPE_MAP = {ACTION_TYPES.MODIFICATION: ActionType.MODIFICATION,
  ACTION_TYPES.PAIR_MODIFICATION: ActionType.PAIRMODIFICATION,

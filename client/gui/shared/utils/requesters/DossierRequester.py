@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/gui/shared/utils/requesters/DossierRequester.py
 import time
 from functools import partial
-
-import AccountCommands
 import BigWorld
 import constants
 import dossiers2
+import AccountCommands
 from adisp import adisp_async
 from debug_utils import LOG_ERROR
 from gui.shared.utils import code2str
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from gui.shared.utils.requesters.common import RequestProcessor
 from skeletons.gui.shared.utils.requesters import IDossierRequester
-
 
 class UserDossier(object):
     __queue = []

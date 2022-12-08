@@ -1,25 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_extras.py
 from functools import partial
-
-import AnimationSequence
+from vehicle_systems.stricted_loading import makeCallbackWeak
 import BigWorld
 import Math
-import Projectiles
 import material_kinds
-from constants import IS_EDITOR, CollisionFlags
+import AnimationSequence
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_CURRENT_EXCEPTION
-from items import vehicles
-from items.components.component_constants import MAIN_TRACK_PAIR_IDX
-
 from gui.impl import backport
 from gui.impl.gen import R
+from items import vehicles
+from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from helpers import i18n
 from helpers.EffectsList import EffectsListPlayer
 from helpers.EntityExtra import EntityExtra
 from helpers.laser_sight_matrix_provider import LaserSightMatrixProvider
-from vehicle_systems.stricted_loading import makeCallbackWeak
-
+from constants import IS_EDITOR, CollisionFlags
+import Projectiles
+from vehicle_extras_battle_royale import AfterburningBattleRoyale
 
 def reload():
     modNames = (reload.__module__,)

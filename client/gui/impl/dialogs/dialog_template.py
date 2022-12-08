@@ -1,20 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/dialogs/dialog_template.py
 import typing
-
-from frameworks.wulf import ViewSettings
+from frameworks.wulf import ViewSettings, ViewStatus
 from gui.impl.dialogs.dialog_template_focus import BaseFocusPresenter, DialogTemplateFocusingSystem
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.dialogs.dialog_template_place_holder_view_model import \
-    DialogTemplatePlaceHolderViewModel
+from gui.impl.gen.view_models.views.dialogs.dialog_template_place_holder_view_model import DialogTemplatePlaceHolderViewModel
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogBaseView
 from gui.impl.pub.dialog_window import DialogButtons
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import List, Dict, Optional
+    from frameworks.wulf import View
+    from gui.impl.dialogs.dialog_template_button import ButtonPresenter
 DEFAULT_DIMMER_ALPHA = 0.5
 
 class DialogTemplateView(FullScreenDialogBaseView):

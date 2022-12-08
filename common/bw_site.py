@@ -1,20 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/bw_site.py
 import __builtin__
+import os
+import traceback
+import sys
+import pydoc
 import fnmatch
 import logging
-import os
-import pydoc
-import sys
-import traceback
-
 import BigWorld
-import ResMgr
-
 import BWLogging
 import BWUtil
+import ResMgr
+import bwdeprecations
 from bwdebug import NOTICE_MSG
-
 DEFAULT_ENCODING = 'utf-8'
 
 class _Helper(object):

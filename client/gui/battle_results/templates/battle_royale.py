@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/templates/battle_royale.py
-from gui.Scaleform.genConsts.BATTLEROYALE_ALIASES import BATTLEROYALE_ALIASES
 from gui.battle_results.components import base, battle_royale
 from gui.battle_results.settings import BATTLE_RESULTS_RECORD as _RECORD
 from gui.impl.gen import R
-
+from gui.Scaleform.genConsts.BATTLEROYALE_ALIASES import BATTLEROYALE_ALIASES
 BR_TOTAL_VO_META = base.DictMeta({'tabInfo': [],
  'personal': {},
  'common': {},
@@ -62,17 +61,17 @@ _STAT_ITEM_VO_META = base.PropertyMeta((('type', '', 'type'),
  ('wreathImage', R.invalid(), 'wreathImage')))
 _STAT_ITEM_VO_META.bind(battle_royale.BattleRoyaleStatsItemBlock)
 _BATTLE_PASS_VO_META = base.PropertyMeta((('currentLevel', 1, 'currentLevel'),
-                                          ('maxPoints', 0, 'maxPoints'),
-                                          ('earnedPoints', 0, 'earnedPoints'),
-                                          ('currentLevelPoints', 0, 'currentLevelPoints'),
-                                          ('isDone', 0, 'isDone'),
-                                          ('hasBattlePass', 0, 'hasBattlePass'),
-                                          ('battlePassComplete', 0, 'battlePassComplete'),
-                                          ('chapterID', 0, 'chapterID'),
-                                          ('pointsTotal', 0, 'pointsTotal'),
-                                          ('basePointsDiff', 0, 'basePointsDiff'),
-                                          ('pointsAux', 0, 'pointsAux'),
-                                          ('availablePoints', 0, 'availablePoints')))
+ ('maxPoints', 0, 'maxPoints'),
+ ('earnedPoints', 0, 'earnedPoints'),
+ ('currentLevelPoints', 0, 'currentLevelPoints'),
+ ('isDone', 0, 'isDone'),
+ ('hasBattlePass', 0, 'hasBattlePass'),
+ ('battlePassComplete', 0, 'battlePassComplete'),
+ ('chapterID', 0, 'chapterID'),
+ ('pointsTotal', 0, 'pointsTotal'),
+ ('basePointsDiff', 0, 'basePointsDiff'),
+ ('pointsAux', 0, 'pointsAux'),
+ ('availablePoints', 0, 'availablePoints')))
 _BATTLE_PASS_VO_META.bind(battle_royale.BattlePassBlock)
 _REWARDS_VO_META = base.PropertyMeta((('achievements', [], 'achievements'),
  ('bonuses', [], 'bonuses'),

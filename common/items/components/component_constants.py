@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/component_constants.py
 import collections
-
-from Math import Vector3
 from soft_exception import SoftException
 from wrapped_reflection_framework import reflectedNamedTuple
-
+from Math import Vector3
 Autoreload = collections.namedtuple('Autoreload', ['reloadTime',
  'boostStartTime',
  'boostResidueTime',

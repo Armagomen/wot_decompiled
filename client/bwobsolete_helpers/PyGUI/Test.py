@@ -1,13 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/Test.py
-import random
-from functools import partial
-
 import BigWorld
 import GUI
-
 from Window import DraggableWindow
-
+import random
+from functools import partial
 
 def clear():
     while len(GUI.roots()):

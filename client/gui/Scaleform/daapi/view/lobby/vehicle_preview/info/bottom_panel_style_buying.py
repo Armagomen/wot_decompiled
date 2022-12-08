@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_style_buying.py
 import typing
-
 from CurrentVehicle import g_currentPreviewVehicle
 from adisp import adisp_process
 from battle_pass_common import CurrencyBP
@@ -9,11 +8,9 @@ from frameworks.wulf import ViewFlags, ViewSettings
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID, I18nConfirmDialogMeta
 from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsWebProductMeta
-from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelStyleBuyingMeta import \
-    VehiclePreviewBottomPanelStyleBuyingMeta
+from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelStyleBuyingMeta import VehiclePreviewBottomPanelStyleBuyingMeta
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.vehicle_preview.buying_panel.style_buying_panel_model import \
-    StyleBuyingPanelModel, StyleBuyingStatus
+from gui.impl.gen.view_models.views.lobby.vehicle_preview.buying_panel.style_buying_panel_model import StyleBuyingPanelModel, StyleBuyingStatus
 from gui.impl.pub import ViewImpl
 from gui.shared.event_dispatcher import mayObtainForMoney, mayObtainWithMoneyExchange
 from gui.shared.formatters import formatPrice
@@ -25,9 +22,9 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Optional, Tuple
+    from gui.shared.gui_items.customization.c11n_items import Style
 _BUY_PRODUCT_USING_DYN = {CurrencyBP.BIT.value: showBuyProductOverlay}
 _DYN_CURRENCIES = tuple(_BUY_PRODUCT_USING_DYN.keys())
 

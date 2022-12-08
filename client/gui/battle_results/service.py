@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/service.py
 import logging
-
+import typing
 import BigWorld
 import Event
 import personal_missions
@@ -13,6 +13,7 @@ from gui import SystemMessages
 from gui.Scaleform.locale.BATTLE_RESULTS import BATTLE_RESULTS
 from gui.battle_results import composer, context, emblems, reusable, stored_sorting
 from gui.battle_results.components.progress import VehicleProgressHelper
+from gui.battle_results.composer import StatsComposer
 from gui.battle_results.settings import PREMIUM_STATE
 from gui.shared import event_dispatcher, events, g_eventBus
 from gui.shared.gui_items.processors.common import BattleResultsGetter, PremiumBonusApplier
@@ -27,7 +28,6 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 
 class BattleResultsService(IBattleResultsService):
@@ -347,7 +347,7 @@ class BattleResultsService(IBattleResultsService):
 
         @adisp_async
         def wait(t, callback):
-            BigWorld.callback(t, lambda: callback(None))
+            BigWorld.callback(t, lambda : callback(None))
 
         isSuccess = False
         results = None

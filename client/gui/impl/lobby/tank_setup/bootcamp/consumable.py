@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/bootcamp/consumable.py
-from bootcamp.Bootcamp import g_bootcamp
 from gui.impl.lobby.tank_setup.array_providers.consumable import ConsumableDeviceProvider
 from gui.impl.lobby.tank_setup.configurations.consumable import ConsumableTabsController, ConsumableTabs
 from gui.impl.lobby.tank_setup.sub_views.consumable_setup import ConsumableSetupSubView
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-
+from bootcamp.Bootcamp import g_bootcamp
 
 class BootcampConsumableDeviceProvider(ConsumableDeviceProvider):
 

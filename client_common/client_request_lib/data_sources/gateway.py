@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/data_sources/gateway.py
+import zlib
 import json
 import urllib
-import zlib
 from base64 import b64encode
 from datetime import datetime, timedelta, time as dt_time
-
 from client_request_lib import exceptions
 from client_request_lib.data_sources import base
-
 EXAMPLES = {}
 DEFAULT_SINCE_DELAY = timedelta(days=1)
 SUCCESS_STATUSES = [200, 201, 304]
@@ -343,20 +341,20 @@ class GatewayDataAccessor(base.BaseDataAccessor):
     def get_clan_provinces(self, callback, clan_id, fields=None):
         get_params = {'clan_id': [clan_id],
          'fields': fields}
-        url = '/clans/provinces/'
+        url = '/global_map/wgapi/clan_provinces/'
         return self._request_data(callback, url, get_data=get_params, converters={'prime_time': lambda x: x and datetime.strptime(x, '%H:%M').time(),
          'pillage_end_datetime': from_iso,
          'clan_id': int})
 
     def get_clan_globalmap_stats(self, callback, clan_id, fields=None):
-        url = '/clans/global_map/stats/'
+        url = '/global_map/wgapi/clan_stats/'
         get_params = {'clan_id': clan_id}
         if fields:
             get_params['fields'] = fields
         return self._request_data(callback, url, get_data=get_params, converters={'clan_id': int})
 
     def get_fronts_info(self, callback, front_names=None, fields=None):
-        url = '/global_map/fronts/'
+        url = '/global_map/wgapi/new_fronts/'
         get_params = {'fields': fields,
          'front_names': front_names}
         return self._request_data(callback, url, get_data=get_params)
@@ -619,15 +617,32 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         post_data.update(meta_info)
         return self._request_data(callback, url, method='POST', post_data=post_data)
 
+    def get_friend_balance(self, callback, spa_id):
+        url = '/friend_service/api/v1/friend_balance/'
+        params = {'friend_spa_id': int(spa_id)}
+        return self._request_data(callback, url, params, method='GET')
+
+    def get_friend_list(self, callback):
+        url = '/friend_service/api/v1/friends/list/'
+        return self._request_data(callback, url, method='GET')
+
+    def put_best_friend(self, callback, spa_id):
+        url = '/friend_service/api/v1/best_friends/set/'
+        data = {'friend_spa_id': int(spa_id)}
+        return self._request_data(callback, url, post_data=data, method='PUT')
+
+    def delete_best_friend(self, callback, spa_id):
+        url = '/friend_service/api/v1/best_friends/delete/'
+        data = {'friend_spa_id': int(spa_id)}
+        return self._request_data(callback, url, post_data=data, method='DELETE')
+
+    def post_gather_friend_ny_resources(self, callback, spa_id):
+        url = '/friend_service/api/v1/best_friends/gather/'
+        data = {'friend_spa_id': int(spa_id)}
+        return self._request_data(callback, url, post_data=data, method='POST')
+
     def get_uilogging_session(self, callback):
         return self._request_data(callback, '/uilogging/session', method='GET')
-
-    def get_inventory_entitlements(self, callback, entitlement_codes):
-        url = '/shop/inventory_entitlements/'
-        if entitlement_codes:
-            urlencoded_string = urllib.urlencode([ ('entitlement_codes', code) for code in entitlement_codes ])
-            url = '{}?{}'.format(url, urlencoded_string)
-        return self._request_data(callback, url, method='GET')
 
     def _get_formatted_language_code(self):
         return self.client_lang.replace('_', '-')

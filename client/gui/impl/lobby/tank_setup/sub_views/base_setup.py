@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/base_setup.py
 import logging
-
+import typing
 from BWUtil import AsyncReturn
-from gui.impl.common.base_sub_model_view import BaseSubModelView
+from wg_async import wg_async, await_callback
 from gui.impl.lobby.tank_setup.array_providers.base import BaseVehSectionContext
+from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.tank_setup.tank_setup_helper import TankSetupAsyncCommandLock
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playSectionSelectSound
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, await_callback
-
 _logger = logging.getLogger(__name__)
 
 class BaseSetupSubView(BaseSubModelView):
@@ -98,6 +97,7 @@ class BaseSetupSubView(BaseSubModelView):
             self._viewModel.tabs.setSelectedTabName(tabName)
             if self._tabsController is not None:
                 self._provider = self._tabsController.getProvider(tabName)(self._interactor)
+                self.__updateTabVisitedState(tabName)
             self._currentTabName = tabName
         return
 
@@ -161,3 +161,13 @@ class BaseSetupSubView(BaseSubModelView):
         else:
             _logger.error('__slotActions doesnt exist action type : %s(viewName %s)', actionType, self.__class__.__name__)
         return
+
+    def __updateTabVisitedState(self, tabName):
+        if not self._tabsController.isVisited(tabName):
+            self._tabsController.setVisited(tabName)
+            for model in self._viewModel.tabs.getTabs():
+                if model.getName() == tabName:
+                    updateFunc = self._tabsController.tabs.get(tabName)
+                    if updateFunc:
+                        updateFunc(self._tabsController, model)
+                    return

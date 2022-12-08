@@ -2,27 +2,24 @@
 # Embedded file name: scripts/client/avatar_components/CombatEquipmentManager.py
 import functools
 import math
-
-import BattleReplay
-import BigWorld
-import BombersWing
-import CombatSelectedArea
-import Flock
 import SoundGroups
 import math_utils
+import BigWorld
 from Math import Vector2, Vector3
-from constants import IS_DEVELOPMENT
-from debug_utils import LOG_DEBUG, LOG_ERROR
-from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+import BombersWing
+import Flock
+from constants import IS_DEVELOPMENT
+from debug_utils import LOG_DEBUG, LOG_ERROR
+import CombatSelectedArea
 from items import vehicles
+import BattleReplay
 from skeletons.gui.battle_session import IBattleSessionProvider
+from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from smoke_screen import SmokeScreen
-
 _ENABLE_DEBUG_DRAW = False
 _ENABLE_DEBUG_LOG = False
-
 
 class _DebugFrontLine(CallbackDelayer):
 

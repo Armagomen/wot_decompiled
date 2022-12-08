@@ -3,22 +3,20 @@
 import nations
 from dossiers2.ui import layouts
 from gui import GUI_NATIONS, getNationIndex
-from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import getAvailableNationsNames
 from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import DetailedStatisticsUtils as DSUtils
-from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import ProfileUtils as PUtils, FALLOUT_STATISTICS_LAYOUT, \
-    STATISTICS_LAYOUT, BATTLE_ROYALE_STATISTICS_LAYOUT, COMP7_STATISTICS_LAYOUT
+from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import ProfileUtils as PUtils, FALLOUT_STATISTICS_LAYOUT, STATISTICS_LAYOUT, BATTLE_ROYALE_STATISTICS_LAYOUT, COMP7_STATISTICS_LAYOUT
 from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
 from gui.Scaleform.locale.DIALOGS import DIALOGS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.PROFILE import PROFILE
 from gui.battle_results.components import style
-from gui.impl import backport
 from gui.impl.gen import R
+from gui.impl import backport
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER
 from helpers import dependency
 from helpers import i18n
 from skeletons.gui.lobby_context import ILobbyContext
-
+from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import getAvailableNationsNames
 
 def _packAvgDmgLditItemData(avgDmg):
     return PUtils.packLditItemData(backport.getIntegralFormat(avgDmg), PROFILE.SECTION_SUMMARY_SCORES_AVGDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGDAMAGE, 'avgDamage40x32.png')

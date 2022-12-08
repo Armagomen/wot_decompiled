@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/avatar_helpers/__init__.py
 import BigWorld
-
+from shared_utils.avatar_helpers import VehicleTelemetry
 
 def getAvatarDatabaseID():
     dbID = 0

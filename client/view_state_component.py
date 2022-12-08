@@ -1,21 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/view_state_component.py
-import typing
 import weakref
-
+import typing
 from cache import cached_property
 from constants import BuffDisplayedState
-from script_component.DynamicScriptComponent import DynamicScriptComponent
-
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, VEHICLE_VIEW_STATE
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MarkersManagerEvent
 from helpers import dependency
 from helpers.fixed_dict import getTimeInterval
+from script_component.DynamicScriptComponent import DynamicScriptComponent
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.fixed_dict import TimeInterval
 
 class ViewStateComponent(DynamicScriptComponent):
 

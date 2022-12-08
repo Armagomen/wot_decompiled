@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/recruit_window/recruit_content.py
 import logging
-
 import Event
 import constants
 from gui import GUI_NATIONS
+from gui.impl.lobby.recruit_window.recruit_dialog_utils import getSortedItems
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.recruit_window.drop_down_item_view_model import DropDownItemViewModel
-from gui.impl.gen.view_models.views.lobby.recruit_window.recruit_content_view_model import DropDownState
+from gui.impl.gen.view_models.views.lobby.recruit_window.recruit_content_view_model import RecruitContentViewModel, DropDownState
 from gui.impl.gen.view_models.views.lobby.recruit_window.vehicle_item_view_model import VehicleItemViewModel
-from gui.impl.lobby.recruit_window.recruit_dialog_utils import getSortedItems
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER
 from gui.shared.utils.functions import replaceHyphenToUnderscore, capitalizeText
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -19,7 +18,6 @@ from items import vehicles
 from items.components.skills_constants import ORDERED_ROLES
 from nations import INDICES
 from skeletons.gui.shared import IItemsCache
-
 DEFAULT_VALUE = '-1'
 _logger = logging.getLogger(__name__)
 

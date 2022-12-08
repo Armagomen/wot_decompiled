@@ -3,17 +3,15 @@
 import json
 import logging
 import typing
-
+from wg_async import wg_async, wg_await
 from Event import Event
 from gui.game_control.reactive_comm import Subscription
 from gui.resource_well.resource_well_helpers import getNumberChannelName
 from helpers import dependency
 from skeletons.gui.game_control import IReactiveCommunicationService
-from wg_async import wg_async, wg_await
-
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Optional
 
 class ResourceWellNumberRequester(object):
     __slots__ = ('onUpdated', '__isSerial', '__subscription', '__remainingValues', '__givenValues', '__isActive')

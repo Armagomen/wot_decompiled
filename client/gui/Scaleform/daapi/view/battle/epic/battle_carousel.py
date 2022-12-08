@@ -2,27 +2,25 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/battle_carousel.py
 import logging
 import weakref
-
 import BigWorld
 import Event
-import nations
 from account_helpers.AccountSettings import EPICBATTLE_CAROUSEL_FILTER_1, EPICBATTLE_CAROUSEL_FILTER_2
 from account_helpers.AccountSettings import EPICBATTLE_CAROUSEL_FILTER_CLIENT_1
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.Scaleform import getButtonsAssetPath
-from gui.Scaleform.daapi.view.battle.shared.respawn import respawn_utils
 from gui.Scaleform.daapi.view.common.filter_contexts import getFilterSetupContexts
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import CarouselDataProvider
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_filter import CarouselFilter
 from gui.Scaleform.daapi.view.meta.BattleTankCarouselMeta import BattleTankCarouselMeta
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.shared.gui_items import ItemsCollection
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from helpers import dependency
+import nations
 from skeletons.gui.battle_session import IBattleSessionProvider
+from gui.Scaleform.daapi.view.battle.shared.respawn import respawn_utils
+from gui.shared.gui_items import ItemsCollection
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 _logger = logging.getLogger(__name__)
 
 class BattleCarouselFilter(CarouselFilter):

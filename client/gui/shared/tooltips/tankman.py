@@ -1,22 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/tankman.py
 import math
-
+from typing import List, Optional
 import nations
 from gui import makeHtmlString
+from gui.game_control.restore_contoller import getTankmenRestoreInfo
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.game_control.restore_contoller import getTankmenRestoreInfo
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.shared.tooltips.common import BlocksTooltipData
+from gui.shared.tooltips import ToolTipDataField, ToolTipAttrField, ToolTipData, TOOLTIP_TYPE, formatters
 from gui.shared.formatters import text_styles, moneyWithIcon
 from gui.shared.gui_items.Tankman import Tankman
 from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.gui_items.crew_skin import localizedFullName
-from gui.shared.tooltips import ToolTipDataField, ToolTipAttrField, ToolTipData, TOOLTIP_TYPE, formatters
-from gui.shared.tooltips.common import BlocksTooltipData
 from helpers import dependency
 from helpers import i18n
 from helpers import time_utils
@@ -25,10 +25,9 @@ from items.components.component_constants import EMPTY_STRING
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from items.tankmen import SKILLS_BY_ROLES, getSkillsConfig
 from shared_utils import findFirst
-from skeletons.gui.game_control import IBattleRoyaleController
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.game_control import IBattleRoyaleController
 TANKMAN_DISMISSED = 'dismissed'
 _TIME_FORMAT_UNITS = [('days', time_utils.ONE_DAY), ('hours', time_utils.ONE_HOUR), ('minutes', time_utils.ONE_MINUTE)]
 
@@ -231,9 +230,9 @@ class NotRecruitedTooltipData(BlocksTooltipData):
         self.item = None
         return
 
-    def _packBlocks(self, *args, **kwargs):
+    def _packBlocks(self, invID, isLocked):
         items = super(NotRecruitedTooltipData, self)._packBlocks()
-        item = self.context.buildItem(*args)
+        item = self.context.buildItem(invID)
         self.item = item
         blocks = list()
         blocks.append(formatters.packImageTextBlockData(title=text_styles.highTitle(item.getFullUserName()), desc=text_styles.main(item.getLabel())))
@@ -264,6 +263,10 @@ class NotRecruitedTooltipData(BlocksTooltipData):
             blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.NOTRECRUITEDTANKMAN_EXPIRETITLE), useHtml=True, padding=formatters.packPadding(top=20 if skills else (17 if hasDescr else 16), bottom=2)))
             expireDateStr = makeString(TOOLTIPS.NOTRECRUITEDTANKMAN_USEBEFORE, date=expiryTime)
             blocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.premiumVehicleName(expireDateStr), value='', icon=ICON_TEXT_FRAMES.RENTALS, padding=formatters.packPadding(left=-60, bottom=-18), iconYOffset=3))
+        if isLocked:
+            alertStr = item.getAdditionalAlert()
+            if alertStr:
+                blocks.append(formatters.packTextBlockData(text_styles.alertBig(alertStr), padding=formatters.packPadding(top=20)))
         items.append(formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=-5)))
         return items
 

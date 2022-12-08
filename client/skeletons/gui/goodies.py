@@ -2,8 +2,12 @@
 # Embedded file name: scripts/client/skeletons/gui/goodies.py
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from typing import Optional, Dict, List, Any, Tuple
     from gui.shared.money import Money
-
+    from gui.shared.gui_items.fitting_item import FittingItem
+    from gui.shared.utils.requesters.GoodiesRequester import GoodieVariable
+    from gui.goodies.goodie_items import RecertificationForm, DemountKit, Booster, _PersonalDiscount, _Goodie
+    from gui.shared.utils.requesters.ShopRequester import _ResourceData, _NamedGoodieData
 
 class IBoostersStateProvider(object):
 

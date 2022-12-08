@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/gui/shared/tooltips/quests.py
 import constants
 from CurrentVehicle import g_currentVehicle
-from battle_royale.gui.Scaleform.daapi.view.lobby.tooltips.battle_royale_tooltip_quest_helper import \
-    getQuestsDescriptionForHangarFlag, getQuestTooltipBlock
 from gui import makeHtmlString
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.ranked_battles.ranked_helpers import isRankedQuestID
 from gui.server_events import events_helpers
 from gui.server_events.awards_formatters import TokenBonusFormatter, PreformattedBonus, LABEL_ALIGN
 from gui.server_events.bonuses import CustomizationsBonus
@@ -23,17 +21,17 @@ from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import getTypeSmallIconPath
 from gui.shared.tooltips import TOOLTIP_TYPE, formatters
 from gui.shared.tooltips.common import BlocksTooltipData
+from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils import flashObject2Dict
 from gui.shared.utils.functions import makeTooltip
-from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency, time_utils
 from helpers.i18n import makeString as _ms
 from shared_utils import findFirst
-from skeletons.gui.game_control import IQuestsController, IRankedBattlesController, IBattleRoyaleController, \
-    IComp7Controller
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
+from skeletons.gui.game_control import IQuestsController, IRankedBattlesController, IBattleRoyaleController, IComp7Controller
+from battle_royale.gui.Scaleform.daapi.view.lobby.tooltips.battle_royale_tooltip_quest_helper import getQuestsDescriptionForHangarFlag, getQuestTooltipBlock
+from skeletons.new_year import INewYearController
 _MAX_AWARDS_PER_TOOLTIP = 5
 _MAX_QUESTS_PER_TOOLTIP = 4
 _MAX_BONUSES_PER_QUEST = 2
@@ -58,6 +56,7 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
     __itemsCache = dependency.descriptor(IItemsCache)
     __comp7Controller = dependency.descriptor(IComp7Controller)
+    _nyController = dependency.descriptor(INewYearController)
 
     def __init__(self, context):
         super(QuestsPreviewTooltipData, self).__init__(context, TOOLTIP_TYPE.QUESTS)
@@ -139,7 +138,8 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
             questHeader = backport.text(R.strings.tooltips.hangar.header.quests.header(), count=count)
             img = backport.image(R.images.gui.maps.icons.quests.questTooltipHeader())
             desc = text_styles.main(backport.text(description, vehicle=vehicleName))
-        return formatters.packImageTextBlockData(title=text_styles.highTitle(questHeader), img=img, txtPadding=formatters.packPadding(top=20), txtOffset=20, desc=desc)
+        isNYEventEnabled = self._nyController.isEnabled()
+        return formatters.packImageTextBlockData(title=text_styles.highTitle(questHeader), img=backport.image(R.images.gui.maps.icons.quests.nyQuestTooltipHeader()) if isNYEventEnabled else img, txtPadding=formatters.packPadding(top=20), txtOffset=20, desc=desc)
 
     def _getBottom(self, value):
         if value > 0:

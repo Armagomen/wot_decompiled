@@ -1,19 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/wgnp/demo_account/controller.py
+import typing
 import time
-
 import wg_async
 from BWUtil import AsyncReturn
 from constants import EMAIL_CONFIRMATION_TOKEN_NAME
-from gui.platform.base.statuses.constants import DEFAULT_CONTEXT, StatusTypes
 from gui.platform.base.statuses.controller_mixin import StatusesMixin
+from gui.platform.base.statuses.constants import DEFAULT_CONTEXT, StatusTypes
 from gui.platform.wgnp.base.controller import WGNPRequestController
-from gui.platform.wgnp.demo_account.request import CredentialsStatusParams, AddCredentialsParams, \
-    ConfirmCredentialsParams, NicknameStatusParams, ChangeNicknameParams, ValidateNicknameParams
-from gui.platform.wgnp.demo_account.statuses import DemoAccCredentialsStatus, createCredentialsConfirmationStatus, \
-    createCredentialStatusFromResponse, DemoAccNicknameStatus, createNicknameStatusFromResponse
+from gui.platform.wgnp.demo_account.request import CredentialsStatusParams, AddCredentialsParams, ConfirmCredentialsParams, NicknameStatusParams, ChangeNicknameParams, ValidateNicknameParams
+from gui.platform.wgnp.demo_account.statuses import DemoAccCredentialsStatus, createCredentialsConfirmationStatus, createCredentialStatusFromResponse, DemoAccNicknameStatus, createNicknameStatusFromResponse
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
-
 NICKNAME_CONTEXT = '<nickname>'
 
 class WGNPDemoAccRequestController(StatusesMixin, WGNPRequestController, IWGNPDemoAccRequestController):

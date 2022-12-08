@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/vehicle_utils.py
-import BigWorld
 import NetworkFilters
+import BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -10,7 +10,6 @@ from gui.shared.items_parameters.params_cache import g_paramsCache
 from helpers import dependency
 from items import getTypeOfCompactDescr
 from skeletons.gui.shared import IItemsCache
-
 _MODULES_INSTALL_ORDER = (GUI_ITEM_TYPE.CHASSIS,
  GUI_ITEM_TYPE.TURRET,
  GUI_ITEM_TYPE.GUN,

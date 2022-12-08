@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/avatar_components/AvatarObserver.py
-import logging
 from collections import defaultdict
-
+import logging
 import BigWorld
 import Math
-from AvatarInputHandler.subfilters_constants import AVATAR_SUBFILTERS, FILTER_INTERPOLATION_TYPE
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
+from AvatarInputHandler.subfilters_constants import AVATAR_SUBFILTERS, FILTER_INTERPOLATION_TYPE
 from helpers.CallbackDelayer import CallbackDelayer
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 _OBSERVABLE_VIEWS = (CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.SNIPER,

@@ -1,31 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/customization/customization_view.py
 import math
-
+from typing import Optional
 import nations
 from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nSellMeta
-from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText, isC11nEnabled
 from gui.Scaleform.daapi.view.lobby.event_boards.event_helpers import LEVELS_RANGE
-from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO, customizationPreview, \
-    getAvailableForSellCustomizationCount
-from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell
-from gui.Scaleform.daapi.view.meta.StorageCategoryCustomizationViewMeta import StorageCategoryCustomizationViewMeta
 from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import event_dispatcher
-from gui.shared.formatters import getItemPricesVO
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.utils.functions import makeTooltip
-from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from shared_utils import CONST_CONTAINER
+from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO, customizationPreview, getAvailableForSellCustomizationCount
+from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import isCustomizationAvailableForSell
+from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText, isC11nEnabled
+from gui.Scaleform.daapi.view.meta.StorageCategoryCustomizationViewMeta import StorageCategoryCustomizationViewMeta
+from gui.shared.formatters import getItemPricesVO
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from gui.shared.utils.functions import makeTooltip
 from skeletons.gui.customization import ICustomizationService
-
+from shared_utils import CONST_CONTAINER
 
 class _CustomizationFilterBit(CONST_CONTAINER):
     STYLE = 1

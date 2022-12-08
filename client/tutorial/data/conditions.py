@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/data/conditions.py
 import functools
-
 from tutorial.data.has_id import HasID
-
 __all__ = ('CONDITION_TYPE', 'CONDITION_STATE', 'FlagCondition', 'GlobalFlagCondition', 'WindowOnSceneCondition', 'VarDefinedCondition', 'VarCompareCondition', 'EffectTriggeredCondition', 'GameItemSimpleStateCondition', 'GameItemRelateStateCondition', 'BonusReceivedCondition', 'Conditions')
 
 class CONDITION_TYPE(object):

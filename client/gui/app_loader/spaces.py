@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/app_loader/spaces.py
-import BattleReplay
 import BigWorld
+import BattleReplay
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
 from constants import ARENA_GUI_TYPE, ACCOUNT_KICK_REASONS
 from gui import DialogsInterface
-from gui.app_loader.settings import APP_NAME_SPACE
 from gui.impl.gen import R
 from gui.shared.utils.decorators import ReprInjector
+from gui.app_loader.settings import APP_NAME_SPACE
 from helpers import dependency, isPlayerAvatar
-from skeletons.connection_mgr import DisconnectReason
 from skeletons.gui.app_loader import IGlobalSpace, GuiGlobalSpaceID as _SPACE_ID, ApplicationStateID
+from skeletons.connection_mgr import DisconnectReason
 from skeletons.gui.shared.utils import IHangarSpace
-
 _REASON = DisconnectReason
 
 def _disableTimeWarpInReplay():

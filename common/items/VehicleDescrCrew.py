@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/VehicleDescrCrew.py
+import tankmen
 from debug_utils import *
 from soft_exception import SoftException
-
-import tankmen
-
 _DO_DEBUG_LOG = False
 
 class VehicleDescrCrew(object):

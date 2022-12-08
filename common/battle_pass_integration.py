@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/battle_pass_integration.py
-from collections import namedtuple
 from copy import copy
-from typing import TYPE_CHECKING
-
+from collections import namedtuple
 from constants import ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES
 from items import vehicles
 from soft_exception import SoftException
-
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    pass
+    from typing import Type, Union
 NON_VEH_CD = 0
 BpPointsSettings = namedtuple('BpPointsSettings', 'vehTypeCompDescr, isWinner, rank')
 

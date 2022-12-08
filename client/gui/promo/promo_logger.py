@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/promo/promo_logger.py
 import logging
 from functools import partial
-
 import BigWorld
 from adisp import adisp_process
 from gui.macroses import getLanguageCode
@@ -13,7 +12,6 @@ from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.promo import IPromoLogger
 from skeletons.gui.web import IWebController
-
 _logger = logging.getLogger(__name__)
 
 class PromoLogActions(CONST_CONTAINER):

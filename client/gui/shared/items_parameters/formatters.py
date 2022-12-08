@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/shared/items_parameters/formatters.py
 from collections import namedtuple
 from itertools import chain
-
 from constants import BonusTypes
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -16,15 +15,10 @@ from gui.shared.gui_items import KPI, kpiFormatValue
 from gui.shared.items_parameters import RELATIVE_PARAMS
 from gui.shared.items_parameters.comparator import PARAM_STATE
 from gui.shared.items_parameters.params_helper import hasGroupPenalties, getCommonParam, PARAMS_GROUPS
-from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_ON_TIME, \
-    WHEELED_SWITCH_OFF_TIME, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, DUAL_GUN_RATE_TIME, \
-    TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, \
-    TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME, CHASSIS_REPAIR_TIME_YOH, \
-    ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS, ROCKET_ACCELERATION_REUSE_AND_DURATION
+from gui.shared.utils import AUTO_RELOAD_PROP_NAME, MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_ON_TIME, WHEELED_SWITCH_OFF_TIME, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, DUAL_GUN_CHARGE_TIME, DUAL_GUN_RATE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_SWITCH_TIME, CHASSIS_REPAIR_TIME, CHASSIS_REPAIR_TIME_YOH, ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS, ROCKET_ACCELERATION_REUSE_AND_DURATION
 from helpers.i18n import makeString
 from items import vehicles, artefacts, getTypeOfCompactDescr, ITEM_TYPES
 from web_stubs import i18n
-
 ChangeCondition = namedtuple('ChangeCondition', ('predicate', 'alternativeParameter'))
 MEASURE_UNITS = {'aimingTime': MENU.TANK_PARAMS_S,
  'areaRadius': MENU.TANK_PARAMS_M,

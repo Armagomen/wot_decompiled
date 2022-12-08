@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/post_progression_cfg_component.py
 import typing
-
 import BigWorld
-from Event import Event
 from adisp import adisp_process
+from Event import Event
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.price_item_model import PriceItemModel
-from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_base_view_model import \
-    ProgressionAvailability, ProgressionState
-from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_cfg_view_model import \
-    PostProgressionCfgViewModel
 from gui.impl.gen.view_models.views.lobby.post_progression.step_model import StepState
+from gui.impl.gen.view_models.views.lobby.post_progression.modification_model import ModificationModel
+from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_base_view_model import ProgressionAvailability, ProgressionState
+from gui.impl.gen.view_models.views.lobby.post_progression.post_progression_cfg_view_model import PostProgressionCfgViewModel
 from gui.impl.lobby.veh_post_progression.post_progression_base_component import PostProgressionBaseComponentView
-from gui.impl.lobby.veh_post_progression.tooltips.level_tooltip_view import CfgProgressionLevelTooltipView
 from gui.impl.lobby.veh_post_progression.tooltips.pair_modification_tooltip_view import CfgPairModificationTooltipView
+from gui.impl.lobby.veh_post_progression.tooltips.level_tooltip_view import CfgProgressionLevelTooltipView
 from gui.impl.lobby.veh_post_progression.tooltips.role_slot_tooltip_view import RoleSlotTooltipView
 from gui.impl.lobby.veh_post_progression.tooltips.setup_tooltip_view import SetupTooltipView
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -25,14 +23,18 @@ from gui.veh_post_progression.helpers import storeLastSeenStep
 from gui.veh_post_progression.models.ext_money import ExtendedMoney, ExtendedCurrency, EXT_MONEY_UNDEFINED
 from gui.veh_post_progression.models.progression import PostProgressionAvailability, PostProgressionCompletion
 from gui.veh_post_progression.models.progression_step import PostProgressionStepState
-from gui.veh_post_progression.models.purchase import PurchaseProvider
+from gui.veh_post_progression.models.purchase import PurchaseCheckResult, PurchaseProvider
 from helpers import dependency
 from post_progression_common import GROUP_ID_BY_FEATURE
-from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
-
+from skeletons.gui.game_control import IWalletController
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.common.price_model import PriceModel
+    from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
+    from gui.impl.gen.view_models.views.lobby.post_progression.multi_step_model import MultiStepModel
+    from gui.impl.gen.view_models.views.lobby.post_progression.single_step_model import SingleStepModel
+    from gui.veh_post_progression.models.progression import PostProgressionItem
+    from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
 _AVAILABILITY_MAP = {PostProgressionAvailability.AVAILABLE: ProgressionAvailability.AVAILABLE,
  PostProgressionAvailability.VEH_NOT_ELITE: ProgressionAvailability.UNAVAILABLEELITE,
  PostProgressionAvailability.VEH_NOT_IN_INVENTORY: ProgressionAvailability.UNAVAILABLEPURCHASE,

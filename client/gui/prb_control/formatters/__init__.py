@@ -1,16 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/formatters/__init__.py
 from __future__ import unicode_literals
-
 import time
 from datetime import datetime
-
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.prb_control import prb_getters
 from helpers import html, i18n
 from helpers.time_utils import makeLocalServerTime
-
 DETACHMENT_IS_NOT_SET = -1
 
 def makePrebattleWaitingID(requestName):

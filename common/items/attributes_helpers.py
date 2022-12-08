@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/attributes_helpers.py
-from typing import TYPE_CHECKING
-
 from items import _xml
-
+from typing import Dict, Tuple, Iterable, List, TYPE_CHECKING
 if TYPE_CHECKING:
-    pass
+    import ResMgr
 STATIC_ATTR_PREFIX = 'miscAttrs/'
 DYNAMIC_ATTR_PREFIX = 'dynAttrs/'
 ALLOWED_STATIC_ATTRS = {'additiveShotDispersionFactor',

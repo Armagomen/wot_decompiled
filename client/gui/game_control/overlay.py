@@ -1,9 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/overlay.py
 import typing
-
 import GUI
+from wg_async import wg_async, wg_await, AsyncEvent
 from frameworks.wulf import WindowLayer
+from gui.Scaleform.lobby_entry import LobbyEntry
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents, CameraMovementStates
 from gui.shared import g_eventBus
 from helpers import dependency
@@ -11,17 +12,15 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IOverlayController, IHeroTankController
 from skeletons.gui.shared.utils import IHangarSpace
-from wg_async import wg_async, wg_await, AsyncEvent
-
 if typing.TYPE_CHECKING:
     pass
 _ANIMATION_DURATION = 300
 _LAYERS = (WindowLayer.MARKER,
-           WindowLayer.VIEW,
-           WindowLayer.WINDOW,
-           WindowLayer.WAITING,
-           WindowLayer.SYSTEM_MESSAGE,
-           WindowLayer.FULLSCREEN_WINDOW)
+ WindowLayer.VIEW,
+ WindowLayer.WINDOW,
+ WindowLayer.WAITING,
+ WindowLayer.SYSTEM_MESSAGE,
+ WindowLayer.FULLSCREEN_WINDOW)
 
 class OverlayController(IOverlayController):
     _hangarSpace = dependency.descriptor(IHangarSpace)
@@ -32,6 +31,7 @@ class OverlayController(IOverlayController):
     def __init__(self):
         self._selectableObjectsPrevState = []
         self._stateOn = False
+        self._stateInProgess = False
         self._backgroundAlpha = 1
         self._optimizationEnabled = True
         self._globalBlur = GUI.WGUIBackgroundBlur()
@@ -50,15 +50,17 @@ class OverlayController(IOverlayController):
 
     @wg_async
     def waitShow(self):
+        self._stateInProgess = True
         if self._canShow():
             return
         yield wg_await(self._showEvent.wait())
 
     @property
     def isActive(self):
-        return self._stateOn
+        return self._stateOn or self._stateInProgess
 
     def setOverlayState(self, state):
+        self._stateInProgess = False
         if self._stateOn != state:
             self._stateOn = state
             self._changeGUIVisibility()

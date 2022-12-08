@@ -1,13 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/wgnp/general/controller.py
-import wg_async
+import typing
 from BWUtil import AsyncReturn
+import wg_async
 from gui.platform.base.statuses.controller_mixin import StatusesMixin
 from gui.platform.wgnp.base.controller import WGNPRequestController
 from gui.platform.wgnp.general.request import AccountCountryParams
-from gui.platform.wgnp.general.statuses import createAccountCountryStatusFromResponse
+from gui.platform.wgnp.general.statuses import GeneralAccountCountryStatus, createAccountCountryStatusFromResponse
 from skeletons.gui.platform.wgnp_controllers import IWGNPGeneralRequestController
-
 ACCOUNT_COUNTRY_CONTEXT = '<country>'
 
 class WGNPGeneralRequestController(StatusesMixin, WGNPRequestController, IWGNPGeneralRequestController):

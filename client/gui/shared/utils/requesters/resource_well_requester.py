@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/resource_well_requester.py
 import typing
-
 import BigWorld
 from adisp import adisp_async
 from gui.resource_well.resource_well_constants import RESOURCE_WELL_PDATA_KEY
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IResourceWellRequester
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict
 
 class ResourceWellRequester(AbstractSyncDataRequester, IResourceWellRequester):
 

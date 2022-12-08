@@ -1,8 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_obtain_windows.py
 from collections import namedtuple
-
+from soft_exception import SoftException
 import constants
+from rent_common import parseRentID, isWithinMaxRentTime
 from debug_utils import LOG_ERROR
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -15,28 +16,24 @@ from gui.Scaleform.locale.DIALOGS import DIALOGS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.shop import showBuyGoldForVehicleWebOverlay
 from gui.shared.events import VehicleBuyEvent
 from gui.shared.formatters import text_styles, moneyWithIcon
 from gui.shared.formatters.text_styles import neutral
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ItemPrice, ITEM_PRICE_EMPTY
-from gui.shared.gui_items.processors.vehicle import VehicleBuyer, VehicleSlotBuyer, VehicleRenter, \
-    VehicleRestoreProcessor, VehicleTradeInProcessor, showVehicleReceivedResultMessages
+from gui.shared.gui_items.processors.vehicle import VehicleBuyer, VehicleSlotBuyer, VehicleRenter, VehicleRestoreProcessor, VehicleTradeInProcessor, showVehicleReceivedResultMessages
 from gui.shared.money import Money, Currency
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
 from gui.shared.tooltips.formatters import packItemActionTooltipData, packItemRentActionTooltipData
 from gui.shared.utils import decorators
 from gui.shared.utils.functions import makeTooltip
-from gui.shop import showBuyGoldForVehicleWebOverlay
 from helpers import i18n, dependency
-from rent_common import parseRentID, isWithinMaxRentTime
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.game_control import IRentalsController, ITradeInController, IRestoreController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from soft_exception import SoftException
-
 
 class _TABS(CONST_CONTAINER):
     UNDEFINED = -1

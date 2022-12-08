@@ -2,12 +2,11 @@
 # Embedded file name: scripts/client/AvatarInputHandler/siege_mode_player_notifications.py
 import BigWorld
 import Math
-import SoundGroups
 from cgf_obsolete_script.py_component import Component
+import SoundGroups
 from constants import VEHICLE_SIEGE_STATE
 from gui.battle_control import avatar_getter
 from vehicle_systems.tankStructure import TankNodeNames
-
 
 class SOUND_NOTIFICATIONS(object):
     START_TO_SIEGE_MODE = 'start_to_siege_mode_PC'

@@ -1,11 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/base.py
-from BWUtil import AsyncReturn
 from account_helpers.settings_core.settings_constants import CONTROLS
+from wg_async import wg_async, wg_await, await_callback
+from BWUtil import AsyncReturn
 from frameworks.wulf import ViewStatus
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.backport.backport_context_menu import BackportContextMenuWindow
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.tank_setup.ammunition_setup_view_model import AmmunitionSetupViewModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.tank_setup.tank_setup_helper import setLastSlotAction
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playOptDeviceSlotEnter
@@ -13,8 +15,6 @@ from gui.impl.pub import ViewImpl
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await, await_callback
-
 
 class BaseAmmunitionSetupView(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -128,13 +128,12 @@ class BaseAmmunitionSetupView(ViewImpl):
     @wg_async
     def _onPanelSelected(self, args):
         sectionName, slotID = args.get('selectedSection'), int(args.get('selectedSlot'))
-        if sectionName:
-            switch = yield wg_await(self._tankSetup.switch(sectionName, slotID))
-            if switch and self.viewStatus == ViewStatus.LOADED:
-                if sectionName == TankSetupConstants.OPT_DEVICES:
-                    playOptDeviceSlotEnter(self._vehItem.getItem(), slotID)
-                self._ammunitionPanel.changeSelectedSection(sectionName, slotID)
-                self._updateAmmunitionPanel()
+        switch = yield wg_await(self._tankSetup.switch(sectionName, slotID))
+        if switch and self.viewStatus == ViewStatus.LOADED:
+            if sectionName == TankSetupConstants.OPT_DEVICES:
+                playOptDeviceSlotEnter(self._vehItem.getItem(), slotID)
+            self._ammunitionPanel.changeSelectedSection(sectionName, slotID)
+            self._updateAmmunitionPanel()
 
     def _onPanelSlotClear(self, args):
         slotID = int(args.get('slotId'))

@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/avatar_getter.py
 import logging
-
 import BigWorld
 import Math
 from gui import GUI_CTRL_MODE_FLAG
-
 _logger = logging.getLogger(__name__)
 
 def isForcedGuiControlMode(avatar=None):

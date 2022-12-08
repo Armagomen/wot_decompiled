@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/dyn_objects_cache.py
 import logging
 from collections import namedtuple
-
+import typing
 import BigWorld
 import CGF
 import resource_helper
 from constants import ARENA_GUI_TYPE
+from gui.shared.utils.graphics import isRendererPipelineDeferred
 from items.components.component_constants import ZERO_FLOAT
 from shared_utils import first
-
-from gui.shared.utils.graphics import isRendererPipelineDeferred
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from vehicle_systems.stricted_loading import makeCallbackWeak
-
 _CONFIG_PATH = 'scripts/dynamic_objects.xml'
 _logger = logging.getLogger(__name__)
 _ScenariosEffect = namedtuple('_ScenariosEffect', ('path', 'rate', 'offset', 'scaleRatio'))

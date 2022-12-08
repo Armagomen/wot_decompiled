@@ -1,20 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/uilogging/deprecated/bootcamp/loggers.py
 from collections import defaultdict
-
 import BigWorld
 from bootcamp.Bootcamp import g_bootcamp
 from helpers import dependency
 from skeletons.gui.game_control import IBootcampController
 from uilogging.base.logger import ifUILoggingEnabled
 from uilogging.constants import LogLevels
-from uilogging.deprecated.base.loggers import BaseLogger
 from uilogging.deprecated.base.loggers import CommonLogger
-from uilogging.deprecated.bootcamp.constants import ACTIONS_HINTS_TO_LOG_ONCE, ACTION_SEQUENCES
 from uilogging.deprecated.bootcamp.validators import TimeValidator
 from uilogging.deprecated.logging_constants import FEATURES
+from uilogging.deprecated.base.loggers import BaseLogger
+from uilogging.deprecated.bootcamp.constants import ACTIONS_HINTS_TO_LOG_ONCE, ACTION_SEQUENCES
 from wotdecorators import noexcept
-
 __all__ = ('BootcampUILogger', 'BootcampLogger')
 
 class LoggingCacheMeta(type):

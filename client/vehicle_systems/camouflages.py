@@ -1,43 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/camouflages.py
 import logging
-import typing
 from collections import namedtuple, defaultdict
 from copy import deepcopy
 from string import lower
-
-import AnimationSequence
+import typing
+from backports.functools_lru_cache import lru_cache
 import BigWorld
 import Math
 import Vehicular
-import items.vehicles
-import math_utils
-from CurrentVehicle import g_currentVehicle
-from backports.functools_lru_cache import lru_cache
-from constants import IS_EDITOR
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.customization.c11n_items import Customization
-from gui.shared.utils.graphics import isRendererPipelineDeferred
+import AnimationSequence
 from helpers import dependency
-from helpers import newFakeModel
-from items.components.c11n_constants import ModificationType, C11N_MASK_REGION, DEFAULT_DECAL_SCALE_FACTORS, SeasonType, \
-    CustomizationType, EMPTY_ITEM_ID, DEFAULT_DECAL_CLIP_ANGLE, ApplyArea, MAX_PROJECTION_DECALS_PER_AREA, \
-    CamouflageTilingType, CustomizationTypeNames, SLOT_TYPE_NAMES, DEFAULT_DECAL_TINT_COLOR, Options, \
-    SLOT_DEFAULT_ALLOWED_MODEL, ItemTags, DEFAULT_GLOSS, DEFAULT_METALLIC, ProjectionDecalMatchingTags, \
-    ProjectionDecalDirectionTags
 from items.customization_slot_tags_validator import getDirectionAndFormFactorTags
-from items.customizations import parseOutfitDescr, CustomizationOutfit, createNationalEmblemComponents, isEditedStyle
-from items.vehicles import makeIntCompactDescrByID, getItemByCompactDescr
 from shared_utils import first
 from skeletons.gui.shared import IItemsCache
-from skeletons.gui.shared.gui_items import IGuiItemsFactory
-from soft_exception import SoftException
+import items.vehicles
+from constants import IS_EDITOR
+from items.vehicles import makeIntCompactDescrByID, getItemByCompactDescr
+from items.customizations import parseOutfitDescr, CustomizationOutfit, createNationalEmblemComponents, isEditedStyle
 from vehicle_outfit.outfit import Outfit
 from vehicle_outfit.packers import ProjectionDecalPacker
 from vehicle_systems.tankStructure import TankPartNames, TankPartIndexes, VehiclePartsTuple
-
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.utils.graphics import isRendererPipelineDeferred
+from items.components.c11n_constants import ModificationType, C11N_MASK_REGION, DEFAULT_DECAL_SCALE_FACTORS, SeasonType, CustomizationType, EMPTY_ITEM_ID, DEFAULT_DECAL_CLIP_ANGLE, ApplyArea, MAX_PROJECTION_DECALS_PER_AREA, CamouflageTilingType, CustomizationTypeNames, SLOT_TYPE_NAMES, DEFAULT_DECAL_TINT_COLOR, Options, SLOT_DEFAULT_ALLOWED_MODEL, ItemTags, DEFAULT_GLOSS, DEFAULT_METALLIC, ProjectionDecalMatchingTags, ProjectionDecalDirectionTags
+from gui.shared.gui_items.customization.c11n_items import Customization
+import math_utils
+from helpers import newFakeModel
+from soft_exception import SoftException
+from CurrentVehicle import g_currentVehicle
+from skeletons.gui.shared.gui_items import IGuiItemsFactory
 if typing.TYPE_CHECKING:
-    pass
+    from items.components.shared_components import ProjectionDecalSlotDescription
+    from vehicle_outfit.containers import ProjectionDecalsMultiSlot
+    from items.vehicles import VehicleDescrType
 _DEAD_VEH_WEIGHT_COEFF = 0.1
 _PROJECTION_DECAL_PREVIEW_ALPHA = 0.5
 _logger = logging.getLogger(__name__)
@@ -79,7 +75,7 @@ ProjectionDecalGenericParams.__new__.__defaults__ = (Math.Vector4(0.0),
 ModelAnimatorParams = namedtuple('ModelAnimatorParams', ('transform', 'attachNode', 'animatorName'))
 ModelAnimatorParams.__new__.__defaults__ = (math_utils.createIdentityMatrix(), '', '')
 LoadedModelAnimator = namedtuple('LoadedModelAnimator', ('animator', 'node', 'attachmentPartNode'))
-AttachmentParams = namedtuple('AttachmentParams', ('transform', 'attachNode', 'modelName', 'sequenceId', 'attachmentLogic', 'initialVisibility', 'partNodeAlias'))
+AttachmentParams = namedtuple('AttachmentParams', ('transform', 'attachNode', 'modelName', 'hangarModelName', 'sequenceId', 'attachmentLogic', 'initialVisibility', 'partNodeAlias'))
 AttachmentParams.__new__.__defaults__ = (math_utils.createIdentityMatrix(),
  '',
  '',
@@ -649,7 +645,7 @@ def getAttachments(outfit, vehicleDescr):
 
     def getAttachmentParams(slotParams, slotData, idx):
         item = getItemByCompactDescr(slotData.intCD)
-        return AttachmentParams(transform=__createTransform(slotParams, slotData), attachNode=slotParams.attachNode, modelName=item.modelName, sequenceId=item.sequenceId, attachmentLogic=item.attachmentLogic, initialVisibility=item.initialVisibility, partNodeAlias='attachment' + str(idx) if item.attachmentLogic != 'prefab' else None)
+        return AttachmentParams(transform=__createTransform(slotParams, slotData), attachNode=slotParams.attachNode, modelName=item.modelName, hangarModelName=item.hangarModelName, sequenceId=item.sequenceId, attachmentLogic=item.attachmentLogic, initialVisibility=item.initialVisibility, partNodeAlias='attachment' + str(idx) if item.attachmentLogic != 'prefab' else None)
 
     return __getParams(outfit, vehicleDescr, 'attachment', GUI_ITEM_TYPE.ATTACHMENT, getAttachmentParams)
 

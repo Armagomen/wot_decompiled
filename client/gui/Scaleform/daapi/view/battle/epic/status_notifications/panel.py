@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/status_notifications/panel.py
 import logging
-
 from gui.Scaleform.daapi.view.battle.epic.status_notifications import sn_items as epic_sn_items
-from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
+from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.panel import StatusNotificationTimerPanel
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_COLORS import BATTLE_NOTIFICATIONS_TIMER_COLORS as _COLORS
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_LINKAGES import BATTLE_NOTIFICATIONS_TIMER_LINKAGES as _LINKS
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTIFICATIONS_TIMER_TYPES as _TYPES
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-
 _logger = logging.getLogger(__name__)
 
 class _EpicBattleHighPriorityGroup(components.StatusNotificationsGroup):

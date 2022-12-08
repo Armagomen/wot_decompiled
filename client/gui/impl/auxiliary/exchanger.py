@@ -2,14 +2,13 @@
 # Embedded file name: scripts/client/gui/impl/auxiliary/exchanger.py
 import logging
 import math
-
+import typing
 import Event
 from adisp import adisp_async, adisp_process
 from gui.shared.gui_items.processors.common import GoldToCreditsExchanger
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 class ExchangeSubmitterBase(object):

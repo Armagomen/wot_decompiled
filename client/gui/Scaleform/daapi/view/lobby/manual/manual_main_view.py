@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/manual/manual_main_view.py
 import logging
-
 from account_helpers import AccountSettings
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.manual.manual_view_base import ManualViewBase
 from gui.Scaleform.daapi.view.meta.ManualMainViewMeta import ManualMainViewMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared import events, EVENT_BUS_SCOPE, event_dispatcher as shared_events
-
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.lobby.manual.manual_view_base import ManualViewBase
 _logger = logging.getLogger(__name__)
 
 class ManualMainView(ManualViewBase, ManualMainViewMeta):

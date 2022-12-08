@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/panel.py
 import logging
-
-import BattleReplay
 import BigWorld
+from helpers import dependency
+import BattleReplay
 from ReplayEvents import g_replayEvents
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import replay_components
@@ -12,9 +12,7 @@ from gui.battle_control import event_dispatcher as gui_event_dispatcher
 from gui.battle_control.battle_constants import CROSSHAIR_VIEW_ID
 from gui.shared.items_parameters import isAutoReloadGun
 from gui.shared.utils.MethodsRules import MethodsRules
-from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 
 class StatusNotificationTimerPanel(StatusNotificationsPanelMeta, MethodsRules):

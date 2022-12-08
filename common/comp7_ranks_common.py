@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/comp7_ranks_common.py
+from typing import Optional, FrozenSet, Tuple
 from cache import cached_property
 from intervals import Interval
 from soft_exception import SoftException

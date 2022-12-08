@@ -1,14 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serializable_types/customizations/decal.py
 from collections import OrderedDict
-
 from items.components.c11n_constants import ApplyArea
 from serialization.field import intField, applyAreaEnumField
 from serialization.serializable_component import SerializableComponent
 from wrapped_reflection_framework import ReflectionMetaclass
-
 from ..types import C11nSerializationTypes
-
 __all__ = ('DecalComponent',)
 
 class DecalComponent(SerializableComponent):

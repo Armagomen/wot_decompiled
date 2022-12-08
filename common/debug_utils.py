@@ -1,23 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/debug_utils.py
 import sys
+import BigWorld
+import excepthook
 import time
 import traceback
-from collections import defaultdict
-from contextlib import contextmanager
+from GarbageCollectionDebug import gcDump, getGarbageGraph
 from functools import wraps
-from threading import RLock
-from traceback import format_exception
+from collections import defaultdict
 from warnings import warn_explicit
-
-import BigWorld
-
-import excepthook
-from GarbageCollectionDebug import gcDump
+from traceback import format_exception
 from constants import IS_CLIENT, IS_CELLAPP, IS_BASEAPP, CURRENT_REALM, IS_DEVELOPMENT, IS_BOT
 from constants import LEAKS_DETECTOR_MAX_EXECUTION_TIME
+from contextlib import contextmanager
+from threading import RLock
 from soft_exception import SoftException
-
 _src_file_trim_to = ('res/wot/scripts/', len('res/wot/scripts/'))
 _g_logMapping = {}
 _g_logLock = RLock()

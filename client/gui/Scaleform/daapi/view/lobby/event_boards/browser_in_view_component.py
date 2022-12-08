@@ -4,10 +4,9 @@ import BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.meta.BrowserInViewComponentMeta import BrowserInViewComponentMeta
 from helpers import dependency
+from gui.Scaleform.daapi.view.meta.BrowserInViewComponentMeta import BrowserInViewComponentMeta
 from skeletons.gui.game_control import IBrowserController
-
 
 class BrowserInViewComponent(BrowserInViewComponentMeta):
     browserCtrl = dependency.descriptor(IBrowserController)

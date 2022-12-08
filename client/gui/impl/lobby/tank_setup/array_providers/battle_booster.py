@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/battle_booster.py
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
+from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_slot_model import BaseSlotModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.battle_booster_slot_model import BattleBoosterSlotModel
 from gui.impl.lobby.tank_setup.array_providers.base import VehicleBaseArrayProvider
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -37,6 +38,7 @@ class BaseBattleBoosterProvider(VehicleBaseArrayProvider):
     def _fillStatus(self, model, item, slotID):
         super(BaseBattleBoosterProvider, self)._fillStatus(model, item, slotID)
         if not item.isAffectsOnVehicle(self._getVehicle()):
+            model.setLockReason('useless_battle_booster')
             model.setIsLocked(True)
 
     def _fillDescription(self, model, item):

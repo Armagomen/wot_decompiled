@@ -5,9 +5,8 @@ from gui.Scaleform.daapi.view.meta.MinimapPresentationMeta import MinimapPresent
 from gui.Scaleform.genConsts.MINIMAPENTRIES_CONSTANTS import MINIMAPENTRIES_CONSTANTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from helpers import dependency
-from points_of_interest_shared import PoiType
 from skeletons.account_helpers.settings_core import ISettingsCore
-
+from points_of_interest_shared import PoiType
 _POI_TYPE_TO_STR = {PoiType.ARTILLERY: MINIMAPENTRIES_CONSTANTS.POI_TYPE_ARTY,
  PoiType.RECON: MINIMAPENTRIES_CONSTANTS.POI_TYPE_RECON}
 

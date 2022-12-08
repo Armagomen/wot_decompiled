@@ -2,13 +2,11 @@
 # Embedded file name: scripts/client/messenger/__init__.py
 import typing
 from types import StringType
-
 from external_strings_utils import unicode_from_utf8
-from messenger.m_settings import MessengerSettings
 from soft_exception import SoftException
-
+from messenger.m_settings import MessengerSettings
 if typing.TYPE_CHECKING:
-    pass
+    from types import UnicodeType, IntType
 
 class error(SoftException):
     pass

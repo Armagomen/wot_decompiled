@@ -41,6 +41,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 if typing.TYPE_CHECKING:
     from typing import List, Union
     from gui.impl.gen.view_models.views.lobby.battle_matters.quest_progress_model import QuestProgressModel
+    from gui.server_events.event_items import BattleMattersQuest, BattleMattersTokenQuest
 _logger = logging.getLogger(__name__)
 
 class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMeta):
@@ -50,6 +51,7 @@ class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMet
 
     @nextTick
     def updateState(self, openMainRewardView=False, openVehicleSelection=False, openMainView=False, **_):
+        self.as_hideViewS()
         self._destroyInjected()
         self._createInjectView(openMainRewardView, openVehicleSelection, openMainView)
 
@@ -57,10 +59,18 @@ class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMet
         pass
 
     def _addInjectContentListeners(self):
-        self._injectView.onStatusChanged += self._onViewReady
+        if getattr(self._injectView.viewModel, 'onShowView', None):
+            self._injectView.viewModel.onShowView += self._onViewReady
+        else:
+            self._injectView.onStatusChanged += self._onViewReady
+        return
 
     def _removeInjectContentListeners(self):
-        self._injectView.onStatusChanged -= self._onViewReady
+        if getattr(self._injectView.viewModel, 'onShowView', None):
+            self._injectView.viewModel.onShowView -= self._onViewReady
+        else:
+            self._injectView.onStatusChanged -= self._onViewReady
+        return
 
     def _makeInjectView(self, openMainRewardView=False, openVehicleSelection=False, openMainView=False):
         if self.__battleMattersController.isPaused():
@@ -79,8 +89,8 @@ class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMet
         self.__battleMattersController.onStateChanged -= self.__onStateChanged
         super(BattleMattersMissionComponent, self)._destroy()
 
-    def _onViewReady(self, state):
-        if state == ViewStatus.LOADED:
+    def _onViewReady(self, *args):
+        if not args or args[0] == ViewStatus.LOADED:
             self.as_showViewS()
 
     def __onStateChanged(self):
@@ -140,8 +150,8 @@ class BattleMattersMainView(ViewImpl):
             return AdditionalRewardsTooltip(packed)
         return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(BattleMattersMainView, self).createToolTipContent(event, contentID)
 
-    def _onLoading(self, *args, **kwargs):
-        super(BattleMattersMainView, self)._onLoading()
+    def _initialize(self, *args, **kwargs):
+        super(BattleMattersMainView, self)._initialize(*args, **kwargs)
         self.__readXML()
         self.__update()
 

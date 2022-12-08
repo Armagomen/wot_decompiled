@@ -2,27 +2,23 @@
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/StrategicCamera.py
 import math
 from collections import namedtuple
-
-import BattleReplay
 import BigWorld
 import Math
+from Math import Vector2, Vector3
+import BattleReplay
 import Settings
 import constants
 import math_utils
 from AvatarInputHandler import cameras, aih_global_binding
-from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, \
-    SPGScrollSmoother
-from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, \
-    SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
-from AvatarInputHandler.cameras import getWorldRayAndPoint, readFloat, readVec2, ImpulseReason, FovExtended
 from BigWorld import StrategicAimingSystem, StrategicAimingSystemRemote
+from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, SPGScrollSmoother
+from AvatarInputHandler.DynamicCameras.camera_switcher import CameraSwitcher, SwitchTypes, CameraSwitcherCollection, SwitchToPlaces, TRANSITION_DIST_HYSTERESIS
+from AvatarInputHandler.cameras import getWorldRayAndPoint, readFloat, readVec2, ImpulseReason, FovExtended
 from ClientArena import Plane
-from Math import Vector2, Vector3
 from account_helpers.settings_core import settings_constants
 from aih_constants import CTRL_MODE_NAME
 from debug_utils import LOG_WARNING
 from helpers.CallbackDelayer import CallbackDelayer
-
 _DistRangeSetting = namedtuple('_DistRangeSetting', ['minArenaSize',
  'distRange',
  'scrollMultiplier',

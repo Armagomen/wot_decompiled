@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/wgnp/general/statuses.py
 import typing
-
 from gui.platform.base.response import Codes
 from gui.platform.base.statuses.constants import StatusTypes
 from gui.platform.base.statuses.status import Status
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.wgnp.general.request import AccountCountryParams
 
 class GeneralAccountCountryStatus(Status):
     __slots__ = ()

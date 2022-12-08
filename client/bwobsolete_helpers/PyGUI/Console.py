@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/Console.py
-import GUI
+import BigWorld, GUI
 import Keys
-
+import math
 from Listeners import registerDeviceListener
 from PyGUIBase import PyGUIBase
-
 MAX_HISTORY_ENTRIES = 50
 
 class Console(PyGUIBase):

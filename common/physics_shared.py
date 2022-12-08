@@ -1,18 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/physics_shared.py
-import collections
-import copy
-import math
-
 import BigWorld
+import ResMgr
 import Math
-
-from constants import IS_CLIENT, IS_EDITOR, SERVER_TICK_LENGTH
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR
-from gun_rotation_shared import encodeRestrictedValueToUint, decodeRestrictedValueFromUint
+import math
+import material_kinds
+import collections
+from items import vehicles, vehicle_items
 from items.components.component_constants import KMH_TO_MS
-from items.vehicles import VEHICLE_PHYSICS_TYPE
-
+from items.vehicles import VEHICLE_PHYSICS_TYPE, VehicleDescriptor, VehicleDescrType
+from math import pi
+from constants import IS_CLIENT, IS_EDITOR, IS_CELLAPP, VEHICLE_PHYSICS_MODE, SERVER_TICK_LENGTH
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_DEBUG_DEV
+import copy
+from items.components import gun_components
+from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES
+from gun_rotation_shared import encodeRestrictedValueToUint, decodeRestrictedValueFromUint
+from typing import Dict, Any
 G = 9.81
 GRAVITY_FACTOR = 1.25
 WEIGHT_SCALE = 0.001

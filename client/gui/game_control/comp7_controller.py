@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/comp7_controller.py
-import itertools
 import logging
-import typing
+import itertools
 from collections import namedtuple
-
+import typing
 import Event
 import adisp
 from comp7_ranks_common import COMP7_RATING_ENTITLEMENT, COMP7_ELITE_ENTITLEMENT, COMP7_ACTIVITY_ENTITLEMENT
@@ -17,6 +16,7 @@ from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.items import ValidationResult
 from gui.prb_control.settings import PRE_QUEUE_RESTRICTION, FUNCTIONAL_FLAG
 from gui.shared import event_dispatcher
+from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.scheduled_notifications import Notifiable, TimerNotifier, SimpleNotifier
 from helpers import dependency
@@ -24,19 +24,17 @@ from helpers import int2roman
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers.time_utils import ONE_SECOND, getTimeDeltaFromNow, getServerUTCTime
 from items import vehicles
+from season_provider import SeasonProvider
 from skeletons.gui.event_boards_controllers import IEventBoardController
 from skeletons.gui.game_control import IComp7Controller, IHangarSpaceSwitchController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-
-from season_provider import SeasonProvider
-
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
-
+    from helpers.server_settings import Comp7Config
+    from items.artefacts import Equipment
 
 class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListener):
     _ALERT_DATA_CLASS = Comp7AlertData
@@ -74,9 +72,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         if self.__roleEquipmentsCache is None:
             equipmentsCache = vehicles.g_cache.equipments()
             roleEquipmentsConfig = self.getModeSettings().roleEquipments
-            self.__roleEquipmentsCache = {role: equipmentsCache[equipmentConfig['equipmentID']] for
-                                          role, equipmentConfig in roleEquipmentsConfig.iteritems() if
-                                          equipmentConfig['equipmentID'] is not None}
+            self.__roleEquipmentsCache = {role:equipmentsCache[equipmentConfig['equipmentID']] for role, equipmentConfig in roleEquipmentsConfig.iteritems() if equipmentConfig['equipmentID'] is not None}
         return self.__roleEquipmentsCache
 
     @property
@@ -112,8 +108,8 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         self.addNotificator(SimpleNotifier(self.getTimer, self.__timerUpdate))
         self.addNotificator(TimerNotifier(self.getTimer, self.__timerTick))
         g_clientUpdateManager.addCallbacks({'cache.entitlements': self.__onEntitlementsChanged,
-                                            'cache.comp7.isOnline': self.__onOfflineStatusChanged,
-                                            'stats.restrictions': self.__onRestrictionsChanged})
+         'cache.comp7.isOnline': self.__onOfflineStatusChanged,
+         'stats.restrictions': self.__onRestrictionsChanged})
 
     def fini(self):
         self.clearNotification()
@@ -245,8 +241,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
 
     def getPlatoonRatingRestriction(self):
         unitMgr = prb_getters.getClientUnitMgr()
-        return self.__comp7Config.squadRatingRestriction.get(unitMgr.unit.getSquadSize(),
-                                                             0) if unitMgr is not None and unitMgr.unit is not None else 0
+        return self.__comp7Config.squadRatingRestriction.get(unitMgr.unit.getSquadSize(), 0) if unitMgr is not None and unitMgr.unit is not None else 0
 
     def _getAlertBlockData(self):
         if self.isOffline:
@@ -257,9 +252,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
             config = self.getModeSettings()
             romanLevels = list(map(int2roman, config.levels))
             vehicleLevelsStr = ', '.join(romanLevels)
-            return self._ALERT_DATA_CLASS.constructForVehicle(levelsStr=vehicleLevelsStr,
-                                                              vehicleIsAvailableForBuy=self.vehicleIsAvailableForBuy(),
-                                                              vehicleIsAvailableForRestore=self.vehicleIsAvailableForRestore())
+            return self._ALERT_DATA_CLASS.constructForVehicle(levelsStr=vehicleLevelsStr, vehicleIsAvailableForBuy=self.vehicleIsAvailableForBuy(), vehicleIsAvailableForRestore=self.vehicleIsAvailableForRestore())
         return super(Comp7Controller, self)._getAlertBlockData()
 
     def __onCheckSceneChange(self):
@@ -373,7 +366,7 @@ class _LeaderboardDataProvider(object):
         return self.__getRanksConfig().eliteRankPercent
 
     def getMinimumPointsNeeded(self):
-        divisions = [d for d in self.__getRanksConfig().divisions if d.rank == self.__MASTER_RANK_ID]
+        divisions = [ d for d in self.__getRanksConfig().divisions if d.rank == self.__MASTER_RANK_ID ]
         return min((division.range.begin for division in divisions))
 
     @adisp.adisp_async
@@ -397,8 +390,7 @@ class _LeaderboardDataProvider(object):
     @adisp.adisp_async
     @adisp.adisp_process
     def getOwnData(self, callback):
-        myInfo = yield self.__eventsController.getMyLeaderboardInfo(self.__EVENT_ID, self.__LEADERBOARD_ID,
-                                                                    showNotification=False)
+        myInfo = yield self.__eventsController.getMyLeaderboardInfo(self.__EVENT_ID, self.__LEADERBOARD_ID, showNotification=False)
         if myInfo is not None:
             position = myInfo.getRank()
             if position is not None:
@@ -457,9 +449,7 @@ class _LeaderboardDataProvider(object):
             _logger.debug('Empty events on controller while requesting pages. Reloading.')
             yield self.__eventsController.getEvents(onlySettings=True)
         for pageID in self.__getPagesToLoad(pageIDs):
-            page = yield self.__eventsController.getLeaderboard(self.__EVENT_ID, self.__LEADERBOARD_ID, pageID + 1,
-                                                                leaderBoardClass=Comp7LeaderBoard,
-                                                                showNotification=False)
+            page = yield self.__eventsController.getLeaderboard(self.__EVENT_ID, self.__LEADERBOARD_ID, pageID + 1, leaderBoardClass=Comp7LeaderBoard, showNotification=False)
             if page is None:
                 result = False
                 break

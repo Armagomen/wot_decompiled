@@ -10,7 +10,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.money import Currency
 from shared_utils import first
 if typing.TYPE_CHECKING:
-    pass
+    from gui.server_events.bonuses import SimpleBonus, ItemsBonus, CustomizationsBonus, GoodiesBonus, CrewBooksBonus, PlusPremiumDaysBonus, CreditsBonus, CrystalBonus, DogTagComponentBonus, VehiclesBonus, DossierBonus
 
 class BonusTypes(enum.IntEnum):
     NONE = 0

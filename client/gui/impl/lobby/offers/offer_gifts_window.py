@@ -3,30 +3,28 @@
 import logging
 import random
 from functools import partial
-
 import ResMgr
-from PlayerEvents import g_playerEvents
 from account_helpers.offers.cache import CachePrefetchResult
 from adisp import adisp_process, adisp_async
 from constants import RentType, PREMIUM_ENTITLEMENTS
-from frameworks.wulf import ViewSettings, ViewFlags
+from PlayerEvents import g_playerEvents
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
-from gui.impl.gen.view_models.views.lobby.offers.gift_model import GiftModel
-from gui.impl.gen.view_models.views.lobby.offers.offer_model import OfferModel
 from gui.impl.lobby.offers import getGfImagePath
-from gui.impl.pub import ViewImpl
 from gui.shared import event_dispatcher
 from gui.shared.gui_items.processors.offers import ReceiveOfferGiftProcessor
 from gui.shared.money import Currency
 from helpers import dependency
+from frameworks.wulf import ViewSettings, ViewFlags
+from gui.impl.gen.view_models.views.lobby.offers.gift_model import GiftModel
+from gui.impl.gen.view_models.views.lobby.offers.offer_model import OfferModel
+from gui.impl.pub import ViewImpl
 from shared_utils import awaitNextFrame
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider, IOffersNovelty
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 RENT_TYPE_TO_MODEL_CONSTANT = {RentType.NO_RENT: GiftModel.RENT_TYPE_NO,
  RentType.TIME_RENT: GiftModel.RENT_TYPE_TIME,

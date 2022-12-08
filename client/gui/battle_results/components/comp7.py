@@ -2,19 +2,17 @@
 # Embedded file name: scripts/client/gui/battle_results/components/comp7.py
 from comp7_ranks_common import MAIN_RANK_NAME, EXTRA_RANK_NAME
 from constants import EntityCaptured
-from constants import FAIRPLAY_VIOLATIONS
 from gui.Scaleform.genConsts.COMP7_CONSTS import COMP7_CONSTS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.battle_results.components import base, style
-from gui.battle_results.components.vehicles import RegularVehicleStatValuesBlock, RegularVehicleStatsBlock, \
-    TeamStatsBlock, _getStunFilter
+from gui.battle_results.components.vehicles import RegularVehicleStatValuesBlock, RegularVehicleStatsBlock, TeamStatsBlock, _getStunFilter
+from constants import FAIRPLAY_VIOLATIONS
 from gui.impl import backport
 from gui.impl.gen.resources import R
 from gui.impl.lobby.comp7 import comp7_shared
 from gui.shared.formatters import text_styles
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 def getFormattedRating(rating):
     return '{:+}'.format(rating)
@@ -56,9 +54,7 @@ class IsDeserterFlag(base.StatsItem):
 
 
 class Comp7RankBlock(base.StatsBlock):
-    __slots__ = (
-    'linkage', 'title', 'descr', 'icon', 'ratingDiff', 'hasProgressBar', 'progressBegin', 'progressCurrent',
-    'progressTotal', 'ratingTotal')
+    __slots__ = ('linkage', 'title', 'descr', 'icon', 'ratingDiff', 'hasProgressBar', 'progressBegin', 'progressCurrent', 'progressTotal', 'ratingTotal')
     __lobbyCtx = dependency.descriptor(ILobbyContext)
 
     def __init__(self, meta=None, field='', *path):
@@ -93,8 +89,7 @@ class Comp7RankBlock(base.StatsBlock):
         self.progressBegin = currentDivision.range.begin
         self.progressCurrent = currentRating
         self.progressTotal = currentDivision.range.end + 1
-        self.ratingTotal = text_styles.counter(
-            backport.text(R.strings.comp7.battleResult.subTask.rating(), rating=currentRating))
+        self.ratingTotal = text_styles.counter(backport.text(R.strings.comp7.battleResult.subTask.rating(), rating=currentRating))
 
     @classmethod
     def __getDescription(cls, achievedRating, division):
@@ -103,8 +98,7 @@ class Comp7RankBlock(base.StatsBlock):
         extraPropertyName = ''
         if isExtraRank:
             extraPropertyName = 'Elite' if isElite else 'Master'
-        propertyName = '{}{}Rating'.format('get' if achievedRating >= 0 else 'lose',
-                                           extraPropertyName if extraPropertyName else '')
+        propertyName = '{}{}Rating'.format('get' if achievedRating >= 0 else 'lose', extraPropertyName if extraPropertyName else '')
         ranksConfig = cls.__lobbyCtx.getServerSettings().comp7PrestigeRanksConfig
         ratingText = R.strings.comp7.battleResult.subTask.descr.dyn(propertyName)()
         return text_styles.main(backport.text(ratingText, topPercentage=ranksConfig.eliteRankPercent))
@@ -121,19 +115,14 @@ class Comp7RankBlock(base.StatsBlock):
             title = R.strings.comp7.battleResult.subTask.title.decrease()
         else:
             title = R.strings.comp7.battleResult.subTask.title.noRaise()
-        return text_styles.middleTitle(backport.text(title, division=backport.text(R.strings.comp7.division.text(),
-                                                                                   division=backport.text(
-                                                                                       R.strings.comp7.division.num(
-                                                                                           currentDivisionValue)())),
-                                                     rank=backport.text(R.strings.comp7.rank.num(currentRankValue)())))
+        return text_styles.middleTitle(backport.text(title, division=backport.text(R.strings.comp7.division.text(), division=backport.text(R.strings.comp7.division.num(currentDivisionValue)())), rank=backport.text(R.strings.comp7.rank.num(currentRankValue)())))
 
     @staticmethod
     def __getRatingDiff(achievedRating):
         formattedRating = getFormattedRating(achievedRating)
         if achievedRating < 0:
             return text_styles.error(formattedRating)
-        return text_styles.tutorial(formattedRating) if achievedRating == 0 else text_styles.bonusAppliedText(
-            formattedRating)
+        return text_styles.tutorial(formattedRating) if achievedRating == 0 else text_styles.bonusAppliedText(formattedRating)
 
 
 class Comp7VehicleStatsBlock(RegularVehicleStatsBlock):
@@ -163,8 +152,7 @@ class Comp7VehicleStatValuesBlock(RegularVehicleStatValuesBlock):
         poiCaptured = result.entityCaptured
         self.damageDealtBySkills = style.getIntegralFormatIfNoEmpty(result.equipmentDamageDealt)
         self.healed = (result.healthRepair, result.alliedHealthRepair)
-        self.capturedPointsOfInterest = style.getIntegralFormatIfNoEmpty(
-            poiCaptured.get(EntityCaptured.POI_CAPTURABLE, 0))
+        self.capturedPointsOfInterest = style.getIntegralFormatIfNoEmpty(poiCaptured.get(EntityCaptured.POI_CAPTURABLE, 0))
         self.roleSkillUsed = style.getIntegralFormatIfNoEmpty(result.roleSkillUsed)
 
 

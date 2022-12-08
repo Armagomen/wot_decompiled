@@ -1,21 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/plugins.py
 import logging
-import typing
 from collections import namedtuple
 from functools import partial
-
+import typing
 import wg_async as future_async
+from constants import IS_EDITOR
 from account_helpers import isLongDisconnectedFromCenter
 from account_helpers.AccountSettings import AccountSettings
 from adisp import adisp_async, adisp_process
 from gui import DialogsInterface, makeHtmlString
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view import dialogs
-from gui.Scaleform.daapi.view.dialogs import CheckBoxDialogMeta, CrewSkinsRemovalCompensationDialogMeta, \
-    CrewSkinsRemovalDialogMeta, DIALOG_BUTTON_ID, HtmlMessageDialogMeta, HtmlMessageLocalDialogMeta, \
-    I18nConfirmDialogMeta, I18nInfoDialogMeta, IconDialogMeta, IconPriceDialogMeta, PMConfirmationDialogMeta, \
-    TankmanOperationDialogMeta
+from gui.Scaleform.daapi.view.dialogs import CheckBoxDialogMeta, CrewSkinsRemovalCompensationDialogMeta, CrewSkinsRemovalDialogMeta, DIALOG_BUTTON_ID, HtmlMessageDialogMeta, HtmlMessageLocalDialogMeta, I18nConfirmDialogMeta, I18nInfoDialogMeta, IconDialogMeta, IconPriceDialogMeta, PMConfirmationDialogMeta, TankmanOperationDialogMeta
 from gui.Scaleform.daapi.view.dialogs.missions_dialogs_meta import UseAwardSheetDialogMeta
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.game_control import restore_contoller
@@ -25,6 +22,7 @@ from gui.impl.gen import R
 from gui.shared.formatters.tankmen import formatDeletedTankmanStr
 from gui.shared.gui_items import GUI_ITEM_ECONOMY_CODE, GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TAGS
+from gui.shared.gui_items.artefacts import OptionalDevice
 from gui.shared.gui_items.vehicle_equipment import EMPTY_ITEM
 from gui.shared.money import Currency
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -41,9 +39,11 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
+if not IS_EDITOR:
+    from gui.impl.pub.dialog_window import DialogResult, DialogButtons
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from post_progression_common import ACTION_TYPES
 _logger = logging.getLogger(__name__)
 PluginResult = namedtuple('PluginResult', 'success errorMsg ctx')
 
@@ -956,6 +956,41 @@ class BattleBoosterValidator(SyncValidator):
 
     def _validate(self):
         return makeError('disabledService') if self.boosters and not self.__lobbyContext.getServerSettings().isBattleBoostersEnabled() else makeSuccess()
+
+
+class AsyncDialogConfirmator(AsyncConfirmator):
+
+    def __init__(self, dialogMethod, *args, **kwargs):
+        super(AsyncDialogConfirmator, self).__init__()
+        self.__dialogMethod = dialogMethod
+        self.__dialogArgs = args
+        self.__dialogKwargs = kwargs
+        self.__dialogResult = None
+        return
+
+    def getResult(self):
+        return self.__dialogResult
+
+    @adisp_async
+    def _confirm(self, callback):
+        self._makeConfirm(callback)
+
+    @future_async.wg_async
+    def _makeConfirm(self, callback):
+        Waiting.suspend()
+        dialog = self.__dialogMethod(*self.__dialogArgs, **self.__dialogKwargs)
+        self.__dialogResult = yield future_async.wg_await(dialog)
+        Waiting.resume()
+        if isinstance(self.__dialogResult, DialogResult):
+            result = self.__dialogResult.result in DialogButtons.ACCEPT_BUTTONS
+        elif isinstance(self.__dialogResult, tuple):
+            result, _ = self.__dialogResult
+        else:
+            result = self.__dialogResult
+        if result:
+            callback(makeSuccess())
+            return
+        callback(makeError())
 
 
 class DismountForDemountKitValidator(SyncValidator):

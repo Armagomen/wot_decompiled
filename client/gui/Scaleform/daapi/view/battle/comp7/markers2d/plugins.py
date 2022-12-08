@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/markers2d/plugins.py
 import BigWorld
-from account_helpers.settings_core.settings_constants import MARKERS
+import settings
 from constants import ROLE_TYPE_TO_LABEL, ROLE_TYPE, INVALID_TIMESTAMP, ARENA_PERIOD
+from account_helpers.settings_core.settings_constants import MARKERS
 from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import SettingsPlugin
 from gui.Scaleform.daapi.view.battle.shared.markers2d.vehicle_plugins import VehicleMarkerPlugin
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 from gui.battle_control import avatar_getter
 from gui.battle_control.arena_info.arena_vos import Comp7Keys
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
-
-import settings
-
 _COMP7_STATUS_EFFECTS_PRIORITY = (BATTLE_MARKER_STATES.STUN_STATE, BATTLE_MARKER_STATES.COMP7_AOE_HEAL_STATE, BATTLE_MARKER_STATES.COMP7_AOE_INSPIRE_STATE)
 
 class Comp7SettingsPlugin(SettingsPlugin):

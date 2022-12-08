@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/products_fetcher/subscriptions/subscriptions_descriptor.py
 import typing
-
 from gui.platform.products_fetcher.product_descriptor import ProductDescriptor
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.server_events import IEventsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.server_events.event_items import Quest
 
 class SubscriptionDescriptor(ProductDescriptor):
     _lobbyContext = dependency.descriptor(ILobbyContext)
@@ -79,7 +77,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
     def getPrimeGamingQuest(self):
         if self.__primeGamingQuest:
             return self.__primeGamingQuest
-        quests = self.__eventsCache.getQuests(self.__twitchFilterFunc)
+        quests = self.__eventsCache.getAllQuests(self.__twitchFilterFunc)
         for quest in quests.values():
             conditionTokens = quest.accountReqs.getTokens()
             isPrimeGamingQuest = all((self.__PRIME_GAMING_FILTER_STR in token.getID() for token in conditionTokens))
@@ -91,7 +89,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
     def getOfferToken(self):
         if self._offerToken:
             return self._offerToken
-        quests = self.__eventsCache.getQuests(self.__twitchFilterFunc)
+        quests = self.__eventsCache.getAllQuests(self.__twitchFilterFunc)
         for quest in quests.values():
             bonuses = quest.getBonuses('tokens')
             for bonus in bonuses:

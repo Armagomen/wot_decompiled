@@ -2,22 +2,19 @@
 # Embedded file name: scripts/client/predefined_hosts.py
 import operator
 import random
-import threading
 import time
+import threading
 import urllib2
-from collections import namedtuple
 from urllib import urlencode
-
+from collections import namedtuple
 import BigWorld
 import ResMgr
 import constants
 from Event import Event, EventManager
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_WARNING, LOG_NOTE
-from shared_utils import BitmaskHelper
-
-from helpers import i18n
 from helpers.time_utils import ONE_MINUTE
-
+from shared_utils import BitmaskHelper
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_WARNING, LOG_NOTE
+from helpers import i18n
 AUTO_LOGIN_QUERY_ENABLED = not constants.IS_DEVELOPMENT
 AUTO_LOGIN_QUERY_URL = 'auto.login.app:0000'
 AUTO_LOGIN_QUERY_TIMEOUT = 5

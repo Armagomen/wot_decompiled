@@ -5,20 +5,17 @@ import struct
 import weakref
 from collections import namedtuple
 from typing import TYPE_CHECKING
-
-from UnitRoster import BaseUnitRosterSlot, _BAD_CLASS_INDEX, buildNamesDict, reprBitMaskFromDict
 from constants import VEHICLE_CLASS_INDICES, PREBATTLE_TYPE, QUEUE_TYPE, INVITATION_TYPE
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV
 from items import vehicles
 from items.badges_common import BadgesCommon
+from UnitRoster import BaseUnitRosterSlot, _BAD_CLASS_INDEX, buildNamesDict, reprBitMaskFromDict
 from ops_pack import OpsUnpacker, packPascalString, unpackPascalString, initOpsFormatDef
 from unit_helpers.ExtrasHandler import EmptyExtrasHandler, ClanBattleExtrasHandler
 from unit_helpers.ExtrasHandler import SquadExtrasHandler, ExternalExtrasHandler
-from unit_roster_config import SquadRoster, UnitRoster, SpecRoster, EventRoster, EpicRoster, BattleRoyaleRoster, \
-    MapBoxRoster, FunRandomRoster, Comp7Roster
-
+from unit_roster_config import SquadRoster, UnitRoster, SpecRoster, EventRoster, EpicRoster, BattleRoyaleRoster, MapBoxRoster, FunRandomRoster, Comp7Roster
 if TYPE_CHECKING:
-    pass
+    from typing import List as TList, Tuple as TTuple, Dict as TDict
 UnitVehicle = namedtuple('UnitVehicle', ('vehInvID', 'vehTypeCompDescr', 'vehLevel', 'vehClassIdx'))
 ProfileVehicle = namedtuple('ProfileVehicle', ('vehCompDescr', 'vehOutfitCD', 'seasonType', 'marksOnGun'))
 
@@ -339,6 +336,7 @@ class CLIENT_UNIT_CMD:
     SET_ARENA_TYPE = 26
     SET_ONLY_10_MODE = 27
     SET_SQUAD_SIZE = 28
+    CHANGE_FUN_EVENT_ID = 29
 
 
 CMD_NAMES = dict([ (v, k) for k, v in CLIENT_UNIT_CMD.__dict__.items() if not k.startswith('__') ])
@@ -1220,7 +1218,7 @@ class UnitBase(OpsUnpacker):
                 self._squadSize = newSquadSize
                 self.storeOp(UNIT_OP.SQUAD_SIZE, newSquadSize)
                 for accountDBID, _ in self._players.iteritems():
-                    self._storeNotification(accountDBID, UNIT_NOTIFY_CMD.CHANGE_SQUAD_SIZE, [newSquadSize])
+                    self._storeNotification(accountDBID, UNIT_NOTIFY_CMD.CHANGE_SQUAD_SIZE, [newSquadSize, bool(self._freeSlots)])
 
                 self._dirty = 1
             return OK

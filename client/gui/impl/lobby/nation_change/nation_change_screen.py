@@ -16,8 +16,8 @@ from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_device_mod
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_screen_model import NationChangeScreenModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_shell_model import NationChangeShellModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_supply_model import NationChangeSupplyModel
-from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tank_setup_model import NationChangeTankSetupModel
 from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tankman_model import NationChangeTankmanModel
+from gui.impl.gen.view_models.views.lobby.nation_change.nation_change_tank_setup_model import NationChangeTankSetupModel
 from gui.impl.pub import ViewImpl
 from gui.shared import event_dispatcher
 from gui.shared.gui_items.Vehicle import getNationLessName, getIconResourceName, sortCrew
@@ -34,7 +34,6 @@ from nation_change.nation_change_helpers import iterVehTypeCDsInNationGroup
 from post_progression_common import SERVER_SETTINGS_KEY, SWITCH_LAYOUT_CAPACITY
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 class NationChangeScreen(ViewImpl):
     __itemsCache = descriptor(IItemsCache)
@@ -221,6 +220,8 @@ class NationChangeScreen(ViewImpl):
             deviceModel.setIsImproved(device.isDeluxe)
             deviceModel.setIsTrophyBasic(device.isUpgradable)
             deviceModel.setIsTrophyUpgraded(device.isUpgraded)
+            deviceModel.setIsModernized(device.isModernized)
+            deviceModel.setLevel(device.level)
             deviceModel.setIntCD(device.intCD)
             slotVM.addViewModel(deviceModel)
             hasDevices = True

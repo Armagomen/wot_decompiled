@@ -3,15 +3,12 @@
 import sys
 import weakref
 from collections import deque
-from functools import wraps, partial
-
+from soft_exception import SoftException
 import BigWorld
-
 from BWUtil import AsyncReturn
+from functools import wraps, partial
 from constants import IS_DEVELOPMENT, IS_CLIENT
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_WARNING, LOG_DEBUG, LOG_DEBUG_DEV
-from soft_exception import SoftException
-
 
 def wg_async(func):
 

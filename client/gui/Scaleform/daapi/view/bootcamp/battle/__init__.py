@@ -1,19 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/battle/__init__.py
 import typing
-
-from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.bootcamp.BCBattlePage import BootcampMinimapComponent
-from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings
-from gui.Scaleform.framework.package_layout import PackageBusinessHandler
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
-
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings
+from gui.Scaleform.framework.package_layout import PackageBusinessHandler
+from gui.Scaleform.daapi.view.bootcamp.BCBattlePage import BootcampMinimapComponent
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
+from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.events import LoadViewEvent
 
 def getContextMenuHandlers():
     pass

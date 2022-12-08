@@ -1,18 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSummaryWindow.py
 from adisp import adisp_process
-from gui.Scaleform.daapi.view.meta.ProfileSummaryWindowMeta import ProfileSummaryWindowMeta
-from gui.Scaleform.locale.PROFILE import PROFILE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.clans.clan_helpers import ClanListener
-from gui.clans.formatters import getClanRoleString
 from gui.impl import backport
 from gui.shared import event_dispatcher as shared_events
+from helpers.i18n import makeString as _ms
+from gui.clans.clan_helpers import ClanListener
+from gui.clans.formatters import getClanRoleString
 from gui.shared.ClanCache import ClanInfo
 from gui.shared.formatters import text_styles
 from gui.shared.view_helpers.emblems import ClanEmblemsHelper
-from helpers.i18n import makeString as _ms
-
+from gui.Scaleform.daapi.view.meta.ProfileSummaryWindowMeta import ProfileSummaryWindowMeta
+from gui.Scaleform.locale.PROFILE import PROFILE
 
 class ProfileSummaryWindow(ProfileSummaryWindowMeta, ClanEmblemsHelper, ClanListener):
 

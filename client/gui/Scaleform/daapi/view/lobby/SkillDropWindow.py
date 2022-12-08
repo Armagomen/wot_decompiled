@@ -2,37 +2,35 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/SkillDropWindow.py
 import cPickle as pickle
 import time
-from typing import TYPE_CHECKING
-
+from typing import TYPE_CHECKING, Optional
+from wg_async import wg_await, wg_async
 from chat_shared import SYS_MESSAGE_TYPE
 from constants import SwitchState
-from gui import SystemMessages
-from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.Scaleform.daapi.view.meta.SkillDropMeta import SkillDropMeta
-from gui.Scaleform.genConsts.SKILLS_CONSTANTS import SKILLS_CONSTANTS
-from gui.Scaleform.locale.MENU import MENU
 from gui.impl.dialogs.dialogs import showDropSkillDialog
-from gui.shared import events
-from gui.shared.formatters import text_styles
-from gui.shared.gui_items.Tankman import Tankman
-from gui.shared.gui_items.processors.tankman import TankmanDropSkills
-from gui.shared.gui_items.serializers import packTankman, packDropSkill, repackTankmanWithSkinData
-from gui.shared.money import Money, Currency
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
-from gui.shared.tooltips.formatters import packActionTooltipData
-from gui.shared.utils import decorators
 from gui.shop import showBuyGoldForCrew
 from helpers import dependency
-from helpers import i18n
 from items import tankmen
+from gui import SystemMessages
+from gui.shared.utils import decorators
+from gui.shared.formatters import text_styles
+from gui.shared.gui_items.serializers import packTankman, packDropSkill, repackTankmanWithSkinData
+from gui.shared.gui_items.Tankman import Tankman
+from gui.shared.gui_items.processors.tankman import TankmanDropSkills
+from gui.shared.money import Money, Currency
+from gui.shared.tooltips.formatters import packActionTooltipData
+from gui.Scaleform.daapi.view.meta.SkillDropMeta import SkillDropMeta
+from gui.shared import events
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.Scaleform.genConsts.SKILLS_CONSTANTS import SKILLS_CONSTANTS
+from gui.Scaleform.locale.MENU import MENU
+from helpers import i18n
 from messenger import MessengerEntry
 from skeletons.gui.goodies import IGoodiesCache
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_await, wg_async
-
+from skeletons.gui.lobby_context import ILobbyContext
 if TYPE_CHECKING:
-    pass
+    from gui.goodies.goodie_items import RecertificationForm
 _switchToWindowState = {SwitchState.ENABLED.value: SKILLS_CONSTANTS.RECERTIFICATION_USABLE,
  SwitchState.DISABLED.value: SKILLS_CONSTANTS.RECERTIFICATION_HIDDEN,
  SwitchState.INACTIVE.value: SKILLS_CONSTANTS.RECERTIFICATION_VISIBLE_DISABLED}

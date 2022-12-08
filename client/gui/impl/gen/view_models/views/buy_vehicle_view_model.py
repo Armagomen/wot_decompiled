@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/buy_vehicle_view_model.py
-from frameworks.wulf import ViewModel
 from gui.impl.gen import R
+from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 from gui.impl.gen.view_models.views.buy_vehicle_view.equipment_block_model import EquipmentBlockModel
 from gui.impl.gen.view_models.views.buy_vehicle_view.vehicle_congratulation_model import VehicleCongratulationModel
-
 
 class BuyVehicleViewModel(ViewModel):
     __slots__ = ('onCloseBtnClick', 'onBuyBtnClick', 'onInHangarClick', 'onBackClick', 'onCommanderLvlChange', 'onCheckboxWithoutCrewChanged', 'onDisclaimerClick')

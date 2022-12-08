@@ -2,18 +2,16 @@
 # Embedded file name: scripts/common/visual_script/__init__.py
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
-
 import ability_common
-import arena_blocks
-import balance
-import bitmask_blocks_common
-import entity_blocks
 import example
 import general
+import vehicle_blocks
 import qa_blocks
 import qa_education_blocks
-import vehicle_blocks
-
+import balance
+import entity_blocks
+import arena_blocks
+import bitmask_blocks_common
 g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.SERVER)
 g_blockRegistrar.regBlocksFromModule(example)
 g_blockRegistrar.regTypesFromModule(example)

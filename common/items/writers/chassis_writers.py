@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/writers/chassis_writers.py
-from Math import Vector3
 from items import _xml
-
 from . import shared_writers
-
+from items.components import component_constants
+from Math import Vector3
+import ResMgr
 
 def writeWheelsAndGroups(wheelsConfig, section):
     wheelId = 0

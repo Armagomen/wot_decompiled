@@ -5,27 +5,26 @@ from UnitBase import UNIT_ROLE
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL, PREBATTLE_TYPE
 from constants import VEHICLE_CLASS_INDICES, VEHICLE_CLASSES
 from gui import makeHtmlString
-from gui.Scaleform.daapi.view.lobby.cyberSport import PLAYER_GUI_STATUS, SLOT_LABEL
-from gui.Scaleform.genConsts.FORTIFICATION_ALIASES import FORTIFICATION_ALIASES as FORT_ALIAS
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
-from gui.Scaleform.locale.MESSENGER import MESSENGER
-from gui.Scaleform.locale.PLATOON import PLATOON
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.settings import ICONS_SIZES
+from helpers import dependency
 from gui.impl import backport
 from gui.impl.gen.resources import R
+from gui.shared.utils.functions import getArenaShortName
+from gui.Scaleform.daapi.view.lobby.cyberSport import PLAYER_GUI_STATUS, SLOT_LABEL
+from gui.Scaleform.genConsts.FORTIFICATION_ALIASES import FORTIFICATION_ALIASES as FORT_ALIAS
+from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
+from gui.Scaleform.locale.MESSENGER import MESSENGER
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.PLATOON import PLATOON
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.prb_control import settings
-from gui.prb_control.items.stronghold_items import SUPPORT_TYPE, REQUISITION_TYPE, HEAVYTRUCKS_TYPE, BOOST_TYPE, \
-    ARTILLERY_STRIKE, REQUISITION, HIGH_CAPACITY_TRANSPORT, INSPIRATION
 from gui.prb_control.settings import UNIT_RESTRICTION
 from gui.shared.formatters import icons, text_styles
 from gui.shared.formatters.ranges import toRomanRangeString
 from gui.shared.gui_items.Vehicle import VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED, Vehicle, getIconResourceName
-from gui.shared.utils.functions import getArenaShortName
 from gui.shared.utils.functions import makeTooltip
-from helpers import dependency
+from gui.prb_control.items.stronghold_items import SUPPORT_TYPE, REQUISITION_TYPE, HEAVYTRUCKS_TYPE, BOOST_TYPE, ARTILLERY_STRIKE, REQUISITION, HIGH_CAPACITY_TRANSPORT, INSPIRATION
 from helpers import i18n
 from messenger import g_settings
 from messenger.m_constants import USER_GUI_TYPE, PROTO_TYPE, USER_TAG
@@ -35,7 +34,6 @@ from nations import INDICES as NATIONS_INDICES, NAMES as NATIONS_NAMES
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 MAX_PLAYER_COUNT_ALL = 0
 
 def getPlayerStatus(slotState, pInfo):

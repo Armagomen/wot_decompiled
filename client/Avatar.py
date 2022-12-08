@@ -1,58 +1,38 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/Avatar.py
 import cPickle
+import logging
 import math
 import weakref
 import zlib
 from functools import partial
-from typing import TYPE_CHECKING
-
-import AccountCommands
-import BWReplay
 import BigWorld
-import CGF
-import ClientArena
-import Event
+import BWReplay
+import Keys
 import Math
 import ResMgr
+import WWISE
 import WoT
-import constants
-from ClientChat import ClientChat
-from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
-from battle_modifiers_common import getModificationCache
-from battle_results_shared import AVATAR_PRIVATE_STATS, listToDict
-from constants import ARENA_PERIOD, AIMING_MODE, VEHICLE_SETTING, DEVELOPMENT_INFO, ARENA_GUI_TYPE
-from constants import DEFAULT_VECTOR_3
-from constants import DROWN_WARNING_LEVEL
-from constants import DUAL_GUN, DUALGUN_CHARGER_STATUS, DUALGUN_CHARGER_ACTION_TYPE
-from constants import TARGET_LOST_FLAGS
-from constants import VEHICLE_MISC_STATUS, VEHICLE_HIT_FLAGS, VEHICLE_SIEGE_STATE, ROLE_TYPE
-from debug_utils import LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_CODEPOINT_WARNING, \
-    LOG_NOTE
-from gun_rotation_shared import decodeGunAngles
-from items import ITEM_TYPE_INDICES, getTypeOfCompactDescr, vehicles
-from material_kinds import EFFECT_MATERIALS
-from physics_shared import computeBarrelLocalPoint
-from shared_utils.avatar_helpers import DualGun
-from soft_exception import SoftException
-from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN, STREAM_ID_AVATAR_BATTLE_RESULS
-
+import CGF
 import Account
+import AccountCommands
 import AreaDestructibles
 import AvatarInputHandler
 import AvatarPositionControl
 import BattleReplay
+import ClientArena
 import CommandMapping
+import Event
 import FlockManager
-import Keys
 import MusicControllerWWISE
 import ProjectileMover
 import SoundGroups
 import TriggersManager
-import VOIP
 import Vehicle
-import WWISE
+import VehicleGunRotator
+import VehicleObserverGunRotator
 import Weather
+import constants
 from AimSound import AimSound
 from AvatarInputHandler import cameras, keys_handlers
 from AvatarInputHandler.RespawnDeathMode import RespawnDeathMode
@@ -60,11 +40,13 @@ from AvatarInputHandler.control_modes import ArcadeControlMode, VideoCameraContr
 from AvatarInputHandler.epic_battle_death_mode import DeathFreeCamMode
 from BattleReplay import CallbackDataNames
 from ChatManager import chatManager
+from ClientChat import ClientChat
 from Flock import DebugLine
 from OfflineMapCreator import g_offlineMapCreator
 from PlayerEvents import g_playerEvents
 from TriggersManager import TRIGGER_TYPE
 from account_helpers import BattleResultsCache, ClientInvitations
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from avatar_components.AvatarObserver import AvatarObserver
 from avatar_components.CombatEquipmentManager import CombatEquipmentManager
 from avatar_components.VehiclesSpawnListStorage import VehiclesSpawnListStorage
@@ -78,22 +60,33 @@ from avatar_components.vehicle_health_broadcast_listener_component import Vehicl
 from avatar_components.vehicle_removal_controller import VehicleRemovalController
 from avatar_components.visual_script_controller import VisualScriptController
 from avatar_helpers import AvatarSyncData
+from battle_results_shared import AVATAR_PRIVATE_STATS, listToDict
 from bootcamp.Bootcamp import g_bootcamp
+from constants import ARENA_PERIOD, AIMING_MODE, VEHICLE_SETTING, DEVELOPMENT_INFO, ARENA_GUI_TYPE
+from constants import DEFAULT_VECTOR_3
+from constants import DROWN_WARNING_LEVEL
+from constants import DUAL_GUN, DUALGUN_CHARGER_STATUS, DUALGUN_CHARGER_ACTION_TYPE
+from constants import TARGET_LOST_FLAGS
+from constants import VEHICLE_MISC_STATUS, VEHICLE_HIT_FLAGS, VEHICLE_SIEGE_STATE
+from debug_utils import LOG_DEBUG, LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_CODEPOINT_WARNING, LOG_NOTE
 from gui import GUI_CTRL_MODE_FLAG, IngameSoundNotifications, SystemMessages
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.app_loader import settings as app_settings
 from gui.battle_control import BattleSessionSetup
 from gui.battle_control import event_dispatcher as gui_event_dispatcher
-from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, CANT_SHOOT_ERROR, DestroyTimerViewState, \
-    DeathZoneTimerViewState, TIMER_VIEW_STATE, ENTITY_IN_FOCUS_TYPE
+from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, CANT_SHOOT_ERROR, DestroyTimerViewState, DeathZoneTimerViewState, TIMER_VIEW_STATE, ENTITY_IN_FOCUS_TYPE
 from gui.prb_control.formatters import messages
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.sounds.epic_sound_constants import EPIC_SOUND
 from gui.wgnc import g_wgncProvider
+from gun_rotation_shared import decodeGunAngles
 from helpers import bound_effects, dependency, uniprof
-from math_utils import almostZero
-from messenger import MessengerEntry
+from items import ITEM_TYPE_INDICES, getTypeOfCompactDescr, vehicles
+from material_kinds import EFFECT_MATERIALS
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
+from physics_shared import computeBarrelLocalPoint
+from shared_utils.avatar_helpers import DualGun
+from math_utils import almostZero
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
@@ -101,10 +94,13 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.helpers.statistics import IStatisticsCollector
+from soft_exception import SoftException
+from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN, STREAM_ID_AVATAR_BATTLE_RESULS
 from vehicle_systems.stricted_loading import makeCallbackWeak
-
-if TYPE_CHECKING:
-    pass
+from messenger import MessengerEntry
+from battle_modifiers_common import getModificationCache
+import VOIP
+_logger = logging.getLogger(__name__)
 
 class _CRUISE_CONTROL_MODE(object):
     NONE = 0
@@ -199,7 +195,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
     followTeamID = property(lambda self: self.observableTeamID if self.observableTeamID else self.team)
 
     def __init__(self):
-        LOG_DEBUG('client Avatar.init')
+        _logger.info('client Avatar.init')
         ClientChat.__init__(self)
         for comp in AVATAR_COMPONENTS:
             comp.__init__(self)
@@ -284,7 +280,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
 
     def onBecomePlayer(self):
         uniprof.enterToRegion('avatar.entering')
-        LOG_DEBUG('[INIT_STEPS] Avatar.onBecomePlayer')
+        _logger.info('[INIT_STEPS] Avatar.onBecomePlayer')
         self.__dynamicObjectsCache.load(self.arenaGuiType)
         BigWorld.cameraSpaceID(0)
         BigWorld.camera(BigWorld.CursorCamera())
@@ -403,7 +399,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
     def onBecomeNonPlayer(self):
         uniprof.exitFromRegion('avatar.arena.battle')
         uniprof.enterToRegion('avatar.exiting')
-        LOG_DEBUG('[INIT_STEPS] Avatar.onBecomeNonPlayer')
+        _logger.info('[INIT_STEPS] Avatar.onBecomeNonPlayer')
         try:
             if self.gunRotator is not None:
                 self.gunRotator.destroy()
@@ -531,7 +527,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         return
 
     def onEnterWorld(self, prereqs):
-        LOG_DEBUG('[INIT_STEPS] Avatar.onEnterWorld')
+        _logger.info('[INIT_STEPS] Avatar.onEnterWorld')
         if self.__initProgress & _INIT_STEPS.ENTERED_WORLD > 0:
             return
         else:
@@ -555,12 +551,12 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
             return
 
     def onLeaveWorld(self):
-        LOG_DEBUG('[INIT_STEPS] Avatar.onLeaveWorld')
+        _logger.info('[INIT_STEPS] Avatar.onLeaveWorld')
         self.__consistentMatrices.notifyLeaveWorld(self)
         self.__cancelWaitingForCharge()
 
     def onVehicleChanged(self):
-        LOG_DEBUG('Avatar vehicle has changed to %s' % self.vehicle)
+        _logger.info('Avatar vehicle has changed to %s', self.vehicle)
         AvatarObserver.onVehicleChanged(self)
         if self.vehicle is not None:
             self.__consistentMatrices.notifyVehicleChanged(self)
@@ -593,7 +589,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         return
 
     def onSpaceLoaded(self):
-        LOG_DEBUG('[INIT_STEPS] Avatar.onSpaceLoaded')
+        _logger.info('[INIT_STEPS] Avatar.onSpaceLoaded')
         self.__applyTimeAndWeatherSettings()
         self.__initProgress |= _INIT_STEPS.SPACE_LOADED
         self.__onInitStepCompleted()
@@ -868,7 +864,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                 if not isComp7 and cmdMap.isFired(CommandMapping.CMD_VOICECHAT_ENABLE, key) and not isDown:
                     if self.__isPlayerInSquad() and not BattleReplay.isPlaying():
                         if VOIP.getVOIPManager().isVoiceSupported():
-                            gui_event_dispatcher.toggleVoipChannelEnabled()
+                            gui_event_dispatcher.toggleVoipChannelEnabled(self.arenaBonusType)
                     return True
                 if cmdMap.isFired(CommandMapping.CMD_VEHICLE_MARKERS_SHOW_INFO, key):
                     gui_event_dispatcher.showExtendedInfo(isDown)
@@ -876,35 +872,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                 if cmdMap.isFired(CommandMapping.CMD_SHOW_HELP, key) and isDown and mods == 0:
                     if g_bootcamp.isRunning():
                         return True
-                    vehicle = self.getVehicleAttached()
-                    if vehicle is not None:
-                        ctx = None
-                        vTypeDesc = vehicle.typeDescriptor
-                        vehicleWithCustomMechanics = vTypeDesc.isWheeledVehicle or vTypeDesc.isTrackWithinTrack or vTypeDesc.isDualgunVehicle or vTypeDesc.hasTurboshaftEngine or vTypeDesc.hasRocketAcceleration
-                        isRanked = self.arenaBonusType == constants.ARENA_BONUS_TYPE.RANKED
-                        isFunRandom = self.arenaBonusType == constants.ARENA_BONUS_TYPE.FUN_RANDOM
-                        if isRanked or isFunRandom or vehicleWithCustomMechanics:
-                            ctx = {'isFunRandom': isFunRandom,
-                             'vehName': vehicle.typeDescriptor.type.userString,
-                             'roleType': vTypeDesc.role if isRanked else ROLE_TYPE.NOT_DEFINED,
-                             'isWheeled': vTypeDesc.isWheeledVehicle,
-                             'isTrackWithinTrack': vTypeDesc.isTrackWithinTrack,
-                             'isDualGun': vTypeDesc.isDualgunVehicle,
-                             'hasTurboshaftEngine': vTypeDesc.hasTurboshaftEngine,
-                             'hasRocketAcceleration': vTypeDesc.hasRocketAcceleration,
-                             'hasBurnout': vTypeDesc.hasBurnout,
-                             'hasSiegeMode': vTypeDesc.hasSiegeMode,
-                             'hasUniqueVehicleHelpScreen': True}
-                        if self.arenaBonusType in constants.ARENA_BONUS_TYPE.BATTLE_ROYALE_RANGE:
-                            ctx = {'battleRoyale': True,
-                             'mapGeometryName': self.arena.arenaType.geometryName,
-                             'hasUniqueVehicleHelpScreen': True}
-                        elif self.arenaGuiType == constants.ARENA_GUI_TYPE.COMP7:
-                            ctx = {'isComp7': True}
-                        if ctx:
-                            gui_event_dispatcher.toggleHelpDetailed(ctx)
-                            return True
-                    gui_event_dispatcher.toggleHelp()
+                    return self.sessionProvider.shared.ingameHelp.showIngameHelp(self.getVehicleAttached())
                 if key == Keys.KEY_F12 and isDown and mods == 0 and constants.HAS_DEV_RESOURCES:
                     self.__dumpVehicleState()
                     return True
@@ -1782,8 +1750,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         g_bootcamp.onBattleAction(details[0], details[1:])
 
     def updateArena(self, updateType, argStr):
-        if self.arena:
-            self.arena.update(updateType, argStr)
+        self.arena.update(updateType, argStr)
 
     def updatePositions(self, indices, positions):
         try:
@@ -2151,7 +2118,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                 self.inputHandler.selectPlayer(vehicleID)
 
     def leaveArena(self):
-        LOG_DEBUG('Avatar.leaveArena')
+        _logger.info('Avatar.leaveArena')
         from helpers import statistics
         self.statsCollector.noteLastArenaData(self.arenaTypeID, self.arenaUniqueID, self.team)
         self.statsCollector.needCollectSessionData(True)
@@ -2506,12 +2473,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         ClientVisibilityFlags.updateSpaceVisibility(self.spaceID, clientVisibilityFlags)
         BigWorld.callback(10.0, partial(BigWorld.pauseDRRAutoscaling, False))
         self.__projectileMover.setSpaceID(self.spaceID)
-        if self.isObserver():
-            import VehicleObserverGunRotator
-            self.gunRotator = VehicleObserverGunRotator.VehicleObserverGunRotator(self)
-        else:
-            import VehicleGunRotator
-            self.gunRotator = VehicleGunRotator.VehicleGunRotator(self)
+        self.__initGunRotator()
         self.positionControl = AvatarPositionControl.AvatarPositionControl(self)
         self.__dualGunHelper = DualGun.DualGunHelper()
         self.__startGUI()
@@ -2552,6 +2514,12 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         self.__startGUI()
         self.setForcedGuiControlMode(GUI_CTRL_MODE_FLAG.CURSOR_ATTACHED | GUI_CTRL_MODE_FLAG.MOVING_DISABLED | GUI_CTRL_MODE_FLAG.AIMING_ENABLED)
         self.setForcedGuiControlMode(GUI_CTRL_MODE_FLAG.CURSOR_DETACHED)
+
+    def __initGunRotator(self):
+        if self.isObserver():
+            self.gunRotator = VehicleObserverGunRotator.VehicleObserverGunRotator(self)
+        else:
+            self.gunRotator = VehicleGunRotator.VehicleGunRotator(self)
 
     def setComponentsVisibility(self, flag):
         vehicle = BigWorld.entity(self.playerVehicleID)
@@ -2668,9 +2636,8 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                     canMove = False
                     break
 
-            if canMove:
+            if canMove and deviceName in self.__deviceStates and self.__deviceStates[deviceName] == 'destroyed':
                 return 'functionalCanMove'
-            return 'functional'
 
     __damageInfoCriticals = ('DEVICE_CRITICAL',
      'DEVICE_REPAIRED_TO_CRITICAL',

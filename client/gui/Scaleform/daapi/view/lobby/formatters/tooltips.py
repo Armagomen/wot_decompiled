@@ -1,20 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/formatters/tooltips.py
 import typing
-
-from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
-from gui.impl import backport
 from gui.impl.gen import R
-from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
-from gui.shared.formatters import text_styles
+from gui.impl import backport
+from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.shared.formatters.time_formatters import formatDate
 from gui.shared.tooltips import formatters
 from helpers import time_utils, dependency
-from items.writers.c11n_writers import natsorted
+from gui.shared.formatters import text_styles
 from skeletons.connection_mgr import IConnectionManager
-
+from items.writers.c11n_writers import natsorted
+from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 if typing.TYPE_CHECKING:
-    pass
+    from season_common import GameSeason
+    from skeletons.gui.game_control import ISeasonProvider
 _MODENAME_TO_PO_FILE = {SELECTOR_BATTLE_TYPES.RANKED: 'ranked_battles',
  SELECTOR_BATTLE_TYPES.MAPBOX: 'mapbox',
  SELECTOR_BATTLE_TYPES.COMP7: 'comp7'}

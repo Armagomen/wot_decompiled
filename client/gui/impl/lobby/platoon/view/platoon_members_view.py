@@ -3,12 +3,10 @@
 import logging
 import typing
 from enum import Enum
-
 import BigWorld
 import VOIP
 from CurrentVehicle import g_currentVehicle
 from UnitBase import UNDEFINED_ESTIMATED_TIME
-from adisp import adisp_process
 from constants import PREBATTLE_TYPE, PremiumConfigs
 from frameworks.wulf import WindowFlags, ViewSettings, WindowStatus
 from gui.Scaleform.daapi.view.lobby.cyberSport import PLAYER_GUI_STATUS
@@ -22,36 +20,33 @@ from gui.impl.backport import BackportContextMenuWindow
 from gui.impl.backport.backport_context_menu import createContextMenuData
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.platoon.bonus_model import BonusModel
-from gui.impl.gen.view_models.views.lobby.platoon.comp7_member_count_dropdown import Comp7DropdownItem
 from gui.impl.gen.view_models.views.lobby.platoon.comp7_slot_model import Comp7SlotModel
 from gui.impl.gen.view_models.views.lobby.platoon.comp7_window_model import Comp7WindowModel
 from gui.impl.gen.view_models.views.lobby.platoon.members_window_model import MembersWindowModel, PrebattleTypes
 from gui.impl.gen.view_models.views.lobby.platoon.slot_label_element_model import SlotLabelElementModel, Types
 from gui.impl.gen.view_models.views.lobby.platoon.slot_model import SlotModel, ErrorType
+from gui.impl.gen.view_models.views.lobby.platoon.comp7_member_count_dropdown import Comp7DropdownItem
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.comp7 import comp7_shared
-from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
-from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime, removeNationFromTechName
+from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime
 from gui.impl.lobby.platoon.tooltip.platoon_alert_tooltip import AlertTooltip
 from gui.impl.lobby.platoon.tooltip.platoon_wtr_tooltip import WTRTooltip
 from gui.impl.lobby.platoon.view.slot_label_html_handler import SlotLabelHtmlParser
 from gui.impl.lobby.platoon.view.subview.platoon_chat_subview import ChatSubview
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_filter_subview import SettingsPopover
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
+from gui.impl.lobby.common.vehicle_model_helpers import fillVehicleModel
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent, Comp7SquadBonusTooltipContent
 from gui.impl.pub import ViewImpl
-from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.prb_control import prb_getters, prbEntityProperty
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, REQUEST_TYPE, SELECTOR_BATTLE_TYPES
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.events import ChannelCarouselEvent
 from gui.shared.gui_items.badge import Badge
-from gui.shared.utils.functions import replaceHyphenToUnderscore
+from gui.shared.system_factory import registerPlatoonView, collectPlatoonView
 from helpers import i18n, dependency
 from helpers.CallbackDelayer import CallbackDelayer
-from messenger.ext import channel_num_gen
 from messenger.m_constants import PROTO_TYPE
-from messenger.m_constants import USER_TAG
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from shared_utils import findFirst
@@ -59,9 +54,14 @@ from skeletons.gui.game_control import IPlatoonController, IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
+from messenger.m_constants import USER_TAG
+from gui.impl.lobby.platoon.platoon_helpers import PreloadableWindow
+from gui.impl.pub.tooltip_window import SimpleTooltipContent
+from messenger.ext import channel_num_gen
+from adisp import adisp_process
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.server_settings import Comp7PrestigeRanksConfig
+    from comp7_ranks_common import Comp7Division
 _logger = logging.getLogger(__name__)
 _strButtons = R.strings.platoon.buttons
 
@@ -358,12 +358,7 @@ class SquadMembersView(ViewImpl, CallbackDelayer):
         vehicle = slotData.get('selectedVehicle', {})
         if vehicle:
             vehicleItem = self._itemsCache.items.getItemByCD(vehicle.get('intCD', 0))
-            slotModel.player.vehicle.setIsPremium(self._getIsVehiclePremium(vehicleItem))
-            slotModel.player.vehicle.setName(vehicleItem.shortUserName)
-            slotModel.player.vehicle.setTechName(replaceHyphenToUnderscore(removeNationFromTechName(vehicleItem.name)))
-            slotModel.player.vehicle.setTier(vehicleItem.level if self._SHOW_VEHICLE_TIER else 0)
-            slotModel.player.vehicle.setType(vehicleItem.type)
-            slotModel.player.vehicle.setNation(vehicleItem.nationName)
+            fillVehicleModel(slotModel.player.vehicle, vehicleItem)
 
     def _setModeSlotSpecificData(self, slotData, slotModel):
         pass
@@ -389,7 +384,7 @@ class SquadMembersView(ViewImpl, CallbackDelayer):
     def _initWindowData(self):
         with self.viewModel.transaction() as model:
             model.setCanMinimize(True)
-            model.setRawTitle(self.__getTitle())
+            model.setRawTitle(self._getTitle())
             header, body = self._getWindowInfoTooltipHeaderAndBody()
             model.setWindowTooltipHeader(header)
             model.setWindowTooltipBody(body)
@@ -531,7 +526,7 @@ class SquadMembersView(ViewImpl, CallbackDelayer):
     def _hasFreeSlot(self):
         return self._platoonCtrl.hasFreeSlot()
 
-    def __getTitle(self):
+    def _getTitle(self):
         title = ''.join((i18n.makeString(backport.text(R.strings.platoon.squad())), i18n.makeString(backport.text(R.strings.platoon.members.header.dyn(self.getPrebattleType())()))))
         return title
 
@@ -745,20 +740,6 @@ class MapboxMembersView(SquadMembersView):
             model.setShouldShowFindPlayersButton(value=False)
 
 
-class FunRandomMembersView(SquadMembersView):
-    _prebattleType = PrebattleTypes.FUNRANDOM
-
-    def _addSubviews(self):
-        self._addSubviewToLayout(ChatSubview())
-
-    def _onFindPlayers(self):
-        pass
-
-    def _updateFindPlayersButton(self, *args):
-        with self.viewModel.transaction() as model:
-            model.setShouldShowFindPlayersButton(value=False)
-
-
 class Comp7MembersView(SquadMembersView):
     _comp7Controller = dependency.descriptor(IComp7Controller)
     _prebattleType = PrebattleTypes.COMP7
@@ -899,23 +880,21 @@ class Comp7MembersView(SquadMembersView):
         return division
 
 
+registerPlatoonView(PREBATTLE_TYPE.SQUAD, SquadMembersView)
+registerPlatoonView(PREBATTLE_TYPE.EVENT, EventMembersView)
+registerPlatoonView(PREBATTLE_TYPE.EPIC, EpicMembersView)
+registerPlatoonView(PREBATTLE_TYPE.BATTLE_ROYALE, BattleRoyalMembersView)
+registerPlatoonView(PREBATTLE_TYPE.MAPBOX, MapboxMembersView)
+registerPlatoonView(PREBATTLE_TYPE.COMP7, Comp7MembersView)
+
 class MembersWindow(PreloadableWindow):
     __platoonCtrl = dependency.descriptor(IPlatoonController)
-    __PRB_TYPE_TO_VIEW_CONTENT_FACTORY = {PREBATTLE_TYPE.SQUAD: SquadMembersView,
-     PREBATTLE_TYPE.EVENT: EventMembersView,
-     PREBATTLE_TYPE.EPIC: EpicMembersView,
-     PREBATTLE_TYPE.BATTLE_ROYALE: BattleRoyalMembersView,
-     PREBATTLE_TYPE.MAPBOX: MapboxMembersView,
-     PREBATTLE_TYPE.FUN_RANDOM: FunRandomMembersView,
-     PREBATTLE_TYPE.COMP7: Comp7MembersView}
 
     def __init__(self, initialPosition=None):
         prbType = self.__platoonCtrl.getPrbEntityType()
-        contentClass = self.__PRB_TYPE_TO_VIEW_CONTENT_FACTORY.get(prbType, None)
-        if contentClass is not None:
-            content = contentClass(prbType)
-        else:
-            content = None
+        platoonViewCls = collectPlatoonView(prbType)
+        content = platoonViewCls(prbType) if platoonViewCls else None
+        if content is None:
             _logger.debug('PrbType is unknown %d', prbType)
         super(MembersWindow, self).__init__(wndFlags=WindowFlags.WINDOW, content=content)
         if initialPosition:

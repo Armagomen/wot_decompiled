@@ -1,31 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_carousel.py
 import logging
-import typing
 from collections import defaultdict, namedtuple, OrderedDict
 from itertools import chain
-
+import typing
 from CurrentVehicle import g_currentVehicle
 from cache import cached_property
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, TYPES_ORDER, isItemLimitReached, \
-    isItemUsedUp, vehicleHasSlot, ITEM_TYPE_TO_TAB
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, TYPES_ORDER, isItemLimitReached, isItemUsedUp, vehicleHasSlot, ITEM_TYPE_TO_TAB
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import getBaseStyleItems, createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP, \
-    getInheritors, getAncestors, getGroupHelper
+from gui.customization.shared import getBaseStyleItems, createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP, getInheritors, getAncestors, getGroupHelper
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA, RequestCriteria
 from helpers import dependency
-from items import vehicles
 from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ItemTags, EMPTY_ITEM_ID
+from items import vehicles
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.gui_items.customization.c11n_items import Customization
 _logger = logging.getLogger(__name__)
 
 def comparisonKey(item):

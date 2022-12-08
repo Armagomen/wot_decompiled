@@ -2,10 +2,8 @@
 # Embedded file name: scripts/client/CombatSelectedArea.py
 import BigWorld
 import Math
-from constants import SERVER_TICK_LENGTH
-
 import math_utils
-
+from constants import SERVER_TICK_LENGTH
 OVER_TERRAIN_HEIGHT = 0.5
 MARKER_HEIGHT = 5.0
 DEFAULT_RADIUS_MODEL = 'content/Interface/CheckPoint/CheckPoint.visual'

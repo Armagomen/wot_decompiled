@@ -1,34 +1,30 @@
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/ArcadeCamera.py
+from collections import namedtuple
 import logging
 import math
-from collections import namedtuple
-
-import BattleReplay
-import BigWorld
 import GUI
 import Keys
 import Math
+import BattleReplay
 import Settings
 import constants
 import math_utils
-from AvatarInputHandler import AimingSystems
+import BigWorld
+from Math import Vector2, Vector3, Vector4, Matrix
 from AvatarInputHandler import cameras, aih_global_binding
-from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, AccelerationSmoother, \
-    CameraWithSettings, calcYawPitchDelta
-from AvatarInputHandler.DynamicCameras.arcade_camera_helper import EScrollDir, EXPONENTIAL_EASING, \
-    CollideAnimatorEasing, OverScrollProtector, ZoomStateSwitcher, MinMax
+from BigWorld import ArcadeAimingSystem, ArcadeAimingSystemRemote
+from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, AccelerationSmoother, CameraWithSettings, calcYawPitchDelta
 from AvatarInputHandler.VideoCamera import KeySensor
 from AvatarInputHandler.cameras import readFloat, readVec2, ImpulseReason, FovExtended
-from BigWorld import ArcadeAimingSystem, ArcadeAimingSystemRemote
-from Math import Vector2, Vector3, Vector4, Matrix
-from account_helpers.settings_core.settings_constants import GAME
 from debug_utils import LOG_WARNING, LOG_ERROR
+from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 from gui.battle_control import event_dispatcher
 from helpers import dependency
-from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 from skeletons.account_helpers.settings_core import ISettingsCache
+from account_helpers.settings_core.settings_constants import GAME
+from AvatarInputHandler.DynamicCameras.arcade_camera_helper import EScrollDir, EXPONENTIAL_EASING, CollideAnimatorEasing, OverScrollProtector, ZoomStateSwitcher, MinMax
 from skeletons.gui.game_control import IBootcampController
-
+from AvatarInputHandler import AimingSystems
 _logger = logging.getLogger(__name__)
 
 def getCameraAsSettingsHolder(settingsDataSec):
@@ -70,8 +66,7 @@ class _InputInertia(object):
     endZoomMultiplier = property(lambda self: self.__zoomMultiplierEasing.b)
 
     def __init__(self, minMaxZoomMultiplier, relativeFocusDist, duration = _DEFAULT_ZOOM_DURATION):
-        self.__deltaEasing = EXPONENTIAL_EASING(math_utils.VectorConstant.Vector3Zero,
-                                                math_utils.VectorConstant.Vector3Zero, duration)
+        self.__deltaEasing = EXPONENTIAL_EASING(math_utils.VectorConstant.Vector3Zero, math_utils.VectorConstant.Vector3Zero, duration)
         fovMultiplier = math_utils.lerp(minMaxZoomMultiplier.min, minMaxZoomMultiplier.max, relativeFocusDist)
         self.__zoomMultiplierEasing = EXPONENTIAL_EASING(fovMultiplier, fovMultiplier, duration)
         self.__minMaxZoomMultiplier = minMaxZoomMultiplier
@@ -184,9 +179,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
             self.__defaultAimOffset = defaultOffset
             self.__cam = BigWorld.HomingCamera(self.__adCfg['enable'])
             if self.__adCfg['enable']:
-                self.__cam.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'],
-                                                self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'],
-                                                self.__adCfg['minimalVolume'])
+                self.__cam.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
                 for group_name in VOLUME_GROUPS_NAMES:
                     self.__cam.addVolumeGroup(self.__adCfg['volumeGroups'][group_name])
 
@@ -212,7 +205,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
                 currentState = currentState.settingsKey
         return ArcadeCameraState(currentDistance, currentState)
 
-    def create(self, onChangeControlMode=None, postmortemMode=False, smartPointCalculator=True):
+    def create(self, onChangeControlMode = None, postmortemMode = False, smartPointCalculator = True):
         super(ArcadeCamera, self).create()
         self.__onChangeControlMode = onChangeControlMode
         self.__postmortemMode = postmortemMode
@@ -221,9 +214,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         if BigWorld.player().isObserver():
             self.__onChangeControlMode = None
             aimingSystemClass = ArcadeAimingSystemRemote
-        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'],
-                                                self._cfg['focusRadius'], self.__calcAimMatrix(),
-                                                self._cfg['angleRange'], not postmortemMode and smartPointCalculator)
+        self.__aimingSystem = aimingSystemClass(self.__refineVehicleMProv(targetMat), self._cfg['heightAboveBase'], self._cfg['focusRadius'], self.__calcAimMatrix(), self._cfg['angleRange'], not postmortemMode and smartPointCalculator)
         if self.__adCfg['enable']:
             self.__aimingSystem.initAdvancedCollider(self.__adCfg['fovRatio'], self.__adCfg['rollbackSpeed'], self.__adCfg['minimalCameraDistance'], self.__adCfg['speedThreshold'], self.__adCfg['minimalVolume'])
             for group_name in VOLUME_GROUPS_NAMES:
@@ -709,8 +700,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         relCamPosMatrix = math_utils.createTranslationMatrix(impulseDeviation + movementDeviation)
         relCamPosMatrix.postMultiply(deviationBasis)
         relCamPosMatrix.translation += fromVehicleToUnshakedPos
-        self.__rotationMatrixVectorHelper.z = -impulseDeviation.x * self.__dynamicCfg[
-            'sideImpulseToRollRatio'] - self.__noiseOscillator.deviation.z
+        self.__rotationMatrixVectorHelper.z = -impulseDeviation.x * self.__dynamicCfg['sideImpulseToRollRatio'] - self.__noiseOscillator.deviation.z
         upRotMat = math_utils.createRotationMatrix(self.__rotationMatrixVectorHelper)
         upRotMat.postMultiply(relCamPosMatrix)
         self.__cam.up = upRotMat.applyVector(math_utils.VectorConstant.Vector3J)
@@ -775,14 +765,10 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         defaultX = self.__defaultAimOffset[0]
         defaultY = self.__defaultAimOffset[1]
         yawFromImpulse = self.__impulseOscillator.deviation.x * self.__dynamicCfg['sideImpulseToYawRatio']
-        xImpulseDeviationTan = math.tan(
-            -(yawFromImpulse + self.__noiseOscillator.deviation.x) * oscillationsZoomMultiplier)
+        xImpulseDeviationTan = math.tan(-(yawFromImpulse + self.__noiseOscillator.deviation.x) * oscillationsZoomMultiplier)
         pitchFromImpulse = self.__impulseOscillator.deviation.z * self.__dynamicCfg['frontImpulseToPitchRatio']
-        yImpulseDeviationTan = math.tan(
-            (pitchFromImpulse + self.__noiseOscillator.deviation.y) * oscillationsZoomMultiplier)
-        self.__ofserVectorHelper.set(
-            (defaultX * xTan + xImpulseDeviationTan) / (xTan * (1 - defaultX * xTan * xImpulseDeviationTan)),
-            (defaultY * yTan + yImpulseDeviationTan) / (yTan * (1 - defaultY * yTan * yImpulseDeviationTan)))
+        yImpulseDeviationTan = math.tan((pitchFromImpulse + self.__noiseOscillator.deviation.y) * oscillationsZoomMultiplier)
+        self.__ofserVectorHelper.set((defaultX * xTan + xImpulseDeviationTan) / (xTan * (1 - defaultX * xTan * xImpulseDeviationTan)), (defaultY * yTan + yImpulseDeviationTan) / (yTan * (1 - defaultY * yTan * yImpulseDeviationTan)))
         return self.__ofserVectorHelper
 
     def __calcRelativeDist(self):
@@ -838,11 +824,9 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         relDist = self.__calcRelativeDist()
         zoomMultiplier = math_utils.lerp(1.0, self.__dynamicCfg['zoomExposure'], relDist)
         impulseDeviation = Vector3(self.__impulseOscillator.deviation)
-        impulseDeviation.set(impulseDeviation.x * zoomMultiplier, impulseDeviation.y * zoomMultiplier,
-                             impulseDeviation.z * zoomMultiplier)
+        impulseDeviation.set(impulseDeviation.x * zoomMultiplier, impulseDeviation.y * zoomMultiplier, impulseDeviation.z * zoomMultiplier)
         movementDeviation = Vector3(self.__movementOscillator.deviation)
-        movementDeviation.set(movementDeviation.x * zoomMultiplier, movementDeviation.y * zoomMultiplier,
-                              movementDeviation.z * zoomMultiplier)
+        movementDeviation.set(movementDeviation.x * zoomMultiplier, movementDeviation.y * zoomMultiplier, movementDeviation.z * zoomMultiplier)
         return (impulseDeviation, movementDeviation, zoomMultiplier)
 
     def applyImpulse(self, position, impulse, reason = ImpulseReason.ME_HIT):
@@ -919,33 +903,21 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         dynamicsSection = dataSec['dynamics']
         self.__impulseOscillator = createOscillatorFromSection(dynamicsSection['impulseOscillator'], False)
         self.__movementOscillator = createOscillatorFromSection(dynamicsSection['movementOscillator'], False)
-        self.__movementOscillator = Math.PyCompoundOscillator(self.__movementOscillator,
-                                                              Math.PyOscillator(1.0, Vector3(50.0, 50.0, 50.0),
-                                                                                Vector3(20.0, 20.0, 20.0),
-                                                                                Vector3(0.01, 0.0, 0.01)))
+        self.__movementOscillator = Math.PyCompoundOscillator(self.__movementOscillator, Math.PyOscillator(1.0, Vector3(50.0, 50.0, 50.0), Vector3(20.0, 20.0, 20.0), Vector3(0.01, 0.0, 0.01)))
         self.__noiseOscillator = createOscillatorFromSection(dynamicsSection['randomNoiseOscillatorSpherical'])
         self.__dynamicCfg.readImpulsesConfig(dynamicsSection)
-        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000,
-                                                                 1000, 0.1)
-        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(
-            readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(
-            readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
-        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(
-            readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['accelerationSensitivity'] = readFloat(dynamicsSection, 'accelerationSensitivity', -1000, 1000, 0.1)
+        self.__dynamicCfg['frontImpulseToPitchRatio'] = math.radians(readFloat(dynamicsSection, 'frontImpulseToPitchRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToRollRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToRollRatio', -1000, 1000, 0.1))
+        self.__dynamicCfg['sideImpulseToYawRatio'] = math.radians(readFloat(dynamicsSection, 'sideImpulseToYawRatio', -1000, 1000, 0.1))
         accelerationThreshold = readFloat(dynamicsSection, 'accelerationThreshold', 0.0, 1000.0, 0.1)
         self.__dynamicCfg['accelerationThreshold'] = accelerationThreshold
         self.__dynamicCfg['accelerationMax'] = readFloat(dynamicsSection, 'accelerationMax', 0.0, 1000.0, 0.1)
-        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0,
-                                                                10.0)
-        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance',
-                                                                     0.0, 1000.0, 10.0)
+        self.__dynamicCfg['maxShotImpulseDistance'] = readFloat(dynamicsSection, 'maxShotImpulseDistance', 0.0, 1000.0, 10.0)
+        self.__dynamicCfg['maxExplosionImpulseDistance'] = readFloat(dynamicsSection, 'maxExplosionImpulseDistance', 0.0, 1000.0, 10.0)
         self.__dynamicCfg['zoomExposure'] = readFloat(dynamicsSection, 'zoomExposure', 0.0, 1000.0, 0.25)
-        accelerationFilter = math_utils.RangeFilter(self.__dynamicCfg['accelerationThreshold'],
-                                                    self.__dynamicCfg['accelerationMax'], 100.0,
-                                                    math_utils.SMAFilter(ArcadeCamera._FILTER_LENGTH))
-        maxAccelerationDuration = readFloat(dynamicsSection, 'maxAccelerationDuration', 0.0, 10000.0,
-                                            ArcadeCamera._DEFAULT_MAX_ACCELERATION_DURATION)
+        accelerationFilter = math_utils.RangeFilter(self.__dynamicCfg['accelerationThreshold'], self.__dynamicCfg['accelerationMax'], 100.0, math_utils.SMAFilter(ArcadeCamera._FILTER_LENGTH))
+        maxAccelerationDuration = readFloat(dynamicsSection, 'maxAccelerationDuration', 0.0, 10000.0, ArcadeCamera._DEFAULT_MAX_ACCELERATION_DURATION)
         self.__accelerationSmoother = AccelerationSmoother(accelerationFilter, maxAccelerationDuration)
         self.__inputInertia = _InputInertia(self.__calculateInputInertiaMinMax(), 0.0)
         advancedCollider = dataSec['advancedCollider']

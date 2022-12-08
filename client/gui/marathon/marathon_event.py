@@ -3,14 +3,15 @@
 import logging
 import typing
 from functools import partial
-
 import constants
+from constants import MarathonConfig
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import MARATHON_REWARD_WAS_SHOWN_PREFIX, MARATHON_VIDEO_WAS_SHOWN_PREFIX
 from adisp import adisp_async, adisp_process
-from constants import MarathonConfig
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.lobby.marathon.marathon_reward_helper import showMarathonReward
+from gui.marathon.marathon_event_container import MarathonEventContainer
+from gui.marathon.marathon_resource_manager import MarathonResourceManager
 from gui.marathon.marathon_constants import MarathonState, MarathonWarning, ZERO_TIME
 from gui.prb_control import prbEntityProperty
 from gui.server_events.bonuses import mergeBonuses, VehiclesBonus, getVehicleCrewReward
@@ -22,9 +23,10 @@ from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
+from web.web_client_api.common import ItemPackEntry
 if typing.TYPE_CHECKING:
-    pass
+    from gui.server_events.event_items import Quest
+    from gui.server_events.bonuses import SimpleBonus
 _logger = logging.getLogger(__name__)
 
 class MarathonEvent(object):

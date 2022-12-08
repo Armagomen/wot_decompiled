@@ -1,15 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/comp7_lobby_builders.py
-from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_calendar_day_extended_tooltip import \
-    Comp7CalendarDayExtendedTooltip
+from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_selector_tooltip import Comp7SelectorTooltip, Comp7SelectorUnavailableTooltip
 from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_calendar_day_tooltip import Comp7CalendarDayTooltip
-from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_selector_tooltip import Comp7SelectorTooltip, \
-    Comp7SelectorUnavailableTooltip
+from gui.Scaleform.daapi.view.lobby.comp7.tooltips.comp7_calendar_day_extended_tooltip import Comp7CalendarDayExtendedTooltip
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import contexts
 from gui.shared.tooltips.builders import DataBuilder
 from gui.shared.tooltips.comp7_tooltips import RoleSkillLobbyTooltipData, BattleResultsPrestigePointsTooltip
-
 __all__ = ('getTooltipBuilders',)
 
 def getTooltipBuilders():

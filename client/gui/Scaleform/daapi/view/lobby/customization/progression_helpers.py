@@ -4,7 +4,6 @@ import binascii
 import logging
 import struct
 from collections import namedtuple
-
 from CurrentVehicle import g_currentVehicle
 from constants import EVENT_TYPE
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -16,7 +15,6 @@ from helpers import dependency
 from helpers import int2roman
 from helpers.i18n import makeString as _ms
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 def makeEventID(itemIntCD, vehicleIntCD):

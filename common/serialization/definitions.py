@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serialization/definitions.py
-import enum
 from collections import namedtuple
-
+import enum
 from constants import IS_EDITOR
-
 __all__ = ('FieldType', 'FieldTypes', 'FieldFlags')
 if IS_EDITOR:
     FieldType = namedtuple('FieldType', 'type default flags saveTag')

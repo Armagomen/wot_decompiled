@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/wgnc/gui_items.py
 from collections import namedtuple
 from functools import partial
-
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.promo.promo_logger import PromoLogSourceType
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -15,7 +14,6 @@ from gui.wgnc.settings import WGNC_GUI_TYPE, WGNC_GUI_INVALID_SEQS, convertToLoc
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
 from skeletons.gui.game_control import IPromoController
-
 _ButtonData = namedtuple('_ButtonData', ['label',
  'action',
  'visible',
@@ -276,3 +274,7 @@ class GUIHolder(object):
             return
         for _, item in self.__items.iteritems():
             item.validate(actionsHolder)
+
+
+def createPopUpItem(body, topic, priority, buttons, icon, bg, group, isNotify):
+    return PopUpItem(body, topic, priority, buttons, icon, bg, group, isNotify)

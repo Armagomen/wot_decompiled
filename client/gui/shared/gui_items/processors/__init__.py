@@ -1,17 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/__init__.py
 import logging
-
-from adisp import adisp_process, adisp_async
+import typing
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
-from gui.SystemMessages import SM_TYPE, ResultMsg
-from gui.shared.gui_items.processors import plugins as proc_plugs
-from gui.shared.money import Currency
-from gui.shared.utils import code2str
 from helpers import dependency
 from helpers import i18n
+from adisp import adisp_process, adisp_async
+from gui.SystemMessages import SM_TYPE, ResultMsg
+from gui.shared.utils import code2str
+from gui.shared.gui_items.processors import plugins as proc_plugs
+from gui.shared.money import Currency
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 def makeSuccess(userMsg='', msgType=SM_TYPE.Information, auxData=None, msgData=None, msgPriority=None):
@@ -31,6 +30,10 @@ def makeI18nError(sysMsgKey='', defaultSysMsgKey='', auxData=None, *args, **kwar
     if localKey not in SYSTEM_MESSAGES.ALL_ENUM and defaultSysMsgKey:
         localKey = '#system_messages:{}'.format(defaultSysMsgKey)
     return makeError(i18n.makeString(localKey, *args, **kwargs), kwargs.get('type', SM_TYPE.Error), auxData)
+
+
+def makeNYSuccess(sysMsgKey='', msgType=SM_TYPE.Information, auxData=None, *args, **kwargs):
+    return makeSuccess(i18n.makeString('#ny:{}'.format(sysMsgKey), *args, **kwargs), msgType, auxData)
 
 
 def makeCrewSkinCompensationMessage(comp):

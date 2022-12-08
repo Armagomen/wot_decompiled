@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/avatar_components/avatar_chat_key_handling.py
 import logging
 from collections import namedtuple
-
-import BattleReplay
 import BigWorld
+from Math import Matrix, Vector3
+import BattleReplay
 import CommandMapping
 import Flock
-from Math import Matrix, Vector3
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from battleground.location_point_manager import g_locationPointManager
 from bootcamp.Bootcamp import g_bootcamp
-from chat_commands_consts import getBaseTeamAndIDFromUniqueID, BATTLE_CHAT_COMMAND_NAMES, \
-    _COMMAND_NAME_TRANSFORM_MARKER_TYPE, _PERSONAL_MESSAGE_MUTE_DURATION, MarkerType, ONE_SHOT_COMMANDS_TO_REPLIES
+from chat_commands_consts import getBaseTeamAndIDFromUniqueID, BATTLE_CHAT_COMMAND_NAMES, _COMMAND_NAME_TRANSFORM_MARKER_TYPE, _PERSONAL_MESSAGE_MUTE_DURATION, MarkerType, ONE_SHOT_COMMANDS_TO_REPLIES
 from gui import GUI_CTRL_MODE_FLAG
 from gui.sounds.epic_sound_constants import EPIC_SOUND
 from helpers import dependency
@@ -24,7 +22,6 @@ from messenger.proto.events import g_messengerEvents
 from messenger_common_chat2 import BATTLE_CHAT_COMMANDS_BY_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.account_helpers.settings_core import ISettingsCore, ISettingsCache
-
 _DELAY_FOR_OPENING_RADIAL_MENU = 0.2
 _TARGET_ID_IS_ENEMY_VEHICLE = {BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY, BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY}
 _CHAT_COMMAND_DEFINING_SOS_REPLY = {BATTLE_CHAT_COMMAND_NAMES.HELPME}
@@ -401,7 +398,11 @@ class AvatarChatKeyHandling(object):
                         _logger.info('Voice was blocked for the receiver of a private message due to flood prevention system!')
             cmdSenderVehicleID = self.__getVehicleIDForCmdSender(cmd)
             sentByPlayer = True if cmdSenderVehicleID == self.playerVehicleID else False
-            self.__playSoundNotification(notificationName, commandNotificationData.matrixProvider.translation, enableVoice, sentByPlayer)
+            if commandNotificationData.matrixProvider is not None:
+                soundPos = commandNotificationData.matrixProvider.translation
+            else:
+                soundPos = None
+            self.__playSoundNotification(notificationName, soundPos, enableVoice, sentByPlayer)
         return
 
     def __resetDebugOutput(self):

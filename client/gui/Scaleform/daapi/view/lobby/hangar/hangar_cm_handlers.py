@@ -1,11 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/hangar_cm_handlers.py
 from logging import getLogger
-
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from account_helpers import AccountSettings
-from account_helpers.AccountSettings import NATION_CHANGE_VIEWED
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getTradeInVehiclesUrl
@@ -27,7 +24,8 @@ from items import UNDEFINED_ITEM_CD
 from skeletons.gui.game_control import IVehicleComparisonBasket, IEpicBattleMetaGameController, ITradeInController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
+from account_helpers import AccountSettings
+from account_helpers.AccountSettings import NATION_CHANGE_VIEWED
 _logger = getLogger(__name__)
 
 class CREW(object):

@@ -1,18 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/mapbox_controller.py
-import logging
 import random
 from collections import namedtuple
 from functools import partial
-
-import BigWorld
-import Event
-import adisp
-from BWUtil import AsyncReturn
+import logging
+import typing
 from account_helpers.AccountSettings import AccountSettings, MAPBOX_PROGRESSION
+from wg_async import wg_async, wg_await, await_callback, BrokenPromiseError
+import adisp
+import BigWorld
+from BWUtil import AsyncReturn
 from constants import QUEUE_TYPE, PREBATTLE_TYPE, Configs
+import Event
 from gui import SystemMessages
-from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.mapbox.mapbox_helpers import formatMapboxBonuses, convertTimeFromISO
@@ -21,31 +21,29 @@ from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, SELECTOR_BATTLE_TYPES, FUNCTIONAL_FLAG
+from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.server_events import caches
 from gui.shared.event_dispatcher import showMapboxIntro, showMapboxSurvey
 from gui.shared.utils import SelectorBattleTypesUtils
 from gui.shared.utils.SelectorBattleTypesUtils import setBattleTypeAsUnknown
-from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier
+from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, TimerNotifier
 from gui.wgcg.mapbox.contexts import MapboxProgressionCtx, MapboxRequestCrewbookCtx, MapboxCompleteSurveyCtx
 from helpers import dependency, server_settings, time_utils
+from season_provider import SeasonProvider
 from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.web import IWebController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.system_messages import ISystemMessages
-from skeletons.gui.web import IWebController
-from wg_async import wg_async, wg_await, await_callback, BrokenPromiseError
-
-from season_provider import SeasonProvider
-
 _logger = logging.getLogger(__name__)
 ProgressionData = namedtuple('ProgressionData', ('surveys',
-                                                 'rewards',
-                                                 'minRank',
-                                                 'totalBattles',
-                                                 'nextSubstage'))
+ 'rewards',
+ 'minRank',
+ 'totalBattles',
+ 'nextSubstage'))
 MapData = namedtuple('MapData', ('progress',
-                                 'total',
-                                 'passed',
+ 'total',
+ 'passed',
  'available',
  'url'))
 RewardData = namedtuple('RewardData', ('bonusList', 'status'))
@@ -81,7 +79,7 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
 
     def init(self):
         super(MapboxController, self).init()
-        self.addNotificator(SimpleNotifier(self.getTimer, self.__timerUpdate))
+        self.addNotificator(TimerNotifier(self.getTimer, self.__timerUpdate))
         self.__progressionDataProvider.init()
 
     def fini(self):
@@ -322,8 +320,7 @@ class MapboxProgressionDataProvider(Notifiable):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __mapboxCtrl = dependency.descriptor(IMapboxController)
     __eventsCache = dependency.descriptor(IEventsCache)
-    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown', '__isStarted',
-                 '__restartNotifier')
+    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown', '__isStarted', '__restartNotifier')
 
     def __init__(self):
         super(MapboxProgressionDataProvider, self).__init__()
@@ -369,12 +366,7 @@ class MapboxProgressionDataProvider(Notifiable):
         self.__isStarted = False
 
     def getProgressionData(self):
-        return None if not self.__progressionData else ProgressionData(
-            {key: MapData(value['progress'], value['total'], value['passed'], value['available'], value['url']) for
-             key, value in self.__progressionData.get('surveys', {}).iteritems()},
-            {value['battles']: RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in
-             self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'),
-            self.__progressionData.get('total_battles_amount'), self.__convertProgressionRestartTime())
+        return None if not self.__progressionData else ProgressionData({key:MapData(value['progress'], value['total'], value['passed'], value['available'], value['url']) for key, value in self.__progressionData.get('surveys', {}).iteritems()}, {value['battles']:RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'), self.__progressionData.get('total_battles_amount'), self.__convertProgressionRestartTime())
 
     def getProgressionRestartTime(self):
         return self.__convertProgressionRestartTime() if self.__progressionData else _LAST_PERIOD

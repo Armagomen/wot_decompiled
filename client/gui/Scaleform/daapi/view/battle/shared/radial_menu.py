@@ -2,14 +2,12 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/radial_menu.py
 import logging
 from collections import namedtuple, defaultdict
-
-import CommandMapping
 import GUI
 import Keys
+import CommandMapping
 from AvatarInputHandler import aih_global_binding
 from aih_constants import CTRL_MODE_NAME
-from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, ReplyState, MarkerType, DefaultMarkerSubType, \
-    ONE_SHOT_COMMANDS_TO_REPLIES, INVALID_MARKER_SUBTYPE, LocationMarkerSubType
+from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, ReplyState, MarkerType, DefaultMarkerSubType, ONE_SHOT_COMMANDS_TO_REPLIES, INVALID_MARKER_SUBTYPE, LocationMarkerSubType
 from gui.Scaleform.daapi.view.meta.RadialMenuMeta import RadialMenuMeta
 from gui.Scaleform.genConsts.RADIAL_MENU_CONSTS import RADIAL_MENU_CONSTS
 from gui.Scaleform.locale.INGAME_HELP import INGAME_HELP
@@ -22,7 +20,6 @@ from gui.shared.utils.key_mapping import getScaleformKey, BW_TO_SCALEFORM
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 _SHORTCUTS_IN_GROUP = 6
 Shortcut = namedtuple('Shortcut', ('title', 'action', 'icon', 'groups', 'bState', 'indexInGroup'))

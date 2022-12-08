@@ -1,15 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/InternalBrowser.py
 import BigWorld
-import FantasyDemo
+import Math
+import types
 import GUI
-import Keys
-
-import LLMozlibKeys
-import Utils
-from FocusManager import setFocusedComponent, isFocusedComponent
 from PyGUIBase import PyGUIBase
-
+from VisualStateComponent import VisualState, VisualStateComponent
+import Utils
+import Keys
+import LLMozlibKeys
+import FantasyDemo
+from FocusManager import setFocusedComponent, isFocusedComponent
 
 class InternalBrowser(PyGUIBase):
     factoryString = 'PyGUI.InternalBrowser'

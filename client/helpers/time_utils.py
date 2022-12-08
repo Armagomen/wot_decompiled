@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/time_utils.py
+import re
 import calendar
 import datetime
-import re
 import time
-
 import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from helpers.i18n import makeString as _ms
 from soft_exception import SoftException
-
 ONE_SECOND = 1
 DAYS_IN_YEAR = 365
 HOURS_IN_DAY = 24
@@ -116,6 +114,16 @@ def getServerRegionalDaysLeftInGameWeek():
         weekStartDayOffset = regionalSettings['starting_day_of_a_new_week']
     currentDay = getServerRegionalWeekDay()
     return (WEEK_END - currentDay + weekStartDayOffset) % WEEK_END
+
+
+def getServerGameDay():
+    regionalSettings = BigWorld.player().serverSettings['regional_settings']
+    dayStartOffset = 0
+    if 'starting_time_of_a_new_game_day' in regionalSettings:
+        dayStartOffset = regionalSettings['starting_day_of_a_new_week']
+    elif 'starting_time_of_a_new_day' in regionalSettings:
+        dayStartOffset = regionalSettings['starting_time_of_a_new_day']
+    return int(getServerRegionalTime() - dayStartOffset) / ONE_DAY
 
 
 def getTimeDeltaFromNow(t):

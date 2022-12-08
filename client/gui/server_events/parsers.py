@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/server_events/parsers.py
 import weakref
+from typing import Union
 from gui.server_events import formatters, conditions
+from gui.server_events.conditions import _Cumulativable, CumulativeResult, _ConditionsGroup
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache

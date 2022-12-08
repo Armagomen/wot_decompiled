@@ -2,13 +2,11 @@
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_how_to_earn_points_view.py
 import itertools
 import logging
-
 from constants import ARENA_BONUS_TYPE
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_how_to_earn_points_view_model import \
-    BattlePassHowToEarnPointsViewModel
+from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_how_to_earn_points_view_model import BattlePassHowToEarnPointsViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_card_model import GameModeCardModel, PointsCardType
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_cell_model import GameModeCellModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_model import GameModeModel, ArenaBonusType
@@ -21,7 +19,6 @@ from gui.shared.event_dispatcher import showHangar
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.shared import IItemsCache
-
 SUPPORTED_ARENA_BONUS_TYPES = [ARENA_BONUS_TYPE.REGULAR, ARENA_BONUS_TYPE.EPIC_BATTLE, ARENA_BONUS_TYPE.COMP7]
 _rBattlePass = R.strings.battle_pass
 _logger = logging.getLogger(__name__)

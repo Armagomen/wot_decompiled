@@ -3,9 +3,8 @@
 import logging
 import math
 from collections import defaultdict, namedtuple
-from enum import Enum
 from functools import partial
-
+from enum import Enum
 import BattleReplay
 import BigWorld
 import Keys
@@ -17,14 +16,11 @@ from account_helpers import AccountSettings
 from account_helpers.AccountSettings import MINIMAP_IBC_HINT_SECTION, HINTS_LEFT
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import MinimapArtyHitSetting
-from battle_royale.gui.battle_control.controllers.radar_ctrl import IRadarListener
 from battleground.location_point_manager import g_locationPointManager
-from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, ReplyState, MarkerType, LocationMarkerSubType, \
-    ONE_SHOT_COMMANDS_TO_REPLIES, INVALID_VEHICLE_POSITION
+from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, ReplyState, MarkerType, LocationMarkerSubType, ONE_SHOT_COMMANDS_TO_REPLIES, INVALID_VEHICLE_POSITION
 from constants import VISIBILITY, AOI
 from debug_utils import LOG_WARNING, LOG_ERROR, LOG_DEBUG
 from gui import GUI_SETTINGS, InputHandler
-from gui.Scaleform.daapi.view.battle.shared.formatters import normalizeHealthPercent
 from gui.Scaleform.daapi.view.battle.shared.minimap import common
 from gui.Scaleform.daapi.view.battle.shared.minimap import entries
 from gui.Scaleform.daapi.view.battle.shared.minimap import settings
@@ -33,13 +29,14 @@ from gui.battle_control import avatar_getter, minimap_utils, matrix_factory
 from gui.battle_control.arena_info.interfaces import IVehiclesAndPositionsController, IArenaVehiclesController
 from gui.battle_control.arena_info.settings import INVALIDATE_OP
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, VEHICLE_LOCATION, VEHICLE_VIEW_STATE
+from battle_royale.gui.battle_control.controllers.radar_ctrl import IRadarListener
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from ids_generators import SequenceIDGenerator
 from shared_utils import findFirst
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.Scaleform.daapi.view.battle.shared.formatters import normalizeHealthPercent
 _logger = logging.getLogger(__name__)
 _C_NAME = settings.CONTAINER_NAME
 _S_NAME = settings.ENTRY_SYMBOL_NAME

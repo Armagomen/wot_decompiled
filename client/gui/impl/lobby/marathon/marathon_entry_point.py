@@ -2,23 +2,22 @@
 # Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_entry_point.py
 import time
 from functools import partial
-
 from adisp import adisp_process
 from frameworks.wulf import ViewFlags, ViewSettings
-from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.marathon.marathon_entry_point_model import MarathonEntryPointModel
 from gui.impl.pub import ViewImpl
+from gui.impl.gen.view_models.views.lobby.marathon.marathon_entry_point_model import MarathonEntryPointModel
 from gui.marathon.marathon_constants import MarathonState
+from gui.server_events.event_items import Quest
 from gui.server_events.events_dispatcher import showMissionsMarathon
 from gui.shared import event_dispatcher, g_eventBus
 from gui.shared.events import OpenLinkEvent
-from gui.shared.missions.packers.events import BattleQuestUIDataPacker
 from helpers import dependency
-from helpers.time_utils import ONE_DAY, ONE_HOUR
 from skeletons.gui.game_control import IMarathonEventsController
 from skeletons.gui.server_events import IEventsCache
-
+from helpers.time_utils import ONE_DAY, ONE_HOUR
+from gui.impl import backport
+from gui.shared.missions.packers.events import BattleQuestUIDataPacker
 _MARATHON_PREFIX = 'winter_marathon'
 _POST_TIME_LEFT_LIMIT = ONE_HOUR * 12
 _eventsCache = dependency.descriptor(IEventsCache)

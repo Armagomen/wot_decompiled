@@ -14,7 +14,9 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Array
-
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from gui.veh_post_progression.models.modifications import MultiModsItem, SimpleModItem
+    from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
 
 class BasePairModificationTooltipView(ViewImpl):
     __slots__ = ()

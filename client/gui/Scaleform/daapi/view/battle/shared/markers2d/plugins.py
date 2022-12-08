@@ -3,7 +3,6 @@
 import logging
 from collections import defaultdict
 from functools import partial
-
 import BattleReplay
 import BigWorld
 import Math
@@ -16,19 +15,16 @@ from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.options import VehicleMarkerSetting
 from account_helpers.settings_core.settings_constants import MARKERS, GRAPHICS
 from battleground.location_point_manager import g_locationPointManager, COMMAND_NAME_TO_LOCATION_MARKER_SUBTYPE
-from chat_commands_consts import getUniqueTeamOrControlPointID, INVALID_MARKER_SUBTYPE, INVALID_MARKER_ID, \
-    LocationMarkerSubType, MarkerType, DefaultMarkerSubType, INVALID_COMMAND_ID
+from chat_commands_consts import getUniqueTeamOrControlPointID, INVALID_MARKER_SUBTYPE, INVALID_MARKER_ID, LocationMarkerSubType, MarkerType, DefaultMarkerSubType, INVALID_COMMAND_ID
 from gui.Scaleform.daapi.view.battle.shared.markers2d import markers
 from gui.Scaleform.daapi.view.battle.shared.markers2d import settings
-from gui.Scaleform.daapi.view.battle.shared.markers2d.markers import LocationMarker, BaseMarker, ReplyStateForMarker
+from gui.Scaleform.daapi.view.battle.shared.markers2d.markers import LocationMarker, BaseMarker, Marker, ReplyStateForMarker
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from gui.doc_loaders import GuiColorsLoader
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared import g_eventBus
 from gui.shared.events import GameEvent
 from gui.shared.utils.plugins import IPlugin
@@ -38,7 +34,8 @@ from messenger.proto.bw_chat2.battle_chat_cmd import AUTOCOMMIT_COMMAND_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.impl import backport
+from gui.impl.gen import R
 _logger = logging.getLogger(__name__)
 _LOCATION_SUBTYPE_TO_FLASH_SYMBOL_NAME = {LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE: settings.MARKER_SYMBOL_NAME.STATIC_ARTY_MARKER,
  LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER,

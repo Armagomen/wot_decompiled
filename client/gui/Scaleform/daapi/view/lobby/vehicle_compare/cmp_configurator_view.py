@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_configurator_view.py
 from collections import defaultdict
-
+import typing
 from adisp import adisp_process
 from debug_utils import LOG_WARNING, LOG_DEBUG, LOG_ERROR
 from gui.Scaleform.daapi import LobbySubView
@@ -21,6 +21,7 @@ from gui.Scaleform.genConsts.VEHICLE_COMPARE_CONSTANTS import VEHICLE_COMPARE_CO
 from gui.Scaleform.locale.VEH_COMPARE import VEH_COMPARE
 from gui.SystemMessages import pushMessagesFromResult
 from gui.game_control.veh_comparison_basket import PARAMS_AFFECTED_TANKMEN_SKILLS
+from skeletons.gui.impl import IGuiLoader
 from gui.impl.gen import R
 from gui.impl.lobby.vehicle_compare.interactors import CompareInteractingItem
 from gui.shared.event_bus import EVENT_BUS_SCOPE
@@ -34,9 +35,7 @@ from items import tankmen, vehicles
 from post_progression_common import VehicleState
 from shared_utils import findFirst
 from skeletons.gui.game_control import IVehicleComparisonBasket
-from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
-
 VEHICLE_FITTING_SLOTS = FITTING_MODULES
 _EMPTY_ID = -1
 

@@ -13,9 +13,11 @@ from gui.impl.pub import ViewImpl
 from gui.selectable_reward.common import SelectableRewardManager
 from gui.shared.missions.packers.bonus import getDefaultBonusPacker
 if typing.TYPE_CHECKING:
+    from typing import Dict, List, Optional, Tuple, Type
     from gui.server_events.bonuses import SelectableBonus
+    from gui.impl.backport import TooltipData
     from gui.SystemMessages import ResultMsg
-
+    from frameworks.wulf import ViewModel, ViewEvent, Window, View
 
 class SelectableRewardBase(ViewImpl):
     __slots__ = ('__selectedTab', '__tabs', '__selectableRewards', '__cart', '_packer')

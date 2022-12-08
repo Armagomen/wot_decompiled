@@ -2,18 +2,15 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/markers2d.py
 import logging
 import typing
-
 import Math
 from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins
-from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, \
-    POI_STATUS_UI_MAPPING
+from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, POI_STATUS_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiCooldownProgress
-from points_of_interest.components import PoiStateUpdateMask
+from points_of_interest.components import PoiStateComponent, PoiStateUpdateMask
 from points_of_interest.mixins import PointsOfInterestListener
 from points_of_interest_shared import PoiStatus
-
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.fixed_dict import StatusWithTimeInterval
 _logger = logging.getLogger(__name__)
 _POI_MARKER_SYMBOL = 'PointOfInterestMarkerUI'
 _POI_MARKER_POSITION_OFFSET = Math.Vector3(0.0, 12.0, 0.0)

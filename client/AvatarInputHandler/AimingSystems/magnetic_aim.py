@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/AimingSystems/magnetic_aim.py
-import math
 from collections import namedtuple
 from itertools import chain
-
+import math
 import BigWorld
-import math_utils
 from Math import Vector3, Matrix
-
+import math_utils
 
 class MagneticAimSettings(object):
     MAGNETIC_ANGLE = 2.25
@@ -97,8 +95,7 @@ def isVehicleVisibleFromCamera(vehicle, aimCamera):
         endPos = vehiclePoint
         testResStatic = BigWorld.wg_collideSegment(BigWorld.player().spaceID, startPos, endPos, 128)
         if testResStatic is None:
-            testResDynamic = BigWorld.wg_collideDynamic(BigWorld.player().spaceID, startPos, endPos,
-                                                        BigWorld.player().playerVehicleID)
+            testResDynamic = BigWorld.wg_collideDynamic(BigWorld.player().spaceID, startPos, endPos, BigWorld.player().playerVehicleID)
             if testResDynamic is None:
                 return True
 

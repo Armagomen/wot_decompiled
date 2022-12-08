@@ -1,28 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/VOIP/VOIPManager.py
 import logging
-
 import BigWorld
 import Event
 import Settings
 import SoundGroups
+import VOIPCommon
 from VOIP.voip_constants import VOIP_SUPPORTED_API
-from account_helpers.settings_core.settings_constants import SOUND
+from VOIPFsm import VOIPFsm, VOIP_FSM_STATE as STATE
+from VOIPHandler import VOIPHandler
 from constants import CLIENT_INACTIVITY_TIMEOUT, ARENA_GUI_TYPE
 from gui.shared.utils import backoff
-from helpers import dependency
 from messenger.m_constants import PROTO_TYPE
 from messenger.m_constants import USER_ACTION_ID, USER_TAG
 from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.shared_find_criteria import MutedFindCriteria
 from messenger.storage import storage_getter
+from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
-
-import VOIPCommon
-from VOIPFsm import VOIPFsm, VOIP_FSM_STATE as STATE
-from VOIPHandler import VOIPHandler
-
+from account_helpers.settings_core.settings_constants import SOUND
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _logger.setLevel(logging.DEBUG)

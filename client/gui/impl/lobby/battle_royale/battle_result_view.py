@@ -2,53 +2,47 @@
 # Embedded file name: scripts/client/gui/impl/lobby/battle_royale/battle_result_view.py
 import typing
 from collections import OrderedDict
-
 import SoundGroups
-from battle_pass_common import getPresentLevel
-from battle_royale.gui.battle_control.controllers.br_battle_sounds import BREvents
 from battle_royale.gui.impl.lobby.tooltips.reward_currency_tooltip_view import RewardCurrencyTooltipView
-from constants import ATTACK_REASON_INDICES, ATTACK_REASON, DEATH_REASON_ALIVE
 from frameworks.wulf import ViewFlags, ViewSettings
-from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HeaderMenuVisibilityState
-from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
-from gui.Scaleform.genConsts.HANGAR_HEADER_QUESTS import HANGAR_HEADER_QUESTS
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.battle_pass.battle_pass_constants import ChapterState
 from gui.impl import backport
 from gui.impl.backport import BackportTooltipWindow, createTooltipData
-from gui.impl.backport.backport_context_menu import BackportContextMenuWindow
-from gui.impl.backport.backport_context_menu import createContextMenuData
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.battle_royale.battle_results.leaderboard.leaderboard_constants import \
-    LeaderboardConstants
-from gui.impl.gen.view_models.views.battle_royale.battle_results.personal.battle_reward_item_model import \
-    BattleRewardItemModel
+from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.battle_result_view_model import BattleResultViewModel
+from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.tooltip_constants_model import TooltipConstantsModel
 from gui.impl.gen.view_models.views.battle_royale.battle_results.personal.stat_item_model import StatItemModel
-from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.battle_pass_progress import \
-    BattlePassProgress
-from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.battle_result_view_model import \
-    BattleResultViewModel
+from gui.impl.gen.view_models.views.battle_royale.battle_results.leaderboard.leaderboard_constants import LeaderboardConstants
+from gui.impl.gen.view_models.views.battle_royale.battle_results.personal.battle_reward_item_model import BattleRewardItemModel
 from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.place_model import PlaceModel
 from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.row_model import RowModel
-from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.tooltip_constants_model import \
-    TooltipConstantsModel
+from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.battle_pass_progress import BattlePassProgress
 from gui.impl.pub import ViewImpl
-from gui.server_events import events_dispatcher
-from gui.server_events.battle_royale_formatters import BRSections
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE, event_dispatcher
 from gui.shared.events import LobbyHeaderMenuEvent
-from gui.sounds.ambients import BattleResultsEnv
+from gui.server_events.battle_royale_formatters import BRSections
+from gui.Scaleform.genConsts.HANGAR_HEADER_QUESTS import HANGAR_HEADER_QUESTS
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HeaderMenuVisibilityState
 from helpers import dependency
-from messenger.storage import storage_getter
-from shared_utils import first
-from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.game_control import IBattleRoyaleController, IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
+from shared_utils import first
 from soft_exception import SoftException
-
+from gui.sounds.ambients import BattleResultsEnv
+from battle_royale.gui.battle_control.controllers.br_battle_sounds import BREvents
+from constants import ATTACK_REASON_INDICES, ATTACK_REASON, DEATH_REASON_ALIVE
+from gui.server_events import events_dispatcher
+from gui.impl.backport.backport_context_menu import BackportContextMenuWindow
+from gui.impl.backport.backport_context_menu import createContextMenuData
+from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
+from skeletons.connection_mgr import IConnectionManager
+from battle_pass_common import getPresentLevel
+from messenger.storage import storage_getter
+from gui.battle_pass.battle_pass_constants import ChapterState
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.battle_royale.battle_results.player_vehicle_status_model import PlayerVehicleStatusModel
+    from gui.impl.gen.view_models.views.lobby.battle_royale.battle_result_view.leaderboard_model import LeaderboardModel
 
 def _getAttackReason(vehicleState, hasKiller):
     if vehicleState == DEATH_REASON_ALIVE:

@@ -1,18 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/tankman_builders.py
-from typing import TYPE_CHECKING
-
+from typing import TYPE_CHECKING, Callable
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.shared.tooltips import advanced
 from gui.shared.tooltips import contexts
 from gui.shared.tooltips import skill
 from gui.shared.tooltips import tankman
+from gui.shared.tooltips import advanced
 from gui.shared.tooltips.builders import AdvancedDataBuilder, ConditionBuilder, DataBuilder
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
-
 if TYPE_CHECKING:
-    pass
+    from gui.shared.tooltips.contexts import PersonalCaseContext
 __all__ = ('getTooltipBuilders',)
 
 def _advancedBlockCondition(context):
@@ -53,8 +51,8 @@ class NotRecruitedTankmanTooltipBuilder(DataBuilder):
     def __init__(self, tooltipType, linkage):
         super(NotRecruitedTankmanTooltipBuilder, self).__init__(tooltipType, linkage, tankman.NotRecruitedTooltipData(contexts.NotRecruitedTankmanContext()))
 
-    def _buildData(self, _advanced, invID, *args, **kwargs):
-        return super(NotRecruitedTankmanTooltipBuilder, self)._buildData(_advanced, invID)
+    def _buildData(self, _advanced, invID, isLocked=True, *args, **kwargs):
+        return super(NotRecruitedTankmanTooltipBuilder, self)._buildData(_advanced, invID, isLocked)
 
 
 class TankmanNewSkillTooltipBuilder(ConditionBuilder):

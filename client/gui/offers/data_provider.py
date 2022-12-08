@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/offers/data_provider.py
 import logging
-import typing
 from functools import wraps
-
+import typing
 import adisp
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -23,9 +22,8 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, Optional, Set, Union
 _logger = logging.getLogger(__name__)
 _CDN_SYNC_TIMEOUT = 60.0
 

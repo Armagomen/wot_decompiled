@@ -2,13 +2,10 @@
 # Embedded file name: scripts/client/gui/shared/money.py
 from collections import namedtuple
 from typing import TYPE_CHECKING
-
 from shared_utils import CONST_CONTAINER
 from soft_exception import SoftException
-
 if TYPE_CHECKING:
-    from typing import Optional, Tuple, Literal
-
+    from typing import Optional, Any, Union, Dict, Tuple, Iterable, Literal, Callable, List
     CURRENCY_TYPE = Literal['credits', 'gold', 'crystal', 'eventCoin', 'bpcoin']
     CURRENCIES_TYPE = Tuple[int, int, int, int, int]
     CURRENCIES_NAMES_TYPE = Tuple[CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE]
@@ -22,22 +19,26 @@ class Currency(CONST_CONTAINER):
     BPCOIN = 'bpcoin'
     BRCOIN = 'brcoin'
     FREE_XP = 'freeXP'
+    EQUIP_COIN = 'equipCoin'
     ALL = (CREDITS,
      GOLD,
      CRYSTAL,
      EVENT_COIN,
-     BPCOIN)
+     BPCOIN,
+     EQUIP_COIN)
     BY_WEIGHT = (GOLD,
      CRYSTAL,
      CREDITS,
      EVENT_COIN,
-     BPCOIN)
+     BPCOIN,
+     EQUIP_COIN)
     GUI_ALL = (CRYSTAL, GOLD, CREDITS)
     _CURRENCY_EXTERNAL_MAP = {CREDITS: 'credits',
      GOLD: 'gold',
      CRYSTAL: 'crystal',
      EVENT_COIN: 'event_coin',
-     BPCOIN: 'bpcoin'}
+     BPCOIN: 'bpcoin',
+     EQUIP_COIN: 'equipCoin'}
     _CURRENCY_INTERNAL_MAP = {external:internal for internal, external in _CURRENCY_EXTERNAL_MAP.iteritems()}
 
     @classmethod
@@ -67,6 +68,7 @@ _GOLD = Currency.GOLD
 _CRYSTAL = Currency.CRYSTAL
 _EVENT_COIN = Currency.EVENT_COIN
 _BPCOIN = Currency.BPCOIN
+_EQUIP_COIN = Currency.EQUIP_COIN
 
 class Money(object):
     __slots__ = ('_values',)
@@ -74,7 +76,7 @@ class Money(object):
     UNDEFINED = None
     WEIGHT = Currency.BY_WEIGHT
 
-    def __init__(self, credits=None, gold=None, crystal=None, eventCoin=None, bpcoin=None, *args, **kwargs):
+    def __init__(self, credits=None, gold=None, crystal=None, eventCoin=None, bpcoin=None, equipCoin=None, *args, **kwargs):
         super(Money, self).__init__()
         values = self._values = {}
         if credits is not None:
@@ -87,6 +89,8 @@ class Money(object):
             values[_EVENT_COIN] = eventCoin
         if bpcoin is not None:
             values[_BPCOIN] = bpcoin
+        if equipCoin is not None:
+            values[_EQUIP_COIN] = equipCoin
         return
 
     def __getitem__(self, index):
@@ -234,6 +238,15 @@ class Money(object):
     def bpcoin(self):
         try:
             return self._values[_BPCOIN]
+        except KeyError:
+            return None
+
+        return None
+
+    @property
+    def equipCoin(self):
+        try:
+            return self._values[_EQUIP_COIN]
         except KeyError:
             return None
 

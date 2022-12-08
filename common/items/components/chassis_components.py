@@ -1,10 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/chassis_components.py
 from collections import namedtuple
-
-from items.components import path_builder
+from copy import deepcopy
 from wrapped_reflection_framework import reflectedNamedTuple, ReflectionMetaclass
-
+from items.components import component_constants
+from items.components import path_builder
+from items.components import shared_components
 __all__ = ('Wheel', 'WheelGroup', 'TrackPair', 'TrackNode', 'TrackBasicVisualParams', 'TrackPairParams', 'TrackPairDebris', 'TrackDebrisParams', 'GroundNode', 'GroundNodeGroup', 'Traces', 'LeveredSuspensionConfig', 'SuspensionLever', 'SplineSegmentModelSet')
 Wheel = reflectedNamedTuple('Wheel', ('index', 'isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle', 'hitTesterManager', 'materials', 'position'))
 Wheel.hitTester = property(lambda self: self.hitTesterManager.activeHitTester)

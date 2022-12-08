@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/proto/bw_chat2/battle_chat_cmd.py
 import struct
-
 import Math
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
 from debug_utils import LOG_ERROR
@@ -17,7 +16,6 @@ from messenger_common_chat2 import BATTLE_CHAT_COMMANDS_BY_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from messenger_common_chat2 import messageArgs, BATTLE_CHAT_COMMANDS
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 AUTOCOMMIT_COMMAND_NAMES = (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY,
  BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY_WITH_SPG,

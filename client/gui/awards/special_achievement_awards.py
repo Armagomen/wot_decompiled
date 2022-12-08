@@ -1,25 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/awards/special_achievement_awards.py
-from CurrentVehicle import g_currentVehicle
 from collector_vehicle import CollectorVehicleConsts
 from gui.Scaleform.genConsts.PERSONALCASECONST import PERSONALCASECONST
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.locale.CLANS import CLANS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.referral_program import REFERRAL_PROGRAM_SOUNDS
 from gui.server_events.awards import AwardAbstract, ExplosionBackAward
 from gui.shared import event_dispatcher as shared_events, EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showReferralProgramWindow
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Vehicle import sortCrew
+from gui.impl.gen import R
+from gui.impl import backport
 from helpers import dependency, i18n, int2roman
 from nations import NAMES
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
+from CurrentVehicle import g_currentVehicle
 _CENTER_ALIGN = 'center'
 
 def _getNationName(nationID):

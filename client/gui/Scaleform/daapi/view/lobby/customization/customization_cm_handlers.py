@@ -1,13 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_cm_handlers.py
 import logging
-
-from CurrentVehicle import g_currentVehicle
-from Event import Event
 from adisp import adisp_process
+from Event import Event
 from gui import DialogsInterface
-from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nBuyMeta, \
-    ConfirmC11nSellMeta
+from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nBuyMeta, ConfirmC11nSellMeta
 from gui.Scaleform.daapi.view.lobby.customization.shared import isItemUsedUp
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -22,7 +19,7 @@ from helpers import dependency
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
-
+from CurrentVehicle import g_currentVehicle
 _logger = logging.getLogger(__name__)
 
 class CustomizationOptions(object):

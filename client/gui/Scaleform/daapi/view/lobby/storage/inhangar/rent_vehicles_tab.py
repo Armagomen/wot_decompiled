@@ -8,13 +8,12 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared import event_dispatcher as shared_events
 from gui.shared.formatters.time_formatters import RentLeftFormatter
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from helpers.i18n import makeString as _ms
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
-from helpers.i18n import makeString as _ms
 from skeletons.gui.game_control import IRentalsController
 from skeletons.gui.shared import IItemsCache
-
 
 class _RentStorageCarouselFilter(StorageCarouselFilter):
 

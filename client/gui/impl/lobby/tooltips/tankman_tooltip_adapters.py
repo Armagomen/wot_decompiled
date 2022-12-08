@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tooltips/tankman_tooltip_adapters.py
+import typing
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.tooltips.contexts import NotRecruitedTankmanContext

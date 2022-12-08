@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/battle_selector.py
 import typing
-
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
 from gui.impl.gen import R
@@ -12,9 +11,8 @@ from gui.shared.tooltips.common import BlocksTooltipData
 from gui.shared.tooltips.periodic.prime_helpers import getPrimeTableBlocks
 from helpers import dependency, time_utils
 from skeletons.connection_mgr import IConnectionManager
-
 if typing.TYPE_CHECKING:
-    pass
+    from skeletons.gui.game_control import ISeasonProvider
 
 class SeasonalBattleSelectorTooltip(BlocksTooltipData):
     __connectionMgr = dependency.descriptor(IConnectionManager)

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/clans/clan_helpers.py
 from collections import namedtuple
 from datetime import datetime
-
 import Event
 from adisp import adisp_async, adisp_process
 from client_request_lib.exceptions import ResponseCodes
@@ -30,7 +29,6 @@ from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
-
 _RequestData = namedtuple('_RequestData', ['pattern',
  'offset',
  'count',
@@ -350,8 +348,7 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
     @adisp_async
     @adisp_process
     def __requestInvites(self, offset, count, isReset, callback):
-        ctx = self.__ctxClass(clanDbID=self.__clanDbID, offset=offset, limit=count, statuses=self.__statuses,
-                              getTotalCount=isReset)
+        ctx = self.__ctxClass(clanDbID=self.__clanDbID, offset=offset, limit=count, statuses=self.__statuses, getTotalCount=isReset)
         result = yield self._requester.sendRequest(ctx, allowDelay=True)
         invites = ctx.getDataObj(result.data)
         self.__lastStatus = result.isSuccess()
@@ -571,8 +568,7 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
     @adisp_async
     @adisp_process
     def __requestInvites(self, offset, count, isReset, callback):
-        ctx = AccountInvitesCtx(accountDbID=self.__accountDbID, offset=offset, limit=count, statuses=self.__statuses,
-                                getTotalCount=isReset)
+        ctx = AccountInvitesCtx(accountDbID=self.__accountDbID, offset=offset, limit=count, statuses=self.__statuses, getTotalCount=isReset)
         result = yield self._requester.sendRequest(ctx, allowDelay=True)
         invites = ctx.getDataObj(result.data)
         self.__lastStatus = result.isSuccess()

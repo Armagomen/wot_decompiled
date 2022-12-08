@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/points_of_interest/poi_view_states.py
-import typing
 from collections import namedtuple
-
+import typing
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 PointViewState = namedtuple('PointState', ('id', 'type', 'status', 'invader'))
 VehicleViewState = namedtuple('VehicleState', ('id', 'blockReasons'))
 if typing.TYPE_CHECKING:

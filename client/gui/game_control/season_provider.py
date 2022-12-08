@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/gui/game_control/season_provider.py
 from collections import defaultdict
 from operator import itemgetter
-
+import typing
 import season_common
-from gui.periodic_battles.models import PrimeTime, PeriodType, PeriodInfo, AlertData, PERIOD_TO_STANDALONE, \
-    PrimeTimeStatus
-from helpers import time_utils, dependency
-from predefined_hosts import g_preDefinedHosts, HOST_AVAILABILITY
-from season_common import GameSeason
-from shared_utils import collapseIntervals
 from shared_utils import first, findFirst
-from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import ISeasonProvider
-
+from helpers import time_utils, dependency
+from shared_utils import collapseIntervals
+from season_common import GameSeason
+from gui.periodic_battles.models import PrimeTime, PeriodType, PeriodInfo, AlertData, PERIOD_TO_STANDALONE, PrimeTimeStatus
+from predefined_hosts import g_preDefinedHosts, HOST_AVAILABILITY
+from skeletons.connection_mgr import IConnectionManager
 
 class SeasonProvider(ISeasonProvider):
     _ALERT_DATA_CLASS = AlertData
@@ -32,6 +30,10 @@ class SeasonProvider(ISeasonProvider):
     def isFrozen(self):
         status, _, _ = self.getPrimeTimeStatus()
         return status == PrimeTimeStatus.FROZEN
+
+    def isNotSet(self, now=None, peripheryID=None):
+        status, _, _ = self.getPrimeTimeStatus(now, peripheryID)
+        return status == PrimeTimeStatus.NOT_SET
 
     def isWithinSeasonTime(self, seasonID):
         settings = self.__getSeasonSettings()
@@ -300,13 +302,12 @@ class SeasonProvider(ISeasonProvider):
             timeLeft = seasonsChangeTime - now
         return timeLeft + 1 if timeLeft > 0 else 0
 
-    def getLeftTimeToPrimeTimesEnd(self):
+    def getLeftTimeToPrimeTimesEnd(self, now=None):
         if self.isInPrimeTime():
             return 0
-        now = self.__getNow()
+        now = now or self.__getNow()
         primeTimeStatus, timeLeft, _ = self.getPrimeTimeStatus(now)
         if primeTimeStatus == PrimeTimeStatus.NOT_AVAILABLE or self.__connectionMgr.isStandalone():
-            _, timeLeft, _ = self.getPrimeTimeStatus(now)
             return timeLeft
         times = []
         for peripheryID in self._getAllPeripheryIDs():
@@ -314,7 +315,7 @@ class SeasonProvider(ISeasonProvider):
             if status == PrimeTimeStatus.NOT_AVAILABLE:
                 times.append(peripheryTime)
 
-        return min(times)
+        return min(times) if times else 0
 
     def _hasPrimeStatusServer(self, states, now=None):
         for peripheryID in self._getAllPeripheryIDs():

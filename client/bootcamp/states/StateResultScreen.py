@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bootcamp/states/StateResultScreen.py
 from copy import deepcopy
-
 from adisp import adisp_process
 from bootcamp.BootCampEvents import g_bootcampEvents
 from bootcamp.BootcampConstants import BOOTCAMP_BATTLE_RESULT_MESSAGE
@@ -13,11 +12,10 @@ from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.battle_session import IBattleSessionProvider
+from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 class StateResultScreen(AbstractState):
     battleResults = dependency.descriptor(IBattleResultsService)

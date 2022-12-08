@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/Grid.py
-import GUI
-
+import BigWorld, GUI, Keys
 from PyGUIBase import PyGUIBase
-
 
 class Grid(PyGUIBase):
     factoryString = 'PyGUI.Grid'
@@ -50,23 +48,19 @@ class Grid(PyGUIBase):
         widthMode = self.component.widthMode
         heightMode = self.component.heightMode
         if widthMode == GUI.Simple.eSizeMode.PIXEL:
-            horizSize = (self.component.width - self.borderLeft - self.borderRight - self.horizontalGap * (
-                        self.gridWidth - 1)) / self.gridWidth
+            horizSize = (self.component.width - self.borderLeft - self.borderRight - self.horizontalGap * (self.gridWidth - 1)) / self.gridWidth
             horizOffset = horizSize + self.horizontalGap
             horizStart = self.borderLeft
         if widthMode == GUI.Simple.eSizeMode.CLIP:
-            horizSize = (2.0 - self.borderLeft - self.borderRight - self.horizontalGap * (
-                        self.gridWidth - 1)) / self.gridWidth
+            horizSize = (2.0 - self.borderLeft - self.borderRight - self.horizontalGap * (self.gridWidth - 1)) / self.gridWidth
             horizOffset = horizSize + self.horizontalGap
             horizStart = -1.0 + self.borderLeft
         if heightMode == GUI.Simple.eSizeMode.PIXEL:
-            vertSize = (self.component.height - self.borderTop - self.borderBottom - self.verticalGap * (
-                        self.gridHeight - 1)) / self.gridHeight
+            vertSize = (self.component.height - self.borderTop - self.borderBottom - self.verticalGap * (self.gridHeight - 1)) / self.gridHeight
             vertOffset = vertSize + self.verticalGap
             vertStart = self.borderTop
         if heightMode == GUI.Simple.eSizeMode.CLIP:
-            vertSize = (2.0 - self.borderTop - self.borderBottom - self.verticalGap * (
-                        self.gridHeight - 1)) / self.gridHeight
+            vertSize = (2.0 - self.borderTop - self.borderBottom - self.verticalGap * (self.gridHeight - 1)) / self.gridHeight
             vertOffset = -(vertSize + self.verticalGap)
             vertStart = 1.0 - self.borderTop
         horizPos = horizStart

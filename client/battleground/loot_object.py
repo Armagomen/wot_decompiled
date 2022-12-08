@@ -3,20 +3,18 @@
 import logging
 import weakref
 from collections import defaultdict
-
-import AnimationSequence
 import BigWorld
-import CGF
 import Math
+import AnimationSequence
+import CGF
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
+from cgf_script.bonus_caps_rules import bonusCapsManager
+from helpers import dependency
 from battleground.component_loading import loadComponentSystem, Loader, CompositeLoaderMixin, loadResourceMapping
 from battleground.components import TerrainAreaGameObject, CompoundSequenceObject, SmartSequenceObject
-from cgf_script.bonus_caps_rules import bonusCapsManager
 from gui.shared.utils.graphics import isRendererPipelineDeferred
-from helpers import dependency
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 
 @dependency.replace_none_kwargs(dynamicObjectsCache=IBattleDynamicObjectsCache, battleSession=IBattleSessionProvider)
@@ -136,7 +134,7 @@ class SteelHunterDynamicObjectsCachingManager(CGF.ComponentManager):
     def __init__(self):
         super(SteelHunterDynamicObjectsCachingManager, self).__init__()
         self.__lootCache = {}
-        self.__cachingQueue = defaultdict(lambda: [])
+        self.__cachingQueue = defaultdict(lambda : [])
         self.__cachedConfig = None
         return
 

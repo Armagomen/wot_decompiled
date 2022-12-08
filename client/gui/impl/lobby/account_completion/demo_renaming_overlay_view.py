@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_completion/demo_renaming_overlay_view.py
 import typing
-
 import BigWorld
+from wg_async import wg_await, wg_async, AsyncReturn
 from gui.impl.backport import text as loc
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.gf_builders import ResDialogBuilder
@@ -16,16 +16,14 @@ from gui.impl.lobby.account_completion.utils.common import DISABLE_BUTTON_TIME
 from gui.impl.pub.dialog_window import DialogButtons
 from gui.platform.base.statuses.constants import StatusTypes
 from gui.platform.wgnp.demo_account.controller import NICKNAME_CONTEXT
-from gui.shared.event_dispatcher import showDemoAccRenamingCompleteOverlay, showContactSupportOverlay, \
-    showDemoRenamingUnavailableOverlay
+from gui.shared.event_dispatcher import showDemoAccRenamingCompleteOverlay, showContactSupportOverlay, showDemoRenamingUnavailableOverlay
 from helpers import dependency
 from skeletons.gui.game_control import IDemoAccCompletionController, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
-from wg_async import wg_await, wg_async, AsyncReturn
-
 if typing.TYPE_CHECKING:
-    pass
+    from wg_async import _Future
+    from gui.platform.wgnp.demo_account.request import ChangeNicknameParams
 _res = R.strings.dialogs.accountCompletion.renamingOverlay
 
 class DemoRenamingOverlayView(BaseWGNPOverlayView):

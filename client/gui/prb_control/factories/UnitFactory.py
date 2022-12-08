@@ -2,27 +2,25 @@
 # Embedded file name: scripts/client/gui/prb_control/factories/UnitFactory.py
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_ERROR
-from gui.prb_control import prb_getters
-from gui.prb_control.entities.base.unit.ctx import LeaveUnitCtx
-from gui.prb_control.entities.base.unit.entity import UnitIntroEntity
-from gui.prb_control.entities.comp7.squad.entity import Comp7SquadEntity, Comp7SquadEntryPoint
-from gui.prb_control.entities.e_sport.unit.entity import ESportIntroEntity, ESportIntroEntry
-from gui.prb_control.entities.e_sport.unit.public.entity import PublicBrowserEntity, PublicEntity
-from gui.prb_control.entities.e_sport.unit.public.entity import PublicBrowserEntryPoint, PublicEntryPoint
-from gui.prb_control.entities.epic.squad.entity import EpicSquadEntity, EpicSquadEntryPoint
-from gui.prb_control.entities.event.squad.entity import EventBattleSquadEntity, EventBattleSquadEntryPoint
-from gui.prb_control.entities.mapbox.squad.entity import MapboxSquadEntryPoint, MapboxSquadEntity
-from gui.prb_control.entities.random.squad.entity import RandomSquadEntity, RandomSquadEntryPoint
-from gui.prb_control.entities.stronghold.unit.entity import StrongholdEntity, StrongholdEntryPoint, \
-    StrongholdBrowserEntryPoint, StrongholdBrowserEntity
-from gui.prb_control.factories.ControlFactory import ControlFactory
-from gui.prb_control.items import PlayerDecorator, FunctionalState
-from gui.prb_control.settings import FUNCTIONAL_FLAG
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE
 from gui.shared.system_factory import registerUnitEntity, collectUnitEntity
 from gui.shared.system_factory import registerUnitEntryPoint, collectUnitEntryPoint
 from gui.shared.system_factory import registerUnitEntryPointByType, collectUnitEntryPointByType
-
+from gui.prb_control import prb_getters
+from gui.prb_control.entities.comp7.squad.entity import Comp7SquadEntity, Comp7SquadEntryPoint
+from gui.prb_control.factories.ControlFactory import ControlFactory
+from gui.prb_control.entities.base.unit.ctx import LeaveUnitCtx
+from gui.prb_control.entities.base.unit.entity import UnitIntroEntity
+from gui.prb_control.entities.e_sport.unit.entity import ESportIntroEntity, ESportIntroEntry
+from gui.prb_control.entities.e_sport.unit.public.entity import PublicBrowserEntity, PublicEntity
+from gui.prb_control.entities.e_sport.unit.public.entity import PublicBrowserEntryPoint, PublicEntryPoint
+from gui.prb_control.entities.event.squad.entity import EventBattleSquadEntity, EventBattleSquadEntryPoint
+from gui.prb_control.entities.mapbox.squad.entity import MapboxSquadEntryPoint, MapboxSquadEntity
+from gui.prb_control.entities.stronghold.unit.entity import StrongholdEntity, StrongholdEntryPoint, StrongholdBrowserEntryPoint, StrongholdBrowserEntity
+from gui.prb_control.entities.random.squad.entity import RandomSquadEntity, RandomSquadEntryPoint
+from gui.prb_control.entities.epic.squad.entity import EpicSquadEntity, EpicSquadEntryPoint
+from gui.prb_control.items import PlayerDecorator, FunctionalState
+from gui.prb_control.settings import FUNCTIONAL_FLAG
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE
 __all__ = ('UnitFactory',)
 registerUnitEntryPoint(PREBATTLE_ACTION_NAME.SQUAD, RandomSquadEntryPoint)
 registerUnitEntryPoint(PREBATTLE_ACTION_NAME.EVENT_SQUAD, EventBattleSquadEntryPoint)
@@ -58,6 +56,7 @@ class UnitFactory(ControlFactory):
         result = collectUnitEntryPoint(action.actionName)
         if result:
             result.setAccountsToInvite(action.accountsToInvite)
+            result.setExtData(action.extData)
         return result
 
     def createEntity(self, ctx):

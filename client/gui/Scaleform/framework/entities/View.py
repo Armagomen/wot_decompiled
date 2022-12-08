@@ -3,21 +3,19 @@
 import logging
 import typing
 from collections import namedtuple
-
+from gui.Scaleform.framework.settings import UIFrameworkImpl
 from gui.Scaleform.framework.entities.DisposableEntity import EntityState
 from gui.Scaleform.framework.entities.abstract.AbstractViewMeta import AbstractViewMeta
 from gui.Scaleform.framework.entities.view_interface import ViewInterface
-from gui.Scaleform.framework.settings import UIFrameworkImpl
 from gui.doc_loaders import hints_layout
 from gui.shared.events import FocusEvent
-from helpers import dependency, uniprof
 from ids_generators import SequenceIDGenerator
 from skeletons.tutorial import ITutorialLoader
 from soft_exception import SoftException
 from sound_gui_manager import ViewSoundExtension
-
+from helpers import dependency, uniprof
 if typing.TYPE_CHECKING:
-    pass
+    from frameworks.wulf import Window
 _UNIPROF_REGION_COLOR = 3368601
 _logger = logging.getLogger(__name__)
 _view_id_generator = SequenceIDGenerator()

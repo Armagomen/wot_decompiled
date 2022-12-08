@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/arena_components/epic_battle_player_data_component.py
 from collections import defaultdict
-
-import BigWorld
-import Event
-from PlayerEvents import g_playerEvents
 from arena_components.player_data_component import PlayerDataComponent
 from constants import ARENA_SYNC_OBJECTS, SECTOR_STATE, ARENA_PERIOD
+from PlayerEvents import g_playerEvents
 from debug_utils import LOG_CURRENT_EXCEPTION
+import Event
+import BigWorld
 from gui.battle_control import avatar_getter
-
 
 class EpicBattlePlayerDataComponent(PlayerDataComponent):
     playerLives = property(lambda self: self.__getPlayerLives())

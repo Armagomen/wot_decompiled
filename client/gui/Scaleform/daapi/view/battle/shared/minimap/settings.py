@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/settings.py
 from enum import Enum
-
 from account_helpers.settings_core.options import MinimapVehModelsSetting, MinimapHPSettings
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from shared_utils import BitmaskHelper
-
 MINIMAP_COMPONENT_PATH = '_level0.root.{}.main.minimap.entriesContainer'.format(LAYER_NAMES.VIEWS)
 MINIMAP_MIN_SIZE_INDEX = 0
 MINIMAP_MAX_SIZE_INDEX = 5

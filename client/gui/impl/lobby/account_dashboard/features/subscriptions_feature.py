@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/subscriptions_feature.py
 from constants import PLAYER_SUBSCRIPTIONS_CONFIG
+from gui.impl.gen.view_models.views.lobby.account_dashboard.subscriptions_entry_point_model import SubscriptionsEntryPointModel
 from gui.impl.lobby.account_dashboard.features.base import FeatureItem
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.shared.event_dispatcher import showSubscriptionsPage

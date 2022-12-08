@@ -1,11 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/items/__init__.py
 from collections import namedtuple
-
+from UnitBase import ROSTER_TYPE
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
+from gui.prb_control.items.prb_items import PlayerPrbInfo
+from gui.prb_control.items.unit_items import PlayerUnitInfo
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, FUNCTIONAL_FLAG, PREBATTLE_RESTRICTION
 from gui.shared.utils.decorators import ReprInjector
-
 
 @ReprInjector.simple('ctrlTypeID', 'entityTypeID', 'hasModalEntity', 'hasLockedState', 'isIntroMode')
 class FunctionalState(object):

@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/formatters.py
 import math
-
 from debug_utils import LOG_ERROR, LOG_WARNING
-
 
 def normalizeHealth(health):
     return max(0.0, health)

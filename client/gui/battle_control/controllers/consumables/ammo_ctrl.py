@@ -5,25 +5,22 @@ import typing
 import weakref
 from collections import namedtuple
 from math import fabs
-
 import BigWorld
 import CommandMapping
 import Event
-from ReloadEffect import ReloadEffectStrategy
 from constants import VEHICLE_SETTING, ReloadRestriction
+from shared_utils import CONST_CONTAINER
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_ERROR
-from gui.Scaleform.genConsts.AUTOLOADERBOOSTVIEWSTATES import AUTOLOADERBOOSTVIEWSTATES
 from gui.battle_control import avatar_getter
-from gui.battle_control.battle_constants import SHELL_SET_RESULT, CANT_SHOOT_ERROR, BATTLE_CTRL_ID, \
-    SHELL_QUANTITY_UNKNOWN
+from gui.battle_control.battle_constants import SHELL_SET_RESULT, CANT_SHOOT_ERROR, BATTLE_CTRL_ID, SHELL_QUANTITY_UNKNOWN
 from gui.battle_control.view_components import ViewComponentsController
 from gui.shared.utils.MethodsRules import MethodsRules
 from gui.shared.utils.decorators import ReprInjector
-from helpers import dependency
+from gui.Scaleform.genConsts.AUTOLOADERBOOSTVIEWSTATES import AUTOLOADERBOOSTVIEWSTATES
+from ReloadEffect import ReloadEffectStrategy
 from items import vehicles
-from shared_utils import CONST_CONTAINER
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from helpers import dependency
 __all__ = ('AmmoController', 'AmmoReplayPlayer')
 _ClipBurstSettings = namedtuple('_ClipBurstSettings', 'size interval')
 _HUNDRED_PERCENT = 100.0
@@ -32,8 +29,8 @@ _TIME_CORRECTION_THRESHOLD = 0.01
 _IGNORED_RELOADING_TIME = 0.15
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
-
+    from gui.shared.gui_items.vehicle_modules import Shell
+    from items.vehicle_items import Gun
 
 class _GunSettings(namedtuple('_GunSettings', 'clip burst shots reloadEffect autoReload isDualGun')):
 
@@ -54,9 +51,9 @@ class _GunSettings(namedtuple('_GunSettings', 'clip burst shots reloadEffect aut
             nationID, itemID = shotDescr.shell.id
             intCD = vehicles.makeIntCompactDescrByID('shell', nationID, itemID)
             shots[intCD] = (shotIdx,
-                            shotDescr.piercingPower[0],
-                            shotDescr.speed,
-                            shotDescr.shell)
+             shotDescr.piercingPower[0],
+             shotDescr.speed,
+             shotDescr.shell)
 
         autoReload = gun.autoreload if 'autoreload' in gun.tags else None
         isDualGun = 'dualGun' in gun.tags
@@ -551,8 +548,7 @@ class AmmoController(MethodsRules, ViewComponentsController):
         self.triggerReloadEffect(timeLeft, baseTime)
         if interval > 0 and self.__currShellCD in self.__ammo and baseTime > 0.0:
             shellsInClip = self.__ammo[self.__currShellCD][1]
-            if not (
-                    shellsInClip == 1 and timeLeft == 0 and not self.__gunSettings.hasAutoReload() or shellsInClip == 0 and timeLeft != 0):
+            if not (shellsInClip == 1 and timeLeft == 0 and not self.__gunSettings.hasAutoReload() or shellsInClip == 0 and timeLeft != 0):
                 if interval <= baseTime:
                     baseTime = interval
         elif baseTime == 0.0:

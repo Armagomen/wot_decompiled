@@ -5,6 +5,7 @@ import nations
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEHICLES_WITH_BLUEPRINT_CONFIRM, STORAGE_BLUEPRINTS_CAROUSEL_FILTER
 from adisp import adisp_process
+from wg_async import wg_async, wg_await
 from blueprints.BlueprintTypes import BlueprintTypes
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.gui_constants import ViewFlags, ViewStatus
@@ -18,8 +19,7 @@ from gui.impl.backport import createTooltipData, BackportTooltipWindow
 from gui.impl.dialogs import dialogs
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_model import BlueprintScreenModel
-from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_scheme_item_model import \
-    BlueprintScreenSchemeItemModel
+from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_scheme_item_model import BlueprintScreenSchemeItemModel
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_tooltips import BlueprintScreenTooltips
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_value_price import BlueprintValuePrice
 from gui.impl.lobby.blueprints import getBlueprintTooltipData
@@ -36,8 +36,6 @@ from helpers import dependency, int2roman
 from helpers.blueprint_generator import g_blueprintGenerator
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await
-
 
 class BlueprintScreen(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)

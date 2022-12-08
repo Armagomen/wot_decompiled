@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/frontline_setup.py
-from CurrentVehicle import g_currentVehicle
 from gui.game_control.epic_meta_game_ctrl import EpicBattleScreens
 from gui.impl.lobby.tank_setup.configurations.epic_battle_ability import EpicBattleTabsController, EpicBattleDealPanel
 from gui.impl.lobby.tank_setup.sub_views.base_equipment_setup import BaseEquipmentSetupSubView
@@ -10,10 +9,9 @@ from helpers import dependency
 from shared_utils import first
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IEpicBattleMetaGameController
-from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions, EpicBattleLogButtons, \
-    EpicBattleLogAdditionalInfo
+from CurrentVehicle import g_currentVehicle
+from uilogging.epic_battle.constants import EpicBattleLogKeys, EpicBattleLogActions, EpicBattleLogButtons, EpicBattleLogAdditionalInfo
 from uilogging.epic_battle.loggers import EpicBattleTooltipLogger
-
 
 class EpicBattleSetupSubView(BaseEquipmentSetupSubView):
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)

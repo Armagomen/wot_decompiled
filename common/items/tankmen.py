@@ -4,27 +4,25 @@ import random
 import struct
 from functools import partial
 from itertools import izip
-
+from typing import List, Dict, Any, Tuple, Optional
 import nations
-from account_shared import AmmoIterator
-from constants import ITEM_DEFS_PATH
-from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_DEBUG_DEV
 from items import vehicles, ITEM_TYPES, parseIntCompactDescr
-from items.components import component_constants
-from items.components import crew_skins_constants, crew_books_constants
+from items.components import skills_components, crew_skins_constants, crew_books_constants
 from items.components import skills_constants
 from items.components import tankmen_components
-from items.components.crew_books_components import CrewBooksCache
+from items.components import component_constants
 from items.components.crew_skins_components import CrewSkinsCache
-from items.passports import PassportCache, passport_generator, maxAttempts, distinctFrom, acceptOn
+from items.components.crew_books_components import CrewBooksCache
 from items.readers import skills_readers
 from items.readers import tankmen_readers
-from items.readers.crewBooks_readers import readCrewBooksCacheFromXML
 from items.readers.crewSkins_readers import readCrewSkinsCacheFromXML
-from soft_exception import SoftException
-
+from items.readers.crewBooks_readers import readCrewBooksCacheFromXML
+from items.passports import PassportCache, passport_generator, maxAttempts, distinctFrom, acceptOn
 from vehicles import VEHICLE_CLASS_TAGS
-
+from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_DEBUG_DEV
+from constants import ITEM_DEFS_PATH
+from account_shared import AmmoIterator
+from soft_exception import SoftException
 SKILL_NAMES = skills_constants.SKILL_NAMES
 SKILL_INDICES = skills_constants.SKILL_INDICES
 ROLES = skills_constants.ROLES

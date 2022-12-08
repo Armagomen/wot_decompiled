@@ -2,26 +2,25 @@
 # Embedded file name: scripts/client/gui/prb_control/entities/event/squad/entity.py
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from debug_utils import LOG_DEBUG
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import rally_dialog_meta
-from gui.prb_control import settings as prb_settings
-from gui.prb_control.entities.base import vehicleAmmoCheck
+from constants import PREBATTLE_TYPE, QUEUE_TYPE
+from gui.prb_control.entities.base.unit.ctx import SetVehicleUnitCtx, SetReadyUnitCtx
+from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
 from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
-from gui.prb_control.entities.base.unit.ctx import SetVehicleUnitCtx, SetReadyUnitCtx
 from gui.prb_control.entities.event.squad.actions_handler import EventBattleSquadActionsHandler
 from gui.prb_control.entities.event.squad.actions_validator import EventBattleSquadActionsValidator
-from gui.prb_control.entities.event.squad.scheduler import EventSquadScheduler
-from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
-from gui.prb_control.storages import prequeue_storage_getter
 from gui.shared.utils import getPlayerDatabaseID
 from gui.shared.utils.decorators import ReprInjector
+from gui.prb_control import settings as prb_settings
+from gui.prb_control.entities.event.squad.scheduler import EventSquadScheduler
+from gui.prb_control.storages import prequeue_storage_getter
+from gui.prb_control.entities.base import vehicleAmmoCheck
 from helpers import dependency
 from skeletons.gui.game_control import IEventBattlesController
-
 
 @ReprInjector.withParent()
 class EventSquadSettingsCtx(SquadSettingsCtx):

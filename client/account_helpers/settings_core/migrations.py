@@ -2,9 +2,7 @@
 # Embedded file name: scripts/client/account_helpers/settings_core/migrations.py
 import BigWorld
 import constants
-from account_helpers.settings_core.settings_constants import GAME, CONTROLS, VERSION, DAMAGE_INDICATOR, DAMAGE_LOG, \
-    BATTLE_EVENTS, SESSION_STATS, BattlePassStorageKeys, BattleCommStorageKeys, OnceOnlyHints, ScorePanelStorageKeys, \
-    SPGAim, GuiSettingsBehavior
+from account_helpers.settings_core.settings_constants import GAME, CONTROLS, VERSION, DAMAGE_INDICATOR, DAMAGE_LOG, BATTLE_EVENTS, SESSION_STATS, BattlePassStorageKeys, BattleCommStorageKeys, OnceOnlyHints, ScorePanelStorageKeys, SPGAim, GuiSettingsBehavior
 from adisp import adisp_process, adisp_async
 from debug_utils import LOG_DEBUG
 from gui.server_events.pm_constants import PM_TUTOR_FIELDS
@@ -96,6 +94,7 @@ def _initializeDefaultSettings(core, data, initialized):
 @adisp_async
 @adisp_process
 def _reinitializeDefaultSettings(core, data, initialized, callback=None):
+
     @adisp_async
     def wrapper(callback=None):
         BigWorld.player().intUserSettings.delIntSettings(range(1, 60), callback)
@@ -820,9 +819,29 @@ def _migrateTo92(core, data, initialized):
     data[GUI_START_BEHAVIOR][GuiSettingsBehavior.RESOURCE_WELL_INTRO_SHOWN] = False
 
 
-def _migrateTo93(core, data, initialized):
+def _migrateTo93(_, data, __):
+    from account_helpers import AccountSettings
+    from account_helpers.AccountSettings import FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS as SECTIONS
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_1)
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_2] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_2)
+
+
+def _migrateTo94(core, data, initialized):
+    onceOnlyHintsData = data['onceOnlyHints2']
+    onceOnlyHintsData[OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT] = False
+    onceOnlyHintsData[OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT] = False
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
-    data[SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1] = {'ussr': False,
+    data[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS] = {'shown': 0}
+
+
+def _migrateTo95(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS, SETTINGS_SECTIONS
+    data[SETTINGS_SECTIONS.UI_STORAGE_2][UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER] = 0
+
+
+def _migrateTo96(core, data, initialized):
+    data['comp7CarouselFilter1'] = {'ussr': False,
      'germany': False,
      'usa': False,
      'china': False,
@@ -848,7 +867,7 @@ def _migrateTo93(core, data, initialized):
      'level_8': False,
      'level_9': False,
      'level_10': False}
-    data[SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_2] = {'premium': False,
+    data['comp7CarouselFilter2'] = {'premium': False,
      'elite': False,
      'igr': False,
      'rented': True,
@@ -857,14 +876,14 @@ def _migrateTo93(core, data, initialized):
      'favorite': False,
      'bonus': False,
      'crystals': False,
-     'funRandom': True,
+     'comp7': True,
      'role_HT_assault': False,
      'role_HT_break': False,
-     'role_HT_support': False,
      'role_HT_universal': False,
+     'role_HT_support': False,
+     'role_MT_assault': False,
      'role_MT_universal': False,
      'role_MT_sniper': False,
-     'role_MT_assault': False,
      'role_MT_support': False,
      'role_ATSPG_assault': False,
      'role_ATSPG_universal': False,
@@ -873,73 +892,6 @@ def _migrateTo93(core, data, initialized):
      'role_LT_universal': False,
      'role_LT_wheeled': False,
      'role_SPG': False}
-
-
-def _migrateTo94(core, data, initialized):
-    onceOnlyHintsData = data['onceOnlyHints2']
-    onceOnlyHintsData[OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT] = False
-    onceOnlyHintsData[OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT] = False
-    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
-    data[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS] = {'shown': 0}
-
-
-def _migrateTo95(core, data, initialized):
-    from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS, SETTINGS_SECTIONS
-    data[SETTINGS_SECTIONS.UI_STORAGE_2][UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER] = 0
-
-
-def _migrateTo96(core, data, initialized):
-    data['comp7CarouselFilter1'] = {'ussr': False,
-                                    'germany': False,
-                                    'usa': False,
-                                    'china': False,
-                                    'france': False,
-                                    'uk': False,
-                                    'japan': False,
-                                    'czech': False,
-                                    'sweden': False,
-                                    'poland': False,
-                                    'italy': False,
-                                    'lightTank': False,
-                                    'mediumTank': False,
-                                    'heavyTank': False,
-                                    'SPG': False,
-                                    'AT-SPG': False,
-                                    'level_1': False,
-                                    'level_2': False,
-                                    'level_3': False,
-                                    'level_4': False,
-                                    'level_5': False,
-                                    'level_6': False,
-                                    'level_7': False,
-                                    'level_8': False,
-                                    'level_9': False,
-                                    'level_10': False}
-    data['comp7CarouselFilter2'] = {'premium': False,
-                                    'elite': False,
-                                    'igr': False,
-                                    'rented': True,
-                                    'event': True,
-                                    'gameMode': False,
-                                    'favorite': False,
-                                    'bonus': False,
-                                    'crystals': False,
-                                    'comp7': True,
-                                    'role_HT_assault': False,
-                                    'role_HT_break': False,
-                                    'role_HT_universal': False,
-                                    'role_HT_support': False,
-                                    'role_MT_assault': False,
-                                    'role_MT_universal': False,
-                                    'role_MT_sniper': False,
-                                    'role_MT_support': False,
-                                    'role_ATSPG_assault': False,
-                                    'role_ATSPG_universal': False,
-                                    'role_ATSPG_sniper': False,
-                                    'role_ATSPG_support': False,
-                                    'role_LT_universal': False,
-                                    'role_LT_wheeled': False,
-                                    'role_SPG': False}
     data['guiStartBehavior']['isComp7IntroShown'] = False
 
 
@@ -947,15 +899,40 @@ def _migrateTo97(core, data, initialized):
     pass
 
 
+def _migrateTo98(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)
+    settingOffset = 1073741824
+    if storedValue & settingOffset:
+        clear = data['clear']
+        clear['onceOnlyHints'] = clear.get('onceOnlyHints', 0) | settingOffset
+
+
+def _migrateTo99(_, data, __):
+    from account_helpers import AccountSettings
+    from account_helpers.AccountSettings import FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS as SECTIONS
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_1)
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_2] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_2)
+
+
+def _migrateTo100(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.NEW_YEAR, 0)
+    clear = data['clear']
+    if storedValue:
+        clear[SETTINGS_SECTIONS.NEW_YEAR] = clear.get(SETTINGS_SECTIONS.NEW_YEAR, 0) | storedValue
+
+
 _versions = ((1,
-              _initializeDefaultSettings,
-              True,
-              False),
-             (2,
-              _reinitializeDefaultSettings,
-              True,
-              True),
-             (3,
+  _initializeDefaultSettings,
+  True,
+  False),
+ (2,
+  _reinitializeDefaultSettings,
+  True,
+  True),
+ (3,
   _migrateTo3,
   False,
   False),
@@ -1311,27 +1288,38 @@ _versions = ((1,
   _migrateTo92,
   False,
   False),
-             (93,
-              _migrateTo93,
-              False,
-              False),
-             (94,
-              _migrateTo94,
-              False,
-              False),
-             (95,
-              _migrateTo95,
-              False,
-              False),
-             (96,
-              _migrateTo96,
-              False,
-              False),
-             (97,
-              _migrateTo97,
-              False,
-              False))
-
+ (93,
+  _migrateTo93,
+  False,
+  False),
+ (94,
+  _migrateTo94,
+  False,
+  False),
+ (95,
+  _migrateTo95,
+  False,
+  False),
+ (96,
+  _migrateTo96,
+  False,
+  False),
+ (97,
+  _migrateTo97,
+  False,
+  False),
+ (98,
+  _migrateTo98,
+  False,
+  False),
+ (99,
+  _migrateTo99,
+  False,
+  False),
+ (100,
+  _migrateTo100,
+  False,
+  False))
 
 @adisp_async
 @adisp_process

@@ -1,11 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/Utils.py
+import BigWorld, GUI, Math
 import string
-
-import BigWorld
-import GUI
-import Math
-
 WHITESPACE = string.whitespace.decode('latin_1')
 
 def autoSelectFont(fonts, idealCharactersPerLine, regionWidth, textComponent):
@@ -36,9 +32,9 @@ def applyMapping(component, mappingType, mapping):
         texture = component.texture
         if texture:
             clipMapping = [None,
-                           None,
-                           None,
-                           None]
+             None,
+             None,
+             None]
             width = component.texture.width
             height = component.texture.height
             clipMapping[0] = (float(mapping[0][0]) / width, float(mapping[0][1]) / height)

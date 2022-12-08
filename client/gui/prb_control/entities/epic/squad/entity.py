@@ -2,19 +2,18 @@
 # Embedded file name: scripts/client/gui/prb_control/entities/epic/squad/entity.py
 import account_helpers
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, VEHICLE_CLASS_INDICES
-from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
-from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
-from gui.prb_control.entities.epic.pre_queue.vehicles_watcher import EpicVehiclesWatcher
 from gui.prb_control.entities.epic.squad.actions_validator import EpicSquadActionsValidator
-from gui.prb_control.entities.random.squad.actions_handler import BalancedSquadActionsHandler
+from gui.prb_control.entities.base.squad.entity import SquadEntryPoint, SquadEntity
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
-from gui.prb_control.storages import prequeue_storage_getter
-from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
+from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
 from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
+from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
 from skeletons.gui.server_events import IEventsCache
-
+from skeletons.gui.lobby_context import ILobbyContext
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.prb_control.entities.random.squad.actions_handler import BalancedSquadActionsHandler
+from gui.prb_control.storages import prequeue_storage_getter
+from gui.prb_control.entities.epic.pre_queue.vehicles_watcher import EpicVehiclesWatcher
 
 class EpicSquadEntryPoint(SquadEntryPoint):
 
@@ -149,7 +148,7 @@ class EpicSquadEntity(SquadEntity):
     def _onInventoryVehiclesUpdated(self, diff):
         self.invalidateVehicleStates()
 
-    def _onUnitMemberVehiclesChanged(self, accoundDbID):
+    def _onUnitMemberVehiclesChanged(self, accountDBID):
         self.invalidateVehicleStates()
-        if accoundDbID != account_helpers.getAccountDatabaseID():
+        if accountDBID != account_helpers.getAccountDatabaseID():
             self.unit_onUnitRosterChanged()

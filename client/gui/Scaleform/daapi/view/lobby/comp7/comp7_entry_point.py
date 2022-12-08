@@ -1,18 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/comp7/comp7_entry_point.py
+from shared_utils import nextTick
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.meta.Comp7EntryPointMeta import Comp7EntryPointMeta
+from gui.impl.pub import ViewImpl
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.comp7.views.banner_model import BannerModel, State
-from gui.impl.pub import ViewImpl
 from gui.periodic_battles.models import PeriodType
 from gui.prb_control.entities.comp7 import comp7_prb_helpers
-from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
-from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
 from helpers import dependency, time_utils
-from shared_utils import nextTick
 from skeletons.gui.game_control import IComp7Controller
-
+from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
+from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 
 def isComp7EntryPointAvailable():
     comp7Ctrl = dependency.instance(IComp7Controller)

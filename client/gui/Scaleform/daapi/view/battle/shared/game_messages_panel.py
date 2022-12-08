@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/game_messages_panel.py
 from collections import namedtuple
-
 import BattleReplay
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.Scaleform.daapi.view.meta.GameMessagesPanelMeta import GameMessagesPanelMeta
 from gui.Scaleform.genConsts.GAME_MESSAGES_CONSTS import GAME_MESSAGES_CONSTS
 from gui.battle_control import avatar_getter
 from gui.battle_results.components.common import makeRegularFinishResultLabel
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.utils import toUpper
-
 
 class PlayerMessageData(namedtuple('playerMessageData', ('messageType', 'length', 'priority', 'msgData'))):
 
@@ -35,6 +33,9 @@ class GameMessagesPanel(GameMessagesPanelMeta):
         self.as_addMessageS(msg)
 
     def onMessageStarted(self, msgType, modificator, msgID):
+        pass
+
+    def onMessagePhaseStarted(self, type, modificator, id):
         pass
 
     def onMessageEnded(self, msgType, msgID):

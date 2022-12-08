@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/views/intro_screen.py
 import logging
-
+import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
 from account_helpers.settings_core.settings_constants import GuiSettingsBehavior
@@ -19,7 +19,6 @@ from gui.shared import event_dispatcher
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IComp7Controller
-
 _logger = logging.getLogger(__name__)
 
 class IntroScreen(ViewImpl, IGlobalListener):

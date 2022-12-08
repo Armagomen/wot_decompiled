@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/proto/xmpp/connection.py
 import random
-
 import BigWorld
-from adisp import adisp_process
 from constants import TOKEN_TYPE
+from adisp import adisp_process
 from gui.shared.utils import backoff, getPlayerDatabaseID
 from gui.shared.utils.requesters import TokenRequester, TokenResponse
 from helpers import dependency
@@ -16,7 +15,6 @@ from messenger.proto.xmpp.gloox_wrapper import ClientEventsHandler
 from messenger.proto.xmpp.log_output import CLIENT_LOG_AREA, g_logOutput
 from messenger.proto.xmpp.logger import sendEventToServer, XMPP_EVENT_LOG
 from skeletons.connection_mgr import IConnectionManager
-
 _BACK_OFF_MIN_DELAY = 10
 _BACK_OFF_MAX_DELAY = 5120
 _BACK_OFF_MODIFIER = 10

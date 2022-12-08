@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/tutorial/control/offbattle/functional.py
 import collections
 import urllib
-
 import MusicControllerWWISE
 import ResMgr
 from adisp import adisp_process
@@ -24,7 +23,6 @@ from tutorial.control.offbattle.context import getBattleDescriptor
 from tutorial.gui import GUI_EFFECT_NAME
 from tutorial.logger import LOG_ERROR, LOG_WARNING
 from tutorial.settings import PLAYER_XP_LEVEL
-
 
 class FunctionalEnterModeEffect(FunctionalEffect):
 

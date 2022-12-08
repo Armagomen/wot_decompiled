@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/__init__.py
 from abc import ABCMeta, abstractmethod
-
 import BigWorld
 from helpers.aop import Weaver
-from tutorial.data.conditions import CONDITION_TYPE
-from tutorial.data.effects import EFFECT_TYPE_NAMES
 from tutorial.logger import LOG_ERROR
-
+from tutorial.data.effects import EFFECT_TYPE_NAMES
+from tutorial.data.conditions import CONDITION_TYPE
 
 class TutorialProxyHolder(object):
     _tutorial = None

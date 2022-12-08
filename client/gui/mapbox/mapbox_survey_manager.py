@@ -3,18 +3,16 @@
 import logging
 import operator
 import typing
-
-from account_helpers import AccountSettings
 from account_helpers.AccountSettings import MAPBOX_SURVEYS
+from account_helpers import AccountSettings
 from constants import ARENA_BONUS_TYPE
 from gui.doc_loaders.surveys_loader import getSurvey
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_question_model import QuestionType
 from gui.mapbox.mapbox_survey_helper import AlternativeQuestion
 from shared_utils import findFirst, first
 from soft_exception import SoftException
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.mapbox.mapbox_survey_helper import IQuestion
 _logger = logging.getLogger(__name__)
 
 class MapboxSurveyManager(object):

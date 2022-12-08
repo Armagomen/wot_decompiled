@@ -2,12 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_details_container_view.py
 import logging
 from operator import methodcaller
-
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getDetailedMissionData, getMapRegionTooltipData
-from gui.Scaleform.daapi.view.meta.PersonalMissionDetailsContainerViewMeta import \
-    PersonalMissionDetailsContainerViewMeta
+from gui.Scaleform.daapi.view.meta.PersonalMissionDetailsContainerViewMeta import PersonalMissionDetailsContainerViewMeta
 from gui.shared import events, event_bus_handlers, EVENT_BUS_SCOPE
 from gui.shared.events import PersonalMissionsEvent
 from gui.shared.gui_items.processors import quests as quests_proc
@@ -18,7 +16,6 @@ from personal_missions import PM_BRANCH
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from tutorial.control.context import GLOBAL_FLAG
-
 _logger = logging.getLogger(__name__)
 
 class PersonalMissionDetailsContainerView(LobbySubView, PersonalMissionDetailsContainerViewMeta):

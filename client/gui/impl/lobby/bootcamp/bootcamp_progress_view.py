@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/bootcamp/bootcamp_progress_view.py
-from bootcamp.Bootcamp import g_bootcamp, ICON_SIZE
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.bootcamp.bootcamp_progress_model import BootcampProgressModel
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.shared.view_helpers.blur_manager import CachedBlur
+from bootcamp.Bootcamp import g_bootcamp, ICON_SIZE
+from gui.impl.gen.view_models.views.bootcamp.bootcamp_progress_model import BootcampProgressModel
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-
 
 class BootcampProgressView(ViewImpl):
     __slots__ = ('__blur', '__tooltipData')

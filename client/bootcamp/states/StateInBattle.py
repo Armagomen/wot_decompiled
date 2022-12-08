@@ -2,20 +2,18 @@
 # Embedded file name: scripts/client/bootcamp/states/StateInBattle.py
 import BattleReplay
 import BigWorld
-from PlayerEvents import g_playerEvents
+from AbstractState import AbstractState
+from bootcamp.aop.in_battle import weave
 from bootcamp.Assistant import BattleAssistant
 from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.Bootcamp import g_bootcamp
-from bootcamp.BootcampConstants import UI_STATE, BOOTCAMP_BATTLE_RESULT_MESSAGE
-from bootcamp.aop.in_battle import weave
 from bootcamp.states import STATE
+from bootcamp.BootcampConstants import UI_STATE, BOOTCAMP_BATTLE_RESULT_MESSAGE
 from gui.Scaleform.daapi.view.bootcamp.BCBattleSpaceEnv import BCBattleSpaceEnv
-from helpers import dependency, aop
 from skeletons.gui.app_loader import GuiGlobalSpaceID
 from skeletons.gui.sounds import ISoundsController
-
-from AbstractState import AbstractState
-
+from helpers import dependency, aop
+from PlayerEvents import g_playerEvents
+from bootcamp.Bootcamp import g_bootcamp
 
 class StateInBattle(AbstractState):
     soundController = dependency.descriptor(ISoundsController)

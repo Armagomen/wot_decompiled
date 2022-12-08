@@ -2,19 +2,17 @@
 # Embedded file name: scripts/client/PoiComponent.py
 import logging
 import weakref
-
+import typing
 import CGF
 import GenericComponents
 import Math
 from constants import ARENA_GUI_TYPE
-from points_of_interest_shared import PoiType, PoiStatus
-from script_component.DynamicScriptComponent import DynamicScriptComponent
-
 from helpers import dependency, fixed_dict
 from points_of_interest.components import PoiStateComponent
+from points_of_interest_shared import PoiType, PoiStatus
+from script_component.DynamicScriptComponent import DynamicScriptComponent
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 
 class PoiComponent(DynamicScriptComponent):

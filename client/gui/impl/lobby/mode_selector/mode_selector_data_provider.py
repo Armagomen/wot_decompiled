@@ -1,43 +1,42 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/mode_selector_data_provider.py
 import logging
-import typing
 from collections import defaultdict, OrderedDict
-
+import typing
 from Event import SafeEvent
 from gui.Scaleform.daapi.view.lobby.header import battle_selector_items
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_columns import ModeSelectorColumns
 from gui.impl.lobby.mode_selector.items.base_item import ModeSelectorLegacyItem
-from gui.impl.lobby.mode_selector.items.battle_royale_mode_selector_item import BattleRoyaleModeSelectorItem
 from gui.impl.lobby.mode_selector.items.bootcamp_mode_selector_item import BootcampModeSelectorItem
-from gui.impl.lobby.mode_selector.items.comp7_mode_selector_item import Comp7ModeSelectorItem
 from gui.impl.lobby.mode_selector.items.epic_mode_selector_item import EpicModeSelectorItem
 from gui.impl.lobby.mode_selector.items.items_constants import CustomModeName
 from gui.impl.lobby.mode_selector.items.mapbox_mode_selector_item import MapboxModeSelectorItem
 from gui.impl.lobby.mode_selector.items.random_mode_selector_item import RandomModeSelectorItem
 from gui.impl.lobby.mode_selector.items.ranked_mode_selector_item import RankedModeSelectorItem
 from gui.impl.lobby.mode_selector.items.spec_mode_selector_item import SpecModeSelectorItem
+from gui.impl.lobby.mode_selector.items.battle_royale_mode_selector_item import BattleRoyaleModeSelectorItem
 from gui.impl.lobby.mode_selector.items.strongholds_mode_selector_item import StrongholdsModeSelectorItem
 from gui.impl.lobby.mode_selector.items.trainings_mode_selector_item import TrainingsModeSelectorItem
+from gui.impl.lobby.mode_selector.items.comp7_mode_selector_item import Comp7ModeSelectorItem
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-from gui.shared.system_factory import registerModSelectorItem, collectModSelectorItem
-
+from gui.shared.system_factory import registerModeSelectorItem, collectModeSelectorItem
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.daapi.view.lobby.header.battle_selector_item import SelectorItem
+    from gui.impl.lobby.mode_selector.items.base_item import ModeSelectorItem
 _logger = logging.getLogger(__name__)
 _ADDITIONAL_ITEMS = {CustomModeName.BOOTCAMP: None}
-registerModSelectorItem(PREBATTLE_ACTION_NAME.RANDOM, RandomModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.RANKED, RankedModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST, StrongholdsModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.SPEC_BATTLES_LIST, SpecModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.TRAININGS_LIST, TrainingsModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.MAPBOX, MapboxModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.EPIC, EpicModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.BATTLE_ROYALE, BattleRoyaleModeSelectorItem)
-registerModSelectorItem(PREBATTLE_ACTION_NAME.COMP7, Comp7ModeSelectorItem)
-registerModSelectorItem(CustomModeName.BOOTCAMP, BootcampModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.RANDOM, RandomModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.RANKED, RankedModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST, StrongholdsModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.SPEC_BATTLES_LIST, SpecModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.TRAININGS_LIST, TrainingsModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.MAPBOX, MapboxModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.EPIC, EpicModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.BATTLE_ROYALE, BattleRoyaleModeSelectorItem)
+registerModeSelectorItem(PREBATTLE_ACTION_NAME.COMP7, Comp7ModeSelectorItem)
+registerModeSelectorItem(CustomModeName.BOOTCAMP, BootcampModeSelectorItem)
 
 class ModeSelectorDataProvider(IGlobalListener):
     __slots__ = ('onListChanged', '_items')
@@ -115,7 +114,7 @@ class ModeSelectorDataProvider(IGlobalListener):
 
     @staticmethod
     def _getModeSelectorLegacyItem(modeName, selectorItem):
-        return None if selectorItem is not None and not selectorItem.isVisible() else (collectModSelectorItem(modeName) or ModeSelectorLegacyItem)(selectorItem)
+        return None if selectorItem is not None and not selectorItem.isVisible() else (collectModeSelectorItem(modeName) or ModeSelectorLegacyItem)(selectorItem)
 
     def _updateSelection(self):
         prbDispatcher = g_prbLoader.getDispatcher()

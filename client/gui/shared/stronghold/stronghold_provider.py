@@ -1,23 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/stronghold/stronghold_provider.py
 import logging
-
 from adisp import adisp_process
-from gui import DialogsInterface
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework import g_entitiesFactories
+from gui import DialogsInterface
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.clans.clan_helpers import isStrongholdsEnabled
+from gui.wgnc.proxy_data import ShowInBrowserItem
+from gui.wgnc.actions import OpenInternalBrowser
+from gui.Scaleform.framework import g_entitiesFactories
+from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.prb_control.settings import FUNCTIONAL_FLAG
 from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.listener import IGlobalListener
-from gui.prb_control.settings import FUNCTIONAL_FLAG
-from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.wgnc.actions import OpenInternalBrowser
-from gui.wgnc.proxy_data import ShowInBrowserItem
+from gui.clans.clan_helpers import isStrongholdsEnabled
 from helpers import dependency
 from skeletons.gui.game_control import IBrowserController
 from skeletons.gui.lobby_context import ILobbyContext
-
 _logger = logging.getLogger(__name__)
 
 class ClientStrongholdProvider(IGlobalListener):

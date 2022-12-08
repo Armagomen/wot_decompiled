@@ -1,20 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/shared_utils/__init__.py
 import collections
+import time
 import itertools
 import logging
-import time
 import types
-import typing
 import weakref
-from functools import partial
-
+from functools import partial, wraps
+import typing
 import BigWorld
 from adisp import adisp_async
-
 if typing.TYPE_CHECKING:
-    from typing import TypeVar
-
+    from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
     T = TypeVar('T')
     R = TypeVar('R')
 _logger = logging.getLogger(__name__)
@@ -287,3 +284,7 @@ def timeit(method):
         return result
 
     return timed
+
+
+def inPercents(fraction, digitsToRound=1):
+    return round(fraction * 100, digitsToRound)

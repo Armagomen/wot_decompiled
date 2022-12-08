@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/framework/managers/containers.py
 import logging
-import typing
 import weakref
 from collections import OrderedDict
-
+import typing
 from Event import Event
 from frameworks.wulf import WindowLayer
+from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
+from shared_utils import CONST_CONTAINER
 from gui.Scaleform.framework.ScopeControllers import GlobalScopeController
 from gui.Scaleform.framework.entities.abstract.ContainerManagerMeta import ContainerManagerMeta
 from gui.Scaleform.framework.managers.loaders import ViewLoadMode, ViewKey
 from gui.Scaleform.framework.settings import UIFrameworkImpl
-from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
-from shared_utils import CONST_CONTAINER
 from shared_utils import findFirst
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import List
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _POPUPS_CONTAINERS = (WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW, WindowLayer.WINDOW)

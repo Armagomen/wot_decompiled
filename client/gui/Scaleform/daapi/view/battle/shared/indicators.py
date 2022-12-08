@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/indicators.py
 import typing
-
 import BigWorld
 import GUI
 import SoundGroups
@@ -9,34 +8,32 @@ from account_helpers.settings_core.settings_constants import SOUND, DAMAGE_INDIC
 from constants import VEHICLE_SIEGE_STATE as _SIEGE_STATE, ROCKET_ACCELERATION_STATE
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV, LOG_WARNING
 from gui import DEPTH_OF_Aim, GUI_SETTINGS
-from gui.Scaleform.daapi.view.battle.shared.vehicles import siege_component
 from gui.Scaleform.daapi.view.meta.RocketAcceleratorIndicatorMeta import RocketAcceleratorIndicatorMeta
+from gui.Scaleform.flash_wrapper import Flash, InputKeyMode
+from gui.Scaleform.daapi.view.battle.shared.vehicles import siege_component
 from gui.Scaleform.daapi.view.meta.SiegeModeIndicatorMeta import SiegeModeIndicatorMeta
 from gui.Scaleform.daapi.view.meta.SixthSenseMeta import SixthSenseMeta
-from gui.Scaleform.flash_wrapper import Flash, InputKeyMode
 from gui.Scaleform.genConsts.DAMAGEINDICATOR import DAMAGEINDICATOR
 from gui.Scaleform.genConsts.ROCKET_ACCELERATOR_INDICATOR import ROCKET_ACCELERATOR_INDICATOR
 from gui.Scaleform.genConsts.SIEGE_MODE_CONSTS import SIEGE_MODE_CONSTS
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-from gui.battle_control.battle_constants import DEVICE_STATES_RANGE, DEVICE_STATE_NORMAL, DEVICE_STATE_CRITICAL, \
-    VEHICLE_DEVICE_IN_COMPLEX_ITEM, DEVICE_STATE_DESTROYED
+from gui.battle_control.battle_constants import DEVICE_STATES_RANGE, DEVICE_STATE_NORMAL, DEVICE_STATE_CRITICAL, VEHICLE_DEVICE_IN_COMPLEX_ITEM, DEVICE_STATE_DESTROYED
 from gui.battle_control.battle_constants import HIT_INDICATOR_MAX_ON_SCREEN
 from gui.battle_control.battle_constants import PREDICTION_INDICATOR_MAX_ON_SCREEN
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, CROSSHAIR_VIEW_ID
 from gui.battle_control.controllers.hit_direction_ctrl import IHitIndicator, HitType
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.crits_mask_parser import critsParserGenerator
 from gui.shared.utils.TimeInterval import TimeInterval
 from helpers import dependency
 from helpers import i18n
+from gui.impl import backport
+from gui.impl.gen import R
 from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from soft_exception import SoftException
-
 if typing.TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescriptor
 _PREDICTION_INDICATOR_SWF = 'battlePredictionIndicatorApp.swf'
 _PREDICTION_INDICATOR_COMPONENT = 'WGPredictionIndicatorFlash'
 _PREDICTION_INDICATOR_MC_NAME = '_root.predictionIndicator.hit_{0}'

@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/products_fetcher/fetch_result.py
 from enum import Enum
-
 import BigWorld
 from constants import SECONDS_IN_DAY
-
 
 class ResponseStatus(Enum):
     UNDEFINED = 0

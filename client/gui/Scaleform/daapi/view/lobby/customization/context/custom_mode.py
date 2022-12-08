@@ -1,19 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/custom_mode.py
 import logging
-import typing
 from copy import copy
-
+import typing
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.customization.context.customization_mode import CustomizationMode
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, isSlotFilled, \
-    isItemsQuantityLimitReached, fitPersonalNumber, formatPersonalNumber, EMPTY_PERSONAL_NUMBER, \
-    customizationSlotIdToUid, CustomizationSlotUpdateVO, getCustomPurchaseItems
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, isSlotFilled, isItemsQuantityLimitReached, fitPersonalNumber, formatPersonalNumber, EMPTY_PERSONAL_NUMBER, customizationSlotIdToUid, CustomizationSlotUpdateVO, getCustomPurchaseItems
 from gui.Scaleform.daapi.view.lobby.customization.shared import getOutfitWithoutItems
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import C11nId, getAvailableRegions
+from gui.customization.shared import C11nId, PurchaseItem, getAvailableRegions
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization import isNeedToMirrorProjectionDecal
 from gui.shared.gui_items.processors.common import OutfitApplier, CustomizationsSeller
@@ -23,9 +20,12 @@ from items.components.c11n_constants import SeasonType, DEFAULT_PALETTE, Options
 from items.customizations import CamouflageComponent, ProjectionDecalComponent, PersonalNumberComponent
 from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Area
-
 if typing.TYPE_CHECKING:
-    pass
+    from items.customizations import SerializableComponent
+    from gui.shared.gui_items.customization.c11n_items import Customization
+    from vehicle_outfit.outfit import Outfit
+    from vehicle_outfit.containers import SlotData
+    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 _logger = logging.getLogger(__name__)
 
 class CustomMode(CustomizationMode):

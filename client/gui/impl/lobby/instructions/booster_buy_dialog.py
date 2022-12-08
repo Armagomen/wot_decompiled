@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/instructions/booster_buy_dialog.py
 from CurrentVehicle import g_currentVehicle
-from adisp import adisp_process
-from frameworks.wulf import ViewSettings
 from gui import SystemMessages
 from gui.impl.gen import R
+from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.instructions.booster_buy_model import BoosterBuyModel
 from gui.impl.lobby.common.buy_sell_item_base_dialog import DialogBuySellItemBaseView
 from gui.shared.gui_items.processors.module import ModuleBuyer
 from gui.shared.gui_items.processors.vehicle import VehicleAutoBattleBoosterEquipProcessor
+from adisp import adisp_process
 from helpers.func_utils import oncePerPeriod
-
 
 class BoosterBuyWindowView(DialogBuySellItemBaseView):
 

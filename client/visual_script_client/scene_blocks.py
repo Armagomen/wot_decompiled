@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/visual_script_client/scene_blocks.py
 import BigWorld
-from material_kinds import EFFECT_MATERIAL_NAMES_BY_INDEXES, EFFECT_MATERIAL_INDEXES_BY_IDS
 from visual_script import ASPECT
-from visual_script.arena_blocks import ArenaMeta
 from visual_script.block import Block
 from visual_script.slot_types import SLOT_TYPE
-
+from visual_script.arena_blocks import ArenaMeta
+from material_kinds import EFFECT_MATERIAL_NAMES_BY_INDEXES, EFFECT_MATERIAL_INDEXES_BY_IDS
 
 class GetSpaceId(Block, ArenaMeta):
 

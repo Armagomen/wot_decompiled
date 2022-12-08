@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/instructions/booster_sell_dialog.py
-from adisp import adisp_process
-from frameworks.wulf import ViewSettings
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.dialogs.ConfirmModuleMeta import MAX_ITEMS_FOR_OPERATION
-from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.common.buy_sell_items_dialog_model import BuySellItemsDialogModel
 from gui.impl.lobby.common.buy_sell_item_base_dialog import DialogBuySellItemBaseView
+from gui.impl.gen import R
+from frameworks.wulf import ViewSettings
 from gui.shared.gui_items.processors.module import ModuleSeller
-
+from adisp import adisp_process
 
 class BoosterSellWindowView(DialogBuySellItemBaseView):
 

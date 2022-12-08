@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/web_client_api/ui/vehicle.py
-import random
 from functools import partial
 from itertools import groupby
 from logging import getLogger
 from types import NoneType
-
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import STYLE_PREVIEW_VEHICLES_POOL
@@ -14,22 +12,19 @@ from debug_utils import LOG_ERROR
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.configurable_vehicle_preview import OptionalBlocks
-from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import canInstallStyle, getCDFromId
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import canInstallStyle, getCDFromId, getSuitableStyledVehicle
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
 from gui.customization.constants import CustomizationModes
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.server_events.events_dispatcher import showMissionsMarathon
 from gui.shared import event_dispatcher
-from gui.shared.event_dispatcher import showHangar, showMarathonRewardScreen, showStyleBuyingPreview, showStylePreview, \
-    showStyleProgressionPreview
+from gui.shared.event_dispatcher import showHangar, showMarathonRewardScreen, showStyleBuyingPreview, showStylePreview, showStyleProgressionPreview
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.money import Currency, MONEY_UNDEFINED, Money
-from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from helpers.time_utils import getCurrentLocalServerTimestamp, getDateTimeInLocal, getDateTimeInUTC, \
-    getTimeStructInLocal, getTimestampFromISO, utcToLocalDatetime
+from helpers.time_utils import getCurrentLocalServerTimestamp, getDateTimeInLocal, getDateTimeInUTC, getTimeStructInLocal, getTimestampFromISO, utcToLocalDatetime
 from items import ITEM_TYPES, vehicles
 from items.components.c11n_constants import CustomizationNamesToTypes
 from shared_utils import first
@@ -38,9 +33,7 @@ from skeletons.gui.game_control import IEpicBattleMetaGameController, IVehicleCo
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 from web.web_client_api import Field, W2CSchema, w2c
-from web.web_client_api.common import CompensationSpec, CompensationType, ItemPackEntry, ItemPackType, \
-    ItemPackTypeGroup, VehicleOfferEntry
-
+from web.web_client_api.common import CompensationSpec, CompensationType, ItemPackEntry, ItemPackType, ItemPackTypeGroup, VehicleOfferEntry
 _logger = getLogger(__name__)
 REQUIRED_ITEM_FIELDS = {'type',
  'id',
@@ -54,10 +47,7 @@ REQUIRED_TANKMAN_FIELDS = {'isPremium',
  'gId',
  'nationID',
  'vehicleTypeID'}
-DEFAULT_STYLED_VEHICLES = (15697,
- 6193,
- 19969,
- 3937)
+DEFAULT_STYLED_VEHICLES = (15697, 6193, 19969, 3937)
 _CUSTOM_CREW_KEYS = {'subscription', 'telecom_rentals'}
 
 class _ItemPackValidationError(SoftException):
@@ -504,36 +494,8 @@ class VehiclePreviewWebApiMixin(object):
     def _openVehicleStylePreview(self, cmd):
         if cmd.vehicle_cd:
             return self.__showStylePreview(cmd.vehicle_cd, cmd)
-        styledVehicleCD = self.__getStyledVehicleCD(cmd.style_id)
+        styledVehicleCD = getSuitableStyledVehicle(cmd.style_id)
         return False if not styledVehicleCD else self.__showStylePreview(styledVehicleCD, cmd)
-
-    def __getStyledVehicleCD(self, styleId):
-        styledVehicleCD = None
-        style = self.__c11n.getItemByID(GUI_ITEM_TYPE.STYLE, styleId)
-        vehicle = g_currentVehicle.item if g_currentVehicle.isPresent() else None
-        if vehicle is not None and not vehicle.descriptor.type.isCustomizationLocked and style.mayInstall(vehicle):
-            styledVehicleCD = vehicle.intCD
-        else:
-            accDossier = self.__itemsCache.items.getAccountDossier()
-            vehiclesStats = accDossier.getRandomStats().getVehicles()
-            vehicleGetter = self.__itemsCache.items.getItemByCD
-            vehiclesStats = {vehicleCD:value for vehicleCD, value in vehiclesStats.iteritems() if not vehicleGetter(vehicleCD).descriptor.type.isCustomizationLocked and style.mayInstall(vehicleGetter(vehicleCD))}
-            if vehiclesStats:
-                sortedVehicles = sorted(vehiclesStats.items(), key=lambda vStat: vStat[1].battlesCount, reverse=True)
-                styledVehicleCD = sortedVehicles[0][0] if sortedVehicles else None
-            if not styledVehicleCD:
-                criteria = REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED | REQ_CRITERIA.VEHICLE.FOR_ITEM(style)
-                vehicle = first(self.__getVehiclesForStylePreview(criteria=criteria))
-                styledVehicleCD = vehicle.intCD if vehicle else None
-            if not styledVehicleCD:
-                criteria = ~REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED | REQ_CRITERIA.VEHICLE.FOR_ITEM(style) | ~REQ_CRITERIA.VEHICLE.EVENT
-                vehicle = random.choice(self.__getVehiclesForStylePreview(criteria=criteria))
-                styledVehicleCD = vehicle.intCD if vehicle else None
-        return styledVehicleCD
-
-    def __getVehiclesForStylePreview(self, criteria=None):
-        vehs = self.__itemsCache.items.getVehicles(criteria=criteria).values()
-        return sorted(vehs, key=lambda item: item.level, reverse=True)
 
     def _getVehicleStylePreviewCallback(self, cmd):
         return showHangar

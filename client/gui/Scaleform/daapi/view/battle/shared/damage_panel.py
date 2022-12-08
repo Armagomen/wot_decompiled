@@ -4,36 +4,35 @@ import logging
 import math
 import typing
 import weakref
-
 import BattleReplay
 import BigWorld
 import GUI
 import Math
-from PlayerEvents import g_playerEvents
-from ReplayEvents import g_replayEvents
-from Vehicle import StunInfo
 from account_helpers.settings_core import settings_constants
 from constants import VEHICLE_SIEGE_STATE as _SIEGE_STATE
+from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
+from gui.battle_control.controllers.prebattle_setups_ctrl import IPrebattleSetupsListener
 from gui.Scaleform.daapi.view.battle.shared.formatters import formatHealthProgress, normalizeHealthPercent
 from gui.Scaleform.daapi.view.battle.shared.timers_common import PythonTimer
 from gui.Scaleform.daapi.view.meta.DamagePanelMeta import DamagePanelMeta
 from gui.Scaleform.flash_wrapper import InputKeyMode
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-from gui.battle_control import avatar_getter
 from gui.battle_control import vehicle_getter
-from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import ALL_VEHICLE_GUI_ITEMS, AUTO_ROTATION_FLAG
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
-from gui.battle_control.controllers.prebattle_setups_ctrl import IPrebattleSetupsListener
 from helpers import dependency
 from helpers import i18n
+from ReplayEvents import g_replayEvents
+from PlayerEvents import g_playerEvents
 from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.battle_control import avatar_getter
+from Vehicle import StunInfo
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.arena_dp import ArenaDataProvider
+    from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 _logger = logging.getLogger(__name__)
 _STATE_HANDLERS = {VEHICLE_VIEW_STATE.HEALTH: '_updateHealthFromServer',
  VEHICLE_VIEW_STATE.SPEED: 'as_updateSpeedS',

@@ -10,12 +10,15 @@ from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils impo
 from gui.impl.gen import R
 from gui.server_events import events_helpers
 from gui.shared.formatters import text_styles as _ts
-from gui.shared.tooltips import TOOLTIP_TYPE, formatters
+from gui.shared.tooltips import TOOLTIP_TYPE
+from gui.shared.tooltips import formatters
 from gui.shared.tooltips.common import BlocksTooltipData, makePriceBlock, CURRENCY_SETTINGS
+from gui.shared.tooltips.contexts import BoosterStatsConfiguration, BoosterInfoContext
 from helpers import dependency
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 if TYPE_CHECKING:
+    from typing import Dict, List, Optional
     from gui.shared.items_cache import ItemsCache
     from gui.goodies import GoodiesCache
     from gui.goodies.goodie_items import BoostersType

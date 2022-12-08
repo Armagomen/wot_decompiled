@@ -7,10 +7,10 @@ from gui.Scaleform.daapi.view.meta.BasePrebattleRoomViewMeta import BasePrebattl
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
+from gui.prb_control.formatters import messages
 from gui.prb_control.entities.base.ctx import LeavePrbAction
 from gui.prb_control.entities.base.legacy.ctx import SetPlayerStateCtx
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
-from gui.prb_control.formatters import messages
 from gui.prb_control.items import prb_items
 from gui.prb_control.settings import CTRL_ENTITY_TYPE
 from gui.shared import events, EVENT_BUS_SCOPE
@@ -20,14 +20,13 @@ from messenger import g_settings
 from messenger.ext import channel_num_gen
 from messenger.gui import events_dispatcher
 from messenger.gui.Scaleform.view.lobby import MESSENGER_VIEW_ALIAS
-from messenger.m_constants import PROTO_TYPE
 from messenger.m_constants import USER_GUI_TYPE
-from messenger.proto import proto_getter
 from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
+from messenger.m_constants import PROTO_TYPE
+from messenger.proto import proto_getter
 from prebattle_shared import decodeRoster
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
     lobbyContext = dependency.descriptor(ILobbyContext)

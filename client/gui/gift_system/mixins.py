@@ -1,7 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/gift_system/mixins.py
+import typing
 from gifts.gifts_common import GiftEventID, GiftEventState
 from gui.gift_system.constants import HubUpdateReason
+from gui.gift_system.hubs.base.hub_core import IGiftEventHub
 from gui.gift_system.wrappers import filterGiftHubsAction
 from helpers import dependency
 from skeletons.gui.game_control import IGiftSystemController

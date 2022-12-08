@@ -1,12 +1,14 @@
 # File: c (Python 2.7)
 
+from typing import Tuple, Any
+import ResMgr
 from constants import IS_EDITOR
 from items import decodeEnum
 from items.components.c11n_constants import ApplyArea, Options
 from items.utils import getEditorOnlySection
 from serialization.definitions import FieldFlags, FieldTypes
 from serialization.exceptions import SerializationException
-
+from serialization.serializable_component import SerializableComponent
 __all__ = ('ComponentXmlDeserializer',)
 
 class ComponentXmlDeserializer(object):

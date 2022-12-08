@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/game_mode_card_model.py
 from enum import IntEnum
-
 from frameworks.wulf import ViewModel
-from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.vehicle_item_model import VehicleItemModel
 from gui.impl.wrappers.user_list_model import UserListModel
-
+from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.vehicle_item_model import VehicleItemModel
 
 class PointsCardType(IntEnum):
     TECH = 0

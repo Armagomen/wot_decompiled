@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/pub/view_impl.py
 import typing
-
-from frameworks.wulf import View, ViewModel, WindowLayer
+from frameworks.wulf import View, ViewEvent, ViewModel, Window, WindowLayer
 from gui.impl.gen.resources import R
 from gui.impl.pub.context_menu_window import ContextMenuContent, ContextMenuWindow
 from gui.impl.pub.pop_over_window import PopOverWindow
@@ -11,7 +10,6 @@ from helpers import dependency
 from helpers.events_handler import EventsHandler
 from skeletons.gui.impl import IGuiLoader
 from soft_exception import SoftException
-
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 
 class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
@@ -40,8 +38,8 @@ class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
         if event.contentID == R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent() or event.contentID == R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipHtmlContent():
             window = SimpleToolTipWindow(event, self.getParentWindow())
         elif event.contentID == R.views.common.tooltip_window.advanced_tooltip_content.AdvandcedTooltipContent():
-            normalContent = event.getArgument('normalContent')
-            advancedContent = event.getArgument('advancedContent')
+            normalContent = int(event.getArgument('normalContent'))
+            advancedContent = int(event.getArgument('advancedContent'))
             window = AdvancedToolTipWindow(event, self.getParentWindow(), self.createToolTipContent(event, normalContent), self.createToolTipContent(event, advancedContent))
         else:
             content = self.createToolTipContent(event, event.contentID)

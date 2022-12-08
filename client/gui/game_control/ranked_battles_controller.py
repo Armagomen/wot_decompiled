@@ -3,9 +3,8 @@
 import logging
 import operator
 import sys
-import typing
 from collections import defaultdict
-
+import typing
 import BigWorld
 import Event
 import season_common
@@ -23,24 +22,19 @@ from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.items import ValidationResult
-from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME, PRE_QUEUE_RESTRICTION, \
-    SELECTOR_BATTLE_TYPES
+from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME, PRE_QUEUE_RESTRICTION, SELECTOR_BATTLE_TYPES
 from gui.ranked_battles import ranked_helpers
-from gui.ranked_battles.constants import ENTITLEMENT_EVENT_TOKEN, FINAL_LEADER_QUEST, FINAL_QUEST_PATTERN, \
-    MAX_GROUPS_IN_DIVISION, NOT_IN_LEAGUES_QUEST, STANDARD_POINTS_COUNT, YEAR_AWARDS_ORDER, \
-    YEAR_AWARD_SELECTABLE_OPT_DEVICE_PREFIX, YEAR_POINTS_TOKEN, YEAR_STRIPE_CLIENT_TOKEN, YEAR_STRIPE_SERVER_TOKEN, \
-    ZERO_RANK_ID
+from gui.ranked_battles.constants import ENTITLEMENT_EVENT_TOKEN, FINAL_LEADER_QUEST, FINAL_QUEST_PATTERN, MAX_GROUPS_IN_DIVISION, NOT_IN_LEAGUES_QUEST, STANDARD_POINTS_COUNT, YEAR_AWARDS_ORDER, YEAR_AWARD_SELECTABLE_OPT_DEVICE_PREFIX, YEAR_POINTS_TOKEN, YEAR_STRIPE_CLIENT_TOKEN, YEAR_STRIPE_SERVER_TOKEN, ZERO_RANK_ID
 from gui.ranked_battles.ranked_builders.postbattle_awards_vos import AwardBlock
 from gui.ranked_battles.ranked_formatters import getRankedAwardsFormatter
 from gui.ranked_battles.ranked_helpers.sound_manager import RankedSoundManager, Sounds
 from gui.ranked_battles.ranked_helpers.stats_composer import RankedBattlesStatsComposer
-from gui.ranked_battles.ranked_helpers.web_season_provider import RankedWebSeasonProvider, UNDEFINED_LEAGUE_ID, \
-    UNDEFINED_WEB_INFO
+from gui.ranked_battles.ranked_helpers.web_season_provider import RankedWebSeasonProvider, UNDEFINED_LEAGUE_ID, UNDEFINED_WEB_INFO
 from gui.ranked_battles.ranked_helpers.year_position_provider import RankedYearPositionProvider
-from gui.ranked_battles.ranked_models import BattleRankInfo, Division, Rank, RankChangeStates, RankData, RankProgress, \
-    RankState, RankStep, RankedAlertData, RankedSeason, ShieldStatus
+from gui.ranked_battles.ranked_models import BattleRankInfo, Division, Rank, RankChangeStates, RankData, RankProgress, RankState, RankStep, RankedAlertData, RankedSeason, ShieldStatus
 from gui.selectable_reward.common import RankedSelectableRewardManager
 from gui.server_events.awards_formatters import AWARDS_SIZES
+from gui.server_events.event_items import RankedQuest
 from gui.server_events.events_helpers import EventInfoModel
 from gui.shared import EVENT_BUS_SCOPE, event_dispatcher, events, g_eventBus
 from gui.shared.formatters.ranges import toRomanRangeString
@@ -51,6 +45,7 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, TimerNotifier
 from helpers import dependency, time_utils
 from ranked_common import SwitchState
+from season_provider import SeasonProvider
 from shared_utils import findFirst, first
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_results import IBattleResultsService
@@ -60,11 +55,12 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
 from web.web_client_api.ranked_battles import createRankedBattlesWebHandlers
-
-from season_provider import SeasonProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.ranked_battles.constants import YearAwardsNames
+    from gui.ranked_battles.ranked_helpers.web_season_provider import WebSeasonInfo
+    from gui.ranked_battles.ranked_models import PostBattleRankInfo
+    from season_common import GameSeason
+    from helpers.server_settings import RankedBattlesConfig
 _logger = logging.getLogger(__name__)
 ZERO_RANK_COUNT = 1
 DEFAULT_RANK = RankData(0, 0)

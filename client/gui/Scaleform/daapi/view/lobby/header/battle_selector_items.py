@@ -1,24 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 from __future__ import absolute_import
-
-import logging
-import typing
 from builtins import object
+from future.utils import viewvalues
 from functools import total_ordering
 from itertools import chain
-
+import logging
+import typing
+from battle_royale.gui.constants import BattleRoyalePerfProblems
 from CurrentVehicle import g_currentVehicle
 from account_helpers import isDemonstrator
 from account_helpers import isDemonstratorExpert
 from adisp import adisp_process
-from battle_royale.gui.constants import BattleRoyalePerfProblems
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, ACCOUNT_ATTR
-from future.utils import viewvalues
 from gui import GUI_SETTINGS
-from gui.Scaleform.daapi.view.lobby.header.battle_selector_item import SelectorItem
 from gui.Scaleform.daapi.view.lobby.mapbox import mapbox_helpers
 from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.daapi.view.lobby.header.battle_selector_item import SelectorItem
 from gui.clans.clan_helpers import isStrongholdsEnabled
 from gui.game_control.epic_meta_game_ctrl import EPIC_PERF_GROUP
 from gui.impl import backport
@@ -35,11 +33,8 @@ from gui.shared.formatters import text_styles, icons
 from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
 from gui.shared.utils.functions import makeTooltip
 from helpers import time_utils, dependency, int2roman
-from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, \
-    IBattleRoyaleTournamentController, IFunRandomController, IMapboxController, IMapsTrainingController, \
-    IEpicBattleMetaGameController, IEventBattlesController, IComp7Controller, IBootcampController
+from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleController, IBattleRoyaleTournamentController, IFunRandomController, IMapboxController, IMapsTrainingController, IEpicBattleMetaGameController, IEventBattlesController, IComp7Controller, IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
     from skeletons.gui.game_control import ISeasonProvider
     cycleStrGetter = typing.Callable[[ISeasonProvider, str, typing.Optional[typing.Callable[[int], str]]], str]
@@ -610,19 +605,20 @@ class _FunRandomSquadItem(_SpecialSquadItem):
 
     def __init__(self, label, data, order, selectorType=None, isVisible=True):
         super(_FunRandomSquadItem, self).__init__(label, data, order, selectorType, isVisible)
+        self._isVisible = self.__funRandomController.isFunRandomPrbActive()
         self._prebattleType = PREBATTLE_TYPE.FUN_RANDOM
-        self._isVisible = self.__funRandomController.isEnabled()
-        self._isDisabled = self._isDisabled or not self.__funRandomController.isInPrimeTime()
 
     @property
     def squadIcon(self):
         return backport.image(_R_ICONS.battleTypes.c_40x40.funRandomSquad())
 
+    def getFormattedLabel(self):
+        pass
+
     def _update(self, state):
         super(_FunRandomSquadItem, self)._update(state)
-        self._isSelected = self.__funRandomController.isFunRandomPrbActive()
-        self._isVisible = self.__funRandomController.isEnabled()
-        self._isDisabled = self._isDisabled or not self.__funRandomController.isInPrimeTime()
+        self._isVisible = self.__funRandomController.isFunRandomPrbActive()
+        self._isSelected = self._isSelected or self._isVisible
 
 
 class _Comp7SquadItem(_SpecialSquadItem):
@@ -869,6 +865,7 @@ class EpicBattleItem(SelectorItem):
         self._isVisible = any((self.__epicController.getCurrentSeason(), self.__epicController.getNextSeason()))
         self._isDisabled = not self.__epicController.isEnabled() or state.hasLockedState
         self._isSelected = state.isQueueSelected(QUEUE_TYPE.EPIC)
+        self.__epicController.storeCycle()
         if self._selectorType is not None:
             self._isNew = not selectorUtils.isKnownBattleType(self._selectorType)
         return
@@ -1097,7 +1094,7 @@ def _addMapboxSquadType(items):
 
 
 def _addFunRandomSquadType(items):
-    items.append(_FunRandomSquadItem(text_styles.middleTitle(backport.text(_R_BATTLE_TYPES.funRandomSquad())), PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD, 2))
+    items.append(_FunRandomSquadItem('', 'funRandomSquad', 2))
 
 
 def _getCycleEndsInStr(modeCtrl, modeName, timeLeftStrGetter=time_utils.getTillTimeString):

@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/comp7/meta_view/pages/rank_rewards_item_model.py
 from enum import IntEnum
-
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.comp7.comp7_bonus_model import Comp7BonusModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import ProgressionItemBaseModel
-
 
 class RankRewardsState(IntEnum):
     NOTACHIEVED = 0

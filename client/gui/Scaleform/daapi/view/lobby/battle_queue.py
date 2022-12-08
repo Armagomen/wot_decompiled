@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/battle_queue.py
 import weakref
-
 import BigWorld
 import MusicControllerWWISE
 import constants
@@ -12,37 +11,37 @@ from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_DEBUG
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
+from gui.impl.gen import R
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.event_boards.formaters import getClanTag
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.daapi.view.meta.BattleQueueMeta import BattleQueueMeta
 from gui.Scaleform.daapi.view.meta.BattleStrongholdsQueueMeta import BattleStrongholdsQueueMeta
+from gui.impl.lobby.comp7 import comp7_shared
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
-from gui.Scaleform.locale.MENU import MENU
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
-from gui.impl.gen import R
-from gui.impl.lobby.comp7 import comp7_shared
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.prb_control import prb_getters, prbEntityProperty
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME, getTypeBigIconPath
-from gui.shared.image_helper import getTextureLinkByID, ImagesFetchCoordinator
 from gui.shared.view_helpers import ClanEmblemsHelper
-from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.shared.image_helper import getTextureLinkByID, ImagesFetchCoordinator
+from gui.shared.system_factory import registerBattleQueueProvider, collectBattleQueueProvider
 from gui.sounds.ambients import BattleQueueEnv
 from helpers import dependency, i18n, time_utils, int2roman
 from helpers.i18n import makeString
 from skeletons.gui.lobby_context import ILobbyContext
+from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
+from gui.Scaleform.locale.MENU import MENU
 from skeletons.gui.shared import IItemsCache
-
 TYPES_ORDERED = (('heavyTank', ITEM_TYPES.VEHICLE_TAGS_HEAVY_TANK_NAME),
  ('mediumTank', ITEM_TYPES.VEHICLE_TAGS_MEDIUM_TANK_NAME),
  ('lightTank', ITEM_TYPES.VEHICLE_TAGS_LIGHT_TANK_NAME),
@@ -87,8 +86,7 @@ class _QueueProvider(object):
         self._queueCallback = None
         currPlayer = BigWorld.player()
         if currPlayer is not None and hasattr(currPlayer, 'requestQueueInfo'):
-            LOG_DEBUG('Requestion queue info: ', self._queueType)
-            currPlayer.requestQueueInfo(self._queueType)
+            self._doRequestQueueInfo(currPlayer)
             self._queueCallback = BigWorld.callback(5, self.requestQueueInfo)
         return
 
@@ -100,6 +98,9 @@ class _QueueProvider(object):
 
     def additionalInfo(self):
         pass
+
+    def getTitle(self, guiType):
+        return MENU.loading_battletypes(guiType)
 
     def getTankInfoLabel(self):
         return makeString(MENU.PREBATTLE_TANKLABEL)
@@ -119,11 +120,19 @@ class _QueueProvider(object):
             currPlayer.createArenaFromQueue()
         return
 
+    def _doRequestQueueInfo(self, currPlayer):
+        params = self._getRequestQueueInfoParams()
+        LOG_DEBUG('Requestion queue info: ', params)
+        currPlayer.requestQueueInfo(*params)
 
-class _RandomQueueProvider(_QueueProvider):
+    def _getRequestQueueInfoParams(self):
+        return (self._queueType,)
+
+
+class RandomQueueProvider(_QueueProvider):
 
     def __init__(self, proxy, qType=constants.QUEUE_TYPE.UNKNOWN):
-        super(_RandomQueueProvider, self).__init__(proxy, qType)
+        super(RandomQueueProvider, self).__init__(proxy, qType)
         self._needAdditionalInfo = None
         return
 
@@ -163,7 +172,7 @@ class _RandomQueueProvider(_QueueProvider):
         self._proxy.flashObject.as_setPlayers(makeHtmlString(_HTMLTEMP_PLAYERSLABEL, 'players', {'count': playerCount}))
 
 
-class _EpicQueueProvider(_RandomQueueProvider):
+class _EpicQueueProvider(RandomQueueProvider):
 
     def forceStart(self):
         currPlayer = BigWorld.player()
@@ -175,19 +184,19 @@ class _EpicQueueProvider(_RandomQueueProvider):
         return makeString(MENU.PREBATTLE_STARTINGTANKLABEL)
 
 
-class _EventQueueProvider(_RandomQueueProvider):
+class _EventQueueProvider(RandomQueueProvider):
     pass
 
 
-class _RankedQueueProvider(_RandomQueueProvider):
+class _RankedQueueProvider(RandomQueueProvider):
     pass
 
 
-class _MapboxQueueProvider(_RandomQueueProvider):
+class _MapboxQueueProvider(RandomQueueProvider):
     pass
 
 
-class _BattleRoyaleQueueProvider(_RandomQueueProvider):
+class _BattleRoyaleQueueProvider(RandomQueueProvider):
 
     def processQueueInfo(self, qInfo):
         playersCount = qInfo.get('players', 0)
@@ -204,7 +213,7 @@ class _BattleRoyaleQueueProvider(_RandomQueueProvider):
         pass
 
 
-class _Comp7QueueProvider(_RandomQueueProvider):
+class _Comp7QueueProvider(RandomQueueProvider):
 
     def processQueueInfo(self, qInfo):
         info = dict(qInfo)
@@ -239,17 +248,17 @@ class _Comp7QueueProvider(_RandomQueueProvider):
         pass
 
 
-_PROVIDER_BY_QUEUE_TYPE = {constants.QUEUE_TYPE.RANDOMS: _RandomQueueProvider,
- constants.QUEUE_TYPE.EVENT_BATTLES: _EventQueueProvider,
- constants.QUEUE_TYPE.RANKED: _RankedQueueProvider,
- constants.QUEUE_TYPE.EPIC: _EpicQueueProvider,
- constants.QUEUE_TYPE.BATTLE_ROYALE: _BattleRoyaleQueueProvider,
- constants.QUEUE_TYPE.MAPBOX: _MapboxQueueProvider,
- constants.QUEUE_TYPE.FUN_RANDOM: _RandomQueueProvider,
- constants.QUEUE_TYPE.COMP7: _Comp7QueueProvider}
+registerBattleQueueProvider(constants.QUEUE_TYPE.RANDOMS, RandomQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.EVENT_BATTLES, _EventQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.RANKED, _RankedQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.EPIC, _EpicQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.BATTLE_ROYALE, _BattleRoyaleQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.MAPBOX, _MapboxQueueProvider)
+registerBattleQueueProvider(constants.QUEUE_TYPE.COMP7, _Comp7QueueProvider)
 
 def _providerFactory(proxy, qType):
-    return _PROVIDER_BY_QUEUE_TYPE.get(qType, _QueueProvider)(proxy, qType)
+    queueProvider = collectBattleQueueProvider(qType)
+    return (queueProvider or _QueueProvider)(proxy, qType)
 
 
 class BattleQueue(BattleQueueMeta, LobbySubView):
@@ -310,7 +319,7 @@ class BattleQueue(BattleQueueMeta, LobbySubView):
             if not permissions.canExitFromQueue():
                 self.as_showExitS(False)
             guiType = prb_getters.getArenaGUIType(queueType=self.__provider.getQueueType())
-            title = MENU.loading_battletypes(guiType)
+            title = self.__provider.getTitle(guiType)
             description = MENU.loading_battletypes_desc(guiType)
             if guiType != constants.ARENA_GUI_TYPE.UNKNOWN and guiType in constants.ARENA_GUI_TYPE_LABEL.LABELS:
                 iconlabel = constants.ARENA_GUI_TYPE_LABEL.LABELS[guiType]

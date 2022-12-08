@@ -3,7 +3,6 @@
 import logging
 from collections import namedtuple, defaultdict, OrderedDict
 from copy import copy
-
 import BigWorld
 import nations
 from adisp import adisp_async
@@ -16,7 +15,6 @@ from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils.requesters import IBlueprintsRequester
-
 _logger = logging.getLogger(__name__)
 _BlueprintData = namedtuple('BlueprintData', ('filledCount', 'totalCount', 'canConvert'))
 SPECIAL_BLUEPRINT_LEVEL = frozenset([1])

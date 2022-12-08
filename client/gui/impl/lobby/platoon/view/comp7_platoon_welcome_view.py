@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/comp7_platoon_welcome_view.py
 import logging
-
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.platoon.platoon_dropdown_model import Type
@@ -9,7 +8,6 @@ from gui.impl.lobby.platoon.view.platoon_welcome_view import WelcomeView
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import Comp7SquadBonusTooltipContent
 from gui.prb_control.entities.comp7 import comp7_prb_helpers
 from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
-
 _logger = logging.getLogger(__name__)
 strButtons = R.strings.platoon.buttons
 

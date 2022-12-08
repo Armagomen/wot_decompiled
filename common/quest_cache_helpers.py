@@ -2,12 +2,10 @@
 # Embedded file name: scripts/common/quest_cache_helpers.py
 import logging
 import time
-
-import quest_xml_source
 from constants import EVENT_TYPE, IS_CLIENT
 from debug_utils import LOG_WARNING
+import quest_xml_source
 from soft_exception import SoftException
-
 if IS_CLIENT:
     from helpers import i18n
 else:

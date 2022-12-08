@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/Browser.py
 import typing
-
 import SCALEFORM
 from Event import Event
-from WebBrowser import CURSOR_TYPES
+from gui.browser import BrowserViewWebHandlers
 from gui.Scaleform.daapi.view.meta.BrowserMeta import BrowserMeta
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.managers.cursor_mgr import CursorManager
-from gui.browser import BrowserViewWebHandlers
 from gui.shared.events import BrowserEvent
 from gui.shared.formatters import icons
+from WebBrowser import CURSOR_TYPES
 from helpers import i18n, dependency
 from skeletons.gui.game_control import IBrowserController
 from soft_exception import SoftException
-
 if typing.TYPE_CHECKING:
-    pass
+    from WebBrowser import WebBrowser
 _CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND,
  CURSOR_TYPES.Pointer: CursorManager.ARROW,
  CURSOR_TYPES.IBeam: CursorManager.IBEAM,

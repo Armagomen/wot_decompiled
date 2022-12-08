@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/__init__.py
 import typing
-
 from account_helpers.AccountSettings import AccountSettings, MODE_SELECTOR_BATTLE_PASS_SHOWN
 from constants import ARENA_BONUS_TYPE
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import BattlePassState
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IBootcampController
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import ModeSelectorNormalCardModel
 BATTLE_PASS_SEASON_ID = 'seasonId'
 _arenaBonusTypeByModeName = {PREBATTLE_ACTION_NAME.RANDOM: ARENA_BONUS_TYPE.REGULAR,
  PREBATTLE_ACTION_NAME.RANKED: ARENA_BONUS_TYPE.RANKED,

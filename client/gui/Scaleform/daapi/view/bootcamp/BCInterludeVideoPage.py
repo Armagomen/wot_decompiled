@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/BCInterludeVideoPage.py
-from gui.Scaleform.daapi.view.bootcamp.BCVideoPage import BCVideoPage
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
+from gui.Scaleform.daapi.view.bootcamp.BCVideoPage import BCVideoPage
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-
 
 class BCInterludeVideoPage(BCVideoPage):
     appLoader = dependency.descriptor(IAppLoader)

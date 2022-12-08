@@ -2,11 +2,10 @@
 # Embedded file name: scripts/common/cgf_demo/test_edge_drawer.py
 import CGF
 import Triggers
-from EdgeDrawer import HighlightComponent
 from cgf_demo.demo_category import DEMO_CATEGORY
-from cgf_script.component_meta_class import CGFComponent
-from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery
-
+from cgf_script.component_meta_class import CGFComponent, ComponentProperty, CGFMetaTypes
+from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister, onProcessQuery
+from EdgeDrawer import HighlightComponent
 
 class _Stage(object):
     Empty = 0

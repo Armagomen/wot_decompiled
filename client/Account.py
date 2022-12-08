@@ -2,53 +2,47 @@
 # Embedded file name: scripts/client/Account.py
 import cPickle
 import copy
+import logging
 import weakref
 import zlib
 from collections import namedtuple
-
 import AccountCommands
 import BigWorld
 import ClientPrebattle
 import Event
-from ClientChat import ClientChat
-from ClientUnitMgr import ClientUnitMgr, ClientUnitBrowser
-from account_shared import NotificationItem, readClientServerVersion
-from adisp import adisp_process
-from constants import ARENA_BONUS_TYPE, QUEUE_TYPE, EVENT_CLIENT_DATA
-from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE, ARENA_GAMEPLAY_MASK_DEFAULT
-from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_WARNING
-from shared_utils.account_helpers.diff_utils import synchronizeDicts
-from soft_exception import SoftException
-from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN
-
 import BattleReplay
 from ChatManager import chatManager
+from ClientChat import ClientChat
 from ClientGlobalMap import ClientGlobalMap
+from ClientUnitMgr import ClientUnitMgr, ClientUnitBrowser
 from ContactInfo import ContactInfo
 from OfflineMapCreator import g_offlineMapCreator
 from PlayerEvents import g_playerEvents as events
-from account_helpers import AccountSyncData, Inventory, DossierCache, Shop, Stats, QuestProgress, CustomFilesCache, \
-    BattleResultsCache, ClientGoodies, client_blueprints, client_recycle_bin, AccountSettings, client_anonymizer, \
-    ClientBattleRoyale
-from account_helpers import ClientInvitations, vehicle_rotation
-from account_helpers import client_epic_meta_game, tokens
-from account_helpers import client_ranked, ClientBadges
-from account_helpers.AccountSettings import CURRENT_VEHICLE
-from account_helpers.battle_pass import BattlePassManager
+from account_helpers import AccountSyncData, Inventory, DossierCache, Shop, Stats, QuestProgress, CustomFilesCache, BattleResultsCache, ClientGoodies, client_blueprints, client_recycle_bin, AccountSettings, client_anonymizer, ClientBattleRoyale
 from account_helpers.dog_tags import DogTags
-from account_helpers.festivity_manager import FestivityManager
-from account_helpers.game_restrictions import GameRestrictions
-from account_helpers.gift_system import GiftSystem
 from account_helpers.maps_training import MapsTraining
 from account_helpers.offers.sync_data import OffersSyncData
+from account_helpers import ClientInvitations, vehicle_rotation
+from account_helpers import client_ranked, ClientBadges
+from account_helpers import client_epic_meta_game, tokens
+from account_helpers.AccountSettings import CURRENT_VEHICLE
+from account_helpers.battle_pass import BattlePassManager
+from account_helpers.festivity_manager import FestivityManager
+from account_helpers.game_restrictions import GameRestrictions
 from account_helpers.renewable_subscription import RenewableSubscription
 from account_helpers.resource_well import ResourceWell
-from account_helpers.session_statistics import SessionStatistics
-from account_helpers.settings_core import IntUserSettings
-from account_helpers.spa_flags import SPAFlags
 from account_helpers.telecom_rentals import TelecomRentals
+from account_helpers.settings_core import IntUserSettings
+from account_helpers.session_statistics import SessionStatistics
+from account_helpers.spa_flags import SPAFlags
+from account_helpers.gift_system import GiftSystem
 from account_helpers.trade_in import TradeIn
+from account_shared import NotificationItem, readClientServerVersion
+from adisp import adisp_process
 from bootcamp.Bootcamp import g_bootcamp
+from constants import ARENA_BONUS_TYPE, QUEUE_TYPE, EVENT_CLIENT_DATA
+from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_TYPE, ARENA_GAMEPLAY_MASK_DEFAULT
+from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG_DEV, LOG_WARNING
 from gui.Scaleform.Waiting import Waiting
 from gui.shared.ClanCache import g_clanCache
 from gui.wgnc import g_wgncProvider
@@ -59,7 +53,9 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils import IHangarSpace
-
+from soft_exception import SoftException
+from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN
+from shared_utils.account_helpers.diff_utils import synchronizeDicts
 StreamData = namedtuple('StreamData', ['data',
  'isCorrupted',
  'origPacketLen',
@@ -67,6 +63,7 @@ StreamData = namedtuple('StreamData', ['data',
  'origCrc32',
  'crc32'])
 StreamData.__new__.__defaults__ = (None,) * len(StreamData._fields)
+_logger = logging.getLogger(__name__)
 
 def _isInt(a):
     return isinstance(a, (int, long))
@@ -133,7 +130,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def __init__(self):
         global g_accountRepository
-        LOG_DEBUG('client Account.init')
+        _logger.info('client Account.init')
         propertyName, propertyValue = _CLIENT_SERVER_VERSION
         self.connectionMgr.checkClientServerVersions(propertyValue, getattr(self, propertyName, None))
         ClientChat.__init__(self)
@@ -238,7 +235,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def onBecomePlayer(self):
         uniprof.enterToRegion('player.account.entering')
-        LOG_DEBUG('Account.onBecomePlayer()')
+        _logger.info('Account.onBecomePlayer()')
         self.databaseID = None
         self.inputHandler = AccountInputHandler()
         BigWorld.clearAllSpaces()
@@ -285,7 +282,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def onBecomeNonPlayer(self):
         uniprof.enterToRegion('player.account.exiting')
-        LOG_DEBUG('Account.onBecomeNonPlayer()')
+        _logger.info('Account.onBecomeNonPlayer()')
         chatManager.switchPlayerProxy(None)
         self.syncData.onAccountBecomeNonPlayer()
         self.inventory.onAccountBecomeNonPlayer()
@@ -452,6 +449,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         events.onTutorialEnqueued(number, queueLen, avgWaitingTime)
         events.onEnqueued(QUEUE_TYPE.TUTORIAL)
 
+    @property
+    def selectedEntity(self):
+        return self.__selectedEntity
+
     def targetFocus(self, entity):
         if self.__objectsSelectionEnabled:
             self.hangarSpace.onMouseEnter(entity)
@@ -570,7 +571,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def showGUI(self, ctx):
         ctx = cPickle.loads(ctx)
-        LOG_DEBUG('showGUI', ctx)
+        _logger.info('showGUI %r', ctx)
         self.databaseID = ctx['databaseID']
         if 'prebattleID' in ctx:
             self.prebattle = ClientPrebattle.ClientPrebattle(ctx['prebattleID'])
@@ -636,9 +637,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def resyncDossiers(self, isFullResync):
         self.dossierCache.resynchronize(isFullResync)
 
-    def requestQueueInfo(self, queueType):
+    def requestQueueInfo(self, queueType, intArg1=0, intArg2=0):
         if self.isPlayer:
-            self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_REQ_QUEUE_INFO, queueType, 0, 0)
+            self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_REQ_QUEUE_INFO, queueType, intArg1, intArg2)
 
     def requestPrebattles(self, prbType, sort_key, idle, start, end):
         if not events.isPlayerEntityChanging:
@@ -1177,17 +1178,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self._doCmdInt2(AccountCommands.CMD_ADD_EQUIPMENT, int(deviceID), count, None)
         return
 
-    @staticmethod
-    def resetScreenShown(screenName):
-        from constants import CURRENT_REALM
-        if CURRENT_REALM == 'DEV':
-            from account_helpers.AccountSettings import GUI_START_BEHAVIOR
-            settingsCore = dependency.instance(ISettingsCore)
-            defaults = AccountSettings.getFilterDefault(GUI_START_BEHAVIOR)
-            settings = settingsCore.serverSettings.getSection(GUI_START_BEHAVIOR, defaults)
-            settings[screenName] = False
-            settingsCore.serverSettings.setSectionSettings(GUI_START_BEHAVIOR, settings)
-
     def removeEquipment(self, deviceID, count=-1):
         self._doCmdInt2(AccountCommands.CMD_ADD_EQUIPMENT, int(deviceID), count, None)
         return
@@ -1215,6 +1205,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def _doCmdIntArr(self, cmd, arr, callback):
         return self.__doCmd('doCmdIntArr', cmd, callback, arr)
+
+    def _doCmdIntArrStr(self, cmd, arr, s, callback):
+        return self.__doCmd('doCmdIntArrStr', cmd, callback, arr, s)
 
     def _doCmdIntStrArr(self, cmd, int1, strArr, callback):
         return self.__doCmd('doCmdIntStrArr', cmd, callback, int1, strArr)

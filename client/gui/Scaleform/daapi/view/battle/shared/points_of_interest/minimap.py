@@ -2,19 +2,16 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/minimap.py
 import logging
 import typing
-
 import math_utils
 from gui.Scaleform.daapi.view.battle.shared.minimap.common import EntriesPlugin
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import CONTAINER_NAME
-from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, \
-    POI_STATUS_UI_MAPPING
+from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, POI_STATUS_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiCooldownProgress
 from points_of_interest.components import PoiStateUpdateMask
 from points_of_interest.mixins import PointsOfInterestListener
 from points_of_interest_shared import PoiStatus
-
 if typing.TYPE_CHECKING:
-    pass
+    from points_of_interest.components import PoiStateComponent
 _logger = logging.getLogger(__name__)
 _POI_MINIMAP_ENTRY_SYMBOL = 'PoiMinimapEntry'
 

@@ -1,16 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/reserves_conversion_view.py
 import typing
-
 from frameworks.wulf import ViewFlags, ViewSettings
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
-from gui.goodies.goodie_items import getBoosterGuiType
+from gui.goodies.goodie_items import Booster, getBoosterGuiType
 from gui.goodies.pr2_conversion_result import getConversionDataProvider
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.personal_reserves.converted_booster_list_item import ConvertedBoosterListItem
-from gui.impl.gen.view_models.views.lobby.personal_reserves.reserves_conversion_view_model import \
-    ReservesConversionViewModel
+from gui.impl.gen.view_models.views.lobby.personal_reserves.reserves_conversion_view_model import ReservesConversionViewModel
 from gui.impl.lobby.personal_reserves.view_utils.reserves_view_monitor import ReservesViewMonitor
 from gui.shared.event_dispatcher import closeReservesIntroAndConversionView
 from helpers import dependency
@@ -18,11 +16,14 @@ from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
-
+from uilogging.personal_reserves.logging_constants import PersonalReservesLogKeys
+from uilogging.personal_reserves.loggers import PersonalReservesMetricsLogger
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Tuple, Optional, List, Any
+    from frameworks.wulf import Array
 
 class ReservesConversionView(ReservesViewMonitor):
+    __slots__ = ('_uiLogger',)
     _goodiesCache = dependency.descriptor(IGoodiesCache)
     _itemsCache = dependency.descriptor(IItemsCache)
     _uiLoader = dependency.descriptor(IGuiLoader)
@@ -36,6 +37,7 @@ class ReservesConversionView(ReservesViewMonitor):
         settings.flags = ViewFlags.LOBBY_TOP_SUB_VIEW
         settings.model = ReservesConversionViewModel()
         super(ReservesConversionView, self).__init__(settings)
+        self._uiLogger = PersonalReservesMetricsLogger(parent=PersonalReservesLogKeys.HANGAR, item=PersonalReservesLogKeys.RESERVES_CONVERSION_WINDOW)
 
     @property
     def _viewModel(self):
@@ -44,10 +46,12 @@ class ReservesConversionView(ReservesViewMonitor):
     def _initialize(self, *args, **kwargs):
         super(ReservesConversionView, self)._initialize(*args, **kwargs)
         self._viewModel.onClose += self._onClose
+        self._uiLogger.onViewInitialize()
 
     def _finalize(self):
         self._viewModel.onClose -= self._onClose
         self.__finalizeSounds()
+        self._uiLogger.onViewFinalize()
         super(ReservesConversionView, self)._finalize()
 
     def _getBoosterDescr(self, boosterID):

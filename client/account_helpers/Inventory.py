@@ -2,16 +2,15 @@
 # Embedded file name: scripts/client/account_helpers/Inventory.py
 import collections
 import logging
+import typing
 from array import array
 from functools import partial
 from itertools import chain
-
 import AccountCommands
 import items
-from account_helpers.abilities import AbilitiesHelper
-from items import vehicles, tankmen
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
-
+from items import vehicles, tankmen
+from account_helpers.abilities import AbilitiesHelper
 _logger = logging.getLogger(__name__)
 _VEHICLE = items.ITEM_TYPE_INDICES['vehicle']
 _CHASSIS = items.ITEM_TYPE_INDICES['vehicleChassis']
@@ -383,9 +382,7 @@ class Inventory(object):
                 callback(AccountCommands.RES_NON_PLAYER)
             return
         else:
-            self.__account.shop.waitForSync(
-                partial(self.__dropSkillsTmanOnShopSynced, tmanInvID, dropSkillsCostIdx, useRecertificationForm,
-                        callback))
+            self.__account.shop.waitForSync(partial(self.__dropSkillsTmanOnShopSynced, tmanInvID, dropSkillsCostIdx, useRecertificationForm, callback))
             return
 
     def respecTankman(self, tmanInvID, vehTypeCompDescr, tmanCostTypeIdx, callback):
@@ -550,8 +547,7 @@ class Inventory(object):
                 callback(AccountCommands.RES_NON_PLAYER, '', {})
             return
         else:
-            self.__account.shop.waitForSync(
-                partial(self.__equipOptDevsSequenceOnShopSynced, vehInvID, devices, callback))
+            self.__account.shop.waitForSync(partial(self.__equipOptDevsSequenceOnShopSynced, vehInvID, devices, callback))
             return
 
     def __onGetItemsResponse(self, itemTypeIdx, callback, resultID):

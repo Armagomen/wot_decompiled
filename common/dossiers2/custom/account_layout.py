@@ -1,21 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/custom/account_layout.py
 from dossiers2.common.DossierBlockBuilders import *
-from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import ACHIEVEMENT15X15_DEPENDENCIES
 from dossiers2.custom.dependencies import ACHIEVEMENT7X7_DEPENDENCIES
 from dossiers2.custom.dependencies import ACHIEVEMENTRATED7X7_DEPENDENCIES
-from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
+from dossiers2.custom.dependencies import HISTORICAL_ACHIEVEMENTS_DEPENDENCIES
 from dossiers2.custom.dependencies import FALLOUT_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import FORT_ACHIEVEMENTS_DEPENDENCIES
-from dossiers2.custom.dependencies import GLOBAL_MAP_STATS_DEPENDENCIES
-from dossiers2.custom.dependencies import HISTORICAL_ACHIEVEMENTS_DEPENDENCIES
-from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import SINGLE_ACHIEVEMENTS_DEPENDENCIES
+from dossiers2.custom.dependencies import GLOBAL_MAP_STATS_DEPENDENCIES
+from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
+from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
+from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import STEAM_ACHIEVEMENT_DEPENDENCIES
-
+from dossiers2.custom.dependencies import PLAYER_BADGES_DEPENDENCIES
 from battle_statistics_layouts import *
-
 TOTAL_BLOCK_LAYOUT = ['creationTime',
  'lastBattleTime',
  'battleLifeTime',
@@ -817,9 +816,9 @@ _SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
  'august22',
  'BattlePassCommonPr_9',
  'september22',
- 'prime_gaming_reserved_2',
- 'prime_gaming_reserved_3',
- 'prime_gaming_reserved_4',
+ 'october22',
+ 'november22',
+ 'december22',
  'prime_gaming_reserved_5',
  'prime_gaming_reserved_6',
  'prime_gaming_reserved_7',
@@ -828,7 +827,12 @@ _SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
  'prime_gaming_reserved_10',
  'prime_gaming_reserved_11',
  'prime_gaming_reserved_12',
- 'comp7Season1']
+ 'comp7Season1',
+ 'hw2022Medal01',
+ 'hw2022Medal02',
+ '12YearsOfService',
+ 'NY23_AtmsphrLevel',
+ 'NY23_CelebChallenge']
 _singleAchievementsPopUps = ['titleSniper',
  'invincible',
  'diehard',
@@ -1002,9 +1006,9 @@ _singleAchievementsPopUps = ['titleSniper',
  'august22',
  'BattlePassCommonPr_9',
  'september22',
- 'prime_gaming_reserved_2',
- 'prime_gaming_reserved_3',
- 'prime_gaming_reserved_4',
+ 'october22',
+ 'november22',
+ 'december22',
  'prime_gaming_reserved_5',
  'prime_gaming_reserved_6',
  'prime_gaming_reserved_7',
@@ -1013,7 +1017,12 @@ _singleAchievementsPopUps = ['titleSniper',
  'prime_gaming_reserved_10',
  'prime_gaming_reserved_11',
  'prime_gaming_reserved_12',
- 'comp7Season1']
+ 'comp7Season1',
+ 'hw2022Medal01',
+ 'hw2022Medal02',
+ '12YearsOfService',
+ 'NY23_AtmsphrLevel',
+ 'NY23_CelebChallenge']
 _singleAchievementsBlockBuilder = BinarySetDossierBlockBuilder('singleAchievements', _SINGLE_ACHIEVEMENTS_VALUES, SINGLE_ACHIEVEMENTS_DEPENDENCIES, _singleAchievementsPopUps)
 FORT_ACHIEVEMENTS_BLOCK_LAYOUT = ['conqueror',
  'fireAndSword',
@@ -1035,7 +1044,7 @@ RANKED_BADGES_BLOCK_LAYOUT = ['1',
  '7',
  '8',
  '9']
-_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', {})
+_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', PLAYER_BADGES_DEPENDENCIES)
 _rankedSeasonsBlockBuilder = DictBlockBuilder('rankedSeasons', 'II', 'BHHHH', {})
 _rareAchievementsBlockBuilder = ListBlockBuilder('rareAchievements', 'I', {})
 UNIQUE_ACHIEVEMENT_VALUES = ['histBattle1_battlefield',

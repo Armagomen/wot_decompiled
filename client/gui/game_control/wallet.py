@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/wallet.py
 import logging
-
 import BigWorld
 import Event
 import constants
@@ -19,7 +18,6 @@ from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 class WalletController(IWalletController):

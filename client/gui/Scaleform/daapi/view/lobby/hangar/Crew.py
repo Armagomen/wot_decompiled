@@ -1,32 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/Crew.py
-import SoundGroups
 from CurrentVehicle import g_currentVehicle
 from gui import SystemMessages
-from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.Scaleform.Waiting import Waiting
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.meta.CrewMeta import CrewMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared import events, event_dispatcher as shared_events
-from gui.shared.SoundEffectsId import SoundEffectsId
-from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.events import LoadViewEvent
+from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Tankman import Tankman, getCrewSkinIconSmallWithoutPath, getRoleBigIconPath
 from gui.shared.gui_items.crew_skin import localizedFullName
+from gui.shared.gui_items.Tankman import Tankman, getCrewSkinIconSmallWithoutPath, getRoleBigIconPath
 from gui.shared.gui_items.processors.tankman import TankmanUnload, TankmanEquip
+from gui.shared.SoundEffectsId import SoundEffectsId
 from gui.shared.utils import decorators
+from gui.impl.gen import R
+from gui.impl import backport
+import SoundGroups
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.meta.CrewMeta import CrewMeta
+from gui.Scaleform.Waiting import Waiting
 from helpers import dependency
-from helpers.i18n import convert, makeString
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from items.tankmen import getSkillsConfig, compareMastery
-from skeletons.gui.lobby_context import ILobbyContext
+from helpers.i18n import convert, makeString
+from gui.ClientUpdateManager import g_clientUpdateManager
 from skeletons.gui.shared import IItemsCache
-
+from skeletons.gui.lobby_context import ILobbyContext
 
 class Crew(CrewMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -69,6 +68,7 @@ class Crew(CrewMeta):
                 roles.append({'tankmanID': tman.invID if tman is not None else None,
                  'roleType': role,
                  'role': convert(skillsConfig.getSkill(role).userString),
+                 'roles': vehicle.descriptor.type.crewRoles[slotIdx],
                  'roleIcon': getRoleBigIconPath(role),
                  'nationID': vehicle.nationID,
                  'typeID': vehicle.innationID,

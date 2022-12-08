@@ -1,13 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/proto/bw_chat2/VOIPChatController.py
-import BattleReplay
 import BigWorld
-import CommandMapping
+import BattleReplay
 import VOIP
+import CommandMapping
 from VOIP.voip_constants import VOIP_SUPPORTED_API
-from account_helpers.settings_core.settings_constants import SOUND
-from adisp import adisp_async, adisp_process
+from constants import ARENA_BONUS_TYPE_IDS
 from debug_utils import LOG_WARNING
+from adisp import adisp_async, adisp_process
 from gui import GUI_SETTINGS
 from gui.impl import backport
 from gui.impl.gen import R
@@ -17,9 +17,9 @@ from gui.shared.utils.key_mapping import getReadableKey
 from helpers import dependency
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.interfaces import IVOIPChatController
+from account_helpers.settings_core.settings_constants import SOUND
 from messenger.proto.shared_messages import ACTION_MESSAGE_TYPE, ClientActionMessage
 from skeletons.account_helpers.settings_core import ISettingsCore
-
 
 class VOIPChatController(IVOIPChatController):
     __slots__ = ('__callbacks', '__captureDevicesCallbacks')
@@ -178,12 +178,17 @@ class VOIPChatController(IVOIPChatController):
         voipMgr = VOIP.getVOIPManager()
         isEnabled = not voipMgr.isCurrentChannelEnabled()
         voipMgr.enableCurrentChannel(isEnabled)
-        self.__showMessage(isEnabled)
+        self.__showMessage(isEnabled, event.ctx.get('arenaBonusType'))
 
     @staticmethod
-    def __showMessage(enable):
+    def __showMessage(enable, arenaBonusType):
         if enable:
             msg = backport.text(R.strings.messenger.client.dynSquad.enableVOIP())
         else:
-            msg = backport.text(R.strings.messenger.client.dynSquad.disableVOIP(), keyName=getReadableKey(CommandMapping.CMD_VOICECHAT_ENABLE))
+            customResource = R.strings.messenger.client.dyn(ARENA_BONUS_TYPE_IDS.get(arenaBonusType))
+            if customResource.isValid():
+                messageRId = customResource.disableVOIP()
+            else:
+                messageRId = R.strings.messenger.client.dynSquad.disableVOIP()
+            msg = backport.text(messageRId, keyName=getReadableKey(CommandMapping.CMD_VOICECHAT_ENABLE))
         g_messengerEvents.onWarningReceived(ClientActionMessage(msg=msg, type_=ACTION_MESSAGE_TYPE.ERROR))

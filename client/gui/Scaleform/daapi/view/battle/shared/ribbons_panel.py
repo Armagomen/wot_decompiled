@@ -1,23 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ribbons_panel.py
 import logging
-
 from account_helpers.settings_core.settings_constants import BATTLE_EVENTS, GRAPHICS
-from gui.Scaleform.daapi.view.battle.shared import ribbons_aggregator
-from gui.Scaleform.daapi.view.battle.shared.ribbons_aggregator import DAMAGE_SOURCE
-from gui.Scaleform.daapi.view.meta.RibbonsPanelMeta import RibbonsPanelMeta
-from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES as _BET
-from gui.battle_control import avatar_getter
+from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
+from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE
 from gui.battle_control.battle_constants import BonusRibbonLabel as _BRL
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.Scaleform.daapi.view.battle.shared import ribbons_aggregator
+from gui.Scaleform.daapi.view.meta.RibbonsPanelMeta import RibbonsPanelMeta
+from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES as _BET
+from gui.battle_control import avatar_getter
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
 from helpers import dependency
-from items.battle_royale import isSpawnedBot, isBattleRoyale
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.Scaleform.daapi.view.battle.shared.ribbons_aggregator import DAMAGE_SOURCE
+from items.battle_royale import isSpawnedBot, isBattleRoyale
 _logger = logging.getLogger(__name__)
 _RIBBON_SOUNDS_ENABLED = True
 _SHOW_RIBBON_SOUND_NAME = 'show_ribbon'
@@ -189,8 +189,9 @@ _RIBBONS_FMTS = {_BET.CAPTURE: _baseRibbonFormatter,
  _BET.RECEIVED_BY_CLING_BRANDER: _singleVehRibbonFormatter,
  _BET.DEALT_DMG_BY_THUNDER_STRIKE: _singleVehRibbonFormatter,
  _BET.RECEIVED_BY_THUNDER_STRIKE: _singleVehRibbonFormatter}
+_DISPLAY_PRECONDITIONS = {_BET.DETECTION: lambda dp, ribbon: dp.getVehicleInfo(ribbon.getVehIDs()[0]).vehicleType.compactDescr > 0}
 
-class BattleRibbonsPanel(RibbonsPanelMeta):
+class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     settingsCore = dependency.descriptor(ISettingsCore)
 
@@ -204,6 +205,7 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
         self.__isVisible = True
         self.__arenaDP = self.sessionProvider.getCtx().getArenaDP()
         self.__ribbonsAggregator = ribbons_aggregator.createRibbonsAggregator()
+        self.__delayedRibbons = []
 
     def onShow(self, ribbonID):
         sound = _SHOW_RIBBON_SOUND_NAME
@@ -223,6 +225,15 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
             self.__playSound(_HIDE_RIBBON_SOUND_NAME)
         return
 
+    def getCtrlScope(self):
+        return ARENA_LISTENER_SCOPE.VEHICLES
+
+    def addVehicleInfo(self, vo, _):
+        self.__processDelayedRibbons()
+
+    def updateVehiclesInfo(self, updated, _):
+        self.__processDelayedRibbons()
+
     def _populate(self):
         super(BattleRibbonsPanel, self)._populate()
         self.__enabled = bool(self.settingsCore.getSetting(BATTLE_EVENTS.SHOW_IN_BATTLE)) and self.__arenaDP is not None
@@ -240,9 +251,12 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
         self.__ribbonsAggregator.start()
         if not self.__enabled:
             self.__ribbonsAggregator.suspend()
+        self.sessionProvider.addArenaCtrl(self)
         return
 
     def _dispose(self):
+        self.sessionProvider.removeArenaCtrl(self)
+        self.__delayedRibbons = []
         self.__ribbonsAggregator.onRibbonAdded -= self.__onRibbonAdded
         self.__ribbonsAggregator.onRibbonUpdated -= self.__onRibbonUpdated
         g_eventBus.removeListener(GameEvent.GUI_VISIBILITY, self.__onGUIVisibilityChanged, scope=EVENT_BUS_SCOPE.BATTLE)
@@ -256,6 +270,12 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
     def _shouldShowRibbon(self, ribbon):
         return self.__checkUserPreferences(ribbon) and self.__checkControllingOwnVehicle()
 
+    def __processDelayedRibbons(self):
+        for ribbon, method in self.__delayedRibbons[:]:
+            if self.__canBeShown(ribbon):
+                self.__invalidateRibbon(ribbon, method)
+                self.__delayedRibbons.remove((ribbon, method))
+
     def __playSound(self, eventName):
         if not self.__isVisible or not _RIBBON_SOUNDS_ENABLED:
             return
@@ -267,21 +287,17 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
             else:
                 soundNotifications.play(eventName)
 
-    def _addRibbon(self, ribbonID, ribbonType='', leftFieldStr='', vehName='', vehType='', rightFieldStr='', bonusRibbonLabelID=_BRL.NO_BONUS, role=''):
-        _logger.debug('RIBBON PANEL: as_addBattleEfficiencyEventS: ribbonID=%s, ribbonType="%s", ", leftFieldStr="%s, vehName="%s", vehType="%s", rightFieldStr="%s", bonusRibbonLabelID=%s, role=%s.', ribbonID, ribbonType, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
-        self.as_addBattleEfficiencyEventS(ribbonType, ribbonID, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
-
-    def _updateRibbon(self, ribbonID, ribbonType='', leftFieldStr='', vehName='', vehType='', rightFieldStr='', bonusRibbonLabelID=_BRL.NO_BONUS, role=''):
-        _logger.debug('RIBBON PANEL: as_updateBattleEfficiencyEventS: ribbonID=%s, ribbonType="%s", ", leftFieldStr="%s, vehName="%s", vehType="%s", rightFieldStr="%s", bonusRibbonLabelID=%s, role=%s.', ribbonID, ribbonType, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
-        self.as_updateBattleEfficiencyEventS(ribbonType, ribbonID, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
-
     def __onRibbonAdded(self, ribbon):
-        self.__invalidateRibbon(ribbon, self._addRibbon)
+        self.__invalidateRibbon(ribbon, self.__addRibbon)
 
     def __onRibbonUpdated(self, ribbon):
-        self.__invalidateRibbon(ribbon, self._updateRibbon)
+        self.__invalidateRibbon(ribbon, self.__updateRibbon)
 
     def __invalidateRibbon(self, ribbon, method):
+        if not self.__canBeShown(ribbon):
+            _logger.debug('Delaying ribbon processing %s', ribbon)
+            self.__delayedRibbons.append((ribbon, method))
+            return
         if self._shouldShowRibbon(ribbon):
             if ribbon.getType() in _RIBBONS_FMTS:
                 updater = _RIBBONS_FMTS[ribbon.getType()]
@@ -290,6 +306,19 @@ class BattleRibbonsPanel(RibbonsPanelMeta):
                 _logger.error('Could not find formatter for ribbon %s', ribbon)
         else:
             self.__ribbonsAggregator.resetRibbonData(ribbon.getID())
+
+    def __addRibbon(self, ribbonID, ribbonType='', leftFieldStr='', vehName='', vehType='', rightFieldStr='', bonusRibbonLabelID=_BRL.NO_BONUS, role=''):
+        _logger.debug('RIBBON PANEL: as_addBattleEfficiencyEventS: ribbonID=%s, ribbonType="%s", ", leftFieldStr="%s, vehName="%s", vehType="%s", rightFieldStr="%s", bonusRibbonLabelID=%s, role=%s.', ribbonID, ribbonType, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
+        self.as_addBattleEfficiencyEventS(ribbonType, ribbonID, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
+
+    def __updateRibbon(self, ribbonID, ribbonType='', leftFieldStr='', vehName='', vehType='', rightFieldStr='', bonusRibbonLabelID=_BRL.NO_BONUS, role=''):
+        _logger.debug('RIBBON PANEL: as_updateBattleEfficiencyEventS: ribbonID=%s, ribbonType="%s", ", leftFieldStr="%s, vehName="%s", vehType="%s", rightFieldStr="%s", bonusRibbonLabelID=%s, role=%s.', ribbonID, ribbonType, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
+        self.as_updateBattleEfficiencyEventS(ribbonType, ribbonID, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
+
+    def __canBeShown(self, ribbon):
+        ribbonType = ribbon.getType()
+        displayPrecondition = _DISPLAY_PRECONDITIONS.get(ribbonType)
+        return False if displayPrecondition and not displayPrecondition(self.__arenaDP, ribbon) else True
 
     def __onGUIVisibilityChanged(self, event):
         self.__isVisible = event.ctx['visible']

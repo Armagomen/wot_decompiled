@@ -1,19 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/cache/web_cache.py
+import os
 import hashlib
 import json
 import logging
-import os
 import urlparse
 from functools import partial
-
 import BigWorld
 from Event import Event, EventManager
 from debug_utils import LOG_CURRENT_EXCEPTION
 from helpers.web.app_storage import ApplicationStorage
 from web.cache.web_downloader import WebDownloader
 from web.web_external_cache import IWebExternalCache
-
 _logger = logging.getLogger(__name__)
 _WORKERS_LIMIT = 2
 
@@ -50,6 +48,10 @@ class WebExternalCache(IWebExternalCache):
         _logger.info('WebStorage destroyed')
         self.__eventsManager.clear()
         return
+
+    def setPause(self, value):
+        if self.__downloader:
+            self.__downloader.setPause(value)
 
     def __closeDownloader(self):
         if self.__downloader:

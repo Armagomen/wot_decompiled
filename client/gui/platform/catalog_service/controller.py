@@ -3,16 +3,14 @@
 import json
 import logging
 from collections import namedtuple
-
 import BigWorld
 import adisp
 from gui.macroses import getLanguageCode
 from gui.shared.money import Currency
 from helpers import dependency
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
+from skeletons.gui.lobby_context import ILobbyContext
 from web.cache.web_downloader import WebDownloader
-
 _logger = logging.getLogger(__name__)
 _DEFAULT_SYNC_TIMEOUT = 180
 _WORKERS_LIMIT = 2

@@ -1,20 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_bottom_panel.py
 from collections import namedtuple
-
+import typing
 import BigWorld
 from CurrentVehicle import g_currentVehicle
-from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION, PROJECTION_DECAL_HINT_SHOWN_FIELD, \
-    CUSTOMIZATION_STYLE_ITEMS_VISITED
+from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION, PROJECTION_DECAL_HINT_SHOWN_FIELD, CUSTOMIZATION_STYLE_ITEMS_VISITED
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, \
-    comparisonKey, FilterTypes, FilterAliases
+from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, comparisonKey, FilterTypes, FilterAliases
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
-from gui.Scaleform.daapi.view.lobby.customization.shared import checkSlotsFilling, isItemUsedUp, \
-    getEditableStylesExtraNotificationCounter, getItemTypesAvailableForVehicle, CustomizationTabs, getMultiSlot, \
-    BillPopoverButtons
+from gui.Scaleform.daapi.view.lobby.customization.shared import checkSlotsFilling, isItemUsedUp, getEditableStylesExtraNotificationCounter, getItemTypesAvailableForVehicle, CustomizationTabs, getMultiSlot, BillPopoverButtons
 from gui.Scaleform.daapi.view.meta.CustomizationBottomPanelMeta import CustomizationBottomPanelMeta
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -32,14 +28,12 @@ from gui.shared.utils.functions import makeTooltip
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType, EDITABLE_STYLE_STORAGE_DEPTH
-from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from tutorial.hints_manager import HINT_SHOWN_STATUS
 from vehicle_outfit.outfit import Area
-
 CustomizationCarouselDataVO = namedtuple('CustomizationCarouselDataVO', ('displayString', 'isZeroCount', 'shouldShow', 'itemLayoutSize', 'bookmarks', 'arrows', 'showSeparators'))
 
 class CustomizationBottomPanel(CustomizationBottomPanelMeta):
@@ -371,7 +365,7 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             hasEmptyNumber = False
 
         hasLockedItems = self.__ctx.mode.isOutfitsHasLockedItems()
-        buyBtnEnabled = self.__ctx.isOutfitsModified()
+        outfitsModified = buyBtnEnabled = self.__ctx.isOutfitsModified()
         if buyBtnEnabled and cartInfo.totalPrice != ITEM_PRICE_EMPTY:
             label = _ms(VEHICLE_CUSTOMIZATION.COMMIT_BUY)
         if hasEmptyNumber:
@@ -382,7 +376,6 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             tooltip = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
         else:
             tooltip = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_ALREADYAPPLIED
-        outfitsModified = self.__ctx.mode.isOutfitsModified()
         if outfitsModified:
             if fromStorageCount > 0 or toBuyCount > 0:
                 self.__showBill()
@@ -633,12 +626,6 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
                 self.__scrollToItem(item.intCD)
                 break
-        else:
-            intCD = first(self.carouselItems)
-            if intCD is not None:
-                self.__scrollToItem(intCD, immediately=True)
-
-        return
 
     def __scrollToItem(self, itemCD, immediately=False):
         self.as_scrollToSlotS(itemCD, immediately)

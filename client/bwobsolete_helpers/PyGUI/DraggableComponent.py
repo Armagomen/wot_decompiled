@@ -1,11 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/DraggableComponent.py
-import GUI
-import Keys
-import Math
-
+import BigWorld, GUI, Math, Keys
 import Utils
-
 
 class DraggableComponent:
 

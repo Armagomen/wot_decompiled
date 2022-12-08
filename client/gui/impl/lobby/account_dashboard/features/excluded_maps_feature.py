@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/excluded_maps_feature.py
 import logging
 import typing
-
 import ArenaType
 from constants import PremiumConfigs, PREMIUM_TYPE, EMPTY_GEOMETRY_ID
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -14,9 +13,8 @@ from helpers import dependency, time_utils
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.excluded_maps_model import ExcludedMapsModel
 _logger = logging.getLogger(__name__)
 
 class ExcludedMapsFeature(FeatureItem):

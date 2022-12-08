@@ -1,17 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/vehicle_items.py
 import functools
-
+import Math
 import nations
-from constants import ATTACK_REASON
 from constants import SHELL_TYPES
 from items import ITEM_TYPES, ITEM_TYPE_NAMES, makeIntCompactDescrByID
 from items.basic_item import BasicItem
+from items.components import chassis_components
 from items.components import component_constants
+from items.components import gun_components
 from items.components import shared_components
+from items.components import shell_components
+from items.components import sound_components
 from soft_exception import SoftException
 from wrapped_reflection_framework import ReflectionMetaclass
-
+from constants import ATTACK_REASON
 
 class VEHICLE_ITEM_STATUS(object):
     UNDEFINED = 0

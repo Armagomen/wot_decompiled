@@ -4,9 +4,8 @@ import logging
 import operator
 import weakref
 from collections import namedtuple, deque
-
-import BattleReplay
 import BigWorld
+import BattleReplay
 from WeakMethod import WeakMethodProxy
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -28,7 +27,6 @@ from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from messenger_common_chat2 import MESSENGER_LIMITS as _LIMITS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _ActionsCollection = namedtuple('_ActionsCollection', 'initID deInitID onBroadcastID broadcastID')
 _logger = logging.getLogger(__name__)
 

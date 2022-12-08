@@ -1,39 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/items_kit_helper.py
 import itertools
+import random
+import typing
 from collections import Container, namedtuple
 from sys import maxint
-
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.COMMON import COMMON
 from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
 from gui.Scaleform.locale.QUESTS import QUESTS
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.RES_SHOP import RES_SHOP
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.shared.formatters import text_styles, icons
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items import vehicle_adjusters
 from gui.shared.gui_items.Tankman import CrewTypes
 from gui.shared.money import Currency, Money, MONEY_ZERO_GOLD
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
-from helpers import dependency
-from helpers.i18n import makeString as _ms
+from gui.impl import backport
+from gui.impl.gen import R
 from items import makeIntCompactDescrByID as makeCD
 from items.components.c11n_constants import CustomizationType
 from items.vehicles import MAX_OPTIONAL_DEVICES_SLOTS, NUM_SHELLS_SLOTS
 from shared_utils import findFirst, first, CONST_CONTAINER
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.goodies import IGoodiesCache
-from skeletons.gui.shared import IItemsCache
 from web.web_client_api.common import ItemPackType, ItemPackTypeGroup, ItemPackEntry
-
+from gui.shared.gui_items import vehicle_adjusters
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from skeletons.gui.shared import IItemsCache
+from helpers import dependency
+from helpers.i18n import makeString as _ms
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.shared.formatters import text_styles, icons
 
 class ItemSortRule(CONST_CONTAINER):
     REGULAR = 'regular'
@@ -122,10 +122,7 @@ _TOOLTIP_TYPE = {ItemPackType.ITEM_DEVICE: TOOLTIPS_CONSTANTS.SHOP_MODULE,
  ItemPackType.CUSTOM_BATTLE_PASS_POINTS: TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS,
  ItemPackType.GOODIE_RECERTIFICATIONFORM: TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP,
  ItemPackType.OFFER_BROCHURE: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
- ItemPackType.OFFER_BATTLE_BOOSTER: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP,
- ItemPackType.BLUEPRINT_NATIONAL_ANY: TOOLTIPS_CONSTANTS.BLUEPRINT_RANDOM_NATIONAL_INFO,
- ItemPackType.DEMOUNT_KITS: TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT,
- ItemPackType.TMAN_TOKEN: TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED}
+ ItemPackType.OFFER_BATTLE_BOOSTER: TOOLTIPS_CONSTANTS.EPIC_BATTLE_INSTRUCTION_TOOLTIP}
 _ICONS = {ItemPackType.CAMOUFLAGE_ALL: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_WINTER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
  ItemPackType.CAMOUFLAGE_SUMMER: RES_SHOP.MAPS_SHOP_REWARDS_48X48_PRIZE_CAMOUFLAGE,
@@ -273,7 +270,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
             if tooltipKey:
                 title = _ms(tooltipKey, group=item.userType, value=item.userName)
                 title = title.replace(_DOUBLE_OPEN_QUOTES, _OPEN_QUOTES).replace(_DOUBLE_CLOSE_QUOTES, _CLOSE_QUOTES)
-    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SEVERAL_SLOTS):
+    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
         title = _ms(key=TOOLTIPS.AWARDITEM_SLOTS_HEADER)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         title = _ms(key=QUESTS.BONUSES_GOLD_DESCRIPTION, value=rawItem.count)
@@ -302,10 +299,6 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
              ItemPackType.CUSTOM_CREW_100: CrewTypes.SKILL_100}.get(rawItem.type))
         else:
             title = _ms(TOOLTIPS.CREW_HEADER)
-    elif rawItem.type == ItemPackType.CUSTOM_X5_BATTLE_BONUS:
-        title = backport.text(R.strings.tooltips.quests.bonuses.token.battle_bonus_x5.header())
-    elif rawItem.type == ItemPackType.CREW_BOOK_RANDOM:
-        title = backport.text(R.strings.tooltips.awardItem.randomBooklet.header())
     else:
         title = rawItem.title or ''
     return title
@@ -314,7 +307,7 @@ def getItemTitle(rawItem, item, forBox=False, additionalInfo=False):
 def getItemDescription(rawItem, item):
     if item is not None:
         description = item.fullDescription
-    elif rawItem.type in (ItemPackType.CUSTOM_SLOT, ItemPackType.CUSTOM_SEVERAL_SLOTS):
+    elif rawItem.type == ItemPackType.CUSTOM_SLOT:
         description = _ms(TOOLTIPS.AWARDITEM_SLOTS_BODY)
     elif rawItem.type == ItemPackType.CUSTOM_GOLD:
         description = _ms(TOOLTIPS.AWARDITEM_GOLD_BODY)
@@ -342,10 +335,6 @@ def getItemDescription(rawItem, item):
              ItemPackType.CREW_75: CrewTypes.SKILL_75,
              ItemPackType.CREW_100: CrewTypes.SKILL_100,
              ItemPackType.CUSTOM_CREW_100: CrewTypes.SKILL_100}.get(rawItem.type))
-    elif rawItem.type == ItemPackType.CUSTOM_X5_BATTLE_BONUS:
-        description = backport.text(R.strings.tooltips.quests.bonuses.token.battle_bonus_x5.body())
-    elif rawItem.type == ItemPackType.CREW_BOOK_RANDOM:
-        description = backport.text(R.strings.tooltips.awardItem.randomBooklet.body())
     else:
         description = rawItem.description or ''
     return description
@@ -803,6 +792,36 @@ def canInstallStyle(styleId, service=None):
         return StyleInstallInfo(canInstall=True, style=style, vehicle=vehicle)
 
 
+@dependency.replace_none_kwargs(service=ICustomizationService, itemsCache=IItemsCache)
+def getSuitableStyledVehicle(styleId, inInventory=False, service=None, itemsCache=None):
+    styledVehicleCD = None
+    style = service.getItemByID(GUI_ITEM_TYPE.STYLE, styleId)
+    vehicle = g_currentVehicle.item if g_currentVehicle.isPresent() else None
+    if vehicle is not None and not vehicle.descriptor.type.isCustomizationLocked and style.mayInstall(vehicle):
+        styledVehicleCD = vehicle.intCD
+    else:
+        accDossier = itemsCache.items.getAccountDossier()
+        vehiclesStats = accDossier.getRandomStats().getVehicles()
+        vehicleGetter = itemsCache.items.getItemByCD
+        vehiclesStats = {vehicleCD:value for vehicleCD, value in vehiclesStats.iteritems() if not vehicleGetter(vehicleCD).descriptor.type.isCustomizationLocked and style.mayInstall(vehicleGetter(vehicleCD))}
+        if vehiclesStats:
+            sortedVehicles = sorted(vehiclesStats.items(), key=lambda vStat: vStat[1].battlesCount, reverse=True)
+            if inInventory:
+                res = findFirst(lambda data: vehicleGetter(data[0]).inventoryCount > 0, sortedVehicles)
+                styledVehicleCD = res[0] if res else None
+            else:
+                styledVehicleCD = sortedVehicles[0][0] if sortedVehicles else None
+    if not styledVehicleCD:
+        criteria = REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED | REQ_CRITERIA.VEHICLE.FOR_ITEM(style)
+        vehicle = first(__getVehiclesForStylePreview(itemsCache, criteria=criteria))
+        styledVehicleCD = vehicle.intCD if vehicle else None
+    if not styledVehicleCD and inInventory is False:
+        criteria = ~REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED | REQ_CRITERIA.VEHICLE.FOR_ITEM(style) | ~REQ_CRITERIA.VEHICLE.EVENT
+        vehicle = random.choice(__getVehiclesForStylePreview(itemsCache, criteria=criteria))
+        styledVehicleCD = vehicle.intCD if vehicle else None
+    return styledVehicleCD
+
+
 def _sortItemsByOrder(items, rule=None):
     if rule is None:
         rule = _PACK_ITEMS_SORT_ORDER
@@ -834,6 +853,11 @@ def _packDataMultiVehicles(itemsPack, vehicle):
 
     inContainerVOs = container.getVO()
     return addCompensationInfo([inContainerVOs], itemsPack) if inContainerVOs else []
+
+
+def __getVehiclesForStylePreview(itemsCache, criteria=None):
+    vehs = itemsCache.items.getVehicles(criteria=criteria).values()
+    return sorted(vehs, key=lambda item: item.level, reverse=True)
 
 
 def __getItemsSortRule(itemsPack):

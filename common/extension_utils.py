@@ -54,7 +54,7 @@ class _MergeExtensionFile(object):
         genString += cls._closeTag(_ROOT_TAG)
         section = rmgr.DataSection()
         section.createSectionFromString(genString)
-        if section.child(0).name == 'root':
+        if section.values() and section.child(0).name == 'root':
             section = section.child(0)
         return section
 

@@ -1,20 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/comp7/squad/actions_validator.py
 import typing
-
-from constants import IS_DEVELOPMENT
-from gui.periodic_battles.models import PrimeTimeStatus
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite, BaseActionsValidator
 from gui.prb_control.entities.base.squad.actions_validator import SquadActionsValidator, SquadVehiclesValidator
-from gui.prb_control.entities.base.unit.actions_validator import UnitSlotsValidator, CommanderValidator, \
-    UnitPlayerValidator
+from gui.prb_control.entities.base.unit.actions_validator import UnitSlotsValidator, CommanderValidator, UnitPlayerValidator
 from gui.prb_control.items import ValidationResult
 from gui.prb_control.settings import UNIT_RESTRICTION
 from helpers import dependency
 from skeletons.gui.game_control import IComp7Controller, IPlatoonController
-
+from gui.periodic_battles.models import PrimeTimeStatus
+from constants import IS_DEVELOPMENT
 if typing.TYPE_CHECKING:
-    pass
+    from gui.prb_control.items import PlayerUnitInfo
 
 class _Comp7VehiclesValidator(SquadVehiclesValidator):
     pass

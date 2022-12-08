@@ -2,29 +2,26 @@
 # Embedded file name: scripts/client/frameworks/wulf/view/view.py
 import logging
 import typing
-
 import Event
 from soft_exception import SoftException
 from sound_gui_manager import ViewSoundExtension
-
 from .view_event import ViewEvent
 from .view_model import ViewModel
-from ..gui_constants import ViewFlags, ViewStatus, ViewEventType, ChildFlags
 from ..py_object_binder import PyObjectEntity, getProxy, getObject
 from ..py_object_wrappers import PyObjectView, PyObjectViewSettings
-
+from ..gui_constants import ViewFlags, ViewStatus, ViewEventType, ChildFlags
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 _logger = logging.getLogger(__name__)
 
 class ViewSettings(typing.Generic[TViewModel]):
     __slots__ = ('__proxy', 'args', 'kwargs')
 
-    def __init__(self, layoutID, flags=ViewFlags.VIEW, model=None, args=()):
+    def __init__(self, layoutID, flags=ViewFlags.VIEW, model=None, args=(), kwargs=None):
         super(ViewSettings, self).__init__()
         self.__proxy = PyObjectViewSettings(layoutID)
         self.__proxy.flags = flags
         self.args = args
-        self.kwargs = {}
+        self.kwargs = kwargs or {}
         if model is not None:
             self.__proxy.model = getProxy(model)
         return
@@ -59,6 +56,14 @@ class ViewSettings(typing.Generic[TViewModel]):
             raise SoftException('model should be ViewModel class or extends it')
         self.__proxy.model = getProxy(model)
         return
+
+    @property
+    def textureName(self):
+        return self.__proxy.textureName
+
+    @textureName.setter
+    def textureName(self, textureName):
+        self.__proxy.textureName = textureName
 
     def clear(self):
         self.__proxy = None
@@ -127,14 +132,23 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
     def getParentView(self):
         return self.proxy.getParent() if self.proxy is not None else None
 
+    def setHold(self, value):
+        if self.proxy is not None:
+            self.proxy.setHold(value)
+        return
+
+    def setHoldSwfs(self, value):
+        if self.proxy is not None:
+            self.proxy.setHoldSwfs(value)
+        return
+
     def getChildView(self, resourceID):
         return self.proxy.getChild(resourceID) if self.proxy is not None else None
 
     def setChildView(self, resourceID, view=None, chFlags=ChildFlags.AUTO_DESTROY):
         if self.proxy is not None:
             if not self.proxy.setChild(resourceID, getProxy(view), chFlags):
-                _logger.error('%r: child %r can not be added. May be child is already added to other view or window',
-                              self, view)
+                _logger.error('%r: child %r can not be added. May be child is already added to other view or window', self, view)
         else:
             _logger.error('%r: Parent view does not have proxy, child can not be added', self)
         return
@@ -173,6 +187,9 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
 
     def createContextMenu(self, event):
         return None
+
+    def canBeClosed(self):
+        return True
 
     def _onLoading(self, *args, **kwargs):
         pass

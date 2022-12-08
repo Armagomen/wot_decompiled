@@ -1,19 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/goodies/booster_state_provider.py
-import logging
 import typing
-
+import logging
 import BigWorld
 from Event import Event
-from goodies.goodie_constants import GOODIE_STATE, GOODIE_VARIETY, GOODIE_TARGET_TYPE
 from gui.goodies.goodie_items import Booster
 from gui.shared.money import Money
+from goodies.goodie_constants import GOODIE_STATE, GOODIE_VARIETY, GOODIE_TARGET_TYPE
 from gui.shared.utils.requesters.GoodiesRequester import GoodieVariable
 from gui.shared.utils.requesters.ShopRequester import _NamedGoodieData
 from skeletons.gui.goodies import IBoostersStateProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, Any, Optional, List, Tuple, Union
+    from gui.shared.utils.requesters.ShopRequester import _ResourceData
+    from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
 _logger = logging.getLogger(__name__)
 
 class BoosterStateProvider(IBoostersStateProvider):

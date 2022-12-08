@@ -3,14 +3,12 @@
 import logging
 import math
 import typing
-
 import BigWorld
 from Math import Vector2
-from gui.battle_control.matrix_factory import makeVehicleEntityMP
 from helpers.CallbackDelayer import CallbackDelayer
-
+from gui.battle_control.matrix_factory import makeVehicleEntityMP
 if typing.TYPE_CHECKING:
-    pass
+    from BigWorld import PyTerrainSelectedArea
 g_logger = logging.getLogger(__name__)
 MIN_OVER_TERRAIN_HEIGHT = 0
 MIN_UPDATE_INTERVAL = 0

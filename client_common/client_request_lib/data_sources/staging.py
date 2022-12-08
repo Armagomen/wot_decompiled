@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/data_sources/staging.py
-import functools
-import json
-from datetime import datetime, time as dt_time
-from functools import wraps
 from itertools import groupby
+import json
 from urllib import urlencode
-
+from functools import wraps
+from datetime import datetime, time as dt_time
 from client_request_lib import exceptions
 from client_request_lib.data_sources import base
-
+import functools
 
 def _doResponse(callback, result, status_code, response_code):
     callback(result, status_code, response_code)

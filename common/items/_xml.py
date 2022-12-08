@@ -1,18 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/_xml.py
-import collections
-from functools import wraps, partial
 from typing import *
-
+from functools import wraps, partial
+from soft_exception import SoftException
 import constants
 from constants import SEASON_TYPE_BY_NAME, RentType
 from debug_utils import LOG_ERROR
-from soft_exception import SoftException
-
 import type_traits
-
+import collections
 if TYPE_CHECKING:
-    pass
+    import ResMgr
 _g_floats = {'count': 0}
 _g_intTuples = {'count': 0}
 _g_floatTuples = {'count': 0}
@@ -366,7 +363,7 @@ def readTupleOfBools(xmlCtx, section, subsectionName, count=None):
 
 def readPrice(xmlCtx, section, subsectionName):
     key = 'credits'
-    for currency in ('gold', 'crystal', 'xp', 'freeXP'):
+    for currency in ('gold', 'crystal', 'xp', 'freeXP', 'equipCoin'):
         if section[subsectionName + '/' + currency] is not None:
             if key != 'credits':
                 raiseWrongXml(xmlCtx, subsectionName, 'Multiple price not allowed')

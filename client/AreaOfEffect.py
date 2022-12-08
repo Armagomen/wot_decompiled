@@ -1,29 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AreaOfEffect.py
+from functools import partial
 import math
 import random
-from functools import partial
-
-import AnimationSequence
 import BigWorld
+import AnimationSequence
 import CGF
 import GenericComponents
 import Math
-from ids_generators import SequenceIDGenerator
-from items import vehicles
-from items.artefacts import AoeEffects, AreaShow
-from random_utils import getValueWithDeviationInPercent
-
-import CombatSelectedArea
 import math_utils
+import CombatSelectedArea
 from ProjectileMover import collideDynamicAndStatic
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MarkersManagerEvent
 from helpers import dependency
+from ids_generators import SequenceIDGenerator
+from items import vehicles
+from items.artefacts import AoeEffects, AreaShow
 from skeletons.account_helpers.settings_core import ISettingsCore
+from random_utils import getValueWithDeviationInPercent
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 
 class EffectRunner(object):
     SHOT_HEIGHT = 100.0

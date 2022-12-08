@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/action_button_state_vo.py
 import re
-
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.Scaleform.locale.CYBERSPORT import CYBERSPORT
 from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
 from gui.Scaleform.locale.PLATOON import PLATOON
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.prb_control.settings import UNIT_RESTRICTION
 from gui.shared.formatters import text_styles, icons
-from helpers import dependency
 from helpers import i18n
 from shared_utils import BoundMethodWeakref
+from helpers import dependency
 from skeletons.gui.game_control import IComp7Controller
-
 
 class ActionButtonStateVO(dict):
     __comp7Ctrl = dependency.descriptor(IComp7Controller)

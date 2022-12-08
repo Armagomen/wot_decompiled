@@ -5,15 +5,10 @@ from debug_utils import LOG_ERROR
 from gui.prb_control import settings, prb_getters
 from gui.prb_control.entities.base.ctx import PrbCtrlRequestCtx
 from gui.prb_control.entities.base.requester import IUnitRequestProcessor
-from gui.wgcg.tournament.contexts import TournamentJoinBattleCtx, TournamentLeaveModeCtx, TournamentMatchmakingInfoCtx, \
-    TournamentAssignCtx, TournamentUnassignCtx, TournamentChangeOpenedCtx, TournamentSetVehicleCtx, \
-    TournamentSetReadyCtx, TournamentKickPlayerCtx, TournamentBattleQueueCtx, TournamentGiveLeadershipCtx, \
-    TournamentSendInvitesCtx, TournamentSetSlotVehicleTypeFilter, TournamentSetSlotVehiclesFilter, \
-    TournamentStopPlayersMatchingCtx
 from helpers import dependency
 from skeletons.gui.web import IWebController
 from soft_exception import SoftException
-
+from gui.wgcg.tournament.contexts import TournamentJoinBattleCtx, TournamentLeaveModeCtx, TournamentMatchmakingInfoCtx, TournamentAssignCtx, TournamentUnassignCtx, TournamentChangeOpenedCtx, TournamentSetVehicleCtx, TournamentSetReadyCtx, TournamentKickPlayerCtx, TournamentBattleQueueCtx, TournamentGiveLeadershipCtx, TournamentSendInvitesCtx, TournamentSetSlotVehicleTypeFilter, TournamentSetSlotVehiclesFilter, TournamentStopPlayersMatchingCtx
 
 class TournamentUnitRequestProcessor(IUnitRequestProcessor):
     clansCtrl = dependency.descriptor(IWebController)

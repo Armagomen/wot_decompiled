@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgcg/states.py
 from collections import namedtuple
-
 import BigWorld
 from adisp import adisp_process, adisp_async
 from client_request_lib.exceptions import ResponseCodes
@@ -20,7 +19,6 @@ from helpers import time_utils
 from shared_utils import CONST_CONTAINER
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
-
 _PING_BACK_OFF_MIN_DELAY = 60
 _PING_BACK_OFF_MAX_DELAY = 1200
 _PING_BACK_OFF_MODIFIER = 30

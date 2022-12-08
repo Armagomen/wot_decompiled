@@ -2,11 +2,9 @@
 # Embedded file name: scripts/client/TeamInfoInBattleVehicleSwitch.py
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import VehicleSelectionPlayerStatus
-from script_component.ScriptComponent import ScriptComponent
-
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from script_component.ScriptComponent import ScriptComponent
 
 class TeamInfoInBattleVehicleSwitch(ScriptComponent):
     REQUIRED_BONUS_CAP = ARENA_BONUS_TYPE_CAPS.VEHICLE_IN_BATTLE_SELECTION

@@ -2,13 +2,10 @@
 # Embedded file name: scripts/common/external_strings_utils.py
 import re
 import string
-
 import unicodedata
-
-from constants import CREDENTIALS_RESTRICTION, CREDENTIALS_RESTRICTION_SET
 from debug_utils import LOG_CURRENT_EXCEPTION
+from constants import CREDENTIALS_RESTRICTION, CREDENTIALS_RESTRICTION_SET
 from soft_exception import SoftException
-
 _MAX_NORMALIZED_NAME_BYTES = 96
 
 class TextRestrictionsBasic(object):

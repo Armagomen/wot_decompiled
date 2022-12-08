@@ -6,8 +6,8 @@ from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
-from messenger import normalizeGroupId
 from messenger.gui.Scaleform.meta.ContactsListPopoverMeta import ContactsListPopoverMeta
+from messenger import normalizeGroupId
 from messenger.gui.Scaleform.view.lobby.ContactsCMListener import ContactsCMListener
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
@@ -15,7 +15,6 @@ from messenger.proto.events import g_messengerEvents
 from messenger.storage import storage_getter
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
     settingsCore = dependency.descriptor(ISettingsCore)

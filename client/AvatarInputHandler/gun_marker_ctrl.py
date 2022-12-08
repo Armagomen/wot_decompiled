@@ -2,29 +2,27 @@
 # Embedded file name: scripts/client/AvatarInputHandler/gun_marker_ctrl.py
 import logging
 import math
+import typing
 from collections import namedtuple
-
 import BattleReplay
 import BigWorld
 import GUI
 import Math
-import aih_constants
 import constants
+import aih_constants
+from Vehicle import Vehicle as VehicleEntity
+from DestructibleEntity import DestructibleEntity
 from AvatarInputHandler import AimingSystems
 from AvatarInputHandler import aih_global_binding
-from DestructibleEntity import DestructibleEntity
-from Vehicle import Vehicle as VehicleEntity
-from gui.shared import EVENT_BUS_SCOPE
-from gui.shared import g_eventBus
-from gui.shared.events import GunMarkerEvent
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
-from items.components.component_constants import MODERN_HE_PIERCING_POWER_REDUCTION_FACTOR_FOR_SHIELDS, \
-    MODERN_HE_DAMAGE_ABSORPTION_FACTOR
 from math_utils import almostZero
+from items.components.component_constants import MODERN_HE_PIERCING_POWER_REDUCTION_FACTOR_FOR_SHIELDS, MODERN_HE_DAMAGE_ABSORPTION_FACTOR
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
+from gui.shared import g_eventBus
+from gui.shared.events import GunMarkerEvent
+from gui.shared import EVENT_BUS_SCOPE
 _MARKER_TYPE = aih_constants.GUN_MARKER_TYPE
 _MARKER_FLAG = aih_constants.GUN_MARKER_FLAG
 _SHOT_RESULT = aih_constants.SHOT_RESULT
@@ -151,13 +149,12 @@ class _CrosshairShotResults(object):
     _CRIT_ONLY_SHOT_RESULT = _SHOT_RESULT.NOT_PIERCED
     _VEHICLE_TRACE_BACKWARD_LENGTH = 0.1
     _VEHICLE_TRACE_FORWARD_LENGTH = 20.0
-    shellExtraData = namedtuple('shellExtraData',
-                                ('hasNormalization', 'mayRicochet', 'checkCaliberForRicochet', 'jetLossPPByDist'))
+    shellExtraData = namedtuple('shellExtraData', ('hasNormalization', 'mayRicochet', 'checkCaliberForRicochet', 'jetLossPPByDist'))
     _SHELL_EXTRA_DATA = {constants.SHELL_TYPES.ARMOR_PIERCING: shellExtraData(True, True, True, 0.0),
-                         constants.SHELL_TYPES.ARMOR_PIERCING_CR: shellExtraData(True, True, True, 0.0),
-                         constants.SHELL_TYPES.ARMOR_PIERCING_HE: shellExtraData(True, False, False, 0.0),
-                         constants.SHELL_TYPES.HOLLOW_CHARGE: shellExtraData(False, True, False, 0.5),
-                         constants.SHELL_TYPES.HIGH_EXPLOSIVE: shellExtraData(False, False, False, 0.0)}
+     constants.SHELL_TYPES.ARMOR_PIERCING_CR: shellExtraData(True, True, True, 0.0),
+     constants.SHELL_TYPES.ARMOR_PIERCING_HE: shellExtraData(True, False, False, 0.0),
+     constants.SHELL_TYPES.HOLLOW_CHARGE: shellExtraData(False, True, False, 0.5),
+     constants.SHELL_TYPES.HIGH_EXPLOSIVE: shellExtraData(False, False, False, 0.0)}
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     @classmethod
@@ -329,8 +326,7 @@ class _CrosshairShotResults(object):
                 hitAngleCos = cDetails.hitAngleCos if matInfo.useHitAngle else 1.0
                 piercingPercent = 1000.0
                 if not isJet and cls._shouldRicochet(shell, hitAngleCos, matInfo):
-                    cls.__collectDebugPiercingData(debugPiercingsList, None, hitAngleCos, minPiercingPower,
-                                                   maxPiercingPower, piercingPercent, matInfo, _SHOT_RESULT.NOT_PIERCED)
+                    cls.__collectDebugPiercingData(debugPiercingsList, None, hitAngleCos, minPiercingPower, maxPiercingPower, piercingPercent, matInfo, _SHOT_RESULT.NOT_PIERCED)
                     break
                 penetrationArmor = 0
                 if piercingPower > 0.0:

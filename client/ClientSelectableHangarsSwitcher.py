@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/ClientSelectableHangarsSwitcher.py
 import logging
-
 import BigWorld
-from constants import FESTIVAL_SCENE, BATTLE_ROYALE_SCENE
-
 from ClientSelectableObject import ClientSelectableObject
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
-from gui.shared import g_eventBus
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
 from skeletons.gui.shared.utils import IHangarSpace
-
+from constants import FESTIVAL_SCENE, BATTLE_ROYALE_SCENE
+from gui.shared import g_eventBus
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
 _logger = logging.getLogger(__name__)
 
 class ClientSelectableHangarsSwitcher(ClientSelectableObject):

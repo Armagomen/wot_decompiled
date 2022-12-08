@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/account_dashboard_view.py
 import logging
-
 import WWISE
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.Waiting import Waiting
@@ -20,7 +19,6 @@ from gui.shared.event_dispatcher import showHangar
 from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.lobby_context import ILobbyContext
-
 _logger = logging.getLogger(__name__)
 
 class Feature(CONST_CONTAINER):

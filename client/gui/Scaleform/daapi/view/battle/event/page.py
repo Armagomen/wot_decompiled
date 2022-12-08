@@ -1,22 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/page.py
 import BigWorld
-from PlayerEvents import g_playerEvents
-from adisp import adisp_process
 from constants import ARENA_PERIOD
 from debug_utils import LOG_DEBUG
+from adisp import adisp_process
+from PlayerEvents import g_playerEvents
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.battle.classic.page import ClassicPage
-from gui.Scaleform.daapi.view.battle.event.manager import EventMarkersManager
-from gui.Scaleform.daapi.view.battle.shared.crosshair import CrosshairPanelContainer
-from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
-from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.shared import EVENT_BUS_SCOPE, events
+from gui.battle_control.battle_constants import BATTLE_CTRL_ID
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
+from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
+from gui.Scaleform.daapi.view.battle.shared.crosshair import CrosshairPanelContainer
+from gui.Scaleform.daapi.view.battle.classic.page import ClassicPage
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.battle.event.manager import EventMarkersManager
 from gui.shared.events import LoadViewEvent
-
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 EVENT_CONFIG = ComponentsConfig(config=((BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT,)),
  (BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER, BATTLE_VIEW_ALIASES.PREBATTLE_TIMER, BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL)),
  (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),

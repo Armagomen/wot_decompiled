@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/links.py
 import re
-
-from adisp import adisp_process, adisp_async
-from debug_utils import LOG_ERROR
 from gui import macroses
-
+from debug_utils import LOG_ERROR
+from adisp import adisp_process, adisp_async
 
 class URLMacros(object):
     __MACROS_PREFIX = '$'

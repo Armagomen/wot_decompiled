@@ -1,25 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mapbox/mapbox_progression_view.py
 import logging
-
 from ArenaType import g_geometryNamesToIDs
+from wg_async import wg_async, wg_await
 from constants import QUEUE_TYPE
 from frameworks.wulf import ViewSettings, ViewFlags, WindowStatus
 from frameworks.wulf.gui_constants import ViewStatus, WindowLayer
 from gui import GUI_SETTINGS
-from gui.Scaleform.Waiting import Waiting
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.meta.MissionsMapboxViewMeta import MissionsMapboxViewMeta
-from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.mapbox.map_model import MapModel
 from gui.impl.gen.view_models.views.lobby.mapbox.mapbox_progression_model import MapboxProgressionModel
 from gui.impl.gen.view_models.views.lobby.mapbox.progression_reward_model import ProgressionRewardModel
+from gui.impl.gen.view_models.views.lobby.mapbox.map_model import MapModel
 from gui.impl.pub import ViewImpl
 from gui.mapbox.mapbox_bonus_packers import getMapboxBonusPacker
 from gui.mapbox.mapbox_helpers import packMapboxRewardModelAndTooltip, getMapboxRewardTooltip
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.meta.MissionsMapboxViewMeta import MissionsMapboxViewMeta
+from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
+from gui.Scaleform.Waiting import Waiting
 from gui.server_events import IEventsCache
 from gui.shared.event_dispatcher import showMapboxRewardChoice, showHangar, showMapboxIntro, showBrowserOverlayView
 from gui.shared.formatters.time_formatters import getTillTimeByResource
@@ -29,8 +29,6 @@ from helpers import dependency, time_utils
 from shared_utils import first
 from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.impl import IGuiLoader
-from wg_async import wg_async, wg_await
-
 _logger = logging.getLogger(__name__)
 
 class MapboxProgressionsComponent(InjectComponentAdaptor, MissionsMapboxViewMeta):

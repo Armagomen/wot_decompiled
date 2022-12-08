@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/bwdebug.py
-import sys
-
 import BigWorld
-
+import sys
 printPath = False
 
 def getClassName(f):

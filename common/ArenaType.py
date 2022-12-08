@@ -1,26 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/ArenaType.py
 import os
-from collections import defaultdict
-
-from Math import Vector2
-
-from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory, SpaceVisibilityFlags
-from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA
-from constants import CHAT_COMMAND_FLAGS
+from realm_utils import ResMgr
 from constants import IS_BOT, IS_WEB, IS_CLIENT, ARENA_TYPE_XML_PATH
+from constants import ARENA_BONUS_TYPE_IDS, ARENA_GAMEPLAY_IDS, ARENA_GAMEPLAY_NAMES, TEAMS_IN_ARENA, HAS_DEV_RESOURCES
 from constants import IS_CELLAPP, IS_BASEAPP
+from constants import CHAT_COMMAND_FLAGS
 from coordinate_system import AXIS_ALIGNED_DIRECTION
-from data_structures import DictObj
+from items.vehicles import CAMOUFLAGE_KINDS
 from debug_utils import LOG_CURRENT_EXCEPTION
 from items import _xml
-from items.vehicles import CAMOUFLAGE_KINDS
-from realm_utils import ResMgr
+from typing import Dict
 from soft_exception import SoftException
+from collections import defaultdict
+from data_structures import DictObj
 from visual_script.misc import ASPECT, VisualScriptTag, readVisualScriptPlanParams, readVisualScriptPlans
-
+from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory, SpaceVisibilityFlags
+from Math import Vector2
 if IS_CLIENT:
     from helpers import i18n
+    import WWISE
 elif IS_WEB:
     from web_stubs import *
 if IS_CELLAPP or IS_BASEAPP:

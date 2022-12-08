@@ -3,12 +3,10 @@
 import heapq
 import logging
 from collections import defaultdict
-
 from BWUtil import AsyncReturn
-from adisp import adisp_process, isAsync
 from debug_utils import LOG_CURRENT_EXCEPTION
+from adisp import adisp_process, isAsync
 from wg_async import wg_async, wg_await, await_callback
-
 _logger = logging.getLogger(__name__)
 
 class EVENT_BUS_SCOPE(object):

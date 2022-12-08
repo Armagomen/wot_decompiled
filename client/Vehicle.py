@@ -3,57 +3,54 @@
 import logging
 import math
 import random
-import typing
 import weakref
 from collections import namedtuple
-
+import typing
 import BigWorld
-import CGF
-import DestructiblesCache
-import GenericComponents
-import Health
 import Math
-import Projectiles
+import Health
 import WoT
-import constants
-import physics_shared
-from Event import Event
-from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
-from constants import SPT_MATKIND
-from constants import VEHICLE_HIT_EFFECT, VEHICLE_SIEGE_STATE, ATTACK_REASON_INDICES, ATTACK_REASON
-from debug_utils import LOG_DEBUG_DEV
-from gun_rotation_shared import decodeGunAngles
-from items import vehicles
-from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES, EFFECT_MATERIALS
-from shared_utils.vehicle_utils import createWheelFilters
-from soft_exception import SoftException
-
 import AreaDestructibles
 import BattleReplay
+import DestructiblesCache
 import TriggersManager
+import constants
+import physics_shared
+from account_helpers.settings_core.settings_constants import GAME
 from TriggersManager import TRIGGER_TYPE
 from VehicleEffects import DamageFromShotDecoder
-from account_helpers.settings_core.settings_constants import GAME
 from aih_constants import ShakeReason
+from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
+from constants import VEHICLE_HIT_EFFECT, VEHICLE_SIEGE_STATE, ATTACK_REASON_INDICES, ATTACK_REASON, ARENA_PERIOD, ARENA_GUI_TYPE, SPT_MATKIND
+from debug_utils import LOG_DEBUG_DEV
+from Event import Event
 from gui.battle_control import vehicle_getter, avatar_getter
 from gui.battle_control.avatar_getter import getSoundNotifications
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _GUI_EVENT_ID, VEHICLE_VIEW_STATE
+from gun_rotation_shared import decodeGunAngles
 from helpers import dependency
 from helpers.EffectMaterialCalculation import calcSurfaceMaterialNearPoint
 from helpers.EffectsList import SoundStartParam
+from items import vehicles
+from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES, EFFECT_MATERIALS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from skeletons.gui.game_control import ISpecialSoundCtrl, IBattleRoyaleController
 from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.game_control import ISpecialSoundCtrl, IBattleRoyaleController
 from skeletons.vehicle_appearance_cache import IAppearanceCache
-from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
+from soft_exception import SoftException
 from vehicle_systems.components.shot_damage_components import ShotDamageComponent
 from vehicle_systems.entity_components.battle_abilities_component import BattleAbilitiesComponent
+from vehicle_systems.components.vehicle_pickup_component import VehiclePickupComponent
 from vehicle_systems.model_assembler import collisionIdxToTrackPairIdx
 from vehicle_systems.tankStructure import TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
-
+from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
+from shared_utils.vehicle_utils import createWheelFilters
+import GenericComponents
+import Projectiles
+import CGF
 if typing.TYPE_CHECKING:
-    pass
+    import OwnVehicle
 _logger = logging.getLogger(__name__)
 LOW_ENERGY_COLLISION_D = 0.3
 HIGH_ENERGY_COLLISION_D = 0.6
@@ -682,6 +679,9 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             ctrl.setDisabledSwitches(self.id, self.disabledSwitches)
         return
 
+    def onVehiclePickup(self):
+        self.entityGameObject.createComponent(VehiclePickupComponent, self.appearance, self.entityGameObject)
+
     def onExtraHitted(self, extraIndex, hitPoint):
         self.extrasHitPoint[extraIndex] = hitPoint
 
@@ -836,7 +836,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
                 if self.__activeGunIndex == activeGun:
                     return
                 self.__activeGunIndex = activeGun
-                swElapsedTime = (switchTimes[2] - switchTimes[1]) * constants.RECHARGE_TIME_MULTIPLIER
+                swElapsedTime = switchTimes[2] - switchTimes[1]
                 afterShotDelay = self.typeDescriptor.gun.dualGun.afterShotDelay
                 leftDelayTime = max(afterShotDelay - swElapsedTime, 0.0)
                 ctrl = self.guiSessionProvider.shared.feedback
@@ -968,7 +968,13 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if TriggersManager.g_manager:
             TriggersManager.g_manager.fireTriggerInstantly(TriggersManager.TRIGGER_TYPE.VEHICLE_VISUAL_VISIBILITY_CHANGED, vehicleId=self.id, isVisible=False)
         self.appearance.removeComponentByType(GenericComponents.HierarchyComponent)
-        self.appearance.deactivate()
+        restoreFilter = True
+        avatar = BigWorld.player()
+        arena = avatar_getter.getArena(avatar)
+        if arena is not None:
+            if avatar.arenaGuiType == ARENA_GUI_TYPE.COMP7 and arena.period == ARENA_PERIOD.PREBATTLE:
+                restoreFilter = False
+        self.appearance.deactivate(restoreFilter=restoreFilter)
         self.guiSessionProvider.stopVehicleVisual(self.id, self.isPlayerVehicle)
         self.appearance = None
         self.isStarted = False

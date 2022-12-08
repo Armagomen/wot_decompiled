@@ -3,7 +3,6 @@
 import itertools
 import logging
 import typing
-
 import constants
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
@@ -20,8 +19,7 @@ from gui.prb_control.settings import VEHICLE_LEVELS
 from gui.shared.formatters import text_styles
 from gui.shared.formatters.ranges import toRomanRangeString
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME, \
-    VEHICLE_ROLES_LABELS_BY_CLASS
+from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_ROLES_LABELS, VEHICLE_CLASS_NAME, VEHICLE_ROLES_LABELS_BY_CLASS
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
@@ -31,9 +29,8 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import ICarouselEnvironment
 _logger = logging.getLogger(__name__)
 
 class FILTER_SECTION(CONST_CONTAINER):

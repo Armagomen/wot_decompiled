@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/poi_sn_items.py
 import logging
-
+import typing
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.components import StatusNotificationsGroup
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.sn_items import TimerSN
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_LINKAGES import BATTLE_NOTIFICATIONS_TIMER_LINKAGES as _LINKS
@@ -12,7 +12,6 @@ from gui.impl.gen import R
 from points_of_interest.poi_view_states import PointViewState, VehicleViewState
 from points_of_interest_shared import PoiStatus, PoiType, PoiBlockReasons, INVALID_TIMESTAMP
 from shared_utils import findFirst
-
 _logger = logging.getLogger(__name__)
 
 class PointOfInterestSN(TimerSN):

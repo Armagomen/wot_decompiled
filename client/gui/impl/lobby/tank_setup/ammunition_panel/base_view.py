@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_panel/base_view.py
 import logging
-
 from CurrentVehicle import g_currentVehicle
+from gui.prb_control import prbDispatcherProperty
 from Event import Event
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -15,13 +15,11 @@ from gui.impl.lobby.tank_setup.backports.context_menu import getHangarContextMen
 from gui.impl.lobby.tank_setup.backports.tooltips import getSlotTooltipData, getSlotSpecTooltipData
 from gui.impl.lobby.tank_setup.tank_setup_helper import setLastSlotAction, clearLastSlotAction
 from gui.impl.pub import ViewImpl
-from gui.prb_control import prbDispatcherProperty
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import AmmunitionPanelViewEvent
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-
 _logger = logging.getLogger(__name__)
 
 class BaseAmmunitionPanelView(ViewImpl):

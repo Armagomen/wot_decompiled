@@ -2,16 +2,15 @@
 # Embedded file name: scripts/client/gui/shared/gui_items/customization/c11n_items.py
 import logging
 import os
-import typing
 import urllib
 from copy import deepcopy
-
+import typing
 import Math
 import ResMgr
 from CurrentVehicle import g_currentVehicle
+from gui.customization.shared import EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, getAvailableRegions
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.shared import EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, getAvailableRegions
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
@@ -25,20 +24,22 @@ from helpers import dependency
 from items import makeIntCompactDescrByID, vehicles
 from items.components import c11n_components as cc
 from items.components.c11n_components import EditingStyleReason
-from items.components.c11n_constants import CustomizationType, EDITING_STYLE_REASONS, ImageOptions, ItemTags, \
-    ProjectionDecalFormTags, SeasonType, UNBOUND_VEH_KEY
+from items.components.c11n_constants import CustomizationType, EDITING_STYLE_REASONS, ImageOptions, ItemTags, ProjectionDecalFormTags, SeasonType, UNBOUND_VEH_KEY
 from items.customizations import createNationalEmblemComponents, isEditedStyle, parseCompDescr, parseOutfitDescr
 from items.vehicles import VehicleDescr
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
+from vehicle_outfit.outfit import Outfit
 from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Area
-from vehicle_outfit.outfit import Outfit
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Dict, List, Optional, Set, Tuple
+    from items.components.c11n_components import ProgressForCustomization
+    from items.components.c11n_constants import ModificationType
+    from items.customizations import CustomizationOutfit
+    from gui.shared.gui_items.Vehicle import Vehicle
 _logger = logging.getLogger(__name__)
 _CAMO_ICON_TEMPLATE = 'img://camouflage,{width},{height},{options},"{texture}","{background}",{colors},{weights}'
 _CAMO_ICON_URL = 'camo://{texture}?{params}'
@@ -98,6 +99,7 @@ class SpecialEvents(object):
     NY20 = 'NY2020_style'
     NY21 = 'NY2021_style'
     NY22 = 'NY2022_style'
+    NY23 = 'NY2023_style'
     FOOTBALL18 = 'football2018'
     WINTER_HUNT = 'winter_hunt'
     KURSK_BATTLE = 'Kursk_battle'
@@ -108,6 +110,7 @@ class SpecialEvents(object):
      NY20,
      NY21,
      NY22,
+     NY23,
      FOOTBALL18,
      WINTER_HUNT,
      KURSK_BATTLE,
@@ -118,6 +121,7 @@ class SpecialEvents(object):
      NY20: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
      NY21: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
      NY22: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
+     NY23: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
      FOOTBALL18: backport.image(R.images.gui.maps.icons.customization.style_info.football()),
      WINTER_HUNT: backport.image(R.images.gui.maps.icons.customization.style_info.marathon()),
      KURSK_BATTLE: backport.image(R.images.gui.maps.icons.customization.style_info.marathon()),
@@ -128,6 +132,7 @@ class SpecialEvents(object):
      NY20: backport.text(R.strings.vehicle_customization.styleInfo.event.ny20()),
      NY21: backport.text(R.strings.vehicle_customization.styleInfo.event.ny21()),
      NY22: backport.text(R.strings.vehicle_customization.styleInfo.event.ny22()),
+     NY23: backport.text(R.strings.vehicle_customization.styleInfo.event.ny23()),
      FOOTBALL18: backport.text(R.strings.vehicle_customization.styleInfo.event.football18()),
      WINTER_HUNT: backport.text(R.strings.vehicle_customization.styleInfo.event.winter_hunt()),
      KURSK_BATTLE: backport.text(R.strings.vehicle_customization.styleInfo.event.kursk_battle()),
@@ -957,6 +962,10 @@ class Attachment(Customization):
     @property
     def modelName(self):
         return self.descriptor.modelName
+
+    @property
+    def hangarModelName(self):
+        return self.descriptor.hangarModelName
 
     @property
     def sequenceId(self):

@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/wgm_balance_info_requester.py
 from functools import partial
-
-import AccountCommands
 import BigWorld
+import AccountCommands
 from adisp import adisp_async, adisp_process
-from debug_utils import LOG_WARNING
-from gui.shared.money import Currency
 from gui.shared.utils.requesters.common import RequestProcessor
+from gui.shared.money import Currency
+from debug_utils import LOG_WARNING
 from helpers import isPlayerAccount
-
 _REQUEST_COOLDOWN = 5.0
 _TOKEN_CURRENCY_CODE = 'currency_code'
 _TOKEN_IS_PAID = 'is_paid'

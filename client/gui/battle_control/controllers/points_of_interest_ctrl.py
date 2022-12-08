@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/points_of_interest_ctrl.py
 import logging
 import typing
-
 import BigWorld
 import CGF
 import Event
@@ -11,11 +10,10 @@ from gui.battle_control.arena_info.interfaces import IPointsOfInterestController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from points_of_interest.components import PoiStateComponent
 from shared_utils import findFirst
-
 if typing.TYPE_CHECKING:
-    pass
+    from EmptyEntity import EmptyEntity
+    from gui.battle_control.controllers.repositories import BattleSessionSetup
 _logger = logging.getLogger(__name__)
-
 
 class PointsOfInterestController(IPointsOfInterestController):
 
@@ -46,10 +44,10 @@ class PointsOfInterestController(IPointsOfInterestController):
     def getPoiEntity(poiID):
         return BigWorld.entities.get(poiID)
 
-    def getVehicleCapturingPoiGO(self, poiName, entityGameObject, spaceID):
-        if poiName in self._vehPoiRegistry:
-            return self._vehPoiRegistry[poiName]
-        self._vehPoiRegistry[poiName] = poiGameObject = CGF.GameObject(spaceID, poiName)
-        poiGameObject.createComponent(GenericComponents.HierarchyComponent, entityGameObject)
-        poiGameObject.activate()
+    def getVehicleCapturingPoiGO(self, poiName, entityGameObject, vehicleID, spaceID):
+        poiGameObject = self._vehPoiRegistry.get(vehicleID, {}).get(poiName)
+        if poiGameObject is None:
+            self._vehPoiRegistry.setdefault(vehicleID, {})[poiName] = poiGameObject = CGF.GameObject(spaceID, poiName)
+            poiGameObject.createComponent(GenericComponents.HierarchyComponent, entityGameObject)
+            poiGameObject.activate()
         return poiGameObject

@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/consumables_panel.py
 import logging
-import typing
 from functools import partial
-
+import typing
 from Event import EventsSubscriber
 from comp7_common import ROLE_EQUIPMENT_TAG
 from constants import ROLE_TYPE_TO_LABEL, ARENA_PERIOD
@@ -20,9 +19,9 @@ from helpers import dependency
 from points_of_interest_shared import PoiType, POI_EQUIPMENT_TAG
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IComp7Controller
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.controllers.consumables.comp7_equipment_ctrl import Comp7EquipmentController
+    from gui.battle_control.arena_info.interfaces import IComp7PrebattleSetupController
 _logger = logging.getLogger(__name__)
 
 class Comp7ConsumablesPanel(ConsumablesPanel):

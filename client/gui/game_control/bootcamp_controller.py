@@ -2,42 +2,39 @@
 # Embedded file name: scripts/client/gui/game_control/bootcamp_controller.py
 from collections import namedtuple
 from functools import partial
-
 import AccountCommands
 import BigWorld
-from PlayerEvents import g_playerEvents
-from account_helpers import isLongDisconnectedFromCenter
+from constants import QUEUE_TYPE, BOOTCAMP
+from wg_async import wg_async, wg_await
 from account_helpers.AccountSettings import AccountSettings, BOOTCAMP_VEHICLE
-from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.Bootcamp import g_bootcamp
-from constants import QUEUE_TYPE
-from debug_utils import LOG_ERROR
+from account_helpers import isLongDisconnectedFromCenter
 from frameworks.wulf import WindowLayer
-from gui import DialogsInterface, makeHtmlString
-from gui.Scaleform.Waiting import Waiting
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.bootcamp.disabled_settings import BCDisabledSettings
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.bootcamp.bootcamp_exit_view import BootcampExitWindow
-from gui.prb_control import prbDispatcherProperty
-from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.prb_getters import getQueueType
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.event_dispatcher import showResSimpleDialog
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
+from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController, IHangarSpaceSwitchController
 from skeletons.gui.battle_session import IBattleSessionProvider
-from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
 from skeletons.gui.lobby_context import ILobbyContext
+from gui.Scaleform.Waiting import Waiting
+from gui.Scaleform.daapi.view.bootcamp.disabled_settings import BCDisabledSettings
+from bootcamp.BootCampEvents import g_bootcampEvents
+from bootcamp.Bootcamp import g_bootcamp
+from PlayerEvents import g_playerEvents
+from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.prb_control import prbDispatcherProperty
+from gui.prb_control.entities.base.ctx import PrbAction
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME
+from gui import DialogsInterface, makeHtmlString
+from debug_utils import LOG_ERROR
+from gui.shared.event_dispatcher import showResSimpleDialog
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await
-
-BootcampDialogConstants = namedtuple('BootcampDialogConstants',
-                                     'dialogType dialogKey focusedID needAwarding premiumType')
+BootcampDialogConstants = namedtuple('BootcampDialogConstants', 'dialogType dialogKey focusedID needAwarding premiumType')
 _GREEN = 'green'
 _YELLOW = 'yellow'
 _GRAY = 'gray'
@@ -49,6 +46,7 @@ class BootcampController(IBootcampController):
     demoAccController = dependency.descriptor(IDemoAccCompletionController)
     itemsCache = dependency.descriptor(IItemsCache)
     appLoader = dependency.descriptor(IAppLoader)
+    spaceSwitchController = dependency.descriptor(IHangarSpaceSwitchController)
 
     def __init__(self):
         super(BootcampController, self).__init__()
@@ -62,6 +60,7 @@ class BootcampController(IBootcampController):
         g_bootcampEvents.onBootcampFinished += self.__onExitBootcamp
         g_playerEvents.onBootcampStartChoice += self.__onBootcampStartChoice
         g_bootcampEvents.onGameplayChoice += self.__onGameplayChoice
+        self.spaceSwitchController.onCheckSceneChange += self.__onCheckSceneChange
 
     @property
     def replayCtrl(self):
@@ -127,6 +126,7 @@ class BootcampController(IBootcampController):
         g_bootcampEvents.onBootcampFinished -= self.__onExitBootcamp
         g_playerEvents.onBootcampStartChoice -= self.__onBootcampStartChoice
         g_bootcampEvents.onGameplayChoice -= self.__onGameplayChoice
+        self.spaceSwitchController.onCheckSceneChange -= self.__onCheckSceneChange
 
     def onLobbyInited(self, event):
         if self.__automaticStart:
@@ -187,6 +187,10 @@ class BootcampController(IBootcampController):
         if g_bootcamp.isLastLesson(currentLesson):
             g_bootcampEvents.onGarageLessonFinished(currentLesson)
         g_bootcampEvents.onRequestBootcampFinish()
+
+    def __onCheckSceneChange(self):
+        if self.__inBootcamp:
+            self.spaceSwitchController.hangarSpaceUpdate(BOOTCAMP)
 
     def __onEnterBootcamp(self):
         self.__inBootcamp = True

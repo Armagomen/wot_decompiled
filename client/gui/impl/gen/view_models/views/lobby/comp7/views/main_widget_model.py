@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/comp7/views/main_widget_model.py
 from enum import IntEnum
-
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.comp7.division_info_model import DivisionInfoModel
-
 
 class Rank(IntEnum):
     FIRST = 1

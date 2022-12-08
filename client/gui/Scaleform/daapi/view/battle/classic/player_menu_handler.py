@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/player_menu_handler.py
-from constants import DENUNCIATIONS_PER_DAY, IS_CHINA
 from gui.Scaleform.daapi.view.lobby.user_cm_handlers import USER
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -9,11 +8,11 @@ from gui.shared import events, EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.denunciator import DENUNCIATIONS, BattleDenunciator, DENUNCIATIONS_MAP
 from helpers import dependency
 from helpers import i18n
+from constants import DENUNCIATIONS_PER_DAY, IS_CHINA
 from messenger.m_constants import PROTO_TYPE, UserEntityScope
 from messenger.proto import proto_getter
 from messenger.storage import storage_getter
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 
 class DYN_SQUAD_OPTION_ID(object):
     SENT_INVITATION = 'sendInvitationToSquad'

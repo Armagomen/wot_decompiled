@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/__init__.py
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.event.page import EventBattlePage
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings
-from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
+from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
-
 __all__ = ('EventBattlePage',)
 
 def getContextMenuHandlers():

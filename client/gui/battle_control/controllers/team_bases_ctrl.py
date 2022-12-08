@@ -1,29 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/team_bases_ctrl.py
 from collections import defaultdict
-
 import BattleReplay
 import BigWorld
 import SoundGroups
-from PlayerEvents import g_playerEvents
+from helpers import dependency
+from skeletons.gui.battle_session import IBattleSessionProvider
 from constants import TEAMS_IN_ARENA
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.battle_control.arena_info.interfaces import ITeamsBasesController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.view_components import ViewComponentsController
-from helpers import dependency
-from skeletons.gui.battle_session import IBattleSessionProvider
-
+from PlayerEvents import g_playerEvents
 _BASE_CAPTURE_SOUND_NAME_ENEMY = 'base_capture_2'
 _BASE_CAPTURE_SOUND_NAME_ALLY = 'base_capture_1'
 _AVAILABLE_TEAMS_NUMBERS = range(1, TEAMS_IN_ARENA.MAX_TEAMS + 1)
 _UPDATE_POINTS_DELAY = 1.0
 _ENEMY_OFFSET_DISABLED_BY_GAMEPLAY = ('assault',
-                                      'assault2',
-                                      'domination',
-                                      'domination30x30',
-                                      'epic',
-                                      'comp7')
+ 'assault2',
+ 'domination',
+ 'domination30x30',
+ 'epic',
+ 'comp7')
 
 def makeClientTeamBaseID(team, baseID):
     if baseID is None:

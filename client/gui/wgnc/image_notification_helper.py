@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/image_notification_helper.py
 import logging
-
-from WebBrowser import getWebCache
 from adisp import adisp_process, adisp_async
 from gui import SystemMessages
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.image_helper import getTextureLinkByID
 from helpers.CallbackDelayer import CallbackDelayer
-
+from WebBrowser import getWebCache
 _logger = logging.getLogger(__name__)
 
 class WebImageHelper(object):

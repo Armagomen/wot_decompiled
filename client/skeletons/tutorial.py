@@ -1,10 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/tutorial.py
 from __future__ import absolute_import
-
 import typing
-
 if typing.TYPE_CHECKING:
+    from tutorial.data.client_triggers import ClientTriggers
+    from tutorial.gui import IGuiImpl
+    from tutorial.core import Tutorial
+    from typing import Optional, Dict
     ComponentID = str
 
 class IGuiController(object):

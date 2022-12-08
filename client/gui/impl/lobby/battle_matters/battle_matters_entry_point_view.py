@@ -11,8 +11,9 @@ from helpers import dependency
 from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.server_events import IEventsCache
 if typing.TYPE_CHECKING:
-    pass
-
+    from frameworks.wulf import ViewEvent, View
+    from typing import Sequence, Tuple, Callable, Optional
+    from Event import Event
 
 class BattleMattersEntryPointView(ViewImpl):
     __slots__ = ()

@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/style_preview.py
 import logging
-
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.LobbySelectableView import LobbySelectableView
@@ -16,12 +15,11 @@ from gui.shared import EVENT_BUS_SCOPE, event_bus_handlers, event_dispatcher, ev
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.customization.c11n_items import getGroupFullNameResourceID
 from helpers import dependency
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.preview_selectable_logic import PreviewSelectableLogic
 from skeletons.gui.game_control import IHeroTankController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
-
-from preview_selectable_logic import PreviewSelectableLogic
-
+from skeletons.new_year import INewYearController
 _SHOW_CLOSE_BTN = False
 _SHOW_BACK_BTN = True
 _logger = logging.getLogger(__name__)
@@ -32,6 +30,7 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     __itemsCache = dependency.descriptor(IItemsCache)
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __heroTanksControl = dependency.descriptor(IHeroTankController)
+    __nyController = dependency.descriptor(INewYearController)
     _COMMON_SOUND_SPACE = STYLE_PREVIEW_SOUND_SPACE
 
     def __init__(self, ctx=None):
@@ -44,6 +43,10 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
          'insertion_close': ''}
         self.__backCallback = ctx.get('backCallback', event_dispatcher.showHangar)
         self.__backBtnDescrLabel = ctx.get('backBtnDescrLabel', backport.text(R.strings.vehicle_preview.header.backBtn.descrLabel.personalAwards()))
+        showBackBtn = ctx.get('showBackBtn')
+        showCloseBtn = ctx.get('showCloseBtn')
+        self.__showBackBtn = showBackBtn if showBackBtn is not None else _SHOW_BACK_BTN
+        self.__showCloseBtn = showCloseBtn if showCloseBtn is not None else _SHOW_CLOSE_BTN
         self.__topPanelData = ctx.get('topPanelData') or {}
         self.__selectedVehicleEntityId = None
         g_currentPreviewVehicle.selectHeroTank(ctx.get('isHeroTank', False))
@@ -58,6 +61,9 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
     def setTopPanel(self):
         self.as_setTopPanelS(self.__topPanelData.get('linkage', ''))
 
+    def _autoCreateSelectableLogic(self):
+        return not self.__nyController.isEnabled()
+
     def _populate(self):
         self.setTopPanel()
         super(VehicleStylePreview, self)._populate()
@@ -71,8 +77,8 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         self.as_setDataS({'closeBtnLabel': backport.text(R.strings.vehicle_preview.header.closeBtn.label()),
          'backBtnLabel': backport.text(R.strings.vehicle_preview.header.backBtn.label()),
          'backBtnDescrLabel': self.__backBtnDescrLabel,
-         'showCloseBtn': _SHOW_CLOSE_BTN,
-         'showBackButton': _SHOW_BACK_BTN})
+         'showCloseBtn': self.__showCloseBtn,
+         'showBackButton': self.__showBackBtn})
         self.as_setAdditionalInfoS({'objectSubtitle': text_styles.main(backport.text(getGroupFullNameResourceID(self._style.groupID))),
          'objectTitle': self._style.userName,
          'descriptionTitle': backport.text(R.strings.tooltips.vehiclePreview.historicalReference.title()),

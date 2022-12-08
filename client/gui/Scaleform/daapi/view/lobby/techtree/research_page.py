@@ -528,5 +528,5 @@ class Research(ResearchMeta):
         isAvailable = self.vehicle.postProgressionAvailability(unlockOnly=True).result
         tutorialStorage = getTutorialGlobalStorage()
         if tutorialStorage is not None:
-            tutorialStorage.setValue(GLOBAL_FLAG.VEH_POST_PROGRESSION_PURCHASABLE, isAvailable)
+            tutorialStorage.setValue(GLOBAL_FLAG.RESEARCH_VEH_POST_PROGRESSION_PURCHASABLE, isAvailable)
         return

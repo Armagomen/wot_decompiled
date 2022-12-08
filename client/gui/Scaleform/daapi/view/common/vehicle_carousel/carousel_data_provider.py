@@ -1,29 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_data_provider.py
 import typing
-
 from CurrentVehicle import g_currentVehicle
 from constants import SEASON_NAME_BY_TYPE
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
 from gui import GUI_NATIONS_ORDER_INDEX, makeHtmlString
 from gui.Scaleform import getButtonsAssetPath
-from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
 from gui.shared.formatters import icons, text_styles
 from gui.shared.formatters.time_formatters import RentLeftFormatter
-from gui.shared.gui_items.Vehicle import Vehicle, VEHICLE_TYPES_ORDER_INDICES, getVehicleStateIcon, \
-    getVehicleStateAddIcon, getBattlesLeft, getSmallIconPath, getIconPath
+from gui.shared.gui_items.Vehicle import Vehicle, VEHICLE_TYPES_ORDER_INDICES, getVehicleStateIcon, getVehicleStateAddIcon, getBattlesLeft, getSmallIconPath, getIconPath
 from gui.shared.gui_items.dossier.achievements import isMarkOfMasteryAchieved
 from gui.shared.utils.requesters import REQ_CRITERIA
-from helpers import dependency
 from helpers.i18n import makeString as ms
+from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
-
 if typing.TYPE_CHECKING:
-    pass
+    from skeletons.gui.shared import IItemsCache
 
 def sortedIndices(seq, getter, reverse=False):
     return sorted(range(len(seq)), key=lambda idx: getter(seq[idx]), reverse=reverse)

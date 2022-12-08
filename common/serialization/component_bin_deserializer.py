@@ -1,12 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serialization/component_bin_deserializer.py
 from cStringIO import StringIO
-
+from typing import Dict, Type
 import varint
 from constants import IS_EDITOR
 from serialization.definitions import FieldFlags, FieldTypes
 from serialization.exceptions import SerializationException, FoundItemException
-
+from serialization.serializable_component import SerializableComponent
 __all__ = ('ComponentBinDeserializer',)
 
 class ComponentBinDeserializer(object):

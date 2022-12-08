@@ -1,23 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/common/personal_reserves/personal_reserves_shared_model_utils.py
-import typing
-from collections import namedtuple, defaultdict
 from time import time
-
+import typing
+from helpers.time_utils import ONE_YEAR, makeLocalServerTime
+from collections import namedtuple, defaultdict
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE
-from gui.goodies.goodie_items import Booster, getFullNameForBoosterIcon
+from gui.goodies.goodie_items import Booster, getFullNameForBoosterIcon, BoosterUICommon
 from gui.goodies.goodies_constants import BoosterCategory
-from gui.impl.common.personal_reserves.personal_reserves_shared_constants import BOOST_CATEGORY_TO_RESERVE_TYPE_LOOKUP, \
-    BOOSTER_STATE_TO_BOOSTER_MODEL_STATE, PREMIUM_BOOSTER_IDS, EVENT_BOOSTER_IDS, PERSONAL_RESOURCE_ORDER, \
-    getAllBoosterIds
+from gui.impl.common.personal_reserves.personal_reserves_shared_constants import BOOST_CATEGORY_TO_RESERVE_TYPE_LOOKUP, BOOSTER_STATE_TO_BOOSTER_MODEL_STATE, PREMIUM_BOOSTER_IDS, EVENT_BOOSTER_IDS, PERSONAL_RESOURCE_ORDER, getAllBoosterIds
 from gui.impl.gen.view_models.common.personal_reserves.booster_model import BoosterModel
 from gui.impl.gen.view_models.common.personal_reserves.reserves_group_model import GroupCategory, ReservesGroupModel
 from gui.shared.utils.requesters import RequestCriteria, REQ_CRITERIA
-from helpers.time_utils import ONE_YEAR
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from typing import Dict, List, Iterable, Optional, Union
+    from skeletons.gui.goodies import IBoostersStateProvider
+    from frameworks.wulf import Array
 
 class BoosterModelData(namedtuple('BoosterModelArgs', ['resourceType',
  'category',
@@ -115,7 +112,7 @@ def addBoosterModel(boosterArray, resourceType, category, booster=None, depotCou
     if booster:
         boosterID = booster.boosterID
         model.setBoosterID(boosterID)
-        model.setInactivationTime(booster.finishTime)
+        model.setInactivationTime(makeLocalServerTime(booster.finishTime) or 0)
         model.setState(BOOSTER_STATE_TO_BOOSTER_MODEL_STATE[booster.state])
         model.setTotalDuration(booster.effectTime)
         expiry = booster.expiryTime

@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/hangar_space_reloader.py
 import logging
-
-from gui.Scaleform.Waiting import Waiting
-from gui.impl.lobby.offers import getGfImagePath
 from helpers import dependency
-from skeletons.gui.shared.utils import IHangarSpace
 from skeletons.gui.shared.utils import IHangarSpaceReloader
-
+from skeletons.gui.shared.utils import IHangarSpace
+from gui.impl.lobby.offers import getGfImagePath
+from gui.Scaleform.Waiting import Waiting
 
 class ErrorFlags(object):
     NONE = 0

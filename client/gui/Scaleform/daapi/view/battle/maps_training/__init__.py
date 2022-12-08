@@ -1,30 +1,29 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/__init__.py
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.battle import shared
-from gui.Scaleform.daapi.view.battle.maps_training.battle_goals import MapsTrainingBattleGoals
+from gui.Scaleform.framework.package_layout import PackageBusinessHandler
+from gui.app_loader import settings as app_settings
+from gui.shared import EVENT_BUS_SCOPE
+from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings
 from gui.Scaleform.daapi.view.battle.maps_training.ingame_help import MapsTrainingIngameHelpWindow
+from gui.Scaleform.daapi.view.battle.maps_training.prebattle_timer import MapsTrainingPreBattleTimer
+from gui.Scaleform.daapi.view.battle.maps_training.battle_goals import MapsTrainingBattleGoals
 from gui.Scaleform.daapi.view.battle.maps_training.loading_page import MapsTrainingLoadingPage
 from gui.Scaleform.daapi.view.battle.maps_training.page import MapsTrainingPage
-from gui.Scaleform.daapi.view.battle.maps_training.prebattle_timer import MapsTrainingPreBattleTimer
-from gui.Scaleform.daapi.view.battle.shared import battle_notifier
-from gui.Scaleform.daapi.view.battle.shared import callout_panel
-from gui.Scaleform.daapi.view.battle.shared import damage_info_panel
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.daapi.view.battle import shared
+from gui.Scaleform.daapi.view.battle.shared import ingame_menu
 from gui.Scaleform.daapi.view.battle.shared import damage_log_panel
 from gui.Scaleform.daapi.view.battle.shared import damage_panel
 from gui.Scaleform.daapi.view.battle.shared import debug_panel
-from gui.Scaleform.daapi.view.battle.shared import indicators
-from gui.Scaleform.daapi.view.battle.shared import ingame_menu
 from gui.Scaleform.daapi.view.battle.shared import messages
-from gui.Scaleform.daapi.view.battle.shared import postmortem_panel
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
-from gui.Scaleform.framework import ViewSettings, ScopeTemplates, ComponentSettings
-from gui.Scaleform.framework.package_layout import PackageBusinessHandler
+from gui.Scaleform.daapi.view.battle.shared import damage_info_panel
+from gui.Scaleform.daapi.view.battle.shared import indicators
+from gui.Scaleform.daapi.view.battle.shared import postmortem_panel
+from gui.Scaleform.daapi.view.battle.shared import callout_panel
+from gui.Scaleform.daapi.view.battle.shared import battle_notifier
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
-from gui.app_loader import settings as app_settings
-from gui.shared import EVENT_BUS_SCOPE
-
 
 def getContextMenuHandlers():
     return tuple()

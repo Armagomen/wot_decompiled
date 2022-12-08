@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/meta_view/pages/progression_page.py
 import typing
-
 from adisp import adisp_process
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.progression_item_model import ProgressionItemModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.progression_item_model import Type
+from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.progression_model import ProgressionModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_division import Division
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import Rank
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.root_view_model import MetaRootViews
@@ -21,9 +21,8 @@ from gui.impl.lobby.comp7.tooltips.sixth_rank_tooltip import SixthRankTooltip
 from helpers import dependency
 from skeletons.gui.game_control import IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
-    pass
+    from helpers.server_settings import Comp7PrestigeRanksConfig
 
 class ProgressionPage(PageSubModelPresenter):
     __slots__ = ('__lastUpdateTime',)

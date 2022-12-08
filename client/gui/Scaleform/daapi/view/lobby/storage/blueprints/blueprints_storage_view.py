@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/blueprints/blueprints_storage_view.py
 import nations
-from WeakMethod import WeakMethodProxy
 from blueprints.BlueprintTypes import BlueprintTypes
-from gui import GUI_NATIONS
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.storage.blueprints import BlueprintsStorageCarouselDataProvider, blueprintExitEvent
@@ -11,17 +9,18 @@ from gui.Scaleform.daapi.view.lobby.storage.blueprints import BlueprintsStorageC
 from gui.Scaleform.daapi.view.lobby.storage.storage_carousel_environment import StorageCarouselEnvironment
 from gui.Scaleform.daapi.view.meta.StorageCategoryBlueprintsViewMeta import StorageCategoryBlueprintsViewMeta
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.STORAGE import STORAGE
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.shared import event_dispatcher as shared_events
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters.blueprints_requester import getNationalFragmentCD
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
+from gui.Scaleform.locale.STORAGE import STORAGE
+from gui import GUI_NATIONS
+from WeakMethod import WeakMethodProxy
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 class StorageCategoryBlueprintsView(StorageCategoryBlueprintsViewMeta, StorageCarouselEnvironment):
     __lobbyCtx = dependency.descriptor(ILobbyContext)

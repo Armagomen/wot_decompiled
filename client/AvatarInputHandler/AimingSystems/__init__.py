@@ -1,19 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/AimingSystems/__init__.py
-import logging.handlers
 import math
 from functools import wraps
-
+import logging.handlers
 import BigWorld
 import Math
-import math_utils
-from Math import Vector3
-from ProjectileMover import collideDynamicAndStatic, collideVehiclesAndStaticScene, EntityCollisionData
-from math_utils import MatrixProviders
-from vehicle_systems.tankStructure import TankPartNames
-
 import ShadowEffect
-
+from Math import Vector3
+import math_utils
+from math_utils import MatrixProviders
+from ProjectileMover import collideDynamicAndStatic, collideVehiclesAndStaticScene, EntityCollisionData
+from vehicle_systems.tankStructure import TankPartNames
 _logger = logging.getLogger(__name__)
 SPG_MINIMAL_AIMING_RADIUS = 15.0
 SPG_MINIMAL_AIMING_RADIUS_SQ = SPG_MINIMAL_AIMING_RADIUS * SPG_MINIMAL_AIMING_RADIUS
@@ -227,17 +224,13 @@ def getShotTargetInfo(vehicle, preferredTargetPoint, gunRotator):
 
 
 def getCappedShotTargetInfos(shotPos, shotVec, gravity, shotDescr, vehicleID, minBounds, maxBounds, collisionStrategy):
-    endPos, direction, collData, usedMaxDistance = BigWorld.wg_getCappedShotTargetInfos(BigWorld.player().spaceID,
-                                                                                        shotPos, shotVec, gravity,
-                                                                                        shotDescr.maxDistance,
-                                                                                        vehicleID, minBounds, maxBounds,
-                                                                                        collisionStrategy)
+    endPos, direction, collData, usedMaxDistance = BigWorld.wg_getCappedShotTargetInfos(BigWorld.player().spaceID, shotPos, shotVec, gravity, shotDescr.maxDistance, vehicleID, minBounds, maxBounds, collisionStrategy)
     if collData is not None:
         collData = EntityCollisionData(*collData)
     return (endPos,
-            direction,
-            collData,
-            usedMaxDistance)
+     direction,
+     collData,
+     usedMaxDistance)
 
 
 @_trackcalls
@@ -321,6 +314,6 @@ def getVehicleAngles(vehicleDescriptor):
     hullAngleMin = vehicleDescriptor.type.hullAimingParams['pitch']['wheelsCorrectionAngles']['pitchMin']
     hullAngleMax = vehicleDescriptor.type.hullAimingParams['pitch']['wheelsCorrectionAngles']['pitchMax']
     return (gunAngleMin,
-            gunAngleMax,
-            hullAngleMin,
-            hullAngleMax)
+     gunAngleMax,
+     hullAngleMin,
+     hullAngleMax)

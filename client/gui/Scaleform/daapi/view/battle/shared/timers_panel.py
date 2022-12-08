@@ -1,35 +1,33 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/timers_panel.py
-import logging
-import math
 import weakref
+import math
 from collections import defaultdict
-
-import BattleReplay
+import logging
 import BigWorld
+import BattleReplay
 import SoundGroups
 from AvatarInputHandler import AvatarInputHandler
 from ReplayEvents import g_replayEvents
-from battle_royale.gui.constants import BattleRoyaleEquipments
 from gui.Scaleform.daapi.view.battle.shared import destroy_times_mapping as _mapping
 from gui.Scaleform.daapi.view.battle.shared.timers_common import TimerComponent, PythonTimer
 from gui.Scaleform.daapi.view.meta.TimersPanelMeta import TimersPanelMeta
-from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_COLORS import BATTLE_NOTIFICATIONS_TIMER_COLORS
-from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_LINKAGES import BATTLE_NOTIFICATIONS_TIMER_LINKAGES
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTIFICATIONS_TIMER_TYPES as _TIMER_STATES
+from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_LINKAGES import BATTLE_NOTIFICATIONS_TIMER_LINKAGES
+from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_COLORS import BATTLE_NOTIFICATIONS_TIMER_COLORS
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
-from gui.battle_control import event_dispatcher as gui_event_dispatcher
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, CROSSHAIR_VIEW_ID
-from gui.impl import backport
-from gui.impl.gen import R
+from gui.battle_control import event_dispatcher as gui_event_dispatcher
 from gui.shared.items_parameters import isAutoReloadGun
 from gui.shared.utils.MethodsRules import MethodsRules
+from gui.impl import backport
+from gui.impl.gen import R
 from helpers import dependency
 from items import vehicles
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
+from battle_royale.gui.constants import BattleRoyaleEquipments
 _logger = logging.getLogger(__name__)
 _TIMERS_PRIORITY = {(_TIMER_STATES.STUN, _TIMER_STATES.WARNING_VIEW): 1,
  (_TIMER_STATES.OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 1,

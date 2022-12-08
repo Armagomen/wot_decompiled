@@ -1,28 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/page.py
-import BattleReplay
 import BigWorld
+import BattleReplay
 from aih_constants import CTRL_MODE_NAME
-from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.battle.classic.page import COMMON_CLASSIC_CONFIG, EXTENDED_CLASSIC_CONFIG, DynamicAliases
-from gui.Scaleform.daapi.view.battle.comp7.lobby_notifier import LobbyNotifier
-from gui.Scaleform.daapi.view.battle.comp7.markers2d.manager import Comp7MarkersManager
 from gui.Scaleform.daapi.view.battle.comp7.start_countdown_sound_player import Comp7StartTimerSoundPlayer
+from gui.shared import g_eventBus, EVENT_BUS_SCOPE
+from gui.shared.events import GameEvent
+from helpers.CallbackDelayer import CallbackDelayer
+from shared_utils import CONST_CONTAINER
+from constants import ARENA_PERIOD
+from gui.Scaleform.daapi.view.battle.classic.page import COMMON_CLASSIC_CONFIG, EXTENDED_CLASSIC_CONFIG, DynamicAliases
+from gui.Scaleform.daapi.view.battle.comp7.markers2d.manager import Comp7MarkersManager
+from gui.Scaleform.daapi.view.battle.comp7.lobby_notifier import LobbyNotifier
 from gui.Scaleform.daapi.view.battle.shared import crosshair
 from gui.Scaleform.daapi.view.battle.shared.page import ComponentsConfig
 from gui.Scaleform.daapi.view.meta.Comp7BattlePageMeta import Comp7BattlePageMeta
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.battle_control import event_dispatcher, avatar_getter
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from gui.shared import g_eventBus, EVENT_BUS_SCOPE
-from gui.shared.events import GameEvent
 from gui.shared.gui_items.vehicle_helpers import getRoleMessage
 from helpers import dependency, int2roman
-from helpers.CallbackDelayer import CallbackDelayer
-from shared_utils import CONST_CONTAINER
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 
 class _DynamicAliases(CONST_CONTAINER):
     LOBBY_NOTIFIER = 'lobbyNotifier'
@@ -132,6 +131,9 @@ class Comp7BattlePage(Comp7BattlePageMeta):
 
     def _onBattleLoadingFinish(self):
         super(Comp7BattlePage, self)._onBattleLoadingFinish()
+        arenaPeriod = self.sessionProvider.shared.arenaPeriod.getPeriod()
+        if arenaPeriod == ARENA_PERIOD.BATTLE:
+            self.as_onBattleStartedS()
         self.__visibilityManager.setBattleLoaded(True)
         self.__updateComponentsVisibility()
 

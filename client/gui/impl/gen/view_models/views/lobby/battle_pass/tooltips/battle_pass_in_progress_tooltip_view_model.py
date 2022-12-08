@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/tooltips/battle_pass_in_progress_tooltip_view_model.py
 from frameworks.wulf import ViewModel
-from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
-from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_royale_reward_points import \
-    BattleRoyaleRewardPoints
-from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.reward_points_model import RewardPointsModel
 from gui.impl.wrappers.user_list_model import UserListModel
-
+from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
+from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_royale_reward_points import BattleRoyaleRewardPoints
+from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.reward_points_model import RewardPointsModel
 
 class BattlePassInProgressTooltipViewModel(ViewModel):
     __slots__ = ()

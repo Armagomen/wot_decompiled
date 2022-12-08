@@ -1,25 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_welcome_view.py
 import logging
-
-from constants import QUEUE_TYPE
-from frameworks.wulf import ViewSettings
+from helpers import dependency
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.platoon.platoon_dropdown_model import PlatoonDropdownModel, Type
-from gui.impl.lobby.platoon.tooltip.platoon_alert_tooltip import AlertTooltip
+from skeletons.gui.game_control import IPlatoonController
+from frameworks.wulf import ViewSettings
+from gui.impl.pub import ViewImpl
 from gui.impl.lobby.platoon.view.platoon_search_view import SearchView
+from gui.impl.gen.view_models.views.lobby.platoon.platoon_dropdown_model import PlatoonDropdownModel, Type
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_filter_subview import TiersFilterSubview
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent
-from gui.impl.pub import ViewImpl
-from gui.prb_control.settings import REQUEST_TYPE
-from gui.shared import g_eventBus
 from gui.shared.events import PlatoonDropdownEvent
-from helpers import dependency
-from skeletons.gui.game_control import IPlatoonController
+from constants import QUEUE_TYPE
 from skeletons.gui.lobby_context import ILobbyContext
-
+from gui.impl.lobby.platoon.tooltip.platoon_alert_tooltip import AlertTooltip
+from gui.shared import g_eventBus
+from gui.prb_control.settings import REQUEST_TYPE
 _logger = logging.getLogger(__name__)
 strButtons = R.strings.platoon.buttons
 

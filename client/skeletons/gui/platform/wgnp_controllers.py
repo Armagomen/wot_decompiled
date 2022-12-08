@@ -7,7 +7,10 @@ from skeletons.gui.platform.controller import IPlatformRequestController
 if typing.TYPE_CHECKING:
     from helpers.server_settings import _Wgnp
     from gui.platform.base.statuses.events_mgr import StatusEventsManager
+    from gui.platform.wgnp.steam_account.statuses import SteamAccEmailStatus
+    from gui.platform.wgnp.steam_account.request import AddEmailParams, ConfirmEmailParams
     from gui.platform.wgnp.demo_account.statuses import DemoAccCredentialsStatus, DemoAccNicknameStatus
+    from gui.platform.wgnp.demo_account.request import AddCredentialsParams, ConfirmCredentialsParams, ChangeNicknameParams, ValidateNicknameParams
     from gui.platform.wgnp.general.statuses import GeneralAccountCountryStatus
     from gui.platform.base.statuses.constants import StatusTypes
 

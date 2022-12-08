@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/CommandMapping.py
 import BigWorld
-import Event
 import ResMgr
-from debug_utils import LOG_DEBUG
-from shared_utils import findFirst
-
 import Keys
+import Event
 import Settings
-
+from shared_utils import findFirst
+from debug_utils import LOG_DEBUG
 g_instance = None
 CMD_MOVE_FORWARD = 1
 CMD_MOVE_FORWARD_SPEC = 2

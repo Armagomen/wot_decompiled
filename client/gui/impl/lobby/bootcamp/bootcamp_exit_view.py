@@ -1,9 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/bootcamp/bootcamp_exit_view.py
-from bootcamp.Bootcamp import g_bootcamp
 from frameworks.wulf import ViewSettings, WindowFlags
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.bootcamp.bootcamp_exit_model import BootcampExitModel
@@ -12,12 +9,14 @@ from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.shared import g_eventBus, events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.view_helpers.blur_manager import CachedBlur
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from bootcamp.Bootcamp import g_bootcamp
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBootcampController
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-
 
 class BootcampExitView(ViewImpl):
     __slots__ = ('__blur', '__tooltipData', '__onQuit', '__onCancel', '__isInBattle')

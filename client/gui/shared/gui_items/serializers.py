@@ -1,22 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/serializers.py
-import cPickle
-import collections
 import copy
+import cPickle
 import math
-
+import collections
+from typing import List, Dict
 from constants import SwitchState
-from gui.goodies import IGoodiesCache
-from gui.shared.gui_items import Tankman, Vehicle
-from gui.shared.gui_items.crew_skin import localizedFullName
-from gui.shared.gui_items.fitting_item import ICONS_MASK
 from gui.shared.money import Money, Currency
 from helpers import dependency, i18n
 from items.components import skills_constants
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
-from skeletons.gui.lobby_context import ILobbyContext
+from gui.goodies import IGoodiesCache
+from gui.shared.gui_items.crew_skin import localizedFullName
+from gui.shared.gui_items.fitting_item import ICONS_MASK
+from gui.shared.gui_items import Tankman, Vehicle
 from skeletons.gui.shared import IItemsCache
-
+from skeletons.gui.lobby_context import ILobbyContext
 
 def packTankmanSkill(skill, isPermanent=False):
     if skill.roleType in skills_constants.ACTIVE_SKILLS or skill.roleType in skills_constants.ROLES:

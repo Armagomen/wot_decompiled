@@ -1,15 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/mapbox/mapbox_helpers.py
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.periodic_battles.models import AlertData
 from gui.periodic_battles.models import PrimeTimeStatus
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.periodic_battles.models import AlertData
 from gui.shared.formatters import text_styles
 from helpers import dependency, time_utils
-from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IMapboxController
-
+from skeletons.connection_mgr import IConnectionManager
 
 def getPrimeTimeStatusVO():
     mapboxCtrl = dependency.instance(IMapboxController)

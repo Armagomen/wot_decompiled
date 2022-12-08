@@ -4,18 +4,15 @@ from debug_utils import LOG_WARNING, LOG_ERROR
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.server_events import formatters
-from gui.server_events.cond_formatters import POSSIBLE_BATTLE_RESUTLS_KEYS, BATTLE_RESULTS_KEYS, FORMATTER_IDS, \
-    FormattableField, packDescriptionField
-from gui.server_events.cond_formatters.formatters import CumulativableFormatter, MissionFormatter, \
-    MissionsVehicleListFormatter, MissionsBattleConditionsFormatter
+from gui.server_events.cond_formatters import POSSIBLE_BATTLE_RESUTLS_KEYS, BATTLE_RESULTS_KEYS, FORMATTER_IDS, FormattableField, packDescriptionField
+from personal_missions_constants import CONDITION_ICON
+from gui.server_events.cond_formatters.formatters import CumulativableFormatter, MissionFormatter, MissionsVehicleListFormatter, MissionsBattleConditionsFormatter
 from gui.server_events.cond_formatters.postbattle import VehiclesDamageFormatter
 from gui.server_events.cond_formatters.postbattle import VehiclesKillFormatter
 from gui.server_events.cond_formatters.postbattle import VehiclesStunFormatter
 from helpers import i18n, dependency
-from personal_missions_constants import CONDITION_ICON
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 ZERO_COUNT = 0
 DEFAULT_GROUP_BY_KEY = None
 

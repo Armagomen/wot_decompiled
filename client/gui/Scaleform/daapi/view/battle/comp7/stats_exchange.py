@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/stats_exchange.py
 import typing
-
 import VOIP
 from constants import ROLE_TYPE_TO_LABEL
 from gui.Scaleform.daapi.view.battle.classic.stats_exchange import DynamicVehicleStatsComponent
@@ -14,9 +13,8 @@ from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.interfaces import IComp7VOIPController
 
 class Comp7VehicleInfoComponent(vehicle.VehicleInfoComponent):
     __slots__ = ()

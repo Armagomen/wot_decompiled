@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/barracks/Barracks.py
 import logging
-
 from account_helpers.AccountSettings import AccountSettings, BARRACKS_FILTER, RECRUIT_NOTIFICATIONS
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
@@ -34,7 +33,6 @@ from helpers.i18n import makeString as _ms
 from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 _COUNTERS_MAP = {RECRUIT_NOTIFICATIONS: ('locationButtonBar', 5)}
 

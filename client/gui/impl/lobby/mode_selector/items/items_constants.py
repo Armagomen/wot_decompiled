@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/items_constants.py
+import typing
 from enum import Enum
-
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_columns import ModeSelectorColumns
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-
 DEFAULT_COLUMN = ModeSelectorColumns.COLUMN_2
 DEFAULT_PRIORITY = -1
 

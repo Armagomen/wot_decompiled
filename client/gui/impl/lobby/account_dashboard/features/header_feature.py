@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/header_feature.py
 import logging
 import typing
-
 import BigWorld
 from WeakMethod import WeakMethodProxy
 from constants import QUEUE_TYPE
@@ -23,8 +22,7 @@ from gui.platform.wgnp.demo_account.controller import NICKNAME_CONTEXT
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.shared import event_dispatcher
-from gui.shared.event_dispatcher import showDemoAccRenamingOverlay, showSteamConfirmEmailOverlay, \
-    showSteamAddEmailOverlay
+from gui.shared.event_dispatcher import showDemoAccRenamingOverlay, showSteamConfirmEmailOverlay, showSteamAddEmailOverlay
 from gui.shared.view_helpers.emblems import EmblemSize, getClanEmblemURL
 from helpers import dependency
 from skeletons.gui.game_control import IBadgesController, ISteamCompletionController, IPlatoonController
@@ -32,9 +30,12 @@ from skeletons.gui.platform.wgnp_controllers import IWGNPSteamAccRequestControll
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
 from wg_async import wg_async, wg_await
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Optional
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.header_model import HeaderModel
+    from gui.platform.wgnp.steam_account.statuses import SteamAccEmailStatus
+    from gui.platform.base.statuses.status import Status
+    from gui.impl.gen.view_models.views.lobby.account_dashboard.account_dashboard_model import AccountDashboardModel
 _logger = logging.getLogger(__name__)
 
 class HeaderFeature(FeatureItem):

@@ -3,11 +3,11 @@
 import logging
 import string
 import typing
-
 import BigWorld
 from CurrentVehicle import g_currentVehicle
+from wg_async import wg_async, wg_await
 from constants import RENEWABLE_SUBSCRIPTION_CONFIG
-from frameworks.wulf import ViewFlags, ViewSettings
+from frameworks.wulf import ViewFlags, ViewSettings, ViewEvent, View
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl import backport
@@ -17,16 +17,16 @@ from gui.impl.gen.view_models.views.lobby.crew.crew_header_model import CrewHead
 from gui.impl.lobby.crew.accelerate_training_tooltip_view import AccelerateTrainingTooltipView
 from gui.impl.lobby.crew.crew_header_tooltip_view import CrewHeaderTooltipView
 from gui.impl.pub import ViewImpl
+from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.gui_items.processors.vehicle import VehicleTmenXPAccelerator
 from gui.shared.utils import decorators
 from helpers import dependency
-from renewable_subscription_common.passive_xp import isTagsSetOk, CrewValidator
+from renewable_subscription_common.passive_xp import isTagsSetOk, CrewValidator, CrewSlotValidationResult
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from wg_async import wg_async, wg_await
-
 if typing.TYPE_CHECKING:
-    pass
+    from account_helpers.renewable_subscription import RenewableSubscription
+    from typing import Union, Dict, Callable
 _logger = logging.getLogger(__name__)
 
 class CrewHeaderView(ViewImpl):

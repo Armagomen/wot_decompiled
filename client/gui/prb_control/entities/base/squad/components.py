@@ -1,15 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/base/squad/components.py
 import typing
-
 import account_helpers
+from items import vehicles
 from gui.shared.gui_items.Vehicle import VEHICLE_CLASS_NAME
 from helpers import dependency
-from items import vehicles
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.prb_control.entities.base.squad.entity import SquadEntity
+    from typing import Optional, List
 
 class RestrictedVehicleTagDataProvider(object):
     __slots__ = ('__unitEntity',)
@@ -94,13 +93,3 @@ class RestrictedScoutDataProvider(RestrictedVehicleTagDataProvider):
 
     def getMaxPossibleVehicles(self):
         return self.__lobbyContext.getServerSettings().getMaxScoutInSquads()
-
-
-class RestrictedSquadDataProvider(RestrictedVehicleTagDataProvider):
-    _VEHICLE_TAG = 'squad_restricted'
-
-    def getRestrictionLevels(self):
-        return None
-
-    def getMaxPossibleVehicles(self):
-        pass

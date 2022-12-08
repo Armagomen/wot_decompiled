@@ -1,32 +1,30 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/bootcamp/pre_queue/entity.py
 import typing
-
 from PlayerEvents import g_playerEvents
-from adisp import adisp_process
 from bootcamp.BootCampEvents import g_bootcampEvents
 from constants import QUEUE_TYPE, PREBATTLE_TYPE
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import rally_dialog_meta
+from gui.prb_control.entities.bootcamp.pre_queue.actions_validator import BootcampActionsValidator
+from gui.shared.events import ViewEventType
 from gui.prb_control import prbDispatcherProperty
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities.base.ctx import LeavePrbAction
-from gui.prb_control.entities.base.pre_queue.ctx import DequeueCtx
-from gui.prb_control.entities.base.pre_queue.ctx import QueueCtx
-from gui.prb_control.entities.base.pre_queue.entity import PreQueueSubscriber, PreQueueEntryPoint, PreQueueEntity
-from gui.prb_control.entities.bootcamp.pre_queue.actions_validator import BootcampActionsValidator
 from gui.prb_control.events_dispatcher import g_eventDispatcher
+from gui.prb_control.entities.base.pre_queue.ctx import DequeueCtx
+from gui.prb_control.entities.base.pre_queue.entity import PreQueueSubscriber, PreQueueEntryPoint, PreQueueEntity
 from gui.prb_control.items import SelectResult
 from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE, REQUEST_TYPE
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
-from gui.shared.events import ViewEventType
 from helpers import dependency
-from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.lobby_context import ILobbyContext
-
+from skeletons.gui.game_control import IBootcampController
+from adisp import adisp_process
+from gui.prb_control.entities.base.pre_queue.ctx import QueueCtx
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.events import LoadViewEvent
 
 class BootcampSubscriber(PreQueueSubscriber):
 

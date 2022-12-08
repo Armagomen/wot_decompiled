@@ -2,20 +2,17 @@
 # Embedded file name: scripts/client/gui/platform/products_fetcher/subscriptions/subscriptions_controller.py
 import logging
 import typing
-
 from BWUtil import AsyncReturn
+from wg_async import wg_async, wg_await
 from gui.platform.base.statuses.constants import StatusTypes
 from gui.platform.products_fetcher.controller import ProductsFetchController, _PlatformProductListParams
-from gui.platform.products_fetcher.subscriptions.subscriptions_descriptor import PrimeGamingDescriptor, \
-    SubscriptionDescriptor
+from gui.platform.products_fetcher.subscriptions.subscriptions_descriptor import PrimeGamingDescriptor, SubscriptionDescriptor
 from helpers import dependency, getClientLanguage
 from skeletons.gui.platform.product_fetch_controller import ISubscriptionsFetchController
 from skeletons.gui.platform.wgnp_controllers import IWGNPGeneralRequestController
-from wg_async import wg_async, wg_await
-
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.wgnp.general.statuses import GeneralAccountCountryStatus
 
 class PlatformSubscriptionsParams(_PlatformProductListParams):
     storefront = 'player_subscriptions'

@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/damage_log_panel.py
 from collections import defaultdict
-
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE as _BET
-from account_helpers.settings_core.options import DamageLogDetailsSetting as _VIEW_MODE, \
-    DamageLogEventPositionsSetting as _EVENT_POSITIONS, DamageLogEventTypesSetting as _DISPLAYED_EVENT_TYPES
+from account_helpers.settings_core.options import DamageLogDetailsSetting as _VIEW_MODE, DamageLogEventPositionsSetting as _EVENT_POSITIONS, DamageLogEventTypesSetting as _DISPLAYED_EVENT_TYPES
 from account_helpers.settings_core.settings_constants import DAMAGE_LOG, GRAPHICS
 from constants import BATTLE_LOG_SHELL_TYPES
 from gui.Scaleform.daapi.view.meta.BattleDamageLogPanelMeta import BattleDamageLogPanelMeta
@@ -21,7 +19,6 @@ from shared_utils import BitmaskHelper
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
 _POSITIVE_EVENTS_MASK = _ETYPE.DAMAGE | _ETYPE.ASSIST_DAMAGE | _ETYPE.STUN
 _NEGATIVE_EVENTS_MASK = _ETYPE.BLOCKED_DAMAGE | _ETYPE.RECEIVED_DAMAGE | _ETYPE.RECEIVED_CRITICAL_HITS
 _ALL_EVENTS_MASK = _POSITIVE_EVENTS_MASK | _NEGATIVE_EVENTS_MASK
@@ -535,11 +532,7 @@ class DamageLogPanel(BattleDamageLogPanelMeta):
             self.__bottomLog.addToLog(events)
 
     def _invalidatePanelVisibility(self):
-        arenaVisitor = self.sessionProvider.arenaVisitor
-        isEpicBattle = arenaVisitor.gui.isInEpicRange()
-        if isEpicBattle:
-            return
-        elif self.__isFullStatsShown:
+        if self.__isFullStatsShown:
             return
         else:
             isVisible = True

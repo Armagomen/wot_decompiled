@@ -2,25 +2,23 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/battle_royale/params.py
 import logging
 from collections import namedtuple
-
-from battle_royale.gui.constants import ParamTypes
 from gui import makeHtmlString, GUI_SETTINGS
-from gui.doc_loaders.battle_royale_settings_loader import getTreeModuleSettings, getTreeVehicleParams
 from gui.impl import backport
-from gui.impl.backport.backport_system_locale import getNiceNumberFormat
 from gui.impl.gen import R
+from battle_royale.gui.constants import ParamTypes
+from gui.doc_loaders.battle_royale_settings_loader import getTreeModuleSettings, getTreeVehicleParams
+from gui.impl.backport.backport_system_locale import getNiceNumberFormat
 from gui.shared.formatters import text_styles
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_parameters import formatters as params_formatters
 from gui.shared.items_parameters import params as base_params
-from gui.shared.items_parameters import params_helper
 from gui.shared.items_parameters.comparator import ItemsComparator, PARAM_STATE, getParamExtendedData
 from gui.shared.items_parameters.formatters import FORMAT_SETTINGS, MEASURE_UNITS
+from gui.shared.items_parameters import params_helper
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import i18n, dependency
 from items import ITEM_TYPES
 from items import getTypeOfCompactDescr
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 _logger = logging.getLogger(__name__)
 _ModuleDescr = namedtuple('_ModuleDescr', ('vDescr', 'currentModuleDescr', 'intCD', 'typeCD', 'moduleParams'))
 ROYALE_VISIBILITY_PARAMS = ('radarRadius', 'radarCooldown')

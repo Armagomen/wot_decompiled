@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_tests/Fonts.py
-import math
-
 import BigWorld
-import GUI
 import ResMgr
-
+import GUI
+import math
 fontTestGUIs = []
 
 def removeAll():

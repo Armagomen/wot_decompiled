@@ -1,21 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/crewOperations/RetrainCrewWindow.py
 from CurrentVehicle import g_currentVehicle
-from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.meta.RetrainCrewWindowMeta import RetrainCrewWindowMeta
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.shared.formatters import text_styles
+from gui.shop import showBuyGoldForCrew
 from gui.shared.gui_items.processors.tankman import TankmanCrewRetraining
 from gui.shared.gui_items.serializers import packTraining
-from gui.shared.money import Money, Currency
 from gui.shared.utils import decorators
-from gui.shop import showBuyGoldForCrew
+from gui.shared.money import Money, Currency
+from gui import SystemMessages
 from helpers import dependency
 from items import tankmen
+from gui.shared.formatters import text_styles
 from skeletons.gui.shared import IItemsCache
-
 
 class RetrainCrewWindow(RetrainCrewWindowMeta):
     AVAILABLE_OPERATIONS = range(3)

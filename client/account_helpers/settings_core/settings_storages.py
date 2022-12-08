@@ -2,9 +2,8 @@
 # Embedded file name: scripts/client/account_helpers/settings_core/settings_storages.py
 import functools
 import weakref
-
-import BattleReplay
 import BigWorld
+import BattleReplay
 from AvatarInputHandler.cameras import FovExtended
 from adisp import adisp_async
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -12,7 +11,6 @@ from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import TimerConfirmDialogMeta
 from gui.shared.utils.monitor_settings import g_monitorSettings
 from messenger import g_settings as messenger_settings
-
 
 class ISettingsStorage(object):
 

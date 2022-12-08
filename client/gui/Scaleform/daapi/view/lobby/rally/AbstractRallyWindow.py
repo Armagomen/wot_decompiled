@@ -5,9 +5,8 @@ from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.meta.AbstractRallyWindowMeta import AbstractRallyWindowMeta
 from gui.prb_control.entities.base.ctx import LeavePrbAction, PrbAction
 from gui.prb_control.entities.base.listener import IPrbListener
-from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.events import RallyWindowEvent
-
+from gui.shared.event_bus import EVENT_BUS_SCOPE
 
 class AbstractRallyWindow(AbstractRallyWindowMeta, IPrbListener):
 

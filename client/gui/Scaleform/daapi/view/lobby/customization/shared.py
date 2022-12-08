@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/shared.py
 import logging
-import struct
 from collections import namedtuple, Counter
+import struct
 from itertools import ifilter
-
+import typing
 import BigWorld
 import Math
 import nations
@@ -17,12 +17,10 @@ from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import QUANTITY_LIMITED_CUSTOMIZATION_TYPES, appliedToFromSlotsIds, C11nId, PurchaseItem, \
-    AdditionalPurchaseGroups, isVehicleCanBeCustomized, getAvailableRegions, EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, \
-    EDITABLE_STYLE_IRREMOVABLE_TYPES
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
+from gui.customization.shared import QUANTITY_LIMITED_CUSTOMIZATION_TYPES, appliedToFromSlotsIds, C11nId, PurchaseItem, AdditionalPurchaseGroups, isVehicleCanBeCustomized, getAvailableRegions, EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, EDITABLE_STYLE_IRREMOVABLE_TYPES
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates
 from gui.shared.formatters import icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER, VEHICLE_TAGS
@@ -45,7 +43,6 @@ from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_outfit.containers import SlotData
 from vehicle_outfit.outfit import Area, Outfit
 from vehicle_outfit.packers import ProjectionDecalPacker
-
 _logger = logging.getLogger(__name__)
 EMPTY_PERSONAL_NUMBER = ''
 

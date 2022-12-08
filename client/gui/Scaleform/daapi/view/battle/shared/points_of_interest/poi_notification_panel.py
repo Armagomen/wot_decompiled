@@ -2,11 +2,9 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/poi_notification_panel.py
 import logging
 import typing
-
 import BigWorld
 from Event import EventsSubscriber
-from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, \
-    POI_STATUS_UI_MAPPING
+from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, POI_STATUS_UI_MAPPING
 from gui.Scaleform.daapi.view.meta.PointsOfInterestNotificationPanelMeta import PointsOfInterestNotificationPanelMeta
 from gui.battle_control import avatar_getter
 from gui.impl import backport
@@ -17,9 +15,9 @@ from points_of_interest.components import PoiStateUpdateMask
 from points_of_interest.mixins import PointsOfInterestListener
 from points_of_interest_shared import ENEMY_VEHICLE_ID
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from points_of_interest.components import PoiStateComponent
+    from points_of_interest_shared import PoiType
 _logger = logging.getLogger(__name__)
 _R_NOTIFICATION_PANEL = R.strings.points_of_interest.notificationPanel
 

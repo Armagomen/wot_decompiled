@@ -1,24 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/fight_btn_tooltips.py
 from __future__ import absolute_import
-
 import typing
-
-from gui.Scaleform.locale.MENU import MENU
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.prb_control.formatters.tooltips import getAbsenceCrewList
-from gui.prb_control.settings import PRE_QUEUE_RESTRICTION, PREBATTLE_RESTRICTION
 from gui.prb_control.settings import UNIT_RESTRICTION
+from gui.prb_control.settings import PRE_QUEUE_RESTRICTION, PREBATTLE_RESTRICTION
+from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.shared.formatters import text_styles, icons
 from gui.shared.formatters.ranges import toRomanRangeString
 from gui.shared.gui_items.Vehicle import getTypeUserName
 from gui.shared.utils.functions import makeTooltip
 from helpers import i18n
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.prb_control.items import ValidationResult
 _STR_PATH = R.strings.menu.headerButtons.fightBtn.tooltip
 
 def getSquadFightBtnTooltipData(state):
@@ -99,6 +96,12 @@ def getEpicFightBtnTooltipData(result):
     elif state == PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER:
         header = backport.text(R.strings.tooltips.hangar.startBtn.battleRoyale.notRented.header())
         body = backport.text(R.strings.tooltips.hangar.startBtn.battleRoyale.notRented.body())
+    elif state == PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER:
+        header = backport.text(R.strings.tooltips.hangar.startBtn.battleRoyale.telecomRentalIsOver.header())
+        body = backport.text(R.strings.tooltips.hangar.startBtn.battleRoyale.telecomRentalIsOver.body())
+    elif state == PREBATTLE_RESTRICTION.CREW_NOT_FULL:
+        header = backport.text(_STR_PATH.crewNotFull.header())
+        body = backport.text(_STR_PATH.crewNotFull.body(), crewList=getAbsenceCrewList())
     else:
         return ''
     return makeTooltip(header, body)
@@ -112,7 +115,10 @@ def getMapsTrainingTooltipData():
 
 def getEpicBattlesOnlyVehicleTooltipData(result):
     state = result.restriction
-    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED, UNIT_RESTRICTION.VEHICLE_WRONG_MODE, PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER):
+    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED,
+     UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
+     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER,
+     PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER):
         header = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.notSupported.header())
         body = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.notSupported.body())
         return makeTooltip(header, body)
@@ -120,7 +126,10 @@ def getEpicBattlesOnlyVehicleTooltipData(result):
 
 def getComp7BattlesOnlyVehicleTooltipData(result):
     state = result.restriction
-    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED, UNIT_RESTRICTION.VEHICLE_WRONG_MODE, PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER):
+    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED,
+     UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
+     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER,
+     PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER):
         header = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.comp7BattleOnly.header())
         body = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.comp7BattleOnly.body())
         return makeTooltip(header, body)
@@ -162,6 +171,9 @@ def getRandomTooltipData(result):
     elif state == PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER:
         header = backport.text(_STR_PATH.rentalIsOver.header())
         body = backport.text(_STR_PATH.rentalIsOver.body())
+    elif state == PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER:
+        header = backport.text(_STR_PATH.telecomRentalIsOver.header())
+        body = backport.text(_STR_PATH.telecomRentalIsOver.body())
     else:
         return ''
     return makeTooltip(header, body)
@@ -207,7 +219,7 @@ def getFunRandomFightBtnTooltipData(result, isInSquad):
     else:
         if isInSquad:
             return getSquadFightBtnTooltipData(state)
-        return ''
+        return getRandomTooltipData(result)
     return makeTooltip(header, body)
 
 

@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/web/app_storage.py
-import logging
 import os
 import shutil
+import logging
 from functools import partial
-
 import BigWorld
-from debug_utils import LOG_CURRENT_EXCEPTION
-from external_strings_utils import unicode_from_utf8
 from helpers import threads
 from helpers.web.storage import IStorage
+from debug_utils import LOG_CURRENT_EXCEPTION
 from soft_exception import SoftException
-
+from external_strings_utils import unicode_from_utf8
 _logger = logging.getLogger(__name__)
 _CACHE_WARNING_GAP_IN_MB = 500
 

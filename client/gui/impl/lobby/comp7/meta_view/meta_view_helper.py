@@ -2,18 +2,19 @@
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/meta_view/meta_view_helper.py
 import logging
 import typing
-
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_division import Division, State
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_division import ProgressionDivision
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import Rank
-from gui.impl.lobby.comp7 import comp7_shared
 from helpers import dependency
 from intervals import Interval
 from skeletons.gui.game_control import IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
-
+from gui.impl.lobby.comp7 import comp7_shared
 if typing.TYPE_CHECKING:
-    pass
+    from comp7_ranks_common import Comp7Division
+    from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_base_model import ProgressionBaseModel
+    from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import ProgressionItemBaseModel
+    from helpers.server_settings import Comp7PrestigeRanksConfig
 _logger = logging.getLogger(__name__)
 
 def setProgressionItemData(itemModel, parentModel, rankIdx, ranksConfig):

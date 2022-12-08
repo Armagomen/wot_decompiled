@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/skeletons/gui/battle_session.py
 import typing
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.interfaces import IAppearanceCacheController, IPointsOfInterestController, IComp7PrebattleSetupController, IComp7VOIPController
 
 class ISharedControllersLocator(object):
     __slots__ = ()
@@ -93,6 +93,10 @@ class ISharedControllersLocator(object):
 
     @property
     def deathzones(self):
+        raise NotImplementedError
+
+    @property
+    def ingameHelp(self):
         raise NotImplementedError
 
 

@@ -1,37 +1,35 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/linked_set/linkedset_details_overlay.py
 import BigWorld
-from adisp import adisp_process
-from gui import makeHtmlString
-from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatErrorTextWithIcon, formatOkTextWithIcon
-from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
 from gui.Scaleform.daapi.view.meta.LinkedSetDetailsOverlayMeta import LinkedSetDetailsOverlayMeta
-from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.Scaleform.daapi.view.lobby.event_boards.formaters import formatErrorTextWithIcon, formatOkTextWithIcon
 from gui.Scaleform.locale.LINKEDSET import LINKEDSET
-from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.STORAGE import STORAGE
-from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.impl import backport
+from helpers.i18n import makeString as _ms
 from gui.prb_control import prbDispatcherProperty
 from gui.prb_control.entities.base.ctx import PrbAction
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-from gui.server_events import settings as quest_settings
+from adisp import adisp_process
+from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getLinkedSetBonuses
 from gui.server_events.awards_formatters import getDefaultAwardFormatter
 from gui.server_events.bonuses import mergeBonuses
-from gui.server_events.conditions import getProgressFromQuestWithSingleAccumulative
-from gui.server_events.events_helpers import getLocalizedQuestNameForLinkedSetQuest, \
-    getLocalizedQuestDescForLinkedSetQuest, getIdxFromQuest
-from gui.server_events.events_helpers import hasAtLeastOneAvailableQuest, isAllQuestsCompleted
+from gui.server_events import settings as quest_settings
+from helpers import dependency
+from skeletons.gui.battle_matters import IBattleMattersController
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
-from helpers import dependency
-from helpers.i18n import makeString as _ms
+from gui.server_events.events_helpers import hasAtLeastOneAvailableQuest, isAllQuestsCompleted
+from gui.Scaleform.locale.MENU import MENU
+from gui.Scaleform.locale.STORAGE import STORAGE
+from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui import makeHtmlString
 from shared_utils import CONST_CONTAINER
-from skeletons.gui.battle_matters import IBattleMattersController
+from gui.server_events.events_helpers import getLocalizedQuestNameForLinkedSetQuest, getLocalizedQuestDescForLinkedSetQuest, getIdxFromQuest
 from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.server_events import IEventsCache
-
+from gui.server_events.conditions import getProgressFromQuestWithSingleAccumulative
 _QUESTS_MOVIE_ROUTES = {(2, 1): 'X2',
  (2, 2): 'Module',
  (2, 3): 'Bullets',

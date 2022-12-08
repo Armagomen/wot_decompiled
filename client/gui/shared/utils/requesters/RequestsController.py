@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/RequestsController.py
 from functools import partial
-
 import BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG
-from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 from shared_utils import safeCancelCallback
-
+from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 
 class _NoCooldownsManager(RequestCooldownManager):
 

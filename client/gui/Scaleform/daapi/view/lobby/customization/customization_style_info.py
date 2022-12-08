@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_style_info.py
 from collections import namedtuple
-
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText
 from gui.Scaleform.daapi.view.meta.CustomizationStyleInfoMeta import CustomizationStyleInfoMeta
+from gui.shared.utils.graphics import isRendererPipelineDeferred
+from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.customization.shared import C11nId, getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.utils.graphics import isRendererPipelineDeferred
-from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from items.components.c11n_constants import SeasonType
@@ -21,7 +20,6 @@ from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from vehicle_outfit.outfit import Area
-
 StyleInfoVO = namedtuple('StyleInfoVO', ('styleName', 'styleInfo', 'styleInfoBig', 'suitableBlock', 'styleParams'))
 ButtonVO = namedtuple('ButtonVO', ('enabled', 'label', 'disabledTooltip', 'visible'))
 ParamVO = namedtuple('ParamVO', ('iconSrc', 'paramText'))
@@ -105,6 +103,9 @@ class CustomizationStyleInfo(CustomizationStyleInfoMeta, CallbackDelayer):
         elif self.__prevStyle != self.__ctx.mode.modifiedStyle:
             self.__installStyle(self.__prevStyle)
         self.__prevStyle = None
+        exitCallback = self.__ctx.getExitCallback()
+        if exitCallback is not None:
+            exitCallback.close()
         return
 
     def onApply(self):
@@ -114,6 +115,9 @@ class CustomizationStyleInfo(CustomizationStyleInfoMeta, CallbackDelayer):
             self.__blurRectId = None
         self.service.setDOFenabled(False)
         self.__visible = False
+        exitCallback = self.__ctx.getExitCallback()
+        if exitCallback is not None:
+            exitCallback.apply()
         return
 
     def hide(self):

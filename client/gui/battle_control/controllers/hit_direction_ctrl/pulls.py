@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/pulls.py
 import math
 from functools import partial
-
 import BigWorld
 import SoundGroups
 from AtGunpoint import ARTY_HIT_PREDICTION_EPSILON_YAW
@@ -16,9 +15,7 @@ from helpers import dependency
 from math_utils import almostZero
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _AGGREGATED_HIT_BITS = HIT_FLAGS.IS_BLOCKED | HIT_FLAGS.HP_DAMAGE | HIT_FLAGS.IS_CRITICAL
-
 
 class BaseHitPull(object):
     __slots__ = ('_pull', '__callbackIDs', '__postponedHits')

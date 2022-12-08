@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/comp7_prebattle_setup_ctrl.py
 import logging
-
 import BigWorld
 import CGF
 import GenericComponents
@@ -17,9 +16,7 @@ from gui.veh_post_progression.sounds import playSound, Sounds
 from helpers import dependency
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
-
 
 class _SceneController(object):
     __dynObjectsCache = dependency.descriptor(IBattleDynamicObjectsCache)
@@ -36,12 +33,11 @@ class _SceneController(object):
             if not self.__pendingSpawnPoints:
                 BigWorld.player().onVehicleEnterWorld += self.__onVehicleEnterWorld
             self.__pendingSpawnPoints[vehicleID] = {'positionNumber': positionNumber,
-                                                    'status': status}
+             'status': status}
 
     def updateSpawnPoint(self, vehicleID, newStatus):
         if vehicleID in self.__spawnPoints:
-            areaComponent = self.__spawnPoints[vehicleID].findComponentByType(
-                GenericComponents.TerrainSelectedAreaComponent)
+            areaComponent = self.__spawnPoints[vehicleID].findComponentByType(GenericComponents.TerrainSelectedAreaComponent)
             newColor = self.__getAreaColor(vehicleID, newStatus)
             areaComponent.setColor(newColor)
         elif vehicleID in self.__pendingSpawnPoints:
@@ -69,8 +65,7 @@ class _SceneController(object):
             return
         self.__spawnPoints[vehicle.id] = newGO = CGF.GameObject(vehicle.spaceID)
         newGO.createComponent(GenericComponents.TransformComponent, Math.Matrix(vehicle.matrix))
-        newGO.createComponent(GenericComponents.TerrainSelectedAreaComponent, visualPath, self.__config.size,
-                              self.__config.overTerrainHeight, self.__getAreaColor(vehicle.id, status))
+        newGO.createComponent(GenericComponents.TerrainSelectedAreaComponent, visualPath, self.__config.size, self.__config.overTerrainHeight, self.__getAreaColor(vehicle.id, status))
         newGO.activate()
 
     def __getAreaColor(self, vehicleID, status):

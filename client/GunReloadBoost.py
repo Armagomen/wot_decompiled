@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/GunReloadBoost.py
 from cache import cached_property
-
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 from view_state_component import ViewStateComponent
-
 
 class GunReloadBoost(ViewStateComponent):
 

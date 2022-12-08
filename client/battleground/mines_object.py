@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/battleground/mines_object.py
-import AnimationSequence
 import BigWorld
 import Math
+import AnimationSequence
 from PlayerEvents import g_playerEvents
-from battleground.component_loading import loadComponentSystem, Loader, CompositeLoaderMixin
-from battleground.components import TerrainAreaGameObject, EffectPlayerObject, SequenceObject, SmartSequenceObject
 from gui.battle_control import avatar_getter
 from helpers import dependency
+from battleground.component_loading import loadComponentSystem, Loader, CompositeLoaderMixin
+from battleground.components import TerrainAreaGameObject, EffectPlayerObject, SequenceObject, SmartSequenceObject
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _CONFIG_PATH = 'scripts/dynamic_objects.xml'
 
 def _getSequenceResourceMapping(path, spaceId):
@@ -39,16 +38,11 @@ def loadMines(ownerVehicleID, callback, dynamicObjectsCache=None, battleSession=
     gameObject = MinesObject(isAlly)
     gameObject.prepareCompositeLoader(callback)
     spaceId = BigWorld.player().spaceID
-    loadComponentSystem(gameObject.startEffectPlayer, gameObject.appendPiece,
-                        _getSequenceResourceMapping(effDescr.plantEffect.effectDescr.path, spaceId))
-    loadComponentSystem(gameObject.destroyEffectPlayer, gameObject.appendPiece,
-                        _getSequenceResourceMapping(effDescr.destroyEffect.effectDescr.path, spaceId))
-    loadComponentSystem(gameObject.idleEffectPlayer, gameObject.appendPiece,
-                        _getSequenceResourceMapping(idleEff.path, spaceId))
-    loadComponentSystem(gameObject.blowUpEffectPlayer, gameObject.appendPiece,
-                        _getEffectResourceMapping(effDescr.blowUpEffectName))
-    loadComponentSystem(gameObject.decalEffectPlayer, gameObject.appendPiece,
-                        _getEffectResourceMapping('minesDecalEffect'))
+    loadComponentSystem(gameObject.startEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(effDescr.plantEffect.effectDescr.path, spaceId))
+    loadComponentSystem(gameObject.destroyEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(effDescr.destroyEffect.effectDescr.path, spaceId))
+    loadComponentSystem(gameObject.idleEffectPlayer, gameObject.appendPiece, _getSequenceResourceMapping(idleEff.path, spaceId))
+    loadComponentSystem(gameObject.blowUpEffectPlayer, gameObject.appendPiece, _getEffectResourceMapping(effDescr.blowUpEffectName))
+    loadComponentSystem(gameObject.decalEffectPlayer, gameObject.appendPiece, _getEffectResourceMapping('minesDecalEffect'))
     loadComponentSystem(gameObject, gameObject.appendPiece, loaders)
     return gameObject
 
@@ -125,8 +119,7 @@ class MinesObject(TerrainAreaGameObject, CompositeLoaderMixin):
 
     def __playStartEffects(self):
         self.startEffectPlayer.bindAndStart(self.__position, self._nativeSystem.spaceID)
-        if self.__isAllyMine or self.__isEnemyMarkerEnabled:
-            self.__playIdleEffects()
+        self.__playIdleEffects()
         self.decalEffectPlayer.start(self.__position)
 
     def __playStopEffects(self):

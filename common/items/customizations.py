@@ -3,21 +3,21 @@
 import base64
 import copy
 from string import lower
-from typing import TypeVar, TYPE_CHECKING
-
+from typing import Dict, TypeVar, Optional, TYPE_CHECKING
 from constants import IS_CELLAPP, IS_BASEAPP
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
+from items import decodeEnum
 from items.components import c11n_components as cn
-from items.components.c11n_constants import ApplyArea, SeasonType, CustomizationType, CustomizationTypeNames, \
-    MAX_USERS_PROJECTION_DECALS, EMPTY_ITEM_ID
-from serializable_types.customizations import CustomizationOutfit, DecalComponent, \
-    CUSTOMIZATION_CLASSES as _CUSTOMIZATION_CLASSES, parseC11sComponentDescr
-from serialization import ComponentBinDeserializer, SerializationException
+from items.components.c11n_constants import ApplyArea, SeasonType, CustomizationType, CustomizationTypeNames, MAX_USERS_PROJECTION_DECALS, EMPTY_ITEM_ID
+from serializable_types.customizations import PaintComponent, CamouflageComponent, getAllItemsFromOutfit, AttachmentComponent, ProjectionDecalComponent, SequenceComponent, PersonalNumberComponent, InsigniaComponent, CustomizationOutfit, DecalComponent, CUSTOMIZATION_CLASSES as _CUSTOMIZATION_CLASSES, parseC11sComponentDescr
+from serialization import ComponentBinDeserializer, ComponentXmlDeserializer, SerializationException, EmptyComponent, makeCompDescr, FieldTypes, FieldFlags, FieldType, SerializableComponent, intField, intArrayField, xmlOnlyFloatField, xmlOnlyFloatArrayField, applyAreaEnumField, customFieldType, customArrayField, optionsEnumField, arrayField, strField, xmlOnlyApplyAreaEnumField, xmlOnlyIntField, xmlOnlyTagsField
+from serialization.serializable_component import SerializableComponentChildType
 from soft_exception import SoftException
-
+from .named_vector import NamedVector
+from .utils import getEditorOnlySection
 parseCompDescr = parseC11sComponentDescr
 if TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescrType
 
 def checkItemInCompDescr(item, customizationElementCompDescr):
     item = cn.splitIntDescr(item) if isinstance(item, int) else item
@@ -83,6 +83,9 @@ def getOutfitType(arenaKind, bonusType):
 
 
 def getBattleOutfit(getter, vehType, arenaKind, bonusType):
+    styleOutfitDescr = getter(vehType, SeasonType.EVENT)
+    if styleOutfitDescr:
+        return parseOutfitDescr(styleOutfitDescr)
     season = getOutfitType(arenaKind, bonusType)
     seasonOutfitDescr = getter(vehType, season)
     if seasonOutfitDescr:

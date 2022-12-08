@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/requesters/session_stats_requester.py
 from collections import namedtuple
-
 import BigWorld
 from adisp import adisp_async
 from constants import ARENA_BONUS_TYPE
@@ -9,7 +8,6 @@ from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared.utils.requesters import IRandomAccountStats, IRandomVehStats, ISessionStatsRequester
-
 ValueWithDelta = namedtuple('ValueWithDelta', ['value', 'delta'])
 RatioValue = namedtuple('RatioValue', ['ratio', 'dealt', 'received'])
 CreditsDetails = namedtuple('CreditsDetails', ['base',
@@ -126,7 +124,7 @@ class BaseAccountStats(BaseStats):
         creditsToDraw = data if data is not None else 0
         data = self.data.get('achievement_credits', {}).get('value', 0)
         achievementCredits = data if data is not None else 0
-        return CreditsDetails(base=replayCreditsData.get('originalCredits', 0) + self._sumRecords(replayCreditsData, 'appliedPremiumCreditsFactor') - creditsToDraw - achievementCredits, noPenalty=self.data.get('achievement_credits', {}).get('value', 0), boosters=replayCreditsData.get('boosterCredits', 0) + replayCreditsData.get('boosterCreditsFactor100', 0), event=self._sumRecords(replayCreditsData, 'eventCreditsList_', 'eventCreditsFactor100List_'), battlePayments=replayCreditsData.get('orderCreditsFactor100', 0), friendlyFirePenalty=replayCreditsData.get('originalCreditsPenalty', 0) + replayCreditsData.get('originalCreditsContributionOut', 0) + replayCreditsData.get('originalCreditsPenaltySquad', 0) + replayCreditsData.get('originalCreditsContributionOutSquad', 0), friendlyFireCompensation=replayCreditsData.get('originalCreditsContributionIn', 0) + replayCreditsData.get('originalCreditsContributionInSquad', 0), aogasFactor=replayCreditsData.get('aogasFactor10', 0), autoRepair=self.data.get('auto_repair_cost_credits', {}).get('value', 0), autoLoad=self.data.get('auto_load_cost_credits', {}).get('value', 0), autoEquip=self.data.get('auto_equip_cost_credits', {}).get('value', 0), squadBonus=replayCreditsData.get('originalPremSquadCredits', 0) + replayCreditsData.get('premSquadCreditsFactor100', 0) + replayCreditsData.get('originalCreditsToDrawSquad', 0))
+        return CreditsDetails(base=replayCreditsData.get('originalCredits', 0) + self._sumRecords(replayCreditsData, 'appliedPremiumCreditsFactor') - creditsToDraw - achievementCredits, noPenalty=self.data.get('achievement_credits', {}).get('value', 0), boosters=replayCreditsData.get('boosterCredits', 0) + replayCreditsData.get('boosterCreditsFactor100', 0), event=self._sumRecords(replayCreditsData, 'eventCreditsList_', 'eventCreditsFactor1000List_'), battlePayments=replayCreditsData.get('orderCreditsFactor100', 0), friendlyFirePenalty=replayCreditsData.get('originalCreditsPenalty', 0) + replayCreditsData.get('originalCreditsContributionOut', 0) + replayCreditsData.get('originalCreditsPenaltySquad', 0) + replayCreditsData.get('originalCreditsContributionOutSquad', 0), friendlyFireCompensation=replayCreditsData.get('originalCreditsContributionIn', 0) + replayCreditsData.get('originalCreditsContributionInSquad', 0), aogasFactor=replayCreditsData.get('aogasFactor10', 0), autoRepair=self.data.get('auto_repair_cost_credits', {}).get('value', 0), autoLoad=self.data.get('auto_load_cost_credits', {}).get('value', 0), autoEquip=self.data.get('auto_equip_cost_credits', {}).get('value', 0), squadBonus=replayCreditsData.get('originalPremSquadCredits', 0) + replayCreditsData.get('premSquadCreditsFactor100', 0) + replayCreditsData.get('originalCreditsToDrawSquad', 0))
 
     @property
     def crystalDetails(self):

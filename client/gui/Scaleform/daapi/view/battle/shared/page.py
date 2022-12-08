@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/page.py
 import logging
 import typing
-
 import BattleReplay
 import aih_constants
 from AvatarInputHandler import aih_global_binding
@@ -23,9 +22,8 @@ from helpers import dependency, uniprof
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gameplay import IGameplayLogic, PlayerEventID
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.shared.events import LoadViewEvent
 _logger = logging.getLogger(__name__)
 
 class IComponentsConfig(object):

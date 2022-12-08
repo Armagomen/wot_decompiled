@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/dispatcher.py
+import typing
 import logging
 import time
 import types
-
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
 from adisp import adisp_async, adisp_process
@@ -13,21 +13,21 @@ from gui import SystemMessages, GUI_SETTINGS
 from gui.prb_control import prb_getters
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities import initDevFunctional, finiDevFunctional
-from gui.prb_control.entities.base.ctx import CreatePrbEntityCtx, PrbCtrlRequestCtx
-from gui.prb_control.entities.base.entity import NotSupportedEntity
 from gui.prb_control.entities.base.unit.ctx import JoinUnitCtx
-from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.factories import ControlFactoryComposite
 from gui.prb_control.formatters import messages
+from gui.prb_control.entities.base.ctx import CreatePrbEntityCtx, PrbCtrlRequestCtx
+from gui.prb_control.entities.base.entity import NotSupportedEntity
+from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.invites import InvitesManager, AutoInvitesNotifier
 from gui.prb_control.items import PlayerDecorator, FunctionalState
 from gui.prb_control.settings import CTRL_ENTITY_TYPE as _CTRL_TYPE, ENTER_UNIT_MGR_ERRORS
 from gui.prb_control.settings import IGNORED_UNIT_BROWSER_ERRORS
 from gui.prb_control.settings import IGNORED_UNIT_MGR_ERRORS
 from gui.prb_control.settings import PREBATTLE_RESTRICTION, FUNCTIONAL_FLAG
-from gui.prb_control.settings import REQUEST_TYPE as _RQ_TYPE
 from gui.prb_control.settings import UNIT_NOTIFICATION_TO_DISPLAY
+from gui.prb_control.settings import REQUEST_TYPE as _RQ_TYPE
 from gui.prb_control.storages import PrbStorageDecorator
 from gui.shared import actions, events, g_eventBus
 from gui.shared.event_bus import EVENT_BUS_SCOPE
@@ -38,7 +38,6 @@ from skeletons.gui.game_control import IIGRController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.prb_control import IPrbControlLoader
 from skeletons.gui.server_events import IEventsCache
-
 _logger = logging.getLogger(__name__)
 
 class _PreBattleDispatcher(ListenersCollection):
@@ -482,6 +481,9 @@ class _PreBattleDispatcher(ListenersCollection):
         if flags & FUNCTIONAL_FLAG.SWITCH == 0:
             self.__setDefault()
 
+    def ctrl_onUnitCreationFailure(self, _):
+        self.__setDefault()
+
     def gs_onTillBanNotification(self, isPlayTimeBan, timeTillBlock):
         if prb_getters.isParentControlActivated():
             self.__entity.resetPlayerState()
@@ -542,6 +544,7 @@ class _PreBattleDispatcher(ListenersCollection):
         g_prbCtrlEvents.onUnitIntroModeJoined += self.ctrl_onUnitIntroModeJoined
         g_prbCtrlEvents.onUnitIntroModeLeft += self.ctrl_onUnitIntroModeLeft
         g_prbCtrlEvents.onUnitBrowserModeLeft += self.ctrl_onUnitBrowserModeLeft
+        g_prbCtrlEvents.onUnitCreationFailure += self.ctrl_onUnitCreationFailure
         g_prbCtrlEvents.onPreQueueJoined += self.ctrl_onPreQueueJoined
         g_prbCtrlEvents.onPreQueueJoinFailure += self.ctrl_onPreQueueJoinFailure
         g_prbCtrlEvents.onPreQueueLeft += self.ctrl_onPreQueueLeft

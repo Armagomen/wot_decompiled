@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/BCHangar.py
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.Hangar import Hangar
-from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl.lobby.account_completion.curtain.curtain_view import CurtainWindow
 from gui.shared import EVENT_BUS_SCOPE
+from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.shared import events
 from helpers import dependency
 from skeletons.tutorial import ITutorialLoader
-
 
 class BCHangar(Hangar):
     tutorialLoader = dependency.descriptor(ITutorialLoader)

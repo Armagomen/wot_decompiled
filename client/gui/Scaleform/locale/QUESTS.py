@@ -76,7 +76,17 @@ class QUESTS(object):
     BONUSES_ITEM_ADDITIONBONUS = '#quests:bonuses/item/additionBonus'
     BONUSES_ITEM_TANKMEN_NO_SKILLS = '#quests:bonuses/item/tankmen/no_skills'
     BONUSES_ITEM_TANKMEN_WITH_SKILLS = '#quests:bonuses/item/tankmen/with_skills'
+    BONUSES_ITEM_NY23RANDOMRESOURCES = '#quests:bonuses/item/ny23RandomResources'
     BONUSES_NOTAVAILABLE = '#quests:bonuses/notAvailable'
+    BONUSNAME_NY22FILLERS = '#quests:bonusName/ny22Fillers'
+    BONUSNAME_NEWYEARSLOT = '#quests:bonusName/newYearSlot'
+    BONUSNAME_NYRANDOMRESOURCE = '#quests:bonusName/nyRandomResource'
+    BONUSNAME_NY_CRYSTAL = '#quests:bonusName/ny_crystal'
+    BONUSNAME_NY_EMERALD = '#quests:bonusName/ny_emerald'
+    BONUSNAME_NY_AMBER = '#quests:bonusName/ny_amber'
+    BONUSNAME_NY_IRON = '#quests:bonusName/ny_iron'
+    BONUSES_VARIADICDISCOUNT_DISCOUNTAMOUNT = '#quests:bonuses/variadicDiscount/discountAmount'
+    BONUSES_VARIADICDISCOUNT_BUTTONLABEL = '#quests:bonuses/variadicDiscount/buttonLabel'
     QUESTS_TITLE = '#quests:quests/title'
     QUESTS_TITLE_MANEUVERSQUESTS = '#quests:quests/title/maneuversQuests'
     QUESTS_TITLE_CURRENTLYAVAILABLE = '#quests:quests/title/currentlyAvailable'
@@ -949,6 +959,7 @@ class QUESTS(object):
     DETAILS_DOSSIER_27_BATTLESCOUNT = '#quests:details/dossier/27/battlesCount'
     DETAILS_DOSSIER_37_BATTLESCOUNT = '#quests:details/dossier/37/battlesCount'
     DETAILS_DOSSIER_39_BATTLESCOUNT = '#quests:details/dossier/39/battlesCount'
+    DETAILS_DOSSIER_42_BATTLESCOUNT = '#quests:details/dossier/42/battlesCount'
     DETAILS_DOSSIER_43_BATTLESCOUNT = '#quests:details/dossier/43/battlesCount'
     DETAILS_MODIFIERS_TITLE_DISCOUNT = '#quests:details/modifiers/title/discount'
     DETAILS_MODIFIERS_TITLE_SELLING = '#quests:details/modifiers/title/selling'
@@ -1642,6 +1653,7 @@ class QUESTS(object):
     GENERAL_INFO_BACK_TITLE = '#quests:general/info/back/title'
     GENERAL_INFO_BACK_GOTO = '#quests:general/info/back/goto'
     DAILYQUESTS_INFO_DAILYMISSIONS = '#quests:dailyQuests/info/dailyMissions'
+    DAILYQUESTS_INFO_NYDAILYMISSIONS = '#quests:dailyQuests/info/NYDailyMissions'
     DAILYQUESTS_INFO_DAILYMISSIONTITLE = '#quests:dailyQuests/info/dailyMissionTitle'
     DAILYQUESTS_INFO_BATTLEPASSDAILYMISSIONS = '#quests:dailyQuests/info/battlePassDailyMissions'
     DAILYQUESTS_INFO_BATTLEPASSDAILYMISSIONTITLE = '#quests:dailyQuests/info/battlePassDailyMissionTitle'
@@ -1715,6 +1727,13 @@ class QUESTS(object):
      BONUSNAME_BLUEPRINTS_NATION,
      BONUSNAME_BLUEPRINTS_NATION_ANY,
      BONUSNAME_BLUEPRINTS_UNIVERSAL,
+     BONUSNAME_NY22FILLERS,
+     BONUSNAME_NEWYEARSLOT,
+     BONUSNAME_NYRANDOMRESOURCE,
+     BONUSNAME_NY_CRYSTAL,
+     BONUSNAME_NY_EMERALD,
+     BONUSNAME_NY_AMBER,
+     BONUSNAME_NY_IRON,
      BONUSNAME_CREDITS,
      BONUSNAME_GOLD,
      BONUSNAME_CRYSTAL,
@@ -2175,6 +2194,7 @@ class QUESTS(object):
      DETAILS_DOSSIER_27_BATTLESCOUNT,
      DETAILS_DOSSIER_37_BATTLESCOUNT,
      DETAILS_DOSSIER_39_BATTLESCOUNT,
+     DETAILS_DOSSIER_42_BATTLESCOUNT,
      DETAILS_DOSSIER_43_BATTLESCOUNT)
     PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ENUM = (PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_USSR,
      PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_GERMANY,

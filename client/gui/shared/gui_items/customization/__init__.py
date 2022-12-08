@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/customization/__init__.py
 from collections import namedtuple
-
 from items.components.c11n_constants import ProjectionDecalDirectionTags
 from shared_utils import first
-
 
 def directionByTag(tags):
     directionTags = (tag for tag in tags if tag.startswith(ProjectionDecalDirectionTags.PREFIX))
@@ -19,11 +17,12 @@ def isNeedToMirrorProjectionDecal(item, slot):
     return False if itemDirection == ProjectionDecalDirectionTags.ANY or slotDirection == ProjectionDecalDirectionTags.ANY else itemDirection != slotDirection
 
 
-CustomizationTooltipContext = namedtuple('CustomizationTooltipContext', ('itemCD', 'vehicleIntCD', 'showInventoryBlock', 'level', 'showOnlyProgressBlock'))
+CustomizationTooltipContext = namedtuple('CustomizationTooltipContext', ('itemCD', 'vehicleIntCD', 'showInventoryBlock', 'level', 'showOnlyProgressBlock', 'context'))
 CustomizationTooltipContext.__new__.__defaults__ = (-1,
  -1,
  False,
  -1,
- False)
+ False,
+ None)
 C11nStyleProgressData = namedtuple('C11nStyleProgressData', ('styleID', 'branch', 'level'))
 C11nStyleProgressData.__new__.__defaults__ = (-1, -1, -1)

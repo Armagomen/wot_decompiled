@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/event_boards/event_boards_controller.py
 import logging
-
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ELEN_NOTIFICATIONS
 from adisp import adisp_process, adisp_async
@@ -10,24 +9,20 @@ from gui import SystemMessages
 from gui.Scaleform.genConsts.MISSIONS_CONSTANTS import MISSIONS_CONSTANTS
 from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.SystemMessages import SM_TYPE
-from gui.event_boards.event_boards_items import EventBoardsSettings, HangarFlagData, LeaderBoard, MyInfoInLeaderBoard, \
-    SET_DATA_STATUS_CODE, EVENT_STATE, PLAYER_STATE_REASON as _psr
+from gui.event_boards.event_boards_items import EventBoardsSettings, HangarFlagData, LeaderBoard, MyInfoInLeaderBoard, SET_DATA_STATUS_CODE, EVENT_STATE, PLAYER_STATE_REASON as _psr
+from gui.event_boards.event_boards_items import EventSettings
 from gui.event_boards.listener import IEventBoardsListener
 from gui.shared.utils.requesters.abstract import Response
 from gui.wgcg import IWebController
-from gui.wgcg.elen.contexts import EventBoardsGetEventDataCtx, EventBoardsGetPlayerDataCtx, EventBoardsJoinEventCtx, \
-    EventBoardsLeaveEventCtx, EventBoardsGetMyEventTopCtx, EventBoardsGetMyLeaderboardPositionCtx, \
-    EventBoardsGetLeaderboardCtx, EventBoardsGetHangarFlagCtx
+from gui.wgcg.elen.contexts import EventBoardsGetEventDataCtx, EventBoardsGetPlayerDataCtx, EventBoardsJoinEventCtx, EventBoardsLeaveEventCtx, EventBoardsGetMyEventTopCtx, EventBoardsGetMyLeaderboardPositionCtx, EventBoardsGetLeaderboardCtx, EventBoardsGetHangarFlagCtx
 from gui.wgcg.settings import WebRequestDataType as _crdt
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.event_boards_controllers import IEventBoardController
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 SUCCESS_STATUSES = (200, 201, 304)
-
 
 class EventBoardsController(IEventBoardController, IEventBoardsListener):
     clanController = dependency.descriptor(IWebController)
@@ -156,8 +151,7 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener):
     @adisp_async
     @adisp_process
     def getMyLeaderboardInfo(self, eventID, leaderboardID, callback, showNotification=True):
-        milbResponse = yield self.sendRequest(
-            EventBoardsGetMyLeaderboardPositionCtx(eventID, leaderboardID, showNotification))
+        milbResponse = yield self.sendRequest(EventBoardsGetMyLeaderboardPositionCtx(eventID, leaderboardID, showNotification))
         if milbResponse is not None:
             myInfoData = MyInfoInLeaderBoard()
             statusCode = myInfoData.setData(milbResponse.getData(), eventID, leaderboardID)
@@ -169,16 +163,14 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener):
 
     @adisp_async
     @adisp_process
-    def getLeaderboard(self, eventID, leaderboardID, pageNumber, callback, leaderBoardClass=None,
-                       showNotification=True):
+    def getLeaderboard(self, eventID, leaderboardID, pageNumber, callback, leaderBoardClass=None, showNotification=True):
         eventSettings = self.__eventBoardsSettings.getEventsSettings().getEvent(eventID)
         if eventSettings is None:
             _logger.error('No settings for %s event are loaded. Try to call getEvents() first.', eventID)
             callback(None)
             return
         else:
-            lbResponse = yield self.sendRequest(
-                EventBoardsGetLeaderboardCtx(eventID, leaderboardID, pageNumber, showNotification))
+            lbResponse = yield self.sendRequest(EventBoardsGetLeaderboardCtx(eventID, leaderboardID, pageNumber, showNotification))
             if lbResponse is not None:
                 mType = eventSettings.getMethod()
                 lbType = eventSettings.getType()
@@ -212,7 +204,7 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener):
             started = notifications.get(MISSIONS_CONSTANTS.ELEN_EVENT_STARTED_NOTIFICATION)
             finished = notifications.get(MISSIONS_CONSTANTS.ELEN_EVENT_FINISHED_NOTIFICATION)
             visited = notifications.get(MISSIONS_CONSTANTS.ELEN_EVENT_TAB_VISITED)
-            allEventID = [event.getEventID() for event in events]
+            allEventID = [ event.getEventID() for event in events ]
             started = started.intersection(allEventID)
             finished = finished.intersection(allEventID)
             visited = visited.intersection(allEventID)
@@ -225,16 +217,11 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener):
                     visited.add(eventID)
                 if event.isAtBeginning():
                     if eventID not in started and not event.hasCustomUI():
-                        SystemMessages.pushMessage(
-                            _ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_BODY, eventName=event.getName()),
-                            messageData={'header': _ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_HEADER)},
-                            type=SM_TYPE.OpenEventBoards)
+                        SystemMessages.pushMessage(_ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_BODY, eventName=event.getName()), messageData={'header': _ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_HEADER)}, type=SM_TYPE.OpenEventBoards)
                         started.add(eventID)
                 if event.isAfterEnd() and eventID in visited:
                     if eventID not in finished and not event.hasCustomUI():
-                        self.__complexWarningNotification(_ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_HEADER),
-                                                          _ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_BODY,
-                                                              eventName=event.getName()))
+                        self.__complexWarningNotification(_ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_HEADER), _ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_BODY, eventName=event.getName()))
                         finished.add(eventID)
 
             AccountSettings.setNotifications(ELEN_NOTIFICATIONS, notifications)
@@ -300,8 +287,7 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener):
 
     @staticmethod
     def __isSuccessResponse(response):
-        return isinstance(response, Response) and (
-                    response.getCode() == ResponseCodes.NO_ERRORS or response.extraCode in SUCCESS_STATUSES)
+        return isinstance(response, Response) and (response.getCode() == ResponseCodes.NO_ERRORS or response.extraCode in SUCCESS_STATUSES)
 
     @staticmethod
     def __complexWarningNotification(header, body):

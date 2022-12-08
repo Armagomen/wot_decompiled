@@ -1,11 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/extension_rules.py
 import re
-
 import ResMgr
-
 from soft_exception import SoftException
-
 EXTENSION_RULES_FILE = 'scripts/extension_rules.xml'
 g_cache = None
 

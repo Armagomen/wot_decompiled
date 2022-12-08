@@ -2,18 +2,16 @@
 # Embedded file name: scripts/client/vehicle_systems/components/debris_crashed_tracks.py
 import logging
 import random
-
 import CGF
-import GenericComponents
 import Vehicular
-import math_utils
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
-from constants import IS_CGF_DUMP, IS_EDITOR
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from items.vehicle_items import CHASSIS_ITEM_TYPE
 from vehicle_systems import tankStructure
+import math_utils
 from vehicle_systems.tankStructure import TankSoundObjectsIndexes
-
+import GenericComponents
+from constants import IS_CGF_DUMP, IS_EDITOR
 if not IS_CGF_DUMP:
     from CustomEffectManager import CustomEffectManager
 _logger = logging.getLogger(__name__)
@@ -187,7 +185,7 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
             soundObject.setRTPC(DebrisCrashedTracksManager.RTPC_OUTER_TRACK_STATE, rtpcValue)
             return
 
-    def __createDebris(self, track, debrisComponent):
+    def createDebris(self, track, debrisComponent):
         if not debrisComponent.shouldCreateDebris:
             return
         elif debrisComponent.trackPairDesc.tracksDebris is None or debrisComponent.debrisDesc.physicalParams is None or not debrisComponent.wheelsGameObject.isValid():
@@ -203,7 +201,7 @@ class DebrisCrashedTracksManager(CGF.ComponentManager):
 
     @onAddedQuery(Vehicular.CompositeTrack, TrackCrashWithDebrisComponent)
     def processCrash(self, track, debris):
-        self.__createDebris(track, debris)
+        self.createDebris(track, debris)
         amountOfBrokenTracks = self.__switchVehicleTrackVisibility(track, debris, False)
         self.__adjustTrackAudition(amountOfBrokenTracks, debris.wheelsGameObject)
         self.__generateDestructionEffect(debris)

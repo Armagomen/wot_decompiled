@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/epic/pre_queue/vehicles_watcher.py
 from itertools import chain
-
+import typing
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import isVehLevelUnlockableInBattle
 from gui.prb_control.entities.base.pre_queue.vehicles_watcher import BaseVehiclesWatcher
 from gui.shared.gui_items.Vehicle import Vehicle
@@ -9,7 +9,6 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-
 
 class EpicVehiclesWatcher(BaseVehiclesWatcher):
     _VEH_STATE_PRIORITIES = {Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE: 1,
@@ -20,7 +19,7 @@ class EpicVehiclesWatcher(BaseVehiclesWatcher):
     def _getUnsuitableVehicles(self, onClear=False):
         config = self.lobbyContext.getServerSettings().epicBattles
         vehs = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.LEVELS(config.validVehicleLevels)).itervalues()
-        eventVehs = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE ^ REQ_CRITERIA.VEHICLE.RANDOM_ONLY).itervalues()
+        eventVehs = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.EVENT_BATTLE).itervalues()
         clanWarsVehs = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CLAN_WARS).itervalues()
         comp7Vehs = self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.COMP7).itervalues()
         return chain(vehs, eventVehs, clanWarsVehs, comp7Vehs)

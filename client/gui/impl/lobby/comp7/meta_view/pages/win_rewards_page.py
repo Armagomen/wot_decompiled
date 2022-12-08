@@ -1,27 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/meta_view/pages/win_rewards_page.py
 import logging
-import typing
 from collections import namedtuple
-
+import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_UI_SECTION, COMP7_WIN_REWARDS_PAGE_WINS_COUNT
 from frameworks.wulf.view.array import fillIntsArray
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.win_rewards_model import WinRewardsModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.root_view_model import MetaRootViews
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.comp7.comp7_bonus_packer import packWinsRewardsQuestBonuses
-from gui.impl.lobby.comp7.comp7_lobby_sounds import MetaViewSounds
 from gui.impl.lobby.comp7.comp7_quest_helpers import getComp7WinsQuests
 from gui.impl.lobby.comp7.meta_view.pages import PageSubModelPresenter
+from gui.impl.lobby.comp7.comp7_lobby_sounds import MetaViewSounds
 from gui.impl.lobby.tooltips.additional_rewards_tooltip import AdditionalRewardsTooltip
 from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.server_events import IEventsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from frameworks.wulf import Array
+    from gui.server_events.event_items import Quest
+    from gui.impl.gen.view_models.views.lobby.comp7.comp7_bonus_model import Comp7BonusModel
 _logger = logging.getLogger(__name__)
 _BonusData = namedtuple('_BonusData', ('bonus', 'tooltip'))
 

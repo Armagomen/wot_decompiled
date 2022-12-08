@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/resource_well_preview.py
+from gui.impl.gen.view_models.views.lobby.vehicle_preview.top_panel.top_panel_tabs_model import TabID
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
-from gui.impl.gen.view_models.views.lobby.vehicle_preview.top_panel.top_panel_tabs_model import TabID
 from gui.resource_well.sounds import RESOURCE_WELL_SOUND_SPACE, SOUNDS
 from gui.shared import EVENT_BUS_SCOPE, events
 from helpers import dependency
 from skeletons.gui.game_control import IResourceWellController
 from skeletons.gui.shared.utils import IHangarSpace
-
 
 class ResourceWellVehiclePreview(VehiclePreview):
     _COMMON_SOUND_SPACE = RESOURCE_WELL_SOUND_SPACE

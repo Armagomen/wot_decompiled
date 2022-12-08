@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_royale/battle_result_view/battle_pass_progress.py
 from enum import Enum
-
 from frameworks.wulf import ViewModel
-
 
 class ChapterStates(Enum):
     ACTIVE = 'active'

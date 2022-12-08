@@ -2,18 +2,17 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/formaters.py
 import nations
 from gui import makeHtmlString
-from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
-from gui.Scaleform.locale.NATIONS import NATIONS
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.event_boards import event_boards_timer
-from gui.event_boards.event_boards_items import CALCULATION_METHODS
-from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
 from gui.impl import backport
-from gui.shared.formatters import icons, text_styles
-from gui.shared.gui_items import Vehicle
 from helpers import int2roman
+from gui.event_boards.event_boards_items import CALCULATION_METHODS
+from gui.event_boards import event_boards_timer
 from helpers.i18n import makeString as _ms
-
+from gui.Scaleform.locale.NATIONS import NATIONS
+from gui.shared.gui_items import Vehicle
+from gui.shared.formatters import icons, text_styles
+from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
 
 def formatNotAvailableTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_NOTAVAILABLEICON)

@@ -2,26 +2,23 @@
 # Embedded file name: scripts/client/web/web_client_api/strongholds/__init__.py
 import logging
 from functools import partial
-
 from adisp import adisp_process
 from constants import JOIN_FAILURE, PREBATTLE_TYPE
 from debug_utils import LOG_CURRENT_EXCEPTION
+from helpers import dependency
 from gui import DialogsInterface
 from gui.SystemMessages import pushMessage, SM_TYPE
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.entities.base.ctx import PrbAction, LeavePrbAction
-from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import CreateBaseExternalUnitCtx, \
-    JoinBaseExternalUnitCtx
+from gui.prb_control.entities.base.external_battle_unit.base_external_battle_ctx import CreateBaseExternalUnitCtx, JoinBaseExternalUnitCtx
 from gui.prb_control.formatters import messages
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from gui.shared import actions
 from gui.shared.items_parameters import params_helper, formatters
-from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IReloginController
 from skeletons.gui.shared import IItemsCache
 from web.web_client_api import w2capi, w2c, W2CSchema, Field
-
 _logger = logging.getLogger(__name__)
 
 class _StrongholdsJoinBattleSchema(W2CSchema):

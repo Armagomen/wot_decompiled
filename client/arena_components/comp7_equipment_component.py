@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/arena_components/comp7_equipment_component.py
-import logging
 from collections import defaultdict
-
+import typing
+import logging
+import GenericComponents
 import BigWorld
 import CGF
-import GenericComponents
 import Math
 import math_utils
 from arena_component_system.client_arena_component_system import ClientArenaComponent
@@ -16,9 +16,7 @@ from helpers import dependency
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IComp7Controller
-
 _logger = logging.getLogger(__name__)
-
 
 class Comp7EquipmentComponent(ClientArenaComponent):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -111,8 +109,7 @@ class _Effect(object):
     def isVisible(vehicle, value, checkTeam=True):
         if value.get('finishing', False):
             return False
-        return False if checkTeam and vehicle.publicInfo['team'] != avatar_getter.getPlayerTeam() else value.get(
-            'isSourceVehicle', False)
+        return False if checkTeam and vehicle.publicInfo['team'] != avatar_getter.getPlayerTeam() else value.get('isSourceVehicle', False)
 
     def _load(self):
         path = self._getPath()
@@ -167,8 +164,7 @@ class _AoeHealEffect(_Effect):
             _logger.error('Failed to update Effect radius. Missing TransformComponent component.')
             return
         else:
-            transformComponent.transform = math_utils.createSRTMatrix(Math.Vector3(self.radius, 1.0, self.radius),
-                                                                      (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+            transformComponent.transform = math_utils.createSRTMatrix(Math.Vector3(self.radius, 1.0, self.radius), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
             return
 
 

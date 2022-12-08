@@ -1,10 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/TextField.py
-import BigWorld
-import GUI
-
+import BigWorld, GUI, Keys
 from PyGUIBase import PyGUIBase
-
 
 class TextField(PyGUIBase):
     factoryString = 'PyGUI.TextField'

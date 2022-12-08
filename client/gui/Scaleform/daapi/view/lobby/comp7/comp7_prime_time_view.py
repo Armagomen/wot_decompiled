@@ -2,14 +2,13 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/comp7/comp7_prime_time_view.py
 from gui.Scaleform.daapi.view.lobby.prime_time_view_base import ServerListItemPresenter
 from gui.Scaleform.daapi.view.meta.Comp7PrimeTimeMeta import Comp7PrimeTimeMeta
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.periodic_battles.models import PrimeTimeStatus
-from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-from gui.shared.formatters import text_styles, time_formatters
 from helpers import dependency, time_utils
 from skeletons.gui.game_control import IComp7Controller
-
+from gui.prb_control.settings import PREBATTLE_ACTION_NAME
+from gui.periodic_battles.models import PrimeTimeStatus
+from gui.impl import backport
+from gui.impl.gen import R
+from gui.shared.formatters import text_styles, time_formatters
 
 class Comp7ServerPresenter(ServerListItemPresenter):
     _periodsController = dependency.descriptor(IComp7Controller)
@@ -36,16 +35,19 @@ class Comp7PrimeTimeView(Comp7PrimeTimeMeta):
     _serverPresenterClass = Comp7ServerPresenter
     __comp7Ctrl = dependency.descriptor(IComp7Controller)
 
-    def _getController(self):
-        return self.__comp7Ctrl
-
-    def _getUpdateEvent(self):
-        return self.__comp7Ctrl.onStatusUpdated
-
     def _populate(self):
         super(Comp7PrimeTimeView, self)._populate()
         self.as_setHeaderTextS(backport.text(R.strings.comp7.primeTimeView.title()))
         self.as_setBackgroundSourceS(backport.image(R.images.gui.maps.icons.comp7.backgrounds.prime_time_back()))
+
+    def _getController(self):
+        return self.__comp7Ctrl
+
+    def _startControllerListening(self):
+        self._getController().onStatusUpdated += self._onControllerUpdated
+
+    def _stopControllerListening(self):
+        self._getController().onStatusUpdated -= self._onControllerUpdated
 
     def _prepareData(self, serverList, serverInfo):
         isSingleServer = len(serverList) == 1

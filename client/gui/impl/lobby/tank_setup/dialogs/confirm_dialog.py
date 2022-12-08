@@ -1,22 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/confirm_dialog.py
 import logging
-
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.fitting_types import FittingTypes
 from gui.impl.gen.view_models.views.lobby.tank_setup.dialogs.ammunition_buy_model import AmmunitionBuyModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.dialogs.confirm_bottom_content_type import ConfirmBottomContentType
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
-from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
-from gui.impl.lobby.dialogs.buy_and_exchange import BuyAndExchange
 from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContentResult
-from gui.impl.lobby.tank_setup.dialogs.bottom_content.bottom_contents import AmmunitionBuyBottomContent
-from gui.impl.lobby.tank_setup.dialogs.helpers.ammunition_buy_helper import isFreeInstalling
+from gui.impl.lobby.dialogs.buy_and_exchange import BuyAndExchange
+from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum
+from gui.impl.lobby.tank_setup.dialogs.dialog_helpers.ammunition_buy_helper import isFreeInstalling
 from gui.impl.lobby.tank_setup.dialogs.main_content.main_contents import AmmunitionBuyMainContent
 from gui.shared.money import ZERO_MONEY
+from gui.impl.lobby.tank_setup.dialogs.bottom_content.bottom_contents import AmmunitionBuyBottomContent
 from gui.shared.utils.requesters import REQ_CRITERIA
-
 _logger = logging.getLogger(__name__)
 _SECTION_TO_FITTING_TYPE = {TankSetupConstants.BATTLE_BOOSTERS: FittingTypes.BOOSTER,
  TankSetupConstants.CONSUMABLES: FittingTypes.EQUIPMENT,

@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/arena_bonus_type_caps.py
-from BonusCaps import BonusCapsConfig
-from constants import ARENA_BONUS_TYPE_NAMES, IS_EDITOR
+from constants import ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, IS_EDITOR
 from debug_utils import LOG_ERROR
 from soft_exception import SoftException
-
+from BonusCaps import BonusCapsConfig
 
 class ARENA_BONUS_TYPE_CAPS():
     RESULTS = 'RESULTS'
@@ -152,6 +151,7 @@ class ARENA_BONUS_TYPE_CAPS():
     RTS_COMPONENT = 'RTS_COMPONENT'
     DISABLE_DEFAULT_SIXTH_SENSE = 'DISABLE_DEFAULT_SIXTH_SENSE'
     ANONYMIZER_ENEMY_TEAM = 'ANONYMIZER_ENEMY_TEAM'
+    NEW_YEAR_BONUSES = 'NEW_YEAR_BONUSES'
     DOSSIER_ACHIEVEMENTS = frozenset((DOSSIER_ACHIEVEMENTS_15X15,
      DOSSIER_ACHIEVEMENTS_RANKED15X15,
      DOSSIER_ACHIEVEMENTS_7X7,
@@ -184,8 +184,10 @@ class ARENA_BONUS_TYPE_CAPS():
     @staticmethod
     def get(arenaBonusType, **kwargs):
         overrideCaps = kwargs.get('specificOverrides', ARENA_BONUS_TYPE_CAPS.OVERRIDE_BONUS_CAPS)
-        bonusCapsConfig = BonusCapsConfig(overrideCaps)
         bonusCaps = ARENA_BONUS_TYPE_CAPS._typeToCaps.get(arenaBonusType, frozenset())
+        if not overrideCaps:
+            return bonusCaps
+        bonusCapsConfig = BonusCapsConfig(overrideCaps)
         return bonusCapsConfig.getModifiedBonusCaps(arenaBonusType, bonusCaps)
 
     @staticmethod

@@ -1,13 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/goodies/goodie_items.py
 import time
-import typing
 import weakref
-
+import typing
 import BigWorld
 import nations
 from constants import FORT_ORDER_TYPE
-from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE
+from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE, GOODIE_VARIETY, GOODIE_TARGET_TYPE
+from gui.goodies.goodies_constants import BoosterCategory
 from goodies.goodie_helpers import GOODIE_TEXT_TO_RESOURCE
 from gui import GUI_SETTINGS
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
@@ -16,11 +16,9 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.RES_SHOP_EXT import RES_SHOP_EXT
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.settings import ICONS_SIZES
-from gui.goodies.goodies_constants import BoosterCategory
 from gui.impl import backport
-from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PREMIUM_BOOSTER_IDS, \
-    MAX_ACTIVATED_BY_CATEGORY, UNATTAINABLE_BOOSTER_IDS
 from gui.impl.gen import R
+from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PREMIUM_BOOSTER_IDS, MAX_ACTIVATED_BY_CATEGORY, UNATTAINABLE_BOOSTER_IDS
 from gui.shared.economics import getActionPrc
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_ECONOMY_CODE, KPI, GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
@@ -31,9 +29,11 @@ from helpers import time_utils, dependency
 from helpers.i18n import makeString as _ms
 from shared_utils import CONST_CONTAINER, first
 from skeletons.gui.game_control import IEpicBattleMetaGameController
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Any, Callable, Tuple, List, Union
+    from gui.shared.money import Money
+    from skeletons.gui.goodies import IGoodiesCache
+    from gui.game_control.epic_meta_game_ctrl import EpicBattleMetaGameController
 MAX_ACTIVE_BOOSTERS_COUNT = 3
 
 class BOOSTER_QUALITY_NAMES(CONST_CONTAINER):
@@ -345,10 +345,6 @@ class Booster(BoosterUICommon):
         return BOOSTER_QUALITY_NAMES.MEDIUM if self.effectValue >= boosterQualityValues[BOOSTER_QUALITY_NAMES.MEDIUM] else BOOSTER_QUALITY_NAMES.SMALL
 
     @property
-    def qualityStr(self):
-        return _ms(MENU.boosterQualityLocale(self.quality))
-
-    @property
     def inCooldown(self):
         return self.state == GOODIE_STATE.ACTIVE
 
@@ -373,10 +369,6 @@ class Booster(BoosterUICommon):
                     return self.effectValue > aEffectValue
 
         return False
-
-    @property
-    def fullUserName(self):
-        return _ms(MENU.BOOSTERSWINDOW_BOOSTERSTABLERENDERER_HEADER, boosterName=self.userName, quality=self.qualityStr)
 
     @property
     def shortDescriptionSpecial(self):

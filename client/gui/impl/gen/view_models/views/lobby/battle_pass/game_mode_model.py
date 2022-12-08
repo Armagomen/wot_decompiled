@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/game_mode_model.py
 from enum import IntEnum
-
 from frameworks.wulf import ViewModel
+from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_card_model import GameModeCardModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_rows_model import GameModeRowsModel
-from gui.impl.wrappers.user_list_model import UserListModel
-
 
 class ArenaBonusType(IntEnum):
     REGULAR = 1

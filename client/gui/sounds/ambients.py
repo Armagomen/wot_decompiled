@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/sounds/ambients.py
 from collections import defaultdict
-
 import MusicControllerWWISE as _MC
 from Event import Event
 from constants import ARENA_PERIOD as _PERIOD
@@ -20,7 +19,6 @@ from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader, GuiGlobalSpaceID
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.shared.utils import IHangarSpace
-
 
 def _getViewSoundEnv(view):
     if hasattr(view, 'getDynamicSoundEnv'):

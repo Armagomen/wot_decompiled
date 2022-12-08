@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgnc/xml/gui_parsers.py
 from debug_utils import LOG_WARNING
-from gui.wgnc import gui_items
 from gui.wgnc.settings import WGNC_POP_UP_PRIORITIES
 from gui.wgnc.xml.format_by_tags import formatText
 from gui.wgnc.xml.shared_parsers import ParsersCollection, SectionParser
-
+from gui.wgnc import gui_items
 
 class _ButtonsParser(SectionParser):
 
@@ -74,7 +73,7 @@ class _PopUpParser(SectionParser):
             buttons = sub.parse(section[sub.getTagName()])
         else:
             buttons = None
-        return gui_items.PopUpItem(body, topic, priority, buttons, icon, bg, group, isNotify)
+        return gui_items.createPopUpItem(body, topic, priority, buttons, icon, bg, group, isNotify)
 
 
 class _WindowParser(SectionParser):

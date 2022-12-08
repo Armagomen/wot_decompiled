@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/barracks/barracks_data_provider.py
+from typing import Dict
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform import MENU
 from gui.Scaleform.framework.entities.DAAPIDataProvider import DAAPIDataProvider
@@ -9,6 +10,7 @@ from gui.impl import backport
 from gui.server_events import recruit_helper
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Tankman import Tankman, getCrewSkinIconSmallWithoutPath
+from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.gui_items.crew_skin import localizedFullName
 from gui.shared.money import Currency
 from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
@@ -128,6 +130,7 @@ def _packNotRecruitedTankman(recruitInfo):
      'notRecruited': True,
      'isRankNameVisible': True,
      'recoveryPeriodText': None,
+     'roles': availableRoles if len(availableRoles) == 1 else [],
      'actionBtnLabel': MENU.BARRACKS_BTNRECRUITNOTRECRUITED,
      'actionBtnTooltip': TOOLTIPS.BARRACKS_TANKMEN_RECRUIT,
      'skills': [],

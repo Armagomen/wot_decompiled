@@ -1,24 +1,22 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/control/bootcamp/lobby/functional.py
 from functools import partial
-
 import BigWorld
 import VSE
-from PlayerEvents import g_playerEvents
+from visual_script import ASPECT
+from wg_async import wg_await, wg_async
 from gui.platform.base.statuses.constants import StatusTypes
 from gui.shared.event_dispatcher import showDemoAccRenamingOverlay
-from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
 from skeletons.gui.shared.utils import IHangarSpace
-from tutorial.control.context import SOUND_EVENT
 from tutorial.control.functional import FunctionalCondition, FunctionalEffect, FunctionalChapterContext
 from tutorial.gui import GUI_EFFECT_NAME
 from tutorial.logger import LOG_DEBUG, LOG_ERROR, LOG_WARNING
-from visual_script import ASPECT
-from wg_async import wg_await, wg_async
-
+from helpers import dependency
+from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
+from PlayerEvents import g_playerEvents
+from tutorial.control.context import SOUND_EVENT
 
 class FunctionalCheckpointReachedCondition(FunctionalCondition):
 

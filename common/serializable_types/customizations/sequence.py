@@ -1,14 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serializable_types/customizations/sequence.py
 from collections import OrderedDict
-
 from constants import IS_EDITOR
 from serialization.field import intField, xmlOnlyIntField, xmlOnlyFloatArrayField
 from serialization.serializable_component import SerializableComponent
 from wrapped_reflection_framework import ReflectionMetaclass
-
 from ..types import C11nSerializationTypes
-
 __all__ = ('SequenceComponent',)
 
 class SequenceComponent(SerializableComponent):

@@ -1,43 +1,39 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/common_tank_appearance.py
-import logging
 import math
 import random
-
+import logging
 import BigWorld
 import CGF
-import DataLinks
 import GenericComponents
-import Math
-import NetworkFilters
 import Triggers
+import Math
+import DataLinks
 import Vehicular
+import NetworkFilters
 import material_kinds
-from CustomEffectManager import CustomEffectManager, EffectSettings
-from ModelHitTester import ModelStatus
-from VehicleStickers import VehicleStickers
 from constants import IS_EDITOR, VEHICLE_SIEGE_STATE
-from helpers import bound_effects, gEffectsDisabled
-from helpers import isPlayerAvatar
+from CustomEffectManager import CustomEffectManager, EffectSettings
 from helpers.EffectMaterialCalculation import calcEffectMaterialIndex
-from items.battle_royale import isSpawnedBot
+from VehicleStickers import VehicleStickers
+from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
+from cgf_obsolete_script.auto_properties import AutoProperty
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from items.vehicle_items import CHASSIS_ITEM_TYPE
-from vehicle_systems import camouflages
 from vehicle_systems import model_assembler
-from vehicle_systems.components.CrashedTracks import CrashedTrackController
-from vehicle_systems.components.debris_crashed_tracks import TrackCrashWithDebrisComponent
-from vehicle_systems.components.siegeEffectsController import SiegeEffectsController
-from vehicle_systems.components.vehicleDecal import VehicleDecal
-from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
-from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, \
-    TankPartIndexes, TankNodeNames, TankRenderMode, CgfTankNodes
+from vehicle_systems import camouflages
 from vehicle_systems.vehicle_damage_state import VehicleDamageState
-
-from cgf_obsolete_script.auto_properties import AutoProperty
-from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
+from vehicle_systems.tankStructure import VehiclePartsTuple, ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes, TankNodeNames, TankRenderMode, CgfTankNodes
+from vehicle_systems.components.CrashedTracks import CrashedTrackController
+from vehicle_systems.components.vehicleDecal import VehicleDecal
+from vehicle_systems.components.siegeEffectsController import SiegeEffectsController
+from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
+from helpers import bound_effects, gEffectsDisabled
 from vehicle_outfit.outfit import Outfit
-
+from items.battle_royale import isSpawnedBot
+from helpers import isPlayerAvatar
+from ModelHitTester import ModelStatus
+from vehicle_systems.components.debris_crashed_tracks import TrackCrashWithDebrisComponent
 _logger = logging.getLogger(__name__)
 DEFAULT_STICKERS_ALPHA = 1.0
 MATKIND_COUNT = 3
@@ -134,6 +130,7 @@ class CommonTankAppearance(ScriptGameObject):
     lodCalculator = ComponentDescriptor()
     shadowManager = ComponentDescriptor()
     siegeEffects = ComponentDescriptor()
+    siegeState = ComponentDescriptor()
     suspension = ComponentDescriptor()
     suspensionSound = ComponentDescriptor()
     swingingAnimator = ComponentDescriptor()
@@ -780,6 +777,8 @@ class CommonTankAppearance(ScriptGameObject):
             return
 
     def onSiegeStateChanged(self, newState, timeToNextMode):
+        if self.siegeState is not None:
+            self.siegeState.onSiegeStateChanged(newState)
         if self.engineAudition is not None:
             self.engineAudition.onSiegeStateChanged(newState)
         if self.hullAimingController is not None:

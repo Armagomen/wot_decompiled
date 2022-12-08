@@ -3,7 +3,6 @@
 import cPickle
 import logging
 from functools import partial
-
 import BigWorld
 from AccountCommands import RES_SUCCESS, RES_FAILURE
 from gui import SystemMessages
@@ -14,7 +13,6 @@ from helpers import dependency
 from messenger.formatters.service_channel import QuestAchievesFormatter
 from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 from skeletons.gui.system_messages import ISystemMessages
-
 _logger = logging.getLogger(__name__)
 
 class ReceiveOfferGiftProcessor(Processor):

@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/customization_quests_common.py
+from typing import Dict, Optional
 from copy import deepcopy
-
-from constants import CUSTOMIZATION_PROGRESS_PREFIX as PREFIX, EVENT_TYPE
 from items import vehicles
-from items.components.c11n_components import CustomizationType
-
+from constants import CUSTOMIZATION_PROGRESS_PREFIX as PREFIX, EVENT_TYPE
+from items.components.c11n_components import CustomizationType, QuestProgressForCustomization as qpc
 SEPARATOR = '_'
 TEMPLATE = PREFIX + SEPARATOR.join(['{styleId}', '{groupID}'])
 

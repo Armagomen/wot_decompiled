@@ -2,16 +2,13 @@
 # Embedded file name: scripts/client/PoiTeamInfoComponent.py
 import logging
 import typing
-
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
-from items import vehicles
 from script_component.ScriptComponent import ScriptComponent
-
 from helpers import dependency
+from items import vehicles
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.interfaces import IPointsOfInterestController
 _logger = logging.getLogger(__name__)
 
 class PoiTeamInfoComponent(ScriptComponent):

@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/common/personal_reserves/booster_model.py
 from enum import Enum, IntEnum
-
 from frameworks.wulf import ViewModel
 from gui.impl.wrappers.user_compound_price_model import UserCompoundPriceModel
-
 
 class ReserveType(Enum):
     PERSONAL = 'personal'

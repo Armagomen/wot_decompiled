@@ -1,17 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/ranked_battles/ranked_models.py
 import operator
+import typing
 from collections import namedtuple
-
-from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
-from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.periodic_battles.models import AlertData
 from gui.ranked_battles.constants import RankTypes, ZERO_RANK_ID, ZERO_DIVISION_ID
+from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from season_common import GameSeason
 from shared_utils import CONST_CONTAINER, first
-
 ShieldStatus = namedtuple('ShieldStatus', 'prevHP, hp, maxHP, shieldState, newShieldState')
 RankData = namedtuple('RankData', 'rank, steps')
 BattleRankInfo = namedtuple('BattleRankInfo', 'level, division, isGroup')

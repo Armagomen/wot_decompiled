@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/battle_results/reusable/shared.py
 import functools
 import operator
-
 from account_shared import getFairPlayViolationName
 from constants import DEATH_REASON_ALIVE
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -14,7 +13,6 @@ from gui.shared.gui_items import Vehicle
 from gui.shared.gui_items.dossier import getAchievementFactory
 from items import vehicles as vehicles_core
 from shared_utils import findFirst
-
 
 def makeAchievementFromPersonal(results):
     popUps = results.get('dossierPopUps', [])
@@ -377,17 +375,7 @@ class _VehicleInfo(object):
 
 
 class VehicleDetailedInfo(_VehicleInfo):
-    __slots__ = (
-    '_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted', '_piercings', '_piercingEnemyHits',
-    '_piercingsReceived', '_damageDealt', '_tdamageDealt', '_sniperDamageDealt', '_artilleryFortEquipDamageDealt',
-    '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio', '_damageAssistedStun', '_stunNum',
-    '_stunDuration', '_rickochetsReceived', '_noDamageDirectHitsReceived', '_targetKills', '_directHits',
-    '_directEnemyHits', '_directHitsReceived', '_explosionHits', '_explosionHitsReceived', '_shots', '_kills',
-    '_tkills', '_damaged', '_mileage', '_capturePoints', '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller',
-    '_isKilledByTeamKiller', '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt',
-    '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther', '_xpPenalty', '_numDefended',
-    '_vehicleNumCaptured', '_numRecovered', '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel',
-    '_prestigePoints', '_roleSkillUsed', '_healthRepair', '_alliedHealthRepair', '_entityCaptured')
+    __slots__ = ('_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted', '_piercings', '_piercingEnemyHits', '_piercingsReceived', '_damageDealt', '_tdamageDealt', '_sniperDamageDealt', '_artilleryFortEquipDamageDealt', '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio', '_damageAssistedStun', '_stunNum', '_stunDuration', '_rickochetsReceived', '_noDamageDirectHitsReceived', '_targetKills', '_directHits', '_directEnemyHits', '_directHitsReceived', '_explosionHits', '_explosionHitsReceived', '_shots', '_kills', '_tkills', '_damaged', '_mileage', '_capturePoints', '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller', '_isKilledByTeamKiller', '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt', '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther', '_xpPenalty', '_numDefended', '_vehicleNumCaptured', '_numRecovered', '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel', '_prestigePoints', '_roleSkillUsed', '_healthRepair', '_alliedHealthRepair', '_entityCaptured')
 
     def __init__(self, vehicleID, vehicle, player, deathReason=DEATH_REASON_ALIVE):
         super(VehicleDetailedInfo, self).__init__(vehicleID, player, deathReason)
@@ -686,8 +674,7 @@ class VehicleDetailedInfo(_VehicleInfo):
 
     @classmethod
     @no_key_error
-    def makeForEnemy(cls, vehicleID, vehicle, player, detailsRecords, deathReason=DEATH_REASON_ALIVE,
-                     isTeamKiller=False):
+    def makeForEnemy(cls, vehicleID, vehicle, player, detailsRecords, deathReason=DEATH_REASON_ALIVE, isTeamKiller=False):
         info = cls(vehicleID, vehicle, player, deathReason=deathReason)
         info._critsInfo = makeCritsInfo(detailsRecords['crits'])
         info._rickochetsReceived = detailsRecords['rickochetsReceived']
@@ -742,8 +729,7 @@ class VehicleDetailedInfo(_VehicleInfo):
         info._destructiblesNumDestroyed = vehicleRecords['destructiblesNumDestroyed']
         info._destructiblesDamageDealt = vehicleRecords['destructiblesDamageDealt']
         info._numDefended = vehicleRecords['numDefended']
-        info._equipmentDamageAssisted = vehicleRecords.get('damageAssistedInspire', 0) + vehicleRecords.get(
-            'damageAssistedSmoke', 0)
+        info._equipmentDamageAssisted = vehicleRecords.get('damageAssistedInspire', 0) + vehicleRecords.get('damageAssistedSmoke', 0)
         info._achievedLevel = vehicleRecords.get('achivedLevel', 0)
         info._prestigePoints = vehicleRecords.get('comp7PrestigePoints', 0)
         info._roleSkillUsed = vehicleRecords.get('roleSkillUsed', 0)

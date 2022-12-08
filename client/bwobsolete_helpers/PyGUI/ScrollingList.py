@@ -1,12 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/ScrollingList.py
-import BigWorld
-import GUI
-import Keys
-
+import BigWorld, GUI, Keys
 import Utils
 from PyGUIBase import PyGUIBase
-
 ITEM_MARGIN = 0.05
 
 class ScrollingList(PyGUIBase):

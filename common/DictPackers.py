@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/DictPackers.py
 import copy
+from debug_utils import LOG_ERROR
 from binascii import crc32
 from functools import partial
-
-from debug_utils import LOG_ERROR
-
 
 def roundToInt(val):
     return int(round(val))

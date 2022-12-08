@@ -4,12 +4,11 @@ from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.meta.ExchangeWindowMeta import ExchangeWindowMeta
 from gui.shared.gui_items.processors.common import GoldToCreditsExchanger
-from gui.shared.money import Currency
 from gui.shared.utils import decorators
+from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
-
 
 class ExchangeWindow(ExchangeWindowMeta):
     itemsCache = dependency.descriptor(IItemsCache)

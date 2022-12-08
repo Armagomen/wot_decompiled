@@ -2,8 +2,9 @@
 # Embedded file name: scripts/client/skeletons/gui/server_events.py
 import typing
 if typing.TYPE_CHECKING:
+    from typing import Optional, Dict, Callable, Union
     from Event import Event
-
+    from gui.server_events.event_items import DailyEpicTokenQuest, Quest, DailyQuest, PremiumQuest
 
 class IEventsCache(object):
     onSyncStarted = None
@@ -12,6 +13,7 @@ class IEventsCache(object):
     onEventsVisited = None
     onProfileVisited = None
     onPersonalQuestsVisited = None
+    onQuestConditionUpdated = None
 
     def init(self):
         raise NotImplementedError
@@ -26,6 +28,10 @@ class IEventsCache(object):
         raise NotImplementedError
 
     def clear(self):
+        raise NotImplementedError
+
+    @property
+    def isStarted(self):
         raise NotImplementedError
 
     @property
@@ -80,7 +86,7 @@ class IEventsCache(object):
     def getRankedQuests(self, filterFunc=None):
         raise NotImplementedError
 
-    def getAllQuests(self, filterFunc=None, includePersonalMissions=False):
+    def getAllQuests(self, filterFunc=None, includePersonalMissions=False, includeCelebrityQuests=False):
         raise NotImplementedError
 
     def getActions(self, filterFunc=None):
@@ -90,6 +96,12 @@ class IEventsCache(object):
         raise NotImplementedError
 
     def getAnnouncedActions(self):
+        raise NotImplementedError
+
+    def getQuestByID(self, qID):
+        raise NotImplementedError
+
+    def getQuestsByIDs(self, qIDs):
         raise NotImplementedError
 
     def getEvents(self, filterFunc=None):
@@ -122,7 +134,7 @@ class IEventsCache(object):
     def isBalancedSquadEnabled(self):
         raise NotImplementedError
 
-    def getBalancedSquadBounds(self):
+    def getBalancedSquadBounds(self, tag='default'):
         raise NotImplementedError
 
     def isSquadXpFactorsEnabled(self):

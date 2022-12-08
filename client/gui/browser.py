@@ -2,12 +2,10 @@
 # Embedded file name: scripts/client/gui/browser.py
 import logging
 import typing
-
 from web.client_web_api.common import WebEventSender
 from web.web_client_api import WebCommandHandler
-
 if typing.TYPE_CHECKING:
-    pass
+    from WebBrowser import WebBrowser
 _logger = logging.getLogger(__name__)
 
 class BrowserViewWebHandlers(object):

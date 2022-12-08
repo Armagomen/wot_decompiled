@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/premature_leave.py
 from BWUtil import AsyncReturn
+from wg_async import wg_await, wg_async
 from gui.impl.gen import R
 from gui.impl.pub.dialog_window import DialogButtons
-from wg_async import wg_await, wg_async
-
 _DIMMER_ALPHA = 0.7
 
 @wg_async

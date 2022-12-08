@@ -1,10 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/recruit_window/recruit_dialog_utils.py
-from gui.impl import backport
 from gui.impl.gen.resources import R
+from gui.impl import backport
 from gui.server_events import recruit_helper
 from gui.shared.utils.functions import replaceHyphenToUnderscore
-
 
 def getTitle(name=None):
     if name:

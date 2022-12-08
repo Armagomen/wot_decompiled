@@ -1,21 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/reserves_activation_view.py
-import logging
 from typing import TYPE_CHECKING
-
+import logging
 from PlayerEvents import g_playerEvents
-from frameworks.wulf import ViewFlags, ViewSettings, ViewModel
+from frameworks.wulf import ViewFlags, ViewSettings, Array, ViewEvent, Window, ViewModel
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPersonalReservesUrl
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.game_control import BoostersController
 from gui.goodies.goodie_items import ClanReservePresenter
 from gui.goodies.goodies_constants import BoosterCategory
 from gui.impl.backport import BackportTooltipWindow, createTooltipData
-from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER, \
-    GOODIES_TYPE_TO_CLAN_BOOSTERS
-from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import \
-    getPersonalBoosterModelDataByResourceType, addPersonalBoostersGroup, addBoosterModel, addEventGroup
+from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER, GOODIES_TYPE_TO_CLAN_BOOSTERS
+from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import getPersonalBoosterModelDataByResourceType, addPersonalBoostersGroup, addBoosterModel, addEventGroup
 from gui.impl.gen import R
+from gui.impl.gen.view_models.common.personal_reserves.booster_model import BoosterModel
 from gui.impl.gen.view_models.common.personal_reserves.reserves_activation_view_model import ReservesActivationViewModel
 from gui.impl.gen.view_models.common.personal_reserves.reserves_group_model import ReservesGroupModel, GroupCategory
 from gui.impl.gui_decorators import args2params
@@ -32,13 +31,19 @@ from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
-
+from uilogging.personal_reserves.logging_constants import PersonalReservesLogKeys
+from uilogging.personal_reserves.loggers import PersonalReservesMetricsLogger
 _logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
-    pass
-
+    from typing import Dict, List, Optional
+    from gui.game_control.epic_meta_game_ctrl import EpicBattleMetaGameController
+    from gui.goodies.goodies_cache import GoodiesCache
+    from gui.shared.items_cache import ItemsCache
+    from gui.wgcg.web_controller import WebController
+    from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import BoosterModelData
 
 class ReservesActivationView(ReservesViewMonitor):
+    __slots__ = ('__destroyViewObject', '_uiLogger')
     _goodiesCache = dependency.descriptor(IGoodiesCache)
     _boosters = dependency.descriptor(IBoostersController)
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -49,6 +54,7 @@ class ReservesActivationView(ReservesViewMonitor):
     def __init__(self, layoutID=R.views.lobby.personal_reserves.ReservesActivationView()):
         settings = ViewSettings(layoutID, flags=ViewFlags.LOBBY_TOP_SUB_VIEW, model=ReservesActivationViewModel())
         super(ReservesActivationView, self).__init__(settings)
+        self._uiLogger = PersonalReservesMetricsLogger(parent=PersonalReservesLogKeys.HANGAR, item=PersonalReservesLogKeys.ACTIVATION_WINDOW)
 
     @property
     def viewModel(self):
@@ -56,6 +62,7 @@ class ReservesActivationView(ReservesViewMonitor):
 
     def _initialize(self, *args, **kwargs):
         super(ReservesActivationView, self)._initialize(*args, **kwargs)
+        self._uiLogger.onViewInitialize()
         self.initListeners()
 
     def _onLoaded(self, *args, **kwargs):
@@ -87,6 +94,7 @@ class ReservesActivationView(ReservesViewMonitor):
         ReservesActivationView._boosters.onBoosterChangeNotify -= self.onBoosterChangeNotify
         g_playerEvents.onClientUpdated -= self.onItemsCacheChanged
         self.__finalizeSounds()
+        self._uiLogger.onViewFinalize()
         super(ReservesActivationView, self)._finalize()
 
     def getClanBoostersByType(self):
@@ -135,7 +143,7 @@ class ReservesActivationView(ReservesViewMonitor):
         self.fillViewModel()
 
     def onInformationClicked(self, *args, **kwargs):
-        showPersonalReservesIntro(callbackOnClose=showBoostersActivation)
+        showPersonalReservesIntro(callbackOnClose=showBoostersActivation, uiLoggingKey=PersonalReservesLogKeys.ACTIVATION_WINDOW)
 
     def onClose(self, *args, **kwargs):
         showHangar()

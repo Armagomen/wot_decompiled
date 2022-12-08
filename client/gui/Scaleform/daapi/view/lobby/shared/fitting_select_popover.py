@@ -1,30 +1,31 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/fitting_select_popover.py
 import logging
-
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+import typing
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
-from gui.Scaleform.daapi.view.lobby.shared.fitting_select.module_extenders import fittingSelectModuleExtenders
 from gui.Scaleform.daapi.view.meta.FittingSelectPopoverMeta import FittingSelectPopoverMeta
-from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
+from gui.Scaleform.daapi.view.lobby.shared.fitting_select.module_extenders import ModuleParamsExtender, fittingSelectModuleExtenders
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from gui.Scaleform.locale.MENU import MENU
-from gui.shared import event_dispatcher as shared_events
-from gui.shared.formatters import text_styles, getItemPricesVOWithReason
 from gui.shared.formatters.text_styles import builder as str_builder
 from gui.shared.gui_items import GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE, GUI_ITEM_ECONOMY_CODE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.fitting_item import FittingItem
-from gui.shared.gui_items.items_actions import factory as ItemsActionsFactory
+from gui.shared.gui_items.vehicle_modules import VehicleModule
 from gui.shared.items_parameters import params_helper
 from gui.shared.items_parameters.formatters import formatModuleParamName, formatParameter
 from gui.shared.utils import EXTRA_MODULE_INFO
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency, i18n
 from helpers.i18n import makeString as _ms
+from gui.shared.formatters import text_styles, getItemPricesVOWithReason
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+from gui.shared.gui_items.items_actions import factory as ItemsActionsFactory
+from gui.shared import event_dispatcher as shared_events
 from items import getTypeInfoByName
+from items.vehicles import VehicleDescriptor
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 FITTING_MODULES = (GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CHASSIS],
  GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.TURRET],
@@ -32,7 +33,7 @@ FITTING_MODULES = (GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CHASSIS],
  GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ENGINE],
  GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.RADIO])
 _PARAMS_LISTS = {GUI_ITEM_TYPE.RADIO: ('radioDistance',),
- GUI_ITEM_TYPE.CHASSIS: ('rotationSpeed', 'maxSteeringLockAngle', 'maxLoad', 'chassisRepairTime'),
+ GUI_ITEM_TYPE.CHASSIS: ('maxLoad', 'rotationSpeed', 'maxSteeringLockAngle', 'chassisRepairTime'),
  GUI_ITEM_TYPE.ENGINE: ('enginePower', 'fireStartingChance'),
  GUI_ITEM_TYPE.TURRET: ('armor', 'rotationSpeed', 'circularVisionRadius'),
  GUI_ITEM_TYPE.GUN: ('avgDamageList', 'avgPiercingPower', 'reloadTime')}

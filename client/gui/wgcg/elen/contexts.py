@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/wgcg/elen/contexts.py
-from gui.shared.utils.requesters import RequestCtx
 from gui.wgcg.settings import WebRequestDataType
-
+from gui.shared.utils.requesters import RequestCtx
 
 class EventBoardsRequestCtx(RequestCtx):
     __slots__ = ('_needShowErrorNotification',)

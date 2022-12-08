@@ -2,23 +2,25 @@
 # Embedded file name: scripts/client/gui/impl/battle/battle_page/full_stats/personal_reserves_tab_view.py
 import logging
 import typing
-
 import BigWorld
 from frameworks.wulf import ViewFlags, ViewSettings
-from frameworks.wulf import ViewModel
 from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER
-from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import \
-    getPersonalBoosterModelDataByResourceType, addPersonalBoostersGroup, addEventGroup
+from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import getPersonalBoosterModelDataByResourceType, addPersonalBoostersGroup, addEventGroup
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.battle.battle_page.personal_reserves_tab_view_model import \
-    PersonalReservesTabViewModel
+from gui.impl.gen.view_models.views.battle.battle_page.personal_reserves_tab_view_model import PersonalReservesTabViewModel
 from gui.impl.gui_decorators import args2params
 from gui.impl.pub import ViewImpl
 from helpers import dependency
 from skeletons.gui.goodies import IBoostersStateProvider
-
+from frameworks.wulf import ViewModel
 if typing.TYPE_CHECKING:
-    pass
+    from typing import List, Dict
+    from frameworks.wulf import Array
+    from frameworks.wulf.view.view import View
+    from frameworks.wulf.view.view_event import ViewEvent
+    from gui.goodies.booster_state_provider import BoosterStateProvider
+    from gui.impl.gen.view_models.common.personal_reserves.reserves_group_model import ReservesGroupModel
+    from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import BoosterModelData
 _logger = logging.getLogger(__name__)
 
 class PersonalReservesTabView(ViewImpl):

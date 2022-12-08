@@ -3,19 +3,17 @@
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import IS_CUSTOMIZATION_INTRO_VIEWED
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.customization.constants import CustomizationModes
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.customization.progression_styles.onboarding_view_model import \
-    OnboardingViewModel
+from gui.impl.gen.view_models.views.lobby.customization.progression_styles.onboarding_view_model import OnboardingViewModel
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyWindow
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from items import vehicles
 from shared_utils import findFirst
 from skeletons.gui.customization import ICustomizationService
-
 
 @dependency.replace_none_kwargs(service=ICustomizationService)
 def _onCustomizationLoadedCallback(service=None):

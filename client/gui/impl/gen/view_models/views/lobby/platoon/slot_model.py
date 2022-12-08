@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/slot_model.py
 from enum import Enum, IntEnum
-
 from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.platoon.player_model import PlayerModel
 from gui.impl.gen.view_models.views.lobby.platoon.slot_label_element_model import SlotLabelElementModel
-
 
 class PrebattleType(Enum):
     SQUAD = 'squad'

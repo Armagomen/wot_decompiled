@@ -2,12 +2,14 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BattleSessionWindow.py
 import functools
 import logging
-
 import BigWorld
+from account_helpers.AccountSettings import CLAN_PREBATTLE_SORTING_KEY
+from gui.impl import backport
+from gui.impl.gen import R
+from shared_utils import safeCancelCallback
 import constants
 import nations
 from account_helpers import getAccountDatabaseID, getPlayerID, AccountSettings
-from account_helpers.AccountSettings import CLAN_PREBATTLE_SORTING_KEY
 from adisp import adisp_process
 from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES, PREBATTLE_ERRORS, PREBATTLE_TYPE
 from gui import SystemMessages
@@ -15,19 +17,14 @@ from gui import makeHtmlString
 from gui.Scaleform.daapi.view.meta.BattleSessionWindowMeta import BattleSessionWindowMeta
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.prb_control import formatters, prb_getters
 from gui.prb_control.entities.base.legacy.ctx import AssignLegacyCtx, KickPlayerCtx, SetPlayerStateCtx
-from gui.prb_control.settings import PREBATTLE_ROSTER, REQUEST_TYPE, PREBATTLE_SETTING_NAME, PREBATTLE_PROPERTY_NAME, \
-    PREBATTLE_PLAYERS_COMPARATORS
+from gui.prb_control.settings import PREBATTLE_ROSTER, REQUEST_TYPE, PREBATTLE_SETTING_NAME, PREBATTLE_PROPERTY_NAME, PREBATTLE_PLAYERS_COMPARATORS
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.shared.formatters import text_styles
 from gui.shared.utils import functions
 from helpers import time_utils, i18n, dependency
-from shared_utils import safeCancelCallback
 from skeletons.gui.web import IWebController
-
 _R_SORT = R.strings.prebattle.labels.sort
 _logger = logging.getLogger(__name__)
 

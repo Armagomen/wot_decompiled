@@ -1,15 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/auxiliary/view_monitor.py
+from typing import TYPE_CHECKING
 import logging
 import weakref
-from typing import TYPE_CHECKING
-
 from frameworks.wulf import ViewStatus
+from gui.impl.pub import ViewImpl
 from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
-
 if TYPE_CHECKING:
-    pass
+    from typing import Optional, Set, Iterable
 _logger = logging.getLogger(__name__)
 
 class ViewMonitor(object):
@@ -45,5 +44,5 @@ class ViewMonitor(object):
                 return
 
             if newView.layer == self._view.layer and newView.uniqueID != self._view.uniqueID:
-                self._view.destroy()
+                self._view.destroyWindow()
                 _logger.info('View %r has been destroyed by opening new view %r', self._view, newView)

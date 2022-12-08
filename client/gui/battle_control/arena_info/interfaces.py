@@ -1,14 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_info/interfaces.py
 import typing
-
 from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE as _SCOPE
 from gui.battle_control.controllers.interfaces import IBattleController
 from gui.battle_control.view_components import ViewComponentsController
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from EmptyEntity import EmptyEntity
+    from items.vehicles import VehicleDescr
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
+    from vehicle_systems.CompoundAppearance import CompoundAppearance
+    from points_of_interest.components import PoiStateComponent
 
 class IArenaController(IBattleController):
     __slots__ = ('__weakref__',)
@@ -399,7 +401,7 @@ class IPointsOfInterestController(IBattleController):
     def getPoiEntity(poiID):
         raise NotImplementedError
 
-    def getVehicleCapturingPoiGO(self, poiName, entityGameObject, spaceID):
+    def getVehicleCapturingPoiGO(self, poiName, entityGameObject, vehicleID, spaceID):
         raise NotImplementedError
 
 

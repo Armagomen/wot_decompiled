@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/messages/fading_messages.py
 import operator
-
+from soft_exception import SoftException
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION
 from gui.Scaleform.daapi.view.meta.BattleMessageListMeta import BattleMessageListMeta
@@ -11,8 +11,6 @@ from gui.doc_loaders import messages_panel_reader
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from soft_exception import SoftException
-
 _MESSAGES_SETTINGS_PATH = 'gui/{}'
 _EXTRA_COLOR_FORMAT = '<font color="#{0:02X}{1:02X}{2:02X}">{3:>s}</font>'
 _COLOR_TO_METHOD = {BATTLE_MESSAGES_CONSTS.COLOR_YELLOW: 'as_showYellowMessageS',

@@ -1,15 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/helpers/fixed_dict.py
-import typing
 from collections import namedtuple
-
+import typing
 RoleEquipmentState = namedtuple('RoleEquipmentState', ('level', 'progress'))
 StatusWithTimeInterval = namedtuple('StatusWithTimeInterval', ('statusID', 'startTime', 'endTime'))
 TimeInterval = namedtuple('TimeInterval', ('startTime', 'endTime'))
 StateWithTimeInterval = namedtuple('TimeInterval', ('stateID', 'timeInterval', 'isSourceVehicle'))
 VisualScriptEquipmentState = namedtuple('VisualScriptEquipmentState', ('quantity', 'endTime', 'totalTime', 'prevStage', 'stage'))
 if typing.TYPE_CHECKING:
-    pass
+    from enum import Enum
 
 def getRoleEquipmentState(fixedDict):
     state = RoleEquipmentState(level=fixedDict['level'], progress=fixedDict['progress'])

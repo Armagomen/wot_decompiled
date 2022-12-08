@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/appearance_cache_ctrls/default_appearance_cache_ctrl.py
 import logging
-
 import BigWorld
 from gui.battle_control.arena_info.interfaces import IAppearanceCacheController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from helpers import dependency
 from skeletons.vehicle_appearance_cache import IAppearanceCache
+from helpers import dependency
 from soft_exception import SoftException
 from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
-
 _logger = logging.getLogger(__name__)
-
 
 class DefaultAppearanceCacheController(IAppearanceCacheController):
     _appearanceCache = dependency.descriptor(IAppearanceCache)

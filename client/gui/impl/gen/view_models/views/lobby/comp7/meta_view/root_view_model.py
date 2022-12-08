@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/comp7/meta_view/root_view_model.py
 from enum import IntEnum
-
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.leaderboard_model import LeaderboardModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.progression_model import ProgressionModel
@@ -9,7 +8,6 @@ from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.rank_rewards_mod
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.win_rewards_model import WinRewardsModel
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.sidebar_model import SidebarModel
 from gui.impl.gen.view_models.views.lobby.comp7.schedule_info_model import ScheduleInfoModel
-
 
 class MetaRootViews(IntEnum):
     PROGRESSION = 0

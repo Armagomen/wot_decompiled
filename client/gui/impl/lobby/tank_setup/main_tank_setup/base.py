@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/main_tank_setup/base.py
 import logging
-
 from BWUtil import AsyncReturn
+from wg_async import wg_async, wg_await, await_callback
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.tank_setup.tank_setup_sounds import playSectionSelectSound
-from wg_async import wg_async, wg_await, await_callback
-
 _logger = logging.getLogger(__name__)
 
 class MainTankSetupView(BaseSubModelView):

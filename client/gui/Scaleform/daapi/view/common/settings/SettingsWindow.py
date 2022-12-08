@@ -1,39 +1,37 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/SettingsWindow.py
 import functools
-
 import BattleReplay
 import BigWorld
-import VOIP
 import WGC
+import VOIP
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COLOR_SETTINGS_TAB_IDX
-from account_helpers.counter_settings import getNewSettings, invalidateSettings
-from account_helpers.settings_core import settings_constants
-from account_helpers.settings_core.options import APPLY_METHOD
 from account_helpers.settings_core.settings_constants import SETTINGS_GROUP
 from debug_utils import LOG_DEBUG, LOG_WARNING
-from gui import DialogsInterface, g_guiResetters
-from gui import makeHtmlString
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.common.settings.SettingsParams import SettingsParams
-from gui.Scaleform.daapi.view.meta.SettingsWindowMeta import SettingsWindowMeta
+from account_helpers.counter_settings import getNewSettings, invalidateSettings
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.SETTINGS_DIALOGS import SETTINGS_DIALOGS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.SETTINGS import SETTINGS
-from gui.impl import backport
-from gui.impl.gen import R
+from gui import DialogsInterface, g_guiResetters
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.formatters import icons
 from gui.shared.utils import flashObject2Dict, decorators, graphics
+from gui.Scaleform.daapi.view.meta.SettingsWindowMeta import SettingsWindowMeta
+from gui.Scaleform.daapi.view.common.settings.SettingsParams import SettingsParams
+from account_helpers.settings_core import settings_constants
+from account_helpers.settings_core.options import APPLY_METHOD
 from helpers import dependency
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
+from gui.Scaleform.genConsts.SETTINGS_DIALOGS import SETTINGS_DIALOGS
+from gui.shared.formatters import icons
+from gui import makeHtmlString
+from gui.impl import backport
+from gui.impl.gen import R
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IAnonymizerController
 from skeletons.gui.lobby_context import ILobbyContext
-
 _PAGES = (SETTINGS.GAMETITLE,
  SETTINGS.GRAFICTITLE,
  SETTINGS.SOUNDTITLE,

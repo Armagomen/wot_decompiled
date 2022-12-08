@@ -1,28 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/tooltips/skill.py
 from typing import TYPE_CHECKING
-
 from debug_utils import LOG_DEBUG
-from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
+from gui.shared.items_parameters import params
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items.Tankman import getSkillBigIconPath, getRoleMediumIconPath
-from gui.shared.items_parameters import params
-from gui.shared.items_parameters import params_helper, MAX_RELATIVE_VALUE, formatters as params_formatters
 from gui.shared.items_parameters.comparator import VehiclesComparator
 from gui.shared.tooltips import TOOLTIP_TYPE, ToolTipData, ToolTipAttrField, formatters
+from gui.shared.items_parameters import params_helper, MAX_RELATIVE_VALUE, formatters as params_formatters
 from gui.shared.tooltips.common import BlocksTooltipData
 from helpers.i18n import makeString as _ms
 from items import tankmen
-
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
+from gui import makeHtmlString
 if TYPE_CHECKING:
-    pass
-
+    from gui.shared.tooltips.contexts import PersonalCaseContext
+    from gui.shared.gui_items.Tankman import TankmanSkill
 
 class SkillTooltipData(ToolTipData):
 

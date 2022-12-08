@@ -1,13 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/messenger/storage/UsersStorage.py
 import logging
-import types
 from collections import deque, defaultdict
-
+import types
 from messenger import normalizeGroupId
 from messenger.m_constants import USER_GUI_TYPE, BREAKERS_MAX_LENGTH, USER_TAG, MESSENGER_SCOPE, UserEntityScope
 from messenger.storage.local_cache import RevCachedStorage
-
 _logger = logging.getLogger(__name__)
 
 class UsersStorage(RevCachedStorage):

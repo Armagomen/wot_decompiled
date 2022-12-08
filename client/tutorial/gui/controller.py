@@ -1,20 +1,20 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/gui/controller.py
-import logging
 import typing
+import logging
 from functools import partial
-
 from gui.Scaleform.genConsts.TUTORIAL_EFFECT_TYPES import TUTORIAL_EFFECT_TYPES as _EFFECT_TYPES
 from gui.Scaleform.genConsts.TUTORIAL_TRIGGER_TYPES import TUTORIAL_TRIGGER_TYPES
 from gui.impl.gen import R
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
+from tutorial.gui import GuiType, ComponentDescr, IGuiImpl
 from skeletons.tutorial import IGuiController
 from soft_exception import SoftException
 from tutorial.doc_loader import gui_config
-from tutorial.gui import GuiType, ComponentDescr
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.impl.gen_utils import DynAccessor
+    from tutorial.data.client_triggers import ClientTriggers
+    from skeletons.tutorial import ComponentID
 _logger = logging.getLogger(__name__)
 _Event = events.TutorialEvent
 _TRIGGER_TYPES = TUTORIAL_TRIGGER_TYPES

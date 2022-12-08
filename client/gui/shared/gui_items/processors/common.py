@@ -2,28 +2,26 @@
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/common.py
 import logging
 from string import lower
-
 import BigWorld
 from constants import EMPTY_GEOMETRY_ID
-from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.shared import removePartsFromOutfit
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from items import makeIntCompactDescrByID
+from items.components.c11n_constants import CustomizationType, CustomizationTypeNames, HIDDEN_CAMOUFLAGE_ID
+from skeletons.gui.shared import IItemsCache
+from skeletons.gui.customization import ICustomizationService
+from gui import SystemMessages
+from gui.impl.gen import R
+from gui.impl import backport
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.formatters import formatPrice, formatGoldPrice, text_styles, icons
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.processors import Processor, makeError, makeSuccess, makeI18nError, makeI18nSuccess, plugins
 from gui.shared.money import Money, Currency
 from helpers import dependency
-from items import makeIntCompactDescrByID
-from items.components.c11n_constants import CustomizationType, CustomizationTypeNames, HIDDEN_CAMOUFLAGE_ID
 from items.customizations import isEditedStyle
-from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IVehicleComparisonBasket
-from skeletons.gui.shared import IItemsCache
-
 _logger = logging.getLogger(__name__)
 
 class TankmanBerthsBuyer(Processor):

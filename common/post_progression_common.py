@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/post_progression_common.py
+from typing import Dict, Set, List, Callable, Optional, TYPE_CHECKING
 from copy import copy
 from itertools import chain
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-    pass
+    from items.components.post_progression_components import ProgressionTree
+    from items.vehicles import VehicleDescriptor
 SERVER_SETTINGS_KEY = 'vehicle_post_progression_config'
 EXT_DATA_SLOT_KEY = 'customRoleSlotTypeId'
 EXT_DATA_PROGRESSION_KEY = 'vehPostProgression'

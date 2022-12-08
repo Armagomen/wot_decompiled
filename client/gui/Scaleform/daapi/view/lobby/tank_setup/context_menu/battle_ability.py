@@ -3,13 +3,11 @@
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option, CMLabel
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel
-from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, \
-    BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
-from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
+from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseEquipmentItemContextMenu, BaseEquipmentSlotContextMenu, BaseHangarEquipmentSlotContextMenu
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
+from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from ids_generators import SequenceIDGenerator
-
 
 class BattleAbilityItemContextMenu(BaseEquipmentItemContextMenu):
     _sqGen = SequenceIDGenerator(BaseEquipmentItemContextMenu._sqGen.currSequenceID)

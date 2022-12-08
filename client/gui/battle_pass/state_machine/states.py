@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_pass/state_machine/states.py
-import typing
 from functools import partial
-
+import typing
 from battle_pass_common import BattlePassRewardReason, get3DStyleProgressToken
 from frameworks.state_machine import ConditionTransition, State, StateEvent, StateFlags
 from gui.battle_pass.battle_pass_helpers import getStyleInfoForChapter, showVideo, getStyleForChapter
@@ -12,16 +11,14 @@ from gui.impl.gen import R
 from gui.impl.lobby.battle_pass.battle_pass_buy_view import WINDOW_IS_NOT_OPENED, g_BPBuyViewStates
 from gui.server_events.events_dispatcher import showMissionsBattlePass
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
-from gui.shared.event_dispatcher import showBattlePassAwardsWindow, showBattlePassBuyWindow, \
-    showBattlePassRewardsSelectionWindow
+from gui.shared.event_dispatcher import showBattlePassAwardsWindow, showBattlePassBuyWindow, showBattlePassRewardsSelectionWindow
 from gui.shared.events import LobbySimpleEvent
 from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.impl import INotificationWindowController
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_pass.state_machine.machine import BattlePassStateMachine
 
 class BattlePassRewardStateID(CONST_CONTAINER):
     LOBBY = 'lobby'
@@ -196,6 +193,8 @@ class RewardStyleState(State):
             chapterID = machine.getChosenStyleChapter()
             _, level = getStyleInfoForChapter(chapterID)
             style = getStyleForChapter(chapterID)
+            additionalRewards, _ = machine.getRewardsData()
+            needNotifyClosing = not additionalRewards
             if style is not None and style.getProgressionLevel() == style.getMaxProgressionLevel():
                 machine.post(StateEvent())
                 return
@@ -207,15 +206,16 @@ class RewardStyleState(State):
             styleToken = get3DStyleProgressToken(self.__battlePass.getSeasonID(), chapterID, level)
             rewards = packToken(styleToken)
             machine.clearChapterStyle()
-            showBattlePassAwardsWindow([rewards], data)
+            showBattlePassAwardsWindow([rewards], data, needNotifyClosing=needNotifyClosing)
             return
 
 
 class RewardAnyState(State):
-    __slots__ = ()
+    __slots__ = ('__needShowBuy',)
     __battlePass = dependency.descriptor(IBattlePassController)
 
     def __init__(self):
+        self.__needShowBuy = False
         super(RewardAnyState, self).__init__(stateID=BattlePassRewardStateID.REWARD_ANY)
 
     def _onEntered(self):
@@ -231,6 +231,7 @@ class RewardAnyState(State):
             if data is None:
                 data = {'reason': BattlePassRewardReason.PURCHASE_BATTLE_PASS_LEVELS}
             data['callback'] = partial(self.__onAwardClose, data.get('chapter'), data.get('reason'))
+            data['showBuyCallback'] = self.__onShowBuy
             chapter = machine.getChosenStyleChapter()
             if chapter is not None:
                 _, level = getStyleInfoForChapter(chapter)
@@ -253,7 +254,7 @@ class RewardAnyState(State):
             currentLevel = self.__battlePass.getCurrentLevel()
             if self.__battlePass.isFinalLevel(chapterID, currentLevel):
                 machine.clearSelf()
-                if not self.__battlePass.isDisabled():
+                if not self.__battlePass.isDisabled() and not self.__needShowBuy:
                     showMissionsBattlePass(R.views.lobby.battle_pass.ChapterChoiceView())
             machine.clearManualFlow()
             return
@@ -264,4 +265,13 @@ class RewardAnyState(State):
             machine.post(StateEvent())
         if not self.__battlePass.isDisabled() and reason == BattlePassRewardReason.PURCHASE_BATTLE_PASS:
             showMissionsBattlePass(R.views.lobby.battle_pass.BattlePassProgressionsView(), chapterID)
+        return
+
+    def __onShowBuy(self):
+        self.__needShowBuy = True
+        machine = self.getMachine()
+        if machine is not None:
+            machine.clearSelf()
+            machine.post(StateEvent())
+        showBattlePassBuyWindow()
         return

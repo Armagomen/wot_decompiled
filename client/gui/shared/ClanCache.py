@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/ClanCache.py
 from collections import namedtuple
-
 import BigWorld
 from Event import Event
 from account_helpers import getAccountDatabaseID
 from adisp import adisp_async, adisp_process
 from constants import CLAN_MEMBER_FLAGS
 from debug_utils import LOG_ERROR
-from gui.clans.formatters import getClanRoleString
-from gui.shared.utils import code2str
 from helpers import dependency
 from helpers import html
+from gui.clans.formatters import getClanRoleString
+from gui.shared.utils import code2str
 from messenger.ext import passCensor
 from messenger.storage import storage_getter
 from skeletons.gui.shared import IItemsCache
-
 
 class ClanInfo(namedtuple('ClanInfo', ['clanName',
  'clanAbbrev',

@@ -21,8 +21,12 @@ from sound_gui_manager import CommonSoundSpaceSettings
 from shared_utils import first
 from skeletons.gui.battle_matters import IBattleMattersController
 if typing.TYPE_CHECKING:
+    from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
     from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_model import BattleMattersVehicleModel
     from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
+    from frameworks.wulf import ViewEvent, View
+    from typing import Sequence, Tuple, Callable, Optional
+    from Event import Event
 _logger = logging.getLogger(__name__)
 _CUSTOMIZATIONS_ORDER = ('style', 'emblem', 'camouflage', 'modification', 'decal', 'inscription', 'paint')
 _DEVICES_TYPES_ORDER = (SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS, SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY, SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT)

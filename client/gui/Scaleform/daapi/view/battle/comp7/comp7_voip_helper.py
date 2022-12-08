@@ -2,16 +2,14 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/comp7_voip_helper.py
 import enum
 import typing
-
 import VOIP
 from gui import makeHtmlString
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.interfaces import IComp7VOIPController
 _HTML_TEMPLATE = 'html_templates:comp7/voiceChat'
 
 @enum.unique

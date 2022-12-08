@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_tests/ActionMatcher.py
+import BigWorld
+import Math
+import GUI
 import math
 from functools import partial
-
-import BigWorld
-import GUI
-import Math
-
 preload = BigWorld.Model('helpers/models/hemisphere.model')
 preload2 = BigWorld.Model('helpers/models/entity_arrow.model')
 preload3 = BigWorld.Model('helpers/models/directional_arrow.model')

@@ -1,15 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/readers/chassis_readers.py
 import math
-
-from constants import IS_EDITOR, IS_CLIENT, IS_UE_EDITOR
-from debug_utils import LOG_ERROR
+import ResMgr
 from items import _xml
 from items.components import chassis_components
 from items.components import component_constants
 from items.components.chassis_components import SplineTrackPairDesc
+from items.components.shared_components import LodSettings
 from items.readers import shared_readers
-
+from debug_utils import LOG_ERROR
+from constants import IS_EDITOR, IS_CLIENT, IS_UE_EDITOR
 if IS_UE_EDITOR or IS_CLIENT:
     import Vehicular
 

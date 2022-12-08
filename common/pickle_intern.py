@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/pickle_intern.py
 import pickle
-from StringIO import StringIO
 from copy import deepcopy
-
+from StringIO import StringIO
 STR_LEN_FOR_INTERN = 20
 
 class UnpicklerWithIntern(pickle.Unpickler, object):

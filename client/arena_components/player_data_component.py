@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/arena_components/player_data_component.py
+from arena_component_system.client_arena_component_system import ClientArenaComponent
 import Event
 import player_ranks
-from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
-from arena_component_system.client_arena_component_system import ClientArenaComponent
-from constants import ARENA_SYNC_OBJECTS, PLAYER_RANK
 from debug_utils import LOG_DEBUG_DEV
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from gui.battle_control import avatar_getter
-
+from constants import ARENA_SYNC_OBJECTS, PLAYER_RANK
 
 class PlayerDataComponent(ClientArenaComponent):
     playerGroups = property(lambda self: self.__getPlayerGroups())

@@ -1,18 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/ModelHitTester.py
-import logging
-import math
 from collections import namedtuple
-
+import math
+import logging
 import BigWorld
 from Math import Vector2, Matrix
-
-from constants import IS_CLIENT, IS_BOT
-from constants import IS_EDITOR
-from items import _xml
+from constants import IS_DEVELOPMENT, IS_CLIENT, IS_BOT
 from soft_exception import SoftException
+from constants import IS_EDITOR
 from wrapped_reflection_framework import ReflectionMetaclass
-
+from items import _xml
 _logger = logging.getLogger(__name__)
 
 class ModelStatus:

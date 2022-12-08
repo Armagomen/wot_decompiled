@@ -3,14 +3,12 @@
 import functools
 import logging
 from collections import namedtuple
-
 import BigWorld
 import Event
 from skeletons.vehicle_appearance_cache import IAppearanceCache
 from soft_exception import SoftException
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.stricted_loading import loadingPriority
-
 _logger = logging.getLogger(__name__)
 VehicleAppearanceCacheInfo = namedtuple('VehicleAppearanceCacheInfo', ['typeDescr',
  'health',

@@ -4,13 +4,13 @@ import struct
 import weakref
 from array import array
 from itertools import izip
-from typing import TYPE_CHECKING
-
+from typing import Type, Dict, Tuple, TYPE_CHECKING, Callable, Any, Iterable
 from debug_utils import LOG_ERROR
-from serialization import ComponentBinSerializer
-
+from serialization import ComponentBinSerializer, SerializableComponent, parseCompDescr
+from serialization.serializable_component import SerializableComponentChildType
 if TYPE_CHECKING:
-    pass
+    from dossiers2.common.DossierDescr import DossierDescr
+    from .DossierBlockBuilders import EVENT_HANDLERS_TYPE
 
 class DossierBlockDescrInterface(object):
     eventsEnabled = True

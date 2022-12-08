@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/recruit_window/recruit_content_view_model.py
 from enum import Enum
-
 from frameworks.wulf import Array
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.recruit_window.drop_down_item_view_model import DropDownItemViewModel
 from gui.impl.gen.view_models.views.lobby.recruit_window.vehicle_item_view_model import VehicleItemViewModel
-
 
 class DropDownState(Enum):
     NORMAL = 'normal'

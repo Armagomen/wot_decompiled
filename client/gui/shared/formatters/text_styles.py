@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/formatters/text_styles.py
 import types
-
 from gui import makeHtmlString
 from gui.shared.money import Currency
 from helpers import i18n
 from soft_exception import SoftException
-
 __all__ = ('standard',
  'main',
  'mainBig',
@@ -63,7 +61,11 @@ __all__ = ('standard',
  'yellowText',
  'greenText',
  'poiCapturedBoldText',
- 'poiCapturedRegularText')
+ 'poiCapturedRegularText',
+ 'nyAmber',
+ 'nyCrystal',
+ 'nyEmerald',
+ 'nyIron')
 
 def _getStyle(style, ctx=None):
     if ctx is None:
@@ -273,6 +275,10 @@ def crystal(text):
     return _formatText('crystalText', text)
 
 
+def equipCoin(text):
+    return _formatText('equipCoinText', text)
+
+
 def textEpic(text):
     return _formatText('textEpic', text)
 
@@ -287,6 +293,22 @@ def bpcoin(text):
 
 def brcoin(text):
     return _formatText('creditsText', text)
+
+
+def nyAmber(text):
+    return _formatText('nyAmber', text)
+
+
+def nyIron(text):
+    return _formatText('nyIron', text)
+
+
+def nyCrystal(text):
+    return _formatText('nyCrystal', text)
+
+
+def nyEmerald(text):
+    return _formatText('nyEmerald', text)
 
 
 def defRes(text):
@@ -311,6 +333,10 @@ def titleFont(text):
 
 def tutorial(text):
     return _formatText('tutorialText', text)
+
+
+def tutorialBig(text):
+    return _formatText('tutorialTextBig', text)
 
 
 def playerOnline(text):

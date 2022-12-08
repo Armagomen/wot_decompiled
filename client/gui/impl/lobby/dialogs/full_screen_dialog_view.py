@@ -2,8 +2,8 @@
 # Embedded file name: scripts/client/gui/impl/lobby/dialogs/full_screen_dialog_view.py
 import logging
 import typing
-
 from PlayerEvents import g_playerEvents
+from wg_async import AsyncScope, AsyncEvent, wg_await, wg_async, BrokenPromiseError, AsyncReturn
 from frameworks.wulf import WindowLayer
 from gui.impl.backport.backport_tooltip import BackportTooltipWindow, createTooltipData
 from gui.impl.dialogs.dialog_template_utils import getCurrencyTooltipAlias
@@ -18,10 +18,8 @@ from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
-from wg_async import AsyncScope, AsyncEvent, wg_await, wg_async, BrokenPromiseError, AsyncReturn
-
 if typing.TYPE_CHECKING:
-    pass
+    from frameworks import wulf
 TViewModel = typing.TypeVar('TViewModel', bound=FullScreenDialogWindowModel)
 _logger = logging.getLogger(__name__)
 
@@ -150,8 +148,8 @@ class FullScreenDialogWindowWrapper(LobbyWindow):
     __slots__ = ('_wrappedView', '_blur', '_doBlur')
     __gui = dependency.descriptor(IGuiLoader)
 
-    def __init__(self, wrappedView, parent=None, doBlur=True, layer=WindowLayer.UNDEFINED):
-        super(FullScreenDialogWindowWrapper, self).__init__(DialogFlags.TOP_FULLSCREEN_WINDOW, content=wrappedView, parent=parent, layer=layer)
+    def __init__(self, wrappedView, parent=None, doBlur=True, layer=WindowLayer.UNDEFINED, **kwargs):
+        super(FullScreenDialogWindowWrapper, self).__init__(DialogFlags.TOP_FULLSCREEN_WINDOW, content=wrappedView, parent=parent, layer=layer, **kwargs)
         self._wrappedView = wrappedView
         self._blur = None
         self._doBlur = doBlur

@@ -1,14 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_tests/GUITest.py
 import math
+import BigWorld, GUI, Math
+import Keys
 import random
 from functools import partial
-
-import BigWorld
-import GUI
-import Keys
-import Math
-
 BigWorld.camera(BigWorld.CursorCamera())
 BigWorld.setCursor(GUI.mcursor())
 GUI.mcursor().visible = True
@@ -160,24 +156,15 @@ class _ParentAnchorWindow(object):
 
 def anchors():
     clear()
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.TOP, (-1, 1),
-                                           (0, 0, 0, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.TOP, (0, 1),
-                                           (0, 0, 128, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.TOP, (1, 1),
-                                           (0, 255, 0, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.CENTER, (-1, 0),
-                                           (0, 255, 255, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.CENTER, (0, 0),
-                                           (255, 0, 0, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.CENTER, (1, 0),
-                                           (255, 0, 255, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.BOTTOM, (-1, -1),
-                                           (255, 255, 0, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.BOTTOM, (0, -1),
-                                           (255, 255, 255, 255)).component)
-    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.BOTTOM, (1, -1),
-                                           (128, 128, 128, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.TOP, (-1, 1), (0, 0, 0, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.TOP, (0, 1), (0, 0, 128, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.TOP, (1, 1), (0, 255, 0, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.CENTER, (-1, 0), (0, 255, 255, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.CENTER, (0, 0), (255, 0, 0, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.CENTER, (1, 0), (255, 0, 255, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.LEFT, GUI.Simple.eVAnchor.BOTTOM, (-1, -1), (255, 255, 0, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.CENTER, GUI.Simple.eVAnchor.BOTTOM, (0, -1), (255, 255, 255, 255)).component)
+    GUI.addRoot(_ParentAnchorWindow.create(GUI.Simple.eHAnchor.RIGHT, GUI.Simple.eVAnchor.BOTTOM, (1, -1), (128, 128, 128, 255)).component)
 
 
 class _FocusableComponent:
@@ -292,9 +279,9 @@ class _GameSquare:
         c.moveFocus = True
         c.crossFocus = True
         c.colour = (int(random.random() * 127),
-                    int(random.random() * 127),
-                    int(random.random() * 127),
-                    255)
+         int(random.random() * 127),
+         int(random.random() * 127),
+         255)
         c.position = (random.random() * 2 - 1, random.random() * 2 - 1, 1)
         return _GameSquare(c)
 

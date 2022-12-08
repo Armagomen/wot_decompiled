@@ -3,9 +3,9 @@
 import ResMgr
 from account_helpers.offers.cache import CachePrefetchResult
 from adisp import adisp_process, adisp_async
-from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO
 from gui.Scaleform.daapi.view.meta.StorageCategoryOffersViewMeta import StorageCategoryOffersViewMeta
+from gui.Scaleform.Waiting import Waiting
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import event_dispatcher
@@ -14,7 +14,6 @@ from gui.shared.formatters import text_styles
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersNovelty, IOffersDataProvider
-
 
 class StorageCategoryOffersView(StorageCategoryOffersViewMeta):
     _offersProvider = dependency.descriptor(IOffersDataProvider)

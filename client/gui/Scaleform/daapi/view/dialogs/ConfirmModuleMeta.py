@@ -1,21 +1,19 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmModuleMeta.py
 import math
-
-import Event
-from gui import SystemMessages
-from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
+import Event
 from gui.Scaleform.framework import ScopeTemplates
-from gui.Scaleform.locale.DIALOGS import DIALOGS
 from gui.shared import events
+from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
+from helpers import i18n
+from gui.Scaleform.locale.DIALOGS import DIALOGS
+from gui.ClientUpdateManager import g_clientUpdateManager
+from gui.shared.utils.decorators import adisp_process
 from gui.shared.gui_items.processors.module import ModuleBuyer, ModuleSeller
 from gui.shared.money import MONEY_UNDEFINED, Currency, Money, CurrencyCollection
-from gui.shared.tooltips import ACTION_TOOLTIPS_TYPE
 from gui.shared.tooltips.formatters import packActionTooltipData
-from gui.shared.utils.decorators import adisp_process
-from helpers import i18n
-
+from gui import SystemMessages
 MAX_ITEMS_FOR_OPERATION = 1000000
 
 class ConfirmModuleMeta(IDialogMeta):

@@ -1,29 +1,28 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/tutorial/loader.py
 import logging
-import typing
 import weakref
-
+import typing
 import BigWorld
 import account_helpers
 from constants import BootcampVersion
-from helpers import dependency
-from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
 from skeletons.tutorial import ITutorialLoader
-from soft_exception import SoftException
-from tutorial import cache as _cache
-from tutorial import core
-from tutorial import settings as _settings
-from tutorial.control.context import GLOBAL_FLAG, GlobalStorage
-from tutorial.control.listener import AppLoaderListener
-from tutorial.doc_loader import loadDescriptorData
 from tutorial.gui.Scaleform.gui_impl import ScaleformGuiImpl
 from tutorial.gui.controller import GuiController
 from tutorial.gui.impl import WulfGuiImpl
+from helpers import dependency
+from tutorial import core
+from tutorial import settings as _settings
+from tutorial import cache as _cache
+from tutorial.control.context import GLOBAL_FLAG, GlobalStorage
+from tutorial.control.listener import AppLoaderListener
+from tutorial.doc_loader import loadDescriptorData
 from tutorial.hints_manager import HintsManager
-
+from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
+from soft_exception import SoftException
 if typing.TYPE_CHECKING:
-    pass
+    from tutorial.core import Tutorial
+    from skeletons.tutorial import IGuiController
 _SETTINGS = _settings.TUTORIAL_SETTINGS
 _LOBBY_DISPATCHER = _settings.TUTORIAL_LOBBY_DISPATCHER
 _BATTLE_DISPATCHER = _settings.TUTORIAL_BATTLE_DISPATCHER

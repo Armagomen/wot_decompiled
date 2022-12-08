@@ -1,9 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/random_utils.py
-import itertools
+import typing
 import random
+import itertools
 from copy import deepcopy
-
 
 class wchoices(object):
 

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/shared/gui_items/processors/battle_pass.py
 import logging
 from functools import partial
-
 import BigWorld
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
@@ -17,7 +16,6 @@ from gui.shared.money import Currency
 from helpers import dependency
 from messenger import g_settings
 from skeletons.gui.game_control import IBattlePassController
-
 _logger = logging.getLogger(__name__)
 
 class _BattlePassActivateChapterValidator(SyncValidator):

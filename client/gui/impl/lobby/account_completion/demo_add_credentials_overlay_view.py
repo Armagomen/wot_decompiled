@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_completion/demo_add_credentials_overlay_view.py
 import typing
-
+from helpers.time_utils import getTimeDeltaFromNow
 import BigWorld
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
@@ -11,16 +11,14 @@ from gui.impl.lobby.account_completion.common.base_credentials_overlay_view impo
 from gui.impl.lobby.account_completion.utils.common import RESTRICTED_REQUEST_MIN_TIME, AccountCompletionType
 from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.platform.base.statuses.constants import StatusTypes
-from gui.shared.event_dispatcher import showDemoConfirmCredentialsOverlay, showDemoCompleteOverlay, \
-    showContactSupportOverlay, showDemoWaitingForTokenOverlayViewOverlay
+from gui.shared.event_dispatcher import showDemoConfirmCredentialsOverlay, showDemoCompleteOverlay, showContactSupportOverlay, showDemoWaitingForTokenOverlayViewOverlay
 from helpers import dependency
-from helpers.time_utils import getTimeDeltaFromNow
 from skeletons.gui.game_control import IBootcampController
 from skeletons.gui.platform.wgnp_controllers import IWGNPDemoAccRequestController
-
 rAccCompletion = R.strings.dialogs.accountCompletion
 if typing.TYPE_CHECKING:
-    pass
+    from wg_async import _Future
+    from gui.platform.wgnp.demo_account.request import AddCredentialsParams
 
 class DemoAddCredentialsOverlayView(BaseCredentialsOverlayView):
     _TITLE = rAccCompletion.credentials.title()

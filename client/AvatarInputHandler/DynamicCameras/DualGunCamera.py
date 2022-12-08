@@ -1,9 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/DualGunCamera.py
 import BigWorld
-from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 from BigWorld import DualGunAimingSystem, DualGunAimingSystemRemote
-
+from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 
 def getCameraAsSettingsHolder(settingsDataSec):
     return DualGunCamera(settingsDataSec)

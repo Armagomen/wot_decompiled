@@ -1,11 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/AccountUnitAPI.py
+from typing import Optional as TOptional
 import constants
-from UnitBase import UNIT_SLOT, CLIENT_UNIT_CMD, INV_ID_CLEAR_VEHICLE
 from constants import PREBATTLE_TYPE
-from debug_utils import *
+from UnitBase import UNIT_SLOT, CLIENT_UNIT_CMD, INV_ID_CLEAR_VEHICLE
 from unit_roster_config import UnitRosterSlot
-
+from debug_utils import *
 
 class UNIT_API:
     NONE = 0
@@ -31,7 +31,7 @@ def getOriginalRequestID(serverRequestID):
 
 class AccountUnitAPI:
 
-    def create(self, requestID, prebattleType, eventQueueType):
+    def create(self, requestID, prebattleType, eventArg):
         pass
 
     def join(self, requestID, unitMgrID, slotIdx):
@@ -89,8 +89,8 @@ class UnitClientAPI(object):
     def createMapboxSquad(self):
         return self._doCreate(PREBATTLE_TYPE.MAPBOX)
 
-    def createFunRandomSquad(self):
-        return self._doCreate(PREBATTLE_TYPE.FUN_RANDOM)
+    def createFunRandomSquad(self, subModeID):
+        return self._doCreate(PREBATTLE_TYPE.FUN_RANDOM, subModeID)
 
     def createComp7Squad(self, squadSize):
         return self._doCreate(PREBATTLE_TYPE.COMP7, squadSize)

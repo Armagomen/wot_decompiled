@@ -17,7 +17,7 @@ from messenger.proto.xmpp.contacts.tasks import ContactTaskQueue, SeqTaskQueue
 from messenger.proto.xmpp.decorators import xmpp_query, QUERY_SIGN, local_query
 from messenger.proto.xmpp.errors import ClientContactError, ClientIntLimitError
 from messenger.proto.xmpp.extensions.shared_queries import PresenceQuery
-from messenger.proto.xmpp.find_criteria import ItemsFindCriteria, GroupFindCriteria, RqFriendshipCriteria
+from messenger.proto.xmpp.find_criteria import ItemsFindCriteria, GroupFindCriteria, RqFriendshipCriteria, MutedOnlyFindCriteria
 from messenger.proto.xmpp.gloox_constants import SUBSCRIPTION as _SUB, GLOOX_EVENT as _EVENT, PRESENCE, DISCONNECT_REASON
 from messenger.proto.xmpp.gloox_wrapper import ClientEventsHandler, ClientHolder
 from messenger.proto.xmpp.jid import makeContactJID, ContactJID

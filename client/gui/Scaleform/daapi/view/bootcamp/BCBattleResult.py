@@ -1,27 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/BCBattleResult.py
 import BigWorld
-import SoundGroups
 from CurrentVehicle import g_currentVehicle
-from PlayerEvents import g_playerEvents
-from bootcamp.BootCampEvents import g_bootcampEvents
-from bootcamp.Bootcamp import g_bootcamp, BOOTCAMP_SOUND
-from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.meta.BCBattleResultMeta import BCBattleResultMeta
 from gui.Scaleform.genConsts.BOOTCAMP_BATTLE_RESULT_CONSTANTS import BOOTCAMP_BATTLE_RESULT_CONSTANTS as AWARD
-from gui.app_loader import settings as app_settings
 from gui.shared import event_bus_handlers, events, EVENT_BUS_SCOPE
-from gui.sounds.ambients import BattleResultsEnv
 from helpers import dependency
+from bootcamp.Bootcamp import g_bootcamp, BOOTCAMP_SOUND
+from gui.sounds.ambients import BattleResultsEnv
+import SoundGroups
+from bootcamp.BootCampEvents import g_bootcampEvents
+from gui.app_loader import settings as app_settings
+from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
+from PlayerEvents import g_playerEvents
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_results import IBattleResultsService
-from uilogging.deprecated.bootcamp.constants import BC_LOG_ACTIONS as DEPRECATED_BC_LOG_ACTIONS, BC_LOG_KEYS, \
-    BC_AWARDS_MAP
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-from uilogging.deprecated.bootcamp.loggers import BootcampUILogger
 from uilogging.deprecated.decorators import loggerTarget, loggerEntry, simpleLog
-
+from uilogging.deprecated.bootcamp.constants import BC_LOG_ACTIONS as DEPRECATED_BC_LOG_ACTIONS, BC_LOG_KEYS, BC_AWARDS_MAP
+from uilogging.deprecated.bootcamp.loggers import BootcampUILogger
 _SNDID_ACHIEVEMENT = 'result_screen_achievements'
 _SNDID_BONUS = 'result_screen_bonus'
 _AMBIENT_SOUND = 'bc_result_screen_ambient'

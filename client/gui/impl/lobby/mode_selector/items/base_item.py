@@ -1,30 +1,33 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/base_item.py
-import typing
 from abc import ABCMeta, abstractmethod
-
+import typing
 import Event
 from frameworks.wulf import WindowLayer
 from gui import GUI_SETTINGS
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.battle_pass.battle_pass_helpers import getFormattedTimeLeft
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_card_types import ModeSelectorCardTypes
-from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import \
-    ModeSelectorNormalCardModel
+from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import ModeSelectorNormalCardModel
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_reward_model import ModeSelectorRewardModel
-from gui.impl.lobby.mode_selector.items.items_constants import CustomModeName, COLUMN_SETTINGS, DEFAULT_PRIORITY, \
-    DEFAULT_COLUMN, ModeSelectorRewardID
+from gui.impl.lobby.mode_selector.items.items_constants import CustomModeName, COLUMN_SETTINGS, DEFAULT_PRIORITY, DEFAULT_COLUMN, ModeSelectorRewardID
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.shared.event_dispatcher import showBrowserOverlayView
+from gui.shared.formatters import time_formatters
 from helpers import dependency, i18n, time_utils
 from skeletons.gui.game_control import IBootcampController, IUISpamController
 from soft_exception import SoftException
-
 if typing.TYPE_CHECKING:
-    pass
+    from typing import Callable, Optional, Type, Union
+    from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_card_model import ModeSelectorCardModel
+    from gui.Scaleform.daapi.view.lobby.header.battle_selector_items import _SelectorItem
+    from gui.impl.gen_utils import DynAccessor
 _rMode = R.strings.mode_selector.mode
 _INFO_PAGE_KEY_TEMPLATE = 'infoPage%s'
+
+def getFormattedTimeLeft(seconds):
+    return time_formatters.getTillTimeByResource(seconds, R.strings.mode_selector.status.timeLeft, removeLeadingZeros=True)
+
 
 def formatSeasonLeftTime(currentSeason):
     return getFormattedTimeLeft(max(0, currentSeason.getEndDate() - time_utils.getServerUTCTime())) if currentSeason else ''
@@ -106,6 +109,9 @@ class ModeSelectorItem(object):
             self._viewModel = None
             self._initialized = False
             return
+
+    def checkHeaderNavigation(self):
+        return True
 
     def handleInfoPageClick(self):
         url = self._urlProcessing(GUI_SETTINGS.lookup(getInfoPageKey(self.modeName)))
@@ -202,6 +208,7 @@ class ModeSelectorNormalCardItem(ModeSelectorItem):
         rReward = R.strings.mode_selector.reward.dyn(rewardIDValue)
         item.setName(rReward.name())
         item.setDescription(backport.text(rReward.description(), **locParams))
+        item.setTooltipID(params.get('tooltipID', ''))
         if rewardID == ModeSelectorRewardID.VEHICLE:
             item.setVehicleLevel(params.get('level', ''))
             item.setVehicleType(params.get('type', ''))

@@ -1,19 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/ToolTip.py
-from functools import partial
-
 import BigWorld
 import GUI
-from bwdebug import ERROR_MSG
-
+from functools import partial
 from Utils import clipSize
+from bwdebug import ERROR_MSG
+import PyGUIBase
 from Window import Window
-
 
 class ToolTipInfo(object):
 
-    def __init__(self, component=None, templateName=None, infoDictionary={}, infoArea=None, delayType=None,
-                 placement=None):
+    def __init__(self, component=None, templateName=None, infoDictionary={}, infoArea=None, delayType=None, placement=None):
         if templateName:
             self.templateName = templateName
             self.infoDictionary = infoDictionary

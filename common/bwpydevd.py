@@ -2,13 +2,10 @@
 # Embedded file name: scripts/common/bwpydevd.py
 import os
 import sys
-import threading
-
-import BigWorld
 import ResMgr
-
+import BigWorld
+import threading
 import bwdebug
-
 REPLACE_PATHS = []
 HAS_BW_CONFIG = False
 if os.name == 'posix':

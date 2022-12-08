@@ -2,10 +2,9 @@
 # Embedded file name: scripts/client/gui/battle_control/battle_session.py
 import weakref
 from collections import namedtuple
-
-import BattleReplay
 import BigWorld
 import Event
+import BattleReplay
 from PlayerEvents import g_playerEvents
 from adisp import adisp_async
 from debug_utils import LOG_DEBUG
@@ -24,7 +23,6 @@ from gui.battle_control.requests import AvatarRequestsController
 from gui.battle_control.view_components import createComponentsBridge
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 BattleExitResult = namedtuple('BattleExitResult', 'isDeserter playerInfo')
 
 class BattleSessionProvider(IBattleSessionProvider):

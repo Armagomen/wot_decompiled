@@ -3,17 +3,13 @@
 import base64
 import cPickle
 from collections import namedtuple
-
 import BigWorld
 import Settings
 from adisp import adisp_async, adisp_process
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from frameworks.wulf import WindowLayer
-from gui import makeHtmlString
 from gui.Scaleform.framework.managers.containers import POP_UP_CRITERIA
 from gui.app_loader import decorators as ap_decorators
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared import event_dispatcher
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.utils import graphics
@@ -21,7 +17,9 @@ from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import INotifyController
-
+from gui.impl import backport
+from gui.impl.gen import R
+from gui import makeHtmlString
 _Settings = namedtuple('_Settings', ['presetChangingVersion', 'lastBattleAvgFps'])
 
 class NotifyController(INotifyController):

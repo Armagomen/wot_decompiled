@@ -6,13 +6,12 @@ from gui.Scaleform.daapi.view.meta.PrebattleTimerBaseMeta import PrebattleTimerB
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import COUNTDOWN_STATE, BATTLE_CTRL_ID
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
+from helpers import dependency
 from gui.impl import backport
 from gui.impl.gen import R
-from helpers import dependency
 from helpers import i18n
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-
 _TIMER_ANIMATION_SHIFT = 0.4
 _STATE_TO_MESSAGE = {COUNTDOWN_STATE.WAIT: R.strings.ingame_gui.timer.waiting(),
  COUNTDOWN_STATE.START: R.strings.ingame_gui.timer.starting(),

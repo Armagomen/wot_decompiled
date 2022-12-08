@@ -1,11 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dossiers2/common/DossierBlockBuilders.py
 import typing
-from typing import Union
-
+from typing import List, Union
 from dossiers2.common.DossierBlocks import *
 from dossiers2.custom.records import RECORDS, RECORD_INDICES, BIT_STORAGES
-
+from serialization.serializable_component import SerializableComponentChildType
 if typing.TYPE_CHECKING:
     from dossiers2.common.DossierDescr import DossierDescr
     EVENT_HANDLERS_TYPE = Iterable[Callable[[DossierDescr, SerializableBlockDescr, [str, Any, Any]], None]]

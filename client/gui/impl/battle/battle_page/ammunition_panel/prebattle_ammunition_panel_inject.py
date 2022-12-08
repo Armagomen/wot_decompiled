@@ -1,14 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/prebattle_ammunition_panel_inject.py
-from gui.Scaleform.daapi.view.meta.PrebattleAmmunitionPanelViewMeta import PrebattleAmmunitionPanelViewMeta
-from gui.Scaleform.framework.entities.inject_component_adaptor import hasAliveInject
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.battle_control.battle_constants import COUNTDOWN_STATE
 from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.battle_control.controllers.prebattle_setups_ctrl import IPrebattleSetupsListener
-from gui.impl.battle.battle_page.ammunition_panel.prebattle_ammunition_panel_view import PrebattleAmmunitionPanelView, \
-    Comp7PrebattleAmmunitionPanelView
+from gui.impl.battle.battle_page.ammunition_panel.prebattle_ammunition_panel_view import PrebattleAmmunitionPanelView, Comp7PrebattleAmmunitionPanelView
+from gui.Scaleform.daapi.view.meta.PrebattleAmmunitionPanelViewMeta import PrebattleAmmunitionPanelViewMeta
+from gui.Scaleform.framework.entities.inject_component_adaptor import hasAliveInject
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.impl.gen.view_models.views.battle.battle_page.prebattle_ammunition_panel_view_model import State
 from gui.shared import EVENT_BUS_SCOPE, events
 from gui.shared.utils.MethodsRules import MethodsRules
@@ -16,7 +15,6 @@ from helpers import dependency
 from post_progression_common import TANK_SETUP_GROUPS
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 
 class PrebattleAmmunitionPanelInject(MethodsRules, PrebattleAmmunitionPanelViewMeta, IPrebattleSetupsListener, IAmmoListener, IAbstractPeriodView):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)

@@ -3,18 +3,18 @@
 import itertools
 import logging
 import sys
-
-from gui.Scaleform.daapi.view.lobby.missions.cards_formatters import CardBattleConditionsFormatters
+import typing
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.server_events.awards_formatters import AWARDS_SIZES
 from gui.server_events.bonuses import HIDDEN_BONUSES
+from gui.Scaleform.daapi.view.lobby.missions.cards_formatters import CardBattleConditionsFormatters
 from gui.server_events.cond_formatters import CONDITION_SIZE
 from helpers import dependency, i18n
 from skeletons.gui.game_control import IMarathonEventsController
 from skeletons.gui.server_events import IEventsCache
 from web.web_client_api import w2c, w2capi, Field, W2CSchema
+from gui.server_events.event_items import Quest
 from web.web_client_api.common import sanitizeResPath
-
 _logger = logging.getLogger(__name__)
 
 class _QuestsSchema(W2CSchema):

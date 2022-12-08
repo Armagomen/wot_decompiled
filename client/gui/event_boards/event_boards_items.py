@@ -2,20 +2,18 @@
 # Embedded file name: scripts/client/gui/event_boards/event_boards_items.py
 import itertools
 from collections import defaultdict
-
 import BigWorld
 from constants import ARENA_BONUS_TYPE
-from debug_utils import LOG_ERROR, LOG_WARNING
 from gui import GUI_NATIONS
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.shared.utils import mapTextureToTheMemory, removeTextureFromMemory
+from shared_utils import findFirst, CONST_CONTAINER
+from debug_utils import LOG_ERROR, LOG_WARNING
+from items import parseIntCompactDescr
 from gui.event_boards import event_boards_timer
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER
-from gui.shared.utils import mapTextureToTheMemory, removeTextureFromMemory
 from helpers import time_utils
-from items import parseIntCompactDescr
-from shared_utils import findFirst, CONST_CONTAINER
-
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 
 class CALCULATION_METHODS(CONST_CONTAINER):
     MAX = 'max'
@@ -118,17 +116,17 @@ class EventsSettings(object):
      'is_squad_allowed',
      'leaderboard_view_size',
      'limits',
-                       'manual',
-                       'method',
-                       'name',
-                       'objective_parameter',
-                       'participants_freeze_deadline',
-                       'prime_times',
-                       'publish_date',
-                       'rewarding_date',
-                       'rewards_by_rank',
-                       'start_date',
-                       'type']
+     'manual',
+     'method',
+     'name',
+     'objective_parameter',
+     'participants_freeze_deadline',
+     'prime_times',
+     'publish_date',
+     'rewarding_date',
+     'rewards_by_rank',
+     'start_date',
+     'type']
     EXPECTED_FIELDS_PRIME_TIMES = ['server', 'start_time', 'end_time']
     EXPECTED_FIELDS_LIMITS = ['win_rate_min',
      'win_rate_max',
@@ -143,9 +141,9 @@ class EventsSettings(object):
     EXPECTED_FIELDS_REWARDS_CATEGORIES_CATEGORY = ['rank_min', 'rank_max', 'reward_category_number']
     EXPECTED_FIELDS_REWARDS_BY_RANK = ['leaderboard_id', 'reward_groups']
     EXPECTED_FIELDS_REWARDS_BY_RANK_GROUP = ['reward_category_number',
-                                             'rank_min',
-                                             'rank_max',
-                                             'rewards']
+     'rank_min',
+     'rank_max',
+     'rewards']
     EXPECTED_FIELDS_METHOD = ['name']
 
     def __init__(self):
@@ -249,11 +247,11 @@ class EventsSettings(object):
 
 class EventSettings(object):
     __mapping = {EVENT_TYPE.VEHICLE: ('vehicles', 'vehicles', None),
-                 EVENT_TYPE.NATION: ('nations', 'nation', GUI_NATIONS),
-                 EVENT_TYPE.LEVEL: ('vehicles_levels', 'level', range(1, 11)),
-                 EVENT_TYPE.CLASS: ('vehicles_classes', 'class', VEHICLE_TYPES_ORDER),
-                 EVENT_TYPE.TEAMS: ('teams', 'team', None),
-                 EVENT_TYPE.ROLE: ('roles', 'role', None)}
+     EVENT_TYPE.NATION: ('nations', 'nation', GUI_NATIONS),
+     EVENT_TYPE.LEVEL: ('vehicles_levels', 'level', range(1, 11)),
+     EVENT_TYPE.CLASS: ('vehicles_classes', 'class', VEHICLE_TYPES_ORDER),
+     EVENT_TYPE.TEAMS: ('teams', 'team', None),
+     EVENT_TYPE.ROLE: ('roles', 'role', None)}
     __CUSTOM_UI_BATTLE_TYPES = (ARENA_BONUS_TYPE.COMP7,)
     EVENT_DAYS_LEFT_TO_START = 5
     EVENT_FINISHED_DURATION = 5 * time_utils.ONE_DAY
@@ -1158,16 +1156,16 @@ class LeaderBoard(object):
                                   'avg_damage_dealt',
                                   'avg_damage_assisted',
                                   'win_rate'],
-                                           CALCULATION_METHODS.SUMMSEQN: ['battle_ts',
-                                                                          'vehicle_cd',
-                                                                          'battle_result',
-                                                                          'is_in_squad',
-                                                                          'exp',
-                                                                          'damage',
-                                                                          'assisted_damage',
-                                                                          'frags',
-                                                                          'used_in_calculations'],
-                                           CALCULATION_METHODS.BATTLECOUNTSTAT3: []}
+     CALCULATION_METHODS.SUMMSEQN: ['battle_ts',
+                                    'vehicle_cd',
+                                    'battle_result',
+                                    'is_in_squad',
+                                    'exp',
+                                    'damage',
+                                    'assisted_damage',
+                                    'frags',
+                                    'used_in_calculations'],
+     CALCULATION_METHODS.BATTLECOUNTSTAT3: []}
 
     def __init__(self):
         self.__infoByType = {}
@@ -1278,8 +1276,7 @@ class LeaderBoard(object):
 
 
 class Comp7LeaderBoard(LeaderBoard):
-    __CUSTOM_EXPECTED_FIELDS_META = ['elite_rank_position_threshold', 'elite_rank_points_threshold',
-                                     'master_rank_position_threshold']
+    __CUSTOM_EXPECTED_FIELDS_META = ['elite_rank_position_threshold', 'elite_rank_points_threshold', 'master_rank_position_threshold']
     EXPECTED_FIELDS_META = LeaderBoard.EXPECTED_FIELDS_META + __CUSTOM_EXPECTED_FIELDS_META
 
     def __init__(self):

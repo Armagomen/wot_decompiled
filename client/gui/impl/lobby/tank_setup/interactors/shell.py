@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/shell.py
 from itertools import izip
-
 import adisp
+from wg_async import wg_await, wg_async, await_callback
 from BWUtil import AsyncReturn
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -14,8 +14,6 @@ from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.vehicle import VehicleAutoLoadProcessor
 from gui.shared.money import ZERO_MONEY
 from gui.shared.utils import decorators
-from wg_async import wg_await, wg_async, await_callback
-
 
 def _hasChanged(leftLayout, rightLayout):
     for leftShell, rightShell in izip(leftLayout, rightLayout):

@@ -1,17 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileTechnique.py
+from stats_params import BATTLE_ROYALE_STATS_ENABLED
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import PROFILE_TECHNIQUE_MEMBER
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK, MARK_ON_GUN_RECORD
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.AchievementsUtils import AchievementsUtils
-from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofRatingUrlForVehicle, getHofDisabledKeys, \
-    onServerSettingsChange, isHofButtonNew, setHofButtonOld
+from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofRatingUrlForVehicle, getHofDisabledKeys, onServerSettingsChange, isHofButtonNew, setHofButtonOld
 from gui.Scaleform.daapi.view.lobby.hof.web_handlers import createHofWebHandlers
-from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import ProfileUtils, DetailedStatisticsUtils, \
-    STATISTICS_LAYOUT, FALLOUT_STATISTICS_LAYOUT, BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT, \
-    COMP7_VEHICLE_STATISTICS_LAYOUT
+from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import ProfileUtils, DetailedStatisticsUtils, STATISTICS_LAYOUT, FALLOUT_STATISTICS_LAYOUT, BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT, COMP7_VEHICLE_STATISTICS_LAYOUT
 from gui.Scaleform.daapi.view.meta.ProfileTechniqueMeta import ProfileTechniqueMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.ACHIEVEMENTS_ALIASES import ACHIEVEMENTS_ALIASES
@@ -22,7 +20,6 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.events import ProfileTechniqueEvent
 from gui.shared.gui_items.Vehicle import VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED, getIconResourceName
 from gui.shared.gui_items.dossier import dumpDossier
 from gui.shared.gui_items.dossier.achievements import isMarkOfMasteryAchieved
@@ -33,8 +30,7 @@ from skeletons.gui.game_control import IVehicleComparisonBasket, IComp7Controlle
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from soft_exception import SoftException
-from stats_params import BATTLE_ROYALE_STATS_ENABLED
-
+from gui.shared.events import ProfileTechniqueEvent
 _MARK_ON_GUN_MIN_LVL = 5
 
 class ProfileTechnique(ProfileTechniqueMeta):

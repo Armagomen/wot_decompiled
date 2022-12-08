@@ -3,7 +3,6 @@
 import operator
 from collections import defaultdict
 from enum import Enum
-
 import nations
 from constants import IGR_TYPE, FLAG_ACTION, ARENA_GUI_TYPE, ROLE_TYPE
 from debug_utils import LOG_ERROR
@@ -17,7 +16,6 @@ from gui.shared.gui_items import Vehicle
 from gui.shared.gui_items.Vehicle import VEHICLE_TAGS, VEHICLE_CLASS_NAME
 from helpers import dependency, i18n
 from skeletons.gui.server_events import IEventsCache
-
 _INVALIDATE_OP = settings.INVALIDATE_OP
 _VEHICLE_STATUS = settings.VEHICLE_STATUS
 _PLAYER_STATUS = settings.PLAYER_STATUS
@@ -28,7 +26,6 @@ _DEFAULT_PHYSICAL_SECTOR = 1
 _DEFAULT_HAS_RESPAWNS = True
 _DEFAULT_ROLE_SKILL_LEVEL = 0
 _DEFAULT_PLAYER_DIVISION = 0
-
 
 class EPIC_RANDOM_KEYS(object):
     PLAYER_GROUP = 'playerGroup'
@@ -63,9 +60,9 @@ class EPIC_BATTLE_KEYS(object):
     @staticmethod
     def getKeys(static=True):
         return [] if static else [(EPIC_BATTLE_KEYS.RANK, _DEFAULT_PLAYER_RANK),
-                                  (EPIC_BATTLE_KEYS.PLAYER_GROUP, _DEFAULT_PLAYER_GROUP),
-                                  (EPIC_BATTLE_KEYS.PHYSICAL_SECTOR, _DEFAULT_PHYSICAL_SECTOR),
-                                  (EPIC_BATTLE_KEYS.HAS_RESPAWNS, _DEFAULT_HAS_RESPAWNS)]
+         (EPIC_BATTLE_KEYS.PLAYER_GROUP, _DEFAULT_PLAYER_GROUP),
+         (EPIC_BATTLE_KEYS.PHYSICAL_SECTOR, _DEFAULT_PHYSICAL_SECTOR),
+         (EPIC_BATTLE_KEYS.HAS_RESPAWNS, _DEFAULT_HAS_RESPAWNS)]
 
     @staticmethod
     def getSortingKeys(static=True):
@@ -79,9 +76,7 @@ class Comp7Keys(Enum):
 
     @staticmethod
     def getKeys(static=True):
-        return [(Comp7Keys.ROLE_SKILL_LEVEL, _DEFAULT_ROLE_SKILL_LEVEL),
-                (Comp7Keys.RANK, (_DEFAULT_PLAYER_RANK, _DEFAULT_PLAYER_DIVISION)),
-                (Comp7Keys.VOIP_CONNECTED, False)] if static else []
+        return [(Comp7Keys.ROLE_SKILL_LEVEL, _DEFAULT_ROLE_SKILL_LEVEL), (Comp7Keys.RANK, (_DEFAULT_PLAYER_RANK, _DEFAULT_PLAYER_DIVISION)), (Comp7Keys.VOIP_CONNECTED, False)] if static else []
 
     @staticmethod
     def getSortingKeys(static=True):
@@ -89,12 +84,11 @@ class Comp7Keys(Enum):
 
 
 GAMEMODE_SPECIFIC_KEYS = {ARENA_GUI_TYPE.EPIC_RANDOM: EPIC_RANDOM_KEYS,
-                          ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING: EPIC_RANDOM_KEYS,
-                          ARENA_GUI_TYPE.EPIC_BATTLE: EPIC_BATTLE_KEYS,
-                          ARENA_GUI_TYPE.EPIC_TRAINING: EPIC_BATTLE_KEYS,
-                          ARENA_GUI_TYPE.BATTLE_ROYALE: BattleRoyaleKeys,
-                          ARENA_GUI_TYPE.COMP7: Comp7Keys}
-
+ ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING: EPIC_RANDOM_KEYS,
+ ARENA_GUI_TYPE.EPIC_BATTLE: EPIC_BATTLE_KEYS,
+ ARENA_GUI_TYPE.EPIC_TRAINING: EPIC_BATTLE_KEYS,
+ ARENA_GUI_TYPE.BATTLE_ROYALE: BattleRoyaleKeys,
+ ARENA_GUI_TYPE.COMP7: Comp7Keys}
 
 class GameModeDataVO(object):
     __slots__ = ('__internalData', '__sortingKeys')
@@ -195,9 +189,7 @@ class PlayerInfoVO(object):
 
 
 class VehicleTypeInfoVO(object):
-    __slots__ = ('compactDescr', 'shortName', 'name', 'level', 'iconName', 'iconPath', 'isObserver', 'isPremiumIGR',
-                 'isDualGunVehicle', 'guiName', 'shortNameWithPrefix', 'classTag', 'nationID', 'turretYawLimits',
-                 'maxHealth', 'strCompactDescr', 'isOnlyForBattleRoyaleBattles', 'tags', 'chassisType', 'role')
+    __slots__ = ('compactDescr', 'shortName', 'name', 'level', 'iconName', 'iconPath', 'isObserver', 'isPremiumIGR', 'isDualGunVehicle', 'guiName', 'shortNameWithPrefix', 'classTag', 'nationID', 'turretYawLimits', 'maxHealth', 'strCompactDescr', 'isOnlyForBattleRoyaleBattles', 'tags', 'chassisType', 'role')
 
     def __init__(self, vehicleType=None, maxHealth=None, **kwargs):
         super(VehicleTypeInfoVO, self).__init__()

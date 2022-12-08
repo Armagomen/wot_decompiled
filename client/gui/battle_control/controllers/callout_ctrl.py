@@ -2,9 +2,8 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/callout_ctrl.py
 import logging
 from collections import namedtuple
-
-import BattleReplay
 import BigWorld
+import BattleReplay
 import CommandMapping
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from chat_commands_consts import _PERSONAL_MESSAGE_MUTE_DURATION, BATTLE_CHAT_COMMAND_NAMES
@@ -27,7 +26,6 @@ from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.account_helpers.settings_core import ISettingsCore, ISettingsCache
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 _logger = logging.getLogger(__name__)
 _CALLOUT_MESSAGES_BLOCK_DURATION = 15
 _HINT_TIMEOUT = 10

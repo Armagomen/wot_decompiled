@@ -1,18 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/account_helpers/DossierCache.py
-import base64
 import cPickle
 import os
-
-import AccountCommands
+import base64
 import BigWorld
+import AccountCommands
+from SyncController import SyncController
 from PlayerEvents import g_playerEvents as events
 from constants import DOSSIER_TYPE
-from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION
 from external_strings_utils import unicode_from_utf8
-
-from SyncController import SyncController
-
+from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION
 
 class DossierCache(object):
 

@@ -1,13 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/doc_loaders/surveys_loader.py
-import logging
 from collections import namedtuple
-
+import logging
+from gui.mapbox.mapbox_survey_helper import Condition, QuantifierTypes, AlternativeOneManyQuestion, AlternativeQuestion, getQuestionClass
 import resource_helper
-from gui.mapbox.mapbox_survey_helper import Condition, QuantifierTypes, AlternativeOneManyQuestion, AlternativeQuestion, \
-    getQuestionClass
 from soft_exception import SoftException
-
 _logger = logging.getLogger(__name__)
 _SURVEYS_XML_PATH = 'gui/surveys.xml'
 _SURVEYS = None
@@ -86,8 +83,7 @@ def _readQuestion(questionSection, questionTypes):
 
 
 def _readAlternativeQuestion(questionSection, questionTypes, qId):
-    alternativeQuestions = [_readQuestion(variant, questionTypes) for variant in
-                            questionSection['alternatives'].values()]
+    alternativeQuestions = [ _readQuestion(variant, questionTypes) for variant in questionSection['alternatives'].values() ]
     isSynchronizedAnswers = questionSection.readBool('synchronizeAnswers')
     clz = AlternativeOneManyQuestion if isSynchronizedAnswers else AlternativeQuestion
     return clz(questionId=qId, alternatives=alternativeQuestions, isSynchronizedAnswers=isSynchronizedAnswers)

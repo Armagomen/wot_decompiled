@@ -32,7 +32,14 @@ from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
+    from typing import List, Set, Iterator, Optional, Tuple, Dict, Union, Any
+    from gui.shared.gui_items.fitting_item import FittingItem
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from gui.shared.gui_items.artefacts import OptionalDevice, BattleBooster
+    from gui.shared.gui_items.vehicle_modules import Shell
+    from gui.shared.gui_items.customization.c11n_items import Customization
     from gui.shared.gui_items.gui_item import GUIItem
+    from gui.shared.gui_items.gui_item_economics import ItemPrice
     from gui.shared.money import Money
 _DK_CURRENCY = GOODIE_VARIETY.DEMOUNT_KIT_NAME
 _SETTINGS_KEY = 'vehicleSellDialog'
@@ -256,7 +263,9 @@ class VehicleSellDialog(VehicleSellDialogMeta):
             if removeCurrency is not None:
                 currentBalance -= data.itemRemovalPrice.extract(removeCurrency)
             data.removeCurrency = removeCurrency
-            if data.isRemovableForMoney:
+            if optDevice.isModernized and data.removeCurrency != _DK_CURRENCY:
+                data.toInventory = False
+            elif data.isRemovableForMoney:
                 data.toInventory = data.removeCurrency is not None
             self.__addVSDItem(data)
             onVehicleOptionalDevices.append(data.toFlashVO())
@@ -356,6 +365,7 @@ class VehicleSellDialog(VehicleSellDialogMeta):
         expenses = -self.__income
         shortage = expenses.getShortage(self.__accountMoney)
         shortage[Currency.GOLD] = 0
+        shortage[Currency.EQUIP_COIN] = 0
         self.as_enableButtonS(controlNumberValid and shortage.isEmpty())
 
     def __getControlQuestion(self, usingGold=False):
@@ -642,6 +652,7 @@ class _OptionalDeviceData(_VSDItemData):
     def __init__(self, optDevice, vehicle=None):
         super(_OptionalDeviceData, self).__init__(optDevice, FITTING_TYPES.OPTIONAL_DEVICE)
         self._flashData['isRemovable'] = optDevice.isRemovable
+        self._flashData['isModernized'] = optDevice.isModernized
         removalPrice = optDevice.getRemovalPrice(self.__itemsCache.items)
         if removalPrice.isActionPrice():
             self._flashData['removeActionPrice'] = packActionTooltipData(ACTION_TOOLTIPS_TYPE.ECONOMICS, 'paidRemovalCost', True, removalPrice.price, removalPrice.defPrice)

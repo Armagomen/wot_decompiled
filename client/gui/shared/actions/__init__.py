@@ -7,6 +7,7 @@ from frameworks.wulf import WindowLayer
 from gui.Scaleform.Waiting import Waiting
 from gui.prb_control.settings import FUNCTIONAL_FLAG
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
+from gui.shared.actions.chains import ActionsChain
 from gui.shared.events import LoginEventEx, GUICommonEvent
 from helpers import dependency
 from predefined_hosts import g_preDefinedHosts, getHostURL
@@ -15,7 +16,7 @@ from skeletons.gameplay import IGameplayLogic
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.login_manager import ILoginManager
-
+from constants import WGC_STATE
 __all__ = ('LeavePrbModalEntity', 'DisconnectFromPeriphery', 'ConnectToPeriphery', 'PrbInvitesInit', 'ActionsChain')
 
 class Action(object):

@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/impl/lobby/awards/multiple_awards_view.py
 import logging
 import typing
-
 from adisp import adisp_process
 from constants import RentType
 from frameworks.wulf import ViewSettings, ViewStatus, ViewFlags
@@ -12,12 +11,9 @@ from gui.impl import backport
 from gui.impl.auxiliary.tooltips.compensation_tooltip import VehicleCompensationTooltipContent
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.awards.multiple_awards_view_model import MultipleAwardsViewModel
-from gui.impl.gen.view_models.views.lobby.awards.reward_model import RewardModel, RentTypeEnum
-from gui.impl.gen.view_models.views.lobby.awards.tooltips.awards_vehicle_for_choose_tooltip_view_model import \
-    AwardsVehicleForChooseTooltipViewModel
+from gui.impl.gen.view_models.views.lobby.awards.tooltips.awards_vehicle_for_choose_tooltip_view_model import AwardsVehicleForChooseTooltipViewModel
 from gui.impl.gen.view_models.views.loot_box_compensation_tooltip_types import LootBoxCompensationTooltipTypes
-from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import \
-    LootBoxVehicleCompensationTooltipModel
+from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import LootBoxVehicleCompensationTooltipModel
 from gui.impl.lobby.awards import SupportedTokenTypes
 from gui.impl.lobby.awards.tooltip import VEH_FOR_CHOOSE_ID
 from gui.impl.lobby.awards.tooltip.vehicle_for_choose import VehicleForChooseTooltipContent
@@ -29,9 +25,9 @@ from gui.sounds.filters import switchHangarOverlaySoundFilter
 from helpers import dependency
 from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
-
+from gui.impl.gen.view_models.views.lobby.awards.reward_model import RewardModel, RentTypeEnum
 if typing.TYPE_CHECKING:
-    pass
+    from gui.platform.catalog_service.controller import _PurchaseDescriptor
 _logger = logging.getLogger(__name__)
 
 class MultipleAwardsView(ViewImpl):

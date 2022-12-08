@@ -1,25 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/gui_items/Tankman.py
-from typing import TYPE_CHECKING
-
-from constants import SkinInvData
-from gui import nationCompareByIndex, TANKMEN_ROLES_ORDER_DICT, makeHtmlString
-from gui.Scaleform.genConsts.SKILLS_CONSTANTS import SKILLS_CONSTANTS
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.shared.gui_items import ItemsCollection, GUI_ITEM_TYPE
-from gui.shared.gui_items.gui_item import HasStrCD, GUIItem
-from gui.shared.utils.functions import getShortDescr
-from helpers import dependency
+from typing import TYPE_CHECKING, Sequence
 from helpers import i18n
 from items import tankmen, vehicles, ITEM_TYPE_NAMES, special_crew
+from gui import nationCompareByIndex, TANKMEN_ROLES_ORDER_DICT, makeHtmlString
+from gui.Scaleform.genConsts.SKILLS_CONSTANTS import SKILLS_CONSTANTS
+from gui.shared.utils.functions import getShortDescr
+from gui.shared.gui_items import ItemsCollection, GUI_ITEM_TYPE
+from gui.shared.gui_items.gui_item import HasStrCD, GUIItem
+from gui.impl.gen import R
+from gui.impl import backport
+from helpers import dependency
 from items.components import skills_constants
-from items.components.crew_skins_constants import NO_CREW_SKIN_ID
+from constants import SkinInvData
 from items.vehicles import VEHICLE_CLASS_TAGS
+from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from skeletons.gui.shared import IItemsCache
-
 if TYPE_CHECKING:
-    pass
+    from gui.shared.gui_items.Vehicle import Vehicle
 
 class CrewTypes(object):
     SKILL_100 = 100
@@ -670,6 +668,26 @@ class YhaTankmanSkill(TankmanSkill):
         return icon
 
 
+class WitchesTankmanSkill(TankmanSkill):
+    __slots__ = ()
+
+    def __init__(self, skillName, tankman=None, proxy=None):
+        super(WitchesTankmanSkill, self).__init__(skillName, tankman, proxy)
+        if skillName == BROTHERHOOD_SKILL_NAME:
+            self._isPermanent = True
+
+    @property
+    def userName(self):
+        return backport.text(R.strings.item_types.tankman.skills.brotherhood_witches()) if self._name == BROTHERHOOD_SKILL_NAME else super(WitchesTankmanSkill, self).userName
+
+    @property
+    def icon(self):
+        icon = super(WitchesTankmanSkill, self).icon
+        if self._name == BROTHERHOOD_SKILL_NAME:
+            icon = 'witches_{}'.format(icon)
+        return icon
+
+
 def getTankmanSkill(skillName, tankman=None, proxy=None):
     if tankman is not None:
         if special_crew.isSabatonCrew(tankman.descriptor):
@@ -678,6 +696,8 @@ def getTankmanSkill(skillName, tankman=None, proxy=None):
             return OffspringTankmanSkill(skillName, tankman, proxy)
         if special_crew.isYhaCrew(tankman.descriptor):
             return YhaTankmanSkill(skillName, tankman, proxy)
+        if special_crew.isWitchesCrew(tankman.descriptor):
+            return WitchesTankmanSkill(skillName, tankman, proxy)
     return TankmanSkill(skillName, tankman, proxy)
 
 
@@ -692,7 +712,7 @@ def getLastUserName(nationID, lastNameID):
 def getFullUserName(nationID, firstNameID, lastNameID):
     firstUserName = getFirstUserName(nationID, firstNameID)
     lastUserName = getLastUserName(nationID, lastNameID)
-    return lastUserName if not firstUserName else '%s %s' % (firstUserName, lastUserName)
+    return ('%s %s' % (firstUserName, lastUserName)).strip()
 
 
 def getRoleUserName(role):

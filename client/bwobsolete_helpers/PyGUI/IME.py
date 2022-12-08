@@ -2,13 +2,12 @@
 # Embedded file name: scripts/client/bwobsolete_helpers/PyGUI/IME.py
 import BigWorld
 import GUI
-from bwdebug import *
-
+import Math
 import Utils
 from Utils import BlinkingCursor
 from Utils import blinkingColourProvider
 from Utils import getHPixelScalar, getVPixelScalar
-
+from bwdebug import *
 ALWAYS_ON_TOP_Z = 0.01
 BACKGROUND_COLOUR = (32, 32, 32, 255)
 DEFAULT_FONT_NAME = 'default_small.font'

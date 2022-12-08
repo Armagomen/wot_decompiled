@@ -1,12 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/bootcamp.py
 from __future__ import absolute_import
-
 import logging
-
+from bootcamp.BootcampConstants import BATTLE_STATS_RESULT_FIELDS, BATTLE_STATS_ICONS
+from helpers.i18n import makeString
 import BigWorld
 from bootcamp.Bootcamp import g_bootcamp
-from bootcamp.BootcampConstants import BATTLE_STATS_RESULT_FIELDS, BATTLE_STATS_ICONS
 from constants import PREMIUM_ENTITLEMENTS, SPA_ATTRS
 from gui import makeHtmlString
 from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
@@ -17,28 +16,23 @@ from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
 from helpers.bots import preprocessBotName
-from helpers.i18n import makeString
 from shared_utils import first
 from skeletons.gui.game_control import IBootcampController
-
 _logger = logging.getLogger(__name__)
 _BG_FOLDER_PATH = '../maps/icons/bootcamp/battle_result/background/'
 _BG_IMAGE_FORMATS = {PLAYER_TEAM_RESULT.WIN: 'bcVictoryBg_{0}.png',
-                     PLAYER_TEAM_RESULT.DEFEAT: 'bcDefeat.png',
-                     PLAYER_TEAM_RESULT.DRAW: 'bcDraw.png'}
+ PLAYER_TEAM_RESULT.DEFEAT: 'bcDefeat.png',
+ PLAYER_TEAM_RESULT.DRAW: 'bcDraw.png'}
 _STAT_ICON_PATH = '../maps/icons/bootcamp/battle_result/{0}.png'
 _STAT_ICON_TOOLTIP_PATH = '../maps/icons/bootcamp/battle_result/tooltip/{0}.png'
-_PREMIUM_RESOURCES = {
-    PREMIUM_ENTITLEMENTS.BASIC: {'icon': backport.image(R.images.gui.maps.icons.bootcamp.rewards.bcPremium()),
-                                 'iconTooltip': backport.image(
-                                     R.images.gui.maps.icons.bootcamp.rewards.tooltips.bcPremium()),
-                                 'label': backport.text(R.strings.bootcamp.result.award.premium.label()),
-                                 'description': backport.text(R.strings.bootcamp.result.award.premium.text())},
-    PREMIUM_ENTITLEMENTS.PLUS: {'icon': backport.image(R.images.gui.maps.icons.bootcamp.rewards.bcPremiumPlus()),
-                                'iconTooltip': backport.image(
-                                    R.images.gui.maps.icons.bootcamp.rewards.tooltips.bcPremiumPlus()),
-                                'label': backport.text(R.strings.bootcamp.result.award.premiumPlus.label()),
-                                'description': backport.text(R.strings.bootcamp.result.award.premiumPlus.text())}}
+_PREMIUM_RESOURCES = {PREMIUM_ENTITLEMENTS.BASIC: {'icon': backport.image(R.images.gui.maps.icons.bootcamp.rewards.bcPremium()),
+                              'iconTooltip': backport.image(R.images.gui.maps.icons.bootcamp.rewards.tooltips.bcPremium()),
+                              'label': backport.text(R.strings.bootcamp.result.award.premium.label()),
+                              'description': backport.text(R.strings.bootcamp.result.award.premium.text())},
+ PREMIUM_ENTITLEMENTS.PLUS: {'icon': backport.image(R.images.gui.maps.icons.bootcamp.rewards.bcPremiumPlus()),
+                             'iconTooltip': backport.image(R.images.gui.maps.icons.bootcamp.rewards.tooltips.bcPremiumPlus()),
+                             'label': backport.text(R.strings.bootcamp.result.award.premiumPlus.label()),
+                             'description': backport.text(R.strings.bootcamp.result.award.premiumPlus.text())}}
 
 def isTechnicalWin(record, reusable):
     teamResult = reusable.getPersonalTeamResult()
@@ -189,9 +183,7 @@ class VideoButtonsItem(base.StatsItem):
         player = BigWorld.player()
         teamResult = reusable.getPersonalTeamResult()
         buttons = g_bootcamp.getInterludeVideoButtons()
-        return None if player.spaFlags.getFlag(
-            SPA_ATTRS.BOOTCAMP_VIDEO_DISABLED) or teamResult != PLAYER_TEAM_RESULT.WIN and not isTechnicalWin(record,
-                                                                                                              reusable) or not buttons else buttons
+        return None if player.spaFlags.getFlag(SPA_ATTRS.BOOTCAMP_VIDEO_DISABLED) or teamResult != PLAYER_TEAM_RESULT.WIN and not isTechnicalWin(record, reusable) or not buttons else buttons
 
 
 class CreditsBlock(base.StatsBlock):

@@ -1,20 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/RentalsController.py
-import copy
 from operator import itemgetter
 from sys import maxint
-
+import copy
+import typing
 import BigWorld
 import Event
 from constants import RentType, SEASON_NAME_BY_TYPE, IS_RENTALS_ENABLED
-from gui.shared.money import Money
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
+from gui.shared.money import Money
 from helpers import dependency
 from helpers import time_utils
-from rent_common import SeasonRentDuration, calculateSeasonRentPrice
 from skeletons.gui.game_control import IRentalsController, ISeasonsController, IEpicBattleMetaGameController
 from skeletons.gui.shared import IItemsCache
-
+from rent_common import SeasonRentDuration, calculateSeasonRentPrice
+from season_common import GameSeason
 RENT_TYPE_WEIGHTS = {RentType.TIME_RENT: 0,
  RentType.SEASON_CYCLE_RENT: 1,
  RentType.SEASON_RENT: 2}
@@ -37,7 +38,7 @@ class RentalsController(IRentalsController):
 
     def onLobbyInited(self, event):
         if self.isEnabled():
-            self.itemsCache.onSyncCompleted += self._update
+            self.itemsCache.onSyncCompleted += self.__onSyncCompleted
             self.epicController.onUpdated += self._update
             if self.__rentNotifyTimeCallback is None:
                 self.__startRentTimeNotifyCallback()
@@ -57,9 +58,14 @@ class RentalsController(IRentalsController):
         if self.isEnabled():
             self.__clearRentTimeNotifyCallback()
             self.__vehiclesForUpdate = None
-            self.itemsCache.onSyncCompleted -= self._update
+            self.itemsCache.onSyncCompleted -= self.__onSyncCompleted
             self.epicController.onUpdated -= self._update
         return
+
+    def __onSyncCompleted(self, _, invalidItems):
+        if invalidItems and GUI_ITEM_TYPE.VEHICLE not in invalidItems:
+            return
+        self._update()
 
     def _update(self, *args):
         self.__clearRentTimeNotifyCallback()

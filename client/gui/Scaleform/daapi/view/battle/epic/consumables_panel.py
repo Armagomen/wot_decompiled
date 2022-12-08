@@ -3,11 +3,10 @@
 from gui.Scaleform.daapi.view.battle.shared.consumables_panel import ConsumablesPanel
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.impl import backport
-from gui.impl.gen import R
 from helpers.epic_game import searchRankForSlot
 from items.vehicles import getVehicleClassFromVehicleType
-
+from gui.impl import backport
+from gui.impl.gen import R
 
 class EpicBattleConsumablesPanel(ConsumablesPanel):
     _EMPTY_LOCKED_SLOT = -1

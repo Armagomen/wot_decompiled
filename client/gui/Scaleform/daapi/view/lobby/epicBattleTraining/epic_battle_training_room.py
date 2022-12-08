@@ -1,26 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattleTraining/epic_battle_training_room.py
 from adisp import adisp_process
-from constants import PREBATTLE_TYPE
-from debug_utils import LOG_DEBUG
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.trainings import formatters
-from gui.Scaleform.daapi.view.meta.EpicBattleTrainingRoomMeta import EpicBattleTrainingRoomMeta
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
 from gui.Scaleform.settings import ICONS_SIZES
-from gui.impl import backport
-from gui.impl.gen import R
-from gui.prb_control.entities.base.legacy.ctx import GroupAssignLegacyCtx, GroupSwapInTeamLegacyCtx, \
-    GroupSwapBetweenTeamLegacyCtx
-from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
-from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.items.prb_items import getPlayersComparator
 from gui.prb_control.settings import PREBATTLE_ROSTER, REQUEST_TYPE
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.shared.formatters import text_styles
+from gui.Scaleform.daapi.view.meta.EpicBattleTrainingRoomMeta import EpicBattleTrainingRoomMeta
+from gui.prb_control.entities.base.legacy.ctx import GroupAssignLegacyCtx, GroupSwapInTeamLegacyCtx, GroupSwapBetweenTeamLegacyCtx
+from debug_utils import LOG_DEBUG
+from constants import PREBATTLE_TYPE
+from gui.prb_control.events_dispatcher import g_eventDispatcher
+from gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
+from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
+from gui.impl import backport
+from gui.impl.gen import R
 from helpers import int2roman
-
 
 class EpicBattleTrainingRoom(EpicBattleTrainingRoomMeta):
 

@@ -3,32 +3,23 @@
 import datetime
 import time
 from functools import partial
-
 import BigWorld
 import account_helpers
-from UnitBase import UNIT_ERROR, UNIT_ROLE
 from client_request_lib.exceptions import ResponseCodes
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui import SystemMessages
-from gui.Scaleform.daapi.view.dialogs.rally_dialog_meta import StrongholdConfirmDialogMeta
-from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.SystemMessages import SM_TYPE
 from gui.clans.clan_helpers import isStrongholdsEnabled, isLeaguesEnabled
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.prb_control import prb_getters
 from gui.prb_control import settings
-from gui.prb_control.entities.base import vehicleAmmoCheck
-from gui.prb_control.entities.base.external_battle_unit.base_external_battle_waiting_manager import \
-    BaseExternalUnitWaitingManager
-from gui.prb_control.entities.base.unit.entity import UnitEntity, UnitEntryPoint, UnitBrowserEntryPoint, \
-    UnitBrowserEntity
+from gui.prb_control.entities.base.unit.entity import UnitEntity, UnitEntryPoint, UnitBrowserEntryPoint, UnitBrowserEntity
 from gui.prb_control.entities.stronghold.unit.actions_handler import StrongholdActionsHandler
 from gui.prb_control.entities.stronghold.unit.actions_validator import StrongholdActionsValidator
 from gui.prb_control.entities.stronghold.unit.permissions import StrongholdPermissions
 from gui.prb_control.entities.stronghold.unit.requester import StrongholdUnitRequestProcessor
+from gui.prb_control.entities.base.external_battle_unit.base_external_battle_waiting_manager import BaseExternalUnitWaitingManager
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.formatters import messages
 from gui.prb_control.items import SelectResult
@@ -39,11 +30,15 @@ from gui.prb_control.settings import PREBATTLE_ACTION_NAME, FUNCTIONAL_FLAG
 from gui.prb_control.settings import UNIT_RESTRICTION
 from gui.prb_control.storages import prequeue_storage_getter
 from gui.shared.ClanCache import _ClanCache
+from gui.Scaleform.daapi.view.dialogs.rally_dialog_meta import StrongholdConfirmDialogMeta
+from gui.SystemMessages import SM_TYPE
+from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.shared.utils.requesters.abstract import Response
-from gui.wgcg.strongholds.contexts import StrongholdJoinBattleCtx, StrongholdUpdateCtx, StrongholdMatchmakingInfoCtx, \
-    StrongholdLeaveModeCtx, SlotVehicleFiltersUpdateCtx
+from gui.wgcg.strongholds.contexts import StrongholdJoinBattleCtx, StrongholdUpdateCtx, StrongholdMatchmakingInfoCtx, StrongholdLeaveModeCtx, SlotVehicleFiltersUpdateCtx
 from helpers import time_utils
-
+from UnitBase import UNIT_ERROR, UNIT_ROLE
+from gui.prb_control.entities.base import vehicleAmmoCheck
 _CREATION_TIMEOUT = 30
 ERROR_MAX_RETRY_COUNT = 3
 SUCCESS_STATUSES = (200, 201, 403, 409)

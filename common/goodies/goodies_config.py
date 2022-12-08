@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/goodies/goodies_config.py
+import time
 import calendar
 import datetime
-import time
-
 import XmlConfigReader
 from debug_utils import LOG_WARNING
-from items.vehicles import makeVehicleTypeCompDescrByName
-from soft_exception import SoftException
-
 from goodie_constants import GOODIE_VARIETY
 from . import goodie_helpers
-
+from items.vehicles import makeVehicleTypeCompDescrByName
+from soft_exception import SoftException
 _CONFIG_FILE = 'scripts/server_xml/goodies.xml'
 g_cache = None
 

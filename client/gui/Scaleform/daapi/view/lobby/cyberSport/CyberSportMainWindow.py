@@ -1,8 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/CyberSportMainWindow.py
-from CurrentVehicle import g_currentVehicle
 from UnitBase import UNIT_BROWSER_ERROR
-from account_helpers.AccountSettings import SELECTED_INTRO_VEHICLES_FIELD
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_ERROR
@@ -16,18 +14,18 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.managers.windows_stored_data import DATA_TYPE, TARGET_ID
 from gui.Scaleform.managers.windows_stored_data import stored_window
 from gui.prb_control import settings, prbPeripheriesHandlerProperty
-from gui.prb_control.entities.base.unit.ctx import AutoSearchUnitCtx, JoinUnitCtx, AcceptSearchUnitCtx, \
-    DeclineSearchUnitCtx, BattleQueueUnitCtx, CreateUnitCtx
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.prb_control.formatters import messages
+from gui.prb_control.entities.base.unit.ctx import AutoSearchUnitCtx, JoinUnitCtx, AcceptSearchUnitCtx, DeclineSearchUnitCtx, BattleQueueUnitCtx, CreateUnitCtx
 from gui.prb_control.settings import SELECTOR_BATTLE_TYPES, CREATOR_ROSTER_SLOT_INDEXES, PREBATTLE_ACTION_NAME
 from gui.shared import EVENT_BUS_SCOPE, events
 from gui.shared.utils import SelectorBattleTypesUtils as selectorUtils
 from helpers import dependency
 from helpers import i18n
+from account_helpers.AccountSettings import SELECTED_INTRO_VEHICLES_FIELD
 from skeletons.gui.lobby_context import ILobbyContext
+from CurrentVehicle import g_currentVehicle
 from skeletons.gui.shared import IItemsCache
-
 
 @stored_window(DATA_TYPE.UNIQUE_WINDOW, TARGET_ID.CHANNEL_CAROUSEL)
 class CyberSportMainWindow(CyberSportMainWindowMeta):

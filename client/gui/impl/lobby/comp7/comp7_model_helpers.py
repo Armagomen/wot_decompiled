@@ -1,16 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/comp7_model_helpers.py
 import typing
-
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.lobby.comp7 import comp7_shared
 from helpers import dependency
 from helpers.time_utils import getServerUTCTime
 from skeletons.gui.game_control import IComp7Controller
-
 if typing.TYPE_CHECKING:
-    pass
-
+    from comp7_ranks_common import Comp7Division
+    from season_common import GameSeason
+    from gui.impl.gen.view_models.views.lobby.comp7.division_info_model import DivisionInfoModel
+    from gui.impl.gen.view_models.views.lobby.comp7.schedule_info_model import ScheduleInfoModel
+    from gui.impl.gen.view_models.views.lobby.comp7.season_model import SeasonModel
 
 def setDivisionInfo(model, division=None):
     if division is None:

@@ -1,16 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/bottom_content/bottom_contents.py
-from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContent, ExchangeMoneyInfo
+from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.tank_setup.configurations.base import BaseDealPanel
 from gui.impl.wrappers.user_compound_price_model import BuyPriceModelBuilder
 from gui.shared.gui_items.fitting_item import canBuyWithGoldExchange
 from gui.shared.gui_items.processors.vehicle import VehicleAutoRepairProcessor
 from gui.shared.money import Money
-from gui.shared.utils import decorators
 from helpers import dependency
+from gui.shared.utils import decorators
 from skeletons.gui.shared import IItemsCache
-
 
 class AmmunitionBuyBottomContent(BaseSubModelView):
 

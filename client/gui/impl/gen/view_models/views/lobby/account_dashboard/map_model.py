@@ -1,9 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_dashboard/map_model.py
 from enum import Enum
-
 from frameworks.wulf import ViewModel
-
 
 class SlotStateEnum(Enum):
     EMPTY = 'empty'

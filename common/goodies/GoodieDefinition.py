@@ -2,15 +2,15 @@
 # Embedded file name: scripts/common/goodies/GoodieDefinition.py
 import time
 from typing import TYPE_CHECKING
-
-from soft_exception import SoftException
-
 from Goodie import Goodie
 from goodie_constants import GOODIE_VARIETY, GOODIE_STATE
-
+from soft_exception import SoftException
 if TYPE_CHECKING:
-    pass
-
+    from typing import Optional
+    from goodies.GoodieConditions import Condition
+    from goodies.GoodieResources import GoodieResource
+    from goodies.GoodieTargets import GoodieTarget
+    from goodies.GoodieValue import GoodieValue
 
 class OverLimitException(SoftException):
     pass

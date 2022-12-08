@@ -7,7 +7,7 @@ from helpers import time_utils
 from uilogging.core.common import getClientBuildVersion, convertEnum
 from uilogging.constants import LogLevels, DEFAULT_LOGGER_NAME
 if typing.TYPE_CHECKING:
-    pass
+    from uilogging.types import FeatureType, GroupType, ActionType, LogLevelType
 _logger = logging.getLogger(DEFAULT_LOGGER_NAME)
 
 class LogRecord(object):

@@ -1,16 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/members_window_model.py
 from enum import Enum
-
 from frameworks.wulf import Array
-from gui.impl.gen.view_models.views.lobby.platoon.button_find_players_cancel_search_model import \
-    ButtonFindPlayersCancelSearchModel
+from gui.impl.gen.view_models.views.lobby.platoon.button_find_players_cancel_search_model import ButtonFindPlayersCancelSearchModel
 from gui.impl.gen.view_models.views.lobby.platoon.button_model import ButtonModel
 from gui.impl.gen.view_models.views.lobby.platoon.button_switch_ready_model import ButtonSwitchReadyModel
 from gui.impl.gen.view_models.views.lobby.platoon.slot_model import SlotModel
 from gui.impl.gen.view_models.views.lobby.platoon.window_header_model import WindowHeaderModel
 from gui.impl.gen.view_models.windows.window_model import WindowModel
-
 
 class PrebattleTypes(Enum):
     SQUAD = 'squad'

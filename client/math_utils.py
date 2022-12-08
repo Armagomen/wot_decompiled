@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/math_utils.py
-import math
 import random
-
+import math
 import Math
 from Math import Vector2, Vector3
-
 
 def createIdentityMatrix():
     return Math.createIdentityMatrix()

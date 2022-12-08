@@ -1,8 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileStatistics.py
 from collections import namedtuple
-
 from debug_utils import LOG_ERROR
+from stats_params import BATTLE_ROYALE_STATS_ENABLED
 from gui.Scaleform.daapi.view.lobby.profile.profile_statistics_vos import getStatisticsVO
 from gui.Scaleform.daapi.view.meta.ProfileStatisticsMeta import ProfileStatisticsMeta
 from gui.Scaleform.genConsts.BATTLE_TYPES import BATTLE_TYPES
@@ -11,15 +11,13 @@ from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.ranked_battles.constants import RankedDossierKeys, ARCHIVE_SEASON_ID
-from gui.shared import g_eventBus
-from gui.shared.event_bus import EVENT_BUS_SCOPE
-from gui.shared.events import ProfileStatisticEvent
 from gui.shared.formatters import text_styles
 from helpers import dependency
 from skeletons.gui.game_control import IRankedBattlesController, IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
-from stats_params import BATTLE_ROYALE_STATS_ENABLED
-
+from gui.shared.event_bus import EVENT_BUS_SCOPE
+from gui.shared.events import ProfileStatisticEvent
+from gui.shared import g_eventBus
 _RankedSeasonsKeys = namedtuple('_RankedSeasonsKeys', ['all', 'current', 'previous'])
 _RANKED_SEASONS_ARCHIVE = 'archive'
 RANKED_SEASONS_ARCHIVE_10x10 = '_10x10'

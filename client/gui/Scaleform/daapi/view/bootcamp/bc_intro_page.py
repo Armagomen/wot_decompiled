@@ -1,28 +1,27 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/bootcamp/bc_intro_page.py
-import BattleReplay
-import BigWorld
 import WWISE
+import BigWorld
+import BattleReplay
 import Windowing
 from PlayerEvents import g_playerEvents
-from bootcamp.BootCampEvents import g_bootcampEvents
 from bootcamp.Bootcamp import BOOTCAMP_SOUND, BOOTCAMP_UI_COMPONENTS
-from bootcamp.BootcampSettings import getBattleDefaults
 from constants import WOT_GAMEPLAY, BootcampVersion
-from debug_utils_bootcamp import LOG_ERROR_BOOTCAMP
-from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.BCIntroVideoPageMeta import BCIntroVideoPageMeta
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
+from gui.app_loader.settings import APP_NAME_SPACE
+from bootcamp.BootCampEvents import g_bootcampEvents
+from bootcamp.BootcampSettings import getBattleDefaults
+from debug_utils_bootcamp import LOG_ERROR_BOOTCAMP
+from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from gui.Scaleform.locale.BOOTCAMP import BOOTCAMP
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.app_loader.settings import APP_NAME_SPACE
-from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBootcampController, IDemoAccCompletionController
-
 PATH_BACKGROUNDS = '../maps/icons/bootcamp/loading/{0}_{1}.png'
 PATH_BACKGROUNDS_CORE = '../maps/icons/bootcamp/loading/{0}_{1}_core.png'
 LINKAGE_BACKGROUNDS = '{0}Page{1}UI'

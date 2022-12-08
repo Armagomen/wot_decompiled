@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/bootcamp/bootcamp_quest_widget_view.py
 from bootcamp.Bootcamp import g_bootcamp
-from frameworks.wulf import WindowFlags, ViewSettings, ViewFlags
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.bootcamp.bootcamp_quest_widget_model import BootcampQuestWidgetModel
 from gui.impl.pub import ViewImpl
+from gui.impl.gen.view_models.views.bootcamp.bootcamp_quest_widget_model import BootcampQuestWidgetModel
+from frameworks.wulf import WindowFlags, ViewSettings, ViewFlags
 from uilogging.deprecated.bootcamp.constants import BC_LOG_KEYS, BC_LOG_ACTIONS
 from uilogging.deprecated.bootcamp.loggers import BootcampLogger
-
 
 class BootcampQuestWidgetView(ViewImpl):
     __slots__ = ()

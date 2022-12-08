@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/BattleTypeSelectPopover.py
 from __future__ import absolute_import
-
 from adisp import adisp_process
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -17,7 +16,6 @@ from gui.shared.events import LoadViewEvent
 from helpers import dependency
 from skeletons.gui.game_control import IRankedBattlesController, IComp7Controller
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 class BattleTypeSelectPopover(BattleTypeSelectPopoverMeta):
     __rankedController = dependency.descriptor(IRankedBattlesController)

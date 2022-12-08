@@ -13,9 +13,9 @@ from items.tankmen import TankmanDescr, generateCompactDescr, getNationConfig
 from shared_utils import first
 from web.web_client_api.common import TManGender, TManLocation
 if typing.TYPE_CHECKING:
-    from typing import Generator, Set, Tuple
+    from typing import Generator, Set, Tuple, Union
     from gui.server_events.recruit_helper import _BaseRecruitInfo
-
+    from items.components.tankmen_components import NationConfig, NationGroup
     TManPassport = Tuple[int, bool, bool, str, str, str]
 _NEW_SKILL = 'new_skill'
 _NEWBIE = 'newbie'

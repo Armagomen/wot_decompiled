@@ -1,53 +1,53 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/hangar_vehicle_appearance.py
 import logging
-import math
 import weakref
+import math
 from collections import namedtuple
-from functools import partial
 from typing import TYPE_CHECKING
-
+from functools import partial
 import BigWorld
-import CGF
 import Event
-import GenericComponents
 import Math
 import VehicleStickers
 import Vehicular
 import math_utils
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
-from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
+from items.components.c11n_constants import EASING_TRANSITION_DURATION
 from gui import g_tankActiveCamouflage
-from gui.ClientHangarSpace import hangarCFG
-from gui.battle_control.vehicle_getter import hasTurretRotator
-from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
-from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.customization.slots import SLOT_ASPECT_RATIO, BaseCustomizationSlot, EmblemSlot, \
-    getProgectionDecalAspect
-from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.simple_turret_rotator import SimpleTurretRotator
+from skeletons.gui.customization import ICustomizationService
+from vehicle_outfit.outfit import Area, ANCHOR_TYPE_TO_SLOT_TYPE_MAP, SLOT_TYPES
+from gui.shared.gui_items.customization.slots import SLOT_ASPECT_RATIO, BaseCustomizationSlot, EmblemSlot, getProgectionDecalAspect
+from gui.shared.items_cache import CACHE_SYNC_REASON
 from helpers import dependency
 from items.components.c11n_constants import ApplyArea
-from items.components.c11n_constants import EASING_TRANSITION_DURATION
 from skeletons.account_helpers.settings_core import ISettingsCore
-from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.turret_gun_angles import ITurretAndGunAngles
-from vehicle_outfit.outfit import Area, ANCHOR_TYPE_TO_SLOT_TYPE_MAP, SLOT_TYPES
 from vehicle_systems import camouflages
 from vehicle_systems.components.vehicle_shadow_manager import VehicleShadowManager
-from vehicle_systems.stricted_loading import makeCallbackWeak
 from vehicle_systems.tankStructure import ModelsSetParams, TankPartNames, ColliderTypes, TankPartIndexes
 from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames
-
+from cgf_obsolete_script.script_game_object import ComponentDescriptor, ScriptGameObject
+from vehicle_systems.stricted_loading import makeCallbackWeak
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
+from gui.shared import g_eventBus, EVENT_BUS_SCOPE
+from gui.ClientHangarSpace import hangarCFG
+from gui.battle_control.vehicle_getter import hasTurretRotator
+from cgf_components.hangar_camera_manager import HangarCameraManager
+import GenericComponents
+import CGF
 if TYPE_CHECKING:
-    pass
+    from vehicle_outfit.outfit import Outfit as TOutfit
+    from items.vehicles import VehicleDescrType
 _SHOULD_CHECK_DECAL_UNDER_GUN = True
 _PROJECTION_DECAL_OVERLAPPING_FACTOR = 0.7
 _HANGAR_TURRET_SHIFT = math.pi / 8
+_CAMERA_MIN_DIST_FACTOR = 0.8
 AnchorLocation = namedtuple('AnchorLocation', ['position', 'normal', 'up'])
 AnchorId = namedtuple('AnchorId', ('slotType', 'areaId', 'regionIdx'))
 AnchorHelper = namedtuple('AnchorHelper', ['location',
@@ -346,13 +346,31 @@ class HangarVehicleAppearance(ScriptGameObject):
                 crashedBspModel = (partId, htManager.crashedModelHitTester.bspModelName)
                 crashedBspModels = crashedBspModels + (crashedBspModel,)
 
-        bspModels = bspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 1, vDesc.hull.hitTesterManager.modelHitTester.bspModelName, capsuleScale), (TankPartNames.getIdx(TankPartNames.GUN) + 2, vDesc.turret.hitTesterManager.modelHitTester.bspModelName, capsuleScale), (TankPartNames.getIdx(TankPartNames.GUN) + 3, vDesc.gun.hitTesterManager.modelHitTester.bspModelName, gunScale))
+        bspModels = bspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 1,
+          vDesc.hull.hitTesterManager.modelHitTester.bspModelName,
+          capsuleScale,
+          True), (TankPartNames.getIdx(TankPartNames.GUN) + 2,
+          vDesc.turret.hitTesterManager.modelHitTester.bspModelName,
+          capsuleScale,
+          True), (TankPartNames.getIdx(TankPartNames.GUN) + 3,
+          vDesc.gun.hitTesterManager.modelHitTester.bspModelName,
+          gunScale,
+          True))
         if vDesc.hull.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 1, vDesc.hull.hitTesterManager.crashedModelHitTester.bspModelName, capsuleScale),)
+            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 1,
+              vDesc.hull.hitTesterManager.crashedModelHitTester.bspModelName,
+              capsuleScale,
+              True),)
         if vDesc.turret.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 2, vDesc.turret.hitTesterManager.crashedModelHitTester.bspModelName, capsuleScale),)
+            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 2,
+              vDesc.turret.hitTesterManager.crashedModelHitTester.bspModelName,
+              capsuleScale,
+              True),)
         if vDesc.gun.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 3, vDesc.gun.hitTesterManager.crashedModelHitTester.bspModelName, gunScale),)
+            crashedBspModels = crashedBspModels + ((TankPartNames.getIdx(TankPartNames.GUN) + 3,
+              vDesc.gun.hitTesterManager.crashedModelHitTester.bspModelName,
+              gunScale,
+              True),)
         modelCA = BigWorld.CollisionAssembler(bspModels, self.__spaceId)
         modelCA.name = 'ModelCollisions'
         resources.append(modelCA)
@@ -592,6 +610,9 @@ class HangarVehicleAppearance(ScriptGameObject):
         if state != CameraMovementStates.FROM_OBJECT:
             colliderData = (self.collisions.getColliderID(), (TankPartNames.getIdx(TankPartNames.GUN) + 1, TankPartNames.getIdx(TankPartNames.GUN) + 2, TankPartNames.getIdx(TankPartNames.GUN) + 3))
             BigWorld.appendCameraCollider(colliderData)
+            cameraManager = CGF.getManager(self.__spaceId, HangarCameraManager)
+            if cameraManager:
+                cameraManager.setMinDist(_CAMERA_MIN_DIST_FACTOR * self.computeVehicleLength())
         else:
             BigWorld.removeCameraCollider(self.collisions.getColliderID())
 

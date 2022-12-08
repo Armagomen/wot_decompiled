@@ -1,15 +1,13 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/mapbox/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
-from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite, \
-    CurrentVehicleActionsValidator
+from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite, CurrentVehicleActionsValidator
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
 from gui.prb_control.items import ValidationResult
 from gui.prb_control.settings import PRE_QUEUE_RESTRICTION, PREBATTLE_RESTRICTION
 from helpers import dependency
-from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
-
+from skeletons.gui.game_control import IMapboxController
 
 class MapboxVehicleValidator(CurrentVehicleActionsValidator):
 

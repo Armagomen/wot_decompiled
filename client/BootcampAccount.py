@@ -1,17 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/BootcampAccount.py
 import cPickle
-
 import AccountCommands
-from constants import QUEUE_TYPE
-from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
-
 import BattleReplay
 from Account import PlayerAccount
 from PlayerEvents import g_playerEvents as events
-from bootcamp.BootCampEvents import g_bootcampEvents
+from constants import QUEUE_TYPE
+from debug_utils_bootcamp import LOG_DEBUG_DEV_BOOTCAMP
 from bootcamp.Bootcamp import g_bootcamp
-
+from bootcamp.BootCampEvents import g_bootcampEvents
 
 class PlayerBootcampAccount(PlayerAccount):
 

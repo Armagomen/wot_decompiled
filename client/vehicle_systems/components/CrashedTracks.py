@@ -1,19 +1,17 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/vehicle_systems/components/CrashedTracks.py
 import weakref
-
-import BigWorld
-import Math
 import math_utils
+import Math
+import BigWorld
 from cgf_obsolete_script.auto_properties import AutoProperty
 from cgf_obsolete_script.py_component import Component
-from constants import IS_EDITOR
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from items.vehicle_items import CHASSIS_ITEM_TYPE
 from vehicle_systems import model_assembler
-from vehicle_systems.stricted_loading import loadingPriority, makeCallbackWeak
 from vehicle_systems.tankStructure import getPartModelsFromDesc, TankPartNames, ModelsSetParams
-
+from vehicle_systems.stricted_loading import loadingPriority, makeCallbackWeak
+from constants import IS_EDITOR
 
 class CrashedTrackController(Component):
     baseTracksComponent = AutoProperty()

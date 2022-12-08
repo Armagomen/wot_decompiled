@@ -1,13 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/base.py
+import typing
+from collections import defaultdict, namedtuple
 import inspect
 import operator
-from collections import defaultdict, namedtuple
-
+from soft_exception import SoftException
 from debug_utils import LOG_WARNING
 from gui.shared.utils.decorators import ReprInjector
-from soft_exception import SoftException
-
 
 class StatsComponent(object):
     __slots__ = ()

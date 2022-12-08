@@ -2,15 +2,13 @@
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/tooltips/battle_matters_entry_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_matters.tooltips.battle_matters_entry_tooltip_view_model import \
-    BattleMattersEntryTooltipViewModel
-from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersEntitlementsBonusUIPacker
+from gui.impl.gen.view_models.views.lobby.battle_matters.tooltips.battle_matters_entry_tooltip_view_model import BattleMattersEntryTooltipViewModel
 from gui.impl.pub import ViewImpl
 from gui.shared.missions.packers.bonus import getDefaultBonusPacker
 from helpers import dependency
 from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.shared import IItemsCache
-
+from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersEntitlementsBonusUIPacker
 
 class BattleMattersEntryTooltipView(ViewImpl):
     __slots__ = ()

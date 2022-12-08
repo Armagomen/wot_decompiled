@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/editable_style_popover.py
+import typing
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey

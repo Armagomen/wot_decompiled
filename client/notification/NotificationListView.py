@@ -1,21 +1,21 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/notification/NotificationListView.py
+import typing
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.meta.NotificationsListMeta import NotificationsListMeta
 from gui.Scaleform.genConsts.NOTIFICATIONS_CONSTANTS import NOTIFICATIONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.shared.formatters import icons
-from gui.shared.notifications import NotificationGroup
-from helpers import dependency
-from helpers.i18n import makeString as _ms
 from messenger.formatters import TimeFormatter
 from notification import NotificationMVC
 from notification.BaseNotificationView import BaseNotificationView
 from notification.settings import LIST_SCROLL_STEP_FACTOR, NOTIFICATION_STATE
+from gui.shared.formatters import icons
+from gui.shared.notifications import NotificationGroup
+from helpers.i18n import makeString as _ms
+from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-
 
 class NotificationListView(NotificationsListMeta, BaseNotificationView):
     _lobbyContext = dependency.descriptor(ILobbyContext)
@@ -92,7 +92,7 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
         self._model.resetNotifiedMessagesCount(self.__currentGroup)
 
     def __getMessagesList(self):
-        filtered = [ item for item in self._model.collection.getListIterator() if item.getGroup() == self.__currentGroup ]
+        filtered = [ item for item in self._model.collection.getListIterator() if item.getGroup() == self.__currentGroup and not item.onlyPopUp() ]
         return [ self.__getListVO(item) for item in filtered ]
 
     def __getEmptyListMsg(self, hasMessages):
@@ -123,11 +123,11 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
             self._model.incrementNotifiedMessagesCount(*notification.getCounterInfo())
         self.__updateCounters()
 
-    def __onNotificationRemoved(self, typeID, entityID, groupID):
+    def __onNotificationRemoved(self, typeID, entityID, groupID, countOnce):
         if groupID == self.__currentGroup:
             self.__setNotificationList()
         else:
-            self._model.decrementNotifiedMessagesCount(groupID, typeID, entityID)
+            self._model.decrementNotifiedMessagesCount(groupID, typeID, entityID, countOnce)
         self.__updateCounters()
 
     def __makeTabItemVO(self, tabId, label, tooltip):
@@ -136,5 +136,5 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
          'tooltip': tooltip}
 
     def __getListVO(self, notificaton):
-        flashId = self._getFlashID(notificaton.getID())
+        flashId = self._getFlashID(notificaton.getCounterInfo())
         return notificaton.getListVO(flashId)

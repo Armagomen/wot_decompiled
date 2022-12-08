@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/account_completion/steam_add_email_overlay_view.py
 import typing
-
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.account_completion.tooltips.tooltip_constants import TooltipConstants
@@ -13,9 +12,10 @@ from gui.shared.event_dispatcher import showSteamConfirmEmailOverlay
 from helpers import dependency
 from helpers.time_utils import getTimeDeltaFromNow
 from skeletons.gui.platform.wgnp_controllers import IWGNPSteamAccRequestController
-
 if typing.TYPE_CHECKING:
-    pass
+    from wg_async import _Future
+    from gui.platform.wgnp.steam_account.request import AddEmailParams as WGNPSAAddEmailParams
+    from gui.impl.gen.view_models.views.lobby.account_completion.add_credentials_model import AddCredentialsModel
 rAccCompletion = R.strings.dialogs.accountCompletion
 
 class SteamAddEmailOverlayView(BaseCredentialsOverlayView):

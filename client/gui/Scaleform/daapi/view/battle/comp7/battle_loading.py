@@ -1,8 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/comp7/battle_loading.py
-from account_helpers.settings_core.options import BattleLoadingTipSetting
 from gui.Scaleform.daapi.view.battle.shared.battle_loading import BattleLoading
-
+from account_helpers.settings_core.options import BattleLoadingTipSetting
 
 class Comp7BattleLoading(BattleLoading):
 

@@ -2,11 +2,10 @@
 # Embedded file name: scripts/common/serializable_types/customizations/customization_outfit.py
 from collections import OrderedDict, defaultdict
 from string import lower, upper
-
+from typing import List, Dict, Tuple, Any, Optional
 from debug_utils import LOG_ERROR
 from items.components import c11n_components as cn
-from items.components.c11n_constants import ApplyArea, CustomizationType, CustomizationTypeNames, HIDDEN_CAMOUFLAGE_ID, \
-    EMPTY_ITEM_ID
+from items.components.c11n_constants import ApplyArea, CustomizationType, CustomizationTypeNames, HIDDEN_CAMOUFLAGE_ID, EMPTY_ITEM_ID
 from items.named_vector import NamedVector
 from items.utils import getDifferVehiclePartNames
 from serialization import ComponentBinSerializer
@@ -14,7 +13,6 @@ from serialization.field import intField, strField, intArrayField, customArrayFi
 from serialization.serializable_component import SerializableComponent
 from soft_exception import SoftException
 from wrapped_reflection_framework import ReflectionMetaclass
-
 from .attachment import AttachmentComponent
 from .camouflage import CamouflageComponent
 from .decal import DecalComponent
@@ -24,7 +22,6 @@ from .personal_number import PersonalNumberComponent
 from .projection_decal import ProjectionDecalComponent
 from .sequence import SequenceComponent
 from ..types import C11nSerializationTypes
-
 __all__ = ('CustomizationOutfit', 'getAllItemsFromOutfit')
 
 def _setComponentsRegion(component, region):

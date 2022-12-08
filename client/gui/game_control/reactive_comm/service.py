@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/reactive_comm/service.py
-import typing
 import weakref
 from collections import deque
-
+import typing
 import wg_async
-from gui.game_control.reactive_comm.channel import SubscriptionStatus, ChannelsEventsSender
 from gui.game_control.reactive_comm.constants import SubscriptionClientStatus
+from gui.game_control.reactive_comm.channel import SubscriptionStatus, ChannelsEventsSender
 from gui.game_control.reactive_comm.manager import ChannelsManager
 from helpers import dependency
 from skeletons.gui.game_control import IReactiveCommunicationService
 from skeletons.gui.lobby_context import ILobbyContext
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.game_control.reactive_comm.channel import Subscription
+    from gui.game_control.reactive_comm.packer import ServiceMessage
 
 class ReactiveCommunicationService(IReactiveCommunicationService, ChannelsEventsSender):
     __lobbyContext = dependency.descriptor(ILobbyContext)

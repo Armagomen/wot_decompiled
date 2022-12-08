@@ -1,28 +1,24 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/readers/c11n_readers.py
 import os
-import re
-from contextlib import contextmanager
-from string import lower, upper
-from typing import TypeVar
-
 import Math
+from string import lower, upper
+import re
 import items._xml as ix
 import items.components.c11n_components as cc
 import items.customizations as c11n
 import items.vehicles as iv
 import nations
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS, parseArenaBonusType
-from bonus_readers import readUTC
-from constants import IS_CLIENT, IS_EDITOR, IS_WEB, DEFAULT_QUEST_FINISH_TIME
-from customization_quests_common import serializeToken, PREFIX
+from constants import IS_CLIENT, IS_EDITOR, IS_WEB, IS_LOAD_GLOSSARY, DEFAULT_QUEST_FINISH_TIME
 from items.components import shared_components
-from items.components.c11n_constants import CustomizationType, CustomizationTypeNames, ProjectionDecalFormTags, \
-    CustomizationNamesToTypes, CustomizationDisplayType, EMPTY_ITEM_ID, SeasonType, ApplyArea, DecalType, \
-    ModificationType, RENT_DEFAULT_BATTLES, ItemTags, ProjectionDecalType, DEFAULT_GLOSS, DEFAULT_METALLIC
+from items.components.c11n_constants import CustomizationType, CustomizationTypeNames, ProjectionDecalFormTags, CustomizationNamesToTypes, CustomizationDisplayType, EMPTY_ITEM_ID, SeasonType, ApplyArea, DecalType, ModificationType, RENT_DEFAULT_BATTLES, ItemTags, ProjectionDecalType, DEFAULT_GLOSS, DEFAULT_METALLIC
 from realm_utils import ResMgr
+from typing import Dict, Type, Tuple, Any, TypeVar
+from contextlib import contextmanager
+from customization_quests_common import serializeToken, PREFIX
+from bonus_readers import readUTC
 from soft_exception import SoftException
-
 if IS_EDITOR:
     from items.components.c11n_components import CUSTOMIZATION_CLASSES
     from reflection_framework.unintrusive_weakref import ref as UnintrusiveWeakRef
@@ -78,7 +74,7 @@ class BaseCustomizationItemXmlReader(object):
             target.maxNumber = ix.readPositiveInt(xmlCtx, section, 'maxNumber')
             if target.maxNumber <= 0:
                 ix.raiseWrongXml(xmlCtx, 'maxNumber', 'should not be less then 1')
-        if IS_CLIENT or IS_EDITOR or IS_WEB:
+        if IS_CLIENT or IS_EDITOR or IS_WEB or IS_LOAD_GLOSSARY:
             self._readClientOnlyFromXml(target, xmlCtx, section, cache)
 
     def _readClientOnlyFromXml(self, target, xmlCtx, section, cache=None):
@@ -234,6 +230,7 @@ class AttachmentXmlReader(BaseCustomizationItemXmlReader):
     def _readClientOnlyFromXml(self, target, xmlCtx, section, cache=None):
         super(AttachmentXmlReader, self)._readClientOnlyFromXml(target, xmlCtx, section)
         target.modelName = ix.readStringOrNone(xmlCtx, section, 'modelName')
+        target.hangarModelName = ix.readStringOrNone(xmlCtx, section, 'hangarModelName')
         target.sequenceId = ix.readIntOrNone(xmlCtx, section, 'sequenceId')
         target.attachmentLogic = ix.readStringOrNone(xmlCtx, section, 'attachmentLogic')
         target.initialVisibility = ix.readBool(xmlCtx, section, 'initialVisibility', True)

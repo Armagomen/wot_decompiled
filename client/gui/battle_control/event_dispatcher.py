@@ -104,8 +104,9 @@ def toggleFullStatsPersonalReserves(isDown):
     g_eventBus.handleEvent(GameEvent(GameEvent.FULL_STATS_PERSONAL_RESERVES, _makeKeyCtx(isDown=isDown)), scope=_SCOPE)
 
 
-def toggleVoipChannelEnabled():
-    g_eventBus.handleEvent(GameEvent(GameEvent.TOGGLE_VOIP_CHANNEL_ENABLED), scope=_SCOPE)
+def toggleVoipChannelEnabled(arenaBonusType=None):
+    event = GameEvent(GameEvent.TOGGLE_VOIP_CHANNEL_ENABLED, {'arenaBonusType': arenaBonusType})
+    g_eventBus.handleEvent(event, scope=_SCOPE)
 
 
 def setNextPlayerPanelMode():

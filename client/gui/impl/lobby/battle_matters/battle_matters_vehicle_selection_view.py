@@ -2,20 +2,17 @@
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_vehicle_selection_view.py
 from collections import OrderedDict
 from functools import partial
-
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
 from gui import GUI_NATIONS_ORDER_INDEX, GUI_NATIONS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_selection_view_model import \
-    BattleMattersVehicleSelectionViewModel
-from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersVehiclesBonusUIPacker
+from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_vehicle_selection_view_model import BattleMattersVehicleSelectionViewModel
 from gui.impl.lobby.battle_matters.popovers.battle_matters_filter_popover_view import BattleMattersFilterPopoverView
 from gui.impl.pub import ViewImpl
 from gui.selectable_reward.common import BattleMattersSelectableRewardManager
 from gui.server_events.events_dispatcher import showBattleMatters, showBattleMattersMainView
-from gui.shared.event_dispatcher import showOfferGiftVehiclePreview, showDelayedReward, \
-    showBonusDelayedConfirmationDialog
+from gui.shared.event_dispatcher import showOfferGiftVehiclePreview, showDelayedReward, showBonusDelayedConfirmationDialog
+from gui.impl.lobby.battle_matters.battle_matters_bonus_packer import BattleMattersVehiclesBonusUIPacker
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER
 from helpers import dependency
 from nations import NONE_INDEX
@@ -23,7 +20,6 @@ from shared_utils import first
 from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.game_control import IVehicleComparisonBasket
 from skeletons.gui.shared import IItemsCache
-
 _NATIONS_KEY_NAME = 'Nations'
 _TYPES_KEY_NAME = 'Types'
 _TYPES_ORDER = ('heavyTank', 'mediumTank', 'lightTank', 'AT-SPG', 'SPG')

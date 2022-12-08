@@ -2,25 +2,27 @@
 # Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_widget.py
 import logging
 import typing
-
 import Event
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.goodies.goodies_constants import BoosterCategory
 from gui.impl.gen import R
+from gui.impl.gen.view_models.common.personal_reserves.booster_model import BoosterModel
 from gui.impl.gen.view_models.views.lobby.personal_reserves.reserves_entry_point_model import ReservesEntryPointModel
-from gui.impl.lobby.personal_reserves.personal_reserves_utils import getActiveBoosters, addToReserveArrayByCategory, \
-    getTotalReadyReserves, getTotalLimitedReserves, boostersInClientUpdate
+from gui.impl.lobby.personal_reserves.personal_reserves_utils import getActiveBoosters, addToReserveArrayByCategory, getTotalReadyReserves, getTotalLimitedReserves, boostersInClientUpdate
 from gui.impl.pub import ViewImpl
 from helpers import dependency
 from skeletons.gui.game_control import IBoostersController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
-
 if typing.TYPE_CHECKING:
-    pass
+    from frameworks.wulf.view.array import Array
+    from gui.shared.items_cache import ItemsCache
+    from gui.goodies.goodies_cache import GoodiesCache
+    from gui.game_control.BoostersController import BoostersController
+    from gui.wgcg.web_controller import WebController
 _logger = logging.getLogger(__name__)
 
 class PersonalReservesWidget(ViewImpl):

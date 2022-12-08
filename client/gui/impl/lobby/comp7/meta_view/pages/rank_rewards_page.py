@@ -3,24 +3,22 @@
 import logging
 import typing
 from collections import namedtuple
-
 from CurrentVehicle import g_currentVehicle
 from comp7_common import Comp7QuestType
+from gui.impl.lobby.comp7.comp7_c11n_helpers import getComp7ProgressionStyleCamouflage
+from items.vehicles import VehicleDescriptor
 from gui.impl.backport import BackportTooltipWindow
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.rank_rewards_item_model import RankRewardsItemModel, \
-    RankRewardsState
-from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.rank_rewards_model import RankRewardsModel
-from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import Rank
 from gui.impl.gen.view_models.views.lobby.comp7.meta_view.root_view_model import MetaRootViews
+from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.rank_rewards_model import RankRewardsModel
+from gui.impl.gen.view_models.views.lobby.comp7.meta_view.pages.rank_rewards_item_model import RankRewardsItemModel, RankRewardsState
+from gui.impl.gen.view_models.views.lobby.comp7.meta_view.progression_item_base_model import Rank
 from gui.impl.gui_decorators import args2params
-from gui.impl.lobby.comp7 import comp7_model_helpers, comp7_shared
-from gui.impl.lobby.comp7.comp7_bonus_packer import packRanksRewardsQuestBonuses
-from gui.impl.lobby.comp7.comp7_c11n_helpers import getComp7ProgressionStyleCamouflage
-from gui.impl.lobby.comp7.comp7_quest_helpers import parseComp7RanksQuestID, parseComp7PeriodicQuestID, isComp7Quest, \
-    getComp7QuestType
 from gui.impl.lobby.comp7.meta_view.meta_view_helper import setRankData, setDivisionData, getRankDivisions
 from gui.impl.lobby.comp7.meta_view.pages import PageSubModelPresenter
+from gui.impl.lobby.comp7 import comp7_model_helpers, comp7_shared
+from gui.impl.lobby.comp7.comp7_bonus_packer import packRanksRewardsQuestBonuses
+from gui.impl.lobby.comp7.comp7_quest_helpers import parseComp7RanksQuestID, parseComp7PeriodicQuestID, isComp7Quest, getComp7QuestType
 from gui.impl.lobby.comp7.tooltips.general_rank_tooltip import GeneralRankTooltip
 from gui.impl.lobby.comp7.tooltips.seventh_rank_tooltip import SeventhRankTooltip
 from gui.impl.lobby.comp7.tooltips.sixth_rank_tooltip import SixthRankTooltip
@@ -30,17 +28,20 @@ from gui.shared.event_dispatcher import showStylePreview, hideVehiclePreview
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
-from items.vehicles import VehicleDescriptor
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IComp7Controller
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 if typing.TYPE_CHECKING:
-    pass
+    from comp7_ranks_common import Comp7Division
+    from gui.impl.gen.view_models.views.lobby.comp7.comp7_style_bonus_model import Comp7StyleBonusModel
+    from gui.server_events.event_items import TokenQuest
+    from gui.shared.gui_items.customization.c11n_items import Style
+    from helpers.server_settings import Comp7PrestigeRanksConfig
+    from vehicle_outfit.outfit import Outfit
 _logger = logging.getLogger(__name__)
 _BonusData = namedtuple('_BonusData', ('bonus', 'tooltip'))
 _DEFAULT_PREVIEW_VEHICLE_TYPE = 'uk:GB91_Super_Conqueror'

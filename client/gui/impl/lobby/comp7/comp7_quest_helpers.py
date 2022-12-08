@@ -2,15 +2,14 @@
 # Embedded file name: scripts/client/gui/impl/lobby/comp7/comp7_quest_helpers.py
 import logging
 import typing
-
 from comp7_common import COMP7_QUEST_PREFIX, COMP7_QUEST_DELIMITER, Comp7QuestType, CLIENT_VISIBLE_QUESTS_TYPE
 from helpers import dependency
 from shared_utils import findFirst
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from comp7_ranks_common import Comp7Division
+    from helpers.server_settings import Comp7PrestigeRanksConfig
 _logger = logging.getLogger(__name__)
 
 def isComp7Quest(qID):

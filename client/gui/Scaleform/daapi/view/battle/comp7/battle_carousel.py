@@ -3,9 +3,7 @@
 import logging
 import typing
 from collections import namedtuple
-
 import BigWorld
-import nations
 from account_helpers.AccountSettings import COMP7_CAROUSEL_FILTER_1, COMP7_CAROUSEL_FILTER_2, AccountSettings
 from account_helpers.AccountSettings import COMP7_CAROUSEL_FILTER_CLIENT_1
 from constants import REQUEST_COOLDOWN, ARENA_PERIOD
@@ -16,20 +14,20 @@ from gui.Scaleform.daapi.view.common.filter_contexts import getFilterSetupContex
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import CarouselDataProvider
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_filter import CarouselFilter, RoleCriteriesGroup
 from gui.Scaleform.daapi.view.meta.Comp7BattleTankCarouselMeta import Comp7BattleTankCarouselMeta
-from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.battle_control.gui_vehicle_builder import VehicleBuilder
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
 from gui.shared.utils.functions import makeTooltip
+from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
+import nations
 from items import vehicles
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.arena_info.interfaces import IComp7PrebattleSetupController
 _logger = logging.getLogger(__name__)
 _FLAG_ICON_TEMPLATE = '../maps/icons/flags/160x100/%s.png'
 _FLAG_SMALL_ICON_TEMPLATE = '../maps/icons/nations/155x31/%s.png'

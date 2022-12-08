@@ -1,11 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_buy_rewards_view_model.py
 from enum import IntEnum
-
 from frameworks.wulf import ViewModel
-from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
 from gui.impl.wrappers.user_list_model import UserListModel
-
+from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
 
 class PackageType(IntEnum):
     BATTLEPASS = 0

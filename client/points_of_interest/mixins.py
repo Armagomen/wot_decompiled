@@ -1,10 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/points_of_interest/mixins.py
+import typing
 import CGF
-from gui.battle_control import avatar_getter
 from points_of_interest.components import PoiStateComponent, PoiStateUIListenerComponent, PoiVehicleStateComponent
 from shared_utils import first
-
+from gui.battle_control import avatar_getter
 
 class PointsOfInterestListener(object):
 

@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/uilogging/core/session.py
+import typing
 import adisp
 import wg_async
 from BWUtil import AsyncReturn
@@ -11,7 +12,7 @@ from skeletons.gui.web import IWebController
 from soft_exception import SoftException
 from uilogging.constants import DEFAULT_LOGGER_NAME
 from uilogging.core.core_constants import LOGS_MAX_COUNT_PER_SEND, LOG_RECORD_MAX_PROPERTIES_COUNT, MAX_SESSION_GET_RETRIES, MIN_SESSION_LIFE_TIME
-
+from uilogging.core.log import LogRecord
 
 class WaitingSessionData(SoftException):
     pass

@@ -1,35 +1,34 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/maps_training_controller.py
+import typing
 from functools import partial
-
 import ArenaType
+import adisp
+from BattleReplay import g_replayCtrl, CallbackDataNames
 import BigWorld
 import Event
-import adisp
-from AccountCommands import isCodeValid
-from BattleReplay import g_replayCtrl, CallbackDataNames
 from CurrentVehicle import g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
 from constants import ARENA_BONUS_TYPE, REQUEST_COOLDOWN
-from debug_utils import LOG_ERROR
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.lobby.maps_training.maps_training_client_settings import MapsTrainingClientSettings
 from gui.prb_control.entities.base.ctx import PrbAction
-from gui.prb_control.entities.listener import IGlobalListener
-from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
-from gui.shared import event_dispatcher
-from gui.shared import events, EVENT_BUS_SCOPE, g_eventBus
 from helpers import dependency
 from helpers import isPlayerAccount
-from items import vehicles
 from items.vehicles import getVehicleClass
 from maps_training_common.helpers import unpackMapsTrainingScenarios, unpackMapsTrainingRewards
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.game_control import IMapsTrainingController
 from skeletons.gui.lobby_context import ILobbyContext
 from wotdecorators import condition
-
+from AccountCommands import isCodeValid
+from debug_utils import LOG_ERROR
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.prb_control.entities.listener import IGlobalListener
+from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
+from gui.shared import events, EVENT_BUS_SCOPE, g_eventBus
+from items import vehicles
+from gui.shared import event_dispatcher
+from skeletons.gui.game_control import IMapsTrainingController
 
 class MapsTrainingController(IMapsTrainingController, IGlobalListener):
     lobbyContext = dependency.descriptor(ILobbyContext)

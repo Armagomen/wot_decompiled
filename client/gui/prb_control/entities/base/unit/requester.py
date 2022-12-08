@@ -1,12 +1,10 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/base/unit/requester.py
 import weakref
-
 from UnitBase import UNIT_ERROR
 from debug_utils import LOG_ERROR
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.requester import IUnitRequestProcessor
-
 
 class UnitRequestProcessor(IUnitRequestProcessor):
     __slots__ = ('__requests', '__entity')
@@ -59,9 +57,11 @@ class UnitRequestProcessor(IUnitRequestProcessor):
 
     def unitMgr_onUnitErrorReceived(self, requestID, unitMgrID, errorCode, errorStr):
         self._onResponseReceived(requestID, False)
-        if errorCode != UNIT_ERROR.OK and self.__entity.getID() == unitMgrID:
+        if errorCode != UNIT_ERROR.OK and self.__entity is not None and self.__entity.getID() == unitMgrID:
             for listener in self.__entity.getListenersIterator():
                 listener.onUnitErrorReceived(errorCode)
+
+        return
 
     def _sendRequest(self, ctx, methodName, chain, *args, **kwargs):
         unitMgr = prb_getters.getClientUnitMgr()

@@ -5,42 +5,41 @@ import functools
 import locale
 import sys
 import zlib
-
-import BigWorld
-import GUI
-import constants
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
-from wg_async import wg_async, wg_await
-
 import Account
 import AreaDestructibles
+import BigWorld
 import CommandMapping
+import GUI
 import MusicControllerWWISE
 import Settings
 import SoundGroups
 import TriggersManager
 import VOIP
 import WebBrowser
+import constants
 import services_config
 from MemoryCriticalController import g_critMemHandler
 from bootcamp.Bootcamp import g_bootcamp
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
 from gui import CLIENT_ENCODING, onRepeatKeyEvent, g_keyEventHandlers, g_mouseEventHandlers, InputHandler
 from gui.Scaleform.game_loading import GameLoading
-from gui.impl.dialogs import dialogs
 from gui.shared import personality as gui_personality
 from helpers import RSSDownloader, OfflineMode, LightingGenerationMode
 from helpers import dependency, log
 from messenger import MessengerEntry
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gameplay import IGameplayLogic
+from wg_async import wg_async, wg_await
+from gui.impl.dialogs import dialogs
 from system_events import g_systemEvents
-
 loadingScreenClass = GameLoading
 __import__('__main__').GameLoading = loadingScreenClass
 try:
     locale.setlocale(locale.LC_TIME, '')
 except locale.Error:
     LOG_CURRENT_EXCEPTION()
+
+sys.setrecursionlimit(sys.getrecursionlimit() + 100)
 
 class ServiceLocator(object):
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -375,7 +374,7 @@ def handleKeyEvent(event):
         if inputHandler is not None:
             if inputHandler.handleKeyEvent(event):
                 return True
-        for handler in g_keyEventHandlers:
+        for handler in g_keyEventHandlers.copy():
             try:
                 if handler(event):
                     return True
@@ -530,6 +529,6 @@ def checkBotNet():
     sys.path.append('test_libs')
     from path_manager import g_pathManager
     g_pathManager.setPathes()
-    from scenario_player import g_scenarioPlayer
+    from test_player import g_testPlayer
     rpycPort = int(sys.argv[sys.argv.index(botArg) + 1])
-    g_scenarioPlayer.delayedInitScenarioPlayer(rpycPort)
+    g_testPlayer.initTestPlayer(rpycPort)

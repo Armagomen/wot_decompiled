@@ -1,13 +1,9 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/game_control/quests_controller.py
-import typing
 import weakref
-
+import typing
 from constants import EVENT_TYPE, PremiumConfigs
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.ranked_battles.ranked_helpers import isRankedQuestID
-from gui.server_events.events_helpers import isBattleMattersQuestID, isPremium, isBattleRoyale, isDailyEpic, \
-    isDailyQuest, isFunRandomQuest
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
@@ -16,13 +12,15 @@ from skeletons.gui.game_control import IQuestsController, IBattleRoyaleControlle
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-
+from gui.server_events.events_helpers import isBattleMattersQuestID, isPremium, isBattleRoyale, isDailyEpic, isDailyQuest, isFunRandomQuest
+from gui.ranked_battles.ranked_helpers import isRankedQuestID
 if typing.TYPE_CHECKING:
-    pass
+    from Vehicle import Vehicle
+    from gui.server_events.event_items import Quest
 _MAX_LVL_FOR_TUTORIAL = 3
 
 def _isAvailableForMode(q):
-    return not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(q.getGroupID()) and not isFunRandomQuest(q.getGroupID())
+    return not isDailyEpic(q.getGroupID()) and not isDailyQuest(q.getID()) and not isPremium(q.getID()) and not isRankedQuestID(q.getID()) and not isBattleRoyale(q.getGroupID()) and not isFunRandomQuest(q.getID())
 
 
 class _QuestCache(object):

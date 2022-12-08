@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/servers_data_provider.py
 import logging
-
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.impl import backport
 from gui.impl.gen import R
@@ -12,7 +11,6 @@ from predefined_hosts import AUTO_LOGIN_QUERY_URL
 from predefined_hosts import HOST_AVAILABILITY, PING_STATUSES, g_preDefinedHosts
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.connection_mgr import IConnectionManager
-
 _logger = logging.getLogger(__name__)
 
 class _INDICATOR_STATUSES(object):

@@ -1,9 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/prb_control/entities/base/squad/entity.py
 from debug_utils import LOG_ERROR
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.entities.View import ViewKey
-from gui.impl.gen.resources import R
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities.base.squad.actions_handler import SquadActionsHandler
 from gui.prb_control.entities.base.squad.actions_validator import SquadActionsValidator
@@ -11,13 +8,15 @@ from gui.prb_control.entities.base.squad.ctx import SquadSettingsCtx
 from gui.prb_control.entities.base.squad.permissions import SquadPermissions
 from gui.prb_control.entities.base.unit.entity import UnitEntryPoint, UnitEntity
 from gui.prb_control.events_dispatcher import g_eventDispatcher
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+from gui.Scaleform.framework.entities.View import ViewKey
 from gui.prb_control.items import SelectResult
 from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.impl.gen.resources import R
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from wg_async import wg_async, wg_await
-
 
 class SquadEntryPoint(UnitEntryPoint):
 

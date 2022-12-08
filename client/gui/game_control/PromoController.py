@@ -3,7 +3,6 @@
 import logging
 import typing
 from collections import namedtuple
-
 import BigWorld
 from Event import Event, EventManager
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
@@ -18,38 +17,35 @@ from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.app_loader import sf_lobby
 from gui.game_control import gc_constants
 from gui.game_control.links import URLMacros
-from gui.impl.gen import R
 from gui.impl.lobby.common.browser_view import BrowserView, makeSettings
+from gui.impl.gen import R
 from gui.promo.promo_logger import PromoLogSourceType, PromoLogActions, PromoLogSubjectType
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showBubbleTooltip
 from gui.shared.events import BrowserEvent
 from gui.shared.utils import isPopupsWindowsOpenDisabled
-from gui.wgcg.promo_screens.contexts import PromoGetTeaserRequestCtx, PromoSendTeaserShownRequestCtx, \
-    PromoGetUnreadCountRequestCtx
+from gui.wgcg.promo_screens.contexts import PromoGetTeaserRequestCtx, PromoSendTeaserShownRequestCtx, PromoGetUnreadCountRequestCtx
 from helpers import i18n, isPlayerAccount, dependency
 from helpers.http import url_formatters
 from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
-from skeletons.gui.game_control import IPromoController, IBrowserController, IEventsNotificationsController, \
-    IBootcampController
+from skeletons.gui.game_control import IPromoController, IBrowserController, IEventsNotificationsController, IBootcampController
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.promo import IPromoLogger
 from skeletons.gui.web import IWebController
 from web.web_client_api import webApiCollection, ui as ui_web_api, sound as sound_web_api
-from web.web_client_api.battle_pass import BattlePassWebApi
-from web.web_client_api.blueprints_convert_sale import BlueprintsConvertSaleWebApi
 from web.web_client_api.platform import PlatformWebApi
 from web.web_client_api.promo import PromoWebApi
+from web.web_client_api.battle_pass import BattlePassWebApi
 from web.web_client_api.ranked_battles import RankedBattlesWebApi
 from web.web_client_api.request import RequestWebApi
 from web.web_client_api.shop import ShopWebApi
 from web.web_client_api.social import SocialWebApi
 from web.web_client_api.vehicles import VehiclesWebApi
-
+from web.web_client_api.blueprints_convert_sale import BlueprintsConvertSaleWebApi
 if typing.TYPE_CHECKING:
-    pass
+    from frameworks.wulf import View
 _PromoData = namedtuple('_PromoData', ['url', 'closeCallback', 'source'])
 _logger = logging.getLogger(__name__)
 
@@ -135,10 +131,11 @@ class PromoController(IPromoController):
 
     @adisp_process
     def showLastTeaserPromo(self):
-        rowUrl = self.__promoData.get('url', '')
-        loadingCallback = self.__logger.getLoggingFuture(self.__promoData, action=PromoLogActions.OPEN_FROM_TEASER, type=PromoLogSubjectType.PROMO_SCREEN, url=rowUrl)
-        url = yield self.__addAuthParams(rowUrl)
-        self.__showBrowserView(url, loadingCallback)
+        if self.__promoData:
+            rowUrl = self.__promoData.get('url', '')
+            loadingCallback = self.__logger.getLoggingFuture(self.__promoData, action=PromoLogActions.OPEN_FROM_TEASER, type=PromoLogSubjectType.PROMO_SCREEN, url=rowUrl)
+            url = yield self.__addAuthParams(rowUrl)
+            self.__showBrowserView(url, loadingCallback)
 
     def setUnreadPromoCount(self, count):
         self.__updatePromoCount(count)
@@ -173,7 +170,7 @@ class PromoController(IPromoController):
     def __onTeaserClosed(self, byUser=False):
         self.__isTeaserOpen = False
         self.onTeaserClosed()
-        if byUser:
+        if byUser and self.__settingsCore.isReady:
             self.__showBubbleTooltip()
 
     def __showBubbleTooltip(self):

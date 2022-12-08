@@ -96,7 +96,7 @@ class IngameDetailsHelpWindow(IngameDetailsHelpWindowMeta, BattleGUIKeyHandler):
         if self.__ctx is None:
             return
         else:
-            self.__datailedList = detailed_help_pages.buildPagesData(self.__ctx)
+            self.__datailedList, selectedIdx = detailed_help_pages.buildPagesData(self.__ctx)
             if self.app is not None:
                 self.app.registerGuiKeyHandler(self)
                 if len(self.__datailedList) > 1:
@@ -105,7 +105,7 @@ class IngameDetailsHelpWindow(IngameDetailsHelpWindowMeta, BattleGUIKeyHandler):
              'pageIndex': index,
              'label': str(index + 1),
              'status': '',
-             'selected': index == 0,
+             'selected': index == selectedIdx,
              'tooltip': {}} for index in range(len(self.__datailedList)) ]
             self.as_setPaginatorDataS(pages)
             return

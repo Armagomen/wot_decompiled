@@ -1,26 +1,23 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/select_slot_spec_compare_dialog.py
 import typing
-
 from BWUtil import AsyncReturn
+from wg_async import wg_async, wg_await
 from frameworks.wulf import ViewSettings
-from gui.Scaleform.Waiting import Waiting
 from gui.impl.dialogs.dialogs import showSingleDialogWithResultData
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_spec_model import SelectSlotSpecDialogSpecModel
-from gui.impl.gen.view_models.views.lobby.vehicle_compare.select_slot_spec_compare_dialog_model import \
-    SelectSlotSpecCompareDialogModel
+from gui.impl.gen.view_models.views.lobby.vehicle_compare.select_slot_spec_compare_dialog_model import SelectSlotSpecCompareDialogModel
 from gui.impl.lobby.common.select_slot_spec_dialog import SelectSlotSpecDialogMainContent
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
 from helpers import dependency
 from items.components.supply_slot_categories import SlotCategories
 from skeletons.gui.game_control import IVehicleComparisonBasket
-from wg_async import wg_async, wg_await
-
+from gui.Scaleform.Waiting import Waiting
 _SLOT_IS_NOT_SELECTED_IDX = 0
 if typing.TYPE_CHECKING:
-    pass
-
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from frameworks.wulf import Window
 
 class SelectSlotSpecCompareDialogMainContent(SelectSlotSpecDialogMainContent):
 

@@ -1,14 +1,12 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/BWUtil.py
-import os
 import sys
+import os
 from functools import partial, wraps
-
-import BigWorld
+from types import GeneratorType
 import ResMgr
-
+import BigWorld
 from bwdebug import TRACE_MSG
-
 
 class _BuiltinsAccessor(object):
 

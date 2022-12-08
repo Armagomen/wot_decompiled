@@ -2,11 +2,10 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/wgnc/WGNCPollWindow.py
 from adisp import adisp_process
 from gui import DialogsInterface
-from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
-from gui.Scaleform.daapi.view.meta.WGNCPollWindowMeta import WGNCPollWindowMeta
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.wgnc import g_wgncProvider
-
+from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
+from gui.Scaleform.daapi.view.meta.WGNCPollWindowMeta import WGNCPollWindowMeta
 
 class WGNCPollWindow(WGNCPollWindowMeta):
 

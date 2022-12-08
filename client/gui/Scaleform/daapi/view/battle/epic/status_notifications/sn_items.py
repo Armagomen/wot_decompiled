@@ -1,10 +1,8 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/status_notifications/sn_items.py
 import typing
-
 from constants import VEHICLE_MISC_STATUS
-from gui.Scaleform.daapi.view.battle.epic.status_notifications.epic_helpers import getSmokeDataByPredicate, \
-    getEquipmentById
+from gui.Scaleform.daapi.view.battle.epic.status_notifications.epic_helpers import getSmokeDataByPredicate, getEquipmentById
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTIFICATIONS_TIMER_TYPES
 from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
@@ -14,9 +12,8 @@ from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.battle_control.battle_constants import DestroyTimerViewState
 
 class _EpicLocalizationProvider(sn_items.LocalizationProvider):
 

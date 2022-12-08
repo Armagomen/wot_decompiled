@@ -1,28 +1,26 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/platform/base/request.py
+import typing
 import copy
 import hashlib
 import httplib
 import json
 import urllib
 import urlparse
-from enum import Enum
 from functools import partial
-
-import BigWorld
+from enum import Enum
 import adisp
-import soft_exception
 import wg_async
+import BigWorld
+import soft_exception
 from BWUtil import AsyncReturn
 from constants import WG_GAMES, CURRENT_REALM
+from gui.platform.base.settings import REQUEST_TIMEOUT, POLLING_PERIOD, POLLING_REQUEST_TIMEOUT, SOLVE_POW_TIMEOUT, ACCEPTED_HTTP_CODES
 from gui.platform.base import logger
 from gui.platform.base.response import PlatformResponse
-from gui.platform.base.settings import REQUEST_TIMEOUT, POLLING_PERIOD, POLLING_REQUEST_TIMEOUT, SOLVE_POW_TIMEOUT, \
-    ACCEPTED_HTTP_CODES
 from helpers import dependency, getClientVersion
 from skeletons.gui.web import IWebController
 from wotdecorators import noexceptReturn
-
 
 class ContentType(str, Enum):
     JSON = 'application/json'

@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/browser/shop_helpers.py
+import typing
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.lobby.hangar.BrowserView import makeBrowserParams
 from helpers import dependency
@@ -111,7 +112,7 @@ def getBlueprintsExchangeUrl():
 
 
 def getPlayerSeniorityAwardsUrl():
-    return _getUrl('psaProducts')
+    return _getUrl('seniorityAwardsProducts')
 
 
 def getSplitPageUrl(params):
@@ -133,10 +134,6 @@ def getBuyRenewableSubscriptionUrl():
 
 def getIntegratedAuctionUrl():
     return _getUrl('integratedAuction')
-
-
-def getEventLootBoxesUrl():
-    return _getUrl('eventLootboxes')
 
 
 def getClientControlledCloseCtx():

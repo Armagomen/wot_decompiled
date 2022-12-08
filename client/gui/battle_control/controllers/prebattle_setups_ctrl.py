@@ -2,33 +2,30 @@
 # Embedded file name: scripts/client/gui/battle_control/controllers/prebattle_setups_ctrl.py
 import logging
 import typing
-
 import BigWorld
-from PerksParametersController import PerksParametersController
 from account_helpers.settings_core.settings_constants import GAME
 from battle_modifiers_common import EXT_DATA_MODIFIERS_KEY
 from constants import ARENA_PERIOD, VEHICLE_SIEGE_STATE
 from gui.battle_control.arena_info.interfaces import IPrebattleSetupsController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
-from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.items_parameters.functions import getVehicleFactors
+from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.utils.MethodsRules import MethodsRules
-from gui.veh_post_progression.battle_cooldown_manager import BattleCooldownManager
 from gui.veh_post_progression.helpers import setFeatures, setDisabledSwitches, getInstalledShells, updateInvInstalled
 from gui.veh_post_progression.sounds import playSound, Sounds
+from gui.veh_post_progression.battle_cooldown_manager import BattleCooldownManager
 from helpers import dependency
 from items import vehicles
 from items.components.post_progression_components import getActiveModifications
 from items.utils import getCircularVisionRadius, getFirstReloadTime
-from post_progression_common import EXT_DATA_PROGRESSION_KEY, EXT_DATA_SLOT_KEY, TANK_SETUP_GROUPS, TankSetupLayouts, \
-    TankSetups, VehicleState
+from PerksParametersController import PerksParametersController
+from post_progression_common import EXT_DATA_PROGRESSION_KEY, EXT_DATA_SLOT_KEY, TANK_SETUP_GROUPS, TankSetupLayouts, TankSetups, VehicleState
 from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-
 if typing.TYPE_CHECKING:
-    pass
+    from items.vehicles import VehicleDescr
 _logger = logging.getLogger(__name__)
 _SWITCH_SETUPS_ACTION = 0
 _EXT_ENHANCEMENTS_KEY = 'extEnhancements'
@@ -328,8 +325,7 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
             self.__updateState(_States.SELECTION_STARTED)
 
     def __updateAmmoCtrl(self):
-        self.__sessionProvider.shared.ammo.updateForNewSetup(self.__vehicle.descriptor.gun,
-                                                             self.__vehicle.shells.installed.getItems())
+        self.__sessionProvider.shared.ammo.updateForNewSetup(self.__vehicle.descriptor.gun, self.__vehicle.shells.installed.getItems())
 
     def __updateAmmoCtrlParams(self, factors):
         ammoCtrl = self.__sessionProvider.shared.ammo

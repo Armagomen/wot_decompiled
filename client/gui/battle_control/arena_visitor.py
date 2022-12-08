@@ -1,18 +1,15 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/arena_visitor.py
 import functools
-import math
 import weakref
-
+import math
 import BigWorld
 import win_points
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from battle_modifiers_common import BattleParams, BattleModifiers
-from constants import ARENA_GUI_TYPE as _GUI_TYPE, ARENA_GUI_TYPE_LABEL as _GUI_TYPE_LABEL, \
-    ARENA_BONUS_TYPE as _BONUS_TYPE, ARENA_PERIOD as _PERIOD, QUEUE_TYPE, TEAMS_IN_ARENA, VISIBILITY, SHELL_TYPES
+from constants import ARENA_GUI_TYPE as _GUI_TYPE, ARENA_GUI_TYPE_LABEL as _GUI_TYPE_LABEL, ARENA_BONUS_TYPE as _BONUS_TYPE, ARENA_PERIOD as _PERIOD, QUEUE_TYPE, TEAMS_IN_ARENA, VISIBILITY, SHELL_TYPES
 from gui import GUI_SETTINGS
 from skeletons.gui.battle_session import IClientArenaVisitor
-
 
 def _getClientArena(avatar=None):
     if avatar is None:
@@ -322,11 +319,11 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
     def isStrongholdRange(self):
         return self._guiType in _GUI_TYPE.STRONGHOLD_RANGE
 
-    def isFunRandom(self):
-        return self._guiType == _GUI_TYPE.FUN_RANDOM
-
     def isComp7Battle(self):
         return self._guiType == _GUI_TYPE.COMP7
+
+    def isFunRandom(self):
+        return self._guiType == _GUI_TYPE.FUN_RANDOM
 
     def hasLabel(self):
         return self._guiType != _GUI_TYPE.UNKNOWN and self._guiType in _GUI_TYPE_LABEL.LABELS
@@ -424,6 +421,9 @@ class _ArenaExtraDataVisitor(IArenaVisitor):
     def isLowLevelBattle(self):
         return 0 < self._extra.get('battleLevel', 0) < 4
 
+    def getValue(self, key, default=None):
+        return self._extra.get(key, default)
+
     def clear(self):
         self._extra = None
         return
@@ -467,16 +467,11 @@ class _ArenaModifiersVisitor(IArenaVisitor):
     def __init__(self, modifiers=None):
         super(_ArenaModifiersVisitor, self).__init__()
         self._modifiers = modifiers = BattleModifiers() if modifiers is None else modifiers
-        self._shellData = {SHELL_TYPES.ARMOR_PIERCING: (modifiers(BattleParams.NORMALIZATION_ANGLE, math.radians(5.0)),
-                                                        math.cos(modifiers(BattleParams.RICOCHET_ANGLE,
-                                                                           math.radians(70.0)))),
-                           SHELL_TYPES.ARMOR_PIERCING_CR: (
-                           modifiers(BattleParams.NORMALIZATION_ANGLE, math.radians(2.0)),
-                           math.cos(modifiers(BattleParams.RICOCHET_ANGLE, math.radians(70.0)))),
-                           SHELL_TYPES.ARMOR_PIERCING_HE: (modifiers(BattleParams.NORMALIZATION_ANGLE, 0.0), 0.0),
-                           SHELL_TYPES.HOLLOW_CHARGE: (
-                           0.0, math.cos(modifiers(BattleParams.RICOCHET_ANGLE, math.radians(85.0)))),
-                           SHELL_TYPES.HIGH_EXPLOSIVE: (0.0, 0.0)}
+        self._shellData = {SHELL_TYPES.ARMOR_PIERCING: (modifiers(BattleParams.NORMALIZATION_ANGLE, math.radians(5.0)), math.cos(modifiers(BattleParams.RICOCHET_ANGLE, math.radians(70.0)))),
+         SHELL_TYPES.ARMOR_PIERCING_CR: (modifiers(BattleParams.NORMALIZATION_ANGLE, math.radians(2.0)), math.cos(modifiers(BattleParams.RICOCHET_ANGLE, math.radians(70.0)))),
+         SHELL_TYPES.ARMOR_PIERCING_HE: (modifiers(BattleParams.NORMALIZATION_ANGLE, 0.0), 0.0),
+         SHELL_TYPES.HOLLOW_CHARGE: (0.0, math.cos(modifiers(BattleParams.RICOCHET_ANGLE, math.radians(85.0)))),
+         SHELL_TYPES.HIGH_EXPLOSIVE: (0.0, 0.0)}
         return
 
     def clear(self):
@@ -492,8 +487,7 @@ class _ArenaModifiersVisitor(IArenaVisitor):
 
 
 class _ClientArenaVisitor(IClientArenaVisitor):
-    __slots__ = (
-    '__weakref__', '_arena', '_canSubscribe', '_gui', '_bonus', '_type', '_extra', '_vehicles', '_modifiers')
+    __slots__ = ('__weakref__', '_arena', '_canSubscribe', '_gui', '_bonus', '_type', '_extra', '_vehicles', '_modifiers')
 
     def __init__(self, arena, canSubscribe):
         super(_ClientArenaVisitor, self).__init__()

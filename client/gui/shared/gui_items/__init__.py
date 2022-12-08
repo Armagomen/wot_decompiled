@@ -14,7 +14,7 @@ from gui.shared.items_parameters.comparator import BACKWARD_QUALITY_PARAMS
 _logger = logging.getLogger(__name__)
 CLAN_LOCK = 1
 GUI_ITEM_TYPE_NAMES = tuple(ITEM_TYPE_NAMES) + tuple(['reserved'] * (16 - len(ITEM_TYPE_NAMES)))
-GUI_ITEM_TYPE_NAMES += ('dossierAccount', 'dossierVehicle', 'dossierTankman', 'achievement', 'tankmanSkill', 'battleBooster', 'badge', 'battleAbility', 'lootBox', 'demountKit', 'vehPostProgression', 'recertificationForm', 'paint', 'camouflage', 'modification', 'outfit', 'style', 'decal', 'emblem', 'inscription', 'projectionDecal', 'insignia', 'personalNumber', 'sequence', 'attachment')
+GUI_ITEM_TYPE_NAMES += ('dossierAccount', 'dossierVehicle', 'dossierTankman', 'achievement', 'tankmanSkill', 'battleBooster', 'badge', 'battleAbility', 'lootBox', 'demountKit', 'vehPostProgression', 'recertificationForm', 'paint', 'camouflage', 'modification', 'outfit', 'style', 'decal', 'emblem', 'inscription', 'projectionDecal', 'insignia', 'personalNumber', 'sequence', 'attachment', 'other')
 GUI_ITEM_TYPE_INDICES = dict(((n, idx) for idx, n in enumerate(GUI_ITEM_TYPE_NAMES)))
 
 class GUI_ITEM_TYPE(CONST_CONTAINER):
@@ -59,6 +59,7 @@ class GUI_ITEM_TYPE(CONST_CONTAINER):
     BADGE = GUI_ITEM_TYPE_INDICES['badge']
     LOOT_BOX = GUI_ITEM_TYPE_INDICES['lootBox']
     VEH_POST_PROGRESSION = GUI_ITEM_TYPE_INDICES['vehPostProgression']
+    OTHER = GUI_ITEM_TYPE_INDICES['other']
     GUI = (ACCOUNT_DOSSIER,
      VEHICLE_DOSSIER,
      TANKMAN_DOSSIER,
@@ -111,11 +112,13 @@ class GUI_ITEM_ECONOMY_CODE(CONST_CONTAINER):
     NOT_ENOUGH_CRYSTAL = formatMoneyError(Currency.CRYSTAL)
     NOT_ENOUGH_EVENT_COIN = formatMoneyError(Currency.EVENT_COIN)
     NOT_ENOUGH_BPCOIN = formatMoneyError(Currency.BPCOIN)
+    NOT_ENOUGH_EQUIP_COIN = formatMoneyError(Currency.EQUIP_COIN)
     NOT_ENOUGH_CURRENCIES = (NOT_ENOUGH_GOLD,
      NOT_ENOUGH_CRYSTAL,
      NOT_ENOUGH_CREDITS,
      NOT_ENOUGH_EVENT_COIN,
-     NOT_ENOUGH_BPCOIN)
+     NOT_ENOUGH_BPCOIN,
+     NOT_ENOUGH_EQUIP_COIN)
     NOT_ENOUGH_MONEY = 'not_enough_money'
 
     @classmethod
@@ -391,25 +394,34 @@ class KPI(object):
         return getVehicleParameterText(paramName=self.__name, isPositive=self.isPositive, isLong=True)
 
 
-def kpiFormatValue(kpiName, value):
+def kpiAddEnding(kpiName, text):
+    res = text
     ending = R.strings.tank_setup.kpi.bonus.valueTypes.dyn(kpiName, R.strings.tank_setup.kpi.bonus.valueTypes.default)()
-    return ('+' if value > 0 else '') + getNiceNumberFormat(value) + backport.text(ending)
+    if ending != R.strings.tank_setup.kpi.bonus.valueTypes.default():
+        res += ' '
+    res += backport.text(ending)
+    return res
 
 
-def kpiFormatValueRange(kpiName, valueRange):
-    ending = R.strings.tank_setup.kpi.bonus.valueTypes.dyn(kpiName, R.strings.tank_setup.kpi.bonus.valueTypes.default)()
+def kpiFormatValue(kpiName, value, addEnding=True):
+    res = ('+' if value > 0 else '') + getNiceNumberFormat(value)
+    return kpiAddEnding(kpiName, res) if addEnding else res
+
+
+def kpiFormatValueRange(kpiName, valueRange, addEnding=True):
     minValue, maxValue = valueRange
-    return '{}-{}{}'.format(getNiceNumberFormat(minValue), getNiceNumberFormat(maxValue), backport.text(ending))
+    res = '{}-{}'.format(getNiceNumberFormat(minValue), getNiceNumberFormat(maxValue))
+    return kpiAddEnding(kpiName, res) if addEnding else res
 
 
-def getKpiValueString(kpi, value):
+def getKpiValueString(kpi, value, addEnding=True):
     if kpi.type == KPI.Type.MUL:
         value = (value - 1.0) * 100
     elif kpi.type == KPI.Type.AGGREGATE_MUL:
         minValue, maxValue = value
         formatValue = ((minValue - 1.0) * 100, (maxValue - 1.0) * 100)
-        return kpiFormatValueRange(kpi.name, formatValue)
-    return kpiFormatValue(kpi.name, value)
+        return kpiFormatValueRange(kpi.name, formatValue, addEnding)
+    return kpiFormatValue(kpi.name, value, addEnding)
 
 
 def getKpiFormatDescription(kpi):

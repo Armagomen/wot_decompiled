@@ -2,16 +2,12 @@
 # Embedded file name: scripts/common/dog_tags_common/config/dog_tag_framework.py
 import inspect
 import sys
-import typing
 from functools import partial
-
+import typing
 from common import ParameterType, Visibility, ParseException, ComponentPurpose, ComponentViewType, ComponentNumberType
-from validators import validateTriumphMedal, validateTriumph, validateSkill, validateDedication, \
-    validateDedicationUnlock, validateBase, validateRankedSkill, validateViewType, validateCommon, \
-    validateStartingComponent
-
+from validators import validateTriumphMedal, validateTriumph, validateSkill, validateDedication, validateDedicationUnlock, validateBase, validateRankedSkill, validateViewType, validateCommon, validateStartingComponent
 if typing.TYPE_CHECKING:
-    pass
+    from typing import List
 
 class XMLObjBuilder(object):
 

@@ -1,19 +1,18 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/common/personal_reserves/personal_reserves_shared_constants.py
 import typing
-
 from backports.functools_lru_cache import lru_cache
 from constants import FORT_ORDER_TYPE
-from goodies.goodie_constants import PR2BoosterIDs, GOODIE_RESOURCE_TYPE, MAX_ACTIVE_PERSONAL_BOOSTERS, \
-    MAX_ACTIVE_EVENT_BOOSTERS, GOODIE_STATE
+from goodies.goodie_constants import PR2BoosterIDs, GOODIE_RESOURCE_TYPE, MAX_ACTIVE_PERSONAL_BOOSTERS, MAX_ACTIVE_EVENT_BOOSTERS, GOODIE_STATE
 from gui.goodies.goodies_constants import BoosterCategory
 from gui.impl.gen.view_models.common.personal_reserves.booster_model import ReserveType, ReserveState
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.goodies import IGoodiesCache
-
 if typing.TYPE_CHECKING:
-    pass
+    from gui.goodies import GoodiesCache
+    from gui.goodies.goodie_items import Booster
+    from typing import Set
 PERSONAL_RESOURCE_ORDER = [GOODIE_RESOURCE_TYPE.XP, GOODIE_RESOURCE_TYPE.CREDITS, GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP]
 EVENT_RESOURCE_ORDER = [GOODIE_RESOURCE_TYPE.FL_XP]
 CLAN_RESOURCE_ORDER_BY_GROUP = [(GOODIE_RESOURCE_TYPE.FREE_XP, GOODIE_RESOURCE_TYPE.CREW_XP), (GOODIE_RESOURCE_TYPE.CREDITS, GOODIE_RESOURCE_TYPE.XP)]

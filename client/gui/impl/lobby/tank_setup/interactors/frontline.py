@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/frontline.py
+from wg_async import wg_await, wg_async
 from BWUtil import AsyncReturn
 from adisp import adisp_process
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -7,8 +8,6 @@ from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import
 from gui.impl.lobby.tank_setup.interactors.base_equipment import BaseEquipmentInteractor
 from gui.shared.event_dispatcher import showBattleAbilitiesConfirmDialog
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
-from wg_async import wg_await, wg_async
-
 
 class FrontlineInteractor(BaseEquipmentInteractor):
     __slots__ = ('_checkboxState',)

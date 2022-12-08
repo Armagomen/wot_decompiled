@@ -2,14 +2,12 @@
 # Embedded file name: scripts/client/frameworks/wulf/view/view_model.py
 import logging
 from contextlib import contextmanager
-
+import typing
 from soft_exception import SoftException
-
-from .array import Array
 from .command import Command
+from .array import Array
 from ..py_object_binder import PyObjectEntity
 from ..py_object_wrappers import PyObjectViewModel
-
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 

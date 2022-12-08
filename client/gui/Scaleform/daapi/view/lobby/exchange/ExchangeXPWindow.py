@@ -8,18 +8,17 @@ from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.locale.DIALOGS import DIALOGS
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.impl import backport
+from gui.shop import showBuyGoldForXpWebOverlay
 from gui.shared.formatters import icons
 from gui.shared.formatters.text_styles import builder
 from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.gui_items.processors.common import FreeXPExchanger
 from gui.shared.money import Currency, Money
 from gui.shared.utils.decorators import adisp_process
-from gui.shop import showBuyGoldForXpWebOverlay
 from helpers import i18n, dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
-
+from gui.impl import backport
 
 class ExchangeXPWindow(ExchangeXpWindowMeta):
     itemsCache = dependency.descriptor(IItemsCache)

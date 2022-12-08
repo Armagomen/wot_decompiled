@@ -1,17 +1,16 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/visual_script_client/arena_blocks.py
 import weakref
-
+from typing import List
 import BigWorld
-from PlayerEvents import g_playerEvents
 from constants import IS_VS_EDITOR, ARENA_PERIOD, ARENA_PERIOD_NAMES
-from visual_script.arena_blocks import ArenaMeta, GetUDOByNameBase, GetDataFromStorageBase
 from visual_script.block import Block, InitParam
 from visual_script.dependency import dependencyImporter
 from visual_script.misc import ASPECT, errorVScript
 from visual_script.slot_types import SLOT_TYPE, arrayOf
+from visual_script.arena_blocks import ArenaMeta, GetUDOByNameBase, GetDataFromStorageBase
 from visual_script.tunable_event_block import TunableEventBlock
-
+from PlayerEvents import g_playerEvents
 helpers, clientArena, dependency, battle_session = dependencyImporter('helpers', 'ClientArena', 'helpers.dependency', 'skeletons.gui.battle_session')
 
 class ClientArena(Block, ArenaMeta):

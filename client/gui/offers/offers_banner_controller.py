@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/offers/offers_banner_controller.py
 import weakref
 from functools import partial
-
 import BigWorld
 import Event
 from account_helpers.offers.cache import CachePrefetchResult
@@ -16,7 +15,6 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.app_loader import GuiGlobalSpaceID, IAppLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersBannerController, IOffersDataProvider
-
 
 class OffersBannerController(IOffersBannerController):
     _appLoader = dependency.descriptor(IAppLoader)

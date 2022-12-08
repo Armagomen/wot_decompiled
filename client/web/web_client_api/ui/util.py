@@ -1,30 +1,25 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/web/web_client_api/ui/util.py
 import typing
-
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NEW_LOBBY_TAB_COUNTER
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.header import battle_selector_items
 from gui.Scaleform.daapi.view.lobby.header.LobbyHeader import HEADER_BUTTONS_COUNTERS_CHANGED_EVENT
-from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip, getCDFromId, \
-    canInstallStyle, showAwardsTooltip
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip, getCDFromId, canInstallStyle, showAwardsTooltip
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as TC
+from gui.Scaleform.daapi.view.lobby.header import battle_selector_items
 from gui.server_events.bonuses import getNonQuestBonuses
 from gui.shared import g_eventBus
-from gui.shared.event_dispatcher import runSalesChain
 from gui.shared.events import HasCtxEvent
 from gui.shared.gui_items.dossier import dumpDossier
 from gui.shared.gui_items.dossier.achievements.abstract import isRareAchievement
 from gui.shared.utils import showInvitationInWindowsBar
-from gui.shared.utils.functions import makeTooltip
+from gui.shared.event_dispatcher import runSalesChain
 from gui.shared.view_helpers import UsersInfoHelper
-from gui.wgcg.utils.contexts import SPAAccountAttributeCtx, PlatformFetchProductListCtx
-from helpers import dependency
+from gui.shared.utils.functions import makeTooltip, mouseScreenPosition
 from helpers import time_utils
-from items import makeIntCompactDescrByID
-from items.components.crew_books_constants import CrewBookCacheType
+from helpers import dependency
 from messenger.storage import storage_getter
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IExternalLinksController
@@ -33,11 +28,14 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.web import IWebController
 from web.web_client_api import w2c, W2CSchema, Field, WebCommandException
 from web.web_client_api.common import ItemPackType, ItemPackEntry, SPA_ID_TYPES
+from gui.wgcg.utils.contexts import SPAAccountAttributeCtx, PlatformFetchProductListCtx
 from web.web_client_api.ui.vehicle import _VehicleCustomizationPreviewSchema
-
+from items import makeIntCompactDescrByID
+from items.components.crew_books_constants import CrewBookCacheType
 if typing.TYPE_CHECKING:
-    pass
+    from gui.Scaleform.framework.entities.abstract.ToolTipMgrMeta import ToolTipMgrMeta
 _COUNTER_IDS_MAP = {'shop': VIEW_ALIAS.LOBBY_STORE}
+NY_OVERLAY_PAGE_CHANGED_EVENT = 'nyOverlayPageChanged'
 
 def _itemTypeValidator(itemType, _=None):
     if not ItemPackType.hasValue(itemType):
@@ -129,6 +127,14 @@ class _ShowAdditionalRewardsTooltipSchema(W2CSchema):
     y = Field(required=True, type=int)
 
 
+class _ShowResourceTooltipSchema(W2CSchema):
+    args = Field(required=True, type=dict)
+
+
+class _NYOverlaySchema(W2CSchema):
+    is_main_page = Field(required=True, type=bool)
+
+
 class UtilWebApiMixin(object):
     itemsCache = dependency.descriptor(IItemsCache)
     goodiesCache = dependency.descriptor(IGoodiesCache)
@@ -146,6 +152,10 @@ class UtilWebApiMixin(object):
             g_eventBus.handleEvent(HasCtxEvent(eventType=HEADER_BUTTONS_COUNTERS_CHANGED_EVENT, ctx={'alias': alias,
              'value': cmd.value or ''}))
         return
+
+    @w2c(_NYOverlaySchema, 'set_ny_overlay_main_page')
+    def setNyOverlayMainPageIsDisplayed(self, cmd):
+        g_eventBus.handleEvent(HasCtxEvent(eventType=NY_OVERLAY_PAGE_CHANGED_EVENT, ctx={'isMainPage': cmd.is_main_page}))
 
     @w2c(_GetCountersSchema, 'get_counters')
     def getCountersInfo(self, cmd):
@@ -228,6 +238,29 @@ class UtilWebApiMixin(object):
 
         self.__getTooltipMgr().onCreateWulfTooltip(TC.ADDITIONAL_REWARDS, [bonuses], cmd.x, cmd.y)
 
+    @w2c(_ShowResourceTooltipSchema, 'show_random_resource_tooltip')
+    def showRandomResourceTooltip(self, cmd):
+        mPosX, mPosY = mouseScreenPosition()
+        self.__getTooltipMgr().onCreateWulfTooltip(TC.NY_RANDOM_RESOURCE, [cmd.args['resourceValue'], cmd.args['isShownFromStore']], int(mPosX), int(mPosY))
+
+    @w2c(_ShowResourceTooltipSchema, 'show_resource_tooltip')
+    def showResourceTooltip(self, cmd):
+        mPosX, mPosY = mouseScreenPosition()
+        self.__getTooltipMgr().onCreateWulfTooltip(TC.NY_RESOURCE_FOR_SHOP, [cmd.args['type']], int(mPosX), int(mPosY))
+
+    @w2c(_ShowResourceTooltipSchema, 'show_restriction_tooltip')
+    def showRestrictionTooltip(self, cmd):
+        mPosX, mPosY = mouseScreenPosition()
+        self.__getTooltipMgr().onCreateWulfTooltip(TC.NY_REWARD_KIT_RESTRICTION, [cmd.args['count'],
+         cmd.args['maxCount'],
+         cmd.args['isLastDay'],
+         cmd.args['countdownTimestamp']], int(mPosX), int(mPosY))
+
+    @w2c(W2CSchema, 'show_resource_list_tooltip')
+    def showResourceListTooltip(self, _):
+        mPosX, mPosY = mouseScreenPosition()
+        self.__getTooltipMgr().onCreateWulfTooltip(TC.NY_RESOURCE_LIST, [], int(mPosX), int(mPosY))
+
     @w2c(W2CSchema, 'server_timestamp')
     def getCurrentLocalServerTimestamp(self, _):
         return time_utils.getCurrentLocalServerTimestamp()
@@ -256,8 +289,7 @@ class UtilWebApiMixin(object):
         return None
 
     @w2c(_ChatAvailabilitySchema, 'check_if_chat_available')
-    def checkIfChatAvailable(self, cmd, ctx):
-        callback = ctx.get('callback')
+    def checkIfChatAvailable(self, cmd):
         receiverId = cmd.receiver_id
 
         def isAvailable():
@@ -265,13 +297,14 @@ class UtilWebApiMixin(object):
             return receiver.hasValidName() and not receiver.isIgnored()
 
         def onNamesReceivedCallback():
-            callback(isAvailable())
+            self.__usersInfoHelper.onNamesReceived -= onNamesReceivedCallback
+            yield isAvailable()
 
         if not bool(self.__usersInfoHelper.getUserName(receiverId)):
             self.__usersInfoHelper.onNamesReceived += onNamesReceivedCallback
             self.__usersInfoHelper.syncUsersInfo()
         else:
-            return isAvailable()
+            yield isAvailable()
 
     @w2c(_VehicleCustomizationPreviewSchema, 'can_install_style')
     def canStyleBeInstalled(self, cmd):

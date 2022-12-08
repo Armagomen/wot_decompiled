@@ -93,10 +93,7 @@ class StatsComposer(IStatsComposer):
 class RegularStatsComposer(StatsComposer):
 
     def __init__(self, reusable):
-        super(RegularStatsComposer, self).__init__(reusable, templates.REGULAR_COMMON_STATS_BLOCK.clone(),
-                                                   templates.REGULAR_PERSONAL_STATS_BLOCK.clone(),
-                                                   templates.REGULAR_TEAMS_STATS_BLOCK.clone(),
-                                                   templates.REGULAR_TEXT_STATS_BLOCK.clone())
+        super(RegularStatsComposer, self).__init__(reusable, templates.REGULAR_COMMON_STATS_BLOCK.clone(), templates.REGULAR_PERSONAL_STATS_BLOCK.clone(), templates.REGULAR_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
         self._block.addNextComponent(templates.PROGRESSIVE_REWARD_VO.clone())
 
 
@@ -260,10 +257,7 @@ class MapsTrainingStatsComposer(IStatsComposer):
 class Comp7StatsComposer(StatsComposer):
 
     def __init__(self, reusable):
-        super(Comp7StatsComposer, self).__init__(reusable, templates.COMP7_COMMON_STATS_BLOCK.clone(),
-                                                 templates.COMP7_PERSONAL_STATS_BLOCK.clone(),
-                                                 templates.COMP7_TEAMS_STATS_BLOCK.clone(),
-                                                 templates.REGULAR_TEXT_STATS_BLOCK.clone())
+        super(Comp7StatsComposer, self).__init__(reusable, templates.COMP7_COMMON_STATS_BLOCK.clone(), templates.COMP7_PERSONAL_STATS_BLOCK.clone(), templates.COMP7_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
         self._block.addNextComponent(templates.PROGRESSIVE_REWARD_VO.clone())
         self._block.addNextComponent(templates.EFFICIENCY_TITLE_WITH_SKILLS_VO.clone())
 
