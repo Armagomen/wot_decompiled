@@ -115,6 +115,9 @@ class AgateAccessor(BaseAccessor):
     def agate_v4_fetch_product_list_state(self, callback, params, fields=None):
         return self._data_source.agate_v4_fetch_product_list_state(callback, params, fields=fields)
 
+    def get_inventory_entitlements(self, callback, entitlement_codes):
+        return self._data_source.get_inventory_entitlements(callback, entitlement_codes)
+
 
 class ClansAccessor(BaseAccessor):
 
@@ -359,24 +362,6 @@ class GiftSystemAccessor(BaseAccessor):
         return self._data_source.post_gift_system_gift(callback, entitlementCode, receiverID, metaInfo)
 
 
-class FriendsAccessor(BaseAccessor):
-
-    def get_friend_balance(self, callback, spaId):
-        return self._data_source.get_friend_balance(callback, spaId)
-
-    def get_friend_list(self, callback):
-        return self._data_source.get_friend_list(callback)
-
-    def put_best_friend(self, callback, spaId):
-        return self._data_source.put_best_friend(callback, spaId)
-
-    def delete_best_friend(self, callback, spaId):
-        return self._data_source.delete_best_friend(callback, spaId)
-
-    def post_gather_friend_ny_resources(self, callback, spaId):
-        return self._data_source.post_gather_friend_ny_resources(callback, spaId)
-
-
 class UILoggingAccessor(BaseAccessor):
 
     def get_uilogging_session(self, callback):
@@ -403,8 +388,8 @@ class Requester(object):
     craftmachine = RequestDescriptor(CrafmachineAccessor)
     mapbox = RequestDescriptor(MapboxAccessor)
     gifts = RequestDescriptor(GiftSystemAccessor)
-    friends = RequestDescriptor(FriendsAccessor)
     uilogging = RequestDescriptor(UILoggingAccessor)
+    agate = RequestDescriptor(AgateAccessor)
 
     @classmethod
     def create_requester(cls, url_fetcher, config, client_lang=None, user_agent=None):

@@ -107,6 +107,7 @@ class ItemTags(object):
     ONLY_VERTICAL_MIRROR = 'onlyVerticalMirror'
     HIDE_IF_INCOMPATIBLE = 'hideIfIncompatible'
     STYLE_SERIAL_NUMBER = 'styleSerialNumber'
+    LOCKED_ON_VEHICLE = 'lockedOnVehicle'
 
 
 class ProjectionDecalType(object):
@@ -365,6 +366,7 @@ CamouflageTilingType.RANGE = tuple([ getattr(CamouflageTilingType, k) for k in d
 CamouflageTilingTypeNames = {getattr(CamouflageTilingType, k):k for k in dir(CamouflageTilingType) if not k.startswith('_') and k not in ('RANGE', 'NONE')}
 CamouflageTilingTypeNameToType = {v:k for k, v in CamouflageTilingTypeNames.iteritems()}
 EASING_TRANSITION_DURATION = 0.8
+IMMEDIATE_TRANSITION_DURATION = 0.0
 
 class SLOT_TYPE_NAMES(object):
     PAINT = 'paint'

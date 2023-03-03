@@ -7,7 +7,7 @@ import BigWorld
 import Windowing
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
-from account_helpers.AccountSettings import MISSIONS_PAGE, NY_DAILY_QUESTS_VISITED
+from account_helpers.AccountSettings import MISSIONS_PAGE
 from adisp import adisp_async as adispasync, adisp_process
 from wg_async import wg_async, wg_await
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -17,7 +17,7 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.event_boards.event_helpers import checkEventExist
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import HIDE_DONE, HIDE_UNAVAILABLE
 from gui.Scaleform.daapi.view.lobby.missions.regular import group_packers
-from gui.Scaleform.daapi.view.lobby.missions.regular.sound_constants import TASKS_SOUND_SPACE, SOUNDS
+from gui.Scaleform.daapi.view.lobby.missions.regular.sound_constants import TASKS_SOUND_SPACE
 from gui.Scaleform.daapi.view.meta.MissionsListViewBaseMeta import MissionsListViewBaseMeta
 from gui.Scaleform.daapi.view.meta.MissionsPageMeta import MissionsPageMeta
 from gui.Scaleform.framework.entities.DAAPIDataProvider import ListDAAPIDataProvider
@@ -124,6 +124,8 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
                 self.soundManager.playSound(soundEvents[1])
                 break
 
+        if self.__currentTabAlias == QUESTS_ALIASES.BATTLE_PASS_MISSIONS_VIEW_PY_ALIAS and self.currentTab is not None:
+            self.currentTab.stop()
         self.__currentTabAlias = alias
         self.__marathonPrefix = prefix
         caches.getNavInfo().setMissionsTab(alias)
@@ -139,11 +141,14 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
         self.__onPageUpdate()
         self.__fireTabChangedEvent()
         self.__showFilter()
+        if alias == QUESTS_ALIASES.BATTLE_PASS_MISSIONS_VIEW_PY_ALIAS and self.currentTab is not None:
+            self.currentTab.start()
         if alias == QUESTS_ALIASES.MISSIONS_MARATHON_VIEW_PY_ALIAS:
             self.currentTab.setMarathon(prefix)
         if self.currentTab:
             self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.CHANGE_SOUND_ENVIRONMENT, ctx=self))
             self.currentTab.setActive(True)
+        return
 
     def getCurrentTabAlias(self):
         return self.__currentTabAlias
@@ -202,8 +207,6 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
         self.__updateHeader()
         self.__tryOpenMissionDetails()
         self.fireEvent(events.MissionsEvent(events.MissionsEvent.ON_ACTIVATE), EVENT_BUS_SCOPE.LOBBY)
-        if self.__currentTabAlias not in self.__VOICED_TABS:
-            self.soundManager.playSound(SOUNDS.ENTER)
         return
 
     def _invalidate(self, ctx=None):
@@ -436,8 +439,6 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
                             newEventsCount += 1
                 elif alias == QUESTS_ALIASES.MAPBOX_VIEW_PY_ALIAS:
                     newEventsCount = self.__mapboxCtrl.getUnseenItemsCount()
-                    if not AccountSettings.getUIFlag(NY_DAILY_QUESTS_VISITED):
-                        newEventsCount += 1
                 elif self.currentTab is not None and self.__currentTabAlias == alias:
                     suitableEvents = self.__getSuitableEvents(self.currentTab)
                     newEventsCount = len(settings.getNewCommonEvents(suitableEvents))
@@ -629,14 +630,13 @@ class MissionView(MissionViewBase):
         result = []
         self._totalQuestsCount = 0
         self._filteredQuestsCount = 0
-        nyBannerAdded = self._appendNYBanner(result)
         for data in self._builder.getBlocksData(self.__viewQuests, self.__filter):
             self._appendBlockDataToResult(result, data)
             self._totalQuestsCount += self._getQuestTotalCountFromBlockData(data)
             self._filteredQuestsCount += self._getQuestFilteredCountFromBlockData(data)
 
         self._questsDP.buildList(result)
-        if not self._totalQuestsCount and not nyBannerAdded:
+        if not self._totalQuestsCount:
             self.as_showDummyS(self._getDummy())
         else:
             self.as_hideDummyS()
@@ -693,9 +693,6 @@ class MissionView(MissionViewBase):
 
     def __onPremiumTypeChanged(self, newAcctType):
         self.markVisited()
-
-    def _appendNYBanner(self, _):
-        return False
 
 
 class ElenMissionView(MissionViewBase):

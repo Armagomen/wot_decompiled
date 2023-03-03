@@ -1,7 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/battle_loading.py
-import logging
-from functools import partial
 import BattleReplay
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import BattleLoadingTipSetting
@@ -17,17 +15,19 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.lobby_context import ILobbyContext
 _bBattleReplayLoadingShowed = False
-_logger = logging.getLogger(__name__)
 
 def _setBattleLoading(value):
     global _bBattleReplayLoadingShowed
     _bBattleReplayLoadingShowed = value and BattleReplay.isPlaying()
 
 
+def _onReplayTerminated(_):
+    _setBattleLoading(False)
+
+
 def _isBattleLoadingShowed():
     if BattleReplay.isPlaying():
-        if _setBattleLoading not in g_replayEvents.onReplayTerminated:
-            g_replayEvents.onReplayTerminated += partial(_setBattleLoading, False)
+        g_replayEvents.onReplayTerminated += _onReplayTerminated
         return _bBattleReplayLoadingShowed
     return False
 
@@ -105,7 +105,7 @@ class BattleLoading(BaseBattleLoadingMeta, IArenaVehiclesController):
         self.as_setMapIconS(SMALL_MAP_IMAGE_SF_PATH % self._arenaVisitor.type.getGeometryName())
 
     def _getSettingsID(self, loadingInfo):
-        return self.settingsCore.options.getSetting(loadingInfo).getSettingID(isVisualOnly=self._arenaVisitor.gui.isSandboxBattle() or self._arenaVisitor.gui.isEventBattle())
+        return self.settingsCore.options.getSetting(loadingInfo).getSettingID(isVisualOnly=self._arenaVisitor.gui.isEventBattle())
 
     def _makeVisualTipVO(self, arenaDP, tip=None):
         loadingInfo = settings_constants.GAME.BATTLE_LOADING_RANKED_INFO if self._arenaVisitor.gui.isRankedBattle() else settings_constants.GAME.BATTLE_LOADING_INFO

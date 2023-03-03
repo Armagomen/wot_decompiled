@@ -13,12 +13,12 @@ if typing.TYPE_CHECKING:
     from fun_random.helpers.server_settings import FunRandomConfig, FunMetaProgressionConfig
     from fun_random.gui.shared.events import FunEventScope, FunEventType
     from gui.Scaleform.daapi.view.lobby.comp7.shared import Comp7AlertData
-    from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import EpicBattleScreens
     from gui.battle_pass.state_machine.delegator import BattlePassRewardLogic
     from gui.game_control.comp7_controller import _LeaderboardDataProvider
     from gui.game_control.epic_meta_game_ctrl import EpicMetaGameSkill
     from gui.game_control.mapbox_controller import ProgressionData
     from gui.game_control.trade_in import TradeInDiscounts
+    from gui.gift_system.hubs.base.hub_core import IGiftEventHub
     from gui.mapbox.mapbox_survey_manager import MapboxSurveyManager
     from gui.periodic_battles.models import AlertData, PeriodInfo, PrimeTime
     from gui.prb_control.items import ValidationResult
@@ -33,6 +33,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items import Tankman, Vehicle
     from gui.shared.gui_items.fitting_item import RentalInfoProvider
     from gui.shared.gui_items.gui_item_economics import ItemPrice
+    from gui.shared.gui_items.loot_box import LootBox, EventLootBoxes
     from gui.shared.gui_items.Tankman import TankmanSkill
     from gui.shared.money import Money, DynamicMoney
     from gui.shared.utils.requesters.EpicMetaGameRequester import EpicMetaGameRequester
@@ -41,6 +42,7 @@ if typing.TYPE_CHECKING:
     from season_common import GameSeason
     from items.artefacts import Equipment
     from skeletons.gui.battle_session import IClientArenaVisitor
+    from gui.entitlements.entitlement_model import AgateEntitlement
     BattlePassBonusOpts = Optional[TokensBonus, BattlePassSelectTokensBonus]
 
 class IGameController(object):
@@ -204,6 +206,7 @@ class IGameSessionController(IGameController):
     onPremiumNotify = None
     onPremiumTypeChanged = None
     onParentControlNotify = None
+    onNotifyTimeTillKick = None
 
     def isSessionStartedThisDay(self):
         raise NotImplementedError
@@ -249,6 +252,9 @@ class IGameSessionController(IGameController):
         raise NotImplementedError
 
     def getParentControlNotificationMeta(self):
+        raise NotImplementedError
+
+    def getKickAtTime(self):
         raise NotImplementedError
 
 
@@ -366,7 +372,7 @@ class IExternalLinksController(IGameController):
     def open(self, url):
         raise NotImplementedError
 
-    def getURL(self, name, params, callback):
+    def getURL(self, name, params=None, callback=lambda *args: None):
         raise NotImplementedError
 
     def externalAllowed(self, url):
@@ -391,9 +397,6 @@ class ISoundEventChecker(IGameController):
 class IHeroTankController(IGameController):
     onUpdated = None
     onInteractive = None
-    onHeroTankChanged = None
-    onHeroTankBought = None
-    onVisibilityChanged = None
 
     def hasAdventHero(self):
         raise NotImplementedError
@@ -435,7 +438,6 @@ class IPlatoonController(IGameController):
     onAvailableTiersForSearchChanged = None
     onAutoSearchCooldownChanged = None
     onPlatoonTankRemove = None
-    onVisibilityChanged = None
 
     def buildExtendedSquadInfoVo(self):
         raise NotImplementedError
@@ -563,6 +565,9 @@ class IPlatoonController(IGameController):
     def hasVehiclesForSearch(self, tierLevel=None):
         raise NotImplementedError
 
+    def orderSlotsBasedOnDisplaySlotsIndices(self, slots):
+        raise NotImplementedError
+
     def processPlatoonActions(self, mapID, entity, currentVehicle, callback):
         raise NotImplementedError
 
@@ -670,7 +675,7 @@ class IBoostersController(IGameController):
     onReserveTimerTick = None
     onGameModeStatusChange = None
 
-    def isGameModeSupported(self):
+    def isGameModeSupported(self, category):
         raise NotImplementedError
 
     def selectRandomBattle(self):
@@ -1079,6 +1084,9 @@ class IBootcampController(IGameController):
     def version(self):
         raise NotImplementedError
 
+    def getBootcampOutfit(self, vehDescr):
+        raise NotImplementedError
+
     def isInBootcamp(self):
         raise NotImplementedError
 
@@ -1209,6 +1217,9 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
     def isCurrentCycleActive(self):
         raise NotImplementedError
 
+    def isBattlePassDataEnabled(self):
+        raise NotImplementedError
+
     def isUnlockVehiclesInBattleEnabled(self):
         raise NotImplementedError
 
@@ -1254,6 +1265,9 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
     def getAllSkillsInformation(self):
         raise NotImplementedError
 
+    def getOrderedSkillTree(self):
+        raise NotImplementedError
+
     def getPlayerLevelInfo(self):
         raise NotImplementedError
 
@@ -1261,6 +1275,9 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
         raise NotImplementedError
 
     def getSeasonData(self):
+        raise NotImplementedError
+
+    def getCurrentSeasonID(self):
         raise NotImplementedError
 
     def getSkillPoints(self):
@@ -1296,10 +1313,22 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
     def getAllLevelRewards(self):
         raise NotImplementedError
 
+    def getLevelRewards(self, level):
+        raise NotImplementedError
+
+    def getMergedLevelRewards(self):
+        raise NotImplementedError
+
     def isNeedToTakeReward(self):
         raise NotImplementedError
 
     def getNotChosenRewardCount(self):
+        raise NotImplementedError
+
+    def showProgressionDuringSomeStates(self, showDefaultTab=False):
+        raise NotImplementedError
+
+    def selectEpicBattle(self):
         raise NotImplementedError
 
     def hasAnyOfferGiftToken(self):
@@ -1323,7 +1352,13 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
     def getSeasonTimeRange(self):
         raise NotImplementedError
 
+    def getActiveSeason(self):
+        raise NotImplementedError
+
     def hasSuitableVehicles(self):
+        raise NotImplementedError
+
+    def hasVehiclesToRent(self):
         raise NotImplementedError
 
     def getStoredEpicDiscount(self):
@@ -1332,10 +1367,7 @@ class IEpicBattleMetaGameController(IGameController, ISeasonProvider):
     def getStats(self):
         raise NotImplementedError
 
-    def openURL(self):
-        raise NotImplementedError
-
-    def showCustomScreen(self, screen):
+    def showWelcomeScreenIfNeed(self, showFullScreen=False, showContainerOnClose=False):
         raise NotImplementedError
 
     def storeCycle(self):
@@ -1557,9 +1589,6 @@ class ICraftmachineController(IGameController):
 
 class ICalendarController(IGameController):
 
-    def mustShow(self):
-        raise NotImplementedError
-
     def updateHeroAdventActionInfo(self):
         raise NotImplementedError
 
@@ -1606,7 +1635,7 @@ class IFestivityController(IGameController):
     def isEnabled(self):
         raise NotImplementedError
 
-    def getHangarEdgeColor(self):
+    def getHangarQuestsFlagData(self):
         raise NotImplementedError
 
 
@@ -1860,12 +1889,6 @@ class IBattlePassController(IGameController):
     def getFinalOfferTime(self):
         raise NotImplementedError
 
-    def getPrevSeasonsStats(self):
-        raise NotImplementedError
-
-    def getLastFinishedSeasonStats(self):
-        raise NotImplementedError
-
     def getSeasonsHistory(self):
         raise NotImplementedError
 
@@ -2017,7 +2040,6 @@ class IMapboxController(IGameController, ISeasonProvider):
 
 class IOverlayController(IGameController):
 
-    @property
     def isActive(self):
         raise NotImplementedError
 
@@ -2160,6 +2182,126 @@ class IWotPlusNotificationController(IGameController):
         raise NotImplementedError
 
 
+class IEntitlementsConsumer(object):
+
+    @property
+    def isConsumesEntitlements(self):
+        raise NotImplementedError
+
+
+class IEntitlementsController(IGameController):
+    onCacheUpdated = None
+
+    def updateCache(self, codes):
+        raise NotImplementedError
+
+    def forceUpdateCache(self, codes):
+        raise NotImplementedError
+
+    def getBalanceEntitlementFromCache(self, code):
+        raise NotImplementedError
+
+    def isCacheInited(self):
+        raise NotImplementedError
+
+    def getConsumedEntitlementFromCache(self, code):
+        raise NotImplementedError
+
+    def getGrantedEntitlementFromCache(self, code):
+        raise NotImplementedError
+
+    def isCodesWasFailedInLastRequest(self, codes):
+        raise NotImplementedError
+
+
+class IEventLootBoxesController(IGameController, IEntitlementsConsumer):
+    onStatusChange = None
+    onAvailabilityChange = None
+    onBoxesCountChange = None
+    onIntroShownChanged = None
+    onBoxesUpdate = None
+    onBoxInfoUpdated = None
+
+    @property
+    def boxCountToGuaranteedBonus(self):
+        raise NotImplementedError
+
+    def getSetting(self, category, setting):
+        raise NotImplementedError
+
+    def setSetting(self, category, setting, value):
+        raise NotImplementedError
+
+    def isEnabled(self):
+        raise NotImplementedError
+
+    def isActive(self):
+        raise NotImplementedError
+
+    def isLootBoxesAvailable(self):
+        raise NotImplementedError
+
+    def isBuyAvailable(self):
+        raise NotImplementedError
+
+    def isLootBoxesWasStarted(self):
+        raise NotImplementedError
+
+    def isLootBoxesWasFinished(self):
+        raise NotImplementedError
+
+    def useExternalShop(self):
+        raise NotImplementedError
+
+    def setIntroWasShown(self, value):
+        raise NotImplementedError
+
+    def getDayLimit(self):
+        raise NotImplementedError
+
+    def getGuaranteedBonusLimit(self, boxType):
+        raise NotImplementedError
+
+    def getEventActiveTime(self):
+        raise NotImplementedError
+
+    def openShop(self):
+        raise NotImplementedError
+
+    def getDayInfoStatistics(self):
+        raise NotImplementedError
+
+    def getExpiresAtLootBoxBuyCounter(self):
+        raise NotImplementedError
+
+    def getTimeLeftToResetPurchase(self):
+        raise NotImplementedError
+
+    def getCommonBoxInfo(self):
+        raise NotImplementedError
+
+    def getPremiumBoxInfo(self):
+        raise NotImplementedError
+
+    def getBoxInfo(self, boxType):
+        raise NotImplementedError
+
+    def getStoreInfo(self, category):
+        raise NotImplementedError
+
+    def getBoxesIDs(self, category):
+        raise NotImplementedError
+
+    def getBoxesCount(self):
+        raise NotImplementedError
+
+    def getBoxesInfo(self):
+        raise NotImplementedError
+
+    def getVehicleLevels(self, boxType):
+        raise NotImplementedError
+
+
 class ITelecomRentalsNotificationController(IGameController):
 
     def processSwitchNotifications(self):
@@ -2185,6 +2327,9 @@ class IEventBattlesController(IGameController, ISeasonProvider):
 class IGiftSystemController(IGameController):
     onEventHubsCreated = None
     onEventHubsDestroyed = None
+
+    def getEventHub(self, eventID):
+        raise NotImplementedError
 
     def getSettings(self):
         raise NotImplementedError
@@ -2238,6 +2383,7 @@ class IResourceWellController(IGameController):
     onEventUpdated = None
     onSettingsChanged = None
     onNumberRequesterUpdated = None
+    onEventStateChanged = None
 
     def isEnabled(self):
         raise NotImplementedError
@@ -2254,6 +2400,9 @@ class IResourceWellController(IGameController):
     def isPaused(self):
         raise NotImplementedError
 
+    def isNotStarted(self):
+        raise NotImplementedError
+
     def getSeason(self):
         raise NotImplementedError
 
@@ -2261,6 +2410,9 @@ class IResourceWellController(IGameController):
         raise NotImplementedError
 
     def getFinishTime(self):
+        raise NotImplementedError
+
+    def getStartTime(self):
         raise NotImplementedError
 
     def getCurrentPoints(self):
@@ -2467,12 +2619,6 @@ class IFunRandomController(IGameController):
         raise NotImplementedError
 
     def isFunRandomPrbActive(self):
-        raise NotImplementedError
-
-    def hasDailyQuestsEntry(self):
-        raise NotImplementedError
-
-    def hasHangarHeaderEntry(self):
         raise NotImplementedError
 
     def getSettings(self):

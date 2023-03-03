@@ -19,6 +19,7 @@ from chat_commands_consts import getUniqueTeamOrControlPointID, INVALID_MARKER_S
 from gui.Scaleform.daapi.view.battle.shared.markers2d import markers
 from gui.Scaleform.daapi.view.battle.shared.markers2d import settings
 from gui.Scaleform.daapi.view.battle.shared.markers2d.markers import LocationMarker, BaseMarker, Marker, ReplyStateForMarker
+from gui.Scaleform.daapi.view.battle.shared.markers2d.settings import CommonMarkerType
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.battle_control import avatar_getter
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -57,7 +58,7 @@ MAX_DISTANCE_TEMP_STICKY = 350
 
 class IMarkersManager(object):
 
-    def createMarker(self, symbol, matrixProvider=None, active=True):
+    def createMarker(self, symbol, matrixProvider=None, active=True, markerType=CommonMarkerType.NORMAL):
         raise NotImplementedError
 
     def invokeMarker(self, markerID, *signature):
@@ -99,13 +100,13 @@ class MarkerPlugin(IPlugin):
     def getMarkerSubtype(self, targetID):
         return INVALID_MARKER_SUBTYPE
 
-    def _createMarkerWithPosition(self, symbol, position, active=True):
+    def _createMarkerWithPosition(self, symbol, position, active=True, markerType=CommonMarkerType.NORMAL):
         matrixProvider = Matrix()
         matrixProvider.translation = position
-        return self._parentObj.createMarker(symbol, matrixProvider, active)
+        return self._parentObj.createMarker(symbol, matrixProvider, active, markerType)
 
-    def _createMarkerWithMatrix(self, symbol, matrixProvider=None, active=True):
-        return self._parentObj.createMarker(symbol, matrixProvider=matrixProvider, active=active)
+    def _createMarkerWithMatrix(self, symbol, matrixProvider=None, active=True, markerType=CommonMarkerType.NORMAL):
+        return self._parentObj.createMarker(symbol, matrixProvider=matrixProvider, active=active, markerType=markerType)
 
     def _invokeMarker(self, markerID, function, *args):
         self._parentObj.invokeMarker(markerID, function, *args)
@@ -350,6 +351,7 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
         self.__arenaDP = self.sessionProvider.getArenaDP()
         if ctrl is not None:
             ctrl.onVehicleMarkerRemoved += self.onVehicleMarkerRemoved
+            ctrl.onVehicleMarkerAdded += self.onVehicleMarkerAdded
             ctrl.onVehicleFeedbackReceived += self.onVehicleFeedbackReceived
         add = g_eventBus.addListener
         add(GameEvent.ON_TARGET_VEHICLE_CHANGED, self._handleAutoAimMarker, scope=settings.SCOPE)
@@ -370,6 +372,7 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
         ctrl = self.sessionProvider.shared.feedback
         if ctrl is not None:
             ctrl.onVehicleMarkerRemoved -= self.onVehicleMarkerRemoved
+            ctrl.onVehicleMarkerAdded -= self.onVehicleMarkerAdded
             ctrl.onVehicleFeedbackReceived -= self.onVehicleFeedbackReceived
         remove = g_eventBus.removeListener
         remove(GameEvent.ON_TARGET_VEHICLE_CHANGED, self._handleAutoAimMarker, scope=settings.SCOPE)
@@ -388,7 +391,11 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
             self._destroyVehicleMarker(vehicleID)
 
     def onVehicleMarkerRemoved(self, vehicleID):
-        self._hideVehicleMarker(vehicleID)
+        self._hideVehicleMarker(vehicleID, clearVehicleID=False)
+
+    def onVehicleMarkerAdded(self, _, vInfo, __):
+        if self._vehicleID and self._vehicleID == vInfo.vehicleID:
+            self.__addAutoAimMarker(vInfo.vehicleID)
 
     def _destroyVehicleMarker(self, vehicleID):
         if vehicleID in self._markers:
@@ -475,14 +482,17 @@ class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
             self._hideAllMarkers()
 
     def __onSettingsChanged(self, diff):
-        if MARKERS.ENEMY in diff:
-            isMarkerEnabled = diff[MARKERS.ENEMY].get(self.__markerBaseAimMarker2D)
-            if isMarkerEnabled:
+        if MARKERS.ENEMY not in diff:
+            return
+        if self.__markerBaseAimMarker2D in diff[MARKERS.ENEMY]:
+            isBaseMarkerEnabled = diff[MARKERS.ENEMY][self.__markerBaseAimMarker2D]
+            if isBaseMarkerEnabled and self._vehicleID in self._markers:
                 self._addMarker(self._vehicleID)
-            elif isMarkerEnabled is False:
+            else:
                 self._hideAllMarkers(clearVehicleID=False)
-            self.__baseMarker = diff[MARKERS.ENEMY].get(self.__markerBaseAimMarker2D)
-            self.__altMarker = diff[MARKERS.ENEMY].get(self.__markerAltAimMarker2D)
+            self.__baseMarker = isBaseMarkerEnabled
+        if self.__markerAltAimMarker2D in diff[MARKERS.ENEMY]:
+            self.__altMarker = diff[MARKERS.ENEMY][self.__markerAltAimMarker2D]
 
     def __showExtendedInfo(self, event):
         isDown = event.ctx['isDown']
@@ -555,7 +565,7 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
             marker = item.getEnemyMarker()
             markerColor = item.getEnemyMarkerColor()
         self._invokeMarker(markerID, 'init', marker, _EQUIPMENT_DELAY_FORMAT.format(round(delay)), self.__defaultPostfix, markerColor)
-        self.__setCallback(markerID, round(BigWorld.serverTime() + delay))
+        self.__setCallback(markerID, BigWorld.serverTime() + delay)
         return
 
     def __setCallback(self, markerID, finishTime, interval=_EQUIPMENT_DEFAULT_INTERVAL):
@@ -569,12 +579,12 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
 
     def __handleCallback(self, markerID, finishTime):
         self.__callbackIDs[markerID] = None
-        delay = round(finishTime - BigWorld.serverTime())
+        delay = finishTime - BigWorld.serverTime()
         if delay <= 0:
             self._destroyMarker(markerID)
         else:
-            self._invokeMarker(markerID, 'updateTimer', _EQUIPMENT_DELAY_FORMAT.format(abs(delay)))
-            self.__setCallback(markerID, finishTime)
+            self._invokeMarker(markerID, 'updateTimer', _EQUIPMENT_DELAY_FORMAT.format(abs(round(delay))))
+            self.__setCallback(markerID, finishTime, min(delay, _EQUIPMENT_DEFAULT_INTERVAL))
         return
 
 
@@ -937,10 +947,10 @@ class BaseAreaMarkerPlugin(MarkerPlugin):
         self.__markers = {}
         super(BaseAreaMarkerPlugin, self).stop()
 
-    def createMarker(self, uniqueID, matrixProvider, active):
+    def createMarker(self, uniqueID, matrixProvider, active, symbol=settings.MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER):
         if uniqueID in self.__markers:
             return False
-        markerID = self._createMarkerWithMatrix(settings.MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER, matrixProvider, active=active)
+        markerID = self._createMarkerWithMatrix(symbol, matrixProvider, active=active)
         self.__markers[uniqueID] = markerID
         return True
 

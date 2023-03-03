@@ -13,7 +13,6 @@ from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import STEAM_ACHIEVEMENT_DEPENDENCIES
-from dossiers2.custom.dependencies import PLAYER_BADGES_DEPENDENCIES
 from battle_statistics_layouts import *
 TOTAL_BLOCK_LAYOUT = ['creationTime',
  'lastBattleTime',
@@ -819,9 +818,9 @@ _SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
  'october22',
  'november22',
  'december22',
- 'prime_gaming_reserved_5',
- 'prime_gaming_reserved_6',
- 'prime_gaming_reserved_7',
+ 'january23',
+ 'february23',
+ 'march23',
  'prime_gaming_reserved_8',
  'prime_gaming_reserved_9',
  'prime_gaming_reserved_10',
@@ -832,7 +831,9 @@ _SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
  'hw2022Medal02',
  '12YearsOfService',
  'NY23_AtmsphrLevel',
- 'NY23_CelebChallenge']
+ 'NY23_CelebChallenge',
+ 'BattlePassCommonPr_NY23',
+ 'BattlePassCommonPr_10']
 _singleAchievementsPopUps = ['titleSniper',
  'invincible',
  'diehard',
@@ -1009,9 +1010,9 @@ _singleAchievementsPopUps = ['titleSniper',
  'october22',
  'november22',
  'december22',
- 'prime_gaming_reserved_5',
- 'prime_gaming_reserved_6',
- 'prime_gaming_reserved_7',
+ 'january23',
+ 'february23',
+ 'march23',
  'prime_gaming_reserved_8',
  'prime_gaming_reserved_9',
  'prime_gaming_reserved_10',
@@ -1022,7 +1023,9 @@ _singleAchievementsPopUps = ['titleSniper',
  'hw2022Medal02',
  '12YearsOfService',
  'NY23_AtmsphrLevel',
- 'NY23_CelebChallenge']
+ 'NY23_CelebChallenge',
+ 'BattlePassCommonPr_NY23',
+ 'BattlePassCommonPr_10']
 _singleAchievementsBlockBuilder = BinarySetDossierBlockBuilder('singleAchievements', _SINGLE_ACHIEVEMENTS_VALUES, SINGLE_ACHIEVEMENTS_DEPENDENCIES, _singleAchievementsPopUps)
 FORT_ACHIEVEMENTS_BLOCK_LAYOUT = ['conqueror',
  'fireAndSword',
@@ -1044,7 +1047,7 @@ RANKED_BADGES_BLOCK_LAYOUT = ['1',
  '7',
  '8',
  '9']
-_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', PLAYER_BADGES_DEPENDENCIES)
+_playerBadgesBlockBuilder = DictBlockBuilder('playerBadges', 'I', 'I', {})
 _rankedSeasonsBlockBuilder = DictBlockBuilder('rankedSeasons', 'II', 'BHHHH', {})
 _rareAchievementsBlockBuilder = ListBlockBuilder('rareAchievements', 'I', {})
 UNIQUE_ACHIEVEMENT_VALUES = ['histBattle1_battlefield',

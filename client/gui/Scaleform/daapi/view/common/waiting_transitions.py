@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/waiting_transitions.py
 import logging
+import SCALEFORM
 from gui.Scaleform.daapi.view.external_components import ExternalFlashComponent
 from gui.Scaleform.daapi.view.external_components import ExternalFlashSettings
 from gui.Scaleform.daapi.view.meta.WaitingTransitionMeta import WaitingTransitionMeta
@@ -32,7 +33,7 @@ class WaitingTransition(ExternalFlashComponent, WaitingTransitionMeta, IWaitingW
         self.__mode = TransitionMode.DISABLED
         self.createExternalComponent()
         self.isEnabled = False
-        self.movie.scaleMode = 'NoScale'
+        self.movie.scaleMode = SCALEFORM.eMovieScaleMode.NO_SCALE
         self.movie.backgroundAlpha = _DEFAULT_MOVIE_BACKGROUND_ALPHA
 
     def isInTransitionMode(self):
@@ -45,7 +46,7 @@ class WaitingTransition(ExternalFlashComponent, WaitingTransitionMeta, IWaitingW
         if self._isDAAPIInited():
             self.__setupBackground()
 
-    def showWaiting(self, messageID, *args):
+    def showWaiting(self, messageID, _=False):
         self.active(True)
         if self.__mode & TransitionMode.PERMANENT_MESSAGE > 0 and self.__textID:
             return

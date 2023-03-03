@@ -6,9 +6,9 @@ from string import lower
 from typing import Dict, TypeVar, Optional, TYPE_CHECKING
 from constants import IS_CELLAPP, IS_BASEAPP
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
-from items import decodeEnum
+from items import decodeEnum, vehicles
 from items.components import c11n_components as cn
-from items.components.c11n_constants import ApplyArea, SeasonType, CustomizationType, CustomizationTypeNames, MAX_USERS_PROJECTION_DECALS, EMPTY_ITEM_ID
+from items.components.c11n_constants import ApplyArea, SeasonType, CustomizationType, CustomizationTypeNames, ItemTags, MAX_USERS_PROJECTION_DECALS, EMPTY_ITEM_ID
 from serializable_types.customizations import PaintComponent, CamouflageComponent, getAllItemsFromOutfit, AttachmentComponent, ProjectionDecalComponent, SequenceComponent, PersonalNumberComponent, InsigniaComponent, CustomizationOutfit, DecalComponent, CUSTOMIZATION_CLASSES as _CUSTOMIZATION_CLASSES, parseC11sComponentDescr
 from serialization import ComponentBinDeserializer, ComponentXmlDeserializer, SerializationException, EmptyComponent, makeCompDescr, FieldTypes, FieldFlags, FieldType, SerializableComponent, intField, intArrayField, xmlOnlyFloatField, xmlOnlyFloatArrayField, applyAreaEnumField, customFieldType, customArrayField, optionsEnumField, arrayField, strField, xmlOnlyApplyAreaEnumField, xmlOnlyIntField, xmlOnlyTagsField
 from serialization.serializable_component import SerializableComponentChildType
@@ -69,6 +69,18 @@ def getNationalEmblemsOutfit(vehDescr):
     return outfit
 
 
+def getBootcampOutfit(vehDescr, customizationConfig):
+    tankCustomization = customizationConfig.get(vehDescr.name, {})
+    styleId = tankCustomization.get('styleId', 0)
+    cache = vehicles.g_cache.customization20()
+    if styleId in cache.styles:
+        outfit = copy.deepcopy(cache.styles[styleId].outfits[SeasonType.SUMMER])
+        if ItemTags.ADD_NATIONAL_EMBLEM in cache.styles[styleId].tags:
+            outfit.decals.extend(createNationalEmblemComponents(vehDescr))
+        return outfit
+    return CustomizationOutfit(decals=createNationalEmblemComponents(vehDescr))
+
+
 def __ignoreItem(itemId, cache, ignoreEmpty, ignoreStyleOnly):
     if itemId != EMPTY_ITEM_ID:
         if ignoreStyleOnly and cache[itemId].isStyleOnly:
@@ -83,9 +95,6 @@ def getOutfitType(arenaKind, bonusType):
 
 
 def getBattleOutfit(getter, vehType, arenaKind, bonusType):
-    styleOutfitDescr = getter(vehType, SeasonType.EVENT)
-    if styleOutfitDescr:
-        return parseOutfitDescr(styleOutfitDescr)
     season = getOutfitType(arenaKind, bonusType)
     seasonOutfitDescr = getter(vehType, season)
     if seasonOutfitDescr:

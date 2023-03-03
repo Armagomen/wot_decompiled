@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle_results_window.py
 import logging
 import BigWorld
-import BattleReplay
 import constants
 from adisp import adisp_process
 from constants import PremiumConfigs
@@ -20,7 +19,6 @@ from gui.battle_results.settings import PROGRESS_ACTION
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.server_events import events_dispatcher as quests_events
 from gui.server_events.events_helpers import isC11nQuest
-from gui.server_events.events_helpers import isCelebrityQuest
 from gui.shared import event_bus_handlers, events, EVENT_BUS_SCOPE, g_eventBus
 from gui.shared import event_dispatcher
 from gui.shared.event_dispatcher import showProgressiveRewardWindow, showTankPremiumAboutPage
@@ -32,7 +30,6 @@ from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-from skeletons.new_year import INewYearController
 from soft_exception import SoftException
 _logger = logging.getLogger(__name__)
 
@@ -85,11 +82,6 @@ class BattleResultsWindow(BattleResultsMeta):
                 lobbyHeaderNavigationPossible = yield self.__lobbyContext.isHeaderNavigationPossible()
                 if not lobbyHeaderNavigationPossible:
                     return
-            if isCelebrityQuest(eID):
-                _nyController = dependency.instance(INewYearController)
-                if not _nyController.isEnabled():
-                    _nyController.showStateMessage()
-                    return
             quests_events.showMission(eID, eventType)
             self.destroy()
         return
@@ -105,9 +97,6 @@ class BattleResultsWindow(BattleResultsMeta):
 
     def onResultsSharingBtnPress(self):
         raise NotImplementedError('This feature is not longer supported')
-
-    def onReplay(self, url):
-        BattleReplay.g_replayCtrl.downloadAndPlayServerSideReplay(url)
 
     def showUnlockWindow(self, itemID, unlockType):
         if not self.__canNavigate():

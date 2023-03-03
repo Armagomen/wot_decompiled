@@ -1,9 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/notification/settings.py
 from collections import namedtuple
+from gui.impl import backport
+from gui.impl.gen import R
 from shared_utils import ScalarTypes
 LIST_SCROLL_STEP_FACTOR = 10
-DEF_ICON_PATH = '../maps/icons/library/{0:>s}-1.png'
+DEF_ICON_NAME = '{0:>s}_1'
 NotificationData = namedtuple('NotificationData', ('entityID', 'savedData', 'priorityLevel', 'entity'))
 
 class NOTIFICATION_STATE(object):
@@ -33,10 +35,6 @@ class NOTIFICATION_TYPE(object):
     RESOURCE_WELL_START = 18
     AUCTION_STAGE_START = 19
     AUCTION_STAGE_FINISH = 20
-    NY_DOG_REMINDER = 21
-    NY_MARKETPLACE_AVAILABLE = 22
-    NY_RESOURCE_COLLECTING_AVAILABLE = 23
-    NY_FRIEND_RESOURCE_COLLECTING_AVAILABLE = 24
     RANGE = None
 
 
@@ -60,22 +58,17 @@ ITEMS_MAX_LENGTHS = {NOTIFICATION_TYPE.MESSAGE: 250,
  NOTIFICATION_TYPE.AUCTION_STAGE_START: 1,
  NOTIFICATION_TYPE.AUCTION_STAGE_FINISH: 1,
  NOTIFICATION_TYPE.SENIORITY_AWARDS_TOKENS: 1,
- NOTIFICATION_TYPE.SENIORITY_AWARDS_QUEST: 1,
- NOTIFICATION_TYPE.NY_DOG_REMINDER: 1,
- NOTIFICATION_TYPE.NY_MARKETPLACE_AVAILABLE: 1,
- NOTIFICATION_TYPE.NY_RESOURCE_COLLECTING_AVAILABLE: 1,
- NOTIFICATION_TYPE.NY_FRIEND_RESOURCE_COLLECTING_AVAILABLE: 1}
+ NOTIFICATION_TYPE.SENIORITY_AWARDS_QUEST: 1}
 
 class NOTIFICATION_BUTTON_STATE(object):
     HIDDEN = 0
     VISIBLE = 1
     ENABLED = 2
-    WARNING = 4
     DEFAULT = VISIBLE | ENABLED
 
 
 def makePathToIcon(iconName):
-    result = ''
-    if iconName:
-        result = DEF_ICON_PATH.format(iconName)
-    return result
+    if not iconName:
+        return ''
+    iconRes = R.images.gui.maps.icons.library.dyn(DEF_ICON_NAME.format(iconName))
+    return backport.image(iconRes()) if iconRes.exists() else ''

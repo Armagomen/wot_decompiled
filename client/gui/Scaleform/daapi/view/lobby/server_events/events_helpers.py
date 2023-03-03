@@ -8,6 +8,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 import constants
 from battle_pass_common import BattlePassConsts
 from constants import EVENT_TYPE
+from gui.server_events.events_constants import BATTLE_MATTERS_QUEST_ID
 from gui import GUI_NATIONS, makeHtmlString
 from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.daapi.view.lobby.event_boards.formaters import getNationText
@@ -34,8 +35,9 @@ from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
-    from typing import Iterable, List, Union
-    from gui.server_events.bonuses import BattlePassPointsBonus, BattlePassStyleProgressTokenBonus, TokensBonus
+    from typing import Iterable, Union
+    from gui.server_events.bonuses import BattlePassStyleProgressTokenBonus, TokensBonus
+    from gui.server_events.event_items import Quest
 FINISH_TIME_LEFT_TO_SHOW = time_utils.ONE_DAY
 START_TIME_LIMIT = 5 * time_utils.ONE_DAY
 _AWARDS_PER_PAGE = 3
@@ -48,18 +50,19 @@ class BattlePassProgress(object):
     def __init__(self, arenaBonusType, *args, **kwargs):
         self.__arenaBonusType = arenaBonusType
         self.__chapterID = kwargs.get('bpChapter', 0)
-        self.__basePointsDiff = self.__basePoints = kwargs.get('basePointsDiff', 0)
+        self.__topPoints = kwargs.get('bpTopPoints', 0)
         self.__pointsAux = kwargs.get('bpNonChapterPointsDiff', 0)
         self.__pointsTotal = kwargs.get('sumPoints', 0)
         self.__hasBattlePass = kwargs.get('hasBattlePass', False)
         self.__questsProgress = kwargs.get('questsProgress', {})
         self.__battlePassComplete = kwargs.get('battlePassComplete', False)
         self.__availablePoints = kwargs.get('availablePoints', False)
+        self.__questPoints = kwargs.get('eventBattlePassPoints', 0)
+        self.__bonusCapPoints = kwargs.get('bpBonusPoints', 0)
         self.__prevLevel = 0
         self.__currLevel = 0
         self.__pointsNew = 0
         self.__pointsMax = 0
-        self.__pointsQst = 0
         self.__initExtendedData()
 
     @property
@@ -67,8 +70,8 @@ class BattlePassProgress(object):
         return self.__chapterID
 
     @property
-    def basePointsDiff(self):
-        return self.__basePointsDiff
+    def bpTopPoints(self):
+        return self.__topPoints
 
     @property
     def isApplied(self):
@@ -120,7 +123,8 @@ class BattlePassProgress(object):
 
     @property
     def pointsAdd(self):
-        return self.__pointsAux or (self.__basePoints if self.__currLevel == self.__prevLevel else self.__pointsNew)
+        totalPoints = self.__topPoints + self.__bonusCapPoints + self.__questPoints
+        return self.__pointsAux or (totalPoints if self.__currLevel == self.__prevLevel else self.__pointsNew)
 
     @property
     def pointsAux(self):
@@ -135,8 +139,12 @@ class BattlePassProgress(object):
         return self.__pointsMax
 
     @property
-    def pointsQst(self):
-        return self.__pointsQst
+    def questPoints(self):
+        return self.__questPoints
+
+    @property
+    def bonusCapPoints(self):
+        return self.__bonusCapPoints
 
     @property
     def pointsTotal(self):
@@ -152,21 +160,17 @@ class BattlePassProgress(object):
     def __initExtendedData(self):
         if not self.__battlePassController.isEnabled() or self.__chapterID == 0:
             return
-        self.__pointsQst = self.__getQuestPoints()
-        self.__prevLevel = self.__battlePassController.getLevelByPoints(self.__chapterID, self.__pointsTotal - self.__basePoints - self.__pointsQst)
+        prevPoints = self.__pointsTotal - self.__topPoints - self.__questPoints - self.__bonusCapPoints + self.__pointsAux
+        self.__prevLevel = self.__battlePassController.getLevelByPoints(self.__chapterID, prevPoints)
         self.__currLevel = self.__battlePassController.getLevelByPoints(self.__chapterID, self.__pointsTotal)
         self.__pointsNew, self.__pointsMax = self.__battlePassController.getProgressionByPoints(self.__chapterID, self.__pointsTotal, self.__currLevel)
 
-    def __getQuestPoints(self):
-        if not self.__questsProgress:
-            return 0
-        allQuests = self.__eventsCache.getQuests()
-        allQuests.update(self.__eventsCache.getHiddenQuests(lambda quest: quest.isShowedPostBattle()))
-        bpQuestsBonuses = [ q.getBonuses(self.__BATTLE_PASS_POINTS) for q in allQuests.itervalues() if q.getID() in self.__questsProgress ]
-        return 0 if not bpQuestsBonuses else sum((sum((b.getCount() for b in bonuses)) for bonuses in bpQuestsBonuses))
-
     def __getRewardType(self):
         return BattlePassConsts.REWARD_BOTH if self.__hasBattlePass else BattlePassConsts.REWARD_FREE
+
+    @staticmethod
+    def __isQuestCompleted(_, previousProgress, currentProgress):
+        return currentProgress.get('bonusCount', 0) - previousProgress.get('bonusCount', 0) > 0
 
 
 class EventPostBattleInfo(EventInfoModel):
@@ -437,7 +441,38 @@ class MotiveQuestPostBattleInfo(QuestPostBattleInfo):
         return info
 
 
+class _BattleMattersQuestInfo(QuestPostBattleInfo):
+
+    def getInfo(self, svrEvents, pCur=None, pPrev=None, noProgressInfo=False):
+        battleResults = R.strings.battle_matters.battleResults
+        result = super(_BattleMattersQuestInfo, self).getInfo(svrEvents, pCur, pPrev, noProgressInfo)
+        result['description'] = backport.text(battleResults.descr()).format(questID=self.event.getOrder(), questName=self.event.getUserName())
+        result['linkTooltip'] = backport.text(battleResults.linkBtn.tooltip())
+        return result
+
+    def _getProgresses(self, pCur, pPrev):
+        index = 0
+        progresses = []
+        for cond in self.event.bonusCond.getConditions().items:
+            if isinstance(cond, conditions._Cumulativable):
+                for _, (curProg, totalProg, diff, _) in cond.getProgressPerGroup(pCur, pPrev).iteritems():
+                    if not diff:
+                        continue
+                    index += 1
+                    progresses.append({'progrTooltip': None,
+                     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                     'maxProgrVal': totalProg,
+                     'currentProgrVal': curProg,
+                     'description': '%d. %s' % (index, self.event.getConditionLbl()),
+                     'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
+                     'progressDiffTooltip': backport.text(R.strings.battle_matters.battleResults.progress.tooltip())})
+
+        return progresses
+
+
 def _getEventInfoData(event):
+    if str(event.getID()).startswith(BATTLE_MATTERS_QUEST_ID):
+        return _BattleMattersQuestInfo(event)
     if event.getType() == constants.EVENT_TYPE.PERSONAL_MISSION:
         return PersonalMissionPostBattleInfo(event)
     if event.getType() == constants.EVENT_TYPE.MOTIVE_QUEST:

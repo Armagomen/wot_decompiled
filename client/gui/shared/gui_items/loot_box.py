@@ -8,7 +8,9 @@ from shared_utils import CONST_CONTAINER
 
 class NewYearLootBoxes(CONST_CONTAINER):
     PREMIUM = 'newYear_premium'
+    SPECIAL = 'newYear_special'
     SPECIAL_AUTO = 'newYear_special_auto'
+    COMMON = 'newYear_usual'
 
 
 class NewYearCategories(CONST_CONTAINER):
@@ -16,17 +18,13 @@ class NewYearCategories(CONST_CONTAINER):
     CHRISTMAS = 'Christmas'
     ORIENTAL = 'Oriental'
     FAIRYTALE = 'Fairytale'
-    SETTINGS = (NEWYEAR,
-     CHRISTMAS,
-     ORIENTAL,
-     FAIRYTALE)
 
 
 class EventCategories(CONST_CONTAINER):
     EVENT = 'Event'
 
 
-class EventLootBoxes(CONST_CONTAINER):
+class WTLootBoxes(CONST_CONTAINER):
     WT_HUNTER = 'wt_hunter'
     WT_BOSS = 'wt_boss'
     WT_SPECIAL = 'wt_special'
@@ -38,10 +36,17 @@ class LunarNYLootBoxTypes(Enum):
     SPECIAL = 'lunar_special'
 
 
+class EventLootBoxes(CONST_CONTAINER):
+    PREMIUM = 'event_premium'
+    COMMON = 'event_common'
+
+
 ALL_LUNAR_NY_LOOT_BOX_TYPES = ('lunar_base', 'lunar_simple', 'lunar_special')
 LUNAR_NY_LOOT_BOXES_CATEGORIES = 'LunarNY'
 SENIORITY_AWARDS_LOOT_BOXES_TYPE = 'seniorityAwards'
-CATEGORIES_GUI_ORDER = (NewYearCategories.NEWYEAR,
+EVENT_LOOT_BOXES_CATEGORY = 'eventLootBoxes'
+GUI_ORDER_NY = (NewYearLootBoxes.COMMON, NewYearLootBoxes.PREMIUM)
+CATEGORIES_GUI_ORDER_NY = (NewYearCategories.NEWYEAR,
  NewYearCategories.CHRISTMAS,
  NewYearCategories.ORIENTAL,
  NewYearCategories.FAIRYTALE)
@@ -86,7 +91,7 @@ class LootBox(GUIItem):
         return self.__category
 
     def isFree(self):
-        return self.__type != NewYearLootBoxes.PREMIUM
+        return self.__type == NewYearLootBoxes.COMMON
 
     def getGuaranteedFrequency(self):
         return self.__guaranteedFrequency
@@ -108,7 +113,5 @@ class LootBox(GUIItem):
         for limitName, limit in limitsCfg.iteritems():
             if 'useBonusProbabilityAfter' in limit:
                 return (limitName, limit['useBonusProbabilityAfter'] + 1)
-            if 'guaranteedFrequency' in limit:
-                return (limitName, limit['guaranteedFrequency'])
 
         return (None, 0)

@@ -6,7 +6,7 @@ from InterfaceScaleManager import InterfaceScaleManager
 from PlayerEvents import g_playerEvents
 from account_helpers.AccountSettings import AccountSettings
 from account_helpers.settings_core.ServerSettingsManager import ServerSettingsManager, SETTINGS_SECTIONS
-from account_helpers.settings_core.settings_constants import SPGAim, CONTOUR, NewYearStorageKeys
+from account_helpers.settings_core.settings_constants import SPGAim, CONTOUR
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.locale.SETTINGS import SETTINGS
@@ -43,7 +43,6 @@ class SettingsCore(ISettingsCore):
         from account_helpers.settings_core import options, settings_storages, settings_constants
         from gui.shared.utils import graphics
         GAME = settings_constants.GAME
-        TUTORIAL = settings_constants.TUTORIAL
         GRAPHICS = settings_constants.GRAPHICS
         SOUND = settings_constants.SOUND
         CONTROLS = settings_constants.CONTROLS
@@ -62,7 +61,6 @@ class SettingsCore(ISettingsCore):
         GAME_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.GAME)
         EXTENDED_GAME_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.GAME_EXTENDED)
         EXTENDED_GAME_2_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.GAME_EXTENDED_2)
-        TUTORIAL_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.TUTORIAL)
         GAMEPLAY_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.GAMEPLAY)
         GRAPHICS_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.GRAPHICS)
         SOUND_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.SOUND)
@@ -81,7 +79,6 @@ class SettingsCore(ISettingsCore):
         BATTLE_HUD_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.BATTLE_HUD)
         SPG_AIM_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.SPG_AIM)
         CONTOUR_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.CONTOUR)
-        NEW_YEAR_SETTINGS_STORAGE = settings_storages.ServerSettingsStorage(self.serverSettings, self, SETTINGS_SECTIONS.NEW_YEAR)
         MESSENGER_SETTINGS_STORAGE = settings_storages.MessengerSettingsStorage(GAME_SETTINGS_STORAGE)
         EXTENDED_MESSENGER_SETTINGS_STORAGE = settings_storages.MessengerSettingsStorage(EXTENDED_GAME_SETTINGS_STORAGE)
         self.__storages = {'game': GAME_SETTINGS_STORAGE,
@@ -98,7 +95,6 @@ class SettingsCore(ISettingsCore):
          'extendedMessenger': EXTENDED_MESSENGER_SETTINGS_STORAGE,
          'marksOnGun': MARK_ON_GUN_SETTINGS_STORAGE,
          'FOV': FOV_SETTINGS_STORAGE,
-         'tutorial': TUTORIAL_SETTINGS_STORAGE,
          'damageIndicator': DAMAGE_INDICATOR_SETTINGS_STORAGE,
          'damageLog': DAMAGE_LOG_SETTINGS_STORAGE,
          'battleEvents': BATTLE_EVENTS_SETTINGS_STORAGE,
@@ -108,8 +104,7 @@ class SettingsCore(ISettingsCore):
          'battleHud': BATTLE_HUD_SETTINGS_STORAGE,
          'dogTags': DOG_TAGS_SETTINGS_STORAGE,
          'spgAim': SPG_AIM_SETTINGS_STORAGE,
-         'contour': CONTOUR_SETTINGS_STORAGE,
-         'newYear': NEW_YEAR_SETTINGS_STORAGE}
+         'contour': CONTOUR_SETTINGS_STORAGE}
         self.isDeviseRecreated = False
         self.isChangesConfirmed = True
         graphicSettings = tuple(((settingName, options.GraphicSetting(settingName, settingName == GRAPHICS.COLOR_GRADING_TECHNIQUE)) for settingName in BigWorld.generateGfxSettings()))
@@ -266,15 +261,6 @@ class SettingsCore(ISettingsCore):
          (MARKERS.ENEMY, options.VehicleMarkerSetting(MARKERS.ENEMY, storage=MARKERS_SETTINGS_STORAGE)),
          (MARKERS.DEAD, options.VehicleMarkerSetting(MARKERS.DEAD, storage=MARKERS_SETTINGS_STORAGE)),
          (MARKERS.ALLY, options.VehicleMarkerSetting(MARKERS.ALLY, storage=MARKERS_SETTINGS_STORAGE)),
-         (TUTORIAL.CUSTOMIZATION, options.TutorialSetting(TUTORIAL.CUSTOMIZATION, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.TECHNICAL_MAINTENANCE, options.TutorialSetting(TUTORIAL.TECHNICAL_MAINTENANCE, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.PERSONAL_CASE, options.TutorialSetting(TUTORIAL.PERSONAL_CASE, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.RESEARCH, options.TutorialSetting(TUTORIAL.RESEARCH, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.RESEARCH_TREE, options.TutorialSetting(TUTORIAL.RESEARCH_TREE, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.MEDKIT_USED, options.TutorialSetting(TUTORIAL.MEDKIT_USED, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.REPAIRKIT_USED, options.TutorialSetting(TUTORIAL.REPAIRKIT_USED, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.FIRE_EXTINGUISHER_USED, options.TutorialSetting(TUTORIAL.FIRE_EXTINGUISHER_USED, storage=TUTORIAL_SETTINGS_STORAGE)),
-         (TUTORIAL.WAS_QUESTS_TUTORIAL_STARTED, options.TutorialSetting(TUTORIAL.WAS_QUESTS_TUTORIAL_STARTED, storage=TUTORIAL_SETTINGS_STORAGE)),
          (DAMAGE_INDICATOR.TYPE, options.DamageIndicatorTypeSetting(DAMAGE_INDICATOR.TYPE, storage=DAMAGE_INDICATOR_SETTINGS_STORAGE)),
          (DAMAGE_INDICATOR.PRESET_CRITS, options.SettingTrueByDefault(DAMAGE_INDICATOR.PRESET_CRITS, storage=DAMAGE_INDICATOR_SETTINGS_STORAGE)),
          (DAMAGE_INDICATOR.PRESET_ALLIES, options.SettingTrueByDefault(DAMAGE_INDICATOR.PRESET_ALLIES, storage=DAMAGE_INDICATOR_SETTINGS_STORAGE)),
@@ -321,8 +307,7 @@ class SettingsCore(ISettingsCore):
          (SCORE_PANEL.SHOW_HP_VALUES, options.SettingFalseByDefault(SCORE_PANEL.SHOW_HP_VALUES, storage=BATTLE_HUD_SETTINGS_STORAGE)),
          (SCORE_PANEL.SHOW_HP_DIFFERENCE, options.SettingFalseByDefault(SCORE_PANEL.SHOW_HP_DIFFERENCE, storage=BATTLE_HUD_SETTINGS_STORAGE)),
          (SCORE_PANEL.ENABLE_TIER_GROUPING, options.SettingFalseByDefault(SCORE_PANEL.ENABLE_TIER_GROUPING, storage=BATTLE_HUD_SETTINGS_STORAGE)),
-         (SCORE_PANEL.SHOW_HP_BAR, options.SettingTrueByDefault(SCORE_PANEL.SHOW_HP_BAR, storage=BATTLE_HUD_SETTINGS_STORAGE)),
-         (NewYearStorageKeys.LOOT_BOX_VIDEO_OFF, options.SettingFalseByDefault(NewYearStorageKeys.LOOT_BOX_VIDEO_OFF, storage=NEW_YEAR_SETTINGS_STORAGE))))
+         (SCORE_PANEL.SHOW_HP_BAR, options.SettingTrueByDefault(SCORE_PANEL.SHOW_HP_BAR, storage=BATTLE_HUD_SETTINGS_STORAGE))))
         self.__options.init()
         AccountSettings.onSettingsChanging += self.__onAccountSettingsChanging
         g_playerEvents.onDisconnected += self.revertSettings
@@ -387,8 +372,6 @@ class SettingsCore(ISettingsCore):
             from account_helpers.settings_core import settings_constants
             if key in settings_constants.GRAPHICS.ALL():
                 LOG_DEBUG('Apply graphic settings: ', {key: value})
-                self.onSettingsChanged({key: value})
-            if key in NewYearStorageKeys.LOOT_BOX_VIDEO_OFF:
                 self.onSettingsChanged({key: value})
             return result
         else:

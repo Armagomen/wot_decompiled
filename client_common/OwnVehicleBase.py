@@ -32,7 +32,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         self.__onDestroy()
 
     def __onDestroy(self):
-        if self.targetVehicleID:
+        if getattr(self, 'targetVehicleID', None):
             self.update_targetVehicleID(None)
         self.__dict__.clear()
         return
@@ -53,7 +53,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         avatar = self._avatar()
         if not avatar:
             return
-        avatar.syncVehicleAttrs(syncVehicleAttrs, self.entity.id)
+        avatar.syncVehicleAttrs(self.entity.id, syncVehicleAttrs)
 
     @noexcept
     def update_vehicleGunReloadTime(self, prop):
@@ -231,6 +231,13 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         avatar = self._avatar()
         return None if not avatar else None
 
+    @noexcept
+    def update_remoteCamera(self, data):
+        avatar = self._avatar()
+        if not avatar:
+            return
+        avatar.setRemoteCamera(data)
+
     def onBattleEvents(self, battleEvents):
         avatar = self._avatar()
         if not avatar:
@@ -268,6 +275,17 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if _DO_LOG:
             self._doLog('showOwnVehicleHitDirection {}'.format(data))
         avatar.showOwnVehicleHitDirection(data.hitDirYaw, data.attackerID, data.damage, data.crits, data.isBlocked, data.isShellHE, data.damagedID, data.attackReasonID)
+
+    def redrawVehicleOnRespawn(self, vehicleID, newVehCompactDescr, newVehOutfitCompactDescr):
+        avatar = self._avatar()
+        if not avatar:
+            return
+        avatar.redrawVehicleOnRespawn(vehicleID, newVehCompactDescr, newVehOutfitCompactDescr)
+
+    def beforeRespawn(self, vehicleID, health):
+        vehicle = BigWorld.entities.get(vehicleID)
+        if vehicle:
+            vehicle.onHealthChanged(health, health, 0, 0)
 
     def getReloadTime(self):
         return self.__getTimeLeftBaseTime(self.vehicleGunReloadTime, True) if self.vehicleGunReloadTime else (0, 0)

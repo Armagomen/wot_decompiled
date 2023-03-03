@@ -39,16 +39,19 @@ class _IntroVideoManager(object):
     def __init__(self):
         self.__isIntroVideoShown = False
 
-    def init(self):
-        g_eventBus.addListener(events.BattlePassEvent.VIDEO_SHOWN, self.showIntroVideoIfNeeded, EVENT_BUS_SCOPE.LOBBY)
+    @property
+    def isIntroVideoShown(self):
+        return _hasTrueInBPStorage(_INTRO_VIDEO_SHOWN)
 
     @property
     def isExtraVideoShown(self):
         return _hasTrueInBPStorage(_EXTRA_VIDEO_SHOWN)
 
-    @property
-    def isIntroVideoShown(self):
-        return _hasTrueInBPStorage(_INTRO_VIDEO_SHOWN)
+    def init(self):
+        g_eventBus.addListener(events.BattlePassEvent.VIDEO_SHOWN, self.showIntroVideoIfNeeded, EVENT_BUS_SCOPE.LOBBY)
+
+    def fini(self):
+        g_eventBus.removeListener(events.BattlePassEvent.VIDEO_SHOWN, self.showIntroVideoIfNeeded, EVENT_BUS_SCOPE.LOBBY)
 
     def showIntroVideoIfNeeded(self, *_):
         if not self.isIntroVideoShown:
@@ -62,9 +65,6 @@ class _IntroVideoManager(object):
 
             if not self.__guiLoader.windowsManager.findWindows(isVideoView):
                 self.__showExtraVideoIfNeeded()
-
-    def fini(self):
-        g_eventBus.removeListener(events.BattlePassEvent.VIDEO_SHOWN, self.showIntroVideoIfNeeded, EVENT_BUS_SCOPE.LOBBY)
 
     @nextTick
     def __showExtraVideoIfNeeded(self):
@@ -95,12 +95,18 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
         chapterID = kwargs.get('chapterID', 0)
         if self.__needTakeDefault(layoutID, chapterID):
             layoutID = self.__getActualViewImplLayoutID(chapterID)
-        if not self.__needReload(layoutID):
+        if not self.__needReload(layoutID) or not self.__battlePass.isActive():
             return
-        if self.__battlePass.isActive():
-            self.__introVideoManager.showIntroVideoIfNeeded()
-        self._destroyInjected()
-        self._createInjectView(layoutID, chapterID)
+        else:
+            if self.__battlePass.isActive():
+                self.__introVideoManager.showIntroVideoIfNeeded()
+            isProgressionView = self._injectView is not None and self._injectView.layoutID == layoutID and layoutID == _R_VIEWS.BattlePassProgressionsView()
+            if isProgressionView:
+                self._injectView.setChapter(chapterID)
+            else:
+                self._destroyInjected()
+                self._createInjectView(layoutID, chapterID)
+            return
 
     def dummyClicked(self, eventType):
         if eventType == 'OpenHangar':
@@ -108,6 +114,17 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
 
     def markVisited(self):
         pass
+
+    def start(self):
+        if self._injectView is not None:
+            self._injectView.updateData()
+            self._injectView.startListeners()
+        return
+
+    def stop(self):
+        if self._injectView is not None:
+            self._injectView.stopListeners()
+        return
 
     def _onPopulate(self):
         pass
@@ -121,6 +138,7 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
         if self.__introVideoManager is not None:
             self.__introVideoManager.fini()
         self.__battlePass.onBattlePassSettingsChange -= self.__onSettingsChanged
+        self.stop()
         super(BattlePassViewsHolderComponent, self)._dispose()
         return
 
@@ -138,7 +156,7 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
         return layoutID not in _VIEWS or layoutID == _R_VIEWS.BattlePassProgressionsView() and chapterID and not self.__battlePass.isChapterExists(chapterID)
 
     def __needReload(self, layoutID):
-        return self._injectView is None or self._injectView.layoutID != layoutID or self._injectView.layoutID in (_R_VIEWS.BattlePassProgressionsView(), _R_VIEWS.ChapterChoiceView())
+        return self._injectView is None or self._injectView.layoutID != layoutID or self._injectView.layoutID == _R_VIEWS.BattlePassProgressionsView()
 
     def __onViewLoaded(self, state):
         if state == ViewStatus.LOADED:
@@ -146,8 +164,10 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
             self.as_setWaitingVisibleS(False)
 
     def __onSettingsChanged(self, *_):
-        if self.__isDummyVisible:
+        isPaused = self.__battlePass.isPaused()
+        if self.__isDummyVisible and not isPaused:
             self.updateState()
+        self.__setDummyVisible(isPaused)
 
     def __getActualViewImplLayoutID(self, chapterID):
         ctrl = self.__battlePass
@@ -171,6 +191,7 @@ class BattlePassViewsHolderComponent(InjectComponentAdaptor, MissionsBattlePassV
              'btnTooltip': '',
              'btnEvent': 'OpenHangar',
              'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK})
+            self._destroyInjected()
         else:
             self.as_setBackgroundS('')
             self.as_hideDummyS()

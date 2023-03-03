@@ -70,9 +70,6 @@ class HangarMeta(View):
     def as_setNotificationEnabledS(self, value):
         return self.flashObject.as_setNotificationEnabled(value) if self._isDAAPIInited() else None
 
-    def as_setRewardKitsVisibleS(self, value):
-        return self.flashObject.as_setRewardKitsVisible(value) if self._isDAAPIInited() else None
-
     def as_createDQWidgetS(self):
         return self.flashObject.as_createDQWidget() if self._isDAAPIInited() else None
 
@@ -91,8 +88,5 @@ class HangarMeta(View):
     def as_setDQWidgetLayoutS(self, lyout):
         return self.flashObject.as_setDQWidgetLayout(lyout) if self._isDAAPIInited() else None
 
-    def as_createFunRandomNYWidgetS(self):
-        return self.flashObject.as_createFunRandomNYWidget() if self._isDAAPIInited() else None
-
-    def as_removeFunRandomNYWidgetS(self):
-        return self.flashObject.as_removeFunRandomNYWidget() if self._isDAAPIInited() else None
+    def as_updateCarouselEventEntryStateS(self, isVisible):
+        return self.flashObject.as_updateCarouselEventEntryState(isVisible) if self._isDAAPIInited() else None

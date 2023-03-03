@@ -21,7 +21,6 @@ from vehicle_systems.components import engine_state
 from vehicle_systems.stricted_loading import makeCallbackWeak, loadingPriority
 from vehicle_systems.tankStructure import VehiclePartsTuple, TankNodeNames, TankPartNames, TankPartIndexes, TankSoundObjectsIndexes
 from vehicle_systems.components.highlighter import Highlighter
-from vehicle_systems.components.tutorial_mat_kinds_controller import TutorialMatKindsController
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers.EffectsList import SpecialKeyPointNames
 from vehicle_systems import camouflages
@@ -81,10 +80,8 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
     burnoutLevel = property(lambda self: self._vehicle.burnoutLevel / 255.0 if self._vehicle is not None else 0.0)
     isConstructed = property(lambda self: self.__isConstructed)
     highlighter = ComponentDescriptor()
-    tutorialMatKindsController = ComponentDescriptor()
     compoundHolder = ComponentDescriptor()
     partsGameObjects = ComponentDescriptor()
-    prefabLoaded = False
 
     def __init__(self):
         CallbackDelayer.__init__(self)
@@ -172,7 +169,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             self.__activated = True
             return
 
-    def deactivate(self, stopEffects=True, restoreFilter=True):
+    def deactivate(self, stopEffects=True):
         if not self.__activated:
             return
         else:
@@ -186,8 +183,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
                 BigWorld.removeCameraCollider(self.collisions.getColliderID())
             self.turretMatrix.target = None
             self.gunMatrix.target = None
-            if restoreFilter:
-                self._vehicle.filter = self.__originalFilter
+            self._vehicle.filter = self.__originalFilter
             self.filter.reset()
             self.__originalFilter = None
             self.__showCircleDelayed = None
@@ -321,9 +317,6 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if self.damageState.effect is not None:
             self.playEffect(self.damageState.effect, SpecialKeyPointNames.STATIC)
         self.highlighter = Highlighter(self.isAlive, self.collisions)
-        if isPlayer and BigWorld.player().isInTutorial:
-            self.tutorialMatKindsController = TutorialMatKindsController()
-            self.tutorialMatKindsController.terrainGroundTypesLink = lambda : self.terrainGroundType
         self.__isConstructed = True
         return
 

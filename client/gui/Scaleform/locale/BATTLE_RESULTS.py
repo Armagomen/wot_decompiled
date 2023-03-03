@@ -29,6 +29,7 @@ class BATTLE_RESULTS(object):
     FINISH_REASON_9 = '#battle_results:finish/reason/9'
     FINISH_REASON_10WIN = '#battle_results:finish/reason/10win'
     FINISH_REASON_10LOSE = '#battle_results:finish/reason/10lose'
+    FINISH_CLARIFICATION_FINISHALLPLAYERSLEFT = '#battle_results:finish/clarification/finishAllPlayersLeft'
     FINISH_OVERTIME_WIN = '#battle_results:finish/overtime/win'
     FINISH_OVERTIME_LOSE = '#battle_results:finish/overtime/lose'
     COMMON_MAINFINISHREASONTITLE = '#battle_results:common/mainFinishReasonTitle'
@@ -287,8 +288,6 @@ class BATTLE_RESULTS(object):
     DETAILS_CALCULATIONS_BASE = '#battle_results:details/calculations/base'
     DETAILS_CALCULATIONS_XPRECORD = '#battle_results:details/calculations/xpRecord'
     DETAILS_CALCULATIONS_SQUADBONUS = '#battle_results:details/calculations/squadBonus'
-    DETAILS_CALCULATIONS_NEWYEAR = '#battle_results:details/calculations/newYear'
-    DETAILS_CALCULATIONS_VEHICLEBRANCH = '#battle_results:details/calculations/vehicleBranch'
     DETAILS_CALCULATIONS_NOPENALTY = '#battle_results:details/calculations/noPenalty'
     DETAILS_CALCULATIONS_EVENT = '#battle_results:details/calculations/event'
     DETAILS_CALCULATIONS_FAIRPLAYVIOLATION_DESERTER = '#battle_results:details/calculations/fairPlayViolation/deserter'
@@ -357,7 +356,6 @@ class BATTLE_RESULTS(object):
     CUSTOMIZATIONPROGRESS_DESCR = '#battle_results:customizationProgress/descr'
     CUSTOMIZATIONPROGRESS_AWARD_RECEIVED = '#battle_results:customizationProgress/award/received'
     CUSTOMIZATIONPROGRESS_AWARD_NEWLEVEL = '#battle_results:customizationProgress/award/newLevel'
-    REPLAYBTNLABEL = '#battle_results:replayBtnLabel'
     DETAILS_TIME_LBL_ENUM = (DETAILS_TIME_LBL_OBJECTIVESREACHED,
      DETAILS_TIME_LBL_OBJECTIVESDESTROYED,
      DETAILS_TIME_LBL_BASESCAPTURED,
@@ -373,8 +371,6 @@ class BATTLE_RESULTS(object):
      DETAILS_CALCULATIONS_BASE,
      DETAILS_CALCULATIONS_XPRECORD,
      DETAILS_CALCULATIONS_SQUADBONUS,
-     DETAILS_CALCULATIONS_NEWYEAR,
-     DETAILS_CALCULATIONS_VEHICLEBRANCH,
      DETAILS_CALCULATIONS_NOPENALTY,
      DETAILS_CALCULATIONS_EVENT,
      DETAILS_CALCULATIONS_FAIRPLAYVIOLATION_DESERTER,

@@ -20,7 +20,6 @@ class ARENAS(object):
     TYPE_ESCORT_DESCRIPTION2 = '#arenas:type/escort/description2'
     TYPE_NATIONS_NAME = '#arenas:type/nations/name'
     TYPE_NATIONS_DESCRIPTION = '#arenas:type/nations/description'
-    TYPE_SANDBOX_DESCRIPTION1 = '#arenas:type/sandbox/description1'
     TYPE_FALLOUT_NAME = '#arenas:type/fallout/name'
     TYPE_FALLOUT_DESCRIPTION = '#arenas:type/fallout/description'
     TYPE_FALLOUT1_NAME = '#arenas:type/fallout1/name'
@@ -56,18 +55,12 @@ class ARENAS(object):
     TYPE_COMP7_SHORT_DESCRIPTION = '#arenas:type/comp7/short_description'
     C_01_KARELIA_NAME = '#arenas:01_karelia/name'
     C_01_KARELIA_DESCRIPTION = '#arenas:01_karelia/description'
-    C_01_KARELIA_FP_NAME = '#arenas:01_karelia_fp/name'
-    C_01_KARELIA_FP_DESCRIPTION = '#arenas:01_karelia_fp/description'
     C_02_MALINOVKA_NAME = '#arenas:02_malinovka/name'
     C_02_MALINOVKA_DESCRIPTION = '#arenas:02_malinovka/description'
-    C_02_MALINOVKA_FP_NAME = '#arenas:02_malinovka_fp/name'
-    C_02_MALINOVKA_FP_DESCRIPTION = '#arenas:02_malinovka_fp/description'
     C_04_HIMMELSDORF_NAME = '#arenas:04_himmelsdorf/name'
     C_04_HIMMELSDORF_DESCRIPTION = '#arenas:04_himmelsdorf/description'
     C_05_PROHOROVKA_NAME = '#arenas:05_prohorovka/name'
     C_05_PROHOROVKA_DESCRIPTION = '#arenas:05_prohorovka/description'
-    C_05_PROHOROVKA_FP_NAME = '#arenas:05_prohorovka_fp/name'
-    C_05_PROHOROVKA_FP_DESCRIPTION = '#arenas:05_prohorovka_fp/description'
     C_06_ENSK_NAME = '#arenas:06_ensk/name'
     C_06_ENSK_DESCRIPTION = '#arenas:06_ensk/description'
     C_07_LAKEVILLE_NAME = '#arenas:07_lakeville/name'
@@ -163,6 +156,8 @@ class ARENAS(object):
     C_252_BR_BATTLE_CITY4_DESCRIPTION = '#arenas:252_br_battle_city4/description'
     C_128_LAST_FRONTIER_V_NAME = '#arenas:128_last_frontier_v/name'
     C_128_LAST_FRONTIER_V_DESCRIPTION = '#arenas:128_last_frontier_v/description'
+    C_121_LOST_PARADISE_V_NAME = '#arenas:121_lost_paradise_v/name'
+    C_121_LOST_PARADISE_V_DESCRIPTION = '#arenas:121_lost_paradise_v/description'
     ALL_ENUM = (TYPE_CTF_NAME,
      TYPE_CTF_DESCRIPTION,
      TYPE_DOMINATION_NAME,
@@ -180,7 +175,6 @@ class ARENAS(object):
      TYPE_ESCORT_DESCRIPTION2,
      TYPE_NATIONS_NAME,
      TYPE_NATIONS_DESCRIPTION,
-     TYPE_SANDBOX_DESCRIPTION1,
      TYPE_FALLOUT_NAME,
      TYPE_FALLOUT_DESCRIPTION,
      TYPE_FALLOUT1_NAME,
@@ -216,18 +210,12 @@ class ARENAS(object):
      TYPE_COMP7_SHORT_DESCRIPTION,
      C_01_KARELIA_NAME,
      C_01_KARELIA_DESCRIPTION,
-     C_01_KARELIA_FP_NAME,
-     C_01_KARELIA_FP_DESCRIPTION,
      C_02_MALINOVKA_NAME,
      C_02_MALINOVKA_DESCRIPTION,
-     C_02_MALINOVKA_FP_NAME,
-     C_02_MALINOVKA_FP_DESCRIPTION,
      C_04_HIMMELSDORF_NAME,
      C_04_HIMMELSDORF_DESCRIPTION,
      C_05_PROHOROVKA_NAME,
      C_05_PROHOROVKA_DESCRIPTION,
-     C_05_PROHOROVKA_FP_NAME,
-     C_05_PROHOROVKA_FP_DESCRIPTION,
      C_06_ENSK_NAME,
      C_06_ENSK_DESCRIPTION,
      C_07_LAKEVILLE_NAME,
@@ -322,7 +310,9 @@ class ARENAS(object):
      C_252_BR_BATTLE_CITY4_NAME,
      C_252_BR_BATTLE_CITY4_DESCRIPTION,
      C_128_LAST_FRONTIER_V_NAME,
-     C_128_LAST_FRONTIER_V_DESCRIPTION)
+     C_128_LAST_FRONTIER_V_DESCRIPTION,
+     C_121_LOST_PARADISE_V_NAME,
+     C_121_LOST_PARADISE_V_DESCRIPTION)
 
     @classmethod
     def all(cls, key0):

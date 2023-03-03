@@ -673,40 +673,6 @@ class TotalEfficiencyDetailsBlock(base.StatsBlock):
             self.addComponent(self.getNextComponentIndex(), block)
 
 
-class TotalPersonalAchievementsBlock(shared.BiDiStatsBlock):
-    __slots__ = ()
-
-    def addComponent(self, index, component):
-        super(TotalPersonalAchievementsBlock, self).addComponent(index, component)
-
-    def setRecord(self, result, reusable):
-        left, right = reusable.personal.getAchievements(result)
-        self.left.setRecord(left, reusable)
-        self.right.setRecord(right, reusable)
-
-
-class SandboxNoIncomeAlert(base.StatsBlock):
-    __slots__ = ('icon', 'text')
-
-    def __init__(self, meta=None, field='', *path):
-        super(SandboxNoIncomeAlert, self).__init__(meta, field, *path)
-        self.icon = ''
-        self.text = ''
-
-    def setRecord(self, result, _):
-        self.icon = RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON
-        builder = text_styles.builder(delimiter='\n')
-        builder.addStyledText(text_styles.middleTitle, BATTLE_RESULTS.COMMON_NOINCOME_ALERT_TITLE)
-        builder.addStyledText(text_styles.standard, BATTLE_RESULTS.COMMON_NOINCOME_ALERT_TEXT)
-        self.text = builder.render()
-
-
-class PersonalAccountDBID(base.StatsItem):
-
-    def _convert(self, value, reusable):
-        return reusable.personal.avatar.accountDBID
-
-
 def fillKillerInfoBlock(vehicleStateBlock, deathReason, killerID, reusable, result):
     reason = style.makeI18nDeathReason(deathReason)
     vehicleStateBlock.vehicleState = reason.i18nString
@@ -720,9 +686,19 @@ def fillKillerInfoBlock(vehicleStateBlock, deathReason, killerID, reusable, resu
     vehicleStateBlock.addComponent(vehicleStateBlock.getNextComponentIndex(), playerKillerBlock)
 
 
-class ReplayURL(base.StatsItem):
-    __itemsCache = dependency.descriptor(IItemsCache)
+class TotalPersonalAchievementsBlock(shared.BiDiStatsBlock):
+    __slots__ = ()
+
+    def addComponent(self, index, component):
+        super(TotalPersonalAchievementsBlock, self).addComponent(index, component)
+
+    def setRecord(self, result, reusable):
+        left, right = reusable.personal.getAchievements(result)
+        self.left.setRecord(left, reusable)
+        self.right.setRecord(right, reusable)
+
+
+class PersonalAccountDBID(base.StatsItem):
 
     def _convert(self, value, reusable):
-        hasFlag = self.__itemsCache.items.stats.isSsrPlayEnabled
-        return reusable.personal.getReplayURL() if hasFlag else ''
+        return reusable.personal.avatar.accountDBID

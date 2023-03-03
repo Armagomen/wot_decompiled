@@ -19,6 +19,7 @@ from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.impl import INotificationWindowController
 if typing.TYPE_CHECKING:
     from gui.battle_pass.state_machine.machine import BattlePassStateMachine
+    from typing import Dict, List, Optional
 
 class BattlePassRewardStateID(CONST_CONTAINER):
     LOBBY = 'lobby'
@@ -104,7 +105,7 @@ class ChoiceItemState(State):
     def _onEntered(self):
         machine = self.getMachine()
         if machine is not None:
-            _, data = machine.getRewardsData()
+            _, data, _ = machine.getRewardsData()
             if machine.hasRewardToChoose():
 
                 def onCloseCallback():
@@ -193,7 +194,7 @@ class RewardStyleState(State):
             chapterID = machine.getChosenStyleChapter()
             _, level = getStyleInfoForChapter(chapterID)
             style = getStyleForChapter(chapterID)
-            additionalRewards, _ = machine.getRewardsData()
+            additionalRewards, _, _ = machine.getRewardsData()
             needNotifyClosing = not additionalRewards
             if style is not None and style.getProgressionLevel() == style.getMaxProgressionLevel():
                 machine.post(StateEvent())
@@ -223,8 +224,8 @@ class RewardAnyState(State):
         if machine is None:
             return
         else:
-            rewards, data = machine.getRewardsData()
-            if rewards is None:
+            rewards, data, packageRewards = machine.getRewardsData()
+            if rewards is None and packageRewards is None:
                 machine.clearSelf()
                 machine.post(StateEvent())
                 return
@@ -238,11 +239,11 @@ class RewardAnyState(State):
                 styleToken = get3DStyleProgressToken(self.__battlePass.getSeasonID(), chapter, level)
                 rewards.append(packToken(styleToken))
                 machine.clearChapterStyle()
-            if not rewards:
+            if not rewards and not packageRewards:
                 machine.clearSelf()
                 machine.post(StateEvent())
                 return
-            showBattlePassAwardsWindow(rewards, data)
+            showBattlePassAwardsWindow(rewards, data, packageRewards=packageRewards)
             return
 
     def _onExited(self):

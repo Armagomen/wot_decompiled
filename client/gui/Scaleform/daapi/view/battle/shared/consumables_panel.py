@@ -157,6 +157,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
         super(ConsumablesPanel, self)._populate()
         if self.sessionProvider.isReplayPlaying:
             self.as_handleAsReplayS()
+        if BigWorld.player().isObserver():
+            self.as_handleAsObserverS()
         self.__addListeners()
 
     def _dispose(self):

@@ -20,6 +20,7 @@ class SPECIAL_VOICE_TAG(object):
     YHA = 'yhaSpecialVoice'
     QUICKY_BABY = 'quickyBabySpecialVoice'
     WITCHES_CREW = 'witchesSpecialVoice'
+    HAND_OF_BLOOD = 'handOfBloodSpecialVoice'
     BATTLE_OF_BLOGGERS = ('ru1_LebwaSpecialVoice', 'ru2_YushaSpecialVoice', 'ru3_Amway921SpecialVoice', 'ru4_KorbenDallasSpecialVoice', 'eu1_MailandSpecialVoice', 'eu2_Skill4ltuSpecialVoice', 'eu3_DezgamezSpecialVoice', 'eu4_AwesomeEpicGuysSpecialVoice')
     BATTLE_OF_BLOGGERS_2021 = ('bb21_ru1_Yusha_specialVoice', 'bb21_ru1_Vspishka_specialVoice', 'bb21_ru2_Amway921_specialVoice', 'bb21_ru2_Korbendailas_specialVoice', 'bb21_ru3_Lebwa_specialVoice', 'bb21_ru3_Inspirer_specialVoice', 'bb21_ru4_Evilgranny_specialVoice', 'bb21_ru4_Nearyou_specialVoice', 'bb21_eu1_Circon_specialVoice', 'bb21_eu2_Dakillzor_specialVoice', 'bb21_eu3_Newmulti2k_specialVoice', 'bb21_eu4_Orzanel_specialVoice', 'bb21_na1_Cabbagemechanic_specialVoice', 'bb21_na2_Tragicloss_specialVoice', 'bb21_na3_Cmdraf_specialVoice', 'bb21_asia1_Mastertortoise_specialVoice', 'bb21_asia2_Summertiger_specialVoice', 'bb21_asia3_Maharlika_specialVoice')
     G_I_JOE_TWITCH_2021 = ('duke_specialVoice', 'cobra_specialVoice')
@@ -27,6 +28,7 @@ class SPECIAL_VOICE_TAG(object):
     WHITE_TIGER_EVENT_2022 = ('villanelle_SpecialVoice', 'ermelinda_SpecialVoice')
     SABATON_2021 = 'sabaton21_specialVoice'
     G_I_JOE_2022 = ('baroness22SpecialVoice', 'coverGirl22SpecialVoice')
+    BPH_2022 = ('commander_bph_2022_1', 'commander_bph_2022_2', 'commander_bph_2022_3', 'commander_bph_2022_4')
     ALL = (BUFFON,
      SABATON,
      OFFSPRING,
@@ -40,7 +42,8 @@ class SPECIAL_VOICE_TAG(object):
      SABATON_2021,
      QUICKY_BABY,
      WITCHES_CREW,
-     CELEBRITY_2023) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022
+     CELEBRITY_2023,
+     HAND_OF_BLOOD) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022 + BPH_2022
 
 
 class SPECIAL_CREW_TAG(object):

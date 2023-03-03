@@ -4,7 +4,6 @@ import time
 import ArenaType
 import ResMgr
 import nations
-from items.components.ny_constants import CurrentNYConstants, PREV_NY_TOYS_BONUSES
 from soft_exception import SoftException
 from copy import deepcopy
 from pprint import pformat
@@ -357,6 +356,7 @@ class Source(object):
          'GR': self.__readBattleResultsConditionList,
          'igrType': self.__readCondition_IGRType,
          'premium': self.__readCondition_bool,
+         'special': self.__readCondition_bool,
          'premiumPlus': self.__readCondition_bool,
          'premiumVip': self.__readCondition_bool,
          'isPremiumQuestsEnabled': self.__readCondition_bool,
@@ -369,6 +369,8 @@ class Source(object):
          'isBattleMattersEnabled': self.__readCondition_bool,
          'isSteamAllowed': self.__readCondition_bool,
          'totalBattles': self.__readBattleResultsConditionList,
+         'lastLogout': self.__readBattleResultsConditionList,
+         'relativeToUTC': self.__readBattleResultsConditionList,
          'accountPrimaryTypes': self.__readListOfInts,
          'accountSecondaryTypes': self.__readListOfInts,
          'accountAttributes': self.__readListAccountAttributes,
@@ -527,9 +529,7 @@ class Source(object):
          'battlePassPoints',
          'currency',
          'freePremiumCrew',
-         'entitlementList',
-         CurrentNYConstants.TOY_BONUS}
-        bonusTypes.update(PREV_NY_TOYS_BONUSES)
+         'entitlementList'}
         if eventType in (EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST, EVENT_TYPE.NT_QUEST):
             bonusTypes.update(('xp', 'tankmenXP', 'xpFactor', 'creditsFactor', 'freeXPFactor', 'tankmenXPFactor'))
         if eventType in (EVENT_TYPE.NT_QUEST,):

@@ -28,8 +28,8 @@ from gui.impl.auxiliary.rewards_helper import getProgressiveRewardVO
 from gui.impl.gen import R
 from gui.server_events import formatters
 from gui.server_events.awards_formatters import QuestsBonusComposer
+from gui.server_events.events_constants import BATTLE_MATTERS_QUEST_ID
 from gui.server_events.events_helpers import isC11nQuest, getDataByC11nQuest
-from gui.server_events.events_constants import CELEBRITY_QUESTS_PREFIX
 from gui.shared.formatters import getItemPricesVO, getItemUnlockPricesVO, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, Tankman, getVehicleComponentsByType
 from gui.shared.gui_items.Tankman import getCrewSkinIconSmall
@@ -39,8 +39,6 @@ from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Currency
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from items.components.ny_constants import CelebrityQuestTokenParts
-from new_year.celebrity.celebrity_quests_helpers import getCelebrityQuests
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
@@ -285,6 +283,10 @@ class BattlePassProgressBlock(base.StatsBlock):
         bpp = reusable.battlePassProgress
         if not bpp.hasProgress:
             return
+        isNewPoints = bpp.pointsNew > 0 or bpp.questPoints > 0 or bpp.bonusCapPoints > 0
+        isNewLevel = bpp.currLevel > bpp.prevLevel
+        if isNewPoints or isNewLevel:
+            self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgressPoints(bpp, bpp.currLevel)))
         for lvl in xrange(bpp.prevLevel, bpp.currLevel):
             self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(bpp, lvl)))
 
@@ -297,6 +299,16 @@ class BattlePassProgressBlock(base.StatsBlock):
           'questInfo': cls.__makeProgressQuestInfo(progress, level),
           'questType': EVENT_TYPE.BATTLE_QUEST,
           'progressList': cls.__makeProgressList(progress, level),
+          'questState': {'statusState': cls.__getMissionState(progress.isDone)},
+          'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
+          'linkBtnEnabled': progress.isApplied})
+
+    @classmethod
+    def __formatBattlePassProgressPoints(cls, progress, level):
+        return ('', {'awards': [],
+          'questInfo': cls.__makeProgressPointsInfo(progress),
+          'questType': EVENT_TYPE.BATTLE_QUEST,
+          'progressList': cls.__makeProgressListPoints(progress),
           'questState': {'statusState': cls.__getMissionState(progress.isDone)},
           'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
           'linkBtnEnabled': progress.isApplied})
@@ -335,25 +347,75 @@ class BattlePassProgressBlock(base.StatsBlock):
          'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
 
     @classmethod
+    def __makeProgressPointsInfo(cls, progress):
+        chapterID = progress.chapterID
+        return {'status': '',
+         'questID': BattlePassConsts.FAKE_QUEST_ID,
+         'eventType': EVENT_TYPE.BATTLE_QUEST,
+         'description': backport.text(_POST_BATTLE_RES.progress.points()),
+         'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE,
+         'tasksCount': -1,
+         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
+
+    @classmethod
     def __makeProgressList(cls, progress, level):
-        return [{'description': cls._getDescription(),
-          'maxProgrVal': progress.pointsMax,
-          'progressDiff': '+ {}'.format(progress.pointsAdd),
-          'progressDiffTooltip': cls._getProgressDiffTooltip(progress),
-          'currentProgrVal': progress.pointsNew,
-          'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}] if not progress.isDone or progress.pointsAux and not progress.isLevelMax or level == progress.currLevel else []
+        progressLevel = {'description': cls._getDescription(progress),
+         'maxProgrVal': progress.pointsMax,
+         'progressDiff': '+ {}'.format(progress.pointsAdd),
+         'progressDiffTooltip': cls._getProgressDiffTooltip(progress),
+         'currentProgrVal': progress.pointsNew,
+         'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}
+        return [progressLevel] if not progress.isDone or progress.pointsAux and not progress.isLevelMax or level == progress.currLevel else []
+
+    @classmethod
+    def __makeProgressListPoints(cls, progress):
+        progressList = []
+        if progress.bpTopPoints > 0:
+            description = backport.text(_POST_BATTLE_RES.progress.points.battle())
+            tooltip = backport.text(_POST_BATTLE_RES.progress.battle.tooltip())
+            points = progress.bpTopPoints
+            progressList.append(cls.__getPointsInfo(description, tooltip, points))
+        if progress.questPoints > 0:
+            description = backport.text(_POST_BATTLE_RES.progress.points.quest())
+            tooltip = backport.text(_POST_BATTLE_RES.progress.quests.tooltip())
+            points = progress.questPoints
+            progressList.append(cls.__getPointsInfo(description, tooltip, points))
+        if progress.bonusCapPoints > 0:
+            description = backport.text(_POST_BATTLE_RES.progress.points.bonus())
+            tooltip = backport.text(_POST_BATTLE_RES.progress.bonus.tooltip())
+            points = progress.bonusCapPoints
+            progressList.append(cls.__getPointsInfo(description, tooltip, points))
+        return progressList
+
+    @staticmethod
+    def __getPointsInfo(description, tooltip, points):
+        pointsInfo = {'description': description,
+         'maxProgrVal': 0,
+         'progressDiff': '+ {}'.format(points),
+         'progressDiffTooltip': tooltip,
+         'currentProgrVal': 0,
+         'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE}
+        return pointsInfo
 
     @classmethod
     def __getChapterName(cls, chapterID):
         return backport.text(R.strings.battle_pass.chapter.fullName.num(chapterID)()) if chapterID else ''
 
     @staticmethod
-    def _getDescription():
-        return backport.text(_POST_BATTLE_RES.progress())
+    def _getDescription(progress):
+        if progress.pointsAux:
+            text = backport.text(_POST_BATTLE_RES.progress.pointsAux())
+        else:
+            text = backport.text(_POST_BATTLE_RES.progress())
+        return text
 
     @staticmethod
     def _getProgressDiffTooltip(progress):
-        return backport.text(_POST_BATTLE_RES.progress.tooltip(), points=progress.pointsAdd)
+        if progress.pointsAux:
+            text = backport.text(_POST_BATTLE_RES.progress.pointsAux.tooltip(), points=progress.pointsAux)
+        else:
+            text = backport.text(_POST_BATTLE_RES.progress.tooltip(), points=progress.pointsAdd)
+        return text
 
     @staticmethod
     def __getMissionState(isDone):
@@ -367,8 +429,12 @@ class BattlePassProgressBlock(base.StatsBlock):
 class Comp7BattlePassProgressBlock(BattlePassProgressBlock):
 
     @staticmethod
-    def _getDescription():
-        return backport.text(_POST_BATTLE_RES.comp7.progress())
+    def _getDescription(progress):
+        if progress.pointsAux:
+            text = backport.text(_POST_BATTLE_RES.progress.pointsAux())
+        else:
+            text = backport.text(_POST_BATTLE_RES.comp7.progress())
+        return text
 
     @staticmethod
     def _getProgressDiffTooltip(progress):
@@ -377,7 +443,6 @@ class Comp7BattlePassProgressBlock(BattlePassProgressBlock):
 
 class QuestsProgressBlock(base.StatsBlock):
     eventsCache = dependency.descriptor(IEventsCache)
-    itemsCache = dependency.descriptor(IItemsCache)
     __slots__ = ()
 
     def getVO(self):
@@ -390,15 +455,10 @@ class QuestsProgressBlock(base.StatsBlock):
         personalMissions = {}
         allCommonQuests = self.eventsCache.getQuests()
         allCommonQuests.update(self.eventsCache.getHiddenQuests(lambda q: q.isShowedPostBattle()))
+        battleMattersProgressData = []
         questsProgress = reusable.personal.getQuestsProgress()
-        allCelebrityQuests = getCelebrityQuests()
-        celebrityProgressQuestIDs = set()
         if questsProgress:
             for qID, qProgress in questsProgress.iteritems():
-                if qID.startswith(CELEBRITY_QUESTS_PREFIX):
-                    if qID in allCelebrityQuests:
-                        celebrityProgressQuestIDs.add(qID)
-                    continue
                 pGroupBy, pPrev, pCur = qProgress
                 isCompleted = isQuestCompleted(pGroupBy, pPrev, pCur)
                 if isC11nQuest(qID):
@@ -408,21 +468,25 @@ class QuestsProgressBlock(base.StatsBlock):
                          {pGroupBy: pCur},
                          {pGroupBy: pPrev},
                          isCompleted))
+                if qID.startswith(BATTLE_MATTERS_QUEST_ID):
+                    data = self.__packQuestProgressData(qID, allCommonQuests, qProgress, isCompleted)
+                    if data:
+                        battleMattersProgressData.append(data)
                 if qID in allCommonQuests:
-                    quest = allCommonQuests[qID]
-                    isProgressReset = not isCompleted and quest.bonusCond.isInRow() and pCur.get('battlesCount', 0) == 0
-                    if pPrev or max(pCur.itervalues()) != 0:
-                        commonQuests.append((quest,
-                         {pGroupBy: pCur},
-                         {pGroupBy: pPrev},
-                         isProgressReset,
-                         isCompleted))
+                    data = self.__packQuestProgressData(qID, allCommonQuests, qProgress, isCompleted)
+                    if data:
+                        commonQuests.append(data)
                 if personal_missions.g_cache.isPersonalMission(qID):
                     pqID = personal_missions.g_cache.getPersonalMissionIDByUniqueID(qID)
                     questsCache = self.eventsCache.getPersonalMissions()
                     quest = questsCache.getAllQuests()[pqID]
                     progress = personalMissions.setdefault(quest, {})
                     progress.update({qID: isCompleted})
+
+        for e, pCur, pPrev, reset, complete in battleMattersProgressData:
+            info = getEventPostBattleInfo(e, allCommonQuests, pCur, pPrev, reset, complete)
+            if info is not None:
+                self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', info))
 
         pm2Progress = reusable.personal.getPM2Progress()
         if pm2Progress:
@@ -433,29 +497,6 @@ class QuestsProgressBlock(base.StatsBlock):
                     personalMissions[quest].update(data)
                 progress = personalMissions.setdefault(quest, {})
                 progress.update(data)
-
-        if celebrityProgressQuestIDs:
-            for qID in sorted(celebrityProgressQuestIDs):
-                activeQuest = allCelebrityQuests.get(qID)
-                if activeQuest is None:
-                    continue
-                if not CelebrityQuestTokenParts.isBattleQuestID(qID):
-                    continue
-                questProgress = questsProgress.get(qID)
-                if questProgress is None:
-                    continue
-                pGroupBy, pPrev, pCur = questProgress
-                isCompleted = isQuestCompleted(pGroupBy, pPrev, pCur)
-                info = None
-                if isCompleted:
-                    info = getEventPostBattleInfo(activeQuest, allCelebrityQuests, None, None, False, True)
-                elif pPrev or max(pCur.itervalues()) != 0:
-                    isProgressReset = activeQuest.bonusCond.isInRow() and pCur.get('battlesCount', 0) == 0
-                    pPrevProgress = {pGroupBy: pPrev} if pPrev else None
-                    pCurProgress = {pGroupBy: pCur} if pCur else None
-                    info = getEventPostBattleInfo(activeQuest, allCelebrityQuests, pCurProgress, pPrevProgress, isProgressReset, isCompleted)
-                if info is not None:
-                    self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', info))
 
         for quest, data in sorted(personalMissions.items(), key=operator.itemgetter(0), cmp=self.__sortPersonalMissions):
             if data.get(quest.getAddQuestID(), False):
@@ -497,6 +538,21 @@ class QuestsProgressBlock(base.StatsBlock):
                 self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem('', info))
 
         return
+
+    @staticmethod
+    def __packQuestProgressData(qID, allCommonQuests, qProgress, isCompleted):
+        pGroupBy, pPrev, pCur = qProgress
+        quest = allCommonQuests.get(qID)
+        data = None
+        if quest is not None:
+            isProgressReset = not isCompleted and quest.bonusCond.isInRow() and pCur.get('battlesCount', 0) == 0
+            if pPrev or max(pCur.itervalues()) != 0:
+                data = (quest,
+                 {pGroupBy: pCur},
+                 {pGroupBy: pPrev},
+                 isProgressReset,
+                 isCompleted)
+        return data
 
     @staticmethod
     def __sortPersonalMissions(a, b):

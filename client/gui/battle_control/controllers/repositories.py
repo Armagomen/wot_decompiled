@@ -15,7 +15,6 @@ from gui.battle_control.controllers.comp7_voip_ctrl import Comp7VOIPController
 from gui.battle_control.controllers.quest_progress import quest_progress_ctrl
 from gui.battle_control.controllers.sound_ctrls.stronghold_battle_sounds import StrongholdBattleSoundController
 from gui.battle_control.controllers.sound_ctrls.comp7_battle_sounds import Comp7BattleSoundController
-from gui.battle_control.controllers.sound_ctrls.new_year_battle_sounds import NewYearSoundController
 from skeletons.gui.battle_session import ISharedControllersLocator, IDynamicControllersLocator
 from gui.battle_control.controllers import battle_hints_ctrl
 from gui.battle_control.controllers import points_of_interest_ctrl
@@ -32,7 +31,7 @@ class BattleSessionSetup(object):
 
     @property
     def isReplayPlaying(self):
-        return self.replayCtrl.isPlaying and not self.replayCtrl.isBattleSimulation if self.replayCtrl is not None else False
+        return self.replayCtrl.isPlaying if self.replayCtrl is not None else False
 
     @property
     def isReplayRecording(self):
@@ -428,9 +427,6 @@ class ClassicControllersRepository(_ControllersRepositoryByBonuses):
         repository.addViewController(default_maps_ctrl.DefaultMapsController(setup), setup)
         repository.addArenaViewController(battle_field_ctrl.BattleFieldCtrl(), setup)
         repository.addArenaController(cls._getAppearanceCacheController(setup), setup)
-        guiVisitor = setup.arenaVisitor.gui
-        if not (guiVisitor.isStrongholdRange() or guiVisitor.isComp7Battle() or guiVisitor.isFunRandom()):
-            repository.addController(NewYearSoundController())
         return repository
 
     @staticmethod
@@ -527,4 +523,3 @@ for guiType in ARENA_GUI_TYPE.STRONGHOLD_RANGE:
 registerBattleControllerRepo(ARENA_GUI_TYPE.EVENT_BATTLES, EventControllerRepository)
 registerBattleControllerRepo(ARENA_GUI_TYPE.MAPS_TRAINING, MapsTrainingControllerRepository)
 registerBattleControllerRepo(ARENA_GUI_TYPE.COMP7, Comp7ControllerRepository)
-registerBattleControllerRepo(ARENA_GUI_TYPE.TUTORIAL, None)
