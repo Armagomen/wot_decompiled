@@ -702,7 +702,8 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                         if mods == 0:
                             self.base.setDevelopmentFeature(0, 'pickup', 0, 'straight')
                         elif mods == 1:
-                            CGF.hotReload(self.spaceID)
+                            if CGF.hotReload(self.spaceID, None):
+                                self.base.setDevelopmentFeature(0, 'hot_reload', 0, '')
                         return True
                     if key == Keys.KEY_T:
                         self.base.setDevelopmentFeature(0, 'log_tkill_ratings', 0, '')
@@ -1242,7 +1243,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         self.__aimingBooster = None
         return
 
-    def updateVehicleAmmo(self, vehicleID, compactDescr, quantity, quantityInClip, previousStage, timeRemaining, totalTime, index=None):
+    def updateVehicleAmmo(self, vehicleID, compactDescr, quantity, quantityInClipOrNextStage, previousStage, timeRemaining, totalTime, index=None):
         LOG_DEBUG_DEV('updateVehicleAmmo vehicleID={}, compactDescr={}'.format(vehicleID, compactDescr))
         if not compactDescr:
             itemTypeIdx = ITEM_TYPE_INDICES['equipment']
@@ -1252,7 +1253,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         if processor:
             if itemTypeIdx == ITEM_TYPE_INDICES['equipment'] and self.arena.period == ARENA_PERIOD.BATTLE:
                 self.guiSessionProvider.shared.equipments.setServerPrevStage(previousStage, compactDescr)
-            getattr(self, processor)(vehicleID, compactDescr, quantity, quantityInClip, timeRemaining, totalTime)
+            getattr(self, processor)(vehicleID, compactDescr, quantity, quantityInClipOrNextStage, timeRemaining, totalTime)
         else:
             LOG_WARNING('Not supported item type index', itemTypeIdx)
 
@@ -1677,6 +1678,9 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         if self.userSeesWorld() and self.__projectileMover is not None:
             self.__projectileMover.hide(shotID, endPoint)
         return
+
+    def projectileMover(self):
+        return self.__projectileMover
 
     def explodeProjectile(self, shotID, effectsIndex, effectMaterialIndex, endPoint, velocityDir, damagedDestructibles):
         if self.userSeesWorld() and self.__projectileMover is not None:
@@ -2111,6 +2115,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         BigWorld.PyGroundEffectManager().stopAll()
         g_playerEvents.isPlayerEntityChanging = True
         g_playerEvents.onPlayerEntityChanging()
+        self.__cancelWaitingForCharge()
         self.__setIsOnArena(False)
         self.base.leaveArena(None)
         replayCtrl = BattleReplay.g_replayCtrl
@@ -2957,7 +2962,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
         return True if self.intUserSettings is None else self.intUserSettings.isSynchronized()
 
     def reloadPlans(self, *args):
-        self.base.setDevelopmentFeature(0, 'reloadPlans', 0, zlib.compress(cPickle.dumps(args)))
+        self.base.setDevelopmentFeature(0, 'reloadPlans', 0, zlib.compress(cPickle.dumps(*args)))
 
     def killEngine(self):
         self.base.setDevelopmentFeature(0, 'kill_engine', 0, '')
@@ -3036,6 +3041,9 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
     @property
     def initCompleted(self):
         return self.__initProgress & _INIT_STEPS.INIT_COMPLETED != 0
+
+    def hotReloadCGF(self):
+        self.base.setDevelopmentFeature(0, 'hot_reload', 0, '')
 
 
 def preload(alist):

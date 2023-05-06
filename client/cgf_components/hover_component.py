@@ -5,7 +5,7 @@ import CGF
 import GUI
 from GenericComponents import VSEComponent
 from cgf_script.managers_registrator import tickGroup, onAddedQuery, onRemovedQuery
-from cgf_script.component_meta_class import CGFComponent
+from cgf_script.component_meta_class import registerComponent
 from constants import IS_CLIENT
 from vehicle_systems.tankStructure import ColliderTypes
 from helpers import dependency
@@ -13,8 +13,9 @@ from skeletons.gui.shared.utils import IHangarSpace
 if IS_CLIENT:
     from AvatarInputHandler import cameras
 
-class IsHovered(CGFComponent):
-    pass
+@registerComponent
+class IsHovered(object):
+    domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
 
 
 class HoverManager(CGF.ComponentManager):

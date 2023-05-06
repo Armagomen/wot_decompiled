@@ -1,7 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/shared/utils/HangarSpace.py
 from Queue import Queue
-from functools import wraps
+from functools import wraps, partial
 import BigWorld
 import Math
 import Event
@@ -156,6 +156,7 @@ class HangarSpace(IHangarSpace):
         self.__delayedIsPremium = False
         self.__delayedForceRefresh = False
         self.__delayedRefreshCallback = None
+        self.__delayedRecreateCallback = None
         self.__spaceDestroyedDuringLoad = False
         self.__lastUpdatedVehicle = None
         self.__vehicleUpdateRequested = False
@@ -291,6 +292,9 @@ class HangarSpace(IHangarSpace):
         if self.__delayedRefreshCallback is not None:
             BigWorld.cancelCallback(self.__delayedRefreshCallback)
             self.__delayedRefreshCallback = None
+        if self.__delayedRecreateCallback is not None:
+            BigWorld.cancelCallback(self.__delayedRecreateCallback)
+            self.__delayedRecreateCallback = None
         self.gameSession.onPremiumNotify -= self.onPremiumChanged
         return
 
@@ -301,10 +305,15 @@ class HangarSpace(IHangarSpace):
             self.__isModelLoaded = False
             self.onVehicleChangeStarted()
             self.statsCollector.noteHangarLoadingState(HANGAR_LOADING_STATE.START_LOADING_VEHICLE)
-            self.__space.recreateVehicle(vehicle.descriptor, vehicle.modelState, outfit=outfit)
+            if self.__space.vehicleEntityId and self.getVehicleEntity() is None:
+                if self.__delayedRecreateCallback is None:
+                    self.__delayedRecreateCallback = BigWorld.callback(0.01, partial(self.__delayedRecreate, vehicle.descriptor, vehicle.modelState, outfit))
+            else:
+                self.__space.recreateVehicle(vehicle.descriptor, vehicle.modelState, outfit=outfit)
             self.__lastUpdatedVehicle = vehicle
         else:
             Waiting.hide('loadHangarSpaceVehicle')
+        return
 
     def startToUpdateVehicle(self, vehicle, outfit=None):
         self.__vehicleUpdateRequested = True
@@ -414,3 +423,12 @@ class HangarSpace(IHangarSpace):
         else:
             self.refreshSpace(self.__delayedIsPremium, self.__delayedForceRefresh)
             return
+
+    def __delayedRecreate(self, descriptor, modelState, outfit):
+        self.__delayedRecreateCallback = None
+        if self.__space:
+            if self.__space.vehicleEntityId and self.getVehicleEntity():
+                self.__space.recreateVehicle(descriptor, modelState, outfit=outfit)
+            else:
+                self.__delayedRecreateCallback = BigWorld.callback(0.01, partial(self.__delayedRecreate, descriptor, modelState, outfit))
+        return

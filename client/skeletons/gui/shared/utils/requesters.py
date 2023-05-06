@@ -897,7 +897,7 @@ class IBlueprintsRequester(IRequester):
     def getBlueprintData(self, vehicleCD, vehicleLevel):
         raise NotImplementedError
 
-    def getBlueprintDiscount(self, vehicleCD, vehicleLevel):
+    def getBlueprintDiscount(self, vehicleCD, vehicleLevel, potentialFilledCount=0):
         raise NotImplementedError
 
     def getRequiredCountAndDiscount(self, vehicleCD, vLevel):

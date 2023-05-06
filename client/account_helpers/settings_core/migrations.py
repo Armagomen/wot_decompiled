@@ -923,6 +923,18 @@ def _migrateTo100(core, data, initialized):
      BATTLE_MATTERS_KEYS.QUEST_PROGRESS: 0}
 
 
+def _migrateTo101(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
+    data[GUI_START_BEHAVIOR][GuiSettingsBehavior.COMP7_INTRO_SHOWN] = False
+
+
+def _migrateTo102(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
+    data[GUI_START_BEHAVIOR][GuiSettingsBehavior.CREW_22_WELCOME_SHOWN] = False
+    feedbackBattleEvents = data.get('feedbackBattleEvents', {})
+    feedbackBattleEvents[BATTLE_EVENTS.CREW_PERKS] = True
+
+
 _versions = ((1,
   _initializeDefaultSettings,
   True,
@@ -1317,6 +1329,14 @@ _versions = ((1,
   False),
  (100,
   _migrateTo100,
+  False,
+  False),
+ (101,
+  _migrateTo101,
+  False,
+  False),
+ (102,
+  _migrateTo102,
   False,
   False))
 

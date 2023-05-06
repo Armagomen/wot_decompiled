@@ -29,8 +29,8 @@ IS_DYNUPDATER = False
 IS_LOAD_GLOSSARY = False
 IS_CGF_DUMP = BigWorld.component == 'client_cgf_dump'
 IS_PROCESS_REPLAY = BigWorld.component.endswith('process_replay')
-DEFAULT_LANGUAGE = 'ru'
-AUTH_REALM = 'RU'
+DEFAULT_LANGUAGE = 'en'
+AUTH_REALM = 'EU'
 IS_DEVELOPMENT = CURRENT_REALM == 'DEV'
 IS_CHINA = CURRENT_REALM == 'CN'
 IS_KOREA = CURRENT_REALM == 'KR'
@@ -80,13 +80,8 @@ class REALM_HELPER:
 
 
 if CURRENT_REALM == 'NA':
-    DEFAULT_LANGUAGE = 'en'
     AUTH_REALM = 'NA'
-elif CURRENT_REALM == 'EU':
-    DEFAULT_LANGUAGE = 'en'
-    AUTH_REALM = 'EU'
 elif CURRENT_REALM == 'ASIA':
-    DEFAULT_LANGUAGE = 'en'
     AUTH_REALM = 'ASIA'
 elif CURRENT_REALM == 'CN':
     DEFAULT_LANGUAGE = 'cn'
@@ -96,7 +91,10 @@ elif CURRENT_REALM == 'KR':
     AUTH_REALM = 'KR'
 elif CURRENT_REALM == 'CT':
     AUTH_REALM = 'CT'
-elif CURRENT_REALM in ('RU', 'ST', 'QA', 'DEV', 'SB'):
+elif CURRENT_REALM == 'RU':
+    DEFAULT_LANGUAGE = 'ru'
+    AUTH_REALM = 'RU'
+elif CURRENT_REALM in ('EU', 'ST', 'QA', 'DEV', 'SB'):
     pass
 SPECIAL_OL_FILTER = IS_KOREA or IS_SINGAPORE
 IS_RENTALS_ENABLED = True
@@ -203,6 +201,7 @@ class ARENA_GUI_TYPE:
     RTS_BOOTCAMP = 28
     FUN_RANDOM = 29
     COMP7 = 30
+    WINBACK = 31
     RANGE = (UNKNOWN,
      RANDOM,
      TRAINING,
@@ -226,7 +225,8 @@ class ARENA_GUI_TYPE:
      RTS_TRAINING,
      RTS_BOOTCAMP,
      FUN_RANDOM,
-     COMP7)
+     COMP7,
+     WINBACK)
     RANDOM_RANGE = (RANDOM, EPIC_RANDOM)
     FALLOUT_RANGE = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
     EPIC_RANGE = (EPIC_BATTLE, EPIC_TRAINING)
@@ -261,7 +261,8 @@ class ARENA_GUI_TYPE_LABEL:
      ARENA_GUI_TYPE.MAPBOX: 'mapbox',
      ARENA_GUI_TYPE.MAPS_TRAINING: 'maps_training',
      ARENA_GUI_TYPE.FUN_RANDOM: 'fun_random',
-     ARENA_GUI_TYPE.COMP7: 'comp7'}
+     ARENA_GUI_TYPE.COMP7: 'comp7',
+     ARENA_GUI_TYPE.WINBACK: 'winback'}
 
 
 class ARENA_BONUS_TYPE:
@@ -301,6 +302,7 @@ class ARENA_BONUS_TYPE:
     RTS_BOOTCAMP = 41
     FUN_RANDOM = 42
     COMP7 = 43
+    WINBACK = 44
     RANGE = (UNKNOWN,
      REGULAR,
      TRAINING,
@@ -336,7 +338,8 @@ class ARENA_BONUS_TYPE:
      RTS_1x1,
      RTS_BOOTCAMP,
      FUN_RANDOM,
-     COMP7)
+     COMP7,
+     WINBACK)
     RANDOM_RANGE = (REGULAR, EPIC_RANDOM)
     FALLOUT_RANGE = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
     TOURNAMENT_RANGE = (TOURNAMENT,
@@ -916,6 +919,9 @@ class Configs(enum.Enum):
     PERSONAL_RESERVES_CONFIG = 'personal_reserves_config'
     PLAY_LIMITS_CONFIG = 'play_limits_config'
     PRE_MODERATION_CONFIG = 'pre_moderation_config'
+    SPAM_PROTECTION_CONFIG = 'spam_protection_config'
+    COLLECTIONS_CONFIG = 'collections_config'
+    WINBACK_CONFIG = 'winback_config'
 
 
 INBATTLE_CONFIGS = ('spgRedesignFeatures',
@@ -1500,6 +1506,7 @@ class QUEUE_TYPE:
     RTS_BOOTCAMP = 27
     FUN_RANDOM = 28
     COMP7 = 29
+    WINBACK = 30
     FALLOUT = (FALLOUT_CLASSIC, FALLOUT_MULTITEAM)
     ALL = (RANDOMS,
      COMPANIES,
@@ -1524,7 +1531,8 @@ class QUEUE_TYPE:
      RTS_1x1,
      RTS_BOOTCAMP,
      FUN_RANDOM,
-     COMP7)
+     COMP7,
+     WINBACK)
     REMOVED = (COMPANIES,)
     BASE_ON_DEQUEUE = (RANDOMS,
      EVENT_BATTLES,
@@ -1773,7 +1781,7 @@ class REQUEST_COOLDOWN:
     WATCH_REPLAY = 5.0
     RESOURCE_WELL_PUT = 1.0
     VEHICLE_IN_BATTLE_SWITCH = 2.0
-    SET_VIVOX_PRESENCE = 1.0
+    SET_VIVOX_PRESENCE = 0.5
     UNIT_UPDATE_EXTRAS = 2.0
 
 
@@ -1991,6 +1999,7 @@ class USER_SERVER_SETTINGS:
     DOG_TAGS = 68
     BATTLE_COMM = 69
     BATTLE_HUD = 71
+    BATTLE_EVENTS = 84
     BATTLE_MATTERS_QUESTS = 89
     QUESTS_PROGRESS = 90
     SESSION_STATS = 96
@@ -2005,7 +2014,8 @@ class USER_SERVER_SETTINGS:
      GAME_EXTENDED_2,
      BATTLE_HUD,
      CONTOUR,
-     UI_STORAGE_2)
+     UI_STORAGE_2,
+     BATTLE_EVENTS)
 
     @classmethod
     def isBattleInvitesForbidden(cls, settings):
@@ -2510,6 +2520,7 @@ class OBSTACLE_KIND:
     CHUNK_DESTRUCTIBLE = 1
     ENTITY_DESTRUCTIBLE = 2
     SMOKE = 3
+    STATIC_GAME_OBJECT = 4
 
 
 class SHELL_TYPES(object):
@@ -2924,6 +2935,10 @@ class DUAL_GUN:
         RELOADING = 1
         READY = 2
 
+    class RELOAD_ORDER:
+        FIRST = 0
+        SECOND = 1
+
     class COOLDOWNS:
         LEFT = 0
         RIGHT = 1
@@ -3048,6 +3063,13 @@ class BonusTypes(object):
      PERK)
 
 
+class TTC_TOOLTIP_SECTIONS(object):
+    EQUIPMENT = 'equipment'
+    SKILLS = 'skills'
+    CREW_MASTERY = 'crew_mastery'
+    ALL = (EQUIPMENT, SKILLS, CREW_MASTERY)
+
+
 class GF_RES_PROTOCOL(object):
     IMG = 'img://'
     CAMO = 'camo://'
@@ -3106,6 +3128,43 @@ DamageAbsorptionLabelToType = {'FRAGMENTS': DamageAbsorptionTypes.FRAGMENTS,
  'BLAST': DamageAbsorptionTypes.BLAST,
  'SPALLS': DamageAbsorptionTypes.SPALLS}
 DamageAbsorptionTypeToLabel = dict(((type, label) for label, type in DamageAbsorptionLabelToType.items()))
+EQUIPMENT_COOLDOWN_MOD_SUFFIX = 'CooldownMod'
+CHANCE_TO_HIT_SUFFIX_FACTOR = 'ChanceToHitDeviceMod'
+
+class AbilitySystemScopeNames(object):
+    DETACHMENT = 'detachment'
+    CREW = 'crew'
+
+
+PerkData = namedtuple('PerkData', 'level, args')
+CrewContextArgs = namedtuple('CrewContextArgs', 'skillData')
+
+class SkillProcessorArgs(object):
+    __slots__ = ('level', 'levelIncrease', 'isActive', 'isFire', 'skillConfig', 'hasActiveTankmanForBooster', 'tankmenSkillConfig')
+
+    def __init__(self, level, levelIncrease, isActive, isFire, skillConfig, hasActiveTankmanForBooster):
+        self.level = level
+        self.levelIncrease = levelIncrease
+        self.isActive = isActive
+        self.isFire = isFire
+        self.skillConfig = skillConfig
+        self.tankmenSkillConfig = self.skillConfig
+        self.hasActiveTankmanForBooster = hasActiveTankmanForBooster
+
+    def isSkillActive(self):
+        return self.isActive and not self.isFire
+
+    def isBoosterApplicable(self):
+        return (self.isActive or self.hasActiveTankmanForBooster) and not self.isFire
+
+
+class GroupSkillProcessorArgs(object):
+    __slots__ = ('factor', 'baseAvgLevel')
+
+    def __init__(self, factor, baseAvgLevel):
+        self.factor = factor
+        self.baseAvgLevel = baseAvgLevel
+
 
 class ReloadRestriction(object):
     CYCLE_RELOAD = 1.0
@@ -3308,6 +3367,24 @@ PLAY_LIMITS = (CURFEW_PLAY_LIMIT,
  DAILY_PLAY_LIMIT,
  SESSION_PLAY_LIMIT)
 
+class WoTPlusBonusType(object):
+    GOLD_BANK = 'gold_bank'
+    IDLE_CREW_XP = 'idle_crew_xp'
+    EXCLUDED_MAP = 'excluded_map'
+    FREE_EQUIPMENT_DEMOUNTING = 'free_equipment_demounting'
+    EXCLUSIVE_VEHICLE = 'exclusive_vehicle'
+
+
+VEHICLE_NO_CREW_TRANSFER_PENALTY_TAG = 'noCrewTransferPenalty'
+VEHICLE_PREMIUM_TAG = 'premium'
+VEHICLE_WOT_PLUS_TAG = 'wotPlus'
+
 class InitialVehsAdditionStrategy(object):
     REALM_AND_COUNTRY = 0
     COUNTRY = 1
+
+
+class WINBACK_CALL_BATTLE_TOKEN_DRAW_REASON(enum.IntEnum):
+    REGULAR = 0
+    MANUAL = 1
+    SQUAD = 2

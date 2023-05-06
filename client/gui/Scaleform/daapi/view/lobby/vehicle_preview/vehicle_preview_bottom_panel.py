@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview_bottom_panel.py
+import logging
 import time
 from collections import namedtuple
 import BigWorld
@@ -48,8 +49,10 @@ from skeletons.gui.game_control import ICalendarController, IExternalLinksContro
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from uilogging.shop.loggers import ShopBundleVehiclePreviewMetricsLogger
 from web.web_client_api.common import ItemPackEntry, ItemPackTypeGroup
 _ButtonState = namedtuple('_ButtonState', ('enabled', 'itemPrice', 'label', 'icon', 'iconAlign', 'isAction', 'actionTooltip', 'tooltip', 'title', 'isMoneyEnough', 'isUnlock', 'isPrevItemsUnlock', 'customOffer', 'isShowSpecial'))
+_logger = logging.getLogger(__name__)
 
 def _buildBuyButtonTooltip(key):
     return makeTooltip(backport.text(R.strings.tooltips.vehiclePreview.buyButton.dyn(key).header()), backport.text(R.strings.tooltips.vehiclePreview.buyButton.dyn(key).body()))
@@ -138,6 +141,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
         self.__couponInfo = None
         self.__hasSSEDiscount = False
         self.__urlMacros = URLMacros()
+        self.__bundlePreviewMetricsLogger = None
         g_techTreeDP.load()
         return
 
@@ -189,6 +193,12 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
 
     def setBuyParams(self, buyParams):
         self.__buyParams = buyParams
+
+    def setBundlePreviewMetricsLogger(self, bundlePreviewMetricsLogger):
+        if isinstance(bundlePreviewMetricsLogger, ShopBundleVehiclePreviewMetricsLogger):
+            self.__bundlePreviewMetricsLogger = bundlePreviewMetricsLogger
+        else:
+            _logger.warning('[SHOPUILOG] expected instance of class ShopBundleVehiclePreviewMetricsLogger.')
 
     def setBackAlias(self, backAlias):
         self.__backAlias = backAlias
@@ -323,6 +333,9 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
     def __isReferralWindow(self):
         return self.__backAlias == VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW
 
+    def __isStoreWindow(self):
+        return self.__backAlias == VIEW_ALIAS.LOBBY_STORE
+
     def __getConfirmationDialogKey(self):
         key = 'buyConfirmation'
         if self.__isReferralWindow():
@@ -366,7 +379,8 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
             if hasExternalLink:
                 btnIcon = backport.image(R.images.gui.maps.icons.library.buyInWeb())
                 buyingPanelData.update({'buyButtonIcon': btnIcon,
-                 'buyButtonIconAlign': 'right'})
+                 'buyButtonIconAlign': 'right',
+                 'isBuyingAvailable': True})
             self.as_setBuyDataS(buyingPanelData)
             return
 
@@ -619,6 +633,9 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
                     self.__purchasePackage()
                     return
                 return
+            loggerEnabled = self.__bundlePreviewMetricsLogger and self.__isStoreWindow()
+            if loggerEnabled:
+                self.__bundlePreviewMetricsLogger.logOpenPurchaseConfirmation()
             requestConfirmed = yield self.__buyRequestConfirmation(self.__getConfirmationDialogKey())
             if requestConfirmed:
                 if self.__isReferralWindow():
@@ -626,9 +643,13 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
                     showGetVehiclePage(inventoryVehicle, self.__buyParams)
                     return
                 if mayObtainForMoney(price):
+                    if loggerEnabled:
+                        self.__bundlePreviewMetricsLogger.logBundlePurchased()
                     showBuyProductOverlay(self.__buyParams)
                 elif price.get(Currency.GOLD, 0) > self._itemsCache.items.stats.gold:
                     showBuyGoldForBundle(price.get(Currency.GOLD, 0), self.__buyParams)
+            elif loggerEnabled:
+                self.__bundlePreviewMetricsLogger.logPurchaseConfirmationClosed()
         return
 
     def __purchaseOffer(self):
