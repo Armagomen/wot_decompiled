@@ -312,7 +312,7 @@ class ModificationItem(BaseCustomizationItem):
 class StyleItem(BaseCustomizationItem):
     __metaclass__ = ReflectionMetaclass
     itemType = CustomizationType.STYLE
-    __slots__ = ('outfits', 'isRent', 'rentCount', 'modelsSet', 'isEditable', 'alternateItems', 'itemsFilters', '_changeableSlotTypes', 'styleProgressions', 'questsProgression', 'dependencies', 'dependenciesAncestors')
+    __slots__ = ('outfits', 'isRent', 'rentCount', 'modelsSet', 'isEditable', 'alternateItems', 'itemsFilters', '_changeableSlotTypes', 'styleProgressions', 'questsProgression', 'dependencies', 'dependenciesAncestors', 'nonTankMaterials')
     allSlots = BaseCustomizationItem.__slots__ + __slots__
 
     def __init__(self, parentGroup = None):
@@ -328,6 +328,7 @@ class StyleItem(BaseCustomizationItem):
         self._changeableSlotTypes = None
         self.styleProgressions = {}
         self.questsProgression = None
+        self.nonTankMaterials = ['PBS_ext.fx']
         super(StyleItem, self).__init__(parentGroup)
         return
 
