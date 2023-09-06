@@ -10,8 +10,6 @@ import BigWorld
 from Event import SafeEvent
 from helpers import isPlayerAccount
 from helpers.log.adapters import getWithContext
-from PlayerEvents import g_playerEvents as playerEvents
-from bootcamp.BootCampEvents import g_bootcampEvents as bootcampPlayerEvents
 from shared_utils import safeCancelCallback
 from uilogging.constants import DEFAULT_LOGGER_NAME, LogLevels
 from uilogging.core.core_constants import LOGS_SEND_PERIOD, LOGS_FORCE_SEND_PERIOD, LOGS_MAX_QUEUE_SIZE, HTTP_DEFAULT_TIMEOUT, HTTP_OK_STATUS, HTTP_SESSION_EXPIRED, DEFAULT_COMPRESSION_LEVEL, FINAL_FLUSH_TIMEOUT, HttpHeaders
@@ -138,8 +136,6 @@ class LogHandler(object):
         self._logs = []
         self._sender = None
         self._logsBatchWaitingTime = 0
-        playerEvents.onAccountShowGUI += self._startSender
-        bootcampPlayerEvents.onAccountShowGUI += self._startSender
         self.onDestroy = SafeEvent()
         self._logger = getWithContext(DEFAULT_LOGGER_NAME, self)
         return
@@ -162,6 +158,16 @@ class LogHandler(object):
             self._getSession()
             self._startSender()
 
+    @_ifDestroyed()
+    def logImmediately(self, log):
+        session = self._getSession()
+        if session is None:
+            self._logger.warning('No session for immediate log.')
+            return
+        else:
+            self._send(session, [log], wait=True)
+            return
+
     @_ifDestroyed(False)
     def isFeatureEnabled(self, feature):
         return self._features.verifyFeature(feature)
@@ -169,6 +175,7 @@ class LogHandler(object):
     @_ifDestroyed(None)
     def getSessionLifetime(self):
         if not self._isPlayer:
+            self._logger.debug('Getting session lifetime stopped. Player not account any more.')
             return None
         else:
             session = self._getSession()
@@ -176,9 +183,11 @@ class LogHandler(object):
                 return session.lifetime
             return None if self._destroyed else 0
 
+    @_ifDestroyed(None)
+    def startSender(self):
+        self._startSender()
+
     def destroy(self, flush=False):
-        playerEvents.onAccountShowGUI -= self._startSender
-        bootcampPlayerEvents.onAccountShowGUI -= self._startSender
         self._stopSender()
         self._logsBatchWaitingTime = 0
         session = self._session.get()

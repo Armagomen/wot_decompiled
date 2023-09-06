@@ -4,7 +4,7 @@ from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.bootcamp.component_override import BootcampComponentOverride
 from gui.Scaleform.daapi.view.lobby.hangar.crew_xp_panel_inject import CrewXPPanelInject
-from gui.Scaleform.framework import ViewSettings, GroupedViewSettings, ScopeTemplates, ConditionalViewSettings, ComponentSettings
+from gui.Scaleform.framework import ComponentSettings, ConditionalViewSettings, GroupedViewSettings, ScopeTemplates, ViewSettings
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -66,7 +66,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.hangar.TournamentsView import TournamentsView
     from gui.impl.lobby.resource_well.entry_point import ResourceWellEntryPointComponent
     from gui.impl.lobby.personal_reserves.personal_reserves_widget_inject import PersonalReservesWidgetInject
-    from gui.impl.lobby.comp7.views.main_widget import Comp7MainWidgetComponent
+    from gui.impl.lobby.comp7.main_widget import Comp7MainWidgetComponent
     from gui.Scaleform.daapi.view.lobby.hangar.carousel_event_entry_widget import CarouselEventEntryHolder
     from gui.Scaleform.daapi.view.lobby.hangar.battle_royale_widget import BattleRoyaleHangarWidgetInject
     from gui.Scaleform.daapi.view.lobby.hangar.entry_points.stronghold_entry_point import StrongholdEntryPoint

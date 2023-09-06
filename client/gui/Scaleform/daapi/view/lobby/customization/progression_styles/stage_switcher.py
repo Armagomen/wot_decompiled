@@ -40,6 +40,7 @@ class StageSwitcherView(ViewImpl):
         self.viewModel.onChange += self.__onChange
         self.__ctx.events.onItemsRemoved += self.__onItemsRemoved
         self.__ctx.events.onItemInstalled += self.__onItemInstalled
+        self.__ctx.events.onChangesCanceled += self.__onChangesCanceled
 
     def _onLoading(self, *args, **kwargs):
         super(StageSwitcherView, self)._onLoading(*args, **kwargs)
@@ -59,6 +60,7 @@ class StageSwitcherView(ViewImpl):
         self.viewModel.onChange -= self.__onChange
         self.__ctx.events.onItemInstalled -= self.__onItemInstalled
         self.__ctx.events.onItemsRemoved -= self.__onItemsRemoved
+        self.__ctx.events.onChangesCanceled -= self.__onChangesCanceled
         self.__ctx = None
         return
 
@@ -70,9 +72,19 @@ class StageSwitcherView(ViewImpl):
 
     def __onItemInstalled(self, item, *_):
         if self.__ctx is not None and self.__ctx.modeId == CustomizationModes.STYLED and item is not None:
-            with self.viewModel.transaction() as tx:
-                style = self.__ctx.mode.modifiedStyle
-                tx.setSelectedLevel(self.__ctx.mode.getStyleProgressionLevel())
+            self.__updateModel()
+        return
+
+    def __onChangesCanceled(self):
+        if self.__ctx is not None and self.__ctx.modeId == CustomizationModes.STYLED:
+            self.__updateModel()
+        return
+
+    def __updateModel(self):
+        with self.viewModel.transaction() as tx:
+            style = self.__ctx.mode.modifiedStyle
+            tx.setSelectedLevel(self.__ctx.mode.getStyleProgressionLevel())
+            if style is not None:
                 tx.setCurrentLevel(style.getLatestOpenedProgressionLevel(g_currentVehicle.item))
         return
 

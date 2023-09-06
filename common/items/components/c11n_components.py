@@ -328,7 +328,7 @@ class StyleItem(BaseCustomizationItem):
         self._changeableSlotTypes = None
         self.styleProgressions = {}
         self.questsProgression = None
-        self.nonTankMaterials = ['PBS_ext.fx']
+        self.nonTankMaterials = ['PBS_ext.fx', 'PBS_ext_skinned.fx']
         super(StyleItem, self).__init__(parentGroup)
         return
 
@@ -860,8 +860,8 @@ class CustomizationCache(object):
                     raise SoftException('Wrong styleId {} '.format(styleID))
                 if not usedStyle.matchVehicleType(vehType):
                     raise SoftException('style {} is incompatible with vehicle {}'.format(styleID, vehDescr.name))
-                if usedStyle.isProgressive() and usedStyle.progression.defaultLvl > outfit.styleProgressionLevel > len(usedStyle.progression.levels):
-                    raise SoftException('Progression style {} level out of limits'.format(styleID))
+                if usedStyle.isProgressive():
+                    _validateStyleProgression(outfit, usedStyle, progressionStorage, vehType)
                 if usedStyle.isWithSerialNumber:
                     _validateSerialNumber(outfit, usedStyle, serialNumbersStorage)
             projectionDecalsCount = len(outfit.projection_decals)
@@ -1039,6 +1039,19 @@ def _validateProgression(component, item, progressionStorage, vehType):
     if not 0 <= level <= achievedLevel:
         raise SoftException('wrong progression level: {}, achievedLevel: {} for component: {} at vehicle: {}, '.format(level, achievedLevel, component.id, vehTypeCD))
     return
+
+
+def _validateStyleProgression(outfit, usedStyle, progressionStorage, vehType):
+    styleID = outfit.styleId
+    if usedStyle.progression.defaultLvl > outfit.styleProgressionLevel > len(usedStyle.progression.levels):
+        raise SoftException('Progression style {} level out of limits'.format(styleID))
+    styleProgressVehDescr = vehType.compactDescr if usedStyle.progression.autobound else 0
+    styleProgress = progressionStorage.get(CustomizationType.STYLE, {}).get(styleID, {})
+    if styleProgressVehDescr in styleProgress:
+        styleProgressLevel = styleProgress[styleProgressVehDescr][C11N_PROGRESS_LEVEL_IDX]
+        outfitStyleLevel = outfit.styleProgressionLevel
+        if not usedStyle.isProgressionRewindEnabled and styleProgressLevel > outfitStyleLevel:
+            raise SoftException('Progression style {} can not be applied. Outfit level={} < Progress level={}'.format(styleID, outfitStyleLevel, styleProgressLevel))
 
 
 def _validateSerialNumber(outfit, item, serialNumberStorage):

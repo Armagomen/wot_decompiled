@@ -70,7 +70,8 @@ def createPlugins():
      'siegeMode': SiegeModePlugin,
      'dualgun': DualGunPlugin,
      'artyCamDist': ArtyCameraDistancePlugin,
-     'spgShotResultIndicator': SPGShotResultIndicatorPlugin}
+     'spgShotResultIndicator': SPGShotResultIndicatorPlugin,
+     'dualAccuracyMechanics': DualAccuracyGunPlugin}
     return resultPlugins
 
 
@@ -141,14 +142,13 @@ class _AmmoSettings(object):
         return self._burst
 
     def getState(self, quantity, quantityInClip):
-        return (quantity < 3, 'normal')
+        pass
 
 
 class _CassetteSettings(_AmmoSettings):
 
     def getState(self, quantity, quantityInClip):
-        isLow, state = super(_CassetteSettings, self).getState(quantity, quantityInClip)
-        isLow |= quantity <= self.getClipCapacity()
+        state = super(_CassetteSettings, self).getState(quantity, quantityInClip)
         if self._burst > 1:
             total = math.ceil(self.getClipCapacity() / float(self._burst))
             current = math.ceil(quantityInClip / float(self._burst))
@@ -157,7 +157,7 @@ class _CassetteSettings(_AmmoSettings):
             current = quantityInClip
         if current <= 0.5 * total:
             state = 'critical' if current == 1 else 'warning'
-        return (isLow, state)
+        return state
 
 
 class CrosshairPlugin(IPlugin):
@@ -494,12 +494,16 @@ class AmmoPlugin(CrosshairPlugin):
         self.__setupGuiSettings(ctrl.getGunSettings())
         quantity, quantityInClip = ctrl.getCurrentShells()
         if (quantity, quantityInClip) != (SHELL_QUANTITY_UNKNOWN,) * 2:
-            isLow, state = self.__guiSettings.getState(quantity, quantityInClip)
-            self._parentObj.as_setAmmoStockS(quantity, quantityInClip, isLow, state, False)
+            state = self.__guiSettings.getState(quantity, quantityInClip)
+            self._parentObj.as_setAmmoStockS(quantity, quantityInClip, state, False)
         reloadingState = ctrl.getGunReloadingState()
         self.__setReloadingState(reloadingState)
         if self.__guiSettings.hasAutoReload:
-            self.__reloadAnimator.setClipAutoLoading(reloadingState.getActualValue(), reloadingState.getBaseValue(), isStun=False)
+            autoReloadingState = ctrl.getAutoReloadingState()
+            baseValue = autoReloadingState.getBaseValue()
+            if quantityInClip == SHELL_QUANTITY_UNKNOWN:
+                baseValue = ctrl.getShellChangeTime()
+            self.__reloadAnimator.setClipAutoLoading(autoReloadingState.getActualValue(), round(baseValue, 1), isStun=False, isTimerOn=True)
         if self._isHideAmmo():
             self._parentObj.as_setNetVisibleS(CROSSHAIR_CONSTANTS.VISIBLE_NET)
         self._parentObj.as_setShellChangeTimeS(ctrl.canQuickShellChange(), ctrl.getQuickShellChangeTime())
@@ -550,7 +554,7 @@ class AmmoPlugin(CrosshairPlugin):
         return
 
     def __onGunAutoReloadTimeSet(self, state, stunned):
-        timeLeft = min(state.getTimeLeft(), state.getActualValue())
+        timeLeft = round(min(state.getTimeLeft(), state.getActualValue()), 1)
         baseValue = round(state.getBaseValue(), 1)
         if self.__shellsInClip == 0:
             baseValue = self.__reCalcFirstShellAutoReload(baseValue)
@@ -595,8 +599,8 @@ class AmmoPlugin(CrosshairPlugin):
         if not result & SHELL_SET_RESULT.CURRENT:
             return
         self.__shellsInClip = quantityInClip
-        isLow, state = self.__guiSettings.getState(quantity, quantityInClip)
-        self._parentObj.as_setAmmoStockS(quantity, quantityInClip, isLow, state, result & SHELL_SET_RESULT.CASSETTE_RELOAD > 0)
+        state = self.__guiSettings.getState(quantity, quantityInClip)
+        self._parentObj.as_setAmmoStockS(quantity, quantityInClip, state, result & SHELL_SET_RESULT.CASSETTE_RELOAD > 0)
         if quantity + quantityInClip == 0:
             self.__reloadAnimator.setClipAutoLoading(0, 0, isRedText=True)
 
@@ -604,12 +608,12 @@ class AmmoPlugin(CrosshairPlugin):
         ctrl = self.sessionProvider.shared.ammo
         if ctrl is not None:
             quantity, quantityInClip = ctrl.getCurrentShells()
-            isLow, state = self.__guiSettings.getState(quantity, quantityInClip)
-            self._parentObj.as_setAmmoStockS(quantity, quantityInClip, isLow, state, False)
+            state = self.__guiSettings.getState(quantity, quantityInClip)
+            self._parentObj.as_setAmmoStockS(quantity, quantityInClip, state, False)
         return
 
     def __onCurrentShellReset(self):
-        self._parentObj.as_setAmmoStockS(0, 0, False, 'normal', False)
+        self._parentObj.as_setAmmoStockS(0, 0, 'normal', False)
 
     def __onQuickShellChangerUpdated(self, isActive, time):
         self._parentObj.as_setShellChangeTimeS(isActive, time)
@@ -1127,7 +1131,7 @@ class SpeedometerWheeledTech(CrosshairPlugin):
     def __onVehicleControlling(self, vehicle):
         vStateCtrl = self.sessionProvider.shared.vehicleState
         vTypeDesc = vehicle.typeDescriptor
-        if vTypeDesc.hasSpeedometer and vehicle.health > 0:
+        if vTypeDesc.hasSpeedometer and vehicle.isAlive():
             if vStateCtrl.isInPostmortem:
                 self.__resetSpeedometer()
             self.__updateBurnoutWarning(vStateCtrl)
@@ -1554,3 +1558,51 @@ class SPGShotResultIndicatorPlugin(CrosshairPlugin):
 
     def __flyTimeIsActive(self, shotResult, shellState):
         return shotResult == SPGShotResultEnum.HIT and shellState not in (SPGShotIndicatorState.ACTIVE_EMPTY_SHELL, SPGShotIndicatorState.EMPTY_SHELL)
+
+
+class DualAccuracyGunPlugin(CrosshairPlugin):
+
+    def __init__(self, parentObj):
+        super(DualAccuracyGunPlugin, self).__init__(parentObj)
+        self.__dualAccGunCtrl = None
+        return
+
+    def start(self):
+        vStateCtrl = self.sessionProvider.shared.vehicleState
+        if vStateCtrl is not None:
+            vStateCtrl.onVehicleControlling += self.__onVehicleControlling
+            vehicle = vStateCtrl.getControllingVehicle()
+            self.__onVehicleControlling(vehicle)
+        return
+
+    def stop(self):
+        vStateCtrl = self.sessionProvider.shared.vehicleState
+        if vStateCtrl is not None:
+            vStateCtrl.onVehicleControlling -= self.__onVehicleControlling
+        self.__unsubscribeDualAccuracyCtrl()
+        return
+
+    def __onSetDualAccuracyState(self, *_):
+        isVisible = not self.__dualAccGunCtrl.isActive() if self.__dualAccGunCtrl is not None else False
+        self.parentObj.as_setDualAccActiveS(isVisible)
+        return
+
+    def __onVehicleControlling(self, vehicle):
+        vTypeDesc = vehicle.typeDescriptor
+        if vTypeDesc.hasDualAccuracy:
+            self.__subscribeDualAccuracyCtrl(vehicle.dynamicComponents.get('dualAccuracy'))
+        else:
+            self.__unsubscribeDualAccuracyCtrl()
+
+    def __subscribeDualAccuracyCtrl(self, dualAccuracyGunCtrl):
+        if dualAccuracyGunCtrl:
+            self.__dualAccGunCtrl = dualAccuracyGunCtrl
+            self.__dualAccGunCtrl.onSetDualAccState += self.__onSetDualAccuracyState
+        self.__onSetDualAccuracyState()
+
+    def __unsubscribeDualAccuracyCtrl(self):
+        if self.__dualAccGunCtrl:
+            self.__dualAccGunCtrl.onSetDualAccState -= self.__onSetDualAccuracyState
+            self.__dualAccGunCtrl = None
+        self.__onSetDualAccuracyState()
+        return

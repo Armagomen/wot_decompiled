@@ -38,6 +38,7 @@ from account_helpers.gift_system import GiftSystem
 from account_helpers.trade_in import TradeIn
 from account_helpers.winback import Winback
 from account_shared import NotificationItem, readClientServerVersion
+from gui.prb_control import prbEntityProperty
 from items import tankmen
 from adisp import adisp_process
 from bootcamp.Bootcamp import g_bootcamp
@@ -94,6 +95,7 @@ class _ClientCommandProxy(object):
      ('doCmdInt3', lambda args: len(args) == 3 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt4', lambda args: len(args) == 4 and all([ _isInt(arg) for arg in args ])),
      ('doCmdInt2Str', lambda args: len(args) == 3 and _isStr(args[2]) and all([ _isInt(arg) for arg in args[:2] ])),
+     ('doCmdInt3Str', lambda args: len(args) == 4 and _isStr(args[3]) and all([ _isInt(arg) for arg in args[:3] ])),
      ('doCmdIntArr', lambda args: len(args) == 1 and _isIntList(args[0])),
      ('doCmdIntStrArr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStrList(args[1])),
      ('doCmdStrArr', lambda args: len(args) == 1 and _isStrList(args[0])),
@@ -582,7 +584,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         if currentVehInvID > 0:
             AccountSettings.setFavorites(CURRENT_VEHICLE, currentVehInvID)
         events.isPlayerEntityChanging = False
-        events.onAccountShowGUI(ctx)
+        if ctx.get('skipShowGUI', False):
+            events.onAccountShowGUISkipped(ctx)
+        else:
+            events.onAccountShowGUI(ctx)
 
     def receiveQueueInfo(self, queueInfo):
         events.onQueueInfoReceived(queueInfo)
@@ -1034,18 +1039,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self._doCmdStr(AccountCommands.CMD_CHANGE_EVENT_ENQUEUE_DATA, argStr, proxy)
         return
 
-    def logClientSystem(self, stats):
-        self.base.logClientSystem(stats)
-
-    def logClientSessionStats(self, stats):
-        self.base.logClientSessionStats(stats)
-
-    def logMemoryCriticalEvent(self, memCritEvent):
-        self.base.logMemoryCriticalEvent(memCritEvent)
-
-    def logClientPB20UXStats(self, stats):
-        self.base.logClientPB20UXStats(stats)
-
     def logUXEvents(self, intArr):
         if self.lobbyContext.needLogUXEvents:
             return
@@ -1183,6 +1176,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def _doCmdInt3(self, cmd, int1, int2, int3, callback):
         return self.__doCmd('doCmdInt3', cmd, callback, int1, int2, int3)
 
+    def _doCmdInt3Str(self, cmd, int1, int2, int3, s, callback):
+        return self.__doCmd('doCmdInt3Str', cmd, callback, int1, int2, int3, s)
+
     def _doCmdInt4(self, cmd, int1, int2, int3, int4, callback):
         return self.__doCmd('doCmdInt4', cmd, callback, int1, int2, int3, int4)
 
@@ -1203,7 +1199,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def _update(self, triggerEvents, diff):
         LOG_DEBUG_DEV('_update', diff if triggerEvents else 'full sync')
-        isFullSync = diff.get('prevRev', None) is None
+        isFullSync = AccountSyncData.isFullSyncDiff(diff)
         if not self.syncData.updatePersistentCache(diff, isFullSync):
             return False
         else:
@@ -1384,6 +1380,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
                                 LOG_WARNING('_synchronizeCacheDict: bad diff=%r for key=%r' % (serverSettingsDiff, sectionKey))
 
             return
+
+    @prbEntityProperty
+    def _prbEntity(self):
+        return None
 
     def __getRequestID(self):
         if g_accountRepository is None:

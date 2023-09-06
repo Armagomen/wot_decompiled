@@ -26,7 +26,7 @@ from adisp import adisp_process
 from battle_pass_common import BattlePassRewardReason, get3DStyleProgressToken
 from chat_shared import SYS_MESSAGE_TYPE
 from collector_vehicle import CollectorVehicleConsts
-from comp7_common import Comp7QuestType
+from comp7_common import Comp7QuestType, COMP7_QUALIFICATION_QUEST_ID
 from constants import DOSSIER_TYPE, EVENT_TYPE, INVOICE_ASSET, PREMIUM_TYPE
 from dossiers2.custom.records import DB_ID_TO_RECORD
 from dossiers2.ui.achievements import BADGES_BLOCK
@@ -49,7 +49,7 @@ from gui.impl.auxiliary.rewards_helper import getProgressiveRewardBonuses, Bluep
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.loot_box_view.loot_congrats_types import LootCongratsTypes
 from gui.impl.lobby.awards.items_collection_provider import MultipleAwardRewardsMainPacker
-from gui.impl.lobby.comp7.comp7_quest_helpers import isComp7Quest, getComp7QuestType, parseComp7RanksQuestID, parseComp7TokensQuestID
+from gui.impl.lobby.comp7.comp7_quest_helpers import isComp7VisibleQuest, getComp7QuestType, parseComp7RanksQuestID, parseComp7TokensQuestID
 from gui.impl.lobby.mapbox.map_box_awards_view import MapBoxAwardsViewWindow
 from gui.impl.pub.notification_commands import WindowNotificationCommand
 from gui.limited_ui.lui_rules_storage import LuiRules
@@ -84,7 +84,6 @@ from skeletons.gui.battle_matters import IBattleMattersController
 from skeletons.gui.game_control import IAwardController, IBattlePassController, IBootcampController, ILimitedUIController, IMapboxController, IRankedBattlesController, IWotPlusController, ISeniorityAwardsController, IWinbackController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader, INotificationWindowController
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
@@ -92,6 +91,8 @@ from skeletons.gui.shared.utils import IHangarSpace
 from skeletons.gui.sounds import ISoundsController
 from skeletons.gui.system_messages import ISystemMessages
 if typing.TYPE_CHECKING:
+    from typing import Tuple, Union, Dict, Literal
+    from messenger.proto.bw.wrappers import _ServiceChannelData
     from comp7_ranks_common import Comp7Division
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
     from gui.server_events.event_items import TokenQuest
@@ -608,12 +609,10 @@ class PiggyBankOpenHandler(ServiceChannelHandler):
 
     @staticmethod
     def _canShowWotPlusWindow(goldEarned):
-        lobbyContext = dependency.instance(ILobbyContext)
         wotPlusCtrl = dependency.instance(IWotPlusController)
         isWotPlusEnabled = wotPlusCtrl.isWotPlusEnabled()
-        isWotPlusNSEnabled = lobbyContext.getServerSettings().isWotPlusNewSubscriptionEnabled()
         hasWotPlusActive = wotPlusCtrl.isEnabled()
-        return isWotPlusEnabled and (hasWotPlusActive or isWotPlusNSEnabled or goldEarned)
+        return isWotPlusEnabled and (hasWotPlusActive or goldEarned)
 
     def __isPremiumEnable(self):
         return self.itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)
@@ -802,6 +801,8 @@ class MotiveQuestsWindowHandler(ServiceChannelHandler):
 
 
 class BattleQuestsAutoWindowHandler(MultiTypeServiceChannelHandler):
+    _BRANCHES_SHOW_ORDER = {personal_missions.PM_BRANCH.PERSONAL_MISSION_2: 1,
+     personal_missions.PM_BRANCH.REGULAR: 2}
 
     def __init__(self, awardCtrl):
         super(BattleQuestsAutoWindowHandler, self).__init__((SYS_MESSAGE_TYPE.battleResults.index(), SYS_MESSAGE_TYPE.personalMissionRebalance.index()), awardCtrl)
@@ -824,7 +825,7 @@ class BattleQuestsAutoWindowHandler(MultiTypeServiceChannelHandler):
                     quest = _getBlueprintActualBonus(blueprintDict, quest)
                     completedQuests[questID] = (quest, ctx)
 
-        values = sorted(completedQuests.values(), key=lambda v: v[0].getID())
+        values = sorted(completedQuests.values(), key=self.__questShowOrderKey)
         for quest, context in values:
             if isDailyQuest(str(quest.getID())):
                 continue
@@ -844,6 +845,15 @@ class BattleQuestsAutoWindowHandler(MultiTypeServiceChannelHandler):
     @staticmethod
     def _getContext(uniqueQuestID, completedQuests, completedQuestUniqueIDs):
         return (uniqueQuestID, {})
+
+    def __questShowOrderKey(self, completedQuest):
+        quest, _ = completedQuest
+        questId = quest.getID()
+        missionsCache = personal_missions.g_cache
+        if missionsCache.hasMission(questId):
+            branchType = missionsCache.questByPotapovQuestID(questId).branch
+            return self._BRANCHES_SHOW_ORDER.get(branchType, questId)
+        return questId
 
 
 class PersonalMissionAutoWindowHandler(BattleQuestsAutoWindowHandler):
@@ -924,7 +934,7 @@ class PersonalMissionOperationAwardHandler(BattleQuestsAutoWindowHandler):
                     pqType = personal_missions.g_cache.questByUniqueQuestID(uniqueQuestID)
                     if pqType.isFinal:
                         self.__openedOperationsAwards.add((pqType.id, pqType.tileID))
-                for operationID, prefix in PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID.iteritems():
+                for operationID, prefix in self.__getFinalTokenQuestIdsByOperationId():
                     if uniqueQuestID in self.__CHAMPION_BADGES_IDS:
                         return True
                     if uniqueQuestID.startswith(prefix):
@@ -945,7 +955,7 @@ class PersonalMissionOperationAwardHandler(BattleQuestsAutoWindowHandler):
         _, message = ctx
         completedQuestIDs = message.data.get('completedQuestIDs', set())
         allQuests = self.eventsCache.getHiddenQuests()
-        for operationId, prefix in PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID.iteritems():
+        for operationId, prefix in self.__getFinalTokenQuestIdsByOperationId():
             quests = []
             for uniqueQuestID in completedQuestIDs:
                 if (uniqueQuestID.startswith(prefix) or self.__isChampionBadgeQuest(uniqueQuestID, operationId)) and uniqueQuestID in allQuests:
@@ -980,6 +990,9 @@ class PersonalMissionOperationAwardHandler(BattleQuestsAutoWindowHandler):
         operations = [ data[1] for data in self.__openedOperationsAwards ]
         if opID not in operations and opID in self.__delayedWindows:
             quests_events.showPersonalMissionsOperationAwardsScreen(self.__delayedWindows.pop(opID))
+
+    def __getFinalTokenQuestIdsByOperationId(self):
+        return sorted(PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID.items(), key=lambda v: self._BRANCHES_SHOW_ORDER.get(getBranchByOperationId(v[0])))
 
 
 class PersonalMissionOperationUnlockedHandler(BattleQuestsAutoWindowHandler):
@@ -1563,7 +1576,7 @@ class BattleMattersQuestsHandler(MultiTypeServiceChannelHandler):
         if not super(BattleMattersQuestsHandler, self)._needToShowAward(ctx):
             return False
         data = message.data
-        return [ qID for qID in data.get('completedQuestIDs', set()) if self.__battleMattersCtrl.isRegularBattleMattersQuestID(qID) or self.__battleMattersCtrl.isIntermediateBattleMattersQuestID(qID) ]
+        return [ qID for qID in data.get('completedQuestIDs', set()) if self.__battleMattersCtrl.isBattleMattersQuestID(qID) ]
 
 
 class ResourceWellRewardHandler(ServiceChannelHandler):
@@ -1590,7 +1603,7 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
     def _showAward(self, ctx):
         _, message = ctx
         data = message.data
-        self.__completedQuestIDs.update((qID for qID in data.get('completedQuestIDs', set()) if isComp7Quest(qID)))
+        self.__completedQuestIDs.update((qID for qID in data.get('completedQuestIDs', set()) if isComp7VisibleQuest(qID)))
         if not self.__completedQuestIDs:
             return
         if self.eventsCache.waitForSync:
@@ -1599,10 +1612,13 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
             self.__showAward()
 
     def __showAward(self):
-        ranksQuests, tokensQuests, periodicQuests = self.__getComp7CompletedQuests()
+        ranksQuests, tokensQuests, periodicQuests, isQualification = self.__getComp7CompletedQuests()
         self.__completedQuestIDs.clear()
-        for quest in ranksQuests:
-            event_dispatcher.showComp7RanksRewardsScreen(quest=quest, periodicQuests=periodicQuests)
+        if isQualification:
+            event_dispatcher.showComp7QualificationRewardsScreen(quests=ranksQuests)
+        else:
+            for quest in ranksQuests:
+                event_dispatcher.showComp7RanksRewardsScreen(quest=quest, periodicQuests=periodicQuests)
 
         for quest in tokensQuests:
             event_dispatcher.showComp7TokensRewardsScreen(quest=quest)
@@ -1611,10 +1627,11 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
         ranksQuests = []
         tokensQuests = []
         periodicQuests = []
+        isQualification = False
         if not self.__completedQuestIDs:
             return (ranksQuests, tokensQuests, periodicQuests)
         else:
-            allQuests = self.eventsCache.getAllQuests(lambda q: isComp7Quest(q.getID()))
+            allQuests = self.eventsCache.getAllQuests(lambda q: isComp7VisibleQuest(q.getID()))
             for qID in self.__completedQuestIDs:
                 quest = allQuests.get(qID)
                 if quest is None:
@@ -1623,14 +1640,19 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
                 qType = getComp7QuestType(qID)
                 if qType == Comp7QuestType.RANKS:
                     ranksQuests.append(quest)
-                if qType == Comp7QuestType.TOKENS:
+                elif qType == Comp7QuestType.TOKENS:
                     tokensQuests.append(quest)
-                if qType == Comp7QuestType.PERIODIC:
+                elif qType == Comp7QuestType.PERIODIC:
                     periodicQuests.append(quest)
+                if qID == COMP7_QUALIFICATION_QUEST_ID:
+                    isQualification = True
 
-            ranksQuests.sort(key=self.__getRanksQuestSortKey)
+            ranksQuests.sort(key=self.__getRanksQuestSortKey, reverse=True)
             tokensQuests.sort(key=self.__getTokensQuestSortKey)
-            return (ranksQuests, tokensQuests, periodicQuests)
+            return (ranksQuests,
+             tokensQuests,
+             periodicQuests,
+             isQualification)
 
     def __onEventCacheSyncCompleted(self, *_):
         self.eventsCache.onSyncCompleted -= self.__onEventCacheSyncCompleted

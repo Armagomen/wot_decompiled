@@ -25,12 +25,10 @@ from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.game_control import IIGRController, IRentalsController
+from skeletons.gui.game_control import IIGRController, IRentalsController, IBootcampController, IBattleRoyaleController, IBattleRoyaleTournamentController, IFunRandomController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
-from skeletons.gui.game_control import IBattleRoyaleController, IBattleRoyaleTournamentController
-from skeletons.gui.game_control import IBootcampController
 _MODULES_NAMES = ('turret',
  'chassis',
  'engine',
@@ -135,6 +133,7 @@ class _CurrentVehicle(_CachedVehicle):
     battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
     battleRoyaleTounamentController = dependency.descriptor(IBattleRoyaleTournamentController)
     bootcampController = dependency.descriptor(IBootcampController)
+    funRandomController = dependency.descriptor(IFunRandomController)
 
     def __init__(self):
         super(_CurrentVehicle, self).__init__()
@@ -250,6 +249,9 @@ class _CurrentVehicle(_CachedVehicle):
     def isTelecom(self):
         return self.isPresent() and self.item.isTelecom
 
+    def isWotPlus(self):
+        return self.isPresent() and self.item.isWotPlus
+
     def isInPrebattle(self):
         return self.isPresent() and self.item.isInPrebattle
 
@@ -323,7 +325,7 @@ class _CurrentVehicle(_CachedVehicle):
         vehicle = self.itemsCache.items.getVehicle(vehInvID)
         vehicle = vehicle if self.__isVehicleSuitable(vehicle) else None
         if vehicle is None:
-            vehiclesCriteria = REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
+            vehiclesCriteria = REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
             invVehs = self.itemsCache.items.getVehicles(criteria=vehiclesCriteria)
 
             def notEvent(x, y):
@@ -336,6 +338,13 @@ class _CurrentVehicle(_CachedVehicle):
             else:
                 vehInvID = 0
         self._selectVehicle(vehInvID, callback, waitingOverlapsUI)
+        return
+
+    def selectGuiVehicle(self, vehicle):
+        if vehicle is not None:
+            self.selectVehicle(vehicle.invID)
+        else:
+            self.selectNoVehicle()
         return
 
     def selectNoVehicle(self):
@@ -423,7 +432,10 @@ class _CurrentVehicle(_CachedVehicle):
         self.onChanged()
 
     def __isVehicleSuitable(self, vehicle):
-        return False if vehicle is None else not REQ_CRITERIA.VEHICLE.BATTLE_ROYALE(vehicle) or self.battleRoyaleController.isBattleRoyaleMode()
+        if vehicle is None:
+            return False
+        else:
+            return False if vehicle.isModeHidden and vehicle.isOnlyForFunRandomBattles and not self.funRandomController.isEnabled() else not REQ_CRITERIA.VEHICLE.BATTLE_ROYALE(vehicle) or self.battleRoyaleController.isBattleRoyaleMode()
 
     def __checkPrebattleLockedVehicle(self):
         from gui.prb_control import prb_getters

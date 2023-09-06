@@ -305,7 +305,7 @@ class BaseUserCMHandler(AbstractContextMenuHandler, EventSystemEntity):
                  'textColor': 13347959}))
             if self.__comp7Ctrl.isEnabled():
                 primeTimeStatus, _, _ = self.__comp7Ctrl.getPrimeTimeStatus()
-                isEnabled = primeTimeStatus == PrimeTimeStatus.AVAILABLE and not self.__comp7Ctrl.isBanned and not self.__comp7Ctrl.isOffline and self.__comp7Ctrl.hasSuitableVehicles()
+                isEnabled = primeTimeStatus == PrimeTimeStatus.AVAILABLE and not self.__comp7Ctrl.isBanned and not self.__comp7Ctrl.isOffline and self.__comp7Ctrl.hasSuitableVehicles() and self.__comp7Ctrl.isQualificationSquadAllowed()
                 options.append(self._makeItem(USER.CREATE_COMP7_SQUAD, MENU.contextmenu(USER.CREATE_COMP7_SQUAD), optInitData={'enabled': canCreate and isEnabled,
                  'textColor': 13347959}))
         return options

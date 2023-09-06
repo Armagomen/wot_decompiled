@@ -2,7 +2,9 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ammunition_panel.py
 from adisp import adisp_process
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
+from constants import ROLE_TYPE
 from CurrentVehicle import g_currentVehicle
+from constants import RENEWABLE_SUBSCRIPTION_CONFIG
 from gui import makeHtmlString
 from gui.impl import backport
 from gui.impl.gen import R
@@ -23,6 +25,7 @@ from helpers import dependency, int2roman
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IBootcampController, ILimitedUIController
+from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from gui.customization.shared import isVehicleCanBeCustomized
 from gui.impl.lobby.tank_setup.dialogs.main_content.main_contents import NeedRepairMainContent
@@ -35,6 +38,7 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
     __service = dependency.descriptor(ICustomizationService)
     __settingsCore = dependency.descriptor(ISettingsCore)
     __limitedUIController = dependency.descriptor(ILimitedUIController)
+    __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self):
         super(AmmunitionPanel, self).__init__()
@@ -74,10 +78,12 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
         self.startGlobalListening()
         g_clientUpdateManager.addMoneyCallback(self.__moneyUpdateCallback)
         g_clientUpdateManager.addCallbacks({'inventory': self.__inventoryUpdateCallBack})
+        self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
 
     def _dispose(self):
         self.stopGlobalListening()
         g_clientUpdateManager.removeObjectCallbacks(self)
+        self.__lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingChanged
         self.__hangarMessage = None
         super(AmmunitionPanel, self)._dispose()
         return
@@ -88,6 +94,7 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
             if onlyMoneyUpdate and self.__hangarMessage == hangarMessage:
                 return
             vehicle = g_currentVehicle.item
+            viewState = g_currentVehicle.getViewState()
             self.__hangarMessage = hangarMessage
             statusId, msg, msgLvl = hangarMessage
             rentAvailable = False
@@ -104,14 +111,15 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
                 msgString = makeHtmlString('html_templates:vehicleStatus', msgLvl, {'message': msg})
             self.__applyCustomizationNewCounter(vehicle)
             self.__updateDevices(vehicle)
+            isElite = vehicle.isElite and viewState.isEliteShown()
             self.as_updateVehicleStatusS({'message': msgString,
              'rentAvailable': rentAvailable,
-             'isElite': vehicle.isElite,
-             'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
-             'vehicleLevel': '{}'.format(int2roman(vehicle.level)),
+             'isElite': isElite,
+             'tankType': '{}_elite'.format(vehicle.type) if isElite else vehicle.type,
+             'vehicleLevel': '{}'.format(int2roman(vehicle.level)) if viewState.isLevelShown() else '',
              'vehicleName': '{}'.format(vehicle.shortUserName),
-             'roleId': vehicle.role,
-             'roleMessage': getRoleMessage(g_currentVehicle.item.role),
+             'roleId': vehicle.role if viewState.isRoleShown() else ROLE_TYPE.NOT_DEFINED,
+             'roleMessage': getRoleMessage(g_currentVehicle.item.role) if viewState.isRoleShown() else '',
              'vehicleCD': vehicle.intCD})
             serverSettings = self.__settingsCore.serverSettings
             tutorialStorage = getTutorialGlobalStorage()
@@ -130,6 +138,10 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
 
     def __inventoryUpdateCallBack(self, *args):
         self.update()
+
+    def __onServerSettingChanged(self, diff):
+        if RENEWABLE_SUBSCRIPTION_CONFIG in diff:
+            self.update()
 
     def __applyCustomizationNewCounter(self, vehicle):
         if vehicle.isCustomizationEnabled() and not self.__bootcampCtrl.isInBootcamp():

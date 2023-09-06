@@ -3,6 +3,7 @@
 import bisect
 import logging
 from collections import namedtuple
+from copy import deepcopy
 from itertools import groupby
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -15,12 +16,12 @@ from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift, getPointsIn
 from gui.battle_pass.state_machine.delegator import BattlePassRewardLogic
 from gui.battle_pass.state_machine.machine import BattlePassStateMachine
 from gui.shared.gui_items.processors.battle_pass import BattlePassActivateChapterProcessor
-from gui.shared.money import Money
 from gui.shared.utils.scheduled_notifications import SimpleNotifier
 from helpers import dependency, time_utils
 from helpers.events_handler import EventsHandler
 from helpers.server_settings import serverSettingsChangeListener
 from shared_utils import findFirst, first
+from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
@@ -34,6 +35,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
     __itemsCache = dependency.descriptor(IItemsCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __offersProvider = dependency.descriptor(IOffersDataProvider)
+    __settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
         self.__oldPoints = 0
@@ -70,6 +72,8 @@ class BattlePassController(IBattlePassController, EventsHandler):
         self.__rewardLogic.start()
         self.onBattlePassSettingsChange(self.__getConfig().mode, self.__currentMode)
         self.__currentMode = self.__getConfig().mode
+        storageData = self.__settingsCore.serverSettings.getBPStorage()
+        self.__settingsCore.serverSettings.updateBPStorageData(storageData)
 
     def onAvatarBecomePlayer(self):
         self.__stop()
@@ -177,7 +181,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
         return self.__getConfig().isExtraChapter(chapterID)
 
     def getBattlePassCost(self, chapterID):
-        return Money(**self.__getConfig().getbattlePassCost(chapterID))
+        return deepcopy(self.__getConfig().getbattlePassCost(chapterID))
 
     def getChapterExpiration(self, chapterID):
         return self.__getConfig().getChapterExpireTimestamp(chapterID) if self.isExtraChapter(chapterID) else 0

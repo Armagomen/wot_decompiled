@@ -34,8 +34,8 @@ class CrosshairPanelContainerMeta(DAAPISimpleContainerMeta):
     def as_setHealthS(self, percent):
         return self.flashObject.as_setHealth(percent) if self._isDAAPIInited() else None
 
-    def as_setAmmoStockS(self, quantity, quantityInClip, isLow, clipState, clipReloaded=False):
-        return self.flashObject.as_setAmmoStock(quantity, quantityInClip, isLow, clipState, clipReloaded) if self._isDAAPIInited() else None
+    def as_setAmmoStockS(self, quantity, quantityInClip, clipState, clipReloaded=False):
+        return self.flashObject.as_setAmmoStock(quantity, quantityInClip, clipState, clipReloaded) if self._isDAAPIInited() else None
 
     def as_setClipParamsS(self, clipCapacity, burst, isAutoloader=False):
         return self.flashObject.as_setClipParams(clipCapacity, burst, isAutoloader) if self._isDAAPIInited() else None
@@ -150,3 +150,6 @@ class CrosshairPanelContainerMeta(DAAPISimpleContainerMeta):
 
     def as_blinkReloadTimeS(self, blinkType):
         return self.flashObject.as_blinkReloadTime(blinkType) if self._isDAAPIInited() else None
+
+    def as_setDualAccActiveS(self, value):
+        return self.flashObject.as_setDualAccActive(value) if self._isDAAPIInited() else None

@@ -8,12 +8,12 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.items_parameters.params_cache import g_paramsCache
-import nations
 from gui.shared.utils.functions import replaceHyphenToUnderscore
-from items import vehicles as veh_core
 from gui.shared.gui_items.fitting_item import FittingItem, ICONS_MASK
 from gui.shared.utils import GUN_CLIP, GUN_CAN_BE_CLIP, GUN_AUTO_RELOAD, GUN_CAN_BE_AUTO_RELOAD, GUN_DUAL_GUN, GUN_CAN_BE_DUAL_GUN
 from gui.shared.money import Currency
+import nations
+from items import vehicles as veh_core
 MODULE_TYPES_ORDER = ('vehicleGun', 'vehicleTurret', 'vehicleEngine', 'vehicleChassis', 'vehicleRadio', 'vehicleFuelTank')
 MODULE_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(MODULE_TYPES_ORDER)))
 SHELL_TYPES_ORDER = (SHELL_TYPES.ARMOR_PIERCING,
@@ -184,6 +184,9 @@ class VehicleGun(VehicleModule):
         typeToCheck = GUN_DUAL_GUN if vehicleDescr is not None else GUN_CAN_BE_DUAL_GUN
         return self.getReloadingType(vehicleDescr) == typeToCheck
 
+    def hasDualAccuracy(self, vehicleDescr=None):
+        return vehicleDescr is not None and g_paramsCache.hasDualAccuracy(self.intCD, vehicleDescr.type.compactDescr)
+
     def getInstalledVehicles(self, vehicles):
         result = set()
         for vehicle in vehicles:
@@ -222,8 +225,10 @@ class VehicleGun(VehicleModule):
                         return backport.image(R.images.gui.maps.icons.modules.autoLoaderGunBoost())
 
             return backport.image(R.images.gui.maps.icons.modules.autoLoaderGun())
+        elif self.isDualGun(vehDescr):
+            return backport.image(R.images.gui.maps.icons.modules.dualGun())
         else:
-            return backport.image(R.images.gui.maps.icons.modules.dualGun()) if self.isDualGun(vehDescr) else None
+            return backport.image(R.images.gui.maps.icons.modules.dualAccuracy()) if self.hasDualAccuracy(vehDescr) else None
 
     def getGUIEmblemID(self):
         return FITTING_TYPES.VEHICLE_DUAL_GUN if self.isDualGun() else super(VehicleGun, self).getGUIEmblemID()

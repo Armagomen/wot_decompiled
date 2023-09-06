@@ -955,6 +955,37 @@ def _migrateTo103(core, data, initialized):
     AccountSettings.setSettings(NEW_SETTINGS_COUNTER, newSettingsCounter)
 
 
+def _migrateTo104(_, data, __):
+    from account_helpers import AccountSettings
+    from account_helpers.AccountSettings import FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS as SECTIONS
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_1)
+    data[SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_2] = AccountSettings.getFilterDefault(FUN_RANDOM_CAROUSEL_FILTER_2)
+
+
+def _migrateTo105(_, __, ___):
+    pass
+
+
+def _migrateTo106(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    from account_helpers.settings_core.ServerSettingsManager import BATTLE_MATTERS_KEYS
+    resetQuests = (5, 6, 7, 8, 9, 11, 12, 16, 18, 21, 23)
+    lastShowedQuest = core.serverSettings.getBattleMattersQuestWasShowed() + 1
+    if lastShowedQuest in resetQuests:
+        data[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS][BATTLE_MATTERS_KEYS.QUEST_PROGRESS] = 0
+
+
+def _migrateTo107(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS, SETTINGS_SECTIONS
+    data[SETTINGS_SECTIONS.UI_STORAGE_2][UI_STORAGE_KEYS.DUAL_ACCURACY_HIGHLIGHTS_COUNTER] = 0
+
+
+def _migrateTo108(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
+    data[GUI_START_BEHAVIOR][GuiSettingsBehavior.COMP7_WHATS_NEW_SHOWN] = False
+
+
 _versions = ((1,
   _initializeDefaultSettings,
   True,
@@ -1361,6 +1392,26 @@ _versions = ((1,
   False),
  (103,
   _migrateTo103,
+  False,
+  False),
+ (104,
+  _migrateTo104,
+  False,
+  False),
+ (105,
+  _migrateTo105,
+  False,
+  False),
+ (106,
+  _migrateTo106,
+  False,
+  False),
+ (107,
+  _migrateTo107,
+  False,
+  False),
+ (108,
+  _migrateTo108,
   False,
   False))
 

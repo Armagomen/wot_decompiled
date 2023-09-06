@@ -2,6 +2,7 @@
 # Embedded file name: scripts/common/items/utils.py
 import copy
 from operator import sub
+from functools import partial
 from typing import Any, Dict, Tuple
 from constants import VEHICLE_TTC_ASPECTS
 from debug_utils import *
@@ -179,7 +180,8 @@ def getInvisibility(vehicleDescr, factors, baseInvisibility, isMoving):
 
 if IS_CLIENT:
     CLIENT_VEHICLE_ATTRIBUTE_FACTORS = {'camouflage': 1.0,
-     'shotDispersion': 1.0}
+     'shotDispersion': 1.0,
+     'dualAccuracyCoolingDelay': 1.0}
     CLIENT_VEHICLE_ATTRIBUTE_FACTORS.update(vehicleAttributeFactors())
 
     def makeDefaultClientVehicleAttributeFactors():
@@ -217,7 +219,16 @@ if IS_CLIENT:
 
 
     def getClientShotDispersion(vehicleDescr, shotDispersionFactor):
-        return vehicleDescr.gun.shotDispersionAngle * vehicleDescr.miscAttrs['multShotDispersionFactor'] * shotDispersionFactor
+        gun = vehicleDescr.gun
+        values = []
+        if 'dualAccuracy' in gun.tags:
+            values.append(gun.dualAccuracy.afterShotDispersionAngle)
+        values.append(gun.shotDispersionAngle)
+        return (value * vehicleDescr.miscAttrs['multShotDispersionFactor'] * shotDispersionFactor for value in values)
+
+
+    def getClientCoolingDelay(vehicleDescr, factors):
+        return float(vehicleDescr.gun.dualAccuracy.coolingDelay) * factors['dualAccuracyCoolingDelay']
 
 
     def getClientInvisibility(vehicleDescr, vehicle, camouflageFactor, factors):
@@ -287,11 +298,19 @@ if IS_CLIENT:
 
         vehicleDescrCrew.onCollectFactors(factors)
         factors['camouflage'] = vehicleDescrCrew.camouflageFactor
+        if vehicleDescr.hasDualAccuracy:
+            crewData = vehicleDescrCrew.collectDefaultCrewData()
+            vehicleDescrCrew.extendSkillProcessor('dualAccuracyCoolingDelay', crewData, partial(_updateDualAccuracyCoolingDelay, factors=factors))
         multShotDispersionFactor = factors.get('multShotDispersionFactor', 1.0)
         shotDispersionFactors = [multShotDispersionFactor, 0.0]
         vehicleDescrCrew.onCollectShotDispersionFactors(shotDispersionFactors)
         factors['shotDispersion'] = shotDispersionFactors
         return
+
+
+    def _updateDualAccuracyCoolingDelay(_, attr, factors):
+        coolingDelayFactor = factors.get('dualAccuracyCoolingDelay', 1.0)
+        factors['dualAccuracyCoolingDelay'] = coolingDelayFactor / attr.factor
 
 
 def getEditorOnlySection(section, createNewSection=False):

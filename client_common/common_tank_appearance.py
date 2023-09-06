@@ -530,11 +530,12 @@ class CommonTankAppearance(ScriptGameObject):
 
     def _attachStickers(self):
         _logger.debug('Attaching VehicleStickers for vehicle: %s', self._vehicle)
+        isCurrentModelDamaged = self.damageState.isCurrentModelDamaged
         if self.vehicleStickers is None:
-            _logger.error('Failed to attach VehicleStickers. Missing VehicleStickers. Vehicle: %s', self._vehicle)
+            if not isCurrentModelDamaged:
+                _logger.error('Failed to attach VehicleStickers. Missing VehicleStickers. Vehicle: %s', self._vehicle)
             return
         else:
-            isCurrentModelDamaged = self.damageState.isCurrentModelDamaged
             self.vehicleStickers.alpha = DEFAULT_STICKERS_ALPHA
             self.vehicleStickers.attach(compoundModel=self.compoundModel, isDamaged=isCurrentModelDamaged, showDamageStickers=not isCurrentModelDamaged)
             return

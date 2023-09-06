@@ -9,7 +9,6 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.ui_logging import IUILoggingCore
 from PlayerEvents import g_playerEvents as playerEvents
-from bootcamp.BootCampEvents import g_bootcampEvents as bootcampPlayerEvents
 from wotdecorators import noexcept
 from uilogging.constants import DEFAULT_LOGGER_NAME, LogLevels
 from uilogging.core.common import convertEnum
@@ -34,15 +33,11 @@ class UILoggingCore(IUILoggingCore):
         return
 
     def init(self):
-        playerEvents.onAccountShowGUI += self._start
-        bootcampPlayerEvents.onAccountShowGUI += self._start
         playerEvents.onAvatarReady += self._start
         self._connectionMgr.onDisconnected += self._stop
         self._logger.debug('Initialized.')
 
     def fini(self):
-        playerEvents.onAccountShowGUI -= self._start
-        bootcampPlayerEvents.onAccountShowGUI -= self._start
         playerEvents.onAvatarReady -= self._start
         self._connectionMgr.onDisconnected -= self._stop
         self._stop()
@@ -57,18 +52,30 @@ class UILoggingCore(IUILoggingCore):
 
     @noexcept
     def log(self, feature, group, action, loglevel=LogLevels.INFO, **params):
-        if not self._isEnabled:
-            return
-        record = BootcampLogRecord if feature == FEATURES.BOOTCAMP else LogRecord
-        log = record(feature=feature, group=group, action=action, level=loglevel, params=params)
-        if log.broken:
-            self._logger.warning('Broken %s.', log)
-            return
-        self._handler.add(log)
+        log = self._createLogRecord(feature, group, action, loglevel, **params)
+        if log:
+            self._handler.add(log)
+
+    @noexcept
+    def logImmediately(self, feature, group, action, loglevel=LogLevels.INFO, **params):
+        log = self._createLogRecord(feature, group, action, loglevel, **params)
+        if log:
+            self._handler.logImmediately(log)
 
     @property
     def _disabled(self):
         return not self._lobbyContext.getServerSettings().uiLogging.enabled
+
+    def _createLogRecord(self, feature, group, action, loglevel, **params):
+        if not self._isEnabled:
+            return None
+        record = BootcampLogRecord if feature == FEATURES.BOOTCAMP else LogRecord
+        log = record(feature=feature, group=group, action=action, level=loglevel, params=params)
+        if log.broken:
+            self._logger.warning('Broken %s.', log)
+            return None
+        else:
+            return log
 
     @property
     def _isEnabled(self):
@@ -79,6 +86,17 @@ class UILoggingCore(IUILoggingCore):
             self._logger.debug('Watching replay. Disabled.')
             return False
         return True
+
+    @noexcept
+    def start(self, ensureSession=False):
+        self._start()
+        if ensureSession:
+            self.ensureSession()
+
+    @noexcept
+    def send(self):
+        if self._started and self._handler:
+            self._handler.startSender()
 
     def _start(self, *args, **kwargs):
         if self._started:
@@ -125,7 +143,7 @@ class UILoggingCore(IUILoggingCore):
 
     def _startSessionKeeper(self, *args, **kwargs):
         if self._sessionKeeper is None and self._ensureSession and self._isEnabled:
-            self._sessionKeeper = Delayer(ENSURE_SESSION_TICK, self._getSessionLifetime)
+            self._sessionKeeper = Delayer(0, self._getSessionLifetime)
             self._logger.debug('Session keeper started.')
         return
 

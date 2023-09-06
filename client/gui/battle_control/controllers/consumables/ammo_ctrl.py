@@ -147,7 +147,7 @@ class IGunReloadingState(IGunReloadingSnapshot):
     def getSnapshot(self):
         raise NotImplementedError
 
-    def startPredictedReloading(self):
+    def startPredictedReloading(self, usePrediction):
         raise NotImplementedError
 
     def stopPredicateReloading(self):
@@ -201,8 +201,8 @@ class ReloadingTimeState(ReloadingTimeSnapshot, IGunReloadingState):
     def getSnapshot(self):
         return ReloadingTimeSnapshot(actualTime=self._actualTime, baseTime=self._baseTime, startTime=self._startTime, updateTime=self._updateTime, waitReloadingStartResponse=self._waitReloadingStartResponse)
 
-    def startPredictedReloading(self):
-        self._waitReloadingStartResponse = True
+    def startPredictedReloading(self, usePrediction):
+        self._waitReloadingStartResponse = usePrediction
 
     def stopPredicateReloading(self):
         self._waitReloadingStartResponse = False
@@ -538,12 +538,12 @@ class AmmoController(MethodsRules, ViewComponentsController):
         return self.__currShellCD
 
     @MethodsRules.delayable('setShells')
-    def setCurrentShellCD(self, intCD):
+    def setCurrentShellCD(self, intCD, usePrediction=True):
         result = False
         if intCD in self.__ammo:
             if self.__currShellCD != intCD:
                 self.__currShellCD = intCD
-                self._reloadingState.startPredictedReloading()
+                self._reloadingState.startPredictedReloading(usePrediction)
                 self.__onCurrentShellChanged(intCD)
                 result = True
         else:
@@ -611,8 +611,14 @@ class AmmoController(MethodsRules, ViewComponentsController):
     def getGunReloadingState(self):
         return self._reloadingState.getSnapshot()
 
+    def getAutoReloadingState(self):
+        return self._autoReloadingState.getSnapshot()
+
     def isGunReloading(self):
         return not self._reloadingState.isReloadingFinished()
+
+    def getShellChangeTime(self):
+        return self.__shellChangeTime
 
     @MethodsRules.delayable('setGunReloadTime')
     def refreshGunReloading(self):
@@ -720,7 +726,7 @@ class AmmoController(MethodsRules, ViewComponentsController):
             code = self.getNextSettingCode(intCD)
             if code is None:
                 return False
-            avatar_getter.updateVehicleSetting(code, intCD, avatar)
+            avatar_getter.predictVehicleSetting(code, intCD, avatar)
             avatar_getter.changeVehicleSetting(code, intCD, avatar)
             return True
 
@@ -894,5 +900,5 @@ class AmmoReplayPlayer(AmmoController):
             intCD = self._order[idx]
             code = self.getNextSettingCode(intCD)
             if code is not None:
-                avatar_getter.updateVehicleSetting(code, intCD)
+                avatar_getter.predictVehicleSetting(code, intCD)
             return

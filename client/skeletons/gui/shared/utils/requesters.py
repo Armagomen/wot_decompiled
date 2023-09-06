@@ -389,6 +389,10 @@ class IStatsRequester(IRequester):
     def dynamicCurrencies(self):
         raise NotImplementedError
 
+    @property
+    def isEmergencyModeEnabled(self):
+        raise NotImplementedError
+
     def getMapsBlackList(self):
         raise NotImplementedError
 
@@ -961,6 +965,9 @@ class ITokensRequester(IRequester):
     def getToken(self, tokenID):
         raise NotImplementedError
 
+    def getTokenInfo(self, tokenID):
+        raise NotImplementedError
+
     def getTokenCount(self, tokenID):
         raise NotImplementedError
 
@@ -1189,6 +1196,9 @@ class IResourceWellRequester(IRequester):
         raise NotImplementedError
 
     def getReward(self):
+        raise NotImplementedError
+
+    def getInitialNumberAmounts(self):
         raise NotImplementedError
 
 

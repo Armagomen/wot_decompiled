@@ -17,6 +17,7 @@ DualGun = reflectedNamedTuple('DualGun', ['chargeTime',
  'afterShotDelay',
  'preChargeIndication',
  'chargeCancelTime'])
+DualAccuracy = collections.namedtuple('DualAccuracy', ['afterShotDispersionAngle', 'coolingDelay'])
 UNDEFINED_ITEM_TYPE_ID = 0
 ZERO_FLOAT = 0.0
 ZERO_INT = 0
@@ -44,6 +45,7 @@ DEFAULT_GUN_AUTORELOAD = Autoreload(reloadTime=(0.0,), boostStartTime=0.0, boost
 DEFAULT_GUN_BURST = (1, 0.0)
 DEFAULT_GUN_CLIP = (1, 0.0)
 DEFAULT_GUN_DUALGUN = DualGun(chargeTime=4.0, shootImpulse=100.0, reloadLockTime=10.0, reloadTimes=(10, 8), rateTime=5, chargeThreshold=0.5, afterShotDelay=0.5, preChargeIndication=0.25, chargeCancelTime=0.18)
+DEFAULT_GUN_DUAL_ACCURACY = DualAccuracy(afterShotDispersionAngle=1.0, coolingDelay=5.0)
 DEFAULT_FAKE_TURRETS = {'lobby': (),
  'battle': ()}
 DEFAULT_HULL_VARIANT_MATCH = (None, None)

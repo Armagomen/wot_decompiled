@@ -40,10 +40,13 @@ class LuiRules(enum.Enum):
     BM_FLAG = 'BattleMattersFlag'
     PERSONAL_MISSIONS = 'PersonalMissions'
     SYS_MSG_COLLECTION_START_BP = 'sysMsgCollectionStartBattlePass'
+    SYS_MSG_COLLECTIONS_UPDATED_ENTRY = 'sysMsgCollectionsUpdatedEntry'
     LOBBY_HEADER_COUNTERS_STORAGE = 'storage'
     PR_HANGAR_BUTTON = 'PersonalReservesHangarButton'
     STRONGHOLD_ENTRY_POINT = 'StrongholdEntryPoint'
     BR_ENTRY_POINT = 'BREntryPoint'
+    FUN_RANDOM_ENTRY_POINT = 'FunRandomEntryPoint'
+    FUN_RANDOM_NOTIFICATIONS = 'FunRandomNotifications'
 
 
 class _LimitedUIRule(namedtuple('_LimitedUIRule', ('idx', 'expression', 'tokens', 'message'))):

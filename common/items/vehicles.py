@@ -52,6 +52,7 @@ from material_kinds import IDS_BY_NAMES
 from items.customization_slot_tags_validator import getDirectionAndFormFactorTags
 from extension_utils import ResMgr, importClass
 from battle_modifiers_common import BattleParams, BattleModifiers, ModifiersContext
+from debug_utils import LOG_DEBUG
 if IS_UE_EDITOR:
     from meta_objects.items.vehicle_items_meta.utils import getEffectNameByEffect
     from combined_data_section import CombinedDataSection
@@ -421,10 +422,12 @@ class VehicleDescriptor(object):
     isWheeledVehicle = property(lambda self: self.type.isWheeledVehicle)
     hasSpeedometer = property(lambda self: self.type.hasSpeedometer)
     isDualgunVehicle = property(lambda self: 'dualGun' in self.gun.tags)
+    hasDualAccuracy = property(lambda self: 'dualAccuracy' in self.gun.tags)
     hasTurboshaftEngine = property(lambda self: self.type.hasTurboshaftEngine)
     hasHydraulicChassis = property(lambda self: self.type.hasHydraulicChassis)
     hasCharge = property(lambda self: self.type.hasCharge)
     hasRocketAcceleration = property(lambda self: self.type.hasRocketAcceleration)
+    hasBurst = property(lambda self: self.gun.burst != component_constants.DEFAULT_GUN_BURST)
     role = property(lambda self: self.type.role)
     isPitchHullAimingAvailable = property(lambda self: self.type.hullAimingParams['pitch']['isAvailable'])
     isYawHullAimingAvailable = property(lambda self: self.type.hullAimingParams['yaw']['isAvailable'])
@@ -659,12 +662,12 @@ class VehicleDescriptor(object):
         self.turrets[positionIndex] = (newTurretDescr, newGunDescr)
         if len(self.type.hulls) > 1:
             self.hull = self.__selectBestHull(self.turrets, self.chassis)
-        self.__updateAttributes()
         if self.__activeTurretPos == positionIndex:
             self.activeTurretPosition = positionIndex
         removed = [prevTurretDescr.compactDescr]
         if gunCompactDescr != 0:
             removed.append(prevGunDescr.compactDescr)
+        self.__updateAttributes()
         return removed
 
     def installEnhancements(self, enhancements, rebuildAttrs=True):
@@ -1000,8 +1003,6 @@ class VehicleDescriptor(object):
 
     def getMaxRepairCost(self):
         type = self.type
-        if 'battle_royale' in type.tags:
-            return 10000
         cost = self.maxHealth * type.repairCost
         for turretDescr, gunDescr in self.turrets:
             cost += gunDescr.maxRepairCost + turretDescr.turretRotatorHealth.maxRepairCost + turretDescr.surveyingDeviceHealth.maxRepairCost
@@ -1234,9 +1235,9 @@ class VehicleDescriptor(object):
             raise SoftException
         self.turrets[turretPositionIdx] = (turretDescr, newGunDescr)
         self.hull = hullDescr
-        self.__updateAttributes()
         if self.__activeTurretPos == turretPositionIdx:
             self.activeTurretPosition = turretPositionIdx
+        self.__updateAttributes()
         return (prevGunDescr.compactDescr,)
 
     def __selectBestHull(self, turrets, chassis):
@@ -1929,7 +1930,7 @@ class VehicleType(object):
             self.extrasDict = copyMethod(commonConfig['extrasDict'])
             self.devices = copyMethod(commonConfig['_devices'])
             self.tankmen = _selectCrewExtras(self.crewRoles, self.extrasDict)
-        if IS_CLIENT or IS_WEB or IS_BOT:
+        if IS_CLIENT or IS_WEB:
             self.i18nInfo = basicInfo.i18n
         if IS_CLIENT or IS_UE_EDITOR:
             self.damageStickersLodDist = commonConfig['miscParams']['damageStickersLodDist']
@@ -1943,7 +1944,7 @@ class VehicleType(object):
                 self.effects, self.editorData.damagedStateGroup = _readVehicleEffects(xmlCtx, section, 'effects', commonConfig['defaultVehicleEffects'][0], useOverride=True)
                 if self.editorData.damagedStateGroup is None:
                     self.editorData.damagedStateGroup = commonConfig['defaultDamagedStateGroup']
-            self.camouflage = shared_readers.readCamouflage(xmlCtx, section, 'camouflage')
+            self.camouflage = shared_readers.readCamouflage(xmlCtx, section, 'camouflage', default=shared_components.DEFAULT_CAMOUFLAGE)
             self.emblemsLodDist = shared_readers.readLodDist(xmlCtx, section, 'emblems/lodDist', g_cache)
             self.emblemsAlpha = _xml.readFraction(xmlCtx, section, 'emblems/alpha')
             self._prereqs = None
@@ -2052,7 +2053,7 @@ class VehicleType(object):
         _xml.rewriteFloat(mainSection, 'speedLimits/forward', self.speedLimits[0] * component_constants.MS_TO_KMH)
         _xml.rewriteFloat(mainSection, 'speedLimits/backward', self.speedLimits[1] * component_constants.MS_TO_KMH)
         _xml.rewriteFloat(mainSection, 'emblems/alpha', self.emblemsAlpha)
-        _xml.rewriteString(mainSection, 'effects/damagedStateGroup', self.editorData.damagedStateGroup)
+        _xml.rewriteString(mainSection, 'effects/damagedStateGroup', self.editorData.damagedStateGroup, 'medium')
         sharedSections = {}
         nationID = self.id[0]
         nationName = nations.NAMES[nationID]
@@ -2066,8 +2067,8 @@ class VehicleType(object):
                     sharedSections[componentId] = section
 
         materialData = tankArmor.TankArmorHelper().collectData()
-        _writeHulls(self.hulls, mainSection, materialData['hull'])
-        _writeInstallableComponents(self.chassis, mainSection, 'chassis', _writeChassis, g_cache.chassisIDs(nationID), sharedSections, materialData=materialData['chassis'])
+        _writeHulls(self.hulls, mainSection, materialData.get('hull', None))
+        _writeInstallableComponents(self.chassis, mainSection, 'chassis', _writeChassis, g_cache.chassisIDs(nationID), sharedSections, materialData=materialData)
         defHull = self.hulls[0]
         for n in xrange(len(defHull.turretPositions)):
             _writeInstallableComponents(self.turrets[n], mainSection, 'turrets' + repr(n), _writeTurret, g_cache.turretIDs(nationID), sharedSections, materialData=materialData)
@@ -2810,7 +2811,7 @@ class VehicleList(object):
                 _xml.raiseWrongXml(ctx, 'tags', 'vehicle %s with level %s does not have tag earn_crystals' % (vname, item.level))
             item.tags = tags
             res[innationID] = item
-            if IS_CLIENT or IS_WEB or IS_BOT:
+            if IS_CLIENT or IS_WEB:
                 item.i18n = shared_readers.readUserText(vsection)
             price = _xml.readPrice(ctx, vsection, 'price')
             if 'gold' in price:
@@ -3223,7 +3224,7 @@ def _writeMultiGun(item, section):
         for child in children:
             value = item.multiGun[index]
             _xml.rewriteVector3(child, 'position', value.position)
-            _xml.rewriteVector3(child, 'shotOffset', value.shotOffset)
+            _xml.rewriteVector3(child, 'shotOffset', value.shotOffset, (0.0, 0.0, 0.0))
             index += 1
 
         return
@@ -3344,6 +3345,8 @@ def _readHull(xmlCtx, section):
         item.prefabs = section.readStrings('prefab')
     if IS_CLIENT or IS_UE_EDITOR or IS_WEB or IS_CELLAPP or IS_PROCESS_REPLAY:
         item.primaryArmor = _readPrimaryArmor(xmlCtx, section, 'primaryArmor', item.materials)
+        if IS_UE_EDITOR and hasattr(item, 'editorData'):
+            item.editorData.primaryArmors = _readPrimaryArmorKinds(xmlCtx, section, 'primaryArmor')
     return item
 
 
@@ -3351,7 +3354,7 @@ def _writeHulls(hulls, section, materialData):
     section = _xml.getSubsection(None, section, 'hull')
     item = hulls[0]
     _writeHitTester(item.hitTesterManager, None, section, 'hitTester')
-    _writeArmor(item.materials, None, section, 'armor', materialData=materialData.get('hull', None))
+    _writeArmor(item.materials, section, materialData.get('hull', None) if materialData is not None else None, item.editorData.primaryArmors)
     _xml.rewriteFloat(section, 'weight', item.weight)
     _xml.rewriteInt(section, 'maxHealth', item.maxHealth)
     __writeTurretPitches(section, item.turretPitches)
@@ -3419,6 +3422,8 @@ def __readTurretPitches(xmlCtx, section, numTurrets):
 def __writeTurretPitches(section, pitches):
     if pitches:
         if len(pitches) == 1 and pitches[0] == 0:
+            if section.has_key('turretPitches'):
+                section.deleteSection(section['turretPitches'])
             return
     with _xml.ListRewriter(section, 'turretPitches/turret') as listRewriter:
         for pitch, child in zip(pitches, listRewriter):
@@ -3481,6 +3486,8 @@ def _readHullVariants(xmlCtx, section, defHull, chassis, turrets):
             if name == 'primaryArmor':
                 if IS_CLIENT or IS_PROCESS_REPLAY:
                     variant.primaryArmor = _readPrimaryArmor(ctx, section, 'primaryArmor', variant.materials)
+                if IS_UE_EDITOR and hasattr(variant, 'editorData'):
+                    variant.editorData.primaryArmors = _readPrimaryArmorKinds(ctx, section, 'primaryArmor')
                 continue
             if name == 'armorHomogenization':
                 if not IS_CLIENT and not IS_BOT:
@@ -3564,6 +3571,8 @@ def _readHullVariants(xmlCtx, section, defHull, chassis, turrets):
 
 def _writeHullVariants(hulls, section, materialData):
     if len(hulls) < 2:
+        if section.has_key('variants'):
+            section.deleteSection('variants')
         return
     else:
         section = _xml.getSubsection(None, section, 'variants')
@@ -3576,6 +3585,7 @@ def _writeHullVariants(hulls, section, materialData):
                 subsection.deleteSection('models')
             else:
                 shared_writers.writeModelsSets(hull.modelsSets, subsection['models'])
+                _writeArmor(hull.materials, subsection, materialData.get(subsectionName, None), hull.editorData.primaryArmors)
             if hull.hitTesterManager == defHull.hitTesterManager:
                 subsection.deleteSection('hitTester')
             else:
@@ -3584,7 +3594,6 @@ def _writeHullVariants(hulls, section, materialData):
             defSlots = defHull.emblemSlots + defHull.slotsAnchors
             shared_writers.writeCustomizationSlots(slots if slots != defSlots else None, subsection, 'customizationSlots')
             _xml.rewriteFloat(subsection, 'weight', hull.weight, defHull.weight)
-            _writeArmor(hull.materials, None, subsection, 'armor', materialData=materialData.get(subsectionName, None))
 
         return
 
@@ -3717,11 +3726,28 @@ def _writeChassis(item, section, sharedSections, materialData, *args, **kwargs):
     _xml.rewriteFloat(section, 'weight', item.weight)
     _xml.rewriteFloat(section, 'rotationSpeed', degrees(item.rotationSpeed))
     _writeCamouflageSettings(section, 'camouflage', item.camouflage)
-    _writeArmor(item.materials, None, section, 'armor', optional=True, materialData=materialData.get(item.name, None))
+    chassisMatData = materialData.get('chassis', None) if materialData is not None else None
+    if len(item.trackPairs) != 2:
+        _writeArmor(item.materials, section, chassisMatData.get(item.name, None) if chassisMatData is not None else None)
+    else:
+        trackPairMatData = materialData.get('trackPair1', None) if materialData is not None else None
+        trackPairsCount = 2
+        paramSections = []
+        for childSectionName, childSection in section.items():
+            if childSectionName == 'trackPairParams':
+                paramSections.append(childSection)
+                if len(paramSections) == trackPairsCount:
+                    break
+
+        for i in xrange(0, len(paramSections) - trackPairsCount):
+            paramSections.append(section.createSection('trackPairParams'))
+
+        _writeArmor(item.trackPairs[0].materials, paramSections[0], chassisMatData.get(item.name, None) if chassisMatData is not None else None)
+        _writeArmor(item.trackPairs[1].materials, paramSections[1], trackPairMatData.get(item.name, None) if trackPairMatData is not None else None)
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
     _writeCustomizableAreas(item.customizableVehicleAreas, section)
-    chassis_writers.writeWheelsAndGroups(item.wheels, section)
+    chassis_writers.writeWheelsAndGroups(item.wheels, section, materialData, item.name)
     shared_writers.writeModelsSets(item.modelsSets, section['models'])
     chassis_writers.writeTraces(item.traces, section, g_cache)
     chassis_writers.writeTrackBasicParams(item.tracks, section, g_cache)
@@ -4170,6 +4196,8 @@ def _readTurret(xmlCtx, section, item, unlocksDescrs=None, _=None):
         item.i18n = shared_readers.readUserText(section)
     if IS_CLIENT or IS_UE_EDITOR or IS_WEB or IS_CELLAPP or IS_PROCESS_REPLAY:
         item.primaryArmor = _readPrimaryArmor(xmlCtx, section, 'primaryArmor', item.materials)
+        if IS_UE_EDITOR and hasattr(item, 'editorData'):
+            item.editorData.primaryArmors = _readPrimaryArmorKinds(xmlCtx, section, 'primaryArmor')
     if IS_CLIENT or IS_UE_EDITOR or IS_BOT or IS_BASEAPP:
         if section.has_key('emblemSlots'):
             if not IS_BASEAPP:
@@ -4188,9 +4216,7 @@ def _readTurret(xmlCtx, section, item, unlocksDescrs=None, _=None):
         item.turretDetachmentEffects = _readTurretDetachmentEffects(xmlCtx, section, 'turretDetachmentEffects', commonConfig['defaultTurretDetachmentEffects'])
         item.prefabs = section.readStrings('prefab')
     if IS_CELLAPP or IS_UE_EDITOR:
-        arrayStr = section.readString('physicsShape')
-        strArr = arrayStr.split()
-        item.physicsShape = tuple(map(float, strArr))
+        item.physicsShape = _xml.readTupleOfFloats(xmlCtx, section, 'physicsShape', defaultValue=[])
     v = _xml.readNonNegativeFloat(xmlCtx, section, 'circularVisionRadius')
     item.circularVisionRadius = v
     nationID = parseIntCompactDescr(item.compactDescr)[1]
@@ -4207,15 +4233,16 @@ def _writeTurret(item, section, sharedSections, materialData, *args, **kwargs):
     _writeHitTester(item.hitTesterManager, None, section, 'hitTester')
     _xml.rewriteString(section, 'wwturretRotatorSoundManual', item.turretRotatorSoundManual)
     _writeCamouflageSettings(section, 'camouflage', item.camouflage)
-    _writeArmor(item.materials, None, section, 'armor', materialData=materialData['turret'].get(item.name, None), precedingSectionName='guns')
+    turretMatData = materialData.get('turret', None) if materialData is not None else None
+    turretMatData = turretMatData.get(item.name, None) if turretMatData is not None else None
+    _writeArmor(item.materials, section, turretMatData, item.editorData.primaryArmors)
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
     _writeCustomizableAreas(item.customizableVehicleAreas, section)
     shared_writers.writeModelsSets(item.modelsSets, section['models'])
-    arrayStr = ' '.join([ '{:.3f}'.format(value) for value in item.physicsShape ])
-    _xml.rewriteString(section, 'physicsShape', arrayStr)
+    _xml.rewriteTupleOfFloats(section, 'physicsShape', item.physicsShape, [])
     nationID = parseIntCompactDescr(item.compactDescr)[1]
-    _writeInstallableComponents(item.guns, section, 'guns', _writeGun, g_cache.gunIDs(nationID), sharedSections, materialData=materialData['gun'], parentName=item.name)
+    _writeInstallableComponents(item.guns, section, 'guns', _writeGun, g_cache.gunIDs(nationID), sharedSections, materialData=materialData.get('gun', None), parentName=item.name)
     _writeMultiGun(item, section)
     return
 
@@ -4410,6 +4437,10 @@ def _readGun(xmlCtx, section, item, unlocksDescrs=None, _=None):
     if section.has_key('dualGun'):
         dualGun = _readGunDualGunParams(xmlCtx, section)
         item.dualGun = dualGun
+    dualAccuracy = None
+    if section.has_key('dualAccuracy'):
+        dualAccuracy = _readGunDualAccuracyParams(xmlCtx, section)
+        item.dualAccuracy = dualAccuracy
     item.shootImpulses = _readShootImpulses(xmlCtx, section)
     tags = item.tags
     if item.clip[0] == 1:
@@ -4424,6 +4455,10 @@ def _readGun(xmlCtx, section, item, unlocksDescrs=None, _=None):
         tags = tags.difference(('dualGun',))
     else:
         tags = tags.union(('dualGun',))
+    if dualAccuracy is None:
+        tags = tags.difference(('dualAccuracy',))
+    else:
+        tags = tags.union(('dualAccuracy',))
     item.tags = tags
     nationID = parseIntCompactDescr(item.compactDescr)[1]
     v = []
@@ -4545,6 +4580,10 @@ def _readGunLocals(xmlCtx, section, sharedItem, unlocksDescrs, turretCompactDesc
     if section.has_key('dualGun'):
         hasOverride = True
         dualGun = _readGunDualGunParams(xmlCtx, section)
+    dualAccuracy = None
+    if section.has_key('dualAccuracy'):
+        hasOverride = True
+        dualAccuracy = _readGunDualAccuracyParams(xmlCtx, section)
     shootImpulses = _readShootImpulses(xmlCtx, section)
     if shootImpulses:
         hasOverride = True
@@ -4696,6 +4735,14 @@ def _readGunLocals(xmlCtx, section, sharedItem, unlocksDescrs, turretCompactDesc
             else:
                 tags = tags.union(('dualGun',))
             item.tags = tags
+        if dualAccuracy is not None:
+            item.dualAccuracy = dualAccuracy
+            tags = item.tags
+            if dualAccuracy == component_constants.DEFAULT_GUN_DUAL_ACCURACY:
+                tags = tags.difference(('dualAccuracy',))
+            else:
+                tags = tags.union(('dualAccuracy',))
+            item.tags = tags
         if shootImpulses:
             item.shootImpulses = shootImpulses
         if IS_CLIENT or IS_UE_EDITOR:
@@ -4724,13 +4771,13 @@ def _writeGun(item, section, sharedSections, materialData, *args, **kwargs):
     _xml.rewriteFloat(section, 'shotDispersionRadius', tan(item.shotDispersionAngle) * 100.0)
     _xml.rewriteFloat(section, 'invisibilityFactorAtShot', item.invisibilityFactorAtShot)
     _xml.rewriteFloat(section, 'impulse', item.impulse)
-    _xml.rewriteBool(section, 'animateEmblemSlots', item.animateEmblemSlots)
+    _xml.rewriteBool(section, 'animateEmblemSlots', item.animateEmblemSlots, True)
     _xml.rewriteBool(section, 'edgeByVisualModel', item.edgeByVisualModel, True)
     _xml.rewriteVector3(section, 'shotOffset', item.shotOffset, (0, 0, 0))
     _xml.rewriteVector2(section, 'turretYawLimits', item.editorTurretYawLimits)
     _writeGunEffectName(item, section)
     _writeCamouflageSettings(section, 'camouflage', item.camouflage)
-    _writeArmor(item.materials, None, section, 'armor', optional=True, materialData=materialData.get(item.name + kwargs['parentName'], None))
+    _writeArmor(item.materials, section, materialData.get(item.name + kwargs['parentName'], None) if materialData is not None else None)
     slots = item.emblemSlots + item.slotsAnchors
     shared_writers.writeCustomizationSlots(slots, section, 'customizationSlots')
     _writeCustomizableAreas(item.customizableVehicleAreas, section)
@@ -5107,7 +5154,10 @@ def _readArmor(xmlCtx, section, subsectionName, optional=False, index=0):
             for kind, matInfo in defMaterials.items():
                 if kind not in res.keys():
                     vals = matInfo._asdict()
-                    vals['armor'] = 0.0
+                    if vals['armor'] is None:
+                        vals['armor'] = -1.0
+                    else:
+                        vals['armor'] = 0.0
                     if matInfo.multipleExtra:
                         vals['extra'] = matInfo.extra.format(index)
                     res[kind] = shared_components.MaterialInfo(**vals)
@@ -5115,29 +5165,38 @@ def _readArmor(xmlCtx, section, subsectionName, optional=False, index=0):
         return res
 
 
-def _writeArmor(armor, xmlCtx, section, subsectionName, optional=False, index=0, materialData=None, precedingSectionName=None):
-    if not armor and optional:
+def _writeArmor(armor, section, materialData, primaryArmor=None):
+    if not armor or materialData is None:
         return
     else:
-        section.deleteSection(subsectionName)
-        armorSection = None
-        if precedingSectionName is not None:
-            sectionItems = section.items()
-            sectionIndex = shared_writers.getPrecedingSectionIndex(sectionItems, precedingSectionName)
-            if sectionIndex is not None:
-                section.insertSection(subsectionName, sectionIndex)
-            else:
-                section.createSection(subsectionName)
-        else:
-            section.createSection(subsectionName)
-        armorSection = _xml.getSubsection(xmlCtx, section, subsectionName)
+        armorSection = section['armor'] if section.has_key('armor') else section.createSection('armor')
+        for childSectionName, childSection in armorSection.items():
+            armorSection.deleteSection(childSection)
+
         materials = g_cache.commonConfig['materials']
-        for matKind, matInfo in armor.items():
+        if primaryArmor is not None:
+            for matKind in primaryArmor:
+                if matKind not in materialData:
+                    materialData.append(matKind)
+
+        def materialSort(left, right):
+            leftMatName = material_kinds.NAMES_BY_IDS.get(left)
+            rightMatName = material_kinds.NAMES_BY_IDS.get(right)
+            if 'armor' in leftMatName and 'armor' in rightMatName or 'armor' not in leftMatName and 'armor' not in rightMatName:
+                if left < right:
+                    return -1
+                return 1
+            return -1 if 'armor' in leftMatName else 1
+
+        materialData = sorted(materialData, cmp=materialSort)
+        exceptions = ['wheel']
+        for matKind in materialData:
             defMatInfo = materials.get(matKind)._asdict()
             matKindName = material_kinds.NAMES_BY_IDS.get(matKind)
-            hasChanges = matInfo.armor != 0 or matInfo.vehicleDamageFactor != defMatInfo['vehicleDamageFactor'] or matInfo.chanceToHitByProjectile != defMatInfo['chanceToHitByProjectile'] or matInfo.chanceToHitByExplosion != defMatInfo['chanceToHitByExplosion'] or materialData is not None and matKind in materialData and material_kinds.needToWriteZeroMaterial(matKind)
-            if hasChanges:
-                _xml.rewriteFloat(armorSection, matKindName, matInfo.armor)
+            matInfo = armor[matKind]
+            hasChanges = matKindName in exceptions or matInfo.vehicleDamageFactor != defMatInfo['vehicleDamageFactor'] or matInfo.chanceToHitByProjectile != defMatInfo['chanceToHitByProjectile'] or matInfo.chanceToHitByExplosion != defMatInfo['chanceToHitByExplosion']
+            defaultArmor = defMatInfo['armor'] if defMatInfo['armor'] is not None else -1.0
+            _xml.rewriteFloat(armorSection, matKindName, matInfo.armor, None if hasChanges else defaultArmor)
             _xml.rewriteFloat(armorSection, matKindName + '/vehicleDamageFactor', matInfo.vehicleDamageFactor, defMatInfo['vehicleDamageFactor'])
             _xml.rewriteFloat(armorSection, matKindName + '/chanceToHitByProjectile', matInfo.chanceToHitByProjectile, defMatInfo['chanceToHitByProjectile'])
             _xml.rewriteFloat(armorSection, matKindName + '/chanceToHitByExplosion', matInfo.chanceToHitByExplosion, defMatInfo['chanceToHitByExplosion'])
@@ -5170,6 +5229,18 @@ def _readPrimaryArmor(xmlCtx, section, subsectionName, materials):
             res.append(materials.get(materialKind, shared_components.DEFAULT_MATERIAL_INFO).armor)
 
         return cachedFloatTuple(res)
+
+
+def _readPrimaryArmorKinds(xmlCtx, section, subsectionName):
+    armorNames = section.readString(subsectionName).split()
+    res = []
+    for matKindName in armorNames:
+        materialKind = material_kinds.IDS_BY_NAMES.get(matKindName)
+        if materialKind is None:
+            _xml.raiseWrongXml(xmlCtx, subsectionName, "unknown material kind name '%s'" % matKindName)
+        res.append(materialKind)
+
+    return res
 
 
 def _readDamageByStaticsChances(xmlCtx, section, subsectionName):
@@ -6121,21 +6192,24 @@ def _readCamouflage(xmlCtx, section, ids, groups, nationID, priceFactors, notInS
 
 
 def _writeCamouflageSettings(section, sectionName, camouflage):
-    tilingKey = sectionName + '/tiling'
+    defaultCamouflage = shared_components.DEFAULT_CAMOUFLAGE
     if camouflage.tiling is not None and len(camouflage.tiling) == 4:
-        tilingValue = Math.Vector4(camouflage.tiling[0], camouflage.tiling[1], camouflage.tiling[2], camouflage.tiling[3])
-        _xml.rewriteVector4(section, tilingKey, tilingValue)
-    maskKey = sectionName + '/exclusionMask'
-    if camouflage.exclusionMask is not None and len(camouflage.exclusionMask) > 0:
-        _xml.rewriteString(section, maskKey, camouflage.exclusionMask)
-    densityKey = sectionName + '/density'
+        value = Math.Vector4(camouflage.tiling[0], camouflage.tiling[1], camouflage.tiling[2], camouflage.tiling[3])
+        defaultValue = Math.Vector4(defaultCamouflage.tiling[0], defaultCamouflage.tiling[1], defaultCamouflage.tiling[2], defaultCamouflage.tiling[3])
+        _xml.rewriteVector4(section, sectionName + '/tiling', value, defaultValue)
+    if camouflage.exclusionMask is not None:
+        _xml.rewriteString(section, sectionName + '/exclusionMask', camouflage.exclusionMask, defaultCamouflage.exclusionMask)
     if camouflage.density is not None and len(camouflage.density) == 2:
-        densityValue = Math.Vector2(camouflage.density[0], camouflage.density[1])
-        _xml.rewriteVector2(section, densityKey, densityValue)
-    aoTextureSizeKey = sectionName + '/aoTextureSize'
+        value = Math.Vector2(camouflage.density[0], camouflage.density[1])
+        defaultValue = Math.Vector2(defaultCamouflage.density[0], defaultCamouflage.density[1])
+        _xml.rewriteVector2(section, sectionName + '/density', value, defaultValue)
     if camouflage.aoTextureSize is not None and len(camouflage.aoTextureSize) == 2:
-        aoTextureValue = Math.Vector2(camouflage.aoTextureSize[0], camouflage.aoTextureSize[1])
-        _xml.rewriteVector2(section, aoTextureSizeKey, aoTextureValue, [1.0, 1.0])
+        value = Math.Vector2(camouflage.aoTextureSize[0], camouflage.aoTextureSize[1])
+        defaultValue = Math.Vector2(defaultCamouflage.aoTextureSize[0], defaultCamouflage.aoTextureSize[1])
+        _xml.rewriteVector2(section, sectionName + '/aoTextureSize', value, defaultValue)
+    camouflageSection = _xml.getSubsection(None, section, sectionName, False)
+    if camouflageSection is not None and len(camouflageSection.items()) == 0:
+        section.deleteSection(sectionName)
     return
 
 
@@ -6539,6 +6613,17 @@ def _readGunDualGunParams(xmlCtx, section):
         return
     else:
         res = component_constants.DualGun(chargeTime=_xml.readNonNegativeFloat(xmlCtx, subSection, 'chargeTime'), shootImpulse=_xml.readNonNegativeInt(xmlCtx, subSection, 'shootImpulse'), reloadLockTime=_xml.readNonNegativeFloat(xmlCtx, subSection, 'reloadLockTime'), reloadTimes=_xml.readTupleOfPositiveFloats(xmlCtx, subSection, 'reloadTimes'), rateTime=_xml.readNonNegativeFloat(xmlCtx, subSection, 'rateTime'), chargeThreshold=_xml.readNonNegativeFloat(xmlCtx, subSection, 'chargeThreshold'), afterShotDelay=_xml.readNonNegativeFloat(xmlCtx, subSection, 'afterShotDelay'), preChargeIndication=_xml.readNonNegativeFloat(xmlCtx, subSection, 'preChargeIndication'), chargeCancelTime=_xml.readNonNegativeFloat(xmlCtx, subSection, 'chargeCancelTime', 0.2))
+        return res
+
+
+def _readGunDualAccuracyParams(xmlCtx, section):
+    subSection = section['dualAccuracy']
+    if subSection is None:
+        return
+    else:
+        afterShotDispersionRadius = _xml.readPositiveFloat(xmlCtx, subSection, 'afterShotDispersionRadius')
+        afterShotDispersionAngle = atan(afterShotDispersionRadius / 100.0)
+        res = component_constants.DualAccuracy(afterShotDispersionAngle=afterShotDispersionAngle, coolingDelay=_xml.readNonNegativeFloat(xmlCtx, subSection, 'coolingDelay'))
         return res
 
 

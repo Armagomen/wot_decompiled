@@ -89,7 +89,7 @@ class _ArenaTypeSkeleton(object):
     squadTeamNumbers = []
     boundingBox = ((0, 0), (0, 0))
     minimap = ''
-    minimapLayers = []
+    minimapLayers = {}
     overviewmap = ''
     winPointsSettings = None
     battleCountdownTimerSound = ''

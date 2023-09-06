@@ -994,7 +994,9 @@ class INGAME_GUI(object):
     PERSONAL_RESERVES_HINT_PRESS = '#ingame_gui:personal_reserves/hint/press'
     PERSONAL_RESERVES_HINT_DESCRIPTION = '#ingame_gui:personal_reserves/hint/description'
     HINT_NOBINDINGKEY = '#ingame_gui:hint/noBindingKey'
+    DESTROYTIMER_LIFTOVER = '#ingame_gui:destroyTimer/liftOver'
     DANGER_ZONE_INDICATOR = '#ingame_gui:danger_zone/indicator'
+    WARNING_ZONE_INDICATOR = '#ingame_gui:warning_zone/indicator'
     STATUSNOTIFICATIONTIMERS_STATICDEATHZONE = '#ingame_gui:statusNotificationTimers/staticDeathZone'
     CHAT_SHORTCUTS_ENUM = (CHAT_SHORTCUTS_ATTENTION_TO_POSITION_GRIDINFO,
      CHAT_SHORTCUTS_ATTENTION_TO_POSITION,

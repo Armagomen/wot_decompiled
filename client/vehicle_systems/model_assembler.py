@@ -896,6 +896,8 @@ def loadAppearancePrefab(prefab, appearance, posloadCallback=None):
 
     def _onLoaded(gameObject):
         appearance.undamagedStateChildren.append(gameObject)
+        if IS_UE_EDITOR:
+            gameObject.removeComponentByType(GenericComponents.DynamicModelComponent)
         gameObject.createComponent(GenericComponents.RedirectorComponent, appearance.gameObject)
         gameObject.createComponent(GenericComponents.DynamicModelComponent, appearance.compoundModel)
         if posloadCallback:

@@ -310,6 +310,7 @@ class MENU(object):
     TANKCAROUSEL_VEHICLESTATES_FALLOUT_ONLY = '#menu:tankCarousel/vehicleStates/fallout_only'
     TANKCAROUSEL_VEHICLESTATES_DEALISOVER = '#menu:tankCarousel/vehicleStates/dealIsOver'
     TANKCAROUSEL_VEHICLESTATES_SUBSCRIPTION_SUSPENDED = '#menu:tankCarousel/vehicleStates/subscription_suspended'
+    TANKCAROUSEL_VEHICLESTATES_WOT_PLUS_EXCLUSIVE_VEHICLE_DISABLED = '#menu:tankCarousel/vehicleStates/wot_plus_exclusive_vehicle_disabled'
     TANKCAROUSEL_STATSSTATUS_UNAVAILABLE = '#menu:tankCarousel/statsStatus/unavailable'
     TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOUNIT = '#menu:tankCarousel/vehicleStates/unsuitableToUnit'
     TANKCAROUSEL_VEHICLESTATES_DISABLED = '#menu:tankCarousel/vehicleStates/disabled'
@@ -393,6 +394,7 @@ class MENU(object):
     CURRENTVEHICLESTATUS_ROTATIONGROUPLOCKED = '#menu:currentVehicleStatus/rotationGroupLocked'
     CURRENTVEHICLESTATUS_WILLBEUNLOCKEDINBATTLE = '#menu:currentVehicleStatus/willBeUnlockedInBattle'
     CURRENTVEHICLESTATUS_SUBSCRIPTION_SUSPENDED = '#menu:currentVehicleStatus/subscription_suspended'
+    CURRENTVEHICLESTATUS_WOT_PLUS_EXCLUSIVE_VEHICLE_DISABLED = '#menu:currentVehicleStatus/wot_plus_exclusive_vehicle_disabled'
     REPAIR_REPAIRSTATUS = '#menu:repair/repairstatus'
     REPAIR_CURIENCY = '#menu:repair/curiency'
     REPAIR_BUTTON = '#menu:repair/button'
@@ -551,6 +553,8 @@ class MENU(object):
     TANK_PARAMS_ROCKETACCELERATIONENGINEPOWER = '#menu:tank_params/rocketAccelerationEnginePower'
     TANK_PARAMS_ROCKETACCELERATIONSPEEDLIMITS = '#menu:tank_params/rocketAccelerationSpeedLimits'
     TANK_PARAMS_ROCKETACCELERATIONREUSEANDDURATION = '#menu:tank_params/rocketAccelerationReuseAndDuration'
+    TANK_PARAMS_DUALACCURACYCOOLINGDELAY = '#menu:tank_params/dualAccuracyCoolingDelay'
+    TANK_PARAMS_DUALACCURACYCOOLINGDELAY_EXTENDEDTITLE = '#menu:tank_params/dualAccuracyCoolingDelay/extendedTitle'
     TANK_PARAMS_TIMEOFREACHING = '#menu:tank_params/timeOfReaching'
     TANK_PARAMS_ATTAINABLESPEED = '#menu:tank_params/attainableSpeed'
     TANK_PARAMS_HULLARMOR = '#menu:tank_params/hullArmor'
@@ -864,6 +868,10 @@ class MENU(object):
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7DISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Disabled/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7BANISSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7BanIsSet/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7BANISSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7BanIsSet/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_HEADER = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_BODY = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7RATINGCALCULATION_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7RatingCalculation/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7RATINGCALCULATION_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7RatingCalculation/body'
     HEADERBUTTONS_DEFAULTCOUNTER = '#menu:headerButtons/defaultCounter'
     HEADERBUTTONS_RATING = '#menu:headerButtons/rating'
     HEADERBUTTONS_PROFILE = '#menu:headerButtons/profile'
@@ -1133,6 +1141,7 @@ class MENU(object):
     MODULEINFO_AUTORELOADGUNLABEL = '#menu:moduleInfo/autoReloadGunLabel'
     MODULEINFO_AUTORELOADGUNLABEL_BOOST = '#menu:moduleInfo/autoReloadGunLabel/boost'
     MODULEINFO_DUALGUNLABEL = '#menu:moduleInfo/dualGunLabel'
+    MODULEINFO_DUALACCURACYGUNLABEL = '#menu:moduleInfo/dualAccuracyGunLabel'
     MODULEINFO_TRACKWITHINTRACKCHASSISLABEL = '#menu:moduleInfo/trackWithinTrackChassisLabel'
     MODULEINFO_HYDRAULICCHASSISLABEL = '#menu:moduleInfo/hydraulicChassisLabel'
     MODULEINFO_HYDRAULICAUTOSIEGECHASSISLABEL = '#menu:moduleInfo/hydraulicAutoSiegeChassisLabel'
@@ -1164,6 +1173,9 @@ class MENU(object):
     MODULEINFO_PARAMS_SHELLSCOUNT = '#menu:moduleInfo/params/shellsCount'
     MODULEINFO_PARAMS_SHELLRELOADINGTIME = '#menu:moduleInfo/params/shellReloadingTime'
     MODULEINFO_PARAMS_RELOADMAGAZINETIME = '#menu:moduleInfo/params/reloadMagazineTime'
+    MODULEINFO_PARAMS_BURSTTIMEINTERVAL = '#menu:moduleInfo/params/burstTimeInterval'
+    MODULEINFO_PARAMS_BURSTCOUNT = '#menu:moduleInfo/params/burstCount'
+    MODULEINFO_PARAMS_BURSTSIZE = '#menu:moduleInfo/params/burstSize'
     MODULEINFO_PARAMS_AUTORELOADTIME = '#menu:moduleInfo/params/autoReloadTime'
     MODULEINFO_PARAMS_AUTORELOADTIME_BOOST = '#menu:moduleInfo/params/autoReloadTime/boost'
     MODULEINFO_PARAMS_RELOADTIME = '#menu:moduleInfo/params/reloadTime'
@@ -1180,6 +1192,8 @@ class MENU(object):
     MODULEINFO_PARAMS_ARMOR = '#menu:moduleInfo/params/armor'
     MODULEINFO_PARAMS_ROTATIONSPEED = '#menu:moduleInfo/params/rotationSpeed'
     MODULEINFO_PARAMS_DISPERTIONRADIUS = '#menu:moduleInfo/params/dispertionRadius'
+    MODULEINFO_PARAMS_DUALACCURACYCOOLINGDELAY = '#menu:moduleInfo/params/dualAccuracyCoolingDelay'
+    MODULEINFO_PARAMS_BURSTFIRERATE = '#menu:moduleInfo/params/burstFireRate'
     MODULEINFO_PARAMS_AIMINGTIME = '#menu:moduleInfo/params/aimingTime'
     MODULEINFO_PARAMS_FIRESTARTINGCHANCE = '#menu:moduleInfo/params/fireStartingChance'
     MODULEINFO_PARAMS_RADIODISTANCE = '#menu:moduleInfo/params/radioDistance'
@@ -1244,6 +1258,7 @@ class MENU(object):
     VEHICLEINFO_PARAMS_GUNYAWLIMITS = '#menu:vehicleInfo/params/gunYawLimits'
     VEHICLEINFO_PARAMS_AIMINGTIME = '#menu:vehicleInfo/params/aimingTime'
     VEHICLEINFO_PARAMS_SHOTDISPERSIONANGLE = '#menu:vehicleInfo/params/shotDispersionAngle'
+    VEHICLEINFO_PARAMS_DUALACCURACYCOOLINGDELAY = '#menu:vehicleInfo/params/dualAccuracyCoolingDelay'
     VEHICLEINFO_PARAMS_AVGDAMAGEPERMINUTE = '#menu:vehicleInfo/params/avgDamagePerMinute'
     VEHICLEINFO_PARAMS_ENGINEPOWERPERTON = '#menu:vehicleInfo/params/enginePowerPerTon'
     VEHICLEINFO_PARAMS_CLIPFIRERATE = '#menu:vehicleInfo/params/clipFireRate'
@@ -2066,7 +2081,7 @@ class MENU(object):
     DISCOUNT_DESCRIPTION_VEHICLE = '#menu:discount/description/vehicle'
     CONTEXTMENU_VIEWCLANPROFILE = '#menu:contextMenu/viewClanProfile'
     CONTEXTMENU_COPYCLANNAME = '#menu:contextMenu/copyClanName'
-    CONTEXTMENU_WOTPLUSRENT = '#menu:contextMenu/wotPlusRent'
+    CONTEXTMENU_TELECOMRENT = '#menu:contextMenu/telecomRent'
     INFINITYSYMBOL = '#menu:infinitySymbol'
     HEADERBUTTONS_BATTLE_TYPES_EPICBATTLE = '#menu:headerButtons/battle/types/epicBattle'
     HEADERBUTTONS_BATTLE_TYPES_EPICBATTLE_DESCR = '#menu:headerButtons/battle/types/epicBattle/descr'
@@ -2178,12 +2193,12 @@ class MENU(object):
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_SWEDEN_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/sweden/blueprints'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_POLAND_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/poland/blueprints'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_ITALY_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/italy/blueprints'
-    INTERNET_PROVIDER_ROSTELECOM_NAME = '#menu:internet_provider/Rostelecom/name'
-    INTERNET_PROVIDER_ROSTELECOM_TARIFF = '#menu:internet_provider/Rostelecom/tariff'
-    INTERNET_PROVIDER_BELTELECOM_NAME = '#menu:internet_provider/Beltelecom/name'
-    INTERNET_PROVIDER_BELTELECOM_TARIFF = '#menu:internet_provider/Beltelecom/tariff'
-    INTERNET_PROVIDER_KYIVSTAR_NAME = '#menu:internet_provider/Kyivstar/name'
-    INTERNET_PROVIDER_KYIVSTAR_TARIFF = '#menu:internet_provider/Kyivstar/tariff'
+    INTERNET_PROVIDER_LOCALPARTNER2_NAME = '#menu:internet_provider/LocalPartner2/name'
+    INTERNET_PROVIDER_LOCALPARTNER2_TARIFF = '#menu:internet_provider/LocalPartner2/tariff'
+    INTERNET_PROVIDER_LOCALPARTNER3_NAME = '#menu:internet_provider/LocalPartner3/name'
+    INTERNET_PROVIDER_LOCALPARTNER3_TARIFF = '#menu:internet_provider/LocalPartner3/tariff'
+    INTERNET_PROVIDER_LOCALPARTNER4_NAME = '#menu:internet_provider/LocalPartner4/name'
+    INTERNET_PROVIDER_LOCALPARTNER4_TARIFF = '#menu:internet_provider/LocalPartner4/tariff'
     INTERNET_PROVIDER_KAZAKHTELECOM_NAME = '#menu:internet_provider/Kazakhtelecom/name'
     INTERNET_PROVIDER_KAZAKHTELECOM_TARIFF = '#menu:internet_provider/Kazakhtelecom/tariff'
     INTERNET_PROVIDER_BEELINEKZ_NAME = '#menu:internet_provider/BeelineKZ/name'
@@ -2218,7 +2233,6 @@ class MENU(object):
     CRYSTALS_INFO_TAB_EARN_LEVEL_DESCRIPTIONCONTENT_LEVEL9 = '#menu:crystals/info/tab/earn/level/descriptionContent/level9'
     CRYSTALS_INFO_TAB_EARN_LEVEL_MOD_0 = '#menu:crystals/info/tab/earn/level/mod/0'
     CRYSTALS_INFO_TAB_EARN_LEVEL_MOD_1 = '#menu:crystals/info/tab/earn/level/mod/1'
-    CRYSTALS_INFO_TAB_EARN_LEVEL_MOD_2 = '#menu:crystals/info/tab/earn/level/mod/2'
     CRYSTALS_INFO_TAB_EARN_MARKER_TITLE = '#menu:crystals/info/tab/earn/marker/title'
     CRYSTALS_INFO_TAB_EARN_MARKER_DESCRIPTION_1 = '#menu:crystals/info/tab/earn/marker/description/1'
     CRYSTALS_INFO_TAB_EARN_MARKER_DESCRIPTION_2 = '#menu:crystals/info/tab/earn/marker/description/2'
@@ -2288,7 +2302,6 @@ class MENU(object):
     CRYSTALS_INFO_TAB_GET_DESCRIPTION = '#menu:crystals/info/tab/get/description'
     CRYSTALS_INFO_TAB_GET_RANDOM = '#menu:crystals/info/tab/get/random'
     CRYSTALS_INFO_TAB_GET_GENERAL = '#menu:crystals/info/tab/get/general'
-    CRYSTALS_INFO_TAB_GET_RANKED = '#menu:crystals/info/tab/get/ranked'
     CRYSTALS_INFO_TAB_GET_CARD_CONDITION = '#menu:crystals/info/tab/get/card/condition'
     CRYSTALS_INFO_TAB_GET_CARD_WIN = '#menu:crystals/info/tab/get/card/win'
     CRYSTALS_INFO_TAB_GET_CARD_DEFEAT = '#menu:crystals/info/tab/get/card/defeat'
@@ -2402,7 +2415,7 @@ class MENU(object):
      CONTEXTMENU_GOTOBLUEPRINT,
      CONTEXTMENU_VIEWCLANPROFILE,
      CONTEXTMENU_COPYCLANNAME,
-     CONTEXTMENU_WOTPLUSRENT)
+     CONTEXTMENU_TELECOMRENT)
     NATIONS_ENUM = (NATIONS_TITLE,
      NATIONS_USSR,
      NATIONS_GERMANY,
@@ -2463,6 +2476,7 @@ class MENU(object):
      TANKCAROUSEL_VEHICLESTATES_FALLOUT_ONLY,
      TANKCAROUSEL_VEHICLESTATES_DEALISOVER,
      TANKCAROUSEL_VEHICLESTATES_SUBSCRIPTION_SUSPENDED,
+     TANKCAROUSEL_VEHICLESTATES_WOT_PLUS_EXCLUSIVE_VEHICLE_DISABLED,
      TANKCAROUSEL_VEHICLESTATES_UNSUITABLETOUNIT,
      TANKCAROUSEL_VEHICLESTATES_DISABLED,
      TANKCAROUSEL_VEHICLESTATES_TOOHEAVY,
@@ -2654,6 +2668,8 @@ class MENU(object):
      TANK_PARAMS_ROCKETACCELERATIONENGINEPOWER,
      TANK_PARAMS_ROCKETACCELERATIONSPEEDLIMITS,
      TANK_PARAMS_ROCKETACCELERATIONREUSEANDDURATION,
+     TANK_PARAMS_DUALACCURACYCOOLINGDELAY,
+     TANK_PARAMS_DUALACCURACYCOOLINGDELAY_EXTENDEDTITLE,
      TANK_PARAMS_TIMEOFREACHING,
      TANK_PARAMS_ATTAINABLESPEED,
      TANK_PARAMS_HULLARMOR,
@@ -2870,14 +2886,14 @@ class MENU(object):
      CST_ITEM_CTX_MENU_PUTONTHIRD,
      CST_ITEM_CTX_MENU_UNLOAD,
      CST_ITEM_CTX_MENU_DECONSTRUCT)
-    INTERNET_PROVIDER_ALL_NAME_ENUM = (INTERNET_PROVIDER_ROSTELECOM_NAME,
-     INTERNET_PROVIDER_BELTELECOM_NAME,
-     INTERNET_PROVIDER_KYIVSTAR_NAME,
+    INTERNET_PROVIDER_ALL_NAME_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_NAME,
+     INTERNET_PROVIDER_LOCALPARTNER3_NAME,
+     INTERNET_PROVIDER_LOCALPARTNER4_NAME,
      INTERNET_PROVIDER_KAZAKHTELECOM_NAME,
      INTERNET_PROVIDER_BEELINEKZ_NAME)
-    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (INTERNET_PROVIDER_ROSTELECOM_TARIFF,
-     INTERNET_PROVIDER_BELTELECOM_TARIFF,
-     INTERNET_PROVIDER_KYIVSTAR_TARIFF,
+    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_TARIFF,
+     INTERNET_PROVIDER_LOCALPARTNER3_TARIFF,
+     INTERNET_PROVIDER_LOCALPARTNER4_TARIFF,
      INTERNET_PROVIDER_KAZAKHTELECOM_TARIFF,
      INTERNET_PROVIDER_BEELINEKZ_TARIFF)
     BOOSTER_USERNAME_ENUM = (BOOSTER_USERNAME_BOOSTER_XP,

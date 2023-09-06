@@ -20,7 +20,10 @@ from gui.shared.event_dispatcher import showHangar
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.shared import IItemsCache
-SUPPORTED_ARENA_BONUS_TYPES = [ARENA_BONUS_TYPE.REGULAR, ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO, ARENA_BONUS_TYPE.EPIC_BATTLE]
+SUPPORTED_ARENA_BONUS_TYPES = [ARENA_BONUS_TYPE.REGULAR,
+ ARENA_BONUS_TYPE.COMP7,
+ ARENA_BONUS_TYPE.EPIC_BATTLE,
+ ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO]
 _rBattlePass = R.strings.battle_pass
 _logger = logging.getLogger(__name__)
 
@@ -43,14 +46,24 @@ class BattlePassHowToEarnPointsView(ViewImpl):
         super(BattlePassHowToEarnPointsView, self)._onLoading(*args, **kwargs)
         self.__createGeneralModel()
 
+    def __getGameMode(self, arenaType):
+        return self.__createBattleRoyalGameModel() if arenaType == ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO else self.__createGameModel(arenaType)
+
     def __createGeneralModel(self):
         with self.viewModel.transaction() as tx:
             gameModes = tx.getGameModes()
-            gameModes.clear()
-            for supportedArenaType in SUPPORTED_ARENA_BONUS_TYPES:
-                if supportedArenaType == ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO:
-                    gameModes.addViewModel(self.__createBattleRoyalGameModel())
-                gameModes.addViewModel(self.__createGameModel(supportedArenaType))
+            if not gameModes:
+                for supportedArenaType in SUPPORTED_ARENA_BONUS_TYPES:
+                    gameModes.addViewModel(self.__getGameMode(supportedArenaType))
+
+            else:
+                for gameMode in gameModes:
+                    arenaBonusType = gameMode.getArenaBonusType()
+                    newMode = self.__getGameMode(arenaBonusType)
+                    gameMode.setTitle(newMode.getTitle())
+                    gameMode.setText(newMode.getText())
+                    gameMode.setTableRows(newMode.getTableRows())
+                    gameMode.setCards(newMode.getCards())
 
             tx.setSyncInitiator((tx.getSyncInitiator() + 1) % 1000)
             tx.setChapterID(self.__chapterID)

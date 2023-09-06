@@ -244,14 +244,14 @@ def getArenaUniqueID(avatar=None):
     return None
 
 
-def updateVehicleSetting(code, value, avatar=None):
+def predictVehicleSetting(code, value, avatar=None):
     if avatar is None:
         avatar = BigWorld.player()
     vehicleid = avatar.playerVehicleID
     if avatar.getVehicleAttached() is not None:
         vehicleid = avatar.getVehicleAttached().id
     try:
-        avatar.updateVehicleSetting(vehicleid, code, value)
+        avatar.predictVehicleSetting(vehicleid, code, value)
     except AttributeError:
         _logger.exception('Attribute "updateVehicleSetting" not found')
 
@@ -269,11 +269,11 @@ def changeVehicleSetting(code, value, avatar=None):
     return
 
 
-def activateAvatarEquipment(equipmentID, avatar=None):
+def activateAvatarEquipment(equipmentID, avatar=None, index=0):
     if avatar is None:
         avatar = BigWorld.player()
     try:
-        avatar.cell.activateEquipment(equipmentID)
+        avatar.cell.activateEquipment(equipmentID, index)
     except AttributeError:
         _logger.exception('Attribute "cell.activateEquipment" not found')
 
@@ -447,18 +447,6 @@ def isBecomeObserverAfterDeath(avatar=None):
         result = avatar.isBecomeObserverAfterDeath()
     except AttributeError as error:
         _logger.exception('Attribute "isBecomeObserverAfterDeath" not found, exception %s', error.message)
-        result = False
-
-    return result
-
-
-def isObserverBothTeams(avatar=None):
-    if avatar is None:
-        avatar = BigWorld.player()
-    try:
-        result = BigWorld.player().isObserverBothTeams
-    except AttributeError as error:
-        _logger.exception('Attribute "isObserverBothTeams" not found, exception %s', error.message)
         result = False
 
     return result

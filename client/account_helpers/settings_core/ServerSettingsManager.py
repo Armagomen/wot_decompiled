@@ -89,6 +89,8 @@ class UI_STORAGE_KEYS(CONST_CONTAINER):
     POST_PROGRESSION_INTRO_SHOWN = 'post_progression_intro_shown'
     VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN = 'veh_preview_post_progression_bullet_shown'
     ACHIEVEMENT_EDIT_VIEW_VISITED = 'achievement_edit_view_visited'
+    DUAL_ACCURACY_HIGHLIGHTS_COUNTER = 'dual_accuracy_highlights_count'
+    DUAL_ACCURACY_MARK_IS_SHOWN = 'dual_accuracy_mark_shown'
 
 
 class BATTLE_MATTERS_KEYS(CONST_CONTAINER):
@@ -454,6 +456,7 @@ class ServerSettingsManager(object):
                                             GuiSettingsBehavior.VEH_POST_PROGRESSION_UNLOCK_MSG_NEED_SHOW: 26,
                                             GuiSettingsBehavior.BIRTHDAY_CALENDAR_INTRO_SHOWED: 27,
                                             GuiSettingsBehavior.RESOURCE_WELL_INTRO_SHOWN: 28,
+                                            GuiSettingsBehavior.COMP7_WHATS_NEW_SHOWN: 29,
                                             GuiSettingsBehavior.COMP7_INTRO_SHOWN: 30}, offsets={}),
      SETTINGS_SECTIONS.EULA_VERSION: Section(masks={}, offsets={'version': Offset(0, 4294967295L)}),
      SETTINGS_SECTIONS.MARKS_ON_GUN: Section(masks={}, offsets={GAME.SHOW_MARKS_ON_GUN: Offset(0, 4294967295L)}),
@@ -580,7 +583,9 @@ class ServerSettingsManager(object):
                                     UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER: Offset(19, 3670016),
                                     UI_STORAGE_KEYS.TURBOSHAFT_HIGHLIGHTS_COUNTER: Offset(23, 58720256)}),
      SETTINGS_SECTIONS.UI_STORAGE_2: Section(masks={UI_STORAGE_KEYS.ROCKET_ACCELERATION_MARK_IS_SHOWN: 0,
-                                      UI_STORAGE_KEYS.ACHIEVEMENT_EDIT_VIEW_VISITED: 4}, offsets={UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER: Offset(1, 14)}),
+                                      UI_STORAGE_KEYS.ACHIEVEMENT_EDIT_VIEW_VISITED: 4,
+                                      UI_STORAGE_KEYS.DUAL_ACCURACY_MARK_IS_SHOWN: 8}, offsets={UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER: Offset(1, 14),
+                                      UI_STORAGE_KEYS.DUAL_ACCURACY_HIGHLIGHTS_COUNTER: Offset(5, 224)}),
      SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS: Section(masks={}, offsets={BATTLE_MATTERS_KEYS.QUESTS_SHOWN: Offset(0, 255),
                                                BATTLE_MATTERS_KEYS.QUEST_PROGRESS: Offset(8, 4294967040L)}),
      SETTINGS_SECTIONS.QUESTS_PROGRESS: Section(masks={}, offsets={QUESTS_PROGRESS.VIEW_TYPE: Offset(0, 3),
@@ -779,6 +784,7 @@ class ServerSettingsManager(object):
     _MAX_DUAL_GUN_HIGHLIGHTS_COUNT = 5
     _MAX_TURBOSHAFT_HIGHLIGHTS_COUNT = 5
     _MAX_ROCKET_ACCELERATION_HIGHLIGHTS_COUNT = 5
+    _MAX_DUAL_ACCURACY_HIGHLIGHTS_COUNT = 5
 
     def __init__(self, core):
         self._core = weakref.proxy(core)
@@ -860,12 +866,11 @@ class ServerSettingsManager(object):
         return self.setSections([SETTINGS_SECTIONS.UI_STORAGE_2], fields)
 
     def getBPStorage(self, defaults=None):
-        if not self.settingsCache.isSynced():
-            return {}
-        storageData = self.getSection(SETTINGS_SECTIONS.BATTLE_PASS_STORAGE, defaults)
-        if updateBattlePassSettings(storageData):
-            self.saveInBPStorage(storageData)
-        return storageData
+        return {} if not self.settingsCache.isSynced() else self.getSection(SETTINGS_SECTIONS.BATTLE_PASS_STORAGE, defaults)
+
+    def updateBPStorageData(self, data, defaults=None):
+        if updateBattlePassSettings(data):
+            self.saveInBPStorage(data)
 
     def saveInBPStorage(self, settings):
         if self.settingsCache.isSynced():
@@ -882,6 +887,9 @@ class ServerSettingsManager(object):
 
     def checkRocketAccelerationHighlights(self, increase=False):
         return self.__checkUIHighlights(UI_STORAGE_KEYS.ROCKET_ACCELERATION_HIGHLIGHTS_COUNTER, self._MAX_ROCKET_ACCELERATION_HIGHLIGHTS_COUNT, increase)
+
+    def checkDualAccuracyHighlights(self, increase=False):
+        return self.__checkUIHighlights(UI_STORAGE_KEYS.DUAL_ACCURACY_HIGHLIGHTS_COUNTER, self._MAX_DUAL_ACCURACY_HIGHLIGHTS_COUNT, increase)
 
     def updateUIStorageCounter(self, key, step=1):
         storageSection = self.getSection(SETTINGS_SECTIONS.UI_STORAGE)
@@ -911,6 +919,8 @@ class ServerSettingsManager(object):
         self.setSectionSettings(SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS, {BATTLE_MATTERS_KEYS.QUEST_PROGRESS: lastSeenProgress})
 
     def getLimitedUIProgress(self, storageIdx, offset):
+        if not self.settingsCache.isSynced():
+            return False
         if storageIdx >= len(LIMITED_UI_STORAGES):
             LOG_ERROR("Can't read LimitedUI flag. storageIdx is out of range")
             return 0
@@ -919,16 +929,34 @@ class ServerSettingsManager(object):
         return flags & 1 << offset
 
     def setLimitedUIProgress(self, storageIdx, offset):
+        if not self.settingsCache.isSynced():
+            return False
         if storageIdx >= len(LIMITED_UI_STORAGES):
             LOG_ERROR("Can't store LimitedUI flag. storageIdx is out of range")
-            return
+            return False
         luiProgress = self.getLimitedUIProgress(storageIdx, offset)
         if luiProgress:
-            return
+            return True
         storageID = LIMITED_UI_STORAGES[storageIdx]
         flags = self.getSectionSettings(storageID, LIMITED_UI_KEY, 0)
         flags |= 1 << offset
         self.setSectionSettings(storageID, {LIMITED_UI_KEY: flags})
+        return True
+
+    def setLimitedUIGroupProgress(self, data):
+        if not self.settingsCache.isSynced():
+            return False
+        settings = {}
+        for storageIdx, offsets in data.iteritems():
+            storageID = LIMITED_UI_STORAGES[storageIdx]
+            flags = self.getSectionSettings(storageID, LIMITED_UI_KEY, 0)
+            for offset in offsets:
+                flags |= 1 << offset
+
+            settings[storageID] = flags
+
+        self.setSettings(settings)
+        return True
 
     def setLimitedUIFullComplete(self, offset):
         settings = {storage:4294967295L for storage in LIMITED_UI_STORAGES}
@@ -1149,7 +1177,8 @@ class ServerSettingsManager(object):
          'clear': {},
          'delete': [],
          SETTINGS_SECTIONS.LIMITED_UI_1: {},
-         SETTINGS_SECTIONS.LIMITED_UI_2: {}}
+         SETTINGS_SECTIONS.LIMITED_UI_2: {},
+         SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS: {}}
         yield migrateToVersion(currentVersion, self._core, data)
         self._setSettingsSections(data)
         callback(self)

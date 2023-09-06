@@ -16,7 +16,7 @@ from gui.impl import backport
 from gui.impl.gen import R
 from gui.ranked_battles.ranked_helpers import getQualificationBattlesCountFromID, isQualificationQuestID
 from gui.server_events import events_helpers, finders
-from gui.server_events.events_constants import BATTLE_MATTERS_QUEST_ID, BATTLE_MATTERS_INTERMEDIATE_QUEST_ID
+from gui.server_events.events_constants import BATTLE_MATTERS_QUEST_ID, BATTLE_MATTERS_INTERMEDIATE_QUEST_ID, BATTLE_MATTERS_COMPENSATION_QUEST_ID
 from gui.server_events.bonuses import compareBonuses, getBonuses
 from gui.server_events.events_helpers import isDailyQuest, isPremium, getIdxFromQuestID
 from gui.server_events.formatters import getLinkedActionID
@@ -406,9 +406,12 @@ class Quest(ServerEventAbstract):
     def getProgressData(self):
         return self._progress or {}
 
+    def getRawBonuses(self):
+        return self.getData().get('bonus', {})
+
     def getBonuses(self, bonusName=None, isCompensation=False, bonusData=None, ctx=None):
         result = []
-        bonusData = bonusData or self._data.get('bonus', {})
+        bonusData = bonusData or self.getRawBonuses()
         if bonusName is None:
             for name, value in bonusData.iteritems():
                 for bonus in getBonuses(self, name, value, isCompensation, ctx=ctx):
@@ -1368,7 +1371,7 @@ class BattleMattersTokenQuestBuilder(IQuestBuilder):
 
     @classmethod
     def isSuitableQuest(cls, questType, qID):
-        return False if questType != constants.EVENT_TYPE.TOKEN_QUEST else qID.startswith(BATTLE_MATTERS_QUEST_ID) or qID.startswith(BATTLE_MATTERS_INTERMEDIATE_QUEST_ID)
+        return False if questType != constants.EVENT_TYPE.TOKEN_QUEST else qID.startswith(BATTLE_MATTERS_QUEST_ID) or qID.startswith(BATTLE_MATTERS_INTERMEDIATE_QUEST_ID) or qID.startswith(BATTLE_MATTERS_COMPENSATION_QUEST_ID)
 
     @classmethod
     def buildQuest(cls, questType, qID, data, progress=None, expiryTime=None):
@@ -1401,7 +1404,7 @@ class BattleMattersQuestBuilder(IQuestBuilder):
 
     @classmethod
     def isSuitableQuest(cls, questType, qID):
-        return qID.startswith(BATTLE_MATTERS_QUEST_ID)
+        return qID.startswith(BATTLE_MATTERS_QUEST_ID) or qID.startswith(BATTLE_MATTERS_COMPENSATION_QUEST_ID)
 
     @classmethod
     def buildQuest(cls, questType, qID, data, progress=None, expiryTime=None):

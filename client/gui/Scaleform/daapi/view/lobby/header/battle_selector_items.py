@@ -196,6 +196,15 @@ class _SelectorExtraItem(_SelectorItem):
 class _MapsTrainingItem(_SelectorItem):
     mapsTrainingController = dependency.descriptor(IMapsTrainingController)
 
+    def isRandomBattle(self):
+        return True
+
+    def setLocked(self, value):
+        self._isLocked = value
+        if self._isLocked:
+            self._isDisabled = True
+            self._isSelected = False
+
     def _update(self, state):
         self._isVisible = True
         if self.mapsTrainingController.isMapsTrainingEnabled:
@@ -850,6 +859,7 @@ class EpicBattleItem(SelectorItem):
         self.__epicController.storeCycle()
         if self._selectorType is not None:
             self._isNew = not selectorUtils.isKnownBattleType(self._selectorType)
+        self._isLocked = not self.__epicController.isEnabled()
         return
 
     def __getScheduleStr(self):
@@ -894,6 +904,9 @@ class EpicBattleItem(SelectorItem):
 class _Comp7Item(_SelectorItem):
     __comp7Controller = dependency.descriptor(IComp7Controller)
     __bootcampController = dependency.descriptor(IBootcampController)
+
+    def isInSquad(self, state):
+        return state.isInUnit(PREBATTLE_TYPE.COMP7)
 
     def isRandomBattle(self):
         return True

@@ -95,10 +95,10 @@ class HangarCarouselDataProvider(CarouselDataProvider):
         isVehicleRemoved = not set(vehiclesCDs or ()).issubset(newRentalsVehicles)
         isVehicleAdded = not set(vehiclesCDs or ()).issubset(rentalVehicles)
         if changeInRentals or isVehicleRemoved or isVehicleAdded:
-            rentPendingVehCD = self._telecomRentals.getRentsPending()
-            rentPendingVehCD = rentPendingVehCD.intersection(newRentalsVehicles)
-            if isVehicleAdded and rentPendingVehCD:
-                self._telecomRentals.resetRentsPending(rentPendingVehCD)
+            telecomPendingVehCD = self._telecomRentals.getRentsPending()
+            telecomPendingVehCD = telecomPendingVehCD.intersection(newRentalsVehicles)
+            if isVehicleAdded and telecomPendingVehCD:
+                self._telecomRentals.resetRentsPending(telecomPendingVehCD)
             self.buildList()
             return
         super(HangarCarouselDataProvider, self).updateVehicles(vehiclesCDs, filterCriteria, forceUpdate)
@@ -116,6 +116,7 @@ class HangarCarouselDataProvider(CarouselDataProvider):
 
     def _setBaseCriteria(self):
         self._baseCriteria = REQ_CRITERIA.INVENTORY
+        self._baseCriteria |= ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN
         self._baseCriteria |= ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
 
     def _buildTelecomRentalVehicleItems(self):

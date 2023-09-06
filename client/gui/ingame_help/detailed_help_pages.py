@@ -27,13 +27,14 @@ class HelpPagePriority(object):
     TRACK_WITHIN_TRACK = 2
     ROCKET_ACCELERATION = 3
     TURBOSHAFT_ENGINE = 4
-    BATTLE_ROYALE = 5
-    DUAL_GUN = 6
-    WHEELED = 7
-    BURNOUT = 8
-    SIEGE_MODE = 9
-    ROLE_TYPE = 10
-    COMP7 = 11
+    DUAL_ACCURACY = 5
+    BATTLE_ROYALE = 6
+    DUAL_GUN = 7
+    WHEELED = 8
+    BURNOUT = 9
+    SIEGE_MODE = 10
+    ROLE_TYPE = 11
+    COMP7 = 12
 
 
 def addPage(datailedList, headerTitle, title, descr, vKeys, buttons, image, roleImage=None, roleActions=None, hintCtx=None):
@@ -224,7 +225,7 @@ class BattleRoyalePagesBuilder(DetailedHelpPagesBuilder):
     @classmethod
     def buildPages(cls, ctx):
         pages = []
-        headerTitle = buildTitle(ctx)
+        headerTitle = backport.text(R.strings.ingame_help.detailsHelp.default.title())
         mapGeometryName = ctx['mapGeometryName']
         mapResourceName = 'c_' + replaceHyphenToUnderscore(mapGeometryName)
         imagePath = R.images.gui.maps.icons.battleHelp.battleRoyale.dyn(mapResourceName)
@@ -232,6 +233,7 @@ class BattleRoyalePagesBuilder(DetailedHelpPagesBuilder):
             raise SoftException('No icons found for map {}'.format(mapGeometryName))
         addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.radar.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.radar.description())), [], [], backport.image(imagePath.br_radar()), hintCtx=HelpHintContext.BATTLE_ROYALE)
         addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.zone.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.zone.description())), [], [], backport.image(imagePath.br_zone()), hintCtx=HelpHintContext.BATTLE_ROYALE)
+        addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.sectorVision.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.sectorVision.description())), [], [], backport.image(imagePath.br_sector()), hintCtx=HelpHintContext.BATTLE_ROYALE)
         addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.airDrop.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.airDrop.description())), [], [], backport.image(imagePath.br_airdrop()), hintCtx=HelpHintContext.BATTLE_ROYALE)
         addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.upgrade.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.upgrade.description())), [], [], backport.image(imagePath.br_tree()), hintCtx=HelpHintContext.BATTLE_ROYALE)
         addPage(pages, headerTitle, backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.uniqueAbilities.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.battleRoyale.uniqueAbilities.description())), [], [], backport.image(imagePath.br_unique_abilities()), hintCtx=HelpHintContext.BATTLE_ROYALE)
@@ -290,6 +292,27 @@ class RocketAccelerationPagesBuilder(DetailedHelpPagesBuilder):
         hasRocketAcceleration = vehicle is not None and vehicle.typeDescriptor.hasRocketAcceleration
         ctx['hasUniqueVehicleHelpScreen'] = ctx.get('hasUniqueVehicleHelpScreen') or hasRocketAcceleration
         ctx['hasRocketAcceleration'] = hasRocketAcceleration
+        return
+
+
+class DualAccuracyPagesBuilder(DetailedHelpPagesBuilder):
+    _SUITABLE_CTX_KEYS = ('hasDualAccuracy',)
+
+    @classmethod
+    def priority(cls):
+        return HelpPagePriority.DUAL_ACCURACY
+
+    @classmethod
+    def buildPages(cls, ctx):
+        pages = []
+        addPage(pages, buildTitle(ctx), backport.text(R.strings.ingame_help.detailsHelp.dualAccuracy.mechanics.title()), text_styles.mainBig(backport.text(R.strings.ingame_help.detailsHelp.dualAccuracy.mechanics())), [], [], backport.image(R.images.gui.maps.icons.battleHelp.dualAccuracy.mechanics()), hintCtx=HelpHintContext.MECHANICS)
+        return pages
+
+    @classmethod
+    def _collectHelpCtx(cls, ctx, arenaVisitor, vehicle):
+        hasDualAccuracy = vehicle is not None and vehicle.typeDescriptor.hasDualAccuracy
+        ctx['hasUniqueVehicleHelpScreen'] = ctx.get('hasUniqueVehicleHelpScreen') or hasDualAccuracy
+        ctx['hasDualAccuracy'] = hasDualAccuracy
         return
 
 
@@ -377,4 +400,5 @@ registerIngameHelpPagesBuilders((SiegeModePagesBuilder,
  RoleTypePagesBuilder,
  RocketAccelerationPagesBuilder,
  Comp7PagesBuilder,
- MapboxPagesBuilder))
+ MapboxPagesBuilder,
+ DualAccuracyPagesBuilder))

@@ -12,7 +12,8 @@ if typing.TYPE_CHECKING:
     from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
     from vehicle_systems.CompoundAppearance import CompoundAppearance
     from points_of_interest.components import PoiStateComponent
-    from cgf_components.zone_components import ZoneMarker, MinimapChanger, ZoneUINotification
+    from cgf_components.zone_components import ZoneMarker, ZoneUINotification
+    from UIComponents import MinimapChangerComponent
 
 class IArenaController(IBattleController):
     __slots__ = ('__weakref__',)
@@ -321,9 +322,6 @@ class IVehicleCountController(IArenaVehiclesController, ViewComponentsController
     def updateAttachedVehicle(self, vehicleID):
         raise NotImplementedError
 
-    def updateLives(self, lives):
-        raise NotImplementedError
-
 
 class IPrebattleSetupsController(IArenaPeriodController, IArenaLoadController, ViewComponentsController):
 
@@ -516,4 +514,31 @@ class IMapZonesController(IBattleController):
         raise NotImplementedError
 
     def getTransformedZones(self):
+        raise NotImplementedError
+
+
+class IOverrideSettingsController(IArenaController):
+    __slots__ = ()
+
+    @property
+    def defaultTab(self):
+        raise NotImplementedError
+
+    @property
+    def disabledTabs(self):
+        raise NotImplementedError
+
+    def getCtrlScope(self):
+        return _SCOPE.OVERRIDE_SETTINGS
+
+
+class IAimingSoundsCtrl(IBattleController):
+
+    def startControl(self, *_):
+        pass
+
+    def stopControl(self):
+        pass
+
+    def updateDispersion(self, multFactor, aimingFactor, idealFactor, dualAccMultFactor, dualAccFactor, idealDualAccFactor, hasDualAcc):
         raise NotImplementedError
