@@ -111,6 +111,8 @@ class INGAME_GUI(object):
     CHAT_SHORTCUTS_ATTACKING_BASE_NUMBERED = '#ingame_gui:chat_shortcuts/attacking_base_numbered'
     CHAT_SHORTCUTS_ATTENTION_TO_OBJECTIVE_ATK = '#ingame_gui:chat_shortcuts/attention_to_objective_atk'
     CHAT_SHORTCUTS_ATTENTION_TO_OBJECTIVE_ATK_AUTOCOMMIT = '#ingame_gui:chat_shortcuts/attention_to_objective_atk_autocommit'
+    CHAT_SHORTCUTS_MOVE_TO_TARGET = '#ingame_gui:chat_shortcuts/move_to_target'
+    CHAT_SHORTCUTS_MOVE_TO_TARGET_AUTOCOMMIT = '#ingame_gui:chat_shortcuts/move_to_target_autocommit'
     CHAT_SHORTCUTS_ATTENTION_TO_BASE_DEF = '#ingame_gui:chat_shortcuts/attention_to_base_def'
     CHAT_SHORTCUTS_ATTENTION_TO_BASE_DEF_NUMBERED = '#ingame_gui:chat_shortcuts/attention_to_base_def_numbered'
     CHAT_SHORTCUTS_DEFENDING_BASE = '#ingame_gui:chat_shortcuts/defending_base'
@@ -557,6 +559,7 @@ class INGAME_GUI(object):
     POSTMORTEM_MESSAGES_DEATH_FROM_THUNDER_STRIKE = '#ingame_gui:postmortem_messages/DEATH_FROM_THUNDER_STRIKE'
     POSTMORTEM_MESSAGES_DEATH_FROM_CORRODING_SHOT = '#ingame_gui:postmortem_messages/DEATH_FROM_CORRODING_SHOT'
     POSTMORTEM_MESSAGES_DEATH_FROM_CLING_BRANDER = '#ingame_gui:postmortem_messages/DEATH_FROM_CLING_BRANDER'
+    POSTMORTEM_MESSAGES_DEATH_FROM_BR_BOT = '#ingame_gui:postmortem_messages/DEATH_FROM_BR_BOT'
     POSTMORTEM_MESSAGES_DEATH_FROM_SHOT_ARCADE_BOMBER_BATTLE_ROYALE = '#ingame_gui:postmortem_messages/DEATH_FROM_SHOT_ARCADE_BOMBER_BATTLE_ROYALE'
     PLAYER_MESSAGES_DEATH_FROM_OVERTURN_SELF_SUICIDE = '#ingame_gui:player_messages/DEATH_FROM_OVERTURN_SELF_SUICIDE'
     PLAYER_MESSAGES_DEATH_FROM_OVERTURN_SELF_ALLY = '#ingame_gui:player_messages/DEATH_FROM_OVERTURN_SELF_ALLY'
@@ -998,6 +1001,10 @@ class INGAME_GUI(object):
     DANGER_ZONE_INDICATOR = '#ingame_gui:danger_zone/indicator'
     WARNING_ZONE_INDICATOR = '#ingame_gui:warning_zone/indicator'
     STATUSNOTIFICATIONTIMERS_STATICDEATHZONE = '#ingame_gui:statusNotificationTimers/staticDeathZone'
+    DEVMAPS_HINT_PRESS = '#ingame_gui:devMaps/hint/press'
+    DEVMAPS_HINT_DESCRIPTION = '#ingame_gui:devMaps/hint/description'
+    DEVMAPS_MAPINFO_TEXT = '#ingame_gui:devMaps/mapInfo/text'
+    DEVMAPS_MAPINFO_INFO = '#ingame_gui:devMaps/mapInfo/info'
     CHAT_SHORTCUTS_ENUM = (CHAT_SHORTCUTS_ATTENTION_TO_POSITION_GRIDINFO,
      CHAT_SHORTCUTS_ATTENTION_TO_POSITION,
      CHAT_SHORTCUTS_GOING_THERE_GRIDINFO,
@@ -1024,6 +1031,8 @@ class INGAME_GUI(object):
      CHAT_SHORTCUTS_ATTACKING_BASE_NUMBERED,
      CHAT_SHORTCUTS_ATTENTION_TO_OBJECTIVE_ATK,
      CHAT_SHORTCUTS_ATTENTION_TO_OBJECTIVE_ATK_AUTOCOMMIT,
+     CHAT_SHORTCUTS_MOVE_TO_TARGET,
+     CHAT_SHORTCUTS_MOVE_TO_TARGET_AUTOCOMMIT,
      CHAT_SHORTCUTS_ATTENTION_TO_BASE_DEF,
      CHAT_SHORTCUTS_ATTENTION_TO_BASE_DEF_NUMBERED,
      CHAT_SHORTCUTS_DEFENDING_BASE,

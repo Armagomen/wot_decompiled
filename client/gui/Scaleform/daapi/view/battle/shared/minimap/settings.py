@@ -35,6 +35,7 @@ class ENTRY_SYMBOL_NAME(object):
     BOMBER_ENTRY = 'BomberEntry'
     RECON_ENTRY = 'ReconEntry'
     SMOKE_ENTRY = 'SmokeEntry'
+    DEATH_ZONE = 'HWDeathZoneEntryUI'
     VEHICLE = 'VehicleEntry'
     VIEW_POINT = 'ViewPointEntry'
     DEAD_POINT = 'DeadPointEntry'
@@ -120,7 +121,8 @@ EQ_MARKER_TO_SYMBOL = {'artillery': ENTRY_SYMBOL_NAME.ARTILLERY_ENTRY,
  'artillery_fort_enemy': ENTRY_SYMBOL_NAME.AOE_ARTILLERY_ENTRY,
  'bomber': ENTRY_SYMBOL_NAME.BOMBER_ENTRY,
  'recon': ENTRY_SYMBOL_NAME.RECON_ENTRY,
- 'smoke': ENTRY_SYMBOL_NAME.SMOKE_ENTRY}
+ 'smoke': ENTRY_SYMBOL_NAME.SMOKE_ENTRY,
+ 'EventDeathZoneUI': ENTRY_SYMBOL_NAME.DEATH_ZONE}
 
 class SettingsTypes(Enum):
     MinimapVehicles = 0

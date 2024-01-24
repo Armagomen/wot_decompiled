@@ -233,6 +233,32 @@ class CommonTankAppearance(ScriptGameObject):
 
         return prereqs
 
+    @staticmethod
+    def collectPrerequisitesForEventBattle(typeDescriptor, outfit, spaceID, isTurretDetached, damageState):
+        isUndamaged = VehicleDamageState.isUndamagedModel(damageState)
+        prereqs = typeDescriptor.prerequisites(True)
+        attachments = camouflages.getAttachments(outfit, typeDescriptor) if isUndamaged else []
+        prereqs.extend(camouflages.getCamoPrereqs(outfit, typeDescriptor))
+        prereqs.extend(camouflages.getModelAnimatorsPrereqs(outfit, spaceID))
+        prereqs.extend(camouflages.getAttachmentsAnimatorsPrereqs(attachments, spaceID))
+        splineDesc = typeDescriptor.chassis.splineDesc
+        modelsSet = outfit.modelsSet
+        if splineDesc is not None:
+            for _, trackDesc in splineDesc.trackPairs.iteritems():
+                prereqs += trackDesc.prerequisites(modelsSet)
+
+        modelsSetParams = ModelsSetParams(outfit.modelsSet, damageState, attachments)
+        compoundAssembler = model_assembler.prepareCompoundAssembler(typeDescriptor, modelsSetParams, spaceID, isTurretDetached)
+        prereqs.append(compoundAssembler)
+        collisionAssembler = model_assembler.prepareCollisionAssembler(typeDescriptor, isTurretDetached, spaceID)
+        prereqs.append(collisionAssembler)
+        physicalTracksBuilders = typeDescriptor.chassis.physicalTracks
+        for name, builders in physicalTracksBuilders.iteritems():
+            for index, builder in enumerate(builders):
+                prereqs.append(builder.createLoader(spaceID, '{0}{1}PhysicalTrack'.format(name, index), modelsSetParams.skin))
+
+        return prereqs
+
     def construct(self, isPlayer, resourceRefs):
         self.__isObserver = 'observer' in self.typeDescriptor.type.tags
         self._compoundModel = resourceRefs[self.typeDescriptor.name]

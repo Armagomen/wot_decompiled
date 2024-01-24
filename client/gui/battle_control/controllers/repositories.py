@@ -194,6 +194,9 @@ class SharedControllersLocator(_ControllersLocator, ISharedControllersLocator):
 class DynamicControllersLocator(_ControllersLocator, IDynamicControllersLocator):
     __slots__ = ()
 
+    def getControllerByID(self, ctrlID):
+        return self._repository.getController(ctrlID)
+
     @property
     def debug(self):
         return self._repository.getController(BATTLE_CTRL_ID.DEBUG)
@@ -417,12 +420,12 @@ class SharedControllersRepository(_ControllersRepository):
         return repository
 
 
-class _ControllersRepositoryByBonuses(_ControllersRepository):
+class ControllersRepositoryByBonuses(_ControllersRepository):
     __slots__ = ()
 
     @classmethod
     def create(cls, setup):
-        repository = super(_ControllersRepositoryByBonuses, cls).create(setup)
+        repository = super(ControllersRepositoryByBonuses, cls).create(setup)
         arenaVisitor = setup.arenaVisitor
         if arenaVisitor.hasRespawns():
             repository.addViewController(respawn_ctrl.RespawnsController(setup), setup)
@@ -439,7 +442,7 @@ class _ControllersRepositoryByBonuses(_ControllersRepository):
         return repository
 
 
-class ClassicControllersRepository(_ControllersRepositoryByBonuses):
+class ClassicControllersRepository(ControllersRepositoryByBonuses):
     __slots__ = ()
 
     @classmethod
@@ -480,7 +483,7 @@ class EpicControllersRepository(_ControllersRepository):
         return repository
 
 
-class EventControllerRepository(_ControllersRepositoryByBonuses):
+class EventControllerRepository(ControllersRepositoryByBonuses):
     __slots__ = ()
 
     @classmethod
@@ -496,7 +499,7 @@ class EventControllerRepository(_ControllersRepositoryByBonuses):
         return repository
 
 
-class MapsTrainingControllerRepository(_ControllersRepositoryByBonuses):
+class MapsTrainingControllerRepository(ControllersRepositoryByBonuses):
     __slots__ = ()
 
     @classmethod
@@ -530,7 +533,7 @@ class Comp7ControllerRepository(ClassicControllersRepository):
     @classmethod
     def create(cls, setup):
         repository = super(Comp7ControllerRepository, cls).create(setup)
-        repository.addArenaViewController(Comp7PrebattleSetupController(), setup)
+        repository.addArenaViewController(Comp7PrebattleSetupController(setup), setup)
         repository.addArenaController(Comp7VOIPController(), setup)
         repository.addController(Comp7BattleSoundController())
         return repository
@@ -549,3 +552,4 @@ for guiType in ARENA_GUI_TYPE.STRONGHOLD_RANGE:
 registerBattleControllerRepo(ARENA_GUI_TYPE.EVENT_BATTLES, EventControllerRepository)
 registerBattleControllerRepo(ARENA_GUI_TYPE.MAPS_TRAINING, MapsTrainingControllerRepository)
 registerBattleControllerRepo(ARENA_GUI_TYPE.COMP7, Comp7ControllerRepository)
+registerBattleControllerRepo(ARENA_GUI_TYPE.TOURNAMENT_COMP7, Comp7ControllerRepository)

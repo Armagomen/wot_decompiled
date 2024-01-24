@@ -93,9 +93,9 @@ def prepareFashions(isDamaged):
          None]
     else:
         fashions = [BigWorld.WGVehicleFashion(),
-         BigWorld.WGBaseFashion(),
-         BigWorld.WGBaseFashion(),
-         BigWorld.WGBaseFashion()]
+         BigWorld.WGVehicleFashion(),
+         BigWorld.WGVehicleFashion(),
+         BigWorld.WGVehicleFashion()]
     return VehiclePartsTuple(*fashions)
 
 

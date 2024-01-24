@@ -5,6 +5,7 @@ import functools
 import logging
 import types
 from collections import namedtuple
+from enum import Enum
 import typing
 import constants
 import post_progression_common
@@ -26,6 +27,7 @@ from gui.shared.utils.decorators import ReprInjector
 from helpers import time_utils
 from personal_missions import PM_BRANCH
 from post_progression_common import FEATURE_BY_GROUP_ID, ROLESLOT_FEATURE
+from prestige_system.prestige_common import PrestigeConfig
 from ranked_common import SwitchState
 from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION
 from schema_manager import getSchemaManager
@@ -449,6 +451,7 @@ _EpicMetaGameConfig.__new__.__defaults__ = (0,
  {})
 
 class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
+ 'enableWelcomeScreen',
  'validVehicleLevels',
  'battlePassDataEnabled',
  'levelsToUpgrateAllReserves',
@@ -463,7 +466,7 @@ class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, validVehicleLevels=[], battlePassDataEnabled=True, levelsToUpgrateAllReserves=[], unlockableInBattleVehLevels=[], inBattleModifiers={}, seasons={}, cycleTimes=(), peripheryIDs={}, primeTimes={}, rentVehicles=[], tooltips={})
+        defaults = dict(isEnabled=False, enableWelcomeScreen=True, validVehicleLevels=[], battlePassDataEnabled=True, levelsToUpgrateAllReserves=[], unlockableInBattleVehLevels=[], inBattleModifiers={}, seasons={}, cycleTimes=(), peripheryIDs={}, primeTimes={}, rentVehicles=[], tooltips={})
         defaults.update(kwargs)
         return super(EpicGameConfig, cls).__new__(cls, **defaults)
 
@@ -564,11 +567,13 @@ class BattleRoyaleConfig(namedtuple('BattleRoyaleConfig', ('isEnabled',
  'defaultAmmo',
  'vehiclesSlotsConfig',
  'economics',
- 'url'))):
+ 'url',
+ 'respawns',
+ 'progressionTokenAward'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, peripheryIDs={}, eventProgression={}, unburnableTitles=(), primeTimes={}, seasons={}, cycleTimes={}, maps=(), battleXP={}, coneVisibility={}, loot={}, defaultAmmo={}, vehiclesSlotsConfig={}, economics={}, url='')
+        defaults = dict(isEnabled=False, peripheryIDs={}, eventProgression={}, unburnableTitles=(), primeTimes={}, seasons={}, cycleTimes={}, maps=(), battleXP={}, coneVisibility={}, loot={}, defaultAmmo={}, vehiclesSlotsConfig={}, economics={}, url='', respawns={}, progressionTokenAward={})
         defaults.update(kwargs)
         return super(BattleRoyaleConfig, cls).__new__(cls, **defaults)
 
@@ -1264,6 +1269,81 @@ class _LimitedUIConfig(namedtuple('_LimitedUIConfig', ('enabled', 'rules', 'vers
         return cls()
 
 
+class _SteamShadeConfig(namedtuple('_SteamShadeConfig', ('battlesPlayed', 'sessions'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(battlesPlayed=10, sessions=3)
+        defaults.update(kwargs)
+        return super(_SteamShadeConfig, cls).__new__(cls, **defaults)
+
+    def asDict(self):
+        return self._asdict()
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
+class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', ('steamShade',))):
+    __slots__ = ()
+
+    class DefaultSteamShadeProperties(Enum):
+        battlesPlayed = -1
+        sessions = -1
+
+    def __new__(cls, **kwargs):
+        defaults = dict(steamShade={})
+        defaults.update(kwargs)
+        return super(_ABFeatureTestConfig, cls).__new__(cls, **defaults)
+
+    def asDict(self):
+        return self._asdict()
+
+    def getSteamShadeProperties(self, group):
+        properties = namedtuple('Properties', ('battlesPlayed', 'sessions'))
+        return properties(int(self.steamShade.get(group, {}).get('properties', {}).get('battlesPlayed', self.DefaultSteamShadeProperties.battlesPlayed.value)), int(self.steamShade.get(group, {}).get('properties', {}).get('sessions', self.DefaultSteamShadeProperties.sessions.value)))
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
+class _WinBackCallConfig(namedtuple('_WinBackCallConfig', ('isEnabled',
+ 'accessToken',
+ 'inviteTokenQuest',
+ 'startTime',
+ 'endTime'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(isEnabled=False, accessToken='', inviteTokenQuest='', startTime=0, endTime=0)
+        defaults.update(kwargs)
+        return super(_WinBackCallConfig, cls).__new__(cls, **defaults)
+
+    def asDict(self):
+        return self._asdict()
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
 class ServerSettings(object):
 
     def __init__(self, serverSettings):
@@ -1312,6 +1392,10 @@ class ServerSettings(object):
         self.__collectionsConfig = CollectionsConfig()
         self.__winbackConfig = WinbackConfig()
         self.__limitedUIConfig = _LimitedUIConfig()
+        self.__prestigeConfig = PrestigeConfig({})
+        self.__steamShadeConfig = _SteamShadeConfig()
+        self.__abFeatureTestConfig = _ABFeatureTestConfig()
+        self.__winBackCallConfig = _WinBackCallConfig()
         self.__schemaManager = getSchemaManager()
         self.set(serverSettings)
 
@@ -1455,11 +1539,27 @@ class ServerSettings(object):
             self.__winbackConfig = makeTupleByDict(WinbackConfig, self.__serverSettings[Configs.WINBACK_CONFIG.value])
         else:
             self.__winbackConfig = WinbackConfig.defaults()
+        if Configs.WINBACK_CALL_CONFIG.value in self.__serverSettings:
+            self.__winBackCallConfig = makeTupleByDict(_WinBackCallConfig, self.__serverSettings[Configs.WINBACK_CALL_CONFIG.value])
+        else:
+            self.__winBackCallConfig = _WinBackCallConfig.defaults()
         if Configs.LIMITED_UI_CONFIG.value in self.__serverSettings:
             self.__limitedUIConfig = makeTupleByDict(_LimitedUIConfig, self.__serverSettings[Configs.LIMITED_UI_CONFIG.value])
         else:
             self.__limitedUIConfig = _LimitedUIConfig.defaults()
+        if Configs.PRESTIGE_CONFIG.value in self.__serverSettings:
+            self.__prestigeConfig = PrestigeConfig(self.__serverSettings.get(Configs.PRESTIGE_CONFIG.value, {}))
+        else:
+            self.__prestigeConfig = PrestigeConfig({})
         self.__schemaManager.set(self.__serverSettings)
+        if Configs.STEAM_SHADE_CONFIG.value in self.__serverSettings:
+            self.__steamShadeConfig = makeTupleByDict(_SteamShadeConfig, self.__serverSettings[Configs.STEAM_SHADE_CONFIG.value])
+        else:
+            self.__steamShadeConfig = _SteamShadeConfig.defaults()
+        if Configs.AB_FEATURE_TEST.value in self.__serverSettings:
+            self.__abFeatureTestConfig = makeTupleByDict(_ABFeatureTestConfig, self.__serverSettings[Configs.AB_FEATURE_TEST.value])
+        else:
+            self.__abFeatureTestConfig = _ABFeatureTestConfig.defaults()
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1566,7 +1666,13 @@ class ServerSettings(object):
         if Configs.COLLECTIONS_CONFIG.value in serverSettingsDiff:
             self.__updateCollectionsConfig(serverSettingsDiff)
         self.__updateLimitedUIConfig(serverSettingsDiff)
+        if Configs.PRESTIGE_CONFIG.value in serverSettingsDiff:
+            self.__serverSettings[Configs.PRESTIGE_CONFIG.value] = serverSettingsDiff[Configs.PRESTIGE_CONFIG.value]
+            self.__prestigeConfig = PrestigeConfig(self.__serverSettings.get(Configs.PRESTIGE_CONFIG.value, {}))
         self.__schemaManager.update(serverSettingsDiff)
+        self.__updateSteamShadeConfig(serverSettingsDiff)
+        self.__updateABFeatureTestConfig(serverSettingsDiff)
+        self.__updateWinBackCallConfig(serverSettingsDiff)
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1737,6 +1843,22 @@ class ServerSettings(object):
     @property
     def limitedUIConfig(self):
         return self.__limitedUIConfig
+
+    @property
+    def prestigeConfig(self):
+        return self.__prestigeConfig
+
+    @property
+    def steamShadeConfig(self):
+        return self.__steamShadeConfig
+
+    @property
+    def abFeatureTestConfig(self):
+        return self.__abFeatureTestConfig
+
+    @property
+    def winBackCallConfig(self):
+        return self.__winBackCallConfig
 
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
@@ -1959,6 +2081,10 @@ class ServerSettings(object):
     def isOnly10ModeEnabled(self):
         return self.__getGlobalSetting('isOnly10ModeEnabled', False)
 
+    def isMapsInDevelopmentEnabled(self):
+        mapsInDevCongig = self.__getGlobalSetting(Configs.MAPS_IN_DEVELOPMENT_CONFIG.value, None)
+        return bool(mapsInDevCongig['isEnabled']) if mapsInDevCongig else False
+
     def getMaxSPGinSquads(self):
         return self.__getGlobalSetting('maxSPGinSquads', 0)
 
@@ -2004,9 +2130,6 @@ class ServerSettings(object):
     def isReferralProgramEnabled(self):
         return self.__getGlobalSetting('isReferralProgramEnabled', False)
 
-    def isCrewSkinsEnabled(self):
-        return self.__getGlobalSetting('isCrewSkinsEnabled', False)
-
     def getPremiumXPBonus(self):
         return self.__getGlobalSetting('tankPremiumBonus', {}).get('xp', 0.5)
 
@@ -2021,9 +2144,6 @@ class ServerSettings(object):
 
     def isBattleBoostersEnabled(self):
         return self.__getGlobalSetting('isBattleBoostersEnabled', False)
-
-    def isCrewBooksEnabled(self):
-        return self.__getGlobalSetting('isCrewBooksEnabled', False)
 
     def isCrewBooksPurchaseEnabled(self):
         return self.__getGlobalSetting('isCrewBooksPurchaseEnabled', False)
@@ -2217,12 +2337,24 @@ class ServerSettings(object):
     def __updateCollectionsConfig(self, diff):
         self.__collectionsConfig = self.__collectionsConfig.replace(diff[Configs.COLLECTIONS_CONFIG.value])
 
+    def __updateWinBackCallConfig(self, serverSettingsDiff):
+        if Configs.WINBACK_CALL_CONFIG.value in serverSettingsDiff:
+            self.__winBackCallConfig = self.__winBackCallConfig.replace(serverSettingsDiff[Configs.WINBACK_CALL_CONFIG.value])
+
     def __updateWinbackConfig(self, diff):
         self.__winbackConfig = self.__winbackConfig.replace(diff[Configs.WINBACK_CONFIG.value])
 
     def __updateLimitedUIConfig(self, serverSettingsDiff):
         if Configs.LIMITED_UI_CONFIG.value in serverSettingsDiff:
             self.__limitedUIConfig = self.__limitedUIConfig.replace(serverSettingsDiff[Configs.LIMITED_UI_CONFIG.value])
+
+    def __updateSteamShadeConfig(self, serverSettingsDiff):
+        if Configs.STEAM_SHADE_CONFIG.value in serverSettingsDiff:
+            self.__steamShadeConfig = self.__steamShadeConfig.replace(serverSettingsDiff[Configs.STEAM_SHADE_CONFIG.value])
+
+    def __updateABFeatureTestConfig(self, serverSettingsDiff):
+        if Configs.AB_FEATURE_TEST.value in serverSettingsDiff:
+            self.__abFeatureTestConfig = self.__abFeatureTestConfig.replace(serverSettingsDiff[Configs.AB_FEATURE_TEST.value])
 
 
 def serverSettingsChangeListener(*configKeys):

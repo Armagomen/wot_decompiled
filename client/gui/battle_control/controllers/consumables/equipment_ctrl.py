@@ -13,6 +13,8 @@ from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME
 from comp7_common import ROLE_EQUIPMENT_TAG
 from constants import VEHICLE_SETTING, EQUIPMENT_STAGES, ARENA_BONUS_TYPE
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.system_factory import collectEquipmentItem
 from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
 from gui.Scaleform.genConsts.BATTLE_MARKERS_CONSTS import BATTLE_MARKERS_CONSTS
@@ -24,7 +26,7 @@ from gui.shared.utils.decorators import ReprInjector
 from gui.sounds.epic_sound_constants import EPIC_SOUND
 from helpers import i18n, dependency
 from items import vehicles, EQUIPMENT_TYPES, ITEM_TYPES
-from points_of_interest_shared import POI_EQUIPMENT_TAG
+from points_of_interest_shared import POI_EQUIPMENT_TAG, PoiTypesByPoiEquipmentName
 from shared_utils import findFirst, forEach, CONST_CONTAINER
 from skeletons.gui.battle_session import IBattleSessionProvider
 from soft_exception import SoftException
@@ -58,11 +60,16 @@ class NotReadyError(_ActivationError):
 
 class PoiUnavailableError(_ActivationError):
 
+    @staticmethod
+    def _getPoiName(equipmentName):
+        poiType = PoiTypesByPoiEquipmentName.get(equipmentName)
+        return backport.text(R.strings.points_of_interest.type.dyn(poiType.name.lower())())
+
     def __new__(cls, name):
-        return super(PoiUnavailableError, cls).__new__(cls, 'equipmentPoiUnavailable', {'name': name})
+        return super(PoiUnavailableError, cls).__new__(cls, 'equipmentPoiUnavailable', {'name': cls._getPoiName(name)})
 
     def __init__(self, name):
-        super(PoiUnavailableError, self).__init__('equipmentPoiUnavailable', {'name': name})
+        super(PoiUnavailableError, self).__init__('equipmentPoiUnavailable', {'name': self._getPoiName(name)})
 
 
 class Comp7RoleSkillUnavailable(_ActivationError):
@@ -569,6 +576,15 @@ class _ArtilleryItem(_OrderItem):
         return BATTLE_MARKERS_CONSTS.COLOR_YELLOW
 
 
+class _EventArtilleryItem(_OrderItem):
+
+    def getMarker(self):
+        pass
+
+    def getMarkerColor(self):
+        return BATTLE_MARKERS_CONSTS.COLOR_RED
+
+
 class _ArtilleryAOEFort(_ArtilleryItem):
 
     def getMarker(self):
@@ -851,6 +867,29 @@ class _RegenerationKitItem(_EquipmentItem):
         return ANIMATION_TYPES.MOVE_GREEN_BAR_DOWN | ANIMATION_TYPES.SHOW_COUNTER_ORANGE | ANIMATION_TYPES.DARK_COLOR_TRANSFORM if self._stage == EQUIPMENT_STAGES.ACTIVE else super(_RegenerationKitItem, self).getAnimationType()
 
 
+class DynComponentsGroupItem(_TriggerItem):
+
+    def update(self, quantity, stage, timeRemaining, totalTime):
+        super(DynComponentsGroupItem, self).update(quantity, stage, timeRemaining, totalTime)
+        if stage in (EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.READY):
+            self._totalTime = self._descriptor.cooldownSeconds
+        elif stage == EQUIPMENT_STAGES.ACTIVE:
+            self._timeRemaining = min(self._timeRemaining, self._descriptor.durationSeconds)
+            self._totalTime = self._descriptor.durationSeconds
+
+    def getEntitiesIterator(self, avatar=None):
+        return []
+
+    def getGuiIterator(self, avatar=None):
+        return []
+
+
+class DynComponentsGroupPassiveItem(DynComponentsGroupItem):
+
+    def canActivate(self, entityName=None, avatar=None):
+        return (False, None)
+
+
 class _VisualScriptItem(_TriggerItem):
 
     def __init__(self, *args):
@@ -944,7 +983,7 @@ class _PoiEquipmentItemVS(_VisualScriptItem):
         return (False, self._getErrorMsg()) if not self._getComponent() else super(_PoiEquipmentItemVS, self).canActivate(entityName, avatar)
 
     def _getErrorMsg(self):
-        return PoiUnavailableError(self._descriptor.userString) if self._stage in (EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.NOT_RUNNING, EQUIPMENT_STAGES.EXHAUSTED) else super(_PoiEquipmentItemVS, self)._getErrorMsg()
+        return PoiUnavailableError(self._descriptor.name) if self._stage in (EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.NOT_RUNNING, EQUIPMENT_STAGES.EXHAUSTED) else super(_PoiEquipmentItemVS, self)._getErrorMsg()
 
 
 class _PoiArtilleryItem(_ArtilleryItem):
@@ -956,7 +995,7 @@ class _PoiArtilleryItem(_ArtilleryItem):
         return BATTLE_MARKERS_CONSTS.COLOR_GREEN
 
     def _getErrorMsg(self):
-        return PoiUnavailableError(self._descriptor.userString) if self._stage in (EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.NOT_RUNNING, EQUIPMENT_STAGES.EXHAUSTED) else super(_PoiArtilleryItem, self)._getErrorMsg()
+        return PoiUnavailableError(self._descriptor.name) if self._stage in (EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.NOT_RUNNING, EQUIPMENT_STAGES.EXHAUSTED) else super(_PoiArtilleryItem, self)._getErrorMsg()
 
     def canActivate(self, entityName=None, avatar=None):
         return (False, self._getErrorMsg()) if self._stage in (EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.NOT_RUNNING, EQUIPMENT_STAGES.EXHAUSTED) else super(_PoiArtilleryItem, self).canActivate(entityName, avatar)
@@ -1058,6 +1097,8 @@ def _isBattleRoyaleBattle():
 
 
 def _triggerItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
+    if descriptor.name.startswith('artillery_deathzone'):
+        return _EventArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_artillery'):
         return _ArcadeArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_bomber'):
@@ -1125,6 +1166,8 @@ _EQUIPMENT_TAG_TO_ITEM = {('fuel',): _AutoItem,
  ('repairkit',): _RepairKitItem,
  ('regenerationKit',): _RegenerationKitItem,
  ('medkit', 'repairkit'): _RepairCrewAndModules,
+ ('dynComponentsGroup',): DynComponentsGroupItem,
+ ('dynComponentsGroup', 'passive'): DynComponentsGroupPassiveItem,
  (ROLE_EQUIPMENT_TAG,): _comp7ItemFactory,
  (POI_EQUIPMENT_TAG,): _poiItemFactory}
 
@@ -1162,6 +1205,7 @@ class EquipmentsController(MethodsRules, IBattleController):
         self.onEquipmentReset = Event.Event(self._eManager)
         self.onEquipmentsCleared = Event.Event(self._eManager)
         self.onEquipmentMarkerShown = Event.Event(self._eManager)
+        self.onEquipmentMarkerHide = Event.Event(self._eManager)
         self.onEquipmentAreaCreated = Event.Event(self._eManager)
         self.onEquipmentCooldownInPercent = Event.Event(self._eManager)
         self.onEquipmentCooldownTime = Event.Event(self._eManager)
@@ -1378,7 +1422,10 @@ class EquipmentsController(MethodsRules, IBattleController):
         if item is None:
             item = self.createItem(eq, 0, -1, 0, 0)
         self.onEquipmentMarkerShown(item, pos, direction, time, team)
-        return
+        return item
+
+    def hideMarker(self, item):
+        self.onEquipmentMarkerHide(item)
 
     def consumePreferredPosition(self):
         value = self.__preferredPosition
@@ -1486,6 +1533,15 @@ class _ReplayArtilleryItem(_ReplayOrderItem):
 
     def getMarkerColor(self):
         return BATTLE_MARKERS_CONSTS.COLOR_YELLOW
+
+
+class _ReplayEventArtilleryItem(_ReplayOrderItem):
+
+    def getMarker(self):
+        pass
+
+    def getMarkerColor(self):
+        return BATTLE_MARKERS_CONSTS.COLOR_RED
 
 
 class _ReplayArtilleryAOEFort(_ReplayArtilleryItem):
@@ -1700,6 +1756,30 @@ class _ReplayRegenerationKitBattleRoyaleItem(_ReplayItem):
         self._totalTime = totalTime
 
 
+class DynComponentsGroupReplayItem(DynComponentsGroupItem):
+    __slots__ = ('__cooldownTime',)
+
+    def __init__(self, descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
+        super(DynComponentsGroupReplayItem, self).__init__(descriptor, quantity, stage, timeRemaining, totalTime, tags)
+        self.__cooldownTime = BigWorld.serverTime() + timeRemaining
+
+    def update(self, quantity, stage, timeRemaining, totalTime):
+        super(DynComponentsGroupReplayItem, self).update(quantity, stage, timeRemaining, totalTime)
+        self.__cooldownTime = BigWorld.serverTime() + timeRemaining
+
+    def getReplayTimeRemaining(self):
+        return max(0, self.__cooldownTime - BigWorld.serverTime())
+
+    def getCooldownPercents(self):
+        totalTime = self.getTotalTime()
+        timeRemaining = self.getReplayTimeRemaining()
+        return round(float(totalTime - timeRemaining) / totalTime * 100.0) if totalTime > 0 else 0.0
+
+
+class DynComponentsGroupPassiveReplayItem(_ReplayItem):
+    pass
+
+
 class _ReplayPoiEquipmentItemVS(_ReplayItem, _PoiEquipmentItemVS):
 
     def _getErrorMsg(self):
@@ -1760,6 +1840,8 @@ def _replayPoiItemFactory(descriptor, quantity, stage, timeRemaining, totalTime,
 
 
 def _replayTriggerItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
+    if descriptor.name.startswith('artillery_deathzone'):
+        return _ReplayEventArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_artillery'):
         return _ReplayArcadeArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('artillery_epic'):
@@ -1797,6 +1879,8 @@ _REPLAY_EQUIPMENT_TAG_TO_ITEM = {('fuel',): _ReplayItem,
  ('repairkit',): _ReplayRepairKitItem,
  ('regenerationKit',): _replayTriggerItemFactory,
  ('medkit', 'repairkit'): _replayTriggerItemFactory,
+ ('dynComponentsGroup',): DynComponentsGroupReplayItem,
+ ('dynComponentsGroup', 'passive'): DynComponentsGroupPassiveReplayItem,
  (ROLE_EQUIPMENT_TAG,): _replayComp7ItemFactory,
  (POI_EQUIPMENT_TAG,): _replayPoiItemFactory}
 

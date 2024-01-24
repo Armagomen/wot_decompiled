@@ -1,3 +1,4 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/gui_vehicle_builder.py
 from gui.veh_post_progression.helpers import getInstalledShells, setFeatures, setDisabledSwitches, updateInvInstalled
 from helpers import dependency
@@ -88,10 +89,27 @@ class VehicleBuilder(object):
         return
 
     @staticmethod
-    def __assertNotSet(target, keys):
-        if target is None:
-            return
-        else:
-            if isinstance(keys, set):
-                pass
-            return
+    def __assertNotSet--- This code section failed: ---
+
+ 109       0	LOAD_FAST         'target'
+           3	LOAD_CONST        ''
+           6	COMPARE_OP        'is'
+           9	POP_JUMP_IF_FALSE '16'
+
+ 110      12	LOAD_CONST        ''
+          15	JUMP_FORWARD      37
+
+ 112      16	LOAD_GLOBAL       'isinstance'
+          19	LOAD_FAST         'keys'
+          22	LOAD_GLOBAL       'set'
+          25	CALL_FUNCTION_2   ''
+          28	POP_JUMP_IF_FALSE '34'
+
+ 113      31	JUMP_FORWARD      '34'
+        34_0	COME_FROM         '31'
+
+ 115      34	LOAD_CONST        ''
+        37_0	COME_FROM         '15'
+          37	RETURN_VALUE      ''
+
+Syntax error at or near 'COME_FROM' token at offset 34_0

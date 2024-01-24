@@ -6,6 +6,7 @@ import math
 from collections import namedtuple, defaultdict
 from gui.impl.lobby.personal_reserves.tooltips.personal_reserves_tooltip_view import PersonalReservesTooltipView
 from gui.impl.pub import ToolTipWindow
+from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from helpers.i18n import makeString
 import ArenaType
 import ResMgr
@@ -798,25 +799,6 @@ class FrontlineDiscountTooltipData(BaseDiscountTooltipData):
          'body': bodyText}
 
 
-class ActionXPTooltipData(BaseDiscountTooltipData):
-
-    def getDisplayableData(self, newPrice, oldPrice):
-        oldPrice = Money.makeFromMoneyTuple(oldPrice)
-        if not oldPrice.isDefined():
-            oldPrice = Money(credits=0)
-        currency = Currency.CREDITS
-        for currency in Currency.ALL:
-            currencyValue = oldPrice.get(currency)
-            if currencyValue is not None:
-                break
-
-        newPrice = Money.makeFromMoneyTuple(newPrice)
-        if not newPrice.isDefined():
-            newPrice = Money.makeFrom(currency, 0)
-        isGoldPrice = newPrice.isCurrencyDefined(Currency.GOLD)
-        return self._packDisplayableData(newPrice.gold if isGoldPrice else newPrice.credits, oldPrice.gold if isGoldPrice else oldPrice.credits, DISCOUNT_TYPE.FREE_XP if isGoldPrice else DISCOUNT_TYPE.XP)
-
-
 class ToolTipFortWrongTime(ToolTipBaseData):
 
     def __init__(self, context):
@@ -1027,7 +1009,7 @@ class CURRENCY_SETTINGS(object):
         return cls.__DECONSTRUCT_SETTINGS.get(currency, cls.DECONSTRUCT_EQUIPCOINS_PRICE)
 
 
-_OPERATIONS_SETTINGS = {CURRENCY_SETTINGS.BUY_CREDITS_PRICE: _CurrencySetting(TOOLTIPS.VEHICLE_BUY_PRICE, icons.credits(), text_styles.credits, ICON_TEXT_FRAMES.CREDITS, iconYOffset=0),
+_OPERATIONS_SETTINGS = {CURRENCY_SETTINGS.BUY_CREDITS_PRICE: _CurrencySetting(TOOLTIPS.VEHICLE_BUY_PRICE, icons.credits(), text_styles.credits, ICON_TEXT_FRAMES.CREDITS, iconYOffset=2),
  CURRENCY_SETTINGS.RESTORE_PRICE: _CurrencySetting('#tooltips:vehicle/restore_price', icons.credits(), text_styles.credits, ICON_TEXT_FRAMES.CREDITS, iconYOffset=0),
  CURRENCY_SETTINGS.BUY_GOLD_PRICE: _CurrencySetting(TOOLTIPS.VEHICLE_BUY_PRICE, icons.gold(), text_styles.gold, ICON_TEXT_FRAMES.GOLD, iconYOffset=0),
  CURRENCY_SETTINGS.BUY_CRYSTAL_PRICE: _CurrencySetting(TOOLTIPS.VEHICLE_BUY_PRICE, icons.crystal(), text_styles.crystal, ICON_TEXT_FRAMES.CRYSTAL, iconYOffset=0),
@@ -1594,3 +1576,7 @@ class PersonalReservesWidgetTooltipContent(BlocksTooltipData):
         content = PersonalReservesTooltipView()
         window = ToolTipWindow(None, content, content.getParentWindow())
         return window
+
+
+def getSimpleTooltipFactory(header='', body='', note='', alert=''):
+    return lambda : SimpleTooltipContent(R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent(), header, body, note, alert)

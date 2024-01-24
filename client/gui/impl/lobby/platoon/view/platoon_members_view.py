@@ -28,6 +28,7 @@ from gui.impl.gen.view_models.views.lobby.platoon.slot_model import SlotModel, E
 from gui.impl.gen.view_models.views.lobby.platoon.comp7_member_count_dropdown import Comp7DropdownItem
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.comp7 import comp7_shared
+from gui.impl.lobby.comp7.comp7_model_helpers import getSeasonNameEnum
 from gui.impl.lobby.platoon.platoon_helpers import formatSearchEstimatedTime
 from gui.impl.lobby.platoon.tooltip.platoon_alert_tooltip import AlertTooltip
 from gui.impl.lobby.platoon.tooltip.platoon_wtr_tooltip import WTRTooltip
@@ -37,6 +38,7 @@ from gui.impl.lobby.platoon.view.subview.platoon_tiers_filter_subview import Set
 from gui.impl.lobby.platoon.view.subview.platoon_tiers_limit_subview import TiersLimitSubview
 from gui.impl.lobby.common.vehicle_model_helpers import fillVehicleModel
 from gui.impl.lobby.premacc.squad_bonus_tooltip_content import SquadBonusTooltipContent, Comp7SquadBonusTooltipContent
+from gui.prestige.prestige_helpers import hasVehiclePrestige, fillPrestigeEmblemModel
 from gui.impl.pub import ViewImpl
 from gui.prb_control import prb_getters, prbEntityProperty
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, REQUEST_TYPE, SELECTOR_BATTLE_TYPES
@@ -349,6 +351,13 @@ class SquadMembersView(ViewImpl, CallbackDelayer):
         tags = playerData.get('tags', [])
         slotModel.player.voice.setIsMutedByUser(USER_TAG.MUTED in tags)
         slotModel.player.setIsIgnored(USER_TAG.IGNORED in tags)
+        prestigeLevel = slotData.get('prestigeLevel', 0)
+        vehicleData = slotData.get('selectedVehicle')
+        vehicleCD = vehicleData.get('intCD', 0) if vehicleData else 0
+        isPrestigeAvailable = hasVehiclePrestige(vehicleCD) and prestigeLevel != 0
+        slotModel.player.setIsPrestigeAvailable(isPrestigeAvailable)
+        if isPrestigeAvailable:
+            fillPrestigeEmblemModel(slotModel.player.prestigeEmblem, prestigeLevel, vehicleCD)
         return
 
     def _setVehicleData(self, slotData, slotModel):
@@ -537,19 +546,28 @@ class SquadMembersView(ViewImpl, CallbackDelayer):
         if not self._platoonCtrl.isInPlatoon():
             return
         isInQueue = self._platoonCtrl.isInQueue()
-        actionButtonStateVO = self.__getActionButtonStateVO()
-        simpleState = actionButtonStateVO.getSimpleState()
-        onlyReadinessText = actionButtonStateVO.isReadinessTooltip()
+        isEnabled, onlyReadinessText, simpleState, toolTipData = self._getActionButtonStateInfo()
         with self.viewModel.transaction() as model:
             if not self._platoonCtrl.isInCoolDown(REQUEST_TYPE.SET_PLAYER_STATE):
-                model.btnSwitchReady.setIsEnabled(actionButtonStateVO['isEnabled'] and not isInQueue)
+                model.btnSwitchReady.setIsEnabled(isEnabled and not isInQueue)
             if self._platoonCtrl.getPlayerInfo().isReady:
                 model.btnSwitchReady.setCaption(backport.text(_strButtons.notReady.caption()))
             else:
                 model.btnSwitchReady.setCaption(backport.text(_strButtons.ready.caption()))
-            model.btnSwitchReady.setDescription(i18n.makeString(actionButtonStateVO['toolTipData'] + '/body'))
+            model.btnSwitchReady.setDescription(toolTipData)
             model.setFooterMessage(simpleState)
-            model.setIsFooterMessageGrey(actionButtonStateVO['isEnabled'] or onlyReadinessText or isInQueue)
+            model.setIsFooterMessageGrey(isEnabled or onlyReadinessText or isInQueue)
+
+    def _getActionButtonStateInfo(self):
+        actionButtonStateVO = self.__getActionButtonStateVO()
+        isEnabled = actionButtonStateVO['isEnabled']
+        onlyReadinessText = actionButtonStateVO.isReadinessTooltip()
+        simpleState = actionButtonStateVO.getSimpleState()
+        toolTipData = i18n.makeString(actionButtonStateVO['toolTipData'] + '/body')
+        return (isEnabled,
+         onlyReadinessText,
+         simpleState,
+         toolTipData)
 
     def _onFindPlayers(self):
         platoonCtrl = self._platoonCtrl
@@ -810,6 +828,7 @@ class Comp7MembersView(SquadMembersView):
 
     def _initWindowModeSpecificData(self, model):
         options = self._comp7Controller.getModeSettings().squadSizes
+        model.setSeasonName(getSeasonNameEnum())
         model.header.memberCountDropdown.setMultiple(False)
         items = model.header.memberCountDropdown.getItems()
         for option in options:

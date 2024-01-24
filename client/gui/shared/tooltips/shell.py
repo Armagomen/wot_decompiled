@@ -17,6 +17,7 @@ from gui.shared.tooltips.module import ModuleTooltipBlockConstructor
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from skeletons.gui.shared import IItemsCache
+from constants import FORCE_FINITE_SHELL_TAG
 _TOOLTIP_MIN_WIDTH = 380
 _TOOLTIP_MAX_WIDTH = 420
 _AUTOCANNON_SHOT_DISTANCE = 400
@@ -77,6 +78,9 @@ class ShellBlockToolTipData(BlocksTooltipData):
         if showBasicData:
             boldText = text_styles.neutral(TOOLTIPS.SHELL_BASIC_DESCRIPTION_BOLD)
             items.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.standard(_ms(TOOLTIPS.SHELL_BASIC_DESCRIPTION, bold=boldText)), padding=lrPaddings)], padding=formatters.packPadding(right=rightPadding)))
+        if FORCE_FINITE_SHELL_TAG in shell.descriptor.tags:
+            boldText = text_styles.neutral(backport.text(R.strings.tooltips.hwShell.alt.description.bold()))
+            items.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.standard(backport.text(R.strings.tooltips.hwShell.alt.description(), bold=boldText)), padding=lrPaddings)], padding=formatters.packPadding(right=rightPadding)))
         return items
 
 

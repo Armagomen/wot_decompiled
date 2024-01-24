@@ -409,6 +409,15 @@ class StaticOptionalDevice(OptionalDevice):
 
             return
 
+    def getFactorValue(self, vehicleDescr, attrPath, default=0.0):
+        splitted = tuple(attrPath.split('/'))
+        factor = self._factors.get(splitted, None)
+        if not factor:
+            return default
+        else:
+            level = self.defineActiveLevel(vehicleDescr)
+            return factor.getActiveValue(level)
+
 
 class StillVehicleOptionalDevice(StaticOptionalDevice):
     __slots__ = ('activateWhenStillSec',)
@@ -2667,6 +2676,15 @@ class Comp7MarchEquipment(VisualScriptEquipment):
         self.invisibilityFactor = section.readFloat('invisibilityFactor')
         self.cooldownSeconds = section.readFloat('cooldownSeconds')
         self._exportSlotsToVSE()
+
+
+class DynComponentsGroupEquipment(Equipment):
+    __slots__ = ('durationSeconds', 'dynComponentsGroups')
+
+    def _readConfig(self, xmlCtx, section):
+        super(DynComponentsGroupEquipment, self)._readConfig(xmlCtx, section)
+        self.durationSeconds = _xml.readFloat(xmlCtx, section, 'durationSeconds')
+        self.dynComponentsGroups = frozenset(_xml.readString(xmlCtx, section, 'dynComponentsGroups').split())
 
 
 class PoiRadarEquipment(VisualScriptEquipment):

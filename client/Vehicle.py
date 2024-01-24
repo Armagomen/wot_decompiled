@@ -213,6 +213,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         self.__isInDebuff = False
         self.__cameraTargetMatrix = Math.WGAdaptiveMatrixProvider()
         self.set_postmortemViewPointName()
+        self.onShowDamageFromShot = Event()
         return
 
     def reload(self):
@@ -247,8 +248,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             outfitDescr = result
         if 'battle_royale' in self.typeDescriptor.type.tags:
             from InBattleUpgrades import onBattleRoyalePrerequisites
-            if onBattleRoyalePrerequisites(self, oldTypeDescriptor):
-                forceReloading = True
+            forceReloading = onBattleRoyalePrerequisites(self, oldTypeDescriptor, forceReloading)
         strCD = self.typeDescriptor.makeCompactDescr()
         newInfo = VehicleAppearanceCacheInfo(self.typeDescriptor, self.health, self.isCrewActive, self.isTurretDetached, outfitDescr)
         ctrl = self.guiSessionProvider.dynamic.appearanceCache
@@ -274,10 +274,10 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if respawnCompactDescr is not None:
             self.isCrewActive = True
             descr = vehicles.VehicleDescr(respawnCompactDescr, extData=self)
+            self.__turretDetachmentConfirmed = False
             if 'battle_royale' not in descr.type.tags:
                 self.health = self.publicInfo.maxHealth
                 self.__prevHealth = self.publicInfo.maxHealth
-                self.__turretDetachmentConfirmed = False
             return descr
         else:
             return vehicles.VehicleDescr(compactDescr=_stripVehCompDescrIfRoaming(self.publicInfo.compDescr), extData=self)
@@ -374,6 +374,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if not self.isStarted:
             return
         else:
+            self.onShowDamageFromShot(attackerID, points, effectsIndex, damageFactor, lastMaterialIsShield)
             hitsReceived = self.appearance.findComponentByType(Projectiles.ProjectileHitsReceivedComponent)
             if hitsReceived is None:
                 self.appearance.createComponent(Projectiles.ProjectileHitsReceivedComponent)
@@ -1209,6 +1210,9 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             highlighter.highlight(True)
 
     def delModel(self, model):
+        if self.isDestroyed or not hasattr(self, 'appearance'):
+            _logger.warning('Vehicle::delModel called by %d after destroy', type(model))
+            return
         highlighter = self.appearance.highlighter
         hlOn = highlighter.isOn
         hlSimpleEdge = highlighter.isSimpleEdge
@@ -1294,7 +1298,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         self.ownVehicle.update_remoteCamera(self.remoteCamera)
 
     def getVseContextInstance(self, contextName):
-        from visual_script_client.contexts.cgf_context import CGFGameObjectContext
+        from visual_script.contexts.cgf_context import CGFGameObjectContext
         if contextName == CGFGameObjectContext.__name__:
             if self.entityGameObject:
                 return CGFGameObjectContext(self.entityGameObject, ASPECT.CLIENT)

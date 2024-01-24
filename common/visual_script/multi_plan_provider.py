@@ -74,8 +74,8 @@ class MultiPlanProvider(object):
                 self._loadPlan(entry['name'], dict(entry['params']), False, entry.get('plan_id', ''))
             self._loadPlan(entry)
 
-    def startPlan(self, planName, params={}, key='', contextInstance=None):
-        self._loadPlan(planName, params, True, key, contextInstance)
+    def startPlan(self, planName, params={}, key='', contextInstance=None, loadOverTime=False):
+        self._loadPlan(planName, params, True, key, contextInstance, loadOverTime)
 
     def stopPlan(self, planName, key=''):
         nameWithKey = self.getPlanNameWithKey(planName, key)
@@ -99,7 +99,7 @@ class MultiPlanProvider(object):
 
         self._context = context
 
-    def _loadPlan(self, planName, params={}, autoStart=False, key='', contextInstance=None):
+    def _loadPlan(self, planName, params={}, autoStart=False, key='', contextInstance=None, loadOverTime=False):
         nameWithKey = self.getPlanNameWithKey(planName, key)
         holder = None
         if nameWithKey in self._plans.keys():
@@ -115,7 +115,10 @@ class MultiPlanProvider(object):
                 holder.plan.setContext(contextInstance)
             elif self._context is not None:
                 holder.plan.setContext(self._context)
-            holder.load(planName, self._aspect, self._planTags.tags)
+            if loadOverTime:
+                holder.loadOverTime(planName, self._aspect, self._planTags.tags)
+            else:
+                holder.load(planName, self._aspect, self._planTags.tags)
             self._plans[nameWithKey] = holder
         return holder
 

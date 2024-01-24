@@ -79,7 +79,8 @@ class MapsTrainingBattleGoals(BattleHintComponent, MapsTrainingGoalsMeta, IArena
     def _getSoundNotification(self, hint, data):
         return hint.soundNotificationNewbie if hint.soundNotificationNewbie is not None and not self.settingsCore.serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT, default=False) else hint.soundNotification
 
-    def _showHint(self, hintData):
+    def _showHint(self, hint, data):
+        hintData = hint.makeVO(data)
         hintType = hintData['hintType']
         descr = hintData.get('description1')
         if descr is None:

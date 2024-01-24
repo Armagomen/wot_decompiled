@@ -174,6 +174,12 @@ class _CustomizationCloseConfirmatorsHelper(CloseConfirmatorsHelper):
         result.append(VIEW_ALIAS.LOBBY_HANGAR)
         return result
 
+    def getRestrictedGuiImplViews(self):
+        return super(_CustomizationCloseConfirmatorsHelper, self).getRestrictedGuiImplViews() + [R.views.lobby.common.BrowserView(),
+         R.views.lobby.personal_reserves.ReservesActivationView(),
+         R.views.lobby.personal_reserves.ReservesConversionView(),
+         R.views.lobby.personal_reserves.ReservesIntroView()]
+
     def start(self, closeConfirmator):
         super(_CustomizationCloseConfirmatorsHelper, self).start(closeConfirmator)
         self._addPlatoonCreationConfirmator()
@@ -266,6 +272,12 @@ class MainView(LobbySubView, CustomizationMainViewMeta):
     def onShopEntryPointClick(self):
         self.__exitingToShop = True
         showShop(getShowcaseUrl())
+
+    @adisp.adisp_async
+    @wg_async
+    def showCloseConfirmator(self, callback):
+        result = yield wg_await(self.__closeConfirmator())
+        callback(result)
 
     def __onVehicleChangeStarted(self):
         entity = self.hangarSpace.getVehicleEntity()

@@ -17,7 +17,8 @@ if typing.TYPE_CHECKING:
     from gui.prb_control.items import ValidationResult
 _STR_PATH = R.strings.menu.headerButtons.fightBtn.tooltip
 
-def getSquadFightBtnTooltipData(state):
+def getSquadFightBtnTooltipData(result):
+    state = result.restriction
     if state == UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED:
         header = backport.text(R.strings.tooltips.hangar.startBtn.squadNotReady.header())
         body = backport.text(R.strings.tooltips.hangar.startBtn.squadNotReady.body())
@@ -108,6 +109,8 @@ def getEpicFightBtnTooltipData(result):
         return ''
     return makeTooltip(header, body)
 
+
+getRoyaleFightBtnTooltipData = getEpicFightBtnTooltipData
 
 def getMapsTrainingTooltipData():
     header = backport.text(R.strings.tooltips.hangar.startBtn.mapsTraining.notReady.header())
@@ -220,7 +223,7 @@ def getFunRandomFightBtnTooltipData(result, isInSquad):
         body = backport.text(resShortCut.funRandomVehLimits.body())
     else:
         if isInSquad:
-            return getSquadFightBtnTooltipData(state)
+            return getSquadFightBtnTooltipData(result)
         return getRandomTooltipData(result)
     return makeTooltip(header, body)
 

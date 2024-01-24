@@ -16,7 +16,6 @@ _XML_NAMESPACE = ' xmlns:xmlref="http://bwt/xmlref"'
 _MERGE_TAG = 'xmlref:merge'
 _CONTENT_TAG = 'xmlref:content'
 _INCLUDE_TAG = 'xmlref:include'
-_cachedElements = set()
 
 def importClass(classPath, defaultMod):
     modPath, _, className = classPath.rpartition('.')
@@ -96,10 +95,10 @@ class ResMgr(object):
         def __getattr__(self, item):
             return getattr(rmgr, item) if IS_CLIENT else getattr(self if item in ('openSection', 'addToCache') else rmgr, item)
 
-    @staticmethod
-    def openSection(filepath, createIfMissing=False):
+    @classmethod
+    def openSection(cls, filepath, createIfMissing=False):
         readExtXML, readMethod = isExtXML(filepath)
-        isXMLCached = rmgr.resolveToAbsolutePath(filepath) in _cachedElements
+        isXMLCached = cls.isInCache(filepath)
         return rmgr.openSection(filepath, createIfMissing) if isXMLCached or not readExtXML else mergeSection(filepath, readMethod == READ_METHOD.MERGE)
 
     @staticmethod
@@ -109,12 +108,14 @@ class ResMgr(object):
         corePath = [ftPath] if rmgr.isFile(ftPath) else []
         xmlPaths = corePath + extPaths
         if not xmlPaths:
-            resourcePath = rmgr.resolveToAbsolutePath(ftPath)
-            _cachedElements.add(resourcePath)
-            return rmgr.addToCache(resourcePath, xml)
+            return rmgr.addToCache(ftPath, xml)
         mergeRequired, _ = isExtXML(ftPath)
         if len(xmlPaths) > 1 and not mergeRequired:
             raise SoftException('Multiple standalone resources for one relative path found: %s', ftPath)
-        resourcePath = rmgr.resolveToAbsolutePath(next(iter(xmlPaths)))
-        _cachedElements.add(resourcePath)
-        return rmgr.addToCache(resourcePath, xml)
+        cachedPath = next(iter(xmlPaths))
+        return rmgr.addToCache(cachedPath, xml)
+
+    @staticmethod
+    def isInCache(filePath):
+        func = getattr(rmgr, 'isInCache', None)
+        return func(filePath) if func is not None else False

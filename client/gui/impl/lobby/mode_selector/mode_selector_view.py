@@ -33,7 +33,7 @@ from gui.impl.pub import ViewImpl
 from gui.impl.pub.tooltip_window import SimpleTooltipContent
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.events import FullscreenModeSelectorEvent, ModeSelectorLoadedEvent, ModeSubSelectorEvent, LoadViewEvent
+from gui.shared.events import FullscreenModeSelectorEvent, ModeSubSelectorEvent, LoadViewEvent
 from gui.shared.system_factory import registerModeSelectorTooltips, collectModeSelectorTooltips
 from gui.shared.view_helpers.blur_manager import CachedBlur
 from helpers import dependency
@@ -77,7 +77,7 @@ def _getTooltipByContentIdMap():
 registerModeSelectorTooltips(_SIMPLE_TOOLTIP_IDS, _getTooltipByContentIdMap())
 
 class ModeSelectorView(ViewImpl):
-    __slots__ = ('__blur', '__dataProvider', '__prevAppBackgroundAlpha', '__isEventEnabled', '__isClickProcessing', '__prevOptimizationEnabled', '__isGraphicsRestored', '__tooltipConstants', '__subSelectorCallback', '__isContentVisible')
+    __slots__ = ('__blur', '__dataProvider', '__prevAppBackgroundAlpha', '__isClickProcessing', '__prevOptimizationEnabled', '__isGraphicsRestored', '__tooltipConstants', '__subSelectorCallback', '__isContentVisible')
     uiBootcampLogger = BootcampLogger(BC_LOG_KEYS.MS_WINDOW)
     _COMMON_SOUND_SPACE = MODE_SELECTOR_SOUND_SPACE
     __appLoader = dependency.descriptor(IAppLoader)
@@ -88,13 +88,12 @@ class ModeSelectorView(ViewImpl):
     layoutID = R.views.lobby.mode_selector.ModeSelectorView()
     _areWidgetsVisible = False
 
-    def __init__(self, layoutId, isEventEnabled=False, provider=None, subSelectorCallback=None):
+    def __init__(self, layoutId, provider=None, subSelectorCallback=None):
         super(ModeSelectorView, self).__init__(ViewSettings(layoutId, ViewFlags.LOBBY_TOP_SUB_VIEW, ModeSelectorModel()))
         self.__dataProvider = provider if provider else ModeSelectorDataProvider()
         self.__blur = None
         self.__prevOptimizationEnabled = False
         self.__prevAppBackgroundAlpha = 0.0
-        self.__isEventEnabled = isEventEnabled
         self.__isClickProcessing = False
         self.__isGraphicsRestored = False
         self.__subSelectorCallback = subSelectorCallback
@@ -189,18 +188,17 @@ class ModeSelectorView(ViewImpl):
         self.__prevOptimizationEnabled = app.graphicsOptimizationManager.getEnable()
         if self.__prevOptimizationEnabled:
             app.graphicsOptimizationManager.switchOptimizationEnabled(False)
-        if self.__subSelectorCallback is not None:
-            self.__subSelectorCallback()
-            self.__subSelectorCallback = None
-        return
 
     def _initialize(self):
         g_eventBus.handleEvent(FullscreenModeSelectorEvent(FullscreenModeSelectorEvent.NAME, ctx={'showing': True}))
 
     def _onLoaded(self):
-        g_eventBus.handleEvent(ModeSelectorLoadedEvent(ModeSelectorLoadedEvent.NAME))
+        if self.__subSelectorCallback is not None:
+            self.__subSelectorCallback(parent=self.getParentWindow())
+            self.__subSelectorCallback = None
         self.uiBootcampLogger.logOnlyFromBootcamp(BC_LOG_ACTIONS.OPENED)
         self.inputManager.removeEscapeListener(self.__handleEscape)
+        return
 
     def _finalize(self):
         self.uiBootcampLogger.logOnlyFromBootcamp(BC_LOG_ACTIONS.CLOSED)
