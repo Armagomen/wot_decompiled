@@ -230,7 +230,7 @@ class _EquipmentItem(object):
             avatar_getter.changeVehicleSetting(VEHICLE_SETTING.ACTIVATE_EQUIPMENT, self.getActivationCode(entityName, avatar), avatar=avatar)
 
     def deactivate(self):
-        if not self.canDeactivate():
+        if not self.canDeactivate() or self._descriptor is None:
             return
         else:
             index = self._index if hasattr(self, '_index') and self._index > 0 else 0
@@ -574,15 +574,6 @@ class _ArtilleryItem(_OrderItem):
 
     def getMarkerColor(self):
         return BATTLE_MARKERS_CONSTS.COLOR_YELLOW
-
-
-class _EventArtilleryItem(_OrderItem):
-
-    def getMarker(self):
-        pass
-
-    def getMarkerColor(self):
-        return BATTLE_MARKERS_CONSTS.COLOR_RED
 
 
 class _ArtilleryAOEFort(_ArtilleryItem):
@@ -1097,8 +1088,6 @@ def _isBattleRoyaleBattle():
 
 
 def _triggerItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
-    if descriptor.name.startswith('artillery_deathzone'):
-        return _EventArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_artillery'):
         return _ArcadeArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_bomber'):
@@ -1125,9 +1114,7 @@ def _triggerItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, t
         return _ReconItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('afterburning'):
         return _AfterburningItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
-    if descriptor.name.startswith('stealth_radar'):
-        return _StealthRadarItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
-    return _RegenerationKitItem(descriptor, quantity, stage, timeRemaining, totalTime, tags) if descriptor.name.startswith('fl_regenerationKit') else _TriggerItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
+    return _StealthRadarItem(descriptor, quantity, stage, timeRemaining, totalTime, tags) if descriptor.name.startswith('stealth_radar') else _TriggerItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
 
 
 def _comp7ItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, tag=None):
@@ -1205,7 +1192,6 @@ class EquipmentsController(MethodsRules, IBattleController):
         self.onEquipmentReset = Event.Event(self._eManager)
         self.onEquipmentsCleared = Event.Event(self._eManager)
         self.onEquipmentMarkerShown = Event.Event(self._eManager)
-        self.onEquipmentMarkerHide = Event.Event(self._eManager)
         self.onEquipmentAreaCreated = Event.Event(self._eManager)
         self.onEquipmentCooldownInPercent = Event.Event(self._eManager)
         self.onEquipmentCooldownTime = Event.Event(self._eManager)
@@ -1286,19 +1272,14 @@ class EquipmentsController(MethodsRules, IBattleController):
         try:
             item = self._equipments[intCD]
         except KeyError:
-            _logger.error('Equipment is not found. %d', intCD)
+            _logger.error('Equipment is not found by CD. %d', intCD)
             item = None
 
         return item
 
     def getEquipmentByIDx(self, idx):
-        try:
-            item = self._equipmentsIdxSlot[idx][0]
-        except KeyError:
-            _logger.error('Equipment is not found. %d', idx)
-            item = None
-
-        return item
+        item = self._equipmentsIdxSlot.get(idx)
+        return item[0] if item else None
 
     def getOrderedEquipmentsLayout(self):
         return [ (intCD, self._equipments[intCD]) for intCD in self._order if intCD ]
@@ -1371,9 +1352,11 @@ class EquipmentsController(MethodsRules, IBattleController):
             self.onEquipmentReset(oldIntCD, newIntCD, item)
             return
 
-    def setServerPrevStage(self, prevStage, intCD):
-        if intCD in self._equipments:
-            self._equipments[intCD].setServerPrevStage(prevStage)
+    def setServerPrevStage(self, **kwargs):
+        compactDescr = kwargs.get('compactDescr')
+        prevStage = kwargs.get('previousStage')
+        if compactDescr in self._equipments:
+            self._equipments[compactDescr].setServerPrevStage(prevStage)
 
     def getEquipments(self):
         return self._equipments
@@ -1422,10 +1405,7 @@ class EquipmentsController(MethodsRules, IBattleController):
         if item is None:
             item = self.createItem(eq, 0, -1, 0, 0)
         self.onEquipmentMarkerShown(item, pos, direction, time, team)
-        return item
-
-    def hideMarker(self, item):
-        self.onEquipmentMarkerHide(item)
+        return
 
     def consumePreferredPosition(self):
         value = self.__preferredPosition
@@ -1533,15 +1513,6 @@ class _ReplayArtilleryItem(_ReplayOrderItem):
 
     def getMarkerColor(self):
         return BATTLE_MARKERS_CONSTS.COLOR_YELLOW
-
-
-class _ReplayEventArtilleryItem(_ReplayOrderItem):
-
-    def getMarker(self):
-        pass
-
-    def getMarkerColor(self):
-        return BATTLE_MARKERS_CONSTS.COLOR_RED
 
 
 class _ReplayArtilleryAOEFort(_ReplayArtilleryItem):
@@ -1840,8 +1811,6 @@ def _replayPoiItemFactory(descriptor, quantity, stage, timeRemaining, totalTime,
 
 
 def _replayTriggerItemFactory(descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
-    if descriptor.name.startswith('artillery_deathzone'):
-        return _ReplayEventArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('arcade_artillery'):
         return _ReplayArcadeArtilleryItem(descriptor, quantity, stage, timeRemaining, totalTime, tags)
     if descriptor.name.startswith('artillery_epic'):
@@ -1955,7 +1924,7 @@ class EquipmentsReplayPlayer(EquipmentsController):
     def canActivate(self, intCD, entityName=None, avatar=None):
         return (False, None)
 
-    def changeSetting(self, intCD, entityName=None, avatar=None):
+    def changeSetting(self, intCD, entityName=None, avatar=None, idx=None):
         return (False, None)
 
     def changeSettingByTag(self, tag, entityName=None, avatar=None):

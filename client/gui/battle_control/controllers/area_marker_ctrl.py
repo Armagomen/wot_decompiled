@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_control/controllers/area_marker_ctrl.py
 import logging
-import math
 import BigWorld
 from helpers import dependency
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -54,7 +53,7 @@ class AreaMarkersController(BaseMarkerController):
                     marker.setVisible(False)
                     continue
                 marker.setVisible(self._globalVisibility)
-                marker.update(int(math.ceil(max(0, distanceToArea))))
+                marker.update(int(max(0, distanceToArea)))
 
             return
 

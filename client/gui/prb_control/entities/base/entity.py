@@ -165,6 +165,9 @@ class BasePrbEntity(IActionsValidator, PrbFunctionalFlags):
     def getIntroType(self):
         pass
 
+    def getRequestCtx(self):
+        return None
+
     def getQueueType(self):
         return QUEUE_TYPE.UNKNOWN
 
@@ -234,3 +237,6 @@ class NotSupportedEntity(BasePrbEntity, IListenersCollection):
 
     def _createActionsValidator(self):
         return NotSupportedActionsValidator()
+
+    def _goToHangar(self):
+        pass

@@ -5,6 +5,7 @@ import cPickle as pickle
 import copy
 import logging
 from copy import deepcopy
+import typing
 import BigWorld
 import CommandMapping
 import Event
@@ -27,6 +28,9 @@ from helpers import dependency, getClientVersion
 from items.components.crew_books_constants import CREW_BOOK_RARITY
 from skeletons.account_helpers.settings_core import ISettingsCore
 from soft_exception import SoftException
+if typing.TYPE_CHECKING:
+    from ResMgr import DataSection
+    from typing import List, Optional, Iterable
 _logger = logging.getLogger(__name__)
 KEY_FILTERS = 'filters'
 KEY_SESSION_SETTINGS = 'session_settings'
@@ -36,6 +40,8 @@ KEY_COUNTERS = 'counters'
 KEY_NOTIFICATIONS = 'notifications'
 KEY_UI_FLAGS = 'ui_flags'
 KEY_MANUAL = 'manual'
+KEY_BATTLE_HINTS = 'battle_hints'
+KEY_NEWBIE_HINTS = 'newbie_hints'
 CAROUSEL_FILTER_1 = 'CAROUSEL_FILTER_1'
 CAROUSEL_FILTER_2 = 'CAROUSEL_FILTER_2'
 CAROUSEL_FILTER_CLIENT_1 = 'CAROUSEL_FILTER_CLIENT_1'
@@ -66,7 +72,6 @@ COMP7_CAROUSEL_FILTER_1 = 'COMP7_CAROUSEL_FILTER_1'
 COMP7_CAROUSEL_FILTER_2 = 'COMP7_CAROUSEL_FILTER_2'
 COMP7_CAROUSEL_FILTER_CLIENT_1 = 'COMP7_CAROUSEL_FILTER_CLIENT_1'
 COMP7_PREBATTLE_CAROUSEL_ROW_VALUE = 'comp7PrebattleCarouselRowValue'
-COMP7_PREBATTLE_MINIMAP_SIZE = 'comp7PrebattleMinimapSize'
 COMP7_IS_VOIP_IN_BATTLE_ACTIVATED = 'comp7IsVoipInBattleActivated'
 BARRACKS_FILTER = 'barracks_filter'
 ORDERS_FILTER = 'ORDERS_FILTER'
@@ -119,7 +124,6 @@ BLUEPRINTS_CONVERT_SALE_STARTED_SEEN = 'bcsStartedSeen'
 IS_SHOP_VISITED = 'isShopVisited'
 LAST_SHOP_ACTION_COUNTER_MODIFICATION = 'lastShopActionCounterModification'
 OVERRIDEN_HEADER_COUNTER_ACTION_ALIASES = 'overridenHeaderCounterActionAliases'
-HW23_ARTEFACT_VOICEOVER_MUTED = 'HW23_ARTEFACT_VOICEOVER_MUTED'
 STORE_TAB = 'store_tab'
 STATS_REGULAR_SORTING = 'statsSorting'
 STATS_SORTIE_SORTING = 'statsSortingSortie'
@@ -225,6 +229,7 @@ SHOWN_WOT_PLUS_INTRO = 'shownWotPlusIntro'
 MINIMAP_SIZE = 'minimapSize'
 COMP7_UI_SECTION = 'comp7'
 COMP7_WEEKLY_QUESTS_PAGE_TOKENS_COUNT = 'comp7WeeklyQuestsPageTokensCount'
+COMP7_SHOP_SEEN_PRODUCTS = 'comp7ShopSeenProducts'
 FUN_RANDOM_NOTIFICATIONS = 'funRandomNotifications'
 FUN_RANDOM_NOTIFICATIONS_FROZEN = 'funRandomNotificationsFrozen'
 FUN_RANDOM_NOTIFICATIONS_PROGRESSIONS = 'funRandomNotificationsProgressions'
@@ -266,6 +271,8 @@ ACHIEVEMENTS_EDITING_ENABLED_STATUS = 'achievementsEditingEnabledStatus'
 ACHIEVEMENTS_MEDAL_ADDED_STATUS = 'achievementsMedalAddedStatus'
 ACHIEVEMENTS_RATING_CHANGED_STATUS = 'achievementsRatingChangedStatus'
 ACHIEVEMENTS_MEDAL_COUNT_INFO = 'achievementsMedalCountInfo'
+VIEWED_MODULES_SECTION = 'mua'
+LIMITED_UI_VERSIONED_RULES = 'luiVersioned'
 
 class BattleMatters(object):
     BATTLE_MATTERS_SETTINGS = 'battleMattersSettings'
@@ -280,11 +287,6 @@ class Winback(object):
     COMPLETED_STARTING_QUEST_COUNT = 'completedStartingQuestCount'
     INTRO_SHOWN = 'introShown'
     BATTLE_SELECTOR_SETTINGS_BULLET_SHOWN = 'battleSelectorSettingsBulletShown'
-
-
-class WinBackCall(object):
-    WIN_BACK_CALL_UI_SECTION = 'winBackCall'
-    WIN_BACK_CALL_SHOWN_INTRO = 'winBackCallIntroShowed'
 
 
 KNOWN_SELECTOR_BATTLES = 'knownSelectorBattles'
@@ -724,7 +726,8 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                                     GuiSettingsBehavior.IS_PRESTIGE_ONBOARDING_VIEWED: False,
                                     GuiSettingsBehavior.PRESTIGE_FIRST_ENTRY_NOTIFICATION_SHOWN: False,
                                     'birthdayCalendarIntroShowed': False,
-                                    'isComp7IntroShown': False},
+                                    GuiSettingsBehavior.COMP7_INTRO_SHOWN: False,
+                                    GuiSettingsBehavior.COMP7_WHATS_NEW_SHOWN: False},
                EULA_VERSION: {'version': 0},
                FORT_MEMBER_TUTORIAL: {'wasShown': False},
                IGR_PROMO: {'wasShown': False},
@@ -870,7 +873,7 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                                      'markerAltPlayerName': True,
                                      'markerAltAimMarker2D': False}},
                 COMP7_PREBATTLE_CAROUSEL_ROW_VALUE: -1,
-                COMP7_PREBATTLE_MINIMAP_SIZE: -1,
+                GAME.COMP7_MINIMAP_SIZE: -1,
                 COMP7_IS_VOIP_IN_BATTLE_ACTIVATED: False,
                 'showVehicleIcon': False,
                 'showVehicleLevel': False,
@@ -881,7 +884,7 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                 'showDamageIcon': True,
                 'showVehiclesCounter': True,
                 'minimapAlpha': 0,
-                MINIMAP_SIZE: 1,
+                GAME.MINIMAP_SIZE: None,
                 GAME.SHOW_VEHICLE_HP_IN_PLAYERS_PANEL: 1,
                 GAME.SHOW_VEHICLE_HP_IN_MINIMAP: 1,
                 'minimapRespawnSize': 0,
@@ -890,7 +893,7 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                 'minimapDrawRange': True,
                 'minimapAlphaEnabled': False,
                 'epicMinimapZoom': 1.5,
-                'mapsTrainingMinimapSize': 3,
+                GAME.TRAINING_MINIMAP_SIZE: None,
                 'increasedZoom': True,
                 'sniperModeByShift': True,
                 'nationalVoices': False,
@@ -904,7 +907,7 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                 GAME.SCROLL_SMOOTHING: True,
                 'hangarCamPeriod': 1,
                 'hangarCamParallaxEnabled': True,
-                'players_panel': {'state': 2,
+                'players_panel': {'state': None,
                                   'showLevels': True,
                                   'showTypes': True},
                 'epic_random_players_panel': {'state': 5},
@@ -1275,9 +1278,9 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                         ACTIVE_TEST_PARTICIPATION_CONFIRMED: False,
                         IS_SHOP_VISITED: False,
                         LAST_SHOP_ACTION_COUNTER_MODIFICATION: None,
-                        OVERRIDEN_HEADER_COUNTER_ACTION_ALIASES: set(),
-                        HW23_ARTEFACT_VOICEOVER_MUTED: False},
- KEY_UI_FLAGS: {COMP7_UI_SECTION: {COMP7_WEEKLY_QUESTS_PAGE_TOKENS_COUNT: 0},
+                        OVERRIDEN_HEADER_COUNTER_ACTION_ALIASES: set()},
+ KEY_UI_FLAGS: {COMP7_UI_SECTION: {COMP7_WEEKLY_QUESTS_PAGE_TOKENS_COUNT: 0,
+                                   COMP7_SHOP_SEEN_PRODUCTS: []},
                 COLLECTIONS_SECTION: {COLLECTION_SHOWN_NEW_REWARDS: {},
                                       COLLECTION_SHOWN_NEW_ITEMS: {},
                                       COLLECTION_SHOWN_NEW_ITEMS_COUNT: {},
@@ -1308,8 +1311,9 @@ DEFAULT_VALUES = {KEY_FILTERS: {STORE_TAB: 0,
                 'uiSpamVisited_PersonalReservesHangarHint': False,
                 'uiSpamVisited_ModernizedSetupTabHint': False,
                 'uiSpamVisited_OfferBannerWindow': False,
-                'uiSpamVisited_StrongholdView': False,
-                WinBackCall.WIN_BACK_CALL_UI_SECTION: {WinBackCall.WIN_BACK_CALL_SHOWN_INTRO: False}}}
+                'uiSpamVisited_StrongholdView': False},
+ KEY_BATTLE_HINTS: {},
+ KEY_NEWBIE_HINTS: {}}
 
 def _filterAccountSection(dataSec):
     for key, section in dataSec.items()[:]:
@@ -1344,7 +1348,7 @@ def _recursiveStep(defaultDict, savedDict, finalDict):
 
 class AccountSettings(object):
     onSettingsChanging = Event.Event()
-    version = 67
+    version = 71
     settingsCore = dependency.descriptor(ISettingsCore)
     __cache = {'login': None,
      'section': None}
@@ -1982,6 +1986,28 @@ class AccountSettings(object):
                     if CREW_SKINS_VIEWED in accSettings.keys():
                         accSettings.deleteSection(CREW_SKINS_VIEWED)
 
+            if currVersion < 68:
+                for key, section in _filterAccountSection(ads):
+                    keySettings = AccountSettings._readSection(section, KEY_NOTIFICATIONS)
+                    if SENIORITY_AWARDS_COINS_REMINDER_SHOWN_TIMESTAMP in keySettings.keys():
+                        keySettings.write(SENIORITY_AWARDS_COINS_REMINDER_SHOWN_TIMESTAMP, _pack(None))
+
+            if currVersion < 69:
+                pass
+            if currVersion < 70:
+                pass
+            if currVersion < 71:
+                isZeroVersion = currVersion is 0
+                for key, section in _filterAccountSection(ads):
+                    accSettings = AccountSettings._readSection(section, KEY_SETTINGS)
+                    panelSettingsExist = 'players_panel' in accSettings.keys()
+                    if not isZeroVersion:
+                        panelSettings = _unpack(accSettings['players_panel'].asString) if panelSettingsExist else DEFAULT_VALUES[KEY_SETTINGS]['players_panel']
+                        panelSettings['state'] = panelSettings.get('state')
+                        if panelSettings['state'] is None:
+                            panelSettings['state'] = 2
+                        accSettings.write('players_panel', _pack(panelSettings))
+
             ads.writeInt('version', AccountSettings.version)
         return
 
@@ -2141,21 +2167,76 @@ class AccountSettings(object):
             _logger.error("Cann't set value in %s section for %s.", BattleMatters.BATTLE_MATTERS_SETTINGS, name)
 
     @classmethod
-    def getWinBackCallSetting(cls, name, default):
-        settings = cls.getUIFlag(WinBackCall.WIN_BACK_CALL_UI_SECTION)
-        return settings.get(name, default)
+    def getNewbieHints(cls, name, default=None):
+        return cls._getValue(name, KEY_NEWBIE_HINTS, force=True, default=default)
 
     @classmethod
-    def setWinBackCallSetting(cls, name, value):
-        settings = cls.getUIFlag(WinBackCall.WIN_BACK_CALL_UI_SECTION)
-        if name in settings:
-            settings[name] = value
-            cls.setUIFlag(WinBackCall.WIN_BACK_CALL_UI_SECTION, settings)
+    def setNewbieHints(cls, name, value, default=None):
+        return cls._setValue(name, value, KEY_NEWBIE_HINTS, force=True, default=default)
+
+    @classmethod
+    def getBattleHints(cls, name, default=None):
+        return cls._getValue(name, KEY_BATTLE_HINTS, force=True, default=default)
+
+    @classmethod
+    def setBattleHints(cls, name, value, default=None):
+        return cls._setValue(name, value, KEY_BATTLE_HINTS, force=True, default=default)
+
+    @classmethod
+    def getVehicleViewedModules(cls, vehIntCD):
+        viewedModules = cls.getUIFlag(VIEWED_MODULES_SECTION)
+        return viewedModules.get(vehIntCD, None) if viewedModules else None
+
+    @classmethod
+    def setVehicleViewedModules(cls, vehIntCD, modules):
+        viewedModules = cls.getUIFlag(VIEWED_MODULES_SECTION)
+        if viewedModules is None:
+            viewedModules = {}
+        viewedModules.update({vehIntCD: modules})
+        cls.setUIFlag(VIEWED_MODULES_SECTION, viewedModules)
+        return
+
+    @classmethod
+    def clearVehicleViewedModules(cls, vehIntCD):
+        viewedModules = cls.getUIFlag(VIEWED_MODULES_SECTION)
+        if viewedModules is not None and vehIntCD in viewedModules:
+            del viewedModules[vehIntCD]
+        cls.setUIFlag(VIEWED_MODULES_SECTION, viewedModules)
+        return
+
+    @classmethod
+    def isVersionedRuleCompleted(cls, ruleID):
+        versionedRules = cls.getUIFlag(LIMITED_UI_VERSIONED_RULES)
+        return ruleID in versionedRules if versionedRules else False
+
+    @classmethod
+    def getCompletedVersionedRules(cls):
+        return cls.getUIFlag(LIMITED_UI_VERSIONED_RULES)
+
+    @classmethod
+    def completeVersionedRules(cls, ruleIDs):
+        versionedRules = cls.getUIFlag(LIMITED_UI_VERSIONED_RULES)
+        if versionedRules is None:
+            versionedRules = []
+        versionedRules = list(set(ruleIDs + versionedRules))
+        cls.setUIFlag(LIMITED_UI_VERSIONED_RULES, versionedRules)
+        return
+
+    @classmethod
+    def clearVersionedRules(cls, ruleIDs):
+        versionedRules = cls.getUIFlag(LIMITED_UI_VERSIONED_RULES)
+        if versionedRules is None:
+            return
         else:
-            _logger.error("Cann't set value in %s section.", WinBackCall.WIN_BACK_CALL_UI_SECTION)
+            for ruleID in ruleIDs:
+                if ruleID in versionedRules:
+                    versionedRules.remove(ruleID)
+
+            cls.setUIFlag(LIMITED_UI_VERSIONED_RULES, versionedRules)
+            return
 
     @staticmethod
-    def _getValue(name, setting, force=False):
+    def _getValue(name, setting, force=False, default=None):
         fds = AccountSettings._readSection(AccountSettings._readUserSection(), setting)
         try:
             if fds.has_key(name):
@@ -2164,13 +2245,13 @@ class AccountSettings(object):
             if constants.IS_DEVELOPMENT:
                 LOG_CURRENT_EXCEPTION()
 
-        return copy.deepcopy(DEFAULT_VALUES[setting][name]) if name in DEFAULT_VALUES[setting] else None
+        return copy.deepcopy(DEFAULT_VALUES[setting][name]) if name in DEFAULT_VALUES[setting] else default
 
     @staticmethod
-    def _setValue(name, value, setting, force=False):
+    def _setValue(name, value, setting, force=False, default=None):
         if name not in DEFAULT_VALUES[setting] and not force:
             raise SoftException('Default value "{}" is not found in "{}"'.format(name, type))
-        if AccountSettings._getValue(name, setting, force) != value:
+        if AccountSettings._getValue(name, setting, force, default=default) != value:
             fds = AccountSettings._readSection(AccountSettings._readUserSection(), setting)
             if name in DEFAULT_VALUES[setting] and DEFAULT_VALUES[setting][name] == value:
                 fds.deleteSection(name)

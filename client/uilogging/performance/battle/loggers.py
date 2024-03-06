@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/uilogging/performance/battle/loggers.py
+import BigWorld
 import logging
 import typing
 from helpers import dependency
@@ -59,9 +60,10 @@ class BattleMetricsLogger(object):
     @noexcept
     def log(self):
         _logger.debug('Battle metrics requested.')
+        if not self._defaultLogger.disabled or BigWorld.wg_debugLogging():
+            data = self.statsCollector.getStatistics()
         if self._defaultLogger.disabled:
             return
-        data = self.statsCollector.getStatistics()
         if not data:
             _logger.error('Battle stats are empty.')
             return

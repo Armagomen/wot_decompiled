@@ -4,6 +4,7 @@ import logging
 import BattleReplay
 import GUI
 import WWISE
+from PlayerEvents import g_playerEvents
 from debug_utils import LOG_WARNING, LOG_DEBUG, LOG_ERROR
 from gui import DEPTH_OF_Aim
 from gui.Scaleform.daapi.view.battle.shared.crosshair import gm_factory, plugins, settings
@@ -43,10 +44,9 @@ class AutoloaderBoostSoundEvents(object):
 
 class CrosshairPanelContainer(ExternalFlashComponent, CrosshairPanelContainerMeta):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    EXTERNAL_FLASH_SETTINGS = ExternalFlashSettings(BATTLE_VIEW_ALIASES.CROSSHAIR_PANEL, settings.CROSSHAIR_CONTAINER_SWF, settings.CROSSHAIR_ROOT_PATH, settings.CROSSHAIR_INIT_CALLBACK)
 
     def __init__(self):
-        super(CrosshairPanelContainer, self).__init__(self.EXTERNAL_FLASH_SETTINGS)
+        super(CrosshairPanelContainer, self).__init__(ExternalFlashSettings(BATTLE_VIEW_ALIASES.CROSSHAIR_PANEL, settings.CROSSHAIR_CONTAINER_SWF, settings.CROSSHAIR_ROOT_PATH, settings.CROSSHAIR_INIT_CALLBACK))
         self.__plugins = PluginsCollection(self)
         self.__plugins.addPlugins(self._getPlugins())
         self.__gunMarkers = None
@@ -176,6 +176,7 @@ class CrosshairPanelContainer(ExternalFlashComponent, CrosshairPanelContainerMet
         self.__callbackDelayer = CallbackDelayer()
         if RoleHelpPlugin.isAvailableToShow():
             self.__toggleFade(True)
+        g_playerEvents.crosshairPanelInitialized()
 
     def _dispose(self):
         self.stopPlugins()

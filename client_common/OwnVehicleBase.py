@@ -65,7 +65,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         timeLeft, timeBase = self.__getTimeLeftBaseTime(prop)
-        avatar.updateVehicleGunReloadTime(self.entity.id, timeLeft, timeBase, prop.clipTime)
+        avatar.updateVehicleGunReloadTime(self.entity.id, timeLeft, timeBase)
 
     @noexcept
     def update_vehicleClipReloadTime(self, prop):
@@ -73,7 +73,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         timeLeft, timeBase = self.__getTimeLeftBaseTime(prop)
-        avatar.updateVehicleClipReloadTime(self.entity.id, timeLeft, timeBase, prop.firstTime, prop.stunned, prop.isBoostApplicable, prop.clipTime)
+        avatar.updateVehicleClipReloadTime(self.entity.id, timeLeft, timeBase, prop.firstTime, prop.stunned, prop.isBoostApplicable)
 
     @noexcept
     def update_vehicleSettings(self, prop):

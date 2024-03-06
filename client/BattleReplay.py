@@ -85,6 +85,8 @@ class CallbackDataNames(object):
     HIDE_AUTO_AIM_MARKER = 'hideAutoAimMarker'
     ON_TARGET_VEHICLE_CHANGED = 'onTargetVehicleChanged'
     MT_CONFIG_CALLBACK = 'mapsTrainingConfigurationCallback'
+    SHOW_BATTLE_HINT = 'show_battle_hint'
+    HIDE_BATTLE_HINT = 'hide_battle_hint'
 
 
 class SimulatedAoI(object):
@@ -677,7 +679,7 @@ class BattleReplay(object):
     def getGunPitch(self):
         return self.__replayCtrl.gunPitch
 
-    def setGunReloadTime(self, startTime, duration, clipTime=None):
+    def setGunReloadTime(self, startTime, duration):
         self.__replayCtrl.setGunReloadTime(startTime, duration)
 
     def resetArenaPeriod(self):
@@ -938,7 +940,7 @@ class BattleReplay(object):
             if not self.isControllingCamera and forceControlMode is None:
                 return
             controlMode = self.getControlMode() if forceControlMode is None else forceControlMode
-            if forceControlMode is None and not self.isControllingCamera and controlMode in _IGNORED_SWITCHING_CTRL_MODES:
+            if forceControlMode is None and not self.isControllingCamera and controlMode in _IGNORED_SWITCHING_CTRL_MODES or controlMode == CTRL_MODE_NAME.MAP_CASE_EPIC:
                 return
             if self.__equipmentId is None and controlMode == CTRL_MODE_NAME.MAP_CASE_ARCADE:
                 return
@@ -1288,6 +1290,10 @@ def _JSON_Encode(obj):
 
 def isPlaying():
     return g_replayCtrl.isPlaying or g_replayCtrl.isTimeWarpInProgress if g_replayCtrl is not None else False
+
+
+def isRecording():
+    return g_replayCtrl is not None and g_replayCtrl.isRecording
 
 
 def isServerSideReplay():

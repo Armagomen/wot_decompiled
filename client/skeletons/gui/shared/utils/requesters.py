@@ -416,7 +416,11 @@ class IStatsRequester(IRequester):
         raise NotImplementedError
 
     @property
-    def steamShadeGroup(self):
+    def defaultSettingsGroup(self):
+        raise NotImplementedError
+
+    @property
+    def newbieHintsGroup(self):
         raise NotImplementedError
 
 

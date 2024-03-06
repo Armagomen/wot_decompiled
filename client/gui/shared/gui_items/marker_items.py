@@ -24,6 +24,8 @@ class MarkerParamsFactory(object):
                 raise SoftException('Duplicated marker type: (%s) in xml config' % markerItemName)
             cls.MARKER_DATA[markerItemName] = cls._readParams(section)
 
+        ResMgr.purge(path)
+
     @classmethod
     def getMarkerParams(cls, matrix, markerStyle=DEFAULT_MARKER, bitMask=FLAG.NONE):
         params = copy.deepcopy(cls.MARKER_DATA.get(markerStyle, {}))
@@ -50,10 +52,10 @@ class MarkerParamsFactory(object):
     @classmethod
     def _readParams(cls, section):
         config = {'visible': section.readBool('visible', True),
-         'areaRadius': section.readFloat('areaRadius'),
-         'disappearingRadius': section.readFloat('disappearingRadius'),
-         'reverseDisappearing': section.readBool('reverseDisappearing'),
-         'offset': section.readVector3('offset')}
+         'areaRadius': section.readFloat('areaRadius', 0.0),
+         'disappearingRadius': section.readFloat('disappearingRadius', 0.0),
+         'reverseDisappearing': section.readBool('reverseDisappearing', False),
+         'offset': section.readVector3('offset', (0, 0, 0))}
         config = cls._readComponents(config, section['components'])
         return config
 

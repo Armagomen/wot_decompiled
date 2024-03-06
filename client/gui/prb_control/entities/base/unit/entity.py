@@ -375,7 +375,6 @@ class _UnitIntroEntity(_UnitEntity):
 
     def init(self, ctx=None):
         super(_UnitIntroEntity, self).init(ctx=ctx)
-        self._loadUnit()
         return FUNCTIONAL_FLAG.LOAD_WINDOW
 
     def fini(self, ctx=None, woEvents=False):
@@ -419,6 +418,9 @@ class _UnitIntroEntity(_UnitEntity):
 
     def showGUI(self, ctx=None):
         self._showWindow()
+
+    def _goToHangar(self):
+        self._loadUnit()
 
     def _createRosterSettings(self):
         return unit_items.SupportedRosterSettings.last(self._prbType)

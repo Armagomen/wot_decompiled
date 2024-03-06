@@ -1,6 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/LobbyView.py
-import BigWorld
 import constants
 import gui
 from PlayerEvents import g_playerEvents
@@ -128,14 +127,7 @@ class LobbyView(LobbyPageMeta, IWaitingWidget):
             view = container.getView()
             if view and view.alias not in VEHICLE_PREVIEW_ALIASES:
                 return
-        component = getattr(BigWorld.player(), 'HalloweenAccountComponent', None)
-        if component and component.getHalloweenController() and component.getHalloweenController().isEventHangar():
-            container = self.app.containerManager.getContainer(WindowLayer.SUB_VIEW)
-            view = container.getView()
-            if view and view.alias not in VEHICLE_PREVIEW_ALIASES:
-                return
         self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_CURSOR_OVER_3DSCENE, ctx={'isOver3dScene': isOver3dScene}))
-        return
 
     def notifyCursorDragging(self, isDragging):
         self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_CURSOR_DRAGGING, ctx={'isDragging': isDragging}))

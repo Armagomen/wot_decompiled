@@ -344,10 +344,7 @@ class AvatarChatKeyHandling(object):
                 matrixProvider = self.__customMatrixProviderGetter[markerType](None, replierID)
             else:
                 matrixProvider = self.__customMatrixProviderGetter[markerType](None, targetID)
-            if matrixProvider is not None:
-                soundPos = matrixProvider.translation
-            else:
-                soundPos = None
+            soundPos = matrixProvider.translation if matrixProvider is not None else None
             enableVoice = True
             if replierID != self.playerVehicleID and targetID != self.playerVehicleID:
                 enableVoice = False

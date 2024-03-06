@@ -10,6 +10,8 @@ from gui.server_events.pm_constants import PM_TUTOR_FIELDS
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCache
 from skeletons.gui.game_control import IIGRController
+from skeletons.gui.shared import IItemsCache
+from skeletons.gui.lobby_context import ILobbyContext
 
 def _initializeDefaultSettings(core, data, initialized):
     LOG_DEBUG('Initializing server settings.')
@@ -492,7 +494,12 @@ def _migrateTo54(core, data, initialized):
 
 
 def _migrateTo55(core, data, initialized):
-    data['onceOnlyHints']['CustomizationProgressionViewHint'] = False
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)
+    settingOffset = 2
+    if storedValue & settingOffset:
+        clear = data['clear']
+        clear['onceOnlyHints'] = clear.get('onceOnlyHints', 0) | settingOffset
 
 
 def _migrateTo56(core, data, initialized):
@@ -766,9 +773,12 @@ def _migrateTo88(core, data, initialized):
 def _migrateTo89(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
     from account_helpers.settings_core.settings_constants import CONTOUR
-    data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.ENHANCED_CONTOUR] = False
-    data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.CONTOUR_PENETRABLE_ZONE] = 0
-    data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.CONTOUR_IMPENETRABLE_ZONE] = 0
+    itemsCache = dependency.instance(IItemsCache)
+    newbieGroup = itemsCache.items.stats.defaultSettingsGroup
+    if newbieGroup != 'new' or not initialized:
+        data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.ENHANCED_CONTOUR] = False
+        data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.CONTOUR_PENETRABLE_ZONE] = 0
+        data[SETTINGS_SECTIONS.CONTOUR][CONTOUR.CONTOUR_IMPENETRABLE_ZONE] = 0
 
 
 def _migrateTo90(core, data, initialized):
@@ -1003,6 +1013,219 @@ def _migrateTo111(core, data, initialized):
 def _migrateTo112(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
     data[GUI_START_BEHAVIOR][GuiSettingsBehavior.COMP7_SEASON_STATISTICS_SHOWN] = False
+
+
+def _migrateTo113(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    from account_helpers.settings_core.settings_constants import SeniorityAwardsStorageKeys as keys
+    data[SETTINGS_SECTIONS.SENIORITY_AWARDS_STORAGE][keys.SENIORITY_AWARDS_ON_PAUSE_NOTIFICATION_SHOWED] = False
+
+
+def _migrateTo114(core, data, initialized):
+    pass
+
+
+def _migrateTo115(core, data, initialized):
+    data['battlePassStorage'][BattlePassStorageKeys.FLAGS_VERSION_HOLIDAY] = 0
+
+
+def _migrateTo116(core, data, initialized):
+    itemsCache = dependency.instance(IItemsCache)
+    newbieGroup = itemsCache.items.stats.defaultSettingsGroup
+    if newbieGroup == 'new' and initialized:
+        newbiesConfigs = {'gameData': {GAME.REPLAY_ENABLED: 1,
+                      GAME.SNIPER_MODE_STABILIZATION: True,
+                      GAME.SHOW_VEH_MODELS_ON_MAP: 2},
+         'gameExtData': {GAME.CAROUSEL_TYPE: 0,
+                         GAME.DOUBLE_CAROUSEL_TYPE: 0,
+                         GAME.VEHICLE_CAROUSEL_STATS: 0,
+                         GAME.PRE_COMMANDER_CAM: False,
+                         GAME.INCREASED_ZOOM: True,
+                         GAME.HULLLOCK_ENABLED: False,
+                         GAME.MINIMAP_MIN_SPOTTING_RANGE: True,
+                         GAME.MINIMAP_VIEW_RANGE: True,
+                         GAME.MINIMAP_MAX_VIEW_RANGE: False,
+                         GAME.MINIMAP_DRAW_RANGE: True},
+         'gameExtData2': {GAME.CUSTOMIZATION_DISPLAY_TYPE: 2},
+         'dogTags': {GAME.SHOW_VICTIMS_DOGTAG: False,
+                     GAME.SHOW_DOGTAG_TO_KILLER: False,
+                     GAME.SHOW_KILLERS_DOGTAG: False},
+         'graphicsData': {GAME.LENS_EFFECT: False},
+         'battleHud': {GAME.SHOW_VEHICLE_HP_IN_PLAYERS_PANEL: 0,
+                       ScorePanelStorageKeys.SHOW_HP_VALUES: True},
+         'feedbackDamageIndicator': {DAMAGE_INDICATOR.TYPE: 1,
+                                     DAMAGE_INDICATOR.PRESET_ALLIES: False,
+                                     DAMAGE_INDICATOR.DAMAGE_VALUE: True,
+                                     DAMAGE_INDICATOR.DYNAMIC_INDICATOR: True,
+                                     DAMAGE_INDICATOR.VEHICLE_INFO: True},
+         'feedbackBattleEvents': {BATTLE_EVENTS.SHOW_IN_BATTLE: True,
+                                  BATTLE_EVENTS.EVENT_NAME: True,
+                                  BATTLE_EVENTS.VEHICLE_INFO: True,
+                                  BATTLE_EVENTS.BLOCKED_DAMAGE: True,
+                                  BATTLE_EVENTS.RECEIVED_DAMAGE: True,
+                                  BATTLE_EVENTS.RECEIVED_CRITS: True,
+                                  BATTLE_EVENTS.ENEMIES_STUN: False,
+                                  BATTLE_EVENTS.BASE_CAPTURE_DROP: True,
+                                  BATTLE_EVENTS.BASE_CAPTURE: True,
+                                  BATTLE_EVENTS.ENEMY_DETECTION: True,
+                                  BATTLE_EVENTS.ENEMY_RAM_ATTACK: True,
+                                  BATTLE_EVENTS.ENEMY_KILL: True,
+                                  BATTLE_EVENTS.ENEMY_TRACK_DAMAGE: True,
+                                  BATTLE_EVENTS.ENEMY_CRITICAL_HIT: True,
+                                  BATTLE_EVENTS.ENEMY_HP_DAMAGE: True,
+                                  BATTLE_EVENTS.ENEMY_WORLD_COLLISION: True,
+                                  BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE: True,
+                                  BATTLE_EVENTS.ENEMY_ASSIST_STUN: True,
+                                  BATTLE_EVENTS.ENEMY_BURNING: True},
+         'feedbackDamageLog': {DAMAGE_LOG.TOTAL_DAMAGE: True,
+                               DAMAGE_LOG.BLOCKED_DAMAGE: True,
+                               DAMAGE_LOG.ASSIST_DAMAGE: True,
+                               DAMAGE_LOG.ASSIST_STUN: True,
+                               DAMAGE_LOG.SHOW_DETAILS: 0},
+         'FEEDBACK_BORDER_MAP': {'battleBorderMapMode': 2}}
+        for configGroup, configs in newbiesConfigs.items():
+            if data.get(configGroup):
+                data[configGroup].update(configs)
+            data[configGroup] = configs
+
+        newbiesAimData = {'arcade': {'netType': 0,
+                    'centralTagType': 4},
+         'sniper': {'net': 100,
+                    'netType': 0,
+                    'centralTag': 100,
+                    'centralTagType': 4,
+                    'reloader': 100,
+                    'condition': 100,
+                    'mixingType': 3,
+                    'mixing': 100,
+                    'gunTagType': 9,
+                    'gunTag': 100,
+                    'cassette': 100,
+                    'reloaderTimer': 100,
+                    'zoomIndicator': 100}}
+        aimData = data.get('aimData')
+        if aimData:
+            for aimDataType in newbiesAimData:
+                if aimDataType in aimData:
+                    data['aimData'][aimDataType].update(newbiesAimData[aimDataType])
+                data['aimData'][aimDataType] = newbiesAimData[aimDataType]
+
+        else:
+            data['aimData'] = newbiesAimData
+        newbiesMarkersData = {'enemy': {'markerBaseHp': 1,
+                   'markerBaseLevel': True,
+                   'markerBaseVehicleName': True,
+                   'markerBasePlayerName': False,
+                   'markerAltIcon': True,
+                   'markerAltVehicleName': True,
+                   'markerAltPlayerName': True,
+                   'markerAltHp': 1},
+         'ally': {'markerBaseHp': 1,
+                  'markerBaseLevel': True,
+                  'markerBaseVehicleName': True,
+                  'markerBasePlayerName': False,
+                  'markerAltIcon': True,
+                  'markerAltVehicleName': True,
+                  'markerAltPlayerName': True,
+                  'markerAltHp': 1},
+         'dead': {'markerBaseHp': 3,
+                  'markerBaseHpIndicator': False,
+                  'markerBaseVehicleName': True,
+                  'markerAltIcon': True,
+                  'markerAltVehicleName': True,
+                  'markerAltPlayerName': False,
+                  'markerAltHp': 1}}
+        markersData = data.get('markersData')
+        if markersData:
+            for markerType in newbiesMarkersData:
+                if markerType in markersData:
+                    data['markersData'][markerType].update(newbiesMarkersData[markerType])
+                data['markersData'][markerType] = newbiesMarkersData[markerType]
+
+        else:
+            data['markersData'] = newbiesMarkersData
+    elif 'dogTags' in data:
+        data['dogTags'][GAME.SHOW_KILLERS_DOGTAG] = True
+    else:
+        data['dogTags'] = {GAME.SHOW_KILLERS_DOGTAG: True}
+
+
+def _migrateTo117(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS, LIMITED_UI_STORAGES_ALL, LIMITED_UI_SPAM_OFF, LIMITED_UI_KEY, UI_STORAGE_KEYS
+    itemsCache = dependency.instance(IItemsCache)
+    sectionBitsCount = 32
+    permanentRulesLength = len(LIMITED_UI_SPAM_OFF.ORDER)
+    commonRulesStartLength = sectionBitsCount - permanentRulesLength
+    firstSectionValue = data[SETTINGS_SECTIONS.LIMITED_UI_1].get(LIMITED_UI_KEY, _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.LIMITED_UI_1, 0))
+    secondSectionValue = data[SETTINGS_SECTIONS.LIMITED_UI_2].get(LIMITED_UI_KEY, _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.LIMITED_UI_2, 0))
+    for storage in LIMITED_UI_STORAGES_ALL:
+        data[storage][LIMITED_UI_KEY] = 0
+
+    permanentRules = firstSectionValue & (1 << permanentRulesLength) - 1
+    positionToDeleteStart = 10
+    positionToDeleteEnd = 12
+    permanentRulesRight = permanentRules & (1 << positionToDeleteStart) - 1
+    permanentRulesLeft = permanentRules >> positionToDeleteEnd & (1 << permanentRulesLength - positionToDeleteEnd) - 1
+    permanentRules = (permanentRulesLeft << positionToDeleteStart | permanentRulesRight) & (1 << permanentRulesLength - 2) - 1
+    data[SETTINGS_SECTIONS.LIMITED_UI_PERMANENT_1][LIMITED_UI_KEY] = permanentRules
+    commonRules = firstSectionValue >> permanentRulesLength & (1 << commonRulesStartLength) - 1
+    rulesCount = itemsCache.items.stats.luiVersion
+    allCommonRulesCompleted = (1 << rulesCount) - 1
+    if rulesCount > commonRulesStartLength:
+        commonRules = (secondSectionValue << commonRulesStartLength | commonRules) & allCommonRulesCompleted
+    data[SETTINGS_SECTIONS.LIMITED_UI_1][LIMITED_UI_KEY] = commonRules
+    data['uiStorage'][UI_STORAGE_KEYS.LIMITED_UI_ALL_NOVICE_RULES_COMPLETED] = False
+    if rulesCount == 0 or commonRules & allCommonRulesCompleted == allCommonRulesCompleted:
+        data['uiStorage'][UI_STORAGE_KEYS.LIMITED_UI_ALL_NOVICE_RULES_COMPLETED] = True
+    clear = data['clear']
+    hintsToClear = {('onceOnlyHints', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)): (1, 24, 25),
+     ('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (0,)}
+    for sectionData, hintsPositions in hintsToClear.items():
+        section, sectionValue = sectionData
+        for bitPosition in hintsPositions:
+            settingOffset = 1 << bitPosition
+            if sectionValue & settingOffset:
+                clear[section] = clear.get(section, 0) | settingOffset
+
+
+def _migrateTo118(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
+    storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.UI_STORAGE, 0)
+    clear = data['clear']
+    for bitPosition in (9, 18, 26):
+        settingOffset = 1 << bitPosition
+        if storedValue & settingOffset:
+            clear['uiStorage'] = clear.get('uiStorage', 0) | settingOffset
+
+    storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.UI_STORAGE_2, 0)
+    clear = data['clear']
+    for bitPosition in (0, 8):
+        settingOffset = 1 << bitPosition
+        if storedValue & settingOffset:
+            clear[SETTINGS_SECTIONS.UI_STORAGE_2] = clear.get(SETTINGS_SECTIONS.UI_STORAGE_2, 0) | settingOffset
+
+
+def _migrateTo119(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
+    data[GUI_START_BEHAVIOR][GuiSettingsBehavior.COMP7_WHATS_NEW_SHOWN] = False
+
+
+def _migrateTo120(core, data, initialized):
+    itemsCache = dependency.instance(IItemsCache)
+    lobbyContext = dependency.instance(ILobbyContext)
+    import gui.prebattle_hints.newbie_controller
+    from gui.battle_hints.newbie_battle_hints_controller import NEWBIE_SETTINGS_MAX_BATTLES as BH_NEWBIE_MAX_BATTLES
+    disabled = itemsCache.items.stats.attributes & constants.ACCOUNT_ATTR.NEWBIE_FEATURES_DISABLED
+    battlesCount = itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
+    data['gameExtData2'][GAME.NEWBIE_PREBATTLE_HINTS] = not disabled and battlesCount <= gui.prebattle_hints.newbie_controller.IS_NEWBIE_MAX_BATTLES
+    data['gameExtData2'][GAME.NEWBIE_BATTLE_HINTS] = not disabled and battlesCount <= BH_NEWBIE_MAX_BATTLES
+    newbieGroup = itemsCache.items.stats.newbieHintsGroup
+    abConfig = lobbyContext.getServerSettings().abFeatureTestConfig
+    if not disabled and newbieGroup and hasattr(abConfig, 'newbieHints'):
+        properties = abConfig.newbieHints.get(newbieGroup)['properties']
+        for param in [GAME.NEWBIE_PREBATTLE_HINTS, GAME.NEWBIE_BATTLE_HINTS]:
+            if param in properties:
+                data['gameExtData2'][param] = properties[param]
 
 
 _versions = ((1,
@@ -1447,6 +1670,38 @@ _versions = ((1,
   False),
  (112,
   _migrateTo112,
+  False,
+  False),
+ (113,
+  _migrateTo113,
+  False,
+  False),
+ (114,
+  _migrateTo114,
+  False,
+  False),
+ (115,
+  _migrateTo115,
+  False,
+  False),
+ (116,
+  _migrateTo116,
+  False,
+  False),
+ (117,
+  _migrateTo117,
+  False,
+  False),
+ (118,
+  _migrateTo118,
+  False,
+  False),
+ (119,
+  _migrateTo119,
+  False,
+  False),
+ (120,
+  _migrateTo120,
   False,
   False))
 

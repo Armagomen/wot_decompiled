@@ -139,9 +139,6 @@ class ServerEventAbstract(object):
     def getDescription(self):
         return getLocalizedData(self._data, 'description')
 
-    def getNotificationTitleText(self):
-        return getLocalizedData(self._data, 'notificationTitleText')
-
     def getNotificationText(self):
         return getLocalizedData(self._data, 'notificationText')
 

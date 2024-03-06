@@ -140,10 +140,9 @@ class GatewayDataAccessor(base.BaseDataAccessor):
             default_headers['User-Agent'] = self.user_agent
         headers = tuple(('{}: {}'.format(k, v) for k, v in default_headers.iteritems() if v))
         args = [headers, 30.0, method]
-        if post_data is not None:
+        if post_data:
             args.append(json.dumps(post_data))
         self.url_fetcher(url, self._preprocess_callback(callback, converters=converters), *args)
-        return
 
     def advent_calendar_fetch_hero_tank_info(self, callback):
         url = '/advc/herotank/'
@@ -393,6 +392,22 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         return self._request_data(callback, url, get_data={'rev': rev}, converters={'periphery_id': int,
          'unit_server_id': int})
 
+    def get_wgsh_common_unit_info(self, callback, periphery_id, unit_server_id, rev, fields=None):
+        url = '/wgsh/v2/periphery/units/info/'
+        get_data = {'rev': rev,
+         'periphery_id': periphery_id,
+         'unit_server_id': unit_server_id}
+        return self._request_data(callback, url, get_data=get_data, converters={'periphery_id': int,
+         'unit_server_id': int})
+
+    def get_wgsh_account_unit_info(self, callback, periphery_id, unit_server_id, rev, fields=None):
+        url = '/wgsh/v2/periphery/units/account_info/'
+        get_data = {'rev': rev,
+         'periphery_id': periphery_id,
+         'unit_server_id': unit_server_id}
+        return self._request_data(callback, url, get_data=get_data, converters={'periphery_id': int,
+         'unit_server_id': int})
+
     def set_vehicle(self, callback, periphery_id, unit_server_id, vehicle_cd, fields=None):
         url = '/wgsh/periphery/{periphery_id}/units/{unit_server_id}/vehicles/'.format(periphery_id=periphery_id, unit_server_id=unit_server_id)
         post_data = {'vehicle_cd': vehicle_cd}
@@ -509,9 +524,15 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         url = '/wgshevents/clan/info'
         return self._request_data(callback, url, method='GET')
 
-    def wgsh_event_get_frozen_vehicles(self, callback, fields=None):
+    def wgsh_event_get_frozen_vehicles(self, callback):
         url = '/wgshevents/frozen_vehicle'
         return self._request_data(callback, url, method='GET')
+
+    def wgsh_event_unfreeze_vehicle(self, callback, playerSpaID, vehicleCD, price):
+        url = '/wgshevents/frozen_vehicle'
+        return self._request_data(callback, url, method='PATCH', post_data={'vehicle_cd': vehicleCD,
+         'repair_price': price,
+         'spa_id': playerSpaID})
 
     def clan_statistics(self, callback, clan_id, fields=None):
         url = '/wgsh/clans/{clan_id}/'.format(clan_id=clan_id)
@@ -652,15 +673,18 @@ class GatewayDataAccessor(base.BaseDataAccessor):
         url = '/agate/api/v5/inventory/getInventoryEntitlements/'
         return self._request_data(callback, url, method='POST', post_data=entitlementsFilter)
 
-    def get_win_back_call_friend_list(self, callback):
-        url = '/winbackcall/call/wot.winback-get-joint-statistics-list.v1'
-        data = {}
-        return self._request_data(callback, url, method='POST', post_data=data)
+    def get_storefront_products(self, callback, ctx):
+        url = '/shop/api/external/v2/{storefront}/products_with_categories/'.format(storefront=ctx.getStorefront())
+        return self._request_data(callback, url, method='GET')
 
-    def win_back_call_send_invite_code(self, callback, spa_id):
-        url = '/winbackcall/call/wot.winback-send-invite-code.v1'
-        data = {'winback_spa_id': int(spa_id)}
-        return self._request_data(callback, url, method='POST', post_data=data)
+    def buy_storefront_product(self, callback, ctx):
+        url = '/shop/api/external/v2/{storefront}/products/{product_code}/buy/'.format(storefront=ctx.getStorefront(), product_code=ctx.getProductCode())
+        price = ctx.getExpectedPrice()
+        postData = {'amount': 1,
+         'prices': [{'amount': price.value,
+                     'code': price.currency,
+                     'item_type': 'currency'}]}
+        return self._request_data(callback, url, method='POST', post_data=postData)
 
     def _get_formatted_language_code(self):
         return self.client_lang.replace('_', '-')

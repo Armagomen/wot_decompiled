@@ -66,9 +66,6 @@ class IControlMode(object):
     def handleKeyEvent(self, isDown, key, mods, event=None):
         pass
 
-    def hasHWKeyEvent(self, isDown, key):
-        pass
-
     def alwaysReceiveKeyEvents(self, isDown=True):
         return False
 
@@ -230,14 +227,6 @@ class _GunControlMode(IControlMode):
 
     def updateShootingStatus(self, canShot):
         self._canShot = canShot
-
-    def hasHWKeyEvent(self, isDown, key):
-        cmdMap = CommandMapping.g_instance
-        if cmdMap.isFired(CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION, key) and isDown:
-            arena = avatar_getter.getArena()
-            if arena and hasattr(constants.ARENA_GUI_TYPE, 'HALLOWEEN') and arena.guiType == constants.ARENA_GUI_TYPE.HALLOWEEN:
-                return True
-        return False
 
 
 class CameraLocationPoint(object):
@@ -771,6 +760,8 @@ class _TrajectoryControlMode(_GunControlMode):
             if pos is None:
                 pos = self._gunMarker.getPosition()
             self._aih.onControlModeChanged(CTRL_MODE_NAME.ARCADE, preferredPos=pos, aimingMode=self._aimingMode, closesDist=False)
+            if TriggersManager.g_manager:
+                TriggersManager.g_manager.fireTriggerInstantly(TRIGGER_TYPE.PLAYER_LEAVE_SPG_MODE)
             return True
         else:
             if cmdMap.isFired(CommandMapping.CMD_CM_FREE_CAMERA, key):
@@ -969,6 +960,8 @@ class StrategicControlMode(_TrajectoryControlMode):
         super(StrategicControlMode, self).enable(**args)
         AccountSettings.setSettings(LAST_ARTY_CTRL_MODE, CTRL_MODE_NAME.STRATEGIC)
         g_repeatKeyHandlers.add(self.__handleRepeatKeyEvent)
+        if not BattleReplay.g_replayCtrl.isPlaying:
+            TriggersManager.g_manager.fireTriggerInstantly(TRIGGER_TYPE.PLAYER_ENTER_SPG_STRATEGIC_MODE)
 
     def disable(self):
         super(StrategicControlMode, self).disable()
@@ -990,6 +983,8 @@ class ArtyControlMode(_TrajectoryControlMode):
         super(ArtyControlMode, self).enable(**args)
         self.strategicCamera = STRATEGIC_CAMERA.TRAJECTORY
         AccountSettings.setSettings(LAST_ARTY_CTRL_MODE, CTRL_MODE_NAME.ARTY)
+        if not BattleReplay.g_replayCtrl.isPlaying:
+            TriggersManager.g_manager.fireTriggerInstantly(TRIGGER_TYPE.PLAYER_ENTER_SPG_SNIPER_MODE)
 
     def disable(self):
         super(ArtyControlMode, self).disable()
@@ -1343,6 +1338,8 @@ class PostMortemControlMode(IControlMode):
                 playerPostmortemViewPointDefined = playerVehicle.isPostmortemViewPointDefined
         camTransitionParams = {'cameraTransitionDuration': args.get('transitionDuration', -1),
          'camMatrix': args.get('camMatrix', None)}
+        if self.__isObserverMode and player.vehicle is None and not player.isObserverFPV:
+            player.consistentMatrices.notifyPreBind(player)
         self.__cam.enable(None, False, args.get('postmortemParams'), None, None, camTransitionParams)
         newVehicle = args.get('newVehicleID', None)
         self.__cam.vehicleMProv = player.consistentMatrices.attachedVehicleMatrix if newVehicle is None else BigWorld.entities.get(newVehicle).matrix

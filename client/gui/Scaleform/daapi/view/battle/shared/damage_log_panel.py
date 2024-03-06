@@ -133,7 +133,7 @@ class _ReceivedHitVehicleVOBuilder(_VehicleVOBuilder):
         if info.getArenaVehicleID() == arenaDP.getPlayerVehicleID() and info.isRam():
             vehicleVO.vehicleName = ''
             vehicleVO.vehicleTypeImg = ''
-        if info.isStaticDeathZone() or info.isDeathZone():
+        if info.isDeathZone() or info.isStaticDeathZone():
             vehicleVO.vehicleName = ''
             vehicleVO.vehicleTypeImg = ''
         if info.isDamagingSmoke():

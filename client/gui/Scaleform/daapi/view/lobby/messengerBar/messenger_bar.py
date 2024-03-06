@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/messenger_bar.py
 from account_helpers.settings_core.settings_constants import SESSION_STATS
 from adisp import adisp_process
-from constants import PREBATTLE_TYPE, IS_DEVELOPMENT, QUEUE_TYPE
+from constants import IS_DEVELOPMENT, QUEUE_TYPE
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
 from gui import SystemMessages
@@ -120,6 +120,7 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
 
     def referralButtonClick(self):
         self.fireEvent(events.ReferralProgramEvent(events.ReferralProgramEvent.SHOW_REFERRAL_PROGRAM_WINDOW), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.as_enableReferralRecruterEffectS(self._referralCtrl.isFirstIndication())
 
     def sessionStatsButtonClick(self):
         if self.__sessionStatsBtnOnlyOnceHintShow:
@@ -138,18 +139,21 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
     def _populate(self):
         super(MessengerBar, self)._populate()
         self.__compareBasketCtrl = _CompareBasketListener(self)
-        self._referralCtrl.onReferralProgramEnabled += self.__onReferralProgramEnabled
-        self._referralCtrl.onReferralProgramDisabled += self.__onReferralProgramDisabled
+        self._referralCtrl.onReferralStateChanged += self.__onReferralStateChanged
         self._referralCtrl.onReferralProgramUpdated += self.__onReferralProgramUpdated
         self._lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
+        self._limitedUIController.startObserve(LuiRules.SESSION_STATS, self.__onLuiRuleSessionStatsCompleted)
         self.addListener(events.FightButtonEvent.FIGHT_BUTTON_UPDATE, self.__handleFightButtonUpdated, scope=EVENT_BUS_SCOPE.LOBBY)
         self.startGlobalListening()
+        bubbleCount = self._referralCtrl.getBubbleCount()
+        referralTooltip, isSpecial = self.__getReferralButtonTooltip(bubbleCount)
         self.as_setInitDataS({'channelsHtmlIcon': _formatIcon('iconChannels'),
-         'isReferralEnabled': self._referralCtrl.isEnabled(),
-         'referralCounter': self._referralCtrl.getBubbleCount(),
+         'isReferralEnabled': self._referralCtrl.isEnabled,
+         'referralCounter': bubbleCount,
          'isReferralFirstIndication': self._referralCtrl.isFirstIndication(),
          'referralHtmlIcon': _formatIcon('iconReferral', width=38, height=29, path='html_templates:lobby/referralButton'),
-         'referralTooltip': TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON,
+         'referralTooltip': referralTooltip,
+         'isSpecialReferralTooltip': isSpecial,
          'contactsHtmlIcon': _formatIcon('iconContacts', width=16),
          'vehicleCompareHtmlIcon': _formatIcon('iconComparison'),
          'contactsTooltip': TOOLTIPS.LOBY_MESSENGER_CONTACTS_BUTTON,
@@ -163,19 +167,19 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
         self.removeListener(events.FightButtonEvent.FIGHT_BUTTON_UPDATE, self.__handleFightButtonUpdated, scope=EVENT_BUS_SCOPE.LOBBY)
         self._lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingChanged
         self._referralCtrl.onReferralProgramUpdated -= self.__onReferralProgramUpdated
-        self._referralCtrl.onReferralProgramDisabled -= self.__onReferralProgramDisabled
-        self._referralCtrl.onReferralProgramEnabled -= self.__onReferralProgramEnabled
+        self._referralCtrl.onReferralStateChanged -= self.__onReferralStateChanged
+        self._limitedUIController.stopObserve(LuiRules.SESSION_STATS, self.__onLuiRuleSessionStatsCompleted)
         self.stopGlobalListening()
         super(MessengerBar, self)._dispose()
 
-    def __onReferralProgramEnabled(self):
-        self.as_setReferralProgramButtonVisibleS(True)
-
-    def __onReferralProgramDisabled(self):
-        self.as_setReferralProgramButtonVisibleS(False)
+    def __onReferralStateChanged(self):
+        self.as_setReferralProgramButtonVisibleS(self._referralCtrl.isEnabled)
 
     def __onReferralProgramUpdated(self, *_):
-        self.as_setReferralBtnCounterS(self._referralCtrl.getBubbleCount())
+        bubbleCount = self._referralCtrl.getBubbleCount()
+        refTooltip, isSpecial = self.__getReferralButtonTooltip(bubbleCount)
+        self.as_setReferralProgramButtonTooltipS(refTooltip, isSpecial)
+        self.as_setReferralBtnCounterS(bubbleCount)
 
     def __handleFightButtonUpdated(self, event):
         state = self.prbDispatcher.getFunctionalState()
@@ -201,11 +205,19 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
     def __updateSessionStatsHint(self, visible):
         self.as_setSessionStatsButtonSettingsUpdateS(visible, '!')
 
+    def __getReferralButtonTooltip(self, bubbleCount):
+        isSpecialTooltip = False
+        if self._referralCtrl.isNewReferralSeason and bubbleCount:
+            isSpecialTooltip = True
+            return (TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON_NEW_SEASON, isSpecialTooltip)
+        return (TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON, isSpecialTooltip)
+
     @adisp_process
     def __updateSessionStatsBtn(self):
         dispatcher = self.prbDispatcher
         if dispatcher is not None:
-            isInSupportedMode = dispatcher.getFunctionalState().entityTypeID in (PREBATTLE_TYPE.SQUAD,)
+            queueType = dispatcher.getEntity().getQueueType()
+            isInSupportedMode = queueType in (QUEUE_TYPE.RANDOMS,)
         else:
             isInSupportedMode = False
         isSessionStatsEnabled = self._lobbyContext.getServerSettings().isSessionStatsEnabled()
@@ -222,6 +234,9 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
         self.as_setSessionStatsButtonEnableS(isSessionStatsEnabled and isInSupportedMode, tooltip)
         self.__updateSessionStatsHint(btnIsVisible and self.__sessionStatsBtnOnlyOnceHintShow and isSessionStatsEnabled and isInSupportedMode and self._limitedUIController.isRuleCompleted(LuiRules.SESSION_STATS))
         return
+
+    def __onLuiRuleSessionStatsCompleted(self, *_):
+        self.__updateSessionStatsBtn()
 
     def __getSessionStatsBtnTooltip(self, btnEnabled):
         mainBtn = R.strings.session_stats.tooltip.mainBtn

@@ -75,7 +75,6 @@ class TrainingIntroEntity(LegacyIntroEntity):
 
     def init(self, clientPrb=None, ctx=None):
         result = super(TrainingIntroEntity, self).init(clientPrb=clientPrb, ctx=ctx)
-        g_eventDispatcher.loadTrainingList()
         result = FUNCTIONAL_FLAG.addIfNot(result, FUNCTIONAL_FLAG.LOAD_PAGE)
         self.__watcher = BaseVehiclesWatcher()
         self.__watcher.start()
@@ -113,6 +112,9 @@ class TrainingIntroEntity(LegacyIntroEntity):
 
     def _createActionsValidator(self):
         return TrainingIntroActionsValidator(self)
+
+    def _goToHangar(self):
+        g_eventDispatcher.loadTrainingList()
 
 
 class TrainingEntity(LegacyEntity):
@@ -330,9 +332,6 @@ class TrainingEntity(LegacyEntity):
                 if callback is not None:
                     callback(False)
             return
-
-    def _goToHangar(self):
-        pass
 
     def _setPlayerReady(self, ctx, callback=None):
         if g_currentVehicle.isObserver():

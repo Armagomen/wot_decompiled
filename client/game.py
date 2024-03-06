@@ -130,6 +130,12 @@ def init(scriptConfig, engineConfig, userPreferences):
         destructible_entities.init()
         from dyn_components_groups import DynComponentsGroupsRepo
         DynComponentsGroupsRepo.init()
+        import hints_common.prebattle.manager
+        hints_common.prebattle.manager.init()
+        from hints.battle import manager as battleHintsModelsMgr
+        battleHintsModelsMgr.init()
+        from arena_vscript_config import config as arenaVScriptsConfig
+        arenaVScriptsConfig.init()
         from AvatarInputHandler.cameras import FovExtended
         FovExtended.instance().resetFov()
         BigWorld.pauseDRRAutoscaling(True)
@@ -303,6 +309,10 @@ def onStreamComplete(streamID, desc, data):
     else:
         player.onStreamComplete(streamID, desc, data)
     return
+
+
+def onLoginToCellFailed():
+    BigWorld.player().onLoginToCellFailed()
 
 
 def onConnected():

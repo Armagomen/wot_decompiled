@@ -3,7 +3,7 @@
 import types
 import arena_bonus_type_caps
 from UnitBase import CMD_NAMES, ROSTER_TYPE, PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER, PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT, ROSTER_TYPE_TO_CLASS, UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE, UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME, UNIT_MGR_FLAGS_TO_INVITATION_TYPE, QUEUE_TYPE_BY_UNIT_MGR_ROSTER, UNIT_ERROR, VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS
-from constants import ARENA_GUI_TYPE, ARENA_GUI_TYPE_LABEL, ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, ARENA_BONUS_TYPE_IDS, ARENA_BONUS_MASK, QUEUE_TYPE, QUEUE_TYPE_NAMES, PREBATTLE_TYPE, PREBATTLE_TYPE_NAMES, INVITATION_TYPE, BATTLE_MODE_VEHICLE_TAGS, SEASON_TYPE_BY_NAME, SEASON_NAME_BY_TYPE, QUEUE_TYPE_IDS, ARENA_BONUS_TYPE_TO_QUEUE_TYPE, ATTACK_REASONS, ATTACK_REASON_INDICES, DAMAGE_INFO_CODES, DAMAGE_INFO_INDICES, DAMAGE_INFO_CODES_PER_ATTACK_REASON
+from constants import ARENA_GUI_TYPE, ARENA_GUI_TYPE_LABEL, ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, ARENA_BONUS_TYPE_IDS, ARENA_BONUS_MASK, QUEUE_TYPE, QUEUE_TYPE_NAMES, PREBATTLE_TYPE, PREBATTLE_TYPE_NAMES, INVITATION_TYPE, BATTLE_MODE_VEHICLE_TAGS, SEASON_TYPE_BY_NAME, SEASON_NAME_BY_TYPE, QUEUE_TYPE_IDS, ARENA_BONUS_TYPE_TO_QUEUE_TYPE, ATTACK_REASONS, ATTACK_REASON_INDICES
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE
 from debug_utils import LOG_DEBUG
 from soft_exception import SoftException
@@ -125,20 +125,6 @@ def addAttackReasonTypesFromExtension(extAttackReasonType, personality):
     extAttackReasonType.inject(personality)
     ATTACK_REASONS.extend(extraValues)
     ATTACK_REASON_INDICES.update(dict(((value, index) for index, value in enumerate(ATTACK_REASONS))))
-
-
-def addDamageResistanceReasonsFromExtension(extDmgResistReasonType, personality):
-    extDmgResistReasonType.inject(personality)
-
-
-def addDamageInfoCodes(infoCodesPerAttackReason, personality):
-    for attackReason, damageInfoCode in infoCodesPerAttackReason.iteritems():
-        if damageInfoCode in DAMAGE_INFO_INDICES:
-            continue
-        DAMAGE_INFO_INDICES[damageInfoCode] = len(DAMAGE_INFO_CODES)
-        DAMAGE_INFO_CODES.append(damageInfoCode)
-
-    DAMAGE_INFO_CODES_PER_ATTACK_REASON.update(infoCodesPerAttackReason)
 
 
 def addPrbTypeByUnitMgrRoster(prbType, unitMgrFlag, personality):
@@ -423,6 +409,10 @@ class AbstractBattleMode(object):
         return (None, None)
 
     @property
+    def _client_attackReasonToCode(self):
+        return {}
+
+    @property
     def _server_canCreateUnitMgr(self):
         return lambda *args, **kwargs: (UNIT_ERROR.OK, '')
 
@@ -674,3 +664,7 @@ class AbstractBattleMode(object):
     def registerCustomizationHangarDecorator(self):
         from gui.shared.system_factory import registerCustomizationHangarDecorator
         registerCustomizationHangarDecorator(self._client_customizationHangarDisabled)
+
+    def registerAttackReasonToCode(self):
+        from gui.battle_control.controllers.msgs_ctrl import _ATTACK_REASON_CODE
+        _ATTACK_REASON_CODE.update(self._client_attackReasonToCode)

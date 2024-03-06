@@ -213,7 +213,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         self.__isInDebuff = False
         self.__cameraTargetMatrix = Math.WGAdaptiveMatrixProvider()
         self.set_postmortemViewPointName()
-        self.onShowDamageFromShot = Event()
         return
 
     def reload(self):
@@ -281,6 +280,12 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             return descr
         else:
             return vehicles.VehicleDescr(compactDescr=_stripVehCompDescrIfRoaming(self.publicInfo.compDescr), extData=self)
+
+    @staticmethod
+    def deferredRespawnVehicle(vehicleObj):
+        if hasattr(vehicleObj, 'respawnCompactDescr') and vehicleObj.respawnCompactDescr:
+            _logger.debug('respawn vehCD is still valid, request reloading of tank resources %s', vehicleObj.id)
+            vehicleObj.respawnVehicle(vehicleObj.id, vehicleObj.respawnCompactDescr)
 
     @staticmethod
     def respawnVehicle(vID, compactDescr=None, outfitCompactDescr=None):
@@ -374,7 +379,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if not self.isStarted:
             return
         else:
-            self.onShowDamageFromShot(attackerID, points, effectsIndex, damageFactor, lastMaterialIsShield)
             hitsReceived = self.appearance.findComponentByType(Projectiles.ProjectileHitsReceivedComponent)
             if hitsReceived is None:
                 self.appearance.createComponent(Projectiles.ProjectileHitsReceivedComponent)
@@ -804,6 +808,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
                 isAttachedVehicle = self.id == attachedVehicle.id
                 if isAttachedVehicle:
                     self.guiSessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.STUN, self.__cachedStunInfo)
+                    TriggersManager.g_manager.fireTrigger(TRIGGER_TYPE.STUN, stunInfo=self.__cachedStunInfo)
                 if not self.isPlayerVehicle:
                     ctrl = self.guiSessionProvider.shared.feedback
                     if ctrl is not None:
@@ -1003,9 +1008,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             progressionCtrl = self.guiSessionProvider.dynamic.progression
             if progressionCtrl is not None:
                 progressionCtrl.vehicleVisualChangingFinished(self.id)
-            if hasattr(self, 'respawnCompactDescr') and self.respawnCompactDescr:
-                _logger.debug('respawn compact descr is still valid, request reloading of tank resources %s', self.id)
-                BigWorld.callback(0.0, lambda : Vehicle.respawnVehicle(self.id, self.respawnCompactDescr))
+            BigWorld.callback(0.0, lambda : Vehicle.deferredRespawnVehicle(self))
             self.refreshNationalVoice()
             self.set_quickShellChangerFactor()
             return
@@ -1210,9 +1213,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             highlighter.highlight(True)
 
     def delModel(self, model):
-        if self.isDestroyed or not hasattr(self, 'appearance'):
-            _logger.warning('Vehicle::delModel called by %d after destroy', type(model))
-            return
         highlighter = self.appearance.highlighter
         hlOn = highlighter.isOn
         hlSimpleEdge = highlighter.isSimpleEdge

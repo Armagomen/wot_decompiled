@@ -32,5 +32,3 @@ class ModeSelectorRewardID(Enum):
     STYLE = 'style'
     PROGRESSION_STYLE = 'progressionStyle'
     VEHICLE = 'vehicle'
-    HW_REWARD_TANK = 'hwRewardTank'
-    HW_REWARD_DECALS = 'hwRewardDecals'

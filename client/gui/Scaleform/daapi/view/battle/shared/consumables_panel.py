@@ -4,22 +4,21 @@ import logging
 import math
 from functools import partial
 from types import NoneType
-from typing import TYPE_CHECKING
 import BigWorld
+from typing import TYPE_CHECKING
 import CommandMapping
-from constants import EQUIPMENT_STAGES, SHELL_TYPES
-from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
-from items import vehicles
+from constants import EQUIPMENT_STAGES, SHELL_TYPES, DAMAGE_INTERPOLATION_DIST_FIRST, DAMAGE_INTERPOLATION_DIST_LAST
 from gui import GUI_SETTINGS
 from gui import TANKMEN_ROLES_ORDER_DICT
 from gui.Scaleform.daapi.view.battle.shared.timers_common import PythonTimer
 from gui.Scaleform.daapi.view.meta.ConsumablesPanelMeta import ConsumablesPanelMeta
-from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
+from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.battle_control.battle_constants import VEHICLE_DEVICE_IN_COMPLEX_ITEM, CROSSHAIR_VIEW_ID
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, DEVICE_STATE_DESTROYED
+from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
 from gui.battle_control.controllers.consumables.equipment_ctrl import IgnoreEntitySelection
 from gui.battle_control.controllers.consumables.equipment_ctrl import NeedEntitySelection, InCooldownError
 from gui.impl import backport
@@ -27,9 +26,12 @@ from gui.impl.gen import R
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
 from gui.shared.formatters import text_styles
+from gui.shared.items_parameters import NO_DATA
+from gui.shared.items_parameters.params import ShellParams
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from items import vehicles
 from items.artefacts import SharedCooldownConsumableConfigReader
 from shared_utils import forEach
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -37,6 +39,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 if TYPE_CHECKING:
     from gui.battle_control.controllers.consumables.equipment_ctrl import _OrderItem, _EquipmentItem
 _logger = logging.getLogger(__name__)
+ASTERISK = '*'
 R_AMMO_ICON = R.images.gui.maps.icons.ammopanel.battle_ammo
 NO_AMMO_ICON = 'NO_{}'
 COMMAND_AMMO_CHOICE_MASK = 'CMD_AMMO_CHOICE_{0:d}'
@@ -298,9 +301,6 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
     def _getEquipmentIcon(self, idx, item, icon):
         return backport.image(self._getEquipmentIconPath(item).dyn(icon)())
 
-    def _isIdxInKeysRange(self, idx):
-        return idx in self.__equipmentRange or idx in self.__ordersRange
-
     def _updateShellSlot(self, idx, quantity):
         self.as_setItemQuantityInSlotS(idx, quantity)
 
@@ -541,17 +541,43 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
     def __makeShellTooltip(self, descriptor, piercingPower, shotSpeed):
         kind = descriptor.kind
         projSpeedFactor = vehicles.g_cache.commonConfig['miscParams']['projectileSpeedFactor']
-        header = backport.text(R.strings.ingame_gui.shells_kinds.dyn(kind)(), caliber=backport.getNiceNumberFormat(descriptor.caliber), userString=descriptor.userString)
+        header = backport.text(R.strings.item_types.shell.kinds.dyn(kind)())
         if GUI_SETTINGS.technicalInfo:
-            params = [backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=backport.getNiceNumberFormat(descriptor.damage[0]))]
+            vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
+            vehicleDescriptor = vehicle.typeDescriptor if vehicle else None
+            shellParams = ShellParams(descriptor, vehicleDescriptor)
+            piercingPowerTable = shellParams.piercingPowerTable
+            isDistanceDependent = piercingPowerTable is not None
+            damageValue = backport.getNiceNumberFormat(shellParams.avgDamage)
+            note = ''
+            showDistanceAsterisk = False
+            footNotes = []
+            if descriptor.isDamageMutable:
+                showDistanceAsterisk = True
+                damageValue = '%s-%s' % (backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]), backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
+                note = ASTERISK
+                footNotes.append(ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=int(DAMAGE_INTERPOLATION_DIST_FIRST), maxDist=int(min(vehicleDescriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))))
+            params = [backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=damageValue) + note]
             if piercingPower != 0:
-                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.piercingPower(), value=backport.getNiceNumberFormat(piercingPower)))
+                value = backport.getNiceNumberFormat(piercingPower)
+                if piercingPowerTable != NO_DATA and isDistanceDependent:
+                    note = ASTERISK
+                    value = '%s-%s' % (backport.getNiceNumberFormat(piercingPowerTable[0][1]), backport.getNiceNumberFormat(piercingPowerTable[-1][1]))
+                    if not showDistanceAsterisk:
+                        footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[-1][0])))
+                else:
+                    note = ASTERISK if not showDistanceAsterisk else ASTERISK * 2
+                    footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
+                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.piercingPower(), value=value) + note)
             params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.shotSpeed(), value=backport.getIntegralFormat(int(round(shotSpeed / projSpeedFactor)))))
             if kind == SHELL_TYPES.HIGH_EXPLOSIVE and descriptor.type.explosionRadius > 0.0:
                 params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.explosionRadius(), value=backport.getNiceNumberFormat(descriptor.type.explosionRadius)))
             if descriptor.hasStun and self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
                 stun = descriptor.stun
                 params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.stunDuration(), minValue=backport.getNiceNumberFormat(stun.guaranteedStunDuration * stun.stunDuration), maxValue=backport.getNiceNumberFormat(stun.stunDuration)))
+            for footNote in footNotes:
+                params.append('\n' + footNote)
+
             body = text_styles.concatStylesToMultiLine(*params)
             fmt = TOOLTIP_FORMAT
         else:
@@ -575,7 +601,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
             handler = None
             if idx in self.__ammoRange:
                 handler = partial(self.__handleAmmoPressed, intCD)
-            elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
+            elif (idx in self.__equipmentRange or idx in self.__ordersRange) and hasEquipment(intCD):
                 item = getEquipment(intCD)
                 if item is not None and item.getTags():
                     handler = self._getKeyHandler(intCD, item.isEntityRequired(), idx)
@@ -683,6 +709,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
             self._extraKeys = extraKeys
             return
 
+    def _getEquipmentIdxByKey(self, key):
+        return self._cds.index(key) if key in self._cds else None
+
     def __onDebuffStarted(self, debuffTime=None):
         self.delayedReload = debuffTime
 
@@ -714,13 +743,19 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, BattleGUIKeyHandler,
         else:
             _logger.error('Equipment with cd=%d is not found in panel=%s', intCD, str(self._cds))
 
-    def __onEquipmentCooldownInPercent(self, intCD, percent):
-        if intCD in self._cds:
-            self.as_setCoolDownPosAsPercentS(self._cds.index(intCD), percent)
+    def __onEquipmentCooldownInPercent(self, key, percent):
+        index = self._getEquipmentIdxByKey(key)
+        if index is None:
+            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
+        self.as_setCoolDownPosAsPercentS(index, percent)
+        return
 
-    def __onEquipmentCooldownTime(self, intCD, timeLeft, isBaseTime, isFlash):
-        if intCD in self._cds:
-            self.as_setCoolDownTimeSnapshotS(self._cds.index(intCD), timeLeft, isBaseTime, isFlash)
+    def __onEquipmentCooldownTime(self, key, timeLeft, isBaseTime, isFlash):
+        index = self._getEquipmentIdxByKey(key)
+        if index is None:
+            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
+        self.as_setCoolDownTimeSnapshotS(index, timeLeft, isBaseTime, isFlash)
+        return
 
     def __onOptionalDeviceAdded(self, optDeviceInBattle):
         if optDeviceInBattle.getIntCD() not in self._cds:

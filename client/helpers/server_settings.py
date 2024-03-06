@@ -5,7 +5,6 @@ import functools
 import logging
 import types
 from collections import namedtuple
-from enum import Enum
 import typing
 import constants
 import post_progression_common
@@ -23,6 +22,7 @@ from gifts.gifts_common import ClientReqStrategy, GiftEventID, GiftEventState
 from gui import GUI_SETTINGS, SystemMessages
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.SystemMessages import SM_TYPE
+from gui.limited_ui.lui_rules_storage import LuiRuleTypes
 from gui.shared.utils.decorators import ReprInjector
 from helpers import time_utils
 from personal_missions import PM_BRANCH
@@ -38,7 +38,7 @@ from trade_in_common.constants_types import CONFIG_NAME as TRADE_IN_CONFIG_NAME
 from achievements20.Achievements20GeneralConfig import Achievements20GeneralConfig
 if typing.TYPE_CHECKING:
     from typing import Callable, Dict, List, Sequence
-    from dict2model.types import ModelType
+    from dict2model.schemas import SchemaModelType
     from base_schema_manager import GameParamsSchema
 _logger = logging.getLogger(__name__)
 _CLAN_EMBLEMS_SIZE_MAPPING = {16: 'clan_emblems_16',
@@ -462,11 +462,12 @@ class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
  'peripheryIDs',
  'primeTimes',
  'rentVehicles',
- 'tooltips'))):
+ 'tooltips',
+ 'reservesModifiers'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, enableWelcomeScreen=True, validVehicleLevels=[], battlePassDataEnabled=True, levelsToUpgrateAllReserves=[], unlockableInBattleVehLevels=[], inBattleModifiers={}, seasons={}, cycleTimes=(), peripheryIDs={}, primeTimes={}, rentVehicles=[], tooltips={})
+        defaults = dict(isEnabled=False, enableWelcomeScreen=True, validVehicleLevels=[], battlePassDataEnabled=True, levelsToUpgrateAllReserves=[], unlockableInBattleVehLevels=[], inBattleModifiers={}, seasons={}, cycleTimes=(), peripheryIDs={}, primeTimes={}, rentVehicles=[], tooltips={}, reservesModifiers=[])
         defaults.update(kwargs)
         return super(EpicGameConfig, cls).__new__(cls, **defaults)
 
@@ -655,18 +656,23 @@ class _BlueprintsConfig(namedtuple('_BlueprintsConfig', ('allowBlueprintsConvers
 
 
 class SeniorityAwardsConfig(typing.NamedTuple('SeniorityAwardsConfig', (('enabled', bool),
+ ('active', bool),
  ('endTime', int),
  ('reminders', list),
  ('clockOnNotification', int),
  ('showRewardNotification', bool),
  ('receivedRewardsToken', str),
+ ('claimVehicleRewardTokenPattern', str),
  ('rewardEligibilityToken', str),
  ('claimRewardToken', str),
- ('rewardQuestsPrefix', str)))):
+ ('vehicleSelectionTokenPattern', str),
+ ('rewardQuestsPrefix', str),
+ ('categories', dict),
+ ('vehicleSelectionQuestPattern', str)))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(enabled=False, endTime=0, reminders=[], clockOnNotification=0, showRewardNotification=False, receivedRewardsToken='', rewardEligibilityToken='', claimRewardToken='', rewardQuestsPrefix='')
+        defaults = dict(enabled=False, active=False, endTime=0, reminders=[], clockOnNotification=0, showRewardNotification=False, receivedRewardsToken='', rewardEligibilityToken='', claimRewardToken='', claimVehicleRewardTokenPattern='', vehicleSelectionTokenPattern='', rewardQuestsPrefix='', categories={}, vehicleSelectionQuestPattern='')
         defaults.update(kwargs)
         return super(SeniorityAwardsConfig, cls).__new__(cls, **defaults)
 
@@ -1082,6 +1088,7 @@ class _Comp7QualificationConfig(settingsBlock('_Comp7QualificationConfig', ('bat
 
 
 class Comp7Config(settingsBlock('Comp7Config', ('isEnabled',
+ 'isShopEnabled',
  'peripheryIDs',
  'primeTimes',
  'seasons',
@@ -1100,7 +1107,7 @@ class Comp7Config(settingsBlock('Comp7Config', ('isEnabled',
 
     @classmethod
     def defaults(cls):
-        return dict(isEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRatingRestriction={}, squadSizes=[], createVivoxTeamChannels=False, qualification=makeTupleByDict(_Comp7QualificationConfig, {}))
+        return dict(isEnabled=False, isShopEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRatingRestriction={}, squadSizes=[], createVivoxTeamChannels=False, qualification=makeTupleByDict(_Comp7QualificationConfig, {}))
 
     @classmethod
     def _preprocessData(cls, data):
@@ -1160,6 +1167,7 @@ class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
  'tokenQuestPrefix',
  'offerTokenPrefix',
  'winbackAccessToken',
+ 'winbackModeAccessTokens',
  'winbackBattlesCountToken',
  'winbackShowPromoToken',
  'winbackPromoURL',
@@ -1168,7 +1176,7 @@ class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, isModeEnabled=False, isWhatsNewEnabled=False, isProgressionEnabled=False, tokenQuestPrefix='', offerTokenPrefix='', winbackAccessToken='', winbackBattlesCountToken='', winbackShowPromoToken='', winbackPromoURL='', lastQuestEnabler='', winbackStartingQuest='')
+        defaults = dict(isEnabled=False, isModeEnabled=False, isWhatsNewEnabled=False, isProgressionEnabled=False, tokenQuestPrefix='', offerTokenPrefix='', winbackAccessToken='', winbackModeAccessTokens=[], winbackBattlesCountToken='', winbackShowPromoToken='', winbackPromoURL='', lastQuestEnabler='', winbackStartingQuest='')
         defaults.update(kwargs)
         return super(WinbackConfig, cls).__new__(cls, **defaults)
 
@@ -1249,12 +1257,12 @@ class _LimitedUIConfig(namedtuple('_LimitedUIConfig', ('enabled', 'rules', 'vers
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(enabled=False, rules=[], version=0)
+        defaults = dict(enabled=False, rules={ruleType:[] for ruleType in LuiRuleTypes.ALL()}, version=0)
         defaults.update(kwargs)
         return super(_LimitedUIConfig, cls).__new__(cls, **defaults)
 
     def hasRules(self):
-        return bool(self.rules)
+        return any(self.rules.values())
 
     def asDict(self):
         return self._asdict()
@@ -1290,24 +1298,16 @@ class _SteamShadeConfig(namedtuple('_SteamShadeConfig', ('battlesPlayed', 'sessi
         return cls()
 
 
-class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', ('steamShade',))):
+class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', 'newbieHints')):
     __slots__ = ()
 
-    class DefaultSteamShadeProperties(Enum):
-        battlesPlayed = -1
-        sessions = -1
-
     def __new__(cls, **kwargs):
-        defaults = dict(steamShade={})
+        defaults = dict(newbieHints={})
         defaults.update(kwargs)
         return super(_ABFeatureTestConfig, cls).__new__(cls, **defaults)
 
     def asDict(self):
         return self._asdict()
-
-    def getSteamShadeProperties(self, group):
-        properties = namedtuple('Properties', ('battlesPlayed', 'sessions'))
-        return properties(int(self.steamShade.get(group, {}).get('properties', {}).get('battlesPlayed', self.DefaultSteamShadeProperties.battlesPlayed.value)), int(self.steamShade.get(group, {}).get('properties', {}).get('sessions', self.DefaultSteamShadeProperties.sessions.value)))
 
     def replace(self, data):
         allowedFields = self._fields
@@ -1319,17 +1319,13 @@ class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', ('steamShade',))):
         return cls()
 
 
-class _WinBackCallConfig(namedtuple('_WinBackCallConfig', ('isEnabled',
- 'accessToken',
- 'inviteTokenQuest',
- 'startTime',
- 'endTime'))):
+class ReferralProgramConfig(namedtuple('ReferralProgramConfig', ('periodNumber', 'periodStartDatetime', 'periodEndDatetime'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, accessToken='', inviteTokenQuest='', startTime=0, endTime=0)
+        defaults = dict(periodNumber=0, periodStartDatetime=0, periodEndDatetime=0)
         defaults.update(kwargs)
-        return super(_WinBackCallConfig, cls).__new__(cls, **defaults)
+        return super(ReferralProgramConfig, cls).__new__(cls, **defaults)
 
     def asDict(self):
         return self._asdict()
@@ -1395,7 +1391,7 @@ class ServerSettings(object):
         self.__prestigeConfig = PrestigeConfig({})
         self.__steamShadeConfig = _SteamShadeConfig()
         self.__abFeatureTestConfig = _ABFeatureTestConfig()
-        self.__winBackCallConfig = _WinBackCallConfig()
+        self.__referralProgramConfig = ReferralProgramConfig()
         self.__schemaManager = getSchemaManager()
         self.set(serverSettings)
 
@@ -1507,17 +1503,17 @@ class ServerSettings(object):
             LOG_DEBUG(Configs.COMP7_CONFIG.value, self.__serverSettings[Configs.COMP7_CONFIG.value])
             self.__comp7Config = makeTupleByDict(Comp7Config, self.__serverSettings[Configs.COMP7_CONFIG.value])
         else:
-            self.__comp7Config = Comp7Config.defaults()
+            self.__comp7Config = Comp7Config()
         if Configs.COMP7_RANKS_CONFIG.value in self.__serverSettings:
             LOG_DEBUG(Configs.COMP7_RANKS_CONFIG.value, self.__serverSettings[Configs.COMP7_RANKS_CONFIG.value])
             self.__comp7RanksConfig = makeTupleByDict(Comp7RanksConfig, self.__serverSettings[Configs.COMP7_RANKS_CONFIG.value])
         else:
-            self.__comp7RanksConfig = Comp7RanksConfig.defaults()
+            self.__comp7RanksConfig = Comp7RanksConfig()
         if Configs.COMP7_REWARDS_CONFIG.value in self.__serverSettings:
             LOG_DEBUG(Configs.COMP7_REWARDS_CONFIG.value, self.__serverSettings[Configs.COMP7_REWARDS_CONFIG.value])
             self.__comp7RewardsConfig = makeTupleByDict(Comp7RewardsConfig, self.__serverSettings[Configs.COMP7_REWARDS_CONFIG.value])
         else:
-            self.__comp7RewardsConfig = Comp7RewardsConfig.defaults()
+            self.__comp7RewardsConfig = Comp7RewardsConfig()
         if Configs.PERSONAL_RESERVES_CONFIG.value in self.__serverSettings:
             self.__personalReservesConfig = makeTupleByDict(PersonalReservesConfig, self.__serverSettings[Configs.PERSONAL_RESERVES_CONFIG.value])
         else:
@@ -1539,10 +1535,6 @@ class ServerSettings(object):
             self.__winbackConfig = makeTupleByDict(WinbackConfig, self.__serverSettings[Configs.WINBACK_CONFIG.value])
         else:
             self.__winbackConfig = WinbackConfig.defaults()
-        if Configs.WINBACK_CALL_CONFIG.value in self.__serverSettings:
-            self.__winBackCallConfig = makeTupleByDict(_WinBackCallConfig, self.__serverSettings[Configs.WINBACK_CALL_CONFIG.value])
-        else:
-            self.__winBackCallConfig = _WinBackCallConfig.defaults()
         if Configs.LIMITED_UI_CONFIG.value in self.__serverSettings:
             self.__limitedUIConfig = makeTupleByDict(_LimitedUIConfig, self.__serverSettings[Configs.LIMITED_UI_CONFIG.value])
         else:
@@ -1560,6 +1552,10 @@ class ServerSettings(object):
             self.__abFeatureTestConfig = makeTupleByDict(_ABFeatureTestConfig, self.__serverSettings[Configs.AB_FEATURE_TEST.value])
         else:
             self.__abFeatureTestConfig = _ABFeatureTestConfig.defaults()
+        if Configs.REFERRAL_PROGRAM_CONFIG.value in self.__serverSettings:
+            self.__referralProgramConfig = makeTupleByDict(ReferralProgramConfig, self.__serverSettings[Configs.REFERRAL_PROGRAM_CONFIG.value])
+        else:
+            self.__referralProgramConfig = ReferralProgramConfig.defaults()
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1586,6 +1582,10 @@ class ServerSettings(object):
         if 'epic_config' in serverSettingsDiff:
             self.__updateEpic(serverSettingsDiff)
             self.__serverSettings['epic_config'] = serverSettingsDiff['epic_config']
+        if 'epicMetaGame' in serverSettingsDiff:
+            self.__updateEpic(serverSettingsDiff)
+            epicSettings = self.__serverSettings.setdefault('epic_config', {})
+            epicSettings['epicMetaGame'] = serverSettingsDiff['epicMetaGame']
         if Configs.BATTLE_ROYALE_CONFIG.value in serverSettingsDiff:
             self.__updateBattleRoyale(serverSettingsDiff)
         if Configs.MAPBOX_CONFIG.value in serverSettingsDiff:
@@ -1672,7 +1672,8 @@ class ServerSettings(object):
         self.__schemaManager.update(serverSettingsDiff)
         self.__updateSteamShadeConfig(serverSettingsDiff)
         self.__updateABFeatureTestConfig(serverSettingsDiff)
-        self.__updateWinBackCallConfig(serverSettingsDiff)
+        if Configs.REFERRAL_PROGRAM_CONFIG.value in serverSettingsDiff:
+            self.__updateReferralProgramConfig(serverSettingsDiff)
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1683,7 +1684,7 @@ class ServerSettings(object):
         return self.__serverSettings
 
     def getConfigModel(self, schema):
-        configModel = self.__schemaManager.get(schema)
+        configModel = self.__schemaManager.getModel(schema)
         if configModel is None:
             raise SoftException('Schema %s was not registered. All schemas must be registered before ServerSettings inited.', schema.gpKey)
         return configModel
@@ -1857,8 +1858,8 @@ class ServerSettings(object):
         return self.__abFeatureTestConfig
 
     @property
-    def winBackCallConfig(self):
-        return self.__winBackCallConfig
+    def referralProgramConfig(self):
+        return self.__referralProgramConfig
 
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
@@ -2337,10 +2338,6 @@ class ServerSettings(object):
     def __updateCollectionsConfig(self, diff):
         self.__collectionsConfig = self.__collectionsConfig.replace(diff[Configs.COLLECTIONS_CONFIG.value])
 
-    def __updateWinBackCallConfig(self, serverSettingsDiff):
-        if Configs.WINBACK_CALL_CONFIG.value in serverSettingsDiff:
-            self.__winBackCallConfig = self.__winBackCallConfig.replace(serverSettingsDiff[Configs.WINBACK_CALL_CONFIG.value])
-
     def __updateWinbackConfig(self, diff):
         self.__winbackConfig = self.__winbackConfig.replace(diff[Configs.WINBACK_CONFIG.value])
 
@@ -2355,6 +2352,9 @@ class ServerSettings(object):
     def __updateABFeatureTestConfig(self, serverSettingsDiff):
         if Configs.AB_FEATURE_TEST.value in serverSettingsDiff:
             self.__abFeatureTestConfig = self.__abFeatureTestConfig.replace(serverSettingsDiff[Configs.AB_FEATURE_TEST.value])
+
+    def __updateReferralProgramConfig(self, serverSettingsDiff):
+        self.__referralProgramConfig = self.__referralProgramConfig.replace(serverSettingsDiff[Configs.REFERRAL_PROGRAM_CONFIG.value])
 
 
 def serverSettingsChangeListener(*configKeys):

@@ -106,9 +106,9 @@ class BattleResultsWindow(BattleResultsMeta, IGlobalListener):
             return
         if unlockType in (PROGRESS_ACTION.RESEARCH_UNLOCK_TYPE, PROGRESS_ACTION.PURCHASE_UNLOCK_TYPE):
             event_dispatcher.showResearchView(itemID)
-            self.onWindowClose()
         elif unlockType in (PROGRESS_ACTION.NEW_SKILL_UNLOCK_TYPE, PROGRESS_ACTION.NEW_FREE_SKILL_UNLOCK_TYPE):
             event_dispatcher.showPersonalCase(itemID)
+        self.onWindowClose()
 
     def showDogTagWindow(self, itemID):
         if self.__canNavigate():

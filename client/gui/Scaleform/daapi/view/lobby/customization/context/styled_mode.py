@@ -54,6 +54,9 @@ class StyledMode(CustomizationMode):
     def changeTab(self, tabId, itemCD=None):
         if tabId != CustomizationTabs.STYLES:
             _logger.warning('There is no tabs in styled customization mode')
+        elif itemCD is not None:
+            self._events.onTabChanged(tabId, itemCD)
+        return
 
     def isAutoRentEnabled(self):
         return self.__autoRentEnabled
@@ -158,7 +161,7 @@ class StyledMode(CustomizationMode):
                     self._removeHiddenFromOutfit(diffOutfit, g_currentVehicle.item.intCD)
                     diff = diffOutfit.pack().makeCompDescr()
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD, diff=diff)
-                if self.__modifiedStyle and styleOutfitData and self.__modifiedStyle.isProgression:
+                if self.__modifiedStyle and self.__modifiedStyle.isProgressionRewindEnabled:
                     outfit = getStyleProgressionOutfit(outfit, styleProgressionLevel, season)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
@@ -218,8 +221,6 @@ class StyledMode(CustomizationMode):
         for s in SeasonType.COMMON_SEASONS:
             diff = self._ctx.stylesDiffsCache.getDiff(item, s)
             outfit = item.getOutfit(s, vehicleCD=vehicleCD, diff=diff)
-            if self.__modifiedStyle and self.__modifiedStyle.isProgression:
-                outfit = getStyleProgressionOutfit(outfit, outfit.progressionLevel, s)
             self._modifiedOutfits[s] = outfit.copy()
 
         self._fitOutfits(modifiedOnly=True)

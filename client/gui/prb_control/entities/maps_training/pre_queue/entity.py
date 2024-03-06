@@ -31,7 +31,6 @@ class MapsTrainingEntity(PreQueueEntity):
 
     def init(self, ctx=None):
         self.storage.release()
-        self.mapsTrainingController.onEnter()
         if ctx is not None:
             ctx.addFlags(FUNCTIONAL_FLAG.LOAD_PAGE)
         return super(MapsTrainingEntity, self).init(ctx) | FUNCTIONAL_FLAG.LOAD_PAGE
@@ -85,3 +84,6 @@ class MapsTrainingEntity(PreQueueEntity):
 
     def _isNeedToShowSystemMessage(self):
         return self.mapsTrainingController.isMapsTrainingEnabled
+
+    def _goToHangar(self):
+        self.mapsTrainingController.onEnter()

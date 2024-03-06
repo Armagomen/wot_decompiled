@@ -54,6 +54,7 @@ ADVANCED_CHAT_COMPONENT = 50
 BATTLE_CHANEL_CONTROLLER = 51
 HIT_DIRECTION_CONTROLLER = 52
 CUSTOMIZATION_HANGAR_AVAILABLE = 53
+OPTIMIZED_VIEWS = 54
 
 class _CollectEventsManager(object):
 
@@ -809,3 +810,15 @@ def registerCustomizationHangarDecorator(handler):
 
 def collectCustomizationHangarDecorator():
     return __collectEM.handleEvent(CUSTOMIZATION_HANGAR_AVAILABLE, {'handlers': []})['handlers']
+
+
+def registerOptimizedViews(optimizedViewsSettings):
+
+    def onCollect(ctx):
+        ctx['optimizedViewsSettings'].update(optimizedViewsSettings)
+
+    __collectEM.addListener(OPTIMIZED_VIEWS, onCollect)
+
+
+def collectOptimizedViews():
+    return __collectEM.handleEvent(OPTIMIZED_VIEWS, ctx={'optimizedViewsSettings': {}})['optimizedViewsSettings']

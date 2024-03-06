@@ -23,6 +23,10 @@ class RotatingCoursorCamera(object):
     def pivotDistance(self):
         return self.__camera.pivotMaxDist
 
+    @property
+    def aimingSystem(self):
+        return None
+
     def setup(self, targetPosition, initialRotations, distanceToTarget):
         if not self.__camera:
             self.__createCamera()
@@ -60,4 +64,5 @@ class RotatingCoursorCamera(object):
         self.__camera = BigWorld.CursorCamera()
         self.__camera.maxDistHalfLife = self.__maxDistHalfLife
         self.__camera.pivotPosition = self.__pivotOffset
+        self.__camera.enableAdvancedCollider(True)
         BigWorld.camera(self.__camera)

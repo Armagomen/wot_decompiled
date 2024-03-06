@@ -2,6 +2,7 @@
 # Embedded file name: scripts/client/gui/game_control/__init__.py
 from typing import TYPE_CHECKING
 import constants
+from gui.graphics_optimization_controller.optimization_controller import GraphicsOptimizationController
 from gui.shared.system_factory import collectGameControllers
 from shared_utils import CONST_CONTAINER
 from skeletons.festivity_factory import IFestivityFactory
@@ -67,6 +68,7 @@ def getGameControllersConfig(manager):
     from gui.game_control.overlay import OverlayController as _OverlayController
     from gui.game_control.account_completion import SteamCompletionController as _SteamCompletionController, DemoAccCompletionController as _DemoAccCompletionController
     from gui.game_control.comp7_controller import Comp7Controller as _Comp7Ctrl
+    from gui.game_control.comp7_shop_controller import Comp7ShopController
     from gui.game_control.veh_post_progression_controller import VehiclePostProgressionController
     from gui.game_control.wot_plus_controller import WotPlusController
     from gui.game_control.telecom_rentals_controller import TelecomRentalsNotificationController
@@ -85,7 +87,6 @@ def getGameControllersConfig(manager):
     from gui.limited_ui.lui_controller import LimitedUIController
     from gui.game_control.collections_controller import CollectionsSystemController
     from gui.hangar_presets.hangar_gui_controller import HangarGuiController
-    from gui.game_control.winback_call_controller import WinBackCallController as _WinBackCall
     tracker = GameStateTracker()
     tracker.init()
     manager.addInstance(_interface.IGameStateTracker, tracker, finalizer='fini')
@@ -121,7 +122,6 @@ def getGameControllersConfig(manager):
     _config(_interface.ITradeInController, _TradeIn())
     _config(_interface.IQuestsController, _Quests())
     _config(_interface.IHangarSpaceSwitchController, HangarSpaceSwitchController())
-    _config(_interface.IWinBackCallController, _WinBackCall())
     _config(_interface.IBootcampController, _Bootcamp())
     _config(_interface.IRankedBattlesController, _Ranked())
     _config(_interface.IEpicModeController, _Epic())
@@ -143,6 +143,7 @@ def getGameControllersConfig(manager):
     _config(_interface.IEventBattlesController, EventBattlesController())
     _config(_interface.IFunRandomController, FunRandomController())
     _config(_interface.IComp7Controller, _Comp7Ctrl())
+    _config(_interface.IComp7ShopController, Comp7ShopController())
     _config(_interface.ISeasonsController, _Seasons())
     _config(_interface.IBadgesController, _Badges())
     _config(_interface.IAnonymizerController, _Anonymizer())
@@ -168,4 +169,5 @@ def getGameControllersConfig(manager):
     _config(_interface.IAchievements20Controller, _Ach20Ctrl())
     _config(_interface.ILimitedUIController, LimitedUIController())
     _config(_interface.IHangarGuiController, HangarGuiController())
+    _config(_interface.IGraphicsOptimizationController, GraphicsOptimizationController())
     collectGameControllers(_config)

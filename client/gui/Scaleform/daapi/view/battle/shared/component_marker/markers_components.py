@@ -5,6 +5,7 @@ import weakref
 import AnimationSequence
 import BigWorld
 import Math
+from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from chat_commands_consts import INVALID_TARGET_ID, MarkerType
 from ids_generators import SequenceIDGenerator
 from account_helpers.settings_core import ISettingsCore, settings_constants
@@ -49,6 +50,7 @@ COMPONENT_MARKER_TYPE_NAMES = dict([ (k, v) for k, v in ComponentBitMask.__dict_
 COMPONENT_MARKER_TYPE_IDS = dict([ (v, k) for k, v in COMPONENT_MARKER_TYPE_NAMES.iteritems() ])
 
 class _IMarkerComponentBase(object):
+    settingsCore = dependency.descriptor(ISettingsCore)
     _idGen = SequenceIDGenerator()
 
     def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
@@ -152,10 +154,12 @@ class World2DMarkerComponent(_IMarkerComponentBase):
 
     def attachGUI(self, guiProvider):
         self._gui = weakref.ref(guiProvider.getMarkers2DPlugin())
+        self.settingsCore.onSettingsChanged += self._onSettingsChanged
         self._createMarker()
         return self._isMarkerExists
 
     def detachGUI(self):
+        self.settingsCore.onSettingsChanged -= self._onSettingsChanged
         self.clear()
 
     def clear(self):
@@ -170,8 +174,6 @@ class World2DMarkerComponent(_IMarkerComponentBase):
             gui = self._gui()
             if gui is None:
                 return
-            if not self._isMarkerExists:
-                self._createMarker()
             gui.setMarkerActive(self._componentID, self._isVisible)
             return
 
@@ -208,6 +210,9 @@ class World2DMarkerComponent(_IMarkerComponentBase):
         gui.invokeMarker(self._componentID, 'init', config['shape'], config['min_distance'], config['max_distance'], self._distance, self._METERS_STRING, config['distanceFieldColor'])
         return True
 
+    def _onSettingsChanged(self, diff):
+        pass
+
 
 class World2DActionMarkerComponent(World2DMarkerComponent):
     MARKER_CULL_DISTANCE = 1800
@@ -215,6 +220,10 @@ class World2DActionMarkerComponent(World2DMarkerComponent):
     MARKER_BOUNDS = Math.Vector4(30, 30, 30, 30)
     MARKER_INNER_BOUNDS = Math.Vector4(17, 17, 18, 18)
     MARKER_BOUND_MIN_SCALE = Math.Vector2(1.0, 1.0)
+
+    def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
+        super(World2DActionMarkerComponent, self).__init__(config, matrixProduct, entity, targetID, isVisible)
+        self._isStickyFromConfig = config.get('is_sticky', True)
 
     @classmethod
     def configReader(cls, section):
@@ -250,7 +259,8 @@ class World2DActionMarkerComponent(World2DMarkerComponent):
     def _setupMarker(self, gui):
         config = self._config
         gui.invokeMarker(self._componentID, 'init', config['shape'], config['shapeReplyMe'], config['shapeHighlight'], config['min_distance'], config['max_distance'], self._distance, self._METERS_STRING, config['distanceFieldColor'])
-        gui.setMarkerSticky(self.componentID, config['is_sticky'])
+        isSticky = config['is_sticky'] & bool(self.settingsCore.getSetting(BattleCommStorageKeys.SHOW_STICKY_MARKERS))
+        gui.setMarkerSticky(self.componentID, isSticky)
         gui.setActiveState(self._componentID, ReplyStateForMarker.CREATE_STATE)
         gui.setMarkerRenderInfo(self._componentID, config['min_scale'], config['bounds'], config['inner_bounds'], config['cull_distance'], config['bounds_min_scale'])
         gui.setMarkerBoundEnabled(self._componentID, True)
@@ -267,6 +277,20 @@ class World2DActionMarkerComponent(World2DMarkerComponent):
         self._isMarkerExists = False
         self._isVisible = False
 
+    def _onSettingsChanged(self, diff):
+        gui = self._gui()
+        if not gui:
+            return
+        addSettings = {}
+        for item in diff:
+            if item in (BattleCommStorageKeys.SHOW_STICKY_MARKERS,):
+                addSettings[item] = diff[item]
+
+        if not addSettings:
+            return
+        newIsSticky = bool(addSettings.get(BattleCommStorageKeys.SHOW_STICKY_MARKERS, self._isStickyFromConfig))
+        gui.setMarkerSticky(self.componentID, newIsSticky & self._isStickyFromConfig)
+
 
 class World2DLocationMarkerComponent(World2DMarkerComponent):
     CULL_DISTANCE = 1800
@@ -279,6 +303,10 @@ class World2DLocationMarkerComponent(World2DMarkerComponent):
     DISTANCE_FOR_MIN_Y_OFFSET = 400
     MAX_Y_BOOST = 1.4
     BOOST_START = 120
+
+    def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
+        super(World2DLocationMarkerComponent, self).__init__(config, matrixProduct, entity, targetID, isVisible)
+        self._isStickyFromConfig = config.get('is_sticky', True)
 
     @classmethod
     def configReader(cls, section):
@@ -313,9 +341,24 @@ class World2DLocationMarkerComponent(World2DMarkerComponent):
 
     def _setupMarker(self, gui):
         config = self._config
-        gui.setMarkerSticky(self._componentID, config['is_sticky'])
+        isSticky = config['is_sticky'] & bool(self.settingsCore.getSetting(BattleCommStorageKeys.SHOW_STICKY_MARKERS))
+        gui.setMarkerSticky(self._componentID, isSticky)
         gui.setMarkerRenderInfo(self._componentID, config['min_scale'], config['bounds'], config['inner_bounds'], config['cull_distance'], config['bounds_min_scale'])
         gui.setMarkerLocationOffset(self._componentID, config['min_y_offset'], config['max_y_offset'], config['distance_for_min_y_offset'], config['max_y_boost'], config['boost_start'])
+
+    def _onSettingsChanged(self, diff):
+        gui = self._gui()
+        if not gui:
+            return
+        addSettings = {}
+        for item in diff:
+            if item in (BattleCommStorageKeys.SHOW_STICKY_MARKERS,):
+                addSettings[item] = diff[item]
+
+        if not addSettings:
+            return
+        newIsSticky = bool(addSettings.get(BattleCommStorageKeys.SHOW_STICKY_MARKERS, self._isStickyFromConfig))
+        gui.setMarkerSticky(self.componentID, newIsSticky & self._isStickyFromConfig)
 
 
 class MinimapMarkerComponent(_IMarkerComponentBase):
@@ -395,7 +438,6 @@ class MinimapMarkerComponent(_IMarkerComponentBase):
 
 
 class DirectionIndicatorMarkerComponent(_IMarkerComponentBase):
-    settingsCore = dependency.descriptor(ISettingsCore)
     _DIRECT_INDICATOR_SWF = SWF
     _DIRECT_INDICATOR_MC_NAME = MC_NAME
 
@@ -605,7 +647,6 @@ class TerrainMarkerComponent(_IMarkerComponentBase):
 
 
 class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
-    settingsCore = dependency.descriptor(ISettingsCore)
 
     class Blending(object):
         NORMAL = 'normal'
@@ -688,7 +729,9 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
             return
 
     def _addMask(self, guid):
-        xc, yc = self._getSize()
+        arenaSize = BigWorld.player().arena.arenaType.boundingBox[1]
+        xc = minimap_utils.MINIMAP_SIZE[0] / arenaSize[0]
+        yc = minimap_utils.MINIMAP_SIZE[1] / arenaSize[1]
         udo = BigWorld.userDataObjects.get(guid, None)
         if udo:
             delta = udo.position - self.position
@@ -701,7 +744,9 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
         if not polygon:
             return
         else:
-            xc, yc = self._getSize()
+            arenaSize = BigWorld.player().arena.arenaType.boundingBox[1]
+            xc = minimap_utils.MINIMAP_SIZE[0] / arenaSize[0]
+            yc = minimap_utils.MINIMAP_SIZE[1] / arenaSize[1]
             self._polygon = sum(([p[0] * xc, p[1] * yc] for p in polygon), list())
             for mask in self._entity.masks:
                 udo = BigWorld.userDataObjects.get(mask.udoGuid, None)
@@ -710,12 +755,6 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
                     self._maskingPolygons.append(sum(([(p[0] + delta[0]) * xc, (p[1] - delta[2]) * yc] for p in udo.minimapMarkerPolygon), list()))
 
             return
-
-    def _getSize(self):
-        arenaSize = BigWorld.player().arena.arenaType.boundingBox[1]
-        xc = minimap_utils.MINIMAP_SIZE[0] / arenaSize[0]
-        yc = minimap_utils.MINIMAP_SIZE[1] / arenaSize[1]
-        return (xc, yc)
 
     def _updatePolygon(self):
         self._gui().invoke(self._componentID, 'setProperties', *self.__getMarkerProperties(self.__isColorBlind()))

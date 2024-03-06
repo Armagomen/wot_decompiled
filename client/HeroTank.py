@@ -104,8 +104,9 @@ class HeroTank(ClientSelectableCameraVehicle):
         allowShowHeroTank = self.__limitedUIController.isRuleCompleted(LuiRules.HERO_TANK)
         heroTankCD = self._heroTankCtrl.getRandomTankCD()
         if allowShowHeroTank and heroTankCD:
-            self.__heroTankCD = heroTankCD
-            self.recreateVehicle()
+            if self.__heroTankCD != heroTankCD:
+                self.__heroTankCD = heroTankCD
+                self.recreateVehicle()
         else:
             self.removeModelFromScene()
         return

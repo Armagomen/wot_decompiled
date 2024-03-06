@@ -9,6 +9,7 @@ class ICON_TEXT_FRAMES(object):
     CREDITS_BIG = 'creditsBig'
     GOLD_BIG = 'goldBig'
     GOLD_DISCOUNT = 'goldDiscount'
+    WDR_COIN = 'wdrcoin'
     XP = 'xp'
     ELITE_XP = 'eliteXp'
     ELITE = 'elite'
@@ -41,4 +42,3 @@ class ICON_TEXT_FRAMES(object):
     LOCK = 'lock'
     RANKED_POINTS = 'rankedPoints'
     BONUS_BATTLE = 'bonusBattle'
-    EVENT_KEY = 'eventKey'

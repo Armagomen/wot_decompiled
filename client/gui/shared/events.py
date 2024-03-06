@@ -694,6 +694,7 @@ class BattlePassEvent(HasCtxEvent):
     AWARD_VIEW_CLOSE = 'onAwardViewClose'
     ON_PURCHASE_LEVELS = 'onPurchaseLevels'
     ON_PREVIEW_PROGRESSION_STYLE_CLOSE = 'onPreviewProgressionStyleClose'
+    ON_FINISH_BATTLE_PASS_PURCHASE = 'onFinishBattlePassPurchase'
     VIDEO_SHOWN = 'videoShown'
 
 
@@ -820,8 +821,3 @@ class PrebattleEvent(HasCtxEvent):
 
 class HangarCrewWidgetViewEvent(HasCtxEvent):
     GF_RESIZED = 'hangarCrewWidgetViewEvent/gfResized'
-
-
-class LobbyMarkerEvents(HasCtxEvent):
-    ADD_MARKER = 'addMarker'
-    REMOVE_MARKER = 'removeMarker'

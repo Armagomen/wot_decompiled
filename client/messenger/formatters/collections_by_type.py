@@ -5,7 +5,6 @@ from gui.gift_system.proxy import GiftSystemMessagesProxy
 from gui.shared.system_factory import registerMessengerClientFormatter, registerTokenQuestsSubFormatters, registerMessengerServerFormatter
 from messenger.formatters import service_channel as _sc
 from messenger.formatters import wot_plus as _wotPlusFormatters
-from messenger.formatters import win_back_call as _win_back_call
 from messenger.formatters import auto_boxes_subformatters, token_quest_subformatters
 from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 _AUTO_BOXES_SUB_FORMATTERS = (auto_boxes_subformatters.EventBoxesFormatter(),
@@ -19,6 +18,7 @@ registerTokenQuestsSubFormatters((token_quest_subformatters.LootBoxTokenQuestFor
  token_quest_subformatters.RankedFinalTokenQuestFormatter(),
  token_quest_subformatters.RankedYearLeaderFormatter(),
  token_quest_subformatters.SeniorityAwardsFormatter(),
+ token_quest_subformatters.SeniorityAwardsVehicleSelectedFormatter(),
  token_quest_subformatters.PersonalMissionsTokenQuestsFormatter(),
  token_quest_subformatters.BattlePassDefaultAwardsFormatter(),
  token_quest_subformatters.BattlePassAutoSelectRewardsFormatter(),
@@ -28,9 +28,7 @@ registerTokenQuestsSubFormatters((token_quest_subformatters.LootBoxTokenQuestFor
  token_quest_subformatters.Comp7RewardsFormatter(),
  token_quest_subformatters.WinbackRewardFormatter(),
  token_quest_subformatters.CrewPerksFormatter(),
- token_quest_subformatters.SteamCompletionFormatter(),
- token_quest_subformatters.WinBackCallInviteRewardsFormatter(),
- token_quest_subformatters.NotificationQuestFormatter()))
+ token_quest_subformatters.SteamCompletionFormatter()))
 _HANGAR_QUESTS_SUB_FORMATTERS = (token_quest_subformatters.BattleMattersAwardsFormatter(),)
 _PERSONAL_MISSIONS_SUB_FORMATTERS = (token_quest_subformatters.PersonalMissionsFormatter(),)
 SERVER_FORMATTERS = {_SM_TYPE.serverReboot.index(): _sc.ServerRebootFormatter(),
@@ -261,4 +259,3 @@ def initRegistrationFormatters():
     registerMessengerClientFormatter(SCH_CLIENT_MSG_TYPE.WOTPLUS_DAILY_ATTENDANCES_ENABLED, _sc.SimpleFormatter('DailyAttendancesEnabledMessage'))
     registerMessengerClientFormatter(SCH_CLIENT_MSG_TYPE.WOTPLUS_DAILY_ATTENDANCES_DISABLED, _sc.SimpleFormatter('DailyAttendancesDisabledMessage'))
     registerMessengerServerFormatter(_SM_TYPE.prestigeLevelChanged.index(), _sc.PrestigeFormatter())
-    registerMessengerClientFormatter(SCH_CLIENT_MSG_TYPE.WIN_BACK_CALL_NOTIFY_TYPE, _win_back_call.WinBackCallEntryFormatter())

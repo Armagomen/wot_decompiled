@@ -314,7 +314,6 @@ class REQ_CRITERIA(object):
         SPECIFIC_BY_NAME = staticmethod(lambda name: RequestCriteria(PredicateCondition(lambda item: item.isSearchableByName(name))))
         SPECIFIC_BY_NAME_OR_SKIN = staticmethod(lambda name: RequestCriteria(PredicateCondition(lambda item: item.isSearchableByName(name) or item.isSearchableBySkinName(name))))
         VEHICLE_BATTLE_ROYALE = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.BATTLE_ROYALE)))
-        VEHICLE_EVENT_BATTLES = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.EVENT)))
         VEHICLE_HIDDEN_IN_HANGAR = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.MODE_HIDDEN)))
         VEHICLE_NATIVE_TYPE = staticmethod(lambda vehicleNativeType: RequestCriteria(PredicateCondition(lambda item: item.vehicleNativeType == vehicleNativeType)))
         VEHICLE_NATIVE_TYPES = staticmethod(lambda vehicleNativeTypes: RequestCriteria(PredicateCondition(lambda item: item.vehicleNativeType in vehicleNativeTypes)))
@@ -406,7 +405,7 @@ class REQ_CRITERIA(object):
 
 
 class RESEARCH_CRITERIA(object):
-    VEHICLE_TO_UNLOCK = ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.VEHICLE.PREMIUM | ~REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR | ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING | ~REQ_CRITERIA.VEHICLE.HAS_ANY_TAG(constants.BATTLE_MODE_VEHICLE_TAGS) | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE | ~REQ_CRITERIA.VEHICLE.EVENT_BATTLE
+    VEHICLE_TO_UNLOCK = ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.VEHICLE.PREMIUM | ~REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR | ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING | ~REQ_CRITERIA.VEHICLE.HAS_ANY_TAG(constants.BATTLE_MODE_VEHICLE_TAGS) | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
 
 
 class ItemsRequester(IItemsRequester):

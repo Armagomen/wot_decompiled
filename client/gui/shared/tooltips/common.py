@@ -4,6 +4,7 @@ import cPickle
 import logging
 import math
 from collections import namedtuple, defaultdict
+from gui.impl.lobby.collection.tooltips.collection_item_tooltip_view import CollectionItemTooltipView
 from gui.impl.lobby.personal_reserves.tooltips.personal_reserves_tooltip_view import PersonalReservesTooltipView
 from gui.impl.pub import ToolTipWindow
 from gui.impl.pub.tooltip_window import SimpleTooltipContent
@@ -28,7 +29,7 @@ from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.clans import formatters as clans_fmts
-from gui.clans.items import formatField
+from gui.clans.data_wrapper.utils import formatField
 from gui.impl import backport
 from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
 from gui.impl.gen import R
@@ -1578,5 +1579,32 @@ class PersonalReservesWidgetTooltipContent(BlocksTooltipData):
         return window
 
 
+class CollectionItemTooltipContentWindowData(ToolTipBaseData):
+
+    def __init__(self, context):
+        super(CollectionItemTooltipContentWindowData, self).__init__(context, TOOLTIPS_CONSTANTS.COLLECTION_ITEM)
+
+    def getDisplayableData(self, itemID, isDetailed, *args, **kwargs):
+        _, _, collectionID, itemID = itemID.split(':')
+        content = CollectionItemTooltipView(int(itemID), int(collectionID), isDetailed)
+        window = ToolTipWindow(None, content, content.getParentWindow())
+        return window
+
+
 def getSimpleTooltipFactory(header='', body='', note='', alert=''):
     return lambda : SimpleTooltipContent(R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent(), header, body, note, alert)
+
+
+class ResearchButtonTooltipData(BlocksTooltipData):
+
+    def __init__(self, context):
+        super(ResearchButtonTooltipData, self).__init__(context, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI)
+        self._setWidth(365)
+        self._setContentMargin(bottom=6)
+        self._setMargins(afterBlock=6, afterSeparator=12)
+
+    def _packBlocks(self, *args, **kwargs):
+        tooltipBlocks = super(ResearchButtonTooltipData, self)._packBlocks()
+        tooltipBlocks.append(formatters.packTitleDescBlock(text_styles.middleTitle(backport.text(R.strings.tooltips.hangar.unlockButton.header())), desc=text_styles.main(backport.text(R.strings.tooltips.hangar.unlockButton.body()))))
+        tooltipBlocks.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.neutral(backport.text(R.strings.tooltips.hangar.unlockButton.footer())))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE))
+        return tooltipBlocks

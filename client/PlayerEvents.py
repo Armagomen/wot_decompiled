@@ -73,6 +73,7 @@ class _PlayerEvents(object):
         self.onShowDevelopmentInfo = Event.Event()
         self.onEntityCheckOutEnqueued = Event.Event()
         self.onRoundFinished = Event.Event()
+        self.crosshairPanelInitialized = Event.Event()
         self.onServerReplayEntering = Event.Event()
         self.onServerReplayExiting = Event.Event()
         self.onPlatformBlueprintsConvertSaleLimits = Event.Event()
@@ -80,6 +81,9 @@ class _PlayerEvents(object):
         self.onUpdateSpecBattlesWindow = Event.Event()
         self.onLoadingMilestoneReached = Event.Event()
         self.onConfigModelUpdated = Event.Event()
+        self.onShowBattleHint = Event.SafeEvent()
+        self.onHideBattleHint = Event.SafeEvent()
+        self.onEmptyBattleHintsQueue = Event.SafeEvent()
 
 
 g_playerEvents = _PlayerEvents()

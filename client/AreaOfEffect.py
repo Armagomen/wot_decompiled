@@ -12,6 +12,7 @@ import math_utils
 import CombatSelectedArea
 from ProjectileMover import collideDynamicAndStatic
 from account_helpers.settings_core.settings_constants import GRAPHICS
+from gui.battle_control import avatar_getter
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MarkersManagerEvent
 from helpers import dependency
@@ -24,7 +25,6 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 
 class EffectRunner(object):
     SHOT_HEIGHT = 100.0
-    RAY_CAST_HEIGHT = 2.0
     MAX_SHOTS = 1000
     GRAVITY = 9.8
     SHELL_VELOCITY = (0, -500, 0)
@@ -77,20 +77,19 @@ class EffectRunner(object):
 
     def _play(self, playID, effect, targetPosition):
         self._callbacks.pop(playID)
+        altitude = Math.Vector3(0, self.SHOT_HEIGHT, 0)
         if effect['offsetDeviation']:
             radius = random.uniform(0, effect['offsetDeviation'])
             angle = random.uniform(0, 2 * math.pi)
             offset = Math.Vector3(radius * math.cos(angle), 0, radius * math.sin(angle))
             targetPosition = targetPosition + offset
         if effect['groundRaycast']:
-            altitude = Math.Vector3(0, self.RAY_CAST_HEIGHT, 0)
             startPoint = targetPosition + altitude
             endPoint = targetPosition - altitude
-            collisionPoint = collideDynamicAndStatic(startPoint, endPoint, (BigWorld.player().playerVehicleID,))
+            collisionPoint = collideDynamicAndStatic(startPoint, endPoint, ())
             if collisionPoint:
                 targetPosition = collisionPoint[0]
         if effect['shotEffects']:
-            altitude = Math.Vector3(0, self.SHOT_HEIGHT, 0)
             shotEffect = random.choice(effect['shotEffects'])
             effectsIndex = vehicles.g_cache.shotEffectsIndexes[shotEffect]
             effectsDescr = vehicles.g_cache.shotEffects[effectsIndex]
@@ -193,7 +192,7 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
         return Math.Matrix(self.matrix).applyToAxis(2)
 
     def _showArea(self):
-        if not self._equipment.areaVisibleToEnemies and self._isAttackerEnemy():
+        if not self._isAreaVisible():
             return
         else:
             areaTimeout = self._adjustedDelay
@@ -216,7 +215,7 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
             return
 
     def _showMarker(self):
-        if not self._equipment.areaVisibleToEnemies and self._isAttackerEnemy():
+        if not self._isAreaVisible():
             return
         delay = self._adjustedDelay
         if self._equipment.areaShow == AreaShow.ALWAYS:
@@ -227,6 +226,12 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
 
     def _isAttackerEnemy(self):
         return self.sessionProvider.getArenaDP().getVehicleInfo(self.vehicleID).team != BigWorld.player().team
+
+    def _isAreaVisible(self):
+        if self._equipment.areaVisibleToEnemies:
+            return True
+        vInfo = self.sessionProvider.getArenaDP().getVehicleInfo(self.vehicleID)
+        return vInfo.team == avatar_getter.getObserverTeam()
 
     def __onAreaGOLoaded(self, gameObject):
         if self.isDestroyed:

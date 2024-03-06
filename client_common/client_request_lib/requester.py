@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client_common/client_request_lib/requester.py
+from functools import wraps
 from client_request_lib.data_sources.staging import StagingDataAccessor
 from client_request_lib.data_sources.fake import FakeDataAccessor
 from client_request_lib.data_sources.gateway import GatewayDataAccessor
@@ -36,6 +37,7 @@ def _in_bigworld(func):
 
 def bigworld_callback_wrapper(func):
 
+    @wraps(func)
     def wrapped(*args, **kwargs):
         new_args = [ _in_bigworld(arg) for arg in args ]
         new_kwargs = {k:_in_bigworld(v) for k, v in kwargs.items()}
@@ -214,6 +216,12 @@ class WgshAccessor(BaseAccessor):
     def get_wgsh_unit_info(self, callback, periphery_id, unit_server_id, rev, fields=None):
         return self._data_source.get_wgsh_unit_info(callback, periphery_id, unit_server_id, rev, fields=fields)
 
+    def get_wgsh_common_unit_info(self, callback, periphery_id, unit_server_id, rev, fields=None):
+        return self._data_source.get_wgsh_common_unit_info(callback, periphery_id, unit_server_id, rev, fields=fields)
+
+    def get_wgsh_account_unit_info(self, callback, periphery_id, unit_server_id, rev, fields=None):
+        return self._data_source.get_wgsh_account_unit_info(callback, periphery_id, unit_server_id, rev, fields=fields)
+
     def set_vehicle(self, callback, periphery_id, unit_server_id, vehicle_cd, fields=None):
         return self._data_source.set_vehicle(callback, periphery_id, unit_server_id, vehicle_cd, fields=fields)
 
@@ -286,8 +294,11 @@ class WgshAccessor(BaseAccessor):
     def get_event_clan_info(self, callback, fields=None):
         return self._data_source.wgsh_event_clan_info(callback, fields=fields)
 
-    def get_event_frozen_vehicles(self, callback, fields=None):
-        return self._data_source.wgsh_event_get_frozen_vehicles(callback, fields=fields)
+    def get_event_frozen_vehicles(self, callback):
+        return self._data_source.wgsh_event_get_frozen_vehicles(callback)
+
+    def event_unfreeze_vehicle(self, callback, playerSpaID, vehicleCD, price):
+        return self._data_source.wgsh_event_unfreeze_vehicle(callback, playerSpaID, vehicleCD, price)
 
 
 class RblbAccessor(BaseAccessor):
@@ -383,13 +394,13 @@ class UILoggingAccessor(BaseAccessor):
         return self._data_source.get_uilogging_session(callback)
 
 
-class WinBackCallAccessor(BaseAccessor):
+class WotShopAccessor(BaseAccessor):
 
-    def get_win_back_call_friend_list(self, callback):
-        return self._data_source.get_win_back_call_friend_list(callback)
+    def get_storefront_products(self, callback, storefront):
+        return self._data_source.get_storefront_products(callback, storefront)
 
-    def win_back_call_send_invite_code(self, callback, spaId):
-        return self._data_source.win_back_call_send_invite_code(callback, spaId)
+    def buy_storefront_product(self, callback, ctx):
+        return self._data_source.buy_storefront_product(callback, ctx)
 
 
 class Requester(object):
@@ -413,7 +424,7 @@ class Requester(object):
     mapbox = RequestDescriptor(MapboxAccessor)
     gifts = RequestDescriptor(GiftSystemAccessor)
     uilogging = RequestDescriptor(UILoggingAccessor)
-    win_back_call = RequestDescriptor(WinBackCallAccessor)
+    wot_shop = RequestDescriptor(WotShopAccessor)
 
     @classmethod
     def create_requester(cls, url_fetcher, config, client_lang=None, user_agent=None):

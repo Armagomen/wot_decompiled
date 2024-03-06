@@ -607,6 +607,17 @@ class _ReceivedByDamagingThunderStrikeRibbon(_SingleVehicleReceivedHitRibbon):
         self.setExtraValue(value)
 
 
+class _ReceivedByHealthAddedRibbon(_SingleVehicleRibbon):
+    __slots__ = ()
+
+    def getType(self):
+        return BATTLE_EFFICIENCY_TYPES.VEHICLE_HEALTH_ADDED
+
+    @classmethod
+    def _extractExtraValue(cls, event):
+        return event.getExtra()
+
+
 class _ReceivedByFireCircleRibbon(_SingleVehicleReceivedHitRibbon):
     __slots__ = ()
 
@@ -966,7 +977,8 @@ _FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY = {FEEDBACK_EVENT_ID.PLAYER_CAPTURED_BASE:
  FEEDBACK_EVENT_ID.DESTRUCTIBLES_DEFENDED: _RibbonSingleClassFactory(_EpicDestructiblesDefended),
  FEEDBACK_EVENT_ID.DEFENDER_BONUS: _RibbonSingleClassFactory(_EpicDefenderBonus),
  FEEDBACK_EVENT_ID.SMOKE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist),
- FEEDBACK_EVENT_ID.INSPIRE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist)}
+ FEEDBACK_EVENT_ID.INSPIRE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist),
+ FEEDBACK_EVENT_ID.VEHICLE_HEALTH_ADDED: _RibbonSingleClassFactory(_ReceivedByHealthAddedRibbon)}
 _FEEDBACK_EVENTS_TO_IGNORE = (FEEDBACK_EVENT_ID.EQUIPMENT_TIMER_EXPIRED,)
 
 def _isRoleBonus(event):

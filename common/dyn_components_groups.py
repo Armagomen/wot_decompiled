@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/dyn_components_groups.py
 from inspect import getargspec
-from functools import partial
 from cache import cached_property
 from constants import IS_CELLAPP, IS_DEVELOPMENT
 from extension_utils import importClass, ResMgr
@@ -24,22 +23,11 @@ def groupComponent(**specs):
             else:
                 return None
 
-        allSpecs = {}
-        for base in componentCls.__bases__:
-            baseReader = getattr(base, 'groupComponentReader', None)
-            if isinstance(baseReader, ObjParam):
-                allSpecs.update(baseReader._specs)
-
-        allSpecs.update(specs)
-        componentCls.groupComponentReader = ObjParam(**allSpecs)
+        componentCls.groupComponentReader = ObjParam(**specs)
         componentCls.groupComponentConfig = cached_property(config)
         return componentCls
 
     return decorator
-
-
-class _UnregisteredComponentConfig(object):
-    pass
 
 
 class DynComponentsGroupsRepo(object):
@@ -68,9 +56,8 @@ class DynComponentsGroupsReader(object):
 
     def getGroup(self, groupName):
         if self._hotReload:
-            groupSection = ResMgr.openSection(self._configPath)[groupName]
-            if groupSection:
-                self._groups[groupName] = self._readGroup(groupSection)
+            section = ResMgr.openSection(self._configPath)
+            self._groups[groupName] = self._readGroup(section[groupName])
         if groupName not in self._groups:
             raise SoftException('No dynamic components group "(%s)" found!' % groupName)
         return self._groups.get(groupName, [])
@@ -91,18 +78,12 @@ class DynComponentsGroupsReader(object):
         for componentType, componentSection in section.items():
             componentClass = importClass(componentType, componentType)
             componentReader = getattr(componentClass, 'groupComponentReader', None)
-            config = componentReader.read(componentSection, self._domain) if componentReader else _UnregisteredComponentConfig()
-            config.createInitParams = partial(self._createInitParams, componentClass)
+            if componentReader:
+                config = componentReader.read(componentSection, self._domain)
+                initParamsOrder = getargspec(componentClass.__init__).args[1:]
+                config.initParams = tuple((getattr(config, paramName) for paramName in initParamsOrder))
+            else:
+                config = None
             group.append((componentType, config))
 
         return group
-
-    @classmethod
-    def _createInitParams(cls, compCls, cfg, kwargs):
-        initParamsOrder = getargspec(compCls.__init__).args[1:]
-        result = tuple((cls._getParam(paramName, cfg, kwargs) for paramName in initParamsOrder))
-        return result
-
-    @staticmethod
-    def _getParam(paramName, cfg, kwargs):
-        return kwargs if paramName == 'ctx' else kwargs.get(paramName, None) or getattr(cfg, paramName, None)

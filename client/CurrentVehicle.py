@@ -2,7 +2,6 @@
 # Embedded file name: scripts/client/CurrentVehicle.py
 from typing import Optional
 import BigWorld
-import CGF
 from constants import CustomizationInvData
 from gui.SystemMessages import pushMessagesFromResult
 from items.components.c11n_constants import SeasonType
@@ -186,8 +185,7 @@ class _CurrentVehicle(_CachedVehicle):
         else:
             if self.isPresent() and self.isInHangar() and self.item.modelState:
                 if self.isInBootcamp():
-                    bootcampOutfit = self.bootcampController.getBootcampOutfit(self.item.descriptor)
-                    outfit = bootcampOutfit if bootcampOutfit else outfit
+                    outfit = self.bootcampController.getBootcampOutfit(self.item.descriptor) or outfit
                 self.hangarSpace.startToUpdateVehicle(self.item, outfit)
             else:
                 self.hangarSpace.removeVehicle()
@@ -327,13 +325,16 @@ class _CurrentVehicle(_CachedVehicle):
         vehicle = self.itemsCache.items.getVehicle(vehInvID)
         vehicle = vehicle if self.__isVehicleSuitable(vehicle) else None
         if vehicle is None:
-            vehiclesCriteria = REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP
-            vehiclesCriteria |= ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
-            vehiclesCriteria |= ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN
-            vehiclesCriteria |= ~REQ_CRITERIA.VEHICLE.EVENT_BATTLE
+            vehiclesCriteria = REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
             invVehs = self.itemsCache.items.getVehicles(criteria=vehiclesCriteria)
+
+            def notEvent(x, y):
+                if x.isOnlyForEventBattles and not y.isOnlyForEventBattles:
+                    return 1
+                return -1 if not x.isOnlyForEventBattles and y.isOnlyForEventBattles else cmp(x, y)
+
             if invVehs:
-                vehInvID = sorted(invVehs.itervalues())[0].invID
+                vehInvID = sorted(invVehs.itervalues(), cmp=notEvent)[0].invID
             else:
                 vehInvID = 0
         self._selectVehicle(vehInvID, callback, waitingOverlapsUI)
@@ -394,7 +395,7 @@ class _CurrentVehicle(_CachedVehicle):
             AccountSettings.setFavorites(ROYALE_VEHICLE, vehInvID)
         elif self.isInBootcamp():
             AccountSettings.setFavorites(BOOTCAMP_VEHICLE, vehInvID)
-        elif not self.isOnlyForEventBattles():
+        else:
             AccountSettings.setFavorites(CURRENT_VEHICLE, vehInvID)
         self.refreshModel()
         self._setChangeCallback(callback)
@@ -406,7 +407,7 @@ class _CurrentVehicle(_CachedVehicle):
         if 'compDescr' in vehsDiff and self.__vehInvID in vehsDiff['compDescr']:
             isVehicleSold = vehsDiff['compDescr'][self.__vehInvID] is None
             isVehicleDescrChanged = not isVehicleSold
-        if isVehicleSold or self.__vehInvID == 0:
+        if (isVehicleSold or self.__vehInvID == 0) and vehsDiff:
             self.selectVehicle()
         else:
             isRepaired = 'repair' in vehsDiff and self.__vehInvID in vehsDiff['repair']
@@ -527,6 +528,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         self.onVehicleInventoryChanged = Event(self._eManager)
         self.onSelected = Event(self._eManager)
         self.onChanged = Event(self._eManager)
+        self.onHeroStateUpdated = Event(self._eManager)
         return
 
     def destroy(self):
@@ -559,7 +561,9 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         self.__vehAppearance = appearance or _RegularPreviewAppearance()
 
     def selectHeroTank(self, value):
-        self.__isHeroTank = value
+        if self.__isHeroTank != value:
+            self.__isHeroTank = value
+            self.onHeroStateUpdated()
 
     @property
     def isHeroTank(self):
@@ -646,11 +650,6 @@ class _CurrentPreviewVehicle(_CachedVehicle):
             self._applyCamouflageTTC()
             self.onChanged()
 
-    def isHalloweenStylePreviewActive(self):
-        from cgf_components.hangar_styles_components import StylePreviewManager
-        stylesManager = CGF.getManager(self.hangarSpace.spaceID, StylePreviewManager)
-        return stylesManager and hasattr(stylesManager, 'isPreviewActive') and stylesManager.isPreviewActive()
-
     def _applyCamouflageTTC(self):
         if self.isPresent():
             camo = first(self._c11nService.getCamouflages(vehicle=self.item).itervalues())
@@ -664,7 +663,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         g_clientUpdateManager.addCallbacks({'stats.unlocks': self._onUpdateUnlocks})
 
     def _selectVehicle(self, vehicleCD, vehicleStrCD=None, style=None, outfit=None):
-        if self.isPresent() and self.item.intCD == vehicleCD:
+        if not self.__isNeedToRefreshVehicle(vehicleCD, style, outfit):
             return
         else:
             Waiting.show('updateCurrentVehicle', isSingle=True, overlapsUI=False)
@@ -696,6 +695,16 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         if self.isPresent() and self.item.intCD in list(unlocks):
             self.item.isUnlocked = True
             self.onVehicleUnlocked()
+
+    def __isNeedToRefreshVehicle(self, vehicleCD, style, outfit):
+        if not self.isPresent():
+            return bool(vehicleCD)
+        elif self.item.intCD != vehicleCD:
+            return True
+        else:
+            if style is not None and outfit is None:
+                outfit = self.__getPreviewOutfitByStyle(style)
+            return outfit is not None
 
     def __getPreviewVehicle(self, vehicleCD):
         if vehicleCD is not None:

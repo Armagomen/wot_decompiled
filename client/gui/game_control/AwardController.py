@@ -26,7 +26,7 @@ from adisp import adisp_process
 from battle_pass_common import BattlePassRewardReason, get3DStyleProgressToken
 from chat_shared import SYS_MESSAGE_TYPE
 from collector_vehicle import CollectorVehicleConsts
-from comp7_common import Comp7QuestType, COMP7_QUALIFICATION_QUEST_ID
+from comp7_common import Comp7QuestType, qualificationQuestIDBySeasonNumber
 from constants import DOSSIER_TYPE, EVENT_TYPE, INVOICE_ASSET, PREMIUM_TYPE, ARENA_BONUS_TYPE
 from dossiers2.custom.records import DB_ID_TO_RECORD
 from dossiers2.ui.achievements import BADGES_BLOCK
@@ -37,6 +37,7 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.framework.managers.view_lifecycle_watcher import IViewLifecycleHandler, ViewLifecycleWatcher
+from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.awards.event_dispatcher import showDynamicAward
@@ -49,7 +50,7 @@ from gui.impl.auxiliary.rewards_helper import getProgressiveRewardBonuses, Bluep
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.loot_box_view.loot_congrats_types import LootCongratsTypes
 from gui.impl.lobby.awards.items_collection_provider import MultipleAwardRewardsMainPacker
-from gui.impl.lobby.comp7.comp7_quest_helpers import isComp7VisibleQuest, getComp7QuestType, parseComp7RanksQuestID, parseComp7TokensQuestID
+from gui.impl.lobby.comp7.comp7_quest_helpers import isComp7VisibleQuest, getComp7QuestType, parseComp7RanksQuestID, getRequiredTokensCountToComplete
 from gui.impl.lobby.mapbox.map_box_awards_view import MapBoxAwardsViewWindow
 from gui.prestige.prestige_helpers import hasVehiclePrestige, showPrestigeRewardWindow, needShowPrestigeRewardWindow
 from gui.impl.pub.notification_commands import WindowNotificationCommand
@@ -64,7 +65,7 @@ from gui.server_events.events_helpers import isACEmailConfirmationQuest, isDaily
 from gui.server_events.finders import CHAMPION_BADGES_BY_BRANCH, CHAMPION_BADGE_AT_OPERATION_ID, PM_FINAL_TOKEN_QUEST_IDS_BY_OPERATION_ID, getBranchByOperationId
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared import event_dispatcher
-from gui.shared.event_dispatcher import showBadgeInvoiceAwardWindow, showBattlePassAwardsWindow, showBattlePassVehicleAwardWindow, showDedicationRewardWindow, showEliteWindow, showMultiAwardWindow, showProgressionRequiredStyleUnlockedWindow, showProgressiveItemsRewardWindow, showProgressiveRewardAwardWindow, showRankedSeasonCompleteView, showRankedSelectableReward, showRankedYearAwardWindow, showRankedYearLBAwardWindow, showResourceWellAwardWindow, showSeniorityRewardAwardWindow, showBlankGiftWindow, showSteamEmailConfirmRewardsView
+from gui.shared.event_dispatcher import showBadgeInvoiceAwardWindow, showBattlePassAwardsWindow, showBattlePassVehicleAwardWindow, showDedicationRewardWindow, showEliteWindow, showMultiAwardWindow, showProgressionRequiredStyleUnlockedWindow, showProgressiveItemsRewardWindow, showProgressiveRewardAwardWindow, showRankedSeasonCompleteView, showRankedSelectableReward, showRankedYearAwardWindow, showRankedYearLBAwardWindow, showResourceWellAwardWindow, showSeniorityRewardAwardWindow, showBlankGiftWindow, showSteamEmailConfirmRewardsView, showSeniorityRewardVehiclesWindow
 from gui.shared.events import PersonalMissionsEvent
 from gui.shared.gui_items.dossier.factories import getAchievementFactory
 from gui.shared.system_factory import registerAwardControllerHandlers, collectAwardControllerHandlers
@@ -82,7 +83,7 @@ from shared_utils import first, findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_matters import IBattleMattersController
-from skeletons.gui.game_control import IAwardController, IBattlePassController, IBootcampController, ILimitedUIController, IMapboxController, IRankedBattlesController, IWotPlusController, ISeniorityAwardsController, IWinbackController
+from skeletons.gui.game_control import IAwardController, IBattlePassController, IBootcampController, ILimitedUIController, IMapboxController, IRankedBattlesController, IWotPlusController, ISeniorityAwardsController, IWinbackController, IComp7Controller
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader, INotificationWindowController
 from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
@@ -462,7 +463,6 @@ class TokenQuestsWindowHandler(ServiceChannelHandler):
 
 
 class SeniorityAwardsWindowHandler(ServiceChannelHandler):
-    itemsCache = dependency.descriptor(IItemsCache)
     eventsCache = dependency.descriptor(IEventsCache)
     seniorityAwardCtrl = dependency.descriptor(ISeniorityAwardsController)
 
@@ -502,8 +502,11 @@ class SeniorityAwardsWindowHandler(ServiceChannelHandler):
 
     def _showAward(self, ctx=None):
         if self.__mergedRewards:
+            vehicles = self.__mergedRewards.get('vehicles', [])
+            if vehicles or self.seniorityAwardCtrl.isVehicleSelectionAvailable:
+                showSeniorityRewardVehiclesWindow(vehicles, fromEntryPoint=False)
             self.seniorityAwardCtrl.markRewardReceived()
-            showSeniorityRewardAwardWindow(self.__completedQuests, self.__mergedRewards)
+            showSeniorityRewardAwardWindow(self.__mergedRewards)
             self.__mergedRewards = None
             self.__questsData = None
             self.__completedQuests = None
@@ -1366,6 +1369,7 @@ class BattlePassStyleRecievedHandler(ServiceChannelHandler):
 
 class BattlePassBuyEmptyHandler(ServiceChannelHandler):
     __battlePass = dependency.descriptor(IBattlePassController)
+    __gui = dependency.descriptor(IGuiLoader)
     __MULTIPLE_CHAPTER = 0
 
     def __init__(self, awardCtrl):
@@ -1410,11 +1414,19 @@ class BattlePassBuyEmptyHandler(ServiceChannelHandler):
             return
 
     def __onAwardShown(self, chapterID):
-        if self.__battlePass.isDisabled() or chapterID is None:
+        if self.__battlePass.isDisabled():
             return
         else:
+            if chapterID is None:
+                if self.__isBattlePassOpen():
+                    chapterID = self.__battlePass.getCurrentChapterID()
+                else:
+                    return
             showMissionsBattlePass(R.views.lobby.battle_pass.BattlePassProgressionsView() if chapterID else None, chapterID)
             return
+
+    def __isBattlePassOpen(self):
+        return self.__gui.windowsManager.findWindows(lambda w: w.content is not None and getattr(w.content, 'alias', None) == QUESTS_ALIASES.BATTLE_PASS_MISSIONS_VIEW_PY_ALIAS)
 
 
 class BattlePassCapHandler(ServiceChannelHandler):
@@ -1608,6 +1620,7 @@ class ResourceWellRewardHandler(ServiceChannelHandler):
 
 
 class Comp7RewardHandler(MultiTypeServiceChannelHandler):
+    __comp7Ctrl = dependency.descriptor(IComp7Controller)
 
     def __init__(self, awardCtrl):
         super(Comp7RewardHandler, self).__init__((SYS_MESSAGE_TYPE.battleResults.index(), SYS_MESSAGE_TYPE.tokenQuests.index()), awardCtrl)
@@ -1650,6 +1663,8 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
             return (ranksQuests, tokensQuests, periodicQuests)
         else:
             allQuests = self.eventsCache.getAllQuests(lambda q: isComp7VisibleQuest(q.getID()))
+            actualSeasonNumber = self.__comp7Ctrl.getActualSeasonNumber()
+            qualificationQuestID = qualificationQuestIDBySeasonNumber(actualSeasonNumber) if actualSeasonNumber else None
             for qID in self.__completedQuestIDs:
                 quest = allQuests.get(qID)
                 if quest is None:
@@ -1662,7 +1677,7 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
                     tokensQuests.append(quest)
                 elif qType == Comp7QuestType.PERIODIC:
                     periodicQuests.append(quest)
-                if qID == COMP7_QUALIFICATION_QUEST_ID:
+                if qID == qualificationQuestID:
                     isQualification = True
 
             ranksQuests.sort(key=self.__getRanksQuestSortKey, reverse=True)
@@ -1683,7 +1698,7 @@ class Comp7RewardHandler(MultiTypeServiceChannelHandler):
 
     @staticmethod
     def __getTokensQuestSortKey(quest):
-        return parseComp7TokensQuestID(quest.getID())
+        return getRequiredTokensCountToComplete(quest.getID())
 
 
 class WinbackQuestHandler(MultiTypeServiceChannelHandler):
