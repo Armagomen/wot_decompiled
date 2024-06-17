@@ -20,7 +20,7 @@ from account_helpers.settings_core.options import MinimapArtyHitSetting
 from account_helpers.settings_core.settings_constants import GAME
 from battleground.location_point_manager import g_locationPointManager
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, ReplyState, MarkerType, LocationMarkerSubType, ONE_SHOT_COMMANDS_TO_REPLIES, INVALID_VEHICLE_POSITION
-from constants import VISIBILITY, AOI
+from constants import VISIBILITY, AOI, VEHICLE_BUNKER_TURRET_TAG
 from debug_utils import LOG_WARNING, LOG_ERROR, LOG_DEBUG
 from gui import GUI_SETTINGS, InputHandler
 from gui.Scaleform.daapi.view.battle.shared.minimap import common
@@ -62,7 +62,7 @@ _AOI_ESTIMATE_RADIUS = 450.0
 _AOI_RADIUS_MARGIN = 50.0
 
 class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
-    __slots__ = ('__isAlive', '__isObserver', '__playerVehicleID', '__viewPointID', '__animationID', '__deadPointID', '__cameraID', '__cameraIDs', '__yawLimits', '__circlesID', '__circlesVisibilityState', '__killerVehicleID', '__defaultViewRangeCircleSize')
+    __slots__ = ('__isAlive', '__isObserver', '__playerVehicleID', '__viewPointID', '__animationID', '__deadPointID', '__cameraID', '__cameraIDs', '__yawLimits', '__circlesID', '__circlesVisibilityState', '__killerVehicleID', '__defaultViewRangeCircleSize', '__isAwaitingRespawn')
 
     def __init__(self, parentObj):
         super(PersonalEntriesPlugin, self).__init__(parentObj)
@@ -79,6 +79,7 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
         self.__circlesVisibilityState = 0
         self.__killerVehicleID = 0
         self.__defaultViewRangeCircleSize = None
+        self.__isAwaitingRespawn = False
         return
 
     def start(self):
@@ -164,8 +165,8 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
                     self.__hideDirectionLine()
             if GUI_SETTINGS.showSectorLines and self.__yawLimits is not None:
                 value = getter(settings_constants.GAME.SHOW_SECTOR_ON_MAP)
-                if value and self.__viewPointID:
-                    self._invoke(self.__viewPointID, 'setYawLimit', *self.__yawLimits)
+                if value:
+                    self.__setupYawLimit()
             if not self.__isObserver and self.__isAlive:
                 if self.__circlesID is None:
                     self.__updateViewRangeCircle()
@@ -181,8 +182,13 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
             return
 
     def updateSettings(self, diff):
-        vInfo = self._arenaDP.getVehicleInfo(self._arenaDP.getAttachedVehicleID())
-        if self.__isAlive or self.__isObserver and vInfo and vInfo.isAlive():
+        isNeedObserverUpdate = False
+        if self.__isObserver:
+            if not BattleReplay.g_replayCtrl.isPlaying:
+                vInfo = self._arenaDP.getVehicleInfo(self._arenaDP.getAttachedVehicleID())
+                if vInfo and vInfo.isAlive():
+                    isNeedObserverUpdate = True
+        if self.__isAlive or isNeedObserverUpdate:
             if settings_constants.GAME.SHOW_VECTOR_ON_MAP in diff and GUI_SETTINGS.showDirectionLine:
                 value = diff[settings_constants.GAME.SHOW_VECTOR_ON_MAP]
                 if value:
@@ -312,7 +318,7 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
             self._setActive(entryID, False)
 
     def __updateViewPointEntry(self, vehicleID=0):
-        isActive = self._isInPostmortemMode() and vehicleID and vehicleID != self.__playerVehicleID or self._isInVideoMode() and self.__isAlive or not (self._isInPostmortemMode() or self._isInVideoMode() or self.__isObserver)
+        isActive = self._isInPostmortemMode() and vehicleID and vehicleID != self.__playerVehicleID or self._isInPostmortemMode() and vehicleID is None and self.__isAwaitingRespawn or self._isInVideoMode() and self.__isAlive or not (self._isInPostmortemMode() or self._isInVideoMode() or self.__isObserver)
         ownMatrix = matrix_factory.getEntityMatrix(self.__killerVehicleID) or matrix_factory.makeAttachedVehicleMatrix()
         if self.__viewPointID:
             self._setActive(self.__viewPointID, active=isActive)
@@ -320,10 +326,12 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
             self._setActive(self.__animationID, active=isActive)
             self._setMatrix(self.__animationID, ownMatrix)
             return
-        self.__viewPointID = self._addEntry(_S_NAME.VIEW_POINT, _C_NAME.PERSONAL, matrix=ownMatrix, active=isActive)
-        transformProps = settings.TRANSFORM_FLAG.DEFAULT
-        transformProps ^= settings.TRANSFORM_FLAG.NO_ROTATION
-        self.__animationID = self._addEntry(_S_NAME.ANIMATION, _C_NAME.PERSONAL, matrix=ownMatrix, active=isActive, transformProps=transformProps)
+        else:
+            self.__viewPointID = self._addEntry(_S_NAME.VIEW_POINT, _C_NAME.PERSONAL, matrix=ownMatrix, active=isActive)
+            transformProps = settings.TRANSFORM_FLAG.DEFAULT
+            transformProps ^= settings.TRANSFORM_FLAG.NO_ROTATION
+            self.__animationID = self._addEntry(_S_NAME.ANIMATION, _C_NAME.PERSONAL, matrix=ownMatrix, active=isActive, transformProps=transformProps)
+            return
 
     def __updateViewRangeCircle(self):
         ownMatrix = matrix_factory.makeAttachedVehicleMatrix()
@@ -368,6 +376,9 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
 
     def _isAlive(self):
         return self.__isAlive
+
+    def _getIsObserver(self):
+        return self.__isObserver
 
     def _onVehicleStateUpdated(self, state, value):
         if state in (VEHICLE_VIEW_STATE.SWITCHING, VEHICLE_VIEW_STATE.RESPAWNING):
@@ -438,7 +449,7 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
         attachedVehicleId = arenaDP.getAttachedVehicleID()
         for flags, vInfo in updated:
             if vInfo.vehicleID == attachedVehicleId and flags & INVALIDATE_OP.VEHICLE_INFO > 0:
-                self._invalidateMarkup(forceInvalidate=True)
+                self._invalidateMarkup(forceInvalidate=self.__isAlive)
                 break
 
     def _canShowViewRangeCircle(self):
@@ -465,6 +476,7 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
 
     def __onPostMortemSwitched(self, noRespawnPossible, respawnAvailable):
         self.__isAlive = False
+        self.__isAwaitingRespawn = not noRespawnPossible
         self.__hideDirectionLine()
         self.__clearYawLimit()
         self.__updateViewPointEntry()
@@ -474,7 +486,7 @@ class PersonalEntriesPlugin(common.SimplePlugin, IArenaVehiclesController):
 
     def __onRespawnBaseMoving(self):
         self.__isAlive = True
-        self.__isAlive = True
+        self.__isAwaitingRespawn = False
         self._invalidateMarkup(True)
 
     def __onMinimapFeedbackReceived(self, eventID, entityID, value):
@@ -601,7 +613,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
         if ctrl is not None:
             ctrl.onMinimapVehicleAdded += self.__onMinimapVehicleAdded
             ctrl.onMinimapVehicleRemoved += self.__onMinimapVehicleRemoved
-            ctrl.onMinimapFeedbackReceived += self.__onMinimapFeedbackReceived
+            ctrl.onMinimapFeedbackReceived += self._onMinimapFeedbackReceived
             ctrl.onVehicleFeedbackReceived += self.__onVehicleFeedbackReceived
         g_playerEvents.onTeamChanged += self.__onTeamChanged
         self.sessionProvider.addArenaCtrl(self)
@@ -624,7 +636,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
         if ctrl is not None:
             ctrl.onMinimapVehicleAdded -= self.__onMinimapVehicleAdded
             ctrl.onMinimapVehicleRemoved -= self.__onMinimapVehicleRemoved
-            ctrl.onMinimapFeedbackReceived -= self.__onMinimapFeedbackReceived
+            ctrl.onMinimapFeedbackReceived -= self._onMinimapFeedbackReceived
             ctrl.onVehicleFeedbackReceived -= self.__onVehicleFeedbackReceived
         g_playerEvents.onTeamChanged -= self.__onTeamChanged
         super(ArenaVehiclesPlugin, self).stop()
@@ -670,7 +682,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
         for vInfo in arenaDP.getVehiclesInfoIterator():
             vehicleID = vInfo.vehicleID
             handled.add(vehicleID)
-            if vehicleID == self.__playerVehicleID or vInfo.isObserver() or not vInfo.isAlive():
+            if self._skipMarker(vInfo):
                 continue
             if vehicleID not in self._entries:
                 model = self.__addEntryToPool(vehicleID, positions=positions)
@@ -686,7 +698,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
         return
 
     def addVehicleInfo(self, vInfo, arenaDP):
-        if not vInfo.isAlive() or vInfo.isObserver():
+        if self._skipMarker(vInfo):
             return
         else:
             vehicleID = vInfo.vehicleID
@@ -779,9 +791,15 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
     def _getPlayerVehicleID(self):
         return self.__playerVehicleID
 
+    def _getIsObserver(self):
+        return self.__isObserver
+
     def _getDisplayedName(self, vInfo):
-        vehicleType = vInfo.vehicleType
-        return vehicleType.shortNameWithPrefix
+        return vInfo.getDisplayedName()
+
+    def _skipMarker(self, vInfo, vProxy=None):
+        isAlive = vProxy.isAlive() if vProxy is not None else vInfo.isAlive()
+        return vInfo.vehicleID == self.__playerVehicleID or vInfo.isObserver() or not isAlive or VEHICLE_BUNKER_TURRET_TAG in vInfo.vehicleType.tags
 
     def _setVehicleInfo(self, vehicleID, entry, vInfo, guiProps, isSpotted=False):
         classTag = vInfo.vehicleType.classTag
@@ -791,7 +809,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
             animation = self.__getSpottedAnimation(entry, isSpotted)
             if animation:
                 self.__playSpottedSound(entry)
-            self._invoke(entry.getID(), 'setVehicleInfo', vehicleID, classTag, name, guiProps.name(), animation)
+            self._invoke(entry.getID(), 'setVehicleInfo', vehicleID, vInfo.getDisplayedClassTag(), name, guiProps.name(), animation)
         return
 
     def _onVehicleHealthChanged(self, vehicleID, currH, maxH):
@@ -934,7 +952,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
             self.__showVehicleHp(key, entry.getID())
 
     def __getSpottedAnimation(self, entry, isSpotted):
-        if not self.__isObserver and isSpotted:
+        if not self.__isObserver and isSpotted and not self._isInFreeCamMode():
             animation = entry.getSpottedAnimation(self._entries.itervalues())
         else:
             animation = ''
@@ -982,7 +1000,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
 
     def __onMinimapVehicleAdded(self, vProxy, vInfo, guiProps):
         vehicleID = vInfo.vehicleID
-        if vehicleID == self.__playerVehicleID or vInfo.isObserver() or not vProxy.isAlive():
+        if self._skipMarker(vInfo, vProxy):
             return
         else:
             self.__clearAoIToFarCallback(vehicleID)
@@ -1017,7 +1035,7 @@ class ArenaVehiclesPlugin(common.EntriesPlugin, IVehiclesAndPositionsController)
         else:
             LOG_DEBUG('Location of vehicle entry is not in AoI', entry)
 
-    def __onMinimapFeedbackReceived(self, eventID, entityID, value):
+    def _onMinimapFeedbackReceived(self, eventID, entityID, value):
         if eventID == FEEDBACK_EVENT_ID.MINIMAP_SHOW_MARKER and entityID != self.__playerVehicleID:
             if entityID in self._entries:
                 entry = self._entries[entityID]
@@ -1230,7 +1248,6 @@ class MinimapPingPlugin(SimpleMinimapPingPlugin):
 
     def __init__(self, parentObj):
         super(MinimapPingPlugin, self).__init__(parentObj)
-        self._mouseKeyEventHandler = {}
         self.__isHintPanelEnabled = False
         self.__minimapSettings = None
         self.__registeredToMouseEvents = False
@@ -1238,8 +1255,8 @@ class MinimapPingPlugin(SimpleMinimapPingPlugin):
 
     def start(self):
         super(MinimapPingPlugin, self).start()
-        self.__minimapSettings = dict(AccountSettings.getSettings(MINIMAP_IBC_HINT_SECTION))
-        if self.__haveHintsLeft(self.__minimapSettings) and not self.sessionProvider.arenaVisitor.gui.isBootcampBattle():
+        self.__minimapSettings = self.getHintSection()
+        if self.__haveHintsLeft(self.__minimapSettings):
             self.__registeredToMouseEvents = True
             InputHandler.g_instance.onKeyDown += self.__handleKeyDownEvent
             InputHandler.g_instance.onKeyUp += self.__handleKeyUpEvent
@@ -1252,6 +1269,9 @@ class MinimapPingPlugin(SimpleMinimapPingPlugin):
             InputHandler.g_instance.onKeyUp -= self.__handleKeyUpEvent
         self._boundingBox = (Math.Vector2(0, 0), Math.Vector2(0, 0))
         AccountSettings.setSettings(MINIMAP_IBC_HINT_SECTION, self.__minimapSettings)
+
+    def getHintSection(self):
+        return dict(AccountSettings.getSettings(MINIMAP_IBC_HINT_SECTION))
 
     def __handleKeyDownEvent(self, event):
         if event.key not in (Keys.KEY_LCONTROL, Keys.KEY_RCONTROL):

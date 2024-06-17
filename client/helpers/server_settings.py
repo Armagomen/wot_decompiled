@@ -29,7 +29,7 @@ from personal_missions import PM_BRANCH
 from post_progression_common import FEATURE_BY_GROUP_ID, ROLESLOT_FEATURE
 from prestige_system.prestige_common import PrestigeConfig
 from ranked_common import SwitchState
-from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION
+from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION, ADDITIONAL_BONUS_SECTION, ADDITIONAL_BONUS_APPLY_COUNT, ADDITIONAL_BONUS_ENABLED, ENABLE_BADGES
 from schema_manager import getSchemaManager
 from shared_utils import makeTupleByDict, updateDict, findFirst
 from soft_exception import SoftException
@@ -1089,6 +1089,7 @@ class _Comp7QualificationConfig(settingsBlock('_Comp7QualificationConfig', ('bat
 
 class Comp7Config(settingsBlock('Comp7Config', ('isEnabled',
  'isShopEnabled',
+ 'isTrainingEnabled',
  'peripheryIDs',
  'primeTimes',
  'seasons',
@@ -1102,12 +1103,15 @@ class Comp7Config(settingsBlock('Comp7Config', ('isEnabled',
  'squadRatingRestriction',
  'squadSizes',
  'createVivoxTeamChannels',
- 'qualification'))):
+ 'qualification',
+ 'maps',
+ 'tournaments',
+ 'remainingOfferTokensNotifications'))):
     __slots__ = ()
 
     @classmethod
     def defaults(cls):
-        return dict(isEnabled=False, isShopEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRatingRestriction={}, squadSizes=[], createVivoxTeamChannels=False, qualification=makeTupleByDict(_Comp7QualificationConfig, {}))
+        return dict(isEnabled=False, isShopEnabled=False, isTrainingEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRatingRestriction={}, squadSizes=[], createVivoxTeamChannels=False, qualification=makeTupleByDict(_Comp7QualificationConfig, {}), maps=set(), tournaments={}, remainingOfferTokensNotifications=[])
 
     @classmethod
     def _preprocessData(cls, data):
@@ -1172,11 +1176,12 @@ class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
  'winbackShowPromoToken',
  'winbackPromoURL',
  'lastQuestEnabler',
- 'winbackStartingQuest'))):
+ 'winbackStartingQuest',
+ 'chainVersions'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
-        defaults = dict(isEnabled=False, isModeEnabled=False, isWhatsNewEnabled=False, isProgressionEnabled=False, tokenQuestPrefix='', offerTokenPrefix='', winbackAccessToken='', winbackModeAccessTokens=[], winbackBattlesCountToken='', winbackShowPromoToken='', winbackPromoURL='', lastQuestEnabler='', winbackStartingQuest='')
+        defaults = dict(isEnabled=False, isModeEnabled=False, isWhatsNewEnabled=False, isProgressionEnabled=False, tokenQuestPrefix='', offerTokenPrefix='', winbackAccessToken='', winbackModeAccessTokens=[], winbackBattlesCountToken='', winbackShowPromoToken='', winbackPromoURL='', lastQuestEnabler='', winbackStartingQuest='', chainVersions=list())
         defaults.update(kwargs)
         return super(WinbackConfig, cls).__new__(cls, **defaults)
 
@@ -1340,6 +1345,55 @@ class ReferralProgramConfig(namedtuple('ReferralProgramConfig', ('periodNumber',
         return cls()
 
 
+class LiveOpsWebEventsConfig(namedtuple('LiveOpsWebEventsConfig', ('eventUniqueName',
+ 'isEnabled',
+ 'url',
+ 'preEventStart',
+ 'eventStart',
+ 'eventEnd',
+ 'postEventEnd',
+ 'isEntryPointSmall'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(eventUniqueName='', isEnabled=False, url='', preEventStart=0, eventStart=0, eventEnd=0, postEventEnd=0, isEntryPointSmall=True)
+        defaults.update(kwargs)
+        return super(LiveOpsWebEventsConfig, cls).__new__(cls, **defaults)
+
+    def asDict(self):
+        return self._asdict()
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
+class _AdvancedAchievementsConfig(namedtuple('_AdvancedAchievementsConfig', ('enabled', 'vehicleAchievementsEnabled', 'customizationAchievementsEnabled'))):
+    __slots__ = ()
+
+    def __new__(cls, **kwargs):
+        defaults = dict(enabled=False, vehicleAchievementsEnabled=False, customizationAchievementsEnabled=False)
+        defaults.update(kwargs)
+        return super(_AdvancedAchievementsConfig, cls).__new__(cls, **defaults)
+
+    def asDict(self):
+        return self._asdict()
+
+    def replace(self, data):
+        allowedFields = self._fields
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        return self._replace(**dataToUpdate)
+
+    @classmethod
+    def defaults(cls):
+        return cls()
+
+
 class ServerSettings(object):
 
     def __init__(self, serverSettings):
@@ -1392,6 +1446,8 @@ class ServerSettings(object):
         self.__steamShadeConfig = _SteamShadeConfig()
         self.__abFeatureTestConfig = _ABFeatureTestConfig()
         self.__referralProgramConfig = ReferralProgramConfig()
+        self.__liveOpsWebEventsConfig = LiveOpsWebEventsConfig()
+        self.__advancedAchievementsConfig = _AdvancedAchievementsConfig()
         self.__schemaManager = getSchemaManager()
         self.set(serverSettings)
 
@@ -1433,8 +1489,6 @@ class ServerSettings(object):
             self.__bwShop = makeTupleByDict(_BwShop, self.__serverSettings['shop'])
         if 'ranked_config' in self.__serverSettings:
             self.__rankedBattlesSettings = makeTupleByDict(RankedBattlesConfig, self.__serverSettings['ranked_config'])
-        if 'advent_calendar_config' in self.__serverSettings:
-            self.__adventCalendar = makeTupleByDict(_AdventCalendarConfig, self.__serverSettings['advent_calendar_config'])
         if 'epic_config' in self.__serverSettings:
             LOG_DEBUG('epic_config', self.__serverSettings['epic_config'])
             self.__epicMetaGameSettings = makeTupleByDict(_EpicMetaGameConfig, self.__serverSettings['epic_config']['epicMetaGame'])
@@ -1503,17 +1557,17 @@ class ServerSettings(object):
             LOG_DEBUG(Configs.COMP7_CONFIG.value, self.__serverSettings[Configs.COMP7_CONFIG.value])
             self.__comp7Config = makeTupleByDict(Comp7Config, self.__serverSettings[Configs.COMP7_CONFIG.value])
         else:
-            self.__comp7Config = Comp7Config()
+            self.__comp7Config = Comp7Config.defaults()
         if Configs.COMP7_RANKS_CONFIG.value in self.__serverSettings:
             LOG_DEBUG(Configs.COMP7_RANKS_CONFIG.value, self.__serverSettings[Configs.COMP7_RANKS_CONFIG.value])
             self.__comp7RanksConfig = makeTupleByDict(Comp7RanksConfig, self.__serverSettings[Configs.COMP7_RANKS_CONFIG.value])
         else:
-            self.__comp7RanksConfig = Comp7RanksConfig()
+            self.__comp7RanksConfig = Comp7RanksConfig.defaults()
         if Configs.COMP7_REWARDS_CONFIG.value in self.__serverSettings:
             LOG_DEBUG(Configs.COMP7_REWARDS_CONFIG.value, self.__serverSettings[Configs.COMP7_REWARDS_CONFIG.value])
             self.__comp7RewardsConfig = makeTupleByDict(Comp7RewardsConfig, self.__serverSettings[Configs.COMP7_REWARDS_CONFIG.value])
         else:
-            self.__comp7RewardsConfig = Comp7RewardsConfig()
+            self.__comp7RewardsConfig = Comp7RewardsConfig.defaults()
         if Configs.PERSONAL_RESERVES_CONFIG.value in self.__serverSettings:
             self.__personalReservesConfig = makeTupleByDict(PersonalReservesConfig, self.__serverSettings[Configs.PERSONAL_RESERVES_CONFIG.value])
         else:
@@ -1556,6 +1610,10 @@ class ServerSettings(object):
             self.__referralProgramConfig = makeTupleByDict(ReferralProgramConfig, self.__serverSettings[Configs.REFERRAL_PROGRAM_CONFIG.value])
         else:
             self.__referralProgramConfig = ReferralProgramConfig.defaults()
+        if Configs.LIVE_OPS_EVENTS_CONFIG.value in self.__serverSettings:
+            self.__liveOpsWebEventsConfig = makeTupleByDict(LiveOpsWebEventsConfig, self.__serverSettings[Configs.LIVE_OPS_EVENTS_CONFIG.value])
+        else:
+            self.__liveOpsWebEventsConfig = LiveOpsWebEventsConfig.defaults()
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1576,9 +1634,6 @@ class ServerSettings(object):
             self.__updateUILogging(serverSettingsDiff)
         if 'eula_config' in serverSettingsDiff:
             self.__updateEULA(serverSettingsDiff)
-        if 'advent_calendar_config' in serverSettingsDiff:
-            self.__updateAdventCalendar(serverSettingsDiff)
-            self.__serverSettings['advent_calendar_config'] = serverSettingsDiff['advent_calendar_config']
         if 'epic_config' in serverSettingsDiff:
             self.__updateEpic(serverSettingsDiff)
             self.__serverSettings['epic_config'] = serverSettingsDiff['epic_config']
@@ -1593,7 +1648,7 @@ class ServerSettings(object):
         if 'unit_assembler_config' in serverSettingsDiff:
             self.__updateUnitAssemblerConfig(serverSettingsDiff)
             self.__serverSettings['unit_assembler_config'] = serverSettingsDiff['unit_assembler_config']
-        if 'comp7_config' in serverSettingsDiff:
+        if Configs.COMP7_CONFIG.value in serverSettingsDiff:
             self.__updateComp7(serverSettingsDiff)
         if Configs.COMP7_RANKS_CONFIG.value in serverSettingsDiff:
             self.__updateComp7PrestigeRanks(serverSettingsDiff)
@@ -1674,6 +1729,8 @@ class ServerSettings(object):
         self.__updateABFeatureTestConfig(serverSettingsDiff)
         if Configs.REFERRAL_PROGRAM_CONFIG.value in serverSettingsDiff:
             self.__updateReferralProgramConfig(serverSettingsDiff)
+        if Configs.LIVE_OPS_EVENTS_CONFIG.value in serverSettingsDiff:
+            self.__updateLiveOpsWebEventsConfig(serverSettingsDiff)
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1861,6 +1918,14 @@ class ServerSettings(object):
     def referralProgramConfig(self):
         return self.__referralProgramConfig
 
+    @property
+    def liveOpsWebEventsConfig(self):
+        return self.__liveOpsWebEventsConfig
+
+    @property
+    def advancedAchievementsConfig(self):
+        return self.__advancedAchievementsConfig
+
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
 
@@ -1941,12 +2006,6 @@ class ServerSettings(object):
     def isBlueprintDataChangedInDiff(self, diff):
         return 'blueprints_config' in diff
 
-    def isBootcampEnabled(self):
-        return self.__getGlobalSetting('isBootcampEnabled', False)
-
-    def getBootcampBonuses(self):
-        return self.__getGlobalSetting('bootcampBonuses', {})
-
     def isMapsTrainingEnabled(self):
         return self.__getGlobalSetting('isMapsTrainingEnabled', False)
 
@@ -1992,6 +2051,9 @@ class ServerSettings(object):
     def isDogTagComponentUnlockingEnabled(self):
         return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableComponentUnlocking', True)
 
+    def isDogTagsBattleMarkerEnabled(self):
+        return self.isDogTagEnabled() and self.__getGlobalSetting(DOG_TAGS_CONFIG, {}).get('enableDogTagsBattleMarker', True)
+
     def isRenewableSubEnabled(self):
         return self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('enabled', False)
 
@@ -2019,6 +2081,15 @@ class ServerSettings(object):
     def isDailyAttendancesEnabled(self):
         return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('enableDailyAttendances', False)
 
+    def isWotPlusBattleBonusesEnabled(self):
+        return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('battleBonuses', {}).get('enabled', False)
+
+    def getWotPlusBattleBonusesConfig(self):
+        return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('battleBonuses', {})
+
+    def isBadgesEnabled(self):
+        return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get(ENABLE_BADGES, False)
+
     def getWotPlusExclusiveVehicleInfo(self):
         return self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('exclusiveVehicle', {})
 
@@ -2036,6 +2107,12 @@ class ServerSettings(object):
 
     def getWotPlusProductCode(self):
         return self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get('subscriptionProductCode', 'subscription_dev')
+
+    def isAdditionalWoTPlusEnabled(self):
+        return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get(ADDITIONAL_BONUS_SECTION, {}).get(ADDITIONAL_BONUS_ENABLED, False)
+
+    def getAdditionalWoTPlusXPCount(self):
+        return self.isRenewableSubEnabled() and self.__getGlobalSetting(RENEWABLE_SUBSCRIPTION_CONFIG, {}).get(ADDITIONAL_BONUS_SECTION, {}).get(ADDITIONAL_BONUS_APPLY_COUNT, 0) or 0
 
     def isTelecomRentalsEnabled(self):
         return self.__getGlobalSetting(TELECOM_RENTALS_CONFIG, {}).get('enabled', True)
@@ -2152,6 +2229,9 @@ class ServerSettings(object):
     def isCrewBooksSaleEnabled(self):
         return self.__getGlobalSetting('isCrewBooksSaleEnabled', False)
 
+    def isJunkCrewConversionEnabled(self):
+        return self.__getGlobalSetting('isJunkCrewConversionEnabled', False)
+
     def isTrophyDevicesEnabled(self):
         return self.__getGlobalSetting('isTrophyDevicesEnabled', False)
 
@@ -2222,9 +2302,6 @@ class ServerSettings(object):
     def __updateEULA(self, targetSettings):
         cProfile = targetSettings['eula_config']
         self.__eula = _EULA(cProfile.get('enabled', False), cProfile.get('demoAccEnabled', False), cProfile.get('steamAccEnabled', False))
-
-    def __updateAdventCalendar(self, targetSettings):
-        self.__adventCalendar = self.__adventCalendar.replace(targetSettings['advent_calendar_config'])
 
     def __updateRanked(self, targetSettings):
         self.__rankedBattlesSettings = self.__rankedBattlesSettings.replace(targetSettings['ranked_config'])
@@ -2355,6 +2432,13 @@ class ServerSettings(object):
 
     def __updateReferralProgramConfig(self, serverSettingsDiff):
         self.__referralProgramConfig = self.__referralProgramConfig.replace(serverSettingsDiff[Configs.REFERRAL_PROGRAM_CONFIG.value])
+
+    def __updateLiveOpsWebEventsConfig(self, serverSettingsDiff):
+        self.__liveOpsWebEventsConfig = self.__liveOpsWebEventsConfig.replace(serverSettingsDiff[Configs.LIVE_OPS_EVENTS_CONFIG.value])
+
+    def __updateAdvancedAchievementsConfig(self, serverSettingsDiff):
+        if Configs.ADVANCED_ACHIEVEMENTS_CONFIG.value in serverSettingsDiff:
+            self.__advancedAchievementsConfig = self.__advancedAchievementsConfig.replace(serverSettingsDiff[Configs.ADVANCED_ACHIEVEMENTS_CONFIG.value])
 
 
 def serverSettingsChangeListener(*configKeys):

@@ -35,12 +35,6 @@ class ARENAS(object):
     TYPE_FALLOUT6_NAME = '#arenas:type/fallout6/name'
     TYPE_FALLOUT6_DESCRIPTION = '#arenas:type/fallout6/description'
     TYPE_FALLOUTMUTLITEAM_DESCRIPTION = '#arenas:type/falloutMutliteam/description'
-    TYPE_BOOTCAMP_DESCRIPTION0 = '#arenas:type/bootcamp/description0'
-    TYPE_BOOTCAMP_DESCRIPTION1 = '#arenas:type/bootcamp/description1'
-    TYPE_BOOTCAMP_DESCRIPTION2 = '#arenas:type/bootcamp/description2'
-    TYPE_BOOTCAMP_DESCRIPTION3 = '#arenas:type/bootcamp/description3'
-    TYPE_BOOTCAMP_DESCRIPTION4 = '#arenas:type/bootcamp/description4'
-    TYPE_BOOTCAMP_DESCRIPTION5 = '#arenas:type/bootcamp/description5'
     TYPE_CTF30X30_NAME = '#arenas:type/ctf30x30/name'
     TYPE_CTF30X30_DESCRIPTION = '#arenas:type/ctf30x30/description'
     TYPE_DOMINATION30X30_NAME = '#arenas:type/domination30x30/name'
@@ -65,6 +59,8 @@ class ARENAS(object):
     C_06_ENSK_DESCRIPTION = '#arenas:06_ensk/description'
     C_07_LAKEVILLE_NAME = '#arenas:07_lakeville/name'
     C_07_LAKEVILLE_DESCRIPTION = '#arenas:07_lakeville/description'
+    C_07_LAKEVILLE_NB_NAME = '#arenas:07_lakeville_nb/name'
+    C_07_LAKEVILLE_NB_DESCRIPTION = '#arenas:07_lakeville_nb/description'
     C_08_RUINBERG_NAME = '#arenas:08_ruinberg/name'
     C_08_RUINBERG_DESCRIPTION = '#arenas:08_ruinberg/description'
     C_10_HILLS_NAME = '#arenas:10_hills/name'
@@ -84,6 +80,8 @@ class ARENAS(object):
     C_31_AIRFIELD_DESCRIPTION = '#arenas:31_airfield/description'
     C_33_FJORD_NAME = '#arenas:33_fjord/name'
     C_33_FJORD_DESCRIPTION = '#arenas:33_fjord/description'
+    C_33_FJORD_NB_NAME = '#arenas:33_fjord_nb/name'
+    C_33_FJORD_NB_DESCRIPTION = '#arenas:33_fjord_nb/description'
     C_34_REDSHIRE_NAME = '#arenas:34_redshire/name'
     C_34_REDSHIRE_DESCRIPTION = '#arenas:34_redshire/description'
     C_35_STEPPES_NAME = '#arenas:35_steppes/name'
@@ -102,6 +100,8 @@ class ARENAS(object):
     C_23_WESTFELD_DESCRIPTION = '#arenas:23_westfeld/description'
     C_28_DESERT_NAME = '#arenas:28_desert/name'
     C_28_DESERT_DESCRIPTION = '#arenas:28_desert/description'
+    C_28_DESERT_NB_NAME = '#arenas:28_desert_nb/name'
+    C_28_DESERT_NB_DESCRIPTION = '#arenas:28_desert_nb/description'
     C_29_EL_HALLOUF_NAME = '#arenas:29_el_hallouf/name'
     C_45_NORTH_AMERICA_NAME = '#arenas:45_north_america/name'
     C_45_NORTH_AMERICA_DESCRIPTION = '#arenas:45_north_america/description'
@@ -113,13 +113,17 @@ class ARENAS(object):
     C_63_TUNDRA_DESCRIPTION = '#arenas:63_tundra/description'
     C_101_DDAY_NAME = '#arenas:101_dday/name'
     C_101_DDAY_DESCRIPTION = '#arenas:101_dday/description'
+    C_101_DDAY_SM24_NAME = '#arenas:101_dday_sm24/name'
+    C_101_DDAY_SM24_DESCRIPTION = '#arenas:101_dday_sm24/description'
     C_115_SWEDEN_DESCRIPTION = '#arenas:115_sweden/description'
+    C_115_SWEDEN_NB_DESCRIPTION = '#arenas:115_sweden_nb/description'
     C_112_EIFFEL_TOWER_CTF_NAME = '#arenas:112_eiffel_tower_ctf/name'
     C_112_EIFFEL_TOWER_CTF_DESCRIPTION = '#arenas:112_eiffel_tower_ctf/description'
     C_212_EPIC_RANDOM_VALLEY_NAME = '#arenas:212_epic_random_valley/name'
     C_212_EPIC_RANDOM_VALLEY_DESCRIPTION = '#arenas:212_epic_random_valley/description'
     C_114_CZECH_DESCRIPTION = '#arenas:114_czech/description'
     C_115_SWEDEN_NAME = '#arenas:115_sweden/name'
+    C_115_SWEDEN_NB_NAME = '#arenas:115_sweden_nb/name'
     C_208_BF_EPIC_NORMANDY_NAME = '#arenas:208_bf_epic_normandy/name'
     C_208_BF_EPIC_NORMANDY_DESCRIPTION = '#arenas:208_bf_epic_normandy/description'
     TYPE_EPIC_NAME = '#arenas:type/epic/name'
@@ -198,12 +202,6 @@ class ARENAS(object):
      TYPE_FALLOUT6_NAME,
      TYPE_FALLOUT6_DESCRIPTION,
      TYPE_FALLOUTMUTLITEAM_DESCRIPTION,
-     TYPE_BOOTCAMP_DESCRIPTION0,
-     TYPE_BOOTCAMP_DESCRIPTION1,
-     TYPE_BOOTCAMP_DESCRIPTION2,
-     TYPE_BOOTCAMP_DESCRIPTION3,
-     TYPE_BOOTCAMP_DESCRIPTION4,
-     TYPE_BOOTCAMP_DESCRIPTION5,
      TYPE_CTF30X30_NAME,
      TYPE_CTF30X30_DESCRIPTION,
      TYPE_DOMINATION30X30_NAME,
@@ -228,6 +226,8 @@ class ARENAS(object):
      C_06_ENSK_DESCRIPTION,
      C_07_LAKEVILLE_NAME,
      C_07_LAKEVILLE_DESCRIPTION,
+     C_07_LAKEVILLE_NB_NAME,
+     C_07_LAKEVILLE_NB_DESCRIPTION,
      C_08_RUINBERG_NAME,
      C_08_RUINBERG_DESCRIPTION,
      C_10_HILLS_NAME,
@@ -247,6 +247,8 @@ class ARENAS(object):
      C_31_AIRFIELD_DESCRIPTION,
      C_33_FJORD_NAME,
      C_33_FJORD_DESCRIPTION,
+     C_33_FJORD_NB_NAME,
+     C_33_FJORD_NB_DESCRIPTION,
      C_34_REDSHIRE_NAME,
      C_34_REDSHIRE_DESCRIPTION,
      C_35_STEPPES_NAME,
@@ -265,6 +267,8 @@ class ARENAS(object):
      C_23_WESTFELD_DESCRIPTION,
      C_28_DESERT_NAME,
      C_28_DESERT_DESCRIPTION,
+     C_28_DESERT_NB_NAME,
+     C_28_DESERT_NB_DESCRIPTION,
      C_29_EL_HALLOUF_NAME,
      C_45_NORTH_AMERICA_NAME,
      C_45_NORTH_AMERICA_DESCRIPTION,
@@ -276,13 +280,17 @@ class ARENAS(object):
      C_63_TUNDRA_DESCRIPTION,
      C_101_DDAY_NAME,
      C_101_DDAY_DESCRIPTION,
+     C_101_DDAY_SM24_NAME,
+     C_101_DDAY_SM24_DESCRIPTION,
      C_115_SWEDEN_DESCRIPTION,
+     C_115_SWEDEN_NB_DESCRIPTION,
      C_112_EIFFEL_TOWER_CTF_NAME,
      C_112_EIFFEL_TOWER_CTF_DESCRIPTION,
      C_212_EPIC_RANDOM_VALLEY_NAME,
      C_212_EPIC_RANDOM_VALLEY_DESCRIPTION,
      C_114_CZECH_DESCRIPTION,
      C_115_SWEDEN_NAME,
+     C_115_SWEDEN_NB_NAME,
      C_208_BF_EPIC_NORMANDY_NAME,
      C_208_BF_EPIC_NORMANDY_DESCRIPTION,
      TYPE_EPIC_NAME,

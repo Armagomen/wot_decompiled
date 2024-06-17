@@ -19,7 +19,7 @@ from gui.shared.notifications import NotificationPriorityLevel
 from helpers import dependency
 from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 from skeletons.account_helpers.settings_core import ISettingsCore
-from skeletons.gui.game_control import ILimitedUIController, IBootcampController
+from skeletons.gui.game_control import ILimitedUIController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.system_messages import ISystemMessages
@@ -92,7 +92,6 @@ class _LimitedUIConditionsService(object):
 
 class LimitedUIController(ILimitedUIController):
     __lobbyContext = dependency.descriptor(ILobbyContext)
-    __bootcampController = dependency.descriptor(IBootcampController)
     __settingsCore = dependency.descriptor(ISettingsCore)
     __systemMessages = dependency.descriptor(ISystemMessages)
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -106,6 +105,7 @@ class LimitedUIController(ILimitedUIController):
         self.__skippedObserves = defaultdict(list)
         self.__serverSettings = None
         self.__isEnabled = False
+        self.__needCheckNoviceRules = False
         self.__em = EventManager()
         self.onStateChanged = Event(self.__em)
         self.onConfigChanged = Event(self.__em)
@@ -121,8 +121,6 @@ class LimitedUIController(ILimitedUIController):
 
     def onAccountBecomePlayer(self):
         super(LimitedUIController, self).onAccountBecomePlayer()
-        if self.__bootcampController.isInBootcamp():
-            return
         self.__initialize()
 
     def onAccountBecomeNonPlayer(self):
@@ -216,6 +214,7 @@ class LimitedUIController(ILimitedUIController):
             self.__luiService.destroy()
             self.__luiService = None
             self.__isEnabled = False
+            self.__needCheckNoviceRules = False
             self.__serverSettings = None
             self.__luiConfig = None
             return
@@ -237,7 +236,11 @@ class LimitedUIController(ILimitedUIController):
         return
 
     def __onServerSettingsSyncCompleted(self):
-        self.__updateConfig()
+        needUpdate = True
+        if self.__needCheckNoviceRules:
+            needUpdate = not self.__checkNoviceRulesCompletion()
+        if needUpdate:
+            self.__updateConfig()
 
     def __onServerSettingsChanged(self, serverSettings):
         if self.__serverSettings is not None:
@@ -258,7 +261,7 @@ class LimitedUIController(ILimitedUIController):
             self.onVersionUpdated()
 
     def __updateStatus(self):
-        isEnableState = self.hasConfig and self.__luiConfig.enabled and self.__rules.hasRules() and not self.__bootcampController.isInBootcamp()
+        isEnableState = self.hasConfig and self.__luiConfig.enabled and self.__rules.hasRules()
         changeState = self.__isEnabled != isEnableState
         if changeState:
             self.__isEnabled = isEnableState
@@ -276,6 +279,8 @@ class LimitedUIController(ILimitedUIController):
             self.__updateConfig()
 
     def __updateConfig(self):
+        if not self.__itemsCache.isSynced():
+            return
         self.__luiConfig = self.__serverSettings.limitedUIConfig
         self.__buildRules()
         if not self.__updateStatus():
@@ -381,7 +386,7 @@ class LimitedUIController(ILimitedUIController):
         return
 
     def __tryNotifyStateChanged(self):
-        if self.__bootcampController.isInBootcamp() or self.version <= 0 or not self.__rules.hasRulesByTypes(LuiRuleTypes.NOVICE) or self.__isRulesForNoviceCompleted():
+        if self.version <= 0 or not self.__rules.hasRulesByTypes(LuiRuleTypes.NOVICE) or self.__isRulesForNoviceCompleted():
             return
         else:
             isLuiConfigEnabled = self.__luiConfig.enabled
@@ -407,10 +412,16 @@ class LimitedUIController(ILimitedUIController):
         return all((self.__isRuleCompleted(ruleID) or self.__checkCondition(ruleID) for ruleID in self.__rules.getRulesIDsByTypes(LuiRuleTypes.NOVICE)))
 
     def __checkNoviceRulesCompletion(self):
-        if not self.__isNoviceRulesTurnedOff() and self.__isRulesForNoviceCompleted():
-            self.__turnOffNoviceRules()
-            self.__rules.storePostponedRules()
-            self.__updateConfig()
+        if self.__settingsCore.serverSettings.settingsCache.isSynced():
+            self.__needCheckNoviceRules = False
+            if not self.__isNoviceRulesTurnedOff() and self.__isRulesForNoviceCompleted():
+                self.__turnOffNoviceRules()
+                self.__rules.storePostponedRules()
+                self.__updateConfig()
+                return True
+        else:
+            self.__needCheckNoviceRules = True
+        return False
 
     def __isNoviceRulesTurnedOff(self):
         return self.__settingsCore.serverSettings.isLimitedUICompleted()

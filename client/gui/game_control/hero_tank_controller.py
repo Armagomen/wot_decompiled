@@ -11,7 +11,7 @@ from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.game_control.calendar_controller import CalendarOfferType
 from helpers import dependency
-from skeletons.gui.game_control import IHeroTankController, IBootcampController, ICalendarController
+from skeletons.gui.game_control import IHeroTankController, ICalendarController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.server_events import IEventsCache
@@ -27,7 +27,6 @@ _HeroTankInfo.__new__.__defaults__ = ('', None, None, '', '')
 class HeroTankController(IHeroTankController):
     itemsCache = dependency.descriptor(IItemsCache)
     lobbyContext = dependency.descriptor(ILobbyContext)
-    bootcampController = dependency.descriptor(IBootcampController)
     calendarController = dependency.descriptor(ICalendarController)
     _eventsCache = dependency.descriptor(IEventsCache)
 
@@ -44,10 +43,12 @@ class HeroTankController(IHeroTankController):
     def init(self):
         self.itemsCache.onSyncCompleted += self.__updateInventoryVehiclesData
         g_eventBus.addListener(_CALENDAR_ACTION_CHANGED, self.__updateCalendarActionInfo, EVENT_BUS_SCOPE.LOBBY)
+        self.__isEnabled = True
 
     def fini(self):
         g_eventBus.removeListener(_CALENDAR_ACTION_CHANGED, self.__updateCalendarActionInfo, EVENT_BUS_SCOPE.LOBBY)
         self.itemsCache.onSyncCompleted -= self.__updateInventoryVehiclesData
+        self.__isEnabled = False
 
     def __onEventsCacheSyncCompleted(self, *_):
         if self.__applyActions():
@@ -64,7 +65,11 @@ class HeroTankController(IHeroTankController):
         self._eventsCache.onSyncCompleted -= self.__onEventsCacheSyncCompleted
 
     def isEnabled(self):
-        return self.__isEnabled and not self.bootcampController.isInBootcamp()
+        return self.__isEnabled and bool(self.__data)
+
+    def setEnabled(self, enabled):
+        self.__isEnabled = enabled
+        self.onUpdated()
 
     def hasAdventHero(self):
         return self.__actionInfo is not None and self.__actionInfo.isEnabled
@@ -154,7 +159,6 @@ class HeroTankController(IHeroTankController):
                 self.__data[vCompDescr] = _HeroTankInfo(name=vData.get('name'), url=vData.get('url'), shopUrl=vData.get('shopUrl'), styleID=vData.get('styleID'), crew=self.__createCrew(vData.get('crew'), vCompDescr))
 
         self.__applyActions()
-        self.__isEnabled = bool(self.__data)
         self.onUpdated()
 
     def __applyActions(self):

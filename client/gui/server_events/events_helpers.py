@@ -274,6 +274,10 @@ def isMapsTraining(groupID):
     return groupID == MAPS_TRAINING_GROUPS_ID or groupID and groupID.startswith(MAPS_TRAINING_QUEST_PREFIX)
 
 
+def isMapsTrainingQuest(eventID):
+    return eventID.startswith(MAPS_TRAINING_QUEST_PREFIX) if eventID else False
+
+
 def isBattleMattersQuestID(questID):
     return questID.startswith(BATTLE_MATTERS_QUEST_ID) if questID else False
 
@@ -336,7 +340,8 @@ def parseC11nProgressToken(token):
     if not validateToken(tokenID):
         return C11nStyleProgressData()
     styleID, branch = deserializeToken(tokenID)
-    return C11nStyleProgressData(styleID=styleID, branch=branch, level=token.limit)
+    level = token.limit or token.count
+    return C11nStyleProgressData(styleID=styleID, branch=branch, level=level)
 
 
 def getIdxFromQuest(quest):

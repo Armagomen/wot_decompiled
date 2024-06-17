@@ -60,6 +60,8 @@ class LuiRules(enum.Enum):
     FUN_RANDOM_ENTRY_POINT = 'FunRandomEntryPoint'
     FUN_RANDOM_NOTIFICATIONS = 'FunRandomNotifications'
     WDR_NEWBIE_REWARD = 'WDRNewbieReward'
+    LIVE_OPS_WEB_EVENTS_ENTRY_POINT = 'LiveOpsWebEventsEntryPoint'
+    ADVANCED_ACHIEVEMENTS = 'AdvancedAchievements'
 
 
 _POSTPONED_RULES_DELAY = 5.0
@@ -80,10 +82,12 @@ class _LimitedUIRules(object):
 
     def __init__(self, rules):
         super(_LimitedUIRules, self).__init__()
-        self.__rules = rules
+        self.__isInited = False
+        self.__rules = rules or {}
         self.__postponedRulesCallbackID = None
         self.__postponedCompletedRules = defaultdict(set)
-        self.__clearStoredVersionedRules()
+        if rules is not None:
+            self.__clearStoredVersionedRules()
         return
 
     def getRule(self, ruleID):
@@ -176,9 +180,17 @@ class _LimitedUIRules(object):
         return
 
     def updateRules(self, rules):
-        self.__postponedCompletedRules.clear()
-        self.clearPostponedRulesCallback()
         self.__rules = rules
+        if not self.__isInited:
+            self.__postponedCompletedRules.clear()
+            self.__clearStoredVersionedRules()
+            self.clearPostponedRulesCallback()
+        else:
+            hasPostponedCallback = self.__hasPostponedRules() and self.__postponedRulesCallbackID is not None
+            self.clearPostponedRulesCallback()
+            if hasPostponedCallback:
+                self.__postponedRulesCallbackID = BigWorld.callback(_POSTPONED_RULES_DELAY, self.__storePostponedRulesByDelay)
+        return
 
     def __storePostponedRulesByDelay(self):
         self.__postponedRulesCallbackID = None
@@ -197,6 +209,7 @@ class _LimitedUIRules(object):
         versionedRules = AccountSettings.getCompletedVersionedRules()
         if versionedRules:
             AccountSettings.clearVersionedRules(set(versionedRules) - {ruleID.value for ruleID in self.getRulesIDsByTypes([LuiRuleTypes.VERSIONED])})
+        self.__isInited = True
 
     @staticmethod
     def __getServerRuleStorageInfo(rule):
@@ -213,9 +226,10 @@ class RulesStorageMaker(object):
 
     @classmethod
     def makeStorage(cls, rawRulesData=None):
-        if rawRulesData is None:
-            rawRulesData = dict()
-        return _LimitedUIRules(cls.__makeRules(rawRulesData))
+        rules = None
+        if rawRulesData is not None:
+            rules = cls.__makeRules(rawRulesData)
+        return _LimitedUIRules(rules)
 
     @classmethod
     def updateStorage(cls, storage, rawRulesData):

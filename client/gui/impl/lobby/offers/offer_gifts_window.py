@@ -236,8 +236,8 @@ class OfferGiftsWindow(ViewImpl):
             return
 
     def _onOffersUpdated(self):
-        if self._offerItem is None or not self._offerItem.isOfferAvailable:
-            if self._offersProvider.getUnlockedOffers(onlyVisible=True):
+        if self._offerItem is None or not self._offerItem.isOfferUnlocked:
+            if self._offersProvider.getUnlockedOffers(includeAllOffers=False):
                 event_dispatcher.showStorage(defaultSection=STORAGE_CONSTANTS.OFFERS)
             else:
                 event_dispatcher.showHangar()

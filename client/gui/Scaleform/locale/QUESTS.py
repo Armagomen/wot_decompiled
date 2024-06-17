@@ -15,6 +15,7 @@ class QUESTS(object):
     MISSIONS_TAB_MAY21_MARATHON = '#quests:missions/tab/may21_marathon'
     MISSIONS_TAB_BATTLEMATTERS = '#quests:missions/tab/battleMatters'
     MISSIONS_TAB_WINBACK = '#quests:missions/tab/winback'
+    MISSIONS_TAB_LIVE_OPS_WEB_EVENTS = '#quests:missions/tab/live_ops_web_events'
     IGR_TOOLTIP_BATTLESLABEL = '#quests:igr/tooltip/battlesLabel'
     IGR_TOOLTIP_WINSLABEL = '#quests:igr/tooltip/winsLabel'
     POSTBATTLE_PROGRESSRESET = '#quests:postBattle/progressReset'
@@ -1058,6 +1059,8 @@ class QUESTS(object):
     MISSIONS_TAB_WINBACK_BODY = '#quests:missions/tab/winback/body'
     MISSIONS_TAB_BATTLE_PASS_BODY = '#quests:missions/tab/battle_pass/body'
     MISSIONS_TAB_BATTLE_PASS_HEADER = '#quests:missions/tab/battle_pass/header'
+    MISSIONS_TAB_LIVE_OPS_WEB_EVENTS_BODY = '#quests:missions/tab/live_ops_web_events/body'
+    MISSIONS_TAB_LIVE_OPS_WEB_EVENTS_HEADER = '#quests:missions/tab/live_ops_web_events/header'
     MISSIONS_TAB_MAPBOX_HEADER = '#quests:missions/tab/mapbox/header'
     MISSIONS_TAB_MAPBOX_BODY = '#quests:missions/tab/mapbox/body'
     MISSIONS_TAB_BATTLEMATTERS_HEADER = '#quests:missions/tab/battleMatters/header'
@@ -1274,6 +1277,11 @@ class QUESTS(object):
     BONUSNAME_FREE_EQUIPMENT_DEMOUNTING = '#quests:bonusName/free_equipment_demounting'
     BONUSNAME_EXCLUSIVE_VEHICLE = '#quests:bonusName/exclusive_vehicle'
     BONUSNAME_ATTENDANCE_REWARD = '#quests:bonusName/attendance_reward'
+    BONUSNAME_TOURCOIN = '#quests:bonusName/tourcoin'
+    BONUSNAME_INDUSTRIALRESOURCE = '#quests:bonusName/industrialResource'
+    BONUSNAME_BATTLE_BONUSES = '#quests:bonusName/battle_bonuses'
+    BONUSNAME_BADGES = '#quests:bonusName/badges'
+    BONUSNAME_ADDITIONAL_BONUSES = '#quests:bonusName/additional_bonuses'
     ACTION_AUTO_CALENDAR = '#quests:action/auto/calendar'
     ACTION_FULL_CALENDAR = '#quests:action/full/calendar'
     ACTION_HERO_FULL_CALENDAR = '#quests:action/hero/full/calendar'
@@ -1312,12 +1320,10 @@ class QUESTS(object):
     ACTION_BUTTON_BERTHSPRICES = '#quests:action/button/berthsPrices'
     ACTION_AUTO_CREDITSTANKMANCOST = '#quests:action/auto/creditsTankmanCost'
     ACTION_FULL_CREDITSTANKMANCOST = '#quests:action/full/creditsTankmanCost'
-    ACTION_HERO_FULL_CREDITSTANKMANCOST = '#quests:action/hero/full/creditsTankmanCost'
     ACTION_SHORT_CREDITSTANKMANCOST = '#quests:action/short/creditsTankmanCost'
     ACTION_BUTTON_CREDITSTANKMANCOST = '#quests:action/button/creditsTankmanCost'
     ACTION_AUTO_GOLDTANKMANCOST = '#quests:action/auto/goldTankmanCost'
     ACTION_FULL_GOLDTANKMANCOST = '#quests:action/full/goldTankmanCost'
-    ACTION_HERO_FULL_GOLDTANKMANCOST = '#quests:action/hero/full/goldTankmanCost'
     ACTION_SHORT_GOLDTANKMANCOST = '#quests:action/short/goldTankmanCost'
     ACTION_BUTTON_GOLDTANKMANCOST = '#quests:action/button/goldTankmanCost'
     ACTION_AUTO_TANKMEN_MIXED = '#quests:action/auto/tankmen/mixed'
@@ -1709,9 +1715,11 @@ class QUESTS(object):
     DAILYQUESTS_CONDITION_EARNEXP_ACCUM = '#quests:dailyQuests/condition/earnExp_accum'
     DAILYQUESTS_CONDITION_DESTROYMODULE_FEW_ACCUM = '#quests:dailyQuests/condition/destroyModule_few_accum'
     DAILYQUESTS_CONDITION_DESTROYMODULE_PLURAL_ACCUM = '#quests:dailyQuests/condition/destroyModule_plural_accum'
+    DAILYQUESTS_CONDITION_DODAMAGEVEH_SINGULAR_ACCUM = '#quests:dailyQuests/condition/doDamageVeh_singular_accum'
     DAILYQUESTS_CONDITION_DODAMAGEVEH_ACCUM = '#quests:dailyQuests/condition/doDamageVeh_accum'
     DAILYQUESTS_CONDITION_DESTROYVEH_FEW_ACCUM = '#quests:dailyQuests/condition/destroyVeh_few_accum'
     DAILYQUESTS_CONDITION_DESTROYVEH_PLURAL_ACCUM = '#quests:dailyQuests/condition/destroyVeh_plural_accum'
+    DAILYQUESTS_CONDITION_BATTLE_SINGULAR = '#quests:dailyQuests/condition/battle_singular'
     DETAILS_CONDITIONS_CUMULATIVE_DAMAGEDHP = '#quests:details/conditions/cumulative/damagedHp'
     DETAILS_CONDITIONS_CUMULATIVE_COMP7PRESTIGEPOINTS = '#quests:details/conditions/cumulative/comp7PrestigePoints'
     TOKEN_DEFAULT_ENUM = (TOKEN_DEFAULT_USSR,
@@ -1828,7 +1836,12 @@ class QUESTS(object):
      BONUSNAME_EXCLUDED_MAP,
      BONUSNAME_FREE_EQUIPMENT_DEMOUNTING,
      BONUSNAME_EXCLUSIVE_VEHICLE,
-     BONUSNAME_ATTENDANCE_REWARD)
+     BONUSNAME_ATTENDANCE_REWARD,
+     BONUSNAME_TOURCOIN,
+     BONUSNAME_INDUSTRIALRESOURCE,
+     BONUSNAME_BATTLE_BONUSES,
+     BONUSNAME_BADGES,
+     BONUSNAME_ADDITIONAL_BONUSES)
     ACTION_ENUM = (ACTION_AUTO_CALENDAR,
      ACTION_FULL_CALENDAR,
      ACTION_HERO_FULL_CALENDAR,
@@ -1867,12 +1880,10 @@ class QUESTS(object):
      ACTION_BUTTON_BERTHSPRICES,
      ACTION_AUTO_CREDITSTANKMANCOST,
      ACTION_FULL_CREDITSTANKMANCOST,
-     ACTION_HERO_FULL_CREDITSTANKMANCOST,
      ACTION_SHORT_CREDITSTANKMANCOST,
      ACTION_BUTTON_CREDITSTANKMANCOST,
      ACTION_AUTO_GOLDTANKMANCOST,
      ACTION_FULL_GOLDTANKMANCOST,
-     ACTION_HERO_FULL_GOLDTANKMANCOST,
      ACTION_SHORT_GOLDTANKMANCOST,
      ACTION_BUTTON_GOLDTANKMANCOST,
      ACTION_AUTO_TANKMEN_MIXED,

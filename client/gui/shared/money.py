@@ -20,6 +20,7 @@ class Currency(CONST_CONTAINER):
     BRCOIN = 'brcoin'
     FREE_XP = 'freeXP'
     EQUIP_COIN = 'equipCoin'
+    TOUR_COIN = 'tourcoin'
     ALL = (CREDITS,
      GOLD,
      CRYSTAL,

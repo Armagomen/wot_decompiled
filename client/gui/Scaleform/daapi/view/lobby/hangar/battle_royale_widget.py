@@ -2,7 +2,7 @@
 # Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/battle_royale_widget.py
 from collections import namedtuple
 from battle_royale.gui.impl.lobby.views.widget_view import WidgetView
-from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
+from gui.Scaleform.daapi.view.meta.BattleRoyaleHangarWidgetInjectMeta import BattleRoyaleHangarWidgetInjectMeta
 from helpers import int2roman
 from helpers import dependency
 from gui.Scaleform.locale.BATTLE_ROYALE import BATTLE_ROYALE
@@ -19,11 +19,14 @@ from battle_royale_progression.gui.shared import event_dispatcher as battle_roya
 from gui.shared.formatters import text_styles
 BattleRoyaleWidgetVO = namedtuple('EpicBattlesWidgetVO', ('calendarStatus', 'showAlert'))
 
-class BattleRoyaleHangarWidgetInject(InjectComponentAdaptor):
+class BattleRoyaleHangarWidgetInject(BattleRoyaleHangarWidgetInjectMeta):
 
     def _makeInjectView(self):
         self.__view = WidgetView()
         return self.__view
+
+    def playBlinkAnimation(self):
+        self.__view.playStartAnimation()
 
 
 class BattleRoyaleHangarWidget(BattleRoyaleHangarWidgetMeta):
@@ -36,7 +39,7 @@ class BattleRoyaleHangarWidget(BattleRoyaleHangarWidgetMeta):
         if self.__brProgression.isEnabled:
             battle_royale_event_dispatcher.showProgressionView()
         else:
-            self.__battleRoyaleController.openURL()
+            self.__battleRoyaleController.openInfoPageWindow()
 
     def onChangeServerClick(self):
         event_dispatcher.showBattleRoyalePrimeTimeWindow()

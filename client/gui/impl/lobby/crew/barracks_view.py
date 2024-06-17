@@ -1,11 +1,14 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/crew/barracks_view.py
 import nations
+from PlayerEvents import g_playerEvents
+from constants import JUNK_TANKMAN_NOVELTY
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.genConsts.BARRACKS_CONSTANTS import BARRACKS_CONSTANTS
 from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
 from gui.game_control import restore_contoller
 from gui.impl import backport
+from gui.impl.auxiliary.junk_tankman_helper import JunkTankmanHelper
 from gui.impl.backport import createContextMenuData, BackportContextMenuWindow
 from gui.impl.dialogs import dialogs
 from gui.impl.gen import R
@@ -15,11 +18,13 @@ from gui.impl.gen.view_models.views.lobby.crew.tankman_model import TankmanModel
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.crew.base_tankman_list_view import BaseTankmanListView
 from gui.impl.lobby.crew.crew_helpers.model_setters import setTankmanModel, setTmanSkillsModel, setRecruitTankmanModel
+from gui.impl.lobby.crew.crew_helpers.tankman_helpers import getBethsSlotsCount
 from gui.impl.lobby.crew.filter import getTankmanKindSettings, getNationSettings, getTankmanRoleSettings, getVehicleTypeSettings, getVehicleTierSettings, getVehicleGradeSettings, SEARCH_MAX_LENGTH
 from gui.impl.lobby.crew.filter.data_providers import CompoundDataProvider, TankmenDataProvider, RecruitsDataProvider
 from gui.impl.lobby.crew.filter.filter_panel_widget import FilterPanelWidget
 from gui.impl.lobby.crew.filter.state import FilterState
 from gui.impl.lobby.crew.tooltips.bunks_confirm_discount_tooltip import BunksConfirmDiscountTooltip
+from gui.impl.lobby.crew.widget.conversion_banner_widget import ConversionBannerWidget
 from gui.server_events import recruit_helper
 from gui.server_events.events_dispatcher import showRecruitWindow
 from gui.shared.event_dispatcher import showPersonalCase, showHangar
@@ -33,7 +38,6 @@ from skeletons.gui.shared import IItemsCache
 from uilogging.crew.loggers import CrewViewLogger
 from uilogging.crew.logging_constants import CrewViewKeys, CrewNavigationButtons, CrewBarracksKeys, CrewMemberAdditionalInfo
 from wg_async import wg_await, wg_async
-from PlayerEvents import g_playerEvents
 
 class BarracksView(BaseTankmanListView):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -51,6 +55,7 @@ class BarracksView(BaseTankmanListView):
         self.__hasFilters = location == BARRACKS_CONSTANTS.LOCATION_FILTER_NOT_RECRUITED
         self.__filterState = FilterState({FilterState.GROUPS.TANKMANKIND.value: TankmanKind.RECRUIT.value if self.__hasFilters else TankmanKind.TANKMAN.value})
         self.__filterPanelWidget = self.__initFilterPanelWidget()
+        self.__conversionBannerWidget = ConversionBannerWidget()
         self.__dataProviders = CompoundDataProvider(tankmen=TankmenDataProvider(self.__filterState), recruits=RecruitsDataProvider(self.__filterState))
         self.__uiLogger = CrewViewLogger(self, CrewViewKeys.BARRACKS)
         super(BarracksView, self).__init__(settings)
@@ -79,15 +84,28 @@ class BarracksView(BaseTankmanListView):
                     return window
         return None
 
+    def __setIsConversionBannerVisible(self, visibleFlag=-1, transaction=None):
+        canShow = JunkTankmanHelper().canShowConversionBanner if visibleFlag == -1 else visibleFlag > 0
+        self.__conversionBannerWidget.setWidgetStates()
+        if canShow:
+            JunkTankmanHelper().setAsShowed(JUNK_TANKMAN_NOVELTY.HEADER)
+        if transaction:
+            transaction.setIsConversionBannerVisible(canShow)
+        else:
+            with self.viewModel.transaction() as tx:
+                tx.setIsConversionBannerVisible(canShow)
+
     def _onLoading(self, *args, **kwargs):
         super(BarracksView, self)._onLoading(*args, **kwargs)
         self.__uiLogger.initialize()
         self.setChildView(FilterPanelWidget.LAYOUT_ID(), self.__filterPanelWidget)
+        self.setChildView(ConversionBannerWidget.LAYOUT_ID(), self.__conversionBannerWidget)
         with self.viewModel.transaction() as tx:
             berths = self.itemsCache.items.stats.tankmenBerthsCount
             berthPrice, _ = self.itemsCache.items.shop.getTankmanBerthPrice(berths)
             defaultBerthPrice, _ = self.itemsCache.items.shop.defaults.getTankmanBerthPrice(berths)
             tx.setIsBerthsOnSale(berthPrice != defaultBerthPrice)
+            self.__setIsConversionBannerVisible(transaction=tx)
         self.__dataProviders.subscribe()
         self.__dataProviders.update()
 
@@ -123,7 +141,8 @@ class BarracksView(BaseTankmanListView):
          (self.__dataProviders.onDataChanged, self.__fillCardList),
          (self.itemsCache.onSyncCompleted, self.__onBerthsPricesChanged),
          (g_playerEvents.onVehicleLockChanged, self._onVehicleLockChanged),
-         (self.eventsCache.onProgressUpdated, self.__onNewRecruits))
+         (self.eventsCache.onProgressUpdated, self.__onNewRecruits),
+         (JunkTankmanHelper().setIsConversionBannerVisible, self.__setIsConversionBannerVisible))
 
     @property
     def _tankmenProvider(self):
@@ -179,12 +198,11 @@ class BarracksView(BaseTankmanListView):
         self.__dataProviders.update()
 
     def __onTankmenBerthsCountUpdate(self, *_):
-        newBerthsCount = self.itemsCache.items.stats.tankmenBerthsCount
-        if newBerthsCount != self.viewModel.berthsAmount.getTo():
+        slotsCount, freeBerthsCount = getBethsSlotsCount()
+        if slotsCount != self.viewModel.berthsAmount.getTo():
             with self.viewModel.transaction() as tx:
-                tankmenInBarracks = self.itemsCache.items.tankmenInBarracksCount()
-                tx.berthsAmount.setFrom(max(newBerthsCount - tankmenInBarracks, 0))
-                tx.berthsAmount.setTo(newBerthsCount)
+                tx.berthsAmount.setFrom(freeBerthsCount)
+                tx.berthsAmount.setTo(slotsCount)
 
     def __onBerthsPricesChanged(self, *_):
         berths = self.itemsCache.items.stats.tankmenBerthsCount
@@ -237,8 +255,8 @@ class BarracksView(BaseTankmanListView):
 
     def __fillCardList(self):
         with self.viewModel.transaction() as tx:
+            self.__setIsConversionBannerVisible(transaction=tx)
             tx.setHasFilters(self.__filterPanelWidget.hasAppliedFilters())
-            slots = self.itemsCache.items.stats.tankmenBerthsCount
             self.__filterPanelWidget.updateAmountInfo(self.__dataProviders.itemsCount, self.__dataProviders.initialItemsCount)
             tx.setItemsAmount(self.__dataProviders.itemsCount)
             tx.setItemsOffset(self._itemsOffset)
@@ -247,9 +265,9 @@ class BarracksView(BaseTankmanListView):
             if newRecruitCount:
                 self.__filterPanelWidget.updateFilterToggleCounter(TankmanKind.RECRUIT.value, newRecruitCount)
             self._fillVisibleCards(tx.getTankmanList())
-            tankmenInBarracks = self._tankmenProvider.tankmenInBarracksCount()
-            tx.berthsAmount.setFrom(max(slots - tankmenInBarracks, 0))
-            tx.berthsAmount.setTo(slots)
+            slotsCount, freeBerthsCount = getBethsSlotsCount()
+            tx.berthsAmount.setFrom(freeBerthsCount)
+            tx.berthsAmount.setTo(slotsCount)
             if self._recruitsProvider.itemsCount:
                 self.__setNewRecruitVisited()
 

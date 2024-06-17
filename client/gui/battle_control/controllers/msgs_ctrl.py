@@ -27,6 +27,7 @@ _ATTACK_REASON_CODE = {_AR_INDICES['shot']: 'DEATH_FROM_SHOT',
  _AR_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION',
  _AR_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE',
  _AR_INDICES['static_deathzone']: 'DEATH_FROM_STATIC_DEATH_ZONE',
+ _AR_INDICES['minefield_zone']: 'DEATH_FROM_MINEFIELD_ZONE',
  _AR_INDICES['drowning']: 'DEATH_FROM_DROWNING',
  _AR_INDICES['overturn']: 'DEATH_FROM_OVERTURN',
  _AR_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION',
@@ -41,7 +42,9 @@ _ATTACK_REASON_CODE = {_AR_INDICES['shot']: 'DEATH_FROM_SHOT',
  _AR_INDICES['thunderStrike']: 'DEATH_FROM_SHOT',
  _AR_INDICES['corrodingShot']: 'DEATH_FROM_SHOT',
  _AR_INDICES['fireCircle']: 'DEATH_FROM_SHOT',
- _AR_INDICES['clingBrander']: 'DEATH_FROM_SHOT'}
+ _AR_INDICES['clingBrander']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['battleship']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['destroyer']: 'DEATH_FROM_SHOT'}
 _PLAYER_KILL_ENEMY_SOUND = 'enemy_killed_by_player'
 _PLAYER_KILL_ALLY_SOUND = 'ally_killed_by_player'
 _ALLY_KILLED_SOUND = 'ally_killed_by_enemy'
@@ -321,7 +324,28 @@ def _getSpawnedBotMsgData(vehicleID, battleSessionProvider=None):
         return None
 
 
-class BattleRoyaleBattleMessagesController(BattleMessagesController):
+class _BRBattleMessagesMixin(object):
+    _battleCtx = None
+
+    def _getEntityType(self, avatar, entityID):
+        if entityID == avatar.playerVehicleID:
+            return _ENTITY_TYPE.SELF
+        if self._battleCtx.isEnemy(entityID) or self._battleCtx.isAlly(entityID) and self._playerChangedTeam():
+            return _ENTITY_TYPE.ENEMY
+        return _ENTITY_TYPE.ALLY if self._battleCtx.isAlly(entityID) else _ENTITY_TYPE.UNKNOWN
+
+    def _playerChangedTeam(self):
+        if 'observer' in BigWorld.player().vehicleTypeDescriptor.type.tags:
+            return False
+        arenaDP = self._battleCtx.getArenaDP()
+        if not arenaDP:
+            return False
+        allyTeam = arenaDP.getAllyTeams()[0]
+        currentTeam = BigWorld.player().team
+        return allyTeam != currentTeam
+
+
+class BattleRoyaleBattleMessagesController(_BRBattleMessagesMixin, BattleMessagesController):
 
     def showAllyHitMessage(self, vehicleID=None):
         spawnBotData = _getSpawnedBotMsgData(vehicleID)
@@ -336,19 +360,8 @@ class BattleRoyaleBattleMessagesController(BattleMessagesController):
         equipmentID = 0
         super(BattleRoyaleBattleMessagesController, self).showVehicleKilledMessage(avatar, targetID, attackerID, equipmentID, reason)
 
-    def _getEntityType(self, avatar, entityID):
-        if entityID == avatar.playerVehicleID:
-            return _ENTITY_TYPE.SELF
-        if self._battleCtx.isEnemy(entityID) or self._battleCtx.isAlly(entityID) and self.__playerChangedTeam():
-            return _ENTITY_TYPE.ENEMY
-        return _ENTITY_TYPE.ALLY if self._battleCtx.isAlly(entityID) else _ENTITY_TYPE.UNKNOWN
 
-    def __playerChangedTeam(self):
-        arenaDP = self._battleCtx.getArenaDP()
-        return False if not arenaDP else arenaDP.getAllyTeams()[0] != BigWorld.player().team
-
-
-class BattleRoyaleBattleMessagesPlayer(BattleMessagesPlayer):
+class BattleRoyaleBattleMessagesPlayer(_BRBattleMessagesMixin, BattleMessagesPlayer):
 
     def showAllyHitMessage(self, vehicleID=None):
         if BattleReplay.g_replayCtrl.isTimeWarpInProgress:

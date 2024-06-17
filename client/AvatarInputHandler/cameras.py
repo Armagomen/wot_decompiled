@@ -239,6 +239,15 @@ def get2DAngleFromCamera(vector):
     return math.acos(dot)
 
 
+def refineVehicleMProv(vehicleMProv):
+    vehicleTranslationOnly = Math.WGTranslationOnlyMP()
+    vehicleTranslationOnly.source = vehicleMProv
+    refinedMatrixProvider = Math.MatrixProduct()
+    refinedMatrixProvider.a = math_utils.createIdentityMatrix()
+    refinedMatrixProvider.b = vehicleTranslationOnly
+    return refinedMatrixProvider
+
+
 class FovExtended(object):
     __instance = None
     arWide = 16.0 / 9.0
@@ -307,6 +316,9 @@ class FovExtended(object):
     def setFovByAbsoluteValue(self, horizontalFov, rampTime=None):
         multiplier = horizontalFov / self.horizontalFov
         self.setFovByMultiplier(multiplier, rampTime)
+
+    def getFovAbsoluteValue(self):
+        return self.horizontalFov * self.__multiplier
 
     def refreshFov(self):
         self.__verticalFov = self.actualDefaultVerticalFov

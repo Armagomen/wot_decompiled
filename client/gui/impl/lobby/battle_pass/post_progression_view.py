@@ -1,10 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_pass/post_progression_view.py
+from ClientSelectableCameraObject import ClientSelectableCameraObject
 from frameworks.wulf import ViewFlags, ViewSettings
 from battle_pass_common import FinalReward, BattlePassConsts, BattlePassTankmenSource
 from gui.battle_pass.battle_pass_award import BattlePassAwardsManager
 from gui.battle_pass.battle_pass_decorators import createBackportTooltipDecorator, createTooltipContentDecorator
-from gui.battle_pass.battle_pass_helpers import getReceivedTankmenCount, getTankmenShopPackages, getStyleForChapter, getVehicleInfoForChapter, isSeasonEndingSoon
+from gui.battle_pass.battle_pass_helpers import getReceivedTankmenCount, getTankmenShopPackages, getStyleForChapter, getVehicleInfoForChapter, isSeasonEndingSoon, isSeasonWithSpecialTankmenScreen
 from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
 from gui.impl.gen import R
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import getVehicleCDForStyle
@@ -71,7 +72,9 @@ class PostProgressionView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__close),
+        return ((self.viewModel.awardsWidget.onTakeRewardsClick, self.__takeAllRewards),
+         (self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
+         (self.viewModel.onClose, self.__close),
          (self.viewModel.showRewards, self.__showRewards),
          (self.viewModel.onTakeRewardsClick, self.__takeAllRewards),
          (self.viewModel.showTankmen, self.__showTankmen),
@@ -89,7 +92,9 @@ class PostProgressionView(ViewImpl):
         self.__setChapter()
         self.__updateDetailRewards()
         with self.viewModel.transaction() as model:
-            model.setIsSpecialVoiceTankmen(not len(self.__battlePass.getSpecialTankmen()) < 2)
+            model.awardsWidget.setIsBpBitEnabled(not self.__battlePass.isHoliday())
+            model.awardsWidget.setIsBpCoinEnabled(not self.__battlePass.isHoliday())
+            model.awardsWidget.setIsSpecialVoiceTankmenEnabled(isSeasonWithSpecialTankmenScreen())
             model.setIsSeasonEndingSoon(isSeasonEndingSoon())
             self.__updateRewardChoice(model=model)
 
@@ -116,8 +121,8 @@ class PostProgressionView(ViewImpl):
 
     @replaceNoneKwargsModel
     def __updateRewardChoice(self, model=None):
-        model.setNotChosenRewardCount(self.__battlePass.getNotChosenRewardCount())
-        model.setIsChooseRewardsEnabled(self.__battlePass.canChooseAnyReward())
+        model.awardsWidget.setNotChosenRewardCount(self.__battlePass.getNotChosenRewardCount())
+        model.awardsWidget.setIsChooseRewardsEnabled(self.__battlePass.canChooseAnyReward())
 
     def __updateDetailRewards(self):
         fromLevel = 1
@@ -154,6 +159,7 @@ class PostProgressionView(ViewImpl):
         self.viewModel.setState(state)
 
     def __onPreview(self):
+        self.__switchCamera()
         if FinalReward.STYLE in self.__battlePass.getPaidFinalRewardTypes(self.__chapter):
             styleInfo = getStyleForChapter(self.__chapter, battlePass=self.__battlePass)
             vehicleCD = getVehicleCDForStyle(styleInfo, itemsCache=self.__itemsCache)
@@ -195,3 +201,7 @@ class PostProgressionView(ViewImpl):
             self.__updateState()
         else:
             showHangar()
+
+    @staticmethod
+    def __switchCamera():
+        ClientSelectableCameraObject.switchCamera()

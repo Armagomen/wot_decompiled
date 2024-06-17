@@ -54,7 +54,7 @@ class OffersDialogWindowMixin(object):
         from gui.shared import event_dispatcher
         offer = self._offersProvider.getOffer(self._offerID)
         if offer is None or not offer.isOfferAvailable:
-            if self._offersProvider.getUnlockedOffers(onlyVisible=True):
+            if self._offersProvider.getUnlockedOffers(includeAllOffers=False):
                 event_dispatcher.showStorage(defaultSection=STORAGE_CONSTANTS.OFFERS)
             else:
                 event_dispatcher.showHangar()
@@ -66,7 +66,10 @@ class OffersDialogWindowMixin(object):
         if offer.showPrice:
             with self.bottomContentViewModel.transaction() as model:
                 model.valueMain.setValue(str(self._price))
-                model.valueMain.setIcon(R.images.gui.maps.icons.offers.token())
+                tokenIcon = backport.image(R.images.gui.maps.icons.offers.token())
+                if offer.cdnGiftsTokenImgPath:
+                    tokenIcon = self._offersProvider.getCdnResourcePath(offer.cdnGiftsTokenImgPath, relative=False)
+                model.valueMain.setIcon(tokenIcon)
 
     def _getResultData(self):
         return None

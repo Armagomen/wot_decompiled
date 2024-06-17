@@ -76,6 +76,9 @@ class IArenaGuiDescription(object):
     def getSelectedQuestInfo(self):
         raise NotImplementedError
 
+    def getReservesModifier(self):
+        raise NotImplementedError
+
 
 class DefaultArenaGuiDescription(IArenaGuiDescription):
     __slots__ = ('_visitor', '_team', '_questInfo', '_isPersonalDataSet', '_selectedQuestIDs', '_selectedQuestInfo')
@@ -161,6 +164,9 @@ class DefaultArenaGuiDescription(IArenaGuiDescription):
 
     def getSelectedQuestInfo(self):
         return self._selectedQuestInfo
+
+    def getReservesModifier(self):
+        return None
 
 
 class ArenaWithBasesDescription(DefaultArenaGuiDescription):
@@ -257,16 +263,8 @@ class ArenaWithL10nDescription(IArenaGuiDescription):
     def getSelectedQuestInfo(self):
         return self._decorated.getSelectedQuestInfo()
 
-
-class BootcampBattleDescription(ArenaWithLabelDescription):
-    __slots__ = ()
-
-    def getWinString(self, isInBattle=True):
-        lessonId = self._visitor.getArenaExtraData().get('lessonId', 0)
-        return i18n.makeString('#arenas:type/{}/description{}'.format(functions.getArenaSubTypeName(self._visitor.type.getID()), lessonId))
-
-    def getScreenIcon(self):
-        return settings.DEFAULT_SCREEN_MAP_IMAGE_RES_PATH
+    def getReservesModifier(self):
+        return None
 
 
 class BattleRoyaleDescription(ArenaWithLabelDescription):
@@ -282,25 +280,28 @@ class BattleRoyaleDescription(ArenaWithLabelDescription):
 class EpicBattlesDescription(ArenaWithLabelDescription):
     __slots__ = ()
     __lobbyContext = dependency.descriptor(ILobbyContext)
-    __battleTypeDescription = FLBattleTypeDescription()
 
     def getWinString(self, isInBattle=True):
-        return self.__battleTypeDescription.getDescription()
+        return FLBattleTypeDescription.getDescription(self.getReservesModifier())
 
     def isInvitationEnabled(self):
         replayCtrl = BattleReplay.g_replayCtrl
         return not replayCtrl.isPlaying
 
     def getBattleTypeIconPath(self, sizeFolder='c_136x136'):
-        return self.__battleTypeDescription.getBattleTypeIconPath(sizeFolder)
+        return FLBattleTypeDescription.getBattleTypeIconPath(self.getReservesModifier(), sizeFolder)
 
     def getDescriptionString(self, isInBattle=True):
-        return self.__battleTypeDescription.getTitle()
+        return FLBattleTypeDescription.getTitle(self.getReservesModifier())
 
     def getTeamName(self, team):
         from epic_constants import EPIC_BATTLE_TEAM_ID
         from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
         return EPIC_BATTLE.TEAM1NAME if team == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER else EPIC_BATTLE.TEAM2NAME
+
+    def getReservesModifier(self):
+        data = self._visitor.getArenaExtraData() or {}
+        return data.get('reservesModifier')
 
 
 class MapboxArenaDescription(ArenaWithLabelDescription):
@@ -321,7 +322,6 @@ registerArenaDescrs(ARENA_GUI_TYPE.RANDOM, ArenaWithBasesDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.EPIC_RANDOM, ArenaWithBasesDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.TRAINING, ArenaWithBasesDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING, ArenaWithBasesDescription)
-registerArenaDescrs(ARENA_GUI_TYPE.BOOTCAMP, BootcampBattleDescription)
 for guiType in ARENA_GUI_TYPE.EPIC_RANGE:
     registerArenaDescrs(guiType, EpicBattlesDescription)
 
@@ -329,6 +329,7 @@ registerArenaDescrs(ARENA_GUI_TYPE.BATTLE_ROYALE, BattleRoyaleDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.MAPBOX, MapboxArenaDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.COMP7, Comp7BattlesDescription)
 registerArenaDescrs(ARENA_GUI_TYPE.TOURNAMENT_COMP7, Comp7BattlesDescription)
+registerArenaDescrs(ARENA_GUI_TYPE.TRAINING_COMP7, Comp7BattlesDescription)
 
 def createDescription(arenaVisitor):
     guiVisitor = arenaVisitor.gui

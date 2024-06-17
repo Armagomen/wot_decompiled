@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/Vehicle.py
+import functools
 import logging
 import math
 import random
@@ -24,7 +25,7 @@ from cgf_components.arena_camera_manager import ArenaCameraManager
 from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
 from constants import VEHICLE_HIT_EFFECT, VEHICLE_SIEGE_STATE, ATTACK_REASON_INDICES, ATTACK_REASON, SPT_MATKIND
 from debug_utils import LOG_DEBUG_DEV
-from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
+from shared_utils import nextTick
 from visual_script.misc import ASPECT
 from Event import Event
 from gui.battle_control import vehicle_getter, avatar_getter
@@ -35,6 +36,7 @@ from helpers import dependency
 from helpers.EffectMaterialCalculation import calcSurfaceMaterialNearPoint
 from helpers.EffectsList import SoundStartParam
 from items import vehicles
+from items.components.component_constants import DEFAULT_TRACK_HIT_VECTOR
 from material_kinds import EFFECT_MATERIAL_INDEXES_BY_NAMES, EFFECT_MATERIALS
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -149,7 +151,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if self.__wheelsSteeringFilter is not None:
             return [ steeringFilter.output(BigWorld.time()) for steeringFilter in self.__wheelsSteeringFilter ]
         else:
-            return
+            return []
 
     @property
     def wheelsSteeringFilters(self):
@@ -253,8 +255,9 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         ctrl = self.guiSessionProvider.dynamic.appearanceCache
         if ctrl is not None:
             appearance = ctrl.getAppearance(self.id, newInfo, None, strCD, False)
-            if BONUS_CAPS.checkAny(BigWorld.player().arenaBonusType, 'EPIC') and self.isAlive() and appearance and not appearance.isAlive:
-                forceReloading = True
+            if appearance:
+                isAppearanceAlive = not appearance.isDestroyed
+                forceReloading = forceReloading or isAppearanceAlive != self.isAlive()
             if forceReloading:
                 oldStrCD = oldTypeDescriptor.makeCompactDescr() if oldTypeDescriptor is not None else None
                 appearance = ctrl.reloadAppearance(self.id, newInfo, self.__onAppearanceReady, strCD, oldStrCD)
@@ -292,6 +295,14 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         _logger.debug('respawnVehicle(%d)', vID)
         vehicle = BigWorld.entities.get(vID)
         if vehicle is not None:
+            avatar = BigWorld.player()
+            vehInfo = avatar.arena.vehicles[vID]
+            avatarVehicle = avatar.vehicle
+            isVehicleAlive = vehInfo['isAlive'] and vehicle.isAlive()
+            isVehicleEntityReady = avatar.playerVehicleID != vID or avatarVehicle and avatarVehicle.id == avatar.playerVehicleID
+            if not isVehicleAlive or not isVehicleEntityReady:
+                nextTick(functools.partial(Vehicle.respawnVehicle, vID, compactDescr, outfitCompactDescr))()
+                return
             vehicle.respawnCompactDescr = compactDescr
             vehicle.respawnOutfitCompactDescr = outfitCompactDescr
             _g_respawnQueue.pop(vID, None)
@@ -329,8 +340,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         self.__prevHealth = self.maxHealth
         self.resetProperties()
         self.onAppearanceReady()
-        if hasattr(self, 'rocketAccelerationController'):
-            self.rocketAccelerationController.init()
 
     def __onVehicleInfoAdded(self, vehID):
         if self.id != vehID:
@@ -715,7 +724,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         return
 
     def onVehiclePickup(self):
-        self.entityGameObject.createComponent(VehiclePickupComponent, self.appearance, self.entityGameObject)
+        self.entityGameObject.createComponent(VehiclePickupComponent, self.appearance)
         attachedVehicle = BigWorld.player().getVehicleAttached()
         if attachedVehicle is None or self.id != attachedVehicle.id:
             return
@@ -729,7 +738,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         self.extrasHitPoint[extraIndex] = hitPoint
 
     def getExtraHitPoint(self, extraIndex):
-        return Math.Vector3(0.0, 10.0, 0.0) if extraIndex is None or extraIndex not in self.extrasHitPoint else self.extrasHitPoint[extraIndex]
+        return DEFAULT_TRACK_HIT_VECTOR if extraIndex is None or extraIndex not in self.extrasHitPoint else self.extrasHitPoint[extraIndex]
 
     def set_perks(self, _=None):
         ctrl = self.guiSessionProvider.dynamic.perks

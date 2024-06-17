@@ -130,9 +130,10 @@ class VehicleInfoComponent(broker.ExchangeComponent):
          'userTags': self._ctx.getUserTags(sessionID, playerVO.igrType),
          'squadIndex': vInfoVO.squadIndex,
          'invitationStatus': overrides.getInvitationDeliveryStatus(vInfoVO),
+         'isBot': vInfoVO.player.isBot,
          'vehicleID': vehicleID,
          'vehicleName': vTypeVO.shortName,
-         'vehicleType': vTypeVO.getClassName(),
+         'vehicleType': vInfoVO.getDisplayedClassTag(),
          'vehicleLevel': vTypeVO.level,
          'vehicleIcon': vTypeVO.iconPath,
          'vehicleIconName': vTypeVO.iconName,
@@ -201,7 +202,7 @@ class VehicleStatusComponent(broker.ExchangeComponent):
     def addVehicleInfo(self, vInfoVO):
         self._vehicleID = vInfoVO.vehicleID
         self._status = vInfoVO.vehicleStatus
-        self._dogTag = vInfoVO.dogTag
+        self._dogTag = vInfoVO.dogTagModel
 
     def addTotalStats(self, stats):
         for composer in self._statsComposers:

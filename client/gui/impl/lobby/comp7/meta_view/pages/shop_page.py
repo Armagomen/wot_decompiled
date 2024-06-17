@@ -3,10 +3,8 @@
 from functools import partial
 import logging
 import typing
-from shared_utils import findFirst
-from shared_utils import first
+from shared_utils import first, findFirst
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from account_helpers.AccountSettings import AccountSettings, COMP7_UI_SECTION, COMP7_SHOP_SEEN_PRODUCTS
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
@@ -29,7 +27,7 @@ from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.comp7 import comp7_model_helpers, comp7_shared
 from gui.impl.lobby.comp7.meta_view.meta_view_helper import setDivisionData, setRankData, getRankDivisions
 from gui.impl.lobby.comp7.meta_view.pages import PageSubModelPresenter
-from gui.impl.lobby.comp7.meta_view.products_helper import packProduct, getItemType, getVehicleCDAndStyle
+from gui.impl.lobby.comp7.meta_view.products_helper import packProduct, getItemType, getVehicleCDAndStyle, addSeenProduct
 from gui.impl.lobby.comp7.meta_view.rotatable_view_helper import RotatableViewHelper, Comp7Cameras
 from gui.impl.lobby.comp7.tooltips.fifth_rank_tooltip import FifthRankTooltip
 from gui.impl.lobby.comp7.tooltips.general_rank_tooltip import GeneralRankTooltip
@@ -130,10 +128,12 @@ class ShopPage(PageSubModelPresenter):
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId', None)
-            vehicleCD = int(event.getArgument('vehicleCD'))
-            if tooltipId == TOOLTIPS_CONSTANTS.SHOP_VEHICLE and vehicleCD:
-                data = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[vehicleCD])
-                window = BackportTooltipWindow(data, self.getParentWindow())
+            itemCD = int(event.getArgument('id'))
+            tooltipData = None
+            if tooltipId in (TOOLTIPS_CONSTANTS.SHOP_VEHICLE, TOOLTIPS_CONSTANTS.AWARD_MODULE, TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM):
+                tooltipData = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[itemCD])
+            if tooltipData:
+                window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 if window is None:
                     return
                 window.load()
@@ -360,18 +360,10 @@ class ShopPage(PageSubModelPresenter):
 
     @args2params(int)
     def __onProductSeen(self, cd):
-        lastSeenProducts = self.__getSeenProducts()
-        lastSeenProducts.append(cd)
-        self.__setSeenProducts(lastSeenProducts)
-
-    def __getSeenProducts(self):
-        settings = AccountSettings.getUIFlag(COMP7_UI_SECTION)
-        return settings.get(COMP7_SHOP_SEEN_PRODUCTS, [])
-
-    def __setSeenProducts(self, products):
-        settings = AccountSettings.getUIFlag(COMP7_UI_SECTION)
-        settings[COMP7_SHOP_SEEN_PRODUCTS] = products
-        AccountSettings.setUIFlag(COMP7_UI_SECTION, settings)
+        addSeenProduct(cd)
+        productModel = findFirst(lambda model: model.getId() == cd, self.viewModel.getProducts())
+        productModel.setIsNew(False)
+        self.parentView.updateTabNotifications()
 
     def __onAddToVehicleCompare(self):
         self.__comparisonBasket.addVehicle(self.__currentItemCD)
@@ -416,7 +408,11 @@ class ShopPage(PageSubModelPresenter):
         self.__disableBlur()
 
     def __onHeroStateChanged(self):
-        g_currentPreviewVehicle.selectVehicle(self.__currentItemCD)
+        itemType = getItemType(self.__currentItemCD)
+        if itemType == GUI_ITEM_TYPE.VEHICLE:
+            self.__selectVehicle()
+        elif itemType == GUI_ITEM_TYPE.STYLE:
+            self.__selectStyle()
         g_currentPreviewVehicle.onHeroStateUpdated -= self.__onHeroStateChanged
 
     def __checkComparisonBacketState(self, model):
@@ -425,6 +421,9 @@ class ShopPage(PageSubModelPresenter):
         model.setVehicleCompareTooltipId(tooltip)
 
     def __selectStyle(self):
+        if g_currentPreviewVehicle.isHeroTank:
+            g_currentPreviewVehicle.onHeroStateUpdated += self.__onHeroStateChanged
+            return
         vCompDescr, style = getVehicleCDAndStyle(self.__currentItemCD)
         if g_currentPreviewVehicle.intCD != vCompDescr:
             g_currentPreviewVehicle.selectVehicle(vCompDescr, style=style)

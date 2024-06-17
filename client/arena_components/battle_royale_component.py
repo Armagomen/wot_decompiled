@@ -12,6 +12,7 @@ class BattleRoyaleComponent(ClientArenaComponent):
         self.__defeatedTeams = []
         self.onBattleRoyalePlaceUpdated = Event.Event(self._eventManager)
         self.onBattleRoyaleDefeatedTeamsUpdate = Event.Event(self._eventManager)
+        self.onRespawnTimeFinished = Event.Event(self._eventManager)
         return
 
     def setBattleRoyalePlace(self, place):

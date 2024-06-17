@@ -47,7 +47,6 @@ def getGameControllersConfig(manager):
     from gui.game_control.ranked_battles_controller import RankedBattlesController as _Ranked
     from gui.game_control.hangar_loading_controller import HangarLoadingController as _HangarLoading
     from gui.game_control.epic_mode_controller import EpicModeController as _Epic
-    from gui.game_control.bootcamp_controller import BootcampController as _Bootcamp
     from gui.game_control.hero_tank_controller import HeroTankController as _HeroTankController
     from gui.game_control.platoon_controller import PlatoonController as _PlatoonController
     from gui.game_control.epic_meta_game_ctrl import EpicBattleMetaGameController as _EpicMeta
@@ -87,6 +86,9 @@ def getGameControllersConfig(manager):
     from gui.limited_ui.lui_controller import LimitedUIController
     from gui.game_control.collections_controller import CollectionsSystemController
     from gui.hangar_presets.hangar_gui_controller import HangarGuiController
+    from gui.game_control.live_ops_web_events_controller import LiveOpsWebEventsController
+    from gui.game_control.achievements_controller import AchievementsController
+    from gui.game_control.achievements_earning_controller import Achievements20EarningController
     tracker = GameStateTracker()
     tracker.init()
     manager.addInstance(_interface.IGameStateTracker, tracker, finalizer='fini')
@@ -122,7 +124,6 @@ def getGameControllersConfig(manager):
     _config(_interface.ITradeInController, _TradeIn())
     _config(_interface.IQuestsController, _Quests())
     _config(_interface.IHangarSpaceSwitchController, HangarSpaceSwitchController())
-    _config(_interface.IBootcampController, _Bootcamp())
     _config(_interface.IRankedBattlesController, _Ranked())
     _config(_interface.IEpicModeController, _Epic())
     _config(_interface.IHeroTankController, _HeroTankController())
@@ -170,4 +171,7 @@ def getGameControllersConfig(manager):
     _config(_interface.ILimitedUIController, LimitedUIController())
     _config(_interface.IHangarGuiController, HangarGuiController())
     _config(_interface.IGraphicsOptimizationController, GraphicsOptimizationController())
+    _config(_interface.ILiveOpsWebEventsController, LiveOpsWebEventsController())
+    _config(_interface.IAchievementsController, AchievementsController())
+    _config(_interface.IAchievements20EarningController, Achievements20EarningController())
     collectGameControllers(_config)

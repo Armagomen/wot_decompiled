@@ -39,6 +39,10 @@ class SPECIAL_VOICE_TAG(object):
     BP_12_M = ('tankman_bp_12_m_5', 'tankman_bp_12_m_8', 'tankman_bp_12_m_9', 'tankman_bp_12_m_10')
     BP_H2 = ('tankmen_bp1002_1', 'tankmen_bp1002_3')
     BP_13 = ('tankmen_bp13_1', 'tankmen_bp13_2', 'tankmen_bp13_3', 'tankmen_bp13_4', 'tankmen_bp13_5', 'tankmen_bp13_6', 'tankmen_bp13_7', 'tankmen_bp13_8', 'tankmen_bp13_9')
+    CYGAN = 'cygan_SpecialVoice'
+    CTM_24 = ('kirk_SpecialVoice', 'spock_SpecialVoice', 'uhura_SpecialVoice')
+    ERIKA = 'erikaSpecialVoice'
+    MIKA = 'mikaSpecialVoice'
     ALL = (BUFFON,
      SABATON,
      OFFSPRING,
@@ -58,7 +62,10 @@ class SPECIAL_VOICE_TAG(object):
      EDELWEISS,
      SKILL_4_LTU,
      TALKTOME_GOOSE,
-     CELEBRITY_2024) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022 + BPH_2022 + WHITE_TIGER_EVENT_2023 + BP_12_M + BP_H2 + BP_13
+     CELEBRITY_2024,
+     CYGAN,
+     ERIKA,
+     MIKA) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022 + BPH_2022 + WHITE_TIGER_EVENT_2023 + BP_12_M + BP_H2 + BP_13 + CTM_24
 
 
 class SPECIAL_CREW_TAG(object):
@@ -67,11 +74,13 @@ class SPECIAL_CREW_TAG(object):
     MIHO = 'mihoCrew'
     YHA = 'yhaCrew'
     WITCHES_CREW = 'witchesCrew'
+    MIKA_CREW = 'mikaCrew'
     ALL = (SABATON,
      OFFSPRING,
      MIHO,
      YHA,
-     WITCHES_CREW)
+     WITCHES_CREW,
+     MIKA_CREW)
 
 
 class GROUP_TAG(object):

@@ -7,7 +7,7 @@ from constants import RentType, OFFER_TOKEN_PREFIX
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.battle_pass.battle_pass_bonuses_packers import TmanTemplateBonusPacker
 from gui.impl import backport
-from gui.impl.backport import createTooltipData
+from gui.impl.backport import createTooltipData, TooltipData
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.awards.reward_model import RewardModel, RentTypeEnum
 from gui.impl.lobby.awards import SupportedTokenTypes
@@ -22,7 +22,6 @@ from skeletons.gui.platform.catalog_service_controller import IPurchaseCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.server_events.bonuses import VehiclesBonus, TokensBonus
-    from gui.impl.backport import TooltipData
     from gui.platform.catalog_service.controller import _PurchaseDescriptor
     from gui.shared.gui_items.Vehicle import Vehicle
 VEH_COMP_R_ID = R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent()
@@ -162,7 +161,8 @@ class _MultiAwardTokenBonusUIPacker(BaseBonusUIPacker):
         return result
 
 
-class _MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
+class MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
+    _SPECIAL_ALIAS = TOOLTIPS_CONSTANTS.EXTENDED_AWARD_VEHICLE
 
     @classmethod
     def _packVehicleBonusModel(cls, bonus, vInfo, isRent, vehicle):
@@ -196,20 +196,23 @@ class _MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
 
     @classmethod
     def _packCompensationTooltip(cls, bonusComp, vehicle):
-        tooltipDataList = super(_MultiAwardVehiclesBonusUIPacker, cls)._packCompensationTooltip(bonusComp, vehicle)
+        tooltipDataList = super(MultiAwardVehiclesBonusUIPacker, cls)._packCompensationTooltip(bonusComp, vehicle)
         return [ cls.__convertCompensationTooltip(bonusComp, vehicle, tooltipData) for tooltipData in tooltipDataList ]
 
     @classmethod
     def _packTooltip(cls, bonus, vehicle, vehInfo):
-        result = super(_MultiAwardVehiclesBonusUIPacker, cls)._packTooltip(bonus, vehicle, vehInfo)
+        tooltipData = super(MultiAwardVehiclesBonusUIPacker, cls)._packTooltip(bonus, vehicle, vehInfo)
         tmanRoleLevel = bonus.getTmanRoleLevel(vehInfo)
-        result.specialArgs.extend([tmanRoleLevel > 0, False])
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EXTENDED_AWARD_VEHICLE, specialArgs=result.specialArgs)
+        tooltipData.specialArgs.extend([tmanRoleLevel > 0, False, False])
+        return tooltipData
 
     @classmethod
     def __convertCompensationTooltip(cls, bonusComp, vehicle, tooltipData):
+        iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.dyn(bonusComp.getName())
+        if not iconAfterRes.exists():
+            iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.gold
         specialArgs = {'labelBefore': '',
-         'iconAfter': backport.image(R.images.gui.maps.icons.quests.bonuses.big.gold()),
+         'iconAfter': backport.image(iconAfterRes()),
          'labelAfter': bonusComp.getIconLabel(),
          'bonusName': bonusComp.getName()}
         uiData = _getVehicleUIData(vehicle)
@@ -229,7 +232,7 @@ class _MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
 def getMultipleAwardsBonusPacker(productCode):
     tokenBonus = _MultiAwardTokenBonusUIPacker(productCode)
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'vehicles': _MultiAwardVehiclesBonusUIPacker(),
+    mapping.update({'vehicles': MultiAwardVehiclesBonusUIPacker(),
      'tmanToken': TmanTemplateBonusPacker(),
      'customizations': Customization3Dand2DbonusUIPacker(),
      SupportedTokenTypes.BATTLE_TOKEN: tokenBonus,

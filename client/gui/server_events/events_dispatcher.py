@@ -191,6 +191,17 @@ def showMissionsBattlePass(layoutID=None, chapterID=0):
     _showMissions(tab=QUESTS_ALIASES.BATTLE_PASS_MISSIONS_VIEW_PY_ALIAS, layoutID=layoutID, chapterID=chapterID)
 
 
+def showMissionsLiveOpsWebEvents():
+
+    def __battleQueueViewPredicate(window):
+        return window.content is not None and getattr(window.content, 'alias', None) == VIEW_ALIAS.BATTLE_QUEUE
+
+    guiLoader = dependency.instance(IGuiLoader)
+    if guiLoader.windowsManager.findWindows(__battleQueueViewPredicate):
+        return
+    _showMissions(tab=QUESTS_ALIASES.LIVE_OPS_WEB_EVENTS_VIEW_PY_ALIAS)
+
+
 def showMissions(tab=None, missionID=None, groupID=None, marathonPrefix=None, anchor=None, showDetails=True, subTab=None):
     _showMissions(**{'tab': tab,
      'subTab': subTab,
@@ -414,3 +425,66 @@ def showActions(tab=None, anchor=None):
 
 def _showMissions(**kwargs):
     g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_MISSIONS), ctx=kwargs), scope=EVENT_BUS_SCOPE.LOBBY)
+
+
+def ifPrbNavigationEnabled(callback):
+
+    def wrapper(*args, **kwargs):
+        prbDispatcher = g_prbLoader.getDispatcher()
+        if prbDispatcher is not None and prbDispatcher.getFunctionalState().isNavigationDisabled():
+            SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error)
+        else:
+            callback(*args, **kwargs)
+        return
+
+    return wrapper
+
+
+@ifPrbNavigationEnabled
+@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
+def showWarningWindow(arenaTypeID, time, reason, isAFKViolation, notificationMgr=None, force=False):
+    from gui.impl.lobby.hangar.notifications.punishment_notification_view import WarningNotificationWindow
+    wnd = WarningNotificationWindow(arenaTypeID, time, reason, isAFKViolation)
+    if force:
+        wnd.load()
+    else:
+        notificationMgr.append(WindowNotificationCommand(wnd))
+
+
+@ifPrbNavigationEnabled
+@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
+def showPenaltyWindow(arenaTypeID, time, reason, isAFKViolation, notificationMgr=None, force=False):
+    from gui.impl.lobby.hangar.notifications.punishment_notification_view import PenaltyNotificationWindow
+    wnd = PenaltyNotificationWindow(arenaTypeID, time, reason, isAFKViolation)
+    if force:
+        wnd.load()
+    else:
+        notificationMgr.append(WindowNotificationCommand(wnd))
+
+
+@ifPrbNavigationEnabled
+@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
+def showBanWindow(arenaTypeID, time, duration, notificationMgr=None, force=False):
+    from gui.impl.lobby.hangar.notifications.punishment_notification_view import BanNotificationWindow
+    wnd = BanNotificationWindow(arenaTypeID, time, duration)
+    if force:
+        wnd.load()
+    else:
+        notificationMgr.append(WindowNotificationCommand(wnd))
+
+
+@ifPrbNavigationEnabled
+@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
+def showComp7BanWindow(arenaTypeID, time, duration, penalty, isQualification, notificationMgr=None, force=False):
+    from gui.impl.lobby.hangar.notifications.punishment_notification_view import Comp7BanNotificationWindow
+    wnd = Comp7BanNotificationWindow(arenaTypeID, time, duration, penalty, isQualification)
+    if force:
+        wnd.load()
+    else:
+        notificationMgr.append(WindowNotificationCommand(wnd))
+
+
+def showComp7YearlyRewardsSelectionWindow():
+    from gui.impl.lobby.comp7.yearly_rewards_selection_screen import YearlyRewardsSelectionWindow
+    window = YearlyRewardsSelectionWindow()
+    window.load()

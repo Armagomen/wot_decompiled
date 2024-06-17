@@ -1289,6 +1289,7 @@ SYS_MESSAGE_TYPE = Enumeration('systemMessageType', ['serverReboot',
  'resourceWellReward',
  'resourceWellNoVehicles',
  'customization2dProgressionChanged',
+ 'bondEquipmentChoosing',
  'prbVehicleMaxScoutKick',
  'personalReservesHaveBeenConverted',
  'changeSquadSize',
@@ -1298,7 +1299,8 @@ SYS_MESSAGE_TYPE = Enumeration('systemMessageType', ['serverReboot',
  'collectionsItems',
  'collectionsReward',
  'collectionEntitlementReceived',
- 'prestigeLevelChanged'])
+ 'prestigeLevelChanged',
+ 'goodiesExpired'])
 SYS_MESSAGE_IMPORTANCE = Enumeration('systemMessageImportance', ['normal', 'high'])
 SM_REQUEST_PERSONAL_MESSAGES_FLAG = 1
 SM_REQUEST_SYSTEM_MESSAGES_FLAG = 2

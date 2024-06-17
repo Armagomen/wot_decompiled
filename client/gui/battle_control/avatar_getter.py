@@ -504,3 +504,20 @@ def getPlayerVehicle(avatar=None):
         vehicle = None
 
     return vehicle
+
+
+def isPostmortemFeatureEnabled(ctrlModeName, avatar=None):
+    if avatar is None:
+        avatar = BigWorld.player()
+    try:
+        result = avatar.isPostmortemFeatureEnabled(ctrlModeName)
+    except AttributeError as error:
+        _logger.debug('Attribute "isPostmortemFeatureEnabled" not found, exception %s', error.message)
+        result = False
+
+    return result
+
+
+def getIsObserverFPV():
+    player = BigWorld.player()
+    return player.isObserverFPV if player else False

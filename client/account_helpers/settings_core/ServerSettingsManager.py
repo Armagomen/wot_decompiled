@@ -51,6 +51,7 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     FALLOUT = 'FALLOUT'
     ONCE_ONLY_HINTS = 'ONCE_ONLY_HINTS'
     ONCE_ONLY_HINTS_2 = 'ONCE_ONLY_HINTS_2'
+    ONCE_ONLY_HINTS_3 = 'ONCE_ONLY_HINTS_3'
     FEEDBACK = 'FEEDBACK'
     DAMAGE_INDICATOR = 'FEEDBACK_DAMAGE_INDICATOR'
     DAMAGE_LOG = 'FEEDBACK_DAMAGE_LOG'
@@ -74,7 +75,8 @@ class SETTINGS_SECTIONS(CONST_CONTAINER):
     LIMITED_UI_PERMANENT_1 = 'LIMITED_UI_PERMANENT_1'
     LIMITED_UI_PERMANENT_2 = 'LIMITED_UI_PERMANENT_2'
     REFERRAL_PROGRAM = 'REFERRAL_PROGRAM'
-    ONCE_ONLY_HINTS_GROUP = (ONCE_ONLY_HINTS, ONCE_ONLY_HINTS_2)
+    ADVANCED_ACHIEVEMENTS_STORAGE = 'ADVANCED_ACHIEVEMENTS_STORAGE'
+    ONCE_ONLY_HINTS_GROUP = (ONCE_ONLY_HINTS, ONCE_ONLY_HINTS_2, ONCE_ONLY_HINTS_3)
 
 
 class UI_STORAGE_KEYS(CONST_CONTAINER):
@@ -96,6 +98,10 @@ class UI_STORAGE_KEYS(CONST_CONTAINER):
     IS_CONFIRM_EMAIL_OVERLAY_ALLOWED = 'is_confirm_email_overlay_allowed'
     LIMITED_UI_ALL_NOVICE_RULES_COMPLETED = 'limited_ui_all_novice_rules_completed'
     MUTABLE_DAMAGE_SHELL_MARK_IS_SHOWN = 'mutable_damage_shell_mark_is_shown'
+
+
+class ADVANCED_ACHIEVEMENTS_STORAGE_KEYS(CONST_CONTAINER):
+    EARNING_TIMESTAMP = 'ACHIEVEMENTS_EARNING_TIMESTAMP'
 
 
 class BATTLE_MATTERS_KEYS(CONST_CONTAINER):
@@ -176,14 +182,13 @@ class ServerSettingsManager(object):
                               GAME.PLAYERS_PANELS_SHOW_LEVELS: 4,
                               GAME.SHOW_DAMAGE_ICON: 5,
                               GAME.DYNAMIC_CAMERA: 6,
-                              GAME.ENABLE_POSTMORTEM_DELAY: 7,
-                              GAME.ENABLE_SERVER_AIM: 8,
                               GAME.SHOW_VEHICLES_COUNTER: 9,
                               GAME.SHOW_VECTOR_ON_MAP: 10,
                               GAME.SHOW_SECTOR_ON_MAP: 11,
                               GAME.RECEIVE_FRIENDSHIP_REQUEST: 12,
                               GAME.SNIPER_MODE_STABILIZATION: 13,
-                              GAME.DISABLE_BATTLE_CHAT: 28}, offsets={GAME.REPLAY_ENABLED: Offset(14, 3 << 14),
+                              GAME.DISABLE_BATTLE_CHAT: 28}, offsets={GAME.POSTMORTEM_MODE: Offset(7, 3 << 7),
+                              GAME.REPLAY_ENABLED: Offset(14, 3 << 14),
                               GAME.DATE_TIME_MESSAGE_INDEX: Offset(16, 983040),
                               GAME.MINIMAP_ALPHA: Offset(20, 267386880),
                               GAME.SHOW_VEH_MODELS_ON_MAP: Offset(29, 3 << 29)}),
@@ -216,7 +221,8 @@ class ServerSettingsManager(object):
                                          GAME.SCROLL_SMOOTHING: 4,
                                          GAME.GAMEPLAY_DEV_MAPS: 5,
                                          GAME.NEWBIE_PREBATTLE_HINTS: 6,
-                                         GAME.NEWBIE_BATTLE_HINTS: 7}, offsets={GAME.CUSTOMIZATION_DISPLAY_TYPE: Offset(2, 3 << 2)}),
+                                         GAME.NEWBIE_BATTLE_HINTS: 7,
+                                         GAME.ENABLE_SERVER_AIM: 8}, offsets={GAME.CUSTOMIZATION_DISPLAY_TYPE: Offset(2, 3 << 2)}),
      SETTINGS_SECTIONS.GAMEPLAY: Section(masks={}, offsets={GAME.GAMEPLAY_MASK: Offset(0, 65535)}),
      SETTINGS_SECTIONS.GRAPHICS: Section(masks={GAME.LENS_EFFECT: 1}, offsets={}),
      SETTINGS_SECTIONS.SOUND: Section(masks={}, offsets={SOUND.ALT_VOICES: Offset(0, 255)}),
@@ -464,6 +470,8 @@ class ServerSettingsManager(object):
                                             GuiSettingsBehavior.RANKED_WELCOME_VIEW_SHOWED: 1,
                                             GuiSettingsBehavior.RANKED_WELCOME_VIEW_STARTED: 2,
                                             GuiSettingsBehavior.EPIC_RANDOM_CHECKBOX_CLICKED: 3,
+                                            GuiSettingsBehavior.CLAN_SUPPLY_INTRO_SHOWN: 4,
+                                            GuiSettingsBehavior.CREW_5075_WELCOME_SHOWN: 21,
                                             GuiSettingsBehavior.COMP7_SEASON_STATISTICS_SHOWN: 22,
                                             GuiSettingsBehavior.PRESTIGE_FIRST_ENTRY_NOTIFICATION_SHOWN: 23,
                                             GuiSettingsBehavior.CREW_22_WELCOME_SHOWN: 24,
@@ -505,13 +513,16 @@ class ServerSettingsManager(object):
                                          OnceOnlyHints.SOUND_BUTTONEX_HINT: 21,
                                          OnceOnlyHints.SESSION_STATS_SETTINGS_BTN_HINT: 22,
                                          OnceOnlyHints.VEHICLE_PREVIEW_MODULES_BUTTON_HINT: 23,
+                                         OnceOnlyHints.ANIMATED_DOGTAG_HANGAR_HINT: 24,
+                                         OnceOnlyHints.ANIMATED_DOGTAG_PROFILE_HINT: 25,
                                          OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: 26,
                                          OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: 27,
                                          OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: 28,
                                          OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: 29,
                                          OnceOnlyHints.FL_SCENARIO_HINT: 30,
                                          OnceOnlyHints.FL_SCENARIO_HINT_SMALL: 31}, offsets={}),
-     SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2: Section(masks={OnceOnlyHints.MODERNIZED_SETUP_TAB_HINT: 1,
+     SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2: Section(masks={OnceOnlyHints.ACHIEVEMENTS_PROFILE_HINT: 0,
+                                           OnceOnlyHints.MODERNIZED_SETUP_TAB_HINT: 1,
                                            OnceOnlyHints.OPT_DEV_DRAG_AND_DROP_HINT: 2,
                                            OnceOnlyHints.DOGTAG_HANGAR_HINT: 3,
                                            OnceOnlyHints.DOGTAG_PROFILE_HINT: 4,
@@ -537,10 +548,11 @@ class ServerSettingsManager(object):
                                            OnceOnlyHints.APPLY_ABILITIES_TO_TYPE_CHECKBOX_HINT: 24,
                                            OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT: 25,
                                            OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT: 26,
-                                           OnceOnlyHints.PERSONAL_RESERVES_HANGAR_HINT: 27,
-                                           OnceOnlyHints.PERSONAL_RESERVES_ACTIVATION_HINT: 28,
                                            OnceOnlyHints.AMMUNITION_FILTER_HINT: 29,
-                                           OnceOnlyHints.SUMMARY_CUSTOMIZATION_BUTTON_HINT: 30}, offsets={}),
+                                           OnceOnlyHints.SUMMARY_CUSTOMIZATION_BUTTON_HINT: 30,
+                                           OnceOnlyHints.BATTLE_ROYALE_DYNAMIC_PLATOON_SUB_MODE_HINT: 31}, offsets={}),
+     SETTINGS_SECTIONS.ONCE_ONLY_HINTS_3: Section(masks={OnceOnlyHints.ACHIEVEMENTS_HANGAR_HINT: 0,
+                                           OnceOnlyHints.ACHIEVEMENTS_PROFILE_HINT_SMALL: 1}, offsets={}),
      SETTINGS_SECTIONS.DAMAGE_INDICATOR: Section(masks={DAMAGE_INDICATOR.TYPE: 0,
                                           DAMAGE_INDICATOR.PRESET_CRITS: 1,
                                           DAMAGE_INDICATOR.DAMAGE_VALUE: 2,
@@ -636,7 +648,8 @@ class ServerSettingsManager(object):
                                      BATTLE_COMM.SHOW_LOCATION_MARKERS: 5}, offsets={}),
      SETTINGS_SECTIONS.DOG_TAGS: Section(masks={GAME.SHOW_VICTIMS_DOGTAG: 0,
                                   GAME.SHOW_DOGTAG_TO_KILLER: 1,
-                                  GAME.SHOW_KILLERS_DOGTAG: 2}, offsets={}),
+                                  GAME.SHOW_KILLERS_DOGTAG: 2,
+                                  GAME.SHOW_PERSONAL_ANIMATED_DOGTAG: 3}, offsets={}),
      SETTINGS_SECTIONS.BATTLE_HUD: Section(masks={SCORE_PANEL.SHOW_HP_VALUES: 0,
                                     SCORE_PANEL.SHOW_HP_DIFFERENCE: 1,
                                     SCORE_PANEL.ENABLE_TIER_GROUPING: 2,
@@ -784,7 +797,8 @@ class ServerSettingsManager(object):
      SETTINGS_SECTIONS.LIMITED_UI_2: Section(masks={}, offsets={LIMITED_UI_KEY: Offset(0, 4294967295L)}),
      SETTINGS_SECTIONS.LIMITED_UI_PERMANENT_1: Section(masks={}, offsets={LIMITED_UI_KEY: Offset(0, 4294967295L)}),
      SETTINGS_SECTIONS.LIMITED_UI_PERMANENT_2: Section(masks={}, offsets={LIMITED_UI_KEY: Offset(0, 4294967295L)}),
-     SETTINGS_SECTIONS.REFERRAL_PROGRAM: Section(masks={}, offsets={ReferralProgram.VIEWED_REFERRAL_PROGRAM_SEASON: Offset(0, 4095)})}
+     SETTINGS_SECTIONS.REFERRAL_PROGRAM: Section(masks={}, offsets={ReferralProgram.VIEWED_REFERRAL_PROGRAM_SEASON: Offset(0, 4095)}),
+     SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE: Section(masks={}, offsets={ADVANCED_ACHIEVEMENTS_STORAGE_KEYS.EARNING_TIMESTAMP: Offset(0, 4294967295L)})}
     AIM_MAPPING = {'net': 1,
      'netType': 1,
      'centralTag': 1,
@@ -807,8 +821,9 @@ class ServerSettingsManager(object):
     def __init__(self, core):
         self._core = weakref.proxy(core)
 
+    @adisp_async
     @adisp_process
-    def applySettings(self):
+    def applySettings(self, callback=None):
         import BattleReplay
         if not BattleReplay.isPlaying():
             yield self._updateToVersion()
@@ -827,6 +842,8 @@ class ServerSettingsManager(object):
             from messenger import g_settings as messenger_settings
             user_prefs.loadFromServer(messenger_settings)
         self._core.storages.get('FOV').apply(False, True)
+        if callable(callback):
+            callback(True)
 
     def getAimSetting(self, section, key, default=None):
         number = self.AIM_MAPPING[key]
@@ -971,6 +988,8 @@ class ServerSettingsManager(object):
         return defaults if not self.settingsCache.isSynced() else self.getUIStorage().get(UI_STORAGE_KEYS.LIMITED_UI_ALL_NOVICE_RULES_COMPLETED, defaults)
 
     def setLimitedUICompleted(self):
+        if not self.settingsCache.isSynced():
+            return
         fields = {UI_STORAGE_KEYS.LIMITED_UI_ALL_NOVICE_RULES_COMPLETED: True}
         return self.setSections([SETTINGS_SECTIONS.UI_STORAGE], fields)
 
@@ -982,6 +1001,12 @@ class ServerSettingsManager(object):
 
     def setQuestProgressSettings(self, settings):
         self.setSectionSettings(SETTINGS_SECTIONS.QUESTS_PROGRESS, settings)
+
+    def getAdvancedAchievementsEarningTimestamp(self):
+        return self.getSectionSettings(SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE, ADVANCED_ACHIEVEMENTS_STORAGE_KEYS.EARNING_TIMESTAMP, 0)
+
+    def setAdvancedAchievementsEarningTimestamp(self, timestamp):
+        self.setSectionSettings(SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE, {ADVANCED_ACHIEVEMENTS_STORAGE_KEYS.EARNING_TIMESTAMP: timestamp})
 
     def _buildAimSettings(self, settings):
         settingToServer = {}
@@ -1197,7 +1222,8 @@ class ServerSettingsManager(object):
          SETTINGS_SECTIONS.LIMITED_UI_PERMANENT_1: {},
          SETTINGS_SECTIONS.LIMITED_UI_PERMANENT_2: {},
          SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS: {},
-         SETTINGS_SECTIONS.BATTLE_BORDER_MAP: {}}
+         SETTINGS_SECTIONS.BATTLE_BORDER_MAP: {},
+         SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE: {}}
         yield migrateToVersion(currentVersion, self._core, data)
         self._setSettingsSections(data)
         callback(self)
@@ -1292,8 +1318,12 @@ class ServerSettingsManager(object):
             settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, onceOnlyHints) ^ clearOnceOnlyHints
         onceOnlyHints2 = data.get('onceOnlyHints2', {})
         clearOnceOnlyHints2 = clear.get('onceOnlyHints2', 0)
-        if onceOnlyHints or clearOnceOnlyHints:
+        if onceOnlyHints2 or clearOnceOnlyHints2:
             settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, onceOnlyHints2) ^ clearOnceOnlyHints2
+        onceOnlyHints3 = data.get('onceOnlyHints3', {})
+        clearOnceOnlyHints3 = clear.get('onceOnlyHints3', 0)
+        if onceOnlyHints3 or clearOnceOnlyHints3:
+            settings[SETTINGS_SECTIONS.ONCE_ONLY_HINTS_3] = self._buildSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_3, onceOnlyHints3) ^ clearOnceOnlyHints3
         uiStorage = data.get('uiStorage', {})
         clearUIStorage = clear.get('uiStorage', 0)
         if uiStorage or clearUIStorage:
@@ -1356,6 +1386,10 @@ class ServerSettingsManager(object):
             if limitedUI or clearLimitedUI:
                 settings[luiStorage] = self._buildSectionSettings(luiStorage, limitedUI) ^ clearLimitedUI
 
+        achievementStorage = data.get(SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE, {})
+        clearAchievementStorag = clear.get(SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE, 0)
+        if achievementStorage or clearAchievementStorag:
+            settings[SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE] = self._buildSectionSettings(SETTINGS_SECTIONS.ADVANCED_ACHIEVEMENTS_STORAGE, achievementStorage) ^ clearAchievementStorag
         version = data.get(VERSION)
         if version is not None:
             settings[VERSION] = version
