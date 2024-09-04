@@ -339,9 +339,7 @@ class Quest(ServerEventAbstract):
         return events_helpers.isMarathon(self.getGroupID()) and bool(self.getBonuses('tokens'))
 
     def shouldBeShown(self):
-        if events_helpers.isMapsTraining(self.getGroupID()):
-            return self.isAvailable().isValid and self.lobbyContext.getServerSettings().isMapsTrainingEnabled()
-        return self.isAvailable().isValid and self.lobbyContext.getServerSettings().comp7Config.isEnabled if events_helpers.isComp7Light(self.getGroupID()) else True
+        return self.isAvailable().isValid and self.lobbyContext.getServerSettings().isMapsTrainingEnabled() if events_helpers.isMapsTraining(self.getGroupID()) else True
 
     def getGroupType(self):
         return getGroupTypeByID(self.getGroupID())

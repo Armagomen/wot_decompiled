@@ -949,11 +949,6 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
 
 Syntax error at or near 'JUMP_FORWARD' token at offset 371
 
-    def setCollisionsOnlyAtPos(self, enable, cameraCollisionScaleMult=4.0):
-        if self.__aimingSystem:
-            self.__aimingSystem.cursorShouldCheckCollisions(not enable)
-        self.__cam.setCollisionCheckOnlyAtPos(enable, cameraCollisionScaleMult)
-
     def __adjustMinDistForShotPointCalc(self):
         if self.__aimingSystem:
             vehPos = Matrix(self.__aimingSystem.vehicleMProv).translation

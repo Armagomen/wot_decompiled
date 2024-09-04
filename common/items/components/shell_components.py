@@ -16,12 +16,13 @@ class ShellType(object):
 
 
 class ArmorPiercingType(ShellType):
-    __slots__ = ('normalizationAngle', 'ricochetAngleCos', 'protectFromDirectHits', 'mechanics', 'nonPiercingArmorDamage')
+    __slots__ = ('normalizationAngle', 'ricochetAngleCos', 'protectFromDirectHits', 'mechanics', 'nonPiercingArmorDamage', 'enableTraceRicochet')
 
     def __init__(self, name):
         super(ArmorPiercingType, self).__init__(name)
         self.normalizationAngle = component_constants.ZERO_FLOAT
         self.ricochetAngleCos = component_constants.ZERO_FLOAT
+        self.enableTraceRicochet = component_constants.DEFAULT_ENABLE_TRACE_RICOCHET
         self.protectFromDirectHits = set()
         self.mechanics = SHELL_MECHANICS_TYPE.LEGACY
         self.nonPiercingArmorDamage = component_constants.ZERO_FLOAT
@@ -31,12 +32,13 @@ class ArmorPiercingType(ShellType):
 
 
 class HollowChargeType(ShellType):
-    __slots__ = ('piercingPowerLossFactorByDistance', 'ricochetAngleCos', 'protectFromDirectHits', 'mechanics', 'nonPiercingArmorDamage')
+    __slots__ = ('piercingPowerLossFactorByDistance', 'ricochetAngleCos', 'protectFromDirectHits', 'mechanics', 'nonPiercingArmorDamage', 'enableTraceRicochet')
 
     def __init__(self, name):
         super(HollowChargeType, self).__init__(name)
         self.piercingPowerLossFactorByDistance = component_constants.ZERO_FLOAT
         self.ricochetAngleCos = component_constants.ZERO_FLOAT
+        self.enableTraceRicochet = component_constants.DEFAULT_ENABLE_TRACE_RICOCHET
         self.protectFromDirectHits = set()
         self.mechanics = SHELL_MECHANICS_TYPE.LEGACY
         self.nonPiercingArmorDamage = component_constants.ZERO_FLOAT
@@ -46,7 +48,7 @@ class HollowChargeType(ShellType):
 
 
 class HighExplosiveImpactParams(object):
-    __slots__ = ('radius', 'armorDamage', 'deviceDamage', 'coneAngleCos', 'piercingSpalls', 'damageAbsorptionType', 'isActive')
+    __slots__ = ('radius', 'armorDamage', 'deviceDamage', 'coneAngleCos', 'piercingSpalls', 'damageAbsorptionType', 'isActive', 'hasSplash')
 
     def __init__(self):
         self.radius = component_constants.ZERO_FLOAT
@@ -55,6 +57,7 @@ class HighExplosiveImpactParams(object):
         self.coneAngleCos = None
         self.piercingSpalls = None
         self.damageAbsorptionType = None
+        self.hasSplash = True
         self.isActive = True
         return
 

@@ -9,7 +9,7 @@ from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import MISSIONS_PAGE
 from adisp import adisp_async as adispasync, adisp_process
-from gui.limited_ui.lui_rules_storage import LuiRules
+from gui.limited_ui.lui_rules_storage import LUI_RULES
 from wg_async import wg_async, wg_await
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi import LobbySubView
@@ -27,7 +27,6 @@ from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
 from gui.Scaleform.locale.BATTLE_PASS import BATTLE_PASS
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.battle_pass.battle_pass_helpers import isBattlePassDailyQuestsIntroShown
 from gui.battle_pass.sounds import HOLIDAY_TASKS_SOUND_SPACE
 from gui.impl import backport
 from gui.impl.gen import R
@@ -286,7 +285,7 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
                     self.__currentTabAlias = QUESTS_ALIASES.MISSIONS_EVENT_BOARDS_VIEW_PY_ALIAS
                 elif self.marathonsCtrl.doesShowAnyMissionsTab():
                     enabledMarathon = self.marathonsCtrl.getFirstEnabledMarathon()
-                    if enabledMarathon is not None and self.__limitedUIController.isRuleCompleted(LuiRules.MISSIONS_MARATHON_VIEW):
+                    if enabledMarathon is not None and self.__limitedUIController.isRuleCompleted(LUI_RULES.MissionsMarathonView):
                         self.__currentTabAlias = QUESTS_ALIASES.MISSIONS_MARATHON_VIEW_PY_ALIAS
                         self.__marathonPrefix = enabledMarathon.prefix
         self._eventID = ctx.get('eventID')
@@ -466,8 +465,6 @@ class MissionsPage(LobbySubView, MissionsPageMeta):
                     availableDailyQuests.extend(self.eventsCache.getPremiumQuests(lambda q: q.isAvailable().isValid).values())
                     if availableDailyQuests:
                         newEventsCount = len(settings.getNewCommonEvents(availableDailyQuests))
-                        if self.battlePass.isActive() and not isBattlePassDailyQuestsIntroShown():
-                            newEventsCount += 1
                 elif alias == QUESTS_ALIASES.MAPBOX_VIEW_PY_ALIAS:
                     newEventsCount = self.__mapboxCtrl.getUnseenItemsCount()
                 elif alias == QUESTS_ALIASES.LIVE_OPS_WEB_EVENTS_VIEW_PY_ALIAS:
