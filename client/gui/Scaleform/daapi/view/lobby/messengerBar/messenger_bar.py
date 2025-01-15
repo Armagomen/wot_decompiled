@@ -217,7 +217,7 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
         dispatcher = self.prbDispatcher
         if dispatcher is not None:
             queueType = dispatcher.getEntity().getQueueType()
-            isInSupportedMode = queueType in (QUEUE_TYPE.RANDOMS,)
+            isInSupportedMode = queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.MAPBOX)
         else:
             isInSupportedMode = False
         isSessionStatsEnabled = self._lobbyContext.getServerSettings().isSessionStatsEnabled()

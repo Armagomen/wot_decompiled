@@ -37,6 +37,11 @@ PRESTIGE_ALLOWED_TAGS = {'role_ATSPG_sniper',
  'comp7',
  'bot_hunter',
  'clanWarsBattles'}
+EXCLUDE_VEHICLE_BY_TAGS = {'bob',
+ 'battle_royale',
+ 'maps_training',
+ 'bunkerTurret',
+ 'event_battles'}
 
 def getCache():
     global _g_cache
@@ -60,13 +65,7 @@ def buildCache():
         nationList = vehicles.g_list.getList(nationIdx)
         vehiclesInNationTree = set()
         for vehDescr in nationList.itervalues():
-            if 'bob' in vehDescr.tags:
-                continue
-            elif 'battle_royale' in vehDescr.tags:
-                continue
-            elif 'maps_training' in vehDescr.tags:
-                continue
-            elif 'bunkerTurret' in vehDescr.tags:
+            if EXCLUDE_VEHICLE_BY_TAGS.intersection(vehDescr.tags):
                 continue
             vehiclesNameToDescr[vehDescr.name] = vehDescr.compactDescr
             vehicleEliteStatusXp[vehDescr.compactDescr] = __getVehicleEliteStatusXp(vehDescr.compactDescr)

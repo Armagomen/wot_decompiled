@@ -32,7 +32,7 @@ from gui.shared.money import Currency
 from gui.shared.tooltips import formatters, ToolTipBaseData
 from gui.shared.tooltips import getComplexStatus, getUnlockPrice, TOOLTIP_TYPE
 from gui.shared.tooltips.common import BlocksTooltipData, makeCompoundPriceBlock, CURRENCY_SETTINGS
-from gui.shared.utils import MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, SHOT_DISPERSION_ANGLE, DUAL_GUN_CHARGE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, ROCKET_ACCELERATION_SPEED_LIMITS, DUAL_ACCURACY_COOLING_DELAY
+from gui.shared.utils import MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_TIME, WHEELED_SPEED_MODE_SPEED, SHOT_DISPERSION_ANGLE, DUAL_GUN_CHARGE_TIME, TURBOSHAFT_SPEED_MODE_SPEED, ROCKET_ACCELERATION_SPEED_LIMITS, DUAL_ACCURACY_COOLING_DELAY, TWIN_GUN_SWITCH_FIRE_MODE_TIME, RELOAD_TIME_SECS_PROP_NAME, TWIN_GUN_RELOAD_TIME
 from gui.impl.lobby.crew.tooltips.vehicle_params_tooltip_view import BaseVehicleParamsTooltipView, BaseVehicleAdvancedParamsTooltipView, VehicleAdvancedParamsTooltipView, VehicleAvgParamsTooltipView
 from helpers import i18n, time_utils, int2roman, dependency
 from helpers.i18n import makeString as _ms
@@ -332,14 +332,16 @@ class VehiclePreviewCrewMemberTooltipData(DefaultCrewMemberTooltipData):
             blocks.extend(defaultBlocks)
         if skillsItems:
             blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.VEHICLEPREVIEW_TANKMAN_SKILLSTITLE), padding=formatters.packPadding(top=10, bottom=10)))
-            newSkillCount = sum((1 for skillItem in skillsItems if skillItem[1] == TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER))
-            if newSkillCount:
-                titleText = makeHtmlString('html_templates:lobby/textStyle', 'mainText', {'message': i18n.makeString(skillsItems[0][1], quantity=newSkillCount)})
-                blocks.append(formatters.packImageTextBlockData(img=skillsItems[0][0], title=titleText, txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
-            for skillItem in skillsItems:
-                if skillItem[1] != TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER:
-                    blocks.append(formatters.packImageTextBlockData(img=skillItem[0], title=text_styles.main(skillItem[1]), txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
+            emptySkills = 0
+            for img, title, level in skillsItems:
+                if title != TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER:
+                    blocks.append(formatters.packImageTextBlockData(img=img, title=text_styles.main(title), txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
+                if level > 0:
+                    emptySkills += 1
 
+            if emptySkills:
+                titleText = makeHtmlString('html_templates:lobby/textStyle', 'mainText', {'message': i18n.makeString(TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER, quantity=emptySkills)})
+                blocks.append(formatters.packImageTextBlockData(img=skillsItems[-1][0], title=titleText, txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
         return [formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=10))]
 
 
@@ -657,10 +659,12 @@ class CommonStatsBlockConstructor(VehicleTooltipBlockConstructor):
                                      'avgPiercingPower',
                                      'hullArmor',
                                      'turretArmor',
-                                     DUAL_GUN_CHARGE_TIME),
+                                     DUAL_GUN_CHARGE_TIME,
+                                     TWIN_GUN_SWITCH_FIRE_MODE_TIME),
      VEHICLE_CLASS_NAME.SPG: ('avgDamage', 'stunMinDuration', 'stunMaxDuration', 'reloadTimeSecs', 'aimingTime', 'explosionRadius'),
      VEHICLE_CLASS_NAME.AT_SPG: ('avgPiercingPower', 'shotDispersionAngle', 'avgDamagePerMinute', 'speedLimits', 'chassisRotationSpeed', 'switchTime')}
-    __CONDITIONAL_PARAMS = ((ROCKET_ACCELERATION_SPEED_LIMITS, ('speedLimits', ROCKET_ACCELERATION_SPEED_LIMITS)),)
+    __CONDITIONAL_PARAMS = ((ROCKET_ACCELERATION_SPEED_LIMITS, ('speedLimits', ROCKET_ACCELERATION_SPEED_LIMITS)), (TWIN_GUN_SWITCH_FIRE_MODE_TIME, (RELOAD_TIME_SECS_PROP_NAME,)))
+    __OVERRIDED_PARAM_NAMES = (('isTwinGunVehicle', {RELOAD_TIME_SECS_PROP_NAME: TWIN_GUN_RELOAD_TIME}),)
 
     def __init__(self, vehicle, configuration, valueWidth, leftPadding, rightPadding):
         super(CommonStatsBlockConstructor, self).__init__(vehicle, configuration, leftPadding, rightPadding)
@@ -672,11 +676,12 @@ class CommonStatsBlockConstructor(VehicleTooltipBlockConstructor):
         highlightedParams = self.__getHighlightedParams()
         comparator = params_helper.similarCrewComparator(self.vehicle)
         if self.configuration.params and not self.configuration.simplifiedOnly:
+            overridedNamesMap = {source:target for vehType, params in self.__OVERRIDED_PARAM_NAMES if getattr(self.vehicle.descriptor, vehType) for source, target in params.items()}
             for paramName in self.__getShownParameters(paramsDict):
                 paramInfo = comparator.getExtendedData(paramName)
                 fmtValue = param_formatter.colorizedFormatParameter(paramInfo, param_formatter.BASE_SCHEME)
                 if fmtValue is not None:
-                    block.append(formatters.packTextParameterBlockData(name=param_formatter.formatVehicleParamName(paramName), value=fmtValue, valueWidth=self._valueWidth, padding=formatters.packPadding(left=-1), highlight=paramName in highlightedParams))
+                    block.append(formatters.packTextParameterBlockData(name=param_formatter.formatVehicleParamName(overridedNamesMap.get(paramName, paramName)), value=fmtValue, valueWidth=self._valueWidth, padding=formatters.packPadding(left=-1), highlight=paramName in highlightedParams))
 
         if block:
             title = text_styles.middleTitle(backport.text(R.strings.tooltips.vehicleParams.common.title()))
@@ -694,6 +699,9 @@ class CommonStatsBlockConstructor(VehicleTooltipBlockConstructor):
         if descr.hasDualAccuracy and serverSettings.checkDualAccuracyHighlights(increase=True):
             params.append(DUAL_ACCURACY_COOLING_DELAY)
             params.append(SHOT_DISPERSION_ANGLE)
+        if descr.isTwinGunVehicle and serverSettings.checkTwinGunHighlights(increase=True):
+            params.append(TWIN_GUN_SWITCH_FIRE_MODE_TIME)
+            params.append(RELOAD_TIME_SECS_PROP_NAME)
         return params
 
     def __getShownParameters(self, paramsDict):

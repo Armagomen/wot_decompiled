@@ -296,7 +296,8 @@ ITEMS_FILTER_VALUE_DESCRIPTION = (Description('id', 'ids', IntegerFilterConverto
  Description('historical', 'edCustomizationDisplayTypes', IntegerFilterConvertor(), '0'))
 FILTER_ID_NAME = {CustomizationType.PROJECTION_DECAL: 'projection_decal',
  CustomizationType.PERSONAL_NUMBER: 'personal_number',
- CustomizationType.DECAL: 'decal'}
+ CustomizationType.DECAL: 'decal',
+ CustomizationType.ATTACHMENT: 'attachment'}
 ALTERNATE_TO_NAME = {CustomizationType.DECAL: 'decal',
  CustomizationType.PROJECTION_DECAL: 'projection_decal',
  CustomizationType.PAINT: 'paint',
@@ -460,6 +461,7 @@ class DecalXmlWriter(BaseCustomizationItemXmlWriter):
         changed = self.writeBase(item, section)
         changed |= rewriteBool(section, 'mirror', item, 'canBeMirrored')
         changed |= self.writeBaseGroup(item, section)
+        changed |= rewriteEmissionParams(section, item)
         if _needWrite(item, 'type'):
             if group:
                 if group.type != item.type:
@@ -480,6 +482,7 @@ class ProjectionDecalXmlWriter(BaseCustomizationItemXmlWriter):
         changed |= rewriteBool(section, 'mirror', item, 'canBeMirroredHorizontally')
         changed |= rewriteString(section, 'glossTexture', item, 'glossTexture', getDefaultGlossTexture())
         changed |= rewriteInt(section, 'scaleFactorId', item, 'scaleFactorId', DEFAULT_SCALE_FACTOR_ID)
+        changed |= rewriteEmissionParams(section, item)
         changed |= self.writeBaseGroup(item, section)
         return changed
 
@@ -498,6 +501,7 @@ class CamouflageXmlWriter(BaseCustomizationItemXmlWriter):
             changed |= rewriteCamouflageTiling(section, item)
             changed |= rewriteCamouflageTilingSettings(section, item)
             changed |= rewriteCamouflageGlossMetallicSettings(section, item)
+            changed |= rewriteEmissionParams(section, item)
         return changed
 
 
@@ -867,11 +871,14 @@ class AttachmentXmlWriter(BaseCustomizationItemXmlWriter):
         changed = self.writeBase(item, section)
         if group:
             changed |= rewriteString(section, 'name', item, 'name', '')
-            changed |= rewriteInt(section, 'sequenceId', item, 'sequenceId', -1)
+            changed |= rewriteInt(section, 'sequenceId', item, 'sequenceId', 0)
             changed |= rewriteString(section, 'modelName', item, 'modelName', '')
             changed |= rewriteString(section, 'hangarModelName', item, 'hangarModelName', '')
+            changed |= rewriteString(section, 'crashModelName', item, 'crashModelName', '')
             changed |= rewriteString(section, 'attachmentLogic', item, 'attachmentLogic', '')
-            changed |= rewriteBool(section, 'initialVisibility', item, 'initialVisibility', False)
+            changed |= rewriteString(section, 'applyType', item, 'applyType', '')
+            changed |= rewriteString(section, 'size', item, 'size', '')
+            changed |= rewriteString(section, 'rarity', item, 'rarity', '')
         changed |= self.writeBaseGroup(item, section)
         return changed
 
@@ -1123,6 +1130,18 @@ def rewriteCamouflageGlossMetallicSettings(section, camouflageItem):
         changed |= section.deleteSection('metallic')
         changed |= _xml.rewriteString(section, 'glossMetallicMap', camouflageItem.glossMetallicSettings['glossMetallicMap'])
     return changed
+
+
+def rewriteEmissionParams(section, item):
+    if item.emissionParams is None or item.emissionParams.emissionTexture == '':
+        return section.deleteSection('emission')
+    else:
+        changed = False
+        emissionSection = findOrCreate(section, 'emission')
+        changed |= rewriteString(emissionSection, 'emission_texture', item, 'emissionParams.emissionTexture', '')
+        changed |= rewriteFloat(emissionSection, 'emission_deferred_power', item, 'emissionParams.emissionDeferredPower', 1.0)
+        changed |= rewriteFloat(emissionSection, 'emission_forward_power', item, 'emissionParams.emissionForwardPower', 1.0)
+        return changed
 
 
 def encodeFlagEnum(enumClass, intValue):

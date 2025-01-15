@@ -74,6 +74,9 @@ class INotificationWindowController(IGameController):
     def hasLock(self, key):
         raise NotImplementedError
 
+    def activeQueueLength(self):
+        raise NotImplementedError
+
     def clear(self):
         raise NotImplementedError
 

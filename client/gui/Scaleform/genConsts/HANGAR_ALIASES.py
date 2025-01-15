@@ -50,6 +50,7 @@ class HANGAR_ALIASES(object):
     COMP7_WIDGET = 'comp7Widget'
     COMP7_MODIFIERS_PANEL = 'comp7ModifiersPanel'
     COMP7_TOURNAMENT_BANNER = 'comp7TournamentBanner'
+    COMP7_GRAND_TOURNAMENT_BANNER = 'comp7GrandTournamentBanner'
     LIVE_OPS_WEB_EVENTS_ENTRY_POINT = 'liveOpsWebEventsEntryPoint'
     AMMUNITION_SETUP_VIEW_VEHICLE_PARAMS = 'ammunitionSetupViewVehicleParams'
     AMMUNITION_PANEL_INJECT = 'ammunitionPanelInject'
@@ -75,3 +76,4 @@ class HANGAR_ALIASES(object):
     EVENT_COINS_COMPONENT = 'eventCoinsComponent'
     HE20_EVENT_ENTRY_POINT = 'he20EventEntryPoint'
     CAROUSEL_EVENT_ENTRY_HOLDER = 'carouselEventEntryHolder'
+    PLAYER_SATISFACTION_WIDGET = 'PlayerSatisfactionWidget'

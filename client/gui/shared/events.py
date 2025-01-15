@@ -525,6 +525,7 @@ class OpenLinkEvent(SharedEvent):
     WOT_PLUS_STEAM_SHOP = 'wotPlusSteamURL'
     WOT_PLUS_SHOP = 'wotPlusShopURL'
     STEAM_SUBSCRIPTION_MANAGEMENT = 'steamSubscriptionManagementURL'
+    LOOT_BOXES_LIST = 'lootBoxesList'
 
     def __init__(self, eventType, url='', title='', params=None):
         super(OpenLinkEvent, self).__init__(eventType)
@@ -642,14 +643,6 @@ class Comp7Event(SharedEvent):
     OPEN_META = 'openMeta'
 
 
-class AirDropEvent(HasCtxEvent):
-    AIR_DROP_SPAWNED = 'onAirDropSpawned'
-    AIR_DROP_LANDED = 'onAirDropLanded'
-    AIR_DROP_LOOP_ENTERED = 'onAirDropLootEntered'
-    AIR_DROP_LOOP_LEFT = 'onAirDropLootLeft'
-    AIR_DROP_NXT_SPAWNED = 'onAirDropNxtSpawned'
-
-
 class ProfilePageEvent(HasCtxEvent):
     SELECT_PROFILE_ALIAS = 'onProfileSelectAlias'
 
@@ -673,6 +666,11 @@ class BattlePassEvent(HasCtxEvent):
     VIDEO_SHOWN = 'videoShown'
 
 
+class LootBoxSystemEvent(HasCtxEvent):
+    ON_STATISTICS_RESET = 'onStatisticsReset'
+    OPENING_ERROR = 'openingError'
+
+
 class ItemRemovalByDemountKitEvent(HasCtxEvent):
     DECLARED = 'item_removal_by_dk_declared'
     CANCELED = 'item_removal_by_dk_canceled'
@@ -694,6 +692,7 @@ class RallyWindowEvent(HasCtxEvent):
 
 class CustomizationEvent(HasCtxEvent):
     SHOW = 'customizationEvent/show'
+    ON_RARITY_REWARD_SCREEN_CLOSED = 'customizationEvent/onRarityRewardScreenClosed'
 
 
 class PrbInvitesEvent(HasCtxEvent):
@@ -872,3 +871,11 @@ class GameSessionEvent(SharedEvent):
 class ExchangeRatesDiscountsEvent(HasCtxEvent):
     ON_SELECTED_AMOUNT_CHANGED = 'onSelectedAmountChanged'
     ON_PERSONAL_DISCOUNT_VIEWED = 'onPersonalDiscountViewed'
+
+
+class ViewReadyEvent(SharedEvent):
+    VIEW_READY = 'ViewReadyEvent.VIEW_READY'
+
+    def __init__(self, viewID):
+        super(ViewReadyEvent, self).__init__(self.VIEW_READY)
+        self.viewID = viewID

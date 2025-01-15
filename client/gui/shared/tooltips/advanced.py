@@ -75,6 +75,9 @@ class BaseAdvancedTooltip(BlocksTooltipData):
         pass
 
     def _packAdvancedBlocks(self, movie, header, description, descReady=False):
+        tokens = description.split('|')
+        if len(tokens) == 2:
+            description = tokens[1]
         if not descReady:
             descrTextR = R.strings.tooltips.advanced.dyn(description)
             if descrTextR and descrTextR.isValid():
@@ -309,6 +312,7 @@ MODULE_MOVIES = {'largeRepairkit': 'consumablesRepairKitBig',
  'passive_engineering': 'sabotageSquad',
  'smoke': 'smokeCloud',
  'commandersView': 'equipmentCommandersVisionSystem',
+ 'modernizedImprovedSightsEnhancedAimDrives': 'equipmentExperimentalAccuracy',
  'modernizedAimDrivesAimingStabilizer': 'equipmentExperimentalAiming',
  'modernizedExtraHealthReserveAntifragmentationLining': 'equipmentExperimentalHardening',
  'modernizedTurbochargerRotationMechanism': 'equipmentExperimentalTurbocharger',

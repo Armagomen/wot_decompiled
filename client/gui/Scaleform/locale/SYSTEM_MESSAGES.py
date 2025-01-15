@@ -224,6 +224,7 @@ class SYSTEM_MESSAGES(object):
     CUSTOMIZATION_ADDED_PERSONALNUMBER_3 = '#system_messages:customization/added/personalNumber_3'
     CUSTOMIZATION_ADDED_PERSONALNUMBER_2 = '#system_messages:customization/added/personalNumber_2'
     CUSTOMIZATION_ADDED_PERSONALNUMBER_1 = '#system_messages:customization/added/personalNumber_1'
+    CUSTOMIZATION_ADDED_ATTACHMENT = '#system_messages:customization/added/attachment'
     CUSTOMIZATION_ADDED_PAINTVALUE = '#system_messages:customization/added/paintValue'
     CUSTOMIZATION_ADDED_CAMOUFLAGEVALUE = '#system_messages:customization/added/camouflageValue'
     CUSTOMIZATION_ADDED_MODIFICATIONVALUE = '#system_messages:customization/added/modificationValue'
@@ -235,6 +236,7 @@ class SYSTEM_MESSAGES(object):
     CUSTOMIZATION_ADDED_PERSONALNUMBER_3VALUE = '#system_messages:customization/added/personalNumber_3Value'
     CUSTOMIZATION_ADDED_PERSONALNUMBER_2VALUE = '#system_messages:customization/added/personalNumber_2Value'
     CUSTOMIZATION_ADDED_PERSONALNUMBER_1VALUE = '#system_messages:customization/added/personalNumber_1Value'
+    CUSTOMIZATION_ADDED_ATTACHMENTVALUE = '#system_messages:customization/added/attachmentValue'
     CUSTOMIZATION_REMOVED_PAINT = '#system_messages:customization/removed/paint'
     CUSTOMIZATION_REMOVED_CAMOUFLAGE = '#system_messages:customization/removed/camouflage'
     CUSTOMIZATION_REMOVED_MODIFICATION = '#system_messages:customization/removed/modification'
@@ -246,6 +248,7 @@ class SYSTEM_MESSAGES(object):
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_3 = '#system_messages:customization/removed/personalNumber_3'
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_2 = '#system_messages:customization/removed/personalNumber_2'
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_1 = '#system_messages:customization/removed/personalNumber_1'
+    CUSTOMIZATION_REMOVED_ATTACHMENT = '#system_messages:customization/removed/attachment'
     CUSTOMIZATION_REMOVED_PAINTVALUE = '#system_messages:customization/removed/paintValue'
     CUSTOMIZATION_REMOVED_CAMOUFLAGEVALUE = '#system_messages:customization/removed/camouflageValue'
     CUSTOMIZATION_REMOVED_MODIFICATIONVALUE = '#system_messages:customization/removed/modificationValue'
@@ -257,6 +260,7 @@ class SYSTEM_MESSAGES(object):
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_3VALUE = '#system_messages:customization/removed/personalNumber_3Value'
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_2VALUE = '#system_messages:customization/removed/personalNumber_2Value'
     CUSTOMIZATION_REMOVED_PERSONALNUMBER_1VALUE = '#system_messages:customization/removed/personalNumber_1Value'
+    CUSTOMIZATION_REMOVED_ATTACHMENTVALUE = '#system_messages:customization/removed/attachmentValue'
     CUSTOMIZATION_PROGRESSION_UP_STYLE = '#system_messages:customization/progression/up/style'
     CUSTOMIZATION_PROGRESSION_DOWN_STYLE = '#system_messages:customization/progression/down/style'
     CUSTOMIZATION_CURRENCY_NOT_ENOUGH = '#system_messages:customization/currency_not_enough'
@@ -271,6 +275,7 @@ class SYSTEM_MESSAGES(object):
     TRAINING_ERROR_DOACTION = '#system_messages:training/error/doAction'
     TRAINING_ERROR_SELECTOBSERVER = '#system_messages:training/error/selectObserver'
     TRAINING_ERROR_ADDPLAYER = '#system_messages:training/error/AddPlayer'
+    TRAINING_ERROR_ONSLAUGHTROSTERLIMIT = '#system_messages:training/error/onslaughtRosterLimit'
     BATTLESESSION_ERROR_ADDPLAYER = '#system_messages:battlesession/error/AddPlayer'
     BATTLESESSION_ERROR_ADDOBSERVER = '#system_messages:battlesession/error/AddObserver'
     BATTLESESSION_ERROR_LIMITS = '#system_messages:battlesession/error/Limits'
@@ -1145,6 +1150,7 @@ class SYSTEM_MESSAGES(object):
     ROYALE_NOTIFICATION_PRIMETIME_TITLE = '#system_messages:royale/notification/primeTime/title'
     ROYALE_NOTIFICATION_CONGRATULATIONS = '#system_messages:royale/notification/congratulations'
     ROYALE_NOTIFICATIONS_SINGLELEVEL_TEXT = '#system_messages:royale/notifications/singleLevel/text'
+    MAPBOX_NOTIFICATION_PRIMETIME_TITLE = '#system_messages:mapbox/notification/primeTime/title'
     MAPBOX_NOTIFICATION_PRIMETIME = '#system_messages:mapbox/notification/primeTime'
     TOKENS_NOTIFICATION_MARK_ACQUIRED = '#system_messages:tokens/notification/mark_acquired'
     RANKED_NOTIFICATION_YEARLB_POSITIVE_TITLE = '#system_messages:ranked/notification/yearLB/positive/title'
@@ -1240,8 +1246,6 @@ class SYSTEM_MESSAGES(object):
     BATTLEPASS_SWITCH_STARTED_TITLE = '#system_messages:battlePass/switch_started/title'
     BATTLEPASS_SWITCH_STARTED_BODY = '#system_messages:battlePass/switch_started/body'
     BATTLEPASS_SWITCH_PAUSE_BODY = '#system_messages:battlePass/switch_pause/body'
-    BATTLEPASS_SWITCH_DISABLE_TITLE = '#system_messages:battlePass/switch_disable/title'
-    BATTLEPASS_SWITCH_DISABLE_BODY = '#system_messages:battlePass/switch_disable/body'
     BATTLEPASS_SWITCH_ENABLED_BODY = '#system_messages:battlePass/switch_enabled/body'
     BATTLEPASS_SWITCH_DISABLE_BATTLE_ROYALE_BODY = '#system_messages:battlePass/switch_disable/battle_royale/body'
     BATTLEPASS_SWITCH_ENABLED_RANKED_BODY = '#system_messages:battlePass/switch_enabled/ranked/body'
@@ -1354,6 +1358,11 @@ class SYSTEM_MESSAGES(object):
     PARENTCONTROL_TITLE = '#system_messages:parentControl/title'
     PARENTCONTROL_MAINTEXT = '#system_messages:parentControl/mainText'
     PARENTCONTROL_LINKTEXT = '#system_messages:parentControl/linkText'
+    PARENTCONTROL_PRIVATEMESSAGESFORBIDDEN = '#system_messages:parentControl/privateMessagesForbidden'
+    PARENTCONTROL_NONFRIENDPRIVATEMESSAGESFORBIDDEN = '#system_messages:parentControl/nonFriendPrivateMessagesForbidden'
+    COUNTRYRESTRICTION_PRIVATEMESSAGESFORBIDDEN = '#system_messages:countryRestriction/privateMessagesForbidden'
+    OTHERRESTRICTION_PRIVATEMESSAGESFORBIDDEN = '#system_messages:otherRestriction/privateMessagesForbidden'
+    OTHERRESTRICTION_NONFRIENDPRIVATEMESSAGESFORBIDDEN = '#system_messages:otherRestriction/nonFriendPrivateMessagesForbidden'
     RESOURCEWELL_RESOURCESLOADINGERROR = '#system_messages:resourceWell/resourcesLoadingError'
     RESOURCEWELL_RESOURCESRETURNERROR = '#system_messages:resourceWell/resourcesReturnError'
     UNIT_WARNINGS_EXPIRED_PLAY_LIMITS = '#system_messages:unit/warnings/EXPIRED_PLAY_LIMITS'
@@ -1734,6 +1743,7 @@ class SYSTEM_MESSAGES(object):
      CUSTOMIZATION_ADDED_PERSONALNUMBER_3,
      CUSTOMIZATION_ADDED_PERSONALNUMBER_2,
      CUSTOMIZATION_ADDED_PERSONALNUMBER_1,
+     CUSTOMIZATION_ADDED_ATTACHMENT,
      CUSTOMIZATION_ADDED_PAINTVALUE,
      CUSTOMIZATION_ADDED_CAMOUFLAGEVALUE,
      CUSTOMIZATION_ADDED_MODIFICATIONVALUE,
@@ -1745,6 +1755,7 @@ class SYSTEM_MESSAGES(object):
      CUSTOMIZATION_ADDED_PERSONALNUMBER_3VALUE,
      CUSTOMIZATION_ADDED_PERSONALNUMBER_2VALUE,
      CUSTOMIZATION_ADDED_PERSONALNUMBER_1VALUE,
+     CUSTOMIZATION_ADDED_ATTACHMENTVALUE,
      CUSTOMIZATION_REMOVED_PAINT,
      CUSTOMIZATION_REMOVED_CAMOUFLAGE,
      CUSTOMIZATION_REMOVED_MODIFICATION,
@@ -1756,6 +1767,7 @@ class SYSTEM_MESSAGES(object):
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_3,
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_2,
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_1,
+     CUSTOMIZATION_REMOVED_ATTACHMENT,
      CUSTOMIZATION_REMOVED_PAINTVALUE,
      CUSTOMIZATION_REMOVED_CAMOUFLAGEVALUE,
      CUSTOMIZATION_REMOVED_MODIFICATIONVALUE,
@@ -1767,6 +1779,7 @@ class SYSTEM_MESSAGES(object):
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_3VALUE,
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_2VALUE,
      CUSTOMIZATION_REMOVED_PERSONALNUMBER_1VALUE,
+     CUSTOMIZATION_REMOVED_ATTACHMENTVALUE,
      CUSTOMIZATION_PROGRESSION_UP_STYLE,
      CUSTOMIZATION_PROGRESSION_DOWN_STYLE,
      CUSTOMIZATION_CURRENCY_NOT_ENOUGH,
@@ -1781,6 +1794,7 @@ class SYSTEM_MESSAGES(object):
      TRAINING_ERROR_DOACTION,
      TRAINING_ERROR_SELECTOBSERVER,
      TRAINING_ERROR_ADDPLAYER,
+     TRAINING_ERROR_ONSLAUGHTROSTERLIMIT,
      BATTLESESSION_ERROR_ADDPLAYER,
      BATTLESESSION_ERROR_ADDOBSERVER,
      BATTLESESSION_ERROR_LIMITS,
@@ -2655,6 +2669,7 @@ class SYSTEM_MESSAGES(object):
      ROYALE_NOTIFICATION_PRIMETIME_TITLE,
      ROYALE_NOTIFICATION_CONGRATULATIONS,
      ROYALE_NOTIFICATIONS_SINGLELEVEL_TEXT,
+     MAPBOX_NOTIFICATION_PRIMETIME_TITLE,
      MAPBOX_NOTIFICATION_PRIMETIME,
      TOKENS_NOTIFICATION_MARK_ACQUIRED,
      RANKED_NOTIFICATION_YEARLB_POSITIVE_TITLE,
@@ -2750,8 +2765,6 @@ class SYSTEM_MESSAGES(object):
      BATTLEPASS_SWITCH_STARTED_TITLE,
      BATTLEPASS_SWITCH_STARTED_BODY,
      BATTLEPASS_SWITCH_PAUSE_BODY,
-     BATTLEPASS_SWITCH_DISABLE_TITLE,
-     BATTLEPASS_SWITCH_DISABLE_BODY,
      BATTLEPASS_SWITCH_ENABLED_BODY,
      BATTLEPASS_SWITCH_DISABLE_BATTLE_ROYALE_BODY,
      BATTLEPASS_SWITCH_ENABLED_RANKED_BODY,
@@ -2864,6 +2877,11 @@ class SYSTEM_MESSAGES(object):
      PARENTCONTROL_TITLE,
      PARENTCONTROL_MAINTEXT,
      PARENTCONTROL_LINKTEXT,
+     PARENTCONTROL_PRIVATEMESSAGESFORBIDDEN,
+     PARENTCONTROL_NONFRIENDPRIVATEMESSAGESFORBIDDEN,
+     COUNTRYRESTRICTION_PRIVATEMESSAGESFORBIDDEN,
+     OTHERRESTRICTION_PRIVATEMESSAGESFORBIDDEN,
+     OTHERRESTRICTION_NONFRIENDPRIVATEMESSAGESFORBIDDEN,
      RESOURCEWELL_RESOURCESLOADINGERROR,
      RESOURCEWELL_RESOURCESRETURNERROR,
      UNIT_WARNINGS_EXPIRED_PLAY_LIMITS,

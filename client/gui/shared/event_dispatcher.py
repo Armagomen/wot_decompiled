@@ -37,6 +37,7 @@ from gui.game_control.links import URLMacros
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.template_settings.default_dialog_template_settings import DisplayFlags
+from gui.impl.gen.view_models.views.lobby.comp7.enums import MetaRootViews
 from gui.impl.gen.view_models.views.lobby.vehicle_preview.top_panel.top_panel_tabs_model import TabID
 from gui.impl.lobby.account_completion.utils.decorators import waitShowOverlay
 from gui.impl.lobby.common.congrats.common_congrats_view import CongratsWindow
@@ -64,7 +65,7 @@ from items import ITEM_TYPES, parseIntCompactDescr, vehicles as vehicles_core
 from nations import NAMES
 from shared_utils import first
 from skeletons.gui.app_loader import IAppLoader
-from skeletons.gui.game_control import IBrowserController, IClanNotificationController, ICollectionsSystemController, IHeroTankController, IMarathonEventsController, IReferralProgramController, IResourceWellController, IBoostersController, IComp7Controller
+from skeletons.gui.game_control import IBrowserController, IClanNotificationController, ICollectionsSystemController, IHeroTankController, IMarathonEventsController, IReferralProgramController, IResourceWellController, IBoostersController, IComp7Controller, IHangarSpaceSwitchController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.impl import IGuiLoader, INotificationWindowController
 from skeletons.gui.lobby_context import ILobbyContext
@@ -647,14 +648,15 @@ def goToHeroTankOnScene(vehTypeCompDescr, previewAlias=VIEW_ALIAS.LOBBY_HANGAR, 
     return
 
 
-def showHeroTankPreview(vehTypeCompDescr, previewAlias=VIEW_ALIAS.LOBBY_HANGAR, previousBackAlias=None, previewBackCb=None, hangarVehicleCD=None):
+def showHeroTankPreview(vehTypeCompDescr, previewAlias=VIEW_ALIAS.LOBBY_HANGAR, previousBackAlias=None, previewBackCb=None, hangarVehicleCD=None, backOutfit=None):
     g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.HERO_VEHICLE_PREVIEW), ctx={'itemCD': vehTypeCompDescr,
      'previewAlias': previewAlias,
      'previewAppearance': HeroTankPreviewAppearance(),
      'isHeroTank': True,
      'previousBackAlias': previousBackAlias,
      'previewBackCb': previewBackCb,
-     'hangarVehicleCD': hangarVehicleCD}), scope=EVENT_BUS_SCOPE.LOBBY)
+     'hangarVehicleCD': hangarVehicleCD,
+     'backOutfit': backOutfit}), scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 def hideVehiclePreview(back=True, close=False):
@@ -946,6 +948,19 @@ def showExchangeXPDialogWindow(needXP=None, parent=None):
     return
 
 
+@wg_async
+def showVehiclesSidebarDialogWindow(parentScreen, parentWindow=None):
+    from gui.impl.lobby.customization.vehicles_sidebar.vehicles_sidebar_window import VehiclesSidebarView
+    from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogWindowWrapper
+    from gui.impl.dialogs import dialogs
+    layoutID = R.views.lobby.customization.vehicles_sidebar.VehiclesSidebar()
+    guiLoader = dependency.instance(IGuiLoader)
+    if guiLoader.windowsManager.getViewByLayoutID(layoutID) is None:
+        wrapper = FullScreenDialogWindowWrapper(VehiclesSidebarView(layoutID=layoutID, parentScreen=parentScreen), parent=parentWindow, layer=WindowLayer.FULLSCREEN_WINDOW, doBlur=False)
+        yield wg_await(dialogs.show(wrapper))
+    return
+
+
 def showBubbleTooltip(msg):
     g_eventBus.handleEvent(events.BubbleTooltipEvent(events.BubbleTooltipEvent.SHOW, msg), scope=EVENT_BUS_SCOPE.LOBBY)
 
@@ -975,7 +990,7 @@ def showTankPremiumAboutPage():
 
 
 @adisp.adisp_process
-def showBrowserOverlayView(url, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, params=None, callbackOnLoad=None, webHandlers=None, forcedSkipEscape=False, browserParams=None, hiddenLayers=None, parent=None):
+def showBrowserOverlayView(url, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, params=None, callbackOnLoad=None, webHandlers=None, forcedSkipEscape=False, browserParams=None, hiddenLayers=None, parent=None, callbackOnClose=None):
     if url:
         if browserParams is None:
             browserParams = {}
@@ -986,7 +1001,8 @@ def showBrowserOverlayView(url, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB, params=N
          'webHandlers': webHandlers,
          'forcedSkipEscape': forcedSkipEscape,
          'browserParams': browserParams,
-         'hiddenLayers': hiddenLayers or ()}), EVENT_BUS_SCOPE.LOBBY)
+         'hiddenLayers': hiddenLayers or (),
+         'callbackOnClose': callbackOnClose}), EVENT_BUS_SCOPE.LOBBY)
     return
 
 
@@ -1190,66 +1206,6 @@ def showDynamicButtonInfoDialogBuilder(resources, icon, formattedMessage, parent
     builder.setFormattedMessage(formattedMessage)
     result = yield wg_await(dialogs.showSimple(builder.build(parent)))
     raise AsyncReturn(result)
-
-
-@wg_async
-def tryToShowReplaceExistingStyleDialog(parent=None):
-    from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
-    from gui.impl.dialogs import dialogs
-    from gui.impl.dialogs.builders import WarningDialogBuilder
-    from gui.impl.wrappers.user_format_string_arg_model import UserFormatStringArgModel
-    from gui.impl.pub.dialog_window import DialogButtons
-    from gui.shared.gui_items import GUI_ITEM_TYPE
-    from skeletons.account_helpers.settings_core import ISettingsCore
-    from skeletons.gui.customization import ICustomizationService
-    from items.components.c11n_constants import EDITABLE_STYLE_STORAGE_DEPTH
-    from CurrentVehicle import g_currentVehicle
-    from items.customizations import isEditedStyle
-    from items.components.c11n_constants import SeasonType
-    from gui.Scaleform.daapi.view.lobby.customization.shared import fitOutfit, getCurrentVehicleAvailableRegionsMap, getEditableStyleOutfitDiffComponent
-    service = dependency.instance(ICustomizationService)
-    settingsCore = dependency.instance(ISettingsCore)
-    serverSettings = settingsCore.serverSettings
-    if serverSettings.getUIStorage().get(UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING):
-        raise AsyncReturn(True)
-    context = service.getCtx()
-    currentStyle = context.mode.currentOutfit.style
-    if currentStyle is None:
-        raise AsyncReturn(True)
-    if not currentStyle.isEditable:
-        raise AsyncReturn(True)
-    vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
-    baseStyle = service.getItemByID(GUI_ITEM_TYPE.STYLE, currentStyle.id)
-    availableRegionsMap = getCurrentVehicleAvailableRegionsMap()
-    for season in SeasonType.COMMON_SEASONS:
-        outfit = context.mode.getModifiedOutfit(season)
-        baseOutfit = baseStyle.getOutfit(season, vehicleCD=vehicleCD)
-        fitOutfit(baseOutfit, availableRegionsMap)
-        diff = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
-        if isEditedStyle(diff):
-            break
-    else:
-        raise AsyncReturn(True)
-
-    storedStyleDiffs = service.getStoredStyleDiffs()
-    for diff in storedStyleDiffs:
-        if currentStyle.id == diff[0]:
-            raise AsyncReturn(True)
-
-    if len(storedStyleDiffs) < EDITABLE_STYLE_STORAGE_DEPTH:
-        raise AsyncReturn(True)
-    newStyleName = currentStyle.userString
-    styleToReplaceName = service.getItemByID(GUI_ITEM_TYPE.STYLE, storedStyleDiffs[-1][0]).userName
-    context.mode.unselectSlot()
-    builder = WarningDialogBuilder()
-    builder.setTitleArgs([newStyleName])
-    builder.setMessageArgs(fmtArgs=[UserFormatStringArgModel(backport.text(R.strings.dialogs.editableStyles.confirmReset.formattedPartOfMessageStyle()), 'style', R.styles.AlertBigTextStyle()), UserFormatStringArgModel(styleToReplaceName, 'formatted_message', None), UserFormatStringArgModel(backport.text(R.strings.dialogs.editableStyles.confirmReset.formattedPartOfMessage()), 'reset', R.styles.AlertBigTextStyle())])
-    builder.setMessagesAndButtons(R.strings.dialogs.editableStyles.confirmReset, focused=DialogButtons.CANCEL)
-    result, dontShowAgain = yield wg_await(dialogs.showSimpleWithResultData(builder.build(parent=parent)))
-    if result and dontShowAgain:
-        serverSettings.saveInUIStorage({UI_STORAGE_KEYS.DISABLE_EDITABLE_STYLE_REWRITE_WARNING: True})
-    raise AsyncReturn(result)
-    return
 
 
 @wg_async
@@ -1524,10 +1480,10 @@ def showFrontlineAwards(bonuses, onCloseCallback=None, onAnimationEndedCallback=
 
 
 @wg_async
-def showFrontlineConfirmDialog(skillIds, vehicleType='', applyForAllOfType=False, isBuy=True):
+def showFrontlineConfirmDialog(skillsInteractor, vehicleType='', isBuy=True):
     from frontline.gui.impl.lobby.dialogs.reserves_confirm_dialog import ReservesConfirmDialog
     from gui.impl.dialogs import dialogs
-    result = yield wg_await(dialogs.showSingleDialogWithResultData(wrappedViewClass=ReservesConfirmDialog, layoutID=ReservesConfirmDialog.LAYOUT_ID, skillIds=skillIds, vehicleType=vehicleType, applyForAllOfType=applyForAllOfType, isBuy=isBuy))
+    result = yield wg_await(dialogs.showSingleDialogWithResultData(wrappedViewClass=ReservesConfirmDialog, layoutID=ReservesConfirmDialog.LAYOUT_ID, skillsInteractor=skillsInteractor, vehicleType=vehicleType, isBuy=isBuy))
     raise AsyncReturn(result)
 
 
@@ -1689,12 +1645,6 @@ def showMapboxAward(numBattles, rewards):
     from gui.impl.lobby.mapbox.map_box_awards_view import MapBoxAwardsViewWindow
     if not MapBoxAwardsViewWindow.getInstances():
         MapBoxAwardsViewWindow(numBattles, rewards).load()
-
-
-def showMapboxRewardChoice(selectableCrewbook):
-    from gui.impl.lobby.mapbox.mapbox_reward_choice_view import MapboxRewardChoiceWindow
-    if not MapboxRewardChoiceWindow.getInstances():
-        MapboxRewardChoiceWindow(selectableCrewbook).load()
 
 
 @waitShowOverlay
@@ -2106,17 +2056,16 @@ def showComp7MetaRootView(tabId=None, *args, **kwargs):
     return
 
 
-@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
-def showComp7NoVehiclesScreen(notificationMgr=None):
-    from gui.impl.lobby.comp7.no_vehicles_screen import NoVehiclesScreenWindow
-    if not NoVehiclesScreenWindow.getInstances():
-        notificationMgr.append(WindowNotificationCommand(NoVehiclesScreenWindow()))
+def showComp7NoVehiclesScreen():
+    from gui.impl.lobby.comp7.no_vehicles_screen import NoVehiclesScreen
+    event = events.LoadGuiImplViewEvent(GuiImplViewLoadParams(R.views.lobby.comp7.NoVehiclesScreen(), NoVehiclesScreen, ScopeTemplates.LOBBY_SUB_SCOPE))
+    g_eventBus.handleEvent(event, scope=EVENT_BUS_SCOPE.LOBBY)
 
 
-@dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
-def showComp7IntroScreen(notificationMgr=None):
-    from gui.impl.lobby.comp7.intro_screen import IntroScreenWindow
-    notificationMgr.append(WindowNotificationCommand(IntroScreenWindow()))
+def showComp7IntroScreen():
+    from gui.impl.lobby.comp7.intro_screen import IntroScreen
+    event = events.LoadGuiImplViewEvent(GuiImplViewLoadParams(R.views.lobby.comp7.IntroScreen(), IntroScreen, ScopeTemplates.LOBBY_SUB_SCOPE))
+    g_eventBus.handleEvent(event, scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 @dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
@@ -2154,8 +2103,20 @@ def showComp7YearlyRewardsScreen(bonuses, showSeasonResults=True, notificationMg
 
 
 def showComp7YearlyRewardsSelectionWindow():
-    from gui.impl.lobby.comp7.yearly_rewards_selection_screen import YearlyRewardsSelectionWindow
-    window = YearlyRewardsSelectionWindow()
+    from gui.impl.lobby.comp7.rewards_selection_screen import Comp7RewardsSelectionWindow, Comp7SelectableRewardType
+    window = Comp7RewardsSelectionWindow(Comp7SelectableRewardType.YEARLY)
+    window.load()
+
+
+def showComp7WeeklyQuestsRewardsSelectionWindow():
+    from gui.impl.lobby.comp7.rewards_selection_screen import Comp7RewardsSelectionWindow, Comp7SelectableRewardType
+    window = Comp7RewardsSelectionWindow(Comp7SelectableRewardType.WEEKLY_QUESTS)
+    window.load()
+
+
+def showComp7AllRewardsSelectionWindow():
+    from gui.impl.lobby.comp7.rewards_selection_screen import Comp7RewardsSelectionWindow
+    window = Comp7RewardsSelectionWindow()
     window.load()
 
 
@@ -2363,3 +2324,26 @@ def showExchangeFreeXPWindow(ctx=None, doBlur=True):
     if guiLoader.windowsManager.getViewByLayoutID(layoutID) is None:
         yield dialogs.showSimple(FullScreenDialogWindowWrapper(ExchangeFreeXPView(layoutID=layoutID, ctx=ctx), doBlur=False, layer=WindowLayer.FULLSCREEN_WINDOW))
     return
+
+
+@dependency.replace_none_kwargs(comp7Ctrl=IComp7Controller, spaceSwitchController=IHangarSpaceSwitchController)
+def showComp7ShopPage(selectComp7Hangar=None, comp7Ctrl=None, spaceSwitchController=None):
+    if not comp7Ctrl.isComp7PrbActive():
+        spaceSwitchController.onSpaceUpdated += checkSpaceAndShowShop
+        selectComp7Hangar()
+        return
+    showComp7MetaRootView(tabId=MetaRootViews.SHOP)
+
+
+@dependency.replace_none_kwargs(comp7Ctrl=IComp7Controller, spaceSwitchController=IHangarSpaceSwitchController)
+def checkSpaceAndShowShop(comp7Ctrl, spaceSwitchController):
+    if not comp7Ctrl.isComp7PrbActive():
+        return
+    spaceSwitchController.onSpaceUpdated -= checkSpaceAndShowShop
+    showComp7MetaRootView(tabId=MetaRootViews.SHOP)
+
+
+def showCustomizationRarityAwardScreen(element, isFirstEntry):
+    from gui.impl.lobby.customization.customization_rarity_reward_screen.customization_rarity_reward_screen import CustomizationRarityRewardWindow
+    window = CustomizationRarityRewardWindow(element, isFirstEntry)
+    window.load()

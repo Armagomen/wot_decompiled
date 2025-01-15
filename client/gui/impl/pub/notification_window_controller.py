@@ -42,6 +42,10 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
     def postponedCount(self):
         return len(self.__postponedQueue)
 
+    @property
+    def activeQueueLength(self):
+        return len(self.__activeQueue)
+
     def init(self):
         self.__gui.windowsManager.onWindowStatusChanged += self.__onWindowStatusChanged
         g_eventBus.addListener(LobbySimpleEvent.WAITING_SHOWN, self.__showWaiting, EVENT_BUS_SCOPE.LOBBY)
@@ -129,7 +133,7 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
                 self.__processNext()
             self.__notifyWithPostponedQueueCount()
         else:
-            _logger.error('Queue is currently disabled.')
+            _logger.info('Notifications queue is currently disabled.')
 
     def postponeActive(self):
         _logger.debug('Postpone the active queue.')

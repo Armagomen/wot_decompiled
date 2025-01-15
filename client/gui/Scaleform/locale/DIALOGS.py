@@ -240,6 +240,7 @@ class DIALOGS(object):
     BUYVEHICLEWINDOW_TRADEIN_WARNING = '#dialogs:buyVehicleWindow/tradein/warning'
     BUYVEHICLEWINDOW_FREERENTSLOT = '#dialogs:buyVehicleWindow/freeRentSlot'
     BUYVEHICLEWINDOW_FULLAMMO = '#dialogs:buyVehicleWindow/fullAmmo'
+    BUYVEHICLEWINDOW_NOTEMPTYAMMO = '#dialogs:buyVehicleWindow/notEmptyAmmo'
     BUYVEHICLEWINDOW_TANKMENCHECKBOX = '#dialogs:buyVehicleWindow/tankmenCheckbox'
     BUYVEHICLEWINDOW_TRADEIN_TANKMENCHECKBOX = '#dialogs:buyVehicleWindow/tradein/tankmenCheckbox'
     BUYVEHICLEWINDOW_TANKMENLABEL = '#dialogs:buyVehicleWindow/tankmenLabel'
@@ -876,13 +877,6 @@ class DIALOGS(object):
     SESSIONSTATS_CONFIRMRESET_TIME = '#dialogs:sessionStats/confirmReset/time'
     SESSIONSTATS_CONFIRMRESET_SUBMIT = '#dialogs:sessionStats/confirmReset/submit'
     SESSIONSTATS_CONFIRMRESET_CANCEL = '#dialogs:sessionStats/confirmReset/cancel'
-    EDITABLESTYLES_CONFIRMRESET_TITLE = '#dialogs:editableStyles/confirmReset/title'
-    EDITABLESTYLES_CONFIRMRESET_MESSAGE = '#dialogs:editableStyles/confirmReset/message'
-    EDITABLESTYLES_CONFIRMRESET_FORMATTEDPARTOFMESSAGESTYLE = '#dialogs:editableStyles/confirmReset/formattedPartOfMessageStyle'
-    EDITABLESTYLES_CONFIRMRESET_FORMATTEDPARTOFMESSAGE = '#dialogs:editableStyles/confirmReset/formattedPartOfMessage'
-    EDITABLESTYLES_CONFIRMRESET_CHECKBOXLABEL = '#dialogs:editableStyles/confirmReset/checkboxLabel'
-    EDITABLESTYLES_CONFIRMRESET_SUBMIT = '#dialogs:editableStyles/confirmReset/submit'
-    EDITABLESTYLES_CONFIRMRESET_CANCEL = '#dialogs:editableStyles/confirmReset/cancel'
     CONFIRMEQUIPMENTBUYINSTALL_SUBMIT = '#dialogs:confirmEquipmentBuyInstall/submit'
     EQUIPMENTPURCASE_CONFORMATION_ALL = '#dialogs:equipmentPurcase/conformation/all'
     EQUIPMENTBUYINSTALL_PRICE = '#dialogs:equipmentBuyInstall/price'
@@ -1025,12 +1019,6 @@ class DIALOGS(object):
     RETRAIN_DISCOUNTTOOLTIP_BODY = '#dialogs:retrain/discountTooltip/body'
     RECRUIT_TITLE = '#dialogs:recruit/title'
     RECRUIT_WARNING_PREMIUMVEHICLE = '#dialogs:recruit/warning/premiumVehicle'
-    RECRUIT_PRICECARD_FREE_TITLE = '#dialogs:recruit/priceCard/free/title'
-    RECRUIT_PRICECARD_CREDITS_TITLE = '#dialogs:recruit/priceCard/credits/title'
-    RECRUIT_PRICECARD_GOLD_TITLE = '#dialogs:recruit/priceCard/gold/title'
-    RECRUIT_PRICECARD_FREE_DESCRIPTION = '#dialogs:recruit/priceCard/free/description'
-    RECRUIT_PRICECARD_CREDITS_DESCRIPTION = '#dialogs:recruit/priceCard/credits/description'
-    RECRUIT_PRICECARD_GOLD_DESCRIPTION = '#dialogs:recruit/priceCard/gold/description'
     RECRUIT_SUBMIT = '#dialogs:recruit/submit'
     RECRUIT_CANCEL = '#dialogs:recruit/cancel'
     RECRUIT_VOICEOVERTEXT = '#dialogs:recruit/voiceoverText'
@@ -1309,6 +1297,7 @@ class DIALOGS(object):
      BUYVEHICLEWINDOW_TRADEIN_WARNING,
      BUYVEHICLEWINDOW_FREERENTSLOT,
      BUYVEHICLEWINDOW_FULLAMMO,
+     BUYVEHICLEWINDOW_NOTEMPTYAMMO,
      BUYVEHICLEWINDOW_TANKMENCHECKBOX,
      BUYVEHICLEWINDOW_TRADEIN_TANKMENCHECKBOX,
      BUYVEHICLEWINDOW_TANKMENLABEL,
@@ -1945,13 +1934,6 @@ class DIALOGS(object):
      SESSIONSTATS_CONFIRMRESET_TIME,
      SESSIONSTATS_CONFIRMRESET_SUBMIT,
      SESSIONSTATS_CONFIRMRESET_CANCEL,
-     EDITABLESTYLES_CONFIRMRESET_TITLE,
-     EDITABLESTYLES_CONFIRMRESET_MESSAGE,
-     EDITABLESTYLES_CONFIRMRESET_FORMATTEDPARTOFMESSAGESTYLE,
-     EDITABLESTYLES_CONFIRMRESET_FORMATTEDPARTOFMESSAGE,
-     EDITABLESTYLES_CONFIRMRESET_CHECKBOXLABEL,
-     EDITABLESTYLES_CONFIRMRESET_SUBMIT,
-     EDITABLESTYLES_CONFIRMRESET_CANCEL,
      CONFIRMEQUIPMENTBUYINSTALL_SUBMIT,
      EQUIPMENTPURCASE_CONFORMATION_ALL,
      EQUIPMENTBUYINSTALL_PRICE,
@@ -2094,12 +2076,6 @@ class DIALOGS(object):
      RETRAIN_DISCOUNTTOOLTIP_BODY,
      RECRUIT_TITLE,
      RECRUIT_WARNING_PREMIUMVEHICLE,
-     RECRUIT_PRICECARD_FREE_TITLE,
-     RECRUIT_PRICECARD_CREDITS_TITLE,
-     RECRUIT_PRICECARD_GOLD_TITLE,
-     RECRUIT_PRICECARD_FREE_DESCRIPTION,
-     RECRUIT_PRICECARD_CREDITS_DESCRIPTION,
-     RECRUIT_PRICECARD_GOLD_DESCRIPTION,
      RECRUIT_SUBMIT,
      RECRUIT_CANCEL,
      RECRUIT_VOICEOVERTEXT,

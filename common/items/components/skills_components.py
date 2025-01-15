@@ -107,7 +107,7 @@ class BasicSkill(legacy_stuff.LegacyStuff):
 
     @property
     def situational(self):
-        return self.uiSettings.typeName is SkillTypeName.SITUATIONAL if self.uiSettings else False
+        return self.uiSettings.typeName == SkillTypeName.SITUATIONAL if self.uiSettings else False
 
     @property
     def typeName(self):
@@ -189,7 +189,7 @@ class DriverSmoothDrivingSkill(ExtendedSkill):
         return self._setOfParameters[0]
 
 
-class GunnerGunsmithSkill(ExtendedSkill):
+class GunnerArmorerSkill(ExtendedSkill):
     __slots__ = ()
 
     @property
@@ -229,8 +229,7 @@ class SkillsConfig(legacy_stuff.LegacyStuff):
     __slots__ = skills_constants.ROLES | skills_constants.ACTIVE_SKILLS | {'vsePerkToSkill'}
 
     def __init__(self):
-        self.vsePerkToSkill = {StubPerkIDs.COMMANDER_TUTOR: 'commander_tutor',
-         StubPerkIDs.RADIOMAN_LAST_EFFORT: 'radioman_lastEffort'}
+        self.vsePerkToSkill = {StubPerkIDs.COMMANDER_TUTOR: 'commander_tutor'}
 
     @staticmethod
     def getNumberOfActiveSkills():

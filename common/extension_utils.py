@@ -3,7 +3,7 @@
 import importlib
 from soft_exception import SoftException
 from ExtensionsManager import g_extensionsManager
-from constants import IS_CLIENT, IS_EDITOR
+from constants import IS_CLIENT, IS_EDITOR, IS_BOT
 from debug_utils import LOG_CURRENT_EXCEPTION
 from extension_rules import isExtXML, READ_METHOD
 if IS_CLIENT or IS_EDITOR:
@@ -73,7 +73,7 @@ class _MergeExtensionFile(object):
             return rmgr.openSection(xmlPath)
         if rmgr.isFile(xmlPath):
             xmlPaths = [xmlPath] + xmlPaths
-        elif len(xmlPaths) > 1 and mergeType != READ_METHOD.INCLUDE:
+        elif len(xmlPaths) > 1 and mergeType not in (READ_METHOD.INCLUDE, READ_METHOD.INCLUDE_BY_PATH):
             raise SoftException('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!'.format(t=mergeType, f=xmlPath))
         if len(xmlPaths) == 1:
             return rmgr.openSection(xmlPaths[0])
@@ -116,11 +116,11 @@ class ResMgr(object):
     class __metaclass__(type):
 
         def __getattr__(self, item):
-            return getattr(rmgr, item) if IS_CLIENT or IS_EDITOR else getattr(self if item in ('openSection', 'addToCache') else rmgr, item)
+            return getattr(rmgr, item) if IS_CLIENT or IS_EDITOR or IS_BOT else getattr(self if item in ('openSection', 'addToCache') else rmgr, item)
 
     @classmethod
     def openSection(cls, filepath, createIfMissing=False):
-        if (IS_CLIENT or IS_EDITOR) and getattr(rmgr, 'IS_PY_SCRIPT', True):
+        if (IS_CLIENT or IS_EDITOR or IS_BOT) and getattr(rmgr, 'IS_PY_SCRIPT', True):
             return rmgr.openSection(filepath, createIfMissing)
         if cls.isInCache(filepath):
             return rmgr.openSection(filepath, createIfMissing)
@@ -138,7 +138,7 @@ class ResMgr(object):
         mergeRequired, mergeType, _ = isExtXML(ftPath)
         if len(xmlPaths) > 1 and not mergeRequired:
             raise SoftException('Multiple standalone resources for one relative path found: %s', ftPath)
-        if len(xmlPaths) > 1 and not corePath and mergeType != READ_METHOD.INCLUDE:
+        if len(xmlPaths) > 1 and not corePath and mergeType not in (READ_METHOD.INCLUDE, READ_METHOD.INCLUDE_BY_PATH):
             raise SoftException('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!'.format(t=mergeType, f=ftPath))
         cachedPath = next(iter(xmlPaths))
         return rmgr.addToCache(cachedPath, xml)

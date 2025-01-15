@@ -1211,7 +1211,7 @@ def _migrateTo120(core, data, initialized):
     battlesCount = itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
     data['gameExtData2'][GAME.NEWBIE_PREBATTLE_HINTS] = not disabled and battlesCount <= gui.prebattle_hints.newbie_controller.IS_NEWBIE_MAX_BATTLES
     data['gameExtData2'][GAME.NEWBIE_BATTLE_HINTS] = not disabled and battlesCount <= BH_NEWBIE_MAX_BATTLES
-    newbieGroup = itemsCache.items.stats.newbieHintsGroup
+    newbieGroup = itemsCache.items.stats.getABGroup(feature='newbieHints')
     abConfig = lobbyContext.getServerSettings().abFeatureTestConfig
     if not disabled and newbieGroup and hasattr(abConfig, 'newbieHints'):
         properties = abConfig.newbieHints.get(newbieGroup)['properties']
@@ -1296,6 +1296,15 @@ def _migrateTo131(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
     data[GUI_START_BEHAVIOR][GuiSettingsBehavior.CREW_NPS_INTRO_SHOWN] = False
     data[GUI_START_BEHAVIOR][GuiSettingsBehavior.CREW_NPS_WELCOME_SHOWN] = False
+
+
+def _migrateTo132(core, data, initialized):
+    pass
+
+
+def _migrateTo133(core, data, initialized):
+    from account_helpers.settings_core.ServerSettingsManager import GUI_START_BEHAVIOR
+    data[GUI_START_BEHAVIOR][GuiSettingsBehavior.COMP7_SEASON_STATISTICS_SHOWN] = False
 
 
 _versions = ((1,
@@ -1816,6 +1825,14 @@ _versions = ((1,
   False),
  (131,
   _migrateTo131,
+  False,
+  False),
+ (132,
+  _migrateTo132,
+  False,
+  False),
+ (133,
+  _migrateTo133,
   False,
   False))
 

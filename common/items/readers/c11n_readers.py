@@ -3,6 +3,7 @@
 import os
 import Math
 from string import lower, upper
+from copy import deepcopy
 import re
 import items._xml as ix
 import items.components.c11n_components as cc
@@ -74,6 +75,8 @@ class BaseCustomizationItemXmlReader(object):
             target.maxNumber = ix.readPositiveInt(xmlCtx, section, 'maxNumber')
             if target.maxNumber <= 0:
                 ix.raiseWrongXml(xmlCtx, 'maxNumber', 'should not be less then 1')
+        if section.has_key('rarity'):
+            target.rarity = ix.readStringOrEmpty(xmlCtx, section, 'rarity')
         if IS_CLIENT or IS_EDITOR or IS_WEB or IS_LOAD_GLOSSARY:
             self._readClientOnlyFromXml(target, xmlCtx, section, cache)
 
@@ -81,7 +84,7 @@ class BaseCustomizationItemXmlReader(object):
         if IS_EDITOR:
             target.i18n = I18nExposedComponentMeta(section.readString('name'), section.readString('userString'), section.readString('description'), section.readString('longDescriptionSpecial'))
         else:
-            target.i18n = shared_components.I18nExposedComponent(section.readString('userString'), section.readString('description'), section.readString('longDescriptionSpecial'))
+            target.i18n = shared_components.I18nExposedComponent(section.readString('userString'), section.readString('description'), section.readString('longDescriptionSpecial'), section.readString('name'))
 
     @staticmethod
     def readVehicleFilterFromXml(xmlCtx, section):
@@ -98,7 +101,7 @@ class BaseCustomizationItemXmlReader(object):
 
     @staticmethod
     def __readFilterNodeFromXml(xmlCtx, section):
-        fn = cc.VehicleFilter.FilterNode()
+        fn = cc.VehicleFilterNode()
         strNations = ix.readStringOrNone(xmlCtx, section, 'nations')
         if strNations:
             r = []
@@ -163,6 +166,7 @@ class DecalXmlReader(BaseCustomizationItemXmlReader):
             target.texture = section.readString('texture')
         if section.has_key('mirror'):
             target.canBeMirrored = ix.readBool(xmlCtx, section, 'mirror')
+        readEmissionParams(target, xmlCtx, section)
 
 
 class ProjectionDecalXmlReader(BaseCustomizationItemXmlReader):
@@ -186,6 +190,7 @@ class ProjectionDecalXmlReader(BaseCustomizationItemXmlReader):
             target.glossTexture = section.readString('glossTexture')
         if section.has_key('scaleFactorId'):
             target.scaleFactorId = section.readInt('scaleFactorId')
+        readEmissionParams(target, xmlCtx, section)
 
 
 class PersonalNumberXmlReader(BaseCustomizationItemXmlReader):
@@ -225,15 +230,16 @@ class AttachmentXmlReader(BaseCustomizationItemXmlReader):
 
     def _readFromXml(self, target, xmlCtx, section, cache=None):
         super(AttachmentXmlReader, self)._readFromXml(target, xmlCtx, section)
-        target.modelName = ix.readStringOrNone(xmlCtx, section, 'modelName')
+        target.applyType = ix.readStringOrEmpty(xmlCtx, section, 'applyType')
+        target.size = ix.readStringOrEmpty(xmlCtx, section, 'size')
 
     def _readClientOnlyFromXml(self, target, xmlCtx, section, cache=None):
         super(AttachmentXmlReader, self)._readClientOnlyFromXml(target, xmlCtx, section)
-        target.modelName = ix.readStringOrNone(xmlCtx, section, 'modelName')
-        target.hangarModelName = ix.readStringOrNone(xmlCtx, section, 'hangarModelName')
-        target.sequenceId = ix.readIntOrNone(xmlCtx, section, 'sequenceId')
-        target.attachmentLogic = ix.readStringOrNone(xmlCtx, section, 'attachmentLogic')
-        target.initialVisibility = ix.readBool(xmlCtx, section, 'initialVisibility', True)
+        target.modelName = ix.readStringOrEmpty(xmlCtx, section, 'modelName')
+        target.hangarModelName = ix.readStringOrEmpty(xmlCtx, section, 'hangarModelName')
+        target.crashModelName = ix.readStringOrEmpty(xmlCtx, section, 'crashModelName')
+        target.sequenceId = ix.readNonNegativeInt(xmlCtx, section, 'sequenceId', 0)
+        target.attachmentLogic = ix.readStringOrEmpty(xmlCtx, section, 'attachmentLogic')
         if IS_EDITOR:
             target.name = ix.readStringOrNone(xmlCtx, section, 'name')
 
@@ -313,6 +319,7 @@ class CamouflageXmlReader(BaseCustomizationItemXmlReader):
             target.rotation = {'hull': rotation.readFloat('HULL', 0.0),
              'turret': rotation.readFloat('TURRET', 0.0),
              'gun': rotation.readFloat('GUN', 0.0)}
+        readEmissionParams(target, xmlCtx, section)
 
     @staticmethod
     def getDefaultNationId(target):
@@ -414,7 +421,7 @@ class StyleXmlReader(BaseCustomizationItemXmlReader):
 
     @staticmethod
     def __readItemFilterNodeFromXml(itemType, xmlCtx, section):
-        fn = cc.ItemsFilter.FilterNode()
+        fn = cc.ItemsFilterNode()
         if section.has_key('id'):
             fn.ids = ix.readTupleOfPositiveInts(xmlCtx, section, 'id')
         if section.has_key('itemGroupName'):
@@ -908,6 +915,22 @@ def readEnum(xmlCtx, section, subsectionName, enumClass, defaultValue=None):
         if valueInt is None:
             ix.raiseWrongXml(xmlCtx, subsectionName, 'Invalid enum value %s in class %s' % (value, enumClass))
         return valueInt
+
+
+def readEmissionParams(target, xmlCtx, section):
+    if section.has_key('emission'):
+        emissionSection = ix.getSubsection(xmlCtx, section, 'emission')
+        if target.emissionParams is not None:
+            target.emissionParams = deepcopy(target.emissionParams)
+        else:
+            target.emissionParams = cc.EmissionParams()
+        if emissionSection.has_key('emission_texture'):
+            target.emissionParams.emissionTexture = emissionSection.readString('emission_texture')
+        if emissionSection.has_key('emission_deferred_power'):
+            target.emissionParams.emissionDeferredPower = emissionSection.readFloat('emission_deferred_power')
+        if emissionSection.has_key('emission_forward_power'):
+            target.emissionParams.emissionForwardPower = emissionSection.readFloat('emission_forward_power')
+    return
 
 
 __xmlReaders = {cc.PaintItem: PaintXmlReader(),

@@ -255,8 +255,9 @@ def showMission(eventID, eventType=None):
         return
     elif isC11nQuest(eventID):
         service = dependency.instance(ICustomizationService)
+        style = service.getStyleItemByQuestID(eventID)
         from gui.customization.constants import CustomizationModes
-        service.showCustomization(modeId=CustomizationModes.STYLED)
+        service.showCustomization(modeId=CustomizationModes.STYLE_3D if style and style.is3D else CustomizationModes.STYLE_2D)
         return
     else:
         eventsCache = dependency.instance(IEventsCache)
@@ -482,9 +483,3 @@ def showComp7BanWindow(arenaTypeID, time, duration, penalty, isQualification, no
         wnd.load()
     else:
         notificationMgr.append(WindowNotificationCommand(wnd))
-
-
-def showComp7YearlyRewardsSelectionWindow():
-    from gui.impl.lobby.comp7.yearly_rewards_selection_screen import YearlyRewardsSelectionWindow
-    window = YearlyRewardsSelectionWindow()
-    window.load()

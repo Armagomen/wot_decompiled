@@ -30,6 +30,7 @@ from gui.prb_control.settings import PREBATTLE_RESTRICTION, FUNCTIONAL_FLAG
 from gui.prb_control.settings import UNIT_NOTIFICATION_TO_DISPLAY
 from gui.prb_control.settings import REQUEST_TYPE as _RQ_TYPE
 from gui.prb_control.storages import PrbStorageDecorator
+from gui.impl.common.fade_manager import dispatcherFadeWrapper
 from gui.shared import actions, events, g_eventBus
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.utils.listeners_collection import ListenersCollection
@@ -104,7 +105,7 @@ class _PreBattleDispatcher(ListenersCollection):
 
     @adisp_async
     @adisp_process
-    def create(self, ctx, callback=None):
+    def create(self, ctx, callback=None, fadeCtx=None):
         if ctx.getRequestType() != _RQ_TYPE.CREATE:
             LOG_ERROR('Invalid context to create prebattle/unit', ctx)
             if callback is not None:
@@ -131,7 +132,7 @@ class _PreBattleDispatcher(ListenersCollection):
                 if callback is not None:
                     callback(False)
                 return
-            result = yield self.unlock(ctx)
+            result = yield self.unlock(ctx, fadeCtx=fadeCtx)
             if not result:
                 if callback is not None:
                     callback(False)
@@ -139,12 +140,12 @@ class _PreBattleDispatcher(ListenersCollection):
             ctx.setForced(True)
             LOG_DEBUG('Request to create', ctx)
             self.__requestCtx = ctx
-            entry.create(ctx, callback=callback)
+            dispatcherFadeWrapper(entry.create, fadeCtx, ctx, callback=callback)
             return
 
     @adisp_async
     @adisp_process
-    def join(self, ctx, callback=None):
+    def join(self, ctx, callback=None, fadeCtx=None):
         if ctx.getRequestType() != _RQ_TYPE.JOIN:
             LOG_ERROR('Invalid context to join prebattle/unit', ctx)
             if callback is not None:
@@ -166,7 +167,7 @@ class _PreBattleDispatcher(ListenersCollection):
                 if callback is not None:
                     callback(False)
                 return
-            result = yield self.unlock(ctx)
+            result = yield self.unlock(ctx, fadeCtx=fadeCtx)
             if not result:
                 if callback is not None:
                     callback(False)
@@ -174,11 +175,11 @@ class _PreBattleDispatcher(ListenersCollection):
             ctx.setForced(True)
             LOG_DEBUG('Request to join', ctx)
             self.__requestCtx = ctx
-            entry.join(ctx, callback=callback)
+            dispatcherFadeWrapper(entry.join, fadeCtx, ctx, callback=callback)
             return
 
     @adisp_async
-    def leave(self, ctx, callback=None, ignoreConfirmation=False, parent=None):
+    def leave(self, ctx, callback=None, ignoreConfirmation=False, parent=None, fadeCtx=None):
         if ctx.getRequestType() != _RQ_TYPE.LEAVE:
             LOG_ERROR('Invalid context to leave prebattle/unit', ctx)
             if callback is not None:
@@ -194,21 +195,21 @@ class _PreBattleDispatcher(ListenersCollection):
             if not ignoreConfirmation:
                 meta = entity.getConfirmDialogMeta(ctx)
                 if meta:
-                    entity.showDialog(meta, lambda result: self.__leaveCallback(result, ctx, callback), parent=parent)
+                    entity.showDialog(meta, lambda result: self.__leaveCallback(result, ctx, fadeCtx, callback), parent=parent)
                     return
-            self.__leaveLogic(ctx, callback)
+            self.__leaveLogic(ctx, fadeCtx, callback)
             return
 
-    def __leaveCallback(self, result, ctx, callback=None):
+    def __leaveCallback(self, result, ctx, fadeCtx, callback=None):
         if not result:
             if callback is not None:
                 callback(False)
             return
         else:
-            self.__leaveLogic(ctx, callback)
+            self.__leaveLogic(ctx, fadeCtx, callback)
             return
 
-    def __leaveLogic(self, ctx, callback):
+    def __leaveLogic(self, ctx, fadeCtx, callback):
         entity = self.__entity
         if not entity.isActive():
             if callback is not None:
@@ -224,12 +225,12 @@ class _PreBattleDispatcher(ListenersCollection):
                 return
             LOG_DEBUG('Request to leave formation', ctx)
             self.__requestCtx = ctx
-            entity.leave(ctx, callback=callback)
+            dispatcherFadeWrapper(entity.leave, fadeCtx, ctx, callback=callback)
             return
 
     @adisp_async
     @adisp_process
-    def unlock(self, unlockCtx, callback=None):
+    def unlock(self, unlockCtx, callback=None, fadeCtx=None):
         if isinstance(self.__entity, NotSupportedEntity):
             if callback is not None:
                 callback(True)
@@ -244,14 +245,14 @@ class _PreBattleDispatcher(ListenersCollection):
                     callback(True)
                 return
             ctx = factory.createLeaveCtx(unlockCtx.getFlags(), self.__entity.getEntityType())
-            result = yield self.leave(ctx)
+            result = yield self.leave(ctx, fadeCtx=fadeCtx)
             if callback is not None:
                 callback(result)
             return
 
     @adisp_async
     @adisp_process
-    def select(self, entry, callback=None, transition=None):
+    def select(self, entry, callback=None, fadeCtx=None):
         ctx = entry.makeDefCtx()
         ctx.addFlags(entry.getModeFlags() & FUNCTIONAL_FLAG.LOAD_PAGE | FUNCTIONAL_FLAG.SWITCH)
         if not self.__validateJoinOp(ctx):
@@ -262,17 +263,15 @@ class _PreBattleDispatcher(ListenersCollection):
             if entry.isVisualOnly():
                 result = True
             else:
-                result = yield self.unlock(ctx)
+                result = yield self.unlock(ctx, fadeCtx=fadeCtx)
             if not result:
                 if callback is not None:
                     callback(False)
                 return
-            if transition is not None:
-                yield transition
             ctx.setForced(True)
             LOG_DEBUG('Request to select', ctx)
             self.__requestCtx = ctx
-            entry.select(ctx, callback=callback)
+            dispatcherFadeWrapper(entry.select, fadeCtx, ctx, callback=callback)
             return
 
     @adisp_async
@@ -292,12 +291,12 @@ class _PreBattleDispatcher(ListenersCollection):
 
     @adisp_async
     @adisp_process
-    def doSelectAction(self, action, callback=None, transition=None):
+    def doSelectAction(self, action, callback=None, fadeCtx=None):
         selectResult = self.__entity.doSelectAction(action)
         if selectResult.isProcessed:
             result = True
             if selectResult.newEntry is not None:
-                result = yield self.select(selectResult.newEntry, transition=transition)
+                result = yield self.select(selectResult.newEntry, fadeCtx=fadeCtx)
             if callback is not None:
                 callback(result)
             g_eventDispatcher.dispatchSwitchResult(result)
@@ -307,7 +306,7 @@ class _PreBattleDispatcher(ListenersCollection):
             if entry is not None:
                 if hasattr(entry, 'configure'):
                     entry.configure(action)
-                result = yield self.select(entry, transition=transition)
+                result = yield self.select(entry, fadeCtx=fadeCtx)
                 if callback is not None:
                     callback(result)
                 g_eventDispatcher.dispatchSwitchResult(result)
@@ -319,7 +318,7 @@ class _PreBattleDispatcher(ListenersCollection):
 
     @adisp_async
     @adisp_process
-    def doLeaveAction(self, action, callback=None):
+    def doLeaveAction(self, action, callback=None, fadeCtx=None):
         factory = self.__factories.get(self.__entity.getCtrlType())
         if factory is None:
             LOG_ERROR('Factory is not found', self.__entity)
@@ -340,7 +339,7 @@ class _PreBattleDispatcher(ListenersCollection):
                 g_eventDispatcher.dispatchSwitchResult(True)
                 return
             self.__entity.setCoolDown(ctx.getRequestType(), ctx.getCooldown())
-            result = yield self.leave(ctx, ignoreConfirmation=action.ignoreConfirmation, parent=action.parent)
+            result = yield self.leave(ctx, ignoreConfirmation=action.ignoreConfirmation, parent=action.parent, fadeCtx=fadeCtx)
             if callback is not None:
                 callback(result)
             g_eventDispatcher.dispatchSwitchResult(result)

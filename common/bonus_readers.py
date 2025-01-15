@@ -906,6 +906,8 @@ def __readBonus_optionalData(config, bonusReaders, section, eventType):
             raise SoftException("Invalid value for 'checkDepth' option: {}".format(depthLevel))
     if section.has_key('probabilityStageDependence'):
         properties['probabilityStageDependence'] = section['probabilityStageDependence'].asBool
+    if section.has_key('dropInGroup'):
+        properties['dropInGroup'] = section['dropInGroup'].asBool
     if properties:
         bonus['properties'] = properties
     return (limitIDs,
@@ -1130,7 +1132,8 @@ _RESERVED_NAMES = frozenset(['config',
  'shouldCompensated',
  'probabilityStageDependence',
  'bonusProbability',
- 'depthLevel'])
+ 'depthLevel',
+ 'dropInGroup'])
 SUPPORTED_BONUSES = frozenset(__BONUS_READERS.iterkeys())
 __SORTED_BONUSES = sorted(SUPPORTED_BONUSES)
 SUPPORTED_BONUSES_IDS = dict(((n, i) for i, n in enumerate(__SORTED_BONUSES)))
@@ -1183,6 +1186,8 @@ def __readBonusConfig(section):
             config['showBonusInfo'] = data.asBool
         if name == 'showProbabilitiesInfo':
             config['showProbabilitiesInfo'] = data.asBool
+        if name == 'dropInGroupItemsCount':
+            config['dropInGroupItemsCount'] = data.asInt
         raise SoftException('Unknown config section: {}'.format(name))
 
     limitIDsLen = sum([ len(limitID) for limitID in config.get('limits', {}) ])
@@ -1212,7 +1217,7 @@ def __readBonusSubSection(config, bonusReaders, section, eventType=None, checkLi
             if limitIDs:
                 resultLimitIDs.update(limitIDs)
         if name in bonusReaders:
-            bonusReaders[name](bonus, name, subSection, eventType, checkLimit)
+            bonusReaders[name](bonus, name, subSection, eventType, checkLimit=checkLimit)
         if name in _RESERVED_NAMES:
             pass
         raise SoftException('Bonus {} not in bonus readers: {}'.format(name, bonusReaders.keys()))

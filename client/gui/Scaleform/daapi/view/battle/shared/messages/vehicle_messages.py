@@ -52,6 +52,13 @@ class VehicleMessages(fading_messages.FadingMessages):
         super(VehicleMessages, self)._removeGameListeners()
         return
 
+    def _getPlayerInfo(self, entityID):
+        ctx = self.sessionProvider.getCtx()
+        vInfoVO = ctx.getArenaDP().getVehicleInfo(entityID)
+        playerName = ctx.getPlayerFullName(entityID, showVehShortName=False)
+        playerInfo = '%s | %s' % (playerName, vInfoVO.getDisplayedName())
+        return playerInfo
+
     def __handleMemoryCriticalMessage(self, message):
         self.showMessage(message[1])
 
@@ -75,7 +82,7 @@ class VehicleMessages(fading_messages.FadingMessages):
             if equipmentID:
                 equipment = vehicles.g_cache.equipments().get(equipmentID)
                 if equipment is not None:
-                    postfix = '_'.join((postfix, equipment.name.split('_')[0].upper()))
+                    postfix = '_'.join((postfix, equipment.messagePostfix))
             self.showMessage(code, names, postfix=postfix)
             return
 
@@ -83,9 +90,6 @@ class VehicleMessages(fading_messages.FadingMessages):
         self.showMessage(key, args, extra)
 
     def __formatEntity(self, entityID):
-        ctx = self.sessionProvider.getCtx()
-        vInfoVO = ctx.getArenaDP().getVehicleInfo(entityID)
-        playerName = ctx.getPlayerFullName(entityID, showVehShortName=False)
-        playerInfo = '%s | %s' % (playerName, vInfoVO.getDisplayedName())
+        playerInfo = self._getPlayerInfo(entityID)
         entityInfo = self.__styleFormatter.format(playerInfo)
         return entityInfo

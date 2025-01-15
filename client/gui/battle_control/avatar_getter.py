@@ -521,3 +521,8 @@ def isPostmortemFeatureEnabled(ctrlModeName, avatar=None):
 def getIsObserverFPV():
     player = BigWorld.player()
     return player.isObserverFPV if player else False
+
+
+def getTargetID(undefinedTargetID=None):
+    player = BigWorld.player()
+    return player.target.id if player is not None and player.target is not None else undefinedTargetID

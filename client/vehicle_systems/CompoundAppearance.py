@@ -25,6 +25,7 @@ from vehicle_systems.components.highlighter import Highlighter
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers.EffectsList import SpecialKeyPointNames
 from vehicle_systems import camouflages
+from vehicle_systems import vehicle_composition
 from cgf_obsolete_script.script_game_object import ComponentDescriptor
 from vehicle_systems import model_assembler
 from VehicleEffects import DamageFromShotDecoder
@@ -268,10 +269,10 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         if self.vehicleTraces is not None and not self.vehicleTraces.activePostmortem:
             self.vehicleTraces = None
         self.suspensionSound = None
-        self.swingingAnimator = None
+        self._swingingAnimator.reset()
         self.burnoutProcessor = None
-        self.gunRecoil = None
-        self.gunAnimators = []
+        self._gunRecoilLink.reset()
+        self._gunAnimators.setup(0)
         self.gunLinkedNodesAnimator = None
         self.crashedTracksController = None
         if self.suspension is not None and not self.suspension.activePostmortem:
@@ -402,6 +403,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
         colorPassEnabled = visibilityMask & BigWorld.ColorPassBit != 0
         self.compoundModel.visible = visibilityMask
         self.compoundModel.skipColorPass = not colorPassEnabled
+        self.compoundModel.skipEdgeDrawerPass = not colorPassEnabled
         self.showStickers(colorPassEnabled)
         if self.crashedTracksController is not None:
             self.crashedTracksController.setVisible(visibilityMask)
@@ -580,6 +582,7 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             isRightSideFlying = self.isRightSideFlying
             isLeftSideFlying = self.isLeftSideFlying
             self._vehicle.filter = self.__originalFilter
+            self.filter.setFlyingInfo(None)
             self.filter.reset()
             self.shadowManager.reattachCompoundModel(self._vehicle, self.compoundModel, newCompoundModel)
             if self.__inSpeedTreeCollision:
@@ -602,7 +605,9 @@ class CompoundAppearance(CommonTankAppearance, CallbackDelayer):
             self.__reattachComponents(self.compoundModel)
             self._connectCollider()
             self.filter.syncGunAngles(prevTurretYaw, prevGunPitch)
-            model_assembler.setupTurretRotations(self)
+            vehicle_composition.removeComposition(self.gameObject)
+            vehicle_composition.createVehicleComposition(self.gameObject)
+            self._updateAttachments()
             self.onModelChanged()
             return
 

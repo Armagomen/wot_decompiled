@@ -68,6 +68,7 @@ class ShopItemType(CONST_CONTAINER):
     EMBLEM = 'emblem'
     INSCRIPTION = 'inscription'
     PROJECTION_DECAL = 'projectionDecal'
+    ATTACHMENT = 'attachment'
     ENHANCEMENT = 'enhancements'
     CREW_BOOKS = 'crew_books'
 
@@ -130,6 +131,7 @@ class ItemPackType(CONST_CONTAINER):
     PERSONAL_NUMBER = 'personal_number/all'
     MODIFICATION = 'modification/all'
     STYLE = 'style/all'
+    ATTACHMENT = 'attachment'
     ACHIEVEMENT = 'achievement'
     BADGE = 'badge'
     REFERRAL_BADGE = 'referralBadge'
@@ -144,11 +146,15 @@ class ItemPackType(CONST_CONTAINER):
     CREW_BOOK_PERSONAL_BOOK = 'crew_book/personalBook'
     CREW_BOOK_UNIVERSAL_BOOK = 'crew_book/universalBook'
     CREW_BOOK_RANDOM = 'crew_book/random'
+    CREW_BOOK_BROCHURE_RANDOM = 'crew_book/brochure_random'
+    CREW_BOOK_GUIDE_RANDOM = 'crew_book/guide_random'
+    CREW_BOOK_MANUAL_RANDOM = 'crew_book/crewBook_random'
     BLUEPRINT = 'blueprint'
     BLUEPRINT_NATIONAL = 'blueprint/national'
     BLUEPRINT_INTELEGENCE_DATA = 'blueprint/intelligence_data'
     BLUEPRINT_ANY = 'blueprint/any'
     BLUEPRINT_NATIONAL_ANY = 'blueprint/nationalAny'
+    BLUEPRINT_NATIONAL_RANDOM = 'blueprint/national_random'
     DEMOUNT_KIT = 'demountKit'
     REFERRAL_AWARDS = 'referral_awards'
     DEMOUNT_KITS = 'demountKit/common'
@@ -183,10 +189,11 @@ class ItemPackTypeGroup(CONST_CONTAINER):
      ItemPackType.PAINT_WINTER)
     STYLE = (ItemPackType.STYLE,)
     MODIFICATION = (ItemPackType.MODIFICATION,)
+    ATTACHMENT = (ItemPackType.ATTACHMENT,)
     DECAL = (ItemPackType.DECAL_1, ItemPackType.DECAL_2)
     PROJECTION_DECAL = (ItemPackType.PROJECTION_DECAL,)
     PERSONAL_NUMBER = (ItemPackType.PERSONAL_NUMBER,)
-    CUSTOMIZATION = tuple(itertools.chain(STYLE, CAMOUFLAGE, PAINT, DECAL, PROJECTION_DECAL, PERSONAL_NUMBER, MODIFICATION))
+    CUSTOMIZATION = tuple(itertools.chain(STYLE, CAMOUFLAGE, PAINT, DECAL, PROJECTION_DECAL, PERSONAL_NUMBER, MODIFICATION, ATTACHMENT))
     CUSTOM = (ItemPackType.CUSTOM_PREMIUM,
      ItemPackType.CUSTOM_PREMIUM_PLUS,
      ItemPackType.CUSTOM_CRYSTAL,

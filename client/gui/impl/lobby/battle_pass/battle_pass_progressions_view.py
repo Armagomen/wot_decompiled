@@ -19,14 +19,14 @@ from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from gui.battle_pass.battle_pass_bonuses_packers import changeBonusTooltipData, packBonusModelAndTooltipData, packSpecialTooltipData
 from gui.battle_pass.battle_pass_constants import ChapterState, MIN_LEVEL
 from gui.battle_pass.battle_pass_decorators import createBackportTooltipDecorator, createTooltipContentDecorator
-from gui.battle_pass.battle_pass_helpers import fillBattlePassCompoundPrice, getAllFinalRewards, getChapterType, getDataByTankman, getExtraInfoPageURL, getFinalTankmen, getInfoPageURL, getIntroVideoURL, getRewardSourceByType, getStyleForChapter, getVehicleInfoForChapter, isSeasonEndingSoon, isSeasonWithSpecialTankmenScreen, updateBuyAnimationFlag, getSingleVehicleForCustomization
+from gui.battle_pass.battle_pass_helpers import fillBattlePassCompoundPrice, getAllFinalRewards, getChapterType, getDataByTankman, getExtraInfoPageURL, getFinalTankmen, getInfoPageURL, getIntroVideoURL, getRewardSourceByType, getSingleVehicleForCustomization, getStyleForChapter, getVehicleInfoForChapter, isSeasonEndingSoon, isSeasonWithSpecialTankmenScreen, updateBuyAnimationFlag
 from gui.battle_pass.sounds import BattlePassSounds
 from gui.collection.collections_helpers import getCollectionRes, loadBattlePassFromCollections
 from gui.impl import backport
 from gui.impl.auxiliary.collections_helper import fillCollectionModel
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_progressions_view_model import BattlePassProgressionsViewModel, ActionTypes, ChapterStates, ChapterType
+from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_progressions_view_model import ActionTypes, BattlePassProgressionsViewModel, ChapterStates, ChapterType
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_level_model import RewardLevelModel
 from gui.impl.gen.view_models.views.lobby.vehicle_preview.top_panel.top_panel_tabs_model import TabID
 from gui.impl.pub import ViewImpl
@@ -55,7 +55,6 @@ _CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
  ChapterState.PAUSED: ChapterStates.PAUSED,
  ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
 _FREE_POINTS_INDEX = 0
-_VOICED_TANKMAN = 'voicedTankman'
 
 class BattlePassProgressionsView(ViewImpl):
     __settingsCore = dependency.descriptor(ISettingsCore)
@@ -118,13 +117,10 @@ class BattlePassProgressionsView(ViewImpl):
         self.__startCommonSound()
 
     def setChapter(self, chapterID):
-        chapterChanged = chapterID != self.__chapterID
-        self.__chapterID = chapterID or self.__getDefaultChapterID()
-        with self.viewModel.transaction() as model:
-            self.__updateProgressData(model=model)
-        self.__updateActionType()
-        if chapterChanged:
-            self.__setShowBuyAnimations()
+        if chapterID != self.__chapterID:
+            self.deactivate()
+            self.__chapterID = chapterID or self.__getDefaultChapterID()
+            self.activate()
 
     def _getEvents(self):
         return ((self.viewModel.onActionClick, self.__onActionClick),
@@ -299,6 +295,7 @@ class BattlePassProgressionsView(ViewImpl):
         model.setSkills(skillsArray)
         model.setTooltipId(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED)
         model.setGroupName(groupName)
+        model.setHasVoice(self.__battlePass.isVoicedTankman(groupName))
         packSpecialTooltipData(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, self.__specialTooltipItems, character.getRecruitID())
 
     def __setFinalRewardsWidget(self, model):
@@ -790,16 +787,12 @@ class BattlePassProgressionsView(ViewImpl):
         freeArray = model.getFreeFinalRewards()
         freeArray.clear()
         for freeReward in self.__battlePass.getFreeFinalRewardTypes(self.__chapterID):
-            if freeReward == FinalReward.TANKMAN and self.__isFinalTankmanVoiced(BattlePassConsts.REWARD_FREE):
-                freeReward = _VOICED_TANKMAN
             freeArray.addString(freeReward)
 
         freeArray.invalidate()
         paidArray = model.getPaidFinalRewards()
         paidArray.clear()
         for paidReward in self.__battlePass.getPaidFinalRewardTypes(self.__chapterID):
-            if paidReward == FinalReward.TANKMAN and self.__isFinalTankmanVoiced(BattlePassConsts.REWARD_PAID):
-                paidReward = _VOICED_TANKMAN
             paidArray.addString(paidReward)
 
         paidArray.invalidate()
@@ -807,10 +800,6 @@ class BattlePassProgressionsView(ViewImpl):
     def __getFinalTankman(self, awardType):
         finalTankmen = getFinalTankmen(self.__chapterID, awardType, battlePass=self.__battlePass)
         return first(finalTankmen)
-
-    def __isFinalTankmanVoiced(self, awardType):
-        tankman = self.__getFinalTankman(awardType)
-        return tankman is not None and self.__battlePass.isVoicedTankman(tankman.getGroupName())
 
     @staticmethod
     def __switchCamera():

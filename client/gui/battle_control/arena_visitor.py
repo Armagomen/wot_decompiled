@@ -8,6 +8,7 @@ from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from battle_modifiers_common import BattleParams, BattleModifiers
 from constants import ARENA_GUI_TYPE as _GUI_TYPE, ARENA_GUI_TYPE_LABEL as _GUI_TYPE_LABEL, ARENA_BONUS_TYPE as _BONUS_TYPE, ARENA_PERIOD as _PERIOD, QUEUE_TYPE, TEAMS_IN_ARENA, VISIBILITY
 from gui import GUI_SETTINGS
+from gui.shared.utils.functions import getArenaImage
 from skeletons.gui.battle_session import IClientArenaVisitor
 
 def _getClientArena(avatar=None):
@@ -275,6 +276,9 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
 
     def isRandomBattle(self):
         return self._guiType in (_GUI_TYPE.EPIC_RANDOM, _GUI_TYPE.RANDOM)
+
+    def isBattleChatSupported(self):
+        return self._guiType in _GUI_TYPE.BATTLE_CHAT_SETTING_SUPPORTED
 
     def isEventBattle(self):
         return self._guiType == _GUI_TYPE.EVENT_BATTLES
@@ -598,11 +602,8 @@ class _ClientArenaVisitor(IClientArenaVisitor):
     def hasPointsOfInterest(self):
         return self._bonus.hasPointsOfInterest()
 
-    def getArenaIconKey(self):
-        return self._type.getGeometryName()
-
-    def getArenaIcon(self, iconKey):
-        return iconKey % self.getArenaIconKey()
+    def getArenaIcon(self, subdir=''):
+        return getArenaImage(self._type.getGeometryName(), subdir)
 
     def getArenaSubscription(self):
         return self._arena if self._canSubscribe else None

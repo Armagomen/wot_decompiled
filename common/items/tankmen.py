@@ -7,6 +7,7 @@ from collections import defaultdict
 from functools import partial
 from itertools import chain, izip
 from typing import Any, Dict, List, Optional, Sequence, Set, TYPE_CHECKING, Tuple
+import persistent_data_cache_common as pdc
 import nations
 from constants import ITEM_DEFS_PATH, NEW_PERK_SYSTEM as NPS, VEHICLE_NO_CREW_TRANSFER_PENALTY_TAG, VEHICLE_WOT_PLUS_TAG
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG_DEV, LOG_ERROR, LOG_WARNING
@@ -41,6 +42,7 @@ ACTIVE_NOT_GROUP_SKILLS = skills_constants.ACTIVE_NOT_GROUP_SKILLS
 SkillUtilization = skills_constants.SkillUtilization
 MAX_FREE_SKILLS_SIZE = 16
 NO_SKILL = -1
+NO_SLOT = -1
 MAX_SKILL_LEVEL = 100
 MAX_SKILLS_EFFICIENCY = 1.0
 MAX_SKILLS_EFFICIENCY_XP = 100000
@@ -59,14 +61,22 @@ _CREW_SKINS_XML_PATH = ITEM_DEFS_PATH + 'crewSkins/'
 _CREW_BOOKS_XML_PATH = ITEM_DEFS_PATH + 'crewBooks/'
 g_cache = None
 
+def _createNationsConfig():
+    global _g_nationsConfig
+    for nationID in xrange(len(nations.NAMES)):
+        getNationConfig(nationID)
+
+    return _g_nationsConfig
+
+
 def init(preloadEverything, pricesToCollect):
     global g_cache
+    global _g_nationsConfig
+    global _g_skillsConfig
     g_cache = Cache()
     if preloadEverything:
-        getSkillsConfig()
-        for nationID in xrange(len(nations.NAMES)):
-            getNationConfig(nationID)
-
+        _g_skillsConfig = pdc.load('tankmen_skills_config', getSkillsConfig)
+        _g_nationsConfig = pdc.load('tankmen_nations_config', _createNationsConfig)
         g_cache.initCrewSkins(pricesToCollect)
         g_cache.initCrewBooks(pricesToCollect)
 
@@ -89,7 +99,6 @@ def getSkillsMask(skills):
 ALL_SKILLS_MASK = getSkillsMask([ skill for skill in LEARNABLE_ACTIVE_SKILLS if skill != 'reserved' ])
 
 def getNationConfig(nationID):
-    global _g_nationsConfig
     if _g_nationsConfig[nationID] is None:
         nationName = nations.NAMES[nationID]
         if nationName not in nations.AVAILABLE_NAMES:
@@ -181,7 +190,7 @@ def presetSkillsFromCfg(roles):
     for bonusRole in bonusRoles:
         bonusDecrCnt = NPS.MAX_BONUS_SKILLS_PER_ROLE
         for skill in cfg[bonusRole]:
-            if skill in skills_constants.COMMON_SKILLS_ORDERED:
+            if skill in COMMON_SKILLS_ORDERED:
                 continue
             if bonusDecrCnt == 0:
                 break
@@ -410,6 +419,18 @@ class TankmanDescr(object):
     def getSkillsMask(self):
         return getSkillsMask(self._skills + sum(self.__rolesBonusSkills.itervalues(), []))
 
+    def getActiveSkillsMask(self, tmanIndx, vehDescrType=None):
+        return getSkillsMask(self.getActiveSkills() + sum(self.getActiveBonusSkills(tmanIndx, vehDescrType).itervalues(), []))
+
+    def getActiveBonusSkills(self, tmanIndx, vehDescrType=None):
+        vehicleDescrType = vehDescrType or vehicles.g_cache.vehicle(self.nationID, self.vehicleTypeID)
+        bonusRoles = vehicleDescrType.crewRoles[tmanIndx]
+        return {role:skills for role, skills in self.__rolesBonusSkills.items() if role in bonusRoles}
+
+    def getActiveSkills(self):
+        skills_by_roles = set(SKILLS_BY_ROLES[self.role]) | set(COMMON_SKILLS_ORDERED)
+        return [ skill for skill in self.skills if skill in skills_by_roles ]
+
     @property
     def earnedSkills(self):
         return list(self._skills[self.freeSkillsNumber:])
@@ -501,13 +522,6 @@ class TankmanDescr(object):
     @property
     def vehicleTypeCompDescr(self):
         return vehicles.makeIntCompactDescrByID('vehicle', self.nationID, self.vehicleTypeID)
-
-    def canUseSkills(self, vehicleDescrType):
-        isPremium, _ = self.__paramsOnVehicle(vehicleDescrType)
-        if isPremium:
-            return True
-        tagList = [VEHICLE_NO_CREW_TRANSFER_PENALTY_TAG, VEHICLE_WOT_PLUS_TAG]
-        return any((tag in vehicleDescrType.tags for tag in tagList))
 
     def isOwnVehicleOrPremium(self, vehicleDescrType, isCheckWotPlus=True):
         tagList = [VEHICLE_NO_CREW_TRANSFER_PENALTY_TAG]
@@ -1620,16 +1634,15 @@ def getSkillRoleType(skillName):
 
 
 def getLessMasteredIDX(tankmenDescrs):
-    forSortMastered = []
-    isCrewEmpty = True
+    sortingList = []
     for slotIdx, tankmanDescr in enumerate(tankmenDescrs):
         if tankmanDescr:
-            forSortMastered.append((tankmanDescr.skillsEfficiencyXP - MAX_SKILLS_EFFICIENCY_XP,
-             -abs(tankmanDescr.needXpForVeteran),
-             tankmanDescr.totalXP(),
-             slotIdx))
-            isCrewEmpty = False
-        forSortMastered.append((float('inf'), slotIdx))
+            if tankmanDescr.needXpForVeteran:
+                sortingList.append((-abs(tankmanDescr.needEfficiencyXP), tankmanDescr.totalXP(), slotIdx))
+            else:
+                sortingList.append((float('inf'), slotIdx))
 
-    forSortMastered = sorted(forSortMastered, key=lambda item: [ idx for idx in item ])
-    return (isCrewEmpty, forSortMastered[0][-1])
+    if sortingList:
+        sortingList = sorted(sortingList, key=lambda item: [ idx for idx in item ])
+        return (False, sortingList[0][-1])
+    return (True, NO_SLOT)

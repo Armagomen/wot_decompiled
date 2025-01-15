@@ -298,10 +298,6 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
         return None
 
     @property
-    def isSsrPlayEnabled(self):
-        return self.getCacheValue('isSsrPlayEnabled', False)
-
-    @property
     def comp7(self):
         return self.getCacheValue('comp7', {})
 
@@ -343,9 +339,8 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
     def luiVersion(self):
         return self.getCacheValue('limitedUi', {}).get('ver', 1)
 
-    @property
-    def newbieHintsGroup(self):
-        return self.getCacheValue('abFeatureTest', {}).get('newbieHints')
+    def getABGroup(self, feature):
+        return self.getCacheValue('abFeatureTest', {}).get(feature)
 
     @adisp_async
     def _requestCache(self, callback):

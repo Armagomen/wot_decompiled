@@ -252,6 +252,7 @@ class SettingsCore(ISettingsCore):
          (CONTROLS.MOUSE_ARCADE_SENS, options.MouseSensitivitySetting('arcade')),
          (CONTROLS.MOUSE_SNIPER_SENS, options.MouseSensitivitySetting('sniper')),
          (CONTROLS.MOUSE_SNIPER_SENS, options.MouseSensitivitySetting('dualgun')),
+         (CONTROLS.MOUSE_SNIPER_SENS, options.MouseSensitivitySetting('twinGun')),
          (CONTROLS.MOUSE_STRATEGIC_SENS, options.MouseSensitivitySetting('strategic')),
          (CONTROLS.MOUSE_ASSIST_AIM_SENS, options.MouseSensitivitySetting('arty', masterSwitch='spgAlternativeAimingCameraEnabled')),
          (CONTROLS.MOUSE_FREECAM_SENS, options.MouseSensitivitySetting('deathfreecam')),

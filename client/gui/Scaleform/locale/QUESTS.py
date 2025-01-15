@@ -80,6 +80,7 @@ class QUESTS(object):
     BONUSES_ITEM_TANKMEN_NO_SKILLS = '#quests:bonuses/item/tankmen/no_skills'
     BONUSES_ITEM_TANKMEN_WITH_SKILLS = '#quests:bonuses/item/tankmen/with_skills'
     BONUSES_NOTAVAILABLE = '#quests:bonuses/notAvailable'
+    BONUSNAME_WDRCOIN = '#quests:bonusName/wdrcoin'
     BONUSES_GOLDPERSONALRATE = '#quests:bonuses/goldPersonalRate'
     BONUSES_FREEXPPERSONALRATE = '#quests:bonuses/freeXpPersonalRate'
     QUESTS_TITLE = '#quests:quests/title'
@@ -1227,6 +1228,7 @@ class QUESTS(object):
     BONUSNAME_PAINT = '#quests:bonusName/paint'
     BONUSNAME_STYLE = '#quests:bonusName/style'
     BONUSNAME_MODIFICATION = '#quests:bonusName/modification'
+    BONUSNAME_ATTACHMENT = '#quests:bonusName/attachment'
     BONUSNAME_FREETOKENS = '#quests:bonusName/freeTokens'
     BONUSNAME_COMPLETIONTOKENS = '#quests:bonusName/completionTokens'
     BONUSNAME_COMPLETIONTOKENS_1_1 = '#quests:bonusName/completionTokens_1_1'
@@ -1725,6 +1727,10 @@ class QUESTS(object):
     DAILYQUESTS_CONDITION_BATTLE_SINGULAR = '#quests:dailyQuests/condition/battle_singular'
     DETAILS_CONDITIONS_CUMULATIVE_DAMAGEDHP = '#quests:details/conditions/cumulative/damagedHp'
     DETAILS_CONDITIONS_CUMULATIVE_COMP7PRESTIGEPOINTS = '#quests:details/conditions/cumulative/comp7PrestigePoints'
+    DAILYQUESTS_COMP7_REWARD = '#quests:dailyQuests/comp7/reward'
+    DAILYQUESTS_COMP7_NEXTTASKS = '#quests:dailyQuests/comp7/nextTasks'
+    DAILYQUESTS_COMP7_QUESTSCOUNTER = '#quests:dailyQuests/comp7/questsCounter'
+    DAILYQUESTS_COMP7_PROGRESSCOUNTER = '#quests:dailyQuests/comp7/progressCounter'
     TOKEN_DEFAULT_ENUM = (TOKEN_DEFAULT_USSR,
      TOKEN_DEFAULT_GERMANY,
      TOKEN_DEFAULT_USA,
@@ -1761,6 +1767,7 @@ class QUESTS(object):
      BONUSNAME_BLUEPRINTS_NATION,
      BONUSNAME_BLUEPRINTS_NATION_ANY,
      BONUSNAME_BLUEPRINTS_UNIVERSAL,
+     BONUSNAME_WDRCOIN,
      BONUSNAME_CREDITS,
      BONUSNAME_GOLD,
      BONUSNAME_CRYSTAL,
@@ -1788,6 +1795,7 @@ class QUESTS(object):
      BONUSNAME_PAINT,
      BONUSNAME_STYLE,
      BONUSNAME_MODIFICATION,
+     BONUSNAME_ATTACHMENT,
      BONUSNAME_FREETOKENS,
      BONUSNAME_COMPLETIONTOKENS,
      BONUSNAME_COMPLETIONTOKENS_1_1,

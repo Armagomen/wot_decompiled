@@ -456,14 +456,15 @@ def packImageListParameterBlockData(listIconSrc, columnWidth, rowHeight, linkage
      'horizontalGap': horizontalGap}, padding)
 
 
-def packMapBoxBlockData(listIconSrc, columnWidth, rowHeight, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TILE_LIST_BLOCK_LINKAGE, padding=None, verticalGap=0, horizontalGap=0, blockWidth=0):
+def packMapBoxBlockData(listIconSrc, columnWidth, rowHeight, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TILE_LIST_BLOCK_LINKAGE, padding=None, verticalGap=0, horizontalGap=0, blockWidth=0, renderersAlign=RENDERERS_ALIGN_LEFT):
     return packBlockDataItem(linkage, {'dataType': 'net.wg.gui.lobby.hangar.mapBox.data.MapBoxItemVO',
      'rendererType': 'MapBoxItemRendererUI',
      'listIconSrc': listIconSrc,
      'columnWidth': columnWidth,
      'rowHeight': rowHeight,
      'verticalGap': verticalGap,
-     'horizontalGap': horizontalGap}, padding, blockWidth=blockWidth)
+     'horizontalGap': horizontalGap,
+     'renderersAlign': renderersAlign}, padding, blockWidth=blockWidth)
 
 
 def packQuestAwardsBlockData(listData, columnWidth, rowHeight, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_TILE_LIST_BLOCK_LINKAGE, padding=None):
@@ -592,6 +593,22 @@ def packCustomizationImageBlockData(img=None, align=BLOCKS_TOOLTIP_TYPES.ALIGN_L
     data['isDim'] = isDim
     if formfactor is not None:
         data['formfactor'] = formfactor
+    return packBlockDataItem(linkage, data, padding)
+
+
+def packCustomizationRarityHeaderBlockData(img, rarity, rarityBackground, rarityIcon, title, subTitle, imgOffset=65, videoSource='', linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_IMAGE_BLOCK_RARITY_HEADER_LINKAGE, width=-1, height=-1, padding=None):
+    data = {'rarity': rarity,
+     'imgOffset': imgOffset,
+     'imagePath': img,
+     'rarityIcon': rarityIcon,
+     'rarityBackground': rarityBackground,
+     'title': title,
+     'subTitle': subTitle,
+     'videoSource': videoSource}
+    if width != -1:
+        data['width'] = width
+    if height != -1:
+        data['height'] = height
     return packBlockDataItem(linkage, data, padding)
 
 

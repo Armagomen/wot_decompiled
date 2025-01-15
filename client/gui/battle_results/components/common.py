@@ -1,5 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/battle_results/components/common.py
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import ARENA_GUI_TYPE, FINISH_REASON
 from gui.impl import backport
 from gui.impl.gen import R
@@ -10,12 +11,12 @@ from gui.battle_results.settings import PLAYER_TEAM_RESULT as _TEAM_RESULT, UI_V
 from gui.shared.utils import toUpper
 from helpers import i18n, dependency
 from helpers.time_utils import ONE_MINUTE
+from player_satisfaction_schema import playerSatisfactionSchema
 from skeletons.gui.battle_session import IBattleSessionProvider
 from gui.battle_control.battle_constants import WinStatus
 _ARENA_TYPE_FORMAT = '#arenas:type/{0}/name'
 _ARENA_TYPE_EXT_FORMAT = '#menu:loading/battleTypes/{0}'
 _ARENA_FULL_NAME_FORMAT = '#battle_results:common/arena/fullName'
-_ARENA_ICON_PATH = '../maps/icons/map/stats/%s.png'
 
 def makeArenaFullName(arenaTypeName, i18nKey):
     arenaFullName = i18n.makeString(_ARENA_FULL_NAME_FORMAT)
@@ -73,7 +74,7 @@ class ArenaIconItem(base.StatsItem):
     __slots__ = ()
 
     def _convert(self, record, reusable):
-        return reusable.common.getArenaIcon(_ARENA_ICON_PATH)
+        return reusable.common.arenaVisitor.getArenaIcon('stats')
 
 
 class ArenaDurationItem(base.StatsItem):
@@ -284,6 +285,14 @@ class EligibleForCrystalRewards(base.StatsItem):
 
     def _convert(self, value, reusable):
         return reusable.personal.avatar.eligibleForCrystalRewards
+
+
+class ShowRateSatisfactionCmp(base.StatsItem):
+
+    def _convert(self, value, reusable):
+        hasBonusCap = reusable.common.checkBonusCaps(ARENA_BONUS_TYPE_CAPS.PLAYER_SATISFACTION_RATING)
+        config = playerSatisfactionSchema.getModel()
+        return hasBonusCap and config.enabledInterfaces.postbattle and config.enabled
 
 
 class SortieTeamsUiVisibility(TeamsUiVisibility):

@@ -9,10 +9,10 @@ from messenger.formatters import personal_reserves as _prFormatters
 from messenger.formatters import auto_boxes_subformatters, token_quest_subformatters
 from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 registerLootBoxAutoOpenSubFormatters((auto_boxes_subformatters.EventBoxesFormatter(),
- auto_boxes_subformatters.EventLootBoxesFormatter(),
  auto_boxes_subformatters.NYPostEventBoxesFormatter(),
  auto_boxes_subformatters.NYGiftSystemSurpriseFormatter(),
- auto_boxes_subformatters.LunarNYEnvelopeAutoOpenFormatter()))
+ auto_boxes_subformatters.LunarNYEnvelopeAutoOpenFormatter(),
+ auto_boxes_subformatters.LootBoxSystemAutoOpenFormatter()))
 registerTokenQuestsSubFormatters((token_quest_subformatters.LootBoxTokenQuestFormatter(),
  token_quest_subformatters.RecruitQuestsFormatter(),
  token_quest_subformatters.RankedSeasonTokenQuestFormatter(),
@@ -103,7 +103,6 @@ def initRegistrationFormatters():
     registerMessengerServerFormatter(_SM_TYPE.customizationProgressionChanged.index(), _sc.CustomizationProgressionChangedFormatter())
     registerMessengerServerFormatter(_SM_TYPE.passiveXPActivated.index(), _wotPlusFormatters.PassiveXpActivatedFormatter())
     registerMessengerServerFormatter(_SM_TYPE.passiveXPDeactivated.index(), _wotPlusFormatters.PassiveXpDeactivatedFormatter())
-    registerMessengerServerFormatter(_SM_TYPE.replacedConsumables.index(), _sc.ConsumableReplacedItemsFormatter())
     registerMessengerServerFormatter(_SM_TYPE.passiveXPSwitched.index(), _wotPlusFormatters.PassiveXpSwitchedFormatter())
     registerMessengerServerFormatter(_SM_TYPE.wotPlusUnlocked.index(), _wotPlusFormatters.WotPlusUnlockedAwardFormatter())
     registerMessengerServerFormatter(_SM_TYPE.wotPlusRenewed.index(), _wotPlusFormatters.WotPlusRenewedFormatter())
@@ -161,3 +160,5 @@ def initRegistrationFormatters():
     registerMessengerServerFormatter(_SM_TYPE.crewBooksConversion.index(), _sc.CrewBooksConversionFormatter())
     registerMessengerServerFormatter(_SM_TYPE.postProgressionUnlocked.index(), _sc.PostProgressionUnlockedFormatter())
     registerMessengerServerFormatter(_SM_TYPE.postProgressionCompleted.index(), _sc.PostProgressionCompletedFormatter())
+    registerMessengerServerFormatter(_SM_TYPE.externalVehicleRentStarted.index(), _sc.ExternalVehicleRentFormatter(isStarted=True))
+    registerMessengerServerFormatter(_SM_TYPE.externalVehicleRentExpired.index(), _sc.ExternalVehicleRentFormatter(isStarted=False))

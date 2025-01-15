@@ -13,7 +13,7 @@ from constants import IS_EDITOR
 from helpers import dependency
 import Math
 from items.vehicles import getItemByCompactDescr
-from items.components.c11n_constants import CustomizationType, DecalType
+from items.components.c11n_constants import CustomizationType, DecalType, SLOT_DEFAULT_ALLOWED_MODEL
 from skeletons.gui.lobby_context import ILobbyContext
 from vehicle_systems import stricted_loading
 from vehicle_systems.tankStructure import TankPartIndexes, TankPartNames, TankNodeNames
@@ -21,6 +21,7 @@ from vehicle_systems.tankStructure import DetachedTurretPartIndexes, DetachedTur
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from vehicle_outfit.outfit import Outfit
 import wrapped_options
+from emission_params import getEmissionParams
 _logger = logging.getLogger(__name__)
 if not IS_EDITOR:
     import BattleReplay
@@ -37,7 +38,7 @@ def isUseDebugStickers():
 DEBUG_STICKER_TEXTURE = 'gui/maps/vehicles/decals/player_stickers/cool/sticker_15.dds'
 _TextureParams = namedtuple('TextureParams', ('textureName', 'bumpTextureName', 'mirror'))
 _CounterParams = namedtuple('CounterParams', ('atlas', 'alphabet', 'mirror'))
-_StickerSlotPair = namedtuple('_StickerSlotPair', ('componentSlot', 'stickerParams'))
+_StickerSlotPair = namedtuple('_StickerSlotPair', ('componentSlot', 'stickerParams', 'emissionParams'))
 _PersonalNumberTexParams = namedtuple('PersonalNumberTexParams', ('textureName', 'textureMap', 'text', 'fontMask', 'digitsCount'))
 _INSIGNIA_LETTER = '*'
 
@@ -211,7 +212,7 @@ class StickerPack(object):
             return
         params = self._data[componentIdx]
         for idx, param in enumerate(params):
-            slot, sticker = param
+            slot, sticker, emissionParams = param
             if not sticker or slot.hideIfDamaged and isDamaged:
                 continue
             texName, bumpTexName, _ = sticker
@@ -219,7 +220,7 @@ class StickerPack(object):
                 continue
             sizes = self._getStickerSize(slot)
             stickerAttributes = self._getStickerAttributes(slot, sticker)
-            handle = stickerModel.addSticker(texName, bumpTexName, slot.rayStart, slot.rayEnd, sizes, slot.rayUp, stickerAttributes)
+            handle = stickerModel.addSticker(texName, bumpTexName, slot.rayStart, slot.rayEnd, sizes, slot.rayUp, stickerAttributes, emissionParams)
             self._handles[componentIdx][idx] = handle
 
     def detach(self, componentIdx, stickerModel):
@@ -254,14 +255,16 @@ class FixedEmblemStickerPack(StickerPack):
     def bind(self, componentIdx, componentSlot):
         if not self._isValidComponentIdx(componentIdx):
             return
-        params = self._data[componentIdx]
-        stickerParam = self._getDefaultParams(componentSlot.emblemId)
-        params.append(_StickerSlotPair(componentSlot, stickerParam))
+        else:
+            params = self._data[componentIdx]
+            stickerParam = self._getDefaultParams(componentSlot.emblemId)
+            params.append(_StickerSlotPair(componentSlot, stickerParam, None))
+            return
 
     def _getDefaultParams(self, stickerID):
         stickerID = stickerID
         item = items.vehicles.g_cache.customization20().decals.get(stickerID)
-        return None if item is None else _TextureParams(item.texture, '', item.canBeMirrored)
+        return (None, None) if item is None else _TextureParams(item.texture, '', item.canBeMirrored)
 
 
 class EmblemStickerPack(StickerPack):
@@ -279,9 +282,11 @@ class EmblemStickerPack(StickerPack):
             if intCD:
                 item = getItemByCompactDescr(intCD)
                 stickerParam = self.__convertToParams(item)
+                emissionParams = getEmissionParams(item)
             else:
                 stickerParam = None
-            params.append(_StickerSlotPair(componentSlot, stickerParam))
+                emissionParams = None
+            params.append(_StickerSlotPair(componentSlot, stickerParam, emissionParams))
             return
 
     def __convertToParams(self, item):
@@ -312,11 +317,13 @@ class InscriptionStickerPack(StickerPack):
             slotIdx = len(params)
             intCD = slot.getItemCD(slotIdx)
             stickerParam = None
+            emissionParams = None
             if intCD:
                 item = getItemByCompactDescr(intCD)
                 if hasattr(item, 'type') and item.type == DecalType.INSCRIPTION:
                     stickerParam = self._convertToParams(item)
-            params.append(_StickerSlotPair(componentSlot, stickerParam))
+                    emissionParams = getEmissionParams(item)
+            params.append(_StickerSlotPair(componentSlot, stickerParam, emissionParams))
             return
 
     def _convertToParams(self, item):
@@ -348,7 +355,7 @@ class PersonalNumStickerPack(StickerPack):
                 item = getItemByCompactDescr(intCD)
                 if component and item.itemType == CustomizationType.PERSONAL_NUMBER:
                     stickerParam = self._convertToParams(item, component)
-            params.append(_StickerSlotPair(componentSlot, stickerParam))
+            params.append(_StickerSlotPair(componentSlot, stickerParam, None))
             return
 
     def _convertToParams(self, item, component):
@@ -362,7 +369,7 @@ class PersonalNumStickerPack(StickerPack):
             return
         params = self._data[componentIdx]
         for idx, param in enumerate(params):
-            slot, sticker = param
+            slot, sticker, _ = param
             if not sticker or slot.hideIfDamaged and isDamaged:
                 continue
             if sticker.textureName == '' and not self._useTexture():
@@ -400,7 +407,8 @@ class ClanStickerPack(StickerPack):
         return True
 
     def bind(self, componentIdx, componentSlot):
-        self._data[componentIdx].append(_StickerSlotPair(componentSlot, _TextureParams('', '', False)))
+        self._data[componentIdx].append(_StickerSlotPair(componentSlot, _TextureParams('', '', False), None))
+        return
 
     def attach(self, componentIdx, stickerModel, isDamaged):
         if IS_EDITOR:
@@ -499,7 +507,7 @@ class InsigniaStickerPack(StickerPack):
                 self._useOldInsignia = False
             else:
                 stickerParam = None
-        params.append(_StickerSlotPair(componentSlot, stickerParam))
+        params.append(_StickerSlotPair(componentSlot, stickerParam, None))
         return
 
     def attach(self, componentIdx, stickerModel, isDamaged):
@@ -511,7 +519,7 @@ class InsigniaStickerPack(StickerPack):
             return
         params = self._data[componentIdx]
         for idx, param in enumerate(params):
-            slot, sticker = param
+            slot, sticker, _ = param
             if not sticker or slot.hideIfDamaged and isDamaged:
                 continue
             size = self._getStickerSize(slot)
@@ -535,7 +543,7 @@ class InsigniaStickerPack(StickerPack):
         params = self._data.pop(componentIdx, [])
         self._data[componentIdx] = []
         for param in params:
-            slot, _ = param
+            slot, _, _ = param
             self.bind(componentIdx, slot)
 
     def _isValidComponentIdx(self, componentIdx):
@@ -572,9 +580,11 @@ class DebugStickerPack(StickerPack):
     def bind(self, componentIdx, componentSlot):
         if not self._isValidComponentIdx(componentIdx):
             return
-        params = self._data[componentIdx]
-        stickerParam = _TextureParams(DEBUG_STICKER_TEXTURE, '', True)
-        params.append(_StickerSlotPair(componentSlot, stickerParam))
+        else:
+            params = self._data[componentIdx]
+            stickerParam = _TextureParams(DEBUG_STICKER_TEXTURE, '', True)
+            params.append(_StickerSlotPair(componentSlot, stickerParam, None))
+            return
 
     def setClanId(self, clanId):
         pass
@@ -628,7 +638,7 @@ class VehicleStickers(object):
 
     show = property(lambda self: self.__show, __setShow)
 
-    def __init__(self, spaceID, vehicleDesc, insigniaRank=0, outfit=None):
+    def __init__(self, spaceID, vehicleDesc, insigniaRank=0, outfit=None, currentModelsSet=None):
         self.__defaultAlpha = vehicleDesc.type.emblemsAlpha
         self.__show = True
         self.__animateGunInsignia = vehicleDesc.gun.animateEmblemSlots
@@ -637,7 +647,8 @@ class VehicleStickers(object):
         self.__componentNames = [(TankPartNames.HULL, TankPartNames.HULL), (TankPartNames.TURRET, TankPartNames.TURRET), (TankPartNames.GUN, TankNodeNames.GUN_INCLINATION)]
         if outfit is None:
             outfit = Outfit(vehicleCD=vehicleDesc.makeCompactDescr())
-        componentSlots = self._createComponentSlots(vehicleDesc, vehicleDesc.turret.showEmblemsOnGun, outfit)
+        modelsSet = currentModelsSet if IS_EDITOR else outfit.modelsSet
+        componentSlots = self._createComponentSlots(vehicleDesc, vehicleDesc.turret.showEmblemsOnGun, modelsSet)
         if not isUseDebugStickers():
             self.__stickerPacks = self._createStickerPacks(vehicleDesc, outfit, insigniaRank)
         else:
@@ -728,22 +739,45 @@ class VehicleStickers(object):
         return
 
     @classmethod
-    def _createComponentSlots(cls, vehicleDesc, showEmblemsOnGun, outfit):
+    def _createComponentSlots(cls, vehicleDesc, showEmblemsOnGun, modelsSet):
         showEmblemsOnGun = vehicleDesc.turret.showEmblemsOnGun
-        componentSlots = ((TankPartNames.HULL, vehicleDesc.hull.emblemSlots), (TankPartNames.GUN if showEmblemsOnGun else TankPartNames.TURRET, vehicleDesc.turret.emblemSlots), (TankPartNames.TURRET if showEmblemsOnGun else TankPartNames.GUN, [ slot for slot in vehicleDesc.gun.emblemSlots if slot.type != 'insigniaOnGun' ]))
-        gunSlots = cls._createGunSlots(vehicleDesc, outfit)
+        componentSlots = ((TankPartNames.HULL, cls._filterClanEmblems(vehicleDesc.hull.emblemSlots, modelsSet)), (TankPartNames.GUN if showEmblemsOnGun else TankPartNames.TURRET, cls._filterClanEmblems(vehicleDesc.turret.emblemSlots, modelsSet)), (TankPartNames.TURRET if showEmblemsOnGun else TankPartNames.GUN, cls._filterClanEmblems([ slot for slot in vehicleDesc.gun.emblemSlots if slot.type != 'insigniaOnGun' ], modelsSet)))
+        gunSlots = cls._createGunSlots(vehicleDesc, modelsSet)
         if gunSlots:
             componentSlots += gunSlots
         return componentSlots
 
     @classmethod
-    def _createGunSlots(cls, vehicleDesc, outfit):
+    def _filterClanEmblems(cls, emblemSlots, modelsSet):
+        clanSlots = []
+        nonClanSlots = []
+        for slot in emblemSlots:
+            if slot.type == 'clan':
+                clanSlots.append(slot)
+            nonClanSlots.append(slot)
+
+        filteredSlots = []
+        for slot in clanSlots:
+            if modelsSet is not None:
+                if modelsSet == '':
+                    modelsSet = SLOT_DEFAULT_ALLOWED_MODEL
+                if modelsSet in slot.compatibleModels:
+                    filteredSlots.append(slot)
+
+        if not filteredSlots:
+            for slot in clanSlots:
+                if not slot.compatibleModels:
+                    filteredSlots.append(slot)
+
+        return nonClanSlots + filteredSlots
+
+    @classmethod
+    def _createGunSlots(cls, vehicleDesc, modelsSet):
         gunEmblemSlots = vehicleDesc.gun.emblemSlots
-        outfitModelSet = outfit.modelsSet
         compatibleGunSlots = []
-        if outfitModelSet:
+        if modelsSet:
             for gSlot in gunEmblemSlots:
-                if outfitModelSet in gSlot.compatibleModels:
+                if modelsSet in gSlot.compatibleModels:
                     compatibleGunSlots.append(gSlot)
 
         if not compatibleGunSlots:

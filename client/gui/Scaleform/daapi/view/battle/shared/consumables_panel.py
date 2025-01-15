@@ -14,8 +14,7 @@ from gui.Scaleform.daapi.view.meta.ConsumablesPanelMeta import ConsumablesPanelM
 from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-from gui.battle_control.battle_constants import VEHICLE_DEVICE_IN_COMPLEX_ITEM, CROSSHAIR_VIEW_ID
-from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, DEVICE_STATE_DESTROYED
+from gui.battle_control.battle_constants import VEHICLE_DEVICE_IN_COMPLEX_ITEM, CROSSHAIR_VIEW_ID, VEHICLE_VIEW_STATE, DEVICE_STATE_DESTROYED, FEEDBACK_EVENT_ID
 from gui.battle_control.controllers.consumables.ammo_ctrl import IAmmoListener
 from gui.battle_control.controllers.consumables.equipment_ctrl import IgnoreEntitySelection
 from gui.battle_control.controllers.consumables.equipment_ctrl import NeedEntitySelection
@@ -121,6 +120,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         self.delayedReload = None
         self.__delayedNextShellID = None
         self.__isViewActive = False
+        self.ammoReloadingStatus = {}
         return
 
     @property
@@ -160,15 +160,18 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         self.__delayedNextShellID = None
         return
 
-    def _reset(self):
+    def _resetCds(self):
         self._cds = [None] * self._PANEL_MAX_LENGTH
+        return
+
+    def _reset(self):
+        self._resetCds()
         self._mask = 0
         self._keys.clear()
         self._extraKeys.clear()
         self.__currentActivatedSlotIdx = -1
         self._resetDelayedReload()
         self.as_resetS()
-        return
 
     def _resetAmmo(self):
         self.__resetStorages(self.__ammoRange, self.__ammoFullMask, True)
@@ -271,6 +274,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
     def _getEquipmentIcon(self, idx, item, icon):
         return backport.image(self._getEquipmentIconPath(item).dyn(icon)())
 
+    def _isIdxInKeysRange(self, idx):
+        return idx in self.__equipmentRange or idx in self.__ordersRange
+
     def _updateShellSlot(self, idx, quantity):
         self.as_setItemQuantityInSlotS(idx, quantity)
 
@@ -370,7 +376,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
     def __onShellsCleared(self, _):
         self._resetAmmo()
 
-    def __onEquipmentsCleared(self):
+    def _onEquipmentsCleared(self):
         self._resetEquipments()
 
     def __onOptionalDevicesCleared(self):
@@ -397,6 +403,28 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         self._addEquipmentSlot(idx, intCD, item)
         return
 
+    def _onEquipmentUpdated(self, intCD, item):
+        if item.index > 0:
+            self._updateEquipmentSlot(item.index + self._ORDERS_START_IDX - 1, item)
+        elif intCD in self._cds:
+            self._updateEquipmentSlot(self._cds.index(intCD), item)
+        else:
+            _logger.error('Equipment with cd=%d is not found in panel=%s', intCD, str(self._cds))
+
+    def _onEquipmentCooldownInPercent(self, key, percent):
+        index = self._getEquipmentIdxByKey(key)
+        if index is None:
+            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
+        self.as_setCoolDownPosAsPercentS(index, percent)
+        return
+
+    def _onEquipmentCooldownTime(self, key, timeLeft, isBaseTime, isFlash):
+        index = self._getEquipmentIdxByKey(key)
+        if index is None:
+            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
+        self.as_setCoolDownTimeSnapshotS(index, timeLeft, isBaseTime, isFlash)
+        return
+
     def _onEquipmentReset(self, oldIntCD, intCD, item):
         self._resetEquipmentSlot(self._cds.index(oldIntCD), intCD, item)
 
@@ -405,6 +433,12 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
 
     def _getEquipmentIconPath(self, *_):
         return self._R_ARTEFACT_ICON
+
+    def __onVehicleFeedbackReceived(self, eventID, _, value):
+        if eventID == FEEDBACK_EVENT_ID.VEHICLE_ATTRS_CHANGED:
+            for idx, payload in enumerate(self.sessionProvider.shared.ammo.getOrderedShellsLayout()):
+                intCD, descriptor, _, _, gunSettings = payload[:5]
+                self.as_updateTooltipS(idx=idx, tooltipStr=self.__makeShellTooltip(descriptor, int(round(gunSettings.getPiercingPower(intCD))), gunSettings.getShotSpeed(intCD)))
 
     def _addListeners(self):
         vehicleCtrl = self.sessionProvider.shared.vehicleState
@@ -428,10 +462,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             self.__fillEquipments(eqCtrl)
             eqCtrl.onEquipmentAdded += self._onEquipmentAdded
             eqCtrl.onEquipmentReset += self._onEquipmentReset
-            eqCtrl.onEquipmentUpdated += self.__onEquipmentUpdated
-            eqCtrl.onEquipmentCooldownInPercent += self.__onEquipmentCooldownInPercent
-            eqCtrl.onEquipmentCooldownTime += self.__onEquipmentCooldownTime
-            eqCtrl.onEquipmentsCleared += self.__onEquipmentsCleared
+            eqCtrl.onEquipmentUpdated += self._onEquipmentUpdated
+            eqCtrl.onEquipmentCooldownInPercent += self._onEquipmentCooldownInPercent
+            eqCtrl.onEquipmentCooldownTime += self._onEquipmentCooldownTime
+            eqCtrl.onEquipmentsCleared += self._onEquipmentsCleared
         optDevicesCtrl = self.sessionProvider.shared.optionalDevices
         if optDevicesCtrl is not None:
             self.__fillOptionalDevices(optDevicesCtrl)
@@ -447,6 +481,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             crosshairCtrl.onCrosshairViewChanged += self.__onCrosshairViewChanged
         CommandMapping.g_instance.onMappingChanged += self._onMappingChanged
         g_eventBus.addListener(GameEvent.CHOICE_CONSUMABLE, self.__handleConsumableChoice, scope=EVENT_BUS_SCOPE.BATTLE)
+        feedbackCtrl = self.sessionProvider.shared.feedback
+        if feedbackCtrl is not None:
+            feedbackCtrl.onVehicleFeedbackReceived += self.__onVehicleFeedbackReceived
         return
 
     def _onSlotWaited(self, index, quantity):
@@ -481,15 +518,18 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if eqCtrl is not None:
             eqCtrl.onEquipmentAdded -= self._onEquipmentAdded
             eqCtrl.onEquipmentReset -= self._onEquipmentReset
-            eqCtrl.onEquipmentUpdated -= self.__onEquipmentUpdated
-            eqCtrl.onEquipmentCooldownInPercent -= self.__onEquipmentCooldownInPercent
-            eqCtrl.onEquipmentCooldownTime -= self.__onEquipmentCooldownTime
-            eqCtrl.onEquipmentsCleared -= self.__onEquipmentsCleared
+            eqCtrl.onEquipmentUpdated -= self._onEquipmentUpdated
+            eqCtrl.onEquipmentCooldownInPercent -= self._onEquipmentCooldownInPercent
+            eqCtrl.onEquipmentCooldownTime -= self._onEquipmentCooldownTime
+            eqCtrl.onEquipmentsCleared -= self._onEquipmentsCleared
         optDevicesCtrl = self.sessionProvider.shared.optionalDevices
         if optDevicesCtrl is not None:
             optDevicesCtrl.onOptionalDeviceAdded -= self.__onOptionalDeviceAdded
             optDevicesCtrl.onOptionalDeviceUpdated -= self.__onOptionalDeviceUpdated
             optDevicesCtrl.onOptionalDevicesCleared -= self.__onOptionalDevicesCleared
+        feedbackCtrl = self.sessionProvider.shared.feedback
+        if feedbackCtrl is not None:
+            feedbackCtrl.onVehicleFeedbackReceived -= self.__onVehicleFeedbackReceived
         return
 
     def __genNextIdx(self, full, start):
@@ -580,7 +620,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             handler = None
             if idx in self.__ammoRange:
                 handler = partial(self.__handleAmmoPressed, intCD)
-            elif (idx in self.__equipmentRange or idx in self.__ordersRange) and hasEquipment(intCD):
+            elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
                 item = getEquipment(intCD)
                 if item is not None and item.getTags():
                     handler = self._getEquipmentKeyHandler(intCD, idx)
@@ -666,29 +706,11 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if self.__reloadTicker:
             self.__reloadTicker.startAnimation(shellIndex, state.getActualValue(), state.getBaseValue())
         else:
-            self.as_setCoolDownTimeS(shellIndex, state.getActualValue(), state.getBaseValue(), state.getTimePassed())
-
-    def __onEquipmentUpdated(self, intCD, item):
-        if item.index > 0:
-            self._updateEquipmentSlot(item.index + self._ORDERS_START_IDX - 1, item)
-        elif intCD in self._cds:
-            self._updateEquipmentSlot(self._cds.index(intCD), item)
-        else:
-            _logger.error('Equipment with cd=%d is not found in panel=%s', intCD, str(self._cds))
-
-    def __onEquipmentCooldownInPercent(self, key, percent):
-        index = self._getEquipmentIdxByKey(key)
-        if index is None:
-            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
-        self.as_setCoolDownPosAsPercentS(index, percent)
-        return
-
-    def __onEquipmentCooldownTime(self, key, timeLeft, isBaseTime, isFlash):
-        index = self._getEquipmentIdxByKey(key)
-        if index is None:
-            _logger.error('Equipment with cd, idx is not found in panel, %s', str(key))
-        self.as_setCoolDownTimeSnapshotS(index, timeLeft, isBaseTime, isFlash)
-        return
+            actualValue = state.getActualValue()
+            reloadingFinished = state.isReloadingFinished()
+            if actualValue > 0 or reloadingFinished and not self.ammoReloadingStatus.get(shellIndex):
+                self.ammoReloadingStatus[shellIndex] = reloadingFinished
+                self.as_setCoolDownTimeS(shellIndex, actualValue, state.getBaseValue(), state.getTimePassed())
 
     def __onOptionalDeviceAdded(self, optDeviceInBattle):
         if optDeviceInBattle.getIntCD() not in self._cds:

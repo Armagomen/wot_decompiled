@@ -170,7 +170,7 @@ class _ArtilleryStrikeSelector(_DefaultStrikeSelector, _VehiclesSelector):
         return gun_marker_ctrl.createArtyHit(myArtyEquipment, areaRadius)
 
     def __markerForceUpdate(self):
-        self.__marker.update(GUN_MARKER_TYPE.CLIENT, self.hitPosition, Vector3(0.0, 0.0, 1.0), (10.0, 10.0), 1000.0, None)
+        self.__marker.update(GUN_MARKER_TYPE.CLIENT, self.hitPosition, Vector3(0.0, 0.0, 1.0), 10.0, 0.0, 1000.0, None)
         return
 
     def processHover(self, position, force=False):
@@ -182,7 +182,7 @@ class _ArtilleryStrikeSelector(_DefaultStrikeSelector, _VehiclesSelector):
                 self.__marker.setPosition(position)
                 BigWorld.callback(SERVER_TICK_LENGTH, self.__markerForceUpdate)
             else:
-                self.__marker.update(GUN_MARKER_TYPE.CLIENT, position, Vector3(0.0, 0.0, 1.0), (10.0, 10.0), SERVER_TICK_LENGTH, None)
+                self.__marker.update(GUN_MARKER_TYPE.CLIENT, position, Vector3(0.0, 0.0, 1.0), 10.0, 0.0, SERVER_TICK_LENGTH, None)
             self.hitPosition = position
             self.writeStateToReplay()
             return
@@ -193,7 +193,7 @@ class _ArtilleryStrikeSelector(_DefaultStrikeSelector, _VehiclesSelector):
     def processReplayHover(self):
         replayCtrl = BattleReplay.g_replayCtrl
         _, _, self.hitPosition, _ = replayCtrl.getGunMarkerParams(self.hitPosition, Math.Vector3(0.0, 0.0, 0.0))
-        self.__marker.update(GUN_MARKER_TYPE.CLIENT, self.hitPosition, Vector3(0.0, 0.0, 1.0), (10.0, 10.0), SERVER_TICK_LENGTH, None)
+        self.__marker.update(GUN_MARKER_TYPE.CLIENT, self.hitPosition, Vector3(0.0, 0.0, 1.0), 10.0, 0.0, SERVER_TICK_LENGTH, None)
         return
 
     def writeStateToReplay(self):
@@ -600,6 +600,16 @@ class _Comp7ArenaBoundPlaneStrikeSelector(_Comp7ArenaBoundArtilleryStrikeSelecto
         return
 
 
+class _Comp7PoiArtilleryStrikeSelector(_ArenaBoundArtilleryStrikeSelector):
+
+    def _getAreaSize(self):
+        radius = self._getRadius()
+        return Vector2(radius * 2, radius * 2)
+
+    def _getRadius(self):
+        return self.equipment.radius
+
+
 _STRIKE_SELECTORS = {artefacts.RageArtillery: _ArtilleryStrikeSelector,
  artefacts.RageBomber: _BomberStrikeSelector,
  artefacts.EpicArtillery: _ArtilleryStrikeSelector,
@@ -612,7 +622,7 @@ _STRIKE_SELECTORS = {artefacts.RageArtillery: _ArtilleryStrikeSelector,
  artefacts.AttackArtilleryFortEquipment: _ArenaBoundArtilleryStrikeSelector,
  artefacts.Comp7ReconEquipment: _Comp7ArenaBoundPlaneStrikeSelector,
  artefacts.Comp7RedlineEquipment: _Comp7ArenaBoundArtilleryStrikeSelector,
- artefacts.PoiArtilleryEquipment: _ArenaBoundArtilleryStrikeSelector}
+ artefacts.PoiArtilleryEquipment: _Comp7PoiArtilleryStrikeSelector}
 
 class MapCaseControlModeBase(IControlMode, CallbackDelayer):
     guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -887,7 +897,7 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
     def isManualBind(self):
         return True
 
-    def updateGunMarker(self, markerType, pos, direction, size, relaxTime, collData):
+    def updateGunMarker(self, markerType, pos, direction, size, sizeOffset, relaxTime, collData):
         replayCtrl = BattleReplay.g_replayCtrl
         if replayCtrl.isPlaying:
             self.__activeSelector.processReplayHover()

@@ -163,7 +163,7 @@ class ClientArena(object):
     viewPoints = property(lambda self: self.__viewPoints)
     isFogOfWarEnabled = property(lambda self: self.__isFogOfWarEnabled)
     hasFogOfWarHiddenVehicles = property(lambda self: self.__hasFogOfWarHiddenVehicles)
-    hasObservers = property(lambda self: any(('observer' in v['vehicleType'].type.tags for v in self.__vehicles.itervalues() if v['vehicleType'] is not None)) or self.hasBonusCap(BONUS_CAPS.SSR))
+    hasObservers = property(lambda self: any(('observer' in v['vehicleType'].type.tags for v in self.__vehicles.itervalues() if v['vehicleType'] is not None)) or self.hasBonusCap(BONUS_CAPS.SERVER_REPLAY))
     teamBasesData = property(lambda self: self.__teamBasesData)
     arenaInfo = property(lambda self: self.__arenaInfo)
     arenaObserverInfo = property(lambda self: self.__arenaObserverInfo)
@@ -302,11 +302,11 @@ class ClientArena(object):
         yield self.awaitVehiclesAdded(awaitVehicles)
         self.onNewStatisticsReceived()
 
-    @wg_async
     def __onVehicleStatisticsUpdate(self, argStr):
         vehicleID, stats = self.__vehicleStatisticsAsDict(cPickle.loads(zlib.decompress(argStr)))
-        yield self.awaitVehiclesAdded([vehicleID])
         self.__statistics[vehicleID] = stats
+        if vehicleID not in self.__vehicles:
+            return
         self.onVehicleStatisticsUpdate(vehicleID)
 
     def __getArenaPlans(self):
@@ -421,6 +421,8 @@ class ClientArena(object):
         self.__rebuildIndexToId()
         if notify:
             self.onVehicleAdded(vehID)
+        if vehID in self.__statistics:
+            self.onVehicleStatisticsUpdate(vehID)
 
     def updateVehicleIsAlive(self, vehID, compDescr, isPlayerVehicle):
         vehInfo = self.__vehicles[vehID]
@@ -446,9 +448,9 @@ class ClientArena(object):
         self.onGameModeSpecificStats(isStatic, stats)
 
     @wg_async
-    def awaitVehiclesAdded(self, vehIDs):
+    def awaitVehiclesAdded(self, vehIDs, timeout=None):
         try:
-            yield wg_await(_ArenaVehiclesAwaiter(self._awaitVehiclesScope, self, vehIDs).wait(), self.VEHICLES_AWAIT_TIMEOUT)
+            yield wg_await(_ArenaVehiclesAwaiter(self._awaitVehiclesScope, self, vehIDs).wait(), timeout or self.VEHICLES_AWAIT_TIMEOUT)
         except BrokenPromiseError:
             pass
 

@@ -303,10 +303,7 @@ class IClientArenaVisitor(object):
     def isSoloTeam(self, team):
         raise NotImplementedError
 
-    def getArenaIconKey(self):
-        raise NotImplementedError
-
-    def getArenaIcon(self, iconKey):
+    def getArenaIcon(self, subdir=''):
         raise NotImplementedError
 
     def getTeamSpawnPoints(self, team):

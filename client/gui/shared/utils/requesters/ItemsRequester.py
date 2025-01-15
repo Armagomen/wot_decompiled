@@ -34,13 +34,14 @@ from skeletons.gui.game_control import IVehiclePostProgressionController
 from skeletons.gui.shared import IItemsCache, IItemsRequester
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 if TYPE_CHECKING:
-    from typing import Optional, Dict
+    from typing import Optional, Dict, List
     import skeletons.gui.shared.utils.requesters as requesters
     from gui.shared.gui_items.badge import Badge
     from gui.shared.gui_items.Tankman import Tankman
     from gui.shared.gui_items.Vehicle import Vehicle
     from gui.veh_post_progression.models.progression import PostProgressionItem
     from items.vehicles import VehicleType
+    from gui.shared.gui_items.customization.c11n_items import Customization
 _logger = logging.getLogger(__name__)
 DO_LOG_BROKEN_SYNC = False
 
@@ -228,6 +229,18 @@ class VehsMultiNationSuitableCriteria(VehsSuitableCriteria):
                 self._selectAllSuitableItemsByVehicleDescr(self.itemsCache.items.getItemByCD(targetVehCD).descriptor, itemTypeID, outSuitableCompDescrs)
 
 
+class VehicleCanInstallC11nCriteria(RequestCriteria):
+    _itemsCache = dependency.descriptor(IItemsCache)
+
+    def __init__(self, itemTypeID, criteria):
+        items = self._itemsCache.items.getItems(itemTypeID, criteria).values()
+        super(VehicleCanInstallC11nCriteria, self).__init__(PredicateCondition(lambda vehicle: self.hasSuitableC11n(vehicle, items)))
+
+    @staticmethod
+    def hasSuitableC11n(vehicle, items):
+        return False if vehicle.isOutfitLocked else any((item.mayInstall(vehicle) for item in items))
+
+
 class REQ_CRITERIA(object):
     EMPTY = RequestCriteria()
     ALL = RequestCriteria(PredicateCondition(lambda i: True))
@@ -277,6 +290,7 @@ class REQ_CRITERIA(object):
         IS_STORAGE_HIDDEN = RequestCriteria(PredicateCondition(lambda item: item.isStorageHidden))
         EXPIRED_IGR_RENT = RequestCriteria(PredicateCondition(lambda item: item.isRented and item.rentalIsOver and item.isPremiumIGR))
         RENT_PROMOTION = RequestCriteria(PredicateCondition(lambda item: item.isRentPromotion))
+        EXTERNAL_RENT = RequestCriteria(PredicateCondition(lambda item: item.isExternalRent))
         WOT_PLUS_VEHICLE = RequestCriteria(PredicateCondition(lambda item: item.isWotPlus))
         TELECOM_RENT = RequestCriteria(PredicateCondition(lambda item: item.isTelecomRent))
         SEASON_RENT = RequestCriteria(PredicateCondition(lambda item: item.isSeasonRent))
@@ -312,6 +326,7 @@ class REQ_CRITERIA(object):
         FOR_ITEM = staticmethod(lambda style: RequestCriteria(PredicateCondition(style.mayInstall)))
         HAS_ROLE = staticmethod(lambda roleName: RequestCriteria(PredicateCondition(lambda item: roleName in {roles[0] for roles in item.descriptor.type.crewRoles})))
         HAS_ROLES = staticmethod(lambda tankmanRoles: RequestCriteria(PredicateCondition(lambda item: any((roles[0] in tankmanRoles for roles in item.descriptor.type.crewRoles)))))
+        CAN_INSTALL_C11N = staticmethod(lambda itemTypeID, criteria=RequestCriteria(): VehicleCanInstallC11nCriteria(itemTypeID, criteria))
 
     class TANKMAN(object):
         IN_TANK = RequestCriteria(PredicateCondition(lambda item: item.isInTank))
@@ -321,6 +336,7 @@ class REQ_CRITERIA(object):
         SPECIFIC_BY_NAME = staticmethod(lambda name: RequestCriteria(PredicateCondition(lambda item: item.isSearchableByName(name))))
         SPECIFIC_BY_NAME_OR_SKIN = staticmethod(lambda name: RequestCriteria(PredicateCondition(lambda item: item.isSearchableByName(name) or item.isSearchableBySkinName(name))))
         VEHICLE_BATTLE_ROYALE = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.BATTLE_ROYALE)))
+        VEHICLE_EVENT_BATTLES = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.EVENT)))
         VEHICLE_HIDDEN_IN_HANGAR = RequestCriteria(PredicateCondition(lambda item: False if not item.vehicleDescr else checkForTags(item.vehicleDescr.type.tags, VEHICLE_TAGS.MODE_HIDDEN)))
         VEHICLE_NATIVE_TYPE = staticmethod(lambda vehicleNativeType: RequestCriteria(PredicateCondition(lambda item: item.vehicleNativeType == vehicleNativeType)))
         VEHICLE_NATIVE_TYPES = staticmethod(lambda vehicleNativeTypes: RequestCriteria(PredicateCondition(lambda item: item.vehicleNativeType in vehicleNativeTypes)))
@@ -416,7 +432,7 @@ class REQ_CRITERIA(object):
 
 
 class RESEARCH_CRITERIA(object):
-    VEHICLE_TO_UNLOCK = ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.VEHICLE.PREMIUM | ~REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR | ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING | ~REQ_CRITERIA.VEHICLE.HAS_ANY_TAG(constants.BATTLE_MODE_VEHICLE_TAGS) | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
+    VEHICLE_TO_UNLOCK = ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.VEHICLE.PREMIUM | ~REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR | ~REQ_CRITERIA.VEHICLE.MAPS_TRAINING | ~REQ_CRITERIA.VEHICLE.HAS_ANY_TAG(constants.BATTLE_MODE_VEHICLE_TAGS) | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE | ~REQ_CRITERIA.VEHICLE.EVENT_BATTLE
 
 
 class ItemsRequester(IItemsRequester):
@@ -808,9 +824,6 @@ class ItemsRequester(IItemsRequester):
                         for idx in items.iterkeys():
                             intCD = vehicles.makeIntCompactDescrByID('customizationItem', cType, getDiffID(idx))
                             invalidate[GUI_ITEM_TYPE.CUSTOMIZATION].add(intCD)
-
-                for vehicleIntCD, outfitsData in itemsDiff.get(CustomizationInvData.OUTFITS_POOL, {}).iteritems():
-                    invalidate[GUI_ITEM_TYPE.VEHICLE].add(vehicleIntCD)
 
             invalidate[itemTypeID].update(itemsDiff.keys())
 
