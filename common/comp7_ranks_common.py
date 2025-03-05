@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/comp7_ranks_common.py
+# Embedded file name: comp7/scripts/common/comp7_ranks_common.py
 from typing import Optional, FrozenSet, Tuple, Dict
 from cache import cached_property
 from intervals import Interval
@@ -14,7 +14,7 @@ class Comp7Division(object):
 
     def __init__(self, serialIdx, divisionInfo):
         pointsRange = divisionInfo['range']
-        self.range = pointsRange if type(pointsRange) is Interval else Interval(*pointsRange)
+        self.range = pointsRange if isinstance(pointsRange, Interval) else Interval(*pointsRange)
         self.rank = divisionInfo['rank']
         self.dvsnID = divisionInfo['id']
         self.index = divisionInfo['index']

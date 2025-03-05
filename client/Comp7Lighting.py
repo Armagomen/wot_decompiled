@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Comp7Lighting.py
+# Embedded file name: comp7/scripts/client/Comp7Lighting.py
 import logging
 import AnimationSequence
 import BigWorld
