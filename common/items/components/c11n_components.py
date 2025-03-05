@@ -13,7 +13,7 @@ from items import vehicles
 from items.components import shared_components
 from soft_exception import SoftException
 from items.components.c11n_constants import ApplyArea, SeasonType, Options, ItemTags, CustomizationType, MAX_CAMOUFLAGE_PATTERN_SIZE, DecalType, HIDDEN_CAMOUFLAGE_ID, PROJECTION_DECALS_SCALE_ID_VALUES, MAX_USERS_PROJECTION_DECALS, CustomizationTypeNames, DecalTypeNames, ProjectionDecalFormTags, DEFAULT_SCALE_FACTOR_ID, CUSTOMIZATION_SLOTS_VEHICLE_PARTS, CamouflageTilingType, SLOT_TYPE_NAMES, EMPTY_ITEM_ID, SLOT_DEFAULT_ALLOWED_MODEL, EDITING_STYLE_REASONS, CustomizationDisplayType, AttachmentSize, AttachmentTags
-from typing import List, Dict, Type, Tuple, Optional, TypeVar, FrozenSet, Iterable, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 from string import lower, upper
 from copy import deepcopy
 from bisect import bisect
@@ -23,9 +23,9 @@ from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 if IS_EDITOR:
     from editor_copy import edCopy
 if TYPE_CHECKING:
+    from typing import List, Dict, Type, Tuple, Optional, FrozenSet, Iterable, Callable, Iterator
     from account_helpers import Tokens
-    from serializable_types.customizations import CustomizationOutfit
-Item = TypeVar('TypeVar')
+    from serializable_types.customizations import CustomizationOutfit, CamouflageComponent
 
 class BaseCustomizationItem(object):
     __metaclass__ = ReflectionMetaclass
@@ -490,6 +490,17 @@ class StyleItem(BaseCustomizationItem):
 
     def removePartrsFromOutfit(self, season, outfitComponent, vehicleCD, intCDs=None):
         return self._opPartsOutfit(type(outfitComponent).getDiff, season, outfitComponent, vehicleCD, intCDs)
+
+    def changePartsOutfitExceptGunInsignia(self, season, outfitComponent, *intCDs):
+        if not self.hasContaineOutfitPart:
+            return outfitComponent
+        for partOutfitComponent in self._iteratePartsOutfit(season, intCDs, True):
+            outfitGunInsignias = set(outfitComponent.getGunInsignias())
+            gunInsigniasInBoth = (insignia for insignia in partOutfitComponent.getGunInsignias() if insignia in outfitGunInsignias)
+            outfitComponent = outfitComponent.getDiff(partOutfitComponent)
+            outfitComponent.insignias.extend(gunInsigniasInBoth)
+
+        return outfitComponent
 
 
 class InsigniaItem(BaseCustomizationItem):
@@ -960,74 +971,74 @@ class CustomizationCache(object):
 
     def adjustProgression--- This code section failed: ---
 
-1194       0	LOAD_GLOBAL       'False'
+1216       0	LOAD_GLOBAL       'False'
            3	STORE_FAST        'force'
 
-1195       6	LOAD_GLOBAL       'CustomizationType'
+1217       6	LOAD_GLOBAL       'CustomizationType'
            9	LOAD_ATTR         'RANGE'
           12	STORE_FAST        'itemTypes'
 
-1196      15	LOAD_FAST         'itemForce'
+1218      15	LOAD_FAST         'itemForce'
           18	LOAD_CONST        ''
           21	COMPARE_OP        'is not'
           24	POP_JUMP_IF_FALSE '48'
 
-1197      27	LOAD_GLOBAL       'True'
+1219      27	LOAD_GLOBAL       'True'
           30	STORE_FAST        'force'
 
-1198      33	LOAD_FAST         'itemForce'
+1220      33	LOAD_FAST         'itemForce'
           36	LOAD_ATTR         'itemType'
           39	BUILD_SET_1       ''
           42	STORE_FAST        'itemTypes'
           45	JUMP_FORWARD      '48'
         48_0	COME_FROM         '45'
 
-1200      48	SETUP_LOOP        '322'
+1222      48	SETUP_LOOP        '322'
           51	LOAD_FAST         'itemTypes'
           54	GET_ITER          ''
           55	FOR_ITER          '321'
           58	STORE_FAST        'itemType'
 
-1201      61	LOAD_GLOBAL       'lower'
+1223      61	LOAD_GLOBAL       'lower'
           64	LOAD_GLOBAL       'CustomizationTypeNames'
           67	LOAD_FAST         'itemType'
           70	BINARY_SUBSCR     ''
           71	CALL_FUNCTION_1   ''
           74	STORE_FAST        'typeName'
 
-1202      77	LOAD_CONST        '{}s'
+1224      77	LOAD_CONST        '{}s'
           80	LOAD_ATTR         'format'
           83	LOAD_FAST         'typeName'
           86	CALL_FUNCTION_1   ''
           89	STORE_FAST        'componentsAttrName'
 
-1203      92	LOAD_GLOBAL       'getattr'
+1225      92	LOAD_GLOBAL       'getattr'
           95	LOAD_FAST         'outfit'
           98	LOAD_FAST         'componentsAttrName'
          101	LOAD_CONST        ''
          104	CALL_FUNCTION_3   ''
          107	STORE_FAST        'components'
 
-1205     110	LOAD_FAST         'components'
+1227     110	LOAD_FAST         'components'
          113	POP_JUMP_IF_TRUE  '122'
 
-1206     116	CONTINUE          '55'
+1228     116	CONTINUE          '55'
          119	JUMP_FORWARD      '122'
        122_0	COME_FROM         '119'
 
-1208     122	LOAD_GLOBAL       'getattr'
+1230     122	LOAD_GLOBAL       'getattr'
          125	LOAD_FAST         'self'
          128	LOAD_FAST         'componentsAttrName'
          131	CALL_FUNCTION_2   ''
          134	STORE_FAST        'storage'
 
-1210     137	SETUP_LOOP        '318'
+1232     137	SETUP_LOOP        '318'
          140	LOAD_FAST         'components'
          143	GET_ITER          ''
          144	FOR_ITER          '317'
          147	STORE_FAST        'component'
 
-1211     150	LOAD_FAST         'itemType'
+1233     150	LOAD_FAST         'itemType'
          153	LOAD_GLOBAL       'CustomizationType'
          156	LOAD_ATTR         'CAMOUFLAGE'
          159	COMPARE_OP        '=='
@@ -1039,23 +1050,23 @@ class CustomizationCache(object):
        177_0	COME_FROM         '162'
          177	POP_JUMP_IF_FALSE '186'
 
-1212     180	CONTINUE          '144'
+1234     180	CONTINUE          '144'
          183	JUMP_FORWARD      '186'
        186_0	COME_FROM         '183'
 
-1214     186	SETUP_EXCEPT      '290'
+1236     186	SETUP_EXCEPT      '290'
 
-1216     189	LOAD_GLOBAL       'isinstance'
+1238     189	LOAD_GLOBAL       'isinstance'
          192	LOAD_FAST         'component'
          195	LOAD_GLOBAL       'int'
          198	CALL_FUNCTION_2   ''
          201	POP_JUMP_IF_FALSE '210'
 
-1217     204	CONTINUE_LOOP     '144'
+1239     204	CONTINUE_LOOP     '144'
          207	JUMP_FORWARD      '210'
        210_0	COME_FROM         '207'
 
-1219     210	LOAD_FAST         'force'
+1241     210	LOAD_FAST         'force'
          213	POP_JUMP_IF_FALSE '240'
          216	LOAD_FAST         'itemForce'
          219	LOAD_ATTR         'id'
@@ -1065,18 +1076,18 @@ class CustomizationCache(object):
        231_0	COME_FROM         '213'
          231	POP_JUMP_IF_FALSE '240'
 
-1220     234	CONTINUE_LOOP     '144'
+1242     234	CONTINUE_LOOP     '144'
          237	JUMP_FORWARD      '240'
        240_0	COME_FROM         '237'
 
-1222     240	LOAD_FAST         'storage'
+1244     240	LOAD_FAST         'storage'
          243	LOAD_ATTR         'get'
          246	LOAD_FAST         'component'
          249	LOAD_ATTR         'id'
          252	CALL_FUNCTION_1   ''
          255	STORE_FAST        'item'
 
-1223     258	LOAD_GLOBAL       '_adjustProgression'
+1245     258	LOAD_GLOBAL       '_adjustProgression'
          261	LOAD_FAST         'component'
          264	LOAD_FAST         'vehTypeCompDescr'
          267	LOAD_FAST         'item'
@@ -1084,14 +1095,14 @@ class CustomizationCache(object):
          273	LOAD_CONST        'progressionLevel'
          276	LOAD_CONST        'force'
 
-1224     279	LOAD_FAST         'force'
+1246     279	LOAD_FAST         'force'
          282	CALL_FUNCTION_261 ''
          285	POP_TOP           ''
          286	POP_BLOCK         ''
          287	JUMP_BACK         '144'
        290_0	COME_FROM         '186'
 
-1225     290	DUP_TOP           ''
+1247     290	DUP_TOP           ''
          291	LOAD_GLOBAL       'SoftException'
          294	COMPARE_OP        'exception match'
          297	POP_JUMP_IF_FALSE '313'
@@ -1099,7 +1110,7 @@ class CustomizationCache(object):
          301	POP_TOP           ''
          302	POP_TOP           ''
 
-1226     303	LOAD_GLOBAL       'LOG_CURRENT_EXCEPTION'
+1248     303	LOAD_GLOBAL       'LOG_CURRENT_EXCEPTION'
          306	CALL_FUNCTION_0   ''
          309	POP_TOP           ''
          310	JUMP_BACK         '144'
@@ -1112,15 +1123,15 @@ class CustomizationCache(object):
          321	POP_BLOCK         ''
        322_0	COME_FROM         '48'
 
-1228     322	SETUP_EXCEPT      '445'
+1250     322	SETUP_EXCEPT      '445'
 
-1229     325	LOAD_GLOBAL       'CustomizationType'
+1251     325	LOAD_GLOBAL       'CustomizationType'
          328	LOAD_ATTR         'STYLE'
          331	LOAD_FAST         'itemTypes'
          334	COMPARE_OP        'in'
          337	POP_JUMP_IF_FALSE '441'
 
-1230     340	LOAD_FAST         'outfit'
+1252     340	LOAD_FAST         'outfit'
          343	LOAD_ATTR         'styleId'
          346	LOAD_CONST        0
          349	COMPARE_OP        '!='
@@ -1141,7 +1152,7 @@ class CustomizationCache(object):
        383_2	COME_FROM         '376'
          383	POP_JUMP_IF_FALSE '441'
 
-1231     386	LOAD_FAST         'self'
+1253     386	LOAD_FAST         'self'
          389	LOAD_ATTR         'styles'
          392	LOAD_ATTR         'get'
          395	LOAD_FAST         'outfit'
@@ -1149,7 +1160,7 @@ class CustomizationCache(object):
          401	CALL_FUNCTION_1   ''
          404	STORE_FAST        'item'
 
-1232     407	LOAD_GLOBAL       '_adjustProgression'
+1254     407	LOAD_GLOBAL       '_adjustProgression'
          410	LOAD_FAST         'outfit'
          413	LOAD_FAST         'vehTypeCompDescr'
          416	LOAD_FAST         'item'
@@ -1157,7 +1168,7 @@ class CustomizationCache(object):
          422	LOAD_CONST        'styleProgressionLevel'
          425	LOAD_CONST        'force'
 
-1233     428	LOAD_FAST         'force'
+1255     428	LOAD_FAST         'force'
          431	CALL_FUNCTION_261 ''
          434	POP_TOP           ''
          435	JUMP_ABSOLUTE     '441'
@@ -1167,7 +1178,7 @@ class CustomizationCache(object):
          442	JUMP_FORWARD      '469'
        445_0	COME_FROM         '322'
 
-1234     445	DUP_TOP           ''
+1256     445	DUP_TOP           ''
          446	LOAD_GLOBAL       'SoftException'
          449	COMPARE_OP        'exception match'
          452	POP_JUMP_IF_FALSE '468'
@@ -1175,7 +1186,7 @@ class CustomizationCache(object):
          456	POP_TOP           ''
          457	POP_TOP           ''
 
-1235     458	LOAD_GLOBAL       'LOG_CURRENT_EXCEPTION'
+1257     458	LOAD_GLOBAL       'LOG_CURRENT_EXCEPTION'
          461	CALL_FUNCTION_0   ''
          464	POP_TOP           ''
          465	JUMP_FORWARD      '469'
