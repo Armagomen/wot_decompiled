@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ApplicationPoint.py
+# Embedded file name: comp7/scripts/client/ApplicationPoint.py
 import weakref
 import BigWorld
 import CGF

@@ -1,0 +1,11 @@
+>>> Decompile folder: 'C:\Users\armag\Desktop\scripts'
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/client/AvatarInputHandler/DynamicCameras/ArcadeCamera.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/client/gui/battle_control/gui_vehicle_builder.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/client/gui/lootbox_system/bonuses_packers.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/client/gui/Scaleform/daapi/view/battle/classic/minimap.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/client/messenger/proto/search_processor.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/common/items/components/c11n_components.py')
+<<< Error: 'code' object has no attribute 'expandtabs'
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/common/serialization/component_xml_deserializer.py')
+<<< Error: ("Decompiling stopped due to <class 'uncompyle6.semantics.pysource.SourceWalkerError'>", 'scripts/common/visual_script/debug_plan_loader.py')
+>>> Files decompiled/found - 7850/7850
