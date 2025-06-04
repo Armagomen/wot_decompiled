@@ -1,5 +1,4 @@
-# File: d (Python 2.7)
-
+# Embedded file name: scripts/common/visual_script/debug_plan_loader.py
 from constants import IS_DEVELOPMENT
 if IS_DEVELOPMENT:
     import VSE
@@ -7,56 +6,50 @@ if IS_DEVELOPMENT:
     import weakref
     from debug_utils import LOG_DEBUG_DEV
     from plan_tags import getAllTags
-    
+
     class DebugPlanHolder(PlanHolder):
         __slots__ = 'contextName'
-        
+
         def __init__(self, plan, state, auto = False):
             super(DebugPlanHolder, self).__init__(plan, state, auto)
             self.contextName = ''
 
 
-    
     class DebugPlanLoader(object):
-        
-        def __init__(self):
-            self._DebugPlanLoader__contextAll = []
-            self._DebugPlanLoader__plans = { }
-            self._DebugPlanLoader__tags = getAllTags()
 
-        
+        def __init__(self):
+            self.__contextAll = []
+            self.__plans = {}
+            self.__tags = getAllTags()
+
         def getContext(self, name):
-            for ctx in self._DebugPlanLoader__contextAll:
+            for ctx in self.__contextAll:
                 if type(ctx()).__name__ == name:
                     return ctx()
-            
 
-        
+            return None
+
         def regContext(self, context):
-            for ctx in self._DebugPlanLoader__contextAll:
+            for ctx in self.__contextAll:
                 if ctx() == context:
                     break
-                    continue
-                self._DebugPlanLoader__contextAll.append(weakref.ref(context))
+            else:
+                self.__contextAll.append(weakref.ref(context))
                 LOG_DEBUG_DEV('VSContext ', type(context).__name__, ' was registered')
-                return None
 
-        
         def unregContext(self, context):
-            for ctx in self._DebugPlanLoader__contextAll[:]:
+            for ctx in self.__contextAll[:]:
                 if ctx() == context:
-                    self._DebugPlanLoader__contextDestroyed(context)
-                    self._DebugPlanLoader__contextAll.remove(ctx)
+                    self.__contextDestroyed(context)
+                    self.__contextAll.remove(ctx)
                     LOG_DEBUG_DEV('VSContext ', type(context).__name__, ' was unregistered')
                     break
-                    continue
 
-        
-        def startPlan(self, planName, contextName, aspect, params = { }):
-            if planName in self._DebugPlanLoader__plans:
-                self._DebugPlanLoader__plans[planName].start()
+        def startPlan(self, planName, contextName, aspect, params = {}):
+            if planName in self.__plans:
+                self.__plans[planName].start()
                 return True
-            holder = None(VSE.Plan(), PlanHolder.LOADING, False)
+            holder = DebugPlanHolder(VSE.Plan(), PlanHolder.LOADING, False)
             holder.params = params
             if contextName != '':
                 context = self.getContext(contextName)
@@ -65,35 +58,33 @@ if IS_DEVELOPMENT:
                     holder.contextName = contextName
                 else:
                     return False
-            holder.load(planName, aspect, self._DebugPlanLoader__tags)
+            holder.load(planName, aspect, self.__tags)
             if holder.isLoaded:
                 holder.start()
-                self._DebugPlanLoader__plans[planName] = holder
+                self.__plans[planName] = holder
                 return True
+            return False
 
-        
         def stopPlan(self, planName):
-            if planName in self._DebugPlanLoader__plans:
-                self._DebugPlanLoader__plans[planName].plan.stop()
-                del self._DebugPlanLoader__plans[planName]
+            if planName in self.__plans:
+                self.__plans[planName].plan.stop()
+                del self.__plans[planName]
                 return True
+            return False
 
-        
         def stopAllPlans(self):
             res = True
-            for planName in list(self._DebugPlanLoader__plans.keys()):
+            for planName in list(self.__plans.keys()):
                 res &= self.stopPlan(planName)
-            
+
             return res
 
-        
-        def _DebugPlanLoader__contextDestroyed(self, context):
-            for planName in list(self._DebugPlanLoader__plans.keys()):
-                holder = self._DebugPlanLoader__plans[planName]
+        def __contextDestroyed(self, context):
+            for planName in list(self.__plans.keys()):
+                holder = self.__plans[planName]
                 if holder.contextName == type(context).__name__:
                     holder.plan.stop()
-                    del self._DebugPlanLoader__plans[planName]
-                    continue
+                    del self.__plans[planName]
 
 
     debugPlanLoader = DebugPlanLoader()
