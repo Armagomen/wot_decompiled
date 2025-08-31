@@ -16,6 +16,7 @@ class CGFMetaTypes(object):
     VECTOR2_LIST = 'CGF::ScriptList<Vector2>'
     VECTOR3_LIST = 'CGF::ScriptList<Vector3>'
     VECTOR4_LIST = 'CGF::ScriptList<Vector4>'
+    OBJECT_LINK_LIST = 'CGF::ScriptList<ObjectLink>'
     LINK = 'BW::CGF::PyLinkConfig'
     VECTOR2 = 'Vector2'
     VECTOR3 = 'Vector3'
@@ -99,6 +100,14 @@ def defaultRegistrator(cls):
         if baseMeta is not None:
             basePropIndex += len(baseMeta)
             all_meta.extend(baseMeta)
+        baseAttrs = vars(base)
+        for key, value in baseAttrs.iteritems():
+            if isinstance(value, ComponentProperty):
+                setattr(cls, key, None)
+                value.name = key
+                value.ownerName = name
+                value.applyIndex(basePropIndex)
+                meta.append(value)
 
     for key, value in attrs.iteritems():
         if isinstance(value, ComponentProperty):

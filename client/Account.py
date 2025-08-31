@@ -20,7 +20,7 @@ from PlayerEvents import g_playerEvents as events
 from account_helpers import AccountSyncData, Inventory, DossierCache, Shop, Stats, QuestProgress, CustomFilesCache, BattleResultsCache, ClientGoodies, client_blueprints, client_recycle_bin, client_anonymizer, ClientBattleRoyale
 from account_helpers import ClientInvitations, vehicle_rotation
 from account_helpers import client_epic_meta_game, tokens
-from account_helpers import client_ranked, ClientBadges
+from account_helpers import client_ranked, client_badges
 from account_helpers.achievements20 import Achievements20
 from account_helpers.battle_pass import BattlePassManager
 from account_helpers.dog_tags import DogTags
@@ -54,6 +54,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared.utils import IHangarSpace
 from soft_exception import SoftException
 from streamIDs import RangeStreamIDCallbacks, STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN
+from schema_manager import getSchemaManager
 StreamData = namedtuple('StreamData', ['data',
  'isCorrupted',
  'origPacketLen',
@@ -171,6 +172,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self.spaFlags = g_accountRepository.spaFlags
         self.anonymizer = g_accountRepository.anonymizer
         self.dailyQuests = g_accountRepository.dailyQuests
+        self.weeklyQuests = g_accountRepository.weeklyQuests
         self.battlePass = g_accountRepository.battlePass
         self.offers = g_accountRepository.offers
         self.dogTags = g_accountRepository.dogTags
@@ -894,6 +896,18 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         args.extend(personalMissionsIDs)
         self._doCmdIntArr(AccountCommands.CMD_PAUSE_POTAPOV_QUESTS, args, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
 
+    def activatePersonalMissionsSeason(self, branches, callback):
+        args = branches
+        self._doCmdIntArr(AccountCommands.CMD_ACTIVATE_POTAPOV_BRANCHES, args, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
+
+    def getPersonalMissionsQuestRewards(self, eventType, questID, callback=None):
+        if callback is not None:
+            proxy = lambda requestID, resultID, errorCode, rewards=None: callback(resultID, errorCode, rewards)
+        else:
+            proxy = None
+        self._doCmdIntStr(AccountCommands.CMD_APPLY_QUEST_DELAYED_REWARD, eventType, questID, proxy)
+        return
+
     def getPersonalMissionReward(self, personalMissionsIDs, questType, needTamkman=False, tmanNation=0, tmanInnation=0, roleID=1, callback=None):
         arr = [questType,
          personalMissionsIDs,
@@ -940,15 +954,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def flushArenaRelations(self, arenaUniqueID, callback=None):
         self._doCmdInt2(AccountCommands.CMD_FLUSH_ARENA_RELATIONS, arenaUniqueID, 0, callback)
-
-    def chooseQuestReward(self, eventType, questID, rewardID, callback=None):
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorCode: callback(resultID, errorCode)
-        else:
-            proxy = None
-        strArr = [questID.encode('utf8'), rewardID.encode('utf8')]
-        self._doCmdIntStrArr(AccountCommands.CMD_CHOOSE_QUEST_REWARD, eventType, strArr, proxy)
-        return
 
     def changeEventEnqueueData(self, data, callback=None):
         if callback is not None:
@@ -1002,9 +1007,6 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def addBlueprintFragment(self, fragmentTypeCD, requestedCount, other=-1):
         LOG_DEBUG('Account.addBlueprintFragment: fragmentTypeCD={}, count={}'.format(fragmentTypeCD, requestedCount))
         self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_BPF_ADD_FRAGMENTS_DEV, requestedCount, fragmentTypeCD, other)
-
-    def getWishlist(self):
-        self._doCmdIntArr(AccountCommands.CMD_WISHLIST_GET_DEV, [], lambda *args: LOG_DEBUG_DEV(args[3]))
 
     def processInvitations(self, invitations):
         self.prebattleInvitations.processInvitations(invitations, ClientInvitations.InvitationScope.ACCOUNT)
@@ -1061,6 +1063,17 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def removeEquipment(self, deviceID, count=-1):
         self._doCmdInt2(AccountCommands.CMD_ADD_EQUIPMENT, int(deviceID), count, None)
+        return
+
+    def unlockPostProgressionTree(self, vehicleName=None, intCD=None):
+        if vehicleName is None and intCD is None:
+            from CurrentVehicle import g_currentVehicle
+            vehicleCD = g_currentVehicle.intCD
+        elif intCD is not None:
+            vehicleCD = intCD
+        elif vehicleName is not None:
+            vehicleCD = BigWorld.player().vehicles.VehicleDescr(typeName=vehicleName).type.compactDescr
+        self._doCmdIntArr(AccountCommands.CMD_VPP_UNLOCK_TREE, (vehicleCD,), None)
         return
 
     def doActions(self, doActionsData):
@@ -1164,6 +1177,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             self._synchronizeCacheDict(self.eventsData, diff, 'eventsData', 'replace', events.onEventsDataChanged)
             self._synchronizeCacheDict(self.personalMissionsLock, diff.get('cache', None), 'potapovQuestIDs', 'replace', events.onPMLocksChanged)
             self._synchronizeCacheDict(self.dailyQuests, diff, 'dailyQuests', 'replace', events.onDailyQuestsInfoChange)
+            self._synchronizeCacheDict(self.weeklyQuests, diff, 'weeklyQuests', 'update', events.onWeeklyQuestsInfoChange)
             self._synchronizeCacheSimpleValue('globalRating', diff.get('account', None), 'globalRating', events.onAccountGlobalRatingChanged)
             self._synchronizeCacheDict(self.platformBlueprintsConvertSaleLimits, diff, 'platformBlueprintsConvertSaleLimits', 'replace', events.onPlatformBlueprintsConvertSaleLimits)
             self._synchronizeCacheDict(self.renewableSubscription, diff, 'renewableSub', 'replace', events.onRenewableSubscriptionStatusChanged)
@@ -1275,7 +1289,9 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             serverSettingsDiff = diffDict.get('serverSettings', None)
             if serverSettingsDiff is not None:
                 if isinstance(serverSettingsDiff, dict):
-                    for key, value in serverSettingsDiff.iteritems():
+                    schemaManager = getSchemaManager()
+                    processedDiff = schemaManager.updateSettings(serverSettings, serverSettingsDiff)
+                    for key, value in processedDiff.iteritems():
                         if value is None:
                             serverSettings.pop(key, None)
                             continue
@@ -1392,7 +1408,7 @@ class _AccountRepository(object):
         self.recycleBin = client_recycle_bin.ClientRecycleBin(self.syncData)
         self.ranked = client_ranked.ClientRanked(self.syncData)
         self.battleRoyale = ClientBattleRoyale.ClientBattleRoyale(self.syncData)
-        self.badges = ClientBadges.ClientBadges(self.syncData)
+        self.badges = client_badges.ClientBadges(self.syncData)
         self.tokens = tokens.Tokens(self.syncData)
         self.epicMetaGame = client_epic_meta_game.ClientEpicMetaGame(self.syncData)
         self.blueprints = client_blueprints.ClientBlueprints(self.syncData)
@@ -1401,6 +1417,7 @@ class _AccountRepository(object):
         self.spaFlags = SPAFlags(self.syncData)
         self.anonymizer = client_anonymizer.ClientAnonymizer(self.syncData)
         self.dailyQuests = {}
+        self.weeklyQuests = {}
         self.battlePass = BattlePassManager(self.syncData, self.commandProxy)
         self.offers = OffersSyncData(self.syncData)
         self.dogTags = DogTags(self.syncData)

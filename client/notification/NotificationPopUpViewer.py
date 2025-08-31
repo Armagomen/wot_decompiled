@@ -14,6 +14,7 @@ from notification import NotificationMVC
 from notification.BaseNotificationView import BaseNotificationView
 from notification.settings import NOTIFICATION_STATE
 from notification.utils import dynamicNotificationRegister
+from shared_utils import nextTick
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.shared.utils import IHangarSpace
 _logger = logging.getLogger(__name__)
@@ -162,9 +163,9 @@ class NotificationPopUpViewer(NotificationPopUpViewerMeta, BaseNotificationView)
             self.as_removeAllMessagesS()
             self.__pendingMessagesQueue = []
 
-    def __getPopUpVO(self, notificaton):
-        flashId = self._getFlashID(notificaton.getCounterInfo())
-        return notificaton.getPopUpVO(flashId)
+    def __getPopUpVO(self, notification):
+        flashId = self._getFlashID(notification.getCounterInfo())
+        return notification.getPopUpVO(flashId)
 
     def __isLocked(self, notification):
         priorities = {priority for val in self.__lockedNotificationPriority.values() for priority in val}
@@ -195,7 +196,7 @@ class NotificationPopUpViewer(NotificationPopUpViewerMeta, BaseNotificationView)
             mvcInstance.getAlertController().onAllAlertsClosed += self.__allAlertsMessageCloseHandler
             g_messengerEvents.onLockPopUpMessages += self.__onLockPopUpMessages
             g_messengerEvents.onUnlockPopUpMessages += self.__onUnlockPopUpMessages
-            self._model.setup()
+            nextTick(self._model.setup)()
         else:
             g_playerEvents.onLoadingMilestoneReached += self._onLoadingMilestoneReached
 

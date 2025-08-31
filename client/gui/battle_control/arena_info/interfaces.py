@@ -10,8 +10,8 @@ if typing.TYPE_CHECKING:
     from Math import Matrix
     from EmptyEntity import EmptyEntity
     from items.vehicles import VehicleDescr
+    from common_tank_structure import VehicleAppearanceCacheInfo
     from gui.shared.gui_items.Vehicle import Vehicle
-    from vehicle_systems.appearance_cache import VehicleAppearanceCacheInfo
     from vehicle_systems.CompoundAppearance import CompoundAppearance
     from points_of_interest.components import PoiStateComponent
     from cgf_components.zone_components import ZoneMarker, RandomEventZoneUINotification, WeatherZoneUINotification
@@ -610,4 +610,13 @@ class IBattleSpamController(IBattleController):
         raise NotImplementedError
 
     def filterMarkersHitState(self, targetID, stateKey):
+        raise NotImplementedError
+
+
+class INitroController(IBattleController):
+
+    def startControl(self, *_):
+        raise NotImplementedError
+
+    def processNitroCmd(self):
         raise NotImplementedError

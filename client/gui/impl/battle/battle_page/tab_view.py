@@ -78,6 +78,17 @@ _COMMENDATIONS_STATE_TO_ENUM = {CommendationsState.UNSENT: CommendationStateEnum
  CommendationsState.RECEIVED: CommendationStateEnum.COMMENDBACK,
  CommendationsState.MUTUAL: CommendationStateEnum.MUTUALCOMMENDATION}
 
+def checkArenaDataProvider(func):
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except AttributeError:
+            _logger.debug('[TabView] Trying to load tab view without arena data provider')
+
+    return wrapper
+
+
 def _playerCompositionKey(playerModel):
     return (playerModel.getIsKilled(),
      -playerModel.getVehicleLevel(),
@@ -184,7 +195,7 @@ class TabView(ViewImpl):
             try:
                 yield player
             except BattlePlayerNotFound:
-                _logger.warning('[TabView] Player model not found. (vehicleId: %d).', vehicleId)
+                pass
             else:
                 self.__setBattlePlayer(vehicleId, player)
 
@@ -214,11 +225,11 @@ class TabView(ViewImpl):
 
     def __setBattlePlayer(self, vehicleId, player):
         if vehicleId not in self.__playerIndexes:
-            _logger.warning('[TabView] Vehicle %d was not found in the cached indexes.', vehicleId)
+            _logger.warning('[TabView]::__setBattlePlayer Vehicle %d was not found in the cached indexes.', vehicleId)
             return
         vehicleInfo = self._visitor.getArenaVehicles()[vehicleId]
         if not vehicleInfo:
-            _logger.warning('[TabView] Vehicle %d info not found.', vehicleId)
+            _logger.warning('[TabView]::__setBattlePlayer Vehicle %d info not found.', vehicleId)
             return
         with self.viewModel.transaction():
             playerList = self._getPlayerList(vehicleInfo)
@@ -228,14 +239,11 @@ class TabView(ViewImpl):
     def __getBattlePlayer(self, vehicleId):
         vehicleInfo = self._visitor.getArenaVehicles().get(vehicleId)
         if vehicleInfo is None:
-            _logger.warning('[TabView] Vehicle %d info not found.', vehicleId)
+            _logger.warning('[TabView]::__getBattlePlayer Vehicle %d info not found.', vehicleId)
             return
         else:
             playerIndex = self.__playerIndexes.get(vehicleId)
-            if playerIndex is None:
-                _logger.warning('[TabView] Vehicle %d was not found in the cached indexes.', vehicleId)
-                return
-            return self._getPlayerList(vehicleInfo).getValue(playerIndex)
+            return None if playerIndex is None else self._getPlayerList(vehicleInfo).getValue(playerIndex)
 
     def _invalidateVehiclesInfo(self, *args):
         self.__playerIndexes.clear()
@@ -257,11 +265,38 @@ class TabView(ViewImpl):
             return
         vehicleInfo = self._getVehicleInfo(vehicleId)
         self._updateSquadFinder(vehicleId, vehicleInfo)
-        with self.modifyBattlePlayer(vehicleId) as playerModel:
-            self._invalidateVehicleStatus(playerModel)
-            self._invalidatePlatoonInfo(playerModel)
+        prebattleID = self._getPrebattleID(vehicleInfo)
+        currPlayerHasJoinedSquad = self._hasCurrentPlayerJustJoinedSquad(vehicleId, prebattleID)
+        if currPlayerHasJoinedSquad:
+            with self.viewModel.transaction() as model:
+                playerList = model.playerList.getAllies()
+                for playerModel in playerList:
+                    self._invalidatePlatoonInfo(playerModel)
+                    if playerModel.getIsCurrentPlayer():
+                        self._invalidateVehicleStatus(playerModel)
+
+        else:
+            with self.modifyBattlePlayer(vehicleId) as playerModel:
+                self._invalidateVehicleStatus(playerModel)
+                self._invalidatePlatoonInfo(playerModel)
+                self._invalidatePersonalInfo(playerModel)
+        if currPlayerHasJoinedSquad:
+            for vehId, _ in self._squadFinder.findSquads():
+                if self._isSquadMember(vehId, prebattleID):
+                    with self.modifyBattlePlayer(vehicleId) as playerModel:
+                        if playerModel:
+                            self._invalidatePersonalInfo(playerModel)
+
         if self._needsResort(vehicleId):
             self._resortPlayerList(self._getPlayerList(vehicleInfo))
+
+    def _hasCurrentPlayerJustJoinedSquad(self, vehicleId, prebattleID):
+        battlePlayer = self.__getBattlePlayer(vehicleId)
+        if not battlePlayer:
+            return False
+        if not battlePlayer.getIsCurrentPlayer():
+            return False
+        return False if battlePlayer.getPlatoon() != 0 else bool(prebattleID)
 
     def _needsResort(self, vehicleId):
         vehicleInfo = self._getVehicleInfo(vehicleId)
@@ -353,6 +388,7 @@ class TabView(ViewImpl):
     def _getPrebattleID(vehicleInfo):
         return vehicleInfo.get('prebattleID', 0) if vehicleInfo is not None else 0
 
+    @checkArenaDataProvider
     def _isPlatoonInvitationEnabled(self, vehicleId):
         arenaDP = self.sessionProvider.getArenaDP()
         vehicleInfo = arenaDP.getVehicleInfo(vehicleId)
@@ -369,7 +405,9 @@ class TabView(ViewImpl):
     def _invalidateVehicleStats(self, player):
         vehicleId = player.getVehicleId()
         if vehicleId:
-            player.setKills(self._visitor.getArenaStatistics().get(vehicleId, {}).get('frags', 0))
+            stats = self._visitor.getArenaStatistics().get(vehicleId, {})
+            kills = stats.get('frags', 0) - stats.get('tkills', 0)
+            player.setKills(kills)
 
     def _invalidateVehicleTypeInfo(self, player):
         vehicleId = player.getVehicleId()
@@ -494,6 +532,7 @@ class TabView(ViewImpl):
                 return
             self._updateStats(vehicleId)
 
+    @checkArenaDataProvider
     def _onPlayerSpeaking(self, accountDBID, isSpeak):
         vehicleId = self.sessionProvider.getArenaDP().getVehIDByAccDBID(accountDBID)
         with self.modifyBattlePlayer(vehicleId) as player:
@@ -502,6 +541,7 @@ class TabView(ViewImpl):
             player.setIsVoiceActive(isSpeak)
         return
 
+    @checkArenaDataProvider
     def _hasMutedSelfInPlatoon(self, vehicleId):
         arenaDP = self.sessionProvider.getArenaDP()
         vehicleInfo = arenaDP.getVehicleInfo(vehicleId)
@@ -514,6 +554,7 @@ class TabView(ViewImpl):
             return False
         return False if self.sessionProvider.isReplayPlaying else not (voipMgr.isEnabled() and voipMgr.isCurrentChannelEnabled())
 
+    @checkArenaDataProvider
     def _invalidateChatActions(self, vehicleId):
         sessionId = self.sessionProvider.getArenaDP().getSessionIDByVehID(vehicleId)
         mutedUsers, ignoredUsers = self._getChatUserStatuses()
@@ -532,6 +573,7 @@ class TabView(ViewImpl):
             return
         self._invalidateChatActions(vehicleId)
 
+    @checkArenaDataProvider
     def _updateChatActions(self, _, user):
         vehicleId = self.sessionProvider.getArenaDP().getVehIDBySessionID(user.getID())
         if not vehicleId:

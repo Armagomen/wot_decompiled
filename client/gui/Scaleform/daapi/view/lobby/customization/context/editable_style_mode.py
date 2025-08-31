@@ -85,9 +85,8 @@ class EditableStyleMode(CustomMode):
         return baseSlotData
 
     def getItemFromSlot(self, slotId, season=None):
-        season = season or self.season
         slotId = correctSlot(slotId)
-        outfit = self.outfits[season]
+        outfit = self._getOutfitForSlot(slotId, season)
         return shared.getItemFromSlot(outfit, slotId)
 
     def getComponentFromSlot(self, slotId, season=None):
@@ -229,7 +228,6 @@ class EditableStyleMode(CustomMode):
         super(EditableStyleMode, self)._onStop()
 
     def _cancelChanges(self):
-        super(EditableStyleMode, self)._cancelChanges()
         self.__isCanceled = True
 
     @adisp_async

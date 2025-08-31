@@ -356,7 +356,7 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
         return options
 
     def _makeAIBotOptions(self):
-        return [self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO)), self._makeItem(USER.VEHICLE_PREVIEW, MENU.contextmenu(USER.VEHICLE_PREVIEW), optInitData={'enabled': not self.prbDispatcher.getFunctionalState().isNavigationDisabled()})]
+        return [self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO))]
 
 
 def appealIncorrectBehavior(cm):
@@ -380,18 +380,11 @@ def showVehicleInfo(cm):
     shared_events.showVehicleInfo(vehicleCD)
 
 
-def showVehiclePreview(cm):
-    vehicleCD = getValidVehicleCDForNationChange(cm.vehicleCD)
-    shared_events.showVehiclePreview(vehicleCD)
-    shared_events.hideBattleResults()
-
-
 registerLobbyContexMenuHandler(DENUNCIATIONS.INCORRECT_BEHAVIOR, appealIncorrectBehavior)
 registerLobbyContexMenuHandler(DENUNCIATIONS.NOT_FAIR_PLAY, appealNotFairPlay)
 registerLobbyContexMenuHandler(DENUNCIATIONS.FORBIDDEN_NICK, appealForbiddenNick)
 registerLobbyContexMenuHandler(DENUNCIATIONS.BOT, appealBot)
 registerLobbyContexMenuHandler(USER.VEHICLE_INFO, showVehicleInfo)
-registerLobbyContexMenuHandler(USER.VEHICLE_PREVIEW, showVehiclePreview)
 
 class AppealCMHandler(BaseUserCMHandler):
 
@@ -440,15 +433,7 @@ class AppealCMHandler(BaseUserCMHandler):
         if self._vehicleCD > 0:
             vehicle = self.itemsCache.items.getItemByCD(self._vehicleCD)
             if not vehicle.isSecret:
-                isEnabled = True
-                if vehicle.isPreviewAllowed():
-                    isEnabled = not self.prbDispatcher.getFunctionalState().isNavigationDisabled()
-                    action = USER.VEHICLE_PREVIEW
-                    label = MENU.contextmenu(USER.VEHICLE_PREVIEW)
-                else:
-                    action = USER.VEHICLE_INFO
-                    label = MENU.contextmenu(USER.VEHICLE_INFO)
-                options.append(self._makeItem(action, label, optInitData={'enabled': isEnabled}))
+                options.append(self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO)))
         return options
 
     def _isAppealsForTopicEnabled(self, topic):

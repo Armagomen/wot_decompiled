@@ -8,7 +8,6 @@ import typing
 import BigWorld
 import personal_missions
 from account_helpers.AccountSettings import QUEST_DELTAS_PROGRESS, QUEST_DELTAS_COMPLETION
-from adisp import adisp_async
 from gui.server_events import events_helpers
 from gui.shared.utils.requesters.quest_deltas_settings import QuestDeltasSettings
 from gui.shared.utils.requesters.token import Token
@@ -36,7 +35,6 @@ class _QuestsProgressRequester(AbstractSyncDataRequester):
     def getTokensData(self):
         return self.itemsCache.items.tokens.getTokens()
 
-    @adisp_async
     def _requestCache(self, callback=None):
         BigWorld.player().questProgress.getCache(lambda resID, value: self._response(resID, value, callback))
 
@@ -110,10 +108,10 @@ class PersonalMissionsProgressRequester(_QuestsProgressRequester):
         if personalMissionsProgress:
             flags, state = self.__pmStorage.get(personalMissionID)
             return self.PersonalMissionProgress(state, flags, personalMissionID in personalMissionsProgress['selected'], pqType.maySelectQuest(self.__pmStorage.unlockedPQIDs()), self.getTokenCount(pqType.mainAwardListQuestID) > 0)
-        return self.PersonalMissionProgress(personal_missions.PM_STATE.NONE, (), 0, False)
+        return self.PersonalMissionProgress(personal_missions.PM_STATE.NONE, (), 0, False, False)
 
-    def getConditionsProgress(self, conditionsProgressID):
-        return self.__getConditionsProgress().get(conditionsProgressID, {})
+    def getConditionsProgress(self, conditionsProgressID, pmName='pm2_progress'):
+        return self.__getPersonalMissionsData(pmName).get(conditionsProgressID, {})
 
     def getPersonalMissionsStorage(self):
         return self.__pmStorage
@@ -136,11 +134,8 @@ class PersonalMissionsProgressRequester(_QuestsProgressRequester):
         super(_QuestsProgressRequester, self)._response(resID, value, callback)
         return
 
-    def __getPersonalMissionsData(self):
-        return self.getCacheValue('potapovQuests', {})
-
-    def __getConditionsProgress(self):
-        return self.getCacheValue('pm2_progress', {})
+    def __getPersonalMissionsData(self, pmName='potapovQuests'):
+        return self.getCacheValue(pmName, {})
 
     def __getQuestsData(self):
         return self.__getPersonalMissionsData().get(self._questsType, {})
@@ -163,14 +158,14 @@ class _QuestCompletionDelta(BaseDelta):
         self.questsFilters = dict()
 
     def questFilter(self, quest):
-        return events_helpers.isDailyQuest(quest.getID()) or events_helpers.isPremium(quest.getID()) or any((filterFunc(quest) for filterFunc in self.questsFilters.values()))
+        return events_helpers.isDailyQuest(quest.getID()) or events_helpers.isPremium(quest.getID()) or events_helpers.isWeeklyQuest(quest.getID()) or any((filterFunc(quest) for filterFunc in self.questsFilters.values()))
 
     def clear(self):
         super(_QuestCompletionDelta, self).clear()
         self.questsFilters = dict()
 
     def _getDataIterator(self, data):
-        events = self.eventsCache.getEvents(self.questFilter)
+        events = self.eventsCache.getAllEvents(self.questFilter)
         for questId in data.get('quests', {}).keys():
             quest = events.get(questId)
             if quest:

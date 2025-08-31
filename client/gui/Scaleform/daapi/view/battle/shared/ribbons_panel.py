@@ -15,6 +15,7 @@ from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
+from gui.shared.utils.graphics import isLowPreset
 from helpers import dependency
 from items import tankmen
 from items.battle_royale import isSpawnedBot, isBattleRoyale
@@ -27,11 +28,10 @@ _SHOW_RIBBON_EXP_SOUND_NAME = 'show_ribbon_role_exp'
 _HIDE_RIBBON_SOUND_NAME = 'hide_ribbon'
 _CHANGE_RIBBON_SOUND_NAME = 'increment_ribbon_counter'
 _SOUNDS = (_SHOW_RIBBON_SOUND_NAME, _HIDE_RIBBON_SOUND_NAME, _CHANGE_RIBBON_SOUND_NAME)
-_EXTENDED_RENDER_PIPELINE = 0
 _ADDITIONAL_USER_SETTINGS = (BATTLE_EVENTS.VEHICLE_INFO,
  BATTLE_EVENTS.EVENT_NAME,
  BATTLE_EVENTS.SHOW_IN_BATTLE,
- GRAPHICS.RENDER_PIPELINE,
+ GRAPHICS.RENDER_PIPELINE_QUALITY,
  GRAPHICS.COLOR_BLIND)
 _BATTLE_EVENTS_SETTINGS_TO_BATTLE_EFFICIENCY_TYPES = {BATTLE_EVENTS.ENEMY_HP_DAMAGE: (_BET.DAMAGE,
                                  _BET.SPAWNED_BOT_DMG,
@@ -284,17 +284,17 @@ class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
         return ARENA_LISTENER_SCOPE.VEHICLES
 
     def addVehicleInfo(self, vo, _):
-        self.__processDelayedRibbons()
+        self._processDelayedRibbons()
 
     def updateVehiclesInfo(self, updated, _):
-        self.__processDelayedRibbons()
+        self._processDelayedRibbons()
 
     def _populate(self):
         super(BattleRibbonsPanel, self)._populate()
         self.__enabled = bool(self.settingsCore.getSetting(BATTLE_EVENTS.SHOW_IN_BATTLE)) and self.__arenaDP is not None
         self.__isWithRibbonName = bool(self.settingsCore.getSetting(BATTLE_EVENTS.EVENT_NAME))
         self.__isWithVehName = bool(self.settingsCore.getSetting(BATTLE_EVENTS.VEHICLE_INFO))
-        self.__isExtendedAnim = self.settingsCore.getSetting(GRAPHICS.RENDER_PIPELINE) == _EXTENDED_RENDER_PIPELINE
+        self.__isExtendedAnim = not isLowPreset()
         for settingName in self.getBattleEventsSettingsToBattleEfficiencyTypes():
             self.__setUserPrefference(settingName, bool(self.settingsCore.getSetting(settingName)))
 
@@ -340,7 +340,7 @@ class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
             enabled = bool(addSettings.get(BATTLE_EVENTS.SHOW_IN_BATTLE, self.__enabled)) and self.__arenaDP is not None
             self.__isWithRibbonName = bool(self.settingsCore.getSetting(BATTLE_EVENTS.EVENT_NAME))
             self.__isWithVehName = bool(self.settingsCore.getSetting(BATTLE_EVENTS.VEHICLE_INFO))
-            self.__isExtendedAnim = self.settingsCore.getSetting(GRAPHICS.RENDER_PIPELINE) == _EXTENDED_RENDER_PIPELINE
+            self.__isExtendedAnim = not isLowPreset()
             if self.__enabled != enabled:
                 self.__enabled = enabled
                 if self.__enabled:
@@ -350,9 +350,9 @@ class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
             self.as_setSettingsS(self.__enabled, self.__isExtendedAnim, self.__isWithRibbonName, self.__isWithVehName)
         return
 
-    def __processDelayedRibbons(self):
+    def _processDelayedRibbons(self):
         for ribbon, method in ((self._ribbonsAggregator.getRibbon(ribbonID), method) for ribbonID, method in self.__delayedRibbons):
-            if self.__canBeShown(ribbon):
+            if self._canBeShown(ribbon):
                 self.__invalidateRibbon(ribbon, method)
                 self.__delayedRibbons.remove((ribbon.getID(), method))
 
@@ -374,7 +374,7 @@ class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
         self.__invalidateRibbon(ribbon, self.__updateRibbon)
 
     def __invalidateRibbon(self, ribbon, method):
-        if not self.__canBeShown(ribbon):
+        if not self._canBeShown(ribbon):
             _logger.debug('Delaying ribbon processing %s', ribbon)
             self.__delayedRibbons.append((ribbon.getID(), method))
             return
@@ -396,7 +396,7 @@ class BattleRibbonsPanel(RibbonsPanelMeta, IArenaVehiclesController):
         _logger.debug('RIBBON PANEL: as_updateBattleEfficiencyEventS: ribbonID=%s, ribbonType="%s", ", leftFieldStr="%s, vehName="%s", vehType="%s", rightFieldStr="%s", bonusRibbonLabelID=%s, role=%s.', ribbonID, ribbonType, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
         self.as_updateBattleEfficiencyEventS(ribbonType, ribbonID, leftFieldStr, vehName, vehType, rightFieldStr, bonusRibbonLabelID, role)
 
-    def __canBeShown(self, ribbon):
+    def _canBeShown(self, ribbon):
         ribbonType = ribbon.getType()
         displayPrecondition = _DISPLAY_PRECONDITIONS.get(ribbonType)
         return False if displayPrecondition and not displayPrecondition(self.__arenaDP, ribbon) else True

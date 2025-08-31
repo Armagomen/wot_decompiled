@@ -4,12 +4,13 @@ import bisect
 import logging
 from collections import namedtuple
 from copy import deepcopy
+from future.utils import iteritems
 from itertools import groupby
 import typing
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
-from battle_pass_common import BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS, BATTLE_PASS_CONFIG_NAME, BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_PDATA_KEY, BATTLE_PASS_SELECT_BONUS_NAME, BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME, BP_TANKMAN_QUEST_CHAIN_TOKEN_POSTFIX, BP_TANKMEN_ENTITLEMENT_TAG_PREFIX, BattlePassConfig, BattlePassConsts, BattlePassState, getBattlePassPassTokenName, getMaxAvalable3DStyleProgressInChapter, isPostProgressionChapter, NON_CHAPTER_ID
+from battle_pass_common import BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS, BATTLE_PASS_CONFIG_NAME, BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_PDATA_KEY, BATTLE_PASS_SELECT_BONUS_NAME, BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME, BP_TANKMAN_QUEST_CHAIN_TOKEN_POSTFIX, BP_TANKMEN_ENTITLEMENT_TAG_PREFIX, BattlePassConfig, BattlePassConsts, BattlePassState, NON_CHAPTER_ID, getBattlePassPassTokenName, getMaxAvalable3DStyleProgressInChapter, isPostProgressionChapter, NON_VEH_CD
 from constants import ARENA_BONUS_TYPE, OFFERS_ENABLED_KEY, QUEUE_TYPE
 from gui.battle_pass.battle_pass_award import BattlePassAwardsManager, awardsFactory
 from gui.battle_pass.battle_pass_constants import ChapterState
@@ -17,12 +18,13 @@ from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift, getPointsIn
 from gui.battle_pass.state_machine.delegator import BattlePassRewardLogic
 from gui.battle_pass.state_machine.machine import BattlePassStateMachine
 from gui.entitlements.tankmen_entitlements_cache import TankmenEntitlementsCache
+from gui.server_events.recruit_helper import getRecruitInfo
 from gui.shared.gui_items.processors.battle_pass import BattlePassActivateChapterProcessor
 from gui.shared.utils.scheduled_notifications import SimpleNotifier
 from helpers import dependency, time_utils
 from helpers.events_handler import EventsHandler
 from helpers.server_settings import serverSettingsChangeListener
-from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX, RECRUIT_TMAN_TOKEN_TOTAL_PARTS
+from items.tankmen import RECRUIT_TMAN_TOKEN_PREFIX
 from shared_utils import findFirst, first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IBattlePassController, ISpecialSoundCtrl
@@ -34,7 +36,7 @@ TopPoints = namedtuple('TopPoints', ['label', 'winPoint', 'losePoint'])
 BattleRoyaleTopPoints = namedtuple('BattleRoyaleTopPoints', ['label', 'points'])
 PointsDifference = namedtuple('PointsDifference', ['bonus', 'top', 'textID'])
 if typing.TYPE_CHECKING:
-    from typing import Callable
+    from typing import Callable, Generator
 
 class BattlePassController(IBattlePassController, EventsHandler):
     __tankmenCache = TankmenEntitlementsCache()
@@ -49,12 +51,15 @@ class BattlePassController(IBattlePassController, EventsHandler):
         self.__oldLevel = 0
         self.__currentMode = None
         self.__isInited = False
+        self.__specialTankmen = {}
         self.__voicedTankmenGroupNames = set()
+        self.__chapterToTankmenScreen = {}
         self.__rewardLogic = None
         self.__eventsManager = EventManager()
         self.__seasonChangeNotifier = SimpleNotifier(self.__getTimeToNotifySeasonChanged, self.__onNotifySeasonChanged)
         self.__extraChapterNotifier = SimpleNotifier(self.__getTimeToExtraChapterExpired, self.__onNotifyExtraChapterExpired)
         self.onPointsUpdated = Event(self.__eventsManager)
+        self.onVehiclesPointsUpdated = Event(self.__eventsManager)
         self.onLevelUp = Event(self.__eventsManager)
         self.onBattlePassIsBought = Event(self.__eventsManager)
         self.onSelectTokenUpdated = Event(self.__eventsManager)
@@ -82,9 +87,10 @@ class BattlePassController(IBattlePassController, EventsHandler):
         self.__rewardLogic.start()
         self.onBattlePassSettingsChange(self.__getConfig().mode, self.__currentMode)
         self.__currentMode = self.__getConfig().mode
-        storageData = self.__settingsCore.serverSettings.getBPStorage()
-        self.__settingsCore.serverSettings.updateBPStorageData(storageData)
-        if not self.__isInited and self.getSpecialVoiceChapters():
+        self.__updateSettingsStorage()
+        if not self.__isInited:
+            self.__updateChapterToTankmenScreen()
+            self.__updateSpecialTankmen()
             self.__updateVoicedTankmenGroupNames()
             self.tankmenCacheUpdate()
         self.__isInited = True
@@ -101,6 +107,8 @@ class BattlePassController(IBattlePassController, EventsHandler):
 
     def fini(self):
         self.__isInited = False
+        self.__voicedTankmenGroupNames = set()
+        self.__chapterToTankmenScreen = {}
         self.__stop()
         self.__rewardLogic.stop()
         self.__clearFields()
@@ -151,7 +159,11 @@ class BattlePassController(IBattlePassController, EventsHandler):
         return self.__getConfig().seasonFinish <= time_utils.getServerUTCTime()
 
     def isValidBattleType(self, prbEntity):
-        return prbEntity.getQueueType() in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.MAPBOX, QUEUE_TYPE.WINBACK)
+        return prbEntity.getQueueType() in (QUEUE_TYPE.RANDOMS,
+         QUEUE_TYPE.MAPBOX,
+         QUEUE_TYPE.WINBACK,
+         QUEUE_TYPE.COMP7,
+         QUEUE_TYPE.COMP7_LIGHT)
 
     def isGameModeEnabled(self, arenaBonusType):
         return self.__getConfig().isGameModeEnabled(arenaBonusType)
@@ -183,8 +195,8 @@ class BattlePassController(IBattlePassController, EventsHandler):
     def isPostProgressionActive(self):
         return isPostProgressionChapter(self.getCurrentChapterID())
 
-    def getExtraChapterID(self):
-        return findFirst(self.isExtraChapter, self.getChapterIDs(), 0)
+    def getExtraChapterIDs(self):
+        return [ chapterID for chapterID in self.__getConfig().getExtraChapterIds() if self.isChapterExists(chapterID) ]
 
     def getRewardTypes(self, chapterID):
         return self.__getConfig().getRewardTypes(chapterID)
@@ -246,8 +258,8 @@ class BattlePassController(IBattlePassController, EventsHandler):
     def getRewardLogic(self):
         return self.__rewardLogic
 
-    def getSpecialVoiceChapters(self):
-        return self.__getConfig().specialVoiceChapters
+    def getTankmenScreens(self):
+        return self.__getConfig().getTankmenScreens()
 
     def getTankmenEntitlements(self):
         return self.__tankmenCache.getBalance()
@@ -354,6 +366,13 @@ class BattlePassController(IBattlePassController, EventsHandler):
 
     def getCurrentLevel(self):
         return self.getLevelInChapter(self.getCurrentChapterID())
+
+    def getCurrentLevelWithPostProgress(self):
+        chapterID = self.getCurrentChapterID()
+        currentLevel = self.getCurrentLevel()
+        if isPostProgressionChapter(chapterID):
+            currentLevel = currentLevel % len(self.getLevelsConfig(chapterID))
+        return currentLevel
 
     def getCurrentChapterID(self):
         activeChapter = self.__itemsCache.items.battlePass.getActiveChapterID()
@@ -550,7 +569,19 @@ class BattlePassController(IBattlePassController, EventsHandler):
         return {chapterID:chapterInfo.get('styleId') for chapterID, chapterInfo in self.__getConfig().chapters.iteritems()}
 
     def getNotChosenRewardCount(self):
-        return sum((token.startswith(BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS) for token in self.__itemsCache.items.tokens.getTokens().iterkeys())) if not self.isOfferEnabled() else sum((token.startswith(BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS) for token in self.__itemsCache.items.tokens.getTokens().iterkeys() if self.__offersProvider.getOfferByToken(getOfferTokenByGift(token)) is not None))
+        return sum((1 for _ in self.getNotChosenRewardsIter()))
+
+    def getNotChosenRewardsIter(self):
+        isOfferEnabled = self.isOfferEnabled()
+        for token in self.__itemsCache.items.tokens.getTokens().iterkeys():
+            if not token.startswith(BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS):
+                continue
+            isReward = not isOfferEnabled
+            isReward |= self.__offersProvider.getOfferByToken(getOfferTokenByGift(token)) is not None
+            if isReward:
+                yield token
+
+        return
 
     def hasAnyOfferGiftToken(self):
         return any((token.startswith(BATTLE_PASS_CHOICE_REWARD_OFFER_GIFT_TOKENS) for token in self.__itemsCache.items.tokens.getTokens().iterkeys()))
@@ -596,7 +627,13 @@ class BattlePassController(IBattlePassController, EventsHandler):
         return tankmanGroupName in self.__voicedTankmenGroupNames
 
     def getSpecialTankmen(self):
-        return self.__getConfig().getSpecialTankmen()
+        return self.__specialTankmen
+
+    def getTankmenScreenID(self, chapterID):
+        return self.__chapterToTankmenScreen.get(chapterID, 0)
+
+    def getChapterToTankmenScreen(self):
+        return self.__chapterToTankmenScreen
 
     def _getEvents(self):
         return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onConfigChanged),
@@ -625,7 +662,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
 
         if any((tokenID.startswith(BATTLE_PASS_OFFER_TOKEN_PREFIX) for tokenID, token in tokens.iteritems())):
             self.onSelectTokenUpdated()
-        if self.getSpecialVoiceChapters():
+        if self.getTankmenScreens():
             for tokenID in tokens.iterkeys():
                 if self.__getNeededTokenForTankmen(tokenID):
                     self.tankmenCacheUpdate(isWaiting=True)
@@ -635,20 +672,47 @@ class BattlePassController(IBattlePassController, EventsHandler):
         return tokenID.endswith(BP_TANKMAN_QUEST_CHAIN_TOKEN_POSTFIX) and not tokenID.startswith('img') or self.__isBPTankmanToken(tokenID)
 
     def __isBPTankmanToken(self, tokenID):
-        tokenParts = tokenID.split(':')
-        return len(tokenParts) == RECRUIT_TMAN_TOKEN_TOTAL_PARTS and tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX) and tokenParts[3] in self.getSpecialTankmen().iterkeys()
+        return tokenID in self.getSpecialTankmen().iterkeys()
 
     def __getTankmenTagForRequest(self):
         return '{}_{}'.format(BP_TANKMEN_ENTITLEMENT_TAG_PREFIX, self.getSeasonNum())
 
+    def __updateChapterToTankmenScreen(self):
+        self.__chapterToTankmenScreen = {}
+        for screenID, screen in self.getTankmenScreens().iteritems():
+            for chapterID in screen['chapters']:
+                if chapterID in self.getMainChapterIDs():
+                    self.__chapterToTankmenScreen[chapterID] = screenID
+
+    def __updateSpecialTankmen(self):
+        self.__specialTankmen = {}
+        for screenID in set(self.__chapterToTankmenScreen.itervalues()):
+            self.__specialTankmen.update(self.getTankmenScreens().get(screenID, {}).get('tankmen', {}))
+
     def __updateVoicedTankmenGroupNames(self):
         self.__voicedTankmenGroupNames = set()
-        for groupName in self.getSpecialTankmen().iterkeys():
+
+        def checkHasTankmanVoiceover(groupName):
             group = getTankmanFirstNationGroup(groupName)
             if group is not None and any((self.__specialSounds.checkTagForSpecialVoice(tag) for tag in group.tags)):
                 self.__voicedTankmenGroupNames.add(groupName)
+            return
 
-        return
+        for chapterRewards in self.__getConfig().getSeasonRewards().itervalues():
+            for rewards in chapterRewards.itervalues():
+                for bonus, _ in rewards.itervalues():
+                    for token in bonus.get('tokens', {}):
+                        if token.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
+                            recruitInfo = getRecruitInfo(token)
+                            if recruitInfo is not None:
+                                checkHasTankmanVoiceover(recruitInfo.getGroupName())
+
+        for tankman in self.getSpecialTankmen().iterkeys():
+            recruitInfo = getRecruitInfo(tankman)
+            if recruitInfo is not None:
+                checkHasTankmanVoiceover(recruitInfo.getGroupName())
+
+        return self.__voicedTankmenGroupNames
 
     def __onResponse(self, *_):
         self.onEntitlementCacheUpdated()
@@ -687,8 +751,10 @@ class BattlePassController(IBattlePassController, EventsHandler):
             self.__extraChapterNotifier.startNotification()
         else:
             self.__extraChapterNotifier.stopNotification()
-        if self.getSpecialTankmen():
-            self.__updateVoicedTankmenGroupNames()
+        self.__updateChapterToTankmenScreen()
+        self.__updateSpecialTankmen()
+        self.__updateVoicedTankmenGroupNames()
+        self.__updateSettingsStorage()
         newMode = None
         oldMode = self.__currentMode
         if 'mode' in config:
@@ -710,6 +776,8 @@ class BattlePassController(IBattlePassController, EventsHandler):
         isPointsUpdated = newPoints != self.__oldPoints
         if isPointsUpdated:
             self.onPointsUpdated()
+        if 'vehiclePoints' in data:
+            self.onVehiclesPointsUpdated({intCD:points for intCD, points in iteritems(data['vehiclePoints']) if NON_VEH_CD != intCD})
         if newLevel != self.__oldLevel or newLevel == 0 and isPointsUpdated:
             self.onLevelUp()
         self.__oldPoints = newPoints
@@ -764,3 +832,7 @@ class BattlePassController(IBattlePassController, EventsHandler):
         self.__oldLevel = 0
         self.__currentMode = None
         return
+
+    def __updateSettingsStorage(self):
+        storageData = self.__settingsCore.serverSettings.getBPStorage()
+        self.__settingsCore.serverSettings.updateBPStorageData(storageData)

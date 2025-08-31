@@ -8,7 +8,7 @@ from functools import partial
 from typing import Optional
 from Triggers import AreaTriggerComponent
 from Vehicular import OnPlayerInZoneComponent
-from vehicle_systems.cgf_helpers import getVehicleEntityByGameObject
+from cgf_common.cgf_helpers import getVehicleEntityByGameObject
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
 from PlayerEvents import g_playerEvents
 from helpers import isPlayerAvatar
@@ -26,11 +26,13 @@ class OnPlayerInZoneManager(CGF.ComponentManager):
         super(OnPlayerInZoneManager, self).__init__()
         self.__prefabPathMap = defaultdict(OrderedDict)
         self.__activePrefab = None
+        return
+
+    def activate(self):
         if _isAvatarReady():
             self.__onAvatarReady()
         else:
             g_playerEvents.onAvatarReady += self.__onAvatarReady
-        return
 
     def deactivate(self):
         self.__prefabPathMap.clear()

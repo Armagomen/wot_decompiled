@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/items/components/component_constants.py
 import collections
+import enum
 from soft_exception import SoftException
 from wrapped_reflection_framework import reflectedNamedTuple
 from Math import Vector3
@@ -23,15 +24,17 @@ TwinGun = collections.namedtuple('TwinGun', ['afterShotDelay',
  'gunMarkerOffset',
  'shootImpulse',
  'twinGunReloadTime'])
+MultiGunState = collections.namedtuple('MultiGunState', ['gunIndexes', 'multiGun'])
+ControllableReload = collections.namedtuple('ControllableReload', ['allowToReloadAfterShot'])
 UNDEFINED_ITEM_TYPE_ID = 0
 ZERO_FLOAT = 0.0
 ZERO_INT = 0
 ZERO_TUPLE2 = (0.0, 0.0)
 ZERO_VECTOR3 = Vector3(0.0, 0.0, 0.0)
-ZERO_TUPLE2 = (0.0, 0.0)
 ONE_INT = 1
 EMPTY_STRING = ''
 EMPTY_TUPLE = ()
+EMPTY_LIST = []
 INFLUENCE_ALL = 0
 INFLUENCE_ALLY = 1
 INFLUENCE_ENEMY = 2
@@ -79,7 +82,7 @@ ALLOWED_EMBLEM_SLOTS = ('player', 'clan', 'inscription', 'insignia', 'insigniaOn
 ALLOWED_PROJECTION_DECALS_ANCHORS = ('projectionDecal', 'fixedProjectionDecal')
 ALLOWED_MISC_SLOTS = ('sequence',)
 ALLOWED_SLOTS_ANCHORS = ('paint', 'camouflage', 'effect', 'style')
-ALLOWED_ATTACHMENT_SLOTS = ('attachment',)
+ALLOWED_ATTACHMENT_SLOTS = ('attachment', 'statTracker')
 TANKMEN_GROUPS = ('normalGroups', 'premiumGroups')
 MAIN_TRACK_PAIR_IDX = 0
 DEFAULT_TRACK_HIT_VECTOR = Vector3(0.0, 10.0, 0.0)
@@ -87,3 +90,15 @@ TrackState = collections.namedtuple('TrackState', ['isBroken', 'hitPoint', 'isDe
 DynamicShotEffect = collections.namedtuple('DynamicShotEffect', ['effectsIndex', 'minShotsCount', 'maxShotsCount'])
 DYNAMIC_SHOT_MAX_COUNT = 10000
 ShootImpulse = collections.namedtuple('ShootImpulse', ['magnitude', 'applicationPoint', 'isStillSafe'])
+
+class ObjectSlotType(object):
+    ATTACHMENT = 'attachment'
+    ALL = (ATTACHMENT,)
+
+
+class MuzzleBreakType(enum.IntEnum):
+    NONE = 0
+    STANDARD = 1
+
+
+INVALID_EFFECT_INDEX = 255

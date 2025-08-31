@@ -6,7 +6,7 @@ from debug_utils import LOG_WARNING
 from items import vehicles, EQUIPMENT_TYPES, getTypeOfCompactDescr
 from items.components.c11n_constants import CustomizationType, DecalType
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.customization.c11n_items import Customization, Paint, Camouflage, Modification, Insignia, Decal, Emblem, Inscription, Style, ProjectionDecal, PersonalNumber, Sequence, Attachment
+from gui.shared.gui_items.customization.c11n_items import Customization, Paint, Camouflage, Modification, Insignia, Decal, Emblem, Inscription, Style, ProjectionDecal, PersonalNumber, Sequence, Attachment, StatTracker
 from vehicle_outfit.outfit import Outfit
 from gui.shared.gui_items.dossier import TankmanDossier, AccountDossier, VehicleDossier
 from gui.shared.gui_items.vehicle_modules import Shell, VehicleGun, VehicleChassis, VehicleEngine, VehicleRadio, VehicleTurret, VehicleFuelTank
@@ -17,11 +17,13 @@ import gui.shared.gui_items.badge as badges
 from gui.shared.gui_items.loot_box import LootBox
 from gui.shared.gui_items.crew_skin import CrewSkin
 from gui.shared.gui_items.crew_book import CrewBook
+from gui.shared.gui_items.vehicle_mechanic_item import VehicleMechanicItem
 from gui.veh_post_progression.models.progression import PostProgressionItem
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 if typing.TYPE_CHECKING:
     from items.vehicles import VehicleType
     from post_progression_common import VehicleState
+    from vehicles.mechanics.mechanic_constants import VehicleMechanic
 _logger = logging.getLogger(__name__)
 _NONE_GUI_ITEM_TYPE = 0
 
@@ -131,6 +133,8 @@ class GuiItemFactory(IGuiItemsFactory):
             cls = Sequence
         elif descriptor.itemType == CustomizationType.ATTACHMENT:
             cls = Attachment
+        elif descriptor.itemType == CustomizationType.STAT_TRACKER:
+            cls = StatTracker
         else:
             LOG_WARNING('Unknown customization type', descriptor.itemType)
             cls = Customization
@@ -154,6 +158,9 @@ class GuiItemFactory(IGuiItemsFactory):
             _, vehNationID, vehID = vehicles.parseIntCompactDescr(vehIntCD)
             vehType = vehicles.g_cache.vehicle(vehNationID, vehID)
         return PostProgressionItem(state, vehType)
+
+    def createVehicleMechanicItem(self, mechanic, vehIntCD):
+        return VehicleMechanicItem(mechanic, vehIntCD)
 
 
 _ITEM_TYPES_MAPPING = {_NONE_GUI_ITEM_TYPE: lambda *args, **kwargs: None,
@@ -184,7 +191,9 @@ _ITEM_TYPES_MAPPING = {_NONE_GUI_ITEM_TYPE: lambda *args, **kwargs: None,
  GUI_ITEM_TYPE.PROJECTION_DECAL: GuiItemFactory.createCustomization,
  GUI_ITEM_TYPE.SEQUENCE: GuiItemFactory.createCustomization,
  GUI_ITEM_TYPE.ATTACHMENT: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.STAT_TRACKER: GuiItemFactory.createCustomization,
  GUI_ITEM_TYPE.OUTFIT: GuiItemFactory.createOutfit,
  GUI_ITEM_TYPE.CREW_SKINS: GuiItemFactory.createCrewSkin,
  GUI_ITEM_TYPE.CREW_BOOKS: GuiItemFactory.createCrewBook,
- GUI_ITEM_TYPE.VEH_POST_PROGRESSION: GuiItemFactory.createVehPostProgression}
+ GUI_ITEM_TYPE.VEH_POST_PROGRESSION: GuiItemFactory.createVehPostProgression,
+ GUI_ITEM_TYPE.VEHICLE_MECHANIC: GuiItemFactory.createVehicleMechanicItem}

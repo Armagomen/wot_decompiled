@@ -5,7 +5,6 @@ from collections import namedtuple, defaultdict, OrderedDict
 from copy import copy
 import BigWorld
 import nations
-from adisp import adisp_async
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentLayouts import Layout
 from blueprints.FragmentTypes import NationalBlueprintFragment, IntelligenceDataFragment
@@ -109,7 +108,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
 
     def getBlueprintDiscount(self, vehicleCD, vLevel, potentialFilledCount=0):
         _logger.debug('getBlueprintDiscount: vehicle=%s, level=%s ', vehicleCD, vLevel)
-        if not potentialFilledCount and (not self.__vehicleFragments or vehicleCD in self.__itemsCache.items.stats.unlocks or vehicleCD not in self.__vehicleFragments):
+        if not potentialFilledCount and (not self.__vehicleFragments or not self.isBlueprintsAvailable() or vehicleCD in self.__itemsCache.items.stats.unlocks or vehicleCD not in self.__vehicleFragments):
             return 0
         filledCount, totalCount = self.getBlueprintCount(vehicleCD, vLevel)
         filledCount = potentialFilledCount or filledCount
@@ -210,8 +209,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
     def hasBlueprintsOrFragments(self):
         return bool(self.__vehicleFragments) or self.hasUniversalFragments()
 
-    @adisp_async
-    def _requestCache(self, callback):
+    def _requestCache(self, callback=None):
         BigWorld.player().blueprints.getCache(lambda resID, value: self._response(resID, value, callback))
 
     @property

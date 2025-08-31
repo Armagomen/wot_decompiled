@@ -20,11 +20,12 @@ from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY, ItemPrice
 from gui.shared.image_helper import getTextureLinkByID
 from gui.shared.money import Money
 from gui.shared.utils.functions import getImageResourceFromPath
+from gui.shared.vehicle_stats_helper import getStatTrackersVehicleStats
 from helpers import dependency
 from items import makeIntCompactDescrByID, vehicles
 from items.components import c11n_components as cc
 from items.components.c11n_components import EditingStyleReason
-from items.components.c11n_constants import CustomizationType, EDITING_STYLE_REASONS, ImageOptions, ItemTags, ProjectionDecalFormTags, SeasonType, UNBOUND_VEH_KEY
+from items.components.c11n_constants import CustomizationType, EDITING_STYLE_REASONS, ImageOptions, ItemTags, ProjectionDecalFormTags, SeasonType, UNBOUND_VEH_KEY, StatTrackerStatistic
 from items.customizations import createNationalEmblemComponents, isEditedStyle, parseCompDescr, parseOutfitDescr
 from items.vehicles import VehicleDescr
 from shared_utils import first
@@ -120,28 +121,28 @@ class SpecialEvents(object):
      WINTER_HUNT,
      KURSK_BATTLE,
      HALLOWEEN)
-    ICONS = {NY: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY18: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY19: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY20: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY21: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY22: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     NY23: backport.image(R.images.gui.maps.icons.customization.style_info.newYear()),
-     FOOTBALL18: backport.image(R.images.gui.maps.icons.customization.style_info.football()),
-     WINTER_HUNT: backport.image(R.images.gui.maps.icons.customization.style_info.marathon()),
-     KURSK_BATTLE: backport.image(R.images.gui.maps.icons.customization.style_info.marathon()),
-     HALLOWEEN: backport.image(R.images.gui.maps.icons.customization.style_info.halloween())}
-    NAMES = {NY: backport.text(R.strings.vehicle_customization.styleInfo.event.ny()),
-     NY18: backport.text(R.strings.vehicle_customization.styleInfo.event.ny18()),
-     NY19: backport.text(R.strings.vehicle_customization.styleInfo.event.ny19()),
-     NY20: backport.text(R.strings.vehicle_customization.styleInfo.event.ny20()),
-     NY21: backport.text(R.strings.vehicle_customization.styleInfo.event.ny21()),
-     NY22: backport.text(R.strings.vehicle_customization.styleInfo.event.ny22()),
-     NY23: backport.text(R.strings.vehicle_customization.styleInfo.event.ny23()),
-     FOOTBALL18: backport.text(R.strings.vehicle_customization.styleInfo.event.football18()),
-     WINTER_HUNT: backport.text(R.strings.vehicle_customization.styleInfo.event.winter_hunt()),
-     KURSK_BATTLE: backport.text(R.strings.vehicle_customization.styleInfo.event.kursk_battle()),
-     HALLOWEEN: backport.text(R.strings.vehicle_customization.styleInfo.event.halloween())}
+    ICONS = {NY: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY18: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY19: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY20: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY21: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY22: R.images.gui.maps.icons.customization.style_info.newYear(),
+     NY23: R.images.gui.maps.icons.customization.style_info.newYear(),
+     FOOTBALL18: R.images.gui.maps.icons.customization.style_info.football(),
+     WINTER_HUNT: R.images.gui.maps.icons.customization.style_info.marathon(),
+     KURSK_BATTLE: R.images.gui.maps.icons.customization.style_info.marathon(),
+     HALLOWEEN: R.images.gui.maps.icons.customization.style_info.halloween()}
+    NAMES = {NY: R.strings.vehicle_customization.styleInfo.event.ny(),
+     NY18: R.strings.vehicle_customization.styleInfo.event.ny18(),
+     NY19: R.strings.vehicle_customization.styleInfo.event.ny19(),
+     NY20: R.strings.vehicle_customization.styleInfo.event.ny20(),
+     NY21: R.strings.vehicle_customization.styleInfo.event.ny21(),
+     NY22: R.strings.vehicle_customization.styleInfo.event.ny22(),
+     NY23: R.strings.vehicle_customization.styleInfo.event.ny23(),
+     FOOTBALL18: R.strings.vehicle_customization.styleInfo.event.football18(),
+     WINTER_HUNT: R.strings.vehicle_customization.styleInfo.event.winter_hunt(),
+     KURSK_BATTLE: R.strings.vehicle_customization.styleInfo.event.kursk_battle(),
+     HALLOWEEN: R.strings.vehicle_customization.styleInfo.event.halloween()}
 
 
 def camoIconTemplate(texture, width, height, colors, background=_CAMO_SWATCH_BACKGROUND, options=ImageOptions.NONE):
@@ -418,11 +419,13 @@ class Customization(FittingItem):
 
     @property
     def specialEventIcon(self):
-        return SpecialEvents.ICONS.get(self.specialEventTag, '')
+        imageKey = SpecialEvents.ICONS.get(self.specialEventTag, '')
+        return backport.image(imageKey) if imageKey != '' else imageKey
 
     @property
     def specialEventName(self):
-        return SpecialEvents.NAMES.get(self.specialEventTag, '')
+        nameKey = SpecialEvents.NAMES.get(self.specialEventTag, '')
+        return backport.text(nameKey) if nameKey != '' else nameKey
 
     @property
     def isProgressive(self):
@@ -662,6 +665,10 @@ class Customization(FittingItem):
                 return self.__progressingData[UNBOUND_VEH_KEY]
         return
 
+    @property
+    def showDisabled(self):
+        return ItemTags.SHOW_DISABLED in self.tags
+
     def _matchVehicleTags(self, vehicle):
         return not (vehicle and vehicle.isProgressionDecalsOnly)
 
@@ -760,6 +767,10 @@ class Modification(Customization):
     @property
     def effects(self):
         return self.descriptor.effects
+
+    @property
+    def useNewWear(self):
+        return self.descriptor.useNewWear
 
     def isWide(self):
         return True
@@ -996,6 +1007,14 @@ class Attachment(Customization):
         return self.descriptor.crashModelName
 
     @property
+    def leftModelName(self):
+        return self.descriptor.leftModelName
+
+    @property
+    def rightModelName(self):
+        return self.descriptor.rightModelName
+
+    @property
     def sequenceId(self):
         return self.descriptor.sequenceId
 
@@ -1026,13 +1045,43 @@ class Attachment(Customization):
     def hasSlot(self, vehicle):
         for areaId in Area.ALL:
             for _, anchor in vehicle.getAnchors(self.itemTypeID, areaId):
-                if not anchor.hiddenForUser:
+                if not anchor.hiddenForUser and anchor.applyType == self.applyType:
                     return True
 
         return False
 
     def mayInstall(self, vehicle, _=None):
         return super(Attachment, self).mayInstall(vehicle) and self.hasSlot(vehicle)
+
+
+class StatTracker(Attachment):
+    __slots__ = ()
+
+    def __init__(self, *args, **kwargs):
+        super(StatTracker, self).__init__(*args, **kwargs)
+        self.itemTypeID = GUI_ITEM_TYPE.STAT_TRACKER
+
+    @property
+    def trackedStatistic(self):
+        return self.descriptor.trackedStatistic
+
+    def hasSlot(self, vehicle):
+        for areaId in Area.ALL:
+            for _, anchor in vehicle.getAnchors(self.itemTypeID, areaId):
+                if not anchor.hiddenForUser:
+                    return True
+
+        return False
+
+    def getStatValue(self, vehicle):
+        vehCD = vehicle.compactDescr
+        frags = getStatTrackersVehicleStats(vehCD)
+        value = 0
+        if self.trackedStatistic == StatTrackerStatistic.KILLS:
+            value = frags
+        else:
+            _logger.error('Unknown stat tracker statistics type: %s', self.trackedStatistic)
+        return self.descriptor.adjustToAllowedNumber(value)
 
 
 class Style(Customization):

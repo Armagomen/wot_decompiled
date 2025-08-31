@@ -1,6 +1,7 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/common/serializable_types/customizations/customization_outfit.py
 from collections import OrderedDict, defaultdict
+from data_structures import OrderedSet
 from string import lower, upper
 from typing import TYPE_CHECKING
 from debug_utils import LOG_ERROR
@@ -13,6 +14,7 @@ from serialization.field import intField, strField, intArrayField, customArrayFi
 from serialization.serializable_component import SerializableComponent
 from soft_exception import SoftException
 from wrapped_reflection_framework import ReflectionMetaclass
+from .stat_tracker import StatTrackerComponent
 from .attachment import AttachmentComponent
 from .camouflage import CamouflageComponent
 from .decal import DecalComponent
@@ -99,6 +101,13 @@ def getAllItemsFromOutfit(cc, outfit, ignoreHiddenCamouflage=True, ignoreEmpty=T
                 continue
             result[cn.AttachmentItem.makeIntDescr(attachmentId)] += 1
 
+    if outfit.stat_trackers and not skipCommonElements:
+        for statTracker in outfit.stat_trackers:
+            statTrackerId = statTracker.id
+            if __ignoreItem(statTrackerId, cc.stat_trackers, ignoreEmpty, ignoreStyleOnly):
+                continue
+            result[cn.StatTrackerItem.makeIntDescr(statTrackerId)] += 1
+
     return dict(result)
 
 
@@ -116,10 +125,11 @@ class CustomizationOutfit(SerializableComponent):
      ('sequences', customArrayField(SequenceComponent.customType)),
      ('attachments', customArrayField(AttachmentComponent.customType)),
      ('styleProgressionLevel', intField()),
-     ('serial_number', strField())))
-    __slots__ = ('modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals', 'insignias', 'personal_numbers', 'sequences', 'attachments', 'styleProgressionLevel', 'serial_number')
+     ('serial_number', strField()),
+     ('stat_trackers', customArrayField(StatTrackerComponent.customType))))
+    __slots__ = ('modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals', 'insignias', 'personal_numbers', 'sequences', 'attachments', 'styleProgressionLevel', 'serial_number', 'stat_trackers')
 
-    def __init__(self, modifications=None, paints=None, camouflages=None, decals=None, projection_decals=None, personal_numbers=None, styleId=0, insignias=None, sequences=None, attachments=None, styleProgressionLevel=0, serial_number=None):
+    def __init__(self, modifications=None, paints=None, camouflages=None, decals=None, projection_decals=None, personal_numbers=None, styleId=0, insignias=None, sequences=None, attachments=None, styleProgressionLevel=0, serial_number=None, stat_trackers=None):
         self.modifications = modifications or []
         self.paints = paints or []
         self.camouflages = camouflages or []
@@ -132,6 +142,7 @@ class CustomizationOutfit(SerializableComponent):
         self.attachments = attachments or []
         self.styleProgressionLevel = styleProgressionLevel or 0
         self.serial_number = serial_number or ''
+        self.stat_trackers = stat_trackers or []
         super(CustomizationOutfit, self).__init__()
 
     def __nonzero__(self):
@@ -178,7 +189,7 @@ class CustomizationOutfit(SerializableComponent):
 
     @staticmethod
     def slotIdToDict(components):
-        res = {}
+        res = OrderedDict()
         for c in components:
             cpy = c.copy()
             slotId = cpy.slotId
@@ -224,8 +235,8 @@ class CustomizationOutfit(SerializableComponent):
                 toDict = self.applyAreaBitmaskToDict if isAppliedTo else self.slotIdToDict
                 modifiedComponents = toDict(modifiedComponents)
                 baseComponents = toDict(baseComponents)
-                modifiedRegions = set(modifiedComponents)
-                baseRegions = set(baseComponents)
+                modifiedRegions = OrderedSet(modifiedComponents)
+                baseRegions = OrderedSet(baseComponents)
                 for region in baseRegions - modifiedRegions:
                     for component in baseComponents[region]:
                         component = component.copy()
@@ -258,6 +269,7 @@ class CustomizationOutfit(SerializableComponent):
         resultOutfit.serial_number = self.serial_number
         resultOutfit.styleId = self.styleId
         resultOutfit.attachments = self.attachments
+        resultOutfit.stat_trackers = self.stat_trackers
         for itemType in CustomizationType.FULL_RANGE:
             typeName = lower(CustomizationTypeNames[itemType])
             componentsAttrName = '{}s'.format(typeName)
@@ -274,8 +286,8 @@ class CustomizationOutfit(SerializableComponent):
                 toDict = self.applyAreaBitmaskToDict if isAppliedTo else self.slotIdToDict
                 modifiedComponents = toDict(modifiedComponents)
                 baseComponents = toDict(baseComponents)
-                modifiedRegions = set(modifiedComponents)
-                baseRegions = set(baseComponents)
+                modifiedRegions = OrderedSet(modifiedComponents)
+                baseRegions = OrderedSet(baseComponents)
                 for region in baseRegions - modifiedRegions:
                     component = baseComponents[region][0].copy()
                     if itemType == CustomizationType.PROJECTION_DECAL and component.matchingTag:
@@ -335,6 +347,11 @@ class CustomizationOutfit(SerializableComponent):
                     toMove[(CustomizationType.ATTACHMENT, attachment.id)] += 1
 
                 self.attachments = []
+            if c11nType == CustomizationType.STAT_TRACKER:
+                for statTracker in self.stat_trackers:
+                    toMove[(CustomizationType.STAT_TRACKER, statTracker.id)] += 1
+
+                self.stat_trackers = []
 
         return dict(toMove)
 
@@ -390,7 +407,9 @@ class CustomizationOutfit(SerializableComponent):
             elif typeId == CustomizationType.MODIFICATION and componentId in self.modifications:
                 result += 1
             elif typeId == CustomizationType.ATTACHMENT and componentId in self.attachments:
-                result += 1
+                result += len([ component for component in self.attachments if componentId == component.id ])
+            elif typeId == CustomizationType.STAT_TRACKER and componentId in self.stat_trackers:
+                result += len([ componentId for component in self.stat_trackers if componentId == component.id ])
         return result
 
     def removeComponent(self, componentId, typeId, count):
@@ -432,7 +451,10 @@ class CustomizationOutfit(SerializableComponent):
                     self.modifications.remove(componentId)
                     count -= 1
                 elif typeId == CustomizationType.ATTACHMENT:
-                    self.attachments.remove(componentId)
+                    self.attachments = [ item for item in self.attachments if item.id != componentId ]
+                    count -= 1
+                elif typeId == CustomizationType.STAT_TRACKER:
+                    self.stat_trackers = [ item for item in self.stat_trackers if item.id != componentId ]
                     count -= 1
         return countBefore - count
 

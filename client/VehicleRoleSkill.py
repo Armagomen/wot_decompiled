@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/VehicleRoleSkill.py
+# Embedded file name: comp7_core/scripts/client/VehicleRoleSkill.py
 from helpers import fixed_dict
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 

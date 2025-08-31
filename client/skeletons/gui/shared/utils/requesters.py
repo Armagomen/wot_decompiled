@@ -16,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 class IRequester(object):
 
-    def request(self, callback):
+    def request(self, callback=None):
         raise NotImplementedError
 
     def isSynced(self):
@@ -218,6 +218,10 @@ class IStatsRequester(IRequester):
 
     @property
     def multipliedVehicles(self):
+        raise NotImplementedError
+
+    @property
+    def prestigeMilestonesAchieved(self):
         raise NotImplementedError
 
     @property

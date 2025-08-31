@@ -9,9 +9,11 @@ from fun_random.gui.fun_gui_constants import initFunRandomLimitedUIIds, PREBATTL
 from fun_random.gui import fun_gui_constants
 from fun_random_common import injectConsts, injectSquadConsts
 from fun_random_common.fun_battle_mode import FunRandomBattleMode
+from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.prb_control.prb_utils import initGuiTypes, initRequestType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.FUNRANDOM_ALIASES import FUNRANDOM_ALIASES
+_LOBBY_EXT_PACKAGES = ['fun_random.gui.impl.lobby.hangar']
 
 class ClientFunRandomBattleMode(FunRandomBattleMode):
     _CLIENT_BATTLE_PAGE = VIEW_ALIAS.CLASSIC_BATTLE_PAGE
@@ -189,7 +191,7 @@ def preInit():
 
 
 def init():
-    pass
+    g_overrideScaleFormViewsConfig.initExtensionLobbyPackages(__name__, _LOBBY_EXT_PACKAGES)
 
 
 def start():

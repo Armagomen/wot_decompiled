@@ -1,5 +1,5 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/ApplicationPoint.py
+# Embedded file name: comp7_core/scripts/client/ApplicationPoint.py
 import weakref
 import BigWorld
 import CGF
@@ -240,6 +240,4 @@ class _PoiArtilleryAoeApplicationPointEffect(_Comp7RedLineApplicationPointEffect
         return self._equipment.radius
 
 
-_EQUIPMENT_APPLICATION_POINTS = {'comp7_recon': _Comp7ReconApplicationPointEffect,
- 'comp7_redline': _Comp7RedLineApplicationPointEffect,
- 'poi_artillery_aoe': _PoiArtilleryAoeApplicationPointEffect}
+_EQUIPMENT_APPLICATION_POINTS = {'poi_artillery_aoe': _PoiArtilleryAoeApplicationPointEffect}
