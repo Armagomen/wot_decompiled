@@ -796,7 +796,7 @@ class VehicleParams(_ParameterBase):
     def burstFireRate(self):
         if self.__hasBurst() and not hasVehicleMechanic(self.__vehicle.descriptor, VehicleMechanic.CHARGEABLE_BURST):
             gun = self._itemDescr.gun
-            burstCountLeft, burstInterval = gun.burst
+            burstCountLeft, burstInterval, _ = gun.burst
             return (burstInterval, gun.clip[0] / burstCountLeft, burstCountLeft)
         else:
             return None
@@ -805,7 +805,7 @@ class VehicleParams(_ParameterBase):
     def turboshaftBurstFireRate(self):
         if self.__hasUnsupportedSwitchMode():
             gun = self._itemDescr.siegeVehicleDescr.gun
-            burstCountLeft, burstInterval = gun.burst
+            burstCountLeft, burstInterval, _ = gun.burst
             return (burstInterval, gun.clip[0] / burstCountLeft, burstCountLeft)
         else:
             return None
@@ -1256,7 +1256,7 @@ class VehicleParams(_ParameterBase):
         if _DO_TTC_LOG:
             LOG_DEBUG('baseReloadTime:%f * loader_meleeFactor:%f * loader_desperadoFactor:%f' % (baseReloadTime, loaderMeleeReloadFactor, loaderDesperadoReloadFactor))
         reloadTime = self.__calcParamWithSkillFactorAmp(baseReloadTime, (loaderMeleeReloadFactor, loaderDesperadoReloadFactor))
-        reloadTime = reloadTime * loaderMeleeReloadFactor * loaderDesperadoReloadFactor + self.mechanicsReloadDelay
+        reloadTime = reloadTime + self.mechanicsReloadDelay
         return (getShotsPerMinute(self._itemDescr.gun, reloadTime, hasAutoReload),)
 
     def __calcClipFireRate(self):

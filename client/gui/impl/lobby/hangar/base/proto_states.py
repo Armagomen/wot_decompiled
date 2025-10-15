@@ -69,7 +69,7 @@ class _LoadoutStatePrototype(LobbyState):
 
 
 class _LoadoutConfirmStatePrototype(LobbyState):
-    __loadoutController = dependency.instance(ILoadoutController)
+    __loadoutController = dependency.descriptor(ILoadoutController)
 
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(_LoadoutConfirmStatePrototype, self).__init__(flags)
@@ -89,7 +89,7 @@ class _LoadoutConfirmStatePrototype(LobbyState):
         super(_LoadoutConfirmStatePrototype, self)._onEntered(event)
         interactor = self.__loadoutController.interactor
         self.__dialog = interactor.showExitConfirmDialog
-        if event.targetStateID != self.getStateID():
+        if self.__dialog and event.targetStateID != self.getStateID():
             try:
                 result = yield self.__dialog()
                 if not result.result:

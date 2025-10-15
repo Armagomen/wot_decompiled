@@ -908,6 +908,15 @@ def __readBonus_optionalData(config, bonusReaders, section, eventType):
         properties['probabilityStageDependence'] = section['probabilityStageDependence'].asBool
     if section.has_key('dropInGroup'):
         properties['dropInGroup'] = section['dropInGroup'].asBool
+    if section.has_key('trackedByNameLimit'):
+        trackedByNameLimit = section.readInt('trackedByNameLimit', 0)
+        if trackedByNameLimit <= 0:
+            raise SoftException('Incorrect trackedByNameLimit value for <optional> with name={}'.format(name))
+        if not name:
+            raise SoftException('name is mandatory for <optional> with "trackedByNameLimit" option used')
+        if properties.get('dropInGroup'):
+            raise SoftException('dropInGroup and trackedByName flags should not be used in the same <optional> (name={}).'.format(name))
+        properties['trackedByNameLimit'] = trackedByNameLimit
     if properties:
         bonus['properties'] = properties
     return (limitIDs,
@@ -1133,7 +1142,8 @@ _RESERVED_NAMES = frozenset(['config',
  'probabilityStageDependence',
  'bonusProbability',
  'depthLevel',
- 'dropInGroup'])
+ 'dropInGroup',
+ 'trackedByNameLimit'])
 SUPPORTED_BONUSES = frozenset(__BONUS_READERS.iterkeys())
 __SORTED_BONUSES = sorted(SUPPORTED_BONUSES)
 SUPPORTED_BONUSES_IDS = dict(((n, i) for i, n in enumerate(__SORTED_BONUSES)))

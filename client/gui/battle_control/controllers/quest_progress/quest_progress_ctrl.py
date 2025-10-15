@@ -162,7 +162,7 @@ class QuestProgressController(IArenaPeriodController, IArenaVehiclesController):
             formatter = self.__getFormatter(selectedQuest)
             return formatter.headerFormat(isMain=isMainQuest, isCompleted=isQuestCompleted, isPM3Quest=isPM3Quest)
         else:
-            return {}
+            return []
 
     def updateQuestProgress(self, questID, info):
         if questID in self.__storage:

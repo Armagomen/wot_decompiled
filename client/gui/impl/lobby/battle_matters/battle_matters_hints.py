@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_hints.py
 import typing
-import Event
 import BigWorld
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
@@ -14,9 +13,8 @@ from gui.impl.gen import R
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.settings import FUNCTIONAL_FLAG
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
-from gui.shared.events import TutorialEvent
+from gui.shared.events import TutorialEvent, GUICommonEvent
 from helpers import dependency
-from helpers.events_handler import EventsHandler
 from skeletons.account_helpers.settings_core import ISettingsCache
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_matters import IBattleMattersController
@@ -25,11 +23,9 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.tutorial import ITutorialLoader
 if typing.TYPE_CHECKING:
     from gui.lobby_state_machine.lobby_state_machine import VisibleRouteInfo
-    from typing import Tuple, Optional
 
 class BattleMattersHintsHelper(object):
     __settingsCache = dependency.descriptor(ISettingsCache)
-    __slots__ = ('__hints', '__hasHintListeners', '__battleMattersController')
 
     def __init__(self, controller):
         super(BattleMattersHintsHelper, self).__init__()
@@ -116,7 +112,6 @@ class _BMManualTriggeredHint(object):
     _tutorialLoader = dependency.descriptor(ITutorialLoader)
     _HINT_NAME = None
     CONTROL_NAME = None
-    __slots__ = ('_isStarted', '_battleMattersController', '_isHintVisible', '_controlOnScene', '_controlIsEnabled')
 
     def __init__(self):
         super(_BMManualTriggeredHint, self).__init__()
@@ -222,13 +217,14 @@ class _BMManualTriggeredHint(object):
             removeListener(events.TutorialEvent.ON_TRIGGER_ACTIVATED, self._onTriggerActivated, scope=EVENT_BUS_SCOPE.GLOBAL)
 
 
-class FightBtnMultiShowHint(_BMManualTriggeredHint, IGlobalListener, EventsHandler):
+class FightBtnMultiShowHint(_BMManualTriggeredHint, IGlobalListener):
     CONTROL_NAME = 'FightButton'
     _HINT_NAME = OnceOnlyHints.BATTLE_MATTERS_FIGHT_BUTTON_HINT
 
     def __init__(self):
         super(FightBtnMultiShowHint, self).__init__()
         self.__waitingBattle = False
+        self.__isInValidState = False
 
     def onPrbEntitySwitched(self):
         self.__waitingBattle = self.prbEntity.getQueueType() == QUEUE_TYPE.RANDOMS or self.__isDevBattle()
@@ -250,13 +246,13 @@ class FightBtnMultiShowHint(_BMManualTriggeredHint, IGlobalListener, EventsHandl
     def _getHintSettings():
         return {'updateRuntime': True}
 
-    def _getEvents(self):
-        lsm = getLobbyStateMachine()
-        return ((lsm.onVisibleRouteChanged, self.__visibleStateChanged),)
-
     def _onStart(self):
         super(FightBtnMultiShowHint, self)._onStart()
-        self._subscribe()
+        lsm = getLobbyStateMachine()
+        if lsm is None:
+            g_eventBus.addListener(GUICommonEvent.LOBBY_VIEW_LOADED, self.__subscribeToStateChanges)
+        else:
+            self.__subscribeToStateChanges()
         self.__waitingBattle = False
         if self.canBeShownInFuture():
             if self.prbDispatcher is None:
@@ -270,12 +266,16 @@ class FightBtnMultiShowHint(_BMManualTriggeredHint, IGlobalListener, EventsHandl
 
     def _onStop(self):
         super(FightBtnMultiShowHint, self)._onStop()
+        g_eventBus.removeListener(GUICommonEvent.LOBBY_VIEW_LOADED, self.__subscribeToStateChanges)
+        lsm = getLobbyStateMachine()
+        if lsm is not None:
+            lsm.onVisibleRouteChanged -= self.__visibleStateChanged
         if not self.__waitingBattle:
             g_playerEvents.onAvatarBecomePlayer -= self.__onAvatarBecomePlayer
         self.stopGlobalListening()
         g_playerEvents.onPrbDispatcherCreated -= self.__onPrbDispatcherCreated
         self._hide()
-        self._unsubscribe()
+        return
 
     def _checkControlConditions(self, componentIsEnabled):
         self.__checkFightBtnHint()
@@ -303,6 +303,12 @@ class FightBtnMultiShowHint(_BMManualTriggeredHint, IGlobalListener, EventsHandl
     def __onPrbDispatcherCreated(self):
         self.startGlobalListening()
 
+    def __subscribeToStateChanges(self, _=None):
+        lsm = getLobbyStateMachine()
+        if self.__visibleStateChanged not in lsm.onVisibleRouteChanged:
+            lsm.onVisibleRouteChanged += self.__visibleStateChanged
+        self.__visibleStateChanged(lsm.visibleRouteInfo)
+
     def __checkFightBtnHint(self):
         if self._isReadyToShow():
             self._show()
@@ -329,7 +335,6 @@ class EntryPointHint(_BMManualTriggeredHint):
     __itemsCache = dependency.descriptor(IItemsCache)
     CONTROL_NAME = 'BattleMattersEntryPoint'
     _HINT_NAME = OnceOnlyHints.BATTLE_MATTERS_ENTRY_POINT_BUTTON_HINT
-    __slots__ = ()
 
     @staticmethod
     def _getHintSettings():

@@ -13,7 +13,6 @@ import Math
 import ResMgr
 import WWISE
 import WoT
-import CGF
 import Account
 import AccountCommands
 import AreaDestructibles
@@ -56,7 +55,6 @@ from avatar_components.VehiclesSpawnListStorage import VehiclesSpawnListStorage
 from avatar_components.avatar_chat_key_handling import AvatarChatKeyHandling
 from avatar_components.avatar_epic_data import AvatarEpicData
 from avatar_components.avatar_recovery_mechanic import AvatarRecoveryMechanic
-from avatar_components.avatar_respawn_mechanic import AvatarRespawnMechanic
 from avatar_components.team_healthbar_mechanic import TeamHealthbarMechanic
 from avatar_components.triggers_controller import TriggersController
 from avatar_components.vehicle_health_broadcast_listener_component import VehicleHealthBroadcastListenerComponent
@@ -167,7 +165,6 @@ AVATAR_COMPONENTS = {CombatEquipmentManager,
  TeamHealthbarMechanic,
  AvatarEpicData,
  AvatarRecoveryMechanic,
- AvatarRespawnMechanic,
  VehiclesSpawnListStorage,
  VehicleRemovalController,
  VehicleHealthBroadcastListenerComponent,
@@ -182,7 +179,7 @@ class VehicleDeinitFailureException(SoftException):
         super(VehicleDeinitFailureException, self).__init__('Exception during vehicle deinit has been detected, thus leading to unstable state of it. Please, check the first exception happened in this function call instead of analyzing c++ crash.')
 
 
-class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarObserver, TeamHealthbarMechanic, AvatarEpicData, AvatarRecoveryMechanic, AvatarRespawnMechanic, VehiclesSpawnListStorage, VehicleRemovalController, VehicleHealthBroadcastListenerComponent, AvatarChatKeyHandling, TriggersController, VisualScriptController, AvatarPostmortemComponent):
+class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarObserver, TeamHealthbarMechanic, AvatarEpicData, AvatarRecoveryMechanic, VehiclesSpawnListStorage, VehicleRemovalController, VehicleHealthBroadcastListenerComponent, AvatarChatKeyHandling, TriggersController, VisualScriptController, AvatarPostmortemComponent):
     __onStreamCompletePredef = {STREAM_ID_AVATAR_BATTLE_RESULS: 'receiveBattleResults'}
     isOnArena = property(lambda self: self.__isOnArena)
     isVehicleAlive = property(lambda self: self.__isVehicleAlive)
@@ -733,7 +730,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
                         if mods == 0:
                             self.base.setDevelopmentFeature(0, 'pickup', 0, 'straight')
                         elif mods == 1:
-                            if CGF.hotReload(self.spaceID, None):
+                            if BigWorld.spaceReload(self.spaceID):
                                 self.base.setDevelopmentFeature(0, 'hot_reload', 0, '')
                         return True
                     if key == Keys.KEY_T:
@@ -1283,7 +1280,7 @@ class PlayerAvatar(BigWorld.Entity, ClientChat, CombatEquipmentManager, AvatarOb
             if not isAlive and wasAlive or not isAlive and wasRespawnAvailable and not isRespawn:
                 vehicle = BigWorld.entities.get(self.playerVehicleID)
                 isManualRespawnEnabled = self.hasBonusCap(_CAPS.BATTLEROYALE)
-                noRespawnPossible = not (self.respawnEnabled or bool(vehicle.enableExternalRespawn) or isManualRespawnEnabled)
+                noRespawnPossible = not (bool(vehicle.enableExternalRespawn) or isManualRespawnEnabled)
                 self.guiSessionProvider.switchToPostmortem(noRespawnPossible, isRespawn)
             return
 

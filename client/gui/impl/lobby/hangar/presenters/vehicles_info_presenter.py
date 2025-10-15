@@ -16,7 +16,6 @@ if typing.TYPE_CHECKING:
     from gui.impl.lobby.hangar.base.hangar_interfaces import IVehicleFilter
 
 class VehiclesInfoPresenter(ViewComponent[VehiclesInfoModel]):
-    __service = dependency.descriptor(ICustomizationService)
     __rentalsCtrl = dependency.descriptor(IRentalsController)
     __customizationService = dependency.descriptor(ICustomizationService)
 

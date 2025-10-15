@@ -9,7 +9,6 @@ class BaseEventBanner(object):
     NAME = ''
 
     def __init__(self):
-        super(BaseEventBanner, self).__init__()
         self._isVisible = False
 
     @property
@@ -21,7 +20,23 @@ class BaseEventBanner(object):
         return False
 
     @property
+    def hasRewards(self):
+        return False
+
+    @property
     def borderColor(self):
+        pass
+
+    @property
+    def title(self):
+        pass
+
+    @property
+    def iconsPath(self):
+        pass
+
+    @property
+    def videosPath(self):
         pass
 
     @property

@@ -331,6 +331,12 @@ class _EquipmentItem(object):
     def isLocked(self):
         return self._isLocked
 
+    def showMinimapMarker(self):
+        return True
+
+    def showMarker(self):
+        return True
+
 
 class _RefillEquipmentItem(object):
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)

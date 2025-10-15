@@ -80,7 +80,7 @@ class PostBattleResultsEntryState(LobbyState, SubhangarStateGroupConfigProvider)
 
     def getSubhangarStateGroupConfig(self):
         arenaUniqueID = self.__cachedParams.get('arenaUniqueID', None)
-        statsController = self.__battleResults.getPresenter(arenaUniqueID)
+        statsController = self.__battleResults.getStatsCtrl(arenaUniqueID)
         teamResultType = SubhangarStateGroups.PostBattleDefeat
         _, reusable = statsController.getResults()
         if reusable:
@@ -132,7 +132,7 @@ class PostBattleResultsEntryState(LobbyState, SubhangarStateGroupConfigProvider)
             g_currentPreviewVehicle.selectVehicle()
             return
         else:
-            _, reusable = self.__battleResults.getPresenter(arenaUniqueID).getResults()
+            _, reusable = self.__battleResults.getStatsCtrl(arenaUniqueID).getResults()
             mapKind = reusable.common.arenaType.getVehicleCamouflageKind()
             mapSeason = SeasonType.fromArenaKind(mapKind)
             from vehicle_systems import camouflages
@@ -250,7 +250,7 @@ class PostBattleResultsState(SFViewLobbyState, SubhangarStateGroupConfigProvider
         return
 
     def getSubhangarStateGroupConfig(self):
-        _, reusable = self.__battleResults.getPresenter(self.__cachedParams.get('arenaUniqueID', None)).getResults()
+        _, reusable = self.__battleResults.getStatsCtrl(self.__cachedParams.get('arenaUniqueID', None)).getResults()
         geometryName = reusable.common.arenaType.getGeometryName()
         mapImageName = getArenaImage(geometryName, 'screen')
         mapImageName = mapImageName.replace('img://', '')
@@ -402,7 +402,7 @@ class _PBSSceneSetup(CameraMover):
 
 
 def _getVehicleCDAndOutfit(battleResultsService, arenaUniqueID):
-    statsController = battleResultsService.getPresenter(arenaUniqueID)
+    statsController = battleResultsService.getStatsCtrl(arenaUniqueID)
     battleResults, reusable = statsController.getResults()
     for vehicleCD, vehicle in reusable.personal.getVehicleCDsIterator(battleResults['personal']):
         return (vehicleCD, vehicle['outfit'])

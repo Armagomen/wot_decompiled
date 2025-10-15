@@ -23,7 +23,7 @@ class AccountStyles(IAccountStyles):
         return
 
     @property
-    def critera(self):
+    def criteria(self):
         return self.__styleCriteria
 
     def initialize(self):

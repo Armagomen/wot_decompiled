@@ -630,6 +630,9 @@ class ProgressionController(IProgressionController, ViewComponentsController):
 
     def updateXP(self, xp, observedVehicleID):
         self.__battleRoyaleArenaLevel.updateXP(xp, observedVehicleID)
+        self.__updateViewComponents()
+
+    def __updateViewComponents(self):
         for view in self._viewComponents:
             view.updateData(self.__battleRoyaleArenaLevel)
             if self.__battleRoyaleArenaLevel.isMaxLvlAchieved and self.__battleRoyaleArenaLevel.levelIsChanged:
@@ -801,4 +804,6 @@ class ProgressionController(IProgressionController, ViewComponentsController):
         avatar.setVehicleOverturned(False)
         if self.__upgradesAvailability is not None:
             self.__upgradesAvailability.onVehicleStatusChanged()
+        if self.__battleRoyaleArenaLevel.xpIsChanged:
+            self.__updateViewComponents()
         return
