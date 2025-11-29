@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/events_service.py
-import json
-import logging
+import json, logging
 from itertools import chain
 from typing import List
 from PlayerEvents import g_playerEvents
@@ -38,12 +35,8 @@ registerBannerEntryPointValidator(StrongholdEventBanner.NAME, isStrongholdEventB
 _logger = logging.getLogger(__name__)
 
 class _EntryPointData(object):
-    __slots__ = ['id',
-     'startDate',
-     'endDate',
-     'weight',
-     'data',
-     '__isValidData']
+    __slots__ = [
+     'id', 'startDate', 'endDate', 'weight', 'data', '__isValidData']
 
     def __init__(self, entryData):
         super(_EntryPointData, self).__init__()
@@ -92,14 +85,18 @@ class _EntryPointData(object):
 
     def isEnabledByValidator(self):
         configValidator = collectBannerEntryPointValidator(self.id)
-        return configValidator() if configValidator is not None else True
+        if configValidator is not None:
+            return configValidator()
+        else:
+            return True
 
 
 class EventsService(IEventsService, Notifiable, ServiceEvents):
     __notificationsCtrl = dependency.descriptor(IEventsNotificationsController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ['__entries', '__serverSettings']
+    __slots__ = [
+     '__entries', '__serverSettings']
 
     def __init__(self):
         super(EventsService, self).__init__()
@@ -148,11 +145,15 @@ class EventsService(IEventsService, Notifiable, ServiceEvents):
         self.stopServiceEvents()
 
     def _isQueueEnabled(self):
-        enabledQueues = (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
-        return any((self.__isQueueSelected(queueType) for queueType in enabledQueues))
+        enabledQueues = (
+         QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
+        return any(self.__isQueueSelected(queueType) for queueType in enabledQueues)
 
     def __isQueueSelected(self, queueType):
-        return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType) if self.prbDispatcher is not None else False
+        if self.prbDispatcher is not None:
+            return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType)
+        else:
+            return False
 
     def __onServerSettingsChanged(self, serverSettings):
         if self.__serverSettings is not None:
@@ -206,7 +207,8 @@ class EventsService(IEventsService, Notifiable, ServiceEvents):
         for entry in self.__entries.itervalues():
             if entry.isEarlyDate():
                 nearestDate = min(nearestDate, entry.startDate)
-            nearestDate = min(nearestDate, entry.endDate)
+            else:
+                nearestDate = min(nearestDate, entry.endDate)
 
         return nearestDate - currentTime + _SECONDS_BEFORE_UPDATE
 

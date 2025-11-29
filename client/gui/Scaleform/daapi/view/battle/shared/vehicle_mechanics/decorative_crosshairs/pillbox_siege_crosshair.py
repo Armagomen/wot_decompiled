@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/decorative_crosshairs/pillbox_siege_crosshair.py
 import typing
 from constants import VEHICLE_SIEGE_STATE
 from events_handler import eventHandler
@@ -25,7 +23,9 @@ class PillboxSiegeDecorativeCrosshair(PillboxSiegeDecorativeCrosshairMeta, Compo
         self.__invalidateAll(newState)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self), VehicleMechanicStatesUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         isActive = state.state == VEHICLE_SIEGE_STATE.PILLBOX_ENABLED

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/profile/comp7_profile_technique_page.py
 from comp7.gui.Scaleform.daapi.view.lobby.profile.comp7_profile_helper import getBattleHandlers
 from comp7.gui.Scaleform.daapi.view.lobby.profile.profile_utils import COMP7_VEHICLE_STATISTICS_LAYOUT
 from comp7.gui.Scaleform.daapi.view.lobby.profile.seasons_manager import getComp7SeasonManagers
@@ -24,7 +22,9 @@ class Comp7ProfileTechniquePage(ProfileTechniquePage):
         return result
 
     def _getEmptyScreenLabel(self):
-        return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7()) if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniquePage, self)._getEmptyScreenLabel()
+        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
+            return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7())
+        return super(Comp7ProfileTechniquePage, self)._getEmptyScreenLabel()
 
     def _getDefaultTableHeader(self, isFallout=False, showMarkOfMastery=False):
         isComp7BattleType = self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7
@@ -37,11 +37,11 @@ class Comp7ProfileTechniquePage(ProfileTechniquePage):
         if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
             battlesCount, wins, xp, prestigePoints = vehParams
             avgPrestigePoints = round(float(prestigePoints) / float(battlesCount))
-            return (battlesCount,
-             wins,
-             xp,
-             avgPrestigePoints)
+            return (
+             battlesCount, wins, xp, avgPrestigePoints)
         return super(Comp7ProfileTechniquePage, self)._unpackVehicleParams(vehParams)
 
     def _getLayout(self):
-        return COMP7_VEHICLE_STATISTICS_LAYOUT if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniquePage, self)._getLayout()
+        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
+            return COMP7_VEHICLE_STATISTICS_LAYOUT
+        return super(Comp7ProfileTechniquePage, self)._getLayout()

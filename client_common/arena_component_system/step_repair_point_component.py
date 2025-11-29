@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/step_repair_point_component.py
 from client_arena_component_system import ClientArenaComponent
 import Event
 
@@ -33,11 +31,15 @@ class StepRepairPointComponent(ClientArenaComponent):
         self.onStepRepairPointActiveStateChanged(stepRepairPoint.id, stepRepairPoint.isActiveForPlayerTeam())
 
     def stepRepairPointPlayerAction(self, repairPointIndex, action, nextActionTime, pointsHealed):
-        self.__repairPointPlayerAction[repairPointIndex] = (action, nextActionTime, pointsHealed)
+        self.__repairPointPlayerAction[repairPointIndex] = (
+         action, nextActionTime, pointsHealed)
         self.onStepRepairPointPlayerAction(repairPointIndex, action, nextActionTime, pointsHealed)
 
     def getRepairPointPlayerAction(self, repairPointIndex):
-        return self.__repairPointPlayerAction[repairPointIndex] if repairPointIndex in self.__repairPointPlayerAction else None
+        if repairPointIndex in self.__repairPointPlayerAction:
+            return self.__repairPointPlayerAction[repairPointIndex]
+        else:
+            return
 
     def getClosestRepairPoint(self, pos):
         chosenRepairPoint = None

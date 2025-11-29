@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/tabs_controller.py
 import inspect
 from account_helpers.AccountSettings import AccountSettings, OPT_DEVICE_TAB_VISITED
 
@@ -21,7 +19,7 @@ class TabsController(object):
 
     def __init__(self, autoCreating=True):
         self._autoCreating = autoCreating
-        self._tabs = {wrapper.tabName:wrapper for _, wrapper in inspect.getmembers(self.__class__, inspect.ismethod) if getattr(wrapper, 'tabName', None)}
+        self._tabs = {wrapper.tabName:wrapper for _, wrapper in inspect.getmembers(self.__class__, inspect.ismethod) if getattr(wrapper, 'tabName', None) if getattr(wrapper, 'tabName', None)}
 
     def addTabModel(self, tabName, updateFunc):
         self._tabs[tabName] = updateFunc
@@ -56,10 +54,10 @@ class TabsController(object):
                 break
 
     def tabOrderKey(self, tabName):
-        return None
+        return
 
     def getDefaultTab(self):
-        return None
+        return
 
     def _getTabs(self, **kwargs):
         return sorted(self._tabs.iterkeys(), key=self.tabOrderKey)

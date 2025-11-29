@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/log/adapters.py
 import logging
 
 class LoggerAdapter(logging.LoggerAdapter):
@@ -35,8 +33,9 @@ class InstanceContextLoggerAdapter(LoggerAdapter):
 
     def process(self, msg, kwargs):
         if self.extra:
-            msg = '{} {}'.format(self.extra, msg)
-        return (msg, kwargs)
+            msg = ('{} {}').format(self.extra, msg)
+        return (
+         msg, kwargs)
 
 
 def getWithContext(loggerName, instance=None, **context):

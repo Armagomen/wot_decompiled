@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/wrappers.py
 import operator
 from functools import wraps
 from helpers import dependency
@@ -12,7 +10,10 @@ def ifPresenterAvailable(defReturn=None):
         @wraps(method)
         def wrapper(view, *args, **kwargs):
             presenter = dependency.instance(IBattleResultsService).getStatsCtrl(view.arenaUniqueID)
-            return method(view, *args, **kwargs) if presenter is not None else defReturn
+            if presenter is not None:
+                return method(view, *args, **kwargs)
+            else:
+                return defReturn
 
         return wrapper
 
@@ -30,7 +31,9 @@ def hasPresenter(defReturn=None, abortAction=None):
             if presenter is not None:
                 return method(view, presenter=presenter, *args, **kwargs)
             else:
-                return operator.methodcaller(abortAction)(view) if abortAction is not None else defReturn
+                if abortAction is not None:
+                    return operator.methodcaller(abortAction)(view)
+                return defReturn
 
         return wrapper
 

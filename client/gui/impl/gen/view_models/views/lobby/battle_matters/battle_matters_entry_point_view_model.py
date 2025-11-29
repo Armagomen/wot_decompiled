@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_matters/battle_matters_entry_point_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -10,7 +8,7 @@ class State(IntEnum):
 
 
 class BattleMattersEntryPointViewModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
     def __init__(self, properties=5, commands=1):
         super(BattleMattersEntryPointViewModel, self).__init__(properties=properties, commands=commands)

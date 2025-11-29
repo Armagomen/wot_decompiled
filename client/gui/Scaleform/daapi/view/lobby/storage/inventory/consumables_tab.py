@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/consumables_tab.py
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyEquipmentUrl
 from gui.Scaleform.daapi.view.lobby.storage.inventory.filters.filter_by_type import FiltrableRegularCategoryByTypeTabView
 from gui.impl.gen import R
@@ -16,21 +14,29 @@ class _ConsumableFilterBit(CONST_CONTAINER):
     MENTORING_LICENSES = 16
 
 
-_TYPE_FILTER_ITEMS = [{'filterValue': _ConsumableFilterBit.CONSUMABLES,
-  'selected': False,
-  'tooltip': R.strings.storage.inventory.filterType.consumables,
-  'icon': R.images.gui.maps.icons.storage.filters.icon_button_consumables}, {'filterValue': _ConsumableFilterBit.BATTLE_BOOSTERS,
-  'selected': False,
-  'tooltip': R.strings.storage.inventory.filterType.instructions,
-  'icon': R.images.gui.maps.icons.storage.filters.icon_button_instructions}, {'filterValue': _ConsumableFilterBit.DEMOUNT_KITS | _ConsumableFilterBit.RECERTIFICATION_FORMS | _ConsumableFilterBit.MENTORING_LICENSES,
-  'selected': False,
-  'tooltip': R.strings.storage.inventory.filterType.other,
-  'icon': R.images.gui.maps.icons.storage.filters.icon_button_other}]
-_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ConsumableFilterBit.CONSUMABLES: (GUI_ITEM_TYPE.EQUIPMENT,),
- _ConsumableFilterBit.BATTLE_BOOSTERS: (GUI_ITEM_TYPE.BATTLE_BOOSTER,),
- _ConsumableFilterBit.DEMOUNT_KITS: (GUI_ITEM_TYPE.DEMOUNT_KIT,),
- _ConsumableFilterBit.RECERTIFICATION_FORMS: (GUI_ITEM_TYPE.RECERTIFICATION_FORM,),
- _ConsumableFilterBit.MENTORING_LICENSES: (GUI_ITEM_TYPE.MENTORING_LICENSE,)}
+_TYPE_FILTER_ITEMS = [
+ {'filterValue': _ConsumableFilterBit.CONSUMABLES, 
+    'selected': False, 
+    'tooltip': R.strings.storage.inventory.filterType.consumables, 
+    'icon': R.images.gui.maps.icons.storage.filters.icon_button_consumables},
+ {'filterValue': _ConsumableFilterBit.BATTLE_BOOSTERS, 
+    'selected': False, 
+    'tooltip': R.strings.storage.inventory.filterType.instructions, 
+    'icon': R.images.gui.maps.icons.storage.filters.icon_button_instructions},
+ {'filterValue': _ConsumableFilterBit.DEMOUNT_KITS | _ConsumableFilterBit.RECERTIFICATION_FORMS | _ConsumableFilterBit.MENTORING_LICENSES, 
+    'selected': False, 
+    'tooltip': R.strings.storage.inventory.filterType.other, 
+    'icon': R.images.gui.maps.icons.storage.filters.icon_button_other}]
+_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ConsumableFilterBit.CONSUMABLES: (
+                                    GUI_ITEM_TYPE.EQUIPMENT,), 
+   _ConsumableFilterBit.BATTLE_BOOSTERS: (
+                                        GUI_ITEM_TYPE.BATTLE_BOOSTER,), 
+   _ConsumableFilterBit.DEMOUNT_KITS: (
+                                     GUI_ITEM_TYPE.DEMOUNT_KIT,), 
+   _ConsumableFilterBit.RECERTIFICATION_FORMS: (
+                                              GUI_ITEM_TYPE.RECERTIFICATION_FORM,), 
+   _ConsumableFilterBit.MENTORING_LICENSES: (
+                                           GUI_ITEM_TYPE.MENTORING_LICENSE,)}
 
 class ConsumablesTabView(FiltrableRegularCategoryByTypeTabView):
     filterItems = _TYPE_FILTER_ITEMS
@@ -39,14 +45,15 @@ class ConsumablesTabView(FiltrableRegularCategoryByTypeTabView):
         showShop(getBuyEquipmentUrl())
 
     def _getItemTypeID(self):
-        return (GUI_ITEM_TYPE.EQUIPMENT,
+        return (
+         GUI_ITEM_TYPE.EQUIPMENT,
          GUI_ITEM_TYPE.BATTLE_BOOSTER,
          GUI_ITEM_TYPE.DEMOUNT_KIT,
          GUI_ITEM_TYPE.RECERTIFICATION_FORM,
          GUI_ITEM_TYPE.MENTORING_LICENSE)
 
     def _getClientSectionKey(self):
-        pass
+        return 'storage_consumables_tab'
 
     def _getFilteredCriteria(self):
         criteria = super(ConsumablesTabView, self)._getFilteredCriteria()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/customization_3d_objects/logging_constants.py
 from enum import Enum
 from gui.filters.carousel_filter import FILTER_KEYS
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, CustomizationModes
@@ -42,7 +40,8 @@ class CustomizationChamomileButtons(object):
     SCALE_1X = '1x_scale_button'
     SCALE_2X = '2x_scale_button'
     SCALE_3X = '3x_scale_button'
-    ALL_SCALE = (SCALE_1X, SCALE_2X, SCALE_3X)
+    ALL_SCALE = (
+     SCALE_1X, SCALE_2X, SCALE_3X)
 
 
 class CustomizationCarouselStates(Enum):
@@ -107,23 +106,23 @@ class CustomizationFilterTypes(Enum):
     PRIMARY = 'primary'
 
 
-CUSTOMIZATION_CAROUSEL_TAB_MAPPING = {CustomizationTabs.PAINTS: CustomizationCarouselTabs.PAINTS,
- CustomizationTabs.CAMOUFLAGES: CustomizationCarouselTabs.CAMOUFLAGES,
- CustomizationTabs.PROJECTION_DECALS: CustomizationCarouselTabs.DECALS,
- CustomizationTabs.EMBLEMS: CustomizationCarouselTabs.EMBLEMS,
- CustomizationTabs.INSCRIPTIONS: CustomizationCarouselTabs.INSCRIPTIONS,
- CustomizationTabs.MODIFICATIONS: CustomizationCarouselTabs.EFFECTS,
- CustomizationTabs.STYLES_2D: CustomizationCarouselTabs.STYLES_2D,
- CustomizationTabs.STYLES_3D: CustomizationCarouselTabs.STYLES_3D,
- CustomizationTabs.ATTACHMENTS: CustomizationCarouselTabs.ATTACHMENTS,
- CustomizationTabs.STAT_TRACKERS: CustomizationCarouselTabs.STAT_TRACKERS}
-CUSTOMIZATION_CAROUSEL_MODE_MAPPING = {CustomizationModes.STYLE_3D: CustomizationCarouselModes.STYLE_3D,
- CustomizationModes.STYLE_2D: CustomizationCarouselModes.STYLE_2D,
- CustomizationModes.CUSTOM: CustomizationCarouselModes.CUSTOM,
- CustomizationModes.STYLE_2D_EDITABLE: CustomizationCarouselModes.EDITABLE_STYLE}
-VEHICLE_CUSTOMIZATION_FILTER_MAPPING = {FILTER_KEYS.OWN_3D_STYLE: VehicleCustomizationFilterButtons.OWN_3D_STYLE,
- FILTER_KEYS.CAN_INSTALL_ATTACHMENTS: VehicleCustomizationFilterButtons.CAN_INSTALL_ATTACHMENTS}
-ATTACHMENT_TYPE_MAPPING = {AttachmentType.UNIVERSAL: CustomizationAttachmentSlots.UNIVERSAL,
- AttachmentType.GUN_MANTLET: CustomizationAttachmentSlots.GUN_MANTLET,
- AttachmentType.TURRET: CustomizationAttachmentSlots.TURRET,
- AttachmentType.GUN: CustomizationAttachmentSlots.GUN}
+CUSTOMIZATION_CAROUSEL_TAB_MAPPING = {CustomizationTabs.PAINTS: CustomizationCarouselTabs.PAINTS, 
+   CustomizationTabs.CAMOUFLAGES: CustomizationCarouselTabs.CAMOUFLAGES, 
+   CustomizationTabs.PROJECTION_DECALS: CustomizationCarouselTabs.DECALS, 
+   CustomizationTabs.EMBLEMS: CustomizationCarouselTabs.EMBLEMS, 
+   CustomizationTabs.INSCRIPTIONS: CustomizationCarouselTabs.INSCRIPTIONS, 
+   CustomizationTabs.MODIFICATIONS: CustomizationCarouselTabs.EFFECTS, 
+   CustomizationTabs.STYLES_2D: CustomizationCarouselTabs.STYLES_2D, 
+   CustomizationTabs.STYLES_3D: CustomizationCarouselTabs.STYLES_3D, 
+   CustomizationTabs.ATTACHMENTS: CustomizationCarouselTabs.ATTACHMENTS, 
+   CustomizationTabs.STAT_TRACKERS: CustomizationCarouselTabs.STAT_TRACKERS}
+CUSTOMIZATION_CAROUSEL_MODE_MAPPING = {CustomizationModes.STYLE_3D: CustomizationCarouselModes.STYLE_3D, 
+   CustomizationModes.STYLE_2D: CustomizationCarouselModes.STYLE_2D, 
+   CustomizationModes.CUSTOM: CustomizationCarouselModes.CUSTOM, 
+   CustomizationModes.STYLE_2D_EDITABLE: CustomizationCarouselModes.EDITABLE_STYLE}
+VEHICLE_CUSTOMIZATION_FILTER_MAPPING = {FILTER_KEYS.OWN_3D_STYLE: VehicleCustomizationFilterButtons.OWN_3D_STYLE, 
+   FILTER_KEYS.CAN_INSTALL_ATTACHMENTS: VehicleCustomizationFilterButtons.CAN_INSTALL_ATTACHMENTS}
+ATTACHMENT_TYPE_MAPPING = {AttachmentType.UNIVERSAL: CustomizationAttachmentSlots.UNIVERSAL, 
+   AttachmentType.GUN_MANTLET: CustomizationAttachmentSlots.GUN_MANTLET, 
+   AttachmentType.TURRET: CustomizationAttachmentSlots.TURRET, 
+   AttachmentType.GUN: CustomizationAttachmentSlots.GUN}

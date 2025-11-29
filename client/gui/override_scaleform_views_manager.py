@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/override_scaleform_views_manager.py
 import importlib
 from constants import ARENA_GUI_TYPE
 from soft_exception import SoftException
 
 class _OverrideScaleFormViewsManager(object):
-    __slots__ = ('_activeViewAliases', '_activeContextMenuAliases', '_battlePackages', '_lobbyPackages')
+    __slots__ = ('_activeViewAliases', '_activeContextMenuAliases', '_battlePackages',
+                 '_lobbyPackages')
 
     def __init__(self):
         super(_OverrideScaleFormViewsManager, self).__init__()
@@ -49,22 +48,22 @@ class _OverrideScaleFormViewsManager(object):
             try:
                 settings = imported.getViewSettings()
             except AttributeError:
-                raise SoftException('Package {0} does not have method getViewSettings'.format(path))
+                raise SoftException(('Package {0} does not have method getViewSettings').format(path))
 
             for setting in settings:
                 if setting.alias in self._activeViewAliases[guiType]:
-                    raise SoftException('Active extensions:{0}, {1} in wot_ext contains duplicate gui views alias={2}'.format(self._activeViewAliases[guiType][setting.alias], extensionName, setting.alias))
+                    raise SoftException(('Active extensions:{0}, {1} in wot_ext contains duplicate gui views alias={2}').format(self._activeViewAliases[guiType][setting.alias], extensionName, setting.alias))
                 self._activeViewAliases[guiType][setting.alias] = extensionName
 
             try:
                 handlers = imported.getContextMenuHandlers()
             except AttributeError:
-                raise SoftException('Package {0} does not have method getContextMenuHandlers'.format(path))
+                raise SoftException(('Package {0} does not have method getContextMenuHandlers').format(path))
 
             for handler in handlers:
                 alias, _ = handler[:2]
                 if alias in self._activeContextMenuAliases[guiType]:
-                    raise SoftException('Active extensions:{0}, {1} in wot_ext contains duplicate context menu alias={2}'.format(self._activeContextMenuAliases[guiType][alias], extensionName, alias))
+                    raise SoftException(('Active extensions:{0}, {1} in wot_ext contains duplicate context menu alias={2}').format(self._activeContextMenuAliases[guiType][alias], extensionName, alias))
                 self._activeContextMenuAliases[guiType][alias] = extensionName
 
 

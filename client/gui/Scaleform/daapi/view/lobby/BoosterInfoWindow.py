@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/BoosterInfoWindow.py
 from gui.Scaleform import MENU
 from gui.Scaleform.daapi.view.meta.BoosterInfoMeta import BoosterInfoMeta
 from gui.Scaleform.framework.entities.View import View
@@ -23,9 +21,11 @@ class BoosterInfoWindow(BoosterInfoMeta):
     def _populate(self):
         super(View, self)._populate()
         booster = self.goodiesCache.getBooster(self.boosterID)
-        self.as_setBoosterInfoS({'windowTitle': _ms(MENU.BOOSTERS_COMMON_NAME),
-         'name': booster.userName,
-         'icon': booster.icon,
-         'parameters': [{'value': '{}\n'.format(booster.getFormattedValue()),
-                         'type': '{}\n'.format(_ms(MENU.BOOSTERS_COMMON_EFFECT_VALUE))}, {'value': booster.getEffectTimeStr(hoursOnly=True),
-                         'type': _ms(MENU.BOOSTERS_COMMON_EFFECT_TIME)}]})
+        self.as_setBoosterInfoS({'windowTitle': _ms(MENU.BOOSTERS_COMMON_NAME), 
+           'name': booster.userName, 
+           'icon': booster.icon, 
+           'parameters': [
+                        {'value': ('{}\n').format(booster.getFormattedValue()), 
+                           'type': ('{}\n').format(_ms(MENU.BOOSTERS_COMMON_EFFECT_VALUE))},
+                        {'value': booster.getEffectTimeStr(hoursOnly=True), 
+                           'type': _ms(MENU.BOOSTERS_COMMON_EFFECT_TIME)}]})

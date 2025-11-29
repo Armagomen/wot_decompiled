@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/member_change_view_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
 from gui.impl.gen.view_models.views.lobby.crew.common.base_crew_view_model import BaseCrewViewModel
 from gui.impl.gen.view_models.views.lobby.crew.member_change_tankman_model import MemberChangeTankmanModel
 
 class MemberChangeViewModel(BaseCrewViewModel):
-    __slots__ = ('onResetFilters', 'onTankmanSelected', 'onRecruitSelected', 'onRecruitNewTankman', 'onTankmanRestore', 'onPlayRecruitVoiceover', 'onLoadCards')
+    __slots__ = ('onResetFilters', 'onTankmanSelected', 'onRecruitSelected', 'onRecruitNewTankman',
+                 'onTankmanRestore', 'onPlayRecruitVoiceover', 'onLoadCards')
 
     def __init__(self, properties=13, commands=11):
         super(MemberChangeViewModel, self).__init__(properties=properties, commands=commands)

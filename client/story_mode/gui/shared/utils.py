@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/shared/utils.py
 import typing
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework.entities.DisposableEntity import EntityState
@@ -42,7 +40,8 @@ def getRewardList(progressInfo, isBattlePassActive, forBattleResults=False):
         for missionId, tasksProgression in progressInfo.get('tasksProgression', {}).iteritems():
             mission = missionSettings.getMission(missionId)
             if mission is not None:
-                rewardsList += mission.getTasksReward([ taskId for taskId in tasksProgression if tasksToComplete.get((missionId, taskId), True) ], isBattlePassActive)
+                rewardsList += mission.getTasksReward([ taskId for taskId in tasksProgression if tasksToComplete.get((missionId, taskId), True)
+                                                      ], isBattlePassActive)
 
         for missionId in progressInfo.get('missionsCompleted', []):
             mission = missionSettings.getMission(missionId)
@@ -58,10 +57,12 @@ def getTasksCount(progressInfo):
     completedTasksCount = 0
     for missionID, tasks in progressInfo.get('tasksProgression', {}).iteritems():
         for taskID in tasks:
-            if (missionID, taskID) in tasksToComplete:
+            if (
+             missionID, taskID) in tasksToComplete:
                 completedTasksCount += 1
 
-    return (completedTasksCount, tasksToCompleteCount)
+    return (
+     completedTasksCount, tasksToCompleteCount)
 
 
 def formatAndFillRewards(rewards, rewardsModel, idGenerator, bonusCache, maxBonusesInView):
@@ -69,7 +70,7 @@ def formatAndFillRewards(rewards, rewardsModel, idGenerator, bonusCache, maxBonu
     formatter = StoryModeBonusesAwardsComposer(maxBonusesInView, AwardsPacker(getSMFormattersMap()))
     bonusRewards = formatter.getFormattedBonuses(rewards, AWARDS_SIZES.BIG)
     for bonus in bonusRewards:
-        tooltipId = '{}'.format(idGenerator.next())
+        tooltipId = ('{}').format(idGenerator.next())
         bonusCache[tooltipId] = bonus
         rewardItem = RewardModel()
         rewardItem.setName(bonus.bonusName)

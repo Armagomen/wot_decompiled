@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/vehicle_health_observer_manager.py
-import BigWorld
-import CGF
-import logging
+import BigWorld, CGF, logging
 from collections import defaultdict
 from constants import SPECIAL_VEHICLE_HEALTH
 from GenericComponents import StateSwitcherComponent
@@ -52,7 +48,9 @@ class VehicleHealthObserverManager(CGF.ComponentManager):
     def __determineState(health):
         if health > 0:
             return StateSwitcherComponent.NORMAL_STATE
-        return StateSwitcherComponent.CRITICAL_STATE if SPECIAL_VEHICLE_HEALTH.IS_AMMO_BAY_EXPLODED(health) else StateSwitcherComponent.DAMAGED_STATE
+        if SPECIAL_VEHICLE_HEALTH.IS_AMMO_BAY_EXPLODED(health):
+            return StateSwitcherComponent.CRITICAL_STATE
+        return StateSwitcherComponent.DAMAGED_STATE
 
     def __onHealthChanged(self, vehicleID, newHealth, prevHealth):
         newState = self.__determineState(newHealth)

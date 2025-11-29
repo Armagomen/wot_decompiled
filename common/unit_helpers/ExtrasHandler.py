@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/unit_helpers/ExtrasHandler.py
 import cPickle
 from debug_utils import LOG_DEBUG_DEV
 
@@ -15,7 +13,7 @@ class EmptyExtrasHandler(object):
         return result
 
     def pack(self, extras):
-        pass
+        return ''
 
     def unpack(self, extrasStr):
         return {}
@@ -51,14 +49,13 @@ class ClanBattleExtrasHandler(SimpleExtrasHandler):
         self._processor = ClanBattleMgrMsgProcessor(unit)
 
     def new(self, initial=None):
-        result = {'battleID': 0,
-         'scheduleTime': 0,
-         'roundStart': 0,
-         'battleResultList': [],
-         'isEnemyReadyForBattle': 0,
-         'clanEquipments': None,
-         'lastEquipRev': 0,
-         'localizedData': None}
+        result = {'battleID': 0, 
+           'scheduleTime': 0, 
+           'roundStart': 0, 
+           'battleResultList': [], 'isEnemyReadyForBattle': 0, 
+           'clanEquipments': None, 
+           'lastEquipRev': 0, 
+           'localizedData': None}
         if initial:
             result.update(initial)
         return result

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/widget/crew_widget_cm_handlers.py
 from gui import SystemMessages
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
@@ -27,13 +25,13 @@ class CrewContextMenuHandler(AbstractContextMenuHandler, EventSystemEntity):
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, cmProxy, ctx=None):
-        super(CrewContextMenuHandler, self).__init__(cmProxy, ctx, {CREW.PERSONAL_FILE: 'showPersonalFile',
-         CREW.RETRAIN: 'retrain',
-         CREW.QUICK_TRAINING: 'showQuickTraining',
-         CREW.CHANGE_CREW_MEMBER: 'changeCrewMember',
-         CREW.CHANGE_SPECIALIZATION: 'changeSpecialization',
-         CREW.SEND_TO_BARRACKS: 'sendToToBarracks',
-         CREW.DISMISS: 'dismiss'})
+        super(CrewContextMenuHandler, self).__init__(cmProxy, ctx, {CREW.PERSONAL_FILE: 'showPersonalFile', 
+           CREW.RETRAIN: 'retrain', 
+           CREW.QUICK_TRAINING: 'showQuickTraining', 
+           CREW.CHANGE_CREW_MEMBER: 'changeCrewMember', 
+           CREW.CHANGE_SPECIALIZATION: 'changeSpecialization', 
+           CREW.SEND_TO_BARRACKS: 'sendToToBarracks', 
+           CREW.DISMISS: 'dismiss'})
 
     def showPersonalFile(self):
         event_dispatcher.showPersonalCase(int(self._tankmanID), previousViewID=self._previousViewID)
@@ -69,9 +67,9 @@ class CrewContextMenuHandler(AbstractContextMenuHandler, EventSystemEntity):
                     isRetrainAvailable = not tman.isMaxCurrentVehicleSkillsEfficiency
                     break
 
-        return [self._makeItem(CREW.PERSONAL_FILE, MENU.contextmenu('crewWidgetPersonalFile')),
-         self._makeItem(CREW.RETRAIN, MENU.contextmenu('crewWidgetRetrain'), {'visible': isRetrainAvailable,
-          'textColor': CM_RETRAIN_COLOR}),
+        return [
+         self._makeItem(CREW.PERSONAL_FILE, MENU.contextmenu('crewWidgetPersonalFile')),
+         self._makeItem(CREW.RETRAIN, MENU.contextmenu('crewWidgetRetrain'), {'visible': isRetrainAvailable, 'textColor': CM_RETRAIN_COLOR}),
          self._makeItem(CREW.QUICK_TRAINING, MENU.contextmenu('crewWidgetQuickTraining')),
          self._makeItem(CREW.CHANGE_CREW_MEMBER, MENU.contextmenu('crewWidgetChangeCrewMember'), {'enabled': self._vehicle and isNotLocked}),
          self._makeItem(CREW.CHANGE_SPECIALIZATION, MENU.contextmenu('crewWidgetChangeSpecialization'), {'enabled': isNotLocked}),

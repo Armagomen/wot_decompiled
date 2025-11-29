@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/progress_circle_ctrl.py
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from constants import REPAIR_POINT_ACTION, SECTOR_BASE_ACTION
 from debug_utils import LOG_WARNING, LOG_ERROR
 from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
@@ -46,7 +43,8 @@ class ProgressTimerPlugin(object):
         return
 
     def getPlayerState(self, idx):
-        return (self._inCircleIdx == idx, None)
+        return (
+         self._inCircleIdx == idx, None)
 
     def _getTime(self, nextTime):
         return max(0, round(nextTime - BigWorld.serverTime()))
@@ -56,7 +54,8 @@ class ProgressTimerPlugin(object):
         for idx in self._cooldown:
             if self._getTime(self._cooldown[idx]) > 0:
                 self._controller.onTimerUpdated(self._type, idx, self._getTime(self._cooldown[idx]))
-            delCallbacks.append(idx)
+            else:
+                delCallbacks.append(idx)
 
         for i in range(0, len(delCallbacks)):
             del self._cooldown[delCallbacks[i]]
@@ -116,7 +115,7 @@ class StepRepairPlugin(ProgressTimerPlugin):
                 action, time, hphealed = actions[idx]
                 if action == REPAIR_POINT_ACTION.COOLDOWN_AFTER_COMPLETE:
                     self._action(idx, REPAIR_POINT_ACTION.COOLDOWN, time, hphealed)
-                if action != REPAIR_POINT_ACTION.CANCEL_REPAIR and action != REPAIR_POINT_ACTION.LEAVE_WHILE_CD:
+                elif action != REPAIR_POINT_ACTION.CANCEL_REPAIR and action != REPAIR_POINT_ACTION.LEAVE_WHILE_CD:
                     self._action(idx, action, time, hphealed)
 
         else:
@@ -138,7 +137,8 @@ class StepRepairPlugin(ProgressTimerPlugin):
         return
 
     def getPlayerState(self, idx):
-        return (self._inCircleIdx == idx, self.__repairPointStates.get(idx, None))
+        return (
+         self._inCircleIdx == idx, self.__repairPointStates.get(idx, None))
 
     def _onRespawnVisibility(self, isVisible, fromTab=False):
         super(StepRepairPlugin, self)._onRespawnVisibility(isVisible, fromTab)
@@ -222,7 +222,8 @@ class StepRepairPlugin(ProgressTimerPlugin):
                     self._controller.onCircleStatusChanged(self._type, repairPointIndex, EPIC_CONSTS.RESUPPLY_FULL)
             else:
                 LOG_WARNING("STATE: '%d' is not implemented ", action)
-            self._sessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.PROGRESS_CIRCLE, (self._type, self._inCircleIdx >= 0))
+            self._sessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.PROGRESS_CIRCLE, (
+             self._type, self._inCircleIdx >= 0))
             return
 
     def _hideAll(self):
@@ -362,4 +363,5 @@ class ProgressTimerController(IBattleController):
         return
 
     def getPlayerCircleState(self, type_, idx):
-        return self.__plugins[type_].getPlayerState(idx) if type_ in self.__plugins else None
+        if type_ in self.__plugins:
+            return self.__plugins[type_].getPlayerState(idx)

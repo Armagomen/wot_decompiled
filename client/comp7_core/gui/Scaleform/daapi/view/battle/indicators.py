@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/indicators.py
 from comp7_core.gui.Scaleform.daapi.view.meta.Comp7ReconFlightMeta import Comp7ReconFlightMeta
 from constants import DIRECT_DETECTION_TYPE
 from gui import GUI_SETTINGS

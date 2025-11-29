@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/category_view.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.storage import storage_helpers
 from gui.Scaleform.daapi.view.meta.BaseStorageCategoryViewMeta import BaseStorageCategoryViewMeta
@@ -83,7 +81,7 @@ class BaseCategoryView(BaseStorageCategoryViewMeta):
 
     def _formatCountString(self, currentItemsCount, totalItemsCount):
         style = text_styles.error if currentItemsCount == 0 else text_styles.stats
-        return '{} / {}'.format(style(currentItemsCount), text_styles.main(totalItemsCount))
+        return ('{} / {}').format(style(currentItemsCount), text_styles.main(totalItemsCount))
 
     def _formatTotalCountString(self, totalItemsCount):
         return text_styles.stats(totalItemsCount)
@@ -123,14 +121,16 @@ class InventoryCategoryView(BaseCategoryView):
         return REQ_CRITERIA.INVENTORY
 
     def _getComparator(self):
-        return None
+        return
 
     def _getItemTypeID(self):
         raise NotImplementedError
 
     def _getItemTypeIDs(self):
         itemTypeID = self._getItemTypeID()
-        return itemTypeID if isinstance(itemTypeID, tuple) else (itemTypeID,)
+        if isinstance(itemTypeID, tuple):
+            return itemTypeID
+        return (itemTypeID,)
 
     def _buildItems(self):
         self._dataProvider.buildList(self._getVoList())

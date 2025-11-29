@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/training/legacy/permissions.py
 from constants import PREBATTLE_ROLE
 from gui.prb_control.entities.base.legacy.permissions import LegacyPermissions, ILegacyPermissions
 

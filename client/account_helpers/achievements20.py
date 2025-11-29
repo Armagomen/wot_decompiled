@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/achievements20.py
 from functools import partial
-import typing
-import AccountCommands
+import typing, AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
 if typing.TYPE_CHECKING:
     from typing import Callable, Dict, Optional
@@ -28,9 +25,8 @@ class Achievements20(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+        return
 
     def setAccount(self, account):
         self.__account = account
@@ -46,20 +42,18 @@ class Achievements20(object):
             if callback is not None:
                 callback(AccountCommands.CMD_SET_ACHIEVEMENTS20_LAYOUT, None)
             return
+        if callback is not None:
+            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
         else:
-            if callback is not None:
-                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
-            else:
-                proxy = None
-            self.__account._doCmdIntArr(AccountCommands.CMD_SET_ACHIEVEMENTS20_LAYOUT, layout, proxy)
-            return
+            proxy = None
+        self.__account._doCmdIntArr(AccountCommands.CMD_SET_ACHIEVEMENTS20_LAYOUT, layout, proxy)
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return

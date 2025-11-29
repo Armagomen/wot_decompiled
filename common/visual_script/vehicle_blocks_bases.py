@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/vehicle_blocks_bases.py
 from block import Block
 from slot_types import SLOT_TYPE, arrayOf
 from visual_script.vehicle_blocks import VehicleMeta

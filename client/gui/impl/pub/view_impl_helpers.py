@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/view_impl_helpers.py
-import logging
-import json
-import typing
+import logging, json, typing
 from soft_exception import SoftException
 from helpers import dependency
 from gui.impl.pub.tooltip_window import ToolTipWindow
@@ -54,9 +50,9 @@ def createParamTooltipWindow(event, parentWindow):
     if not tooltipType:
         _logger.error('Can not create ParamTooltipWindow: tooltip type is not specified')
         return
-    elif not resId:
-        _logger.error('Can not create ParamTooltipWindow: resId is not specified')
-        return
     else:
+        if not resId:
+            _logger.error('Can not create ParamTooltipWindow: resId is not specified')
+            return
         window = ToolTipWindow(event, ParamTooltipView(tooltipType, params, int(resId)), parentWindow)
         return window

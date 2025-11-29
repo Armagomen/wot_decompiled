@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/factories/composite.py
 from debug_utils import LOG_ERROR
 from gui.prb_control.factories.ControlFactory import ControlFactory
 from gui.prb_control.factories.PreQueueFactory import PreQueueFactory
@@ -7,20 +5,26 @@ from gui.prb_control.factories.LegacyFactory import LegacyFactory
 from gui.prb_control.factories.UnitFactory import UnitFactory
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, FUNCTIONAL_FLAG
 from soft_exception import SoftException
-_ORDER_TO_CREATE = (CTRL_ENTITY_TYPE.LEGACY, CTRL_ENTITY_TYPE.UNIT, CTRL_ENTITY_TYPE.PREQUEUE)
+_ORDER_TO_CREATE = (
+ CTRL_ENTITY_TYPE.LEGACY,
+ CTRL_ENTITY_TYPE.UNIT,
+ CTRL_ENTITY_TYPE.PREQUEUE)
 
 class ControlFactoryComposite(ControlFactory):
 
     def __init__(self):
-        self.__factories = {CTRL_ENTITY_TYPE.LEGACY: LegacyFactory(),
-         CTRL_ENTITY_TYPE.UNIT: UnitFactory(),
-         CTRL_ENTITY_TYPE.PREQUEUE: PreQueueFactory()}
+        self.__factories = {CTRL_ENTITY_TYPE.LEGACY: LegacyFactory(), 
+           CTRL_ENTITY_TYPE.UNIT: UnitFactory(), 
+           CTRL_ENTITY_TYPE.PREQUEUE: PreQueueFactory()}
 
     def clear(self):
         self.__factories.clear()
 
     def get(self, ctrlType):
-        return self.__factories[ctrlType] if ctrlType in self.__factories else None
+        if ctrlType in self.__factories:
+            return self.__factories[ctrlType]
+        else:
+            return
 
     def createEntry(self, ctx):
         ctrlType = ctx.getCtrlType()
@@ -28,7 +32,7 @@ class ControlFactoryComposite(ControlFactory):
             return self.__factories[ctrlType].createEntry(ctx)
         else:
             LOG_ERROR('Entry factory is not found', ctx)
-            return None
+            return
 
     def createEntryByAction(self, action):
         for ctrlType in _ORDER_TO_CREATE:

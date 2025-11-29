@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/shared/bonuses_formatters.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -16,7 +14,9 @@ def getImgPath(path):
     if path is None:
         return ''
     else:
-        return path if path.startswith('img:') else _IMG_PATH_PREFIX + path[2:]
+        if path.startswith('img:'):
+            return path
+        return _IMG_PATH_PREFIX + path[2:]
 
 
 class StoryModeBonusesAwardsComposer(CurtailingAwardsComposer):
@@ -30,11 +30,13 @@ class StoryModeBonusesAwardsComposer(CurtailingAwardsComposer):
 
     def _packMergedBonuses(self, mergedBonuses, size=AWARDS_SIZES.SMALL):
         mergedBonusCount = len(mergedBonuses)
-        imgs = {AWARDS_SIZES.SMALL: RES_ICONS.getBonusIcon(AWARDS_SIZES.SMALL, 'default'),
-         AWARDS_SIZES.BIG: RES_ICONS.getBonusIcon(AWARDS_SIZES.BIG, 'default')}
+        imgs = {AWARDS_SIZES.SMALL: RES_ICONS.getBonusIcon(AWARDS_SIZES.SMALL, 'default'), 
+           AWARDS_SIZES.BIG: RES_ICONS.getBonusIcon(AWARDS_SIZES.BIG, 'default')}
         return PreformattedBonus(bonusName='default', label=backport.text(R.strings.marathon.reward.rest(), count=mergedBonusCount), isSpecial=True, images=imgs, specialAlias=TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, specialArgs=self._getShortBonusesData(mergedBonuses, size), userName='')
 
     @staticmethod
     def _bonusesSortFunction(bonus):
         name = bonus.bonusName
-        return BONUS_ORDER.index(name) if name in BONUS_ORDER else len(BONUS_ORDER) + 1
+        if name in BONUS_ORDER:
+            return BONUS_ORDER.index(name)
+        return len(BONUS_ORDER) + 1

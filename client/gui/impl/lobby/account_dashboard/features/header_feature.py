@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/header_feature.py
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from WeakMethod import WeakMethodProxy
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.clans.settings import getClanRoleName
@@ -41,8 +37,8 @@ class HeaderFeature(FeatureItem):
         self.__notConfirmedEmail = ''
         self.__isDestroyed = False
         self.__confirmationWindow = None
-        self._tooltipModelFactories = {R.views.lobby.tooltips.clans.ClanShortInfoTooltipContent(): ClanShortInfoTooltipContent,
-         R.views.lobby.account_completion.tooltips.HangarTooltip(): WeakMethodProxy(self.__createHangarTooltipView)}
+        self._tooltipModelFactories = {R.views.lobby.tooltips.clans.ClanShortInfoTooltipContent(): ClanShortInfoTooltipContent, 
+           R.views.lobby.account_completion.tooltips.HangarTooltip(): WeakMethodProxy(self.__createHangarTooltipView)}
         return
 
     def initialize(self, *args, **kwargs):
@@ -50,8 +46,8 @@ class HeaderFeature(FeatureItem):
         self._viewModel.header.onShowBadges += self.__onShowBadges
         self._viewModel.header.onAccountInfoButtonClick += self.__onAccountInfoButtonClick
         self.__badgesController.onUpdated += self.__onBadgesChanged
-        g_clientUpdateManager.addCallbacks({'stats.clanInfo': self.__onClanInfoChanged,
-         'cache.activeOrders': self.__onClanInfoChanged})
+        g_clientUpdateManager.addCallbacks({'stats.clanInfo': self.__onClanInfoChanged, 
+           'cache.activeOrders': self.__onClanInfoChanged})
         self.__wgnpSteamAccCtrl.statusEvents.subscribe(StatusTypes.CONFIRMED, self._setEmailConfirmed)
         self.__wgnpSteamAccCtrl.statusEvents.subscribe(StatusTypes.ADDED, self._setEmailActionNeeded)
         self.__wgnpSteamAccCtrl.statusEvents.subscribe(StatusTypes.ADD_NEEDED, self._setEmailActionNeeded)
@@ -72,7 +68,8 @@ class HeaderFeature(FeatureItem):
         return
 
     def createToolTipContent(self, event, contentID):
-        return self._tooltipModelFactories[contentID]() if contentID in self._tooltipModelFactories else None
+        if contentID in self._tooltipModelFactories:
+            return self._tooltipModelFactories[contentID]()
 
     def _fillModel(self, model):
         submodel = model.header

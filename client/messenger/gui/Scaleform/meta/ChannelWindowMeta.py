@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/meta/ChannelWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class ChannelWindowMeta(AbstractWindowView):
@@ -11,7 +9,9 @@ class ChannelWindowMeta(AbstractWindowView):
         self._printOverrideError('getClientID')
 
     def as_setTitleS(self, title):
-        return self.flashObject.as_setTitle(title) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTitle(title)
 
     def as_setCloseEnabledS(self, enabled):
-        return self.flashObject.as_setCloseEnabled(enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCloseEnabled(enabled)

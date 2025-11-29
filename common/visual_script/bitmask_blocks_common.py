@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/bitmask_blocks_common.py
 from visual_script.block import Block, InitParam, buildStrKeysValue, Meta
 from visual_script.misc import errorVScript, EDITOR_TYPE, BLOCK_MODE
 from visual_script.slot_types import SLOT_TYPE
@@ -8,15 +6,15 @@ class BitMaskMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 4202496
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Bit Mask'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/automation'
 
 
 class BitMaskBase(Block, BitMaskMeta):
@@ -35,18 +33,21 @@ class BitMaskBase(Block, BitMaskMeta):
 
     def _addInputNode(self):
         self._flags.append(self._makeDataInputSlot('f' + str(len(self._flags)), SLOT_TYPE.STR, EDITOR_TYPE.ENUM_SELECTOR))
-        self._flags[-1].setEditorData([ name for name in self._inFlags.iterkeys() ])
+        self._flags[(-1)].setEditorData([ name for name in self._inFlags.iterkeys() ])
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Flags Count', SLOT_TYPE.INT, 1), InitParam('BitMask type', SLOT_TYPE.STR, buildStrKeysValue(*cls._MASK_TYPES.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [
+         InitParam('Flags Count', SLOT_TYPE.INT, 1),
+         InitParam('BitMask type', SLOT_TYPE.STR, buildStrKeysValue(*cls._MASK_TYPES.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def _getValue(self):
         bitMask = 0
         for f in self._flags:
             if f.hasValue():
                 bitMask |= self._inFlags[f.getValue()]
-            errorVScript(self, 'Not all input flags are specified')
+            else:
+                errorVScript(self, 'Not all input flags are specified')
 
         self._bitMask.setValue(bitMask)
 
@@ -71,7 +72,7 @@ class BitwiseOperationBase(Block, BitMaskMeta):
     def __init__(self, *args, **kwargs):
         super(BitwiseOperationBase, self).__init__(*args, **kwargs)
         self._masks = []
-        masksCount = self._getInitParams()
+        masksCount, = self._getInitParams()
         for _ in xrange(masksCount):
             self._addInputNode()
 
@@ -127,4 +128,4 @@ class BitwiseEQUAL(BitwiseOperationBase):
 
     def _getValue(self):
         masks = self._maskValues
-        self._res.setValue(all((m == masks[0] for m in masks[1:])))
+        self._res.setValue(all(m == masks[0] for m in masks[1:]))

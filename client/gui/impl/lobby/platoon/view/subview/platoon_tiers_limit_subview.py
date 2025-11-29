@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/subview/platoon_tiers_limit_subview.py
-import logging
-import typing
+import logging, typing
 from account_helpers.settings_core.settings_constants import GAME
 from constants import Configs
 from frameworks.wulf import ViewEvent, View
@@ -46,7 +43,10 @@ class TiersLimitSubview(ViewImpl):
         return self.getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return AlertTooltip(R.strings.platoon.searching.expanded.header(), R.strings.platoon.searching.expanded.body()) if contentID == R.views.lobby.platoon.AlertTooltip() else None
+        if contentID == R.views.lobby.platoon.AlertTooltip():
+            return AlertTooltip(R.strings.platoon.searching.expanded.header(), R.strings.platoon.searching.expanded.body())
+        else:
+            return
 
     def hideSettings(self):
         self.__isShowingSettings = False
@@ -70,7 +70,7 @@ class TiersLimitSubview(ViewImpl):
         self.__addListeners()
         self.resetState()
         self.update()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.btnShowSettings.setCaption(backport.text(_strButtons.settings.caption()))
             model.btnShowSettings.setDescription(backport.text(_strButtons.settings.description()))
             model.btnResetSettings.setCaption(backport.text(_strButtons.reset.caption()))
@@ -111,7 +111,7 @@ class TiersLimitSubview(ViewImpl):
         isInQueue = platoonCtrl.isInQueue()
         hasTierPreferences = platoonCtrl.isTankLevelPreferenceEnabled()
         tiersString = self.__tiersString if platoonCtrl.canStartSearch() else ''
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             hasResetSettingsButton = bool(tiersString) and layoutID != currentPlatoonLayouts.get(EPlatoonLayout.SEARCH).layoutID and platoonCtrl.canStartSearch() and not isInSearch
             hasLookingForCaption = hasTierPreferences and layoutID == currentPlatoonLayouts.get(EPlatoonLayout.SEARCH).layoutID and bool(tiersString)
             hasTiersString = hasTierPreferences and layoutID != currentPlatoonLayouts.get(EPlatoonLayout.MEMBER).layoutID and bool(tiersString) and platoonCtrl.canStartSearch()
@@ -160,5 +160,5 @@ class TiersLimitSubview(ViewImpl):
         self.update()
 
     def __updateSettingsButtonIsPressedState(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.btnShowSettings.setIsPressed(self.__isShowingSettings)

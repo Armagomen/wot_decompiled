@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/EntityVisualScriptRunner.py
-import cPickle
-import zlib
-import BigWorld
+import cPickle, zlib, BigWorld
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from visual_script_client.contexts.vehicle_context import VehicleContextClient
 from visual_script_client.contexts.entity_context import EntityContextClient

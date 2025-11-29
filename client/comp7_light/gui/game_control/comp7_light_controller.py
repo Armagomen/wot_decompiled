@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/game_control/comp7_light_controller.py
-import typing
-import Event
+import typing, Event
 from Event import EventManager
 from comp7_light.gui.comp7_light_constants import FUNCTIONAL_FLAG
 from comp7_light.helpers.comp7_light_server_settings import Comp7LightServerSettings
@@ -91,7 +88,10 @@ class Comp7LightController(Notifiable, SeasonProvider, IComp7LightController, IG
         return
 
     def getModeSettings(self):
-        return self.__comp7LightServerSettings.comp7LightConfig if self.__comp7LightServerSettings else None
+        if self.__comp7LightServerSettings:
+            return self.__comp7LightServerSettings.comp7LightConfig
+        else:
+            return
 
     def isEnabled(self):
         config = self.getModeSettings()
@@ -126,7 +126,7 @@ class Comp7LightController(Notifiable, SeasonProvider, IComp7LightController, IG
             restriction = PRE_QUEUE_RESTRICTION.LIMIT_VEHICLE_TYPE
             ctx = {'forbiddenType': vehicle.shortUserName}
         else:
-            return None
+            return
         return ValidationResult(False, restriction, ctx)
 
     def hasSuitableVehicles(self):
@@ -135,7 +135,10 @@ class Comp7LightController(Notifiable, SeasonProvider, IComp7LightController, IG
         return len(v) > 0
 
     def isModePrbActive(self):
-        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.COMP7_LIGHT)
+        if self.prbEntity is None:
+            return False
+        else:
+            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.COMP7_LIGHT)
 
     def isProgressionActive(self):
         return self.__progressionController.isEnabled and not self.__progressionController.isFinished
@@ -152,7 +155,7 @@ class Comp7LightController(Notifiable, SeasonProvider, IComp7LightController, IG
         return len(vRestorePossible) > 0
 
     def getPreannouncedSeason(self):
-        return None
+        return
 
     def getRoleEquipment(self, roleName):
         return self.__roleEquipments.get(roleName, {}).get('item')
@@ -230,9 +233,9 @@ class Comp7LightController(Notifiable, SeasonProvider, IComp7LightController, IG
                 if equipmentConfig['equipmentID'] is not None:
                     startCharge = equipmentConfig['startCharge']
                     startLevel = len([ levelCost for levelCost in equipmentConfig['cost'] if levelCost <= startCharge ])
-                    self.__roleEquipmentsCache[role] = {'item': equipmentsCache[equipmentConfig['equipmentID']],
-                     'startLevel': startLevel,
-                     'overrides': equipmentConfig['overrides']}
+                    self.__roleEquipmentsCache[role] = {'item': equipmentsCache[equipmentConfig['equipmentID']], 
+                       'startLevel': startLevel, 
+                       'overrides': equipmentConfig['overrides']}
 
         return self.__roleEquipmentsCache
 

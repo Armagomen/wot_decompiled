@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/events.py
 from __future__ import absolute_import
 from gui.shared.event_bus import SharedEvent
 from gui.shared.events import NavigationEvent

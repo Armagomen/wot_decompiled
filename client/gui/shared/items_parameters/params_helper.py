@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/items_parameters/params_helper.py
 import copy
 from itertools import chain
 import typing
@@ -19,60 +17,30 @@ from helpers import dependency
 from items import vehicles, ITEM_TYPES
 from shared_utils import findFirst, first
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-RELATIVE_POWER_PARAMS = ('avgDamage',
- AVG_DAMAGE_PER_SECOND,
- 'avgPiercingPower',
- 'stunMinDuration',
- 'stunMaxDuration',
- 'reloadTime',
- CONTINUOUS_SHOTS_PER_MINUTE,
- AUTO_RELOAD_PROP_NAME,
- 'reloadTimeSecs',
- TWIN_GUN_SWITCH_FIRE_MODE_TIME,
- 'clipFireRate',
- AUTO_SHOOT_CLIP_FIRE_RATE,
- BURST_FIRE_RATE,
- 'turboshaftBurstFireRate',
- DUAL_GUN_CHARGE_TIME,
- 'turretRotationSpeed',
- 'turretYawLimits',
- 'pitchLimits',
- 'gunYawLimits',
- 'aimingTime',
- SHOT_DISPERSION_ANGLE,
- DUAL_ACCURACY_COOLING_DELAY,
- 'avgDamagePerMinute')
-RELATIVE_ARMOR_PARAMS = ('maxHealth',
- 'hullArmor',
- 'turretArmor',
- CHASSIS_REPAIR_TIME)
-RELATIVE_MOBILITY_PARAMS = ('vehicleWeight',
- 'enginePower',
- TURBOSHAFT_ENGINE_POWER,
- ROCKET_ACCELERATION_ENGINE_POWER,
- 'enginePowerPerTon',
- 'speedLimits',
- TWIN_GUN_TOP_SPEED,
- WHEELED_SPEED_MODE_SPEED,
- TURBOSHAFT_SPEED_MODE_SPEED,
- ROCKET_ACCELERATION_SPEED_LIMITS,
- 'chassisRotationSpeed',
- ROCKET_ACCELERATION_REUSE_AND_DURATION,
- MAX_STEERING_LOCK_ANGLE,
- 'switchOnTime',
- 'switchOffTime',
- TURBOSHAFT_SWITCH_TIME)
-RELATIVE_CAMOUFLAGE_PARAMS = ('invisibilityStillFactor',
- 'invisibilityMovingFactor',
- TURBOSHAFT_INVISIBILITY_STILL_FACTOR,
- TURBOSHAFT_INVISIBILITY_MOVING_FACTOR)
+RELATIVE_POWER_PARAMS = (
+ 'avgDamage', AVG_DAMAGE_PER_SECOND, 'avgPiercingPower', 'stunMinDuration', 'stunMaxDuration', 'reloadTime',
+ CONTINUOUS_SHOTS_PER_MINUTE, AUTO_RELOAD_PROP_NAME, 'reloadTimeSecs', TWIN_GUN_SWITCH_FIRE_MODE_TIME,
+ 'clipFireRate', AUTO_SHOOT_CLIP_FIRE_RATE, BURST_FIRE_RATE, 'turboshaftBurstFireRate', DUAL_GUN_CHARGE_TIME,
+ 'turretRotationSpeed', 'turretYawLimits', 'pitchLimits', 'gunYawLimits', 'aimingTime', SHOT_DISPERSION_ANGLE,
+ DUAL_ACCURACY_COOLING_DELAY, 'avgDamagePerMinute')
+RELATIVE_ARMOR_PARAMS = (
+ 'maxHealth', 'hullArmor', 'turretArmor', CHASSIS_REPAIR_TIME)
+RELATIVE_MOBILITY_PARAMS = (
+ 'vehicleWeight', 'enginePower', TURBOSHAFT_ENGINE_POWER, ROCKET_ACCELERATION_ENGINE_POWER, 'enginePowerPerTon',
+ 'speedLimits', TWIN_GUN_TOP_SPEED, WHEELED_SPEED_MODE_SPEED, TURBOSHAFT_SPEED_MODE_SPEED,
+ ROCKET_ACCELERATION_SPEED_LIMITS, 'chassisRotationSpeed', ROCKET_ACCELERATION_REUSE_AND_DURATION,
+ MAX_STEERING_LOCK_ANGLE, 'switchOnTime', 'switchOffTime', TURBOSHAFT_SWITCH_TIME)
+RELATIVE_CAMOUFLAGE_PARAMS = (
+ 'invisibilityStillFactor', 'invisibilityMovingFactor',
+ TURBOSHAFT_INVISIBILITY_STILL_FACTOR, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR)
 RELATIVE_VISIBILITY_PARAMS = ('circularVisionRadius', 'radioDistance')
-PARAMS_GROUPS = {'relativePower': RELATIVE_POWER_PARAMS,
- 'relativeArmor': RELATIVE_ARMOR_PARAMS,
- 'relativeMobility': RELATIVE_MOBILITY_PARAMS,
- 'relativeCamouflage': RELATIVE_CAMOUFLAGE_PARAMS,
- 'relativeVisibility': RELATIVE_VISIBILITY_PARAMS}
-EXTRA_POWER_PARAMS = (KPI.Name.VEHICLE_GUN_SHOT_DISPERSION,
+PARAMS_GROUPS = {'relativePower': RELATIVE_POWER_PARAMS, 
+   'relativeArmor': RELATIVE_ARMOR_PARAMS, 
+   'relativeMobility': RELATIVE_MOBILITY_PARAMS, 
+   'relativeCamouflage': RELATIVE_CAMOUFLAGE_PARAMS, 
+   'relativeVisibility': RELATIVE_VISIBILITY_PARAMS}
+EXTRA_POWER_PARAMS = (
+ KPI.Name.VEHICLE_GUN_SHOT_DISPERSION,
  KPI.Name.VEHICLE_GUN_SHOT_DISPERSION_CHASSIS_MOVEMENT,
  KPI.Name.VEHICLE_GUN_SHOT_DISPERSION_CHASSIS_ROTATION,
  KPI.Name.VEHICLE_GUN_SHOT_DISPERSION_TURRET_ROTATION,
@@ -84,7 +52,8 @@ EXTRA_POWER_PARAMS = (KPI.Name.VEHICLE_GUN_SHOT_DISPERSION,
  KPI.Name.ENEMY_MODULES_CREW_CRIT_CHANCE,
  KPI.Name.VEHICLE_DAMAGE_ENEMIES_BY_RAMMING,
  KPI.Name.SHELL_VELOCITY)
-EXTRA_ARMOR_PARAMS = (KPI.Name.CREW_HIT_CHANCE,
+EXTRA_ARMOR_PARAMS = (
+ KPI.Name.CREW_HIT_CHANCE,
  KPI.Name.CREW_REPEATED_STUN_DURATION,
  KPI.Name.CREW_STUN_DURATION,
  KPI.Name.EQUIPMENT_PREPARATION_TIME,
@@ -104,40 +73,48 @@ EXTRA_ARMOR_PARAMS = (KPI.Name.CREW_HIT_CHANCE,
  KPI.Name.VEHICLE_FALLING_DAMAGE_RESISTANCE,
  KPI.Name.VEHICLE_PENALTY_FOR_DAMAGED_ENGINE,
  KPI.Name.VEHICLE_PENALTY_FOR_DAMAGED_AMMORACK)
-EXTRA_MOBILITY_PARAMS = (KPI.Name.VEHICLE_SPEED_GAIN,
+EXTRA_MOBILITY_PARAMS = (
+ KPI.Name.VEHICLE_SPEED_GAIN,
  KPI.Name.MEDIUM_GROUND_FACTOR,
  KPI.Name.SOFT_GROUND_FACTOR,
  KPI.Name.WHEELS_ROTATION_SPEED)
-EXTRA_CAMOUFLAGE_PARAMS = (KPI.Name.VEHICLE_OWN_SPOTTING_TIME, KPI.Name.FOLIAGE_MASKING_FACTOR, KPI.Name.COMMANDER_LAMP_DELAY)
-EXTRA_VISIBILITY_PARAMS = (KPI.Name.VEHICLE_ENEMY_SPOTTING_TIME,
+EXTRA_CAMOUFLAGE_PARAMS = (
+ KPI.Name.VEHICLE_OWN_SPOTTING_TIME,
+ KPI.Name.FOLIAGE_MASKING_FACTOR,
+ KPI.Name.COMMANDER_LAMP_DELAY)
+EXTRA_VISIBILITY_PARAMS = (
+ KPI.Name.VEHICLE_ENEMY_SPOTTING_TIME,
  KPI.Name.DEMASK_FOLIAGE_FACTOR,
  KPI.Name.DEMASK_MOVING_FACTOR,
  KPI.Name.PENALTY_TO_DAMAGED_SURVEYING_DEVICE,
  KPI.Name.ART_NOTIFICATION_DELAY_FACTOR,
  KPI.Name.DAMAGED_MODULES_DETECTION_TIME)
-EXTRA_PARAMS_GROUP = {'relativePower': EXTRA_POWER_PARAMS,
- 'relativeArmor': EXTRA_ARMOR_PARAMS,
- 'relativeMobility': EXTRA_MOBILITY_PARAMS,
- 'relativeCamouflage': EXTRA_CAMOUFLAGE_PARAMS,
- 'relativeVisibility': EXTRA_VISIBILITY_PARAMS}
-_ITEM_TYPE_HANDLERS = {ITEM_TYPES.vehicleRadio: params.RadioParams,
- ITEM_TYPES.vehicleEngine: params.EngineParams,
- ITEM_TYPES.vehicleChassis: params.ChassisParams,
- ITEM_TYPES.vehicleTurret: params.TurretParams,
- ITEM_TYPES.vehicleGun: params.GunParams,
- ITEM_TYPES.shell: params.ShellParams,
- ITEM_TYPES.equipment: params.EquipmentParams,
- ITEM_TYPES.optionalDevice: params.OptionalDeviceParams,
- ITEM_TYPES.vehicle: params.VehicleParams}
-_STATE_TO_HIGHLIGHT = {PARAM_STATE.WORSE: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NEGATIVE,
- PARAM_STATE.BETTER: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_POSITIVE,
- PARAM_STATE.NOT_APPLICABLE: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE,
- PARAM_STATE.NORMAL: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE}
+EXTRA_PARAMS_GROUP = {'relativePower': EXTRA_POWER_PARAMS, 
+   'relativeArmor': EXTRA_ARMOR_PARAMS, 
+   'relativeMobility': EXTRA_MOBILITY_PARAMS, 
+   'relativeCamouflage': EXTRA_CAMOUFLAGE_PARAMS, 
+   'relativeVisibility': EXTRA_VISIBILITY_PARAMS}
+_ITEM_TYPE_HANDLERS = {ITEM_TYPES.vehicleRadio: params.RadioParams, 
+   ITEM_TYPES.vehicleEngine: params.EngineParams, 
+   ITEM_TYPES.vehicleChassis: params.ChassisParams, 
+   ITEM_TYPES.vehicleTurret: params.TurretParams, 
+   ITEM_TYPES.vehicleGun: params.GunParams, 
+   ITEM_TYPES.shell: params.ShellParams, 
+   ITEM_TYPES.equipment: params.EquipmentParams, 
+   ITEM_TYPES.optionalDevice: params.OptionalDeviceParams, 
+   ITEM_TYPES.vehicle: params.VehicleParams}
+_STATE_TO_HIGHLIGHT = {PARAM_STATE.WORSE: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NEGATIVE, 
+   PARAM_STATE.BETTER: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_POSITIVE, 
+   PARAM_STATE.NOT_APPLICABLE: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE, 
+   PARAM_STATE.NORMAL: HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE}
 _PARAMS_WITH_AVAILABLE_ZERO_VALUES = {DUAL_ACCURACY_COOLING_DELAY: lambda v: v is not None}
 
 def isValidEmptyValue(paramName, paramValue):
     func = _PARAMS_WITH_AVAILABLE_ZERO_VALUES.get(paramName)
-    return func(paramValue) if func is not None else False
+    if func is not None:
+        return func(paramValue)
+    else:
+        return False
 
 
 def _getParamsProvider(item, vehicleDescr=None):
@@ -224,7 +201,7 @@ def itemOnVehicleComparator(vehicle, item):
             withItemParams = params.VehicleParams(vehicle).getParamsDict()
             vehicle.descriptor.installTurret(*removedModules)
         else:
-            LOG_WARNING('Module {} cannot be installed on vehicle {}'.format(item, vehicle))
+            LOG_WARNING(('Module {} cannot be installed on vehicle {}').format(item, vehicle))
             return VehiclesComparator(withItemParams, vehicleParams)
     else:
         removedModule = vehicle.descriptor.installComponent(item.intCD)
@@ -239,7 +216,7 @@ def skillOnSimilarCrewComparator(vehicle, skillNames=None, highlightedSkills=Non
     situationalBonuses = []
     highlightedSkills = highlightedSkills or []
     skillNames = skillNames or []
-    if any((skillName in CREW_MASTERY_BONUSES for skillName in skillNames)):
+    if any(skillName in CREW_MASTERY_BONUSES for skillName in skillNames):
         situationalBonuses = list(CREW_MASTERY_BONUSES)
     if highlightedSkills:
         for highlightedSkill in highlightedSkills:
@@ -288,7 +265,8 @@ def getSituationalParams(skillNames):
             if kpi.situational:
                 situationalKPI.append(kpi.name)
 
-    return (situationalParams, situationalKPI)
+    return (
+     situationalParams, situationalKPI)
 
 
 def artifactComparator(vehicle, item, slotIdx, compareWithEmptySlot=False):
@@ -367,7 +345,7 @@ def getSkillsDiff(comparableVehicle, vehicle):
     for _, comparableTman in comparableVehicle.crew:
         if comparableTman:
             for skill in comparableTman.skillsMap:
-                if not any((skill in tman.skillsMap for _, tman in vehicle.crew if tman)):
+                if not any(skill in tman.skillsMap for _, tman in vehicle.crew if tman):
                     skillsDiff.append(skill)
 
     return skillsDiff
@@ -403,7 +381,8 @@ def shellOnVehicleComparator(shell, vehicle):
     vDescriptor = vehicle.descriptor
     oldIdx = vDescriptor.activeGunShotIndex
     vehicleParams = params.VehicleParams(vehicle).getParamsDict()
-    idx, _ = findFirst(lambda (i, s): s.shell.compactDescr == shell.intCD, enumerate(vDescriptor.gun.shots), (0, None))
+    idx, _ = findFirst(lambda (i, s): s.shell.compactDescr == shell.intCD, enumerate(vDescriptor.gun.shots), (0,
+                                                                                                              None))
     vDescriptor.activeGunShotIndex = idx
     newParams = params.VehicleParams(vehicle).getParamsDict(preload=True)
     vDescriptor.activeGunShotIndex = oldIdx
@@ -439,7 +418,8 @@ def __hasEffect(groupName, comparator, targetState):
     for paramName in chain(PARAMS_GROUPS[groupName], EXTRA_PARAMS_GROUP[groupName]):
         state = comparator.getExtendedData(paramName).state
         if type(state[0]) is not tuple:
-            state = (state,)
+            state = (
+             state,)
         if any([ status == targetState for status, _ in state ]):
             return True
 
@@ -459,10 +439,10 @@ def hasSituationalEffect(groupName, comparator):
 
 
 def getCommonParam(state, name, parentID='', highlight=HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE):
-    return {'state': state,
-     'paramID': name,
-     'parentID': parentID,
-     'highlight': highlight}
+    return {'state': state, 
+       'paramID': name, 
+       'parentID': parentID, 
+       'highlight': highlight}
 
 
 class SimplifiedBarVO(dict):
@@ -537,7 +517,7 @@ class VehParamsBaseGenerator(object):
             return True
         conditionalBonus = CONDITIONAL_BONUSES.get(extraParamName)
         if conditionalBonus:
-            boosterName = next(((key[0] if key else None) for key in conditionalBonus.keys()))
+            boosterName = next((key[0] if key else None) for key in conditionalBonus.keys())
             for item in installedBoosters:
                 if vehicle and item and item.name == boosterName:
                     return not item.isAffectsOnVehicle(vehicle)
@@ -584,7 +564,7 @@ class VehParamsBaseGenerator(object):
             stateHighlight = _STATE_TO_HIGHLIGHT[state[0]]
             if highlight == HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE:
                 highlight = stateHighlight
-            if stateHighlight != HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE and highlight != stateHighlight:
+            elif stateHighlight != HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_NONE and highlight != stateHighlight:
                 highlight = HANGAR_ALIASES.VEH_PARAM_RENDERER_HIGHLIGHT_MIXED
 
         return highlight
@@ -596,16 +576,17 @@ class VehParamsBaseGenerator(object):
         return getCommonParam(HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_ADVANCED, param.name, parentID, highlight)
 
     def _makeExtraParamVO(self, param, parentID, highlight):
-        return (getCommonParam(HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_EXTRA, param.name, parentID, highlight), 0)
+        return (
+         getCommonParam(HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_EXTRA, param.name, parentID, highlight), 0)
 
     def _makeSimpleParamBottomVO(self, param, vehIntCD=None):
-        return None
+        return
 
     def _makeExtraAdditionalBlock(self, paramID, parentID, tooltip):
-        return None
+        return
 
     def _makeSeparator(self, parentID):
-        return None
+        return
 
     def _makeLineSeparator(self, parentID):
-        return None
+        return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/chat_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.platoon.chat_message_model import ChatMessageModel
 from gui.impl.gen.view_models.views.lobby.platoon.chat_message_part_model import ChatMessagePartModel

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BunkerLogicComponent.py
 import BigWorld
 from cgf_components_common.bunkers import BunkerLogicComponentDescriptor
 from constants import IS_CGF_DUMP, IS_EDITOR
@@ -55,18 +53,18 @@ class BunkerLogicComponent(DynamicScriptComponent, BunkerLogicComponentDescripto
         destructibleEntity = destructibleComponent.getDestructibleEntity(self.destructibleEntityId)
         if destructibleEntity is None or not destructibleEntity.isAlive():
             return
+        if isInFocus:
+            destructibleEntity.drawEdge()
         else:
+            destructibleEntity.removeEdge()
+        vehicles = [ v for v in BigWorld.player().vehicles if v.id in self.vehicleIDs ]
+        for vehicle in vehicles:
             if isInFocus:
-                destructibleEntity.drawEdge()
+                vehicle.drawEdge()
             else:
-                destructibleEntity.removeEdge()
-            vehicles = [ v for v in BigWorld.player().vehicles if v.id in self.vehicleIDs ]
-            for vehicle in vehicles:
-                if isInFocus:
-                    vehicle.drawEdge()
                 vehicle.removeEdge()
 
-            return
+        return
 
     def _onBunkerDestroyed(self):
         self._activateGameObject(self.destroyedChild)

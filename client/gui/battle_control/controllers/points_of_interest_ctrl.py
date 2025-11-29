@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/points_of_interest_ctrl.py
-import logging
-import typing
-import BigWorld
-import CGF
-import Event
-import GenericComponents
+import logging, typing, BigWorld, CGF, Event, GenericComponents
 from gui.battle_control.arena_info.interfaces import IPointsOfInterestController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from points_of_interest.components import PoiStateComponent

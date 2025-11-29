@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/alert_message_presenter.py
 from __future__ import absolute_import
 from comp7_light.gui.impl.gen.view_models.views.lobby.alert_message_model import AlertMessageModel, State
 from comp7_light.gui.shared import event_dispatcher
@@ -22,13 +20,20 @@ class AlertMessagePresenter(ViewComponent[AlertMessageModel]):
         return super(AlertMessagePresenter, self).getViewModel()
 
     def _getCallbacks(self):
-        return (('inventory.1.compDescr', self.__updateAlertData),)
+        return (
+         (
+          'inventory.1.compDescr', self.__updateAlertData),)
 
     def _getEvents(self):
-        return ((self.viewModel.onClick, self.__onClick),
-         (self.__comp7LightController.onStatusUpdated, self.__updateAlertData),
-         (self.__comp7LightController.onStatusTick, self.__updateAlertData),
-         (self.__comp7LightController.onModeConfigChanged, self.__updateAlertData))
+        return (
+         (
+          self.viewModel.onClick, self.__onClick),
+         (
+          self.__comp7LightController.onStatusUpdated, self.__updateAlertData),
+         (
+          self.__comp7LightController.onStatusTick, self.__updateAlertData),
+         (
+          self.__comp7LightController.onModeConfigChanged, self.__updateAlertData))
 
     def __onClick(self):
         state = self.__getAlertState()
@@ -44,8 +49,10 @@ class AlertMessagePresenter(ViewComponent[AlertMessageModel]):
             return State.CEASEFIREAVAILABLE
         if not self.__comp7LightController.isInPrimeTime():
             return State.CEASEFIREUNAVAILABLE
-        return State.MODEOFFLINE if self.__comp7LightController.isOffline else State.NONE
+        if self.__comp7LightController.isOffline:
+            return State.MODEOFFLINE
+        return State.NONE
 
     def __updateAlertData(self, _=None):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setState(self.__getAlertState())

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/awards_formatters.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -18,9 +16,9 @@ _OPERATION_AWARDS_COUNT = 3
 DISPLAY_ALL_AWARDS = -1
 
 def formatShortData(bonus, size):
-    return {'name': bonus.userName,
-     'label': bonus.getFormattedLabel(),
-     'imgSource': bonus.getImage('tooltip') or bonus.getImage(size)}
+    return {'name': bonus.userName, 
+       'label': bonus.getFormattedLabel(), 
+       'imgSource': bonus.getImage('tooltip') or bonus.getImage(size)}
 
 
 class CurtailingAwardsComposer(QuestsBonusComposer):
@@ -56,39 +54,39 @@ class CurtailingAwardsComposer(QuestsBonusComposer):
         compensationReason = None
         if bonus.compensationReason is not None:
             compensationReason = self._packBonus(bonus.compensationReason, size)
-        return {'label': bonus.getFormattedLabel(),
-         'imgSource': bonus.getImage(size),
-         'tooltip': bonus.tooltip,
-         'isSpecial': bonus.isSpecial,
-         'specialAlias': bonus.specialAlias,
-         'isWulfTooltip': bonus.isWulfTooltip,
-         'specialArgs': bonus.specialArgs,
-         'hasCompensation': bonus.isCompensation,
-         'hasAnimation': False,
-         'compensationReason': compensationReason,
-         'align': bonus.align,
-         'highlightType': bonus.getHighlightType(size),
-         'overlayType': bonus.getOverlayType(size),
-         'highlightIcon': bonus.getHighlightIcon(size),
-         'overlayIcon': bonus.getOverlayIcon(size)}
+        return {'label': bonus.getFormattedLabel(), 
+           'imgSource': bonus.getImage(size), 
+           'tooltip': bonus.tooltip, 
+           'isSpecial': bonus.isSpecial, 
+           'specialAlias': bonus.specialAlias, 
+           'isWulfTooltip': bonus.isWulfTooltip, 
+           'specialArgs': bonus.specialArgs, 
+           'hasCompensation': bonus.isCompensation, 
+           'hasAnimation': False, 
+           'compensationReason': compensationReason, 
+           'align': bonus.align, 
+           'highlightType': bonus.getHighlightType(size), 
+           'overlayType': bonus.getOverlayType(size), 
+           'highlightIcon': bonus.getHighlightIcon(size), 
+           'overlayIcon': bonus.getOverlayIcon(size)}
 
     def _packMergedBonuses(self, mergedBonuses, size=AWARDS_SIZES.SMALL):
         mergedBonusCount = len(mergedBonuses)
-        return {'label': text_styles.stats(i18n.makeString(QUESTS.MISSIONS_AWARDS_MERGED, count=mergedBonusCount)),
-         'imgSource': RES_ICONS.getBonusIcon(size, 'default'),
-         'isSpecial': True,
-         'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS,
-         'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
+        return {'label': text_styles.stats(i18n.makeString(QUESTS.MISSIONS_AWARDS_MERGED, count=mergedBonusCount)), 
+           'imgSource': RES_ICONS.getBonusIcon(size, 'default'), 
+           'isSpecial': True, 
+           'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, 
+           'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
 
     @classmethod
     def _getShortBonusesData(cls, preformattedBonuses, size=AWARDS_SIZES.SMALL):
         bonuses = []
         for bonus in preformattedBonuses:
-            shortData = {'name': bonus.userName,
-             'label': bonus.getFormattedLabel(),
-             'imgSource': bonus.getImage(size),
-             'highlightIcon': bonus.getHighlightIcon(size),
-             'overlayIcon': bonus.getOverlayIcon(size)}
+            shortData = {'name': bonus.userName, 
+               'label': bonus.getFormattedLabel(), 
+               'imgSource': bonus.getImage(size), 
+               'highlightIcon': bonus.getHighlightIcon(size), 
+               'overlayIcon': bonus.getOverlayIcon(size)}
             bonuses.append(shortData)
 
         return bonuses
@@ -100,21 +98,21 @@ class TwitchAwardsComposer(CurtailingAwardsComposer):
         compensationReason = None
         if bonus.compensationReason is not None:
             compensationReason = self._packBonus(bonus.compensationReason, size)
-        packed = {'label': bonus.label,
-         'tooltip': bonus.tooltip,
-         'isSpecial': bonus.isSpecial,
-         'specialAlias': bonus.specialAlias,
-         'specialArgs': bonus.specialArgs,
-         'hasCompensation': bonus.isCompensation,
-         'hasAnimation': False,
-         'compensationReason': compensationReason,
-         'align': bonus.align,
-         'highlightType': bonus.getHighlightType(size),
-         'overlayType': bonus.getOverlayType(size),
-         'highlightIcon': bonus.getHighlightIcon(size),
-         'overlayIcon': bonus.getOverlayIcon(size)}
+        packed = {'label': bonus.label, 
+           'tooltip': bonus.tooltip, 
+           'isSpecial': bonus.isSpecial, 
+           'specialAlias': bonus.specialAlias, 
+           'specialArgs': bonus.specialArgs, 
+           'hasCompensation': bonus.isCompensation, 
+           'hasAnimation': False, 
+           'compensationReason': compensationReason, 
+           'align': bonus.align, 
+           'highlightType': bonus.getHighlightType(size), 
+           'overlayType': bonus.getOverlayType(size), 
+           'highlightIcon': bonus.getHighlightIcon(size), 
+           'overlayIcon': bonus.getOverlayIcon(size)}
         imagePath = bonus.getImage(size)
-        image = imagePath.split('/')[-1] if imagePath else ''
+        image = imagePath.split('/')[(-1)] if imagePath else ''
         packed['imgSource'] = image
         name = bonus.bonusName
         if name == 'dossier':
@@ -125,13 +123,13 @@ class TwitchAwardsComposer(CurtailingAwardsComposer):
     def _packMergedBonuses(self, mergedBonuses, size=AWARDS_SIZES.SMALL):
         mergedBonusCount = len(mergedBonuses)
         imgPath = RES_ICONS.getBonusIcon(size, 'default')
-        imgSource = imgPath.split('/')[-1]
-        return {'name': 'groups',
-         'imgSource': imgSource,
-         'label': i18n.makeString(QUESTS.MISSIONS_AWARDS_MERGED, count=mergedBonusCount),
-         'isSpecial': True,
-         'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS,
-         'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
+        imgSource = imgPath.split('/')[(-1)]
+        return {'name': 'groups', 
+           'imgSource': imgSource, 
+           'label': i18n.makeString(QUESTS.MISSIONS_AWARDS_MERGED, count=mergedBonusCount), 
+           'isSpecial': True, 
+           'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, 
+           'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
 
 
 class BattlePassAwardsComposer(CurtailingAwardsComposer):
@@ -150,19 +148,19 @@ class BattlePassAwardsComposer(CurtailingAwardsComposer):
                 blueprints = False
 
         if blueprints:
-            return {'label': '',
-             'imgSource': RES_ICONS.getBonusIcon(size, 'blueprint_tube'),
-             'isSpecial': True,
-             'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS,
-             'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
+            return {'label': '', 
+               'imgSource': RES_ICONS.getBonusIcon(size, 'blueprint_tube'), 
+               'isSpecial': True, 
+               'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, 
+               'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
         label = ''
         if self._displayedRewardsCount > 1:
             label = text_styles.stats(i18n.makeString(QUESTS.MISSIONS_AWARDS_MERGED, count=len(mergedBonuses)))
-        return {'label': label,
-         'imgSource': RES_ICONS.getBonusIcon(size, 'default'),
-         'isSpecial': True,
-         'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS,
-         'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
+        return {'label': label, 
+           'imgSource': RES_ICONS.getBonusIcon(size, 'default'), 
+           'isSpecial': True, 
+           'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, 
+           'specialArgs': self._getShortBonusesData(mergedBonuses, size)}
 
 
 class RawLabelBonusComposer(QuestsBonusComposer):
@@ -180,9 +178,9 @@ class AwardsWindowComposer(CurtailingAwardsComposer):
     def _getShortBonusesData(cls, preformattedBonuses, size=AWARDS_SIZES.SMALL):
         bonuses = []
         for bonus in preformattedBonuses:
-            shortData = {'name': bonus.userName,
-             'label': bonus.getFormattedLabel(),
-             'imgSource': bonus.getImage(AWARDS_SIZES.SMALL)}
+            shortData = {'name': bonus.userName, 
+               'label': bonus.getFormattedLabel(), 
+               'imgSource': bonus.getImage(AWARDS_SIZES.SMALL)}
             bonuses.append(shortData)
 
         return bonuses
@@ -270,7 +268,8 @@ def _getBonusesWithModifyTokens(bonuses, freeTokenName, addTokensCount, hasPawne
                 value = {freeTokenName: {'count': bonus.getCount() + addTokensCount}}
                 newBonuses.append(FreeTokensBonus(value, ctx=ctx, hasPawned=hasPawned))
                 hasFreeTokens = True
-            newBonuses.append(bonus)
+            else:
+                newBonuses.append(bonus)
 
         if not hasFreeTokens:
             value = {freeTokenName: {'count': addTokensCount}}
@@ -327,7 +326,8 @@ def _getTankwomansCountInOperation(operation):
             if quest.isCompleted():
                 current += 1
 
-    return (current, total)
+    return (
+     current, total)
 
 
 class MainOperationAwardComposer(PersonalMissionsAwardComposer):
@@ -357,7 +357,10 @@ class MainOperationAwardComposer(PersonalMissionsAwardComposer):
 
     def _getPreformattedTankwomanBonus(self, operation):
         _, total = _getTankwomansCountInOperation(operation)
-        return PreformattedBonus(bonusName=self._TANKWOMAN_BONUS, label=formatCountLabel(total), images=dict(((size, RES_ICONS.getBonusIcon(size, self._TANKWOMAN_BONUS)) for size in AWARDS_SIZES.ALL())), labelFormatter=text_styles.stats, align=LABEL_ALIGN.RIGHT, specialAlias=TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKWOMAN, isSpecial=True, specialArgs=[]) if total else None
+        if total:
+            return PreformattedBonus(bonusName=self._TANKWOMAN_BONUS, label=formatCountLabel(total), images=dict((size, RES_ICONS.getBonusIcon(size, self._TANKWOMAN_BONUS)) for size in AWARDS_SIZES.ALL()), labelFormatter=text_styles.stats, align=LABEL_ALIGN.RIGHT, specialAlias=TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKWOMAN, isSpecial=True, specialArgs=[])
+        else:
+            return
 
 
 class AddOperationAwardComposer(PersonalMissionsAwardComposer):
@@ -391,7 +394,9 @@ class TooltipOperationAwardComposer(MainOperationAwardComposer):
         super(TooltipOperationAwardComposer, self).__init__(packer=packer)
 
     def _getKeySortOrder(self, key):
-        return self._BONUSES_ORDER.index(key) if key in self._BONUSES_ORDER else -1
+        if key in self._BONUSES_ORDER:
+            return self._BONUSES_ORDER.index(key)
+        return -1
 
     def _sortFunc(self, b1, b2):
         return cmp(self._getKeySortOrder(b1.bonusName), self._getKeySortOrder(b2.bonusName))
@@ -426,9 +431,9 @@ class TooltipOperationAwardComposer(MainOperationAwardComposer):
         if not operation.isFullCompleted():
             current, total = _getTankwomansCountInOperation(operation)
             if total:
-                images = dict(((size, RES_ICONS.getBonusIcon(size, 'tankwoman')) for size in AWARDS_SIZES.ALL()))
+                images = dict((size, RES_ICONS.getBonusIcon(size, 'tankwoman')) for size in AWARDS_SIZES.ALL())
                 return PreformattedBonus(bonusName=self._TANKWOMAN_BONUS, label='%s / %s' % (formatCompleteCount(current, total), str(total)), images=images, labelFormatter=text_styles.main)
-        return None
+        return
 
 
 class TooltipPostponedOperationAwardComposer(TooltipOperationAwardComposer):
@@ -458,16 +463,17 @@ class MarathonAwardComposer(CurtailingAwardsComposer):
             sliceIdx = awardsCount - 1
             displayBonuses = preformattedBonuses[:sliceIdx]
             mergedBonuses = preformattedBonuses[sliceIdx:]
-        elif bonusCount > self.AWARDS_PER_LINE_COUNT and bonusCount > self._displayedRewardsCount:
-            awardsCount = self._displayedRewardsCount
-            sliceIdx = awardsCount - 1
-            displayBonuses = preformattedBonuses[:sliceIdx]
-            mergedBonuses = preformattedBonuses[sliceIdx:]
         else:
-            displayBonuses = preformattedBonuses
-        result = []
-        for b in displayBonuses:
-            result.append(self._packBonus(b, size))
+            if bonusCount > self.AWARDS_PER_LINE_COUNT and bonusCount > self._displayedRewardsCount:
+                awardsCount = self._displayedRewardsCount
+                sliceIdx = awardsCount - 1
+                displayBonuses = preformattedBonuses[:sliceIdx]
+                mergedBonuses = preformattedBonuses[sliceIdx:]
+            else:
+                displayBonuses = preformattedBonuses
+            result = []
+            for b in displayBonuses:
+                result.append(self._packBonus(b, size))
 
         if mergedBonuses:
             result.append(self._packMergedBonuses(mergedBonuses, size))
@@ -513,7 +519,8 @@ class RoyaleCurtailingAwardsComposer(CurtailingAwardsComposer):
         bonuses = []
         for bonus in preformattedBonuses:
             name = bonus.userName
-            if bonus.specialAlias in (TOOLTIPS_CONSTANTS.BADGE, TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_AWARD):
+            if bonus.specialAlias in (TOOLTIPS_CONSTANTS.BADGE, TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS,
+             TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_AWARD):
                 typeName = userName = name
                 if bonus.specialAlias == TOOLTIPS_CONSTANTS.BADGE:
                     typeName = backport.text(R.strings.battle_royale.tooltips.awards.badge())
@@ -523,9 +530,9 @@ class RoyaleCurtailingAwardsComposer(CurtailingAwardsComposer):
                     item = cls.itemsCache.items.getItemByCD(bonus.specialArgs[0])
                     userName = item.userName
                 name = backport.text(R.strings.battle_royale.tooltips.awards.pattern(), typeName=typeName, userName=userName)
-            shortData = {'name': name,
-             'label': bonus.getFormattedLabel(),
-             'imgSource': bonus.getImage(size)}
+            shortData = {'name': name, 
+               'label': bonus.getFormattedLabel(), 
+               'imgSource': bonus.getImage(size)}
             bonuses.append(shortData)
 
         return bonuses

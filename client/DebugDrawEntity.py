@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DebugDrawEntity.py
 from collections import defaultdict
-import BigWorld
-import GUI
+import BigWorld, GUI
 from Math import Vector3, Matrix
 import math_utils
 from helpers.CallbackDelayer import CallbackDelayer
@@ -13,9 +10,7 @@ class DebugDrawEntity(BigWorld.Entity):
 
     def __init__(self):
         super(DebugDrawEntity, self).__init__()
-        self.objectStates = defaultdict(lambda : {'version': 0,
-         'models': [],
-         '3Dtexts': []})
+        self.objectStates = defaultdict(lambda : {'version': 0, 'models': [], '3Dtexts': []})
         self.reuseModels = defaultdict(list)
         self.reuse3DTexts = []
         self.timer = CallbackDelayer()
@@ -77,7 +72,7 @@ class DebugDrawEntity(BigWorld.Entity):
             for line in draw['lines']:
                 points = line['points']
                 width = line['width']
-                for segment in [ (points[i - 1], points[i]) for i in xrange(1, len(points)) ]:
+                for segment in [ (points[(i - 1)], points[i]) for i in xrange(1, len(points)) ]:
                     obj = self.__createDirectedLine(segment[0], segment[1], width)
                     state['models'].append(obj)
 
@@ -141,7 +136,8 @@ class DebugDrawEntity(BigWorld.Entity):
             motor = BigWorld.Servo(Matrix())
             model.addMotor(motor)
             BigWorld.addModel(model, self.spaceID)
-        return (model, motor)
+        return (
+         model, motor)
 
     def __create3DText(self, position, text, color, textSize):
         if self.reuse3DTexts:
@@ -165,4 +161,5 @@ class DebugDrawEntity(BigWorld.Entity):
         component.size = (0, textSize)
         component.colour = color
         motor.signal = math_utils.createTranslationMatrix(position)
-        return (model, motor, component)
+        return (
+         model, motor, component)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/common/tankman_info_component.py
-import typing
-import BigWorld
+import typing, BigWorld
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.backport.backport_tooltip import createAndLoadBackportTooltipWindow
 from gui.impl.gen import R
@@ -32,7 +29,13 @@ class TankmanInfoComponent(ComponentBase):
         return vm.tankmanInfo
 
     def _getEvents(self):
-        return super(TankmanInfoComponent, self)._getEvents() + ((self.viewModel.onPlayUniqueVoice, self._onPlayUniqueVoice), (self.viewModel.onChangeVehicle, self._onChangeVehicle), (self.viewModel.onRetrain, self._onRetrain))
+        return super(TankmanInfoComponent, self)._getEvents() + (
+         (
+          self.viewModel.onPlayUniqueVoice, self._onPlayUniqueVoice),
+         (
+          self.viewModel.onChangeVehicle, self._onChangeVehicle),
+         (
+          self.viewModel.onRetrain, self._onRetrain))
 
     def _fillViewModel(self, vm):
         self._setTankmanInfo(vm)
@@ -68,17 +71,13 @@ class TankmanInfoComponent(ComponentBase):
             posX, posY = event.mouse.positionX, event.mouse.positionY
             parent = self.parent.getParentWindow()
             if tooltipId == TooltipConstants.SKILL:
-                args = [event.getArgument('skillName'),
-                 event.getArgument('roleName'),
-                 self.context.tankmanID,
-                 None,
-                 False,
-                 '',
-                 event.getArgument('isBonus')]
+                args = [event.getArgument('skillName'), event.getArgument('roleName'), self.context.tankmanID, None, False,
+                 '', event.getArgument('isBonus')]
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, posX, posY, parent)
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
             if tooltipId == TOOLTIPS_CONSTANTS.COMMANDER_BONUS:
-                args = (self.context.tankman.invID,)
+                args = (
+                 self.context.tankman.invID,)
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.COMMANDER_BONUS, args, posX, posY, parent)
                 return TOOLTIPS_CONSTANTS.COMMANDER_BONUS
             if tooltipId == TOOLTIPS_CONSTANTS.CREW_SKILL_UNTRAINED:
@@ -86,22 +85,21 @@ class TankmanInfoComponent(ComponentBase):
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_SKILL_UNTRAINED, args, posX, posY, parent)
                 return TOOLTIPS_CONSTANTS.CREW_SKILL_UNTRAINED
             if tooltipId == TooltipConstants.TANKMAN:
-                args = (self.context.tankman.invID,)
+                args = (
+                 self.context.tankman.invID,)
                 self._toolTipMgr.onCreateWulfTooltip(TooltipConstants.TANKMAN, args, posX, posY, parent)
                 return TooltipConstants.TANKMAN
             if tooltipId == TooltipConstants.SKILLS_EFFICIENCY:
-                args = (event.getArgument('tankmanID'),)
+                args = (
+                 event.getArgument('tankmanID'),)
                 self._toolTipMgr.onCreateWulfTooltip(tooltipId, args, posX, posY, parent)
                 return tooltipId
             if tooltipId == TOOLTIPS_CONSTANTS.ACTION_PRICE:
-                specialArgs = (None,
-                 None,
+                specialArgs = (
+                 None, None,
                  convertMoneyToTuple(self.context.retrainPrice.price),
                  convertMoneyToTuple(self.context.retrainPrice.defPrice),
-                 True,
-                 False,
-                 None,
-                 True)
+                 True, False, None, True)
                 return createAndLoadBackportTooltipWindow(self.parent.getParentWindow(), isSpecial=True, tooltipId=TOOLTIPS_CONSTANTS.ACTION_PRICE, specialArgs=specialArgs)
         return
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/game_messages_ctrl.py
 import weakref
 from collections import namedtuple
 from PlayerEvents import g_playerEvents

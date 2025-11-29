@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TargetDesignatorTargetController.py
-import logging
-import typing
+import logging, typing
 from functools import partial
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/stance_dance_turbo_widget.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from constants import ARENA_PERIOD
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import HotKeyData
@@ -36,12 +33,16 @@ def _getWidgetState(prev, state):
         if state.energyTurbo == state.params.maxEnergy:
             return (MECHANICS_WIDGET_CONST.READY, prev != MECHANICS_WIDGET_CONST.PREPARING)
         return (MECHANICS_WIDGET_CONST.PREPARING, False)
-    return (MECHANICS_WIDGET_CONST.TRANSITION, False) if state.isSwitchingState else (MECHANICS_WIDGET_CONST.IDLE, False)
+    if state.isSwitchingState:
+        return (MECHANICS_WIDGET_CONST.TRANSITION, False)
+    return (MECHANICS_WIDGET_CONST.IDLE, False)
 
 
 class StanceDanceTurboMechanicWidget(StanceDanceTurboWidgetMeta, ComponentListener, IMechanicStatesListenerLogic):
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)],
-     CommandMapping.CMD_CM_SPECIAL_ABILITY: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)], 
+       CommandMapping.CMD_CM_SPECIAL_ABILITY: [
+                                             HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -87,7 +88,8 @@ class StanceDanceTurboMechanicWidget(StanceDanceTurboWidgetMeta, ComponentListen
         self.as_setSpeedS(self.__currentSpeed, self.__isActive and self.__uiState == MECHANICS_WIDGET_CONST.ACTIVE)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicStatesUpdater(VehicleMechanic.STANCE_DANCE, self),
+        return [
+         VehicleMechanicStatesUpdater(VehicleMechanic.STANCE_DANCE, self),
          VehicleMechanicPassengerUpdater(VehicleMechanic.STANCE_DANCE, self),
          HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self),
          CrosshairTypeUpdater(self),

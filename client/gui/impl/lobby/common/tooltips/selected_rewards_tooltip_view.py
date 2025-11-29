@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/tooltips/selected_rewards_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.common.tooltips.selected_rewards_tooltip_category_model import SelectedRewardsTooltipCategoryModel
@@ -22,7 +20,7 @@ class SelectedRewardsTooltipView(ViewImpl):
         return super(SelectedRewardsTooltipView, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setTotalSelected(self.__count)
             categories = tx.getCategories()
             categories.clear()

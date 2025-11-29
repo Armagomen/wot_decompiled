@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/random/squad/entity.py
 import account_helpers
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL, PREBATTLE_TYPE, QUEUE_TYPE
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -157,16 +155,22 @@ class RandomSquadEntity(SquadEntity, RestrictedRoleTagMixin):
         return super(RandomSquadEntity, self)._createRosterSettings()
 
     def _createActionsHandler(self):
-        return BalancedSquadActionsHandler(self) if self.isBalancedSquadEnabled() else RandomSquadActionsHandler(self)
+        if self.isBalancedSquadEnabled():
+            return BalancedSquadActionsHandler(self)
+        return RandomSquadActionsHandler(self)
 
     def _createActionsValidator(self):
-        return VehTypeForbiddenBalancedSquadActionsValidator(self) if self.isBalancedSquadEnabled() else VehTypeForbiddenSquadActionsValidator(self)
+        if self.isBalancedSquadEnabled():
+            return VehTypeForbiddenBalancedSquadActionsValidator(self)
+        return VehTypeForbiddenSquadActionsValidator(self)
 
     def _vehicleStateCondition(self, v):
         if self._isBalancedSquad:
             if v.level not in self._rosterSettings.getLevelsRange():
                 return False
-        return self.isTagVehicleAvailable(v.tags) if self.isRoleRestrictionValid() else super(RandomSquadEntity, self)._vehicleStateCondition(v)
+        if self.isRoleRestrictionValid():
+            return self.isTagVehicleAvailable(v.tags)
+        return super(RandomSquadEntity, self)._vehicleStateCondition(v)
 
     def _onServerSettingChanged(self, *args, **kwargs):
         balancedEnabled = self.isBalancedSquadEnabled()

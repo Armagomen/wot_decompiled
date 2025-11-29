@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/drr_scale_ctrl.py
-import weakref
-import BigWorld
-import Keys
+import weakref, BigWorld, Keys
 from Event import Event
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from gui import g_repeatKeyHandlers
@@ -38,14 +34,13 @@ class DRRScaleController(IBattleController):
                 self.__messages.showVehicleMessage('DRR_SCALE_STEP_DOWN', {'scale': drr_scale.getPercent(result)})
                 self.onDRRChanged()
             return True
-        elif key in (Keys.KEY_EQUALS, Keys.KEY_ADD) and BigWorld.isKeyDown(Keys.KEY_RSHIFT) and isDown and not self.settingsCore.getSetting(GRAPHICS.DRR_AUTOSCALER_ENABLED):
+        if key in (Keys.KEY_EQUALS, Keys.KEY_ADD) and BigWorld.isKeyDown(Keys.KEY_RSHIFT) and isDown and not self.settingsCore.getSetting(GRAPHICS.DRR_AUTOSCALER_ENABLED):
             result = drr_scale.stepUp()
             if result is not None and self.__messages:
                 self.__messages.showVehicleMessage('DRR_SCALE_STEP_UP', {'scale': drr_scale.getPercent(result)})
                 self.onDRRChanged()
             return True
-        else:
-            return False
+        return False
 
     def __handleRepeatKeyEvent(self, event):
         self.handleKey(event.key, event.isKeyDown())

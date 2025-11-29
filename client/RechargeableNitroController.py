@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/RechargeableNitroController.py
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from constants import RECHARGEABLE_NITRO_STATE
 from items.components.shared_components import RechargeableNitroParams
 from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
@@ -17,13 +13,21 @@ if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
 _logger = logging.getLogger(__name__)
 
-class RechargeableNitroState(typing.NamedTuple('RechargeableNitroState', (('state', RECHARGEABLE_NITRO_STATE),
- ('endTime', float),
- ('remainingTime', float),
- ('isCharged', bool),
- ('isEmpty', bool),
- ('isBelowThreshold', bool),
- ('params', typing.Optional[RechargeableNitroParams]))), IMechanicState):
+class RechargeableNitroState(typing.NamedTuple('RechargeableNitroState', (
+ (
+  'state', RECHARGEABLE_NITRO_STATE),
+ (
+  'endTime', float),
+ (
+  'remainingTime', float),
+ (
+  'isCharged', bool),
+ (
+  'isEmpty', bool),
+ (
+  'isBelowThreshold', bool),
+ (
+  'params', typing.Optional[RechargeableNitroParams]))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, params):

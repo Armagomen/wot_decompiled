@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_first_entry_view.py
 from adisp import adisp_process
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi import LobbySubView
@@ -57,14 +55,14 @@ class PersonalMissionFirstEntryView(LobbySubView, PersonalMissionFirstEntryViewM
         super(PersonalMissionFirstEntryView, self)._populate()
         infoBlocks = [ self.__makeTileData(cardIndex) for cardIndex in xrange(0, self.__cardsLen) ]
         firstEntry = not self.__settingsCore.serverSettings.getUIStorage().get(PM_TUTOR_FIELDS.GREETING_SCREEN_SHOWN)
-        self.as_setInitDataS({'titleLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_TITLE,
-         'bigBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_ACKNOWLEDGEBTN,
-         'playVideoBtnLabel': text_styles.concatStylesToSingleLine(icons.makeImageTag(RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_PLAYICON, width=14, height=15, vSpace=-2), i18n.makeString(PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_VIDEOBTNLABEL)),
-         'playVideoBtnVisible': self.__settings.get('isEnabled', False),
-         'bgSource': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_INFOSCREENBG,
-         'infoBlocks': infoBlocks,
-         'backBtnLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_LABEL,
-         'isFirstEntry': firstEntry})
+        self.as_setInitDataS({'titleLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_TITLE, 
+           'bigBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_ACKNOWLEDGEBTN, 
+           'playVideoBtnLabel': text_styles.concatStylesToSingleLine(icons.makeImageTag(RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_PLAYICON, width=14, height=15, vSpace=-2), i18n.makeString(PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_VIDEOBTNLABEL)), 
+           'playVideoBtnVisible': self.__settings.get('isEnabled', False), 
+           'bgSource': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_INFOSCREENBG, 
+           'infoBlocks': infoBlocks, 
+           'backBtnLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_LABEL, 
+           'isFirstEntry': firstEntry})
         self.soundManager.setRTPC(SOUNDS.RTCP_OVERLAY, SOUNDS.MAX_MISSIONS_ZOOM)
 
     def _dispose(self):
@@ -76,37 +74,39 @@ class PersonalMissionFirstEntryView(LobbySubView, PersonalMissionFirstEntryViewM
         blocksLen = self.__CARDS[cardIndex]
         blocks = []
         for blockIndex in xrange(0, blocksLen):
-            blocks.append({'title': PERSONAL_MISSIONS.getBlockTitle(cardIndex, blockIndex),
-             'description': PERSONAL_MISSIONS.getBlockDescription(cardIndex, blockIndex),
-             'image': RES_ICONS.getBlockImageByStep(cardIndex, blockIndex)})
+            blocks.append({'title': PERSONAL_MISSIONS.getBlockTitle(cardIndex, blockIndex), 
+               'description': PERSONAL_MISSIONS.getBlockDescription(cardIndex, blockIndex), 
+               'image': RES_ICONS.getBlockImageByStep(cardIndex, blockIndex)})
 
-        item = self.__R_PERSONAL_MISSION_FIRST_ENTRY_VIEW.dyn('item{}'.format(cardIndex))
-        data = {'index': cardIndex,
-         'icon': RES_ICONS.getInfoIcon(cardIndex),
-         'title': PERSONAL_MISSIONS.getCardHeader(cardIndex),
-         'description': PERSONAL_MISSIONS.getCardInnerDescription(cardIndex),
-         'blocks': blocks,
-         'notificationIcon': RES_ICONS.MAPS_ICONS_LIBRARY_WARNINGICON_1,
-         'notificationLabel': backport.text(item.warning()) if item and 'warning' in item.keys() else ''}
+        item = self.__R_PERSONAL_MISSION_FIRST_ENTRY_VIEW.dyn(('item{}').format(cardIndex))
+        data = {'index': cardIndex, 
+           'icon': RES_ICONS.getInfoIcon(cardIndex), 
+           'title': PERSONAL_MISSIONS.getCardHeader(cardIndex), 
+           'description': PERSONAL_MISSIONS.getCardInnerDescription(cardIndex), 
+           'blocks': blocks, 
+           'notificationIcon': RES_ICONS.MAPS_ICONS_LIBRARY_WARNINGICON_1, 
+           'notificationLabel': backport.text(item.warning()) if item and 'warning' in item.keys() else ''}
         self.as_setDetailedCardDataS(data)
 
     @adisp_process
     def __showVideo(self):
         url = yield self.__urlMacros.parse(self.__settings.get('url'))
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)
-        ctx = {'url': url,
-         'webHandlers': webHandlers,
-         'returnAlias': self.alias}
+        ctx = {'url': url, 
+           'webHandlers': webHandlers, 
+           'returnAlias': self.alias}
         showPersonalMissionBrowserView(ctx)
 
     @staticmethod
     def __makeTileData(cardIndex):
-        return {'index': cardIndex,
-         'iconSource': RES_ICONS.getInfoIcon(cardIndex),
-         'titleLabel': PERSONAL_MISSIONS.getCardHeader(cardIndex),
-         'descriptionLabel': PERSONAL_MISSIONS.getCardDescription(cardIndex)}
+        return {'index': cardIndex, 
+           'iconSource': RES_ICONS.getInfoIcon(cardIndex), 
+           'titleLabel': PERSONAL_MISSIONS.getCardHeader(cardIndex), 
+           'descriptionLabel': PERSONAL_MISSIONS.getCardDescription(cardIndex)}
 
     def __normalizeSlotIndex(self, slotIndex):
         if slotIndex >= self.__cardsLen:
             return 0
-        return self.__cardsLen - 1 if slotIndex < 0 else slotIndex
+        if slotIndex < 0:
+            return self.__cardsLen - 1
+        return slotIndex

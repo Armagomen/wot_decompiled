@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/view_component.py
-import logging
-import weakref
+import logging, weakref
 from future.utils import iteritems
 from typing import TYPE_CHECKING
 from Event import Event, EventManager

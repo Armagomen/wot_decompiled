@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/gf_notifications/notification_base.py
 from gui.impl.pub import ViewImpl
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -30,7 +28,11 @@ class NotificationBase(ViewImpl, IPrbListener):
 
     def _getEvents(self):
         events = super(NotificationBase, self)._getEvents()
-        return events + ((g_playerEvents.onEnqueued, self.__updatePrebattleControls), (g_playerEvents.onDequeued, self.__updatePrebattleControls))
+        return events + (
+         (
+          g_playerEvents.onEnqueued, self.__updatePrebattleControls),
+         (
+          g_playerEvents.onDequeued, self.__updatePrebattleControls))
 
     def _finalize(self):
         self._isPopUp = None
@@ -44,7 +46,10 @@ class NotificationBase(ViewImpl, IPrbListener):
 
     def _canNavigate(self):
         prbDispatcher = self.prbDispatcher
-        return False if prbDispatcher is not None and prbDispatcher.getFunctionalState().isNavigationDisabled() else True
+        if prbDispatcher is not None and prbDispatcher.getFunctionalState().isNavigationDisabled():
+            return False
+        else:
+            return True
 
     def __updatePrebattleControls(self, *_):
         self._update()

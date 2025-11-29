@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/page.py
 import BigWorld
 from BattleReplay import g_replayEvents
 from battle_royale.gui.Scaleform.daapi.view.battle.respawn_message_panel import RespawnMessagePanel
@@ -46,7 +44,11 @@ class _DynamicAliases(CONST_CONTAINER):
 class _BattleRoyaleComponentsConfig(ComponentsConfig):
 
     def __init__(self):
-        super(_BattleRoyaleComponentsConfig, self).__init__(((BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER,
+        super(_BattleRoyaleComponentsConfig, self).__init__((
+         (
+          BATTLE_CTRL_ID.ARENA_PERIOD,
+          (
+           BATTLE_VIEW_ALIASES.BATTLE_TIMER,
            BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
            BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL,
            BATTLE_VIEW_ALIASES.HINT_PANEL,
@@ -56,11 +58,21 @@ class _BattleRoyaleComponentsConfig(ComponentsConfig):
            _DynamicAliases.SELECT_RESPAWN_SOUND_PLAYER,
            BATTLE_VIEW_ALIASES.CORRODING_SHOT_INDICATOR,
            BATTLE_VIEW_ALIASES.BR_TIMERS_PANEL)),
-         (BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,)),
-         (BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT,)),
-         (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
-         (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL, DynamicAliases.DRONE_MUSIC_PLAYER)),
-         (BATTLE_CTRL_ID.PROGRESSION_CTRL, (BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL,
+         (
+          BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,)),
+         (
+          BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT,)),
+         (
+          BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+         (
+          BATTLE_CTRL_ID.BATTLE_FIELD_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL,
+           DynamicAliases.DRONE_MUSIC_PLAYER)),
+         (
+          BATTLE_CTRL_ID.PROGRESSION_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL,
            BATTLE_VIEW_ALIASES.UPGRADE_PANEL,
            _DynamicAliases.PROGRESSION_MESSAGES_PLAYER,
            _DynamicAliases.LEVEL_SOUND_PLAYER,
@@ -69,44 +81,78 @@ class _BattleRoyaleComponentsConfig(ComponentsConfig):
            _DynamicAliases.VEH_UPGRADE_EFFECT_PLAYER,
            _DynamicAliases.SPAWNED_BOT_MSG_PUBLISHER,
            _DynamicAliases.MINEFIELD_MSG_PUBLISHER)),
-         (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.DRONE_MUSIC_PLAYER,)),
-         (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-         (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
-         (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
-         (BATTLE_CTRL_ID.RADAR_CTRL, (BATTLE_VIEW_ALIASES.RADAR_BUTTON, _DynamicAliases.RADAR_SOUND_PLAYER)),
-         (BATTLE_CTRL_ID.SPAWN_CTRL, (BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN,
+         (
+          BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS,
+          (
+           DynamicAliases.DRONE_MUSIC_PLAYER,)),
+         (
+          BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+         (
+          BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
+         (
+          BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
+         (
+          BATTLE_CTRL_ID.RADAR_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.RADAR_BUTTON,
+           _DynamicAliases.RADAR_SOUND_PLAYER)),
+         (
+          BATTLE_CTRL_ID.SPAWN_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN,
            BATTLE_VIEW_ALIASES.BR_RESPAWN_MESSAGE_PANEL,
            _DynamicAliases.SELECT_RESPAWN_SOUND_PLAYER,
            BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL,
            BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL)),
-         (BATTLE_CTRL_ID.VEHICLES_COUNT_CTRL, (BATTLE_VIEW_ALIASES.FRAG_PANEL,
+         (
+          BATTLE_CTRL_ID.VEHICLES_COUNT_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.FRAG_PANEL,
            BATTLE_VIEW_ALIASES.FULL_STATS,
            _DynamicAliases.ENEMIES_AMOUNT_SOUND_PLAYER,
            _DynamicAliases.PHASE_SOUND_PLAYER,
            _DynamicAliases.POSTMORTEM_SOUND_PLAYER,
            _DynamicAliases.ARENA_PERIOD_SOUND_PLAYER,
            _DynamicAliases.EQUIPMENT_SOUND_PLAYER)),
-         (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL,))), ((DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer),
-         (_DynamicAliases.SELECT_RESPAWN_SOUND_PLAYER, SelectRespawnSoundPlayer),
-         (_DynamicAliases.PROGRESSION_MESSAGES_PLAYER, ProgressionMessagesPlayer),
-         (_DynamicAliases.RADAR_SOUND_PLAYER, RadarSoundPlayer),
-         (_DynamicAliases.LEVEL_SOUND_PLAYER, LevelSoundPlayer),
-         (_DynamicAliases.ENEMIES_AMOUNT_SOUND_PLAYER, EnemiesAmountSoundPlayer),
-         (_DynamicAliases.PHASE_SOUND_PLAYER, PhaseSoundPlayer),
-         (_DynamicAliases.POSTMORTEM_SOUND_PLAYER, PostmortemSoundPlayer),
-         (_DynamicAliases.INSTALL_MODULE_SOUND_PLAYER, InstallModuleSoundPlayer),
-         (_DynamicAliases.ARENA_PERIOD_SOUND_PLAYER, ArenaPeriodSoundPlayer),
-         (_DynamicAliases.VEH_UPGRADE_EFFECT_PLAYER, BRUpgradeEffectPlayer),
-         (_DynamicAliases.EQUIPMENT_SOUND_PLAYER, EquipmentSoundPlayer),
-         (_DynamicAliases.SPAWNED_BOT_MSG_PUBLISHER, SpawnedBotMsgPlayerMsgs),
-         (_DynamicAliases.MINEFIELD_MSG_PUBLISHER, MinefieldPlayerMessenger),
-         (_DynamicAliases.RESPAWN_PANEL, RespawnMessagePanel)))
+         (
+          BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL,))), (
+         (
+          DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer),
+         (
+          _DynamicAliases.SELECT_RESPAWN_SOUND_PLAYER, SelectRespawnSoundPlayer),
+         (
+          _DynamicAliases.PROGRESSION_MESSAGES_PLAYER, ProgressionMessagesPlayer),
+         (
+          _DynamicAliases.RADAR_SOUND_PLAYER, RadarSoundPlayer),
+         (
+          _DynamicAliases.LEVEL_SOUND_PLAYER, LevelSoundPlayer),
+         (
+          _DynamicAliases.ENEMIES_AMOUNT_SOUND_PLAYER, EnemiesAmountSoundPlayer),
+         (
+          _DynamicAliases.PHASE_SOUND_PLAYER, PhaseSoundPlayer),
+         (
+          _DynamicAliases.POSTMORTEM_SOUND_PLAYER, PostmortemSoundPlayer),
+         (
+          _DynamicAliases.INSTALL_MODULE_SOUND_PLAYER, InstallModuleSoundPlayer),
+         (
+          _DynamicAliases.ARENA_PERIOD_SOUND_PLAYER, ArenaPeriodSoundPlayer),
+         (
+          _DynamicAliases.VEH_UPGRADE_EFFECT_PLAYER, BRUpgradeEffectPlayer),
+         (
+          _DynamicAliases.EQUIPMENT_SOUND_PLAYER, EquipmentSoundPlayer),
+         (
+          _DynamicAliases.SPAWNED_BOT_MSG_PUBLISHER, SpawnedBotMsgPlayerMsgs),
+         (
+          _DynamicAliases.MINEFIELD_MSG_PUBLISHER, MinefieldPlayerMessenger),
+         (
+          _DynamicAliases.RESPAWN_PANEL, RespawnMessagePanel)))
 
 
 _BATTLE_ROYALE_CFG = _BattleRoyaleComponentsConfig()
 
 class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
-    __PANELS_FOR_SHOW_HIDE = [BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL, BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL]
+    __PANELS_FOR_SHOW_HIDE = [
+     BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL, BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL]
 
     def __init__(self, components=None, **kwargs):
         if components is None:
@@ -121,14 +167,20 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
         self.__isAllowToogleGuiVisible = False
         self.__canShowHUD = True
         self.__hudComponents = set()
-        super(BattleRoyalePage, self).__init__(components, external=(crosshair.CrosshairPanelContainer, BattleRoyaleMarkersManager))
+        super(BattleRoyalePage, self).__init__(components, external=(
+         crosshair.CrosshairPanelContainer,
+         BattleRoyaleMarkersManager))
         return
 
     def showSpawnPoints(self):
-        hiddenComponents = {BATTLE_VIEW_ALIASES.BATTLE_LOADING}
-        visibleComponents = {BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN}
+        hiddenComponents = {
+         BATTLE_VIEW_ALIASES.BATTLE_LOADING}
+        visibleComponents = {
+         BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN}
         if BigWorld.player().hasBonusCap(ARENA_BONUS_TYPE_CAPS.SQUADS):
-            visibleComponents.update([BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL, BATTLE_VIEW_ALIASES.BATTLE_MESSENGER])
+            visibleComponents.update([
+             BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL,
+             BATTLE_VIEW_ALIASES.BATTLE_MESSENGER])
         if not self.__selectSpawnToggling:
             self.__selectSpawnToggling.update(set(self.as_getComponentsVisibilityS()) - set(visibleComponents))
         self.__canShowHUD = False
@@ -136,7 +188,9 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
         self.app.enterGuiControlMode(BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN, stopVehicle=True)
 
     def closeSpawnPoints(self):
-        hiddenComponents = {BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN, BATTLE_VIEW_ALIASES.BATTLE_LOADING}
+        hiddenComponents = {
+         BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN,
+         BATTLE_VIEW_ALIASES.BATTLE_LOADING}
         self.__isAllowToogleGuiVisible = True
         if self.__selectSpawnToggling or self.__hudComponents:
             self.__canShowHUD = True
@@ -240,7 +294,8 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
         alias = BATTLE_VIEW_ALIASES.BATTLE_ROYALE_WINNER_CONGRATS
         if self.__isWinnerScreenShown:
             self.__isWinnerScreenShown = False
-            self._setComponentsVisibility(visible=self.__winScreenToggling, hidden=[alias])
+            self._setComponentsVisibility(visible=self.__winScreenToggling, hidden=[
+             alias])
             self.__winScreenToggling.clear()
             toggleCrosshairVisibility()
 
@@ -281,9 +336,11 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
 
     def _onBattleLoadingFinish(self):
         arenaPeriod = self.sessionProvider.shared.arenaPeriod.getPeriod()
-        self.__canShowHUD = arenaPeriod not in (ARENA_PERIOD.IDLE, ARENA_PERIOD.WAITING) or BigWorld.player().observerSeesAll()
+        self.__canShowHUD = arenaPeriod not in (
+         ARENA_PERIOD.IDLE, ARENA_PERIOD.WAITING) or BigWorld.player().observerSeesAll()
         super(BattleRoyalePage, self)._onBattleLoadingFinish()
-        if not self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN) and arenaPeriod not in {ARENA_PERIOD.BATTLE, ARENA_PERIOD.AFTERBATTLE}:
+        if not self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN) and arenaPeriod not in {
+         ARENA_PERIOD.BATTLE, ARENA_PERIOD.AFTERBATTLE}:
             self._setComponentsVisibility(visible={BATTLE_VIEW_ALIASES.BATTLE_LOADING})
         if not self.__canShowHUD and not BigWorld.player().observerSeesAll():
             self._setComponentsVisibility(visible={BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN})
@@ -294,7 +351,8 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
         if self.__isWinnerScreenShown:
             return
         if not self.__canShowHUD and visible:
-            hasNoHUD = {BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN, BATTLE_VIEW_ALIASES.BATTLE_LOADING} & set(visible)
+            hasNoHUD = {
+             BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN, BATTLE_VIEW_ALIASES.BATTLE_LOADING} & set(visible)
             if not hasNoHUD:
                 self.__hudComponents.update(visible)
                 super(BattleRoyalePage, self)._setComponentsVisibility(hidden=hidden)
@@ -335,17 +393,16 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
             return
         teamPanelAliases = (CTRL_MODE_NAME.POSTMORTEM, CTRL_MODE_NAME.VIDEO)
         if ctrlMode in teamPanelAliases:
-            args = {'hidden': {BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL},
-             'visible': {BATTLE_VIEW_ALIASES.PLAYERS_PANEL}}
+            args = {'hidden': {BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL}, 'visible': {BATTLE_VIEW_ALIASES.PLAYERS_PANEL}}
         else:
-            args = {'hidden': {BATTLE_VIEW_ALIASES.PLAYERS_PANEL},
-             'visible': {BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL}}
+            args = {'hidden': {BATTLE_VIEW_ALIASES.PLAYERS_PANEL}, 'visible': {
+                         BATTLE_VIEW_ALIASES.BATTLE_TEAM_PANEL}}
         hideInVideoModeAliases = {BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL,
          BATTLE_VIEW_ALIASES.BR_RESPAWN_MESSAGE_PANEL,
          BATTLE_VIEW_ALIASES.VEHICLE_MESSAGES,
          BATTLE_VIEW_ALIASES.RADAR_BUTTON}
-        args['hidden' if ctrlMode == CTRL_MODE_NAME.VIDEO else 'visible'].update(hideInVideoModeAliases)
-        args['hidden' if ctrlMode == CTRL_MODE_NAME.VIDEO or not self.isPostmortemTipsVisible else 'visible'].add(BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL)
+        args[('hidden' if ctrlMode == CTRL_MODE_NAME.VIDEO else 'visible')].update(hideInVideoModeAliases)
+        args[('hidden' if ctrlMode == CTRL_MODE_NAME.VIDEO or not self.isPostmortemTipsVisible else 'visible')].add(BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL)
         self._setComponentsVisibility(**args)
 
     def __onConfWindowTriggered(self, isOpened):
@@ -358,7 +415,10 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
 
     def __getProgressionWindowCtrl(self):
         progression = self.sessionProvider.dynamic.progression
-        return progression.getWindowCtrl() if progression else None
+        if progression:
+            return progression.getWindowCtrl()
+        else:
+            return
 
     def __onVehicleStateUpdated(self, state, value):
         damageScreenVisible = None
@@ -366,7 +426,9 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
             vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
             isAlive = vehicle is not None and vehicle.isAlive()
             damageScreenVisible = value.isCausingDamage and isAlive
-        elif state in (VEHICLE_VIEW_STATE.SWITCHING, VEHICLE_VIEW_STATE.DESTROYED, VEHICLE_VIEW_STATE.CREW_DEACTIVATED):
+        elif state in (VEHICLE_VIEW_STATE.SWITCHING,
+         VEHICLE_VIEW_STATE.DESTROYED,
+         VEHICLE_VIEW_STATE.CREW_DEACTIVATED):
             damageScreenVisible = False
         isObserver = BigWorld.player().isObserver()
         notInBattle = self.sessionProvider.shared.arenaPeriod.getPeriod() != ARENA_PERIOD.BATTLE
@@ -387,7 +449,8 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
             self.__panelsIsVisible = True
         if vehicle and not vehicle.isAlive():
             if avatar_getter.isBecomeObserverAfterDeath() and BigWorld.player().isObserverBothTeams:
-                self._setComponentsVisibility(visible=[BATTLE_VIEW_ALIASES.PLAYERS_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL])
+                self._setComponentsVisibility(visible=[
+                 BATTLE_VIEW_ALIASES.PLAYERS_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL])
                 BigWorld.player().setIsObserver()
         if damageScreenVisible is not None:
             self.as_updateDamageScreenS(damageScreenVisible)
@@ -412,7 +475,8 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
     def __onShowDeathScreen(self):
         self.__hideRadialMenu()
         if self.as_isComponentVisibleS(self._fullStatsAlias):
-            self._setComponentsVisibility(visible={self._fullStatsAlias}, hidden=[BATTLE_VIEW_ALIASES.BR_PLAYER_STATS_IN_BATTLE])
+            self._setComponentsVisibility(visible={
+             self._fullStatsAlias}, hidden=[BATTLE_VIEW_ALIASES.BR_PLAYER_STATS_IN_BATTLE])
             self._fsToggling.add(BATTLE_VIEW_ALIASES.BR_PLAYER_STATS_IN_BATTLE)
 
     def __onWinnerScreen(self, *_):
@@ -442,4 +506,6 @@ class BattleRoyalePage(BattleRoyalePageMeta, ISpawnListener):
     def __isDeadAfterRespawnTimeFinished(self):
         arenaDP = self.sessionProvider.getArenaDP()
         arenaInfo = BigWorld.player().arena.arenaInfo
-        return arenaInfo.arenaInfoBRComponent.isRespawnTimeFinished and not arenaDP.getVehicleInfo().isAlive() if arenaInfo else False
+        if arenaInfo:
+            return arenaInfo.arenaInfoBRComponent.isRespawnTimeFinished and not arenaDP.getVehicleInfo().isAlive()
+        return False

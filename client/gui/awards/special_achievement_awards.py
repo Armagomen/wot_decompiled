@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/awards/special_achievement_awards.py
 from collector_vehicle import CollectorVehicleConsts
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.locale.CLANS import CLANS
@@ -36,7 +34,7 @@ class VehicleCollectorAward(ExplosionBackAward):
         return False
 
     def getAwardImage(self):
-        medalName = ''.join((CollectorVehicleConsts.COLLECTOR_MEDAL_PREFIX, str(self.__nationID)))
+        medalName = ('').join((CollectorVehicleConsts.COLLECTOR_MEDAL_PREFIX, str(self.__nationID)))
         return backport.image(R.images.gui.maps.icons.achievement.big.dyn(medalName)())
 
     def getWindowTitle(self):
@@ -142,7 +140,8 @@ class ClanJoinAward(AwardAbstract):
         return i18n.makeString(CLANS.CLANPROFILE_CLANJOINAWARD_BTNACTION)
 
     def getButtonStates(self):
-        return (False, True, True)
+        return (
+         False, True, True)
 
     def handleBodyButton(self):
         shared_events.showClanProfileWindow(self.clanDbID, self.clanAbbrev)
@@ -193,7 +192,7 @@ class TelecomAward(AwardAbstract):
             details = self.__getVehicleDetails(vehCD)
             vehicleNames.append(backport.text(self.__addProviderToRes(R.strings.menu.awardWindow.telecomAward.vehicles)(), **details))
 
-        vehicles = '\n'.join(vehicleNames)
+        vehicles = ('\n').join(vehicleNames)
         if self.__hasCrew:
             if self.__hasBrotherhood:
                 descriptionRes = R.strings.menu.awardWindow.telecomAward.description.withBrotherhood
@@ -210,7 +209,8 @@ class TelecomAward(AwardAbstract):
         return text_styles.standard(backport.text(self.__addProviderToRes(R.strings.menu.awardWindow.telecomAward.subdescription)()))
 
     def getButtonStates(self):
-        return (False, True, True)
+        return (
+         False, True, True)
 
     def getBodyButtonText(self):
         return backport.text(self.__addProviderToRes(R.strings.menu.awardWindow.telecomAward.button.label)())

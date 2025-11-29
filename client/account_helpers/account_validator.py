@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/account_validator.py
-import logging
-import BigWorld
-import wg_async
-import constants
+import logging, BigWorld, wg_async, constants
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from items import vehicles, tankmen, ITEM_TYPE_NAMES
@@ -39,7 +34,8 @@ class ValidationCodes(object):
 
 
 def _packItemData(itemTypeID, itemData, *args):
-    return (ITEM_TYPE_NAMES[itemTypeID], itemData) + args
+    return (
+     ITEM_TYPE_NAMES[itemTypeID], itemData) + args
 
 
 class AccountValidator(object):
@@ -66,7 +62,8 @@ class AccountValidator(object):
 class InventoryVehiclesValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryVehicles,)
+        return (
+         self.__validateInventoryVehicles,)
 
     @wg_async.wg_async
     def __validateInventoryVehicles(self):
@@ -99,7 +96,8 @@ class InventoryVehiclesValidator(AccountValidator):
 class InventoryOutfitValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryOutfit,)
+        return (
+         self.__validateInventoryOutfit,)
 
     @wg_async.wg_async
     def __validateInventoryOutfit(self):
@@ -130,7 +128,8 @@ class InventoryOutfitValidator(AccountValidator):
 class InventoryTankmenValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryTankmen,)
+        return (
+         self.__validateInventoryTankmen,)
 
     @wg_async.wg_async
     def __validateInventoryTankmen(self):

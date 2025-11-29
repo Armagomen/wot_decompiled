@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/easy_tank_equip/crew_preset_model.py
 from enum import Enum
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.crew.tankman_model import TankmanModel

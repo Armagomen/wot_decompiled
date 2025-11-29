@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/__init__.py
 import Event
 from gui.prb_control.entities.listener import IGlobalListener
 

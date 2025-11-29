@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/blueprints/blueprint_balance_content_model.py
 from gui.impl.gen.view_models.views.common_balance_content_model import CommonBalanceContentModel
 from gui.impl.gen.view_models.views.lobby.blueprints.fragment_item_model import FragmentItemModel
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/entities.py
 from collections import deque
 from gui.shared.utils.decorators import ReprInjector
 from messenger.m_constants import PROTO_TYPE, USER_TAG, GAME_ONLINE_STATUS
@@ -32,7 +30,8 @@ class XMPPUserEntity(LobbyUserEntity):
     def getPersistentState(self):
         state = None
         if self._userID and self._item.isTrusted():
-            state = (self._name, self._item.getItemType())
+            state = (
+             self._name, self._item.getItemType())
         return state
 
     def setPersistentState(self, state):
@@ -113,7 +112,7 @@ class _XMPPChannelEntity(ChannelEntity):
 
     @storage_getter('shownMessages')
     def shownMessagesStorage(self):
-        return None
+        return
 
     def getID(self):
         return self._jid
@@ -139,7 +138,8 @@ class _XMPPChannelEntity(ChannelEntity):
     def getPersistentState(self):
         state = None
         if self._isStored:
-            state = (self.getMessageType(), self._name)
+            state = (
+             self.getMessageType(), self._name)
         return state
 
     def setPersistentState(self, state):
@@ -183,11 +183,11 @@ class _XMPPChannelEntity(ChannelEntity):
 
 
 class XMPPChatChannelEntity(_XMPPChannelEntity):
-    __slots__ = ('_contactDBID',)
+    __slots__ = ('_contactDBID', )
 
     def __init__(self, jid, name=''):
         super(XMPPChatChannelEntity, self).__init__(jid, name)
-        self._contactDBID = 0L
+        self._contactDBID = 0
 
     def isPrivate(self):
         return True
@@ -201,7 +201,8 @@ class XMPPChatChannelEntity(_XMPPChannelEntity):
     def getPersistentState(self):
         state = None
         if self._isStored:
-            state = (self.getMessageType(), self._name, self._contactDBID)
+            state = (
+             self.getMessageType(), self._name, self._contactDBID)
         return state
 
     def setPersistentState(self, state):
@@ -222,9 +223,10 @@ class XMPPChatChannelEntity(_XMPPChannelEntity):
         pass
 
     def setUser(self, jid, nickname, presence=PRESENCE.AVAILABLE):
-        super(XMPPChatChannelEntity, self).addMembers((XMPPChatSessionGameMember(jid, nickname, presence),))
+        super(XMPPChatChannelEntity, self).addMembers((
+         XMPPChatSessionGameMember(jid, nickname, presence),))
 
-    def setContact(self, jid, presence, dbID=0L):
+    def setContact(self, jid, presence, dbID=0):
         if dbID:
             self._contactDBID = dbID
         if self._contactDBID and jid.getDatabaseID() == self._contactDBID:
@@ -251,7 +253,9 @@ class XMPPMucChannelEntity(_XMPPChannelEntity):
         return self._isLazy
 
     def isAlwaysShow(self):
-        return True if self._channelType == XMPP_MUC_CHANNEL_TYPE.STANDARD else False
+        if self._channelType == XMPP_MUC_CHANNEL_TYPE.STANDARD:
+            return True
+        return False
 
     def isClan(self):
         return self._channelType == XMPP_MUC_CHANNEL_TYPE.CLANS
@@ -274,7 +278,8 @@ class XMPPMucChannelEntity(_XMPPChannelEntity):
             return
         else:
             if self._isStored:
-                state = (self.getMessageType(), self._name, self._password)
+                state = (
+                 self.getMessageType(), self._name, self._password)
             return state
 
     def setPersistentState(self, state):
@@ -323,14 +328,14 @@ class XmppClanChannelEntity(XMPPMucChannelEntity):
 
     def __init__(self, dbID=0, clanTag=''):
         jid = makeClanRoomJID(dbID, channelType=XMPP_MUC_CHANNEL_TYPE.CLANS)
-        channelName = '[{}]'.format(clanTag)
+        channelName = ('[{}]').format(clanTag)
         super(XmppClanChannelEntity, self).__init__(jid, name=channelName, isSystem=True, isLazy=False, channelType=XMPP_MUC_CHANNEL_TYPE.CLANS)
 
 
 class _XMPPMemberEntity(MemberEntity):
-    __slots__ = ('_dbID',)
+    __slots__ = ('_dbID', )
 
-    def __init__(self, jid, nickName, dbID=0L, presence=PRESENCE.AVAILABLE):
+    def __init__(self, jid, nickName, dbID=0, presence=PRESENCE.AVAILABLE):
         super(_XMPPMemberEntity, self).__init__(jid, nickName, presence)
         self._dbID = dbID
 
@@ -345,7 +350,7 @@ class _XMPPMemberEntity(MemberEntity):
 
     def clear(self):
         self._memberID = None
-        self._dbID = 0L
+        self._dbID = 0
         super(_XMPPMemberEntity, self).clear()
         return
 
@@ -366,7 +371,7 @@ class XMPPChatSessionNonGameMember(_XMPPMemberEntity):
 class XMPPMUCOccupant(_XMPPMemberEntity):
     __slots__ = ('_affiliation', '_role')
 
-    def __init__(self, jid, nickName, dbID=0L, presence=PRESENCE.AVAILABLE, info=None):
+    def __init__(self, jid, nickName, dbID=0, presence=PRESENCE.AVAILABLE, info=None):
         super(XMPPMUCOccupant, self).__init__(jid, nickName, dbID, presence)
         if info is not None:
             self._affiliation = info.affiliation

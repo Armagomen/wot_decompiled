@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/stronghold/plugins.py
 from gui.Scaleform.daapi.view.battle.shared.markers2d.vehicle_plugins import VehicleMarkerPlugin
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES as _STATES
 
@@ -14,10 +12,14 @@ class _StrongholdInspireMarker(object):
         return self.isSourceVehicle
 
     def getHideStatusID(self):
-        return _STATES.INSPIRED_STATE if self.needInspireCounter() else _STATES.INSPIRING_STATE
+        if self.needInspireCounter():
+            return _STATES.INSPIRED_STATE
+        return _STATES.INSPIRING_STATE
 
     def getStatusID(self):
-        return _STATES.INSPIRING_STATE if self.needInspireCounter() else _STATES.INSPIRED_STATE
+        if self.needInspireCounter():
+            return _STATES.INSPIRING_STATE
+        return _STATES.INSPIRED_STATE
 
 
 class StrongholdVehicleMarkerPlugin(VehicleMarkerPlugin):

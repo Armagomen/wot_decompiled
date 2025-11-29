@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TargetDesignatorController.py
-import BigWorld
-import typing
+import BigWorld, typing
 from constants import TARGET_DESIGNATOR_STATE as STATE
 from items.components.shared_components import TargetDesignatorParams
 from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
@@ -26,20 +23,21 @@ class TargetDesignatorState(IMechanicState):
             if self.params is not None:
                 return self.params.deployTime
             return 0
-        else:
-            return max(0.0, self.endTime - BigWorld.serverTime() if self.endTime > 0 else self.baseTime)
+        return max(0.0, self.endTime - BigWorld.serverTime() if self.endTime > 0 else self.baseTime)
 
     def baseTimeLeft(self):
         return max(0.0, self.startTime + self.baseTime - BigWorld.serverTime() if self.endTime > 0 else self.baseTime)
 
     def progress(self, timeLeft):
-        return 1.0 - timeLeft / self.baseTime if self.baseTime > 0 else 1.0
+        if self.baseTime > 0:
+            return 1.0 - timeLeft / self.baseTime
+        return 1.0
 
     def isTransition(self, other):
         return self.state != other.state
 
     def __str__(self):
-        return 'TargetDesignatorState({})'.format(', '.join(('%s=%s' % (name, getattr(self, name, '')) for name in self.__slots__)))
+        return ('TargetDesignatorState({})').format((', ').join('%s=%s' % (name, getattr(self, name, '')) for name in self.__slots__))
 
 
 class TargetDesignatorController(VehicleMechanicPrefabDynamicComponent, IMechanicCommandsComponent, IMechanicStatesComponent):
@@ -91,4 +89,7 @@ class TargetDesignatorController(VehicleMechanicPrefabDynamicComponent, IMechani
         self.__statesEvents.updateMechanicState(newState)
 
     def __updateState(self):
-        return TargetDesignatorState(STATE.PRE_BATTLE, self.__params) if self.abilityState is None else TargetDesignatorState(self.abilityState.state, self.__params, self.abilityState.startTime, self.abilityState.endTime)
+        if self.abilityState is None:
+            return TargetDesignatorState(STATE.PRE_BATTLE, self.__params)
+        else:
+            return TargetDesignatorState(self.abilityState.state, self.__params, self.abilityState.startTime, self.abilityState.endTime)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_presets/providers/random_dynamic_gui_providers.py
 from constants import QUEUE_TYPE, ARENA_BONUS_TYPE
 from gui.hangar_presets.obsolete.hangar_presets_getters import RandomPresetsGetter
 from gui.hangar_presets.providers import DefaultHangarDynamicGuiProvider

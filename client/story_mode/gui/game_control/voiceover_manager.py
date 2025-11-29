@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/game_control/voiceover_manager.py
 from functools import partial
 import typing
 from account_helpers.settings_core.settings_constants import SOUND
-import BigWorld
-import SoundGroups
-import WWISE
+import BigWorld, SoundGroups, WWISE
 from Event import Event
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
@@ -15,7 +11,9 @@ from story_mode.skeletons.voiceover_controller import IVoiceoverManager
 _UPDATE_PERIOD = 0.1
 
 class VoiceoverManager(IVoiceoverManager):
-    __slots__ = ('onSubtitleShow', 'onSubtitleHide', '_currentSound', '_currentSubtitle', '_callbackId', '_currentCtx', '_delay', '_onEndCallbackId', 'onStarted', 'onStopped')
+    __slots__ = ('onSubtitleShow', 'onSubtitleHide', '_currentSound', '_currentSubtitle',
+                 '_callbackId', '_currentCtx', '_delay', '_onEndCallbackId', 'onStarted',
+                 'onStopped')
 
     def __init__(self):
         super(VoiceoverManager, self).__init__()

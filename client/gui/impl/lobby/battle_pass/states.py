@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/states.py
 from typing import TYPE_CHECKING
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
@@ -44,15 +42,14 @@ class BattlePassState(ViewLobbyState):
     def registerTransitions(self):
         lsm = self.getMachine()
         for state in self.getChildrenStates():
-            if state.VIEW_KEY.alias not in (_BP.IntroVideo(), _BP.ExtraVideo()):
-                lsm.addNavigationTransitionFromParent(state)
+            lsm.addNavigationTransitionFromParent(state)
 
         introVideoState = lsm.getStateByCls(IntroVideoBattlePassState)
         self.addTransition(HijackTransition(IntroBattlePassState, _shouldNavigateToIntroVideo), introVideoState)
         extraVideoState = lsm.getStateByCls(ExtraVideoBattlePassState)
         self.addTransition(HijackTransition(IntroBattlePassState, _shouldNavigateToExtraVideo), extraVideoState)
-        chapterChoice = lsm.getStateByCls(ChapterChoiceBattlePassState)
-        self.addTransition(HijackTransition(ProgressionBattlePassState, _shouldNavigateToProgression), chapterChoice)
+        progressionState = lsm.getStateByCls(ProgressionBattlePassState)
+        self.addTransition(HijackTransition(ChapterChoiceBattlePassState, _isHoliday), progressionState)
 
     def _onEntered(self, event):
         super(BattlePassState, self)._onEntered(event)
@@ -74,7 +71,7 @@ class _BattlePassPresenterState(LobbyState):
         super(_BattlePassPresenterState, self).addNavigationTransition(targetViewState, transitionType, record)
 
     def getNavigationDescription(self):
-        shortStateID = self.STATE_ID.split('/')[-1]
+        shortStateID = self.STATE_ID.split('/')[(-1)]
         return LobbyStateDescription(title=backport.text(R.strings.battle_pass.navigation.dyn(shortStateID)(), **self._getNavigationDescriptionArgs()))
 
     def _getNavigationDescriptionArgs(self):
@@ -184,9 +181,11 @@ class ProgressionBattlePassState(_BattlePassPresenterState):
         from gui.impl.lobby.lootbox_system.states import LootBoxMainState
         lsm = self.getMachine()
         buyPassState = lsm.getStateByCls(BuyPassBattlePassState)
+        buyPassConfirmState = lsm.getStateByCls(BuyPassConfirmBattlePassState)
         buyLevelsState = lsm.getStateByCls(BuyLevelsBattlePassState)
         lootBoxMainState = lsm.getStateByCls(LootBoxMainState)
         self.addNavigationTransition(buyPassState)
+        self.addNavigationTransition(buyPassConfirmState)
         self.addNavigationTransition(buyLevelsState)
         self.addNavigationTransition(lsm.getStateByCls(StylePreviewState))
         self.addNavigationTransition(lsm.getStateByCls(ConfigurableVehiclePreviewState))
@@ -267,34 +266,37 @@ class HolidayFinalBattlePassState(_BattlePassPresenterState):
         from gui.Scaleform.daapi.view.lobby.vehicle_preview.states import ConfigurableVehiclePreviewState
         from gui.Scaleform.daapi.view.lobby.vehicle_preview.states import StyleProgressionPreviewState
         lsm = self.getMachine()
+        confirmState = lsm.getStateByCls(BuyPassConfirmBattlePassState)
+        rewardsState = lsm.getStateByCls(BuyPassRewardsBattlePassState)
+        self.addNavigationTransition(confirmState)
+        self.addNavigationTransition(rewardsState)
         self.addNavigationTransition(lsm.getStateByCls(StylePreviewState))
         self.addNavigationTransition(lsm.getStateByCls(ConfigurableVehiclePreviewState))
         self.addNavigationTransition(lsm.getStateByCls(StyleProgressionPreviewState))
 
 
-STATES = {_BP.IntroVideo(): IntroVideoBattlePassState,
- _BP.ExtraVideo(): ExtraVideoBattlePassState,
- _BP.Intro(): IntroBattlePassState,
- _BP.ChapterChoice(): ChapterChoiceBattlePassState,
- _BP.Progression(): ProgressionBattlePassState,
- _BP.PostProgression(): PostProgressionBattlePassState,
- _BP.BuyPass(): BuyPassBattlePassState,
- _BP.BuyPassConfirm(): BuyPassConfirmBattlePassState,
- _BP.BuyPassRewards(): BuyPassRewardsBattlePassState,
- _BP.BuyLevels(): BuyLevelsBattlePassState,
- _BP.BuyLevelsRewards(): BuyLevelsRewardsBattlePassState,
- _BP.HolidayFinal(): HolidayFinalBattlePassState}
+STATES = {_BP.IntroVideo(): IntroVideoBattlePassState, 
+   _BP.ExtraVideo(): ExtraVideoBattlePassState, 
+   _BP.Intro(): IntroBattlePassState, 
+   _BP.ChapterChoice(): ChapterChoiceBattlePassState, 
+   _BP.Progression(): ProgressionBattlePassState, 
+   _BP.PostProgression(): PostProgressionBattlePassState, 
+   _BP.BuyPass(): BuyPassBattlePassState, 
+   _BP.BuyPassConfirm(): BuyPassConfirmBattlePassState, 
+   _BP.BuyPassRewards(): BuyPassRewardsBattlePassState, 
+   _BP.BuyLevels(): BuyLevelsBattlePassState, 
+   _BP.BuyLevelsRewards(): BuyLevelsRewardsBattlePassState, 
+   _BP.HolidayFinal(): HolidayFinalBattlePassState}
 _INITIAL_STATE_ID = _BP.Intro()
 
 def _shouldNavigateToIntroVideo(event):
     return not isIntroVideoShown()
 
 
-@dependency.replace_none_kwargs(battlePass=IBattlePassController)
-def _shouldNavigateToExtraVideo(event, battlePass=None):
+def _shouldNavigateToExtraVideo(event):
     return isIntroVideoShown() and not isExtraVideoShown()
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
-def _shouldNavigateToProgression(event, battlePass=None):
-    return not battlePass.isChapterExists(event.params.get('chapterID'))
+def _isHoliday(event, battlePass=None):
+    return battlePass.isHoliday()

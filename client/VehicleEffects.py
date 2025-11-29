@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VehicleEffects.py
 from collections import namedtuple
-import typing
-import cgf_network
-import Physics
+import typing, cgf_network, Physics
 from Math import Vector3, Vector4, Matrix
 from constants import VEHICLE_HIT_EFFECT
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_DEBUG_DEV
@@ -20,14 +16,15 @@ MAX_FALLBACK_CHECK_DISTANCE = 10000.0
 HitEffectMapping = namedtuple('HitEffectMapping', ('componentName', 'hitTester'))
 
 class DamageFromShotDecoder(object):
-    ShotPoint = namedtuple('ShotPoint', ('componentName', 'componentIdx', 'matrix', 'hitEffectCode', 'hitEffectGroup', 'isDynCollision'))
-    _HIT_EFFECT_CODE_TO_EFFECT_GROUP = {VEHICLE_HIT_EFFECT.INTERMEDIATE_RICOCHET: 'armorBasicRicochet',
-     VEHICLE_HIT_EFFECT.FINAL_RICOCHET: 'armorRicochet',
-     VEHICLE_HIT_EFFECT.ARMOR_NOT_PIERCED: 'armorResisted',
-     VEHICLE_HIT_EFFECT.ARMOR_PIERCED_NO_DAMAGE: 'armorResisted',
-     VEHICLE_HIT_EFFECT.ARMOR_PIERCED: 'armorHit',
-     VEHICLE_HIT_EFFECT.CRITICAL_HIT: 'armorCriticalHit',
-     VEHICLE_HIT_EFFECT.ARMOR_PIERCED_DEVICE_DAMAGED: 'armorCriticalHit'}
+    ShotPoint = namedtuple('ShotPoint', ('componentName', 'componentIdx', 'matrix',
+                                         'hitEffectCode', 'hitEffectGroup', 'isDynCollision'))
+    _HIT_EFFECT_CODE_TO_EFFECT_GROUP = {VEHICLE_HIT_EFFECT.INTERMEDIATE_RICOCHET: 'armorBasicRicochet', 
+       VEHICLE_HIT_EFFECT.FINAL_RICOCHET: 'armorRicochet', 
+       VEHICLE_HIT_EFFECT.ARMOR_NOT_PIERCED: 'armorResisted', 
+       VEHICLE_HIT_EFFECT.ARMOR_PIERCED_NO_DAMAGE: 'armorResisted', 
+       VEHICLE_HIT_EFFECT.ARMOR_PIERCED: 'armorHit', 
+       VEHICLE_HIT_EFFECT.CRITICAL_HIT: 'armorCriticalHit', 
+       VEHICLE_HIT_EFFECT.ARMOR_PIERCED_DEVICE_DAMAGED: 'armorCriticalHit'}
     _PRIMARY_COLLISION_INDEX = 0
     _ENCODED_SEGMENT_BITS = 64
 
@@ -37,11 +34,15 @@ class DamageFromShotDecoder(object):
 
     @staticmethod
     def convertComponentIndex(compIdx, collisionComponent):
-        return collisionComponent.maxStaticPartIndex - compIdx if compIdx > collisionComponent.maxStaticPartIndex else compIdx
+        if compIdx > collisionComponent.maxStaticPartIndex:
+            return collisionComponent.maxStaticPartIndex - compIdx
+        return compIdx
 
     @staticmethod
     def getPartName(partIndex, collisionComponent):
-        return collisionComponent.getPartName(partIndex) if partIndex < 0 else TankPartIndexes.getName(partIndex)
+        if partIndex < 0:
+            return collisionComponent.getPartName(partIndex)
+        return TankPartIndexes.getName(partIndex)
 
     @classmethod
     def encodeHitPoint(cls, hitPoint):
@@ -65,7 +66,8 @@ class DamageFromShotDecoder(object):
             bbox = collisionComponent.getBoundingBox(compIdx)
             if not hitTestRes or hitTestRes < 0.0:
                 width, height, depth = (bbox[1] - bbox[0]) / 256.0
-                directions = [Vector3(0.0, -height, 0.0),
+                directions = [
+                 Vector3(0.0, -height, 0.0),
                  Vector3(0.0, height, 0.0),
                  Vector3(-width, 0.0, 0.0),
                  Vector3(width, 0.0, 0.0),
@@ -127,23 +129,20 @@ class DamageFromShotDecoder(object):
             return
         else:
             _, data, start, end = decodeSegment(segment, collisionComponent.getBoundingBox(compIndex))
-            return (compIndex,
-             data,
-             start,
-             end)
+            return (compIndex, data, start, end)
 
     @classmethod
     def getPartIndexByNetworkID(cls, spaceID, networkID):
         gameObject = cgf_network.getGameObjectByNetworkID(spaceID, networkID)
         if not gameObject.isValid():
-            LOG_DEBUG_DEV("[DamageFromShotDecoder] Can't find game object for networkID {}".format(networkID))
-            return None
+            LOG_DEBUG_DEV(("[DamageFromShotDecoder] Can't find game object for networkID {}").format(networkID))
+            return
         else:
             linker = gameObject.findComponentByType(Physics.DynamicCollisionLinker)
             if linker and linker.collisionPartIndexes:
                 return linker.collisionPartIndexes[cls._PRIMARY_COLLISION_INDEX]
-            LOG_DEBUG_DEV("[DamageFromShotDecoder] Can't find collision for networkID {}".format(networkID))
-            return None
+            LOG_DEBUG_DEV(("[DamageFromShotDecoder] Can't find collision for networkID {}").format(networkID))
+            return
 
 
 class RepaintParams(object):
@@ -161,4 +160,5 @@ class RepaintParams(object):
         repaintGlossRangeScale = vehicleDescr.type.repaintParameters['refGlossMult']
         repaintReferenceColor = Vector4(refColor.x, refColor.y, refColor.z, repaintReferenceGloss)
         repaintReplaceColor.w = repaintColorRangeScale
-        return (repaintReferenceColor, repaintReplaceColor, repaintGlossRangeScale)
+        return (
+         repaintReferenceColor, repaintReplaceColor, repaintGlossRangeScale)

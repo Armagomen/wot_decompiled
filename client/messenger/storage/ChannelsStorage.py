@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/ChannelsStorage.py
 import types
 from debug_utils import LOG_ERROR
 from messenger.ext.channel_num_gen import genClientID4Channel
@@ -7,14 +5,14 @@ from messenger.storage.local_cache import SimpleCachedStorage
 _CHANNELS_MAX_COUNT = 20
 
 class ChannelsStorage(SimpleCachedStorage):
-    __slots__ = ('__channels',)
+    __slots__ = ('__channels', )
 
     def __init__(self):
         super(ChannelsStorage, self).__init__()
         self.__channels = []
 
     def __repr__(self):
-        return 'ChannelsStorage(id=0x{0:08X}, len={1:n})'.format(id(self), len(self.__channels))
+        return ('ChannelsStorage(id=0x{0:08X}, len={1:n})').format(id(self), len(self.__channels))
 
     def clear(self):
         while self.__channels:
@@ -37,7 +35,10 @@ class ChannelsStorage(SimpleCachedStorage):
 
     def getChannelByCriteria(self, criteria):
         channels = self.getChannelsByCriteria(criteria)
-        return channels[0] if channels else None
+        if channels:
+            return channels[0]
+        else:
+            return
 
     def addChannel(self, channel):
         result = True
@@ -84,6 +85,7 @@ class ChannelsStorage(SimpleCachedStorage):
                     protoType, channelID, state = item
                     if requiredType != protoType:
                         continue
-                    yield (channelID, state)
+                    yield (
+                     channelID, state)
 
             return stateGenerator

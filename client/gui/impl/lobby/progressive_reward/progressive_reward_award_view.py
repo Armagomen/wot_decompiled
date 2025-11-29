@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/progressive_reward/progressive_reward_award_view.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -46,8 +44,7 @@ class ProgressiveRewardAwardView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(ProgressiveRewardAwardView, self).createToolTip(event)
+        return super(ProgressiveRewardAwardView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
         tooltipData = self.__getBackportTooltipData(event)
@@ -58,9 +55,9 @@ class ProgressiveRewardAwardView(ViewImpl):
         self.viewModel.onDestroyEvent += self.__onDestroy
         self.viewModel.onCloseAction += self.__onWindowClose
         self.viewModel.onSpecialActionBtnClick += self.__onSpecialActionButtonClick
-        g_clientUpdateManager.addCallbacks({'blueprints': self.__update,
-         'serverSettings.blueprints_config': self.__update,
-         'serverSettings.progressive_reward_config': self.__update})
+        g_clientUpdateManager.addCallbacks({'blueprints': self.__update, 
+           'serverSettings.blueprints_config': self.__update, 
+           'serverSettings.progressive_reward_config': self.__update})
         self.__specialRewardType = specialRewardType
         self.__bonuses = bonuses
         self.__currentStep = currentStep
@@ -77,9 +74,13 @@ class ProgressiveRewardAwardView(ViewImpl):
         super(ProgressiveRewardAwardView, self)._finalize()
 
     def __update(self, _=None):
-        unique = (LootCongratsTypes.INIT_CONGRAT_TYPE_CREW_BOOKS, LootCongratsTypes.INIT_CONGRAT_TYPE_EPIC_REWARDS, LootCongratsTypes.INIT_CONGRAT_TYPE_AC_EMAIL_CONFIRMATION)
+        unique = (
+         LootCongratsTypes.INIT_CONGRAT_TYPE_CREW_BOOKS,
+         LootCongratsTypes.INIT_CONGRAT_TYPE_EPIC_REWARDS,
+         LootCongratsTypes.INIT_CONGRAT_TYPE_AC_EMAIL_CONFIRMATION)
         if self.__specialRewardType in unique:
-            deferred = (LootCongratsTypes.INIT_CONGRAT_TYPE_CREW_BOOKS,)
+            deferred = (
+             LootCongratsTypes.INIT_CONGRAT_TYPE_CREW_BOOKS,)
             if self.__specialRewardType not in deferred:
                 self.viewModel.setInitialCongratsType(self.__specialRewardType)
         else:
@@ -102,7 +103,7 @@ class ProgressiveRewardAwardView(ViewImpl):
             _logger.warning('Progressive config is missing on server!')
             return
         else:
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 steps = tx.getSteps()
                 steps.clear()
                 fillStepsModel(currentStep, progressive.probability, progressive.maxSteps, True, steps)
@@ -112,7 +113,7 @@ class ProgressiveRewardAwardView(ViewImpl):
             return
 
     def __setBonuses(self, bonuses):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             rewardsList = tx.getRewards()
             rewardsList.clear()
             lastCongratsIndex = getLastCongratsIndex(bonuses, self.__specialRewardType)
@@ -142,17 +143,19 @@ class ProgressiveRewardAwardView(ViewImpl):
         tooltipId = event.getArgument('tooltipId')
         if tooltipId is None:
             return
-        elif tooltipId in self.__items:
-            return self.__items[tooltipId]
         else:
+            if tooltipId in self.__items:
+                return self.__items[tooltipId]
             if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
                 vehicleCD = _getVehicleCD(event.getArgument('vehicleCD'))
                 if vehicleCD is not None:
-                    return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(vehicleCD, True))
+                    return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(
+                     vehicleCD, True))
             elif tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
                 vehicleCD = _getVehicleCD(event.getArgument('vehicleCD'))
                 if vehicleCD is not None:
-                    return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[vehicleCD])
+                    return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[
+                     vehicleCD])
             return
 
     def __isEpicReward(self):
@@ -171,7 +174,7 @@ def _getVehicleCD(value):
         vehicleCD = int(value)
     except ValueError:
         _logger.warning('Wrong vehicle compact descriptor: %s!', value)
-        return None
+        return
 
     return vehicleCD
-    return None
+    return

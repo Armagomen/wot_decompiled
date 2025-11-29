@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/battle_pass_bonuses_helper.py
-import logging
-import typing
+import logging, typing
 from battle_pass_common import BATTLE_PASS_TOKEN_BLUEPRINT_GIFT_OFFER
 from gui.battle_pass.battle_pass_constants import BonusesLayoutConsts
 from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift
@@ -36,7 +33,9 @@ class BonusesHelper(object):
         if value in result:
             result = result.get(value, {})
             defaultValue = result.get(parameter, defaultValue)
-        return result[parameter] if parameter in result else defaultValue
+        if parameter in result:
+            return result[parameter]
+        return defaultValue
 
     @classmethod
     def getTextStrings(cls, bonus):
@@ -54,24 +53,33 @@ class BonusesHelper(object):
     @classmethod
     def __getSubType(cls, bonus):
         getter = cls.__selectGetter(bonus, _SUB_TYPE_GETTERS_MAP)
-        return None if getter is None else getter.getSubType(bonus)
+        if getter is None:
+            return
+        else:
+            return getter.getSubType(bonus)
 
     @classmethod
     def __getValue(cls, bonus, source):
         getter = cls.__selectGetter(bonus, _VALUE_GETTERS_MAP)
-        return None if getter is None else getter.getValue(bonus, source)
+        if getter is None:
+            return
+        else:
+            return getter.getValue(bonus, source)
 
     @staticmethod
     def __selectGetter(bonus, getters):
         name = bonus.getName()
-        return getters[name] if name in getters else getters.get('default', None)
+        if name in getters:
+            return getters[name]
+        else:
+            return getters.get('default', None)
 
 
 class _BaseSubTypeGetter(object):
 
     @staticmethod
     def getSubType(_):
-        return None
+        return
 
 
 class _ItemsSubTypeGetter(_BaseSubTypeGetter):
@@ -128,17 +136,17 @@ class _RewardSelectSubTypeGetter(_BaseSubTypeGetter):
         return bonus.getType()
 
 
-_SUB_TYPE_GETTERS_MAP = {'default': _BaseSubTypeGetter,
- 'items': _ItemsSubTypeGetter,
- 'customizations': _CustomizationSubTypeGetter,
- 'currencies': _CurrenciesSubTypeGetter,
- 'battlePassSelectToken': _RewardSelectSubTypeGetter}
+_SUB_TYPE_GETTERS_MAP = {'default': _BaseSubTypeGetter, 
+   'items': _ItemsSubTypeGetter, 
+   'customizations': _CustomizationSubTypeGetter, 
+   'currencies': _CurrenciesSubTypeGetter, 
+   'battlePassSelectToken': _RewardSelectSubTypeGetter}
 
 class _BaseValueGetter(object):
 
     @classmethod
     def getValue(cls, bonus, _):
-        return None
+        return
 
 
 class _IntCDValueGetter(_BaseValueGetter):
@@ -209,15 +217,15 @@ class _TokenValueGetter(_BaseValueGetter):
         return first(bonus.getTokens().iterkeys(), '')
 
 
-_VALUE_GETTERS_MAP = {'default': _BaseValueGetter,
- 'blueprints': _BlueprintValueGetter,
- 'items': _IntCDValueGetter,
- 'goodies': _IntCDValueGetter,
- 'crewBooks': _IntCDValueGetter,
- 'customizations': _CustomizationValueGetter,
- 'styleProgressToken': _StyleProgressTokenValueGetter,
- 'vehicles': _VehiclesValueGetter,
- 'tokens': _TokenValueGetter}
+_VALUE_GETTERS_MAP = {'default': _BaseValueGetter, 
+   'blueprints': _BlueprintValueGetter, 
+   'items': _IntCDValueGetter, 
+   'goodies': _IntCDValueGetter, 
+   'crewBooks': _IntCDValueGetter, 
+   'customizations': _CustomizationValueGetter, 
+   'styleProgressToken': _StyleProgressTokenValueGetter, 
+   'vehicles': _VehiclesValueGetter, 
+   'tokens': _TokenValueGetter}
 
 class _BaseTextGetter(object):
 
@@ -245,7 +253,7 @@ class _HtmlTextGetter(_BaseTextGetter):
 
     @staticmethod
     def _getKey(_):
-        pass
+        return ''
 
     @staticmethod
     def _getContext(_):
@@ -265,10 +273,7 @@ class _CrewBookTextGetter(_HtmlTextGetter):
     @staticmethod
     def _getContext(crewBook):
         item, count = crewBook
-        return {'type': item.getBookType(),
-         'nation': item.getNation(),
-         'value': count,
-         'name': item.userName}
+        return {'type': item.getBookType(), 'nation': item.getNation(), 'value': count, 'name': item.userName}
 
 
 class _CrewSkinTextGetter(_HtmlTextGetter):
@@ -295,9 +300,7 @@ class _CrewSkinTextGetter(_HtmlTextGetter):
         count, firstNameID, lastNameID = item
         firstName = i18n.makeString(firstNameID)
         lastName = i18n.makeString(lastNameID)
-        return {'value': count,
-         'firstName': firstName,
-         'lastName': lastName}
+        return {'value': count, 'firstName': firstName, 'lastName': lastName}
 
 
 class _DossierTextGetter(_HtmlTextGetter):
@@ -313,7 +316,9 @@ class _DossierTextGetter(_HtmlTextGetter):
         _, typeItem = item
         if typeItem == _HelperConsts.ACHIVE_TYPE:
             return _HelperConsts.ACHIVE_KEY
-        return _HelperConsts.BADGE_KEY if typeItem == _HelperConsts.BADGE_TYPE else ''
+        if typeItem == _HelperConsts.BADGE_TYPE:
+            return _HelperConsts.BADGE_KEY
+        return ''
 
     @staticmethod
     def _getContext(item):
@@ -331,8 +336,10 @@ class _SelectTokenTextGetter(_BaseTextGetter):
             count = text_styles.credits(cls.__getRealValue(item))
             colon = backport.text(R.strings.common.common.colon())
             if count > 1:
-                return '{}{} {}'.format(backport.text(nameRes()), colon, count)
-        return backport.text(nameRes()) if nameRes.exists() else ''
+                return ('{}{} {}').format(backport.text(nameRes()), colon, count)
+        if nameRes.exists():
+            return backport.text(nameRes())
+        return ''
 
     @classmethod
     def __getRealValue(cls, item):
@@ -342,7 +349,9 @@ class _SelectTokenTextGetter(_BaseTextGetter):
             return item.getCount()
         else:
             gift = first(offer.getAllGifts())
-            return item.getCount() if gift is None else str(gift.giftCount * item.getCount())
+            if gift is None:
+                return item.getCount()
+            return str(gift.giftCount * item.getCount())
 
 
 class _StyleProgressTokenTextGetter(_BaseTextGetter):
@@ -404,17 +413,17 @@ class _CurrenciesTextGetter(_BaseTextGetter):
         return i18n.makeString('#quests:bonuses/%s/description' % item.getCode(), value=item.formatValue())
 
 
-_TEXT_GETTERS_MAP = {'default': _BaseTextGetter,
- 'crewBooks': _CrewBookTextGetter,
- 'crewSkins': _CrewSkinTextGetter,
- 'currencies': _CurrenciesTextGetter,
- 'dossier': _DossierTextGetter,
- 'battlePassSelectToken': _SelectTokenTextGetter,
- 'styleProgressToken': _StyleProgressTokenTextGetter,
- 'tmanToken': _TankmanTokenTextGetter,
- 'randomQuestToken': _RandomQuestTokenTextGetter,
- 'lootBox': _LootboxTextGetter,
- Currency.EQUIP_COIN: _EquipCoinTextGetter}
+_TEXT_GETTERS_MAP = {'default': _BaseTextGetter, 
+   'crewBooks': _CrewBookTextGetter, 
+   'crewSkins': _CrewSkinTextGetter, 
+   'currencies': _CurrenciesTextGetter, 
+   'dossier': _DossierTextGetter, 
+   'battlePassSelectToken': _SelectTokenTextGetter, 
+   'styleProgressToken': _StyleProgressTokenTextGetter, 
+   'tmanToken': _TankmanTokenTextGetter, 
+   'randomQuestToken': _RandomQuestTokenTextGetter, 
+   'lootBox': _LootboxTextGetter, 
+   Currency.EQUIP_COIN: _EquipCoinTextGetter}
 
 class _HelperConsts(object):
     HTML_BONUS_PATH = 'html_templates:lobby/quests/bonuses'

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_progressions_view_model.py
 from enum import Enum
 from frameworks.wulf import Array
 from gui.impl.wrappers.user_compound_price_model import UserCompoundPriceModel
@@ -32,7 +30,9 @@ class ChapterType(Enum):
 
 
 class BattlePassProgressionsViewModel(CommonViewModel):
-    __slots__ = ('onClose', 'onChapterActivate', 'onTakeClick', 'onTakeAllClick', 'onOpenShopClick', 'onAboutClick', 'onPointsInfoClick', 'onFinishedAnimation', 'onLevelsAnimationFinished', 'onStyleBonusPreview', 'onChapterChoice', 'onViewLoaded')
+    __slots__ = ('onClose', 'onChapterActivate', 'onTakeClick', 'onTakeAllClick', 'onOpenShopClick',
+                 'onAboutClick', 'onPointsInfoClick', 'onFinishedAnimation', 'onLevelsAnimationFinished',
+                 'onStyleBonusPreview', 'onChapterChoice', 'onViewLoaded')
 
     def __init__(self, properties=40, commands=13):
         super(BattlePassProgressionsViewModel, self).__init__(properties=properties, commands=commands)

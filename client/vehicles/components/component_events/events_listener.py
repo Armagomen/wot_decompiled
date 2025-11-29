@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/component_events/events_listener.py
 import typing
 from events_handler import EventsHandler, eventHandler, subscribeToEvents
 from vehicles.components.component_events.events_interfaces import IComponentListener

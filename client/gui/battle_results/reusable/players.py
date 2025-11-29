@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/players.py
 import typing
 from collections import namedtuple
 from gui.battle_results.components import style
@@ -10,7 +8,8 @@ from skeletons.gui.lobby_context import ILobbyContext
 _ClanInfo = namedtuple('_ClanInfo', 'clanDBID clanAbbrev')
 
 class PlayerInfo(shared.ItemInfo):
-    __slots__ = ('__dbID', '__team', '__fakeName', '__realName', '__prebattleID', '__igrType', '__clanInfo', '__isTeamKiller', 'squadIndex', '__tags', '__weakref__')
+    __slots__ = ('__dbID', '__team', '__fakeName', '__realName', '__prebattleID', '__igrType',
+                 '__clanInfo', '__isTeamKiller', 'squadIndex', '__tags', '__weakref__')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, dbID=0, team=0, name='', realName=style.getUnknownPlayerName(), prebattleID=0, igrType=0, clanAbbrev='', clanDBID=0, wasInBattle=True, **kwargs):
@@ -80,7 +79,7 @@ class PlayerInfo(shared.ItemInfo):
 
 
 class PlayersInfo(shared.UnpackedInfo):
-    __slots__ = ('__players',)
+    __slots__ = ('__players', )
 
     def __init__(self, players):
         super(PlayersInfo, self).__init__()
@@ -112,7 +111,8 @@ class PlayersInfo(shared.UnpackedInfo):
 
     def getPlayerInfoIterator(self):
         for dbID, info in self.__players.iteritems():
-            yield (dbID, info)
+            yield (
+             dbID, info)
 
     def getFirstAllyClan(self, team):
         result = findFirst(lambda player: player.clanDBID and player.team == team, self.__players.itervalues(), PlayerInfo())

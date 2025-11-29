@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/BonusCaps.py
 from typing import Dict, Optional, Set, FrozenSet
 
 class BonusCapsConst(object):
@@ -10,10 +8,11 @@ class BonusCapsConst(object):
 
 
 class BonusCapsConfig(object):
-    __slots__ = {'__config'}
-    __OPERATIONS = {BonusCapsConst.REMOVE: lambda x, y: x - y,
-     BonusCapsConst.ADD: lambda x, y: x | y,
-     BonusCapsConst.OVERRIDE: lambda x, y: y}
+    __slots__ = {
+     '__config'}
+    __OPERATIONS = {BonusCapsConst.REMOVE: lambda x, y: x - y, 
+       BonusCapsConst.ADD: lambda x, y: x | y, 
+       BonusCapsConst.OVERRIDE: lambda x, y: y}
 
     def __init__(self, config=None):
         if not config:
@@ -29,4 +28,7 @@ class BonusCapsConfig(object):
         return resultBonusCaps
 
     def getModifiedBonusCaps(self, arenaBonusType, defaultBonusCaps):
-        return defaultBonusCaps if self.__config.get(arenaBonusType, None) is None else frozenset(self.__performOperations(arenaBonusType, defaultBonusCaps))
+        if self.__config.get(arenaBonusType, None) is None:
+            return defaultBonusCaps
+        else:
+            return frozenset(self.__performOperations(arenaBonusType, defaultBonusCaps))

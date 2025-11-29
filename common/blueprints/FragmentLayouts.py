@@ -1,19 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/blueprints/FragmentLayouts.py
 from bitstring import BitArray
 from bit_coder import BitCoder
 
 class Layout(object):
-    __slots__ = ('rows', 'columns', 'stamps', '__iadd__', '__isub__', '__len__', 'asInt', 'fromInt', 'layoutData')
-    LAYOUTS = dict(((16, 4),
-     (15, 5),
-     (14, 7),
-     (10, 5),
-     (12, 4),
-     (9, 3),
-     (8, 4),
-     (6, 3),
-     (4, 2)))
+    __slots__ = ('rows', 'columns', 'stamps', '__iadd__', '__isub__', '__len__', 'asInt',
+                 'fromInt', 'layoutData')
+    LAYOUTS = dict(((16, 4), (15, 5), (14, 7), (10, 5), (12, 4), (9, 3), (8, 4), (6, 3), (4, 2)))
     filledCount = property(lambda self: self.layoutData.count(1))
     emptyCount = property(lambda self: self.layoutData.count(0))
 
@@ -82,4 +73,4 @@ class Layout(object):
     def __numberOfSetBits(i):
         i = i - (i >> 1 & 1431655765)
         i = (i & 858993459) + (i >> 2 & 858993459)
-        return ((i + (i >> 4) & 252645135) * 16843009 & 4294967295L) >> 24
+        return ((i + (i >> 4) & 252645135) * 16843009 & 4294967295) >> 24

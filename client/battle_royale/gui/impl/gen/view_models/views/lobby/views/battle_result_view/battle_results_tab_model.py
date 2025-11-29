@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/battle_result_view/battle_results_tab_model.py
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_result_view.battle_pass_progress import BattlePassProgress
 from gui.impl.gen.view_models.views.battle_royale.battle_results.personal.personal_results_model import PersonalResultsModel
 
 class BattleResultsTabModel(PersonalResultsModel):
     __slots__ = ()
 
-    def __init__(self, properties=10, commands=0):
+    def __init__(self, properties=11, commands=0):
         super(BattleResultsTabModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -47,6 +45,12 @@ class BattleResultsTabModel(PersonalResultsModel):
     def setQuestCompleted(self, value):
         self._setNumber(9, value)
 
+    def getIsObserver(self):
+        return self._getBool(10)
+
+    def setIsObserver(self, value):
+        self._setBool(10, value)
+
     def _initialize(self):
         super(BattleResultsTabModel, self)._initialize()
         self._addViewModelProperty('battlePassProgress', BattlePassProgress())
@@ -55,3 +59,4 @@ class BattleResultsTabModel(PersonalResultsModel):
         self._addStringProperty('vehicleType', '')
         self._addStringProperty('vehicleName', '')
         self._addNumberProperty('questCompleted', 0)
+        self._addBoolProperty('isObserver', False)

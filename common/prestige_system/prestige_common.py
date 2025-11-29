@@ -1,11 +1,15 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/prestige_system/prestige_common.py
 import typing
 from constants import IS_CLIENT
 from prestige_system import getCache, computePrestigeCache
 if typing.TYPE_CHECKING:
     from typing import Dict, List, Optional, Iterable
-PrestigeGrade = typing.NamedTuple('_PrestigeGrade', (('level', int), ('prestigeMarkID', int), ('main', bool)))
+PrestigeGrade = typing.NamedTuple('_PrestigeGrade', (
+ (
+  'level', int),
+ (
+  'prestigeMarkID', int),
+ (
+  'main', bool)))
 
 class PrestigeConfig(object):
 
@@ -44,10 +48,12 @@ class PrestigeConfig(object):
         return self._config.get('grades', [])
 
     def getSortedGrades(self, key=GradeKeys.LEVEL):
-        return [ PrestigeGrade(**g) for g in sorted(self.grades, key=lambda v: v.get(key)) ]
+        return [ PrestigeGrade(**g) for g in sorted(self.grades, key=lambda v: v.get(key))
+               ]
 
     def getSortedMainGrades(self, key=GradeKeys.LEVEL):
-        return [ PrestigeGrade(**g) for g in sorted(self.grades, key=lambda v: v.get(key)) if g.get(self.GradeKeys.MAIN, False) ]
+        return [ PrestigeGrade(**g) for g in sorted(self.grades, key=lambda v: v.get(key)) if g.get(self.GradeKeys.MAIN, False)
+               ]
 
     def getVehiclePoints(self, vehCD):
         return self.prestigePoints.get(vehCD)

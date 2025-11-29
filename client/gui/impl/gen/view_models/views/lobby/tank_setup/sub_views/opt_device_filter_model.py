@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/sub_views/opt_device_filter_model.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.filters_model import FiltersModel
 
 class OptDeviceFilterModel(FiltersModel):

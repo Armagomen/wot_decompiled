@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/resources_loading_view.py
 import logging
 from adisp import adisp_process
 from frameworks.wulf import ViewSettings, WindowFlags, ViewStatus
@@ -48,7 +46,9 @@ class ResourcesLoadingView(ViewImpl):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.resource_well.lobby.feature.tooltips.ProgressTooltip():
             return ProgressTooltip(progress=self.viewModel.getProgression(), diff=event.getArgument('progressDiff'))
-        return MaxProgressTooltip(currentValue=event.getArgument('currentValue'), maxValue=event.getArgument('maxValue'), resourceType=event.getArgument('type')) if contentID == R.views.resource_well.lobby.feature.tooltips.MaxProgressTooltip() else super(ResourcesLoadingView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.resource_well.lobby.feature.tooltips.MaxProgressTooltip():
+            return MaxProgressTooltip(currentValue=event.getArgument('currentValue'), maxValue=event.getArgument('maxValue'), resourceType=event.getArgument('type'))
+        return super(ResourcesLoadingView, self).createToolTipContent(event, contentID)
 
     @createBackportTooltipDecorator()
     def createToolTip(self, event):
@@ -56,7 +56,10 @@ class ResourcesLoadingView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips[int(tooltipId)]
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips[int(tooltipId)]
 
     def _onLoading(self, *args, **kwargs):
         super(ResourcesLoadingView, self)._onLoading(*args, **kwargs)
@@ -77,25 +80,38 @@ class ResourcesLoadingView(ViewImpl):
         return
 
     def _getCallbacks(self):
-        return (('stats.gold', self.__updateCurrencies),
-         ('stats.credits', self.__updateCurrencies),
-         ('stats.crystal', self.__updateCurrencies),
-         ('stats.freeXP', self.__updateCurrencies),
-         ('blueprints', self.__updateBlueprints))
+        return (
+         (
+          'stats.gold', self.__updateCurrencies),
+         (
+          'stats.credits', self.__updateCurrencies),
+         (
+          'stats.crystal', self.__updateCurrencies),
+         (
+          'stats.freeXP', self.__updateCurrencies),
+         (
+          'blueprints', self.__updateBlueprints))
 
     def _getEvents(self):
-        return ((self.viewModel.loadResources, self.__loadResources),
-         (self.viewModel.showHangar, self.__showHangar),
-         (self.viewModel.close, self.__close),
-         (self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated),
-         (self.__resourceWell.onEventUpdated, self.__onEventStateUpdated),
-         (self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
+        return (
+         (
+          self.viewModel.loadResources, self.__loadResources),
+         (
+          self.viewModel.showHangar, self.__showHangar),
+         (
+          self.viewModel.close, self.__close),
+         (
+          self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventStateUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
 
     def __isDestroyed(self):
         return self.viewStatus in (ViewStatus.DESTROYED, ViewStatus.DESTROYING) or self.viewModel is None
 
     def __updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillProgression(model=model)
             self.__fillTabs(model=model)
             fillVehicleInfo(model.vehicleInfo, self.__resourceWell.getRewardVehicle(self.__rewardID))
@@ -156,7 +172,7 @@ class ResourcesLoadingView(ViewImpl):
         self.__updateResourceModels(ResourceType.BLUEPRINTS.value)
 
     def __updateResourceModels(self, resourceType):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             tabModel = findFirst(lambda tab: tab.getType() == resourceType, model.getResourcesTabs())
             for resourceModel in tabModel.getResources():
                 resources = self.__resources[resourceType]
@@ -202,10 +218,10 @@ class ResourcesLoadingView(ViewImpl):
         if not result.success and result.userMsg == UNAVAILABLE_REWARD_ERROR:
             self.__showNoRewardsConfirm()
             return
-        elif result.success and result.auxData is not None and result.auxData.get('isRewardObtained', False):
-            self.destroyWindow()
-            return
         else:
+            if result.success and result.auxData is not None and result.auxData.get('isRewardObtained', False):
+                self.destroyWindow()
+                return
             self.__updateLoadingError(isError=not result.success and not responseCtx.get('isUserCancelAction', False))
             if nextRewardID is not None:
                 self.__rewardID = nextRewardID
@@ -228,7 +244,7 @@ class ResourcesLoadingView(ViewImpl):
         self.destroyWindow()
 
     def __onNumberRequesterUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillProgression(model=model)
             self.__fillTabs(model=model)
             fillVehicleCounter(self.__rewardID, vehicleCounterModel=model.vehicleCounter, resourceWell=self.__resourceWell)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/root_view_model.py
 from server_side_replay.gui.impl.gen.view_models.views.lobby.enums import ReplaysViews
 from frameworks.wulf import ViewModel
 from server_side_replay.gui.impl.gen.view_models.views.lobby.pages.best_replays_model import BestReplaysModel
@@ -8,7 +6,7 @@ from server_side_replay.gui.impl.gen.view_models.views.lobby.pages.my_replays_mo
 from server_side_replay.gui.impl.gen.view_models.views.lobby.sidebar_model import SidebarModel
 
 class RootViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=5, commands=1):
         super(RootViewModel, self).__init__(properties=properties, commands=commands)

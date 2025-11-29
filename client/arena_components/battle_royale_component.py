@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/arena_components/battle_royale_component.py
 from arena_component_system.client_arena_component_system import ClientArenaComponent
 import Event
 from debug_utils import LOG_DEBUG_DEV

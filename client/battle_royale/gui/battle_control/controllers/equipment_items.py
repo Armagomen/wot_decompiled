@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/equipment_items.py
 import importlib
 from collections import namedtuple
 import BigWorld
@@ -34,16 +32,21 @@ class _RepairBattleRoyaleCrewAndModules(_RepairCrewAndModules):
     def _canActivate(self, entityName=None, avatar=None):
         vehicle = BigWorld.entities.get(avatar_getter.getPlayerVehicleID())
         isAlive = avatar_getter.isVehicleAlive()
-        return (True, None) if vehicle and isAlive and self.__hasDebuffComponentsForStop(vehicle) else super(_RepairBattleRoyaleCrewAndModules, self)._canActivate(entityName, avatar)
+        if vehicle and isAlive and self.__hasDebuffComponentsForStop(vehicle):
+            return (True, None)
+        else:
+            return super(_RepairBattleRoyaleCrewAndModules, self)._canActivate(entityName, avatar)
 
     def __hasDebuffComponentsForStop(self, vehicle):
-        return bool([ True for comp in vehicle.dynamicComponents.values() if hasattr(comp, 'canBeStoppedRepairKit') and comp.canBeStoppedRepairKit ])
+        return bool([ True for comp in vehicle.dynamicComponents.values() if hasattr(comp, 'canBeStoppedRepairKit') and comp.canBeStoppedRepairKit
+                    ])
 
 
 class _RegenerationKitBattleRoyaleItem(_EquipmentItem):
 
     def canActivate(self, entityName=None, avatar=None):
-        if self._timeRemaining <= 0 < self._quantity and self._stage in (EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.PREPARING):
+        if self._timeRemaining <= 0 < self._quantity and self._stage in (
+         EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.PREPARING):
             result = True
             error = None
         else:
@@ -55,25 +58,33 @@ class _RegenerationKitBattleRoyaleItem(_EquipmentItem):
             return (result, error)
         else:
             vehicle = BigWorld.entities.get(avatar.playerVehicleID)
-            return (False, _ActivationError('vehicleIsNotDamaged', {'name': self._descriptor.userString})) if not vehicle or vehicle.health >= vehicle.maxHealth else (True, None)
+            if not vehicle or vehicle.health >= vehicle.maxHealth:
+                return (False, _ActivationError('vehicleIsNotDamaged', {'name': self._descriptor.userString}))
+            return (
+             True, None)
 
     def getActivationCode(self, entityName=None, avatar=None):
         return self._descriptor.id[1]
 
     def getAnimationType(self):
-        return ANIMATION_TYPES.MOVE_GREEN_BAR_DOWN | ANIMATION_TYPES.SHOW_COUNTER_ORANGE | ANIMATION_TYPES.DARK_COLOR_TRANSFORM if self._stage == EQUIPMENT_STAGES.ACTIVE else super(_RegenerationKitBattleRoyaleItem, self).getAnimationType()
+        if self._stage == EQUIPMENT_STAGES.ACTIVE:
+            return ANIMATION_TYPES.MOVE_GREEN_BAR_DOWN | ANIMATION_TYPES.SHOW_COUNTER_ORANGE | ANIMATION_TYPES.DARK_COLOR_TRANSFORM
+        return super(_RegenerationKitBattleRoyaleItem, self).getAnimationType()
 
 
 class _ArcadeMineFieldBattleRoyaleItem(_ArcadeMineFieldItem, _BomberStrikeSelector):
 
     def _getErrorMsg(self):
-        return InCooldownError(self._descriptor.userString) if self._quantity else None
+        if self._quantity:
+            return InCooldownError(self._descriptor.userString)
+        else:
+            return
 
 
 class _FireCircle(_TriggerItem):
 
     def getTags(self):
-        pass
+        return ('fireCircle', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
@@ -93,20 +104,23 @@ class _CorrodingShotIndicator(object):
 
 
 class _CorrodingShot(_TriggerItem):
-    __slots__ = ('__crosshairIndicator',)
+    __slots__ = ('__crosshairIndicator', )
 
     def __init__(self, descriptor, quantity, stage, timeRemaining, totalTime, tags):
         self.__crosshairIndicator = _CorrodingShotIndicator()
         super(_CorrodingShot, self).__init__(descriptor, quantity, stage, timeRemaining, totalTime, tags)
 
     def getTags(self):
-        pass
+        return ('corrodingShot', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
 
     def canActivate(self, entityName=None, avatar=None):
-        return (False, None) if self._stage == EQUIPMENT_STAGES.PREPARING else super(_CorrodingShot, self).canActivate(entityName, avatar)
+        if self._stage == EQUIPMENT_STAGES.PREPARING:
+            return (False, None)
+        else:
+            return super(_CorrodingShot, self).canActivate(entityName, avatar)
 
     def canDeactivate(self):
         return False
@@ -124,7 +138,10 @@ class _BotSpawner(_ArtilleryItem, _BomberStrikeSelector):
         return MapCaseMode.ArcadeMapCaseControlMode
 
     def _getErrorMsg(self):
-        return InCooldownError(self._descriptor.userString) if self._quantity else None
+        if self._quantity:
+            return InCooldownError(self._descriptor.userString)
+        else:
+            return
 
     def getStrikeSelector(self):
 
@@ -145,7 +162,10 @@ class _ThunderStrike(_ArtilleryItem, _BomberStrikeSelector):
         return MapCaseMode.ArcadeMapCaseControlMode
 
     def _getErrorMsg(self):
-        return InCooldownError(self._descriptor.userString) if self._quantity else None
+        if self._quantity:
+            return InCooldownError(self._descriptor.userString)
+        else:
+            return
 
     def getStrikeSelector(self):
 
@@ -166,7 +186,7 @@ class _AdaptationHealthRestore(_TriggerItem):
         super(_AdaptationHealthRestore, self).__init__(descriptor, quantity, stage, timeRemaining, totalTime, tags)
 
     def getTags(self):
-        pass
+        return ('adaptationHealthRestore', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
@@ -185,7 +205,7 @@ class _AdaptationHealthRestore(_TriggerItem):
 class _ShotPassion(_BuffItem):
 
     def getTags(self):
-        pass
+        return ('shotPassion', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
@@ -222,7 +242,7 @@ class _BRReplayThunderStrike(_ReplayArtilleryItem, _BomberStrikeSelector):
 class _GameplayConsumableItem(_TriggerItem):
 
     def getTags(self):
-        pass
+        return ('trappoint', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
@@ -231,14 +251,14 @@ class _GameplayConsumableItem(_TriggerItem):
 class _RepairPointItem(_TriggerItem):
 
     def getTags(self):
-        pass
+        return ('repairpoint', )
 
     def getEntitiesIterator(self, avatar=None):
         return []
 
 
 class _BRReplayCorrodingShot(_ReplayItem):
-    __slots__ = ('__crosshairIndicator',)
+    __slots__ = ('__crosshairIndicator', )
 
     def __init__(self, descriptor, quantity, stage, timeRemaining, totalTime, tags=None):
         self.__crosshairIndicator = _CorrodingShotIndicator()

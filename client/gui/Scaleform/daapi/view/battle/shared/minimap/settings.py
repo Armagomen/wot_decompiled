@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/settings.py
 from enum import Enum
 from account_helpers.settings_core.options import MinimapVehModelsSetting, MinimapHPSettings
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from shared_utils import BitmaskHelper
-MINIMAP_COMPONENT_PATH = '_level0.root.{}.main.minimap.entriesContainer'.format(LAYER_NAMES.VIEWS)
+MINIMAP_COMPONENT_PATH = ('_level0.root.{}.main.minimap.entriesContainer').format(LAYER_NAMES.VIEWS)
 MINIMAP_MIN_SIZE_INDEX = 0
 MINIMAP_MAX_SIZE_INDEX = 5
 MINIMAP_WAS_SPOTTED_RESET_DELAY = 5.0
@@ -75,7 +73,7 @@ class ENTRY_SYMBOL_NAME(object):
 
 
 class TRANSFORM_FLAG(object):
-    FULL = 4294967295L
+    FULL = 4294967295
     NO_POSITION = 1
     NO_ROTATION = 2
     NO_SCALE = 4
@@ -114,13 +112,13 @@ class VIEW_RANGE_CIRCLES_AS3_DESCR(object):
     AS_REMOVE_ALL_CIRCLES = 'as_removeAllCircles'
 
 
-EQ_MARKER_TO_SYMBOL = {'artillery': ENTRY_SYMBOL_NAME.ARTILLERY_ENTRY,
- 'artillery_yellow': ENTRY_SYMBOL_NAME.ARTILLERY_YELLOW_ENTRY,
- 'artillery_fort_ally': ENTRY_SYMBOL_NAME.AOE_ARTILLERY_ENTRY,
- 'artillery_fort_enemy': ENTRY_SYMBOL_NAME.AOE_ARTILLERY_ENTRY,
- 'bomber': ENTRY_SYMBOL_NAME.BOMBER_ENTRY,
- 'recon': ENTRY_SYMBOL_NAME.RECON_ENTRY,
- 'smoke': ENTRY_SYMBOL_NAME.SMOKE_ENTRY}
+EQ_MARKER_TO_SYMBOL = {'artillery': ENTRY_SYMBOL_NAME.ARTILLERY_ENTRY, 
+   'artillery_yellow': ENTRY_SYMBOL_NAME.ARTILLERY_YELLOW_ENTRY, 
+   'artillery_fort_ally': ENTRY_SYMBOL_NAME.AOE_ARTILLERY_ENTRY, 
+   'artillery_fort_enemy': ENTRY_SYMBOL_NAME.AOE_ARTILLERY_ENTRY, 
+   'bomber': ENTRY_SYMBOL_NAME.BOMBER_ENTRY, 
+   'recon': ENTRY_SYMBOL_NAME.RECON_ENTRY, 
+   'smoke': ENTRY_SYMBOL_NAME.SMOKE_ENTRY}
 
 class SettingsTypes(Enum):
     MinimapVehicles = 0

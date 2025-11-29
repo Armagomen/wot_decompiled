@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/personal_file_view.py
-import typing
-import BigWorld
+import typing, BigWorld
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.impl import backport
 from gui.impl.gen import R
@@ -46,7 +43,9 @@ class PersonalFileView(ContainerBase, IPersonalTab, ViewImpl):
             self.interactionCtrl.onChangeTankman(tankmanID)
 
     def _getEvents(self):
-        return ((g_playerEvents.onDisconnected, self.__onDisconnected),)
+        return (
+         (
+          g_playerEvents.onDisconnected, self.__onDisconnected),)
 
     def onStopAnimations(self):
         if hasattr(self, 'interactionCtrl'):
@@ -68,7 +67,10 @@ class PersonalFileView(ContainerBase, IPersonalTab, ViewImpl):
         super(PersonalFileView, self).refresh()
 
     def _getComponents(self):
-        return [TankmanInfoComponent(key='tankman_info', parent=self), SkillMatrixComponent(key='skill_matrix', parent=self), PostProgressionWidgetComponent(key='post_progression', parent=self)]
+        return [
+         TankmanInfoComponent(key='tankman_info', parent=self),
+         SkillMatrixComponent(key='skill_matrix', parent=self),
+         PostProgressionWidgetComponent(key='post_progression', parent=self)]
 
     def _getContext(self, *args, **kwargs):
         return PersonalFileViewContext(kwargs.get('tankmanID'))

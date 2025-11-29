@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/listeners.py
 from logging import getLogger
 import weakref
 from collector_vehicle import CollectorVehicleConsts
@@ -52,8 +50,8 @@ class _BlueprintsListener(_Listener):
 
     def startListen(self, page):
         super(_BlueprintsListener, self).startListen(page)
-        g_clientUpdateManager.addCallbacks({_BLUEPRINT_DIFF_KEY: self._onBlueprintsUpdate,
-         _BLUEPRINT_SETTINGS_KEY: self.__onBlueprintsModeChanged})
+        g_clientUpdateManager.addCallbacks({_BLUEPRINT_DIFF_KEY: self._onBlueprintsUpdate, 
+           _BLUEPRINT_SETTINGS_KEY: self.__onBlueprintsModeChanged})
 
     def stopListen(self):
         g_clientUpdateManager.removeObjectCallbacks(self)
@@ -73,12 +71,12 @@ class _StatsListener(_Listener):
     def startListen(self, page):
         super(_StatsListener, self).startListen(page)
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChanged
-        g_clientUpdateManager.addCallbacks({_CREDITS_DIFF_KEY: self._onCreditsUpdate,
-         _GOLD_DIFF_KEY: self._onGoldUpdate,
-         _FREE_XP_DIFF_KEY: self._onFreeXPUpdate,
-         _UNLOCKS_DIFF_KEY: self._onUnlocksUpdate,
-         _VEH_XP_DIFF_KEY: self._onVehiclesXPUpdate,
-         _ELITE_DIFF_KEY: self._onEliteVehiclesUpdate})
+        g_clientUpdateManager.addCallbacks({_CREDITS_DIFF_KEY: self._onCreditsUpdate, 
+           _GOLD_DIFF_KEY: self._onGoldUpdate, 
+           _FREE_XP_DIFF_KEY: self._onFreeXPUpdate, 
+           _UNLOCKS_DIFF_KEY: self._onUnlocksUpdate, 
+           _VEH_XP_DIFF_KEY: self._onVehiclesXPUpdate, 
+           _ELITE_DIFF_KEY: self._onEliteVehiclesUpdate})
 
     def stopListen(self):
         self.__lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingsChanged
@@ -98,7 +96,7 @@ class _StatsListener(_Listener):
         self._page.invalidateElites(elites)
 
     def _onVehiclesXPUpdate(self, xps):
-        newXPs = {key:(value if value else 0) for key, value in xps.iteritems()}
+        newXPs = {key:value if value else 0 for key, value in xps.iteritems()}
         self._page.invalidateVTypeXP(newXPs)
 
     def _onUnlocksUpdate(self, unlocks):
@@ -122,9 +120,9 @@ class _ItemsCacheListener(_Listener):
 
     def startListen(self, page):
         super(_ItemsCacheListener, self).startListen(page)
-        g_clientUpdateManager.addCallbacks({_INVENTORY_DIFF_KEY: self.__onInventoryUpdate,
-         _CACHE_DIFF_KEY: self.__onCacheUpdate,
-         _GOODIES_DIFF_KEY: self.__onGoodiesUpdate})
+        g_clientUpdateManager.addCallbacks({_INVENTORY_DIFF_KEY: self.__onInventoryUpdate, 
+           _CACHE_DIFF_KEY: self.__onCacheUpdate, 
+           _GOODIES_DIFF_KEY: self.__onGoodiesUpdate})
         g_playerEvents.onCenterIsLongDisconnected += self.__center_onIsLongDisconnected
         self.__itemsCache.onSyncCompleted += self.__items_onSyncCompleted
         self.__comparisonBasket.onChange += self.__onVehCompareBasketChanged
@@ -255,7 +253,8 @@ class _PrbGlobalListener(_Listener, IGlobalListener):
 
 
 class TTListenerDecorator(_Listener):
-    __slots__ = ('_stats', '_items', '_wallet', '_prbListener', '_rent', '_restore', '_blueprints')
+    __slots__ = ('_stats', '_items', '_wallet', '_prbListener', '_rent', '_restore',
+                 '_blueprints')
 
     def __init__(self):
         super(TTListenerDecorator, self).__init__()

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gui_decorators.py
-import functools
-import inspect
-import logging
+import functools, inspect, logging
 from frameworks.wulf import View, ViewStatus
 from helpers.uniprof import regions
 _REGION_FORMAT = 'view.{}.{}'
@@ -16,7 +12,8 @@ def args2params(*types):
         def _wrapper(*args):
             signature = inspect.getargspec(func).args
             if 'self' in signature:
-                args, kwargs = (args[0],), args[1]
+                args, kwargs = (
+                 args[0],), args[1]
                 signature.remove('self')
             else:
                 args, kwargs = tuple(), args[0]
@@ -48,7 +45,7 @@ class ViewLifeCycleToRegions(object):
 
     def __call__(self, clazz):
         if View not in inspect.getmro(clazz):
-            raise UserWarning('The following argument {} is not subclass of View'.format(clazz))
+            raise UserWarning(('The following argument {} is not subclass of View').format(clazz))
 
         def swap(func):
 

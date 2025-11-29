@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/prestige_system/prestige_milestones_common.py
 from typing import Optional, Dict, Set, Any, Union
 from copy import copy
 from constants import IS_CLIENT
@@ -9,10 +7,10 @@ VehCDType = int
 PrestigeLevelType = int
 InvoiceStatusType = int
 ErrorStrType = str
-MilestoneData = Dict[str, Any]
-MilestonesType = Dict[PrestigeLevelType, MilestoneData]
-MilestonesCacheType = Dict[VehCDType, Dict[PrestigeLevelType, MilestonesType]]
-OverrideItem = Dict[str, Union[MilestonesType, Set[VehCDType], bool]]
+MilestoneData = Dict[(str, Any)]
+MilestonesType = Dict[(PrestigeLevelType, MilestoneData)]
+MilestonesCacheType = Dict[(VehCDType, Dict[(PrestigeLevelType, MilestonesType)])]
+OverrideItem = Dict[(str, Union[(MilestonesType, Set[VehCDType], bool)])]
 
 class PrestigeMilestonesConfig(object):
 
@@ -71,7 +69,7 @@ def applyOverrideMilestones(vehicleMilestones, override):
             for prestigeLevel, milestone_data in override['milestones'].items():
                 vehicleMilestones[vehicleCD][prestigeLevel] = milestone_data
 
-        if vehicleCD in vehicleMilestones:
+        elif vehicleCD in vehicleMilestones:
             vehicleMilestones.pop(vehicleCD)
 
 

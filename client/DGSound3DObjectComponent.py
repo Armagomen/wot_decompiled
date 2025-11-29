@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DGSound3DObjectComponent.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 
 class DGSound3DObjectComponent(DynamicScriptComponent):

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/marker_items.py
-import Math
-import copy
-import ResMgr
+import Math, copy, ResMgr
 from extension_utils import importClass
 from gui.Scaleform.daapi.view.battle.shared.component_marker.markers_components import ComponentBitMask as FLAG, COMPONENT_MARKER_TYPE_NAMES
 from gui.Scaleform.daapi.view.battle.shared.component_marker.markers import MarkerBase
@@ -36,8 +32,7 @@ class MarkerParamsFactory(object):
         mp.a = matrix
         mp.b = Math.Matrix()
         mp.b.translation = offset
-        params.update({'matrixProduct': mp,
-         'bitMask': bitMask})
+        params.update({'matrixProduct': mp, 'bitMask': bitMask})
         return params
 
     @classmethod
@@ -51,11 +46,11 @@ class MarkerParamsFactory(object):
 
     @classmethod
     def _readParams(cls, section):
-        config = {'visible': section.readBool('visible', True),
-         'areaRadius': section.readFloat('areaRadius', 0.0),
-         'disappearingRadius': section.readFloat('disappearingRadius', 0.0),
-         'reverseDisappearing': section.readBool('reverseDisappearing', False),
-         'offset': section.readVector3('offset', (0, 0, 0))}
+        config = {'visible': section.readBool('visible', True), 
+           'areaRadius': section.readFloat('areaRadius', 0.0), 
+           'disappearingRadius': section.readFloat('disappearingRadius', 0.0), 
+           'reverseDisappearing': section.readBool('reverseDisappearing', False), 
+           'offset': section.readVector3('offset', (0, 0, 0))}
         config = cls._readComponents(config, section['components'])
         return config
 

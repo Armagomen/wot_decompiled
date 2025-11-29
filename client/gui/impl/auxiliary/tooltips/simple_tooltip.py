@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/tooltips/simple_tooltip.py
 import typing
 from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
 from gui.impl.gen import R

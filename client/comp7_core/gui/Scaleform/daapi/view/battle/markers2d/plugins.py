@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/markers2d/plugins.py
-import BigWorld
-import settings
+import BigWorld, settings
 from account_helpers.settings_core.settings_constants import MARKERS
 from comp7_core.gui.battle_control.arena_info.arena_vos import Comp7CoreKeys
 from constants import ROLE_TYPE_TO_LABEL, ROLE_TYPE, INVALID_TIMESTAMP, ARENA_PERIOD
@@ -10,33 +7,45 @@ from gui.Scaleform.daapi.view.battle.shared.markers2d.vehicle_plugins import Veh
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 from gui.battle_control import avatar_getter
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
-_COMP7_STATUS_EFFECTS_PRIORITY = (BATTLE_MARKER_STATES.STUN_STATE, BATTLE_MARKER_STATES.COMP7_AOE_HEAL_STATE, BATTLE_MARKER_STATES.COMP7_AOE_INSPIRE_STATE)
+_COMP7_STATUS_EFFECTS_PRIORITY = (
+ BATTLE_MARKER_STATES.STUN_STATE,
+ BATTLE_MARKER_STATES.COMP7_AOE_HEAL_STATE,
+ BATTLE_MARKER_STATES.COMP7_AOE_INSPIRE_STATE)
 
 class Comp7SettingsPlugin(SettingsPlugin):
-    __BEFORE_BATTLE_OVERRIDES = {MARKERS.ALLY: (('markerAltIcon', False),
-                    ('markerAltLevel', False),
-                    ('markerAltHpIndicator', False),
-                    ('markerAltDamage', False),
+    __BEFORE_BATTLE_OVERRIDES = {MARKERS.ALLY: (
+                    (
+                     'markerAltIcon', False),
+                    (
+                     'markerAltLevel', False),
+                    (
+                     'markerAltHpIndicator', False),
+                    (
+                     'markerAltDamage', False),
                     ('markerAltHp', 3),
-                    ('markerAltVehicleName', True),
-                    ('markerAltPlayerName', True),
-                    ('markerAltAimMarker2D', False),
-                    ('markerBaseIcon', False),
-                    ('markerBaseLevel', False),
-                    ('markerBaseHpIndicator', False),
-                    ('markerBaseDamage', False),
+                    (
+                     'markerAltVehicleName', True),
+                    (
+                     'markerAltPlayerName', True),
+                    (
+                     'markerAltAimMarker2D', False),
+                    (
+                     'markerBaseIcon', False),
+                    (
+                     'markerBaseLevel', False),
+                    (
+                     'markerBaseHpIndicator', False),
+                    (
+                     'markerBaseDamage', False),
                     ('markerBaseHp', 3),
-                    ('markerBaseVehicleName', True),
-                    ('markerBasePlayerName', True),
-                    ('markerBaseAimMarker2D', False))}
-    __ADDITIONAL_SETTINGS = {name:(('markerAltRoleName', True),
-     ('markerAltRoleSkillLevel', True),
-     ('markerBaseRoleName', False),
-     ('markerBaseRoleSkillLevel', False)) for name in MARKERS.ALL()}
-    __ADDITIONAL_SETTINGS_BEFORE_BATTLE = {name:(('markerAltRoleName', True),
-     ('markerAltRoleSkillLevel', False),
-     ('markerBaseRoleName', True),
-     ('markerBaseRoleSkillLevel', False)) for name in MARKERS.ALL()}
+                    (
+                     'markerBaseVehicleName', True),
+                    (
+                     'markerBasePlayerName', True),
+                    (
+                     'markerBaseAimMarker2D', False))}
+    __ADDITIONAL_SETTINGS = {name:(('markerAltRoleName', True), ('markerAltRoleSkillLevel', True), ('markerBaseRoleName', False), ('markerBaseRoleSkillLevel', False)) for name in MARKERS.ALL()}
+    __ADDITIONAL_SETTINGS_BEFORE_BATTLE = {name:(('markerAltRoleName', True), ('markerAltRoleSkillLevel', False), ('markerBaseRoleName', True), ('markerBaseRoleSkillLevel', False)) for name in MARKERS.ALL()}
 
     def __init__(self, parentObj):
         super(Comp7SettingsPlugin, self).__init__(parentObj)
@@ -114,48 +123,48 @@ class Comp7VehicleMarkerPlugin(VehicleMarkerPlugin):
         arenaDP = self.sessionProvider.getArenaDP()
         if arenaDP is None or vehicleID not in self._markers:
             return
-        else:
-            marker = self._markers[vehicleID]
-            vInfo = arenaDP.getVehicleInfo(vehicleID)
-            handle = marker.getMarkerID()
-            if eventID == FEEDBACK_EVENT_ID.VEHICLE_AOE_HEAL:
-                self.__updateAoeHealMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_AOE_INSPIRE:
-                self.__updateAoeInspireMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RISKY_ATTACK_BUFF:
-                self.__updateRiskyAttackBuffMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RISKY_ATTACK_HEAL:
-                self.__updateRiskyAttackHealMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_BERSERK:
-                self.__updateBerserkMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_ALLY_SUPPORT:
-                self.__updateAllySupportMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_HUNTER:
-                self.__updateHunterMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_FAST_RECHARGE:
-                self.__updateFastRechargeMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_JUGGERNAUT:
-                self.__updateJuggernautMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_SURE_SHOT:
-                self.__updateSureShotMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_CONCENTRATION:
-                self.__updateConcentrationMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_SNIPER:
-                self.__updateSniperMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_MARCH:
-                self.__updateMarchMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_AGGRESSIVE_DETECTION:
-                self.__updateAggressiveDetectionMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_POINT_RECON:
-                self.__updatePointReconMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RED_LINE:
-                self.__updateRedLineMarker(vehicleID, handle, value)
-            elif eventID == FEEDBACK_EVENT_ID.VEHICLE_DEAD:
-                self.__setRoleSkillLevel(marker, vInfo)
-            return
+        marker = self._markers[vehicleID]
+        vInfo = arenaDP.getVehicleInfo(vehicleID)
+        handle = marker.getMarkerID()
+        if eventID == FEEDBACK_EVENT_ID.VEHICLE_AOE_HEAL:
+            self.__updateAoeHealMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_AOE_INSPIRE:
+            self.__updateAoeInspireMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RISKY_ATTACK_BUFF:
+            self.__updateRiskyAttackBuffMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RISKY_ATTACK_HEAL:
+            self.__updateRiskyAttackHealMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_BERSERK:
+            self.__updateBerserkMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_ALLY_SUPPORT:
+            self.__updateAllySupportMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_HUNTER:
+            self.__updateHunterMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_FAST_RECHARGE:
+            self.__updateFastRechargeMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_JUGGERNAUT:
+            self.__updateJuggernautMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_SURE_SHOT:
+            self.__updateSureShotMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_CONCENTRATION:
+            self.__updateConcentrationMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_SNIPER:
+            self.__updateSniperMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_MARCH:
+            self.__updateMarchMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_AGGRESSIVE_DETECTION:
+            self.__updateAggressiveDetectionMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_POINT_RECON:
+            self.__updatePointReconMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_RED_LINE:
+            self.__updateRedLineMarker(vehicleID, handle, value)
+        elif eventID == FEEDBACK_EVENT_ID.VEHICLE_DEAD:
+            self.__setRoleSkillLevel(marker, vInfo)
+        return
 
     def _getMarkerStatusPriority(self, markerState):
-        aoeMarker = markerState.statusID in (BATTLE_MARKER_STATES.COMP7_AOE_INSPIRE_STATE, BATTLE_MARKER_STATES.COMP7_AOE_HEAL_STATE)
+        aoeMarker = markerState.statusID in (
+         BATTLE_MARKER_STATES.COMP7_AOE_INSPIRE_STATE, BATTLE_MARKER_STATES.COMP7_AOE_HEAL_STATE)
         if aoeMarker and markerState.isSourceVehicle:
             return -2
         try:
@@ -252,13 +261,12 @@ class Comp7VehicleMarkerPlugin(VehicleMarkerPlugin):
         vehicle = BigWorld.entities.get(vehicleID)
         if vehicle is None or not vehicle.isAlive():
             return
-        else:
-            show = not state.get('finishing', False)
-            isSourceVehicle = state.get('isSourceVehicle', False)
-            endTime = state.get('endTime', INVALID_TIMESTAMP)
-            duration = max(endTime - BigWorld.serverTime(), 0) if show and endTime != INVALID_TIMESTAMP else 0
-            self._updateMarkerTimer(vehicleID, handle=handle, duration=duration, statusID=stateID, showCountdown=showCountdown, isSourceVehicle=isSourceVehicle)
-            return
+        show = not state.get('finishing', False)
+        isSourceVehicle = state.get('isSourceVehicle', False)
+        endTime = state.get('endTime', INVALID_TIMESTAMP)
+        duration = max(endTime - BigWorld.serverTime(), 0) if show and endTime != INVALID_TIMESTAMP else 0
+        self._updateMarkerTimer(vehicleID, handle=handle, duration=duration, statusID=stateID, showCountdown=showCountdown, isSourceVehicle=isSourceVehicle)
+        return
 
     def __onTeammateSelectionStatuses(self, statuses):
         for vehicleID, status in statuses.iteritems():

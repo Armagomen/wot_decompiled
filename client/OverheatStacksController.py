@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/OverheatStacksController.py
-import BigWorld
-import typing
+import BigWorld, typing
 from constants import OVERHEAT_GAIN_STATE as STATE
 from items.components.shared_components import OverheatStacksParams
 from math_utils import clamp
@@ -10,19 +7,15 @@ from vehicles.mechanics.mechanic_states import createMechanicStatesEvents, IMech
 if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import MechanicStatesEvents
 
-class OverheatStacksState(typing.NamedTuple('OverheatStacksState', (('level', int),
- ('gainState', STATE),
- ('startTime', int),
- ('endTime', int),
- ('delayTimerElapsed', float),
- ('stackTimeElapsed', float),
- ('delayTimerDuration', float),
- ('stackDuration', float),
- ('dmgLevelBonus', float),
- ('speedThreshold', float),
- ('maxLevel', int),
- ('heatingTime', float),
- ('coolingTime', float))), IMechanicState):
+class OverheatStacksState(typing.NamedTuple('OverheatStacksState', (
+ (
+  'level', int), ('gainState', STATE), ('startTime', int), ('endTime', int),
+ (
+  'delayTimerElapsed', float), ('stackTimeElapsed', float), ('delayTimerDuration', float),
+ (
+  'stackDuration', float), ('dmgLevelBonus', float), ('speedThreshold', float), ('maxLevel', int),
+ (
+  'heatingTime', float), ('coolingTime', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, curLevel, gainState, timeElapsed, delayTimerElapsed, timeNextGain, params):

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/collection/collections_helpers.py
-import typing
-import SoundGroups
-import nations
+import typing, SoundGroups, nations
 from CurrentVehicle import g_currentVehicle
 from collections_common import UNUSABLE_COLLECTION_ENTITIES, USABLE_COLLECTION_ENTITIES
 from gui.collection.collections_constants import COLLECTION_ITEM_RES_KEY_TEMPLATE, COLLECTION_RES_PREFIX
@@ -92,16 +88,14 @@ def getItemInfo(itemId, collectionId, collections=None):
     smallImageRes = R.images.gui.maps.icons.collectionItems.c_400x300.dyn(itemResKey)
     smallImage = backport.image(smallImageRes()) if smallImageRes.exists() else ''
     itemType = getItemPreviewType(item)
-    return (name,
-     itemType,
-     description,
-     largeImage,
-     mediumImage,
-     smallImage)
+    return (
+     name, itemType, description, largeImage, mediumImage, smallImage)
 
 
 def getImagePath(imageResource):
-    return backport.image(imageResource()) if imageResource.exists() else ''
+    if imageResource.exists():
+        return backport.image(imageResource())
+    return ''
 
 
 def getItemResKey(collectionId, item):
@@ -116,7 +110,9 @@ def getCollectionRes(collectionId, collectionsSystem=None):
 
 @replace_none_kwargs(collectionsSystem=ICollectionsSystemController)
 def getItemName(collectionId, item, collectionsSystem=None):
-    return getUnusableItemName(collectionId, item, collectionsSystem=collectionsSystem) if item.type in UNUSABLE_COLLECTION_ENTITIES else getUsableItemName(item)
+    if item.type in UNUSABLE_COLLECTION_ENTITIES:
+        return getUnusableItemName(collectionId, item, collectionsSystem=collectionsSystem)
+    return getUsableItemName(item)
 
 
 def getUsableItemName(item):
@@ -124,7 +120,9 @@ def getUsableItemName(item):
         return getCustomizationName(item.relatedId)
     if item.type == 'dossier':
         return getDossierName(item.relatedId)
-    return getTankmanFullName(item.relatedId) if item.type == 'tankman' else ''
+    if item.type == 'tankman':
+        return getTankmanFullName(item.relatedId)
+    return ''
 
 
 @replace_none_kwargs(collectionsSystem=ICollectionsSystemController)
@@ -153,7 +151,7 @@ def getTankmanFullName(groupName):
             firstNameId, lastNameId = first(group.firstNamesList), first(group.lastNamesList)
             nationConfig = getNationConfig(nationId)
             firstName, lastName = nationConfig.getFirstName(firstNameId), nationConfig.getLastName(lastNameId)
-            return '{} {}'.format(firstName, lastName)
+            return ('{} {}').format(firstName, lastName)
 
     return ''
 
@@ -182,7 +180,10 @@ def getCustomizationPreviewType(itemCD, itemsCache=None):
 def getVehicleForStyleItem(item, itemsCache=None, collectionsSystem=None):
     customizationItem = itemsCache.items.getItemByCD(item.relatedId)
     vehicleCD = getSingleVehicleForCustomization(customizationItem)
-    return itemsCache.items.getItemByCD(vehicleCD) if vehicleCD is not None else None
+    if vehicleCD is not None:
+        return itemsCache.items.getItemByCD(vehicleCD)
+    else:
+        return
 
 
 def composeBonuses(bonuses):

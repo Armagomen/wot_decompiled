@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/team/statistics_packer.py
 from copy import deepcopy
 import typing
 from gui.battle_results.presenters.packers.team.stats_params_settings import REGULAR_PARAMETERS
@@ -15,21 +13,12 @@ if typing.TYPE_CHECKING:
 
 class Statistics(IStatisticsPacker):
     __ALL_PARAMETERS = {}
-    _STATS_PARAMETERS = (RegularParamType.SHOTS,
-     RegularParamType.DAMAGEDEALT,
-     RegularParamType.DIRECTHITSRECEIVED,
-     RegularParamType.EXPLOSIONHITSRECEIVED,
-     RegularParamType.DAMAGEBLOCKEDBYARMOR,
-     RegularParamType.TEAMHITSDAMAGE,
-     RegularParamType.SPOTTED,
-     RegularParamType.DAMAGEDKILLED,
-     RegularParamType.DAMAGEASSISTED,
-     RegularParamType.DAMAGEASSISTEDSELF,
-     RegularParamType.STUNDURATION,
-     RegularParamType.DAMAGEASSISTEDSTUN,
-     RegularParamType.DAMAGEASSISTEDSTUNSELF,
-     RegularParamType.STUNNUM,
-     RegularParamType.CAPTUREPOINTSVAL,
+    _STATS_PARAMETERS = (
+     RegularParamType.SHOTS, RegularParamType.DAMAGEDEALT, RegularParamType.DIRECTHITSRECEIVED,
+     RegularParamType.EXPLOSIONHITSRECEIVED, RegularParamType.DAMAGEBLOCKEDBYARMOR, RegularParamType.TEAMHITSDAMAGE,
+     RegularParamType.SPOTTED, RegularParamType.DAMAGEDKILLED, RegularParamType.DAMAGEASSISTED,
+     RegularParamType.DAMAGEASSISTEDSELF, RegularParamType.STUNDURATION, RegularParamType.DAMAGEASSISTEDSTUN,
+     RegularParamType.DAMAGEASSISTEDSTUNSELF, RegularParamType.STUNNUM, RegularParamType.CAPTUREPOINTSVAL,
      RegularParamType.MILEAGE)
 
     @classmethod
@@ -38,9 +27,9 @@ class Statistics(IStatisticsPacker):
         for paramType in cls._STATS_PARAMETERS:
             paramSettings = cls._getAllParameters().get(paramType)
             if paramSettings is None:
-                raise SoftException('Missing parameter settings for parameter {}'.format(paramType.value))
+                raise SoftException(('Missing parameter settings for parameter {}').format(paramType.value))
             conditionCheckers = paramSettings.conditions
-            if conditionCheckers and not all((func(info, battleResults) for func in conditionCheckers)):
+            if conditionCheckers and not all(func(info, battleResults) for func in conditionCheckers):
                 continue
             paramModel = DetailedStatsParameterModel()
             cls.__packParameter(paramModel, paramSettings, info, battleResults)
@@ -69,7 +58,7 @@ class Statistics(IStatisticsPacker):
         for detailedParamType in details:
             paramSettings = cls._getAllParameters().get(detailedParamType)
             if paramSettings is None:
-                raise SoftException('Missing parameter settings for parameter {}'.format(detailedParamType.value))
+                raise SoftException(('Missing parameter settings for parameter {}').format(detailedParamType.value))
             paramModel = SimpleStatsParameterModel()
             cls.__packParameter(paramModel, paramSettings, info, battleResults)
             detailsModel.addViewModel(paramModel)

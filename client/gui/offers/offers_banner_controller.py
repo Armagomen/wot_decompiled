@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/offers/offers_banner_controller.py
-import logging
-import weakref
+import logging, weakref
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey

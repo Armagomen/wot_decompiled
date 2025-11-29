@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/package_layout.py
-import importlib
-import logging
+import importlib, logging
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework import g_entitiesFactories, GroupedViewSettings
 from gui.Scaleform.framework.managers import context_menu
@@ -51,7 +48,7 @@ class PackageBusinessHandler(object):
         self._app.loadView(SFViewLoadParams(alias, name=name, parent=parent), *args, **kwargs)
 
     def loadViewWithGenName(self, alias, parent=None, *args, **kwargs):
-        self._app.loadView(SFViewLoadParams(alias, name='rw{0}'.format(self.__counter.next()), parent=parent), *args, **kwargs)
+        self._app.loadView(SFViewLoadParams(alias, name=('rw{0}').format(self.__counter.next()), parent=parent), *args, **kwargs)
 
     def loadViewBySharedEvent(self, event):
         self._app.loadView(event.loadParams)
@@ -64,11 +61,17 @@ class PackageBusinessHandler(object):
 
     def findViewByAlias(self, layer, alias):
         container = self.__getContainer(layer)
-        return None if not container else container.getView(criteria={POP_UP_CRITERIA.VIEW_ALIAS: alias})
+        if not container:
+            return None
+        else:
+            return container.getView(criteria={POP_UP_CRITERIA.VIEW_ALIAS: alias})
 
     def findViewByName(self, layer, name):
         container = self.__getContainer(layer)
-        return None if not container else container.getView(criteria={POP_UP_CRITERIA.UNIQUE_NAME: name})
+        if not container:
+            return None
+        else:
+            return container.getView(criteria={POP_UP_CRITERIA.UNIQUE_NAME: name})
 
     def bringViewToFront(self, name):
         manager = self._app.containerManager if self._app else None
@@ -85,7 +88,9 @@ class PackageBusinessHandler(object):
             return None
         else:
             manager = self._app.containerManager
-            return None if not manager else manager.getContainer(layer)
+            if not manager:
+                return None
+            return manager.getContainer(layer)
 
     def __loadViewHandler(self, event):
         alias = event.alias
@@ -162,7 +167,7 @@ class PackageImporter(object):
                 settings = self._getHandlesWithoutExtensionOverride(settings, arenaGuiType)
         except AttributeError:
             _logger.exception('Package "%s" can not be loaded', path)
-            raise SoftException('Package {0} does not have method getViewSettings'.format(path))
+            raise SoftException(('Package {0} does not have method getViewSettings').format(path))
 
         aliases = g_entitiesFactories.initSettings(settings)
         self._aliases[path] = aliases
@@ -172,7 +177,7 @@ class PackageImporter(object):
                 handlers = self._getHandlesWithoutExtensionOverride(handlers, arenaGuiType)
         except AttributeError:
             _logger.exception('Package "%s" can not be loaded', path)
-            raise SoftException('Package {0} does not have method getContextMenuHandlers'.format(path))
+            raise SoftException(('Package {0} does not have method getContextMenuHandlers').format(path))
 
         contextMenuTypes = context_menu.registerHandlers(*handlers)
         self._contextMenuTypes[path] = contextMenuTypes
@@ -186,7 +191,7 @@ class PackageImporter(object):
             handlers = imported.getBusinessHandlers()
         except AttributeError:
             _logger.exception('Package "%s" can not be loaded', path)
-            raise SoftException('Package {0} does not have method getBusinessHandlers'.format(path))
+            raise SoftException(('Package {0} does not have method getBusinessHandlers').format(path))
 
         processed = set()
         for handler in handlers:
@@ -194,7 +199,7 @@ class PackageImporter(object):
                 for h in processed:
                     h.fini()
 
-                raise SoftException('Package {0} has invalid business handler {1}'.format(path, handler.__class__.__name__))
+                raise SoftException(('Package {0} has invalid business handler {1}').format(path, handler.__class__.__name__))
             handler.init()
             processed.add(handler)
 

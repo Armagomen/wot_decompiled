@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/service_events.py
 from PlayerEvents import g_playerEvents
 from gui.shared import g_eventBus, events
 

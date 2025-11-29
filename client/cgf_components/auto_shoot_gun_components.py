@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/auto_shoot_gun_components.py
-import typing
-import CGF
+import typing, CGF
 from constants import IS_CLIENT
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
 from Vehicular import GunEffectsController

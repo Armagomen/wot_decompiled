@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/lock.py
 import weakref
 from Event import Event
 from soft_exception import SoftException
@@ -163,7 +161,7 @@ def synchronized(lockID):
 
         def wrapper(*args, **kwargs):
             rv = None
-            with Lock(lockID) as lock:
+            with Lock(lockID) as (lock):
                 if lock.tryLock():
                     rv = func(*args, **kwargs)
             return rv

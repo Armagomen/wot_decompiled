@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/common/base_personal_case_controller.py
 import typing
 from Event import Event
 from gui.impl.dialogs.dialogs import showRetrainSingleDialog
@@ -18,7 +16,11 @@ class BasePersonalCaseController(InteractionController):
         return BasePersonalCaseComponentViewEvents()
 
     def _getEvents(self):
-        return [(self.eventsProvider.onChangeVehicleClick, self._onChangeVehicleClick), (self.eventsProvider.onRetrainClick, self._onRetrainClick)]
+        return [
+         (
+          self.eventsProvider.onChangeVehicleClick, self._onChangeVehicleClick),
+         (
+          self.eventsProvider.onRetrainClick, self._onRetrainClick)]
 
     def _onChangeVehicleClick(self, tankmanInvID):
         event_dispatcher.showTankChange(tankmanInvID=tankmanInvID, previousViewID=self.view.getParentView().currentTabId)

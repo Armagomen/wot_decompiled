@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/points_of_interest/components.py
-import enum
-import typing
-import BigWorld
-import CGF
+import enum, typing, BigWorld, CGF
 if typing.TYPE_CHECKING:
     from points_of_interest_shared import PoiType
     from helpers.fixed_dict import StatusWithTimeInterval
@@ -65,7 +60,7 @@ class PoiStateComponent(object):
 
 
 class PoiStateUIListenerComponent(object):
-    __slots__ = ('listener',)
+    __slots__ = ('listener', )
 
     def __init__(self, listener):
         self.listener = listener
@@ -83,7 +78,7 @@ class PoiCaptureBlockerStateComponent(object):
 
 
 class PoiVehicleStateComponent(object):
-    __slots__ = ('id',)
+    __slots__ = ('id', )
 
     def __init__(self, poiID):
         self.id = poiID

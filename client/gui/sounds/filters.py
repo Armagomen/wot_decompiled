@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/filters.py
 import WWISE
 from gui.sounds.sound_constants import SoundFilters
 from shared_utils import CONST_CONTAINER
@@ -83,7 +81,7 @@ class _SoundFilterAbstract(object):
 class EmptySoundFilter(_SoundFilterAbstract):
 
     def __repr__(self):
-        pass
+        return 'EmptyFilter'
 
 
 class _WWISEStateAmbient(_SoundFilterAbstract):
@@ -138,7 +136,7 @@ class WWISEHangarTasksFilter(_WWISEStateAmbient):
         _WWISEStateAmbient.__init__(self, StatesGroup.HANGAR_PLACE_TASKS)
 
     def _getStopState(self):
-        pass
+        return ''
 
 
 class WWISEHangarTasksBPFilter(WWISEHangarTasksFilter):
@@ -190,21 +188,25 @@ def getEmptyFilter():
 
 
 def get(filterID):
-    return _filters[filterID] if filterID in _filters else EmptySoundFilter()
+    if filterID in _filters:
+        return _filters[filterID]
+    return EmptySoundFilter()
 
 
 def _selectFilter(wwise):
-    return wwise if WWISE.enabled else EmptySoundFilter()
+    if WWISE.enabled:
+        return wwise
+    return EmptySoundFilter()
 
 
-_filters = {SoundFilters.FILTERED_HANGAR: _selectFilter(WWISEFilteredHangarFilter()),
- SoundFilters.BATTLE_PASS_FILTER: _selectFilter(WWISEBattlePassFilter()),
- SoundFilters.HANGAR_OVERLAY: _selectFilter(WWISEHangarOverlayFilter()),
- SoundFilters.HANGAR_PLACE_TASKS_DAILY: _selectFilter(WWISEHangarTasksDailyFilter()),
- SoundFilters.HANGAR_PLACE_TASKS_MISSIONS: _selectFilter(WWISEHangarTasksMissionsFilter()),
- SoundFilters.HANGAR_PLACE_TASKS_BATTLE_PASS: _selectFilter(WWISEHangarTasksBPFilter()),
- SoundFilters.HANGAR_PLACE_TASKS_EVENTS: _selectFilter(WWISEEventPageFilter()),
- SoundFilters.HANGAR_PLACE_TASKS_BATTLE_MATTERS: _selectFilter(WWISEBattleMattersFilter())}
+_filters = {SoundFilters.FILTERED_HANGAR: _selectFilter(WWISEFilteredHangarFilter()), 
+   SoundFilters.BATTLE_PASS_FILTER: _selectFilter(WWISEBattlePassFilter()), 
+   SoundFilters.HANGAR_OVERLAY: _selectFilter(WWISEHangarOverlayFilter()), 
+   SoundFilters.HANGAR_PLACE_TASKS_DAILY: _selectFilter(WWISEHangarTasksDailyFilter()), 
+   SoundFilters.HANGAR_PLACE_TASKS_MISSIONS: _selectFilter(WWISEHangarTasksMissionsFilter()), 
+   SoundFilters.HANGAR_PLACE_TASKS_BATTLE_PASS: _selectFilter(WWISEHangarTasksBPFilter()), 
+   SoundFilters.HANGAR_PLACE_TASKS_EVENTS: _selectFilter(WWISEEventPageFilter()), 
+   SoundFilters.HANGAR_PLACE_TASKS_BATTLE_MATTERS: _selectFilter(WWISEBattleMattersFilter())}
 
 def _setState(stateGroup, stateName):
     WWISE.WW_setState(stateGroup, stateName)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/popovers/filter_popover_vehicle_model.py
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 
 class FilterPopoverVehicleModel(VehicleModel):

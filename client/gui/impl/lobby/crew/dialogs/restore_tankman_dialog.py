@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/restore_tankman_dialog.py
 import BigWorld
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui import SystemMessages
@@ -75,7 +73,7 @@ class RestoreTankmanDialog(BaseCrewDialogTemplateView):
         super(RestoreTankmanDialog, self)._finalize()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):
@@ -113,7 +111,8 @@ class RestoreTankmanDialog(BaseCrewDialogTemplateView):
             if requiredRole != self._tankman.role:
                 dialogs.showRetrainSingleDialog(self._tankman.invID, self._vehicle.intCD, targetSlotIdx=self._vehicleSlotIdx, beforeActions=doActions)
                 return
-            doActions.append((factory.EQUIP_TANKMAN,
+            doActions.append((
+             factory.EQUIP_TANKMAN,
              self._tankman.invID,
              self._vehicle.invID,
              self._vehicleSlotIdx))

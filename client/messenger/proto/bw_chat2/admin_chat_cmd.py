@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw_chat2/admin_chat_cmd.py
 import types
 from debug_utils import LOG_WARNING
 from external_strings_utils import isAccountNameValid, normalizedAccountName
@@ -37,7 +35,7 @@ class _ParsingResult(object):
 
 
 class _ParsingError(_ParsingResult):
-    __slots__ = ('id', 'i18nKey')
+    __slots__ = ('i18nKey', )
 
     def __init__(self, errorID, args=None, i18nKey=None):
         super(_ParsingError, self).__init__(args)
@@ -63,7 +61,7 @@ class _ArgsParser(object):
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return None
+        return
 
     def parse_args(self, argsLine):
         args = argsLine.split(None, self.nargs - 1)
@@ -111,11 +109,11 @@ class _UserBanUnBanArgsParser(_ArgsParser):
 
 
 _MAX_BAN_TIME = 5256000
-_TIME_LETTER_TO_MULTIPLIER = {'h': 60,
- 'd': 1440,
- 'w': 10080,
- 'm': 43200,
- 'y': 525600}
+_TIME_LETTER_TO_MULTIPLIER = {'h': 60, 
+   'd': 1440, 
+   'w': 10080, 
+   'm': 43200, 
+   'y': 525600}
 
 class _UserBanArgsParser(_UserBanUnBanArgsParser):
 
@@ -134,11 +132,11 @@ class _UserBanArgsParser(_UserBanUnBanArgsParser):
                     amount = long(banPeriod)
                 else:
                     amountStr = banPeriod[:-1]
-                    litter = banPeriod[-1]
+                    litter = banPeriod[(-1)]
                     if amountStr.isdigit():
                         amount = long(amountStr)
-                if amount is None:
-                    return _ParsingError(_ERRORS.WRONG_ARGS, {'int64Arg1': banPeriod}, I18N_MESSENGER.CLIENT_ERROR_COMMAND_WRONG_BAN_PERIOD)
+                    if amount is None:
+                        return _ParsingError(_ERRORS.WRONG_ARGS, {'int64Arg1': banPeriod}, I18N_MESSENGER.CLIENT_ERROR_COMMAND_WRONG_BAN_PERIOD)
                 if litter is not None:
                     if litter in _TIME_LETTER_TO_MULTIPLIER:
                         multiplier = _TIME_LETTER_TO_MULTIPLIER[litter]
@@ -161,8 +159,8 @@ class _UserUnBanArgsParser(_UserBanUnBanArgsParser):
         super(_UserUnBanArgsParser, self).__init__(2)
 
 
-_AVAILABLE_PARSERS = {'USERBAN': _UserBanArgsParser,
- 'USERUNBAN': _UserUnBanArgsParser}
+_AVAILABLE_PARSERS = {'USERBAN': _UserBanArgsParser, 
+   'USERUNBAN': _UserUnBanArgsParser}
 
 def getCommandFromLine(text):
     cmdName, argsLine = ('', '')
@@ -174,7 +172,8 @@ def getCommandFromLine(text):
                 cmdName, argsLine = ('', '')
         if cmdLine:
             argsLine = cmdLine.pop(0)
-    return (cmdName, argsLine)
+    return (
+     cmdName, argsLine)
 
 
 def parseCommandLine(text):
@@ -192,7 +191,7 @@ def parseCommandLine(text):
 
 
 class _AdminChatCommandDecorator(_ChatCommand):
-    __slots__ = ('_actionID',)
+    __slots__ = ('_actionID', )
 
     def __init__(self, actionID, protoData, clientID=0):
         super(_AdminChatCommandDecorator, self).__init__(protoData, clientID)

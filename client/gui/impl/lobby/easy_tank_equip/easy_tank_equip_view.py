@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/easy_tank_equip_view.py
 from BWUtil import AsyncReturn
-import logging
-import weakref
+import logging, weakref
 from collections import OrderedDict
 from typing import TYPE_CHECKING, NamedTuple, Type
 import BigWorld
@@ -59,15 +56,25 @@ if TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from typing import List, Optional
 _logger = logging.getLogger(__name__)
-PROVIDERS_PRIORITIES_MAP = OrderedDict(((ProposalType.CREW, CrewDataProvider),
- (ProposalType.SHELLS, ShellsDataProvider),
- (ProposalType.CONSUMABLES, ConsumablesDataProvider),
- (ProposalType.OPT_DEVICES, OptDevicesDataProvider),
- (ProposalType.STYLES, StylesDataProvider)))
-GUI_ITEM_TYPE_TO_PROPOSAL_MAP = {GUI_ITEM_TYPE.EQUIPMENT: ProposalType.CONSUMABLES,
- GUI_ITEM_TYPE.SHELL: ProposalType.SHELLS,
- GUI_ITEM_TYPE.OPTIONALDEVICE: ProposalType.OPT_DEVICES}
-CardInfo = NamedTuple('CardInfo', [('card', Type[BaseCard]), ('model', ProposalModel)])
+PROVIDERS_PRIORITIES_MAP = OrderedDict((
+ (
+  ProposalType.CREW, CrewDataProvider),
+ (
+  ProposalType.SHELLS, ShellsDataProvider),
+ (
+  ProposalType.CONSUMABLES, ConsumablesDataProvider),
+ (
+  ProposalType.OPT_DEVICES, OptDevicesDataProvider),
+ (
+  ProposalType.STYLES, StylesDataProvider)))
+GUI_ITEM_TYPE_TO_PROPOSAL_MAP = {GUI_ITEM_TYPE.EQUIPMENT: ProposalType.CONSUMABLES, 
+   GUI_ITEM_TYPE.SHELL: ProposalType.SHELLS, 
+   GUI_ITEM_TYPE.OPTIONALDEVICE: ProposalType.OPT_DEVICES}
+CardInfo = NamedTuple('CardInfo', [
+ (
+  'card', Type[BaseCard]),
+ (
+  'model', ProposalModel)])
 
 class _EasyTankEquipCloseConfirmatorsHelper(CloseConfirmatorsHelper):
 
@@ -126,10 +133,7 @@ class EasyTankEquipView(ViewImpl):
                 slotId = event.getArgument('slotId')
                 if None not in [targetId, slotId]:
                     historicalBattleID = -1
-                    specialArgs = (targetId,
-                     slotId,
-                     historicalBattleID,
-                     self.copyVehicle)
+                    specialArgs = (targetId, slotId, historicalBattleID, self.copyVehicle)
                     return self.__createSpecialTooltip(tooltipId, specialArgs)
         return super(EasyTankEquipView, self).createToolTip(event)
 
@@ -157,29 +161,37 @@ class EasyTankEquipView(ViewImpl):
     def _finalize(self):
         self.__closeConfirmatorHelper.stop()
         self.__clear()
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False,
-         'setIdle': True,
-         'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False, 'setIdle': True, 'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
         super(EasyTankEquipView, self)._finalize()
 
     def _getEvents(self):
-        return super(EasyTankEquipView, self)._getEvents() + ((self.__easyTankEquipCtrl.onUpdated, self.__onSettingsChange),
-         (self.__itemsCache.onSyncCompleted, self.__onItemsCacheSyncCompleted),
-         (self.viewModel.onEnableBlur, self.__onEnableBlur),
-         (self.viewModel.onClose, self.__onClose),
-         (self.viewModel.onSelectProposal, self.__onSelectProposal),
-         (self.viewModel.onSwitchPreset, self.__onSwitchPreset),
-         (self.viewModel.onSwapSlots, self.__onSwapSlots),
-         (self.viewModel.dealPanel.onDealConfirmed, self.__onDealPanelConfirmed),
-         (self.viewModel.dealPanel.onDealCancelled, self.__onDealPanelCancelled))
+        return super(EasyTankEquipView, self)._getEvents() + (
+         (
+          self.__easyTankEquipCtrl.onUpdated, self.__onSettingsChange),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onItemsCacheSyncCompleted),
+         (
+          self.viewModel.onEnableBlur, self.__onEnableBlur),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onSelectProposal, self.__onSelectProposal),
+         (
+          self.viewModel.onSwitchPreset, self.__onSwitchPreset),
+         (
+          self.viewModel.onSwapSlots, self.__onSwapSlots),
+         (
+          self.viewModel.dealPanel.onDealConfirmed, self.__onDealPanelConfirmed),
+         (
+          self.viewModel.dealPanel.onDealCancelled, self.__onDealPanelCancelled))
 
     def _getCallbacks(self):
-        currencies = [Currency.CREDITS,
-         Currency.GOLD,
-         Currency.CRYSTAL,
-         Currency.EQUIP_COIN]
-        moneyCallbacks = tuple((('stats.{}'.format(c), self.__onMoneyUpdated) for c in currencies))
-        return super(EasyTankEquipView, self)._getCallbacks() + moneyCallbacks + (('inventory', self.__onInventoryUpdate),)
+        currencies = [
+         Currency.CREDITS, Currency.GOLD, Currency.CRYSTAL, Currency.EQUIP_COIN]
+        moneyCallbacks = tuple((('stats.{}').format(c), self.__onMoneyUpdated) for c in currencies)
+        return super(EasyTankEquipView, self)._getCallbacks() + moneyCallbacks + (
+         (
+          'inventory', self.__onInventoryUpdate),)
 
     def _setTTC(self):
         currentVehicle = g_currentVehicle.item
@@ -209,11 +221,11 @@ class EasyTankEquipView(ViewImpl):
             provider.updateBalance(balance)
 
     def __initializeCards(self):
-        cardsLoadingMap = {ProposalType.CREW: CardInfo(CrewCard, self.viewModel.crewProposal),
-         ProposalType.SHELLS: CardInfo(ShellsCard, self.viewModel.shellsProposal),
-         ProposalType.CONSUMABLES: CardInfo(ConsumablesCard, self.viewModel.consumablesProposal),
-         ProposalType.OPT_DEVICES: CardInfo(OptDevicesCard, self.viewModel.optDevicesProposal),
-         ProposalType.STYLES: CardInfo(StylesCard, self.viewModel.styleProposal)}
+        cardsLoadingMap = {ProposalType.CREW: CardInfo(CrewCard, self.viewModel.crewProposal), 
+           ProposalType.SHELLS: CardInfo(ShellsCard, self.viewModel.shellsProposal), 
+           ProposalType.CONSUMABLES: CardInfo(ConsumablesCard, self.viewModel.consumablesProposal), 
+           ProposalType.OPT_DEVICES: CardInfo(OptDevicesCard, self.viewModel.optDevicesProposal), 
+           ProposalType.STYLES: CardInfo(StylesCard, self.viewModel.styleProposal)}
         for cardType, cardInfo in cardsLoadingMap.items():
             card = cardInfo.card(cardInfo.model, weakref.proxy(self), self.__providers[cardType])
             card.initialize()
@@ -256,9 +268,7 @@ class EasyTankEquipView(ViewImpl):
     def __onEnableBlur(self):
         if self.__blur is not None:
             self.__blur.enable()
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': True,
-         'setIdle': True,
-         'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': True, 'setIdle': True, 'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
         return
 
     def __onMoneyUpdated(self, _):
@@ -281,7 +291,8 @@ class EasyTankEquipView(ViewImpl):
         for provider in self.__providers.values():
             if provider.isProposalSelected:
                 provider.updateBalance((balanceRemains + provider.getPresetPrice()).toNonNegative())
-            notSelectedCards.append(provider)
+            else:
+                notSelectedCards.append(provider)
 
         for provider in notSelectedCards:
             provider.updateBalance(balanceRemains.toNonNegative())
@@ -417,20 +428,18 @@ class EasyTankEquipView(ViewImpl):
             for index, tankman in crew:
                 if tankman is None:
                     factory.doAction(factory.BUY_AND_EQUIP_TANKMAN, g_currentVehicle.item, index)
-                actions.append((factory.EQUIP_TANKMAN,
-                 tankman.invID,
-                 g_currentVehicle.item.invID,
-                 index))
+                else:
+                    actions.append((factory.EQUIP_TANKMAN, tankman.invID, g_currentVehicle.item.invID, index))
 
             if actions:
                 BigWorld.player().doActions(actions)
             return
 
     def __getPresetsDataForApplying(self):
-        applyingParamsMap = {ProposalType.SHELLS: 'shellsData',
-         ProposalType.CONSUMABLES: 'eqsData',
-         ProposalType.OPT_DEVICES: 'optDevicesData',
-         ProposalType.STYLES: 'styleData'}
+        applyingParamsMap = {ProposalType.SHELLS: 'shellsData', 
+           ProposalType.CONSUMABLES: 'eqsData', 
+           ProposalType.OPT_DEVICES: 'optDevicesData', 
+           ProposalType.STYLES: 'styleData'}
         applyingData = {}
         for proposalType, provider in self.__providers.items():
             applyingPresetData = provider.getPresetDataForApplying()

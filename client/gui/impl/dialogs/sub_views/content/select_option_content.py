@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/content/select_option_content.py
 import typing
 from Event import Event
 from frameworks.wulf import ViewSettings
@@ -123,7 +121,7 @@ class SelectOptionContent(ViewImpl):
 
 
 class MoneyOption(SelectOptionBasePresenter):
-    __slots__ = ('__price',)
+    __slots__ = ('__price', )
     _VIEW_MODEL = SelectMoneyViewModel
     _itemsCache = dependency.descriptor(IItemsCache)
 
@@ -164,14 +162,14 @@ class MoneyOption(SelectOptionBasePresenter):
         return self._itemsCache.items.stats.money.getShortage(self.__price.price)
 
     def _updateShortage(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             cost = vm.cost
             hasShortage = bool(self.shortage)
             cost.setIsEnough(not hasShortage)
             vm.setIsDisabled(hasShortage)
 
     def _updateMoney(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             cost = vm.cost
             currency = self.__price.getCurrency()
             cost.setType(CurrencyType(currency))
@@ -191,7 +189,7 @@ class MoneyOption(SelectOptionBasePresenter):
 
 
 class DemountKitOption(SelectOptionBasePresenter):
-    __slots__ = ('__demountKit',)
+    __slots__ = ('__demountKit', )
     _VIEW_MODEL = SelectDemountKitViewModel
     _itemsCache = dependency.descriptor(IItemsCache)
 
@@ -221,7 +219,7 @@ class DemountKitOption(SelectOptionBasePresenter):
         return
 
     def _goodiesChangeHandler(self, *_):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsDisabled(self.__demountKit.inventoryCount == 0)
             vm.setStorageCount(self.__demountKit.inventoryCount)
 

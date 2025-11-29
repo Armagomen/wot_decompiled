@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/fitting_item.py
 from collections import namedtuple
 import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -19,25 +17,30 @@ from items import vehicles, getTypeInfoByName
 from rent_common import SeasonRentDuration
 from telecom_rentals_common import TELECOM_RENTALS_RENT_KEY
 ICONS_MASK = '../maps/icons/%(type)s/%(subtype)s%(unicName)s.png'
-_RentalInfoProvider = namedtuple('RentalInfoProvider', ('rentExpiryTime', 'compensations', 'battlesLeft', 'winsLeft', 'seasonRent', 'isRented', 'isTelecomRent', 'anyExpires', 'isExternalRent'))
-SeasonRentInfo = namedtuple('SeasonRentInfo', ('seasonType', 'seasonID', 'duration', 'expiryTime'))
-_BIG_HIGHLIGHT_TYPES_MAP = {SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE_BIG,
- SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_BIG,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS_BIG,
- SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT_BIG,
- SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT: SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BIG,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC_BIG,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED_BIG,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG}
-SLOT_HIGHLIGHT_TO_ITEM_HIGHLIGHT_TYPES = {SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: ItemHighlightTypes.TROPHY,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: ItemHighlightTypes.TROPHY_BASIC,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: ItemHighlightTypes.TROPHY_UPGRADED,
- SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: ItemHighlightTypes.BATTLE_BOOSTER,
- SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: ItemHighlightTypes.BATTLE_BOOSTER_REPLACE,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS: ItemHighlightTypes.EQUIPMENT_PLUS,
- SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: ItemHighlightTypes.BUILT_IN_EQUIPMENT,
- SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: ItemHighlightTypes.MODERNIZED}
+_RentalInfoProvider = namedtuple('RentalInfoProvider', ('rentExpiryTime', 'compensations',
+                                                        'battlesLeft', 'winsLeft',
+                                                        'seasonRent', 'isRented',
+                                                        'isTelecomRent', 'anyExpires',
+                                                        'isExternalRent'))
+SeasonRentInfo = namedtuple('SeasonRentInfo', ('seasonType', 'seasonID', 'duration',
+                                               'expiryTime'))
+_BIG_HIGHLIGHT_TYPES_MAP = {SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE_BIG, 
+   SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_BIG, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS_BIG, 
+   SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT_BIG, 
+   SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT: SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BIG, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC_BIG, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED_BIG, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG}
+SLOT_HIGHLIGHT_TO_ITEM_HIGHLIGHT_TYPES = {SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY: ItemHighlightTypes.TROPHY, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC: ItemHighlightTypes.TROPHY_BASIC, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED: ItemHighlightTypes.TROPHY_UPGRADED, 
+   SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER: ItemHighlightTypes.BATTLE_BOOSTER, 
+   SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER_CREW_REPLACE: ItemHighlightTypes.BATTLE_BOOSTER_REPLACE, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS: ItemHighlightTypes.EQUIPMENT_PLUS, 
+   SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT: ItemHighlightTypes.BUILT_IN_EQUIPMENT, 
+   SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED: ItemHighlightTypes.MODERNIZED}
 
 def canBuyWithGoldExchange(price, money, exchangeRate):
     money = money.exchange(Currency.GOLD, Currency.CREDITS, exchangeRate, default=0, useDiscounts=True)
@@ -73,8 +76,8 @@ class RentalInfoProvider(_RentalInfoProvider):
                 cyclesIDs = [ cycleID for cycleID, duration in rents if duration == SeasonRentDuration.SEASON_CYCLE ]
                 cycles = [ currentSeason.getCycleInfo(cycleID) for cycleID in cyclesIDs if currentSeason.getCycleInfo(cycleID) ]
                 if cycles:
-                    return sorted(cycles, key=lambda c: c.ordinalNumber)[-1]
-        return None
+                    return sorted(cycles, key=lambda c: c.ordinalNumber)[(-1)]
+        return
 
     def getActiveSeasonRent(self):
         for seasonType, rentTypes in self.seasonRent.iteritems():
@@ -137,7 +140,8 @@ class RentalInfoProvider(_RentalInfoProvider):
                         lastFutureCycleInfo = self._getLastFutureCycleRentInfo()
                         if lastFutureCycleInfo and lastFutureCycleInfo.seasonID != curCycle.ID:
                             lastCycle = currentSeason.getCycleInfo(lastFutureCycleInfo.seasonID)
-                            return (curCycle, lastCycle)
+                            return (
+                             curCycle, lastCycle)
                         return (curCycle,)
             return
 
@@ -147,14 +151,15 @@ class RentalInfoProvider(_RentalInfoProvider):
             currentSeason = self.seasonsController.getCurrentSeason(seasonType)
             if currentSeason:
                 currentCycleID = currentSeason.getCycleID() or currentSeason.getLastActiveCycleID(now)
-                futureCycleRents = first(sorted([ item[0] for item in rentTypes if item[1] == SeasonRentDuration.SEASON_CYCLE and item[0] > currentCycleID ], reverse=True))
+                futureCycleRents = first(sorted([ item[0] for item in rentTypes if item[1] == SeasonRentDuration.SEASON_CYCLE and item[0] > currentCycleID
+                                                ], reverse=True))
                 if futureCycleRents:
                     lastFutureCycleRentID = futureCycleRents
                     cycleInfo = currentSeason.getCycleInfo(lastFutureCycleRentID)
                     if cycleInfo:
                         return SeasonRentInfo(seasonType, lastFutureCycleRentID, SeasonRentDuration.SEASON_CYCLE, cycleInfo.endDate)
 
-        return None
+        return
 
     def _getSeasonExpiryTime(self):
         activeSeasonRent = self.getActiveSeasonRent()
@@ -163,10 +168,13 @@ class RentalInfoProvider(_RentalInfoProvider):
             if lastFutureCycleRent:
                 return lastFutureCycleRent.expiryTime
             return activeSeasonRent.expiryTime
+        return 0
 
 
 class FittingItem(GUIItem):
-    __slots__ = ('_buyPrices', '_sellPrices', '_mayConsumeWalletResources', '_personalDiscountPrice', '_isHidden', '_inventoryCount', '_isUnlocked', '_isBoughtForAltPrice', '_rentInfo', '_restoreInfo', '_fullyConfigured', '_isInitiallyUnlocked', '_descriptor')
+    __slots__ = ('_buyPrices', '_sellPrices', '_mayConsumeWalletResources', '_isHidden',
+                 '_inventoryCount', '_isUnlocked', '_isBoughtForAltPrice', '_rentInfo',
+                 '_restoreInfo', '_fullyConfigured', '_isInitiallyUnlocked', '_descriptor')
 
     class TARGETS(object):
         CURRENT = 1
@@ -178,7 +186,6 @@ class FittingItem(GUIItem):
         self._isBoughtForAltPrice = isBoughtForAltPrice
         self._rentInfo = RentalInfoProvider(None, None, None, None, None, None)
         self._restoreInfo = None
-        self._personalDiscountPrice = None
         self._descriptor = self._getDescriptor()
         if proxy is not None and proxy.inventory.isSynced() and proxy.stats.isSynced() and proxy.shop.isSynced():
             self._mayConsumeWalletResources = proxy.stats.mayConsumeWalletResources
@@ -300,11 +307,11 @@ class FittingItem(GUIItem):
 
     @property
     def minRentPrice(self):
-        return None
+        return
 
     @property
     def rentLeftTime(self):
-        pass
+        return 0
 
     def isPreviewAllowed(self):
         return False
@@ -354,37 +361,39 @@ class FittingItem(GUIItem):
         return self.inventoryCount > 0
 
     def getShortInfo(self, vehicle=None, expanded=False):
-        return '' if not GUI_SETTINGS.technicalInfo else self._getShortInfo(vehicle, expanded)
+        if not GUI_SETTINGS.technicalInfo:
+            return ''
+        return self._getShortInfo(vehicle, expanded)
 
     def getParams(self, vehicle=None):
         return dict(params_helper.get(self, vehicle.descriptor if vehicle is not None else None))
 
     def getRentPackage(self, rentID=None):
-        return None
+        return
 
     def getGUIEmblemID(self):
-        pass
+        return 'notFound'
 
     @property
     def icon(self):
-        return ICONS_MASK % {'type': self.itemTypeName,
-         'subtype': '',
-         'unicName': self.name.replace(':', '-')}
+        return ICONS_MASK % {'type': self.itemTypeName, 
+           'subtype': '', 
+           'unicName': self.name.replace(':', '-')}
 
     def getExtraIconInfo(self, _=None):
-        return None
+        return
 
     @property
     def iconSmall(self):
-        return ICONS_MASK % {'type': self.itemTypeName,
-         'subtype': 'small/',
-         'unicName': self.name.replace(':', '-')}
+        return ICONS_MASK % {'type': self.itemTypeName, 
+           'subtype': 'small/', 
+           'unicName': self.name.replace(':', '-')}
 
     def getBonusIcon(self, size='small'):
         return self.icon
 
     def getShopIcon(self, size):
-        pass
+        return ''
 
     def getBuyPrice(self, preferred=True):
         if self.buyPrices.hasAltPrice():
@@ -429,13 +438,16 @@ class FittingItem(GUIItem):
         return vehicle.descriptor.mayInstallComponent(self.intCD, optDevicesLayouts=optDevicesLayouts)
 
     def mayRemove(self, vehicle):
-        return (True, '')
+        return (
+         True, '')
 
     def mayRent(self, money):
-        return (False, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
+        return (
+         False, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
 
     def mayRestore(self, money):
-        return (False, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
+        return (
+         False, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
 
     def mayRestoreWithExchange(self, money, exchangeRate):
         return False
@@ -448,7 +460,9 @@ class FittingItem(GUIItem):
             mayPurchase, reason = self.mayPurchase(money)
         if mayRent or mayPurchase:
             return (True, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
-        return (mayRent, rentReason) if self.isRentable and not mayRent else (mayPurchase, reason)
+        if self.isRentable and not mayRent:
+            return (mayRent, rentReason)
+        return (mayPurchase, reason)
 
     def mayPurchaseWithExchange(self, money, exchangeRate):
         canBuy, reason = self.mayPurchase(money)
@@ -465,7 +479,9 @@ class FittingItem(GUIItem):
         canRent, _ = self.mayRent(money)
         if canRent:
             return True
-        return True if self.isRestoreAvailable() and self.mayRestoreWithExchange(money, proxy.defaults.exchangeRate) else self.mayPurchaseWithExchange(money, proxy.exchangeRate)
+        if self.isRestoreAvailable() and self.mayRestoreWithExchange(money, proxy.defaults.exchangeRate):
+            return True
+        return self.mayPurchaseWithExchange(money, proxy.exchangeRate)
 
     def mayPurchase(self, money):
         buyPrice = self.getBuyPrice(preferred=True).price
@@ -476,15 +492,18 @@ class FittingItem(GUIItem):
                 altResult, altCode = self._mayPurchase(altPrice, money)
                 if altResult:
                     result, code = altResult, altCode
-        return (result, code)
+        return (
+         result, code)
 
     def getTarget(self, vehicle):
         if self.isInstalled(vehicle):
             return self.TARGETS.CURRENT
-        return self.TARGETS.IN_INVENTORY if self.isInInventory else self.TARGETS.OTHER
+        if self.isInInventory:
+            return self.TARGETS.IN_INVENTORY
+        return self.TARGETS.OTHER
 
     def getConflictedEquipments(self, vehicle):
-        pass
+        return ()
 
     def getInstalledVehicles(self, vehs):
         return set()
@@ -496,26 +515,29 @@ class FittingItem(GUIItem):
         return False
 
     def _mayPurchase(self, price, money):
-        if self.itemTypeID not in (GUI_ITEM_TYPE.EQUIPMENT,
-         GUI_ITEM_TYPE.OPTIONALDEVICE,
-         GUI_ITEM_TYPE.SHELL,
-         GUI_ITEM_TYPE.BATTLE_BOOSTER,
-         GUI_ITEM_TYPE.CREW_BOOKS) and not self.isUnlocked and not self.isCollectible:
+        if self.itemTypeID not in (
+         GUI_ITEM_TYPE.EQUIPMENT, GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.SHELL,
+         GUI_ITEM_TYPE.BATTLE_BOOSTER, GUI_ITEM_TYPE.CREW_BOOKS) and not self.isUnlocked and not self.isCollectible:
             return (False, GUI_ITEM_ECONOMY_CODE.UNLOCK_ERROR)
-        return (False, GUI_ITEM_ECONOMY_CODE.ITEM_IS_HIDDEN) if self.isHidden else self._isEnoughMoney(price, money)
+        if self.isHidden:
+            return (False, GUI_ITEM_ECONOMY_CODE.ITEM_IS_HIDDEN)
+        return self._isEnoughMoney(price, money)
 
     @classmethod
     def _isEnoughMoney(cls, price, money):
         if not price.isDefined():
-            return (False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
+            return (
+             False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
         shortage = money.getShortage(price)
         if shortage:
             currency = shortage.getCurrency(byWeight=True)
-            return (False, GUI_ITEM_ECONOMY_CODE.getCurrencyError(currency))
-        return (True, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
+            return (
+             False, GUI_ITEM_ECONOMY_CODE.getCurrencyError(currency))
+        return (
+         True, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
 
     def _sortByType(self, other):
-        pass
+        return 0
 
     def _getDescriptor(self):
         return vehicles.getItemByCompactDescr(self.intCD)
@@ -560,10 +582,11 @@ class FittingItem(GUIItem):
             return cmp(self.userName, other.userName)
 
     def __eq__(self, other):
-        return False if other is None else self.intCD == other.intCD
+        if other is None:
+            return False
+        else:
+            return self.intCD == other.intCD
 
     def __repr__(self):
-        return '%s<intCD:%d, type:%s, nation:%d>' % (self.__class__.__name__,
-         self.intCD,
-         self.itemTypeName,
-         self.nationID)
+        return '%s<intCD:%d, type:%s, nation:%d>' % (
+         self.__class__.__name__, self.intCD, self.itemTypeName, self.nationID)

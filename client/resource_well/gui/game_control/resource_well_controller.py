@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/game_control/resource_well_controller.py
-import logging
-import typing
+import logging, typing
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
 from gui.shared.utils.scheduled_notifications import SimpleNotifier
@@ -139,7 +136,10 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def getRewardStyleID(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
-        return None if not rewardConfig.isSerial else first(rewardConfig.bonus['vehicles'].values(), {}).get('customization', {}).get('styleId')
+        if not rewardConfig.isSerial:
+            return None
+        else:
+            return first(rewardConfig.bonus['vehicles'].values(), {}).get('customization', {}).get('styleId')
 
     def getRewardSequence(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
@@ -151,7 +151,9 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def isParentRewardAvailable(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
-        return False if not rewardConfig.availableAfter else self.isRewardAvailable(rewardConfig.availableAfter)
+        if not rewardConfig.availableAfter:
+            return False
+        return self.isRewardAvailable(rewardConfig.availableAfter)
 
     def isRewardAvailable(self, rewardID):
         vehicle = self.getRewardVehicle(rewardID)
@@ -200,15 +202,23 @@ class ResourceWellController(IResourceWellController, EventsHandler):
             requester.stop()
 
     def _getEvents(self):
-        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
+        return (
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
 
     def _getCallbacks(self):
-        return (('tokens', self.__onTokensUpdated), ('inventory.1.compDescr', self.__onInventoryUpdated))
+        return (
+         (
+          'tokens', self.__onTokensUpdated),
+         (
+          'inventory.1.compDescr', self.__onInventoryUpdated))
 
     def __getTimeLeft(self):
         if not self.isStarted():
             return max(0, self.config.startTime - time_utils.getServerUTCTime())
-        return max(0, self.config.finishTime - time_utils.getServerUTCTime()) if not self.isFinished() else 0
+        if not self.isFinished():
+            return max(0, self.config.finishTime - time_utils.getServerUTCTime())
+        return 0
 
     def __onEventStateChange(self):
         self.onEventUpdated()
@@ -234,12 +244,12 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         if remainingValuesCount > rewardLimit:
             _logger.error('Remaining values count cannot exceed reward limit!')
             return 0
-        elif remainingValuesCount < rewardLimit / 2.0:
-            return remainingValuesCount
-        elif givenValuesCount > rewardLimit:
-            _logger.error('Given values count cannot exceed reward limit!')
-            return 0
         else:
+            if remainingValuesCount < rewardLimit / 2.0:
+                return remainingValuesCount
+            if givenValuesCount > rewardLimit:
+                _logger.error('Given values count cannot exceed reward limit!')
+                return 0
             return rewardLimit - givenValuesCount
 
     @serverSettingsChangeListener(RESOURCE_WELL_GAME_PARAMS_KEY)
@@ -321,7 +331,9 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def __getInitialRemainingValues(self, rewardID):
         initialAmountsInCache = self.__syncData.getInitialNumberAmounts().get(self.getRewardSequence(rewardID))
-        return initialAmountsInCache if initialAmountsInCache == 0 else self.getRewardLimit(rewardID)
+        if initialAmountsInCache == 0:
+            return initialAmountsInCache
+        return self.getRewardLimit(rewardID)
 
     def __createConfig(self):
         return makeTupleByDict(ResourceWellConfig, self.__lobbyContext.getServerSettings().getSettings().get(RESOURCE_WELL_GAME_PARAMS_KEY, {}))

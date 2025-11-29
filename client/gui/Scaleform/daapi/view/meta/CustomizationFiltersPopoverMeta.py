@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CustomizationFiltersPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class CustomizationFiltersPopoverMeta(SmartPopOverView):
@@ -35,7 +33,9 @@ class CustomizationFiltersPopoverMeta(SmartPopOverView):
         self._printOverrideError('onRarityChange')
 
     def as_setDataS(self, data):
-        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(data)
 
     def as_enableDefBtnS(self, value):
-        return self.flashObject.as_enableDefBtn(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableDefBtn(value)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/utils.py
 import typing
 from abc import ABCMeta
 from gui.Scaleform.genConsts.MISSIONS_STATES import MISSIONS_STATES
@@ -32,7 +30,7 @@ class MissionItemPacker(object):
             condinionalModel = questModel.postBattleCondition if questModel.postBattleCondition.getItems() else questModel.bonusCondition
             items = condinionalModel.getItems()
             descriptions = [ item.getDescrData() for item in items ]
-            separator = ' {} '.format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
+            separator = (' {} ').format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
             if condinionalModel.getConditionType() == CONDITION_GROUP_AND:
                 result = separator.join(descriptions)
             else:
@@ -60,7 +58,9 @@ class MissionItemPacker(object):
 
 
 def getCountdown(missionItem):
-    return EventInfoModel.getDailyProgressResetTimeDelta() if missionItem.itemType == 'bonus' else 0
+    if missionItem.itemType == 'bonus':
+        return EventInfoModel.getDailyProgressResetTimeDelta()
+    return 0
 
 
 class DailyMissionItemPacker(MissionItemPacker):
@@ -68,7 +68,9 @@ class DailyMissionItemPacker(MissionItemPacker):
     def _getFirstConditionModelFromQuestModel(self, dailyQuestModel):
         postBattleModel = findFirstConditionModel(dailyQuestModel.postBattleCondition)
         bonusConditionModel = findFirstConditionModel(dailyQuestModel.bonusCondition)
-        return postBattleModel if postBattleModel else bonusConditionModel
+        if postBattleModel:
+            return postBattleModel
+        return bonusConditionModel
 
     def packSpecificMissionItem(self, model, data):
         pass

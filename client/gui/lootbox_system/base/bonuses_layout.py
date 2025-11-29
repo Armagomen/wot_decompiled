@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/bonuses_layout.py
-import copy
-import functools
-import logging
-import ResMgr
+import copy, functools, logging, ResMgr
 from gui.impl.gen.view_models.views.lobby.lootbox_system.bonus_model import BonusRarity
 from gui.lootbox_system.base.bonuses_layout_helpers import BonusesHelper
 from gui.lootbox_system.base.common import BonusesLayoutAttrs, DEFAULT_EVENT_NAME
@@ -87,13 +82,14 @@ def _parseSectionValues(storage, name, section):
     for sectionName, item in section.items():
         if sectionName == BonusesLayoutAttrs.PRIORITY:
             storage[name][sectionName] = item.asInt
-        if sectionName == BonusesLayoutAttrs.RARITY:
+        elif sectionName == BonusesLayoutAttrs.RARITY:
             storage[name][sectionName] = item.asString
-        if sectionName == BonusesLayoutAttrs.VISIBILITY:
+        elif sectionName == BonusesLayoutAttrs.VISIBILITY:
             storage[name][sectionName] = item.asBool
-        if sectionName == BonusesLayoutAttrs.OVERRIDE:
+        elif sectionName == BonusesLayoutAttrs.OVERRIDE:
             _parseOverride(storage[name], item)
-        _parseSectionValues(storage[name], sectionName, item)
+        else:
+            _parseSectionValues(storage[name], sectionName, item)
 
 
 def _parseOverride(storage, section):
@@ -102,11 +98,11 @@ def _parseOverride(storage, section):
     for name, item in section.items():
         if name == BonusesLayoutAttrs.PRIORITY:
             values[name] = item.asInt
-        if name == BonusesLayoutAttrs.RARITY:
+        elif name == BonusesLayoutAttrs.RARITY:
             values[name] = item.asString
-        if name == BonusesLayoutAttrs.VISIBILITY:
+        elif name == BonusesLayoutAttrs.VISIBILITY:
             values[name] = item.asBool
-        if name == BonusesLayoutAttrs.ID:
+        elif name == BonusesLayoutAttrs.ID:
             ids = item.asString
 
     names = ids.split(' ')
@@ -125,6 +121,7 @@ def _mergeDicts(destination, source):
                 continue
             if type(dstValue) is type(srcValue):
                 destination[key] = copy.deepcopy(srcValue)
-        destination[key] = copy.deepcopy(source[key])
+        else:
+            destination[key] = copy.deepcopy(source[key])
 
     return destination

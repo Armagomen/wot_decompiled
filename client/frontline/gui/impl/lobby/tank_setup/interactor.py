@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tank_setup/interactor.py
 from BWUtil import AsyncReturn
 from adisp import adisp_process
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -33,7 +31,7 @@ class ReservesAutoRenewal(BaseAutoRenewal):
 
 
 class FrontlineInteractor(BaseEquipmentInteractor):
-    __slots__ = ('_checkboxState',)
+    __slots__ = ('_checkboxState', )
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
 
     def __init__(self, vehItem):
@@ -77,7 +75,8 @@ class FrontlineInteractor(BaseEquipmentInteractor):
 
     def getPendingPurchaseSkillIds(self):
         epicSkills = self.__epicController.getEpicSkills()
-        return [ epicSkills[item.innationID].skillID for item in self.getChangedList() if not epicSkills[item.innationID].isActivated ]
+        return [ epicSkills[item.innationID].skillID for item in self.getChangedList() if not epicSkills[item.innationID].isActivated
+               ]
 
     @adisp_process
     def confirm(self, callback, skipDialog=True):
@@ -112,7 +111,9 @@ class FrontlineInteractor(BaseEquipmentInteractor):
         return
 
     def getChangedList(self):
-        return self.getCurrentLayout() or [] if self._checkboxState else super(FrontlineInteractor, self).getChangedList() or []
+        if self._checkboxState:
+            return self.getCurrentLayout() or []
+        return super(FrontlineInteractor, self).getChangedList() or []
 
     def _createAutoRenewal(self):
         return ReservesAutoRenewal(self.getItem())

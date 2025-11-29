@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/formatters/invites.py
 import logging
 from constants import PREBATTLE_TYPE_NAMES, PREBATTLE_TYPE, QUEUE_TYPE
 from constants import QUEUE_TYPE_NAMES
@@ -31,15 +29,17 @@ class _PrbInvitePart(CONST_CONTAINER):
     STATE = 'inviteState'
 
 
-_PRB_INVITE_PART_KEYS = {_PrbInvitePart.TITLE_CREATOR_NAME: ('name',),
- _PrbInvitePart.TITLE: ('title', 'sender'),
- _PrbInvitePart.WARNING: ('warning',),
- _PrbInvitePart.COMMENT: ('comment',),
- _PrbInvitePart.NOTE: ('note',),
- _PrbInvitePart.STATE: ('state',)}
+_PRB_INVITE_PART_KEYS = {_PrbInvitePart.TITLE_CREATOR_NAME: ('name', ), 
+   _PrbInvitePart.TITLE: ('title', 'sender'), 
+   _PrbInvitePart.WARNING: ('warning', ), 
+   _PrbInvitePart.COMMENT: ('comment', ), 
+   _PrbInvitePart.NOTE: ('note', ), 
+   _PrbInvitePart.STATE: ('state', )}
 
 def _formatInvite(inviteType, values, maySkipValue=False, **kwargs):
-    return makeHtmlString(path='html_templates:lobby/prebattle', key=inviteType, ctx={k:v for k, v in zip(_PRB_INVITE_PART_KEYS[inviteType], values)}, **kwargs) if all(values) or maySkipValue else ''
+    if all(values) or maySkipValue:
+        return makeHtmlString(path='html_templates:lobby/prebattle', key=inviteType, ctx={k:v for k, v in zip(_PRB_INVITE_PART_KEYS[inviteType], values)}, **kwargs)
+    return ''
 
 
 def getPrbName(prbType, lowercase=False):
@@ -89,7 +89,7 @@ def getAcceptNotAllowedText(prbType, peripheryID, isInviteActive=True, isAlready
                 text = backport.text(_R_INVITES.prebattle.acceptNotAllowed.otherPeriphery(), host=host)
             else:
                 text = backport.text(_R_INVITES.prebattle.acceptNotAllowed.undefinedPeriphery())
-            text = ' '.join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
+            text = (' ').join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
     return text
 
 
@@ -114,51 +114,51 @@ def getLeaveOrChangeText(funcState, invitePrbType, peripheryID, lobbyContext=Non
                 text = backport.text(_R_INVITES.note.change_and_leave.dyn(entityName)(), host=(lobbyContext.getPeripheryName(peripheryID) or ''), **kwargs)
             if isPermanentlyWinbackLeave:
                 if text:
-                    text = ''.join((text, '\n\n'))
+                    text = ('').join((text, '\n\n'))
                 permanentlyLeaveText = backport.text(_R_INVITES.note.change_and_leave_permanently.QUEUE_WINBACK(), host=lobbyContext.getPeripheryName(peripheryID) or '')
-                text = ''.join((text, permanentlyLeaveText))
-            text = ' '.join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
+                text = ('').join((text, permanentlyLeaveText))
+            text = (' ').join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
         else:
             if not isInWinback or not isPermanentlyWinbackLeave:
                 text = backport.text(_R_INVITES.note.leave.dyn(entityName)(), **kwargs)
             if isPermanentlyWinbackLeave:
                 if text:
-                    text = ''.join((text, '\n\n'))
-                text = ''.join((text, backport.text(_R_INVITES.note.leave_permanently.QUEUE_WINBACK())))
+                    text = ('').join((text, '\n\n'))
+                text = ('').join((text, backport.text(_R_INVITES.note.leave_permanently.QUEUE_WINBACK())))
     elif isAnotherPeriphery:
         text = backport.text(_R_INVITES.note.server_change(), host=lobbyContext.getPeripheryName(peripheryID) or '')
-        text = ' '.join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
+        text = (' ').join((text, backport.text(_R_INVITES.note.serverSelectionIsRemembered())))
     return text
 
 
 class InviteFormatter(object):
 
     def getCtx(self, invite):
-        return {'sender': invite.senderFullName,
-         'receiver': invite.receiverFullName}
+        return {'sender': invite.senderFullName, 
+           'receiver': invite.receiverFullName}
 
     def getNote(self, invite):
-        pass
+        return ''
 
     def getText(self, invite):
-        pass
+        return ''
 
 
 class PrbInviteHtmlTextFormatter(InviteFormatter):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     @prbInvitesProperty
     def prbInvites(self):
-        return None
+        return
 
     def canAcceptInvite(self, invite):
         return self.prbInvites.canAcceptInvite(invite)
 
     def getIconName(self, invite):
-        return '{0:>s}InviteIcon'.format(getPrbName(invite.type, True))
+        return ('{0:>s}InviteIcon').format(getPrbName(invite.type, True))
 
     def getIconPath(self, invite, pathMaker=None):
         return pathMaker(self.getIconName(invite))
@@ -205,7 +205,7 @@ class PrbInviteHtmlTextFormatter(InviteFormatter):
         text = self.getState(invite)
         if text:
             result.append(text)
-        return ''.join(result)
+        return ('').join(result)
 
     def updateTooltips(self, invite, canAccept, message):
         return message
@@ -232,11 +232,11 @@ class AutoInviteTextFormatter(InviteFormatter):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     @prbAutoInvitesProperty
     def prbAutoInvites(self):
-        return None
+        return
 
     def getNote(self, invite):
         note = ''
@@ -248,8 +248,8 @@ class AutoInviteTextFormatter(InviteFormatter):
         return note
 
     def getText(self, invite):
-        startTimeStr = u'{} {}'.format(backport.text(R.strings.prebattle.title.battleSession.startTime()), getPrebattleStartTimeString(invite.startTime))
-        return u'{}, {}'.format(getPrebattleFullDescription(invite.description), startTimeStr)
+        startTimeStr = ('{} {}').format(backport.text(R.strings.prebattle.title.battleSession.startTime()), getPrebattleStartTimeString(invite.startTime))
+        return ('{}, {}').format(getPrebattleFullDescription(invite.description), startTimeStr)
 
 
 class _PrbInviteInfo(object):
@@ -265,7 +265,7 @@ class PrbAutoInviteInfo(_PrbInviteInfo):
 
     @prbAutoInvitesProperty
     def prbAutoInvites(self):
-        return None
+        return
 
     def getID(self):
         return self.__prbID
@@ -277,14 +277,14 @@ class PrbAutoInviteInfo(_PrbInviteInfo):
         invite = self.prbAutoInvites.getInvite(self.__prbID)
         canAccept = self.prbAutoInvites.canAcceptInvite(invite)
         formatter = AutoInviteTextFormatter()
-        result = {'id': self.__prbID,
-         'text': formatter.getText(invite),
-         'comment': '',
-         'note': formatter.getNote(invite),
-         'canAccept': canAccept,
-         'canDecline': True,
-         'isAcceptVisible': True,
-         'isDeclineVisible': False}
+        result = {'id': self.__prbID, 
+           'text': formatter.getText(invite), 
+           'comment': '', 
+           'note': formatter.getNote(invite), 
+           'canAccept': canAccept, 
+           'canDecline': True, 
+           'isAcceptVisible': True, 
+           'isDeclineVisible': False}
         return result
 
 

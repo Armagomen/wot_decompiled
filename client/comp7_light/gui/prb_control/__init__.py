@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/prb_control/__init__.py
 
 
 def registerComp7LightOthersPrbParams():
@@ -14,7 +12,8 @@ def registerComp7LightOthersPrbParams():
     from gui.impl.gen.view_models.views.lobby.mode_selector.tooltips.mode_selector_tooltips_constants import ModeSelectorTooltipsConstants
     from gui.shared.system_factory import registerModeSelectorTooltips
     from comp7_light_constants import PREBATTLE_TYPE
-    registerModeSelectorTooltips([ModeSelectorTooltipsConstants.COMP7_LIGHT_CALENDAR_DAY_EXTENDED_INFO], {})
+    registerModeSelectorTooltips([
+     ModeSelectorTooltipsConstants.COMP7_LIGHT_CALENDAR_DAY_EXTENDED_INFO], {})
     registerPrbStorage(makeQueueName(QUEUE_TYPE.COMP7_LIGHT), Comp7LightStorage())
     _PRB_TO_QUEUE.update({PREBATTLE_TYPE.COMP7_LIGHT: QUEUE_TYPE.COMP7_LIGHT})
     _arenaBonusTypeByModeName.update({PREBATTLE_ACTION_NAME.COMP7_LIGHT: ARENA_BONUS_TYPE.COMP7_LIGHT})

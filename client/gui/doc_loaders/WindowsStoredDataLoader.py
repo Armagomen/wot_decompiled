@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/WindowsStoredDataLoader.py
-import base64
-import cPickle
-import Settings
+import base64, cPickle, Settings
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 
 class WindowsStoredDataLoader(object):
@@ -16,7 +12,8 @@ class WindowsStoredDataLoader(object):
     def load(self):
         if Settings.g_instance is None:
             LOG_ERROR('Settings is not defined, can not load data')
-            return (self.__defMask, [])
+            return (
+             self.__defMask, [])
         else:
             section = Settings.g_instance.userPrefs[Settings.KEY_WINDOWS_STORED_DATA]
             if section is None:
@@ -32,9 +29,9 @@ class WindowsStoredDataLoader(object):
                         return cPickle.loads(base64.b64decode(value))
                     except TypeError:
                         LOG_CURRENT_EXCEPTION()
-                        return None
+                        return
 
-                    return None
+                    return
 
                 if dataSec is not None:
                     for _, subSec in dataSec.items():
@@ -42,7 +39,8 @@ class WindowsStoredDataLoader(object):
                         if record:
                             records.append(record)
 
-            return (mask, records)
+            return (
+             mask, records)
 
     def flush(self, mask, records):
         if Settings.g_instance is None:

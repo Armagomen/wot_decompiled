@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/parental_control_feature.py
 from gui.impl.lobby.account_dashboard.features.base import FeatureItem
 from gui.impl.lobby.premacc.dashboard.parent_control_info_popover import ParentControlInfoPopoverContent
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/sound_blocks.py
-import logging
-import BigWorld
+import logging, BigWorld
 from visual_script import ASPECT
 from visual_script.block import Block, Meta
 from visual_script.dependency import dependencyImporter
@@ -14,15 +11,15 @@ class SoundMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 16776960
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Sound'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/sound'
 
     @classmethod
     def blockAspects(cls):
@@ -125,13 +122,8 @@ class PlayCombatMusic(Block, SoundMeta):
         self._play = self._makeEventInputSlot('play', self._doPlay)
         self._stop = self._makeEventInputSlot('stop', self._doMute)
         self._musicId = self._makeDataInputSlot('music', SLOT_TYPE.STR, EDITOR_TYPE.ENUM_SELECTOR)
-        self._musicId.setEditorData(['wwmusicLoading',
-         'wwmusicRelaxed',
-         'wwmusicIntensive',
-         'wwmusicStop',
-         'wwmusicEndbattleStop',
-         'wwmusicResultWin',
-         'wwmusicResultDrawn',
+        self._musicId.setEditorData(['wwmusicLoading', 'wwmusicRelaxed', 'wwmusicIntensive', 'wwmusicStop',
+         'wwmusicEndbattleStop', 'wwmusicResultWin', 'wwmusicResultDrawn',
          'wwmusicResultDefeat'])
         self._out = self._makeEventOutputSlot('out')
 

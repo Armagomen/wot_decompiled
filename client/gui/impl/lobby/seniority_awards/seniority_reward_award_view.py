@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/seniority_reward_award_view.py
 import logging
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import SENIORITY_AWARDS_COINS_REMINDER_SHOWN_TIMESTAMP
@@ -31,31 +29,7 @@ _BT_BADGE = backport.text(R.strings.badge.badge_57())
 _AT_NICKNAME_BADGE = backport.text(R.strings.badge.badge_58())
 _BT_NICKNAME_BADGE = backport.text(R.strings.badge.badge_59())
 _EXCLUDED_BONUSES = ('slots', 'vehicles')
-_BONUSES_ORDER = ({'getLabel': _T50_2_STYLE_NAME},
- {'getName': 'crystal'},
- {'getName': 'credits'},
- {'getIcon': 'personalBook'},
- {'getIcon': 'universalBook'},
- {'getName': 'premium_plus'},
- {'getName': 'battle_bonus'},
- {'getName': 'goodies',
-  'getIcon': 'credits'},
- {'getName': 'goodies',
-  'getIcon': 'xp'},
- {'getName': 'dossier_badge',
-  'getLabel': _AT_NICKNAME_BADGE},
- {'getName': 'dossier_badge',
-  'getLabel': _BT_NICKNAME_BADGE},
- {'getName': 'dossier_badge',
-  'getLabel': _AT_BADGE},
- {'getName': 'dossier_badge',
-  'getLabel': _BT_BADGE},
- {'getIcon': 'projectionDecal'},
- {'getName': 'dossier_achievement'},
- {'getName': 'customizations',
-  'getIcon': 'emblem'},
- {'getName': 'customizations',
-  'getIcon': 'style'})
+_BONUSES_ORDER = ({'getLabel': _T50_2_STYLE_NAME}, {'getName': 'crystal'}, {'getName': 'credits'}, {'getIcon': 'personalBook'}, {'getIcon': 'universalBook'}, {'getName': 'premium_plus'}, {'getName': 'battle_bonus'}, {'getName': 'goodies', 'getIcon': 'credits'}, {'getName': 'goodies', 'getIcon': 'xp'}, {'getName': 'dossier_badge', 'getLabel': _AT_NICKNAME_BADGE}, {'getName': 'dossier_badge', 'getLabel': _BT_NICKNAME_BADGE}, {'getName': 'dossier_badge', 'getLabel': _AT_BADGE}, {'getName': 'dossier_badge', 'getLabel': _BT_BADGE}, {'getIcon': 'projectionDecal'}, {'getName': 'dossier_achievement'}, {'getName': 'customizations', 'getIcon': 'emblem'}, {'getName': 'customizations', 'getIcon': 'style'})
 
 def _keySortOrder(bonus, _):
     for index, criteria in enumerate(_BONUSES_ORDER):
@@ -96,8 +70,7 @@ class SeniorityRewardAwardView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(SeniorityRewardAwardView, self).createToolTip(event)
+        return super(SeniorityRewardAwardView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.seniority_awards.SeniorityAwardsTooltip():
@@ -113,7 +86,7 @@ class SeniorityRewardAwardView(ViewImpl):
         else:
             self.__updateBonuses(data)
             self.__tooltipData = {}
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self.__setBonuses(vm)
                 self.__setSpecialCurrency(vm)
                 vm.setShopOnOpenState(self.__getShopOnOpenState())
@@ -132,12 +105,20 @@ class SeniorityRewardAwardView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenBtnClick, self.__onOpenBtnClick), (self.viewModel.onShopBtnClick, self.__onShopBtnClick), (self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange))
+        return (
+         (
+          self.viewModel.onOpenBtnClick, self.__onOpenBtnClick),
+         (
+          self.viewModel.onShopBtnClick, self.__onShopBtnClick),
+         (
+          self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange))
 
     def __getShopOnOpenState(self):
         if self.__needBlockShopTransition:
             return ShopOnOpenState.NOT_AVAILABLE
-        return ShopOnOpenState.DISABLED if not self.__seniorityAwardsCtrl.isAvailable else ShopOnOpenState.AVAILABLE
+        if not self.__seniorityAwardsCtrl.isAvailable:
+            return ShopOnOpenState.DISABLED
+        return ShopOnOpenState.AVAILABLE
 
     @property
     def __needBlockShopTransition(self):
@@ -164,15 +145,19 @@ class SeniorityRewardAwardView(ViewImpl):
         tooltipId = event.getArgument('tooltipId')
         if tooltipId is None:
             return
-        elif tooltipId in self.__tooltipData:
-            return self.__tooltipData[tooltipId]
-        vehicleCD = getVehicleCD(event.getArgument('vehicleCD'))
-        if vehicleCD is None:
-            return
-        elif tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
-            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(int(vehicleCD), True))
         else:
-            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[vehicleCD]) if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT else None
+            if tooltipId in self.__tooltipData:
+                return self.__tooltipData[tooltipId]
+            vehicleCD = getVehicleCD(event.getArgument('vehicleCD'))
+            if vehicleCD is None:
+                return
+            if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
+                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(
+                 int(vehicleCD), True))
+            if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
+                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[
+                 vehicleCD])
+            return
 
     def __updateBonuses(self, data):
         seniorityAwards = getSeniorityAwardsBonuses(data, excluded=_EXCLUDED_BONUSES, sortKey=lambda b: _keySortOrder(*b))
@@ -187,7 +172,7 @@ class SeniorityRewardAwardView(ViewImpl):
             showShop(getPlayerSeniorityAwardsUrl())
 
     def __onSettingsChange(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setShopOnOpenState(self.__getShopOnOpenState())
 
 

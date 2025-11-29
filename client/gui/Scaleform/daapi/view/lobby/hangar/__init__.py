@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.crew_panel_inject import CrewPanelInject
@@ -15,10 +13,15 @@ def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.hangar import hangar_cm_handlers
     from gui.impl.lobby.crew.widget.crew_widget_cm_handlers import CrewContextMenuHandler
     from gui.impl.lobby.crew.crew_cm_handlers import CrewTankmanContextMenuHandler
-    return ((CONTEXT_MENU_HANDLER_TYPE.VEHICLE, hangar_cm_handlers.VehicleContextMenuHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.TECHNICAL_MAINTENANCE, hangar_cm_handlers.TechnicalMaintenanceCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.CREW_MEMBER, CrewContextMenuHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.CREW_TANKMAN, CrewTankmanContextMenuHandler))
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.VEHICLE, hangar_cm_handlers.VehicleContextMenuHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.TECHNICAL_MAINTENANCE, hangar_cm_handlers.TechnicalMaintenanceCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CREW_MEMBER, CrewContextMenuHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CREW_TANKMAN, CrewTankmanContextMenuHandler))
 
 
 def getViewSettings():
@@ -56,7 +59,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.hangar.prestige_hangar_entry_point_inject import PrestigeHangarEntryPointInject
     from gui.Scaleform.daapi.view.lobby.hangar.Hangar import Hangar
     from gui.impl.lobby.player_satisfaction_rating.player_satisfaction_widget import PlayerSatisfactionWidget
-    return (ViewSettings(VIEW_ALIAS.LOBBY_HANGAR, HangarWindow, '', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.LOBBY_HANGAR, HangarWindow, '', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.LEGACY_LOBBY_HANGAR, Hangar, 'hangar.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LEGACY_LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.LOBBY_STRONGHOLD, StrongholdView, 'StrongholdView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_STRONGHOLD, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.STRONGHOLD_ADS, StrongholdAdsView, 'browserScreen.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.STRONGHOLD_ADS, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -98,22 +102,36 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (HangarPackageBusinessHandler(),)
+    return (
+     HangarPackageBusinessHandler(),)
 
 
 class HangarPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.HANGAR_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.BATTLEPASS_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_HANGAR, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LEGACY_LOBBY_HANGAR, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_STRONGHOLD, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.STRONGHOLD_ADS, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.BROWSER_VIEW, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_TOURNAMENTS, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.FITTING_SELECT_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.VEHICLE_HUB, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.HANGAR_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.BATTLEPASS_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_HANGAR, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LEGACY_LOBBY_HANGAR, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_STRONGHOLD, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.STRONGHOLD_ADS, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.BROWSER_VIEW, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_TOURNAMENTS, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.FITTING_SELECT_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.VEHICLE_HUB, self.loadViewByCtxEvent))
         super(HangarPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

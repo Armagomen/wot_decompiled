@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/arena_components/epic_battle_player_data_component.py
 from collections import defaultdict
 from arena_components.player_data_component import PlayerDataComponent
 from constants import ARENA_SYNC_OBJECTS, SECTOR_STATE, ARENA_PERIOD
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_CURRENT_EXCEPTION
-import Event
-import BigWorld
+import Event, BigWorld
 from gui.battle_control import avatar_getter
 
 class EpicBattlePlayerDataComponent(PlayerDataComponent):
@@ -144,15 +141,19 @@ class EpicBattlePlayerDataComponent(PlayerDataComponent):
         timesToAdd = self.getSyncDataObjectData(ARENA_SYNC_OBJECTS.SECTOR, 'gameTimeToAddPerCapture')
         if timesToAdd is not None:
             try:
-                return timesToAdd[idInPlayerGroup - 1]
+                return timesToAdd[(idInPlayerGroup - 1)]
             except (TypeError, IndexError, KeyError):
-                LOG_CURRENT_EXCEPTION(tags=("Failed to get 'gameTimeToAddPerCapture' from arena sector sync data for zone '{}'!".format(idInPlayerGroup), timesToAdd))
+                LOG_CURRENT_EXCEPTION(tags=(
+                 ("Failed to get 'gameTimeToAddPerCapture' from arena sector sync data for zone '{}'!").format(idInPlayerGroup), timesToAdd))
 
         return 0.0
 
     def getGameTimeToAddWhenAllCaptured(self):
         time = self.getSyncDataObjectData(ARENA_SYNC_OBJECTS.SECTOR, 'gameTimeToAddWhenAllCaptured')
-        return time if time is not None else 0.0
+        if time is not None:
+            return time
+        else:
+            return 0.0
 
     def getPlayerGroupForVehicle(self, vId):
         return self.getPhysicalLaneForVehicle(vId)
@@ -165,7 +166,7 @@ class EpicBattlePlayerDataComponent(PlayerDataComponent):
         arena = avatar_getter.getArena()
         if arena is not None:
             key = 'playerGroup'
-            gameModeStats = dict(((vehID, {key: playerGroup}) for vehID, playerGroup in args.iteritems()))
+            gameModeStats = dict((vehID, {key: playerGroup}) for vehID, playerGroup in args.iteritems())
             arena.updateGameModeSpecificStats(False, gameModeStats)
         self.onPlayerGroupsUpdated(args)
         playerId = avatar_getter.getPlayerVehicleID()
@@ -234,8 +235,7 @@ class EpicBattlePlayerDataComponent(PlayerDataComponent):
             if self.__physicalLane != group:
                 self.__physicalLane = group
                 self.onPlayerPhysicalLaneUpdated(group)
-        gameModeStats = dict(((vehID, {'playerGroup': group,
-          'physicalSector': sectorID}) for vehID, (sectorID, group) in args.iteritems()))
+        gameModeStats = dict((vehID, {'playerGroup': group, 'physicalSector': sectorID}) for vehID, (sectorID, group) in args.iteritems())
         self.onPlayerGroupsUpdated(args)
         arena.updateGameModeSpecificStats(False, gameModeStats)
 
@@ -268,5 +268,5 @@ class EpicBattlePlayerDataComponent(PlayerDataComponent):
         arena = avatar_getter.getArena()
         if not arena:
             return
-        gameModeStats = dict(((vehID, {'hasRespawns': hasRespawns}) for vehID in playerList))
+        gameModeStats = dict((vehID, {'hasRespawns': hasRespawns}) for vehID in playerList)
         arena.updateGameModeSpecificStats(False, gameModeStats)

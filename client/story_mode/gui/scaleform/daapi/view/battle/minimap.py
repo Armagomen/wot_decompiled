@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/minimap.py
-import BattleReplay
-import BigWorld
-import CGF
-import Math
+import BattleReplay, BigWorld, CGF, Math
 from BunkerLogicComponent import BunkerLogicComponent
 from aih_constants import CTRL_MODE_NAME
 from constants import IS_DEVELOPMENT
@@ -30,6 +25,7 @@ class StoryModeVehicleEntry(VehicleEntry):
                 if self._classTag == 'SPG':
                     return _ANIMATION_SPG
                 return _ANIMATION_ENEMY
+        return ''
 
 
 class StoryModeArenaVehiclesPlugin(ArenaVehiclesPlugin):

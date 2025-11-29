@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/FreeXPInfoWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class FreeXPInfoWindowMeta(AbstractWindowView):
@@ -11,10 +9,13 @@ class FreeXPInfoWindowMeta(AbstractWindowView):
         self._printOverrideError('onCancelButton')
 
     def as_setSubmitLabelS(self, value):
-        return self.flashObject.as_setSubmitLabel(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSubmitLabel(value)
 
     def as_setTitleS(self, value):
-        return self.flashObject.as_setTitle(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTitle(value)
 
     def as_setTextS(self, value):
-        return self.flashObject.as_setText(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setText(value)

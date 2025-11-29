@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/vehicle_modules.py
-import logging
-import typing
-import nations
+import logging, typing, nations
 from shared_utils import CONST_CONTAINER, findFirst
 from constants import SHELL_TYPES, SHELL_MECHANICS_TYPE
 from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
@@ -20,14 +16,13 @@ from items import vehicles as veh_core
 from vehicles.mechanics.mechanic_constants import VehicleMechanic
 if typing.TYPE_CHECKING:
     from items.vehicles import VehicleDescr
-MODULE_TYPES_ORDER = ('vehicleGun', 'vehicleTurret', 'vehicleEngine', 'vehicleChassis', 'vehicleRadio', 'vehicleFuelTank')
-MODULE_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(MODULE_TYPES_ORDER)))
-SHELL_TYPES_ORDER = (SHELL_TYPES.ARMOR_PIERCING,
- SHELL_TYPES.ARMOR_PIERCING_CR,
- SHELL_TYPES.HOLLOW_CHARGE,
- SHELL_TYPES.HIGH_EXPLOSIVE,
- SHELL_TYPES.SMOKE)
-SHELL_TYPES_ORDER_INDICES = dict(((n, i) for i, n in enumerate(SHELL_TYPES_ORDER)))
+MODULE_TYPES_ORDER = ('vehicleGun', 'vehicleTurret', 'vehicleEngine', 'vehicleChassis',
+                      'vehicleRadio', 'vehicleFuelTank')
+MODULE_TYPES_ORDER_INDICES = dict((n, i) for i, n in enumerate(MODULE_TYPES_ORDER))
+SHELL_TYPES_ORDER = (
+ SHELL_TYPES.ARMOR_PIERCING, SHELL_TYPES.ARMOR_PIERCING_CR,
+ SHELL_TYPES.HOLLOW_CHARGE, SHELL_TYPES.HIGH_EXPLOSIVE, SHELL_TYPES.SMOKE)
+SHELL_TYPES_ORDER_INDICES = dict((n, i) for i, n in enumerate(SHELL_TYPES_ORDER))
 
 class ModulesIconNames(CONST_CONTAINER):
     WHEELED_CHASSIS = 'wheeledChassis'
@@ -41,7 +36,7 @@ class ModulesIconNames(CONST_CONTAINER):
 _logger = logging.getLogger(__name__)
 
 class VehicleModule(FittingItem):
-    __slots__ = ('_vehicleModuleDescriptor',)
+    __slots__ = ('_vehicleModuleDescriptor', )
     _GUI_SUPPORTED_MECHANICS = set()
 
     def __init__(self, intCompactDescr, proxy=None, descriptor=None):
@@ -50,15 +45,20 @@ class VehicleModule(FittingItem):
 
     @property
     def icon(self):
-        return '' if not self.iconName else backport.image(R.images.gui.maps.icons.modules.dyn(self.iconName)())
+        if not self.iconName:
+            return ''
+        return backport.image(R.images.gui.maps.icons.modules.dyn(self.iconName)())
 
     @property
     def iconName(self):
-        pass
+        return ''
 
     @property
     def descriptor(self):
-        return self._vehicleModuleDescriptor if self._vehicleModuleDescriptor is not None else super(VehicleModule, self).descriptor
+        if self._vehicleModuleDescriptor is not None:
+            return self._vehicleModuleDescriptor
+        else:
+            return super(VehicleModule, self).descriptor
 
     def getBonusIcon(self, size='small'):
         if size == 'small':
@@ -71,7 +71,9 @@ class VehicleModule(FittingItem):
 
     def getShopIcon(self, size=STORE_CONSTANTS.ICON_SIZE_MEDIUM):
         resID = R.images.gui.maps.shop.modules.num(size).dyn(replaceHyphenToUnderscore(self.itemTypeName))()
-        return backport.image(resID) if resID != -1 else ''
+        if resID != -1:
+            return backport.image(resID)
+        return ''
 
     def getVehicleMechanics(self, vehDescr):
         return set()
@@ -85,7 +87,10 @@ class VehicleModule(FittingItem):
 
 class VehicleChassis(VehicleModule):
     __slots__ = ()
-    _GUI_SUPPORTED_MECHANICS = {VehicleMechanic.HYDRAULIC_WHEELED_CHASSIS, VehicleMechanic.HYDRAULIC_CHASSIS, VehicleMechanic.TRACK_WITHIN_TRACK}
+    _GUI_SUPPORTED_MECHANICS = {
+     VehicleMechanic.HYDRAULIC_WHEELED_CHASSIS,
+     VehicleMechanic.HYDRAULIC_CHASSIS,
+     VehicleMechanic.TRACK_WITHIN_TRACK}
 
     def isInstalled(self, vehicle, slotIdx=None):
         return self.intCD == vehicle.chassis.intCD
@@ -118,7 +123,9 @@ class VehicleChassis(VehicleModule):
 
     @property
     def iconName(self):
-        return ModulesIconNames.WHEELED_CHASSIS if self.isWheeledChassis() else ModulesIconNames.CHASSIS
+        if self.isWheeledChassis():
+            return ModulesIconNames.WHEELED_CHASSIS
+        return ModulesIconNames.CHASSIS
 
     def getExtraIconInfo(self, vehDescr=None):
         if self.isHydraulicChassis():
@@ -126,10 +133,14 @@ class VehicleChassis(VehicleModule):
                 return backport.image(R.images.gui.maps.icons.modules.hydraulicWheeledChassisIcon())
             return backport.image(R.images.gui.maps.icons.modules.hydraulicChassisIcon())
         else:
-            return backport.image(R.images.gui.maps.icons.modules.trackWithinTrack()) if self.isTrackWithinTrack() else None
+            if self.isTrackWithinTrack():
+                return backport.image(R.images.gui.maps.icons.modules.trackWithinTrack())
+            return
 
     def getGUIEmblemID(self):
-        return FITTING_TYPES.VEHICLE_WHEELED_CHASSIS if self.isWheeledChassis() else super(VehicleChassis, self).getGUIEmblemID()
+        if self.isWheeledChassis():
+            return FITTING_TYPES.VEHICLE_WHEELED_CHASSIS
+        return super(VehicleChassis, self).getGUIEmblemID()
 
     def getShopIcon(self, size=STORE_CONSTANTS.ICON_SIZE_MEDIUM):
         if self.isWheeledChassis():
@@ -141,12 +152,18 @@ class VehicleChassis(VehicleModule):
 
     def getVehicleMechanics(self, vehDescr):
         mechanics = super(VehicleChassis, self).getVehicleMechanics(vehDescr)
-        mechanicChecks = [(self.isHydraulicWheeledChassis(), VehicleMechanic.HYDRAULIC_WHEELED_CHASSIS), (self.isHydraulicChassis(), VehicleMechanic.HYDRAULIC_CHASSIS), (self.isTrackWithinTrack(), VehicleMechanic.TRACK_WITHIN_TRACK)]
+        mechanicChecks = [
+         (
+          self.isHydraulicWheeledChassis(), VehicleMechanic.HYDRAULIC_WHEELED_CHASSIS),
+         (
+          self.isHydraulicChassis(), VehicleMechanic.HYDRAULIC_CHASSIS),
+         (
+          self.isTrackWithinTrack(), VehicleMechanic.TRACK_WITHIN_TRACK)]
         extendMechanics(mechanics, {}, mechanicChecks, CHASSIS_MECHANICS_OVERRIDES)
         return mechanics
 
     def _getShortInfoKey(self):
-        return '#menu:descriptions/{}'.format(FITTING_TYPES.VEHICLE_WHEELED_CHASSIS if self.isWheeledChassis() else self.itemTypeName)
+        return ('#menu:descriptions/{}').format(FITTING_TYPES.VEHICLE_WHEELED_CHASSIS if self.isWheeledChassis() else self.itemTypeName)
 
 
 class VehicleTurret(VehicleModule):
@@ -166,7 +183,10 @@ class VehicleTurret(VehicleModule):
                     optDevicesLayouts.append(setup.getIntCDs())
 
             installPossible, reason = vehicle.descriptor.mayInstallTurret(self.intCD, gunCD, optDevicesLayouts=optDevicesLayouts)
-            return (False, 'need gun') if not installPossible and reason == 'not for this vehicle type' else (installPossible, reason)
+            if not installPossible and reason == 'not for this vehicle type':
+                return (False, 'need gun')
+            return (
+             installPossible, reason)
 
     def getInstalledVehicles(self, vehicles):
         result = set()
@@ -187,7 +207,8 @@ class VehicleTurret(VehicleModule):
 
 class VehicleGun(VehicleModule):
     __slots__ = ('_defaultAmmo', '_maxAmmo')
-    _GUI_SUPPORTED_MECHANICS = {VehicleMechanic.AUTO_SHOOT_GUN,
+    _GUI_SUPPORTED_MECHANICS = {
+     VehicleMechanic.AUTO_SHOOT_GUN,
      VehicleMechanic.DUAL_GUN,
      VehicleMechanic.DUAL_ACCURACY,
      VehicleMechanic.TWIN_GUN,
@@ -207,7 +228,9 @@ class VehicleGun(VehicleModule):
 
     def mayInstall(self, vehicle, slotIdx=None):
         installPossible, reason = FittingItem.mayInstall(self, vehicle)
-        return (False, 'need turret') if not installPossible and reason == 'not for current vehicle' else (installPossible, reason)
+        if not installPossible and reason == 'not for current vehicle':
+            return (False, 'need turret')
+        return (installPossible, reason)
 
     def getReloadingType(self, vehicleDescr=None):
         return g_paramsCache.getGunReloadingSystemType(self.intCD, vehicleDescr.type.compactDescr if vehicleDescr is not None else None)
@@ -245,7 +268,7 @@ class VehicleGun(VehicleModule):
         return self.descriptor.isDamageMutable
 
     def isNonPiercingDamage(self):
-        return any((shell.isNonPiercingDamageMechanics for shell in self.defaultAmmo))
+        return any(shell.isNonPiercingDamageMechanics for shell in self.defaultAmmo)
 
     def hasDualAccuracy(self, vehicleDescr=None):
         return vehicleDescr is not None and g_paramsCache.hasDualAccuracy(self.intCD, vehicleDescr.type.compactDescr)
@@ -275,41 +298,58 @@ class VehicleGun(VehicleModule):
         userType = super(VehicleGun, self).userType
         if self.isDualGun():
             return backport.text(R.strings.item_types.dualGun.name())
-        return backport.text(R.strings.item_types.twinGun.name()) if self.isTwinGun() else userType
+        if self.isTwinGun():
+            return backport.text(R.strings.item_types.twinGun.name())
+        return userType
 
     def getExtraIconInfo(self, vehDescr=None):
         if self.isClipGun(vehDescr):
             return backport.image(R.images.gui.maps.icons.modules.magazineGunIcon())
-        elif self.isAutoReloadable(vehDescr):
-            descriptor = self.__getDescriptor(vehDescr)
-            if descriptor.autoreloadHasBoost:
-                return backport.image(R.images.gui.maps.icons.modules.autoLoaderGunBoost())
-            return backport.image(R.images.gui.maps.icons.modules.autoLoaderGun())
-        elif self.isAutoShoot(vehDescr):
-            return backport.image(R.images.gui.maps.icons.modules.autoShootGun())
-        elif self.isDualGun(vehDescr):
-            return backport.image(R.images.gui.maps.icons.modules.dualGun())
-        elif self.hasDualAccuracy(vehDescr):
-            return backport.image(R.images.gui.maps.icons.modules.dualAccuracy())
-        elif self.isDamageMutable():
-            return backport.image(R.images.gui.maps.icons.modules.damageMutable())
         else:
-            return backport.image(R.images.gui.maps.icons.modules.twinGun()) if self.isTwinGun(vehDescr) else None
+            if self.isAutoReloadable(vehDescr):
+                descriptor = self.__getDescriptor(vehDescr)
+                if descriptor.autoreloadHasBoost:
+                    return backport.image(R.images.gui.maps.icons.modules.autoLoaderGunBoost())
+                return backport.image(R.images.gui.maps.icons.modules.autoLoaderGun())
+            if self.isAutoShoot(vehDescr):
+                return backport.image(R.images.gui.maps.icons.modules.autoShootGun())
+            if self.isDualGun(vehDescr):
+                return backport.image(R.images.gui.maps.icons.modules.dualGun())
+            if self.hasDualAccuracy(vehDescr):
+                return backport.image(R.images.gui.maps.icons.modules.dualAccuracy())
+            if self.isDamageMutable():
+                return backport.image(R.images.gui.maps.icons.modules.damageMutable())
+            if self.isTwinGun(vehDescr):
+                return backport.image(R.images.gui.maps.icons.modules.twinGun())
+            return
 
     def getGUIEmblemID(self):
-        return FITTING_TYPES.VEHICLE_DUAL_GUN if self.isDualGun() else super(VehicleGun, self).getGUIEmblemID()
+        if self.isDualGun():
+            return FITTING_TYPES.VEHICLE_DUAL_GUN
+        return super(VehicleGun, self).getGUIEmblemID()
 
     def getVehicleMechanics(self, vehDescr):
         mechanics = super(VehicleGun, self).getVehicleMechanics(vehDescr)
-        mechanicChecks = [(self.isAutoShoot(vehDescr), VehicleMechanic.AUTO_SHOOT_GUN),
-         (self.isDualGun(vehDescr), VehicleMechanic.DUAL_GUN),
-         (self.hasDualAccuracy(vehDescr), VehicleMechanic.DUAL_ACCURACY),
-         (self.isTwinGun(vehDescr), VehicleMechanic.TWIN_GUN),
-         (self.isClipGun(vehDescr), VehicleMechanic.MAGAZINE_GUN),
-         (self.isAutoReloadableWithBoost(vehDescr), VehicleMechanic.AUTO_LOADER_GUN_BOOST),
-         (self.isAutoReloadable(vehDescr) and not self.isAutoReloadableWithBoost(vehDescr), VehicleMechanic.AUTO_LOADER_GUN),
-         (self.isDamageMutable(), VehicleMechanic.DAMAGE_MUTABLE),
-         (any((shell.descriptor.hasStun for shell in self.defaultAmmo)), VehicleMechanic.STUN)]
+        mechanicChecks = [
+         (
+          self.isAutoShoot(vehDescr), VehicleMechanic.AUTO_SHOOT_GUN),
+         (
+          self.isDualGun(vehDescr), VehicleMechanic.DUAL_GUN),
+         (
+          self.hasDualAccuracy(vehDescr), VehicleMechanic.DUAL_ACCURACY),
+         (
+          self.isTwinGun(vehDescr), VehicleMechanic.TWIN_GUN),
+         (
+          self.isClipGun(vehDescr), VehicleMechanic.MAGAZINE_GUN),
+         (
+          self.isAutoReloadableWithBoost(vehDescr), VehicleMechanic.AUTO_LOADER_GUN_BOOST),
+         (
+          self.isAutoReloadable(vehDescr) and not self.isAutoReloadableWithBoost(vehDescr),
+          VehicleMechanic.AUTO_LOADER_GUN),
+         (
+          self.isDamageMutable(), VehicleMechanic.DAMAGE_MUTABLE),
+         (
+          any(shell.descriptor.hasStun for shell in self.defaultAmmo), VehicleMechanic.STUN)]
         descriptor = self.__getDescriptor(vehDescr)
         extendMechanics(mechanics, descriptor.mechanicsParams, mechanicChecks, GUN_MECHANICS_OVERRIDES)
         return mechanics
@@ -321,19 +361,21 @@ class VehicleGun(VehicleModule):
         result = []
         shells = veh_core.getDefaultAmmoForGun(self.descriptor)
         for i in range(0, len(shells), 2):
-            result.append(Shell(shells[i], count=shells[i + 1], proxy=proxy))
+            result.append(Shell(shells[i], count=shells[(i + 1)], proxy=proxy))
 
         return result
 
     def _getShortInfoKey(self, vehicleDescr=None):
         key = super(VehicleGun, self)._getShortInfoKey()
         if self.isAutoReloadable(vehicleDescr):
-            return '/'.join((key, 'autoReload'))
+            return ('/').join((key, 'autoReload'))
         if self.isAutoShoot(vehicleDescr):
-            return '/'.join((key, 'autoShoot'))
+            return ('/').join((key, 'autoShoot'))
         if self.isDualGun(vehicleDescr):
-            return '/'.join((key, 'dualGun'))
-        return '/'.join((key, 'twinGun')) if self.isTwinGun(vehicleDescr) else key
+            return ('/').join((key, 'dualGun'))
+        if self.isTwinGun(vehicleDescr):
+            return ('/').join((key, 'twinGun'))
+        return key
 
     def __getDescriptor(self, vehDescr=None):
         vehicleGuns = vehDescr.type.getGuns() if vehDescr is not None else ()
@@ -343,7 +385,9 @@ class VehicleGun(VehicleModule):
 
 class VehicleEngine(VehicleModule):
     __slots__ = ()
-    _GUI_SUPPORTED_MECHANICS = {VehicleMechanic.TURBOSHAFT_ENGINE, VehicleMechanic.ROCKET_ACCELERATION}
+    _GUI_SUPPORTED_MECHANICS = {
+     VehicleMechanic.TURBOSHAFT_ENGINE,
+     VehicleMechanic.ROCKET_ACCELERATION}
 
     def isInstalled(self, vehicle, slotIdx=None):
         return self.intCD == vehicle.engine.intCD
@@ -385,11 +429,17 @@ class VehicleEngine(VehicleModule):
         if self.hasTurboshaftEngine():
             return RES_ICONS.MAPS_ICONS_MODULES_TURBINEENGINEICON
         else:
-            return RES_ICONS.MAPS_ICONS_MODULES_ROCKETACCELERATIONICON if self.hasRocketAcceleration() else None
+            if self.hasRocketAcceleration():
+                return RES_ICONS.MAPS_ICONS_MODULES_ROCKETACCELERATIONICON
+            return
 
     def getVehicleMechanics(self, vehDescr):
         mechanics = super(VehicleEngine, self).getVehicleMechanics(vehDescr)
-        mechanicChecks = [(vehDescr.hasTurboshaftEngine, VehicleMechanic.TURBOSHAFT_ENGINE), (vehDescr.hasRocketAcceleration, VehicleMechanic.ROCKET_ACCELERATION)]
+        mechanicChecks = [
+         (
+          vehDescr.hasTurboshaftEngine, VehicleMechanic.TURBOSHAFT_ENGINE),
+         (
+          vehDescr.hasRocketAcceleration, VehicleMechanic.ROCKET_ACCELERATION)]
         extendMechanics(mechanics, {}, mechanicChecks, ENGINE_MECHANICS_OVERRIDES)
         return mechanics
 
@@ -429,7 +479,7 @@ class VehicleRadio(VehicleModule):
 
 
 class Shell(FittingItem):
-    __slots__ = ('_count',)
+    __slots__ = ('_count', )
 
     def __init__(self, intCompactDescr, count=0, proxy=None, isBoughtForCredits=False):
         FittingItem.__init__(self, intCompactDescr, proxy, isBoughtForCredits)
@@ -437,7 +487,7 @@ class Shell(FittingItem):
 
     @property
     def level(self):
-        pass
+        return 0
 
     @property
     def count(self):
@@ -473,22 +523,20 @@ class Shell(FittingItem):
 
     @property
     def icon(self):
-        return ICONS_MASK[:-4] % {'type': self.itemTypeName,
-         'subtype': 'small/',
-         'unicName': self.descriptor.icon[0]}
+        return ICONS_MASK[:-4] % {'type': self.itemTypeName, 
+           'subtype': 'small/', 
+           'unicName': self.descriptor.icon[0]}
 
     @property
     def defaultLayoutValue(self):
-        return (self.intCD if not self.isBoughtForAltPrice else -self.intCD, self.count)
+        return ((self.isBoughtForAltPrice or self).intCD if 1 else -self.intCD, self.count)
 
     def isDamageMutable(self):
         return self.descriptor.isDamageMutable
 
     def getAdvancedTooltipKey(self):
-        return (self.type,
-         self.isModernMechanics,
-         self.isNonPiercingDamageMechanics,
-         self.isDamageMutable())
+        return (
+         self.type, self.isModernMechanics, self.isNonPiercingDamageMechanics, self.isDamageMutable())
 
     def getBonusIcon(self, size='small'):
         sizeFldr = R.images.gui.maps.icons.shell.dyn(size)
@@ -502,7 +550,9 @@ class Shell(FittingItem):
 
     def getShopIcon(self, size=STORE_CONSTANTS.ICON_SIZE_MEDIUM):
         resID = R.images.gui.maps.shop.shells.num(size).dyn(replaceHyphenToUnderscore(self.descriptor.iconName))()
-        return backport.image(resID) if resID != -1 else ''
+        if resID != -1:
+            return backport.image(resID)
+        return ''
 
     def isInstalled(self, vehicle, slotIdx=None):
         for shell in vehicle.shells.installed.getItems():
@@ -518,7 +568,9 @@ class Shell(FittingItem):
         return vehicle.shells.setupLayouts.isInOtherLayout(self)
 
     def _getAltPrice(self, buyPrice, proxy):
-        return buyPrice.exchange(Currency.GOLD, Currency.CREDITS, proxy.exchangeRateForShellsAndEqs, useDiscounts=False) if Currency.GOLD in buyPrice else super(Shell, self)._getAltPrice(buyPrice, proxy)
+        if Currency.GOLD in buyPrice:
+            return buyPrice.exchange(Currency.GOLD, Currency.CREDITS, proxy.exchangeRateForShellsAndEqs, useDiscounts=False)
+        return super(Shell, self)._getAltPrice(buyPrice, proxy)
 
     def _getFormatLongUserName(self, kind):
         if self.nationID == nations.INDICES['germany']:
@@ -533,7 +585,9 @@ class Shell(FittingItem):
         return backport.text(R.strings.item_types.shell.name(), kind=backport.text(R.strings.item_types.shell.dyn(kind).dyn(self.descriptor.kind)()), name=self.userName, caliber=backport.getNiceNumberFormat(caliber), dimension=dimension)
 
     def _getShortInfoKey(self):
-        return '#menu:descriptions/mutableDamageShell' if self.isDamageMutable() else super(Shell, self)._getShortInfoKey()
+        if self.isDamageMutable():
+            return '#menu:descriptions/mutableDamageShell'
+        return super(Shell, self)._getShortInfoKey()
 
     def _sortByType(self, other):
         return SHELL_TYPES_ORDER_INDICES[self.type] - SHELL_TYPES_ORDER_INDICES[other.type]

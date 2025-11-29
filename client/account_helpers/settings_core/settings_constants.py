@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/settings_constants.py
 from shared_utils import CONST_CONTAINER
 VERSION = 'VERSION'
 POST_PROCESSING_QUALITY = 'POST_PROCESSING_QUALITY'
@@ -42,7 +40,8 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getScreenConstants(cls):
-        return (cls.MONITOR,
+        return (
+         cls.MONITOR,
          cls.VIDEO_MODE,
          cls.WINDOW_SIZE,
          cls.RESOLUTION,
@@ -53,7 +52,8 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getColorSettings(cls):
-        return (cls.COLOR_FILTER_INTENSITY,
+        return (
+         cls.COLOR_FILTER_INTENSITY,
          cls.BRIGHTNESS_CORRECTION,
          cls.CONTRAST_CORRECTION,
          cls.COLOR_GRADING_TECHNIQUE,
@@ -61,7 +61,10 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getCustomColorSettings(cls):
-        return (cls.BRIGHTNESS_CORRECTION, cls.CONTRAST_CORRECTION, cls.SATURATION_CORRECTON)
+        return (
+         cls.BRIGHTNESS_CORRECTION,
+         cls.CONTRAST_CORRECTION,
+         cls.SATURATION_CORRECTON)
 
 
 class GAME(CONST_CONTAINER):
@@ -176,6 +179,16 @@ class SOUND(CONST_CONTAINER):
     BASS_BOOST = 'bassBoost'
     NIGHT_MODE = 'nightMode'
     LOW_QUALITY = 'lowQualitySound'
+    PHYSICS_QUALITY = 'physicsQuality'
+
+
+class SoundPhysicsQuality(CONST_CONTAINER):
+    DISABLE = 'disabled'
+    LOW = 'low'
+    MEDIUM = 'medium'
+    HIGH = 'high'
+    ORDER = (
+     HIGH, MEDIUM, LOW, DISABLE)
 
 
 class CONTROLS(CONST_CONTAINER):
@@ -225,7 +238,10 @@ class SPGAimEntranceModeOptions(CONST_CONTAINER):
     LAST = 'last'
     STRATEGIC = 'strategic'
     TRAJECTORY = 'trajectory'
-    SETTINGS_OPTIONS = [LAST, STRATEGIC, TRAJECTORY]
+    SETTINGS_OPTIONS = [
+     LAST,
+     STRATEGIC,
+     TRAJECTORY]
 
 
 class MARKERS(CONST_CONTAINER):
@@ -476,11 +492,13 @@ class SESSION_STATS(CONST_CONTAINER):
 
     @classmethod
     def getCommonBlock(cls):
-        return (cls.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY, cls.IS_NEEDED_SAVE_CURRENT_TAB)
+        return (cls.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY,
+         cls.IS_NEEDED_SAVE_CURRENT_TAB)
 
     @classmethod
     def getEconomicBlockView(cls):
-        return (cls.ECONOMIC_BLOCK_VIEW_WITHOUT_SPENDING, cls.ECONOMIC_BLOCK_VIEW_WITH_SPENDING)
+        return (cls.ECONOMIC_BLOCK_VIEW_WITHOUT_SPENDING,
+         cls.ECONOMIC_BLOCK_VIEW_WITH_SPENDING)
 
 
 class BattlePassStorageKeys(CONST_CONTAINER):

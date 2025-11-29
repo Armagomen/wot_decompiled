@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/stats_exchange/vehicle.py
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import broker
 from gui.Scaleform.settings import ICONS_SIZES
 from gui.battle_control.arena_info import vos_collections
@@ -17,7 +15,7 @@ class ISortedIDsComposer(object):
 
 
 class VehiclesSortedIDsComposer(broker.SingleSideComposer, ISortedIDsComposer):
-    __slots__ = ('_items',)
+    __slots__ = ()
 
     def __init__(self, voField='vehiclesIDs', sortKey=vos_collections.VehicleInfoSortKey):
         super(VehiclesSortedIDsComposer, self).__init__(voField=voField, sortKey=sortKey)
@@ -71,7 +69,7 @@ class TeamsCorrelationIDsComposer(BiSortedIDsComposer):
 
 
 class TotalStatsComposer(broker.IExchangeComposer):
-    __slots__ = ('_stats',)
+    __slots__ = ('_stats', )
 
     def __init__(self):
         super(TotalStatsComposer, self).__init__()
@@ -92,7 +90,7 @@ class TotalStatsComposer(broker.IExchangeComposer):
 
 class VehicleInfoComponent(broker.ExchangeComponent):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('_data',)
+    __slots__ = ('_data', )
 
     def __init__(self):
         super(VehicleInfoComponent, self).__init__()
@@ -119,46 +117,45 @@ class VehicleInfoComponent(broker.ExchangeComponent):
         prestigeGradeMarkID = vInfoVO.prestigeGradeMarkID
         if prestigeGradeMarkID == PrestigeConstants.MAX_GRADE_MARK_ID:
             prestigeGradeMarkID = MAX_GRADE_ID
-        data = {'accountDBID': accountDBID,
-         'sessionID': sessionID,
-         'playerName': parts.playerName,
-         'playerFakeName': parts.playerFakeName,
-         'playerFullName': parts.playerFullName,
-         'playerStatus': overrides.getPlayerStatus(vInfoVO, isTeamKiller),
-         'clanAbbrev': playerVO.clanAbbrev,
-         'region': parts.regionCode,
-         'userTags': self._ctx.getUserTags(sessionID, playerVO.igrType),
-         'squadIndex': vInfoVO.squadIndex,
-         'invitationStatus': overrides.getInvitationDeliveryStatus(vInfoVO),
-         'isBot': vInfoVO.player.isBot,
-         'vehicleID': vehicleID,
-         'vehicleName': vTypeVO.shortName,
-         'vehicleType': vInfoVO.getDisplayedClassTag(),
-         'vehicleLevel': vTypeVO.level,
-         'vehicleIcon': vTypeVO.iconPath,
-         'vehicleIconName': vTypeVO.iconName,
-         'vehicleStatus': vInfoVO.vehicleStatus,
-         'isObserver': vInfoVO.isObserver(),
-         'vehicleAction': overrides.getAction(vInfoVO),
-         'isVehiclePremiumIgr': vTypeVO.isPremiumIGR,
-         'teamColor': overrides.getColorScheme(),
-         'hasSelectedBadge': hasPrefixBadge,
-         'prestigeLevel': prestigeLevel,
-         'prestigeMarkId': prestigeGradeMarkID}
+        data = {'accountDBID': accountDBID, 
+           'sessionID': sessionID, 
+           'playerName': parts.playerName, 
+           'playerFakeName': parts.playerFakeName, 
+           'playerFullName': parts.playerFullName, 
+           'playerStatus': overrides.getPlayerStatus(vInfoVO, isTeamKiller), 
+           'clanAbbrev': playerVO.clanAbbrev, 
+           'region': parts.regionCode, 
+           'userTags': self._ctx.getUserTags(sessionID, playerVO.igrType), 
+           'squadIndex': vInfoVO.squadIndex, 
+           'invitationStatus': overrides.getInvitationDeliveryStatus(vInfoVO), 
+           'isBot': vInfoVO.player.isBot, 
+           'vehicleID': vehicleID, 
+           'vehicleName': vTypeVO.shortName, 
+           'vehicleType': vInfoVO.getDisplayedClassTag(), 
+           'vehicleLevel': vTypeVO.level, 
+           'vehicleIcon': vTypeVO.iconPath, 
+           'vehicleIconName': vTypeVO.iconName, 
+           'vehicleStatus': vInfoVO.vehicleStatus, 
+           'isObserver': vInfoVO.isObserver(), 
+           'vehicleAction': overrides.getAction(vInfoVO), 
+           'isVehiclePremiumIgr': vTypeVO.isPremiumIGR, 
+           'teamColor': overrides.getColorScheme(), 
+           'hasSelectedBadge': hasPrefixBadge, 
+           'prestigeLevel': prestigeLevel, 
+           'prestigeMarkId': prestigeGradeMarkID}
         if vInfoVO.overriddenBadge:
-            data['badge'] = {'icon': 'override_badge_{}'.format(vInfoVO.overriddenBadge),
-             'content': None,
-             'sizeContent': ICONS_SIZES.X24,
-             'isDynamic': False,
-             'isAtlasSource': True}
+            data['badge'] = {'icon': ('override_badge_{}').format(vInfoVO.overriddenBadge), 'content': None, 
+               'sizeContent': ICONS_SIZES.X24, 
+               'isDynamic': False, 
+               'isAtlasSource': True}
         elif vInfoVO.selectedBadge:
             badgeID = vInfoVO.selectedBadge
             badge = buildBadge(badgeID, vInfoVO.getBadgeExtraInfo())
             if badge is not None:
                 data['badge'] = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': True}, shortIconName=True)
         if vInfoVO.selectedSuffixBadge:
-            data['suffixBadgeType'] = 'badge_{}'.format(vInfoVO.selectedSuffixBadge)
-            data['suffixBadgeStripType'] = 'strip_{}'.format(vInfoVO.selectedSuffixBadge)
+            data['suffixBadgeType'] = ('badge_{}').format(vInfoVO.selectedSuffixBadge)
+            data['suffixBadgeStripType'] = ('strip_{}').format(vInfoVO.selectedSuffixBadge)
         return self._data.update(data)
 
 
@@ -186,9 +183,9 @@ class VehicleStatusComponent(broker.ExchangeComponent):
         super(VehicleStatusComponent, self).clear()
 
     def get(self, forced=False):
-        data = {'isEnemy': self._isEnemy,
-         'vehicleID': self._vehicleID,
-         'status': self._status}
+        data = {'isEnemy': self._isEnemy, 
+           'vehicleID': self._vehicleID, 
+           'status': self._status}
         if self._dogTag:
             data['dogTag'] = self._dogTag
         for composer in self._idsComposers:

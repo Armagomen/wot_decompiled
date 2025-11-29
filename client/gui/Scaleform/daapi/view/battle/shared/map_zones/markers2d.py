@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/map_zones/markers2d.py
-import logging
-import Math
-import typing
+import logging, Math, typing
 from gui.Scaleform.daapi.view.battle.shared.map_zones.mixins import MapZonesListener
 from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins
 _logger = logging.getLogger(__name__)

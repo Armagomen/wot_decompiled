@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/abstract.py
 from gui.sounds.sound_constants import SoundSystems, SPEAKERS_CONFIG
 
 class SoundSystemAbstract(object):

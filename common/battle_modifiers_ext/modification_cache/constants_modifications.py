@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/modification_cache/constants_modifications.py
 from constants import AOI
 from battle_modifiers_common.battle_modifiers import BattleParams, ConstantsSet, CONSTANTS_ORIGINAL
 from battle_modifiers_ext.constants_ext import USE_CONSTANTS_CACHE, MAX_CONSTANTS_CACHE_LAYER_COUNT, ModifierDomain

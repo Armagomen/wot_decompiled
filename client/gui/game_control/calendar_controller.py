@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/calendar_controller.py
-import functools
-import logging
+import functools, logging
 from collections import namedtuple
 from enum import Enum
 import BigWorld
@@ -67,15 +64,14 @@ _logger = logging.getLogger(__name__)
 _browserIDGen = xrange(_MIN_BROWSER_ID, _MIN_BROWSER_ID + 10000).__iter__()
 
 def calendarEnabledActionFilter(act):
-    return any((isinstance(mod, CalendarSplashModifier) for mod in act.getModifiers()))
+    return any(isinstance(mod, CalendarSplashModifier) for mod in act.getModifiers())
 
 
-_HeroAdventActionInfo = namedtuple('HeroAdventActionInfo', ('isEnabled', 'vehicleCD', 'styleId', 'offerType', 'endTimestamp'))
-_HeroAdventActionInfo.__new__.__defaults__ = (False,
- 0,
- 0,
- None,
- 0)
+_HeroAdventActionInfo = namedtuple('HeroAdventActionInfo', ('isEnabled', 'vehicleCD',
+                                                            'styleId', 'offerType',
+                                                            'endTimestamp'))
+_HeroAdventActionInfo.__new__.__defaults__ = (
+ False, 0, 0, None, 0)
 
 class _HeroAdventActionHelper(object):
     __webController = dependency.descriptor(IWebController)
@@ -191,28 +187,27 @@ class CalendarController(GameWindowController, ICalendarController):
         lastShowTstamp = self.__getShowTimestamp()
         if not lastShowTstamp or lastShowTstamp < 0:
             return True
-        else:
-            now = time_utils.getServerUTCTime()
-            if lastShowTstamp > now:
-                return True
-            actions = self.eventsCache.getActions(calendarEnabledActionFilter).values()
-            for action in actions:
-                if action.getFinishTime() < now:
-                    continue
-                stepDuration = None
-                for modifier in action.getModifiers():
-                    duration = modifier.getDuration() if modifier else None
-                    if duration:
-                        stepDuration = min(stepDuration, duration) if stepDuration else duration
+        now = time_utils.getServerUTCTime()
+        if lastShowTstamp > now:
+            return True
+        actions = self.eventsCache.getActions(calendarEnabledActionFilter).values()
+        for action in actions:
+            if action.getFinishTime() < now:
+                continue
+            stepDuration = None
+            for modifier in action.getModifiers():
+                duration = modifier.getDuration() if modifier else None
+                if duration:
+                    stepDuration = min(stepDuration, duration) if stepDuration else duration
 
-                popupIntervalInHours = self.lobbyContext.getServerSettings().adventCalendar.popupIntervalInHours
-                stepDuration = (stepDuration or popupIntervalInHours) * ONE_HOUR
-                offerChangedTime = now - int(now - action.getStartTime()) % stepDuration
-                wasntVisibleAtAll = not lastShowTstamp or lastShowTstamp > now
-                wasntVisibleCurrentOffer = not wasntVisibleAtAll and lastShowTstamp < offerChangedTime
-                result = wasntVisibleAtAll or wasntVisibleCurrentOffer
+            popupIntervalInHours = self.lobbyContext.getServerSettings().adventCalendar.popupIntervalInHours
+            stepDuration = (stepDuration or popupIntervalInHours) * ONE_HOUR
+            offerChangedTime = now - int(now - action.getStartTime()) % stepDuration
+            wasntVisibleAtAll = not lastShowTstamp or lastShowTstamp > now
+            wasntVisibleCurrentOffer = not wasntVisibleAtAll and lastShowTstamp < offerChangedTime
+            result = wasntVisibleAtAll or wasntVisibleCurrentOffer
 
-            return result
+        return result
 
     def showWindow(self, url=None, invokedFrom=None):
         self._showWindow(url, invokedFrom)
@@ -234,9 +229,9 @@ class CalendarController(GameWindowController, ICalendarController):
     def _openWindow(self, url, invokedFrom=None):
         if self.appLoader.getSpaceID() != GuiGlobalSpaceID.LOBBY:
             return
-        elif self.__getBrowserView() is not None:
-            return
         else:
+            if self.__getBrowserView() is not None:
+                return
             try:
                 while self.__browserID is None:
                     browserID = next(_browserIDGen)
@@ -275,7 +270,7 @@ class CalendarController(GameWindowController, ICalendarController):
             except (TypeError, ValueError):
                 _logger.warning('Invalid calendar show timestamp')
 
-        return None
+        return
 
     def __getBrowserView(self):
         app = self.appLoader.getApp()
@@ -299,14 +294,14 @@ class CalendarController(GameWindowController, ICalendarController):
         browserHandlers = webApiCollection(NotificationWebApi, RequestWebApi, ShopWebApi, SoundWebApi, UtilWebApi, _CloseWindowWebApi, _OpenTabWebApi, OpenWindowWebApi, PersonalExchangeRatesDiscountsWebApi)
 
         def showBrowserWindow():
-            ctx = {'size': browserSize,
-             'title': i18n.makeString(MENU.ADVENTCALENDAR_WINDOW_TITLE),
-             'handlers': browserHandlers,
-             'browserID': browserID,
-             'alias': VIEW_ALIAS.ADVENT_CALENDAR,
-             'showCloseBtn': False,
-             'showWaiting': True,
-             'showActionBtn': False}
+            ctx = {'size': browserSize, 
+               'title': i18n.makeString(MENU.ADVENTCALENDAR_WINDOW_TITLE), 
+               'handlers': browserHandlers, 
+               'browserID': browserID, 
+               'alias': VIEW_ALIAS.ADVENT_CALENDAR, 
+               'showCloseBtn': False, 
+               'showWaiting': True, 
+               'showActionBtn': False}
             browser = self.browserCtrl.getBrowser(browserID)
             browser.useSpecialKeys = False
             if invokedFrom == CalendarInvokeOrigin.HANGAR:

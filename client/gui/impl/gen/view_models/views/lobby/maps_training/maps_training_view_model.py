@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/maps_training/maps_training_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.hangar.menu_item_model import MenuItemModel
 from gui.impl.gen.view_models.views.lobby.maps_training.maps_training_group_model import MapsTrainingGroupModel
@@ -8,7 +6,8 @@ from gui.impl.gen.view_models.views.lobby.maps_training.maps_training_selected_m
 from gui.impl.gen.view_models.views.lobby.maps_training.maps_training_vehicle_marker_model import MapsTrainingVehicleMarkerModel
 
 class MapsTrainingViewModel(ViewModel):
-    __slots__ = ('onBack', 'onSelect', 'onScenarioSelect', 'onFilteringChange', 'onBlurRectUpdated', 'onMoveSpace', 'onInfoClicked', 'onClose', 'onNavigate')
+    __slots__ = ('onBack', 'onSelect', 'onScenarioSelect', 'onFilteringChange', 'onBlurRectUpdated',
+                 'onMoveSpace', 'onInfoClicked', 'onClose', 'onNavigate')
 
     def __init__(self, properties=11, commands=9):
         super(MapsTrainingViewModel, self).__init__(properties=properties, commands=commands)

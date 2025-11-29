@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/zone_components.py
-import functools
-import logging
-import BigWorld
-import CGF
-import GenericComponents
-import Triggers
-import UIComponents
+import functools, logging, BigWorld, CGF, GenericComponents, Triggers, UIComponents
 from cgf_script.component_meta_class import ComponentProperty as CompProp, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, onProcessQuery, autoregister
 from constants import IS_CLIENT, IS_CGF_DUMP
@@ -73,6 +65,7 @@ class ZoneMarker(object):
             restTime = self.finishTime - BigWorld.serverTime()
             if self.duration and restTime > 0:
                 return float(restTime) / self.duration * 100
+        return 0.0
 
     def isActive(self):
         return self.finishTime >= BigWorld.serverTime() >= self.startTime
@@ -84,13 +77,13 @@ class WeatherZoneUINotification(object):
     domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
     editorTitle = 'Zone with weather UI Notification'
     trigger = CompProp(type=CGFMetaTypes.LINK, editorName='Trigger', value=Triggers.AreaTriggerComponent)
-    zoneType = CompProp(type=CGFMetaTypes.STRING, editorName='Zone Type', value=WeatherZoneUINotificationType.BLIZZARD_ZONE, annotations={'comboBox': {WeatherZoneUINotificationType.BLIZZARD_ZONE: WeatherZoneUINotificationType.BLIZZARD_ZONE,
-                  WeatherZoneUINotificationType.FIRE_ZONE: WeatherZoneUINotificationType.FIRE_ZONE,
-                  WeatherZoneUINotificationType.FOG_ZONE: WeatherZoneUINotificationType.FOG_ZONE,
-                  WeatherZoneUINotificationType.RAIN_ZONE: WeatherZoneUINotificationType.RAIN_ZONE,
-                  WeatherZoneUINotificationType.SANDSTORM_ZONE: WeatherZoneUINotificationType.SANDSTORM_ZONE,
-                  WeatherZoneUINotificationType.SMOKE_ZONE: WeatherZoneUINotificationType.SMOKE_ZONE,
-                  WeatherZoneUINotificationType.TORNADO_ZONE: WeatherZoneUINotificationType.TORNADO_ZONE}})
+    zoneType = CompProp(type=CGFMetaTypes.STRING, editorName='Zone Type', value=WeatherZoneUINotificationType.BLIZZARD_ZONE, annotations={'comboBox': {WeatherZoneUINotificationType.BLIZZARD_ZONE: WeatherZoneUINotificationType.BLIZZARD_ZONE, 
+                    WeatherZoneUINotificationType.FIRE_ZONE: WeatherZoneUINotificationType.FIRE_ZONE, 
+                    WeatherZoneUINotificationType.FOG_ZONE: WeatherZoneUINotificationType.FOG_ZONE, 
+                    WeatherZoneUINotificationType.RAIN_ZONE: WeatherZoneUINotificationType.RAIN_ZONE, 
+                    WeatherZoneUINotificationType.SANDSTORM_ZONE: WeatherZoneUINotificationType.SANDSTORM_ZONE, 
+                    WeatherZoneUINotificationType.SMOKE_ZONE: WeatherZoneUINotificationType.SMOKE_ZONE, 
+                    WeatherZoneUINotificationType.TORNADO_ZONE: WeatherZoneUINotificationType.TORNADO_ZONE}})
 
     def __init__(self):
         super(WeatherZoneUINotification, self).__init__()
@@ -131,9 +124,9 @@ class RandomEventZoneUINotification(object):
     domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
     editorTitle = 'Zone with timer UI Notification'
     trigger = CompProp(type=CGFMetaTypes.LINK, editorName='Trigger', value=Triggers.AreaTriggerComponent)
-    zoneType = CompProp(type=CGFMetaTypes.STRING, editorName='Zone Type', value=RandomEventZoneUINotificationType.DANGER_ZONE, annotations={'comboBox': {RandomEventZoneUINotificationType.WARNING_ZONE: RandomEventZoneUINotificationType.WARNING_ZONE,
-                  RandomEventZoneUINotificationType.DANGER_ZONE: RandomEventZoneUINotificationType.DANGER_ZONE,
-                  RandomEventZoneUINotificationType.MAP_DEATH_ZONE: RandomEventZoneUINotificationType.MAP_DEATH_ZONE}})
+    zoneType = CompProp(type=CGFMetaTypes.STRING, editorName='Zone Type', value=RandomEventZoneUINotificationType.DANGER_ZONE, annotations={'comboBox': {RandomEventZoneUINotificationType.WARNING_ZONE: RandomEventZoneUINotificationType.WARNING_ZONE, 
+                    RandomEventZoneUINotificationType.DANGER_ZONE: RandomEventZoneUINotificationType.DANGER_ZONE, 
+                    RandomEventZoneUINotificationType.MAP_DEATH_ZONE: RandomEventZoneUINotificationType.MAP_DEATH_ZONE}})
 
     def __init__(self):
         super(RandomEventZoneUINotification, self).__init__()
@@ -347,16 +340,15 @@ class MapZoneManager(CGF.ComponentManager):
         mapZones = self.__guiSessionProvider.shared.mapZones
         if avatarVehicle is None or not avatarVehicle.isAlive() or mapZones is None:
             return
-        else:
-            for reZone in sorted([ zone for zone in self.queryRandomEventUINotifications ], key=lambda z: z.zoneType == RandomEventZoneUINotificationType.DANGER_ZONE, reverse=True):
-                if avatarVehicle.id in reZone.inZoneVehicles:
-                    mapZones.enterRandomEventZone(reZone)
+        for reZone in sorted([ zone for zone in self.queryRandomEventUINotifications ], key=lambda z: z.zoneType == RandomEventZoneUINotificationType.DANGER_ZONE, reverse=True):
+            if avatarVehicle.id in reZone.inZoneVehicles:
+                mapZones.enterRandomEventZone(reZone)
 
-            for wZone in self.queryWeatherUINotifications:
-                if avatarVehicle.id in wZone.inZoneVehicles:
-                    mapZones.enterWeatherZone(wZone)
+        for wZone in self.queryWeatherUINotifications:
+            if avatarVehicle.id in wZone.inZoneVehicles:
+                mapZones.enterWeatherZone(wZone)
 
-            return
+        return
 
     def __onAvatarReady(self):
         BigWorld.player().onVehicleLeaveWorld += self.__onVehicleLeaveWorld

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/progression/progression.py
 import typing
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
 from gui.impl.gen.view_models.views.lobby.battle_results.progression.progression_model import ProgressionModel

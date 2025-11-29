@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/customization/customization_rarity_reward_screen/customization_rarity_reward_screen.py
-import BigWorld
-import SoundGroups
+import BigWorld, SoundGroups
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewFlags, ViewSettings, WindowLayer, WindowFlags
 from gui.impl.gen.view_models.views.lobby.customization.customization_rarity_reward_screen_model import CustomizationRarityRewardScreenModel
@@ -46,11 +43,17 @@ class CustomizationRarityRewardScreen(ViewImpl):
         return super(CustomizationRarityRewardScreen, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.goToExterior, self.__onGoToExterior), (self.viewModel.goToGarage, self.__onGoToGarage), (self.__hangarSpace.onVehicleChanged, self.__onVehicleChanged))
+        return (
+         (
+          self.viewModel.goToExterior, self.__onGoToExterior),
+         (
+          self.viewModel.goToGarage, self.__onGoToGarage),
+         (
+          self.__hangarSpace.onVehicleChanged, self.__onVehicleChanged))
 
     def _onLoading(self, *args, **kwargs):
         super(CustomizationRarityRewardScreen, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setName(self.__element.name)
             model.setTitle(self.__element.userName)
             model.setRarity(self.__element.rarity)
@@ -87,7 +90,7 @@ class CustomizationRarityRewardScreen(ViewImpl):
 
 
 class CustomizationRarityRewardWindow(LobbyWindow):
-    __slots__ = ('_blur',)
+    __slots__ = ('_blur', )
 
     def __init__(self, element, isFirstEntry):
         self._blur = None

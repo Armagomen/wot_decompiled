@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/frontline_event_widget.py
 from CurrentVehicle import g_currentVehicle
 from constants import LoadoutParams
 from frontline.frontline_account_settings import isRentBannerClicked, setRentBannerClicked
@@ -22,6 +20,8 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from frontline.gui.frontline_helpers import isFinishedCycleState
 from PlayerEvents import g_playerEvents
+from wg_async import wg_async, wg_await, delay
+from constants import SERVER_TICK_LENGTH
 
 class _LastEntryState(object):
 
@@ -39,9 +39,9 @@ class BattleAbilitiesLoadoutParams(object):
     loadoutGroupIndex = 0
     loadoutSectionIndex = 2
     loadoutSlotIndex = 0
-    parameters = {LoadoutParams.groupIndex: loadoutGroupIndex,
-     LoadoutParams.sectionIndex: loadoutSectionIndex,
-     LoadoutParams.slotIndex: loadoutSlotIndex}
+    parameters = {LoadoutParams.groupIndex: loadoutGroupIndex, 
+       LoadoutParams.sectionIndex: loadoutSectionIndex, 
+       LoadoutParams.slotIndex: loadoutSlotIndex}
 
 
 _g_entryLastState = _LastEntryState()
@@ -50,7 +50,9 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __itemsCache = dependency.descriptor(IItemsCache)
     __hangarSpace = dependency.descriptor(IHangarSpace)
-    __abilitiesPanelCriteria = (REQ_CRITERIA.VEHICLE.READY, REQ_CRITERIA.VEHICLE.WOT_PLUS_VEHICLE, REQ_CRITERIA.VEHICLE.EXPIRED_RENT)
+    __abilitiesPanelCriteria = (
+     REQ_CRITERIA.VEHICLE.READY, REQ_CRITERIA.VEHICLE.WOT_PLUS_VEHICLE,
+     REQ_CRITERIA.VEHICLE.EXPIRED_RENT)
 
     def __init__(self):
         super(FrontlineEventWidget, self).__init__(model=EventWidgetModel)
@@ -68,15 +70,25 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
         self.queueUpdate()
 
     def _getEvents(self):
-        return ((self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged),
-         (self.__epicController.onUpdated, self.__onEpicUpdated),
-         (self.viewModel.goToProgressionScreen, self.__onProgressionClick),
-         (self.viewModel.goToCombatReservesScreen, self.__onCombatReservesClick),
-         (self.viewModel.goToSpecialVehicleRentScreen, self.__onVehicleRentClick),
-         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.__hangarSpace.onSpaceCreate, self.__onSpaceCreate),
-         (g_currentVehicle.onChanged, self.__onChangedVehicle),
-         (g_playerEvents.onClientUpdated, self.__onTokensUpdate))
+        return (
+         (
+          self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged),
+         (
+          self.__epicController.onUpdated, self.__onEpicUpdated),
+         (
+          self.viewModel.goToProgressionScreen, self.__onProgressionClick),
+         (
+          self.viewModel.goToCombatReservesScreen, self.__onCombatReservesClick),
+         (
+          self.viewModel.goToSpecialVehicleRentScreen, self.__onVehicleRentClick),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.__hangarSpace.onSpaceCreate, self.__onSpaceCreate),
+         (
+          g_currentVehicle.onChanged, self.__onChangedVehicle),
+         (
+          g_playerEvents.onClientUpdated, self.__onTokensUpdate))
 
     def _prepareRewardsData(self):
         hasNewRewards = False
@@ -94,7 +106,7 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
         super(FrontlineEventWidget, self)._rawUpdate()
         self.__setRentHightlighted()
         self.__updateBattleAbilitiesPanel()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self.__fillWidgetModel(vm)
             if self.__hangarSpace.spaceInited:
                 rewards, rewardsHash = self._prepareRewardsData()
@@ -102,9 +114,12 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
                 vm.setRewardsHash(rewardsHash)
                 _g_entryLastState.update(rewards, rewardsHash)
 
+    @wg_async
     def __onTokensUpdate(self, diff, _):
-        if diff.get('tokens') and isFinishedCycleState():
-            self._rawUpdate()
+        if diff.get('tokens'):
+            yield wg_await(delay(SERVER_TICK_LENGTH))
+            if _g_entryLastState.rewards and not self.__epicController.getNotChosenRewardTokens():
+                self._rawUpdate()
 
     def __onProgressionClick(self):
         if self.__epicController.getNotChosenRewardCount() and isFinishedCycleState():
@@ -132,7 +147,7 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
 
     def __setRentHightlighted(self):
         isRentHightlighted = not (isRentBannerClicked() or self.__epicController.hasSuitableVehicles(~REQ_CRITERIA.VEHICLE.EXPIRED_RENT))
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsRentHighlighted(isRentHightlighted)
 
     def __fillWidgetModel(self, vm):
@@ -144,15 +159,15 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
         vm.setIsMaxLevel(self.__epicController.isMaxLevel())
         vm.setCurrentProgress(self.__epicController.getCurrentProgress())
         vm.setTotalProgress(self.__epicController.getPointsProgressForLevel(progressTier))
-        vm.setCombatReservesPoints(self.__epicController.getSkillPoints() if not isFinished else 0)
+        vm.setCombatReservesPoints((isFinished or self.__epicController.getSkillPoints)() if 1 else 0)
         vehicleLevels = self.__epicController.getValidVehicleLevels()
         vehiclesLevel = toRangeString(vehicleLevels) if isRomanNumberForbidden() else toRomanRangeString(vehicleLevels)
         vm.setRentalVehicleLevel(vehiclesLevel)
 
     def __updateBattleAbilitiesPanel(self):
         ctrl = self.__epicController
-        isSuitable = ctrl.isCurVehicleSuitable() and any((ctrl.isCurVehicleSuitable(criteria, True) for criteria in self.__abilitiesPanelCriteria))
-        with self.viewModel.transaction() as vm:
+        isSuitable = ctrl.isCurVehicleSuitable() and any(ctrl.isCurVehicleSuitable(criteria, True) for criteria in self.__abilitiesPanelCriteria)
+        with self.viewModel.transaction() as (vm):
             vm.setIsSelectedSuitableVehicle(isSuitable)
 
     def __onChangedVehicle(self):

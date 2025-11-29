@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/dialogs/buy_pair_modification.py
 from __future__ import absolute_import
 import logging
 from frameworks.wulf import ViewSettings
@@ -14,8 +12,8 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.veh_post_progression.models.ext_money import EXT_MONEY_ZERO
 from post_progression_common import ACTION_TYPES
 _logger = logging.getLogger(__name__)
-ACTION_TYPE_TO_FITTING_TYPE = {ACTION_TYPES.MODIFICATION: FittingTypes.POST_PROGRESSION_MODIFICATION,
- ACTION_TYPES.PAIR_MODIFICATION: FittingTypes.POST_PROGRESSION_PAIR_MODIFICATION}
+ACTION_TYPE_TO_FITTING_TYPE = {ACTION_TYPES.MODIFICATION: FittingTypes.POST_PROGRESSION_MODIFICATION, 
+   ACTION_TYPES.PAIR_MODIFICATION: FittingTypes.POST_PROGRESSION_PAIR_MODIFICATION}
 
 class BuyPairModificationDialog(BuyAndExchange[AmmunitionBuyModel]):
 
@@ -42,7 +40,8 @@ class BuyPairModificationDialog(BuyAndExchange[AmmunitionBuyModel]):
         super(BuyPairModificationDialog, self)._onLoading(*args, **kwargs)
         self._buyContent = PriceBottomContent(viewModel=self.viewModel.dealPanel, price=self.__price)
         self._buyContent.onLoading()
-        self._mainContent = BuyPairModificationMainContent(viewModel=self.viewModel.mainContent, items=[self.__item.getModificationByID(self.__modID)], vehicleInvID=self.__vehicle.invID, itemsType=ACTION_TYPE_TO_FITTING_TYPE.get(self.__item.actionType, ''))
+        self._mainContent = BuyPairModificationMainContent(viewModel=self.viewModel.mainContent, items=[
+         self.__item.getModificationByID(self.__modID)], vehicleInvID=self.__vehicle.invID, itemsType=ACTION_TYPE_TO_FITTING_TYPE.get(self.__item.actionType, ''))
         self._mainContent.onLoading()
 
     def _initialize(self, *args, **kwargs):
@@ -77,7 +76,7 @@ class BuyPairModificationDialog(BuyAndExchange[AmmunitionBuyModel]):
     def __updateData(self):
         if self.__vehicle is None or not self.__toStepID or not self.__modID:
             return False
-        elif not self.__vehicle.postProgressionAvailability():
+        if not self.__vehicle.postProgressionAvailability():
             return False
         else:
             step = self.__vehicle.postProgression.getStep(self.__toStepID)
@@ -90,7 +89,7 @@ class BuyPairModificationDialog(BuyAndExchange[AmmunitionBuyModel]):
 
 
 class BuyPairModificationMainContent(MultipleItemsContent):
-    __slots__ = ('_warnings',)
+    __slots__ = ('_warnings', )
 
     def __init__(self, viewModel, items, vehicleInvID=None, itemsType=None):
         super(BuyPairModificationMainContent, self).__init__(viewModel, items, vehicleInvID, itemsType)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tankmen_voiceover_view.py
 import logging
 from urlparse import urljoin
 from battle_pass_common import BattlePassTankmenSource, TANKMAN_QUEST_CHAIN_ENTITLEMENT_POSTFIX
@@ -39,7 +37,9 @@ class TankmenVoiceoverView(ViewImpl):
         return super(TankmenVoiceoverView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return CrewMemberSkillTooltip(event.getArgument('name'), event.getArgument('isZero'), event.getArgument('hasZeroPerk')) if contentID == R.views.lobby.battle_pass.tooltips.CrewMemberSkillTooltip() else super(TankmenVoiceoverView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.battle_pass.tooltips.CrewMemberSkillTooltip():
+            return CrewMemberSkillTooltip(event.getArgument('name'), event.getArgument('isZero'), event.getArgument('hasZeroPerk'))
+        return super(TankmenVoiceoverView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(TankmenVoiceoverView, self)._onLoading(*args, **kwargs)
@@ -53,15 +53,24 @@ class TankmenVoiceoverView(ViewImpl):
         super(TankmenVoiceoverView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.close, self.__close),
-         (self.viewModel.showShop, self.__showShop),
-         (self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassChange),
-         (self.__battlePass.onSeasonStateChanged, self.__onBattlePassChange),
-         (self.__battlePass.onExtraChapterExpired, self.__onBattlePassChange),
-         (self.__battlePass.onEntitlementCacheUpdated, self.__fillModel))
+        return (
+         (
+          self.viewModel.close, self.__close),
+         (
+          self.viewModel.showShop, self.__showShop),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassChange),
+         (
+          self.__battlePass.onSeasonStateChanged, self.__onBattlePassChange),
+         (
+          self.__battlePass.onExtraChapterExpired, self.__onBattlePassChange),
+         (
+          self.__battlePass.onEntitlementCacheUpdated, self.__fillModel))
 
     def _getStopSound(self):
-        return BattlePassSounds.HOLIDAY_VOICEOVER_STOP if self.__battlePass.isHoliday() else BattlePassSounds.VOICEOVER_STOP
+        if self.__battlePass.isHoliday():
+            return BattlePassSounds.HOLIDAY_VOICEOVER_STOP
+        return BattlePassSounds.VOICEOVER_STOP
 
     def __close(self):
         if self.__backCallback is not None:
@@ -94,7 +103,7 @@ class TankmenVoiceoverView(ViewImpl):
         return self.__battlePass.getTankmenScreens().get(self.__screenID, {}).get('tankmen', {})
 
     def __fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillTankmen(self.__getTankmenForView(), model.getTankmen())
             model.setScreenID(self.__screenID)
 
@@ -158,7 +167,9 @@ class TankmenVoiceoverView(ViewImpl):
     def __getStateForShopTankmanModel(self, count, availableCount):
         if availableCount <= 0:
             return TankmanStates.RECEIVED
-        return TankmanStates.IN_SHOP if availableCount == count else TankmanStates.NOT_FULL
+        if availableCount == count:
+            return TankmanStates.IN_SHOP
+        return TankmanStates.NOT_FULL
 
     def __getStateForQuestChainTankmanModel(self, tankman, count):
         receivedQuestCount = getReceivedTankmenCount(tankman, TANKMAN_QUEST_CHAIN_ENTITLEMENT_POSTFIX)

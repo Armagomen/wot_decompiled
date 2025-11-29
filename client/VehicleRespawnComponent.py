@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VehicleRespawnComponent.py
-import BigWorld
-import Event
+import BigWorld, Event
 from constants import RespawnState, VEHICLE_SETTING, IS_VS_EDITOR
 from helpers import dependency
 from script_component.DynamicScriptComponent import DynamicScriptComponent
@@ -77,6 +74,5 @@ class VehicleRespawnComponent(DynamicScriptComponent):
         avatar = BigWorld.player()
         if avatar is None or avatar.playerVehicleID != self.entity.id:
             return
-        else:
-            RespawnDestroyEffect.play(self.entity.id)
-            return
+        RespawnDestroyEffect.play(self.entity.id)
+        return

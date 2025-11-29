@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/MinimapGrid.py
 import weakref
 from gui.Scaleform.daapi.view.meta.MinimapGridMeta import MinimapGridMeta
 from helpers import dependency

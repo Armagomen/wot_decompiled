@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/clan_supply/main_view.py
-import logging
-import weakref
+import logging, weakref
 from functools import partial
 import typing
 from account_helpers import AccountSettings
@@ -31,7 +28,11 @@ from uilogging.clan_supply.loggers import ClanSupplyEventLogger
 if typing.TYPE_CHECKING:
     from typing import Optional
 _logger = logging.getLogger(__name__)
-_SubModelInfo = typing.NamedTuple('_SubModelInfo', [('ID', ClanSupplyViews), ('presenter', SubModelPresenter)])
+_SubModelInfo = typing.NamedTuple('_SubModelInfo', [
+ (
+  'ID', ClanSupplyViews),
+ (
+  'presenter', SubModelPresenter)])
 
 class MainView(ViewImpl):
     __slots__ = ('__tabId', '__presenterLoader', '__isClosingBySelf', '__uiLogger')
@@ -39,10 +40,10 @@ class MainView(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
     __wallet = dependency.descriptor(IWalletController)
     __settingsCore = dependency.descriptor(ISettingsCore)
-    __tabID2ScreenEventLog = {ClanSupplyViews.PROGRESSION: ClanSupplyLogKeys.PROGRESSION_SCREEN,
-     ClanSupplyViews.QUESTS: ClanSupplyLogKeys.QUESTS_SCREEN}
-    __tabID2SidebarLog = {ClanSupplyViews.PROGRESSION: ClanSupplyLogKeys.SIDEBAR_PROGRESSION,
-     ClanSupplyViews.QUESTS: ClanSupplyLogKeys.SIDEBAR_QUEST}
+    __tabID2ScreenEventLog = {ClanSupplyViews.PROGRESSION: ClanSupplyLogKeys.PROGRESSION_SCREEN, 
+       ClanSupplyViews.QUESTS: ClanSupplyLogKeys.QUESTS_SCREEN}
+    __tabID2SidebarLog = {ClanSupplyViews.PROGRESSION: ClanSupplyLogKeys.SIDEBAR_PROGRESSION, 
+       ClanSupplyViews.QUESTS: ClanSupplyLogKeys.SIDEBAR_QUEST}
 
     def __init__(self, layoutID, *args, **kwargs):
         settings = ViewSettings(layoutID, flags=ViewFlags.LOBBY_SUB_VIEW, model=ClanSupplyModel(), args=args, kwargs=kwargs)
@@ -98,10 +99,18 @@ class MainView(ViewImpl):
         super(MainView, self)._finalize()
 
     def _getEvents(self):
-        return super(MainView, self)._getEvents() + ((self.viewModel.onClose, self.__onClose), (self.viewModel.onInfoPageOpen, self.__onInfoPageOpen), (self.viewModel.sidebar.onSideBarTabChange, self.__onSideBarTabChanged))
+        return super(MainView, self)._getEvents() + (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onInfoPageOpen, self.__onInfoPageOpen),
+         (
+          self.viewModel.sidebar.onSideBarTabChange, self.__onSideBarTabChanged))
 
     def _getCallbacks(self):
-        return (('cache.dynamicCurrencies.tourcoin', self.__updateBalance),)
+        return (
+         (
+          'cache.dynamicCurrencies.tourcoin', self.__updateBalance),)
 
     @property
     def __currentPage(self):
@@ -118,7 +127,7 @@ class MainView(ViewImpl):
         return
 
     def __updateTabs(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tabs = tx.sidebar.getItems()
             tabs.clear()
             for tab in tuple(ClanSupplyViews):
@@ -173,8 +182,8 @@ class PresenterLazyLoader(object):
     def __init__(self, mainView):
         self.__presentersCache = {}
         self.__mainView = weakref.proxy(mainView)
-        self.__loadersMap = {ClanSupplyViews.PROGRESSION: partial(self.__makeSubModel, ClanSupplyViews.PROGRESSION, self.__loadProgression),
-         ClanSupplyViews.QUESTS: partial(self.__makeSubModel, ClanSupplyViews.QUESTS, self.__loadQuests)}
+        self.__loadersMap = {ClanSupplyViews.PROGRESSION: partial(self.__makeSubModel, ClanSupplyViews.PROGRESSION, self.__loadProgression), 
+           ClanSupplyViews.QUESTS: partial(self.__makeSubModel, ClanSupplyViews.QUESTS, self.__loadQuests)}
 
     def clear(self):
         self.__loadersMap.clear()

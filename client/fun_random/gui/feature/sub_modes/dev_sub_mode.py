@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_modes/dev_sub_mode.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from fun_random.gui.feature.sub_modes.base_sub_mode import FunBaseSubMode
 if typing.TYPE_CHECKING:
     from fun_random.helpers.server_settings import FunSubModeConfig
@@ -15,7 +12,7 @@ class FunDevSubMode(FunBaseSubMode):
         _logger.info('%s is created with settings %s', self, self._settings)
 
     def __repr__(self):
-        return 'FunDevSubMode id={}, isEnabled={}'.format(self._settings.eventID, self._settings.isEnabled)
+        return ('FunDevSubMode id={}, isEnabled={}').format(self._settings.eventID, self._settings.isEnabled)
 
     def clearNotification(self):
         super(FunDevSubMode, self).clearNotification()

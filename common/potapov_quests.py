@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/potapov_quests.py
-import struct
-import time
-import ResMgr
-import nations
-import quest_xml_source
+import struct, time, ResMgr, nations, quest_xml_source
 from items import _xml, ItemsPrices, vehicles
 from items.vehicles import VEHICLE_CLASS_TAGS
 from constants import ITEM_DEFS_PATH, IS_CLIENT, IS_WEB, EVENT_TYPE, PERSONAL_MISSION_FREE_TOKEN_NAME, PERSONAL_MISSION_2_FREE_TOKEN_NAME, PERSONAL_MISSION_FINAL_PAWN_COST, PERSONAL_MISSION_2_FINAL_PAWN_COST, COMMON_ROLE_TO_ROLE_TYPE, COMMON_ROLE
@@ -17,7 +11,8 @@ elif IS_WEB:
     from web_stubs import *
 POTAPOV_QUEST_XML_PATH = ITEM_DEFS_PATH + 'potapov_quests/'
 _FALLOUT_BATTLE_TAGS = frozenset(('classic', 'multiteam'))
-_ALLOWED_TAG_NAMES = ('initial', 'final') + tuple(_FALLOUT_BATTLE_TAGS) + tuple(VEHICLE_CLASS_TAGS) + tuple(ALLIANCES_TAGS) + tuple(COMMON_ROLE.ALL)
+_ALLOWED_TAG_NAMES = (
+ 'initial', 'final') + tuple(_FALLOUT_BATTLE_TAGS) + tuple(VEHICLE_CLASS_TAGS) + tuple(ALLIANCES_TAGS) + tuple(COMMON_ROLE.ALL)
 g_cache = None
 g_tileCache = None
 g_seasonCache = None
@@ -26,27 +21,34 @@ class PQ_BRANCH():
     REGULAR = 0
     PERSONAL_MISSION_2 = 2
     PERSONAL_MISSION_3 = 4
-    ALL = (REGULAR, PERSONAL_MISSION_2, PERSONAL_MISSION_3)
-    NAME_TO_TYPE = {'regular': REGULAR,
-     'pm2': PERSONAL_MISSION_2,
-     'pm3': PERSONAL_MISSION_3}
+    ALL = (
+     REGULAR, PERSONAL_MISSION_2, PERSONAL_MISSION_3)
+    NAME_TO_TYPE = {'regular': REGULAR, 
+       'pm2': PERSONAL_MISSION_2, 
+       'pm3': PERSONAL_MISSION_3}
     TYPE_TO_NAME = dict(zip(NAME_TO_TYPE.values(), NAME_TO_TYPE.keys()))
-    V1_BRANCHES = (REGULAR, PERSONAL_MISSION_2)
-    V2_BRANCHES = (PERSONAL_MISSION_3,)
-    BRANCH_GROUPS = [V1_BRANCHES, V2_BRANCHES]
+    V1_BRANCHES = (
+     REGULAR,
+     PERSONAL_MISSION_2)
+    V2_BRANCHES = (
+     PERSONAL_MISSION_3,)
+    BRANCH_GROUPS = [
+     V1_BRANCHES, V2_BRANCHES]
 
 
-PM_BRANCH_TO_FREE_TOKEN_NAME = {PQ_BRANCH.REGULAR: PERSONAL_MISSION_FREE_TOKEN_NAME,
- PQ_BRANCH.PERSONAL_MISSION_2: PERSONAL_MISSION_2_FREE_TOKEN_NAME}
-PM_BRANCH_TO_FINAL_PAWN_COST = {PQ_BRANCH.REGULAR: PERSONAL_MISSION_FINAL_PAWN_COST,
- PQ_BRANCH.PERSONAL_MISSION_2: PERSONAL_MISSION_2_FINAL_PAWN_COST}
+PM_BRANCH_TO_FREE_TOKEN_NAME = {PQ_BRANCH.REGULAR: PERSONAL_MISSION_FREE_TOKEN_NAME, 
+   PQ_BRANCH.PERSONAL_MISSION_2: PERSONAL_MISSION_2_FREE_TOKEN_NAME}
+PM_BRANCH_TO_FINAL_PAWN_COST = {PQ_BRANCH.REGULAR: PERSONAL_MISSION_FINAL_PAWN_COST, 
+   PQ_BRANCH.PERSONAL_MISSION_2: PERSONAL_MISSION_2_FINAL_PAWN_COST}
 
 def isPotapovQuestBranchEnabled(gameParams, branch):
     if branch == PQ_BRANCH.REGULAR:
         return gameParams['misc_settings']['isRegularQuestEnabled']
     if branch == PQ_BRANCH.PERSONAL_MISSION_2:
         return gameParams['misc_settings']['isPM2QuestEnabled']
-    return gameParams['misc_settings']['isPM3QuestEnabled'] if branch == PQ_BRANCH.PERSONAL_MISSION_3 else False
+    if branch == PQ_BRANCH.PERSONAL_MISSION_3:
+        return gameParams['misc_settings']['isPM3QuestEnabled']
+    return False
 
 
 def isPotapovQuestTileEnabled(gameParams, pqType):
@@ -69,13 +71,20 @@ class PQ_STATE():
     NEED_GET_ADD_REWARD = 4
     NEED_GET_ALL_REWARDS = 5
     ALL_REWARDS_GOTTEN = 6
-    NEXT_STATE = {NONE: (UNLOCKED, NEED_GET_MAIN_REWARD, NEED_GET_ALL_REWARDS),
-     UNLOCKED: (NEED_GET_MAIN_REWARD, NEED_GET_ALL_REWARDS),
-     NEED_GET_MAIN_REWARD: (MAIN_REWARD_GOTTEN, ALL_REWARDS_GOTTEN),
-     MAIN_REWARD_GOTTEN: (NEED_GET_ADD_REWARD,),
-     NEED_GET_ADD_REWARD: (ALL_REWARDS_GOTTEN,),
-     NEED_GET_ALL_REWARDS: (ALL_REWARDS_GOTTEN,)}
-    NEED_GET_REWARD = (NEED_GET_MAIN_REWARD, NEED_GET_ADD_REWARD, NEED_GET_ALL_REWARDS)
+    NEXT_STATE = {NONE: (
+            UNLOCKED, NEED_GET_MAIN_REWARD, NEED_GET_ALL_REWARDS), 
+       UNLOCKED: (
+                NEED_GET_MAIN_REWARD, NEED_GET_ALL_REWARDS), 
+       NEED_GET_MAIN_REWARD: (
+                            MAIN_REWARD_GOTTEN, ALL_REWARDS_GOTTEN), 
+       MAIN_REWARD_GOTTEN: (
+                          NEED_GET_ADD_REWARD,), 
+       NEED_GET_ADD_REWARD: (
+                           ALL_REWARDS_GOTTEN,), 
+       NEED_GET_ALL_REWARDS: (
+                            ALL_REWARDS_GOTTEN,)}
+    NEED_GET_REWARD = (
+     NEED_GET_MAIN_REWARD, NEED_GET_ADD_REWARD, NEED_GET_ALL_REWARDS)
     COMPLETED = (ALL_REWARDS_GOTTEN, NEED_GET_ALL_REWARDS, NEED_GET_ADD_REWARD)
 
 
@@ -84,14 +93,17 @@ class PQ_FLAG():
     PAUSE = 1
 
 
-PQ_REWARD_BY_DEMAND = {1: (PQ_STATE.NEED_GET_MAIN_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS),
- 2: (PQ_STATE.NEED_GET_ADD_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS),
- 3: (PQ_STATE.NEED_GET_MAIN_REWARD, PQ_STATE.NEED_GET_ADD_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS)}
+PQ_REWARD_BY_DEMAND = {1: (
+     PQ_STATE.NEED_GET_MAIN_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS), 
+   2: (
+     PQ_STATE.NEED_GET_ADD_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS), 
+   3: (
+     PQ_STATE.NEED_GET_MAIN_REWARD, PQ_STATE.NEED_GET_ADD_REWARD, PQ_STATE.NEED_GET_ALL_REWARDS)}
 
 def init():
     global g_cache
-    global g_tileCache
     global g_seasonCache
+    global g_tileCache
     g_seasonCache = SeasonCache()
     g_tileCache = TileCache()
     g_cache = PQCache()
@@ -156,7 +168,8 @@ class TileCache(object):
         for tname, tsection in section.items():
             if tname == 'quests':
                 continue
-            ctx = (None, xmlPath)
+            ctx = (
+             None, xmlPath)
             if tname in ids:
                 _xml.raiseWrongXml(ctx, '', 'tile name is not unique')
             seasonID = _xml.readInt(ctx, tsection, 'seasonID')
@@ -168,15 +181,15 @@ class TileCache(object):
             chainsCountToUnlockNext = _xml.readInt(ctx, tsection, 'chainsCountToUnlockNext', 0, 15)
             nextTileIDs = frozenset(map(int, _xml.readString(ctx, tsection, 'nextTileIDs').split()))
             achievements = {}
-            basicInfo = {'name': tname,
-             'chainsCount': chainsCount,
-             'nextTileIDs': nextTileIDs,
-             'chainsCountToUnlockNext': chainsCountToUnlockNext,
-             'questsInChain': _xml.readInt(ctx, tsection, 'questsInChain', 1, 100),
-             'price': ItemsPrices._tuplePrice(_xml.readPrice(ctx, tsection, 'price')),
-             'achievements': achievements,
-             'seasonID': seasonID,
-             'tokens': set(_xml.readString(ctx, tsection, 'tokens').split())}
+            basicInfo = {'name': tname, 
+               'chainsCount': chainsCount, 
+               'nextTileIDs': nextTileIDs, 
+               'chainsCountToUnlockNext': chainsCountToUnlockNext, 
+               'questsInChain': _xml.readInt(ctx, tsection, 'questsInChain', 1, 100), 
+               'price': ItemsPrices._tuplePrice(_xml.readPrice(ctx, tsection, 'price')), 
+               'achievements': achievements, 
+               'seasonID': seasonID, 
+               'tokens': set(_xml.readString(ctx, tsection, 'tokens').split())}
             if tsection.has_key('achievements'):
                 for aname, asection in tsection['achievements'].items():
                     _, aid = aname.split('_')
@@ -223,13 +236,13 @@ class PQCache(object):
         return uniqueQuestID in self.__questUniqueIDToPotapovQuestID
 
     def questListByTileIDChainID(self, tileID, chainID):
-        return self.__tileIDchainIDToPotapovQuestID[tileID, chainID]
+        return self.__tileIDchainIDToPotapovQuestID[(tileID, chainID)]
 
     def finalPotapovQuestIDByTileIDChainID(self, tileID, chainID):
-        return self.__tileIDchainIDToFinalPotapovQuestID[tileID, chainID]
+        return self.__tileIDchainIDToFinalPotapovQuestID[(tileID, chainID)]
 
     def initialPotapovQuestIDByTileIDChainID(self, tileID, chainID):
-        return self.__tileIDchainIDToInitialPotapovQuestID[tileID, chainID]
+        return self.__tileIDchainIDToInitialPotapovQuestID[(tileID, chainID)]
 
     def getPotapovQuestIDByUniqueID(self, uniqueQuestID):
         if uniqueQuestID not in self.__questUniqueIDToPotapovQuestID:
@@ -277,15 +290,15 @@ class PQCache(object):
                 _xml.raiseWrongXml(ctx, '', 'quest internalID must be between 1 and %s' % tileInfo['chainsCount'])
             minLevel = _xml.readInt(ctx, qsection, 'minLevel', VEHICLE_RESTRICTION_MIN_LEVEL, VEHICLE_RESTRICTION_MAX_LEVEL)
             maxLevel = _xml.readInt(ctx, qsection, 'maxLevel', minLevel, VEHICLE_RESTRICTION_MAX_LEVEL)
-            basicInfo = {'name': qname,
-             'id': potapovQuestID,
-             'branch': PQ_BRANCH.NAME_TO_TYPE[questBranchName],
-             'tileID': int(tileID),
-             'chainID': int(chainID),
-             'internalID': int(internalID),
-             'minLevel': minLevel,
-             'maxLevel': maxLevel,
-             'requiredUnlocks': frozenset(map(int, _xml.readString(ctx, qsection, 'requiredUnlocks').split()))}
+            basicInfo = {'name': qname, 
+               'id': potapovQuestID, 
+               'branch': PQ_BRANCH.NAME_TO_TYPE[questBranchName], 
+               'tileID': int(tileID), 
+               'chainID': int(chainID), 
+               'internalID': int(internalID), 
+               'minLevel': minLevel, 
+               'maxLevel': maxLevel, 
+               'requiredUnlocks': frozenset(map(int, _xml.readString(ctx, qsection, 'requiredUnlocks').split()))}
             rewardByDemand = qsection.readInt('rewardByDemand', 0)
             if rewardByDemand != 0 and rewardByDemand not in PQ_REWARD_BY_DEMAND.keys():
                 raise SoftException('Unexpected value for rewardByDemand')
@@ -309,16 +322,8 @@ class PQCache(object):
                 basicInfo['shortUserString'] = i18n.makeString(qsection.readString('shortUserString'))
                 basicInfo['description'] = qsection.readString('description')
                 basicInfo['advice'] = qsection.readString('advice')
-            questPath = ''.join([POTAPOV_QUEST_XML_PATH,
-             '/',
-             questBranchName,
-             '/tile_',
-             tileID,
-             '/chain_',
-             chainID,
-             '/',
-             qname,
-             '.xml'])
+            questPath = ('').join([POTAPOV_QUEST_XML_PATH, '/', questBranchName, '/tile_', tileID, '/chain_',
+             chainID, '/', qname, '.xml'])
             questCtx = (None, questPath)
             nodes = xmlSource.readFromInternalFile(questPath, curTime, auxData)
             nodes = nodes.get(EVENT_TYPE.POTAPOV_QUEST, None)
@@ -435,7 +440,12 @@ class ClassifierByRole(object):
 
 
 class PQType(object):
-    __slots__ = ('id', 'tags', 'isInitial', 'isFinal', 'branch', 'classifier', 'tileID', 'chainID', 'internalID', 'requiredUnlocks', 'generalQuestID', 'mainQuestID', 'mainAwardListQuestID', 'addQuestID', 'addAwardListQuestID', 'mainQuestInfo', 'addQuestInfo', 'userString', 'shortUserString', 'description', 'advice', 'minLevel', 'maxLevel', 'rewardByDemand', 'mainAwardListQuestInfo', 'addAwardListQuestInfo')
+    __slots__ = ('id', 'tags', 'isInitial', 'isFinal', 'branch', 'classifier', 'tileID',
+                 'chainID', 'internalID', 'requiredUnlocks', 'generalQuestID', 'mainQuestID',
+                 'mainAwardListQuestID', 'addQuestID', 'addAwardListQuestID', 'mainQuestInfo',
+                 'addQuestInfo', 'userString', 'shortUserString', 'description',
+                 'advice', 'minLevel', 'maxLevel', 'rewardByDemand', 'mainAwardListQuestInfo',
+                 'addAwardListQuestInfo')
 
     def __init__(self, basicInfo):
         self.id = basicInfo['id']
@@ -505,10 +515,11 @@ class PQType(object):
             flags, state = potapovQuestsProgress.get(finalQuestID)
             if state >= PQ_STATE.NEED_GET_ADD_REWARD:
                 completedQuestsCount += 1
-            if state == PQ_STATE.NONE:
+            elif state == PQ_STATE.NONE:
                 toUnlock.add(finalQuestID)
 
-        return (completedQuestsCount >= chainsCountToUnlockNext, toUnlock)
+        return (
+         completedQuestsCount >= chainsCountToUnlockNext, toUnlock)
 
     @property
     def isPM3(self):
@@ -558,7 +569,8 @@ class PQStorage(object):
     def __contains__(self, id):
         return id in self.__quests
 
-    def get(self, key, default=(PQ_FLAG.NONE, PQ_STATE.NONE)):
+    def get(self, key, default=(
+ PQ_FLAG.NONE, PQ_STATE.NONE)):
         return self.__quests.get(key, default)
 
     def pop(self, id):
@@ -576,7 +588,8 @@ class PQStorage(object):
         else:
             quests = self.__quests
             size = len(quests)
-            packedValues = [ ((id & 1023) << 6) + ((flags & 7) << 3) + (state & 7) for id, (flags, state) in quests.iteritems() ]
+            packedValues = [ ((id & 1023) << 6) + ((flags & 7) << 3) + (state & 7) for id, (flags, state) in quests.iteritems()
+                           ]
             self.__compDescr = struct.pack(('<%sH' % (size + 1)), size, *packedValues)
             return self.__compDescr
 

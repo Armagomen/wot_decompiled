@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/lobby_header_utils.py
 from __future__ import absolute_import
 from enum import Enum
 from shared_utils import BitmaskHelper

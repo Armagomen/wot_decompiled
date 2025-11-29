@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/mapbox/mapbox_survey_helper.py
 from enum import Enum
-import logging
-import json
-import typing
+import logging, json, typing
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_question_model import QuestionType
@@ -24,7 +20,8 @@ class QuantifierTypes(Enum):
 
 
 class Condition(object):
-    __slots__ = ('__requiredQuestionId', '__requiredAnswers', '__requiredOptionId', '__quantifier', '__isRequiredAnswer')
+    __slots__ = ('__requiredQuestionId', '__requiredAnswers', '__requiredOptionId',
+                 '__quantifier', '__isRequiredAnswer')
     __mapboxCtrl = dependency.descriptor(IMapboxController)
 
     def __init__(self, requiredQuestionId, requiredOptionId, requiredAnswers, quantifier, isRequired=False):
@@ -43,7 +40,9 @@ class Condition(object):
         selectedAnswers = surveyManager.getSelectedAnswers(self.__requiredQuestionId, self.__requiredOptionId)
         if not selectedAnswers and self.__isRequiredAnswer:
             return False
-        return len(selectedAnswers) > 1 and set(selectedAnswers).issubset(set(self.__requiredAnswers)) if self.__quantifier == QuantifierTypes.MULTIPLE.value else len(set(selectedAnswers).intersection(set(self.__requiredAnswers))) == 1
+        if self.__quantifier == QuantifierTypes.MULTIPLE.value:
+            return len(selectedAnswers) > 1 and set(selectedAnswers).issubset(set(self.__requiredAnswers))
+        return len(set(selectedAnswers).intersection(set(self.__requiredAnswers))) == 1
 
     def clear(self):
         self.__requiredAnswers = []
@@ -98,7 +97,8 @@ class IQuestion(object):
 
 
 class Question(IQuestion):
-    __slots__ = ('__surveyGroup', '__questionId', '__isMultiple', '__isRequired', '__conditions', '__answers', '__guiParameters', '__linkedParameters', '__dependedQuestions')
+    __slots__ = ('__surveyGroup', '__questionId', '__isMultiple', '__isRequired', '__conditions',
+                 '__answers', '__guiParameters', '__linkedParameters', '__dependedQuestions')
     _mapboxCtrl = dependency.descriptor(IMapboxController)
 
     def __init__(self, *args, **kwargs):
@@ -128,7 +128,10 @@ class Question(IQuestion):
         return self.__isMultiple
 
     def isUsingIcons(self):
-        return self.__guiParameters.showIcons if self.__guiParameters is not None else False
+        if self.__guiParameters is not None:
+            return self.__guiParameters.showIcons
+        else:
+            return False
 
     def isReadyToShow(self):
         return not self.__conditions or bool(findFirst(lambda c: c.isValid(), self.__conditions))
@@ -142,39 +145,53 @@ class Question(IQuestion):
                 if sourceQuestionId:
                     choice = first(self._mapboxCtrl.surveyManager.getSelectedAnswers(sourceQuestionId))
                     return '%s_%s' % (self.__guiParameters.image, replaceHyphenToUnderscore(choice))
-            return self.__guiParameters.image if self.__guiParameters is not None else ''
+            if self.__guiParameters is not None:
+                return self.__guiParameters.image
+            return ''
 
     def getTitleParameters(self):
         if self.__linkedParameters is None or not self.__linkedParameters.param:
             return []
+        param = self.__linkedParameters.param
+        sourceQuestionId = param.fromQuestion
+        pathPrefix = self._mapboxCtrl.surveyManager.getQuestion(sourceQuestionId).getPathPrefix()
+        if param.answers is not None:
+            strPath = _STR_PATH.dyn(self.__surveyGroup).response
+            sources = [ answer for answer in param.answers if answer in self._mapboxCtrl.surveyManager.getSelectedAnswers(sourceQuestionId)
+                      ]
         else:
-            param = self.__linkedParameters.param
-            sourceQuestionId = param.fromQuestion
-            pathPrefix = self._mapboxCtrl.surveyManager.getQuestion(sourceQuestionId).getPathPrefix()
-            if param.answers is not None:
-                strPath = _STR_PATH.dyn(self.__surveyGroup).response
-                sources = [ answer for answer in param.answers if answer in self._mapboxCtrl.surveyManager.getSelectedAnswers(sourceQuestionId) ]
-            else:
-                strPath = _STR_PATH.dyn(self.__surveyGroup).question.option
-                sources = [ option for option in param.options ]
-            itemsResIds = [ strPath.dyn('_'.join((pathPrefix, replaceHyphenToUnderscore(source))))() for source in sources ]
-            items = [ backport.text(resId) for resId in itemsResIds if resId != R.invalid() ]
-            return [backport.text(_STR_PATH.listSeparator()).join(items)] if items and self.__linkedParameters.isJoined else items
+            strPath = _STR_PATH.dyn(self.__surveyGroup).question.option
+            sources = [ option for option in param.options ]
+        itemsResIds = [ strPath.dyn(('_').join((pathPrefix, replaceHyphenToUnderscore(source))))() for source in sources
+                      ]
+        items = [ backport.text(resId) for resId in itemsResIds if resId != R.invalid() ]
+        if items and self.__linkedParameters.isJoined:
+            return [backport.text(_STR_PATH.listSeparator()).join(items)]
+        else:
+            return items
 
     def getPathPrefix(self):
         return self.__guiParameters.pathPrefix
 
     def getLinkedQuestionId(self):
-        return self.__linkedParameters.param.fromQuestion if self.__linkedParameters else None
+        if self.__linkedParameters:
+            return self.__linkedParameters.param.fromQuestion
+        else:
+            return
 
     def getAnswers(self):
-        return self.__answers.variants if self.__answers is not None else []
+        if self.__answers is not None:
+            return self.__answers.variants
+        else:
+            return []
 
     def convertAnswers(self, answers, optionId):
         if len(answers) > 1:
             _logger.error('Incorrect answers for the question with questionId=%s', self.__questionId)
             return []
-        return answers[0].get('choices', []) if answers else []
+        if answers:
+            return answers[0].get('choices', [])
+        return []
 
     def validateAnswers(self, answers, oldAnswers):
         groupsAnswers = self.__answers.responseGroups if self.__answers is not None else None
@@ -206,7 +223,7 @@ class Question(IQuestion):
 
 
 class _TableQuestion(Question):
-    __slots__ = ('__options',)
+    __slots__ = ('__options', )
 
     def __init__(self, *args, **kwargs):
         super(_TableQuestion, self).__init__(*args, **kwargs)
@@ -217,15 +234,19 @@ class _TableQuestion(Question):
 
     def convertAnswers(self, answers, optionId):
         answer = findFirst(lambda answer: answer.get('optionId') == optionId, answers)
-        return answer.get('choices', []) if answer is not None else []
+        if answer is not None:
+            return answer.get('choices', [])
+        else:
+            return []
 
     def getOptions(self):
         if self.__options is None:
             return []
-        elif self.__options.fromQuestion is None:
-            return self.__options.answers
         else:
-            return [ option for option in self.__options.answers if option in self._mapboxCtrl.surveyManager.getSelectedAnswers(self.__options.fromQuestion) ]
+            if self.__options.fromQuestion is None:
+                return self.__options.answers
+            return [ option for option in self.__options.answers if option in self._mapboxCtrl.surveyManager.getSelectedAnswers(self.__options.fromQuestion)
+                   ]
 
     def validateAnswers(self, answers, oldAnswers):
         _logger.debug('Unsupported operation for a table question')
@@ -261,7 +282,9 @@ class _VehicleQuestion(Question):
         return QuestionType.VEHICLE
 
     def convertAnswers(self, answers, optionId):
-        return first(answers, {}).get('choices', []) if answers else []
+        if answers:
+            return first(answers, {}).get('choices', [])
+        return []
 
 
 class _ImageQuestion(Question):
@@ -309,7 +332,7 @@ class AlternativeQuestion(IQuestion):
             if q.getLinkedQuestionId():
                 return q.getLinkedQuestionId()
 
-        return None
+        return
 
     def getQuestionType(self):
         return QuestionType.ALTERNATIVE
@@ -319,13 +342,16 @@ class AlternativeQuestion(IQuestion):
 
     def getDependedQuestions(self, questionId=None):
         question = findFirst(lambda q: q.getQuestionId() == questionId, self._alternatives)
-        return question.getDependedQuestions() if question is not None else []
+        if question is not None:
+            return question.getDependedQuestions()
+        else:
+            return []
 
     def getConditions(self):
         return [ c for q in self._alternatives for c in q.getConditions() ]
 
     def isReadyToShow(self):
-        return any((q.isReadyToShow() for q in self._alternatives))
+        return any(q.isReadyToShow() for q in self._alternatives)
 
     def isSyncronizedAnswers(self):
         return self.__isSynchronizedAnswers
@@ -384,13 +410,13 @@ class AlternativeOneManyQuestion(AlternativeQuestion):
         return
 
 
-_SUPPORTED_QUESTION_TYPES = {QuestionType.IMAGE.value: _ImageQuestion,
- QuestionType.VEHICLE.value: _VehicleQuestion,
- QuestionType.TABLE.value: _TableQuestion,
- QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion,
- QuestionType.TEXT.value: _TextQuestion,
- QuestionType.MULTIPLE_CHOICE.value: _MulptipleChoiceQuestion,
- QuestionType.ALTERNATIVE.value: AlternativeQuestion}
+_SUPPORTED_QUESTION_TYPES = {QuestionType.IMAGE.value: _ImageQuestion, 
+   QuestionType.VEHICLE.value: _VehicleQuestion, 
+   QuestionType.TABLE.value: _TableQuestion, 
+   QuestionType.INTERACTIVE_MAP.value: _InteractiveMapQuestion, 
+   QuestionType.TEXT.value: _TextQuestion, 
+   QuestionType.MULTIPLE_CHOICE.value: _MulptipleChoiceQuestion, 
+   QuestionType.ALTERNATIVE.value: AlternativeQuestion}
 
 def getQuestionClass(questionType):
     return _SUPPORTED_QUESTION_TYPES.get(questionType)

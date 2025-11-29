@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_first_entry_award_view.py
 from operator import attrgetter
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.meta.PersonalMissionFirstEntryAwardViewMeta import PersonalMissionFirstEntryAwardViewMeta
@@ -19,20 +17,14 @@ from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
 
 def _wrapBadgeAward(title, badgeID, imageSize):
-    return {'title': title,
-     'icon': getBadgeIconPath(imageSize, badgeID),
-     'tooltip': {'isSpecial': True,
-                 'specialAlias': TOOLTIPS_CONSTANTS.BADGE,
-                 'specialArgs': [badgeID]}}
+    return {'title': title, 
+       'icon': getBadgeIconPath(imageSize, badgeID), 'tooltip': {'isSpecial': True, 'specialAlias': TOOLTIPS_CONSTANTS.BADGE, 'specialArgs': [badgeID]}}
 
 
 class PersonalMissionFirstEntryAwardView(LobbySubView, PersonalMissionsNavigation, PersonalMissionFirstEntryAwardViewMeta):
     _COMMON_SOUND_SPACE = PERSONAL_MISSIONS_SOUND_SPACE
-    __BADGE_ICON_SIZES = dict(enumerate((BADGES_ICONS.X220,
-     BADGES_ICONS.X110,
-     BADGES_ICONS.X110,
-     BADGES_ICONS.X110,
-     BADGES_ICONS.X80), start=1))
+    __BADGE_ICON_SIZES = dict(enumerate((
+     BADGES_ICONS.X220, BADGES_ICONS.X110, BADGES_ICONS.X110, BADGES_ICONS.X110, BADGES_ICONS.X80), start=1))
 
     def bigBtnClicked(self):
         settingsCore = dependency.instance(ISettingsCore)
@@ -55,12 +47,12 @@ class PersonalMissionFirstEntryAwardView(LobbySubView, PersonalMissionsNavigatio
             titleLabel = PERSONAL_MISSIONS.PERSONALMISSIONAWARDVIEW_TITLE_PERFECT
         else:
             titleLabel = PERSONAL_MISSIONS.PERSONALMISSIONAWARDVIEW_TITLE
-        self.as_setInitDataS({'bgSource': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_INFOSCREENBG,
-         'titleLabel': titleLabel,
-         'subtitleLabel': PERSONAL_MISSIONS.PERSONALMISSIONAWARDVIEW_SUBTITLE,
-         'bigBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_ACKNOWLEDGEBTN})
-        self.as_updateS({'awardsLinkage': PERSONAL_MISSIONS_ALIASES.BADGES_CMP_LINKAGES[len(awards) - 1],
-         'awards': awards})
+        self.as_setInitDataS({'bgSource': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_INFOSCREENBG, 
+           'titleLabel': titleLabel, 
+           'subtitleLabel': PERSONAL_MISSIONS.PERSONALMISSIONAWARDVIEW_SUBTITLE, 
+           'bigBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONFIRSTENTRYVIEW_ACKNOWLEDGEBTN})
+        self.as_updateS({'awardsLinkage': PERSONAL_MISSIONS_ALIASES.BADGES_CMP_LINKAGES[(len(awards) - 1)], 
+           'awards': awards})
         self.soundManager.playSound(SOUNDS.FIRST_RUN_AWARD_APPEARANCE)
 
     def __getAwards(self, operations):

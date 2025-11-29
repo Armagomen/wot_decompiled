@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DestructibleEntity.py
-import BigWorld
-import destructible_entities
-import Math
+import BigWorld, destructible_entities, Math
 from debug_utils import LOG_ERROR
 from DestructibleStickers import DestructibleStickers
 from Vehicle import SegmentCollisionResultExt
@@ -33,9 +29,10 @@ class DestructibleEntity(BigWorld.Entity):
 
     def __init__(self):
         self.publicInfo = {'team': self.team}
-        self.__stateTriggers = {'alive': self.isAlive,
-         'destroyed': self.isDestroyed}
-        self.targetCaps = [0]
+        self.__stateTriggers = {'alive': self.isAlive, 
+           'destroyed': self.isDestroyed}
+        self.targetCaps = [
+         0]
         self.model = None
         self.__properties = destructible_entities.g_destructibleEntitiesCache.getDestructibleEntityType(self.typeID)
         self.__prereqs = None
@@ -95,29 +92,27 @@ class DestructibleEntity(BigWorld.Entity):
     def showDamageFromShot(self, attackerID, hitEffectCode, damage, gunInstallationIndex):
         if hitEffectCode is None or not self.isAlive() or attackerID != BigWorld.player().playerVehicleID:
             return
+        hasPiercedHit = DamageFromShotDecoder.hasDamaged(hitEffectCode)
+        if hitEffectCode in VEHICLE_HIT_EFFECT.RICOCHETS:
+            eventID = _FET.VEHICLE_RICOCHET
+        elif hitEffectCode == VEHICLE_HIT_EFFECT.CRITICAL_HIT:
+            eventID = _FET.VEHICLE_CRITICAL_HIT
+        elif hasPiercedHit:
+            eventID = _FET.VEHICLE_ARMOR_PIERCED
         else:
-            hasPiercedHit = DamageFromShotDecoder.hasDamaged(hitEffectCode)
-            if hitEffectCode in VEHICLE_HIT_EFFECT.RICOCHETS:
-                eventID = _FET.VEHICLE_RICOCHET
-            elif hitEffectCode == VEHICLE_HIT_EFFECT.CRITICAL_HIT:
-                eventID = _FET.VEHICLE_CRITICAL_HIT
-            elif hasPiercedHit:
-                eventID = _FET.VEHICLE_ARMOR_PIERCED
-            else:
-                eventID = _FET.VEHICLE_HIT
-            destructibleEntityComponent = BigWorld.player().arena.componentSystem.destructibleEntityComponent
-            if destructibleEntityComponent is not None:
-                destructibleEntityComponent.updateDestructibleEntityFeedback(self, eventID, gunInstallationIndex, damage)
-            return
+            eventID = _FET.VEHICLE_HIT
+        destructibleEntityComponent = BigWorld.player().arena.componentSystem.destructibleEntityComponent
+        if destructibleEntityComponent is not None:
+            destructibleEntityComponent.updateDestructibleEntityFeedback(self, eventID, gunInstallationIndex, damage)
+        return
 
     def showDamageFromExplosion(self, attackerID, damage, gunInstallationIndex):
         if not self.isAlive() or attackerID != BigWorld.player().playerVehicleID:
             return
-        else:
-            destructibleEntityComponent = BigWorld.player().arena.componentSystem.destructibleEntityComponent
-            if destructibleEntityComponent is not None:
-                destructibleEntityComponent.updateDestructibleEntityFeedback(self, _FET.VEHICLE_ARMOR_PIERCED, gunInstallationIndex, damage)
-            return
+        destructibleEntityComponent = BigWorld.player().arena.componentSystem.destructibleEntityComponent
+        if destructibleEntityComponent is not None:
+            destructibleEntityComponent.updateDestructibleEntityFeedback(self, _FET.VEHICLE_ARMOR_PIERCED, gunInstallationIndex, damage)
+        return
 
     def set_health(self, oldValue):
         self.__checkStateTriggers()
@@ -169,7 +164,10 @@ class DestructibleEntity(BigWorld.Entity):
         return self.__properties.materials.get(matKind, None)
 
     def isDestructibleComponent(self, componentID):
-        return self.__activeStateResource.isDestructibleComponent(componentID) if self.__activeStateResource is not None else False
+        if self.__activeStateResource is not None:
+            return self.__activeStateResource.isDestructibleComponent(componentID)
+        else:
+            return False
 
     def __updateState(self, stateName):
         if self.__activeStateResource is not None:
@@ -187,7 +185,10 @@ class DestructibleEntity(BigWorld.Entity):
         return
 
     def getGuiNode(self):
-        return self.__activeStateResource.guiNode if self.__activeStateResource is not None else None
+        if self.__activeStateResource is not None:
+            return self.__activeStateResource.guiNode
+        else:
+            return
 
     def isAlive(self):
         return self.health > 0
@@ -207,7 +208,10 @@ class DestructibleEntity(BigWorld.Entity):
 
     def getStateBounds(self, stateName, partIndex):
         state = self.__stateResources.get(stateName, None)
-        return (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0) if not state else state.collisionComponent.getBoundingBox(partIndex)
+        if not state:
+            return (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0)
+        else:
+            return state.collisionComponent.getBoundingBox(partIndex)
 
     def __setPickingEnabled(self, enable):
         self.targetCaps = [1] if enable else [0]
@@ -257,7 +261,8 @@ class DestructibleEntityState(ScriptGameObject):
 
         collisionAssembler = BigWorld.CollisionAssembler(tuple(bspModels), self.spaceID)
         collisionAssembler.name = self.__stateName + ASSEMBLER_NAME_SUFFIXES.PHYSICS
-        return [visualModel, collisionAssembler]
+        return [
+         visualModel, collisionAssembler]
 
     def onResourcesLoaded(self, prereqs):
         assemblerName = self.__stateName + ASSEMBLER_NAME_SUFFIXES.PHYSICS
@@ -311,19 +316,25 @@ class DestructibleEntityState(ScriptGameObject):
         return
 
     def collideAllWorld(self, startPoint, endPoint):
-        return self.__collisionComponent.collideAllWorld(startPoint, endPoint) if self.__collisionComponent is not None else None
+        if self.__collisionComponent is not None:
+            return self.__collisionComponent.collideAllWorld(startPoint, endPoint)
+        else:
+            return
 
     def isDestructibleComponent(self, componentID):
         component = next((c for cIDx, c in enumerate(self.__stateProperties.components.itervalues()) if cIDx == componentID), None)
-        return component.destructible if component is not None else False
+        if component is not None:
+            return component.destructible
+        else:
+            return False
 
     def __playEffect(self, effectName, model):
         if self.__effectsPlayer is not None or None in (model, effectName):
             return
+        effectsSection = destructible_entities.g_destructibleEntitiesCache.getDestroyEffectList(effectName)
+        if effectsSection is None:
+            return
         else:
-            effectsSection = destructible_entities.g_destructibleEntitiesCache.getDestroyEffectList(effectName)
-            if effectsSection is None:
-                return
             effects = effectsFromSection(effectsSection)
             if effects is None:
                 return

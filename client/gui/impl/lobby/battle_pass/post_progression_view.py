@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/post_progression_view.py
 from enum import IntEnum, unique
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
@@ -19,15 +17,15 @@ from gui.impl.gen.view_models.views.lobby.battle_pass.post_progression_view_mode
 from gui.impl.pub.view_component import ViewComponent
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.lootbox_system.base.common import ViewID, Views
-from gui.shared.event_dispatcher import showBattlePass, showBattlePassHowToEarnPointsView, showBattlePassTankmenVoiceover, showBrowserOverlayView, showShop
+from gui.shared.event_dispatcher import showBattlePassHowToEarnPointsView, showBattlePassTankmenVoiceover, showBrowserOverlayView, showShop
 from helpers import dependency, time_utils
 from shared_utils import first
 from skeletons.gui.game_control import IBattlePassController, ICollectionsSystemController, ILootBoxSystemController
 from skeletons.gui.shared import IItemsCache
-_CHAPTER_STATUSES = {ChapterState.ACTIVE: ChapterStatus.ACTIVE,
- ChapterState.COMPLETED: ChapterStatus.COMPLETED,
- ChapterState.PAUSED: ChapterStatus.PAUSED,
- ChapterState.NOT_STARTED: ChapterStatus.NOTSTARTED}
+_CHAPTER_STATUSES = {ChapterState.ACTIVE: ChapterStatus.ACTIVE, 
+   ChapterState.COMPLETED: ChapterStatus.COMPLETED, 
+   ChapterState.PAUSED: ChapterStatus.PAUSED, 
+   ChapterState.NOT_STARTED: ChapterStatus.NOTSTARTED}
 
 @unique
 class _AnimationState(IntEnum):
@@ -72,41 +70,66 @@ class PostProgressionPresenter(ViewComponent[PostProgressionViewModel]):
         self.__fillModel()
 
     def onExtraChapterExpired(self):
-        self.__checkBattlePassState()
+        self.__fillModel()
 
     def _onLoading(self, *args, **kwargs):
         super(PostProgressionPresenter, self)._onLoading(*args, **kwargs)
         self.__fillModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenInfoPage, self.__showInfoPage),
-         (self.viewModel.onOpenPointsInfo, self.__showPointsInfo),
-         (self.viewModel.onProgressAchieved, self.__onProgressAchieved),
-         (self.viewModel.onCycleCompleted, self.__onCycleCompleted),
-         (self.viewModel.awardsWidget.onTakeRewardsClick, self.__claimRewards),
-         (self.viewModel.awardsWidget.onBpcoinClick, self.__showCoinsShop),
-         (self.viewModel.awardsWidget.showTickets, self.__showTickets),
-         (self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
-         (self.viewModel.awardsWidget.showTalers, self.__showTalers),
-         (self.viewModel.awardsWidget.collectionEntryPoint.openCollection, self.__openCollection),
-         (self.__battlePass.onBattlePassSettingsChange, self.__checkBattlePassState),
-         (self.__battlePass.onSelectTokenUpdated, self.__updateRewardChoice),
-         (self.__battlePass.onOffersUpdated, self.__updateRewardChoice),
-         (self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
-         (self.__battlePass.onSeasonStateChanged, self.__checkBattlePassState),
-         (self.__battlePass.onBattlePassIsBought, self.__onBattlePassBought),
-         (self.__collectionsSystem.onBalanceUpdated, self.__updateCollections),
-         (self.__collectionsSystem.onServerSettingsChanged, self.__updateCollections),
-         (self.__lootBoxes.onStatusChanged, self.__updateTicketInfo),
-         (self.__lootBoxes.onBoxesAvailabilityChanged, self.__updateTicketInfo),
-         (self.__lootBoxes.onBoxesCountChanged, self.__updateTicketInfo),
-         (g_playerEvents.onClientUpdated, self.__onBPTalerUpdated))
+        return (
+         (
+          self.viewModel.onOpenInfoPage, self.__showInfoPage),
+         (
+          self.viewModel.onOpenPointsInfo, self.__showPointsInfo),
+         (
+          self.viewModel.onProgressAchieved, self.__onProgressAchieved),
+         (
+          self.viewModel.onCycleCompleted, self.__onCycleCompleted),
+         (
+          self.viewModel.awardsWidget.onTakeRewardsClick, self.__claimRewards),
+         (
+          self.viewModel.awardsWidget.onBpcoinClick, self.__showCoinsShop),
+         (
+          self.viewModel.awardsWidget.showTickets, self.__showTickets),
+         (
+          self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
+         (
+          self.viewModel.awardsWidget.showTalers, self.__showTalers),
+         (
+          self.viewModel.awardsWidget.collectionEntryPoint.openCollection, self.__openCollection),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__checkBattlePassState),
+         (
+          self.__battlePass.onSelectTokenUpdated, self.__updateRewardChoice),
+         (
+          self.__battlePass.onOffersUpdated, self.__updateRewardChoice),
+         (
+          self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
+         (
+          self.__battlePass.onSeasonStateChanged, self.__checkBattlePassState),
+         (
+          self.__battlePass.onBattlePassIsBought, self.__onBattlePassBought),
+         (
+          self.__collectionsSystem.onBalanceUpdated, self.__updateCollections),
+         (
+          self.__collectionsSystem.onServerSettingsChanged, self.__updateCollections),
+         (
+          self.__lootBoxes.onStatusChanged, self.__updateTicketInfo),
+         (
+          self.__lootBoxes.onBoxesAvailabilityChanged, self.__updateTicketInfo),
+         (
+          self.__lootBoxes.onBoxesCountChanged, self.__updateTicketInfo),
+         (
+          g_playerEvents.onClientUpdated, self.__onBPTalerUpdated))
 
     def _getCallbacks(self):
-        return (('stats.bpcoin', self.__updateBalance),)
+        return (
+         (
+          'stats.bpcoin', self.__updateBalance),)
 
     def __fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updatePostProgressionData(model=model)
             self.__updateProgression(model=model)
             self.__updateChapters(model.getChapters())
@@ -200,7 +223,7 @@ class PostProgressionPresenter(ViewComponent[PostProgressionViewModel]):
         return model
 
     def __onPointsUpdated(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updatePostProgressionData(model=model)
             self.__updateProgression(model=model)
             self.__updateChapters(model.getChapters())
@@ -211,31 +234,31 @@ class PostProgressionPresenter(ViewComponent[PostProgressionViewModel]):
 
     def __onBPTalerUpdated(self, *data):
         if data[0].get('cache', {}).get('dynamicCurrencies', {}).get(CurrencyBP.TALER.value, ''):
-            with self.viewModel.awardsWidget.transaction() as model:
+            with self.viewModel.awardsWidget.transaction() as (model):
                 model.setTalerCount(self.__itemsCache.items.stats.dynamicCurrencies.get(CurrencyBP.TALER.value, 0))
 
     def __getPostProgressionStatus(self):
         chapterState = self.__battlePass.getChapterState(self.__chapterID)
         if chapterState == ChapterState.ACTIVE:
             return PostProgressionStatus.UNLOCKED
-        return PostProgressionStatus.PAUSED if chapterState == ChapterState.PAUSED else PostProgressionStatus.LOCKED
+        if chapterState == ChapterState.PAUSED:
+            return PostProgressionStatus.PAUSED
+        return PostProgressionStatus.LOCKED
 
     def __getChapterStatus(self, chapterID):
         chapterState = self.__battlePass.getChapterState(chapterID)
         return _CHAPTER_STATUSES.get(chapterState, ChapterStatus.NOTSTARTED)
 
     def __getTankmenScreenID(self):
-        tankmenScreens = set((screen for chapter, screen in self.__battlePass.getChapterToTankmenScreen().iteritems() if self.__battlePass.isChapterExists(chapter)))
+        tankmenScreens = set(screen for chapter, screen in self.__battlePass.getChapterToTankmenScreen().iteritems() if self.__battlePass.isChapterExists(chapter))
         if len(tankmenScreens) == 1:
             self.__tankmenScreen = first(tankmenScreens)
             return self.__tankmenScreen
         return False
 
     def __checkBattlePassState(self, *_):
-        if self.__battlePass.isPaused():
-            showBattlePass()
-            return
-        self.__fillModel()
+        if not self.__battlePass.isPaused():
+            self.__fillModel()
 
     @staticmethod
     def __showInfoPage():
@@ -275,7 +298,7 @@ class PostProgressionPresenter(ViewComponent[PostProgressionViewModel]):
     def __onCycleCompleted(self):
         self.__animationState &= ~_AnimationState.NEW_CYCLE_STATE
         currentChapterPoints = self.__battlePass.getPointsInChapter(self.__chapterID)
-        currentChapterPoints %= self.__battlePass.getLevelsConfig(self.__chapterID)[-1]
+        currentChapterPoints %= self.__battlePass.getLevelsConfig(self.__chapterID)[(-1)]
         if self.__animationState == _AnimationState.NORMAL_STATE and not currentChapterPoints:
             self.__updateProgression()
 

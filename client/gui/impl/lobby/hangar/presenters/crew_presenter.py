@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/crew_presenter.py
 from __future__ import absolute_import
 from collections import OrderedDict
 import typing
@@ -9,6 +7,7 @@ from typing import NamedTuple, Union
 from CurrentVehicle import g_currentVehicle
 from cgf_components.marker_component import IGuiLoader
 from constants import RENEWABLE_SUBSCRIPTION_CONFIG
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl import backport
@@ -21,8 +20,11 @@ from gui.impl.gen.view_models.views.lobby.loadout.crew.slot_model import SlotMod
 from gui.impl.gen.view_models.views.lobby.loadout.crew.tankman_model import TankmanModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.vehicle_bonus_detail_model import VehicleBonusDetailModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
+from gui.impl.gen.view_models.views.lobby.crew.common.tooltip_constants import TooltipConstants
+from gui.impl.backport.backport_tooltip import createBackportTooltipContent
 from gui.impl.gen_utils import DynAccessor
 from gui.impl.lobby.crew.crew_header_tooltip_view import CrewHeaderTooltipView
+from gui.impl.lobby.crew.tooltips.empty_skill_tooltip import EmptySkillTooltip
 from gui.impl.lobby.crew.crew_helpers.skill_helpers import getTmanNewSkillCount, isTankmanSkillIrrelevant
 from gui.impl.lobby.crew.widget.crew_widget import BuildedMessage
 from gui.impl.pub.view_component import ViewComponent
@@ -33,12 +35,14 @@ from gui.shared.gui_items.Vehicle import getIconResourceName
 from gui.shared.gui_items.processors.vehicle import VehicleTmenXPAccelerator
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils import decorators
+from helpers.dependency import descriptor
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency, int2roman
 from items.special_crew import CustomSkills
 from items.tankmen import MAX_SKILL_LEVEL, getLessMasteredIDX
 from nations import AVAILABLE_NAMES
 from renewable_subscription_common.passive_xp import isTagsSetOk
+from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IWotPlusController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
@@ -47,11 +51,17 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from frameworks.wulf import Array
 DOG = 'dog'
-BuiltMessage = NamedTuple('BuiltMessage', [('text', str),
- ('iconFrom', DynAccessor),
- ('iconTo', DynAccessor),
- ('vehFromCD', DynAccessor),
- ('vehToCD', DynAccessor)])
+BuiltMessage = NamedTuple('BuiltMessage', [
+ (
+  'text', str),
+ (
+  'iconFrom', DynAccessor),
+ (
+  'iconTo', DynAccessor),
+ (
+  'vehFromCD', DynAccessor),
+ (
+  'vehToCD', DynAccessor)])
 
 class IdleCrewBonus(Enum):
     DISABLED = 'Disabled'
@@ -81,8 +91,10 @@ class CrewPresenter(ViewComponent[CrewModel]):
     __itemsCache = dependency.descriptor(IItemsCache)
     __wotPlusCtrl = dependency.descriptor(IWotPlusController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
+    appLoader = descriptor(IAppLoader)
 
     def __init__(self):
+        self.__toolTipMgr = self.appLoader.getApp().getToolTipMgr()
         super(CrewPresenter, self).__init__(model=CrewModel)
 
     @property
@@ -93,8 +105,67 @@ class CrewPresenter(ViewComponent[CrewModel]):
         self._unsubscribe()
         g_clientUpdateManager.removeObjectCallbacks(self)
 
+    def createToolTip(self, event):
+        if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
+            tooltipId = event.getArgument('tooltipId')
+            if tooltipId == TooltipConstants.SKILL:
+                args = [
+                 event.getArgument('skillName'), event.getArgument('roleName'),
+                 int(event.getArgument('tankmanID')), None, True, None, event.getArgument('isBonus'),
+                 int(event.getArgument('skillIndex'))]
+                self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
+                return TOOLTIPS_CONSTANTS.CREW_PERK_GF
+            if tooltipId == TooltipConstants.TANKMAN:
+                isCalledFromCrewWidget = True
+                args = (event.getArgument('tankmanID'), isCalledFromCrewWidget)
+                self.__toolTipMgr.onCreateWulfTooltip(TooltipConstants.TANKMAN, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
+                return TooltipConstants.TANKMAN
+            if tooltipId == TooltipConstants.SKILLS_EFFICIENCY:
+                args = (
+                 event.getArgument('tankmanID'),)
+                self.__toolTipMgr.onCreateWulfTooltip(tooltipId, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
+                return tooltipId
+            if tooltipId == TooltipConstants.CREW_SKILL_UNTRAINED:
+                args = ()
+                self.__toolTipMgr.onCreateWulfTooltip(tooltipId, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
+                return tooltipId
+        return super(CrewPresenter, self).createToolTip(event)
+
     def createToolTipContent(self, event, contentID):
-        return CrewHeaderTooltipView(self.__getIdleCrewState()) if contentID == R.views.lobby.crew.CrewHeaderTooltipView() else None
+        tooltipId = event.getArgument('tooltipId')
+        if contentID == R.views.lobby.crew.CrewHeaderTooltipView():
+            return CrewHeaderTooltipView(self.__getIdleCrewState())
+        else:
+            if tooltipId == TooltipConstants.VEHICLE_CREW_MEMBER_IN_HANGAR:
+                slotIdx = int(event.getArgument('slotIdx'))
+                tankmanID = int(event.getArgument('tankmanID'))
+                if tankmanID == NO_TANKMAN:
+                    vehicle = self.__itemsCache.items.getVehicle(g_currentVehicle.item.invID)
+                    role = vehicle.descriptor.type.crewRoles[slotIdx][0]
+                else:
+                    tankman = self.__itemsCache.items.getTankman(tankmanID)
+                    role = tankman.role
+                    for idx, roles in enumerate(tankman.vehicleNativeDescr.type.crewRoles):
+                        if roles and role == roles[0]:
+                            slotIdx = idx
+                            break
+
+                args = [
+                 role,
+                 tankmanID,
+                 slotIdx,
+                 None,
+                 None,
+                 None,
+                 None,
+                 None]
+                return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.VEHICLE_CREW_MEMBER_IN_HANGAR, specialArgs=args)
+            if contentID == R.views.lobby.crew.tooltips.EmptySkillTooltip():
+                tman = self.__itemsCache.items.getTankman(int(event.getArgument('tankmanID')))
+                return EmptySkillTooltip(tman, int(event.getArgument('skillIndex')))
+            if contentID == R.views.lobby.crew.CrewHeaderTooltipView():
+                return CrewHeaderTooltipView(self.__getIdleCrewState())
+            return super(CrewPresenter, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(CrewPresenter, self)._onLoading(*args, **kwargs)
@@ -102,21 +173,33 @@ class CrewPresenter(ViewComponent[CrewModel]):
         self.__updateModel()
 
     def _getCallbacks(self):
-        return (('idleCrewXP', self.__idleCrewXPUpdated),)
+        return (
+         (
+          'idleCrewXP', self.__idleCrewXPUpdated),)
 
     def __idleCrewXPUpdated(self, diff):
         self.__updateIntensiveTraining()
 
     def _getEvents(self):
-        return ((g_currentVehicle.onChanged, self.__onVehicleChanged),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (self.__wotPlusCtrl.onEnabledStatusChanged, self.__onWotPlusStatusChanged),
-         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.viewModel.onOpenCrew, self.__onOpenCrew),
-         (self.viewModel.onOpenBarracks, self.__onOpenBarracks),
-         (self.viewModel.onDogMoreInfoClick, self.__onDogMoreInfoClick),
-         (self.viewModel.onToggleAcceleratedTraining, self.__onToggleAcceleratedTraining),
-         (self.viewModel.onToggleIntensiveTraining, self.__onToggleIntensiveTraining))
+        return (
+         (
+          g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
+         (
+          self.__wotPlusCtrl.onEnabledStatusChanged, self.__onWotPlusStatusChanged),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.viewModel.onOpenCrew, self.__onOpenCrew),
+         (
+          self.viewModel.onOpenBarracks, self.__onOpenBarracks),
+         (
+          self.viewModel.onDogMoreInfoClick, self.__onDogMoreInfoClick),
+         (
+          self.viewModel.onToggleAcceleratedTraining, self.__onToggleAcceleratedTraining),
+         (
+          self.viewModel.onToggleIntensiveTraining, self.__onToggleIntensiveTraining))
 
     @wg_async
     def __onToggleIntensiveTraining(self):
@@ -146,14 +229,14 @@ class CrewPresenter(ViewComponent[CrewModel]):
         stringRoot = R.strings.dialogs.idleCrewBonus
         message = None
         if previousVehicle:
-            vehicleFromName = '{} %(typeIconFrom) {}'.format(int2roman(previousVehicle.level), previousVehicle.userName)
+            vehicleFromName = ('{} %(typeIconFrom) {}').format(int2roman(previousVehicle.level), previousVehicle.userName)
             removeTypeStringFrom = backport.text(stringRoot.message.removeTypeFrom())
             removeVehFromNameString = backport.text(stringRoot.message.removeName(), vehicleName=vehicleFromName)
-            vehicleToName = '{} %(typeIconTo) {}'.format(int2roman(g_currentVehicle.item.level), g_currentVehicle.item.userName)
+            vehicleToName = ('{} %(typeIconTo) {}').format(int2roman(g_currentVehicle.item.level), g_currentVehicle.item.userName)
             removeTypeStringTo = backport.text(stringRoot.message.removeTypeTo())
             removeVehToNameString = backport.text(stringRoot.message.removeName(), vehicleName=vehicleToName)
             endDot = backport.text(stringRoot.message.dot())
-            finalString = '{} {} {} {}{}'.format(removeTypeStringFrom, removeVehFromNameString, removeTypeStringTo, removeVehToNameString, endDot)
+            finalString = ('{} {} {} {}{}').format(removeTypeStringFrom, removeVehFromNameString, removeTypeStringTo, removeVehToNameString, endDot)
             message = BuildedMessage(text=finalString, iconFrom=R.images.gui.maps.icons.vehicleTypes.num('24x24').dyn(getIconResourceName(previousVehicle.type)), iconTo=R.images.gui.maps.icons.vehicleTypes.num('24x24').dyn(getIconResourceName(g_currentVehicle.item.type)), vehFromCD=previousVehicle.intCD, vehToCD=g_currentVehicle.item.intCD)
         return message
 
@@ -193,7 +276,9 @@ class CrewPresenter(ViewComponent[CrewModel]):
             return IdleCrewBonus.INCOMPATIBLE_WITH_CURRENT_VEHICLE
         if self.__wotPlusCtrl.hasVehicleCrewIdleXP(g_currentVehicle.item.invID):
             return IdleCrewBonus.ACTIVE_ON_CURRENT_VEHICLE
-        return IdleCrewBonus.ACTIVE_ON_ANOTHER_VEHICLE if self.__wotPlusCtrl.getVehicleIDWithIdleXP() else IdleCrewBonus.ENABLED
+        if self.__wotPlusCtrl.getVehicleIDWithIdleXP():
+            return IdleCrewBonus.ACTIVE_ON_ANOTHER_VEHICLE
+        return IdleCrewBonus.ENABLED
 
     def __onOpenCrew(self, ctx):
         slotId = int(ctx.get('crewSlotId', 0))
@@ -240,13 +325,15 @@ class CrewPresenter(ViewComponent[CrewModel]):
 
     def __findLessMasteredTman(self):
         crew = OrderedDict(sorted(g_currentVehicle.item.crew, key=lambda item: item[0]))
-        tankmenDescrs = [ (tman.descriptor if tman else None) for tman in itervalues(crew) ]
+        tankmenDescrs = [ tman.descriptor if tman else None for tman in itervalues(crew) ]
         return getLessMasteredIDX(tankmenDescrs)[1]
 
     def __updateCrewModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             vehicle = self.__itemsCache.items.getVehicle(g_currentVehicle.item.invID)
             self.viewModel.setVehicleNation(vehicle.nationName)
+            self.viewModel.setVehicleType(vehicle.type)
+            self.viewModel.setVehicleName(vehicle.shortUserName)
             slots = model.getSlots()
             slots.clear()
             tankmenBerthsAmount = self.__itemsCache.items.stats.tankmenBerthsCount
@@ -259,11 +346,12 @@ class CrewPresenter(ViewComponent[CrewModel]):
             lessMastered = self.__findLessMasteredTman()
             battleBoosterBonus = self.__calcVehicleBooster(vehicle)
             vehicleBonusDetails = self.__calcVehicleBonusDetails(vehicle)
+            vehicleCrewBoosterBonusDetails = self.__calcVehicleCrewBoosterBonusDetails(vehicle)
             optDeviceBonuses = self.__calcOptDeviceBonuses(vehicle)
             for _, tman in vehicle.crew:
                 if tman:
                     quickTrainingEnabled = vehicle.crewIndices.get(tman.invID) == lessMastered and vehicle.isXPToTman
-                    tankman = self.__createTankmanModel(tman, battleBoosterBonus, quickTrainingEnabled, vehicleBonusDetails, optDeviceBonuses)
+                    tankman = self.__createTankmanModel(tman, battleBoosterBonus, quickTrainingEnabled, vehicleBonusDetails, vehicleCrewBoosterBonusDetails, optDeviceBonuses)
                     crew.addViewModel(tankman)
 
             for slotIdx, tman in vehicle.crew:
@@ -279,12 +367,22 @@ class CrewPresenter(ViewComponent[CrewModel]):
             crew.invalidate()
             slots.invalidate()
 
+    def __calcVehicleCrewBoosterBonusDetails(self, vehicle):
+        if vehicle.consumables.layoutCapacity:
+            basic = REQ_CRITERIA.VEHICLE.SUITABLE([vehicle], [GUI_ITEM_TYPE.EQUIPMENT])
+            criteria = basic | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.SECRET
+            battleBusters = self.__itemsCache.items.getItems(GUI_ITEM_TYPE.BATTLE_BOOSTER, criteria, nationID=vehicle.nationID).values()
+            return [ self.__createVehicleBonusDetail(name=battleBuster.descriptor.iconName, bonusType=TankSetupConstants.CREW_BOOSTERS, bonus=100) for battleBuster in battleBusters if battleBuster.getOverlayType(vehicle) == 'battleBoosterReplace' and battleBuster.isInstalled(vehicle)
+                   ]
+        return []
+
     def __calcVehicleBonusDetails(self, vehicle):
         if vehicle.consumables.layoutCapacity:
             basic = REQ_CRITERIA.VEHICLE.SUITABLE([vehicle], [GUI_ITEM_TYPE.EQUIPMENT])
             criteria = basic | ~REQ_CRITERIA.HIDDEN | ~REQ_CRITERIA.SECRET
             equipments = self.__itemsCache.items.getItems(GUI_ITEM_TYPE.EQUIPMENT, criteria, nationID=vehicle.nationID).values()
-            return [ self.__createVehicleBonusDetail(name=equipment.descriptor.iconName, bonusType=TankSetupConstants.CONSUMABLES, bonus=equipment.crewLevelIncrease if equipment.isInstalled(vehicle) else 0) for equipment in equipments if equipment.isStimulator ]
+            return [ self.__createVehicleBonusDetail(name=equipment.descriptor.iconName, bonusType=TankSetupConstants.CONSUMABLES, bonus=equipment.crewLevelIncrease if equipment.isInstalled(vehicle) else 0) for equipment in equipments if equipment.isStimulator
+                   ]
         return []
 
     def __calcOptDeviceBonuses(self, vehicle):
@@ -300,9 +398,11 @@ class CrewPresenter(ViewComponent[CrewModel]):
                     artefactsBonus = optDevice.descriptor.getFactorValue(vehicle.descriptor, attrPath)
                 if mergedBonuses.get(optDevice.descriptor.iconName):
                     mergedBonuses[optDevice.descriptor.iconName] += artefactsBonus
-                mergedBonuses[optDevice.descriptor.iconName] = artefactsBonus
+                else:
+                    mergedBonuses[optDevice.descriptor.iconName] = artefactsBonus
 
-            return [ self.__createVehicleBonusDetail(name=name, bonusType=TankSetupConstants.OPT_DEVICES, bonus=value) for name, value in mergedBonuses.items() ]
+            return [ self.__createVehicleBonusDetail(name=name, bonusType=TankSetupConstants.OPT_DEVICES, bonus=value) for name, value in mergedBonuses.items()
+                   ]
         return []
 
     def __calcVehicleBooster(self, vehicle):
@@ -316,9 +416,9 @@ class CrewPresenter(ViewComponent[CrewModel]):
                 if booster.isInstalled(vehicle) and booster.isAffectOnCrewLevel():
                     return self.__createVehicleBonusDetail(name=booster.descriptor.iconName, bonusType=TankSetupConstants.BATTLE_BOOSTERS, bonus=booster.getCrewBonus(vehicle))
 
-        return None
+        return
 
-    def __createTankmanModel(self, tman, battleBoosterBonus, isQuickTrainingEnabled, vehicleBonusDetails, optDeviceBonuses):
+    def __createTankmanModel(self, tman, battleBoosterBonus, isQuickTrainingEnabled, vehicleBonusDetails, vehicleCrewBoosterBonusDetails, optDeviceBonuses):
         newSkillsCount, lastSkillLevel = getTmanNewSkillCount(tman, withFree=True)
         man = TankmanModel()
         man.setId(tman.invID)
@@ -352,7 +452,7 @@ class CrewPresenter(ViewComponent[CrewModel]):
             boosterBonusValue = battleBoosterBonus.getBonus()
         man.vehicleBonus.setBattleBooster(boosterBonusValue)
         man.setTankmanSuitable(self.__isTankmanTrainedForVehicle(tman))
-        self.__setEquipmentsBonuses(man, tman, battleBoosterBonus, vehicleBonusDetails, optDeviceBonuses)
+        self.__setEquipmentsBonuses(man, tman, battleBoosterBonus, vehicleBonusDetails, vehicleCrewBoosterBonusDetails, optDeviceBonuses)
         return man
 
     def __addMajorSkills(self, tman, model):
@@ -368,7 +468,7 @@ class CrewPresenter(ViewComponent[CrewModel]):
             roleBonusSkills = BonusSkillsModel()
             roleBonusSkills.setRole(role)
             availableBonusSkillsCountByRole = tman.bonusSkillsCountByRole.get(role) + tman.newBonusSkillsCountByRole.get(role)
-            bonusTrainingProgress = tman.bonusSlotsLevels[availableBonusSkillsCountByRole - 1] if availableBonusSkillsCountByRole > 0 else CrewConstants.DONT_SHOW_LEVEL
+            bonusTrainingProgress = tman.bonusSlotsLevels[(availableBonusSkillsCountByRole - 1)] if availableBonusSkillsCountByRole > 0 else CrewConstants.DONT_SHOW_LEVEL
             roleBonusSkills.setTrainingProgress(bonusTrainingProgress)
             newBonusSkillsCount = tman.newBonusSkillsCountByRole.get(role)
             roleBonusSkills.setNewCount(newBonusSkillsCount)
@@ -410,7 +510,7 @@ class CrewPresenter(ViewComponent[CrewModel]):
     def __setCommanderBonus(self, model, tankman):
         model.addViewModel(self.__createVehicleBonusDetail(name='commander_bonus', bonusType=VehicleBonusDetailModel.COMMANDER, bonus=tankman.vehicleBonuses.get(VehicleBonusDetailModel.COMMANDER, 0)))
 
-    def __setEquipmentsBonuses(self, man, tankman, battleBoosterBonus, vehicleBonusDetails, optDeviceBonuses):
+    def __setEquipmentsBonuses(self, man, tankman, battleBoosterBonus, vehicleBonusDetails, vehicleCrewBoosterBonusDetails, optDeviceBonuses):
         vehicleBonusDetailsModel = man.getVehicleBonusDetails()
         vehicleBonusDetailsModel.clear()
         self.__setBrotherhoodBonus(vehicleBonusDetailsModel, tankman)
@@ -422,6 +522,9 @@ class CrewPresenter(ViewComponent[CrewModel]):
         for vehicleBonusDetail in vehicleBonusDetails:
             vehicleBonusDetailsModel.addViewModel(vehicleBonusDetail)
 
+        for vehicleBonusDetail in vehicleCrewBoosterBonusDetails:
+            vehicleBonusDetailsModel.addViewModel(vehicleBonusDetail)
+
         if battleBoosterBonus is not None:
             vehicleBonusDetailsModel.addViewModel(battleBoosterBonus)
         vehicleBonusDetailsModel.invalidate()
@@ -429,19 +532,24 @@ class CrewPresenter(ViewComponent[CrewModel]):
 
     def __getCrewPanelState(self):
         veh = g_currentVehicle.item
-        return CrewModel.DISABLED_STATE if veh.isDisabled or veh.isLocked or veh.isInBattle or veh.isAwaitingBattle or veh.isInPrebattle else CrewModel.DEFAULT_STATE
+        if veh.isDisabled or veh.isLocked or veh.isInBattle or veh.isAwaitingBattle or veh.isInPrebattle:
+            return CrewModel.DISABLED_STATE
+        return CrewModel.DEFAULT_STATE
 
     @staticmethod
     def __isTankmanTrainedForVehicle(tman):
-        return True if tman is None else tman.roleLevel >= MAX_SKILL_LEVEL and tman.realRoleLevel.bonuses.penalty >= 0
+        if tman is None:
+            return True
+        else:
+            return tman.roleLevel >= MAX_SKILL_LEVEL and tman.realRoleLevel.bonuses.penalty >= 0
 
     @staticmethod
     def __getPerkState(skill, tman):
-        if skill.isZero:
-            return PerkModel.FREE_STATE
         if isTankmanSkillIrrelevant(tman, skill):
             return PerkModel.IRRELEVANT_STATE
-        return PerkModel.LEARNED_STATE if skill.isMaxLevel else PerkModel.LEARNING_STATE
+        if skill.isMaxLevel:
+            return PerkModel.LEARNED_STATE
+        return PerkModel.LEARNING_STATE
 
     def __updateAcceleratedTraining(self):
         isXPToTman = g_currentVehicle.item.isXPToTman if g_currentVehicle.item else False
@@ -453,7 +561,7 @@ class CrewPresenter(ViewComponent[CrewModel]):
         self.viewModel.setAcceleratedTraining(acceleratedTrainingState)
 
     def __updateIntensiveTraining(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             wotPlusState = CrewModel.DISABLED_TRAINING_STATE
             vehicle = g_currentVehicle.item
             if vehicle and self.__lobbyContext.getServerSettings().isRenewableSubPassiveCrewXPEnabled():

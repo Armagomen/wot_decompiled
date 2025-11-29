@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/__init__.py
-import datetime
-import BigWorld
+import datetime, BigWorld
 from constants import ACCOUNT_ATTR
 from account_helpers.AccountSettings import AccountSettings, GOLD_FISH_LAST_SHOW_TIME
 from shared_utils.account_helpers import BattleResultsCache

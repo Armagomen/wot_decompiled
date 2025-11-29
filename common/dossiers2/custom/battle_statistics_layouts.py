@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/battle_statistics_layouts.py
 from dossiers2.common.DossierBlockBuilders import *
 from dossiers2.custom.dependencies import VEH_TYPE_FRAGS_DEPENDENCIES
 from dossiers2.custom.dependencies import TOTAL_STATS_DEPENDENCIES
@@ -9,7 +7,8 @@ from dossiers2.custom.dependencies import A7X7_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import HISTORICAL_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import FORT_BATTLES_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import FORT_SORTIES_STATS_DEPENDENCIES
-A15X15_BLOCK_LAYOUT = ['xp',
+A15X15_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -27,7 +26,8 @@ A15X15_BLOCK_LAYOUT = ['xp',
  'winAndSurvived',
  'frags8p',
  'battlesCountBefore9_0']
-A15X15_2_BLOCK_LAYOUT = ['originalXP',
+A15X15_2_BLOCK_LAYOUT = [
+ 'originalXP',
  'damageAssistedTrack',
  'damageAssistedRadio',
  'directHitsReceived',
@@ -41,7 +41,8 @@ A15X15_2_BLOCK_LAYOUT = ['originalXP',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-CLAN_BLOCK_LAYOUT = ['xp',
+CLAN_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -57,7 +58,8 @@ CLAN_BLOCK_LAYOUT = ['xp',
  'xpBefore8_9',
  'battlesCountBefore8_9',
  'battlesCountBefore9_0']
-CLAN2_BLOCK_LAYOUT = ['originalXP',
+CLAN2_BLOCK_LAYOUT = [
+ 'originalXP',
  'damageAssistedTrack',
  'damageAssistedRadio',
  'directHitsReceived',
@@ -71,7 +73,8 @@ CLAN2_BLOCK_LAYOUT = ['originalXP',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-COMPANY_BLOCK_LAYOUT = ['xp',
+COMPANY_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -87,7 +90,8 @@ COMPANY_BLOCK_LAYOUT = ['xp',
  'xpBefore8_9',
  'battlesCountBefore8_9',
  'battlesCountBefore9_0']
-COMPANY2_BLOCK_LAYOUT = ['originalXP',
+COMPANY2_BLOCK_LAYOUT = [
+ 'originalXP',
  'damageAssistedTrack',
  'damageAssistedRadio',
  'directHitsReceived',
@@ -101,7 +105,8 @@ COMPANY2_BLOCK_LAYOUT = ['originalXP',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-A7X7_BLOCK_LAYOUT = ['xp',
+A7X7_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -131,7 +136,8 @@ A7X7_BLOCK_LAYOUT = ['xp',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-RATED_7X7_BLOCK_LAYOUT = ['xp',
+RATED_7X7_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -160,7 +166,8 @@ RATED_7X7_BLOCK_LAYOUT = ['xp',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-HISTORICAL_BLOCK_LAYOUT = ['xp',
+HISTORICAL_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -189,7 +196,8 @@ HISTORICAL_BLOCK_LAYOUT = ['xp',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-FORT_BLOCK_LAYOUT_BASE = ['xp',
+FORT_BLOCK_LAYOUT_BASE = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -215,8 +223,12 @@ FORT_BLOCK_LAYOUT_BASE = ['xp',
  'frags8p',
  'potentialDamageReceived',
  'damageBlockedByArmor']
-FORT_BLOCK_LAYOUT = FORT_BLOCK_LAYOUT_BASE + ['battlesOnStunningVehicles', 'stunNum', 'damageAssistedStun']
-GLOBAL_MAP_BLOCK_LAYOUT = ['xp',
+FORT_BLOCK_LAYOUT = FORT_BLOCK_LAYOUT_BASE + [
+ 'battlesOnStunningVehicles',
+ 'stunNum',
+ 'damageAssistedStun']
+GLOBAL_MAP_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -248,7 +260,8 @@ GLOBAL_MAP_BLOCK_LAYOUT = ['xp',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-RANKED_BLOCK_LAYOUT = ['xp',
+RANKED_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -278,7 +291,8 @@ RANKED_BLOCK_LAYOUT = ['xp',
  'stunNum',
  'damageAssistedStun',
  'playedBonusBattles']
-A30X30_BLOCK_LAYOUT = ['xp',
+A30X30_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -307,7 +321,8 @@ A30X30_BLOCK_LAYOUT = ['xp',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE = ['xp',
+FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -339,13 +354,18 @@ FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE = ['xp',
  'coins',
  'resourceAbsorbed',
  'deathCount']
-FALLOUT_VEHICLE_BLOCK_LAYOUT = FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE + ['battlesOnStunningVehicles', 'stunNum', 'damageAssistedStun']
-FALLOUT_BLOCK_LAYOUT = FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE + ['avatarDamageDealt',
+FALLOUT_VEHICLE_BLOCK_LAYOUT = FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE + [
+ 'battlesOnStunningVehicles',
+ 'stunNum',
+ 'damageAssistedStun']
+FALLOUT_BLOCK_LAYOUT = FALLOUT_VEHICLE_BLOCK_LAYOUT_BASE + [
+ 'avatarDamageDealt',
  'avatarKills',
  'battlesOnStunningVehicles',
  'stunNum',
  'damageAssistedStun']
-EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT = ['xp',
+EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -375,7 +395,8 @@ EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT = ['xp',
  'stunNum',
  'damageAssistedStun',
  'deathCount']
-COMP7_BLOCK_LAYOUT = ['xp',
+COMP7_BLOCK_LAYOUT = [
+ 'xp',
  'battlesCount',
  'wins',
  'losses',
@@ -412,20 +433,17 @@ COMP7_BLOCK_LAYOUT = ['xp',
  'healthRepair',
  'poiCapturable']
 EPIC_BATTLE_BLOCK_LAYOUT = EPIC_BATTLE_VEHICLE_BLOCK_LAYOUT
-MAX_BLOCK_LAYOUT = ['maxXP', 'maxFrags', 'maxDamage']
+MAX_BLOCK_LAYOUT = [
+ 'maxXP', 'maxFrags', 'maxDamage']
 MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + ['maxXPVehicle', 'maxFragsVehicle', 'maxDamageVehicle']
 MAX_FALLOUT_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + ['maxWinPoints', 'maxCoins']
 MAX_FALLOUT_BLOCK_LAYOUT_WITH_AVATAR = MAX_FALLOUT_BLOCK_LAYOUT + ['maxFragsWithAvatar', 'maxDamageWithAvatar']
-MAX_COMP7_BLOCK_LAYOUT = MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT + ['maxComp7PrestigePoints',
- 'maxComp7PrestigePointsVehicle',
- 'maxEquipmentDamageDealt',
- 'maxEquipmentDamageDealtVehicle',
- 'maxHealthRepair',
- 'maxHealthRepairVehicle',
- 'maxWinSeries',
- 'maxSquadWinSeries']
-MAX_15x15_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + ['maxAssisted', 'maxDamageBlockedByArmor']
-MAX_15x15_AND_BEST_VEHICLE_BLOCK_LAYOUT = MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT + ['maxAssisted',
- 'maxAssistedVehicle',
- 'maxDamageBlockedByArmor',
- 'maxDamageBlockedByArmorVehicle']
+MAX_COMP7_BLOCK_LAYOUT = MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT + [
+ 'maxComp7PrestigePoints', 'maxComp7PrestigePointsVehicle',
+ 'maxEquipmentDamageDealt', 'maxEquipmentDamageDealtVehicle',
+ 'maxHealthRepair', 'maxHealthRepairVehicle',
+ 'maxWinSeries', 'maxSquadWinSeries']
+MAX_15x15_BLOCK_LAYOUT = MAX_BLOCK_LAYOUT + [
+ 'maxAssisted', 'maxDamageBlockedByArmor']
+MAX_15x15_AND_BEST_VEHICLE_BLOCK_LAYOUT = MAX_AND_BEST_VEHICLE_BLOCK_LAYOUT + [
+ 'maxAssisted', 'maxAssistedVehicle', 'maxDamageBlockedByArmor', 'maxDamageBlockedByArmorVehicle']

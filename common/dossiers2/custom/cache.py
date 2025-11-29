@@ -1,48 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/cache.py
 import nations
 from items import vehicles
 from collector_vehicle import CollectorVehicleConsts
-PRESTIGE_ALLOWED_TAGS = {'role_ATSPG_sniper',
- 'role_ATSPG_universal',
- 'role_ATSPG_support',
- 'role_LT_universal',
- 'role_LT_wheeled',
- 'role_SPG',
- 'role_HT_break',
- 'role_HT_universal',
- 'role_HT_support',
- 'role_MT_assault',
- 'role_MT_universal',
- 'role_MT_sniper',
- 'role_MT_support',
- 'role_ATSPG_assault',
- 'role_HT_assault',
- 'special',
- 'collectorVehicle',
- 'secret',
- 'testTank',
- 'private',
- 'event_battles',
- 'fallout',
- 'epic_battles',
- 'mapbox',
- 'fun_random',
- 'rent_promotion',
- 'premiumIGR',
- 'pillbox',
- 'fr_hidden',
- 'mode_hidden',
- 'disableIBA',
- 'comp7',
- 'comp7_light',
- 'bot_hunter',
- 'clanWarsBattles'}
-EXCLUDE_VEHICLE_BY_TAGS = {'bob',
- 'battle_royale',
- 'maps_training',
- 'bunkerTurret',
- 'event_battles'}
+PRESTIGE_ALLOWED_TAGS = {
+ 'role_ATSPG_sniper', 'role_ATSPG_universal', 'role_ATSPG_support', 'role_LT_universal',
+ 'role_LT_wheeled', 'role_SPG', 'role_HT_break', 'role_HT_universal', 'role_HT_support',
+ 'role_MT_assault', 'role_MT_universal', 'role_MT_sniper', 'role_MT_support',
+ 'role_ATSPG_assault', 'role_HT_assault', 'special', 'collectorVehicle', 'secret', 'testTank',
+ 'private', 'event_battles', 'fallout', 'epic_battles', 'mapbox', 'fun_random',
+ 'rent_promotion', 'premiumIGR', 'pillbox', 'fr_hidden', 'mode_hidden', 'disableIBA', 'comp7',
+ 'comp7_light', 'bot_hunter', 'clanWarsBattles'}
+EXCLUDE_VEHICLE_BY_TAGS = {
+ 'bob', 'battle_royale', 'maps_training', 'bunkerTurret', 'event_battles'}
 
 def getCache():
     global _g_cache
@@ -51,7 +19,8 @@ def getCache():
 
 def buildCache():
     vehiclesByLevel = {}
-    TAGS_TO_COLLECT = {'beast', 'sinai', 'patton'}.union(PRESTIGE_ALLOWED_TAGS)
+    TAGS_TO_COLLECT = {
+     'beast', 'sinai', 'patton'}.union(PRESTIGE_ALLOWED_TAGS)
     vehiclesByTag = {tag:set() for tag in TAGS_TO_COLLECT}
     vehiclesInTreeByNation = {}
     vehiclesInTree = set()
@@ -92,18 +61,18 @@ def buildCache():
             nationsWithVehiclesInTree.append(nationIdx)
 
     vehicles8p = vehiclesByLevel[8] | vehiclesByLevel[9] | vehiclesByLevel[10] | vehiclesByLevel[11]
-    _g_cache.update({'vehiclesByLevel': vehiclesByLevel,
-     'vehicles8+': vehicles8p,
-     'vehiclesByTag': vehiclesByTag,
-     'mausTypeCompDescr': vehicles.makeVehicleTypeCompDescrByName('germany:G42_Maus'),
-     'vehiclesInTreesByNation': vehiclesInTreeByNation,
-     'vehiclesInTrees': vehiclesInTree,
-     'nationsWithVehiclesInTree': nationsWithVehiclesInTree,
-     'collectorVehiclesByNations': collectorVehiclesByNations,
-     'collectorVehiclesLevelsByNations': collectorVehiclesLevelsByNations,
-     'vehiclesNameToDescr': vehiclesNameToDescr,
-     'vehicleEliteStatusXp': vehicleEliteStatusXp,
-     'vehiclesByClass': vehiclesByClass})
+    _g_cache.update({'vehiclesByLevel': vehiclesByLevel, 
+       'vehicles8+': vehicles8p, 
+       'vehiclesByTag': vehiclesByTag, 
+       'mausTypeCompDescr': vehicles.makeVehicleTypeCompDescrByName('germany:G42_Maus'), 
+       'vehiclesInTreesByNation': vehiclesInTreeByNation, 
+       'vehiclesInTrees': vehiclesInTree, 
+       'nationsWithVehiclesInTree': nationsWithVehiclesInTree, 
+       'collectorVehiclesByNations': collectorVehiclesByNations, 
+       'collectorVehiclesLevelsByNations': collectorVehiclesLevelsByNations, 
+       'vehiclesNameToDescr': vehiclesNameToDescr, 
+       'vehicleEliteStatusXp': vehicleEliteStatusXp, 
+       'vehiclesByClass': vehiclesByClass})
 
 
 _g_cache = {}

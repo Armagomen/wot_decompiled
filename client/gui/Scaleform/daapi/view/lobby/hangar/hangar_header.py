@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/hangar_header.py
-import logging
-import typing
-import BigWorld
-import constants
+import logging, typing, BigWorld, constants
 from CurrentVehicle import g_currentVehicle
 from gui import g_guiResetters
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -31,9 +26,9 @@ class ActiveWidgets(object):
     RIGHT = 3
 
     def __init__(self):
-        self.__widgets = {self.LEFT: '',
-         self.CENTER: '',
-         self.RIGHT: ''}
+        self.__widgets = {self.LEFT: '', 
+           self.CENTER: '', 
+           self.RIGHT: ''}
         super(ActiveWidgets, self).__init__()
 
     def update(self, position, alias):
@@ -160,14 +155,12 @@ class HangarHeader(HangarHeaderMeta, IGlobalListener, IEventBoardsListener):
     def _makeHeaderVO(self):
         isVisible, flagsGetter = self.__hangarGuiCtrl.sfController.currentPresetGetter.getHangarHeaderBlock()
         if flagsGetter is None:
-            return {'isVisible': isVisible,
-             'quests': []}
+            return {'isVisible': isVisible, 'quests': []}
         else:
             isGrouped = self.__screenWidth <= _SCREEN_WIDTH_FOR_MARATHON_GROUP
             params = {QuestFlagTypes.MARATHON: {'isGrouped': isGrouped}}
             quests = flagsGetter.getVO(self._currentVehicle.item, params)
-            return {'isVisible': isVisible,
-             'quests': quests}
+            return {'isVisible': isVisible, 'quests': quests}
 
     def __onChangeScreenResolution(self):
         self.__screenWidth = BigWorld.screenSize()[0]
@@ -194,7 +187,9 @@ class HangarHeader(HangarHeaderMeta, IGlobalListener, IEventBoardsListener):
         isValidBattleType = self.prbDispatcher and self.prbDispatcher.getEntity() and self.__battlePassController.isValidBattleType(self.prbDispatcher.getEntity())
         isRuleCompleted = self.__limitedUIController.isRuleCompleted(LUI_RULES.BattlePassEntry)
         isVisible = isBPAvailable and isValidBattleType and isRuleCompleted
-        return HANGAR_ALIASES.BATTLE_PASSS_ENTRY_POINT if isVisible else ''
+        if isVisible:
+            return HANGAR_ALIASES.BATTLE_PASSS_ENTRY_POINT
+        return ''
 
     def __updateWidget(self):
         alias = self.__hangarGuiCtrl.sfController.currentPresetGetter.getHangarWidgetAlias() or self.__getBPWidget()
@@ -208,7 +203,8 @@ class HangarHeader(HangarHeaderMeta, IGlobalListener, IEventBoardsListener):
 
     def __updateBattlePassSmallWidget(self):
         currentArenaBonusType = self.__getCurentArenaBonusType()
-        secondaryPointCanBeAvailable = currentArenaBonusType not in (constants.ARENA_BONUS_TYPE.REGULAR,
+        secondaryPointCanBeAvailable = currentArenaBonusType not in (
+         constants.ARENA_BONUS_TYPE.REGULAR,
          constants.ARENA_BONUS_TYPE.UNKNOWN,
          constants.ARENA_BONUS_TYPE.MAPBOX,
          constants.ARENA_BONUS_TYPE.WINBACK)
@@ -223,7 +219,8 @@ class HangarHeader(HangarHeaderMeta, IGlobalListener, IEventBoardsListener):
         self.as_setDataS(headerVO)
 
     def __updateRightWidget(self, *_):
-        isRandom = self.__getCurentArenaBonusType() in (constants.ARENA_BONUS_TYPE.REGULAR, constants.ARENA_BONUS_TYPE.WINBACK)
+        isRandom = self.__getCurentArenaBonusType() in (constants.ARENA_BONUS_TYPE.REGULAR,
+         constants.ARENA_BONUS_TYPE.WINBACK)
         alias = ''
         if isRandom:
             if self.__resourceWell.isActive() or self.__resourceWell.isPaused() or self.__resourceWell.isNotStarted():
@@ -234,7 +231,8 @@ class HangarHeader(HangarHeaderMeta, IGlobalListener, IEventBoardsListener):
             self.as_addSecondaryEntryPointS(alias, True)
 
     def __updateBattleMattersEntryPoint(self, *_):
-        isValidArena = self.__getCurentArenaBonusType() in (constants.ARENA_BONUS_TYPE.REGULAR, constants.ARENA_BONUS_TYPE.WINBACK)
+        isValidArena = self.__getCurentArenaBonusType() in (constants.ARENA_BONUS_TYPE.REGULAR,
+         constants.ARENA_BONUS_TYPE.WINBACK)
         controller = self.__battleMattersController
         isLuiRuleCompleted = self.__limitedUIController.isRuleCompleted(LUI_RULES.BattleMattersFlag)
         isBattleMattersMShow = controller.isEnabled() and (not controller.isFinished() or controller.hasDelayedRewards()) and isValidArena and isLuiRuleCompleted

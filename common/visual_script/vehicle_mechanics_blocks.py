@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/vehicle_mechanics_blocks.py
 import typing
 from constants import CONCENTRATION_MODE_STATE, OVERHEAT_GAIN_STATE, POWER_MODE_STATE, RECHARGEABLE_NITRO_STATE, SECONDARY_GUN_STATE, VEHICLE_SIEGE_STATE, TARGET_DESIGNATOR_STATE, STATIONARY_RELOAD_STATE, GUN_LOCK_REASONS
 from visual_script.misc import ASPECT
@@ -12,14 +10,14 @@ class VehicleMechanicsMeta(VehicleMeta):
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Vehicle Mechanics'
 
 
 class ConcentrationModeStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EConcentrationModeState'
 
     @classmethod
     def vs_enum(cls):
@@ -34,7 +32,7 @@ class VehicleSiegeStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EVehicleSiegeState'
 
     @classmethod
     def vs_enum(cls):
@@ -49,7 +47,7 @@ class PowerModeStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EPowerModeState'
 
     @classmethod
     def vs_enum(cls):
@@ -64,7 +62,7 @@ class SecondaryGunStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'ESecondaryGunState'
 
     @classmethod
     def vs_enum(cls):
@@ -79,7 +77,7 @@ class RechargeableNitroStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'ERechargeableNitroState'
 
     @classmethod
     def vs_enum(cls):
@@ -94,7 +92,7 @@ class OverheatGainStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EOverheatGainState'
 
     @classmethod
     def vs_enum(cls):
@@ -109,7 +107,7 @@ class TargetDesignatorStateEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'ETargetDesignatorState'
 
     @classmethod
     def vs_enum(cls):
@@ -124,7 +122,7 @@ class StationaryReloadEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EStationaryReloadState'
 
     @classmethod
     def vs_enum(cls):
@@ -139,7 +137,7 @@ class StationaryReloadLockEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        pass
+        return 'EStationaryReloadLockState'
 
     @classmethod
     def vs_enum(cls):

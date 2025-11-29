@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/coordinate_system.py
 from Math import Vector2, Vector3
 ASSERT_EPS = 0.001
 
@@ -16,7 +14,7 @@ def getBoundsFromHullPoints(hullPoints):
     coords0.sort()
     coords1.sort()
     bottomLeft = Vector2(coords0[0], coords1[0])
-    topRight = Vector2(coords0[-1], coords1[-1])
+    topRight = Vector2(coords0[(-1)], coords1[(-1)])
     return (bottomLeft, topRight)
 
 
@@ -47,22 +45,20 @@ class AXIS_ALIGNED_DIRECTION:
     MINUS_Z = 1
     PLUS_X = 2
     MINUS_X = 3
-    RANGE = (PLUS_Z,
-     MINUS_Z,
-     PLUS_X,
-     MINUS_X)
-    FROM_NAME = {'+Z': PLUS_Z,
-     '-Z': MINUS_Z,
-     '+X': PLUS_X,
-     '-X': MINUS_X}
-    TO_COORDINATES = {PLUS_X: (1.0, 0.0),
-     MINUS_X: (-1.0, 0.0),
-     PLUS_Z: (0.0, 1.0),
-     MINUS_Z: (0.0, -1.0)}
-    OPPOSITE = {PLUS_X: MINUS_X,
-     MINUS_X: PLUS_X,
-     PLUS_Z: MINUS_Z,
-     MINUS_Z: PLUS_Z}
+    RANGE = (
+     PLUS_Z, MINUS_Z, PLUS_X, MINUS_X)
+    FROM_NAME = {'+Z': PLUS_Z, 
+       '-Z': MINUS_Z, 
+       '+X': PLUS_X, 
+       '-X': MINUS_X}
+    TO_COORDINATES = {PLUS_X: (1.0, 0.0), 
+       MINUS_X: (-1.0, 0.0), 
+       PLUS_Z: (0.0, 1.0), 
+       MINUS_Z: (0.0, -1.0)}
+    OPPOSITE = {PLUS_X: MINUS_X, 
+       MINUS_X: PLUS_X, 
+       PLUS_Z: MINUS_Z, 
+       MINUS_Z: PLUS_Z}
 
     @staticmethod
     def toVector(direction):

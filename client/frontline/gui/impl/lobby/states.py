@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/states.py
 import typing
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import StateFlags
@@ -101,6 +99,11 @@ class FrontlineRootHangarState(LobbyState):
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(FrontlineRootHangarState, self).__init__(flags=flags | LobbyStateFlags.HANGAR)
 
+    def _onEntered(self, event):
+        super(FrontlineRootHangarState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.disable()
+
 
 class _FlLoadoutConfirmStatePrototype(_LoadoutConfirmStatePrototype):
     STATE_ID = FrontlineStateIDs.LOADOUT_CONFIRM_LEAVE
@@ -109,6 +112,11 @@ class _FlLoadoutConfirmStatePrototype(_LoadoutConfirmStatePrototype):
 @FrontlineHangarState.parentOf
 class FrontlineAllVehiclesState(LobbyState):
     STATE_ID = FrontlineStateIDs.ALL_VEHICLES
+
+    def _onEntered(self, event):
+        super(FrontlineAllVehiclesState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.enable()
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.allVehicles()))
@@ -123,7 +131,8 @@ class ProgressionScreenState(GuiImplViewLobbyState):
         super(ProgressionScreenState, self).__init__(ProgressionScreenView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.fl_progression_screen.title()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
+        return LobbyStateDescription(title=backport.text(R.strings.fl_progression_screen.title()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
 
     def __openInfoView(self):
         showFrontlineInfoWindow()
@@ -134,7 +143,8 @@ FrontlineLoadoutStateBase, _, FrontlineLoadoutSectionState, FrontlineShellsLoado
 class _BattleAbilitiesLoadoutStatePrototype(LobbyState):
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.fl_battle_abilities_setup.header.title()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
+        return LobbyStateDescription(title=backport.text(R.strings.fl_battle_abilities_setup.header.title()), infos=(
+         LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
 
     @staticmethod
     def __openInfoView(*_):

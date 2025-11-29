@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
@@ -10,7 +8,9 @@ from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDL
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.profile import profile_cm_handlers
-    return ((CONTEXT_MENU_HANDLER_TYPE.PROFILE_VEHICLE, profile_cm_handlers.ProfileVehicleCMHandler),)
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.PROFILE_VEHICLE, profile_cm_handlers.ProfileVehicleCMHandler),)
 
 
 def getViewSettings():
@@ -28,7 +28,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.profile.ProfileWindow import ProfileWindow
     from gui.Scaleform.daapi.view.lobby.profile.ProfileHof import ProfileHof
     from gui.Scaleform.daapi.view.lobby.profile.profile_technique_prestige_injects import ProfileTechniquePrestigeInject, ProfileTechniquePrestigeEmblemInject
-    return (ViewSettings(VIEW_ALIAS.LOBBY_PROFILE, ProfilePage, 'profile.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_PROFILE, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.LOBBY_PROFILE, ProfilePage, 'profile.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_PROFILE, ScopeTemplates.LOBBY_SUB_SCOPE),
      GroupedViewSettings(VIEW_ALIAS.PROFILE_WINDOW, ProfileWindow, 'profileWindow.swf', WindowLayer.WINDOW, 'profileWindow', None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.PROFILE_AWARDS, ProfileAwards, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.PROFILE_STATISTICS, ProfileStatistics, ScopeTemplates.DEFAULT_SCOPE),
@@ -46,18 +47,24 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (ProfilePackageBusinessHandler(),)
+    return (
+     ProfilePackageBusinessHandler(),)
 
 
 def getStateMachineRegistrators():
     from gui.Scaleform.daapi.view.lobby.profile.states import registerStates, registerTransitions
-    return (registerStates, registerTransitions)
+    return (
+     registerStates, registerTransitions)
 
 
 class ProfilePackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.LOBBY_PROFILE, self.__loadOrUpdateView), (VIEW_ALIAS.PROFILE_WINDOW, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.LOBBY_PROFILE, self.__loadOrUpdateView),
+         (
+          VIEW_ALIAS.PROFILE_WINDOW, self.loadViewByCtxEvent))
         super(ProfilePackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)
 
     def __loadOrUpdateView(self, event):

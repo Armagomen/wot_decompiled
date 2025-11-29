@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/vehicle_model_helpers.py
 import typing
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.impl.gen.view_models.common.vehicle_mechanic_model import VehicleMechanicModel
@@ -23,7 +21,7 @@ def fillVehicleModel(model, vehicleItem, tags=None):
     model.setVehicleCD(vehicleItem.compactDescr)
     if not tags:
         return
-    model.setTags(','.join(frozenset(tags) & vehicleItem.tags))
+    model.setTags((',').join(frozenset(tags) & vehicleItem.tags))
 
 
 def fillVehicleMechanicsArray(mechanicsArray, vehicleItem):

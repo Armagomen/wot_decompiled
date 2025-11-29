@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/event_welcome_view.py
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl.gen import R
@@ -11,7 +9,7 @@ from story_mode_common.configs.story_mode_settings import settingsSchema
 from story_mode.uilogging.story_mode.loggers import EventWelcomeViewLogger
 
 class EventWelcomeView(ViewImpl):
-    __slots__ = ('_uiLogger',)
+    __slots__ = ('_uiLogger', )
     layoutID = R.views.story_mode.lobby.EventWelcomeView()
 
     def __init__(self, layoutID=None):
@@ -25,7 +23,13 @@ class EventWelcomeView(ViewImpl):
 
     def _getEvents(self):
         viewModel = self.getViewModel()
-        return ((viewModel.onClose, self.__onClose), (viewModel.onSubmit, self.__onClose), (g_playerEvents.onDisconnected, self.__onDisconnected))
+        return (
+         (
+          viewModel.onClose, self.__onClose),
+         (
+          viewModel.onSubmit, self.__onClose),
+         (
+          g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def _onLoading(self, *args, **kwargs):
         super(EventWelcomeView, self)._onLoading(*args, **kwargs)

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/entitlements/entitlements_requester.py
-import copy
-import logging
-import typing
+import copy, logging, typing
 from adisp import adisp_process
 from gui.wgcg.agate.contexts import AgateGetInventoryEntitlementsCtx
 from helpers import dependency
@@ -44,15 +40,12 @@ class EntitlementsRequester(object):
             if request.hasSameContext(ctx):
                 return request
 
-        return None
+        return
 
 
 class _EntitlementsRequest(object):
-    __DEFAULT_RETRY_TIMES = [2,
-     3,
-     5,
-     8,
-     13]
+    __DEFAULT_RETRY_TIMES = [
+     2, 3, 5, 8, 13]
     __web = dependency.descriptor(IWebController)
 
     def __init__(self, ctx, callback, retryTimes, finishedCallback):
@@ -103,7 +96,9 @@ class _EntitlementsRequest(object):
         return 500 <= response.code <= 511
 
     def __getNextRetryTime(self):
-        return self.__retryTimes.pop(0) if self.__retryTimes else 0
+        if self.__retryTimes:
+            return self.__retryTimes.pop(0)
+        return 0
 
     def __clear(self):
         self.__ctx = None

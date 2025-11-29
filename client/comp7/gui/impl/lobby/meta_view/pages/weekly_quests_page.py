@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/weekly_quests_page.py
 from itertools import izip
-import logging
-import typing
+import logging, typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_UI_SECTION, COMP7_WEEKLY_QUESTS_PAGE_TOKENS_COUNT
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
@@ -35,7 +32,7 @@ class WeeklyQuestsPage(PageSubModelPresenter):
     pageId = MetaRootViews.WEEKLYQUESTS
     __comp7Controller = dependency.descriptor(IComp7Controller)
     __comp7WeeklyQuestsCtrl = dependency.descriptor(IComp7WeeklyQuestsController)
-    __slots__ = ('__tooltipDataById',)
+    __slots__ = ('__tooltipDataById', )
 
     def __init__(self, viewModel, parentView):
         super(WeeklyQuestsPage, self).__init__(viewModel, parentView)
@@ -66,7 +63,13 @@ class WeeklyQuestsPage(PageSubModelPresenter):
             return
 
     def _getEvents(self):
-        return ((self.__comp7WeeklyQuestsCtrl.onWeeklyQuestsUpdated, self.__onWeeklyQuestsUpdated), (self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection), (self.getViewModel().onAnimationEnd, self.__onAnimationEnd))
+        return (
+         (
+          self.__comp7WeeklyQuestsCtrl.onWeeklyQuestsUpdated, self.__onWeeklyQuestsUpdated),
+         (
+          self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection),
+         (
+          self.getViewModel().onAnimationEnd, self.__onAnimationEnd))
 
     def __onWeeklyQuestsUpdated(self, quests):
         self.__updateData(quests)
@@ -76,7 +79,7 @@ class WeeklyQuestsPage(PageSubModelPresenter):
         showComp7WeeklyQuestsRewardsSelectionWindow()
 
     def __updateData(self, quests):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setTimeToNewQuests(quests.getTimeToNewQuests())
             self.__setProgressAnimationToBeShown(model, quests.numCompletedBattleQuests)
             fillViewModelsArray(self.__updateQuestCardModels(self.__sliceOffCompletedWeeksExceptLast(quests, model.QUESTS_PER_WEEK)), model.getQuestCards())
@@ -87,7 +90,9 @@ class WeeklyQuestsPage(PageSubModelPresenter):
     def __getClaimWeeklyRewardButtonState():
         if isWeeklyRewardClaimed():
             return ChoiceRewardState.CLAIMED
-        return ChoiceRewardState.ACTIVE if isWeeklyRewardClaimable() else ChoiceRewardState.DEFAULT
+        if isWeeklyRewardClaimable():
+            return ChoiceRewardState.ACTIVE
+        return ChoiceRewardState.DEFAULT
 
     def __updateQuestCardModels(self, sortedBattleQuests):
         bonusPacker = getComp7BonusPacker()
@@ -144,7 +149,7 @@ class WeeklyQuestsPage(PageSubModelPresenter):
         model.setQuestsPassed(numCompletedBattleQuests)
 
     def __onAnimationEnd(self):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             questsPassed = model.getQuestsPassed()
             model.setPreviousQuestsPassed(questsPassed)
             settings = AccountSettings.getUIFlag(COMP7_UI_SECTION)

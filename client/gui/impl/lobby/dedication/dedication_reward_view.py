@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dedication/dedication_reward_view.py
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.gen import R
@@ -71,7 +69,7 @@ class DedicationRewardView(ViewImpl):
 
     def _setAwards(self, bonuses, data):
         rewards = self._convertNonQuestBonuses(bonuses)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setLevel(str(data.get('reason', '')))
             packMissionsBonusModelAndTooltipData(rewards, getDefaultBonusPacker(), tx.getMainRewards(), tooltipData=self.__tooltipItems)
 

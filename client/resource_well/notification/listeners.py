@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/notification/listeners.py
 import logging
 from gui import SystemMessages
 from gui.SystemMessages import SM_TYPE
@@ -53,10 +51,10 @@ class ResourceWellListener(_NotificationListener):
         if not self.__resourceWell.isStarted() or self.__resourceWell.isFinished():
             self.__prevIsEnabled = None
             return
-        elif self.__prevIsEnabled is None and self.__resourceWell.isStarted() and not self.__resourceWell.isFinished():
-            self.__prevIsEnabled = self.__resourceWell.isEnabled()
-            return
         else:
+            if self.__prevIsEnabled is None and self.__resourceWell.isStarted() and not self.__resourceWell.isFinished():
+                self.__prevIsEnabled = self.__resourceWell.isEnabled()
+                return
             isEnabled = self.__resourceWell.isEnabled()
             if self.__prevIsEnabled is not isEnabled:
                 self.__prevIsEnabled = isEnabled
@@ -77,13 +75,13 @@ class ResourceWellListener(_NotificationListener):
     def __pushStarted(self):
         model = self._model()
         if model is not None:
-            if self.__resourceWell.getPurchaseMode() in (PurchaseMode.SEQUENTIAL_PRODUCT, PurchaseMode.ONE_SERIAL_PRODUCT):
+            if self.__resourceWell.getPurchaseMode() in (
+             PurchaseMode.SEQUENTIAL_PRODUCT, PurchaseMode.ONE_SERIAL_PRODUCT):
                 text = self.__getSingleVehicleText()
             else:
                 text = self.__getTwoVehiclesText()
             title = backport.text(R.strings.messenger.serviceChannelMessages.resourceWell.start.title())
-            messageData = {'title': title,
-             'text': text}
+            messageData = {'title': title, 'text': text}
             model.addNotification(ResourceWellStartDecorator(message=messageData, entityID=self.__START_ENTITY_ID, model=model))
             setStartNotificationShown()
         return

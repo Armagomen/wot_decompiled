@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/secondary_objectives/state_machine/states.py
 from enum import Enum
 import BigWorld
 from frameworks.state_machine import StateFlags

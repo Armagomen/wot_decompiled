@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/accuracy_stacks_manager.py
-import CGF
-import SoundGroups
+import CGF, SoundGroups
 from cgf_components.vehicle_mechanics_components import AccuracyStacksRTPCComponent
 from cgf_script.managers_registrator import autoregister, onProcessQuery, onAddedQuery, onRemovedQuery
 from cgf_common.cgf_helpers import getParentGameObjectByComponent

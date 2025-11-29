@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/UsersStorage.py
 import logging
 from collections import deque, defaultdict
 import types
@@ -9,7 +7,8 @@ from messenger.storage.local_cache import RevCachedStorage
 _logger = logging.getLogger(__name__)
 
 class UsersStorage(RevCachedStorage):
-    __slots__ = ('__contacts', '__emptyGroups', '__openedGroups', '__clanMembersIDs', '__breakers')
+    __slots__ = ('__contacts', '__emptyGroups', '__openedGroups', '__clanMembersIDs',
+                 '__breakers')
 
     def __init__(self):
         super(UsersStorage, self).__init__()
@@ -20,7 +19,7 @@ class UsersStorage(RevCachedStorage):
         self.__breakers = deque([], BREAKERS_MAX_LENGTH)
 
     def __repr__(self):
-        return 'UsersStorage(id=0x{0:08X}, len={1:n})'.format(id(self), len(self.__contacts))
+        return ('UsersStorage(id=0x{0:08X}, len={1:n})').format(id(self), len(self.__contacts))
 
     def clear(self):
         self.__clanMembersIDs.clear()
@@ -105,7 +104,7 @@ class UsersStorage(RevCachedStorage):
 
     def getClanMembersIterator(self, exCurrent=True):
         for dbID in self.__clanMembersIDs:
-            user = self.__contacts[dbID, UserEntityScope.LOBBY]
+            user = self.__contacts[(dbID, UserEntityScope.LOBBY)]
             if exCurrent and user.isCurrentPlayer():
                 continue
             yield user
@@ -142,7 +141,9 @@ class UsersStorage(RevCachedStorage):
             if name in contact.getGroups():
                 return True
 
-        return True if name in self.__emptyGroups else False
+        if name in self.__emptyGroups:
+            return True
+        return False
 
     def isGroupEmpty(self, name):
         self._syncEmptyGroups()
@@ -206,7 +207,8 @@ class UsersStorage(RevCachedStorage):
         removed = self.__clanMembersIDs.difference(membersIDs)
         if removed:
             for dbID in removed:
-                key = (dbID, UserEntityScope.LOBBY)
+                key = (
+                 dbID, UserEntityScope.LOBBY)
                 if key in self.__contacts:
                     contact = self.__contacts[key]
                     contact.removeTags(tags)
@@ -243,7 +245,8 @@ class UsersStorage(RevCachedStorage):
         for contact in self.__contacts.itervalues():
             state = contact.getPersistentState()
             if state:
-                contacts.append((contact.getProtoType(), contact.getID(), state))
+                contacts.append((
+                 contact.getProtoType(), contact.getID(), state))
 
         if contacts:
             data.append(contacts)
@@ -272,7 +275,8 @@ class UsersStorage(RevCachedStorage):
                     protoType, dbID, state = item
                     if requiredType != protoType:
                         continue
-                    yield (dbID, state)
+                    yield (
+                     dbID, state)
 
             result = stateGenerator
         if record:
@@ -284,4 +288,4 @@ class UsersStorage(RevCachedStorage):
         return result
 
     def _getServerRevKey(self):
-        pass
+        return 'USERS_STORAGE_REV'

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/customization/customization_cart/customization_cart_view.py
 from collections import namedtuple
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from adisp import adisp_process
 from wg_async import wg_async, wg_await
@@ -49,13 +46,8 @@ from tutorial.hints_manager import HINT_SHOWN_STATUS
 if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_seasons_model import CartSeasonsModel
 _logger = logging.getLogger(__name__)
-_SelectItemData = namedtuple('_SelectItemData', ('season',
- 'quantity',
- 'purchaseIndices',
- 'idx',
- 'intCD',
- 'dependents',
- 'dependentOn'))
+_SelectItemData = namedtuple('_SelectItemData', (
+ 'season', 'quantity', 'purchaseIndices', 'idx', 'intCD', 'dependents', 'dependentOn'))
 
 def _getSeasonModel(seasonType, seasons):
     if seasonType not in SEASON_TYPE_TO_NAME:
@@ -73,25 +65,26 @@ class CartExchangeCreditsInfoItem(InfoItemBase):
 
     @property
     def itemTypeName(self):
-        pass
+        return 'customization'
 
     @property
     def userName(self):
-        pass
+        return 'Cart'
 
     @property
     def itemTypeID(self):
         return GUI_ITEM_TYPE.CUSTOMIZATION
 
     def getExtraIconInfo(self):
-        return None
+        return
 
     def getGUIEmblemID(self):
-        pass
+        return 'notFound'
 
 
 class CustomizationCartView(ViewImpl):
-    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters', '__items', '__blur', '__moneyState', '__isProlongStyleRent')
+    __slots__ = ('__c11nView', '__ctx', '__purchaseItems', '__mode', '__counters',
+                 '__items', '__blur', '__moneyState', '__isProlongStyleRent')
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __service = dependency.descriptor(ICustomizationService)
@@ -130,7 +123,7 @@ class CustomizationCartView(ViewImpl):
                     intCD = self.__items[itemID].intCD
                 else:
                     _logger.error('Invalid itemID is received: %r', itemID)
-                    return None
+                    return
                 args = CustomizationTooltipContext(itemCD=intCD, showInventoryBlock=event.getArgument('showInventoryBlock'), level=int(event.getArgument('progressionLevel')))
             window = BackportTooltipWindow(createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=args), self.getParentWindow())
             window.load()
@@ -152,33 +145,32 @@ class CustomizationCartView(ViewImpl):
         if result is None:
             _logger.error("Can't process purchase items")
             return
-        else:
-            self.__purchaseItems = result.items
-            self.__mode = result.itemsType
-            itemDescriptors = result.descriptors
-            autoRentHintStatus = self.__settingsCore.serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_AUTOPROLONGATION_HINT)
-            autoRentHintShown = autoRentHintStatus is not None and autoRentHintStatus == HINT_SHOWN_STATUS
-            self.__setItemsNCounters(itemDescriptors)
-            with self.getViewModel().transaction() as model:
-                style = model.style
-                isStyle = self.__mode in (ItemsType.STYLE, ItemsType.EDITABLE_STYLE)
-                if self.__mode == ItemsType.EDITABLE_STYLE:
-                    isEdited = any((pItem.isEdited for pItem in purchaseItems))
-                    style.setIsEditable(isEdited)
-                style.setIsStyle(isStyle)
-                style.setIsProlongStyleRent(self.__isProlongStyleRent)
-                if self.__isProlongStyleRent or not autoRentHintShown:
-                    model.tutorial.setShowProlongHint(True)
-                if isStyle:
-                    item = self.__purchaseItems[0].item
-                    style.setStyleTypeName(item.userTypeID)
-                    style.setStyleName(item.userName)
-                    rent = model.rent
-                    if item.isRentable:
-                        rent.setHasAutoRent(True)
-                        rent.setIsAutoRentSelected(self.__ctx.mode.isAutoRentEnabled())
-                self.__setItemsData(model, itemDescriptors)
-            return
+        self.__purchaseItems = result.items
+        self.__mode = result.itemsType
+        itemDescriptors = result.descriptors
+        autoRentHintStatus = self.__settingsCore.serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_AUTOPROLONGATION_HINT)
+        autoRentHintShown = autoRentHintStatus is not None and autoRentHintStatus == HINT_SHOWN_STATUS
+        self.__setItemsNCounters(itemDescriptors)
+        with self.getViewModel().transaction() as (model):
+            style = model.style
+            isStyle = self.__mode in (ItemsType.STYLE, ItemsType.EDITABLE_STYLE)
+            if self.__mode == ItemsType.EDITABLE_STYLE:
+                isEdited = any(pItem.isEdited for pItem in purchaseItems)
+                style.setIsEditable(isEdited)
+            style.setIsStyle(isStyle)
+            style.setIsProlongStyleRent(self.__isProlongStyleRent)
+            if self.__isProlongStyleRent or not autoRentHintShown:
+                model.tutorial.setShowProlongHint(True)
+            if isStyle:
+                item = self.__purchaseItems[0].item
+                style.setStyleTypeName(item.userTypeID)
+                style.setStyleName(item.userName)
+                rent = model.rent
+                if item.isRentable:
+                    rent.setHasAutoRent(True)
+                    rent.setIsAutoRentSelected(self.__ctx.mode.isAutoRentEnabled())
+            self.__setItemsData(model, itemDescriptors)
+        return
 
     @uniprof.regionDecorator(label='customization_cart.loading', scope='exit')
     def _onLoaded(self, *args, **kwargs):
@@ -210,7 +202,7 @@ class CustomizationCartView(ViewImpl):
         return
 
     def __updateMoney(self, *_):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self.__setTotalData(model)
 
     def __setTotalData(self, model):
@@ -264,7 +256,7 @@ class CustomizationCartView(ViewImpl):
         itemData = self.__items[itemId]
         self.__refreshPurchaseItems(itemData.purchaseIndices, selected)
         self.__refreshStrictlyDependantItems(itemData, selected)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             processorSelector = ProcessorSelector(_getProcessorsMap())
             result = processorSelector.process(self.__purchaseItems)
             self.__purchaseItems = result.items
@@ -373,7 +365,7 @@ class CustomizationCartView(ViewImpl):
 
     def __setBonuses(self, seasons):
         if self.__mode in (ItemsType.STYLE, ItemsType.EDITABLE_STYLE):
-            item = first((pitem.item for pitem in self.__purchaseItems if pitem.item.itemTypeID == GUI_ITEM_TYPE.STYLE))
+            item = first(pitem.item for pitem in self.__purchaseItems if pitem.item.itemTypeID == GUI_ITEM_TYPE.STYLE)
             vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
             for seasonType in SeasonType.COMMON_SEASONS:
                 outfit = item.getOutfit(seasonType, vehicleCD=vehicleCD)
@@ -410,6 +402,7 @@ class CustomizationCartView(ViewImpl):
         if item and item.bonus:
             vehicle = g_currentVehicle.item
             return item.bonus.getFormattedValue(vehicle)
+        return ''
 
     def __onVehicleChanged(self):
         self.__isProlongStyleRent = False
@@ -514,6 +507,6 @@ class _EditableStyleItemUIDataPacker(_SeparateUIDataPacker):
 
 
 def _getProcessorsMap():
-    return {ItemsType.DEFAULT: SeparateItemsProcessor(_SeparateUIDataPacker(), _StubUIDataPacker()),
-     ItemsType.STYLE: StyleItemsProcessor(_StyleUIDataPacker(), _StubUIDataPacker()),
-     ItemsType.EDITABLE_STYLE: EditableStyleItemsProcessor(_EditableStyleItemUIDataPacker(), _StubUIDataPacker())}
+    return {ItemsType.DEFAULT: SeparateItemsProcessor(_SeparateUIDataPacker(), _StubUIDataPacker()), 
+       ItemsType.STYLE: StyleItemsProcessor(_StyleUIDataPacker(), _StubUIDataPacker()), 
+       ItemsType.EDITABLE_STYLE: EditableStyleItemsProcessor(_EditableStyleItemUIDataPacker(), _StubUIDataPacker())}

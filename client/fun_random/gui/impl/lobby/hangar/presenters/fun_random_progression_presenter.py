@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/hangar/presenters/fun_random_progression_presenter.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.feature.util.fun_mixins import FunProgressionWatcher
@@ -22,7 +20,9 @@ class FunRandomProgressionPresenter(ViewComponent[FunRandomProgressionEntryPoint
         return super(FunRandomProgressionPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return FunRandomProgressionTooltipView() if contentID == R.views.fun_random.mono.lobby.tooltips.progression_tooltip() else super(FunRandomProgressionPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.fun_random.mono.lobby.tooltips.progression_tooltip():
+            return FunRandomProgressionTooltipView()
+        return super(FunRandomProgressionPresenter, self).createToolTipContent(event, contentID)
 
     def setDisabledProgression(self):
         self.viewModel.progressionState.setStatus(defineProgressionStatus(None))
@@ -42,11 +42,13 @@ class FunRandomProgressionPresenter(ViewComponent[FunRandomProgressionEntryPoint
         super(FunRandomProgressionPresenter, self)._finalize()
 
     def _getEvents(self):
-        return super(FunRandomProgressionPresenter, self)._getEvents() + ((self.viewModel.onShowInfo, self.showActiveProgressionPage),)
+        return super(FunRandomProgressionPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onShowInfo, self.showActiveProgressionPage),)
 
     @hasActiveProgression(abortAction='setDisabledProgression')
     def __invalidateAll(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             progression = self.getActiveProgression()
             model.progressionState.setStatus(defineProgressionStatus(progression))
             if progression.isInUnlimitedProgression:

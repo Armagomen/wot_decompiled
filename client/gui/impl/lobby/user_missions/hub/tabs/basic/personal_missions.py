@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/personal_missions.py
 import logging
 from collections import OrderedDict
 from helpers import dependency
@@ -31,7 +29,9 @@ class PersonalMissionsPresenter(ViewComponent[PersonalMissionsModel]):
         self.__fillModel()
 
     def _getEvents(self):
-        return ((self.eventsCache.onSyncCompleted, self.__onCacheSyncCompleted),)
+        return (
+         (
+          self.eventsCache.onSyncCompleted, self.__onCacheSyncCompleted),)
 
     def __onCacheSyncCompleted(self):
         self.__fillModel()
@@ -42,8 +42,8 @@ class PersonalMissionsPresenter(ViewComponent[PersonalMissionsModel]):
         self.currentOperation = self.__getInProgressOperation(operations)
         currentDetailProgress, currentMissionsProgress = self.__getProgress(self.currentOperation)
         nextOperation = self.__getNextOperation(operations)
-        areAllOperationsCompleted = all((op.isCompleted() for op in operations.values()))
-        with self.viewModel.transaction() as tx:
+        areAllOperationsCompleted = all(op.isCompleted() for op in operations.values())
+        with self.viewModel.transaction() as (tx):
             if self.__isFirstActivation(operations):
                 tx.setState(State.CAMPAIGN_3_NOT_ACTIVATED)
                 tx.setCampaignName(self.__getCampaignName())
@@ -90,7 +90,10 @@ class PersonalMissionsPresenter(ViewComponent[PersonalMissionsModel]):
             return isFirstActivation
 
     def __getInProgressOperation(self, operations):
-        return findFirst(lambda op: op.isInProgress(), operations.values()) if operations else None
+        if operations:
+            return findFirst(lambda op: op.isInProgress(), operations.values())
+        else:
+            return
 
     def __isBaseProgress(self, operations):
         operationInProgress = self.__getInProgressOperation(operations)
@@ -108,7 +111,10 @@ class PersonalMissionsPresenter(ViewComponent[PersonalMissionsModel]):
 
     def __getCampaignName(self):
         campaigns = self.personalMissionsCache.getCampaignsForBranch('pm3')
-        return '' if campaigns is None else campaigns.values()[0].getUserName()
+        if campaigns is None:
+            return ''
+        else:
+            return campaigns.values()[0].getUserName()
 
     def __getProgress(self, operation):
         detailProgress = 0

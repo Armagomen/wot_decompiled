@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/example_view_skeleton/events.py
 from gui.impl.lobby.container_views.base.events import ComponentEventsBase
 
 class ExampleComponentViewEvents(ComponentEventsBase):

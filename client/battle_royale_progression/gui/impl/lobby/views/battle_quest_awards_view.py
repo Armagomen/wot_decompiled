@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/lobby/views/battle_quest_awards_view.py
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.battle_quest_awards_model import BattleQuestAwardsModel, BattleStatus
 from battle_royale_progression.gui.impl.lobby.views.bonus_packer import getBonusPacker
 from battle_royale_progression.gui.sounds_constants import GENERAL_SOUND_SPACE
@@ -40,15 +38,18 @@ class BattleQuestAwardsView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def updateModel(self):
         level = self._stage.get('stage', 0)
         isFinishStage = self._stage.get('finishStage', False)
         rewardsData = self._stage.get('detailedRewards', ())
         bonuses = awardsFactory(rewardsData)
-        with self.viewModel.transaction() as model:
-            model.setBattleStatus(BattleStatus.INPROGRESS if not isFinishStage else BattleStatus.COMPLETED)
+        with self.viewModel.transaction() as (model):
+            model.setBattleStatus((isFinishStage or BattleStatus).INPROGRESS if 1 else BattleStatus.COMPLETED)
             model.setLevel(level)
             rewards = model.getRewards()
             with useBigAwardInjection():
@@ -63,12 +64,12 @@ class BattleQuestAwardsView(ViewImpl):
         self.__removeListeners()
 
     def __addListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.onClose += self.__onClose
             model.onApprove += self.__onApprove
 
     def __removeListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.onClose -= self.__onClose
             model.onApprove -= self.__onApprove
 

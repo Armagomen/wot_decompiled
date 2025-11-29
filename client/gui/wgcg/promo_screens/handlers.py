@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/promo_screens/handlers.py
 from typing import TYPE_CHECKING
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.settings import WebRequestDataType
@@ -10,10 +8,10 @@ if TYPE_CHECKING:
 class PromoScreensRequestHandlers(RequestHandlers):
 
     def get(self):
-        handlers = {WebRequestDataType.PROMO_GET_TEASER: self.__getTeaser,
-         WebRequestDataType.PROMO_TEASER_SHOWN: self.__sendShownTeaser,
-         WebRequestDataType.PROMO_GET_UNREAD: self.__getUnreadCount,
-         WebRequestDataType.PROMO_SEND_LOG: self.__sendActionLog}
+        handlers = {WebRequestDataType.PROMO_GET_TEASER: self.__getTeaser, 
+           WebRequestDataType.PROMO_TEASER_SHOWN: self.__sendShownTeaser, 
+           WebRequestDataType.PROMO_GET_UNREAD: self.__getUnreadCount, 
+           WebRequestDataType.PROMO_SEND_LOG: self.__sendActionLog}
         return handlers
 
     def __getTeaser(self, ctx, callback):

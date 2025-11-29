@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/armor_flashlight/battle_controller.py
-import logging
-import typing
-import BigWorld
-import CGF
-import armor_flashlight
+import logging, typing, BigWorld, CGF, armor_flashlight
 from AvatarInputHandler import aih_global_binding, AvatarInputHandler
 from AvatarInputHandler.aih_global_binding import BINDING_ID
 from AvatarInputHandler.gun_marker_ctrl import computePiercingPowerAtDist
@@ -29,12 +23,8 @@ if typing.TYPE_CHECKING:
     from aih_constants import GunMarkerState
 _logger = logging.getLogger(__name__)
 GUN_PIERCING = 'gunPiercing'
-SETTINGS_TRIGGER_CHANGES = (ArmorFlashlight.ENABLED,
- ArmorFlashlight.FILL,
- ArmorFlashlight.OPACITY,
- ArmorFlashlight.COLOR_SCHEMA,
- GRAPHICS.COLOR_BLIND,
- ArmorFlashlight.RESOLUTION,
+SETTINGS_TRIGGER_CHANGES = (ArmorFlashlight.ENABLED, ArmorFlashlight.FILL, ArmorFlashlight.OPACITY,
+ ArmorFlashlight.COLOR_SCHEMA, GRAPHICS.COLOR_BLIND, ArmorFlashlight.RESOLUTION,
  POST_PROCESSING_QUALITY)
 VALID_CTRL_MODES = (CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.TWIN_GUN, CTRL_MODE_NAME.DUAL_GUN)
 
@@ -78,9 +68,9 @@ class ArmorFlashlightBattleController(IArenaLoadController, IArmorFlashlightBatt
     def spaceLoadCompleted(self):
         if not isFeatureEnabled():
             return
-        elif not BigWorld.player().hasBonusCap(ARENA_BONUS_TYPE_CAPS.AFL_ENABLED):
-            return
         else:
+            if not BigWorld.player().hasBonusCap(ARENA_BONUS_TYPE_CAPS.AFL_ENABLED):
+                return
             self._isVisible = self.settingsCore.getSetting(ArmorFlashlight.ENABLED)
             self.sessionProvider.onBattleSessionStop += self._unsubscribeFromBattleSessionEvents
             if not self._subscribeToBattleSessionEvents():
@@ -100,12 +90,12 @@ class ArmorFlashlightBattleController(IArenaLoadController, IArmorFlashlightBatt
     def toggle(self):
         if self._armorFlashlightSingleton is None:
             return False
-        self._isVisible = not self._isVisible
-        self._armorFlashlightSingleton.setVisible(self._isVisible)
-        if self._targetTankID is not None:
-            self._resolveTargetTank(True)
-            return True
         else:
+            self._isVisible = not self._isVisible
+            self._armorFlashlightSingleton.setVisible(self._isVisible)
+            if self._targetTankID is not None:
+                self._resolveTargetTank(True)
+                return True
             return False
 
     def _subscribeToBattleSessionEvents(self, *_, **__):
@@ -143,18 +133,18 @@ class ArmorFlashlightBattleController(IArenaLoadController, IArmorFlashlightBatt
     def _updateVisibilityState(self, markerType, gunMarkerState, *_, **__):
         if self._armorFlashlightSingleton is None:
             return
-        elif markerType == GUN_MARKER_TYPE.CLIENT and not self.gunMarkersFlags & GUN_MARKER_FLAG.CLIENT_MODE_ENABLED:
-            return
-        elif self._myTeam is None or not isPlayerAvatar():
-            self._stopFlashlight()
-            return
         else:
+            if markerType == GUN_MARKER_TYPE.CLIENT and not self.gunMarkersFlags & GUN_MARKER_FLAG.CLIENT_MODE_ENABLED:
+                return
+            if self._myTeam is None or not isPlayerAvatar():
+                self._stopFlashlight()
+                return
             player = BigWorld.player()
             collision = gunMarkerState.collData
             if _inputIsBad(player.inputHandler) or _collisionIsBad(collision, self._myTeam):
                 self._stopFlashlight()
                 return
-            elif not self._isVisible:
+            if not self._isVisible:
                 return
             self._startFlashlight(collision.entity)
             self._setShootingParams(gunMarkerState.position, gunMarkerState.direction, gunMarkerState.size)
@@ -228,7 +218,7 @@ class ArmorFlashlightBattleController(IArenaLoadController, IArmorFlashlightBatt
         return
 
     def _onSettingsChanged(self, diff):
-        if any((item in diff for item in SETTINGS_TRIGGER_CHANGES)):
+        if any(item in diff for item in SETTINGS_TRIGGER_CHANGES):
             self._setSettings()
 
     def _setSettings(self):

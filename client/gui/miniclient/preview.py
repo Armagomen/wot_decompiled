@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/miniclient/preview.py
 from helpers import aop
 
 class ChangeVehicleIsPreviewAllowed(aop.Pointcut):
 
     def __init__(self, config):
-        aop.Pointcut.__init__(self, 'gui.shared.gui_items.Vehicle', 'Vehicle', 'isPreviewAllowed', aspects=(_ChangedIsPreviewAllowed(config),))
+        aop.Pointcut.__init__(self, 'gui.shared.gui_items.Vehicle', 'Vehicle', 'isPreviewAllowed', aspects=(
+         _ChangedIsPreviewAllowed(config),))
 
 
 class _ChangedIsPreviewAllowed(aop.Aspect):

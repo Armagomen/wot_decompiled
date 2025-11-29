@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/state_machine/state_machine_helpers.py
-import logging
-import typing
+import logging, typing
 from battle_pass_common import BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_TOKEN_3D_STYLE, BattlePassRewardReason, BattlePassState, getBattlePassPassEntitlementName, getBattlePassShopEntitlementName, isPostProgressionChapter
 from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift, getStyleInfoForChapter, makeChapterMediaName
 from gui.impl.gen import R
@@ -58,10 +55,10 @@ def separateRewards(rewards):
 def packStartEvent(rewards, data, packageRewards, eventMethod, battlePass=None):
     if rewards is None or data is None:
         return
+    reason = data['reason']
+    if reason in (BattlePassRewardReason.STYLE_UPGRADE,):
+        return
     else:
-        reason = data['reason']
-        if reason in (BattlePassRewardReason.STYLE_UPGRADE,):
-            return
         if not ('newLevel' in data and 'chapter' in data):
             return
         isPremiumPurchase = reason in BattlePassRewardReason.PURCHASE_REASONS
@@ -84,7 +81,9 @@ def packStartEvent(rewards, data, packageRewards, eventMethod, battlePass=None):
             rewards['entitlements'].pop(getBattlePassShopEntitlementName(battlePass.getSeasonID()), None)
             if not rewards['entitlements']:
                 rewards.pop('entitlements')
-        return None if not isPremiumPurchase and not isRareLevel and not isFinalLevel or not rewards else EventNotificationCommand(NotificationEvent(method=eventMethod, rewards=[rewards], data=data, packageRewards=packageRewards))
+        if not isPremiumPurchase and not isRareLevel and not isFinalLevel or not rewards:
+            return
+        return EventNotificationCommand(NotificationEvent(method=eventMethod, rewards=[rewards], data=data, packageRewards=packageRewards))
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
@@ -105,8 +104,7 @@ def defaultEventMethod(rewards, data, packageRewards, battlePass=None):
 
 
 def packToken(tokenID):
-    return {'tokens': {tokenID: {'count': 1,
-                          'expires': {'after': 1}}}}
+    return {'tokens': {tokenID: {'count': 1, 'expires': {'after': 1}}}}
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)

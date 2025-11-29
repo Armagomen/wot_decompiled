@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_sell_dialog.py
 import typing
 from account_helpers.AccountSettings import AccountSettings
 from goodies.goodie_constants import GOODIE_VARIETY
@@ -60,7 +58,9 @@ class VehicleSellDialog(VehicleSellDialogMeta):
     __restore = dependency.descriptor(IRestoreController)
     __goodiesCache = dependency.descriptor(IGoodiesCache)
     __wotPlus = dependency.descriptor(IWotPlusController)
-    __slots__ = ('__vehInvID', '__vehicle', '__nationGroupVehicles', '__controlNumber', '__enteredControlNumber', '__income', '__accountMoney', '__isCrewDismissal', '__vehicleSellPrice', '__items', '__otherVehicleShells', '__isDemountKitEnabled')
+    __slots__ = ('__vehInvID', '__vehicle', '__nationGroupVehicles', '__controlNumber',
+                 '__enteredControlNumber', '__income', '__accountMoney', '__isCrewDismissal',
+                 '__vehicleSellPrice', '__items', '__otherVehicleShells', '__isDemountKitEnabled')
 
     def __init__(self, ctx=None):
         super(VehicleSellDialog, self).__init__()
@@ -106,13 +106,13 @@ class VehicleSellDialog(VehicleSellDialogMeta):
         inventory = []
         customizationItems = []
         boosters = []
-        sellMap = {FITTING_TYPES.SHELL: shells,
-         _INVENTORY_SHELLS: inventory,
-         FITTING_TYPES.EQUIPMENT: eqs,
-         FITTING_TYPES.OPTIONAL_DEVICE: optDevicesToSell,
-         FITTING_TYPES.MODULE: inventory,
-         FITTING_TYPES.CUSTOMIZATION: customizationItems,
-         FITTING_TYPES.BOOSTER: boosters}
+        sellMap = {FITTING_TYPES.SHELL: shells, 
+           _INVENTORY_SHELLS: inventory, 
+           FITTING_TYPES.EQUIPMENT: eqs, 
+           FITTING_TYPES.OPTIONAL_DEVICE: optDevicesToSell, 
+           FITTING_TYPES.MODULE: inventory, 
+           FITTING_TYPES.CUSTOMIZATION: customizationItems, 
+           FITTING_TYPES.BOOSTER: boosters}
         itemsForDemountKit = []
         itemsForFreeDemount = []
         for item in self.__items:
@@ -122,8 +122,9 @@ class VehicleSellDialog(VehicleSellDialogMeta):
                     itemsForDemountKit.append(guiItem)
                 if guiItem.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE and item.removeCurrency == _WP_CURRENCY:
                     itemsForFreeDemount.append(guiItem)
-            container = sellMap[item.itemType]
-            container.append(guiItem)
+            else:
+                container = sellMap[item.itemType]
+                container.append(guiItem)
 
         self.__doSellVehicle(self.__vehicle, shells, eqs, optDevicesToSell, inventory, customizationItems, self.__isCrewDismissal, itemsForDemountKit, itemsForFreeDemount, boosters)
 
@@ -170,16 +171,16 @@ class VehicleSellDialog(VehicleSellDialogMeta):
             battleBoostersOnVehicle.extend(self.__prepareVehicleBoosters(vehicle))
             customizationOnVehicle.extend(self.__prepareVehicleCustomizations(vehicle))
 
-        data = {'accountMoney': self.__accountMoney.toDict(),
-         'sellVehicleVO': self.__getSellVehicleData(),
-         'modulesInInventory': self.__prepareInventoryModules(),
-         'shellsInInventory': self.__prepareInventoryShells(),
-         'isSlidingComponentOpened': _getSlidingComponentOpened(),
-         'optionalDevicesOnVehicle': optionalDevicesOnVehicle,
-         'shellsOnVehicle': shellsOnVehicle,
-         'equipmentsOnVehicle': equipmentsOnVehicle,
-         'battleBoostersOnVehicle': battleBoostersOnVehicle,
-         'customizationOnVehicle': customizationOnVehicle}
+        data = {'accountMoney': self.__accountMoney.toDict(), 
+           'sellVehicleVO': self.__getSellVehicleData(), 
+           'modulesInInventory': self.__prepareInventoryModules(), 
+           'shellsInInventory': self.__prepareInventoryShells(), 
+           'isSlidingComponentOpened': _getSlidingComponentOpened(), 
+           'optionalDevicesOnVehicle': optionalDevicesOnVehicle, 
+           'shellsOnVehicle': shellsOnVehicle, 
+           'equipmentsOnVehicle': equipmentsOnVehicle, 
+           'battleBoostersOnVehicle': battleBoostersOnVehicle, 
+           'customizationOnVehicle': customizationOnVehicle}
         self.as_setDataS(data)
         self.__updateTotalCost()
         self.setCrewDismissal(self.__isCrewDismissal)
@@ -198,7 +199,7 @@ class VehicleSellDialog(VehicleSellDialogMeta):
             currCount = len(self.__restore.getDismissedTankmen())
             header = backport.text(R.strings.tooltips.vehicleSellDialog.crew.alertIcon.recovery.header())
             if deletedCount == 1:
-                crewTooltip = text_styles.concatStylesToMultiLine(text_styles.middleTitle(header), text_styles.main(backport.text(R.strings.tooltips.vehicleSellDialog.crew.alertIcon.recovery.body(), maxVal=maxCount, curVal=currCount, sourceName=tankmenGoingToBuffer[-1].fullUserName, targetInfo=deletedStr)))
+                crewTooltip = text_styles.concatStylesToMultiLine(text_styles.middleTitle(header), text_styles.main(backport.text(R.strings.tooltips.vehicleSellDialog.crew.alertIcon.recovery.body(), maxVal=maxCount, curVal=currCount, sourceName=tankmenGoingToBuffer[(-1)].fullUserName, targetInfo=deletedStr)))
             else:
                 crewTooltip = text_styles.concatStylesToMultiLine(text_styles.middleTitle(header), text_styles.main(backport.text(R.strings.tooltips.dismissTankmanDialog.bufferIsFullMultiple.body(), deletedStr=deletedStr, extraCount=deletedCount - 1, maxCount=maxCount, currCount=currCount)))
         else:
@@ -237,30 +238,30 @@ class VehicleSellDialog(VehicleSellDialogMeta):
         for buttons in _BARRACKS_DROP_DOWN_DATA_PROVIDER:
             barracksDropDownData.append({key:backport.text(value) for key, value in buttons.iteritems()})
 
-        return {'intCD': self.__vehicle.intCD,
-         'userName': self.__vehicle.userName,
-         'icon': self.__vehicle.icon,
-         'level': self.__vehicle.level,
-         'isElite': self.__vehicle.isElite,
-         'isPremium': self.__vehicle.isPremium,
-         'hasNationGroup': self.__vehicle.hasNationGroup,
-         'type': vehType,
-         'nationID': self.__vehicle.nationID,
-         'sellPrice': self.__vehicleSellPrice.toMoneyTuple(),
-         'priceTextValue': priceTextValue,
-         'priceTextColor': priceTextColor,
-         'currencyIcon': currencyIcon,
-         'action': vehicleAction,
-         'hasCrew': hasCrew,
-         'isRented': self.__vehicle.isRented,
-         'description': description,
-         'roleStr': roleStr,
-         'priceLabel': backport.text(R.strings.dialogs.vehicleSellDialog.vehicle.emptySellPrice()),
-         'crewLabel': backport.text(R.strings.dialogs.vehicleSellDialog.crew.label()),
-         'inNationGroupDescription': backport.text(R.strings.dialogs.vehicleSellDialog.message.multinational()),
-         'crewTooltip': crewTooltip,
-         'barracksDropDownData': barracksDropDownData,
-         'isPostProgressionUnlocked': self.__vehicle.postProgressionAvailability(unlockOnly=True).result}
+        return {'intCD': self.__vehicle.intCD, 
+           'userName': self.__vehicle.userName, 
+           'icon': self.__vehicle.icon, 
+           'level': self.__vehicle.level, 
+           'isElite': self.__vehicle.isElite, 
+           'isPremium': self.__vehicle.isPremium, 
+           'hasNationGroup': self.__vehicle.hasNationGroup, 
+           'type': vehType, 
+           'nationID': self.__vehicle.nationID, 
+           'sellPrice': self.__vehicleSellPrice.toMoneyTuple(), 
+           'priceTextValue': priceTextValue, 
+           'priceTextColor': priceTextColor, 
+           'currencyIcon': currencyIcon, 
+           'action': vehicleAction, 
+           'hasCrew': hasCrew, 
+           'isRented': self.__vehicle.isRented, 
+           'description': description, 
+           'roleStr': roleStr, 
+           'priceLabel': backport.text(R.strings.dialogs.vehicleSellDialog.vehicle.emptySellPrice()), 
+           'crewLabel': backport.text(R.strings.dialogs.vehicleSellDialog.crew.label()), 
+           'inNationGroupDescription': backport.text(R.strings.dialogs.vehicleSellDialog.message.multinational()), 
+           'crewTooltip': crewTooltip, 
+           'barracksDropDownData': barracksDropDownData, 
+           'isPostProgressionUnlocked': self.__vehicle.postProgressionAvailability(unlockOnly=True).result}
 
     def __prepareInventoryModules(self):
         nationID = self.__nationGroupVehicles[0].nationID if len(self.__nationGroupVehicles) == 1 else None
@@ -348,11 +349,11 @@ class VehicleSellDialog(VehicleSellDialogMeta):
         return onVehicleShells
 
     def __subscribe(self):
-        g_clientUpdateManager.addCallbacks({'stats.gold': self.__onSetGoldHandler,
-         'stats.crystal': self.__onSetCrystalHandler,
-         'stats.equipCoin': self.__onSetEquipCoinHandler,
-         'stats.vehicleSellsLeft': self.__onSellLimitUpdate,
-         'goodies': self.__onSetGoodiesHandler})
+        g_clientUpdateManager.addCallbacks({'stats.gold': self.__onSetGoldHandler, 
+           'stats.crystal': self.__onSetCrystalHandler, 
+           'stats.equipCoin': self.__onSetEquipCoinHandler, 
+           'stats.vehicleSellsLeft': self.__onSellLimitUpdate, 
+           'goodies': self.__onSetGoodiesHandler})
         self.__itemsCache.onSyncCompleted += self.__shopResyncHandler
 
     def __unsubscribe(self):
@@ -401,7 +402,7 @@ class VehicleSellDialog(VehicleSellDialogMeta):
             formattedItems.append(backport.text(acceptButtonTooltip.notEnoughCurrency.body()))
         if not isInLimit:
             formattedItems.append(backport.text(acceptButtonTooltip.vehicleSellLimit.body()))
-        warningMessage = '{}\n'.format(backport.text(R.strings.common.common.dot())).join(formattedItems) + backport.text(R.strings.common.common.dot())
+        warningMessage = ('{}\n').format(backport.text(R.strings.common.common.dot())).join(formattedItems) + backport.text(R.strings.common.common.dot())
         if formattedItems:
             header = backport.text(acceptButtonTooltip.notEnable.header())
             tooltip = makeTooltip(header, warningMessage)
@@ -434,9 +435,10 @@ class VehicleSellDialog(VehicleSellDialogMeta):
                 if item.guiItem.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE and item.isRemovableForMoney:
                     currency = item.removeCurrency
                     optionalDevices -= item.itemRemovalPrice.extract(currency)
-            if item.guiItem.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
+            elif item.guiItem.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
                 optionalDevices += item.itemSellPrice
-            common += item.itemSellPrice
+            else:
+                common += item.itemSellPrice
 
         self.__income = _VSDMoney()
         self.__income += _VSDMoney(self.__vehicleSellPrice)
@@ -515,7 +517,8 @@ def _getSlidingComponentOpened():
 
 
 def _getCurrencyIterator():
-    order = (_WP_CURRENCY, _DK_CURRENCY) + Currency.BY_WEIGHT
+    order = (
+     _WP_CURRENCY, _DK_CURRENCY) + Currency.BY_WEIGHT
     for c in order:
         yield c
 
@@ -579,7 +582,9 @@ class _VSDMoney(dict):
         return self.__mul__(n)
 
     def extract(self, currency):
-        return _VSDMoney() if not currency else _VSDMoney(**{currency: self[currency]})
+        if not currency:
+            return _VSDMoney()
+        return _VSDMoney(**{currency: self[currency]})
 
     def isEmpty(self):
         for c in self.values():
@@ -593,7 +598,8 @@ class _VSDMoney(dict):
 
 
 class _VSDItemData(object):
-    __slots__ = ('_itemSellPrice', '_itemRemovalPrice', '_flashData', '__fittingItem', '__itemType')
+    __slots__ = ('_itemSellPrice', '_itemRemovalPrice', '_flashData', '__fittingItem',
+                 '__itemType')
 
     def __init__(self, item, itemType=None):
         super(_VSDItemData, self).__init__()
@@ -602,10 +608,10 @@ class _VSDItemData(object):
         self.__itemType = itemType
         itemPrice = item.sellPrices.itemPrice
         self._itemSellPrice = _VSDMoney(item.sellPrices.itemPrice.price)
-        self._flashData = {'count': 1,
-         'toInventory': True,
-         'userName': item.userName,
-         'sellPrice': itemPrice.price.toMoneyTuple()}
+        self._flashData = {'count': 1, 
+           'toInventory': True, 
+           'userName': item.userName, 
+           'sellPrice': itemPrice.price.toMoneyTuple()}
         if itemPrice.isActionPrice():
             self._flashData['action'] = packItemActionTooltipData(item, False)
         return
@@ -719,4 +725,6 @@ class _OptionalDeviceData(_VSDItemData):
 
     @classmethod
     def __getAlertIconTooltip(cls, optDevice):
-        return '#tooltips:vehicleSellDialog/renderer/alertIconSell' if not optDevice.isModernized else '#tooltips:vehicleSellDialog/renderer/alertIconDeconstruct'
+        if not optDevice.isModernized:
+            return '#tooltips:vehicleSellDialog/renderer/alertIconSell'
+        return '#tooltips:vehicleSellDialog/renderer/alertIconDeconstruct'

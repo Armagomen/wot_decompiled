@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/xml_config_specs.py
 import json
 from Math import Vector2, Vector3, Vector4
 from typing import TYPE_CHECKING
@@ -27,10 +25,16 @@ class SimpleParam(IParam):
 
     @property
     def default(self):
-        return self._default if self._default is not None else self._DEFAULT
+        if self._default is not None:
+            return self._default
+        else:
+            return self._DEFAULT
 
     def read(self, section, name=''):
-        return self.default if not section else self._read(section, self.name if self.name is not None else name)
+        if not section:
+            return self.default
+        else:
+            return self._read(section, self.name if self.name is not None else name)
 
     def _read(self, section, name):
         method = getattr(section, self._SIMPLE_METHOD)
@@ -76,7 +80,10 @@ class JsonParam(SimpleParam):
 
     def _read(self, section, name):
         res = json.loads(section.readString(name) or 'null')
-        return res if res is not None else self.default
+        if res is not None:
+            return res
+        else:
+            return self.default
 
 
 class ListParam(SimpleParam):
@@ -89,7 +96,8 @@ class ListParam(SimpleParam):
 
     def _read(self, section, name):
         valueName = self._valueParam.name if self._valueParam.name is not None else ''
-        res = [ self._valueParam.read(itemSection, valueName) for itemName, itemSection in section[name].items() if self._itemName is None or self._itemName == itemName ]
+        res = [ self._valueParam.read(itemSection, valueName) for itemName, itemSection in section[name].items() if self._itemName is None or self._itemName == itemName
+              ]
         return res
 
 
@@ -118,7 +126,7 @@ class ObjParam(SimpleParam):
 
     def __init__(self, name=None, **specs):
         super(ObjParam, self).__init__(name=name)
-        self._specs = {paramName:paramReader for paramName, paramReader in specs.items() if isinstance(paramReader, IParam)}
+        self._specs = {paramName:paramReader for paramName, paramReader in specs.items() if isinstance(paramReader, IParam) if isinstance(paramReader, IParam)}
 
     def _read(self, section, name):
         obj = self.Obj()
@@ -138,4 +146,6 @@ class EnumParam(StrParam):
 
     def _read(self, section, name):
         attrName = super(EnumParam, self)._read(section, name)
-        return self._defaultValue if not attrName else getattr(self._enum, attrName)
+        if not attrName:
+            return self._defaultValue
+        return getattr(self._enum, attrName)

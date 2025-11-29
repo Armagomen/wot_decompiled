@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanSendInvitesWindow.py
 from adisp import adisp_process
 from client_request_lib.exceptions import ResponseCodes
 from gui import SystemMessages
@@ -27,7 +25,10 @@ class ClanSendInvitesWindow(SendInvitesWindow, UsersInfoHelper, ClanListener):
         ctx = clan_ctx.CreateInviteCtx(self.__clanDbID, accountsToInvite, comment)
         self.as_onReceiveSendInvitesCooldownS(ctx.getCooldown())
         result = yield self.webCtrl.sendRequest(ctx)
-        expectedCodes = (ResponseCodes.ACCOUNT_ALREADY_APPLIED, ResponseCodes.ACCOUNT_ALREADY_INVITED, ResponseCodes.NO_ERRORS)
+        expectedCodes = (
+         ResponseCodes.ACCOUNT_ALREADY_APPLIED,
+         ResponseCodes.ACCOUNT_ALREADY_INVITED,
+         ResponseCodes.NO_ERRORS)
         if result.getCode() in expectedCodes:
             successAccounts = [ item.getAccountDbID() for item in ctx.getDataObj(result.data) ]
             failedAccounts = set(accountsToInvite) - set(successAccounts)
@@ -47,11 +48,9 @@ class ClanSendInvitesWindow(SendInvitesWindow, UsersInfoHelper, ClanListener):
 
     def _populate(self):
         super(ClanSendInvitesWindow, self)._populate()
-        self.as_setInvalidUserTagsS([USER_TAG.IGNORED,
-         USER_TAG.IGNORED_TMP,
-         USER_TAG.CURRENT,
-         USER_TAG.CLAN_MEMBER,
-         USER_TAG.OTHER_CLAN_MEMBER])
+        self.as_setInvalidUserTagsS([
+         USER_TAG.IGNORED, USER_TAG.IGNORED_TMP, USER_TAG.CURRENT,
+         USER_TAG.CLAN_MEMBER, USER_TAG.OTHER_CLAN_MEMBER])
         self.as_enableMassSendS(False, CLANS.CLANPROFILE_SENDINVITESWINDOW_TOOLTIP_MASSSENDBLOCKED)
 
     def _initCooldown(self):

@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/marathon/marathon_entry_point_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.marathon.base_event_model import BaseEventModel
 
 class MarathonEntryPointModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
     STATE_MARATHON_DISABLED = -1
     STATE_MARATHON_NOT_STARTED = 0
     STATE_MARATHON_IN_PROGRESS = 1

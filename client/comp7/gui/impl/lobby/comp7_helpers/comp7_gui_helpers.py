@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_gui_helpers.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR, COMP7_UI_SECTION, COMP7_LAST_SEASON, COMP7_LAST_SEASON_WHERE_STATISTICS_SHOWN
 from comp7_common_const import seasonNameBySeasonNumber
@@ -22,11 +20,13 @@ def isSeasonStatisticsShouldBeShown(comp7Controller=None):
         return False
     seasonPointsCode = seasonPointsCodeBySeasonNumber(previousSeason.getNumber())
     receivedSeasonPoints = comp7Controller.getReceivedSeasonPoints().get(seasonPointsCode)
-    return False if not receivedSeasonPoints else True
+    if not receivedSeasonPoints:
+        return False
+    return True
 
 
 def isComp7OnboardingShouldBeShown():
-    return _needToShowComp7Intro(includePreannounced=True) and not _hasParticipantToken()
+    return _needToShowComp7Intro(includePreannounced=True, includeNext=True) and not _hasParticipantToken()
 
 
 def isComp7WhatsNewShouldBeShown():
@@ -50,12 +50,12 @@ def isViewShown(key, settingsCore=None):
 
 
 @dependency.replace_none_kwargs(comp7Ctrl=IComp7Controller)
-def _needToShowComp7Intro(comp7Ctrl=None, includePreannounced=False):
+def _needToShowComp7Intro(comp7Ctrl=None, includePreannounced=False, includeNext=False):
     if not comp7Ctrl.isAvailable():
         return False
     else:
         nextSeason = comp7Ctrl.getNextSeason()
-        launchedNextSeason = nextSeason if nextSeason and not nextSeason.hasTentativeDates() else None
+        launchedNextSeason = nextSeason if includeNext and nextSeason and not nextSeason.hasTentativeDates() else None
         season = comp7Ctrl.getCurrentSeason(includePreannounced=includePreannounced) or launchedNextSeason
         if not season:
             return False

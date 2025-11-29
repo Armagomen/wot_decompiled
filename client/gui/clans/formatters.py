@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/formatters.py
 from client_request_lib.exceptions import ResponseCodes
 from gui import makeHtmlString
 from gui.impl import backport
@@ -28,34 +26,38 @@ def formatInvitesCount(count):
     elif count <= 999:
         count = str(count)
     elif count <= 99999:
-        count = '{}K'.format(int(count / 1000))
+        count = ('{}K').format(int(count / 1000))
     else:
         count = '99K+'
     return count
 
 
 def formatDataToString(data):
-    return DUMMY_UNAVAILABLE_DATA if data is None else str(data)
+    if data is None:
+        return DUMMY_UNAVAILABLE_DATA
+    else:
+        return str(data)
 
 
 def formatShortDateShortTimeString(timestamp):
-    return str(' ').join((backport.getShortDateFormat(timestamp), '  ', backport.getShortTimeFormat(timestamp)))
+    return str(' ').join((
+     backport.getShortDateFormat(timestamp), '  ', backport.getShortTimeFormat(timestamp)))
 
 
 _CUSTOM_ERR_MESSAGES_BY_REQUEST = {REQUEST_TYPE.CREATE_INVITES: lambda result, ctx: ''}
-_CUSTOM_ERR_MESSAGES = {(REQUEST_TYPE.CLAN_GLOBAL_MAP_STATS, ResponseCodes.GLOBAL_MAP_ERROR): '',
- (REQUEST_TYPE.CLAN_RATINGS, ResponseCodes.WGRS_ERROR): '',
- (REQUEST_TYPE.CLAN_GLOBAL_MAP_STATS, ResponseCodes.CLAN_DOES_NOT_EXIST): '',
- (REQUEST_TYPE.CLAN_INFO, ResponseCodes.WGCCBE_ERROR): '',
- (REQUEST_TYPE.CLAN_APPLICATIONS, ResponseCodes.WGCCBE_ERROR): '',
- (REQUEST_TYPE.CLAN_INVITES, ResponseCodes.WGCCBE_ERROR): '',
- (REQUEST_TYPE.ACCOUNT_INVITES, ResponseCodes.WGCCBE_ERROR): '',
- (REQUEST_TYPE.CLAN_ACCOUNTS, ResponseCodes.WGCCBE_ERROR): '',
- (REQUEST_TYPE.ACCEPT_INVITE, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT',
- (REQUEST_TYPE.DECLINE_INVITE, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT',
- (REQUEST_TYPE.DECLINE_INVITES, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT',
- (REQUEST_TYPE.ACCEPT_APPLICATION, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT',
- (REQUEST_TYPE.DECLINE_APPLICATION, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT'}
+_CUSTOM_ERR_MESSAGES = {(REQUEST_TYPE.CLAN_GLOBAL_MAP_STATS, ResponseCodes.GLOBAL_MAP_ERROR): '', 
+   (REQUEST_TYPE.CLAN_RATINGS, ResponseCodes.WGRS_ERROR): '', 
+   (REQUEST_TYPE.CLAN_GLOBAL_MAP_STATS, ResponseCodes.CLAN_DOES_NOT_EXIST): '', 
+   (REQUEST_TYPE.CLAN_INFO, ResponseCodes.WGCCBE_ERROR): '', 
+   (REQUEST_TYPE.CLAN_APPLICATIONS, ResponseCodes.WGCCBE_ERROR): '', 
+   (REQUEST_TYPE.CLAN_INVITES, ResponseCodes.WGCCBE_ERROR): '', 
+   (REQUEST_TYPE.ACCOUNT_INVITES, ResponseCodes.WGCCBE_ERROR): '', 
+   (REQUEST_TYPE.CLAN_ACCOUNTS, ResponseCodes.WGCCBE_ERROR): '', 
+   (REQUEST_TYPE.ACCEPT_INVITE, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT', 
+   (REQUEST_TYPE.DECLINE_INVITE, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT', 
+   (REQUEST_TYPE.DECLINE_INVITES, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT', 
+   (REQUEST_TYPE.ACCEPT_APPLICATION, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT', 
+   (REQUEST_TYPE.DECLINE_APPLICATION, ResponseCodes.CLAN_IN_TRANSACTION): 'DEFAULT'}
 
 def getRequestErrorMsg(result, ctx):
     msgReqKey = ctx.getRequestType()
@@ -82,20 +84,26 @@ def getRequestUserName(rqTypeID):
 
 def getClanRoleString(position):
     roleStr = getClanRoleName(position)
-    return backport.text(R.strings.menu.profile.header.clan.position.dyn(roleStr)()) if roleStr is not None else ''
+    if roleStr is not None:
+        return backport.text(R.strings.menu.profile.header.clan.position.dyn(roleStr)())
+    else:
+        return ''
 
 
 def getClanRoleIcon(role):
     roleStr = getClanRoleName(role)
-    return '../maps/icons/clans/roles/%s.png' % roleStr if roleStr is not None else ''
+    if roleStr is not None:
+        return '../maps/icons/clans/roles/%s.png' % roleStr
+    else:
+        return ''
 
 
 def getClanAbbrevString(clanAbbrev):
-    return '[{0:>s}]'.format(clanAbbrev)
+    return ('[{0:>s}]').format(clanAbbrev)
 
 
 def getClanFullName(clanName, clanAbbrev):
-    return '{} {}'.format(getClanAbbrevString(clanAbbrev), clanName)
+    return ('{} {}').format(getClanAbbrevString(clanAbbrev), clanName)
 
 
 def getAppSentSysMsg(clanName, clanAbbrev):
@@ -143,7 +151,7 @@ class _BaseClanAppHtmlTextFormatter(object):
         text = self.getComment(entity)
         if text:
             result.append(text)
-        return ''.join(result)
+        return ('').join(result)
 
     def getTitle(self, entity):
         return makeHtmlString('html_templates:lobby/clans', self._titleKey, {'appsCount': entity})
@@ -204,7 +212,7 @@ class ClanAppActionHtmlTextFormatter(object):
         self.__actType = actType
 
     def getTitle(self):
-        pass
+        return ''
 
     def getComment(self, clanName):
         return makeHtmlString('html_templates:lobby/clans/', self.__actType, ctx={'name': clanName})
@@ -217,4 +225,4 @@ class ClanAppActionHtmlTextFormatter(object):
         text = self.getComment(clanName)
         if text:
             result.append(text)
-        return ''.join(result)
+        return ('').join(result)

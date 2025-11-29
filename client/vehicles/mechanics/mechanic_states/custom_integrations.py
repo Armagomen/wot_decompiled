@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_states/custom_integrations.py
-import typing
-import logging
+import typing, logging
 from events_handler import eventHandler
 from vehicles.components.component_events import ComponentListener
 from vehicles.mechanics.mechanic_states.mechanic_interfaces import IMechanicStatesListenerLogic

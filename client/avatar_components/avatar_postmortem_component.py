@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/avatar_components/avatar_postmortem_component.py
-import BattleReplay
-import logging
+import BattleReplay, logging
 from AvatarInputHandler.control_modes import PostMortemControlMode
 from account_helpers.settings_core.settings_constants import GAME
 from aih_constants import CTRL_MODE_NAME
@@ -49,7 +46,9 @@ class AvatarPostmortemComponent(object):
         self.destroy()
 
     def canSwitchToAllyVehicle(self):
-        return False if self.arenaBonusType in (ARENA_BONUS_TYPE.EPIC_BATTLE,) else True
+        if self.arenaBonusType in (ARENA_BONUS_TYPE.EPIC_BATTLE,):
+            return False
+        return True
 
     def isPostmortemFeatureEnabled(self, feature):
         if feature not in CTRL_MODE_NAME.POSTMORTEM_CONTROL_MODES:

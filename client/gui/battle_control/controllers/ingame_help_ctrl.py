@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/ingame_help_ctrl.py
 import typing
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -50,7 +48,10 @@ class IngameHelpController(IBattleController):
 
     def canShow(self):
         battleApp = self.__appLoader.getDefBattleApp()
-        return False if battleApp is None else not bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_MENU)))
+        if battleApp is None:
+            return False
+        else:
+            return not bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_MENU)))
 
     def __onShowBtnHint(self, event):
         self.__currentHintContext = event.ctx.get('hintCtx')

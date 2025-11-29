@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/WeakMethod.py
 from weakref import ref
 
 class WeakMethod(ref):
@@ -30,7 +28,9 @@ class WeakMethod(ref):
     def __call__(self):
         obj = super(WeakMethod, self).__call__()
         func = self._func_ref()
-        return None if obj is None or func is None else self._meth_type(func, obj)
+        if obj is None or func is None:
+            return
+        return self._meth_type(func, obj)
 
     def __eq__(self, other):
         if isinstance(other, WeakMethod):
@@ -65,10 +65,14 @@ class WeakMethodProxy(object):
         return self._methodRef() is not None
 
     def __eq__(self, other):
-        return self._methodRef == other._methodRef if isinstance(other, WeakMethodProxy) else False
+        if isinstance(other, WeakMethodProxy):
+            return self._methodRef == other._methodRef
+        return False
 
     def __ne__(self, other):
-        return self._methodRef != other._methodRef if isinstance(other, WeakMethodProxy) else True
+        if isinstance(other, WeakMethodProxy):
+            return self._methodRef != other._methodRef
+        return True
 
     def __hash__(self):
         return self._methodRef.__hash__()

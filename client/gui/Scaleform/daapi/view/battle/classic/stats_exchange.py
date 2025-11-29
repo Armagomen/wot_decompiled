@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/stats_exchange.py
 from collections import defaultdict
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import BattleStatisticsDataController
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import createExchangeBroker
@@ -11,7 +9,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from helpers import dependency
 
 class FragsCollectableStats(broker.CollectableStats):
-    __slots__ = ('__teamsDeaths',)
+    __slots__ = ('__teamsDeaths', )
 
     def __init__(self):
         super(FragsCollectableStats, self).__init__()
@@ -36,16 +34,19 @@ class FragsCollectableStats(broker.CollectableStats):
             score = len(vehicleIDs)
             if isEnemyTeam(teamIdx):
                 allyScope += score
-            enemyScope += score
+            else:
+                enemyScope += score
 
         self._setTotalScore(allyScope, enemyScope)
-        return {'leftScope': allyScope,
-         'rightScope': enemyScope} if allyScope or enemyScope else {}
+        if allyScope or enemyScope:
+            return {'leftScope': allyScope, 
+               'rightScope': enemyScope}
+        return {}
 
 
 class DynamicVehicleStatsComponent(vehicle.VehicleStatsComponent):
     settingsCore = dependency.descriptor(ISettingsCore)
-    __slots__ = ('_frags', '_vehicleID', '_chatCommand', '_chatCommandFlags', '_spottedStatus')
+    __slots__ = ('_frags', '_chatCommand', '_chatCommandFlags', '_spottedStatus')
 
     def __init__(self):
         super(DynamicVehicleStatsComponent, self).__init__()
@@ -85,9 +86,15 @@ class ClassicStatisticsDataController(BattleStatisticsDataController):
 
     def _createExchangeBroker(self, exchangeCtx):
         exchangeBroker = createExchangeBroker(exchangeCtx)
-        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(vehicle.VehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(vehicle.TeamsSortedIDsComposer(), vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
-        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(vehicle.TotalStatsComposer(),)))
-        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(vehicle.TeamsSortedIDsComposer(), vehicle.TeamsCorrelationIDsComposer()), statsComposers=(vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(vehicle.VehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
+         vehicle.TeamsSortedIDsComposer(),
+         vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
+        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(
+         vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(
+         vehicle.TeamsSortedIDsComposer(),
+         vehicle.TeamsCorrelationIDsComposer()), statsComposers=(
+         vehicle.TotalStatsComposer(),)))
         return exchangeBroker
 
     def _createExchangeCollector(self):

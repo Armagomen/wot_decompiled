@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/panel.py
-import logging
-import BigWorld
+import logging, BigWorld
 from helpers import dependency
 import BattleReplay
 from ReplayEvents import g_replayEvents
@@ -73,7 +70,9 @@ class StatusNotificationTimerPanel(StatusNotificationsPanelMeta, MethodsRules):
         return
 
     def _getComponentClass(self):
-        return replay_components.ReplayStatusNotificationContainer if self._sessionProvider.isReplayPlaying else components.StatusNotificationContainer
+        if self._sessionProvider.isReplayPlaying:
+            return replay_components.ReplayStatusNotificationContainer
+        return components.StatusNotificationContainer
 
     def _generateItems(self):
         return []
@@ -90,19 +89,19 @@ class StatusNotificationTimerPanel(StatusNotificationsPanelMeta, MethodsRules):
         return verticalOffset
 
     def _addNotificationTimerSetting(self, data, typeId, iconName, linkage, color=_COLORS.ORANGE, noiseVisible=False, text='', countdownVisible=True, iconOffsetY=0, iconSmallName='', isReversedTimerDirection=False, canBlink=False, descriptionFontSize=14, descriptionOffsetY=0):
-        data.append({'typeId': typeId,
-         'iconName': iconName,
-         'iconSmallName': iconSmallName,
-         'linkage': linkage,
-         'color': color,
-         'noiseVisible': noiseVisible,
-         'text': text,
-         'countdownVisible': countdownVisible,
-         'iconOffsetY': iconOffsetY,
-         'isReversedTimerDirection': isReversedTimerDirection,
-         'canBlink': canBlink,
-         'descriptionFontSize': descriptionFontSize,
-         'descriptionOffsetY': descriptionOffsetY})
+        data.append({'typeId': typeId, 
+           'iconName': iconName, 
+           'iconSmallName': iconSmallName, 
+           'linkage': linkage, 
+           'color': color, 
+           'noiseVisible': noiseVisible, 
+           'text': text, 
+           'countdownVisible': countdownVisible, 
+           'iconOffsetY': iconOffsetY, 
+           'isReversedTimerDirection': isReversedTimerDirection, 
+           'canBlink': canBlink, 
+           'descriptionFontSize': descriptionFontSize, 
+           'descriptionOffsetY': descriptionOffsetY})
 
     def _updatePanelPosition(self):
         vehicle = BigWorld.entity(self.__vehicleID) if self.__vehicleID is not None else None

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TwinGunController.py
 import typing
 from constants import DEFAULT_GUN_INSTALLATION_INDEX
 from vehicles.components.component_wrappers import ifAppearanceReady

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_bonus_packer.py
-import typing
-import logging
+import typing, logging
 from constants import PREMIUM_ENTITLEMENTS
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK
 from gui import GUI_NATIONS_ORDER_INDEX
@@ -31,24 +28,14 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from gui.impl.gen.view_models.views.lobby.battle_pass.reward_item_model import RewardItemModel
 _logger = logging.getLogger(__name__)
-_REWARDS_ORDER = ('vehicles',
- 'battleToken',
- 'tokens',
- 'crewBooks',
- 'customizations',
- 'items',
- PREMIUM_ENTITLEMENTS.PLUS,
- PREMIUM_ENTITLEMENTS.BASIC,
- Currency.CRYSTAL,
- Currency.GOLD,
- 'freeXP',
- Currency.CREDITS,
- 'blueprintsAny',
- BlueprintBonusTypes.BLUEPRINTS,
- 'goodies',
- 'slots')
-_CUSTOMIZATIONS_ORDER = ('style', 'emblem', 'camouflage', 'modification', 'decal', 'inscription', 'paint')
-_DEVICES_TYPES_ORDER = (SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS,
+_REWARDS_ORDER = (
+ 'vehicles', 'battleToken', 'tokens', 'crewBooks', 'customizations', 'items',
+ PREMIUM_ENTITLEMENTS.PLUS, PREMIUM_ENTITLEMENTS.BASIC, Currency.CRYSTAL, Currency.GOLD, 'freeXP',
+ Currency.CREDITS, 'blueprintsAny', BlueprintBonusTypes.BLUEPRINTS, 'goodies', 'slots')
+_CUSTOMIZATIONS_ORDER = ('style', 'emblem', 'camouflage', 'modification', 'decal',
+                         'inscription', 'paint')
+_DEVICES_TYPES_ORDER = (
+ SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS_BIG,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC,
@@ -60,7 +47,8 @@ _DEVICES_TYPES_ORDER = (SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS,
  SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG,
  SLOT_HIGHLIGHT_TYPES.BATTLE_BOOSTER,
  SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT)
-_ITEMS_TYPES_ORDER = (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.BATTLE_BOOSTER, GUI_ITEM_TYPE.EQUIPMENT)
+_ITEMS_TYPES_ORDER = (
+ GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.BATTLE_BOOSTER, GUI_ITEM_TYPE.EQUIPMENT)
 
 def _vehiclesCmp(firstModel, secondModel):
     return cmp(firstModel.getLevel(), secondModel.getLevel())
@@ -77,9 +65,7 @@ def _itemsCmp(firstModel, secondModel):
     return result
 
 
-_CUSTOM_SORT = {VehiclesBonus.VEHICLES_BONUS: _vehiclesCmp,
- 'customizations': _customizationsCmp,
- 'items': _itemsCmp}
+_CUSTOM_SORT = {VehiclesBonus.VEHICLES_BONUS: _vehiclesCmp, 'customizations': _customizationsCmp, 'items': _itemsCmp}
 
 def battleMattersSort(rewardType):
     return _CUSTOM_SORT.get(rewardType, lambda _, __: 0)
@@ -121,12 +107,12 @@ def _blueprintsNationCmp(firstBonus, secondBonus):
 
 def getBattleMattersBonusPacker():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({VehiclesBonus.VEHICLES_BONUS: BattleMattersVehiclesBonusUIPacker(),
-     BlueprintBonusTypes.BLUEPRINTS: BattleMattersBlueprintBonusUIPacker(),
-     SELECTABLE_BONUS_NAME: BattleMattersTokenBonusUIPacker(),
-     'entitlements': BattleMattersEntitlementsBonusUIPacker(),
-     'items': ExtendedItemBonusUIPacker(),
-     'dossier': BattleMattersDossierBonusUIPacker()})
+    mapping.update({VehiclesBonus.VEHICLES_BONUS: BattleMattersVehiclesBonusUIPacker(), 
+       BlueprintBonusTypes.BLUEPRINTS: BattleMattersBlueprintBonusUIPacker(), 
+       SELECTABLE_BONUS_NAME: BattleMattersTokenBonusUIPacker(), 
+       'entitlements': BattleMattersEntitlementsBonusUIPacker(), 
+       'items': ExtendedItemBonusUIPacker(), 
+       'dossier': BattleMattersDossierBonusUIPacker()})
     return BonusUIPacker(mapping)
 
 
@@ -172,9 +158,11 @@ class BattleMattersTokenBonusUIPacker(SelectableBonusPacker):
     def _getToolTip(cls, bonus):
         if cls.__isVehicleReceived():
             vehicle = cls.__battleMattersController.getSelectedVehicle()
-            return [backport.createTooltipData(isSpecial=True, specialArgs=(vehicle.intCD,), specialAlias=TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE)]
+            return [
+             backport.createTooltipData(isSpecial=True, specialArgs=(vehicle.intCD,), specialAlias=TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE)]
         else:
-            return [None]
+            return [
+             None]
 
     @classmethod
     def __isVehicleReceived(cls):
@@ -210,7 +198,8 @@ class BattleMattersVehiclesBonusUIPacker(VehiclesBonusUIPacker):
 
 
 class BattleMattersEntitlementsBonusUIPacker(BaseBonusUIPacker):
-    _ITEMS_TO_SKIP = {'battle_matters_rent_tiger'}
+    _ITEMS_TO_SKIP = {
+     'battle_matters_rent_tiger'}
 
     @classmethod
     def _pack(cls, bonus):
@@ -223,8 +212,11 @@ class BattleMattersEntitlementsBonusUIPacker(BaseBonusUIPacker):
 
 
 class BattleMattersDossierBonusUIPacker(DossierBonusUIPacker):
-    _ITEMS_TO_SKIP = {(ACHIEVEMENT_BLOCK.STEAM, 'steamBriefingMedal')}
+    _ITEMS_TO_SKIP = {
+     (
+      ACHIEVEMENT_BLOCK.STEAM, 'steamBriefingMedal')}
 
     @classmethod
     def _packAchievements(cls, bonus):
-        return [ cls._packSingleAchievement(achievement, bonus) for achievement in bonus.getAchievements() if achievement.getRecordName() not in cls._ITEMS_TO_SKIP ]
+        return [ cls._packSingleAchievement(achievement, bonus) for achievement in bonus.getAchievements() if achievement.getRecordName() not in cls._ITEMS_TO_SKIP
+               ]

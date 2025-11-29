@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/battle_matters.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Callable, List, Optional, Union

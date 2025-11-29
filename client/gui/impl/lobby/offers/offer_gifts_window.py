@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/offers/offer_gifts_window.py
 import logging
 from functools import partial
 import ResMgr
@@ -28,16 +26,13 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from web.cache.web_cache import CachePrefetchResult
 _logger = logging.getLogger(__name__)
-RENT_TYPE_TO_MODEL_CONSTANT = {RentType.NO_RENT: GiftModel.RENT_TYPE_NO,
- RentType.TIME_RENT: GiftModel.RENT_TYPE_TIME,
- RentType.BATTLES_RENT: GiftModel.RENT_TYPE_BATTLES,
- RentType.WINS_RENT: GiftModel.RENT_TYPE_WINS}
-BONUSES_WITHOUT_COUNTER = {Currency.CREDITS,
- Currency.GOLD,
- Currency.CRYSTAL,
- 'freeXP',
- PREMIUM_ENTITLEMENTS.PLUS,
- 'vehicles'}
+RENT_TYPE_TO_MODEL_CONSTANT = {RentType.NO_RENT: GiftModel.RENT_TYPE_NO, 
+   RentType.TIME_RENT: GiftModel.RENT_TYPE_TIME, 
+   RentType.BATTLES_RENT: GiftModel.RENT_TYPE_BATTLES, 
+   RentType.WINS_RENT: GiftModel.RENT_TYPE_WINS}
+BONUSES_WITHOUT_COUNTER = {
+ Currency.CREDITS, Currency.GOLD, Currency.CRYSTAL, 'freeXP',
+ PREMIUM_ENTITLEMENTS.PLUS, 'vehicles'}
 
 class OfferGiftsWindow(ViewImpl):
     _lobbyContext = dependency.descriptor(ILobbyContext)
@@ -95,7 +90,7 @@ class OfferGiftsWindow(ViewImpl):
                 self.destroyWindow()
                 return
             self._offersNovelty.saveAsSeen(self._offerID)
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 localization = ResMgr.openSection(self._offersProvider.getCdnResourcePath(offerItem.cdnLocFilePath, relative=False))
                 description = localization.readString('description') if localization else ''
                 linkText = localization.readString('linkText') if localization else ''
@@ -186,11 +181,7 @@ class OfferGiftsWindow(ViewImpl):
             count = gift.giftCount if gift.bonusType not in BONUSES_WITHOUT_COUNTER else 0
         price = gift.price
         imgPath = getGfImagePath(icon) or ''
-        return (title,
-         description,
-         imgPath,
-         count,
-         price)
+        return (title, description, imgPath, count, price)
 
     def _onGiftClicked(self, args):
         giftID = args.get('index')
@@ -224,7 +215,7 @@ class OfferGiftsWindow(ViewImpl):
         if self._offerItem is None:
             return
         else:
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 for giftModel in model.gifts.getItems():
                     gift = self._offerItem.getGift(giftModel.getId())
                     notEnoughTokens = self._offerItem.availableTokens < gift.price
@@ -244,7 +235,7 @@ class OfferGiftsWindow(ViewImpl):
             self.destroyWindow()
             return
         else:
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 self._setDynamicInfo(model)
                 self._generateGifts(model)
             return

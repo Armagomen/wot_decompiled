@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/visitor.py
 import typing
 from .transitions import BaseTransition
 from .exceptions import NodeError
@@ -9,9 +7,9 @@ if typing.TYPE_CHECKING:
 
 def getAncestors(node, upper=None):
     if not isinstance(node, Node):
-        raise NodeError('Invalid argument "node" = {}'.format(node))
+        raise NodeError(('Invalid argument "node" = {}').format(node))
     if upper is not None and not isinstance(upper, Node):
-        raise NodeError('Invalid argument "upper" = {}'.format(upper))
+        raise NodeError(('Invalid argument "upper" = {}').format(upper))
     result = []
     found = node.getParent()
     while found != upper and found is not None:
@@ -23,9 +21,9 @@ def getAncestors(node, upper=None):
 
 def isDescendantOf(node, ancestor):
     if not isinstance(node, Node):
-        raise NodeError('Invalid argument "node" = {}'.format(node))
+        raise NodeError(('Invalid argument "node" = {}').format(node))
     if not isinstance(ancestor, Node):
-        raise NodeError('Invalid argument "ancestor" = {}'.format(ancestor))
+        raise NodeError(('Invalid argument "ancestor" = {}').format(ancestor))
     found = node.getParent()
     while found is not None:
         if found == ancestor:
@@ -41,10 +39,12 @@ def getDescendantIndex(node, ancestor, filter_=None):
         if child == node or isDescendantOf(node, child):
             return index
 
+    return -1
+
 
 def getLCA(nodes, upper=None):
     if not nodes:
-        return None
+        return
     else:
         ancestors = getAncestors(nodes[0], upper=upper)
         others = nodes[1:]
@@ -59,7 +59,7 @@ def getLCA(nodes, upper=None):
             if found:
                 return ancestor
 
-        return None
+        return
 
 
 def getEffectiveTargetStates(transition, history):
@@ -73,11 +73,15 @@ def getEffectiveTargetStates(transition, history):
                 defaultHistory = state.getTransitions()
                 if defaultHistory:
                     targets.extend(getEffectiveTargetStates(defaultHistory[0], history))
-        targets.append(state)
+        else:
+            targets.append(state)
 
     return targets
 
 
 def getTransitionDomain(transition, history, upper=None):
     states = getEffectiveTargetStates(transition, history)
-    return getLCA([transition.getSource()] + states, upper=upper) if states else None
+    if states:
+        return getLCA([transition.getSource()] + states, upper=upper)
+    else:
+        return

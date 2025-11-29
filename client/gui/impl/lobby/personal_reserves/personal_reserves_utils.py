@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_utils.py
 import typing
 from frameworks.wulf import Array
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE, BoosterCategory
@@ -15,9 +13,8 @@ if typing.TYPE_CHECKING:
     from skeletons.gui.game_control import IBoostersController
     from skeletons.gui.shared import IItemsCache
     from gui.goodies.goodie_items import BoostersType, Booster, BoosterUICommon
-_BOOSTER_CATEGORY_TO_MODEL_ENUM = {BoosterCategory.PERSONAL: CategoryType.PERSONAL,
- BoosterCategory.CLAN: CategoryType.CLAN,
- BoosterCategory.EVENT: CategoryType.EVENT}
+_BOOSTER_CATEGORY_TO_MODEL_ENUM = {BoosterCategory.PERSONAL: CategoryType.PERSONAL, BoosterCategory.CLAN: CategoryType.CLAN, 
+   BoosterCategory.EVENT: CategoryType.EVENT}
 
 def generatePersonalReserveTick(boosters):
     if not boosters:
@@ -31,7 +28,9 @@ def generatePersonalReserveTick(boosters):
         if 0 < activationTimeLeft < nextInterval:
             nextInterval = activationTimeLeft
 
-    return nextInterval if nextInterval < ONE_DAY else 0
+    if nextInterval < ONE_DAY:
+        return nextInterval
+    return 0
 
 
 @replace_none_kwargs(goodiesCache=IGoodiesCache, webController=IWebController)
@@ -45,7 +44,8 @@ def getActiveBoosters(goodiesCache, webController):
 @replace_none_kwargs(cache=IGoodiesCache, controller=IWebController)
 def getActiveClanBoosters(cache=None, controller=None):
     if controller.getAccountProfile().isInClan():
-        clanBoosters = [ clanBooster for clanBooster in cache.getClanReserves().values() if clanBooster.state == GOODIE_STATE.ACTIVE ]
+        clanBoosters = [ clanBooster for clanBooster in cache.getClanReserves().values() if clanBooster.state == GOODIE_STATE.ACTIVE
+                       ]
         return clanBoosters
     return []
 
@@ -63,7 +63,8 @@ def getGUIResourceOrder(category, boostersByResource):
         return PERSONAL_RESOURCE_ORDER
     if category == BoosterCategory.EVENT:
         return EVENT_RESOURCE_ORDER
-    resourceOrder = [CLAN_RESOURCE_ORDER_BY_GROUP[0][0], CLAN_RESOURCE_ORDER_BY_GROUP[1][0]]
+    resourceOrder = [
+     CLAN_RESOURCE_ORDER_BY_GROUP[0][0], CLAN_RESOURCE_ORDER_BY_GROUP[1][0]]
     for idx, group in enumerate(CLAN_RESOURCE_ORDER_BY_GROUP):
         for resourceType in group:
             if resourceType in boostersByResource:
@@ -99,8 +100,9 @@ def getNearestExpirationTimeAndCountForToday(boosters):
     if not boosters:
         return (0, 0)
     nearestExpiringTime = findNearestExpiryTimeInBoostersList(boosters)
-    counter = sum((booster.expirations[nearestExpiringTime].amount for booster in boosters if nearestExpiringTime in booster.expirations))
-    return (nearestExpiringTime, counter)
+    counter = sum(booster.expirations[nearestExpiringTime].amount for booster in boosters if nearestExpiringTime in booster.expirations)
+    return (
+     nearestExpiringTime, counter)
 
 
 def findNearestExpiryTimeInBoostersList(goodies):
@@ -146,7 +148,7 @@ def getTotalBoostersByResourceAndPremium(booster, cache):
 
 def getSummedBoosterCount(criteria, cache, filter_=None):
     boosters = cache.getBoosters(criteria=criteria).values()
-    return sum((booster.count for booster in boosters if not filter_ or filter_(booster)))
+    return sum(booster.count for booster in boosters if not filter_ or filter_(booster))
 
 
 def getBoostersInGroup(booster, cache):
@@ -157,5 +159,6 @@ def getBoostersInGroup(booster, cache):
         criteria |= ~REQ_CRITERIA.BOOSTER.IN_BOOSTER_ID_LIST(PREMIUM_BOOSTER_IDS)
     boosters = cache.getBoosters(criteria).values()
     if boosters:
-        boosters = sorted(boosters, key=lambda booster_: (booster_.isExpirable, 9999999999L - booster_.nextExpiryTime), reverse=True)
+        boosters = sorted(boosters, key=lambda booster_: (
+         booster_.isExpirable, 9999999999 - booster_.nextExpiryTime), reverse=True)
     return boosters

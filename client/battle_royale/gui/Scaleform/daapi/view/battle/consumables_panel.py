@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/consumables_panel.py
 import BigWorld
 from Event import EventsSubscriber
 from battle_royale.gui.battle_control.controllers.spawn_ctrl import ISpawnListener
@@ -14,7 +12,7 @@ from gui.impl.gen import R
 from helpers.time_utils import ONE_MINUTE
 
 class BattleRoyaleConsumablesPanel(ConsumablesPanel, ISpawnListener):
-    __slots__ = ('__quantityMap',)
+    __slots__ = ('__quantityMap', )
     _PANEL_MAX_LENGTH = 11
     _AMMO_START_IDX = 0
     _AMMO_END_IDX = 1
@@ -88,10 +86,10 @@ class BattleRoyaleConsumablesPanel(ConsumablesPanel, ISpawnListener):
     def _onEquipmentAdded(self, intCD, item):
         if item is None or intCD in self._cds:
             return
+        slotIdx = self.__getNewSlotIdx(self._EQUIPMENT_START_IDX, self._EQUIPMENT_END_IDX)
+        if slotIdx is None:
+            return
         else:
-            slotIdx = self.__getNewSlotIdx(self._EQUIPMENT_START_IDX, self._EQUIPMENT_END_IDX)
-            if slotIdx is None:
-                return
             self._addEquipmentSlot(slotIdx, intCD, item)
             self._mask |= 1 << slotIdx
             return
@@ -131,10 +129,10 @@ class BattleRoyaleConsumablesPanel(ConsumablesPanel, ISpawnListener):
         quantity = self.__quantityMap[idx] = item.getQuantity()
         if self.__isVehicleUpgrading:
             return
-        elif prevQuantity is not None and quantity > prevQuantity:
-            self.as_setGlowS(idx, CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN)
-            return
         else:
+            if prevQuantity is not None and quantity > prevQuantity:
+                self.as_setGlowS(idx, CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN)
+                return
             currStage = item.getStage()
             prevStage = item.getPrevStage()
             if currStage == EQUIPMENT_STAGES.READY and prevStage == EQUIPMENT_STAGES.COOLDOWN:
@@ -185,7 +183,7 @@ class BattleRoyaleConsumablesPanel(ConsumablesPanel, ISpawnListener):
         if state != VEHICLE_VIEW_STATE.LOOT:
             return
         else:
-            self.__quantityMap = [ (numItems if numItems is not None else 0) for numItems in self.__quantityMap ]
+            self.__quantityMap = [ numItems if numItems is not None else 0 for numItems in self.__quantityMap ]
             vehStateCtrl = self.sessionProvider.shared.vehicleState
             if vehStateCtrl is not None:
                 vehStateCtrl.onVehicleStateUpdated -= self.__onVehicleLootAction
@@ -239,7 +237,9 @@ class BattleRoyaleConsumablesPanel(ConsumablesPanel, ISpawnListener):
         arenaInfo = BigWorld.player().arena.arenaInfo
         respawnPeriod = arenaInfo.arenaInfoBRComponent.respawnPeriod if arenaInfo else 0
         timeToResurrect = arenaInfo.arenaInfoBRComponent.timeToResurrect if arenaInfo else 0
-        return backport.text(R.strings.artefacts.br_respawn.platoon.descr(), duration=respawnPeriod / ONE_MINUTE, timeToResurrect=timeToResurrect) if isSquadMode else backport.text(R.strings.artefacts.br_respawn.solo.descr(), duration=respawnPeriod / ONE_MINUTE)
+        if isSquadMode:
+            return backport.text(R.strings.artefacts.br_respawn.platoon.descr(), duration=respawnPeriod / ONE_MINUTE, timeToResurrect=timeToResurrect)
+        return backport.text(R.strings.artefacts.br_respawn.solo.descr(), duration=respawnPeriod / ONE_MINUTE)
 
     def _onRespawnBaseMoving(self):
         super(BattleRoyaleConsumablesPanel, self)._onRespawnBaseMoving()

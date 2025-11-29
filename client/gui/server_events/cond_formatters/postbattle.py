@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/cond_formatters/postbattle.py
 from constants import ATTACK_REASON
 from debug_utils import LOG_WARNING, LOG_ERROR
 from dossiers2.custom.records import DB_ID_TO_RECORD
@@ -27,11 +25,11 @@ def _packAchievementsList(achivementsIDs):
         block, achieveName = DB_ID_TO_RECORD[aID]
         factory = factories.getAchievementFactory((block, achieveName))
         item = factory.create(value=0)
-        result.append({'block': block,
-         'type': achieveName,
-         'tooltip': TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS,
-         'icon': item.getSmallIcon(),
-         'label': item.getUserName()})
+        result.append({'block': block, 
+           'type': achieveName, 
+           'tooltip': TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS, 
+           'icon': item.getSmallIcon(), 
+           'label': item.getUserName()})
 
     return result
 
@@ -45,19 +43,19 @@ def _makeKeyNegativeIf(key, cond):
 class MissionsPostBattleConditionsFormatter(MissionsBattleConditionsFormatter):
 
     def __init__(self):
-        super(MissionsPostBattleConditionsFormatter, self).__init__({'vehicleKills': VehiclesKillFormatter(),
-         'vehicleDamage': VehiclesDamageFormatter(),
-         'vehicleStun': VehiclesStunFormatter(),
-         'win': _WinFormatter(),
-         'isAlive': _SurviveFormatter(),
-         'achievements': _AchievementsFormatter(),
-         'clanKills': _ClanKillsFormatter(),
-         'results': _BattleResultsFormatter(),
-         'unitResults': _UnitResultsFormatter(),
-         'crits': _CritsFormatter(),
-         'multiStunEvent': _MultiStunEventFormatter(),
-         'firstBlood': _FirstBloodFormatter(),
-         'vehicleBlockedByArmor': _VehicleBlockedByArmorFormatter()})
+        super(MissionsPostBattleConditionsFormatter, self).__init__({'vehicleKills': VehiclesKillFormatter(), 
+           'vehicleDamage': VehiclesDamageFormatter(), 
+           'vehicleStun': VehiclesStunFormatter(), 
+           'win': _WinFormatter(), 
+           'isAlive': _SurviveFormatter(), 
+           'achievements': _AchievementsFormatter(), 
+           'clanKills': _ClanKillsFormatter(), 
+           'results': _BattleResultsFormatter(), 
+           'unitResults': _UnitResultsFormatter(), 
+           'crits': _CritsFormatter(), 
+           'multiStunEvent': _MultiStunEventFormatter(), 
+           'firstBlood': _FirstBloodFormatter(), 
+           'vehicleBlockedByArmor': _VehicleBlockedByArmorFormatter()})
 
 
 class _ClanKillsFormatter(SimpleMissionsFormatter):
@@ -72,7 +70,7 @@ class _ClanKillsFormatter(SimpleMissionsFormatter):
         i18nKey = '#quests:details/conditions/clanKills'
         if condition.isNegative():
             i18nKey = '%s/not' % i18nKey
-        return packDescriptionField(i18n.makeString(i18nKey, camos=', '.join(camos)))
+        return packDescriptionField(i18n.makeString(i18nKey, camos=(', ').join(camos)))
 
     @classmethod
     def _getIconKey(cls, condition=None):
@@ -128,7 +126,7 @@ class _AchievementsFormatter(SimpleMissionsFormatter):
     def _getDescription(self, condition):
         key = events_fmts.getAchievementsConditionKey(condition)
         iconTexts = [ _packAchieveElement(idx) for idx in condition.getValue() ]
-        description = '%s %s' % (i18n.makeString('#quests:details/conditions/%s' % key), ', '.join(iconTexts))
+        description = '%s %s' % (i18n.makeString('#quests:details/conditions/%s' % key), (', ').join(iconTexts))
         return packDescriptionField(description)
 
     @classmethod
@@ -137,10 +135,10 @@ class _AchievementsFormatter(SimpleMissionsFormatter):
 
     def _packGui(self, condition):
         achievementsList = _packAchievementsList(condition.getValue())
-        return events_fmts.packMissionIconCondition(self._getTitle(condition), MISSIONS_ALIASES.NONE, self._getDescription(condition), self._getIconKey(condition), conditionData={'data': {'rendererLinkage': MISSIONS_ALIASES.ACHIEVEMENT_RENDERER,
-                  'list': achievementsList,
-                  'icon': RES_ICONS.get90ConditionIcon(self._getIconKey()),
-                  'description': i18n.makeString(QUESTS.DETAILS_CONDITIONS_ACHIEVEMENTS)}}, sortKey=self._getSortKey(condition), progressID=condition.progressID)
+        return events_fmts.packMissionIconCondition(self._getTitle(condition), MISSIONS_ALIASES.NONE, self._getDescription(condition), self._getIconKey(condition), conditionData={'data': {'rendererLinkage': MISSIONS_ALIASES.ACHIEVEMENT_RENDERER, 
+                    'list': achievementsList, 
+                    'icon': RES_ICONS.get90ConditionIcon(self._getIconKey()), 
+                    'description': i18n.makeString(QUESTS.DETAILS_CONDITIONS_ACHIEVEMENTS)}}, sortKey=self._getSortKey(condition), progressID=condition.progressID)
 
     @classmethod
     def _getTitle(cls, *args, **kwargs):
@@ -153,7 +151,9 @@ class VehiclesKillFormatter(MissionsVehicleListFormatter):
     def _getIconKey(cls, condition=None):
         if condition.getFireStarted() or condition.getAttackReason() == ATTACK_REASON.FIRE:
             return CONDITION_ICON.FIRE
-        return CONDITION_ICON.RAM if condition.getAttackReason() == ATTACK_REASON.RAM else CONDITION_ICON.KILL_VEHICLES
+        if condition.getAttackReason() == ATTACK_REASON.RAM:
+            return CONDITION_ICON.RAM
+        return CONDITION_ICON.KILL_VEHICLES
 
     @classmethod
     def _getTitleKey(cls, condition=None):
@@ -161,11 +161,9 @@ class VehiclesKillFormatter(MissionsVehicleListFormatter):
 
 
 class VehiclesDamageFormatter(MissionsVehicleListFormatter):
-    UTILITY_DAMAGE_TAGS = {'directHitsReceived',
-     'whileMovingAtSpeed',
-     'whileEnemyInvisible',
-     'enemyIsNotSpotted',
-     'beyondVisionRadius'}
+    UTILITY_DAMAGE_TAGS = {
+     'directHitsReceived', 'whileMovingAtSpeed', 'whileEnemyInvisible',
+     'enemyIsNotSpotted', 'beyondVisionRadius'}
 
     @classmethod
     def _getIconKey(cls, condition=None):
@@ -173,7 +171,9 @@ class VehiclesDamageFormatter(MissionsVehicleListFormatter):
             return CONDITION_ICON.FIRE
         if condition.getAttackReason() == ATTACK_REASON.RAM:
             return CONDITION_ICON.RAM
-        return CONDITION_ICON.HURT_VEHICLES if ('classes' in condition.data or 'classesDiversity' in condition.data) and not cls.UTILITY_DAMAGE_TAGS.intersection(condition.data) or 'eventCount' in condition.data and cls.UTILITY_DAMAGE_TAGS.intersection(condition.data) else CONDITION_ICON.DAMAGE
+        if ('classes' in condition.data or 'classesDiversity' in condition.data) and not cls.UTILITY_DAMAGE_TAGS.intersection(condition.data) or 'eventCount' in condition.data and cls.UTILITY_DAMAGE_TAGS.intersection(condition.data):
+            return CONDITION_ICON.HURT_VEHICLES
+        return CONDITION_ICON.DAMAGE
 
     @classmethod
     def _getTitleKey(cls, condition=None):
@@ -190,7 +190,9 @@ class VehiclesStunFormatter(MissionsVehicleListFormatter):
 
     @classmethod
     def _getIconKey(cls, condition=None):
-        return CONDITION_ICON.ASSIST_STUN if condition.isEventCount() else CONDITION_ICON.ASSIST_STUN_DURATION
+        if condition.isEventCount():
+            return CONDITION_ICON.ASSIST_STUN
+        return CONDITION_ICON.ASSIST_STUN_DURATION
 
     @classmethod
     def _getTitleKey(cls, condition=None):
@@ -210,10 +212,8 @@ class _MultiStunEventFormatter(SimpleMissionsFormatter):
 
     @classmethod
     def _getTitle(cls, condition):
-        return FormattableField(FORMATTER_IDS.RELATION, (condition.relationValue,
-         condition.relation,
-         RELATIONS_SCHEME.DEFAULT,
-         cls._getTitleKey(condition)))
+        return FormattableField(FORMATTER_IDS.RELATION, (
+         condition.relationValue, condition.relation, RELATIONS_SCHEME.DEFAULT, cls._getTitleKey(condition)))
 
     @classmethod
     def _getTitleKey(cls, condition=None):
@@ -232,12 +232,14 @@ class _BattleResultsFormatter(SimpleMissionsFormatter):
         _, topRangeLower = condition.getMaxRange()
         if topRangeLower < TOP_RANGE_LOWEST:
             return packSimpleTitle(i18n.makeString(QUESTS.DETAILS_CONDITIONS_TOP_TITLE, value=topRangeLower))
-        elif value is None:
-            return super(_BattleResultsFormatter, cls)._getTitle()
-        elif condition.keyName == 'markOfMastery':
-            return packSimpleTitle(value)
         else:
-            return packSimpleTitle(i18n.makeString('#epic_battle:rank/rank%d' % int(value))) if condition.keyName == 'rankChange' else FormattableField(FORMATTER_IDS.RELATION, (value, relation, relationI18nType))
+            if value is None:
+                return super(_BattleResultsFormatter, cls)._getTitle()
+            if condition.keyName == 'markOfMastery':
+                return packSimpleTitle(value)
+            if condition.keyName == 'rankChange':
+                return packSimpleTitle(i18n.makeString('#epic_battle:rank/rank%d' % int(value)))
+            return FormattableField(FORMATTER_IDS.RELATION, (value, relation, relationI18nType))
 
     def _getDescription(self, condition):
         label, _, _, _ = getResultsData(condition)
@@ -249,20 +251,22 @@ class _BattleResultsFormatter(SimpleMissionsFormatter):
         aggregatedKeys = condition.getAggregatedKeys()
         if topRangeLower < TOP_RANGE_LOWEST:
             return CONDITION_ICON.TOP
-        elif condition.keyName is None and aggregatedKeys:
-            return BATTLE_RESULTS_AGGREGATED_KEYS.get(aggregatedKeys, CONDITION_ICON.FOLDER)
-        elif condition.keyName in BATTLE_RESULTS_KEYS:
-            return BATTLE_RESULTS_KEYS[condition.keyName]
-        elif condition.keyName in POSSIBLE_BATTLE_RESUTLS_KEYS:
-            LOG_WARNING("Condition's text description is not supported.", condition.keyName)
-            return POSSIBLE_BATTLE_RESUTLS_KEYS[condition.keyName]
         else:
+            if condition.keyName is None and aggregatedKeys:
+                return BATTLE_RESULTS_AGGREGATED_KEYS.get(aggregatedKeys, CONDITION_ICON.FOLDER)
+            if condition.keyName in BATTLE_RESULTS_KEYS:
+                return BATTLE_RESULTS_KEYS[condition.keyName]
+            if condition.keyName in POSSIBLE_BATTLE_RESUTLS_KEYS:
+                LOG_WARNING("Condition's text description is not supported.", condition.keyName)
+                return POSSIBLE_BATTLE_RESUTLS_KEYS[condition.keyName]
             LOG_ERROR('Condition is not supported.', condition.keyName)
             return super(_BattleResultsFormatter, cls)._getIconKey()
 
     def _getSortKey(self, condition):
         _, topRangeLower = condition.getMaxRange()
-        return 'top' if topRangeLower < TOP_RANGE_LOWEST else condition.keyName or condition.getName()
+        if topRangeLower < TOP_RANGE_LOWEST:
+            return 'top'
+        return condition.keyName or condition.getName()
 
 
 class _UnitResultsFormatter(SimpleMissionsFormatter):
@@ -325,8 +329,9 @@ class _VehicleBlockedByArmorFormatter(MissionsVehicleListFormatter):
             labelKey = labelKey.all
         damage = ''
         if condition.relationValue:
-            damage = '{} '.format(int(condition.relationValue))
-        return FormattableField(FORMATTER_IDS.DESCRIPTION, (backport.text(labelKey(), damage=damage, classes=cls._formatClassesEnumeration(condition)),))
+            damage = ('{} ').format(int(condition.relationValue))
+        return FormattableField(FORMATTER_IDS.DESCRIPTION, (
+         backport.text(labelKey(), damage=damage, classes=cls._formatClassesEnumeration(condition)),))
 
     @classmethod
     def _getIconKey(cls, condition=None):

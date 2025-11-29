@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/queues/LRUCache.py
 import collections
 
 class LRUCache(object):
@@ -14,9 +12,9 @@ class LRUCache(object):
             self.__cache[key] = value
             return value
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     def peek(self, key):
         return self.__cache.get(key, None)

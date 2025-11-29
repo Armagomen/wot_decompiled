@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/daily_section/presenters/daily_missions_block_presenter.py
-import typing
-import BigWorld
+import typing, BigWorld
 from constants import DAILY_QUESTS_CONFIG, PremiumConfigs
 from gui import SystemMessages
 from gui.impl.gen import R
@@ -36,7 +33,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
 
     def update(self):
         super(DailyMissionsBlockPresenter, self).update()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._updateCountDowns(tx)
 
     @property
@@ -44,21 +41,29 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
         return super(DailyMissionsBlockPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return DailyRerollTooltip(self.__getCountdown(), getRerollTimeout()) if contentID == R.views.mono.user_missions.tooltips.daily_reroll_tooltip() else super(DailyMissionsBlockPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.mono.user_missions.tooltips.daily_reroll_tooltip():
+            return DailyRerollTooltip(self.__getCountdown(), getRerollTimeout())
+        return super(DailyMissionsBlockPresenter, self).createToolTipContent(event, contentID)
 
     def _updateHasPremiumMissions(self):
         self._hasPremiumMissions = isPremiumPlusAccount() and isPremiumQuestsEnable()
 
     def _onLoading(self, *args, **kwargs):
         super(DailyMissionsBlockPresenter, self)._onLoading()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._updateModel(tx)
             self._updateCountDowns(tx)
 
     def _getEvents(self):
         vm = self.viewModel
         eventsTuple = super(DailyMissionsBlockPresenter, self)._getEvents()
-        return eventsTuple + ((vm.onReroll, self.__onReRoll), (self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged), (self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
+        return eventsTuple + (
+         (
+          vm.onReroll, self.__onReRoll),
+         (
+          self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged),
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
 
     def _finalize(self):
         self._cancelRerollTimer()
@@ -69,7 +74,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
         if not self._isBlockEnabled:
             return
         quests = sorted(self.eventsCache.getDailyQuests().values(), key=dailyQuestsSortFunc)
-        with model.transaction() as tx:
+        with model.transaction() as (tx):
             questIdsInModel = [ q.getId() for q in tx.getMissionsList() ]
             questIdsInModel.append(tx.bonusMission.getId())
             if not fullUpdate:
@@ -86,7 +91,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
         visitEventsGUI(seenQuests)
 
     def _onSyncCompleted(self, *_):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._updateModel(tx)
         super(DailyMissionsBlockPresenter, self)._onSyncCompleted(*_)
 
@@ -146,7 +151,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
     def _updateCountdownUntilNextReroll(self, model):
         self._rerollTimeout = getRerollTimeout()
         cd = self.__getCountdownF()
-        with model.transaction() as tx:
+        with model.transaction() as (tx):
             tx.setTimeToNextRerol(int(cd))
         self._cancelRerollTimer()
         if cd > 0:
@@ -179,7 +184,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
             rerollStateChanged = 'rerollEnabled' in dqDiff and dqDiff['rerollEnabled'] is not self._isRerollEnabled
             stateChanged = 'enabled' in dqDiff and dqDiff['enabled'] is not self._isBlockEnabled
             rerollTimeoutChanged = 'rerollTimeout' in dqDiff and dqDiff['rerollTimeout'] != self._rerollTimeout
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 if rerollStateChanged:
                     self._updateRerollEnabled(tx)
                 if rerollTimeoutChanged:
@@ -190,12 +195,12 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
             premDiff = diff[PremiumConfigs.PREM_QUESTS]
             stateChanged = 'enabled' in premDiff and premDiff['enabled'] is not self._hasPremiumMissions
             if stateChanged:
-                with self.viewModel.transaction() as tx:
+                with self.viewModel.transaction() as (tx):
                     self._updateModel(tx, fullUpdate=True)
 
     def _onRerollTimerEnd(self):
         self._rerollTimerID = None
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setTimeToNextRerol(0)
         return
 
@@ -209,7 +214,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
         return True
 
     def _onPremiumTypeChanged(self, *_):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._updateModel(tx, fullUpdate=True)
 
     @decorators.adisp_process('dailyQuests/waitReroll')
@@ -221,7 +226,7 @@ class DailyMissionsBlockPresenter(BaseMissionsBlockPresenter[DailyMissionsBlockM
         quest = quests[questId]
         result = yield daily_quests.DailyQuestReroll(quest).request()
         if result.success:
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 self._updateCountdownUntilNextReroll(tx)
         if result.userMsg:
             SystemMessages.pushMessage(result.userMsg, type=result.sysMsgType)

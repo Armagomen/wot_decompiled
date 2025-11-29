@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfilePage.py
-import logging
-import BigWorld
+import logging, BigWorld
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofTabCounter, isHofButtonNew, showDisabledDialog
@@ -22,7 +19,8 @@ from gui.Scaleform.daapi.view.lobby.profile.sound_constants import ACHIEVEMENTS_
 from gui.Scaleform.daapi.view.lobby.hof.web_handlers import createHofWebHandlers
 from gui.Scaleform.daapi.view.lobby.hof.hof_helpers import getHofDisabledKeys, onServerSettingsChange
 from gui.shared.events import ProfilePageEvent, CollectionsEvent
-_LUI_RULES = (LUI_RULES.profileHof, LUI_RULES.profileTechniquePage)
+_LUI_RULES = (
+ LUI_RULES.profileHof, LUI_RULES.profileTechniquePage)
 _logger = logging.getLogger(__name__)
 
 class ProfilePage(LobbySubView, ProfileMeta):
@@ -41,7 +39,10 @@ class ProfilePage(LobbySubView, ProfileMeta):
 
     @property
     def tabId(self):
-        return self.__tabNavigator.tabId if self.__tabNavigator else None
+        if self.__tabNavigator:
+            return self.__tabNavigator.tabId
+        else:
+            return
 
     def registerFlashComponent(self, component, alias, *args):
         if alias == VIEW_ALIAS.PROFILE_TAB_NAVIGATOR:
@@ -124,57 +125,61 @@ class ProfilePage(LobbySubView, ProfileMeta):
             event = ProfilePageEvent(ProfilePageEvent.SELECT_PROFILE_ALIAS)
             g_eventBus.handleEvent(event, scope=EVENT_BUS_SCOPE.LOBBY)
             selectedAlias = event.ctx.get('selectedAlias', selectedAlias)
-        tabBarData = [(PROFILE.SECTION_SUMMARY_TITLE,
+        tabBarData = [
+         (
+          PROFILE.SECTION_SUMMARY_TITLE,
           PROFILE.PROFILE_TABS_TOOLTIP_SUMMARY,
           VIEW_ALIAS.PROFILE_TOTAL_PAGE,
           'ProfileTotalPage_UI',
           True,
           'statsSummary'),
-         (PROFILE.SECTION_ADVANCEDACHIEVEMENTS_TITLE,
+         (
+          PROFILE.SECTION_ADVANCEDACHIEVEMENTS_TITLE,
           PROFILE.PROFILE_TABS_TOOLTIP_ADVANCEDACHIEVEMENTS,
           VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE,
           'ProfileTotalPage_UI',
           True,
           'statsAchievements'),
-         (PROFILE.SECTION_AWARDS_TITLE,
+         (
+          PROFILE.SECTION_AWARDS_TITLE,
           PROFILE.PROFILE_TABS_TOOLTIP_AWARDS,
           VIEW_ALIAS.PROFILE_AWARDS,
           'ProfileAwards_UI',
           True,
           'statsAwards'),
-         (PROFILE.SECTION_STATISTICS_TITLE,
+         (
+          PROFILE.SECTION_STATISTICS_TITLE,
           PROFILE.PROFILE_TABS_TOOLTIP_STATISTICS,
           VIEW_ALIAS.PROFILE_STATISTICS,
           'ProfileStatistics_UI',
           True,
           'statsStatistics'),
-         (PROFILE.SECTION_TECHNIQUE_TITLE,
+         (
+          PROFILE.SECTION_TECHNIQUE_TITLE,
           PROFILE.PROFILE_TABS_TOOLTIP_TECHNIQUE,
           VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE,
           'ProfileTechniquePage_UI',
           True,
           'statsTechnique')]
         if isHofEnabled:
-            tabBarData.append((PROFILE.SECTION_HOF_TITLE,
+            tabBarData.append((
+             PROFILE.SECTION_HOF_TITLE,
              PROFILE.PROFILE_TABS_TOOLTIP_HOF,
              VIEW_ALIAS.PROFILE_HOF,
              'ProfileHofPage_UI',
              True,
              'statsHof'))
         if self.__collectionsSystem.isEnabled():
-            tabBarData.append((PROFILE.SECTION_COLLECTIONS_TITLE,
+            tabBarData.append((
+             PROFILE.SECTION_COLLECTIONS_TITLE,
              PROFILE.PROFILE_TABS_TOOLTIP_COLLECTIONS,
              VIEW_ALIAS.PROFILE_COLLECTIONS_PAGE,
              'ProfileCollectionsPage_UI',
              True,
              'statsCollections'))
-        return {'tabBarData': [ {'label': makeString(label),
-                        'tooltip': tooltip,
-                        'alias': alias,
-                        'linkage': linkage,
-                        'enabled': isEnabled,
-                        'id': uiId} for label, tooltip, alias, linkage, isEnabled, uiId in tabBarData ],
-         'selectedAlias': selectedAlias}
+        return {'tabBarData': [ {'label': makeString(label), 'tooltip': tooltip, 'alias': alias, 'linkage': linkage, 'enabled': isEnabled, 'id': uiId} for label, tooltip, alias, linkage, isEnabled, uiId in tabBarData
+                       ], 
+           'selectedAlias': selectedAlias}
 
     @property
     def __isHofEnabled(self):
@@ -200,33 +205,28 @@ class ProfilePage(LobbySubView, ProfileMeta):
     def __updateTabCounters(self):
         counters = []
         if self.__achievements20Controller.getAchievementsTabCounter():
-            counters.append({'componentId': VIEW_ALIAS.PROFILE_TOTAL_PAGE,
-             'count': '1'})
+            counters.append({'componentId': VIEW_ALIAS.PROFILE_TOTAL_PAGE, 'count': '1'})
         advancedAchievementsCount = self.__getTotalUnseenAdvancedAchievementsCount()
         if advancedAchievementsCount:
-            counters.append({'componentId': VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE,
-             'count': str(advancedAchievementsCount)})
+            counters.append({'componentId': VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE, 'count': str(advancedAchievementsCount)})
         if self.__isHofEnabled:
             hofCounter = getHofTabCounter()
             if hofCounter and self._limitedUIController.isRuleCompleted(LUI_RULES.profileHof):
-                counters.append({'componentId': VIEW_ALIAS.PROFILE_HOF,
-                 'count': str(hofCounter)})
+                counters.append({'componentId': VIEW_ALIAS.PROFILE_HOF, 'count': str(hofCounter)})
             if isHofButtonNew(PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON) and self._limitedUIController.isRuleCompleted(LUI_RULES.profileTechniquePage):
-                counters.append({'componentId': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE,
-                 'count': '1'})
+                counters.append({'componentId': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE, 'count': '1'})
         if self.__collectionsSystem.isEnabled() and getCollectionsTabCounter(collectionsSystem=self.__collectionsSystem):
-            counters.append({'componentId': VIEW_ALIAS.PROFILE_COLLECTIONS_PAGE,
-             'count': ' '})
+            counters.append({'componentId': VIEW_ALIAS.PROFILE_COLLECTIONS_PAGE, 'count': ' '})
         self.__tabNavigator.as_setBtnTabCountersS(counters)
 
     def __loadHofUrl(self, url):
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': url,
-         'returnAlias': VIEW_ALIAS.LOBBY_PROFILE,
-         'allowRightClick': True,
-         'webHandlers': createHofWebHandlers(),
-         'selectedAlias': VIEW_ALIAS.PROFILE_HOF,
-         'disabledKeys': getHofDisabledKeys(),
-         'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': url, 
+           'returnAlias': VIEW_ALIAS.LOBBY_PROFILE, 
+           'allowRightClick': True, 
+           'webHandlers': createHofWebHandlers(), 
+           'selectedAlias': VIEW_ALIAS.PROFILE_HOF, 
+           'disabledKeys': getHofDisabledKeys(), 
+           'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
 
     def __onProfileVisited(self):
         self.__updateTabCounters()

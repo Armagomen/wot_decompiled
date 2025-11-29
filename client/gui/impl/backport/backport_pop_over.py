@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/backport/backport_pop_over.py
 from collections import namedtuple
 import logging
 from frameworks.wulf import ViewSettings, ViewModel
@@ -23,8 +21,7 @@ class BackportPopOverContent(PopOverViewImpl):
     def __init__(self, popOverData):
         settings = ViewSettings(R.views.common.pop_over_window.backport_pop_over.BackportPopOverContent())
         settings.model = ViewModel()
-        settings.kwargs = {'alias': popOverData.alias,
-         'data': popOverData.args}
+        settings.kwargs = {'alias': popOverData.alias, 'data': popOverData.args}
         super(BackportPopOverContent, self).__init__(settings)
 
     def _initialize(self, alias, data):

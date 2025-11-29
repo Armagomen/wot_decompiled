@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/lobby_footer.py
 from __future__ import absolute_import
-import logging
-import typing as t
+import logging, typing as t
 from frameworks.wulf import WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.page.footer.default_model import DefaultModel
@@ -48,7 +45,9 @@ class LobbyFooter(ViewComponent[DefaultModel], IGlobalListener):
         self._registerChild(footer.ServerInfo(), ServerInfoPresenter())
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenGameMenu, self.__showLobbyMenu),)
+        return (
+         (
+          self.viewModel.onOpenGameMenu, self.__showLobbyMenu),)
 
     def __showLobbyMenu(self):
         showLobbyMenu()

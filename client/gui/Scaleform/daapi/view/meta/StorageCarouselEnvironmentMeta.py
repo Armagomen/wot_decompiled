@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/StorageCarouselEnvironmentMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class StorageCarouselEnvironmentMeta(BaseDAAPIComponent):
@@ -14,7 +12,9 @@ class StorageCarouselEnvironmentMeta(BaseDAAPIComponent):
         self._printOverrideError('changeSearchNameVehicle')
 
     def as_updateSearchS(self, searchInputLabel, searchInputName, searchInputTooltip, searchInputMaxChars):
-        return self.flashObject.as_updateSearch(searchInputLabel, searchInputName, searchInputTooltip, searchInputMaxChars) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateSearch(searchInputLabel, searchInputName, searchInputTooltip, searchInputMaxChars)
 
     def as_updateCounterS(self, shouldShow, displayString, isZeroCount):
-        return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount)

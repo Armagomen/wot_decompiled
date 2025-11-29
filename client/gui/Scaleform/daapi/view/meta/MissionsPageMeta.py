@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/MissionsPageMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class MissionsPageMeta(View):
@@ -14,19 +12,25 @@ class MissionsPageMeta(View):
         self._printOverrideError('onClose')
 
     def as_setTabsDataProviderS(self, dataProvider):
-        return self.flashObject.as_setTabsDataProvider(dataProvider) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTabsDataProvider(dataProvider)
 
     def as_showFilterS(self, visible, topShadowVisible):
-        return self.flashObject.as_showFilter(visible, topShadowVisible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showFilter(visible, topShadowVisible)
 
     def as_showFilterCounterS(self, countText, isFilterApplied):
-        return self.flashObject.as_showFilterCounter(countText, isFilterApplied) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showFilterCounter(countText, isFilterApplied)
 
     def as_blinkFilterCounterS(self):
-        return self.flashObject.as_blinkFilterCounter() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_blinkFilterCounter()
 
     def as_setTabsCounterDataS(self, data):
-        return self.flashObject.as_setTabsCounterData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTabsCounterData(data)
 
     def as_showBattleMattersAnimationS(self, animPath, data):
-        return self.flashObject.as_showBattleMattersAnimation(animPath, data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showBattleMattersAnimation(animPath, data)

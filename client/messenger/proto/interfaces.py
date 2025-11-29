@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/interfaces.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Optional
@@ -7,7 +5,7 @@ if typing.TYPE_CHECKING:
     from messenger.proto.bw_chat2.battle_chat_cmd import _OutCmdDecorator
 
 class IProtoPlugin(object):
-    __slots__ = ('__weakref__',)
+    __slots__ = ('__weakref__', )
 
     def connect(self, scope):
         pass
@@ -61,31 +59,31 @@ class IProtoLimits(object):
 class IBattleCommandFactory(object):
 
     def createByName(self, name):
-        return None
+        return
 
     def createByNameTarget(self, name, targetID):
-        return None
+        return
 
     def createByPosition(self, position, name, reloadTime=0.0):
-        return None
+        return
 
     def createByObjectiveIndex(self, idx, isAtk, actionName):
-        return None
+        return
 
     def createByBaseIndexAndName(self, pointID, commandName, baseName):
-        return None
+        return
 
     def create4Reload(self, isCassetteClip, timeLeft, quantity):
-        return None
+        return
 
     def createReplyByName(self, replyID, replyType, replierID):
-        return None
+        return
 
     def createCancelReplyByName(self, replyID, replyType, replierID):
-        return None
+        return
 
     def createClearChatCommandsFromTarget(self, targetID, targetMarkerType):
-        return None
+        return
 
 
 class IUnitCommandFactory(object):
@@ -122,19 +120,19 @@ class ISearchProcessor(object):
         pass
 
     def getSearchResultLimit(self):
-        pass
+        return 0
 
 
 class IChatMessage(object):
 
     def getMessage(self):
-        pass
+        return ''
 
 
 class IChatError(IChatMessage):
 
     def getTitle(self):
-        pass
+        return ''
 
     def isModal(self):
         return False
@@ -143,7 +141,7 @@ class IChatError(IChatMessage):
 class IVOIPChatProvider(object):
 
     def getChannelParams(self):
-        pass
+        return ('', '')
 
     def requestCredentials(self, reset=0):
         pass

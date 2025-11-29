@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/ContactsListButton.py
 from gui.Scaleform.daapi.view.meta.ButtonWithCounterMeta import ButtonWithCounterMeta
 from messenger.m_constants import USER_ACTION_ID as _ACTION_ID, USER_TAG
 from messenger.proto.events import g_messengerEvents
@@ -15,7 +13,7 @@ class ContactsListButton(ButtonWithCounterMeta):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def _populate(self):
         super(ContactsListButton, self)._populate()
@@ -33,7 +31,7 @@ class ContactsListButton(ButtonWithCounterMeta):
         super(ContactsListButton, self)._dispose()
 
     def __setContactsCount(self):
-        self.__friends = dict(((friend.getID(), 1 if friend.isOnline() else 0) for friend in self.usersStorage.getList(FriendsFindCriteria())))
+        self.__friends = dict((friend.getID(), 1 if friend.isOnline() else 0) for friend in self.usersStorage.getList(FriendsFindCriteria()))
         self.__showContactsCount()
 
     def __showContactsCount(self):
@@ -53,7 +51,8 @@ class ContactsListButton(ButtonWithCounterMeta):
 
     def __me_onUserActionReceived(self, actionID, user, shadowMode):
         dbID = user.getID()
-        if actionID in (_ACTION_ID.FRIEND_REMOVED, _ACTION_ID.IGNORED_ADDED, _ACTION_ID.TMP_IGNORED_ADDED):
+        if actionID in (
+         _ACTION_ID.FRIEND_REMOVED, _ACTION_ID.IGNORED_ADDED, _ACTION_ID.TMP_IGNORED_ADDED):
             self.__friends.pop(dbID, None)
         elif actionID == _ACTION_ID.FRIEND_ADDED:
             self.__friends[dbID] = 1 if user.isOnline() else 0

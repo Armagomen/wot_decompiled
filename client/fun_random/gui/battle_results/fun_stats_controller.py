@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/fun_stats_controller.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.battle_results.pbs_helpers import getEventID
@@ -46,4 +44,4 @@ class FunBattleResultStatsCtrl(IBattleResultStatsCtrl, FunSubModesWatcher):
 
     @staticmethod
     def onShowResults(arenaUniqueID):
-        return None
+        return

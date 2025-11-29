@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/campaign_selector_view.py
 from typing import TYPE_CHECKING
 from AccountCommands import LOCK_REASON
 from adisp import adisp_process
@@ -63,20 +61,28 @@ class CampaignSelectorView(ViewImpl):
         showPM30IntroWindow()
 
     def _getEvents(self):
-        return ((self.viewModel.onOperation, self._onEnterTheOperation),
-         (self.viewModel.onMoreInfo, self._onMoreInfo),
-         (self.viewModel.onClose, self.__onClose),
-         (self.viewModel.switchCampaign, self._switchCampaign),
-         (self.__eventsCache.onPMSyncCompleted, self._onEventCacheSyncCompleted),
-         (self.__itemsCache.onSyncCompleted, self.__onItemsSyncCompleted),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return (
+         (
+          self.viewModel.onOperation, self._onEnterTheOperation),
+         (
+          self.viewModel.onMoreInfo, self._onMoreInfo),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.switchCampaign, self._switchCampaign),
+         (
+          self.__eventsCache.onPMSyncCompleted, self._onEventCacheSyncCompleted),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onItemsSyncCompleted),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def __onServerSettingsChanged(self, diff=None):
         diff = diff or {}
         switchers = ['disabledPMOperations', 'isPM2QuestEnabled', 'isPM3QuestEnabled']
         if not self._personalMissions.isEnabled():
             self.__onClose()
-        elif any((switcher in diff for switcher in switchers)):
+        elif any(switcher in diff for switcher in switchers):
             self._onEventCacheSyncCompleted()
 
     def _onLoading(self, *args, **kwargs):
@@ -90,7 +96,7 @@ class CampaignSelectorView(ViewImpl):
 
     def __onItemsSyncCompleted(self, _, __):
         activeCampaigns = self._personalMissions.getActiveCampaigns()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setBlockedByVehicle(self._isLockedByVeh(activeCampaigns))
 
     def _onVehicleLockChanged(self, _, lockReason):
@@ -139,9 +145,9 @@ class CampaignSelectorView(ViewImpl):
 
     def _fillModel(self):
         self._operations = self._personalMissions.getAllOperations(PM_BRANCH.V2_BRANCHES)
-        isFirstTimeEntrance = not any((operation.isStarted() for operation in self._operations.values()))
+        isFirstTimeEntrance = not any(operation.isStarted() for operation in self._operations.values())
         self._isFirstTimeEntrance = isFirstTimeEntrance
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             campaignsList = vm.getCampaigns()
             campaignsList.clear()
             isAllOperationsWithHonors = True
@@ -184,7 +190,9 @@ class CampaignSelectorView(ViewImpl):
             self._activeSeason = self._getSeasonState(isAllOperationsWithHonors, activeCampaigns, isFirstTimeEntrance)
             vm.setCampaignSelectorViewState(self._activeSeason)
             if isFirstTimeEntrance and self._progressInFirstTwoSeasons:
-                activeCampaigns = (PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.REGULAR], PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.PERSONAL_MISSION_2])
+                activeCampaigns = (
+                 PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.REGULAR],
+                 PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.PERSONAL_MISSION_2])
             vm.setBlockedByVehicle(self._isLockedByVeh(activeCampaigns))
             vm.setFirstTimeEntrance(isFirstTimeEntrance)
         return

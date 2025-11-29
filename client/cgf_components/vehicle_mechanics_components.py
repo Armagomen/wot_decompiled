@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/vehicle_mechanics_components.py
 import CGF
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 _VEHICLE_MECHANICS_CATEGORY = 'Vehicle Mechanics'

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/__init__.py
 import BigWorld
 from constants import ARENA_GUI_TYPE
 from frameworks.wulf import WindowLayer
@@ -21,7 +19,7 @@ class ConditionalStoryModeViewSettings(ComponentSettings):
 
 
 def getContextMenuHandlers():
-    pass
+    return ()
 
 
 def getViewSettings():
@@ -71,7 +69,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import PostmortemPanel
     from story_mode.gui.scaleform.daapi.view.battle.delayed_sixth_sense_indicator import DelayedSixthSenseIndicator
     from story_mode.gui.scaleform.daapi.view.battle.sixth_sence_indicator import StoryModeSixthSenseIndicator
-    return (ViewSettings(VIEW_ALIAS.STORY_MODE_BATTLE_PAGE, StoryModeBattlePage, getSwfExtensionUrl('story_mode', 'storyModeBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.STORY_MODE_BATTLE_PAGE, StoryModeBattlePage, getSwfExtensionUrl('story_mode', 'storyModeBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ViewSettings(VIEW_ALIAS.ONBOARDING_BATTLE_PAGE, OnboardingBattlePage, getSwfExtensionUrl('story_mode', 'onboardingBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ViewSettings(VIEW_ALIAS.INGAME_HELP, StoryModeIngameHelpWindow, 'ingameHelpWindow.swf', WindowLayer.WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, canClose=False, canDrag=False, isModal=True),
      ViewSettings(VIEW_ALIAS.INGAME_MENU, StoryModeIngameMenu, 'ingameMenu.swf', WindowLayer.TOP_WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canClose=False, canDrag=False),
@@ -120,17 +119,23 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_StoryModeBattlePackageBusinessHandler(),) + shared.getBusinessHandlers()
+    return (
+     _StoryModeBattlePackageBusinessHandler(),) + shared.getBusinessHandlers()
 
 
 class _StoryModeBattlePackageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.STORY_MODE_BATTLE_PAGE, self._loadPage),
-         (VIEW_ALIAS.ONBOARDING_BATTLE_PAGE, self._loadPage),
-         (VIEW_ALIAS.ONBOARDING_SETTINGS_WINDOW, self.loadViewBySharedEvent),
-         (VIEW_ALIAS.STORY_MODE_INTRO_VIDEO_WINDOW, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.STORY_MODE_BATTLE_PAGE, self._loadPage),
+         (
+          VIEW_ALIAS.ONBOARDING_BATTLE_PAGE, self._loadPage),
+         (
+          VIEW_ALIAS.ONBOARDING_SETTINGS_WINDOW, self.loadViewBySharedEvent),
+         (
+          VIEW_ALIAS.STORY_MODE_INTRO_VIDEO_WINDOW, self.loadViewByCtxEvent))
         super(_StoryModeBattlePackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
     def _loadPage(self, event):

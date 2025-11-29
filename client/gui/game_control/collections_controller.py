@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/collections_controller.py
 import logging
 from collections import OrderedDict
 import typing
@@ -81,7 +79,7 @@ class CollectionsSystemController(ICollectionsSystemController, EventsHandler):
         return collection
 
     def getCollectionByName(self, collectionName):
-        collection = first((c for c in self.__getConfig().collections.itervalues() if c.name == collectionName))
+        collection = first(c for c in self.__getConfig().collections.itervalues() if c.name == collectionName)
         if collection is None:
             _logger.error('Collection with name <%s> does not exist!', collectionName)
         return collection
@@ -91,24 +89,31 @@ class CollectionsSystemController(ICollectionsSystemController, EventsHandler):
             if collectionId in linkedGroup:
                 return sorted(linkedGroup, reverse=True)
 
-        return [collectionId]
+        return [
+         collectionId]
 
     def getCollectionIDs(self):
         return self.__getConfig().collections.keys()
 
     def isRelatedEventActive(self, collectionId):
         collection = self.getCollection(collectionId)
-        return False if collection is None else collection.isRelatedEventActive
+        if collection is None:
+            return False
+        else:
+            return collection.isRelatedEventActive
 
     def getCollectionItem(self, collectionId, itemId):
         collection = self.getCollection(collectionId)
-        return collection.items.get(itemId) if collection is not None else None
+        if collection is not None:
+            return collection.items.get(itemId)
+        else:
+            return
 
     def getMaxItemCount(self, collectionId):
         return len(self.getCollection(collectionId).items)
 
     def getMaxProgressItemCount(self, collectionId):
-        return sum((not item.isSpecial for item in self.getCollection(collectionId).items.itervalues()))
+        return sum(not item.isSpecial for item in self.getCollection(collectionId).items.itervalues())
 
     def getNewCollectionItemCount(self, collectionId):
         collection = self.getCollection(collectionId)
@@ -116,19 +121,19 @@ class CollectionsSystemController(ICollectionsSystemController, EventsHandler):
             _logger.error('Collection with id <%s> does not exist!', collectionId)
             return 0
         else:
-            return sum((self.isItemReceived(collectionId, item.itemId) and isItemNew(collectionId, item.itemId) for item in collection.items.itervalues()))
+            return sum(self.isItemReceived(collectionId, item.itemId) and isItemNew(collectionId, item.itemId) for item in collection.items.itervalues())
 
     def getNewLinkedCollectionsItemCount(self, collectionId):
-        return sum((self.getNewCollectionItemCount(linkedId) for linkedId in self.getLinkedCollections(collectionId)))
+        return sum(self.getNewCollectionItemCount(linkedId) for linkedId in self.getLinkedCollections(collectionId))
 
     def getReceivedItemCount(self, collectionId):
         balance = self.__entitlementsCache.getCollectionBalance(collectionId)
-        return sum((code.startswith(COLLECTION_ITEM_PREFIX_NAME) for code in balance.iterkeys()))
+        return sum(code.startswith(COLLECTION_ITEM_PREFIX_NAME) for code in balance.iterkeys())
 
     def getReceivedProgressItemCount(self, collectionId):
         balance = self.__entitlementsCache.getCollectionBalance(collectionId)
         collection = self.getCollection(collectionId)
-        items = set((makeCollectionItemEntitlementName(collectionId, item.itemId) for item in collection.items.itervalues() if not item.isSpecial))
+        items = set(makeCollectionItemEntitlementName(collectionId, item.itemId) for item in collection.items.itervalues() if not item.isSpecial)
         return len(items.intersection(balance.keys()))
 
     def isRewardReceived(self, collectionId, requiredCount):
@@ -142,10 +147,16 @@ class CollectionsSystemController(ICollectionsSystemController, EventsHandler):
         return makeCollectionItemEntitlementName(collectionId, itemId) in self.__entitlementsCache.getBalance()
 
     def _getCallbacks(self):
-        return (('cache.isEmergencyModeEnabled', self.__onEmergencyModeChanged),)
+        return (
+         (
+          'cache.isEmergencyModeEnabled', self.__onEmergencyModeChanged),)
 
     def _getEvents(self):
-        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged), (g_messengerEvents.serviceChannel.onChatMessageReceived, self.__onChatMessageReceived))
+        return (
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          g_messengerEvents.serviceChannel.onChatMessageReceived, self.__onChatMessageReceived))
 
     def __getRawConfig(self):
         return self.__getConfig().getRawData()

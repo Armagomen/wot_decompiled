@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/states.py
 from __future__ import absolute_import
-import itertools
-import logging
-import typing
-import weakref
+import itertools, logging, typing, weakref
 from enum import IntEnum
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import State, StateFlags
@@ -13,7 +8,8 @@ from frameworks.state_machine.visitor import isDescendantOf, getLCA
 from frameworks.wulf import WindowStatus
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.ScopeTemplates import SimpleScope
-from gui.Scaleform.framework.entities.View import ViewKey
+from gui.Scaleform.framework.entities.View import ViewKey, View
+from gui.Scaleform.framework.entities.wulf_adapter import WulfPackageLayoutAdapter
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams, GuiImplViewLoadParams
 from gui.impl import backport
 from gui.impl.gen import R
@@ -32,7 +28,8 @@ EMPTY_STATE_ID_ENDING = 'empty'
 
 class LobbyStateFlags(StateFlags):
     HANGAR = StateFlags.MAX << 1
-    MAX = HANGAR
+    POST_BATTLE_RESULTS = HANGAR << 1
+    MAX = POST_BATTLE_RESULTS
 
 
 class LobbyStateDescription(object):
@@ -44,14 +41,14 @@ class LobbyStateDescription(object):
             QUESTION = 1
             VIDEO = 2
 
-        def __init__(self, label=u'', tooltipHeader=u'', tooltipBody=u'', type=Type.INFO, onMoreInfoRequested=lambda : None):
+        def __init__(self, label='', tooltipHeader='', tooltipBody='', type=Type.INFO, onMoreInfoRequested=lambda : None):
             self.label = label
             self.tooltipHeader = tooltipHeader
             self.tooltipBody = tooltipBody
             self.type = type
             self.onMoreInfoRequested = onMoreInfoRequested
 
-    def __init__(self, title=u'', infos=()):
+    def __init__(self, title='', infos=()):
         self.title = title
         self.infos = infos
 
@@ -161,10 +158,10 @@ class LobbyState(State):
         window = uiLoader.windowsManager.getWindow(uniqueWindowId)
         if not compareViewKeys(window.content, self.getViewKey()):
             return
-        if isinstance(window.content, ViewImpl):
-            self._onViewExternallyDestroyed()
-        else:
+        if isinstance(window.content, (View, WulfPackageLayoutAdapter)):
             window.content.onDisposed += WeakMethodProxy(self.__shouldDisposeView)
+        else:
+            self._onViewExternallyDestroyed()
 
 
 class ViewLobbyState(LobbyState):
@@ -207,7 +204,7 @@ class GuiImplViewLobbyState(LobbyState):
 
     def _focusView(self, view, event):
         parentWindow = view.getParentWindow()
-        if not parentWindow.isFocused:
+        if not parentWindow.isFocused and not parentWindow.isHidden():
             parentWindow.tryFocus()
 
 
@@ -227,7 +224,9 @@ class UntrackedState(LobbyState):
         if params:
             return params[self.LOAD_PARAMS_KEY].loadParams.viewKey
         else:
-            return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith else None
+            if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith:
+                return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey
+            return
 
     def serializeParams(self):
         return self._paramsEnteredWith
@@ -281,7 +280,9 @@ class _SubScopeSubLayerUntrackedState(UntrackedState):
 
     def getNavigationDescription(self):
         from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar())) if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR else super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
+        if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR:
+            return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar()))
+        return super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
 
 
 @SubScopeSubLayerState.parentOf
@@ -383,4 +384,5 @@ class _TopScopeTopLayerEmptyState(EmptyState):
 def compareViewKeys(view, stateViewKey):
     if hasattr(view, 'key'):
         return stateViewKey == view.key
-    return stateViewKey.alias == view.layoutID if hasattr(view, 'layoutID') else None
+    if hasattr(view, 'layoutID'):
+        return stateViewKey.alias == view.layoutID

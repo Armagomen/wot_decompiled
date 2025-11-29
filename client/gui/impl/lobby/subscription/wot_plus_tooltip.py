@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/subscription/wot_plus_tooltip.py
 from typing import TYPE_CHECKING
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -31,7 +29,7 @@ class WotPlusTooltip(ViewImpl):
 
     def _onLoading(self):
         super(WotPlusTooltip, self)._onLoading()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setExpirationDate(getRegionalDateTime(self._wotPlusCtrl.getExpiryTime(), DateTimeFormatsEnum.SHORTDATE))
             if self._wotPlusCtrl.getNextBillingTime():
                 model.setNextCharge(getRegionalDateTime(self._wotPlusCtrl.getNextBillingTime(), DateTimeFormatsEnum.SHORTDATE))

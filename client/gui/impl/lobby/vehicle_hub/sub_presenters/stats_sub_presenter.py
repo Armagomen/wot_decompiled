@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/stats_sub_presenter.py
 from __future__ import absolute_import
 import json
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -24,18 +22,19 @@ class StatsSubPresenter(SubPresenterBase):
         specialMechanic = findFirst(lambda mechanic: mechanic.isSpecial, currentVehicle.getVehicleMechanicItems())
         specialMechanicName = specialMechanic.guiName.value if specialMechanic is not None else ''
         specialStaticParams = specialMechanic.staticParams if specialMechanic is not None else ()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setSpecialMechanicName(specialMechanicName)
             specialParams = model.getSpecialMechanicParams()
             specialParams.clear()
             for paramName, data in specialStaticParams:
-                paramState = (PARAM_STATE.NORMAL, None)
-                item = {'id': paramName,
-                 'value': formatParameterValue(paramName, data['value'], False, paramState, allowSmartRound=False),
-                 'measureUnit': getMeasureUnitsForParameter(currentVehicle, paramName),
-                 'template': data['template'],
-                 'name': self.__getKpiName(paramName, data['kpiSign']),
-                 'tooltipID': TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_ADVANCED_PARAMETERS}
+                paramState = (
+                 PARAM_STATE.NORMAL, None)
+                item = {'id': paramName, 
+                   'value': formatParameterValue(paramName, data['value'], False, paramState, allowSmartRound=False), 
+                   'measureUnit': getMeasureUnitsForParameter(currentVehicle, paramName), 
+                   'template': data['template'], 
+                   'name': self.__getKpiName(paramName, data['kpiSign']), 
+                   'tooltipID': TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_ADVANCED_PARAMETERS}
                 specialParams.addViewModel(self.__fillModel(SpecialVehicleParamModel(), item))
 
             specialParams.invalidate()
@@ -43,12 +42,14 @@ class StatsSubPresenter(SubPresenterBase):
 
     def __getKpiName(self, paramName, kpiSign):
         kpiName = VEHICLE_ATTR_TO_KPI_NAME_MAP.get(paramName, paramName)
-        return json.dumps({'name': kpiName,
-         'key': kpiSign}) if KPI.Name.hasValue(kpiName) else None
+        if KPI.Name.hasValue(kpiName):
+            return json.dumps({'name': kpiName, 'key': kpiSign})
+        else:
+            return
 
     def __fillModel(self, model, params):
         for k, v in params.items():
-            setter = getattr(model, 'set{}{}'.format(k[0].upper(), k[1:]), None)
+            setter = getattr(model, ('set{}{}').format(k[0].upper(), k[1:]), None)
             if setter is not None:
                 setter(v)
 

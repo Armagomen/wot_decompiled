@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/gen/view_models/views/lobby/views/progression/progression_main_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.progression.progression_view_model import ProgressionViewModel

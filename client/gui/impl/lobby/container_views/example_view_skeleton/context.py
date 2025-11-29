@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/example_view_skeleton/context.py
 from gui.impl.lobby.container_views.base.context import TankmanContext
 
 class ExampleViewContext(TankmanContext):
-    __slots__ = ('_exampleField',)
+    __slots__ = ('_exampleField', )
 
     def __init__(self, tankmanID):
         self._exampleField = None
@@ -19,4 +17,4 @@ class ExampleViewContext(TankmanContext):
         self._exampleField = self._getExampleField()
 
     def _getExampleField(self):
-        pass
+        return 'some value'

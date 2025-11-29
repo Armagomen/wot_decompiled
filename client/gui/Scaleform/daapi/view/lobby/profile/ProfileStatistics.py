@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileStatistics.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import BattleTypesDropDownItems
 from gui.Scaleform.daapi.view.lobby.profile.profile_statistics_vos import getStatisticsVO
@@ -18,22 +16,25 @@ from skeletons.gui.lobby_context import ILobbyContext
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.events import ProfileStatisticEvent
 from gui.shared import g_eventBus
-_FRAME_LABELS = {PROFILE_DROPDOWN_KEYS.ALL: 'random',
- PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: 'epicRandom',
- PROFILE_DROPDOWN_KEYS.FALLOUT: 'fallout',
- PROFILE_DROPDOWN_KEYS.HISTORICAL: 'historical',
- PROFILE_DROPDOWN_KEYS.TEAM: 'team7x7',
- PROFILE_DROPDOWN_KEYS.STATICTEAM: 'team7x7',
- PROFILE_DROPDOWN_KEYS.CLAN: 'clan',
- PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: 'fortifications',
- PROFILE_DROPDOWN_KEYS.STATICTEAM_SEASON: 'team7x7',
- PROFILE_DROPDOWN_KEYS.RANKED: 'ranked_15x15',
- PROFILE_DROPDOWN_KEYS.RANKED_10X10: BATTLE_TYPES.RANKED_10X10,
- PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: 'battle_royale',
- PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: 'battle_royale'}
+_FRAME_LABELS = {PROFILE_DROPDOWN_KEYS.ALL: 'random', 
+   PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: 'epicRandom', 
+   PROFILE_DROPDOWN_KEYS.FALLOUT: 'fallout', 
+   PROFILE_DROPDOWN_KEYS.HISTORICAL: 'historical', 
+   PROFILE_DROPDOWN_KEYS.TEAM: 'team7x7', 
+   PROFILE_DROPDOWN_KEYS.STATICTEAM: 'team7x7', 
+   PROFILE_DROPDOWN_KEYS.CLAN: 'clan', 
+   PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: 'fortifications', 
+   PROFILE_DROPDOWN_KEYS.STATICTEAM_SEASON: 'team7x7', 
+   PROFILE_DROPDOWN_KEYS.RANKED: 'ranked_15x15', 
+   PROFILE_DROPDOWN_KEYS.RANKED_10X10: BATTLE_TYPES.RANKED_10X10, 
+   PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: 'battle_royale', 
+   PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: 'battle_royale'}
 
 def _packProviderType(mainType, addValue=None):
-    return '%s/%s' % (mainType, str(addValue)) if addValue is not None else mainType
+    if addValue is not None:
+        return '%s/%s' % (mainType, str(addValue))
+    else:
+        return mainType
 
 
 def _parseProviderType(value):
@@ -60,8 +61,8 @@ class ProfileStatistics(ProfileStatisticsMeta):
             self.invokeUpdate()
 
     def showPlayersStats(self):
-        self.__rankedController.showRankedBattlePage(ctx={'selectedItemID': RANKEDBATTLES_CONSTS.RANKED_BATTLES_RATING_ID,
-         'clientParams': {'spaID': self._databaseID}})
+        self.__rankedController.showRankedBattlePage(ctx={'selectedItemID': RANKEDBATTLES_CONSTS.RANKED_BATTLES_RATING_ID, 
+           'clientParams': {'spaID': self._databaseID}})
 
     def onCompletedSeasonsInfoChanged(self):
         self._setInitData()
@@ -121,7 +122,9 @@ class ProfileStatistics(ProfileStatisticsMeta):
         if seasonStats:
             return seasonStats
         else:
-            return accountDossier.getSeasonRanked15x15Stats(RankedDossierKeys.ARCHIVE, ARCHIVE_SEASON_ID) if self._battlesType == PROFILE_DROPDOWN_KEYS.RANKED else super(ProfileStatistics, self)._getNecessaryStats(accountDossier)
+            if self._battlesType == PROFILE_DROPDOWN_KEYS.RANKED:
+                return accountDossier.getSeasonRanked15x15Stats(RankedDossierKeys.ARCHIVE, ARCHIVE_SEASON_ID)
+            return super(ProfileStatistics, self)._getNecessaryStats(accountDossier)
 
     @classmethod
     def __updateStaticDropdownData(cls, vo):

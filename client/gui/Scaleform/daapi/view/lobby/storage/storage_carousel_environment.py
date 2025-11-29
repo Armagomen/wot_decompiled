@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/storage_carousel_environment.py
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import ICarouselEnvironment
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import formatCountString
 from gui.Scaleform.daapi.view.meta.StorageCarouselEnvironmentMeta import StorageCarouselEnvironmentMeta
@@ -31,7 +29,10 @@ class StorageCarouselEnvironment(ICarouselEnvironment, IGlobalListener, StorageC
 
     @property
     def filter(self):
-        return self._dataProvider.filter if self._dataProvider is not None else None
+        if self._dataProvider is not None:
+            return self._dataProvider.filter
+        else:
+            return
 
     def applyFilter(self, forceApply=False):
         self._dataProvider.applyFilter(forceApply)

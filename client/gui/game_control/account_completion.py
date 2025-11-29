@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/account_completion.py
-import BigWorld
-import constants
+import BigWorld, constants
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import SHOW_DEMO_ACC_REGISTRATION

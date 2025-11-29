@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/prb_control/entities/pre_queue/__init__.py
 from adisp import adisp_process, adisp_async
 import wg_async as future_async
 from gui.impl.dialogs import dialogs
@@ -15,7 +13,7 @@ from story_mode.uilogging.story_mode.loggers import TasksCompletedWarningLogger
 def checkTasksAvailable(callback):
     ctrl = dependency.instance(IStoryModeController)
     mission = ctrl.missions.getMission(ctrl.selectedMissionId)
-    if mission and all((ctrl.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks())):
+    if mission and all(ctrl.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks()):
         logger = TasksCompletedWarningLogger()
         logger.logOpen(state=str(ctrl.selectedMissionId))
         builder = WarningDialogBuilder()

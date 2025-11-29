@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/economics/value_extractors.py
 import typing
 from constants import FairplayViolationType
 from fairplay_violation_types import getViolationsByMask
@@ -22,22 +20,32 @@ def getPremiumAccountValue(records, recordConfig, _):
 
 def getIncreasingBaseAccountFactor(records, recordConfig, _):
     factor = _getBaseAccountFactor(records, recordConfig)
-    return factor if factor > 1 else 0
+    if factor > 1:
+        return factor
+    return 0
 
 
 def getIncreasingPremiumAccountFactor(records, recordConfig, _):
     factor = _getPremiumAccountFactor(records, recordConfig)
-    return factor if factor > 1 else 0
+    if factor > 1:
+        return factor
+    return 0
 
 
 def getDecreasingBaseAccountFactor(records, recordConfig, _):
     factor = _getBaseAccountFactor(records, recordConfig)
-    return factor if factor < 1 else None
+    if factor < 1:
+        return factor
+    else:
+        return
 
 
 def getDecreasingPremiumAccountFactor(records, recordConfig, _):
     factor = _getPremiumAccountFactor(records, recordConfig)
-    return factor if factor < 1 else None
+    if factor < 1:
+        return factor
+    else:
+        return
 
 
 def getBaseAccountEarnedValue(records, recordConfig, _):
@@ -62,12 +70,16 @@ def getPremiumAccountEventValue(records, recordConfig, _):
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getBaseAccountWotPlusCurrentBonusValue(records, recordConfig, battleResults, lobbyContext=None):
-    return getBaseAccountValue(records, recordConfig, battleResults) if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled() else 0
+    if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled():
+        return getBaseAccountValue(records, recordConfig, battleResults)
+    return 0
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getPremiumAccountWotPlusCurrentBonusValue(records, recordConfig, battleResults, lobbyContext=None):
-    return getPremiumAccountValue(records, recordConfig, battleResults) if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled() else 0
+    if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled():
+        return getPremiumAccountValue(records, recordConfig, battleResults)
+    return 0
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -76,6 +88,7 @@ def getBaseAccountWotPlusBonusValue(records, recordConfig, battleResults, lobbyC
         if not battleResults.reusable.personal.isWotPlus:
             return records.baseAccountValueWithWotPlus.getRecord(*recordConfig.recordNames)
         return getBaseAccountValue(records, recordConfig, battleResults)
+    return 0
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -84,6 +97,7 @@ def getPremiumAccountWotPlusBonusValue(records, recordConfig, battleResults, lob
         if not battleResults.reusable.personal.isWotPlus:
             return records.premiumAccountValueWithWotPlus.getRecord(*recordConfig.recordNames)
         return getPremiumAccountValue(records, recordConfig, battleResults)
+    return 0
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -126,7 +140,9 @@ def getTotalGoldValue(records, recordConfig, _):
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getGoldPiggyBank(_, __, battleResults, lobbyContext=None):
     reusable = battleResults.reusable
-    return reusable.personal.getGoldBankGain() if lobbyContext.getServerSettings().isRenewableSubGoldReserveEnabled() and isGoldPiggyBankAvailaible(reusable) else 0
+    if lobbyContext.getServerSettings().isRenewableSubGoldReserveEnabled() and isGoldPiggyBankAvailaible(reusable):
+        return reusable.personal.getGoldBankGain()
+    return 0
 
 
 def getCrystalValue(records, recordConfig, _):
@@ -139,22 +155,30 @@ def getCrystalTotalValue(records, recordConfig, _):
 
 def getBaseAccountSquadXp(records, recordConfig, _):
     value = records.baseAccountValue.getRecord(*recordConfig.recordNames)
-    return value if value > 0 else 0
+    if value > 0:
+        return value
+    return 0
 
 
 def getPremiumAccountSquadXp(records, recordConfig, _):
     value = records.premiumAccountValue.getRecord(*recordConfig.recordNames)
-    return value if value > 0 else 0
+    if value > 0:
+        return value
+    return 0
 
 
 def getBaseAccountSquadXpPenalty(records, recordConfig, _):
     value = records.baseAccountValue.getRecord(*recordConfig.recordNames)
-    return value if value < 0 else 0
+    if value < 0:
+        return value
+    return 0
 
 
 def getPremiumAccountSquadXpPenalty(records, recordConfig, _):
     value = records.premiumAccountValue.getRecord(*recordConfig.recordNames)
-    return value if value < 0 else 0
+    if value < 0:
+        return value
+    return 0
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -205,3 +229,4 @@ def _getViolationPercent(battleResults, penaltyType):
         if names and name == names[0]:
             return percent
         return 0
+    return 0

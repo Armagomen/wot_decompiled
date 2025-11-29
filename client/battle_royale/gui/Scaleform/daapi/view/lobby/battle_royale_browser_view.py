@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/battle_royale_browser_view.py
 from gui.Scaleform.daapi.view.lobby.shared.web_view import WebView
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController

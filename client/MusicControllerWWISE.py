@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/MusicControllerWWISE.py
-import WWISE
-import BigWorld
-import ResMgr
+import WWISE, BigWorld, ResMgr
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
 from helpers import isPlayerAvatar
@@ -16,7 +12,8 @@ MUSIC_EVENT_COMBAT_LOADING = 4
 MUSIC_EVENT_COMBAT_VICTORY = 5
 MUSIC_EVENT_COMBAT_LOSE = 6
 MUSIC_EVENT_COMBAT_DRAW = 7
-_BATTLE_RESULT_MUSIC_EVENTS = (MUSIC_EVENT_COMBAT_VICTORY, MUSIC_EVENT_COMBAT_LOSE, MUSIC_EVENT_COMBAT_DRAW)
+_BATTLE_RESULT_MUSIC_EVENTS = (
+ MUSIC_EVENT_COMBAT_VICTORY, MUSIC_EVENT_COMBAT_LOSE, MUSIC_EVENT_COMBAT_DRAW)
 AMBIENT_EVENT_NONE = 1000
 AMBIENT_EVENT_LOBBY = 1001
 AMBIENT_EVENT_SHOP = 1002
@@ -32,26 +29,27 @@ AMBIENT_EVENT_LOBBY_FORT_INTENDANT_SERVICE = 1011
 AMBIENT_EVENT_LOBBY_FORT_TROPHY_BRIGADE = 1012
 AMBIENT_EVENT_LOBBY_FORT_OFFICE = 1013
 AMBIENT_EVENT_LOBBY_FORT_MILITARY_SHOP = 1014
-FORT_MAPPING = {'wwfort': AMBIENT_EVENT_LOBBY_FORT,
- 'wwfort_building_financial_dept': AMBIENT_EVENT_LOBBY_FORT_FINANCIAL_DEPT,
- 'wwfort_building_tankodrome': AMBIENT_EVENT_LOBBY_FORT_TANKODROME,
- 'wwfort_building_training_dept': AMBIENT_EVENT_LOBBY_FORT_TRAINING_DEPT,
- 'wwfort_building_military_academy': AMBIENT_EVENT_LOBBY_FORT_MILITARY_ACADEMY,
- 'wwfort_building_transport_dept': AMBIENT_EVENT_LOBBY_FORT_TRANSPORT_DEPT,
- 'wwfort_building_intendant_service': AMBIENT_EVENT_LOBBY_FORT_INTENDANT_SERVICE,
- 'wwfort_building_trophy_brigade': AMBIENT_EVENT_LOBBY_FORT_TROPHY_BRIGADE,
- 'wwfort_building_office': AMBIENT_EVENT_LOBBY_FORT_OFFICE,
- 'wwfort_building_military_shop': AMBIENT_EVENT_LOBBY_FORT_MILITARY_SHOP}
-_ARENA_EVENTS = (MUSIC_EVENT_COMBAT, AMBIENT_EVENT_COMBAT, MUSIC_EVENT_COMBAT_LOADING)
+FORT_MAPPING = {'wwfort': AMBIENT_EVENT_LOBBY_FORT, 
+   'wwfort_building_financial_dept': AMBIENT_EVENT_LOBBY_FORT_FINANCIAL_DEPT, 
+   'wwfort_building_tankodrome': AMBIENT_EVENT_LOBBY_FORT_TANKODROME, 
+   'wwfort_building_training_dept': AMBIENT_EVENT_LOBBY_FORT_TRAINING_DEPT, 
+   'wwfort_building_military_academy': AMBIENT_EVENT_LOBBY_FORT_MILITARY_ACADEMY, 
+   'wwfort_building_transport_dept': AMBIENT_EVENT_LOBBY_FORT_TRANSPORT_DEPT, 
+   'wwfort_building_intendant_service': AMBIENT_EVENT_LOBBY_FORT_INTENDANT_SERVICE, 
+   'wwfort_building_trophy_brigade': AMBIENT_EVENT_LOBBY_FORT_TROPHY_BRIGADE, 
+   'wwfort_building_office': AMBIENT_EVENT_LOBBY_FORT_OFFICE, 
+   'wwfort_building_military_shop': AMBIENT_EVENT_LOBBY_FORT_MILITARY_SHOP}
+_ARENA_EVENTS = (
+ MUSIC_EVENT_COMBAT, AMBIENT_EVENT_COMBAT, MUSIC_EVENT_COMBAT_LOADING)
 _CMD_SERVER_CHANGE_HANGAR_AMBIENT = 'cmd_change_hangar_ambient'
 _CMD_SERVER_CHANGE_HANGAR_MUSIC = 'cmd_change_hangar_music'
 _ON_VEHICLE_KILLED_EVENT = 'music_stinger'
 _SERVER_OVERRIDDEN = 0
 _CLIENT_OVERRIDDEN = 1
 _ARENA_PERIOD_STATE_NAME = 'STATE_arenastate'
-_ARENA_PERIOD_STATE = {ARENA_PERIOD.WAITING: 'STATE_arenastate_waiting',
- ARENA_PERIOD.PREBATTLE: 'STATE_arenastate_counter',
- ARENA_PERIOD.BATTLE: 'STATE_arenastate_battle'}
+_ARENA_PERIOD_STATE = {ARENA_PERIOD.WAITING: 'STATE_arenastate_waiting', 
+   ARENA_PERIOD.PREBATTLE: 'STATE_arenastate_counter', 
+   ARENA_PERIOD.BATTLE: 'STATE_arenastate_battle'}
 g_musicController = None
 
 def create():
@@ -146,13 +144,19 @@ class MusicController(object):
             return
 
         def param(self, paramName):
-            return self.__event.param(paramName) if self.__event is not None else None
+            if self.__event is not None:
+                return self.__event.param(paramName)
+            else:
+                return
 
         def getEventId(self):
             return self.__eventID
 
         def isPlaying(self):
-            return self.__event.isPlaying if self.__event is not None else False
+            if self.__event is not None:
+                return self.__event.isPlaying
+            else:
+                return False
 
         def destroy(self, force=False):
             if self.__event is not None:
@@ -171,8 +175,8 @@ class MusicController(object):
         self.__music = MusicController.MusicEvent()
         self.__ambient = MusicController.MusicEvent()
         self.__sndEventMusic = None
-        self.__soundEvents = {MUSIC_EVENT_NONE: None,
-         AMBIENT_EVENT_NONE: None}
+        self.__soundEvents = {MUSIC_EVENT_NONE: None, 
+           AMBIENT_EVENT_NONE: None}
         self._skipArenaChanges = False
         self.__vehicleKilled = False
         self.init()
@@ -324,19 +328,20 @@ class MusicController(object):
             player = BigWorld.player()
             if not isPlayerAvatar():
                 return
-            if player.arena is None:
-                return
+        if player.arena is None:
+            return
+        else:
             arenaType = player.arena.arenaType
             if eventId == MUSIC_EVENT_COMBAT_LOADING:
                 wwmusicSetup = self.__specialSounds.arenaMusicSetup
                 if wwmusicSetup is not None:
                     soundEventName = wwmusicSetup.get('wwmusicLoading')
-            elif eventId == AMBIENT_EVENT_COMBAT:
-                soundEventName = arenaType.ambientSound
-        if soundEventName:
-            import SoundGroups
-            return SoundGroups.g_instance.getSound2D(soundEventName)
-        else:
+            else:
+                if eventId == AMBIENT_EVENT_COMBAT:
+                    soundEventName = arenaType.ambientSound
+                if soundEventName:
+                    import SoundGroups
+                    return SoundGroups.g_instance.getSound2D(soundEventName)
             return
 
     def __loadConfig(self):
@@ -348,21 +353,25 @@ class MusicController(object):
         for i in section.items():
             s = i[1]
             if i[0] == 'music':
-                eventNames[MUSIC_EVENT_LOBBY] = (s.readString('wwlobby'), s.readString('wwlobby'))
+                eventNames[MUSIC_EVENT_LOBBY] = (
+                 s.readString('wwlobby'), s.readString('wwlobby'))
                 eventNames[MUSIC_EVENT_COMBAT_VICTORY] = s.readString('wwcombat_victory')
                 eventNames[MUSIC_EVENT_COMBAT_LOSE] = s.readString('wwcombat_lose')
                 eventNames[MUSIC_EVENT_COMBAT_DRAW] = s.readString('wwcombat_draw')
-            if i[0] == 'ambient':
-                eventNames[AMBIENT_EVENT_LOBBY] = (s.readString('wwlobby'), s.readString('wwlobby'))
+            elif i[0] == 'ambient':
+                eventNames[AMBIENT_EVENT_LOBBY] = (
+                 s.readString('wwlobby'), s.readString('wwlobby'))
                 eventNames[AMBIENT_EVENT_SHOP] = (s.readString('wwshop'), s.readString('wwlobby'))
                 eventNames[AMBIENT_EVENT_STATISTICS] = (s.readString('wwrating'), s.readString('wwlobby'))
                 for key, const in FORT_MAPPING.iteritems():
-                    eventNames[const] = (s.readString(key), s.readString(key))
+                    eventNames[const] = (
+                     s.readString(key), s.readString(key))
 
         self.__overrideEvents(eventNames)
         for eventId, names in eventNames.items():
             if not isinstance(names, tuple):
-                names = (names,)
+                names = (
+                 names,)
             soundNames = []
             for eventName in names:
                 if eventName not in soundNames:
@@ -407,7 +416,9 @@ class MusicController(object):
                     eventNames[eventId] = overriddenNames[_CLIENT_OVERRIDDEN]
 
     def _getSoundEventById(self, soundEventID):
-        return self.__music if soundEventID < AMBIENT_EVENT_NONE else self.__ambient
+        if soundEventID < AMBIENT_EVENT_NONE:
+            return self.__music
+        return self.__ambient
 
     def isPlaying(self, soundEventID):
         soundEvent = self._getSoundEventById(soundEventID)
@@ -430,7 +441,7 @@ class MusicController(object):
                 self.__updateOverridden(AMBIENT_EVENT_SHOP, _SERVER_OVERRIDDEN, None)
                 self.__updateOverridden(AMBIENT_EVENT_STATISTICS, _SERVER_OVERRIDDEN, None)
                 hasChanges = True
-            if notification['type'] == _CMD_SERVER_CHANGE_HANGAR_MUSIC:
+            elif notification['type'] == _CMD_SERVER_CHANGE_HANGAR_MUSIC:
                 self.__updateOverridden(MUSIC_EVENT_LOBBY, _SERVER_OVERRIDDEN, None)
                 hasChanges = True
 
@@ -439,9 +450,10 @@ class MusicController(object):
                 ambientEventName = notification['data']
                 self.__updateOverridden(AMBIENT_EVENT_LOBBY, _SERVER_OVERRIDDEN, (ambientEventName, ambientEventName))
                 self.__updateOverridden(AMBIENT_EVENT_SHOP, _SERVER_OVERRIDDEN, (ambientEventName, ambientEventName))
-                self.__updateOverridden(AMBIENT_EVENT_STATISTICS, _SERVER_OVERRIDDEN, (ambientEventName, ambientEventName))
+                self.__updateOverridden(AMBIENT_EVENT_STATISTICS, _SERVER_OVERRIDDEN, (
+                 ambientEventName, ambientEventName))
                 hasChanges = True
-            if notification['type'] == _CMD_SERVER_CHANGE_HANGAR_MUSIC:
+            elif notification['type'] == _CMD_SERVER_CHANGE_HANGAR_MUSIC:
                 musicEventNames = [ event.strip() for event in notification['data'].split('|') ]
                 musicEventName = musicEventNames[0]
                 premiumMusicEventName = musicEventNames[1] if len(musicEventNames) > 1 else musicEventName

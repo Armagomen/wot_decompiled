@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/season_modifier_presenter.py
 from __future__ import absolute_import
 from comp7_light.gui.impl.gen.view_models.views.lobby.season_modifier_model import SeasonModifierModel
 from comp7_light.gui.impl.lobby.tooltips.comp7_light_modifiers_domain_tooltip_view import Comp7LightModifiersDomainTooltipView, COMP7_LIGHT_SEASON_MODIFIERS_DOMAIN
@@ -23,10 +21,16 @@ class SeasonModifierPresenter(ViewComponent[SeasonModifierModel]):
         return super(SeasonModifierPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return Comp7LightModifiersDomainTooltipView(COMP7_LIGHT_SEASON_MODIFIERS_DOMAIN) if contentID == R.views.battle_modifiers.lobby.tooltips.ModifiersDomainTooltipView() else super(SeasonModifierPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.battle_modifiers.lobby.tooltips.ModifiersDomainTooltipView():
+            return Comp7LightModifiersDomainTooltipView(COMP7_LIGHT_SEASON_MODIFIERS_DOMAIN)
+        return super(SeasonModifierPresenter, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return ((self.__comp7LightController.onStatusUpdated, self.__updateData), (self.__comp7LightController.onModeConfigChanged, self.__updateData))
+        return (
+         (
+          self.__comp7LightController.onStatusUpdated, self.__updateData),
+         (
+          self.__comp7LightController.onModeConfigChanged, self.__updateData))
 
     def __updateData(self, _=None):
         self.viewModel.setEnabled(self.__comp7LightController.isBattleModifiersAvailable())

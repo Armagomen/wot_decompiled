@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/debug_manager_blocks_base.py
 from visual_script.block import Block, Meta
 from visual_script.misc import ASPECT, errorVScript
 from visual_script.slot_types import SLOT_TYPE, arrayOf
@@ -10,14 +8,14 @@ def uint32toInt32(value):
     if value <= 2147483647:
         return value
     else:
-        return -(4294967295L - value + 1)
+        return -(4294967295 - value + 1)
 
 
 def int32ToUint32(value):
     if value >= 0:
         return value
     else:
-        return 4294967295L + value + 1
+        return 4294967295 + value + 1
 
 
 DEFAULT_COLOR = uint32toInt32(COLORS.DEFAULT)
@@ -26,11 +24,11 @@ class DebugManagerBlockMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 16711765
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Debug Manager'
 
     @classmethod
     def blockAspects(cls):
@@ -65,7 +63,7 @@ class DebugManagerBlock(Block, DebugManagerBlockMeta):
                 if not isGroupEnabled(groupID):
                     setGroupEnabled(groupID, True)
         else:
-            errorVScript(self, 'Unknown DebugManager function {}'.format(self._func))
+            errorVScript(self, ('Unknown DebugManager function {}').format(self._func))
         self._out.call()
 
     def _createDataInputSlot(self, slotName, slotType=SLOT_TYPE.STR, slotDefaultValue=None):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/main_window.py
 import typing
 from frameworks.wulf import WindowFlags
 from gui.impl.gen import R
@@ -19,10 +17,12 @@ class MainWindow(WindowImpl):
         self.gui.windowsManager.addWindowsArea(R.areas.specific())
         self.gui.windowsManager.addWindowsArea(R.areas.pop_over())
         self.gui.windowsManager.addWindowsArea(R.areas.context_menu())
+        self.gui.windowsManager.addWindowsArea(R.areas.flattening_window())
 
     def _finalize(self):
         self.gui.windowsManager.removeWindowsArea(R.areas.default())
         self.gui.windowsManager.removeWindowsArea(R.areas.specific())
         self.gui.windowsManager.removeWindowsArea(R.areas.pop_over())
         self.gui.windowsManager.removeWindowsArea(R.areas.context_menu())
+        self.gui.windowsManager.removeWindowsArea(R.areas.flattening_window())
         super(MainWindow, self)._finalize()

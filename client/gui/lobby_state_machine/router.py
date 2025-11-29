@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/router.py
 from __future__ import absolute_import
-import json
-import logging
-import typing
+import json, logging, typing
 from frameworks.state_machine import BaseStateObserver, visitor
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.lobby_state_machine.resource_mapping import resLayoutToStateId, stateIdToResLayout
@@ -50,7 +46,11 @@ class Router(EventsHandler):
 
     def _getEvents(self):
         model = self._routableView.getRouterModel()
-        events = ((model.navigateTo, self.__navigateTo), (model.navigateBack, self.__navigateBack))
+        events = (
+         (
+          model.navigateTo, self.__navigateTo),
+         (
+          model.navigateBack, self.__navigateBack))
         return events
 
     def _encodeRoute(self, stateId):
@@ -79,7 +79,9 @@ class Router(EventsHandler):
 
     def _decodeStateId(self, route):
         resourceMappedRoute = resLayoutToStateId(route)
-        return resourceMappedRoute if resourceMappedRoute else self._routePrefix + route
+        if resourceMappedRoute:
+            return resourceMappedRoute
+        return self._routePrefix + route
 
     def _decodeJsonParams(self, jsonParams):
         params = {}
@@ -93,7 +95,7 @@ class Router(EventsHandler):
     def __updateModel(self):
         _logger.debug('Encoded route: %r', self._route)
         _logger.debug('Encoded params: %r', self._params)
-        with self._routableView.getRouterModel().transaction() as model:
+        with self._routableView.getRouterModel().transaction() as (model):
             model.setRoute(self._route)
             model.setParams(self._params)
 

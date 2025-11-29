@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/power_mode_widget.py
 import typing
 from constants import POWER_MODE_STATE
 from events_handler import eventHandler
@@ -15,10 +13,10 @@ if typing.TYPE_CHECKING:
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
 
 class PowerModeMechanicWidget(PowerWidgetMeta, ComponentListener, IMechanicStatesListenerLogic):
-    _POWER_MODE_UI_STATES = {POWER_MODE_STATE.NOT_ACTIVE: MECHANICS_WIDGET_CONST.PREPARING,
-     POWER_MODE_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING,
-     POWER_MODE_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE,
-     POWER_MODE_STATE.MAX_MODE: MECHANICS_WIDGET_CONST.ACTIVE}
+    _POWER_MODE_UI_STATES = {POWER_MODE_STATE.NOT_ACTIVE: MECHANICS_WIDGET_CONST.PREPARING, 
+       POWER_MODE_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING, 
+       POWER_MODE_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE, 
+       POWER_MODE_STATE.MAX_MODE: MECHANICS_WIDGET_CONST.ACTIVE}
 
     def __init__(self):
         super(PowerModeMechanicWidget, self).__init__()
@@ -41,7 +39,9 @@ class PowerModeMechanicWidget(PowerWidgetMeta, ComponentListener, IMechanicState
         self.__invalidateProgress(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.POWER_MODE, self), VehicleMechanicStatesUpdater(VehicleMechanic.POWER_MODE, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.POWER_MODE, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.POWER_MODE, self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         self.as_setStateS(self._POWER_MODE_UI_STATES[state.state], isInstantly)

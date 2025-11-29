@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/armor/armor_tooltip.py
 from __future__ import absolute_import
 from account_helpers.settings_core import settings_constants
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
@@ -14,7 +12,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared.utils import IHangarSpace
 
 class ArmorTooltipView(ViewImpl):
-    __slots__ = ('_vehicleEntity',)
+    __slots__ = ('_vehicleEntity', )
     _hangarSpace = dependency.descriptor(IHangarSpace)
     _settingsCore = dependency.descriptor(ISettingsCore)
 
@@ -24,7 +22,9 @@ class ArmorTooltipView(ViewImpl):
         self._vehicleEntity = vehicleEntity
 
     def _getEvents(self):
-        return ((self._settingsCore.onSettingsChanged, self._onSettingsChanged),)
+        return (
+         (
+          self._settingsCore.onSettingsChanged, self._onSettingsChanged),)
 
     def _onLoading(self, *args, **kwargs):
         super(ArmorTooltipView, self)._onLoading(*args, **kwargs)
@@ -36,7 +36,7 @@ class ArmorTooltipView(ViewImpl):
 
     def update(self):
         materials = getMaterialsAtCursor(self._vehicleEntity, self._hangarSpace.spaceID)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             armorLayers = model.getArmorLayers()
             armorLayers.clear()
             stackedMaterials = stackMaterials(materials, self._vehicleEntity.typeDescriptor.level)

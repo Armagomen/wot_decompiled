@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/controller.py
-import BigWorld
-import typing
-import SoundGroups
+import BigWorld, typing, SoundGroups
 from goodies import goodie_constants
 from gui.impl.dialogs import dialogs
 from gui.impl.gen.view_models.views.lobby.crew.help_navigate_from import HelpNavigateFrom
@@ -26,10 +22,10 @@ _ADD_KEY = 'add'
 _PERCENT_KEY = 'percent'
 CREW_BOOKS_PURCHASE_ENABLED = 'isCrewBooksPurchaseEnabled'
 IS_MENTORING_LICENSE_ENABLED = 'isMentoringLicenseEnabled'
-FREE_XP_STEPPER_ACTION = {'perk': {_ADD_KEY: lambda stepper: stepper.getSkillUpXpCost(),
-          'subtract': lambda stepper: stepper.getSkillDownXpCost()},
- _PERCENT_KEY: {_ADD_KEY: lambda stepper: stepper.getLevelUpXpCost(),
-                'subtract': lambda stepper: stepper.getLevelDownXpCost()}}
+FREE_XP_STEPPER_ACTION = {'perk': {_ADD_KEY: lambda stepper: stepper.getSkillUpXpCost(), 
+            'subtract': lambda stepper: stepper.getSkillDownXpCost()}, 
+   _PERCENT_KEY: {_ADD_KEY: lambda stepper: stepper.getLevelUpXpCost(), 
+                  'subtract': lambda stepper: stepper.getLevelDownXpCost()}}
 
 class QuickTrainingInteractionController(InteractionController):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -38,18 +34,31 @@ class QuickTrainingInteractionController(InteractionController):
         return QuickTrainingViewEvents()
 
     def _getEvents(self):
-        return [(self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChange),
-         (self.eventsProvider.onFreeXpMouseEnter, self._onFreeXpMouseEnter),
-         (self.eventsProvider.onFreeXpSelected, self._onFreeXpSelected),
-         (self.eventsProvider.onFreeXpUpdated, self._onFreeXpStepperUpdate),
-         (self.eventsProvider.onFreeXpManualInput, self._onFreeXpManualInput),
-         (self.eventsProvider.onBookMouseEnter, self._onBookMouseEnter),
-         (self.eventsProvider.onBookSelected, self._onBookSelected),
-         (self.eventsProvider.onBuyBook, self._onBuyBook),
-         (self.eventsProvider.onLearn, self._onLearn),
-         (self.eventsProvider.onCancel, self._onCancel),
-         (self.eventsProvider.onMentoringClick, self._onMentoringClick),
-         (self.eventsProvider.onPostProgressionOpen, self._onPostProgression)]
+        return [
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChange),
+         (
+          self.eventsProvider.onFreeXpMouseEnter, self._onFreeXpMouseEnter),
+         (
+          self.eventsProvider.onFreeXpSelected, self._onFreeXpSelected),
+         (
+          self.eventsProvider.onFreeXpUpdated, self._onFreeXpStepperUpdate),
+         (
+          self.eventsProvider.onFreeXpManualInput, self._onFreeXpManualInput),
+         (
+          self.eventsProvider.onBookMouseEnter, self._onBookMouseEnter),
+         (
+          self.eventsProvider.onBookSelected, self._onBookSelected),
+         (
+          self.eventsProvider.onBuyBook, self._onBuyBook),
+         (
+          self.eventsProvider.onLearn, self._onLearn),
+         (
+          self.eventsProvider.onCancel, self._onCancel),
+         (
+          self.eventsProvider.onMentoringClick, self._onMentoringClick),
+         (
+          self.eventsProvider.onPostProgressionOpen, self._onPostProgression)]
 
     def onInventoryUpdate(self, invDiff):
         updatedCrew = {}
@@ -62,7 +71,7 @@ class QuickTrainingInteractionController(InteractionController):
             if self.context.isSingleTankman:
                 return
         if updatedCrew:
-            updatedVehicleIDs = [ (k[0] if isinstance(k, tuple) else k) for k in updatedCrew.keys() ]
+            updatedVehicleIDs = [ k[0] if isinstance(k, tuple) else k for k in updatedCrew.keys() ]
             if self.context.vehicle and self.context.vehicle.invID not in updatedVehicleIDs:
                 return
             if self.context.tankmanID not in updatedCrew.values()[0]:
@@ -166,13 +175,17 @@ class QuickTrainingInteractionController(InteractionController):
     def _onLearn(self):
         doActions = []
         if self.context.selection.freeXp > 0 and self.context.canCrewSelectFreeXp:
-            doActions.append((factory.USE_FREE_XP_TO_TANKMAN, self.context.selection.freeXp, self.context.tankmanID))
+            doActions.append((
+             factory.USE_FREE_XP_TO_TANKMAN,
+             self.context.selection.freeXp,
+             self.context.tankmanID))
         for bookCD in self.context.selection.books.keys():
             book = self.itemsCache.items.getItemByCD(bookCD)
             count = self.context.selection.getBookCountById(bookCD)
             if book.isPersonal() and self.context.isSingleTankman and not self.context.canCurrentTankmanUsePersonalBook:
                 continue
-            doActions.append((factory.USE_CREW_BOOK,
+            doActions.append((
+             factory.USE_CREW_BOOK,
              bookCD,
              self.context.vehicleID if self.context.vehicle and not book.isPersonal() else NO_VEHICLE_ID,
              count,

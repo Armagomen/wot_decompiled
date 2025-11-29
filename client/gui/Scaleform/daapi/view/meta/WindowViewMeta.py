@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/WindowViewMeta.py
 from gui.Scaleform.daapi.view.meta.WrapperViewMeta import WrapperViewMeta
 
 class WindowViewMeta(WrapperViewMeta):
@@ -14,7 +12,9 @@ class WindowViewMeta(WrapperViewMeta):
         self._printOverrideError('onTryClosing')
 
     def as_getGeometryS(self):
-        return self.flashObject.as_getGeometry() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getGeometry()
 
     def as_setGeometryS(self, x, y, width, height):
-        return self.flashObject.as_setGeometry(x, y, width, height) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setGeometry(x, y, width, height)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vehicle_passenger/passenger_wrappers.py
-import operator
-import typing
+import operator, typing
 from functools import wraps
 if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.vehicle_passenger.passenger_interfaces import IVehiclePassengerWatcher
@@ -17,7 +14,9 @@ def hasVehiclePassengerCtrl(ctrlName='passengerCtrl', defReturn=None, abortActio
                 kwargs[ctrlName] = passengerCtrl
                 return method(passengerInfoWatcher, *args, **kwargs)
             else:
-                return operator.methodcaller(abortAction)(passengerInfoWatcher) if abortAction is not None else defReturn
+                if abortAction is not None:
+                    return operator.methodcaller(abortAction)(passengerInfoWatcher)
+                return defReturn
 
         return wrapper
 

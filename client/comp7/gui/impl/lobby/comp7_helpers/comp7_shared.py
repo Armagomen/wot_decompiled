@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_shared.py
 import typing
 from gui.shared.utils.requesters import REQ_CRITERIA
 from shared_utils import findFirst
@@ -12,11 +10,14 @@ if typing.TYPE_CHECKING:
     from gui.shared.utils.requesters import RequestCriteria
 
 def getDivisionEnumValue(division):
-    return tuple(Division)[division.index - 1] if division is not None else None
+    if division is not None:
+        return tuple(Division)[(division.index - 1)]
+    else:
+        return
 
 
 def getRankEnumValue(division):
-    return tuple(Rank)[division.rank - 1]
+    return tuple(Rank)[(division.rank - 1)]
 
 
 def getRankById(rankId):
@@ -41,7 +42,7 @@ def isQualification(comp7Controller=None):
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
 def getPlayerDivisionByRating(rating, seasonNumber=None, comp7Controller=None):
     ranksConfig = comp7Controller.getRanksConfig()
-    division = findFirst(lambda d: rating in d.range, ranksConfig.divisions if not isElite(seasonNumber) else reversed(ranksConfig.divisions))
+    division = findFirst(lambda d: rating in d.range, (isElite(seasonNumber) or ranksConfig).divisions if 1 else reversed(ranksConfig.divisions))
     return division
 
 
@@ -63,7 +64,7 @@ def hasRankInactivity(rank, comp7Controller=None):
     if not isRankInactivityAvailable:
         return False
     ranksConfig = comp7Controller.getRanksConfig()
-    return any((division.hasRankInactivity for division in ranksConfig.divisionsByRank[rank]))
+    return any(division.hasRankInactivity for division in ranksConfig.divisionsByRank[rank])
 
 
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)

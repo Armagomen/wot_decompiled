@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AffectComponent.py
-import logging
-import BigWorld
-import CGF
-import GenericComponents
+import logging, BigWorld, CGF, GenericComponents
 from helpers import dependency
 from shared_utils import nextTick
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
@@ -13,12 +8,10 @@ _logger = logging.getLogger(__name__)
 _HEAL_OVER_TIME_ZONE_ = 0
 _DAMAGE_OVER_TIME_ZONE_ = 1
 _FIRE_CIRCLE_ZONE_ = 2
-_ZONE_ACTIVATE_EVENT_ = {_HEAL_OVER_TIME_ZONE_: BREvents.REPAIR_POINT_ENTER,
- _DAMAGE_OVER_TIME_ZONE_: BREvents.TRAP_POINT_ENTER,
- _FIRE_CIRCLE_ZONE_: BREvents.BR_FIRE_CIRCLE_ENTERED}
-_ZONE_DEACTIVATE_EVENT_ = {_HEAL_OVER_TIME_ZONE_: BREvents.REPAIR_POINT_EXIT,
- _DAMAGE_OVER_TIME_ZONE_: BREvents.TRAP_POINT_EXIT,
- _FIRE_CIRCLE_ZONE_: BREvents.BR_FIRE_CIRCLE_LEFT}
+_ZONE_ACTIVATE_EVENT_ = {_HEAL_OVER_TIME_ZONE_: BREvents.REPAIR_POINT_ENTER, _DAMAGE_OVER_TIME_ZONE_: BREvents.TRAP_POINT_ENTER, 
+   _FIRE_CIRCLE_ZONE_: BREvents.BR_FIRE_CIRCLE_ENTERED}
+_ZONE_DEACTIVATE_EVENT_ = {_HEAL_OVER_TIME_ZONE_: BREvents.REPAIR_POINT_EXIT, _DAMAGE_OVER_TIME_ZONE_: BREvents.TRAP_POINT_EXIT, 
+   _FIRE_CIRCLE_ZONE_: BREvents.BR_FIRE_CIRCLE_LEFT}
 
 class AffectComponent(object):
     __guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -126,8 +119,13 @@ class RepairAffectComponent(AffectComponent):
 
 
 def getInfluenceZoneType(pointDescr):
-    return _HEAL_OVER_TIME_ZONE_ if pointDescr.hotParams else _DAMAGE_OVER_TIME_ZONE_
+    if pointDescr.hotParams:
+        return _HEAL_OVER_TIME_ZONE_
+    return _DAMAGE_OVER_TIME_ZONE_
 
 
 def getEffectConfig(influenceZoneType, config):
-    return config.getRepairPointEffect() if influenceZoneType == _HEAL_OVER_TIME_ZONE_ else None
+    if influenceZoneType == _HEAL_OVER_TIME_ZONE_:
+        return config.getRepairPointEffect()
+    else:
+        return

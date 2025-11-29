@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/legacy_mechanics/siege_component.py
 import BigWorld
 from gui.shared.utils.TimeInterval import TimeInterval
 from constants import VEHICLE_SIEGE_STATE
 
 class _ComponentUpdater(object):
-    __slots__ = ('_parentObj', '_totalTime', '_timeLeft', '_siegeState', '_deviceState', '_isSmooth', '_staticMode')
+    __slots__ = ('_parentObj', '_totalTime', '_timeLeft', '_siegeState', '_deviceState',
+                 '_isSmooth', '_staticMode')
 
     def __init__(self, parentObj, totalTime, timeLeft, siegeState, deviceState, isSmooth):
         super(_ComponentUpdater, self).__init__()
@@ -18,7 +17,7 @@ class _ComponentUpdater(object):
         self._staticMode = False
 
     def __repr__(self):
-        return '_UpdaterComponent(totalTime = {}, timeLeft = {}, siegeState = {}, deviceState = {})'.format(self._totalTime, self._timeLeft, self._siegeState, self._deviceState)
+        return ('_UpdaterComponent(totalTime = {}, timeLeft = {}, siegeState = {}, deviceState = {})').format(self._totalTime, self._timeLeft, self._siegeState, self._deviceState)
 
     def clear(self):
         self._stopTick()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AccuracyStacksController.py
-import typing
-import BigWorld
+import typing, BigWorld
 from items.components.shared_components import AccuracyStacksParams
 from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
 from vehicles.mechanics.mechanic_states import IMechanicState, IMechanicStatesComponent, createMechanicStatesEvents
@@ -9,14 +6,11 @@ if typing.TYPE_CHECKING:
     from typing import Any, Optional
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
 
-class AccuracyStacksState(typing.NamedTuple('AccuracyStacksState', (('level', int),
- ('maxLevel', int),
- ('startTime', float),
- ('endTime', float),
- ('isGainingActive', bool),
- ('duration', float),
- ('timeElapsed', float),
- ('speedThreshold', float))), IMechanicState):
+class AccuracyStacksState(typing.NamedTuple('AccuracyStacksState', (
+ (
+  'level', int), ('maxLevel', int), ('startTime', float), ('endTime', float), ('isGainingActive', bool),
+ (
+  'duration', float), ('timeElapsed', float), ('speedThreshold', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, stackDuration, speedThreshold):

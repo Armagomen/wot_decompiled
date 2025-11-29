@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/DAAPIDataProvider.py
 from abc import ABCMeta, abstractmethod, abstractproperty
 from gui.Scaleform.framework.entities.BaseDAAPIModule import BaseDAAPIModule
 from gui.shared.utils import sortByFields
@@ -51,7 +49,10 @@ class DAAPIDataProvider(BaseDAAPIModule):
         return len(self.collection)
 
     def pyRequestItemAt(self, idx):
-        return self._itemWrapper(self.collection[int(idx)]) if -1 < idx < self.pyLength() else None
+        if -1 < idx < self.pyLength():
+            return self._itemWrapper(self.collection[int(idx)])
+        else:
+            return
 
     def pyRequestItemRange(self, startIndex, endIndex):
         return map(self._itemWrapper, self.collection[int(startIndex):int(endIndex) + 1])
@@ -74,7 +75,10 @@ class SortableDAAPIDataProvider(DAAPIDataProvider):
         return self.pyGetSelectedIdx()
 
     def pyRequestItemAt(self, idx):
-        return self._itemWrapper(self.sortedCollection[int(idx)]) if -1 < idx < self.pyLength() else None
+        if -1 < idx < self.pyLength():
+            return self._itemWrapper(self.sortedCollection[int(idx)])
+        else:
+            return
 
     def pyRequestItemRange(self, startIndex, endIndex):
         return map(self._itemWrapper, self.sortedCollection[int(startIndex):int(endIndex) + 1])
@@ -83,7 +87,7 @@ class SortableDAAPIDataProvider(DAAPIDataProvider):
         self._sort = tuple(zip(fields, order))
 
     def pyGetSelectedIdx(self):
-        pass
+        return -1
 
 
 class ListDAAPIDataProvider(DAAPIDataProvider):
@@ -103,7 +107,10 @@ class ListDAAPIDataProvider(DAAPIDataProvider):
         return self.pyGetSelectedIdx()
 
     def pyRequestItemAt(self, idx):
-        return self._itemWrapper(self.sortedCollection[int(idx)]) if -1 < idx < self.pyLength() else None
+        if -1 < idx < self.pyLength():
+            return self._itemWrapper(self.sortedCollection[int(idx)])
+        else:
+            return
 
     def pyRequestItemRange(self, startIndex, endIndex):
         return map(self._itemWrapper, self.sortedCollection[int(startIndex):int(endIndex) + 1])
@@ -112,7 +119,7 @@ class ListDAAPIDataProvider(DAAPIDataProvider):
         self._sort = tuple(zip(fields, order))
 
     def pyGetSelectedIdx(self):
-        pass
+        return -1
 
     def refreshRandomItems(self, indexes, items):
         self.flashObject.invalidateItems(indexes, items)

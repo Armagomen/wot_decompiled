@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/user_missions_presenter.py
 from comp7.gui.impl.lobby.entry_point_presenter import EntryPointPresenter
 from comp7.gui.impl.lobby.user_missions.hangar_widget.overlap_ctrl import Comp7OverlapCtrlMixin
 from comp7.gui.impl.lobby.weekly_quests_widget_presenter import WeeklyQuestsWidgetPresenter
@@ -18,12 +16,12 @@ class _QuestsPresenter(QuestsPresenter, Comp7OverlapCtrlMixin):
 
 
 class Comp7UserMissionsPresenter(UserMissionsPresenter):
-    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter,
-     R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
+    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter, 
+       R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
 
     def _getChildComponents(self):
-        return {R.aliases.comp7.shared.EntryPoint(): EntryPointPresenter,
-         R.aliases.comp7.shared.WeeklyQuestsWidget(): WeeklyQuestsWidgetPresenter}
+        return {R.aliases.comp7.shared.EntryPoint(): EntryPointPresenter, 
+           R.aliases.comp7.shared.WeeklyQuestsWidget(): WeeklyQuestsWidgetPresenter}
 
     def _updateEntryPoints(self, vm):
         vm.setIsAnyEntryPointAvailable(True)

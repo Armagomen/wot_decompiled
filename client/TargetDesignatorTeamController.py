@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TargetDesignatorTeamController.py
-import logging
-import typing
+import logging, typing
 from Math import Vector3
 from chat_commands_consts import LocationMarkerSubType
 from helpers import dependency
@@ -10,7 +7,7 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 if typing.TYPE_CHECKING:
     from typing import Set, Optional, Tuple
     from gui.battle_control.controllers.feedback_adaptor import BattleFeedbackAdaptor
-    ClientMarkers = Set[Tuple[int, int, Vector3, int, int]]
+    ClientMarkers = Set[Tuple[(int, int, Vector3, int, int)]]
 _debug = logging.getLogger(__name__).debug
 _UNSPOTTED_MARKER_HIT = LocationMarkerSubType.TARGET_DESIGNATOR_UNSPOTTED_MARKER_HIT
 
@@ -36,11 +33,7 @@ class TargetDesignatorTeamController(DynamicScriptComponent):
             x, y, z, w = marker.point
             hitPoint = Vector3(x, y, z)
             hitMarkerID = hash(hitPoint)
-            newMarkers.add((hitMarkerID,
-             targetID,
-             hitPoint,
-             _UNSPOTTED_MARKER_HIT,
-             creatorID))
+            newMarkers.add((hitMarkerID, targetID, hitPoint, _UNSPOTTED_MARKER_HIT, creatorID))
 
         self.__updateMarkers(oldMarkers, newMarkers)
 

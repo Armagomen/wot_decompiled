@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_single_price_dialog.py
 import typing
 from gui.goodies.demount_kit import getDemountKitForOptDevice
 from gui.goodies.goodie_items import DemountKit

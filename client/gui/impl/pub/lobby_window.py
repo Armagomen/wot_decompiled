@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/lobby_window.py
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import Window, WindowSettings, WindowFlags, WindowLayer, WindowStatus
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -50,7 +47,7 @@ class LobbyWindow(Window):
 
 
 class LobbyNotificationWindow(LobbyWindow):
-    __slots__ = ('__initialParent',)
+    __slots__ = ('__initialParent', )
     __appLoader = dependency.descriptor(IAppLoader)
 
     def __init__(self, wndFlags=None, decorator=None, content=None, parent=None, layer=WindowLayer.UNDEFINED):
@@ -68,4 +65,4 @@ class LobbyNotificationWindow(LobbyWindow):
 
     def _getParent(self, parent, content):
         self.__initialParent = super(LobbyNotificationWindow, self)._getParent(parent, content)
-        return None
+        return

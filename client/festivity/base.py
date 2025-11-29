@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/festivity/base.py
 from collections import namedtuple
 import logging
 from pprint import pformat
@@ -13,7 +11,10 @@ def _defaultLogger(*args):
 
 
 def _getProxy(callback):
-    return (lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)) if callback is not None else None
+    if callback is not None:
+        return lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
+    else:
+        return
 
 
 FestivityQuestsHangarFlag = namedtuple('FestivityQuestsHangarFlag', 'icon, iconDisabled, flagBackground')

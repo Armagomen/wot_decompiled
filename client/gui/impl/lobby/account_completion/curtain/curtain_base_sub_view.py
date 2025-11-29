@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_completion/curtain/curtain_base_sub_view.py
 import typing
 from typing import Type
 from Event import Event
@@ -10,7 +8,8 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen_utils import DynAccessor
 
 class CurtainBaseSubView(ViewImpl):
-    __slots__ = ('_isActive', '_isHidden', 'onWaitingChanged', '_isWaitingVisible', '_waitingMsgResID')
+    __slots__ = ('_isActive', '_isHidden', 'onWaitingChanged', '_isWaitingVisible',
+                 '_waitingMsgResID')
     _LAYOUT_DYN_ACCESSOR = R.invalid
     _VIEW_MODEL_CLASS = ViewModel
 

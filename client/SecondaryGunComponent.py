@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/SecondaryGunComponent.py
-import typing
-import CGF
+import typing, CGF
 from vehicles.components.vehicle_component import VehicleGunPrefabDynamicComponent
 from vehicles.parts.guns import IGunComponent, createGunShootingEvents
 if typing.TYPE_CHECKING:

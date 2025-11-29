@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/vehicle_builders.py
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.auxiliary.tooltips.compensation_tooltip import VehicleCompensationTooltipContent
@@ -8,10 +6,11 @@ from gui.impl.gen import R
 from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import LootBoxVehicleCompensationTooltipModel
 from gui.shared.tooltips import advanced, contexts, vehicle, vehicle_roles, ToolTipBaseData
 from gui.shared.tooltips.builders import DataBuilder, DefaultFormatBuilder, AdvancedDataBuilder, TooltipWindowBuilder, AdvancedTooltipWindowBuilder
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def getTooltipBuilders():
-    return (DataBuilder(TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE, TOOLTIPS_CONSTANTS.VEHICLE_INFO_UI, vehicle.VehicleInfoTooltipData(contexts.CarouselContext())),
+    return (
+     DataBuilder(TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE, TOOLTIPS_CONSTANTS.VEHICLE_INFO_UI, vehicle.VehicleInfoTooltipData(contexts.CarouselContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.HANGAR_CAROUSEL_VEHICLE, TOOLTIPS_CONSTANTS.VEHICLE_INFO_UI, vehicle.VehicleInfoTooltipData(contexts.HangarCarouselContext())),
      InventoryVehicleBuilder(TOOLTIPS_CONSTANTS.INVENTORY_VEHICLE, TOOLTIPS_CONSTANTS.VEHICLE_INFO_UI),
      DataBuilder(TOOLTIPS_CONSTANTS.TECHTREE_VEHICLE, TOOLTIPS_CONSTANTS.VEHICLE_INFO_UI, vehicle.VehicleInfoTooltipData(contexts.TechTreeContext())),

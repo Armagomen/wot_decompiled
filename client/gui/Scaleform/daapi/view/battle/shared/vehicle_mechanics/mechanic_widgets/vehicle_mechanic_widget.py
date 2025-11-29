@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/vehicle_mechanic_widget.py
 import typing
 from collections import namedtuple
 from gui.Scaleform.daapi.view.meta.BaseVehicleMechanicsWidgetMeta import BaseVehicleMechanicsWidgetMeta
@@ -15,9 +13,8 @@ class VehicleMechanicWidget(BaseVehicleMechanicsWidgetMeta, IHotKeysView, IMecha
         viewData = []
         for hotKeyCommand in hotKeyCommands:
             if hotKeyCommand.command in self._HOT_KEY_MAP:
-                viewData.extend([ {'keyCode': getScaleformKey(hotKeyCommand.key),
-                 'command': data.command,
-                 'isLong': data.isLong} for data in self._HOT_KEY_MAP[hotKeyCommand.command] ])
+                viewData.extend([ {'keyCode': getScaleformKey(hotKeyCommand.key), 'command': data.command, 'isLong': data.isLong} for data in self._HOT_KEY_MAP[hotKeyCommand.command]
+                                ])
 
         self.as_setHotKeysS(viewData)
 

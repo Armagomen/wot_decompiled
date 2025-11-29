@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/easy_tank_equip_vehicle.py
 
 
 class _EasyTankEquipCopyVehicle(object):
-    __slots__ = ('__vehicle',)
+    __slots__ = ('__vehicle', )
 
     def __init__(self):
         super(_EasyTankEquipCopyVehicle, self).__init__()

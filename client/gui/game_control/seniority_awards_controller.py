@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/seniority_awards_controller.py
 from enum import Enum
 import re
 from typing import Dict, Iterable, Optional, TYPE_CHECKING
-import BigWorld
-import Event
-import logging
+import BigWorld, Event, logging
 from BWUtil import AsyncReturn
 from constants import Configs
 from gui import SystemMessages
@@ -72,7 +68,9 @@ class SeniorityAwardsController(ISeniorityAwardsController):
 
     @property
     def config(self):
-        return self.__lobbyContext.getServerSettings().getSeniorityAwardsConfig() if self.__lobbyContext else SeniorityAwardsConfig()
+        if self.__lobbyContext:
+            return self.__lobbyContext.getServerSettings().getSeniorityAwardsConfig()
+        return SeniorityAwardsConfig()
 
     @property
     def isEnabled(self):
@@ -88,7 +86,9 @@ class SeniorityAwardsController(ISeniorityAwardsController):
 
     @property
     def timeLeft(self):
-        return self.config.endTime - time_utils.getServerUTCTime() if self.isEnabled else -1
+        if self.isEnabled:
+            return self.config.endTime - time_utils.getServerUTCTime()
+        return -1
 
     @property
     def endTime(self):
@@ -180,12 +180,14 @@ class SeniorityAwardsController(ISeniorityAwardsController):
     @property
     def pendingReminderTimestamp(self):
         if not self.isAvailable:
-            return None
+            return
         else:
             timestamp = time_utils.getServerUTCTime()
             reminders = self.config.reminders
             pendingNotifications = [ reminderTS for reminderTS in reminders if reminderTS < timestamp ]
-            return max(pendingNotifications) if pendingNotifications else None
+            if pendingNotifications:
+                return max(pendingNotifications)
+            return
 
     @property
     def completedSeniorityAwardsQuests(self):
@@ -238,7 +240,7 @@ class SeniorityAwardsController(ISeniorityAwardsController):
         pattern = self.vehicleSelectionQuestPrefix
         bonusVehicles = {}
         for quest in self.__eventsCache.getHiddenQuests(__vehicleSelectionFilterFunc).values():
-            rewardId = quest.getID().split(':')[-1]
+            rewardId = quest.getID().split(':')[(-1)]
             for vehBonus in quest.getBonuses('vehicles'):
                 vehicles = vehBonus.getValue()
                 for intCD in vehicles.iterkeys():
@@ -273,7 +275,8 @@ class SeniorityAwardsController(ISeniorityAwardsController):
         raise AsyncReturn(result)
 
     def getVehicleSelectionQuestReward(self, vehicleRewardId):
-        return self.getVehicleSelectionRewards()[vehicleRewardId] if self.isVehicleSelectionQuestCompleted(vehicleRewardId) else None
+        if self.isVehicleSelectionQuestCompleted(vehicleRewardId):
+            return self.getVehicleSelectionRewards()[vehicleRewardId]
 
     def claimReward(self):
         self.__showWaiting()
@@ -357,7 +360,8 @@ class SeniorityAwardsController(ISeniorityAwardsController):
         eligibilityToken = self.config.rewardEligibilityToken
         if eligibilityToken and eligibilityToken in diff:
             self.__update()
-        return self.__onVehicleSelectionStateChanged() if self.vehicleSelectionToken in diff else None
+        if self.vehicleSelectionToken in diff:
+            return self.__onVehicleSelectionStateChanged()
 
     def __onSettingsChanged(self, diff):
         if Configs.SENIORITY_AWARDS_CONFIG.value in diff:
@@ -406,7 +410,7 @@ class SeniorityAwardsController(ISeniorityAwardsController):
     def __onItemsCacheUpdated(self, reason, diff):
         if reason != CACHE_SYNC_REASON.CLIENT_UPDATE or diff is None or GUI_ITEM_TYPE.VEHICLE not in diff:
             return
-        elif not self.isVehicleSelectionAvailable:
+        if not self.isVehicleSelectionAvailable:
             return
         else:
             vehDiff = diff[GUI_ITEM_TYPE.VEHICLE]

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/postmortem_panel.py
 import SoundGroups
 from constants import VEHICLE_BUNKER_TURRET_TAG
 from gui.Scaleform.daapi.view.battle.pve_base.postmortem_panel import PvePostmortemPanel, LivesState
@@ -58,10 +56,7 @@ class StoryModePostmortemPanel(PvePostmortemPanel):
 
     def __showCustomMessage(self, code, killerVehID, device=None):
         msgText, colors = self._messages[code]
-        self._deathInfo = {'text': msgText,
-         'colors': colors,
-         'killerVehicle': killerVehID,
-         'device': device}
+        self._deathInfo = {'text': msgText, 'colors': colors, 'killerVehicle': killerVehID, 'device': device}
         self._deathInfoReceived()
 
     def updateTime(self, value):

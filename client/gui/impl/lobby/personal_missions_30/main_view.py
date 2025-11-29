@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/main_view.py
 from collections import OrderedDict
 from functools import partial
 import SoundGroups
@@ -63,7 +61,7 @@ class MainView(ViewImpl):
         settings.model = MainViewModel()
         super(MainView, self).__init__(settings)
         self.__blur = CachedBlur()
-        self.__initState = MainScreenState.PROGRESSION if state is None else (MainScreenState(state) if isinstance(state, str) else state)
+        self.__initState = MainScreenState.PROGRESSION if state is None else MainScreenState(state) if isinstance(state, str) else state
         self.__assemblingManager = assemblingManager
         self.__tooltipData = {}
         self.__quests = {}
@@ -135,31 +133,57 @@ class MainView(ViewImpl):
 
     def _getEvents(self):
         cameraEvents = self.__assemblingManager.getCameraEvents(self.viewModel)
-        viewEvents = [(self.viewModel.onBack, self.__onBack),
-         (self.viewModel.onSwitchOperation, self.__onSelectOperation),
-         (self.viewModel.showOperationVehicleVideo, self.__showOperationVehicleVideo),
-         (self.viewModel.showDetailVideo, self.__showDetailVideo),
-         (self.viewModel.onOperationStatusButtonClick, self.__onOperationStatusButtonClick),
-         (self.viewModel.onDetailInfo, self.__onDetailInfo),
-         (self.viewModel.onClaimDetail, self.__onClaimDetail),
-         (self.viewModel.onMission, self.__onMissionShow),
-         (self.viewModel.onAdditionalMission, self.__onAdditionalMissionShow),
-         (self.viewModel.onVehiclePreview, self.__onVehiclePreview),
-         (self.viewModel.setFreeCamera, self.__setFreeCamera),
-         (self.viewModel.updateAnimationState, self.__updateAnimationState),
-         (self.viewModel.showVehicleInHangar, self.__showVehicleInHangar),
-         (self.viewModel.missionsModel.changeCategory, self.__changeMissionsCategory),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (self.__settingsCore.onSettingsChanged, self.__onSettingsChanged),
-         (self.__eventsCache.onPMSyncCompleted, self.__onPmEventsSync),
-         (self.__eventsCache.onSyncCompleted, self.__onCommonSync),
-         (self.__itemsCache.onPMSyncCompleted, self.__onPmItemsSync),
-         (self.__itemsCache.onSyncCompleted, self.__onItemsSyncCompleted),
-         (self.__assemblingManager.onCameraFlightStarted, self.__onCameraFlightStarted),
-         (self.__assemblingManager.onCameraFlightFinished, self.__onCameraFlightFinished),
-         (self.__assemblingManager.onAssemblingVideoFinished, self.__onAssemblingVideoFinished),
-         (self.__assemblingManager.onAssemblingAnimationStarted, self.__onAssemblingAnimationStarted),
-         (self.__assemblingManager.onAssemblingAnimationFinished, self.__onAssemblingAnimationFinished)]
+        viewEvents = [
+         (
+          self.viewModel.onBack, self.__onBack),
+         (
+          self.viewModel.onSwitchOperation, self.__onSelectOperation),
+         (
+          self.viewModel.showOperationVehicleVideo, self.__showOperationVehicleVideo),
+         (
+          self.viewModel.showDetailVideo, self.__showDetailVideo),
+         (
+          self.viewModel.onOperationStatusButtonClick, self.__onOperationStatusButtonClick),
+         (
+          self.viewModel.onDetailInfo, self.__onDetailInfo),
+         (
+          self.viewModel.onClaimDetail, self.__onClaimDetail),
+         (
+          self.viewModel.onMission, self.__onMissionShow),
+         (
+          self.viewModel.onAdditionalMission, self.__onAdditionalMissionShow),
+         (
+          self.viewModel.onVehiclePreview, self.__onVehiclePreview),
+         (
+          self.viewModel.setFreeCamera, self.__setFreeCamera),
+         (
+          self.viewModel.updateAnimationState, self.__updateAnimationState),
+         (
+          self.viewModel.showVehicleInHangar, self.__showVehicleInHangar),
+         (
+          self.viewModel.missionsModel.changeCategory, self.__changeMissionsCategory),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          self.__settingsCore.onSettingsChanged, self.__onSettingsChanged),
+         (
+          self.__eventsCache.onPMSyncCompleted, self.__onPmEventsSync),
+         (
+          self.__eventsCache.onSyncCompleted, self.__onCommonSync),
+         (
+          self.__itemsCache.onPMSyncCompleted, self.__onPmItemsSync),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onItemsSyncCompleted),
+         (
+          self.__assemblingManager.onCameraFlightStarted, self.__onCameraFlightStarted),
+         (
+          self.__assemblingManager.onCameraFlightFinished, self.__onCameraFlightFinished),
+         (
+          self.__assemblingManager.onAssemblingVideoFinished, self.__onAssemblingVideoFinished),
+         (
+          self.__assemblingManager.onAssemblingAnimationStarted, self.__onAssemblingAnimationStarted),
+         (
+          self.__assemblingManager.onAssemblingAnimationFinished, self.__onAssemblingAnimationFinished)]
         return viewEvents + cameraEvents
 
     def _onLoading(self, *args, **kwargs):
@@ -182,7 +206,7 @@ class MainView(ViewImpl):
 
     def __onCommonSync(self, *_):
         self.__fillRewardTankModel(self.viewModel)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             for operationModel in tx.getOperations():
                 operation = self.__pm3Operations.get(operationModel.getOperationId())
                 self.__fillAdditionalMissionsModel(operationModel, operation)
@@ -198,7 +222,8 @@ class MainView(ViewImpl):
             self.__needQuestsUpdate = True
         pm3Quests = {}
         if diff:
-            pm3Quests = diff.get('potapovQuests', {}).get('pm3', {}).get(('selected', '_r'), set())
+            pm3Quests = diff.get('potapovQuests', {}).get('pm3', {}).get(('selected',
+                                                                          '_r'), set())
             if diff.get('pm3_progress', {}):
                 for questsID in diff.get('pm3_progress', {}):
                     pm3Quests.add(questsID)
@@ -224,7 +249,7 @@ class MainView(ViewImpl):
         if self.__operationsToUpdate[self.__operation.getID()]:
             self.__updateViewModel(operationToUpdate=self.__operation)
         else:
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 tx.setActiveOperationId(self.__operation.getID())
                 self.__fillRewardTankModel(tx)
                 self.__fillOperationStatusModel(tx)
@@ -233,7 +258,8 @@ class MainView(ViewImpl):
         ProgressionState.goTo(operationID=self.__operation.getID())
 
     def __onOperationStatusButtonClick(self):
-        if self.viewModel.status.getStatus().value in (OperationStatus.COMPLETED.value, OperationStatus.PAUSED.value, OperationStatus.AVAILABLE.value):
+        if self.viewModel.status.getStatus().value in (
+         OperationStatus.COMPLETED.value, OperationStatus.PAUSED.value, OperationStatus.AVAILABLE.value):
             if PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.PERSONAL_MISSION_3] not in self.__eventsCache.getPersonalMissions().getActiveCampaigns():
                 self.__switchCampaign()
             self.__processOperation(self.__operation.getBranch(), self.__operation.getID())
@@ -265,7 +291,7 @@ class MainView(ViewImpl):
             self.__settingsCore.serverSettings.setPM3VehDetailInstalled(stageNumber)
             self.__pushDetailMessage(detailName=detailName)
         operationModel = self.__getOperationFromModel(self.__operation.getID())
-        with operationModel.transaction() as tx:
+        with operationModel.transaction() as (tx):
             self.__fillDetails(tx, self.__operation)
 
     def __pushDetailMessage(self, detailName):
@@ -343,7 +369,7 @@ class MainView(ViewImpl):
         diff = diff or {}
         if DAILY_QUESTS_CONFIG in diff or Configs.WEEKLY_QUESTS_CONFIG in diff:
             operationModel = self.__getOperationFromModel(self.__operation.getID())
-            with operationModel.transaction() as tx:
+            with operationModel.transaction() as (tx):
                 self.__fillAdditionalMissionsModel(tx, self.__operation)
         if 'isPM3QuestEnabled' in diff and not diff['isPM3QuestEnabled'] or 'disabledPMOperations' in diff or 'disabledPersonalMissions' in diff:
             if not diff.get('isPM3QuestEnabled', True) or self.__operation.getID() in diff.get('disabledPMOperations', {}):
@@ -389,10 +415,9 @@ class MainView(ViewImpl):
                     self.__onAssemblingVideoFinished(MAX_DETAIL_ID)
                 self.__achievementsController.resume()
 
-            showPM30RewardsWindow(ctx={'questID': quest.getID(),
-             'rewards': {quest.getID(): quest.getBonuses()},
-             'type': REWARDS_VIEW_TYPES['operation'],
-             'closingCallback': onFinalRewardWindowClosed})
+            showPM30RewardsWindow(ctx={'questID': quest.getID(), 
+               'rewards': {quest.getID(): quest.getBonuses()}, 'type': REWARDS_VIEW_TYPES['operation'], 
+               'closingCallback': onFinalRewardWindowClosed})
             self.__settingsCore.serverSettings.setPM3VehDetailInstalled(MAX_DETAIL_ID)
             self.__pushDetailMessage(detailName=detailName)
             self.__setAllOperationsUpdateStatus(needUpdate=True)
@@ -407,18 +432,21 @@ class MainView(ViewImpl):
         return OrderedDict(sorted(self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).items()))
 
     def __getOperationFromModel(self, operationID):
-        return first([ operationModel for operationModel in self.viewModel.getOperations() if operationModel.getOperationId() == operationID ], None)
+        return first([ operationModel for operationModel in self.viewModel.getOperations() if operationModel.getOperationId() == operationID
+                     ], None)
 
     def __getOperationLastInstalledDetail(self, operation):
         if operation.isCompleted():
             return MAX_DETAIL_ID
-        return 0 if not operation.isStarted() else self.__lastInstalledDetail
+        if not operation.isStarted():
+            return 0
+        return self.__lastInstalledDetail
 
     def __updateViewModel(self, operationToUpdate=None):
         self.__pm3Operations = self.__getSortedPm3Operations()
         self.__operation = self.__pm3Operations.get(self.__operation.getID())
         self.__operationStatus = getOperationStatus(self.__operation, self.__pm3Operations)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setActiveOperationId(self.__operation.getID())
             tx.setCampaignName(self.__pm3Campaign.getUserName())
             self.__fillRewardTankModel(tx)
@@ -459,7 +487,13 @@ class MainView(ViewImpl):
     def __fillMainRewards(self, operationModel, operation):
         rewardsArray = operationModel.getRewards()
         rewardsArray.clear()
-        rewards = ((RewardsType.MAIN, operation.getPM3RewardQuest()), (RewardsType.OPERATION, operation.getPM3RewardHonorQuest()), (RewardsType.CAMPAIGN, self.__pm3Campaign.getPM3CampaignFinishedQuest()))
+        rewards = (
+         (
+          RewardsType.MAIN, operation.getPM3RewardQuest()),
+         (
+          RewardsType.OPERATION, operation.getPM3RewardHonorQuest()),
+         (
+          RewardsType.CAMPAIGN, self.__pm3Campaign.getPM3CampaignFinishedQuest()))
         for rewardType, quest in rewards:
             completedTasks, tasksNumber = getMainRewardInfo(operation, self.__pm3Operations, rewardType)
             if rewardType:
@@ -478,14 +512,14 @@ class MainView(ViewImpl):
     def __fillDetails(self, operationModel, operation):
         detailsArray = operationModel.getDetails()
         detailsArray.clear()
-        vehDetails = sorted(tuple(operation.getVehDetails().items()), key=lambda vehDetail: int(vehDetail[0].rsplit(':')[-1]))
+        vehDetails = sorted(tuple(operation.getVehDetails().items()), key=lambda vehDetail: int(vehDetail[0].rsplit(':')[(-1)]))
         for detailIndex in range(0, len(vehDetails)):
             if detailIndex == 0:
                 minDetailPoints = 0
                 maxDetailPoints = vehDetails[detailIndex][1]
             else:
-                minDetailPoints = vehDetails[detailIndex - 1][1]
-                maxDetailPoints = vehDetails[detailIndex][1] - vehDetails[detailIndex - 1][1]
+                minDetailPoints = vehDetails[(detailIndex - 1)][1]
+                maxDetailPoints = vehDetails[detailIndex][1] - vehDetails[(detailIndex - 1)][1]
             maxDetailPointRelativeProgression = vehDetails[detailIndex][1]
             isInstalled = isVehDetailInstalled(self.__lastInstalledDetail, vehDetails[detailIndex][0])
             detailModel = operationModel.getDetailsType()()
@@ -547,7 +581,7 @@ class MainView(ViewImpl):
         missionsArray.invalidate()
 
     def __updateAllMissions(self):
-        with self.viewModel.missionsModel.transaction() as tx:
+        with self.viewModel.missionsModel.transaction() as (tx):
             self.__quests = getQuestsByOperationsChains()
             allMissionsArray = tx.getAllMissions()
             allMissionsArray.clear()
@@ -583,15 +617,17 @@ class MainView(ViewImpl):
             newQuest = self.__eventsCache.getPersonalMissions().getQuestsForBranch(PM_BRANCH.PERSONAL_MISSION_3).get(missionIDToUpdate)
             questCategory = MISSIONS_ROLES_TO_CATEGORIES[newQuest.getQuestClassifier().classificationAttr].value
             self.__quests[newQuest.getOperationID()][questCategory][missionIDToUpdate] = newQuest
-            missionsByOperationModel = first([ model for model in self.viewModel.missionsModel.getAllMissions() if model.getOperationId() == newQuest.getOperationID() ])
-            missionsByChainModel = first([ model for model in missionsByOperationModel.getMissionsCategorizations() if model.getMissionsCategory().value == questCategory ])
+            missionsByOperationModel = first([ model for model in self.viewModel.missionsModel.getAllMissions() if model.getOperationId() == newQuest.getOperationID()
+                                             ])
+            missionsByChainModel = first([ model for model in missionsByOperationModel.getMissionsCategorizations() if model.getMissionsCategory().value == questCategory
+                                         ])
             chainQuests = self.__quests[newQuest.getOperationID()][questCategory].values()
             chainQuestsModels = missionsByChainModel.getMissions()
-            with chainQuestsModels.transaction() as tx:
+            with chainQuestsModels.transaction() as (tx):
                 for index, quest in enumerate(chainQuests):
                     if quest.getID() == missionIDToUpdate:
                         if not quest.isInitial():
-                            self.__fillMissionModel(tx[index - 1], chainQuests[index - 1], index, len(chainQuestsModels))
+                            self.__fillMissionModel(tx[(index - 1)], chainQuests[(index - 1)], index, len(chainQuestsModels))
                         self.__fillMissionModel(tx[index], quest, index + 1, len(chainQuestsModels))
 
     def __fillMissionModel(self, missionModel, mission, missionIndex, maxMissionNumber):
@@ -601,30 +637,31 @@ class MainView(ViewImpl):
         currentProgressValue = maxProgressValue if mission.isCompleted() else battlesUniqueVehiclesCount
         if mission.isDisabled():
             status = MissionStatus.DISABLED
-        elif mission.isCompleted():
-            status = MissionStatus.COMPLETED
-        elif mission.isInProgress():
-            status = MissionStatus.ACTIVE
         else:
-            status = MissionStatus.LOCKED
-        missionModel.setOperationId(mission.getOperationID())
-        missionModel.setCurrentMissionNumber(missionIndex)
-        missionModel.setMaxMissions(maxMissionNumber)
-        missionModel.setMissionStatus(status)
-        missionModel.setMissionCategory(MISSIONS_ROLES_TO_CATEGORIES[mission.getMajorTag()])
-        missionModel.setCurrentProgressValue(currentProgressValue)
-        missionModel.setMaxProgressValue(maxProgressValue)
-        missionModel.setAllQuestsRequired(questConfig.allQuestsRequired)
-        self.__fillRewards(missionModel.getRewards(), mission.getBonuses(), getBonusPacker())
-        questsArray = missionModel.getQuests()
-        questsArray.clear()
-        for questID, questDetails in questConfig.questsDetails.items():
-            questModel = missionModel.getQuestsType()()
-            questModel.setId(questID)
-            questModel.setQuestType(questDetails['icon'])
-            questModel.setSummary(questDetails['title'])
-            questModel.setQuestCondition(questDetails['description'])
-            questsArray.addViewModel(questModel)
+            if mission.isCompleted():
+                status = MissionStatus.COMPLETED
+            elif mission.isInProgress():
+                status = MissionStatus.ACTIVE
+            else:
+                status = MissionStatus.LOCKED
+            missionModel.setOperationId(mission.getOperationID())
+            missionModel.setCurrentMissionNumber(missionIndex)
+            missionModel.setMaxMissions(maxMissionNumber)
+            missionModel.setMissionStatus(status)
+            missionModel.setMissionCategory(MISSIONS_ROLES_TO_CATEGORIES[mission.getMajorTag()])
+            missionModel.setCurrentProgressValue(currentProgressValue)
+            missionModel.setMaxProgressValue(maxProgressValue)
+            missionModel.setAllQuestsRequired(questConfig.allQuestsRequired)
+            self.__fillRewards(missionModel.getRewards(), mission.getBonuses(), getBonusPacker())
+            questsArray = missionModel.getQuests()
+            questsArray.clear()
+            for questID, questDetails in questConfig.questsDetails.items():
+                questModel = missionModel.getQuestsType()()
+                questModel.setId(questID)
+                questModel.setQuestType(questDetails['icon'])
+                questModel.setSummary(questDetails['title'])
+                questModel.setQuestCondition(questDetails['description'])
+                questsArray.addViewModel(questModel)
 
         questsArray.invalidate()
 
@@ -648,22 +685,23 @@ class MainView(ViewImpl):
         status = DetailStatus.DEFAULT
         earnedPoints = 0
         if totalPoints >= maxDetailPoints or operation.isCompleted():
-            if detailIndex == MAX_DETAIL_ID - 1 and not self.__operation.getPM3RewardQuest().isCompleted():
+            if detailIndex == MAX_DETAIL_ID - 1 and not operation.getPM3RewardQuest().isCompleted():
                 status = DetailStatus.IN_PROGRESS
-            elif isInstalled or operation.isCompleted():
+            elif (isInstalled or operation.isCompleted()) and not (detailIndex == MAX_DETAIL_ID - 1 and not operation.isCompleted() and isInstalled):
                 status = DetailStatus.DONE
             else:
                 status = DetailStatus.NOT_RECEIVED
             earnedPoints = maxDetailPoints - minDetailPoints
-        elif totalPoints in range(minDetailPoints, maxDetailPoints):
+        elif minDetailPoints <= totalPoints < maxDetailPoints:
             status = DetailStatus.IN_PROGRESS
             earnedPoints = totalPoints - minDetailPoints
-        return (status, earnedPoints)
+        return (
+         status, earnedPoints)
 
     def __getDetailedOperationStatus(self):
         operations = self.__pm3Operations.values()
         notCurrentOperations = [ operation for operation in operations if operation.getID() != self.__operation.getID() ]
-        isAnotherOperationInProgress = any((operation.isInProgress() for operation in notCurrentOperations))
+        isAnotherOperationInProgress = any(operation.isInProgress() for operation in notCurrentOperations)
         nextNotStartedOperation = getNextNotStartedOperation(self.__operation, notCurrentOperations)
         unclaimedOperation = firstUnclaimedOperation(self.__operation, operations)
         state = OperationStatus.AVAILABLE
@@ -674,9 +712,9 @@ class MainView(ViewImpl):
         operationWasStarted = wasOperationActivatedBefore(self.__operation, unclaimedOperation)
         operationIsPaused = self.__operation.isPaused()
         operationIsInProgress = self.__operation.isInProgress()
-        isAnotherOperationActive = any((operation.isActive() for operation in notCurrentOperations))
+        isAnotherOperationActive = any(operation.isActive() for operation in notCurrentOperations)
         selectedQuests = self.__eventsCache.getPersonalMissions().getSelectedQuestsForBranch(self.__operation.getBranch()).values()
-        if all((operation.isFullCompleted() for operation in operations)):
+        if all(operation.isFullCompleted() for operation in operations):
             state = OperationStatus.CAMPAIGN_FINISHED
         elif unclaimedOperation is not None and unclaimedOperation.getID() < self.__operation.getID():
             state = OperationStatus.PRECEDING_OPERATION_NOT_COMPLETED

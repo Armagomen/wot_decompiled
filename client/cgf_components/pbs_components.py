@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/pbs_components.py
-import CGF
-import GenericComponents
+import CGF, GenericComponents
 from cgf_script.component_meta_class import registerComponent
 from cgf_script.managers_registrator import registerManager, onAddedQuery, registerRule, Rule
 
@@ -38,4 +35,4 @@ class PostBattleRule(Rule):
 
     @registerManager(PostBattleManager)
     def reg1(self):
-        return None
+        return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/tooltips/prestige_reward_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -22,7 +20,8 @@ class PrestigeRewardTooltipView(ViewImpl):
 
     def _onLoading(self, bonus, *args, **kwargs):
         super(PrestigeRewardTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             rewardArray = vm.getRewards()
             rewardArray.clear()
-            packBonusModelAndTooltipData([bonus], rewardArray, packer=getVehSkillTreeRewardTooltipViewBonusPacker())
+            packBonusModelAndTooltipData([
+             bonus], rewardArray, packer=getVehSkillTreeRewardTooltipViewBonusPacker())

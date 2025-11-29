@@ -1,12 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/avatars.py
 import typing
 from gui.battle_results.reusable import shared, ReusableInfoFactory
 from gui.doc_loaders.badges_loader import getSelectedByLayout
 from gui.shared.badges import buildBadge
 
 class AvatarInfo(shared.ItemInfo):
-    __slots__ = ('__totalDamaged', '__avatarKills', '__avatarDamaged', '__avatarDamageDealt', '__badge', '__suffixBadge', '__fairplayViolations', '__accRank', '__prevAccRank', '__extInfo', '__badgesInfo', '__weakref__')
+    __slots__ = ('__totalDamaged', '__avatarKills', '__avatarDamaged', '__avatarDamageDealt',
+                 '__badge', '__suffixBadge', '__fairplayViolations', '__accRank',
+                 '__prevAccRank', '__extInfo', '__badgesInfo', '__weakref__')
 
     def __init__(self, bonusType, totalDamaged=0, avatarKills=0, avatarDamaged=0, avatarDamageDealt=0, fairplayViolations=None, wasInBattle=True, accRank=None, prevAccRank=None, badges=(), **kwargs):
         super(AvatarInfo, self).__init__(wasInBattle=wasInBattle)
@@ -24,7 +24,7 @@ class AvatarInfo(shared.ItemInfo):
         else:
             self.__badge, self.__suffixBadge, self.__badgesInfo = (0, 0, None)
         self.__extInfo = kwargs
-        return None
+        return
 
     @property
     def totalDamaged(self):
@@ -47,7 +47,9 @@ class AvatarInfo(shared.ItemInfo):
 
     @property
     def accRank(self):
-        return self.__accRank[0] if self.__accRank else 0
+        if self.__accRank:
+            return self.__accRank[0]
+        return 0
 
     @property
     def extensionInfo(self):
@@ -55,7 +57,9 @@ class AvatarInfo(shared.ItemInfo):
 
     @property
     def prevAccRank(self):
-        return self.__prevAccRank[0] if self.__prevAccRank else 0
+        if self.__prevAccRank:
+            return self.__prevAccRank[0]
+        return 0
 
     @property
     def badge(self):

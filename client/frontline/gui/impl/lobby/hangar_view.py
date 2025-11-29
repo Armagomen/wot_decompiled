@@ -1,11 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/hangar_view.py
 import typing
+from account_helpers.AccountSettings import HANGAR_VIEW_SETTINGS, HANGAR_KEY_BINDINGS
 from frontline.gui.impl.lobby.presenters.alert_presenter import AlertPresenter
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.hangar.hangar_settings_model import HangarSettingsModel
+from gui.impl.gen.view_models.views.lobby.hangar.key_bindings_model import KeyBindingsModel
+from gui.impl.lobby.common.presenters.settings_presenter import SettingsPresenter
 from gui.impl.lobby.hangar.base.sound_constants import HangarSoundStates
 from gui.sounds.epic_sound_constants import EPIC_SOUND
 from helpers.statistics import HANGAR_LOADING_STATE
+from gui.impl.lobby.hangar.base.blur import RandomHangarBlur
 from shared_utils import nextTick
 from gui.impl.pub import WindowImpl
 from helpers import dependency
@@ -19,7 +22,7 @@ from gui.impl.gen.view_models.views.lobby.common.router_model import RouterModel
 from gui.shared.event_dispatcher import showLobbyMenu
 from gui.app_loader import app_getter
 from gui.impl.lobby.hangar.presenters.utils import getMenuItems
-from gui.impl.lobby.hangar.presenters.vehicles_info_presenter import VehiclesInfoPresenter
+from gui.impl.lobby.common.presenters.vehicles_info_presenter import VehiclesInfoPresenter
 from gui.impl.lobby.hangar.base.vehicles_filter_component import VehiclesFilterComponent
 from frontline.gui.impl.lobby.presenters.frontline_loadout_presenter import FrontlineLoadoutPresenter
 from frontline.gui.impl.lobby.presenters.fl_vehicle_inventory_presenter import FLVehicleInventoryPresenter
@@ -72,8 +75,8 @@ def _createFrontlineCriteria():
 
 
 class FrontlineHangar(ViewComponent[RouterModel], IRoutableView):
-    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=EPIC_SOUND.HANGAR, entranceStates={HangarSoundStates.PLACE.value: HangarSoundStates.PLACE_GARAGE.value,
-     EPIC_SOUND.GAMEMODE_GROUP: EPIC_SOUND.GAMEMODE_STATE}, exitStates={EPIC_SOUND.GAMEMODE_GROUP: EPIC_SOUND.GAMEMODE_DEFAULT}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='', exitEvent='')
+    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=EPIC_SOUND.HANGAR, entranceStates={HangarSoundStates.PLACE.value: HangarSoundStates.PLACE_GARAGE.value, 
+       EPIC_SOUND.GAMEMODE_GROUP: EPIC_SOUND.GAMEMODE_STATE}, exitStates={EPIC_SOUND.GAMEMODE_GROUP: EPIC_SOUND.GAMEMODE_DEFAULT}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='', exitEvent='')
 
     def __init__(self, layoutId=R.views.frontline.mono.lobby.hangar(), model=RouterModel):
         super(FrontlineHangar, self).__init__(layoutId, model)
@@ -85,10 +88,17 @@ class FrontlineHangar(ViewComponent[RouterModel], IRoutableView):
         self.__baseCriteria = _createFrontlineCriteria()
         self.__vehicleFilter = VehiclesFilterComponent(self.__baseCriteria)
         self.__invVehicleFilter = VehiclesFilterComponent(self.__baseCriteria | REQ_CRITERIA.INVENTORY)
+        self.__blur = RandomHangarBlur()
         return
 
+    @property
+    def blur(self):
+        return self.__blur
+
     def createToolTipContent(self, event, contentID):
-        return LevelReservesTooltip() if contentID == R.views.frontline.mono.lobby.tooltips.level_reserves_tooltip() else super(FrontlineHangar, self).createToolTipContent(event, contentID)
+        if contentID == R.views.frontline.mono.lobby.tooltips.level_reserves_tooltip():
+            return LevelReservesTooltip()
+        return super(FrontlineHangar, self).createToolTipContent(event, contentID)
 
     def getRouterModel(self):
         return self.getViewModel()
@@ -97,27 +107,30 @@ class FrontlineHangar(ViewComponent[RouterModel], IRoutableView):
         from frontline.gui.impl.lobby.presenters.user_missions_presenter import FrontlineUserMissionsPresenter
         hangar = R.aliases.hangar.shared
         frontlineHangar = R.aliases.frontline.shared
-        return {hangar.VehiclesInfo(): lambda : VehiclesInfoPresenter(self.__vehicleFilter),
-         hangar.VehiclesStatistics(): lambda : FLVehiclesStatisticsPresenter(self.__invVehicleFilter, self.__accountStyles),
-         hangar.Loadout(): FrontlineLoadoutPresenter,
-         hangar.Crew(): CrewPresenter,
-         hangar.VehicleParams(): HangarVehicleParamsPresenter,
-         hangar.VehiclesInventory(): lambda : FLVehicleInventoryPresenter(self.__invVehicleFilter),
-         hangar.VehicleFilters(): lambda : VehicleFiltersDataProvider(self.__carouselFilter),
-         hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()),
-         hangar.VehicleMenu(): VehicleMenuPresenter,
-         hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(HangarSelectableLogic()),
-         hangar.Teaser(): TeaserPresenter,
-         hangar.HeroTank(): HeroTankPresenter,
-         hangar.OptionalDevicesAssistant(): OptionalDevicesAssistantPresenter,
-         frontlineHangar.UserMissions(): FrontlineUserMissionsPresenter,
-         frontlineHangar.AlertMessage(): AlertPresenter}
+        return {hangar.VehiclesInfo(): lambda : VehiclesInfoPresenter(self.__vehicleFilter), 
+           hangar.VehiclesStatistics(): lambda : FLVehiclesStatisticsPresenter(self.__invVehicleFilter, self.__accountStyles), 
+           hangar.Loadout(): FrontlineLoadoutPresenter, 
+           hangar.Crew(): CrewPresenter, 
+           hangar.VehicleParams(): HangarVehicleParamsPresenter, 
+           hangar.VehiclesInventory(): lambda : FLVehicleInventoryPresenter(self.__invVehicleFilter), 
+           hangar.VehicleFilters(): lambda : VehicleFiltersDataProvider(self.__carouselFilter), 
+           hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()), 
+           hangar.VehicleMenu(): VehicleMenuPresenter, 
+           hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(HangarSelectableLogic()), 
+           hangar.Teaser(): TeaserPresenter, 
+           hangar.HeroTank(): HeroTankPresenter, 
+           hangar.OptionalDevicesAssistant(): OptionalDevicesAssistantPresenter, 
+           hangar.Settings(): lambda : SettingsPresenter(HangarSettingsModel, HANGAR_VIEW_SETTINGS), 
+           hangar.KeyBindings(): lambda : SettingsPresenter(KeyBindingsModel, HANGAR_KEY_BINDINGS, readOnly=True), 
+           frontlineHangar.UserMissions(): FrontlineUserMissionsPresenter, 
+           frontlineHangar.AlertMessage(): AlertPresenter}
 
     def _onLoading(self, *args, **kwargs):
         self.__inputManager = self.__app.gameInputManager
         self.__vehicleFilter.initialize()
         self.__invVehicleFilter.initialize()
         self.__accountStyles.initialize()
+        self.__blur.init()
         super(FrontlineHangar, self)._onLoading(*args, **kwargs)
 
     def _onShown(self):
@@ -157,11 +170,13 @@ class FrontlineHangar(ViewComponent[RouterModel], IRoutableView):
         self.__inputManager = None
         self.__accountStyles.destroy()
         self.__accountStyles = None
+        self.__blur.destroy()
+        self.__blur = None
         return
 
     @app_getter
     def __app(self):
-        return None
+        return
 
     def __escapeHandler(self):
         showLobbyMenu()

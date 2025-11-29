@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/components/books_list_component.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -19,22 +17,28 @@ class BooksListComponent(ComponentBase):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.crew.tooltips.QuickTrainingLostXpTooltip():
             return QuickTrainingLostXpTooltip()
-        return CrewBookMouseTooltip() if contentID == R.views.lobby.crew.tooltips.CrewBookMouseTooltip() else None
+        if contentID == R.views.lobby.crew.tooltips.CrewBookMouseTooltip():
+            return CrewBookMouseTooltip()
 
     def _getViewModel(self, vm):
         return vm.books
 
     def _getEvents(self):
-        return super(BooksListComponent, self)._getEvents() + ((self.viewModel.mouseEnter, self._onBookMouseEnter),
-         (self.viewModel.select, self._onBookSelected),
-         (self.viewModel.buy, self._onBuyBook),
-         (self.viewModel.openPostProgression, self.events.onPostProgressionOpen))
+        return super(BooksListComponent, self)._getEvents() + (
+         (
+          self.viewModel.mouseEnter, self._onBookMouseEnter),
+         (
+          self.viewModel.select, self._onBookSelected),
+         (
+          self.viewModel.buy, self._onBuyBook),
+         (
+          self.viewModel.openPostProgression, self.events.onPostProgressionOpen))
 
-    @jsonArgsConverter(('bookId',))
+    @jsonArgsConverter(('bookId', ))
     def _onBuyBook(self, bookId):
         self.events.onBuyBook(bookId)
 
-    @jsonArgsConverter(('intCD',))
+    @jsonArgsConverter(('intCD', ))
     def _onBookMouseEnter(self, intCD):
         self.events.onBookMouseEnter(intCD)
 
@@ -56,15 +60,11 @@ class BooksListComponent(ComponentBase):
         bookList.clear()
         for book in ctx.crewBooks:
             if book.isPersonal():
-                stateFlags = (cauUsePersonalBook,
-                 isPersonalBookDisabled,
-                 isPersonalBookDisabled,
-                 hasMaxedTankmen)
+                stateFlags = (
+                 cauUsePersonalBook, isPersonalBookDisabled, isPersonalBookDisabled, hasMaxedTankmen)
             else:
-                stateFlags = (cauUseCommonBook,
-                 isCommonBookDisabled,
-                 hasCommonBookError,
-                 hasMaxedTankmen)
+                stateFlags = (
+                 cauUseCommonBook, isCommonBookDisabled, hasCommonBookError, hasMaxedTankmen)
             bookList.addViewModel(self.__fillBookItemModel(book, rewardBook, hiddenItems, *stateFlags))
 
         bookList.invalidate()

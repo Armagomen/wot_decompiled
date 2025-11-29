@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_event_banner.py
 from account_helpers.AccountSettings import COMP7_BANNER_FIRST_APPEARANCE_TIMESTAMP
 from comp7_core.gui.impl.lobby.event_banner import Comp7CoreEventBanner
 from comp7.gui.impl.lobby.tooltips.entry_point_tooltip import Comp7EntryPointTooltip
@@ -35,7 +33,7 @@ class Comp7EventBanner(Comp7CoreEventBanner):
 
     @property
     def borderColor(self):
-        pass
+        return '#65DEFF'
 
     @staticmethod
     @dependency.replace_none_kwargs(modeCtrl=IComp7Controller)

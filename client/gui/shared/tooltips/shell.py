@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/shell.py
 from constants import DAMAGE_INTERPOLATION_DIST_LAST, DAMAGE_INTERPOLATION_DIST_FIRST
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -64,7 +62,8 @@ class ShellBlockToolTipData(BlocksTooltipData):
                 items.append(formatters.packBuildUpBlockData(compatibleBlocks, padding=formatters.packPadding(left=leftPadding, bottom=8)))
         if params.get('isBasic'):
             boldText = text_styles.stats(backport.text(R.strings.tooltips.shell.basic.description.bold()))
-            items.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.standard(backport.text(R.strings.tooltips.shell.basic.description(), bold=boldText)), padding=lrPaddings)], padding=formatters.packPadding(right=rightPadding)))
+            items.append(formatters.packBuildUpBlockData([
+             formatters.packTextBlockData(text_styles.standard(backport.text(R.strings.tooltips.shell.basic.description(), bold=boldText)), padding=lrPaddings)], padding=formatters.packPadding(right=rightPadding)))
         return items
 
 
@@ -92,7 +91,8 @@ class HeaderBlockConstructor(ShellTooltipBlockConstructor):
         shellKind = backport.text(R.strings.item_types.shell.kinds.dyn(shell.type)())
         headerText = formatters.packTitleDescBlock(title=text_styles.highTitle(shell.userName), desc=text_styles.concatStylesToMultiLine(text_styles.main(shellKind), params_formatters.formatParamNameColonValueUnits(paramName=paramName, paramValue=paramValue)), padding=formatters.packPadding(left=-15), descPadding=formatters.packPadding(top=4), gap=-4)
         headerImage = formatters.packImageBlockData(img=shell.getBonusIcon(size='big'), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(right=30, top=-5, bottom=-5))
-        return [headerText, headerImage]
+        return [
+         headerText, headerImage]
 
 
 class PriceBlockConstructor(ShellTooltipBlockConstructor):
@@ -139,7 +139,8 @@ class PriceBlockConstructor(ShellTooltipBlockConstructor):
             if inventoryCount:
                 block.append(formatters.packTitleDescParameterWithIconBlockData(title=text_styles.main(backport.text(R.strings.tooltips.vehicle.inventoryCount())), value=text_styles.stats(inventoryCount), icon=backport.image(R.images.gui.maps.icons.library.storage_icon()), padding=formatters.packPadding(left=66), titlePadding=formatters.packPadding(left=16), iconPadding=formatters.packPadding(top=-2, left=-2)))
             hasAction = shell.buyPrices.itemPrice.isActionPrice() or shell.sellPrices.itemPrice.isActionPrice()
-            return (block, notEnoughMoney or hasAction)
+            return (
+             block, notEnoughMoney or hasAction)
 
 
 class CommonStatsBlockConstructor(ShellTooltipBlockConstructor):
@@ -187,19 +188,19 @@ class CommonStatsBlockConstructor(ShellTooltipBlockConstructor):
                         maxDist = int(min(vehicle.descriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))
                         if tableData:
                             minDist = tableData[0][1]
-                            maxDist = tableData[-1][1]
+                            maxDist = tableData[(-1)][1]
                         footNotes.append(_ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=minDist, maxDist=maxDist))
                     if isPiercingPower and piercingPowerTable != NO_DATA:
                         if tableData:
-                            paramValue = '%s-%s' % (tableData[0][0], tableData[-1][0])
+                            paramValue = '%s-%s' % (tableData[0][0], tableData[(-1)][0])
                             paramUnits += _ASTERISK
-                            if not showDistanceAsterisk:
-                                footNotes.append(_ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=tableData[0][1], maxDist=tableData[-1][1]))
-                        else:
-                            asterisks = _ASTERISK if not showDistanceAsterisk else _ASTERISK * 2
+                            showDistanceAsterisk or footNotes.append(_ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=tableData[0][1], maxDist=tableData[(-1)][1]))
+                    else:
+                        if not showDistanceAsterisk:
+                            asterisks = _ASTERISK if 1 else _ASTERISK * 2
                             paramUnits += asterisks
                             footNotes.append(asterisks + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
-                    block.append(self._packParameterBlock(backport.text(R.strings.menu.moduleInfo.params.dyn(paramName)()), paramValue, paramUnits))
+                        block.append(self._packParameterBlock(backport.text(R.strings.menu.moduleInfo.params.dyn(paramName)()), paramValue, paramUnits))
 
             notePadding = formatters.packPadding(top=8)
             for title in footNotes:
@@ -217,10 +218,12 @@ class CommonStatsBlockConstructor(ShellTooltipBlockConstructor):
             extendedTable = comparator.getExtendedData('piercingPowerTable')
             for (distance, value), (_, valueState) in zip(extendedTable.value, extendedTable.state):
                 fmtValue = params_formatters.formatParameter('piercingPower', value, valueState, colorScheme)
-                yield (distance, fmtValue)
+                yield (
+                 distance, fmtValue)
 
         else:
             for distance, value in table:
-                yield (distance, params_formatters.formatParameter('piercingPower', value))
+                yield (
+                 distance, params_formatters.formatParameter('piercingPower', value))
 
         return

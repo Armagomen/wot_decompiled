@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/event_battles_controller.py
-import typing
-import Event
+import typing, Event
 from helpers import dependency, time_utils
 from skeletons.gui.game_control import IEventBattlesController
 from skeletons.gui.lobby_context import ILobbyContext
@@ -81,7 +78,9 @@ class EventBattlesController(IEventBattlesController, Notifiable, SeasonProvider
 
     def __getTimer(self):
         _, timeLeft, _ = self.getPrimeTimeStatus()
-        return timeLeft + 1 if timeLeft > 0 else time_utils.ONE_MINUTE
+        if timeLeft > 0:
+            return timeLeft + 1
+        return time_utils.ONE_MINUTE
 
     def __resetTimer(self):
         self.startNotification()

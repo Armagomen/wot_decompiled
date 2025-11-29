@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tooltips/additional_rewards_tooltip.py
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.impl.gen import R
@@ -22,7 +20,7 @@ class AdditionalRewardsTooltip(ViewImpl):
 
     def _onLoading(self, packedBonuses, *args, **kwargs):
         super(AdditionalRewardsTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setHeaderText(self._getHeader())
             model.setHeaderCount(self._getHeaderCount())
             model.setDescription(R.invalid())
@@ -35,4 +33,4 @@ class AdditionalRewardsTooltip(ViewImpl):
 
     @classmethod
     def _getHeaderCount(cls):
-        pass
+        return 0

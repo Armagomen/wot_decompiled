@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/views/info_view_model.py
 from frameworks.wulf import Array, ViewModel
 from frontline.gui.impl.gen.view_models.views.lobby.views.rank_item_model import RankItemModel
 from frontline.gui.impl.gen.view_models.views.lobby.views.skill_category_base_model import SkillCategoryBaseModel
 
 class InfoViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=8, commands=1):
         super(InfoViewModel, self).__init__(properties=properties, commands=commands)

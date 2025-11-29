@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/remapping/remapping_readers.py
 from typing import List, Dict, FrozenSet, TYPE_CHECKING
 from battle_modifiers_ext.constants_ext import RemappingConditionNames, ModifiersWithRemapping
 from remapping_composers import getComposerClass
@@ -15,10 +13,10 @@ def readComposers(config, remappingName, availableConditions):
     composers = {}
     for composerName, section in config.items():
         if composerName not in ModifiersWithRemapping.ALL:
-            raise SoftException(ERR_TEMPLATE.format("Invalid composer name '{}'".format(composerName), remappingName))
+            raise SoftException(ERR_TEMPLATE.format(("Invalid composer name '{}'").format(composerName), remappingName))
         composerClass = getComposerClass(remappingName, composerName)
         if composerClass is None:
-            raise SoftException(ERR_TEMPLATE.format("Invalid composer class for composer '{}'".format(composerName), remappingName))
+            raise SoftException(ERR_TEMPLATE.format(("Invalid composer class for composer '{}'").format(composerName), remappingName))
         conditions, template = {}, ''
         if section.has_key('conditions'):
             conditions = _readComposerConditions(section, remappingName, composerName, availableConditions)
@@ -27,7 +25,7 @@ def readComposers(config, remappingName, availableConditions):
         if section.has_key('specialRules'):
             specialRules = _readRemappingRules(section, remappingName, composerName, 'specialRules')
         if not conditions and not specialRules:
-            raise SoftException(ERR_TEMPLATE.format("Missing conditions and special rules for '{}' composer ".format(composerName), remappingName))
+            raise SoftException(ERR_TEMPLATE.format(("Missing conditions and special rules for '{}' composer ").format(composerName), remappingName))
         composers[composerName] = composerClass(conditions, template, specialRules)
 
     return composers
@@ -40,10 +38,10 @@ def readConditions(config, remappingName):
             raise SoftException(ERR_TEMPLATE.format('Missing condition name section', remappingName))
         conditionName = conditionSection['conditionName'].asString
         if conditionName not in RemappingConditionNames.ALL:
-            raise SoftException(ERR_TEMPLATE.format("Invalid condition name '{}'".format(conditionName)), remappingName)
+            raise SoftException(ERR_TEMPLATE.format(("Invalid condition name '{}'").format(conditionName)), remappingName)
         conditionClass = getConditionClass(conditionName)
         if conditionClass is None:
-            raise SoftException(ERR_TEMPLATE.format("Unsupported condition class for '{}'".format(conditionName)), remappingName)
+            raise SoftException(ERR_TEMPLATE.format(("Unsupported condition class for '{}'").format(conditionName)), remappingName)
         regularRules = {}
         if conditionSection.has_key('remappings'):
             regularRules = _readRemappingRules(conditionSection, remappingName, conditionName, 'remappings')
@@ -57,7 +55,7 @@ def _readComposerConditions(config, remappingName, composerName, availableCondit
     conditionNames = config['conditions'].asString.split()
     for conditionName in conditionNames:
         if conditionName not in availableConditions:
-            raise SoftException(ERR_TEMPLATE.format("Invalid condition '{}' for composer '{}'".format(conditionName, composerName), remappingName))
+            raise SoftException(ERR_TEMPLATE.format(("Invalid condition '{}' for composer '{}'").format(conditionName, composerName), remappingName))
         conditions.append(availableConditions[conditionName])
 
     return conditions
@@ -66,7 +64,7 @@ def _readComposerConditions(config, remappingName, composerName, availableCondit
 def _readComposerTemplate(config, remappingName, composerName):
     template = config['targetTemplate'].asString
     if not template:
-        raise SoftException(ERR_TEMPLATE.format("Empty target template section for '{}' composer ".format(composerName), remappingName))
+        raise SoftException(ERR_TEMPLATE.format(("Empty target template section for '{}' composer ").format(composerName), remappingName))
     return template
 
 
@@ -82,17 +80,17 @@ def _readRemappingRules(config, remappingName, conditionName, sectionName):
 
 def _readRemappingSource(config, remappingName, conditionName):
     if not config.has_key('source'):
-        raise SoftException(ERR_TEMPLATE.format("Missing source section for '{}' condition ".format(conditionName), remappingName))
+        raise SoftException(ERR_TEMPLATE.format(("Missing source section for '{}' condition ").format(conditionName), remappingName))
     source = config['source'].asString.split()
     if not source:
-        raise SoftException(ERR_TEMPLATE.format("Empty source section for '{}' condition ".format(conditionName), remappingName))
+        raise SoftException(ERR_TEMPLATE.format(("Empty source section for '{}' condition ").format(conditionName), remappingName))
     return source
 
 
 def _readRemappingTarget(config, remappingName, conditionName):
     if not config.has_key('target'):
-        raise SoftException(ERR_TEMPLATE.format("Missing target section for '{}' condition ".format(conditionName), remappingName))
+        raise SoftException(ERR_TEMPLATE.format(("Missing target section for '{}' condition ").format(conditionName), remappingName))
     target = config['target'].asString
     if not target:
-        raise SoftException(ERR_TEMPLATE.format("Empty target section for '{}' condition ".format(conditionName), remappingName))
+        raise SoftException(ERR_TEMPLATE.format(("Empty target section for '{}' condition ").format(conditionName), remappingName))
     return target

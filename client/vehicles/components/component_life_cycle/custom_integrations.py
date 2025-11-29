@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/component_life_cycle/custom_integrations.py
-import typing
-import logging
+import typing, logging
 from events_handler import eventHandler
 from vehicles.components.component_events import ComponentListener
 from vehicles.components.component_life_cycle.life_cycle_interfaces import IComponentLifeCycleListenerLogic

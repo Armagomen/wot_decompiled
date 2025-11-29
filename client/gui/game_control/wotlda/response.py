@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/wotlda/response.py
 import httplib
 from typing import Dict, Optional, TYPE_CHECKING
 from gui.game_control.wotlda.constants import LAST_UPDATE_TIMESTAMP, SupportedWotldaLoadoutType
@@ -14,19 +12,27 @@ class WotldaResponse(object):
         return
 
     def getData(self):
-        return self._response.getData() if self.isSuccess() else {}
+        if self.isSuccess():
+            return self._response.getData()
+        return {}
 
     def setException(self, exception):
         self._exception = exception
 
     def isSuccess(self):
-        return self._response.getExtraCode() == httplib.OK if self._response else False
+        if self._response:
+            return self._response.getExtraCode() == httplib.OK
+        return False
 
     def isNotModified(self):
-        return self._response.getExtraCode() == httplib.NOT_MODIFIED if self._response else False
+        if self._response:
+            return self._response.getExtraCode() == httplib.NOT_MODIFIED
+        return False
 
     def isServiceUnavailable(self):
-        return self._response.getExtraCode() == httplib.SERVICE_UNAVAILABLE if self._response else True
+        if self._response:
+            return self._response.getExtraCode() == httplib.SERVICE_UNAVAILABLE
+        return True
 
     def hasRequestFailed(self):
         return self._exception or not self.isSuccess() and not self.isNotModified()

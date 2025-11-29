@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/ranked_efficiency_tooltip.py
-import typing
-import BigWorld
+import typing, BigWorld
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.dog_tags.ranked_efficiency_tooltip_model import RankedEfficiencyTooltipModel
@@ -33,7 +30,7 @@ class RankedEfficiencyTooltip(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(RankedEfficiencyTooltip, self)._onLoading(*args, **kwargs)
         if self.__rankedController.hasAnySeason():
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 items = model.getItems()
                 self.__addPassedSeasons(items)
                 self.__addCurrentSeason(items)
@@ -78,7 +75,10 @@ class RankedEfficiencyTooltip(ViewImpl):
 
     def __checkInLeague(self, seasonID):
         tokens = self.__itemsCache.items.tokens.getTokens()
-        leagueTokenPatterns = (SeasonResultTokenPatterns.RANKED_OFF_GOLD_LEAGUE_TOKEN, SeasonResultTokenPatterns.RANKED_OFF_SILVER_LEAGUE_TOKEN, SeasonResultTokenPatterns.RANKED_OFF_BRONZE_LEAGUE_TOKEN)
+        leagueTokenPatterns = (
+         SeasonResultTokenPatterns.RANKED_OFF_GOLD_LEAGUE_TOKEN,
+         SeasonResultTokenPatterns.RANKED_OFF_SILVER_LEAGUE_TOKEN,
+         SeasonResultTokenPatterns.RANKED_OFF_BRONZE_LEAGUE_TOKEN)
         for pattern in leagueTokenPatterns:
             token = tokens.get(pattern.format(seasonID))
             if token:
@@ -93,7 +93,10 @@ class RankedEfficiencyTooltip(ViewImpl):
         seasonKey = RankedDossierKeys.SEASON % seasonNumber
         stats = accountDossier.getSeasonRankedStats(seasonKey, seasonID)
         stepsEfficiency = stats.getStepsEfficiency()
-        return round(stepsEfficiency * 100, EFFICIENCY_DIGITS) if stepsEfficiency is not None else 0
+        if stepsEfficiency is not None:
+            return round(stepsEfficiency * 100, EFFICIENCY_DIGITS)
+        else:
+            return 0
 
     def __getSeasonModel(self, efficiency, state, efficiencyState=RankedSeasonEfficiencyModel.EFFICIENCY_OUT_OF_LEAGUE):
         model = RankedSeasonEfficiencyModel()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/__init__.py
 import weakref
 from helpers.ro_property import ROPropertyMeta
 from messenger.m_constants import PROTO_TYPE, PROTO_TYPE_NAMES
@@ -13,21 +11,21 @@ from messenger.proto.migration.MigrationServerSettings import MigrationServerSet
 from messenger.proto.xmpp import XmppPlugin, XmppServerSettings
 from messenger.proto.xmpp.xmpp_constants import XMPP_MUC_CHANNEL_TYPE
 __all__ = ('BWProtoPlugin', 'BWProtoPlugin_chat2', 'XmppPlugin', 'MigrationPlugin')
-_SUPPORTED_PROTO_PLUGINS = {PROTO_TYPE.BW: BWProtoPlugin(),
- PROTO_TYPE.BW_CHAT2: BWProtoPlugin_chat2(),
- PROTO_TYPE.XMPP: XmppPlugin()}
+_SUPPORTED_PROTO_PLUGINS = {PROTO_TYPE.BW: BWProtoPlugin(), 
+   PROTO_TYPE.BW_CHAT2: BWProtoPlugin_chat2(), 
+   PROTO_TYPE.XMPP: XmppPlugin()}
 _SUPPORTED_PROTO_PLUGINS[PROTO_TYPE.MIGRATION] = MigrationPlugin(_SUPPORTED_PROTO_PLUGINS)
-_SUPPORTED_PROTO_SETTINGS = {PROTO_TYPE.BW: BWServerSettings(),
- PROTO_TYPE.BW_CHAT2: BWServerSettings_chat2(),
- PROTO_TYPE.XMPP: XmppServerSettings(),
- PROTO_TYPE.MIGRATION: MigrationServerSettings()}
+_SUPPORTED_PROTO_SETTINGS = {PROTO_TYPE.BW: BWServerSettings(), 
+   PROTO_TYPE.BW_CHAT2: BWServerSettings_chat2(), 
+   PROTO_TYPE.XMPP: XmppServerSettings(), 
+   PROTO_TYPE.MIGRATION: MigrationServerSettings()}
 
 class ProtoPluginsDecorator(IProtoPlugin):
     __metaclass__ = ROPropertyMeta
     __readonly__ = {PROTO_TYPE_NAMES[k]:v for k, v in _SUPPORTED_PROTO_PLUGINS.iteritems()}
 
     def __repr__(self):
-        return 'ProtoPluginsDecorator(id=0x{0:08X}, ro={1!r:s})'.format(id(self), self.__readonly__.keys())
+        return ('ProtoPluginsDecorator(id=0x{0:08X}, ro={1!r:s})').format(id(self), self.__readonly__.keys())
 
     def connect(self, scope):
         self._invoke('connect', scope)
@@ -64,7 +62,7 @@ class ServerSettings(object):
     __readonly__ = {PROTO_TYPE_NAMES[k]:v for k, v in _SUPPORTED_PROTO_SETTINGS.iteritems()}
 
     def __repr__(self):
-        return 'ServerSettings(id=0x{0:08X}, ro={1!r:s})'.format(id(self), self.__readonly__.keys())
+        return ('ServerSettings(id=0x{0:08X}, ro={1!r:s})').format(id(self), self.__readonly__.keys())
 
     def update(self, data):
         for settings in self.__readonly__.itervalues():
@@ -91,7 +89,10 @@ class ServerSettings(object):
         return result
 
     def getSystemChannels(self, protoType):
-        return self._getSystemChannels() if protoType is PROTO_TYPE.XMPP else None
+        if protoType is PROTO_TYPE.XMPP:
+            return self._getSystemChannels()
+        else:
+            return
 
     def isXmppClansEnabled(self):
         return self._isXmppMucChannelEnabled(XMPP_MUC_CHANNEL_TYPE.CLANS)

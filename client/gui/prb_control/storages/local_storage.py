@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/storages/local_storage.py
 from constants import ARENA_GUI_TYPE, QUEUE_TYPE
 from gui.battle_control.arena_visitor import createByAvatar
 from gui.shared.system_factory import collectCanSelectPrbEntity
@@ -33,7 +31,7 @@ class LocalStorage(object):
 
 
 class SessionStorage(LocalStorage):
-    __slots__ = ('_isSelected',)
+    __slots__ = ('_isSelected', )
     _GUI_TYPE = ARENA_GUI_TYPE.UNKNOWN
 
     def __init__(self):
@@ -61,7 +59,7 @@ class SessionStorage(LocalStorage):
 
 
 class RecentPrbStorage(LocalStorage):
-    __slots__ = ('_queueType',)
+    __slots__ = ('_queueType', )
 
     def __init__(self):
         super(RecentPrbStorage, self).__init__()

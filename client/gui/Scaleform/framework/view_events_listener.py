@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/view_events_listener.py
 from debug_utils import LOG_UNEXPECTED
 from gui.shared import EVENT_BUS_SCOPE
 from gui.shared.events import ViewEventType
@@ -33,12 +31,12 @@ def _loadViewsChainEventHandler(app, e):
     app.containerManager.loadChain(items)
 
 
-_EVENT_HANDLERS = {ViewEventType.LOAD_VIEW: _loadViewEventHandler,
- ViewEventType.LOAD_GUI_IMPL_VIEW: _loadGuiImplViewEventHandler,
- ViewEventType.PRELOAD_VIEW: _preLoadViewEventHandler,
- ViewEventType.DESTROY_VIEW: _destroyViewEventHandler,
- ViewEventType.DESTROY_GUI_IMPL_VIEW: _destroyGuiImplViewEventHandler,
- ViewEventType.LOAD_VIEWS_CHAIN: _loadViewsChainEventHandler}
+_EVENT_HANDLERS = {ViewEventType.LOAD_VIEW: _loadViewEventHandler, 
+   ViewEventType.LOAD_GUI_IMPL_VIEW: _loadGuiImplViewEventHandler, 
+   ViewEventType.PRELOAD_VIEW: _preLoadViewEventHandler, 
+   ViewEventType.DESTROY_VIEW: _destroyViewEventHandler, 
+   ViewEventType.DESTROY_GUI_IMPL_VIEW: _destroyGuiImplViewEventHandler, 
+   ViewEventType.LOAD_VIEWS_CHAIN: _loadViewsChainEventHandler}
 
 class ViewEventsListener(EventSystemEntity):
 

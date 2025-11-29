@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/meta_view_helper.py
-import logging
-import typing
+import logging, typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Division, Rank
 from comp7.gui.impl.gen.view_models.views.lobby.progression_division import ProgressionDivision, State
 from comp7.gui.impl.lobby.comp7_helpers import comp7_shared
@@ -29,7 +26,7 @@ def setProgressionItemData(itemModel, parentModel, rankIdx, ranksConfig):
 
 def setRankData(itemModel, rank, ranksConfig):
     sortedDivisions = getRankDivisions(rank, ranksConfig)
-    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[-1].range.end)
+    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[(-1)].range.end)
     itemModel.setRank(comp7_shared.getRankById(rank))
     itemModel.setFrom(rankLimits.begin)
     itemModel.setTo(rankLimits.end + 1)
@@ -38,7 +35,7 @@ def setRankData(itemModel, rank, ranksConfig):
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
 def setCurrentProgressionIdx(model, rank, ranksConfig, comp7Controller=None):
     sortedDivisions = getRankDivisions(rank, ranksConfig)
-    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[-1].range.end)
+    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[(-1)].range.end)
     isRankElite = rank == _getEliteRank()
     if not isRankElite or comp7Controller.isElite:
         if comp7Controller.rating in rankLimits:
@@ -83,5 +80,5 @@ def getDivisionState(division, comp7Controller=None):
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
 def _getEliteRank(comp7Controller=None):
     ranksConfig = comp7Controller.getRanksConfig()
-    eliteRank = ranksConfig.ranksOrder[-1]
+    eliteRank = ranksConfig.ranksOrder[(-1)]
     return eliteRank

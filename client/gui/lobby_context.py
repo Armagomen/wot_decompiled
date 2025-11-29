@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_context.py
 from helpers.server_settings import ServerSettings
 import BigWorld
 from Event import Event, EventManager
 from account_helpers import isRoamingEnabled
 from adisp import adisp_async, adisp_process
-from constants import CURRENT_REALM
+from constants import CURRENT_REALM, MISC_GUI_SETTINGS
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.lobby_ctx_listener import LobbyContextChangeListener
 from helpers import dependency
@@ -14,6 +12,7 @@ from predefined_hosts import g_preDefinedHosts
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from Sound import setSpatialAudioEnabled
 
 class LobbyContext(ILobbyContext):
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -68,6 +67,8 @@ class LobbyContext(ILobbyContext):
             if cArenaID == clientArenaID:
                 return arenaUniqueID
 
+        return 0
+
     def getClientIDByArenaUniqueID(self, arenaUniqueID):
         if arenaUniqueID in self.__arenaUniqueIDs:
             return self.__arenaUniqueIDs[arenaUniqueID]
@@ -76,7 +77,8 @@ class LobbyContext(ILobbyContext):
         return clientID
 
     def setCredentials(self, login, token):
-        self.__credentials = (login, token)
+        self.__credentials = (
+         login, token)
 
     def getCredentials(self):
         return self.__credentials
@@ -128,11 +130,11 @@ class LobbyContext(ILobbyContext):
         if clanInfo and len(clanInfo) > 1:
             clanAbbrev = clanInfo[1]
         if clanAbbrev:
-            fullName = '{0:>s} [{1:>s}]'.format(pName, clanAbbrev)
+            fullName = ('{0:>s} [{1:>s}]').format(pName, clanAbbrev)
         if pDBID is not None:
             regionCode = self.getRegionCode(pDBID)
         if regionCode:
-            fullName = '{0:>s} {1:>s}'.format(fullName, regionCode)
+            fullName = ('{0:>s} {1:>s}').format(fullName, regionCode)
         return fullName
 
     def getClanAbbrev(self, clanInfo):
@@ -241,3 +243,14 @@ class LobbyContext(ILobbyContext):
     def __notifyToUpdate(self, diff, itemsCache=None):
         if 'lootBoxes_config' in diff:
             itemsCache.items.tokens.updateAllLootBoxes(diff['lootBoxes_config'])
+        if MISC_GUI_SETTINGS in diff:
+            _switchAudioState(diff[MISC_GUI_SETTINGS])
+
+
+def _switchAudioState(miscGuiSettings):
+    if 'soundSettings' not in miscGuiSettings:
+        return
+    soundSettings = miscGuiSettings['soundSettings']
+    if 'physicsSoundEnabled' not in soundSettings:
+        return
+    setSpatialAudioEnabled(soundSettings['physicsSoundEnabled'])

@@ -1,27 +1,24 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/backport/backport_r.py
-import typing
-import logging
+import typing, logging
 from frameworks import wulf
 _logger = logging.getLogger(__name__)
 
 def text(resId, *args, **kwargs):
     if resId <= 0:
         _logger.warning('Invalid resId')
-        return u''
+        return ''
     if args:
         try:
             return wulf.getTranslatedTextByResId(resId, args)
         except (TypeError, ValueError):
             _logger.warning("Arguments do not match string with resId '%r': %r", resId, args)
-            return u''
+            return ''
 
     elif kwargs:
         try:
             return wulf.getTranslatedTextByResId(resId, kwargs)
         except (TypeError, ValueError):
             _logger.warning("Arguments do not match string with resId '%r': %r", resId, kwargs)
-            return u''
+            return ''
 
     return wulf.getTranslatedTextByResId(resId)
 
@@ -29,20 +26,20 @@ def text(resId, *args, **kwargs):
 def ntext(resId, n, *args, **kwargs):
     if resId <= 0:
         _logger.warning('Invalid resId')
-        return u''
+        return ''
     if args:
         try:
             return wulf.getTranslatedPluralTextByResId(resId, n, args)
         except (TypeError, ValueError):
             _logger.warning("Arguments do not match string with resId '%r': %r", resId, args)
-            return u''
+            return ''
 
     elif kwargs:
         try:
             return wulf.getTranslatedPluralTextByResId(resId, n, kwargs)
         except (TypeError, ValueError):
             _logger.warning("Arguments do not match string with resId '%r': %r", resId, kwargs)
-            return u''
+            return ''
 
     return wulf.getTranslatedPluralTextByResId(resId, n)
 

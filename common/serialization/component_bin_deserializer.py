@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/serialization/component_bin_deserializer.py
 from cStringIO import StringIO
 from typing import Dict, Type
 import varint
@@ -7,7 +5,7 @@ from constants import IS_EDITOR
 from serialization.definitions import FieldFlags, FieldTypes
 from serialization.exceptions import SerializationException, FoundItemException
 from serialization.serializable_component import SerializableComponent
-__all__ = ('ComponentBinDeserializer',)
+__all__ = ('ComponentBinDeserializer', )
 
 class ComponentBinDeserializer(object):
 
@@ -88,7 +86,7 @@ class ComponentBinDeserializer(object):
             if path and path[1] is None and path[0] == k and wanted in array:
                 raise FoundItemException()
             return array
-        elif itemType >= FieldTypes.CUSTOM_TYPE_OFFSET:
+        if itemType >= FieldTypes.CUSTOM_TYPE_OFFSET:
             customType = itemType / FieldTypes.CUSTOM_TYPE_OFFSET
             return [ self.__decodeCustomType(customType, next, wanted) for _ in xrange(n) ]
         else:

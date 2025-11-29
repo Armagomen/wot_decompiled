@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/congrats/congrats_ctx.py
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.Scaleform.locale.RES_SHOP import RES_SHOP
 from gui.impl import backport
@@ -19,7 +17,7 @@ class CongratsCtx(ICongratsCtx):
 
     @property
     def description(self):
-        pass
+        return ''
 
     @property
     def image(self):
@@ -59,4 +57,6 @@ class StyleCongratsCtx(GUIItemCongratsCtx):
     @property
     def image(self):
         size = STORE_CONSTANTS.ICON_SIZE_LARGE
-        return RES_SHOP.getStyleIcon(size, self._item.id) if RES_SHOP.hasStyleIcon(size, self._item.id) else self._item.icon
+        if RES_SHOP.hasStyleIcon(size, self._item.id):
+            return RES_SHOP.getStyleIcon(size, self._item.id)
+        return self._item.icon

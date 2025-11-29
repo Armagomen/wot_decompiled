@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/Goodies.py
 import collections
 from typing import TYPE_CHECKING
 from WeakMethod import WeakMethod
@@ -17,8 +15,8 @@ if TYPE_CHECKING:
     from typing import Type, Dict, Optional, Callable, Union, Tuple, Set, Iterator, List
     from goodies.Goodie import Goodie
     from goodies.GoodieDefinition import GoodieDefinition
-    UpdateCallback = Callable[[Goodie, int, int], None]
-    RemoveCallback = Callable[[int, int, int], None]
+    UpdateCallback = Callable[([Goodie, int, int], None)]
+    RemoveCallback = Callable[([int, int, int], None)]
 
 class GoodieException(SoftException):
     pass
@@ -68,7 +66,9 @@ class _ActualGoodiesDict(collections.MutableMapping, dict):
             return
         else:
             defined = self._definedGoodiesDict.get(goodieID, None)
-            return None if defined is None else (defined.resource, defined.value)
+            if defined is None:
+                return
+            return (defined.resource, defined.value)
 
     def checkResource(self, goodieID):
         resourceTuple = self.__getResource(goodieID)
@@ -77,7 +77,9 @@ class _ActualGoodiesDict(collections.MutableMapping, dict):
         else:
             resource, value = resourceTuple
             anotherGoodieID = self._resourceIndexDict.get(resource)
-            return anotherGoodieID if anotherGoodieID is not None else None
+            if anotherGoodieID is not None:
+                return anotherGoodieID
+            return
 
     def compareByResource(self, goodieID, anotherGoodieID):
         resourceTuple = self.__getResource(goodieID)
@@ -89,7 +91,9 @@ class _ActualGoodiesDict(collections.MutableMapping, dict):
         if anotherResource != resource:
             return False
         else:
-            return True if anotherValue > value else False
+            if anotherValue > value:
+                return True
+            return False
 
 
 class Goodies(object):
@@ -132,7 +136,7 @@ class Goodies(object):
             return
 
     def __expire(self, goodieID):
-        LOG_DEBUG_DEV('[GOODIE] __expire goodie {} '.format(goodieID))
+        LOG_DEBUG_DEV(('[GOODIE] __expire goodie {} ').format(goodieID))
         goodieDefinition = self.definedGoodies.get(goodieID, None)
         if goodieDefinition is None:
             return
@@ -158,7 +162,7 @@ class Goodies(object):
             return
 
     def __erase(self, goodieID, reasonID):
-        LOG_DEBUG_DEV('[GOODIE] __erase goodie {}, reason id {} '.format(goodieID, reasonID))
+        LOG_DEBUG_DEV(('[GOODIE] __erase goodie {}, reason id {} ').format(goodieID, reasonID))
         goodie = self.actualGoodies.get(goodieID, None)
         if goodie is None:
             return
@@ -182,7 +186,7 @@ class Goodies(object):
             return
 
     def __decrement(self, goodieID, amount, reasonID, skipActive):
-        LOG_DEBUG_DEV('[GOODIE] __decrement goodie {}, amount {}, reason id {} '.format(goodieID, amount, reasonID))
+        LOG_DEBUG_DEV(('[GOODIE] __decrement goodie {}, amount {}, reason id {} ').format(goodieID, amount, reasonID))
         goodieDefinition = self.definedGoodies.get(goodieID, None)
         if goodieDefinition is None:
             return
@@ -208,7 +212,8 @@ class Goodies(object):
 
     def __show(self, target, resources, returnDeltas, applyToZero):
         if not isinstance(resources, set):
-            resources = {resources}
+            resources = {
+             resources}
         toUpdate = {}
         for resource in resources:
             bestGoodieDef, bestDeltaValue = self.__getBestAvailableGoodie(target, resource, applyToZero)
@@ -237,7 +242,8 @@ class Goodies(object):
                 if delta is not None and (bestGoodieDef is None or bestDelta.value < delta.value):
                     bestGoodieDef, bestDelta = goodieDefinition, delta
 
-        return (bestGoodieDef, bestDelta)
+        return (
+         bestGoodieDef, bestDelta)
 
     def getFirstGoodie(self, target, resource):
         for goodie in self.actualGoodies.itervalues():
@@ -245,7 +251,7 @@ class Goodies(object):
             if goodieDefinition.target == target and goodieDefinition.resource == resource:
                 return goodie
 
-        return None
+        return
 
     def isGoodieEnabled(self, target, resource):
         for goodieDefinition in self.definedGoodies.itervalues():
@@ -342,23 +348,23 @@ class Goodies(object):
         if goodie is None:
             LOG_WARNING("Couldn't find goodie by id={}", goodieID)
             return
-        elif goodie.isActive():
-            LOG_WARNING("Couldn't activate goodie(id={}) because it is already activated!".format(goodieID))
-            return
         else:
+            if goodie.isActive():
+                LOG_WARNING(("Couldn't activate goodie(id={}) because it is already activated!").format(goodieID))
+                return
             defined = self.definedGoodies[goodieID]
             if not defined.isTimeLimited():
-                LOG_WARNING("Couldn't activate goodie(id={}) because it has unlimited time!".format(goodieID))
+                LOG_WARNING(("Couldn't activate goodie(id={}) because it has unlimited time!").format(goodieID))
                 return
             oldGoodieID = self.actualGoodies.checkResource(goodieID)
             if oldGoodieID is not None:
                 if self.actualGoodies.compareByResource(oldGoodieID, goodieID):
                     self.__decrement(oldGoodieID, 1, ACTION_REASON_ID.END_OF_EFFECT, False)
                 else:
-                    LOG_WARNING("Couldn't activate goodie(id={}) because replacing is forbidden!".format(goodieID))
+                    LOG_WARNING(("Couldn't activate goodie(id={}) because replacing is forbidden!").format(goodieID))
                     return
             if self.activeGoodiesCount() >= MAX_ACTIVE_BOOSTERS:
-                LOG_WARNING("Couldn't activate goodie(id={}) because limit of activated boosters is reached!".format(goodieID))
+                LOG_WARNING(("Couldn't activate goodie(id={}) because limit of activated boosters is reached!").format(goodieID))
                 return
             goodie = defined.createGoodie(state=GOODIE_STATE.ACTIVE, counter=goodie.counter, expirations=goodie.expirations)
             self.actualGoodies[goodieID] = goodie

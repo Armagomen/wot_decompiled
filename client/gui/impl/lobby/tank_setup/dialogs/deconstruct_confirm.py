@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/deconstruct_confirm.py
 from itertools import chain
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template import DialogTemplateView
@@ -22,7 +20,8 @@ _SUBMIT_CLICK_SOUND = 'mod_equipment_disassemble'
 
 class DeconstructMultConfirm(DialogTemplateView):
     itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('storageItems', 'vehicleItems', 'upgradeModulePair', 'ctx', '__tooltipCache', '_storageProvider', '_onVehicleProvider')
+    __slots__ = ('storageItems', 'vehicleItems', 'upgradeModulePair', 'ctx', '__tooltipCache',
+                 '_storageProvider', '_onVehicleProvider')
     LAYOUT_ID = R.views.lobby.tanksetup.dialogs.DeconstructConfirm()
     VIEW_MODEL = DeconstructConfirmModel
 
@@ -52,7 +51,7 @@ class DeconstructMultConfirm(DialogTemplateView):
         for intCD, itemSpecs in sorted(itemsDict.items(), key=self._sortItemsKey):
             itemModel = DeconstructConfirmItemModel()
             item = self.itemsCache.items.getItemByCD(intCD)
-            count = sum(((itemSpec.count if isInventory else 1) for itemSpec in itemSpecs))
+            count = sum((itemSpec.count if isInventory else 1) for itemSpec in itemSpecs)
             if isInventory:
                 tooltipItems[intCD] = count
             else:
@@ -78,7 +77,7 @@ class DeconstructMultConfirm(DialogTemplateView):
     def createToolTipContent(self, event, contentID):
         intCD = int(event.getArgument('intCD'))
         if not intCD:
-            return None
+            return
         else:
             item = self.itemsCache.items.getItemByCD(intCD)
             title = item.userName
@@ -92,7 +91,7 @@ class DeconstructMultConfirm(DialogTemplateView):
                 if intCD in tooltipItems:
                     value = tooltipItems[intCD]
                     return DeconstructFromVehicleTooltip(title, value)
-            return None
+            return
 
     def _onLoading(self, *args, **kwargs):
         super(DeconstructMultConfirm, self)._onLoading(*args, **kwargs)
@@ -126,8 +125,8 @@ class DeconstructMultConfirm(DialogTemplateView):
     def _update(self):
         self._storageProvider.updateItems()
         self._onVehicleProvider.updateItems()
-        with self.viewModel.transaction() as model:
-            totalCount = sum((item.inventoryCount for item in self._storageProvider.getItems())) + len(self._onVehicleProvider.getItems())
+        with self.viewModel.transaction() as (model):
+            totalCount = sum(item.inventoryCount for item in self._storageProvider.getItems()) + len(self._onVehicleProvider.getItems())
             totalIncome = self._storageProvider.getTotalPrice(self.ctx) + self._onVehicleProvider.getTotalPrice(self.ctx)
             model.setDeconstructingEquipCoinsAmount(totalIncome.equipCoin)
             storageCount = self.updateArray(model.getInventoryEquipment(), self.storageItems, True)
@@ -153,7 +152,7 @@ class DeconstructConfirm(DialogTemplateView):
         self.__device = self.__itemsCache.items.getItemByCD(itemIntCD)
         self.__currency = self.__device.sellPrices.itemPrice.price.getCurrency(byWeight=True)
         self.__fromVehicle = fromVehicle
-        self.__curCount = self.__device.inventoryCount if not fromVehicle else 1
+        self.__curCount = (fromVehicle or self.__device).inventoryCount if 1 else 1
 
     @property
     def viewModel(self):

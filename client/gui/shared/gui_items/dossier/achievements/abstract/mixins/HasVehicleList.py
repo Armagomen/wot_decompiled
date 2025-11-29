@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/mixins/HasVehicleList.py
 from collections import namedtuple
 from gui import nationCompareByIndex
 from helpers import dependency
@@ -31,4 +29,6 @@ class HasVehiclesList(object):
     @classmethod
     def __sortFunc(cls, i1, i2):
         res = i1.level - i2.level
-        return res if res else nationCompareByIndex(i1.nation, i2.nation)
+        if res:
+            return res
+        return nationCompareByIndex(i1.nation, i2.nation)

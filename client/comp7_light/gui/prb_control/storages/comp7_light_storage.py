@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/prb_control/storages/comp7_light_storage.py
 from comp7_light_constants import ARENA_GUI_TYPE
 from gui.prb_control.storages.local_storage import SessionStorage
 from helpers import dependency

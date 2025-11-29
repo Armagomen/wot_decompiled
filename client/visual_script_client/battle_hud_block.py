@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/battle_hud_block.py
 import BigWorld
 from skeletons.gui.battle_session import IBattleSessionProvider
 from visual_script import ASPECT
@@ -8,21 +6,21 @@ from visual_script.dependency import dependencyImporter
 from visual_script.misc import errorVScript
 from visual_script.slot_types import SLOT_TYPE
 helpers, dependency = dependencyImporter('helpers', 'helpers.dependency')
-Math = dependencyImporter('Math')
+Math, = dependencyImporter('Math')
 
 class BattleHUDMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 8388607
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Battle HUD'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/action'
 
     @classmethod
     def blockAspects(cls):
@@ -39,7 +37,7 @@ class BattleHUDEventMeta(BattleHUDMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/trigger'
 
 
 class OnShowMessage(BattleHUDEventMeta, Block):
@@ -82,7 +80,9 @@ class OnShowMessage(BattleHUDEventMeta, Block):
 
     @property
     def active(self):
-        return True if not self._active.hasValue() else self._active.getValue()
+        if not self._active.hasValue():
+            return True
+        return self._active.getValue()
 
     def __onShowVehicleErrorByKey(self, key, args=None, extra=None):
         if self.active:

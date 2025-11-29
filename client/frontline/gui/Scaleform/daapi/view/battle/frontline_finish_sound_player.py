@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_finish_sound_player.py
 from functools import partial
 from typing import Set
 import BigWorld
@@ -10,12 +8,12 @@ from constants import FINISH_REASON, ARENA_PERIOD
 from gui.battle_control import avatar_getter
 from gui.sounds.epic_sound_constants import EPIC_SOUND, EPIC_TIME_WWEVENTS
 _BATTLE_END_SOUND_TIME = 2
-_FRONTLINE_SOUND_EVENTS = {FINISH_REASON.DESTROYED_OBJECTS: 'end_battle_last_kill',
- FINISH_REASON.EXTERMINATION: 'end_battle_last_kill'}
-_FRONTLINE_SOUND_NOTIFICATIONS = {FINISH_REASON.EXTERMINATION: EPIC_SOUND.BF_EB_ALL_ENEMIES_DESTROYED,
- FINISH_REASON.TIMEOUT: EPIC_SOUND.BF_EB_TIME_OUT}
-_FRONTLINE_SOUND_NOTIFICATION_DELAY = {FINISH_REASON.EXTERMINATION: 3,
- FINISH_REASON.DESTROYED_OBJECTS: 3}
+_FRONTLINE_SOUND_EVENTS = {FINISH_REASON.DESTROYED_OBJECTS: 'end_battle_last_kill', 
+   FINISH_REASON.EXTERMINATION: 'end_battle_last_kill'}
+_FRONTLINE_SOUND_NOTIFICATIONS = {FINISH_REASON.EXTERMINATION: EPIC_SOUND.BF_EB_ALL_ENEMIES_DESTROYED, 
+   FINISH_REASON.TIMEOUT: EPIC_SOUND.BF_EB_TIME_OUT}
+_FRONTLINE_SOUND_NOTIFICATION_DELAY = {FINISH_REASON.EXTERMINATION: 3, 
+   FINISH_REASON.DESTROYED_OBJECTS: 3}
 
 class FrontlineFinishSoundPlayer(FinishSoundPlayer, IViewComponentsCtrlListener):
 

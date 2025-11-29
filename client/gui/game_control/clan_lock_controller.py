@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/clan_lock_controller.py
 import Event
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared.gui_items import CLAN_LOCK
@@ -26,8 +24,8 @@ class ClanLockController(IClanLockController, Notifiable):
         self.clearNotification()
 
     def onLobbyStarted(self, ctx):
-        g_clientUpdateManager.addCallbacks({'stats.vehTypeLocks': self.__updateVehicleLocks,
-         'stats.globalVehicleLocks': self.__updateGlobalLocks})
+        g_clientUpdateManager.addCallbacks({'stats.vehTypeLocks': self.__updateVehicleLocks, 
+           'stats.globalVehicleLocks': self.__updateGlobalLocks})
         self.__updateVehicleLocks(self.itemsCache.items.stats.vehicleTypeLocks)
         self.__updateGlobalLocks(self.itemsCache.items.stats.globalVehicleLocks)
 
@@ -44,7 +42,8 @@ class ClanLockController(IClanLockController, Notifiable):
         g_clientUpdateManager.removeObjectCallbacks(self)
 
     def __updateVehicleLocks(self, locks):
-        self.__lockedVehicles = [ key for key, value in locks.iteritems() if value.get(CLAN_LOCK, None) is not None ]
+        self.__lockedVehicles = [ key for key, value in locks.iteritems() if value.get(CLAN_LOCK, None) is not None
+                                ]
         self.__notificationStartStop()
         return
 

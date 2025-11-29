@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/CustomEffect.py
 import material_kinds
 from items import _xml
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
@@ -33,7 +31,9 @@ class RangeTable(object):
                 break
             idx += 1
 
-        return foundValue if idx == -1 or len(self.values) <= idx else self.values[idx]
+        if idx == -1 or len(self.values) <= idx:
+            return foundValue
+        return self.values[idx]
 
 
 class SelectorDescFactory(object):
@@ -75,7 +75,8 @@ class SelectorDescFactory(object):
                 modelName = node[1].readString('model', '')
                 waterY = node[1].readBool('waterY', False)
                 drawOrder = node[1].readInt('drawOrder', 0)
-                gNodes[nodeName] = (modelName, waterY, drawOrder)
+                gNodes[nodeName] = (
+                 modelName, waterY, drawOrder)
 
         except Exception:
             LOG_CURRENT_EXCEPTION()
@@ -133,7 +134,7 @@ class SelectorDesc(object):
 
 
 class DiscreteSelectorDesc(SelectorDesc):
-    __slots__ = ('_selectors', '_variable')
+    __slots__ = ('_selectors', )
 
     @property
     def selectors(self):
@@ -178,7 +179,7 @@ class DiscreteSelectorDesc(SelectorDesc):
 
 
 class MatkindSelectorDesc(DiscreteSelectorDesc):
-    __slots__ = ('_variable',)
+    __slots__ = ()
 
     def read(self, dataSection, effects):
         SelectorDesc.read(self, dataSection, effects)
@@ -193,7 +194,7 @@ class MatkindSelectorDesc(DiscreteSelectorDesc):
 
 
 class RangeSelectorDesc(SelectorDesc):
-    __slots__ = ('_selectors', '_variable', '__keys')
+    __slots__ = ('_selectors', '__keys')
 
     def __init__(self):
         super(RangeSelectorDesc, self).__init__()
@@ -244,7 +245,7 @@ class RangeSelectorDesc(SelectorDesc):
 
 
 class UnionSelectorDesc(SelectorDesc):
-    __slots__ = ('_selectors',)
+    __slots__ = ('_selectors', )
 
     def __init__(self):
         super(UnionSelectorDesc, self).__init__()
@@ -267,14 +268,14 @@ class UnionSelectorDesc(SelectorDesc):
         for selector in self._selectors:
             if selector._isPC is None:
                 selector.getActiveEffects(effects, args)
-            if selector._isPC == isPc:
+            elif selector._isPC == isPc:
                 selector.getActiveEffects(effects, args)
 
         return
 
 
 class EffectSelectorDesc(SelectorDesc):
-    __slots__ = ('__hardPoint', '_id', '__ttl', '_effectList', '_variable')
+    __slots__ = ('__hardPoint', '_id', '__ttl', '_effectList')
 
     @property
     def isEffectList(self):
@@ -360,11 +361,7 @@ class EffectSelectorDesc(SelectorDesc):
             nodeEffects = effects.get(nodeName, None)
             if nodeEffects is None:
                 self._id = len(effects)
-                nodeEffects = (self._id,
-                 modelName,
-                 waterY,
-                 drawOrder,
-                 {})
+                nodeEffects = (self._id, modelName, waterY, drawOrder, {})
                 effects[nodeName] = nodeEffects
             else:
                 self._id = nodeEffects[0]
@@ -379,7 +376,7 @@ class EffectSelectorDesc(SelectorDesc):
 
 
 class EffectListSelectorDesc(EffectSelectorDesc):
-    __slots__ = ('_effectList',)
+    __slots__ = ()
 
     def __init__(self):
         super(EffectListSelectorDesc, self).__init__()
@@ -387,7 +384,7 @@ class EffectListSelectorDesc(EffectSelectorDesc):
 
 
 class EffectDescriptorBase(object):
-    __slots__ = ('_selectorDesc',)
+    __slots__ = ('_selectorDesc', )
 
     def __init__(self):
         self._selectorDesc = None
@@ -398,7 +395,7 @@ class EffectDescriptorBase(object):
 
 
 class CustomEffectsDescriptor(EffectDescriptorBase):
-    __slots__ = ('__effects', '_selectorDesc')
+    __slots__ = ('__effects', )
 
     @staticmethod
     def getDescriptor(dataSection, customDescriptors, xmlCtx, name):
@@ -428,7 +425,10 @@ class CustomEffectsDescriptor(EffectDescriptorBase):
         return
 
     def create(self, args):
-        return MainCustomSelector(self, args) if self._selectorDesc is not None else None
+        if self._selectorDesc is not None:
+            return MainCustomSelector(self, args)
+        else:
+            return
 
     def getActiveEffects(self, effects, args):
         if self._selectorDesc is not None:
@@ -456,7 +456,10 @@ class ExhaustEffectDescriptor(EffectDescriptorBase):
                     effectDescriptor = self.__descriptors[tag]
                     break
 
-        return ExhaustMainSelector(effectDescriptor, args, self.nodes) if effectDescriptor is not None else None
+        if effectDescriptor is not None:
+            return ExhaustMainSelector(effectDescriptor, args, self.nodes)
+        else:
+            return
 
     def getActiveEffects(self, effects, args):
         raise SoftException('This function should not be called by hand.')

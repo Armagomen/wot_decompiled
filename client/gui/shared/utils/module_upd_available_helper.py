@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/module_upd_available_helper.py
 from collections import namedtuple
 import typing
 from CurrentVehicle import g_currentVehicle
@@ -34,7 +32,7 @@ class _VehicleResearchInfo(namedtuple('VehicleResearchInfo', 'vehIntCD wasSaved 
 
     def hasUnviewedVehicles(self):
         notSeenItems = self.getUnviewedItems()
-        return any((getTypeOfCD(itemCD) == GUI_ITEM_TYPE.VEHICLE for itemCD in notSeenItems))
+        return any(getTypeOfCD(itemCD) == GUI_ITEM_TYPE.VEHICLE for itemCD in notSeenItems)
 
     def hasUnviewedItems(self):
         return bool(self.getUnviewedItems())
@@ -65,7 +63,10 @@ def getResearchInfo(vehIntCD=None, vehicle=None):
 
 def getVehicleResearchInfo(vehIntCD=None, vehicle=None):
     vehicle = _validateAndGetVehicle(vehIntCD, vehicle)
-    return _getVehicleResearchInfo(vehicle) if vehicle is not None else None
+    if vehicle is not None:
+        return _getVehicleResearchInfo(vehicle)
+    else:
+        return
 
 
 def updateViewedItems(vehIntCD=None, vehicle=None):
@@ -101,12 +102,13 @@ def _getVehicleResearchInfo(vehicle, itemsCache=None):
         itemTypeID = getTypeOfCD(itemCD)
         if guiItem.isUnlocked:
             researched.add(itemCD)
-        discount = 0
-        available = unlockStats.isSeqUnlocked(required) and unlockStats.isUnlocked(vehIntCD)
-        if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
-            xpCost, discount = _getNewCost(itemCD, guiItem.level, xpCost)
-        if available and vehXp >= xpCost - discount:
-            availableToResearch.add(itemCD)
+        else:
+            discount = 0
+            available = unlockStats.isSeqUnlocked(required) and unlockStats.isUnlocked(vehIntCD)
+            if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+                xpCost, discount = _getNewCost(itemCD, guiItem.level, xpCost)
+            if available and vehXp >= xpCost - discount:
+                availableToResearch.add(itemCD)
 
     return _VehicleResearchInfo(vehIntCD, wasSaved, canBeSaved, researched, availableToResearch, viewedItems)
 
@@ -135,7 +137,9 @@ def _validateAndGetVehicle(vehIntCD, vehicle, itemsCache=None):
                 vehicle = itemsCache.items.getItemByCD(vehIntCD)
             elif g_currentVehicle.item:
                 vehicle = g_currentVehicle.item
-        return None if not _validateVehicle(vehicle) else vehicle
+        if not _validateVehicle(vehicle):
+            return
+        return vehicle
 
 
 def _marksAsViewedAndSave(vehicle, researchInfo):
@@ -148,4 +152,6 @@ def _marksAsViewedAndSave(vehicle, researchInfo):
 
 
 def _validateVehicle(vehicle):
-    return False if vehicle is None or vehicle.isPremium or vehicle.isPremiumIGR or vehicle.isCollectible or vehicle.isSpecial or vehicle.isSecret or vehicle.tags & BATTLE_MODE_VEHICLE_TAGS else True
+    if vehicle is None or vehicle.isPremium or vehicle.isPremiumIGR or vehicle.isCollectible or vehicle.isSpecial or vehicle.isSecret or vehicle.tags & BATTLE_MODE_VEHICLE_TAGS:
+        return False
+    return True

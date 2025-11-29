@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/dialog_helpers/model_formatters.py
 
 
 def initItemInfo(viewModel, device, currency):
-    with viewModel.transaction() as model:
+    with viewModel.transaction() as (model):
         model.detailsDevice.setOverlayType(device.getHighlightType())
         model.detailsDevice.setLevel(device.level)
         model.detailsDevice.setDeviceName(device.name)

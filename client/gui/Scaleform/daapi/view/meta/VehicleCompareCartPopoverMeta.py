@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleCompareCartPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class VehicleCompareCartPopoverMeta(SmartPopOverView):
@@ -14,13 +12,17 @@ class VehicleCompareCartPopoverMeta(SmartPopOverView):
         self._printOverrideError('gotoCompareView')
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)
 
     def as_getDPS(self):
-        return self.flashObject.as_getDP() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getDP()
 
     def as_updateToCmpBtnPropsS(self, data):
-        return self.flashObject.as_updateToCmpBtnProps(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateToCmpBtnProps(data)
 
     def as_updateClearBtnPropsS(self, data):
-        return self.flashObject.as_updateClearBtnProps(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateClearBtnProps(data)

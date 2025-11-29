@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/battle_session.py
 import typing
 if typing.TYPE_CHECKING:
     from gui.armor_flashlight.interfaces import IArmorFlashlightBattleController
@@ -713,7 +711,7 @@ class IBattleSessionProvider(object):
 
     @property
     def battleCache(self):
-        return None
+        return
 
     @property
     def isReplayPlaying(self):

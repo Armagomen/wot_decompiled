@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/progression_quests_presenter.py
 from comp7.gui.impl.lobby.comp7_helpers.comp7_bonus_packer import packQuestBonuses
 from comp7_light.gui.impl.gen.view_models.views.lobby.progression_quests_model import ProgressionQuestsModel
 from comp7_light.gui.impl.lobby.comp7_light_helpers.account_settings import getLastSeenQuestData, setLastSeenQuestData
@@ -41,10 +39,15 @@ class ProgressionQuestsPresenter(TooltipPositionerMixin, Comp7LightOverlapCtrlMi
         self._updateViewModel()
 
     def _getEvents(self):
-        return super(ProgressionQuestsPresenter, self)._getEvents() + ((self.viewModel.onMarkAsViewed, self.__onMarkAsViewed),
-         (self.__eventsCache.onSyncCompleted, self._updateViewModel),
-         (self.viewModel.onMissionClick, self.__onOpenProgression),
-         (self.__comp7LightProgressionController.onProgressPointsUpdated, self._updateViewModel))
+        return super(ProgressionQuestsPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onMarkAsViewed, self.__onMarkAsViewed),
+         (
+          self.__eventsCache.onSyncCompleted, self._updateViewModel),
+         (
+          self.viewModel.onMissionClick, self.__onOpenProgression),
+         (
+          self.__comp7LightProgressionController.onProgressPointsUpdated, self._updateViewModel))
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7_light.mono.lobby.tooltips.battle_quest_tooltip():
@@ -68,7 +71,7 @@ class ProgressionQuestsPresenter(TooltipPositionerMixin, Comp7LightOverlapCtrlMi
 
     def _rawUpdate(self):
         super(ProgressionQuestsPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             battleQuests = self.__comp7LightProgressionController.getProgressionData()
             modelQuests = vm.getQuests()
             modelQuests.clear()

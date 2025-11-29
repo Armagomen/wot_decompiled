@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/persistent_data_cache_common/caches.py
-import abc
-import os
-import enum
-import typing
+import abc, os, enum, typing
 from persistent_data_cache_common import cached_data
 from persistent_data_cache_common.common import getLogger, MeasureExecutionTime, DEFAULT_SAVING_TIMEOUT
 from soft_exception import SoftException
@@ -58,7 +53,7 @@ class BasePDCache(object):
 
     def load(self, dataProvider):
         if self._destroyed:
-            raise SoftException('Cannot load {}. Cache already destroyed.'.format(dataProvider.name))
+            raise SoftException(('Cannot load {}. Cache already destroyed.').format(dataProvider.name))
         data = self._getCachedData().get(dataProvider.name)
         self._logger.debug('Data has%s been loaded from <%s>.', ' not' if data is None else '', dataProvider.name)
         return data
@@ -84,7 +79,7 @@ class BasePDCache(object):
                 self._logger.error('Saving failed with <%s>.', error)
                 self._events.onFailedToSaveCachedData(str(error))
             except TimeoutError:
-                error = 'Saving data timeout <{}>.'.format(timeout)
+                error = ('Saving data timeout <{}>.').format(timeout)
                 self._logger.error(error)
                 self._events.onFailedToSaveCachedData(error)
 
@@ -133,13 +128,15 @@ class BasePDCache(object):
             if not self._isFileExist(filePath):
                 self._logger.debug('Cache file does not exist: <%s>.', filePath)
                 return {}
-            cachedData = MeasureExecutionTime('cache.file.loaded')(self._loadCachedData)(filePath)
-            if cachedData.version != version:
-                self._logger.debug('Cache version mismatch: %s != %s.', cachedData.version, version)
-                return {}
-            data = cachedData.deserialize(onDataDeserialized=self._events.onDataDeserialized)
-            self._events.onCachedDataLoaded()
-            return data
+            else:
+                cachedData = MeasureExecutionTime('cache.file.loaded')(self._loadCachedData)(filePath)
+                if cachedData.version != version:
+                    self._logger.debug('Cache version mismatch: %s != %s.', cachedData.version, version)
+                    return {}
+                data = cachedData.deserialize(onDataDeserialized=self._events.onDataDeserialized)
+                self._events.onCachedDataLoaded()
+                return data
+
         except Exception as error:
             self._logger.exception('Failed to load cache file <%s>.', filePath)
             self._events.onFailedToLoadCachedData(str(error))
@@ -173,9 +170,11 @@ class BasePDCache(object):
         try:
             if not self._isFileExist(filePath):
                 return True
-            self._deleteFile(filePath)
-            self._logger.debug('Cache file <%s> deleted.', filePath)
-            return True
+            else:
+                self._deleteFile(filePath)
+                self._logger.debug('Cache file <%s> deleted.', filePath)
+                return True
+
         except Exception:
             self._logger.exception('Cannot delete cache file <%s>.', filePath)
             return False
@@ -201,7 +200,7 @@ class DefaultPDCache(BasePDCache):
     __slots__ = ()
 
     def _loadCachedData(self, filePath):
-        with open(filePath, 'rb') as cf:
+        with open(filePath, 'rb') as (cf):
             return cached_data.loads(cf.read())
 
     def _saveCachedData(self, filePath, cachedData):
@@ -210,7 +209,7 @@ class DefaultPDCache(BasePDCache):
         if not os.path.exists(dirPath):
             self._logger.debug('Creating cache dir by path <%s>.', dirPath)
             os.makedirs(dirPath)
-        with open(filePath, 'wb') as cf:
+        with open(filePath, 'wb') as (cf):
             cf.write(data)
 
     def _isFileExist(self, filePath):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/status_notifications/panel.py
 import logging
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
@@ -12,13 +10,15 @@ _logger = logging.getLogger(__name__)
 class _EventHighPriorityGroup(components.StatusNotificationsGroup):
 
     def __init__(self, updateCallback):
-        super(_EventHighPriorityGroup, self).__init__((sn_items.FireSN,), updateCallback)
+        super(_EventHighPriorityGroup, self).__init__((
+         sn_items.FireSN,), updateCallback)
 
 
 class EventStatusNotificationTimerPanel(StatusNotificationTimerPanel):
 
     def _generateItems(self):
-        items = [_EventHighPriorityGroup,
+        items = [
+         _EventHighPriorityGroup,
          sn_items.StaticDeathZoneSN,
          sn_items.PersonalDeathZoneSN,
          sn_items.StunSN]

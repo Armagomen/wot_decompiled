@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/header_state_presenter.py
 from __future__ import absolute_import
 import logging
 from functools import partial
@@ -46,7 +44,9 @@ class HeaderStatePresenter(ViewComponent[HeaderStateModel], IRoutableView):
         return
 
     def _getEvents(self):
-        return ((self.__lsm.onVisibleRouteChanged, self.__onStateChanged),)
+        return (
+         (
+          self.__lsm.onVisibleRouteChanged, self.__onStateChanged),)
 
     def __onStateChanged(self, routeInfo):
         self.__callableDelayer.clear()
@@ -61,6 +61,6 @@ class HeaderStatePresenter(ViewComponent[HeaderStateModel], IRoutableView):
             headerType = HeaderType.DEFAULT
             if routeInfo.state.getFlags() & LobbyStateFlags.HANGAR:
                 headerType = HeaderType.HANGAR
-            with self.getViewModel().transaction() as model:
+            with self.getViewModel().transaction() as (model):
                 model.setType(headerType)
             return

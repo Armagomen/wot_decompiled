@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/dependencies.py
 import time
 from functools import partial
 from dossiers2.custom.config import RECORD_CONFIGS
@@ -10,191 +8,316 @@ TOTAL_STATS_DEPENDENCIES = {}
 
 def _set_TOTAL_STATS_DEPENDENCIES():
     global TOTAL_STATS_DEPENDENCIES
-    TOTAL_STATS_DEPENDENCIES.update({'treesCut': [_updateLumberjack]})
+    TOTAL_STATS_DEPENDENCIES.update({'treesCut': [
+                  _updateLumberjack]})
 
 
 A15X15_STATS_DEPENDENCIES = {}
 
 def _set_A15X15_STATS_DEPENDENCIES():
     global A15X15_STATS_DEPENDENCIES
-    A15X15_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    A15X15_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 A30X30_STATS_DEPENDENCIES = {}
 
 def _set_A30X30_STATS_DEPENDENCIES():
     global A30X30_STATS_DEPENDENCIES
-    A30X30_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    A30X30_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 A7X7_STATS_DEPENDENCIES = {}
 
 def _set_A7X7_STATS_DEPENDENCIES():
     global A7X7_STATS_DEPENDENCIES
-    A7X7_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko],
-     'wins': [_updateForTacticalOperations]})
+    A7X7_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko], 
+       'wins': [
+              _updateForTacticalOperations]})
 
 
 ACHIEVEMENT15X15_DEPENDENCIES = {}
 
 def _set_ACHIEVEMENT15X15_DEPENDENCIES():
     global ACHIEVEMENT15X15_DEPENDENCIES
-    ACHIEVEMENT15X15_DEPENDENCIES.update({'warrior': [_updateBattleHeroes, _updateSteamForWarriorMedal],
-     'invader': [_updateBattleHeroes],
-     'sniper': [_updateBattleHeroes],
-     'defender': [_updateBattleHeroes],
-     'steelwall': [_updateBattleHeroes, _updateSteamForSteelWallMedal],
-     'supporter': [_updateBattleHeroes],
-     'scout': [_updateBattleHeroes],
-     'evileye': [_updateBattleHeroes],
-     'battleHeroes': [_updateMedalKay, _updateSteamBattleHeroes],
-     'fragsBeast': [_updateBeasthunter],
-     'fragsSinai': [_updateSinai],
-     'fragsPatton': [_updatePattonValley],
-     'sniperSeries': [_updateMaxSniperSeries],
-     'maxSniperSeries': [_updateTitleSniper],
-     'invincibleSeries': [_updateMaxInvincibleSeries],
-     'maxInvincibleSeries': [_updateInvincible],
-     'diehardSeries': [_updateMaxDiehardSeries],
-     'maxDiehardSeries': [_updateDiehard],
-     'killingSeries': [_updateMaxKillingSeries],
-     'maxKillingSeries': [_updateHandOfDeath],
-     'piercingSeries': [_updateMaxPiercingSeries],
-     'maxPiercingSeries': [_updateArmorPiercer],
-     'maxAimerSeries': [_updateAimer],
-     'sniper2': [_updateBattleHeroes],
-     'mainGun': [_updateBattleHeroes],
-     'WFC2014WinSeries': [_updateMaxWFC2014WinSeries],
-     'deathTrackWinSeries': [_updateMaxDeathTrackWinSeries],
-     'tankwomenProgress': [_updateTankwomen],
-     'EFC2016WinSeries': [_updateMaxEFC2016WinSeries],
-     'rankedBattlesHeroProgress': [_updateRankedBattlesHeroProgress],
-     'rankedStayingCounter': [_updateRankedStayingPower],
-     'rankedDivisionCounter': [_updateRankedDivisionFighter],
-     'RP2018sergeantCounter': [_updateRP2018sergeant],
-     'bonecrusher': [_updateSteamForBonecrusherMedal]})
+    ACHIEVEMENT15X15_DEPENDENCIES.update({'warrior': [
+                 _updateBattleHeroes, _updateSteamForWarriorMedal], 
+       'invader': [
+                 _updateBattleHeroes], 
+       'sniper': [
+                _updateBattleHeroes], 
+       'defender': [
+                  _updateBattleHeroes], 
+       'steelwall': [
+                   _updateBattleHeroes, _updateSteamForSteelWallMedal], 
+       'supporter': [
+                   _updateBattleHeroes], 
+       'scout': [
+               _updateBattleHeroes], 
+       'evileye': [
+                 _updateBattleHeroes], 
+       'battleHeroes': [
+                      _updateMedalKay, _updateSteamBattleHeroes], 
+       'fragsBeast': [
+                    _updateBeasthunter], 
+       'fragsSinai': [
+                    _updateSinai], 
+       'fragsPatton': [
+                     _updatePattonValley], 
+       'sniperSeries': [
+                      _updateMaxSniperSeries], 
+       'maxSniperSeries': [
+                         _updateTitleSniper], 
+       'invincibleSeries': [
+                          _updateMaxInvincibleSeries], 
+       'maxInvincibleSeries': [
+                             _updateInvincible], 
+       'diehardSeries': [
+                       _updateMaxDiehardSeries], 
+       'maxDiehardSeries': [
+                          _updateDiehard], 
+       'killingSeries': [
+                       _updateMaxKillingSeries], 
+       'maxKillingSeries': [
+                          _updateHandOfDeath], 
+       'piercingSeries': [
+                        _updateMaxPiercingSeries], 
+       'maxPiercingSeries': [
+                           _updateArmorPiercer], 
+       'maxAimerSeries': [
+                        _updateAimer], 
+       'sniper2': [
+                 _updateBattleHeroes], 
+       'mainGun': [
+                 _updateBattleHeroes], 
+       'WFC2014WinSeries': [
+                          _updateMaxWFC2014WinSeries], 
+       'deathTrackWinSeries': [
+                             _updateMaxDeathTrackWinSeries], 
+       'tankwomenProgress': [
+                           _updateTankwomen], 
+       'EFC2016WinSeries': [
+                          _updateMaxEFC2016WinSeries], 
+       'rankedBattlesHeroProgress': [
+                                   _updateRankedBattlesHeroProgress], 
+       'rankedStayingCounter': [
+                              _updateRankedStayingPower], 
+       'rankedDivisionCounter': [
+                               _updateRankedDivisionFighter], 
+       'RP2018sergeantCounter': [
+                               _updateRP2018sergeant], 
+       'bonecrusher': [
+                     _updateSteamForBonecrusherMedal]})
 
 
 ACHIEVEMENT7X7_DEPENDENCIES = {}
 
 def _set_ACHIEVEMENT7X7_DEPENDENCIES():
     global ACHIEVEMENT7X7_DEPENDENCIES
-    ACHIEVEMENT7X7_DEPENDENCIES.update({'wolfAmongSheep': [_updateWolfAmongSheepMedal],
-     'geniusForWar': [_updateGeniusForWarMedal],
-     'crucialShot': [_updateCrucialShotMedal],
-     'tacticalBreakthroughSeries': [_updateMaxTacticalBreakthroughSeries],
-     'maxTacticalBreakthroughSeries': [_updateTacticalBreakthrough, _updateAwardCount],
-     'fightingReconnaissance': [_updateFightingReconnaissanceMedal],
-     'pyromaniac': [_updatePyromaniacMedal],
-     'ranger': [_updateRangerMedal],
-     'promisingFighter': [_updatePromisingFighterMedal],
-     'heavyFire': [_updateHeavyFireMedal],
-     'fireAndSteel': [_updateFireAndSteelMedal],
-     'guerrilla': [_updateGuerrillaMedal],
-     'bruteForce': [_updateBruteForceMedal],
-     'prematureDetonation': [_updatePrematureDetonationMedal],
-     'sentinel': [_updateSentinelMedal],
-     'infiltrator': [_updateInfiltratorMedal],
-     'wolfAmongSheepMedal': [_updateAwardCount, _updateBattleHeroes],
-     'geniusForWarMedal': [_updateAwardCount, _updateBattleHeroes],
-     'fightingReconnaissanceMedal': [_updateAwardCount],
-     'crucialShotMedal': [_updateAwardCount],
-     'promisingFighterMedal': [_updateAwardCount],
-     'heavyFireMedal': [_updateAwardCount],
-     'rangerMedal': [_updateAwardCount],
-     'fireAndSteelMedal': [_updateAwardCount],
-     'pyromaniacMedal': [_updateAwardCount],
-     'guerrillaMedal': [_updateAwardCount],
-     'infiltratorMedal': [_updateAwardCount],
-     'sentinelMedal': [_updateAwardCount],
-     'prematureDetonationMedal': [_updateAwardCount],
-     'bruteForceMedal': [_updateAwardCount],
-     'kingOfTheHill': [_updateAwardCount],
-     'armoredFist': [_updateAwardCount],
-     'godOfWar': [_updateAwardCount],
-     'willToWinSpirit': [_updateAwardCount],
-     'noMansLand': [_updateAwardCount],
-     'forTacticalOperations': [_updateAwardCount],
-     'awardCount': [_updateBattleTested]})
+    ACHIEVEMENT7X7_DEPENDENCIES.update({'wolfAmongSheep': [
+                        _updateWolfAmongSheepMedal], 
+       'geniusForWar': [
+                      _updateGeniusForWarMedal], 
+       'crucialShot': [
+                     _updateCrucialShotMedal], 
+       'tacticalBreakthroughSeries': [
+                                    _updateMaxTacticalBreakthroughSeries], 
+       'maxTacticalBreakthroughSeries': [
+                                       _updateTacticalBreakthrough, _updateAwardCount], 
+       'fightingReconnaissance': [
+                                _updateFightingReconnaissanceMedal], 
+       'pyromaniac': [
+                    _updatePyromaniacMedal], 
+       'ranger': [
+                _updateRangerMedal], 
+       'promisingFighter': [
+                          _updatePromisingFighterMedal], 
+       'heavyFire': [
+                   _updateHeavyFireMedal], 
+       'fireAndSteel': [
+                      _updateFireAndSteelMedal], 
+       'guerrilla': [
+                   _updateGuerrillaMedal], 
+       'bruteForce': [
+                    _updateBruteForceMedal], 
+       'prematureDetonation': [
+                             _updatePrematureDetonationMedal], 
+       'sentinel': [
+                  _updateSentinelMedal], 
+       'infiltrator': [
+                     _updateInfiltratorMedal], 
+       'wolfAmongSheepMedal': [
+                             _updateAwardCount, _updateBattleHeroes], 
+       'geniusForWarMedal': [
+                           _updateAwardCount, _updateBattleHeroes], 
+       'fightingReconnaissanceMedal': [
+                                     _updateAwardCount], 
+       'crucialShotMedal': [
+                          _updateAwardCount], 
+       'promisingFighterMedal': [
+                               _updateAwardCount], 
+       'heavyFireMedal': [
+                        _updateAwardCount], 
+       'rangerMedal': [
+                     _updateAwardCount], 
+       'fireAndSteelMedal': [
+                           _updateAwardCount], 
+       'pyromaniacMedal': [
+                         _updateAwardCount], 
+       'guerrillaMedal': [
+                        _updateAwardCount], 
+       'infiltratorMedal': [
+                          _updateAwardCount], 
+       'sentinelMedal': [
+                       _updateAwardCount], 
+       'prematureDetonationMedal': [
+                                  _updateAwardCount], 
+       'bruteForceMedal': [
+                         _updateAwardCount], 
+       'kingOfTheHill': [
+                       _updateAwardCount], 
+       'armoredFist': [
+                     _updateAwardCount], 
+       'godOfWar': [
+                  _updateAwardCount], 
+       'willToWinSpirit': [
+                         _updateAwardCount], 
+       'noMansLand': [
+                    _updateAwardCount], 
+       'forTacticalOperations': [
+                               _updateAwardCount], 
+       'awardCount': [
+                    _updateBattleTested]})
 
 
 ACHIEVEMENTRATED7X7_DEPENDENCIES = {}
 
 def _set_ACHIEVEMENTRATED7X7_DEPENDENCIES():
     global ACHIEVEMENTRATED7X7_DEPENDENCIES
-    ACHIEVEMENTRATED7X7_DEPENDENCIES.update({'victoryMarchSeries': [_updateMaxVictoryMarchSeries, _updateVictoryMarch]})
+    ACHIEVEMENTRATED7X7_DEPENDENCIES.update({'victoryMarchSeries': [
+                            _updateMaxVictoryMarchSeries, _updateVictoryMarch]})
 
 
 HISTORICAL_ACHIEVEMENTS_DEPENDENCIES = {}
 
 def _set_HISTORICAL_ACHIEVEMENTS_DEPENDENCIES():
     global HISTORICAL_ACHIEVEMENTS_DEPENDENCIES
-    HISTORICAL_ACHIEVEMENTS_DEPENDENCIES.update({'bothSidesWins': [_updateMakerOfHistoryMedal],
-     'weakVehiclesWins': [_updateGuardsManMedal]})
+    HISTORICAL_ACHIEVEMENTS_DEPENDENCIES.update({'bothSidesWins': [
+                       _updateMakerOfHistoryMedal], 
+       'weakVehiclesWins': [
+                          _updateGuardsManMedal]})
 
 
 HISTORICAL_STATS_DEPENDENCIES = {}
 
 def _set_HISTORICAL_STATS_DEPENDENCIES():
     global HISTORICAL_STATS_DEPENDENCIES
-    HISTORICAL_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    HISTORICAL_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 FORT_BATTLES_STATS_DEPENDENCIES = {}
 
 def _set_FORT_BATTLES_STATS_DEPENDENCIES():
     global FORT_BATTLES_STATS_DEPENDENCIES
-    FORT_BATTLES_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    FORT_BATTLES_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 FORT_SORTIES_STATS_DEPENDENCIES = {}
 
 def _set_FORT_SORTIES_STATS_DEPENDENCIES():
     global FORT_SORTIES_STATS_DEPENDENCIES
-    FORT_SORTIES_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko],
-     'wins': [_updateSoldierOfFortune]})
+    FORT_SORTIES_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko], 
+       'wins': [
+              _updateSoldierOfFortune]})
 
 
 FORT_ACHIEVEMENTS_DEPENDENCIES = {}
@@ -207,30 +330,48 @@ SINGLE_ACHIEVEMENTS_DEPENDENCIES = {}
 
 def _set_SINGLE_ACHIEVEMENTS_DEPENDENCIES():
     global SINGLE_ACHIEVEMENTS_DEPENDENCIES
-    SINGLE_ACHIEVEMENTS_DEPENDENCIES.update({'onboardingMedal': [_updateSteamOnboarding]})
+    SINGLE_ACHIEVEMENTS_DEPENDENCIES.update({'onboardingMedal': [
+                         _updateSteamOnboarding]})
 
 
 STEAM_ACHIEVEMENT_DEPENDENCIES = {}
 
 def _set_STEAM_ACHIEVEMENT_DEPENDENCIES():
     global STEAM_ACHIEVEMENT_DEPENDENCIES
-    STEAM_ACHIEVEMENT_DEPENDENCIES.update({'steamBattleCredits': [_updateSteamBattleCredits],
-     'steamBattleXP': [_updateSteamBattleXP],
-     'steamFreeXP': [_updateSteamFreeXP],
-     'steamMasteryMarks': [_updateSteamMasteryMarksMedals],
-     'steamBasePoints': [_updateSteamBasePoints],
-     'steamHardCharacter': [_updateSteamHardCharacterMedal],
-     'steamMedium': [_updatesteamMediumMedal],
-     'steamATSPG': [_updateSteamATSPGMedal],
-     'steamBreakThrough': [_updateSteamBreakThroughMedal],
-     'steamStop': [_updateSteamStopMedal],
-     'steamReconnoiter': [_updateSteamReconnoiterMedal],
-     'steamPotentialStun': [_updateSteamPotentialStunMedal],
-     'steamMileage': [_updateSteamMileageMedal],
-     'steamTopLeague': [_updateSteamTopLeagueMedal],
-     'steamSpotted': [_updateSteamSpottedMedal],
-     'steamFrags': [_updateSteamFragsMedals],
-     'steamBattleHeroes': [_updateSteamOrderMedal]})
+    STEAM_ACHIEVEMENT_DEPENDENCIES.update({'steamBattleCredits': [
+                            _updateSteamBattleCredits], 
+       'steamBattleXP': [
+                       _updateSteamBattleXP], 
+       'steamFreeXP': [
+                     _updateSteamFreeXP], 
+       'steamMasteryMarks': [
+                           _updateSteamMasteryMarksMedals], 
+       'steamBasePoints': [
+                         _updateSteamBasePoints], 
+       'steamHardCharacter': [
+                            _updateSteamHardCharacterMedal], 
+       'steamMedium': [
+                     _updatesteamMediumMedal], 
+       'steamATSPG': [
+                    _updateSteamATSPGMedal], 
+       'steamBreakThrough': [
+                           _updateSteamBreakThroughMedal], 
+       'steamStop': [
+                   _updateSteamStopMedal], 
+       'steamReconnoiter': [
+                          _updateSteamReconnoiterMedal], 
+       'steamPotentialStun': [
+                            _updateSteamPotentialStunMedal], 
+       'steamMileage': [
+                      _updateSteamMileageMedal], 
+       'steamTopLeague': [
+                        _updateSteamTopLeagueMedal], 
+       'steamSpotted': [
+                      _updateSteamSpottedMedal], 
+       'steamFrags': [
+                    _updateSteamFragsMedals], 
+       'steamBattleHeroes': [
+                           _updateSteamOrderMedal]})
 
 
 VEH_TYPE_FRAGS_DEPENDENCIES = {}
@@ -238,52 +379,68 @@ VEH_TYPE_FRAGS_DEPENDENCIES = {}
 def _set_VEH_TYPE_FRAGS_DEPENDENCIES():
     global VEH_TYPE_FRAGS_DEPENDENCIES
     cache = getCache()
-    VEH_TYPE_FRAGS_DEPENDENCIES.update({cache['mausTypeCompDescr']: [_updateMousebane],
-     '_insert_': [_updateTankExpert]})
+    VEH_TYPE_FRAGS_DEPENDENCIES.update({cache['mausTypeCompDescr']: [
+                                  _updateMousebane], 
+       '_insert_': [
+                  _updateTankExpert]})
 
 
 CLAN_STATS_DEPENDENCIES = {}
 
 def _set_CLAN_STATS_DEPENDENCIES():
     global CLAN_STATS_DEPENDENCIES
-    CLAN_STATS_DEPENDENCIES.update({'battlesCount': [_updateMedalRotmistrov]})
+    CLAN_STATS_DEPENDENCIES.update({'battlesCount': [
+                      _updateMedalRotmistrov]})
 
 
 CLUB_BATTLES_STAT_DEPENDENCIES = {}
 
 def _set_CLUB_BATTLES_STAT_DEPENDENCIES():
     global CLUB_BATTLES_STAT_DEPENDENCIES
-    CLUB_BATTLES_STAT_DEPENDENCIES.update({'wins': [_updateStrategicOperations]})
+    CLUB_BATTLES_STAT_DEPENDENCIES.update({'wins': [
+              _updateStrategicOperations]})
 
 
 CLUB_ACHIEVEMENTS_DEPENDENCIES = {}
 
 def _set_CLUB_ACHIEVEMENTS_DEPENDENCIES():
     global CLUB_ACHIEVEMENTS_DEPENDENCIES
-    CLUB_ACHIEVEMENTS_DEPENDENCIES.update({'victoryMarchSeries': [_updateMaxVictoryMarchSeries, _updateClubVictoryMarch]})
+    CLUB_ACHIEVEMENTS_DEPENDENCIES.update({'victoryMarchSeries': [
+                            _updateMaxVictoryMarchSeries, _updateClubVictoryMarch]})
 
 
 GLOBAL_MAP_STATS_DEPENDENCIES = {}
 
 def _set_GLOBAL_MAP_STATS_DEPENDENCIES():
     global GLOBAL_MAP_STATS_DEPENDENCIES
-    GLOBAL_MAP_STATS_DEPENDENCIES.update({'battlesCount': [_updateMedalRotmistrov],
-     'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    GLOBAL_MAP_STATS_DEPENDENCIES.update({'battlesCount': [
+                      _updateMedalRotmistrov], 
+       'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 FALLOUT_STATS_DEPENDENCIES = {}
 
 def _set_FALLOUT_STATS_DEPENDENCIES():
     global FALLOUT_STATS_DEPENDENCIES
-    FALLOUT_STATS_DEPENDENCIES.update({'avatarKills': [_updateStormLord],
-     'winPoints': [_updateWinnerLaurels]})
+    FALLOUT_STATS_DEPENDENCIES.update({'avatarKills': [
+                     _updateStormLord], 
+       'winPoints': [
+                   _updateWinnerLaurels]})
 
 
 def _updateRankedBadge(dossierDescr, dossierBlockDescr, key, value, prevValue):
@@ -299,14 +456,22 @@ RANKED_STATS_DEPENDENCIES = {}
 
 def _set_RANKED_STATS_DEPENDENCIES():
     global RANKED_STATS_DEPENDENCIES
-    RANKED_STATS_DEPENDENCIES.update({'winAndSurvived': [_updateMedalAbrams],
-     'frags': [_updateMedalCarius],
-     'frags8p': [_updateMedalEkins],
-     'damageDealt': [_updateMedalKnispel],
-     'damageReceived': [_updateMedalKnispel],
-     'spotted': [_updateMedalPoppel],
-     'capturePoints': [_updateMedalLeClerc],
-     'droppedCapturePoints': [_updateMedalLavrinenko]})
+    RANKED_STATS_DEPENDENCIES.update({'winAndSurvived': [
+                        _updateMedalAbrams], 
+       'frags': [
+               _updateMedalCarius], 
+       'frags8p': [
+                 _updateMedalEkins], 
+       'damageDealt': [
+                     _updateMedalKnispel], 
+       'damageReceived': [
+                        _updateMedalKnispel], 
+       'spotted': [
+                 _updateMedalPoppel], 
+       'capturePoints': [
+                       _updateMedalLeClerc], 
+       'droppedCapturePoints': [
+                              _updateMedalLavrinenko]})
 
 
 EPIC_BATTLE_STATS_DEPENDENCIES = {}
@@ -317,7 +482,8 @@ def _set_EPIC_BATTLE_STATS_DEPENDENCIES():
 
 def _updateMedalCarius(dossierDescr, dossierBlockDescr, key, value, prevValue):
     frags = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 frags += dossierDescr[block]['frags']
@@ -325,7 +491,7 @@ def _updateMedalCarius(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalCariusCfg = RECORD_CONFIGS['medalCarius']
     maxMedalClass = len(medalCariusCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if frags >= medalCariusCfg[maxMedalClass - medalClass]:
+        if frags >= medalCariusCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -337,7 +503,8 @@ def _updateMedalCarius(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalKnispel(dossierDescr, dossierBlockDescr, key, value, prevValue):
     damage = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 damage += dossierDescr[block]['damageDealt']
@@ -346,7 +513,7 @@ def _updateMedalKnispel(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalKnispelCfg = RECORD_CONFIGS['medalKnispel']
     maxMedalClass = len(medalKnispelCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if damage >= medalKnispelCfg[maxMedalClass - medalClass]:
+        if damage >= medalKnispelCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -358,7 +525,8 @@ def _updateMedalKnispel(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalPoppel(dossierDescr, dossierBlockDescr, key, value, prevValue):
     spotted = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 spotted += dossierDescr[block]['spotted']
@@ -366,7 +534,7 @@ def _updateMedalPoppel(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalPoppelCfg = RECORD_CONFIGS['medalPoppel']
     maxMedalClass = len(medalPoppelCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if spotted >= medalPoppelCfg[maxMedalClass - medalClass]:
+        if spotted >= medalPoppelCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -378,7 +546,8 @@ def _updateMedalPoppel(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalLeClerc(dossierDescr, dossierBlockDescr, key, value, prevValue):
     capturePoints = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 capturePoints += dossierDescr[block]['capturePoints']
@@ -386,7 +555,7 @@ def _updateMedalLeClerc(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalLeClercCfg = RECORD_CONFIGS['medalLeClerc']
     maxMedalClass = len(medalLeClercCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if capturePoints >= medalLeClercCfg[maxMedalClass - medalClass]:
+        if capturePoints >= medalLeClercCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -398,7 +567,8 @@ def _updateMedalLeClerc(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalLavrinenko(dossierDescr, dossierBlockDescr, key, value, prevValue):
     droppedCapturePoints = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 droppedCapturePoints += dossierDescr[block]['droppedCapturePoints']
@@ -406,7 +576,7 @@ def _updateMedalLavrinenko(dossierDescr, dossierBlockDescr, key, value, prevValu
     medalLavrinenkoCfg = RECORD_CONFIGS['medalLavrinenko']
     maxMedalClass = len(medalLavrinenkoCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if droppedCapturePoints >= medalLavrinenkoCfg[maxMedalClass - medalClass]:
+        if droppedCapturePoints >= medalLavrinenkoCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -436,7 +606,7 @@ def _updateMedalKay(dossierDescr, dossierBlockDescr, key, value, prevValue):
     maxMedalClass = len(medalKayCfg)
     battleHeroes = dossierBlockDescr['battleHeroes']
     for medalClass in xrange(1, maxMedalClass + 1):
-        if battleHeroes >= medalKayCfg[maxMedalClass - medalClass]:
+        if battleHeroes >= medalKayCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -448,7 +618,8 @@ def _updateMedalKay(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalAbrams(dossierDescr, dossierBlockDescr, key, value, prevValue):
     winAndSurvived = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 winAndSurvived += dossierDescr[block]['winAndSurvived']
@@ -456,7 +627,7 @@ def _updateMedalAbrams(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalAbramsCfg = RECORD_CONFIGS['medalAbrams']
     maxMedalClass = len(medalAbramsCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if winAndSurvived >= medalAbramsCfg[maxMedalClass - medalClass]:
+        if winAndSurvived >= medalAbramsCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -468,7 +639,8 @@ def _updateMedalAbrams(dossierDescr, dossierBlockDescr, key, value, prevValue):
 
 def _updateMedalEkins(dossierDescr, dossierBlockDescr, key, value, prevValue):
     frags8p = 0
-    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon', 'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
+    for block in ('a15x15', 'a7x7', 'historical', 'fortBattles', 'fortSorties', 'globalMapCommon',
+                  'globalMapMiddle', 'globalMapChampion', 'globalMapAbsolute', 'a30x30'):
         if dossierDescr.isBlockInLayout(block):
             if block in dossierDescr:
                 frags8p += dossierDescr[block]['frags8p']
@@ -476,7 +648,7 @@ def _updateMedalEkins(dossierDescr, dossierBlockDescr, key, value, prevValue):
     medalEkinsCfg = RECORD_CONFIGS['medalEkins']
     maxMedalClass = len(medalEkinsCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if frags8p >= medalEkinsCfg[maxMedalClass - medalClass]:
+        if frags8p >= medalEkinsCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -627,7 +799,7 @@ def _updateTankExpert(dossierDescr, dossierBlockDescr, key, value):
         dossierDescr.addPopUp('achievements', 'tankExpert', True)
     nationID = getVehicleNationID(key)
     if not bool(cache['vehiclesInTreesByNation'][nationID] - killedVehTypes):
-        record = ''.join(['tankExpert', str(nationID)])
+        record = ('').join(['tankExpert', str(nationID)])
         dossierDescr['achievements'][record] = True
         dossierDescr.addPopUp('achievements', record, True)
 
@@ -901,7 +1073,7 @@ def _updateBattleTested(dossierDescr, dossierBlockDescr, key, value, prevValue):
     awardCountCnfg = RECORD_CONFIGS['battleTested']
     maxMedalClass = len(awardCountCnfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if value >= awardCountCnfg[maxMedalClass - medalClass]:
+        if value >= awardCountCnfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -915,7 +1087,7 @@ def _updateMakerOfHistoryMedal(dossierDescr, dossierBlockDescr, key, value, prev
     minWinsCnfg = RECORD_CONFIGS['makerOfHistory']
     maxMedalClass = len(minWinsCnfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if value >= minWinsCnfg[maxMedalClass - medalClass]:
+        if value >= minWinsCnfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -929,7 +1101,7 @@ def _updateGuardsManMedal(dossierDescr, dossierBlockDescr, key, value, prevValue
     minWinsCnfg = RECORD_CONFIGS['guardsman']
     maxMedalClass = len(minWinsCnfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if value >= minWinsCnfg[maxMedalClass - medalClass]:
+        if value >= minWinsCnfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -944,7 +1116,7 @@ def _updateForTacticalOperations(dossierDescr, dossierBlockDescr, key, value, pr
     medalCfg = RECORD_CONFIGS['forTacticalOperations']
     maxMedalClass = len(medalCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if wins7x7 >= medalCfg[maxMedalClass - medalClass]:
+        if wins7x7 >= medalCfg[(maxMedalClass - medalClass)]:
             break
     else:
         return
@@ -1086,12 +1258,12 @@ def __getNewMedalClass(medalConfigName, valueToCheck, curMedalClass):
     medalCfg = RECORD_CONFIGS[medalConfigName]
     maxMedalClass = len(medalCfg)
     for medalClass in xrange(1, maxMedalClass + 1):
-        if valueToCheck >= medalCfg[maxMedalClass - medalClass]:
+        if valueToCheck >= medalCfg[(maxMedalClass - medalClass)]:
             if curMedalClass == 0 or curMedalClass > medalClass:
                 return medalClass
             break
 
-    return None
+    return
 
 
 VEHICLE_ACHIEVEMENTS_DEPENDENCIES = {}
@@ -1104,7 +1276,7 @@ def _processAchievementDependency(achievement, requiredAchievements, dossierDesc
     activeStage = achievement.getActiveStage(currentValue, currentStage)
     if not (requiredAchievements and activeStage) or achievement.isAchievementCompleted(currentValue):
         return
-    if all((requiredAchievement.isAchievementCompleted(requiredAchievement.getCurrentDataFromDossier(dossierDescr)[0]) for requiredAchievement in requiredAchievements)):
+    if all(requiredAchievement.isAchievementCompleted(requiredAchievement.getCurrentDataFromDossier(dossierDescr)[0]) for requiredAchievement in requiredAchievements):
         achievement.updateValueInDossier(dossierDescr, currentValue, currentStage, currentTimestamp)
 
 

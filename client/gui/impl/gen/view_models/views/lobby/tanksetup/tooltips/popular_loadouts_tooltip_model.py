@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tanksetup/tooltips/popular_loadouts_tooltip_model.py
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 
 class PopularLoadoutsTooltipModel(VehicleModel):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/easy_tank_equip_deal_panel.py
 from typing import TYPE_CHECKING
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.common.proposal_model import ProposalType
@@ -20,12 +18,12 @@ class EasyTankEquipDealPanel(BaseDealPanel):
     _KITS = 'demountKits'
     _DEF_PRICE = 'defPrice'
     _DISCOUNT = 'discount'
-    _DEFAULT_PRICES = {_IN_TANK: 0,
-     _KITS: 0,
-     BaseDealPanel._IN_STORAGE: 0,
-     BaseDealPanel._MONEY: ZERO_MONEY,
-     _DEF_PRICE: ZERO_MONEY,
-     _DISCOUNT: ZERO_MONEY}
+    _DEFAULT_PRICES = {_IN_TANK: 0, 
+       _KITS: 0, 
+       BaseDealPanel._IN_STORAGE: 0, 
+       BaseDealPanel._MONEY: ZERO_MONEY, 
+       _DEF_PRICE: ZERO_MONEY, 
+       _DISCOUNT: ZERO_MONEY}
     _prices = _DEFAULT_PRICES.copy()
 
     @classmethod

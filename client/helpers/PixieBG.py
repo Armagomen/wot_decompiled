@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/PixieBG.py
-import weakref
-import functools
-import Pixie
+import weakref, functools, Pixie
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 
 class PixieBG(object):

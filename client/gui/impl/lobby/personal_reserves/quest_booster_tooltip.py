@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/quest_booster_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.goodies.goodie_items import Booster, getFullNameForBoosterIcon
 from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import fillBoosterModelWithData
@@ -12,7 +10,7 @@ from helpers.time_utils import ONE_DAY
 from skeletons.gui.goodies import IGoodiesCache
 
 class QuestBoosterTooltip(ViewImpl):
-    __slots__ = ('boosterID',)
+    __slots__ = ('boosterID', )
     goodiesCache = dependency.descriptor(IGoodiesCache)
 
     def __init__(self, boosterID):
@@ -29,8 +27,8 @@ class QuestBoosterTooltip(ViewImpl):
         super(QuestBoosterTooltip, self)._onLoading()
         booster = self.goodiesCache.getBooster(self.boosterID)
         boosters = getBoostersInGroup(booster, self.goodiesCache)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillBoosterModelWithData(model, booster)
             model.setWillExpireAfter(int((booster.expireAfter or 0) / ONE_DAY))
-            model.setInDepotExpirableAmount(sum((inDepotBooster.count for inDepotBooster in boosters)))
+            model.setInDepotExpirableAmount(sum(inDepotBooster.count for inDepotBooster in boosters))
             model.setIconId(getFullNameForBoosterIcon(booster.boosterType, isPremium=booster.getIsPremium(), isExpirable=bool(booster.expireAfter or 0)))

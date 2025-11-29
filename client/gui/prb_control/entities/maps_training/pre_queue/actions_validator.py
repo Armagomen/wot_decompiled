@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/maps_training/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
@@ -14,16 +12,23 @@ class MapsTrainingValidator(BaseActionsValidator):
     def _validate(self):
         if not self.mapsTrainingController.isValid():
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE)
-        return ValidationResult(False, PREBATTLE_RESTRICTION.PREVIEW_VEHICLE_IS_PRESENT) if not g_currentPreviewVehicle.isPresent() or g_currentPreviewVehicle.intCD != self.mapsTrainingController.getSelectedVehicle() else super(MapsTrainingValidator, self)._validate()
+        if not g_currentPreviewVehicle.isPresent():
+            return ValidationResult(False, PREBATTLE_RESTRICTION.PREVIEW_VEHICLE_IS_PRESENT)
+        return super(MapsTrainingValidator, self)._validate()
 
 
 class MapsTrainingActionsValidator(PreQueueActionsValidator):
 
     def _createStateValidator(self, entity):
         baseValidator = super(MapsTrainingActionsValidator, self)._createStateValidator(entity)
-        return ActionsValidatorComposite(entity, [baseValidator, MapsTrainingValidator(entity)])
+        return ActionsValidatorComposite(entity, [
+         baseValidator,
+         MapsTrainingValidator(entity)])
 
     def _createVehiclesValidator(self, entity):
+        return BaseActionsValidator(entity)
+
+    def _createPreviewVehiclesValidator(self, entity):
         return BaseActionsValidator(entity)
 
     def _createTutorialValidator(self, entity):

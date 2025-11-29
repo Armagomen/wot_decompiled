@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/collection/resources/cdn/models.py
 import typing
 from enum import Enum, unique
 from dict2model.models import Model
@@ -53,22 +51,22 @@ class ImageModel(Model):
         return normalizeGfImagePath(fileCache.getRelativePath(self.url))
 
     def __repr__(self):
-        return '<ImageModel(group={}, sub={}, name={})>'.format(self.group, self.sub, self.name)
+        return ('<ImageModel(group={}, sub={}, name={})>').format(self.group, self.sub, self.name)
 
 
 class ConfigModel(Model):
-    __slots__ = ('images',)
+    __slots__ = ('images', )
 
     def __init__(self, images):
         super(ConfigModel, self).__init__()
         self.images = images
 
     def __repr__(self):
-        return '<ConfigModel(images={})>'.format(len(self.images))
+        return ('<ConfigModel(images={})>').format(len(self.images))
 
 
 class CdnCacheParamsModel(object):
-    __slots__ = ('configUrl',)
+    __slots__ = ('configUrl', )
 
     def __init__(self, configUrl=None):
         self.configUrl = configUrl
@@ -82,8 +80,8 @@ class CdnCacheParamsModel(object):
         return
 
     def __repr__(self):
-        return '<CdnCacheParamsModel(configUrl={})>'.format(self.configUrl)
+        return ('<CdnCacheParamsModel(configUrl={})>').format(self.configUrl)
 
 
 def makeImageID(group, sub, name):
-    return '/'.join((Group(group), Sub(sub), name))
+    return ('/').join((Group(group), Sub(sub), name))

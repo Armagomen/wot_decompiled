@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/winback/winback_selectable_reward_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
@@ -11,7 +9,8 @@ class SelectableRewardName(Enum):
 
 
 class WinbackSelectableRewardViewModel(ViewModel):
-    __slots__ = ('onCategorySelect', 'onFilterReset', 'onSelectReward', 'onClose', 'onConfirm')
+    __slots__ = ('onCategorySelect', 'onFilterReset', 'onSelectReward', 'onClose',
+                 'onConfirm')
     VEHICLE_LEVEL = 'vehicleLevel'
     REWARD_INDEX = 'rewardIndex'
 

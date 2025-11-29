@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/maps_training.py
 from functools import partial
 import AccountCommands
 from Event import Event
@@ -29,7 +27,8 @@ class MapsTraining(object):
     def synchronize(self, isFullSync, diff):
         if isFullSync:
             self.__cache.clear()
-        dataResetKey = (MT_PDATA_KEY, '_r')
+        dataResetKey = (
+         MT_PDATA_KEY, '_r')
         if dataResetKey in diff:
             self.__cache[MT_PDATA_KEY] = diff[dataResetKey]
             self.onMapsTrainingDataChanged(diff)
@@ -42,24 +41,23 @@ class MapsTraining(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return
 
     def __getResult(self, progress, vehType, team):
         bestResult = extractScenarioProgress(progress, team, vehType)
         scenarioCompleted = MAX_SCENARIO_PROGRESS == bestResult
-        return (scenarioCompleted, bestResult)
+        return (
+         scenarioCompleted, bestResult)
 
     def getGeometryData(self, geometryID):
         progress = self.__cache[MT_PDATA_KEY].get(geometryID, DEFAULT_PROGRESS_VALUE)
@@ -69,8 +67,8 @@ class MapsTraining(object):
             for team in VEHICLE_TYPE.ALL_TEAMS:
                 completed, bestResult = self.__getResult(progress, vehType, team)
                 total += int(completed)
-                results.setdefault(vehType, {})[team] = {'completed': completed,
-                 'best': bestResult}
+                results.setdefault(vehType, {})[team] = {'completed': completed, 
+                   'best': bestResult}
 
         results['total'] = total
         return results

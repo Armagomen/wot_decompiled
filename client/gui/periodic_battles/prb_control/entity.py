@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/periodic_battles/prb_control/entity.py
 from gui.impl import backport
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities.base.pre_queue.entity import PreQueueEntryPoint

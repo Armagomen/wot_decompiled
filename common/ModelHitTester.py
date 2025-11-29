@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/ModelHitTester.py
 from collections import namedtuple
-import math
-import logging
-import BigWorld
+import math, logging, BigWorld
 from Math import Vector2, Matrix
 from constants import IS_DEVELOPMENT, IS_CLIENT, IS_BOT
 from soft_exception import SoftException
@@ -26,8 +22,8 @@ class HitTesterManager(object):
     CLIENT_CAPSULE_TAG = 'capsuleScale'
 
     def __init__(self, dataSection=None):
-        self.__hitTesters = {ModelStatus.NORMAL: None,
-         ModelStatus.CRASHED: None}
+        self.__hitTesters = {ModelStatus.NORMAL: None, 
+           ModelStatus.CRASHED: None}
         self.__status = ModelStatus.NORMAL
         if dataSection:
             self.initHitTesters(dataSection)
@@ -102,7 +98,9 @@ class HitTesterManager(object):
 
 
 class ModelHitTester(object):
-    __slots__ = ('__bspModel', '__bspModelName', '__bspModelDown', '__bspModelNameDown', '__bspModelUp', '__bspModelNameUp', '__extraCapsuleScale', 'bbox', 'bboxDown', 'bboxUp')
+    __slots__ = ('__bspModel', '__bspModelName', '__bspModelDown', '__bspModelNameDown',
+                 '__bspModelUp', '__bspModelNameUp', '__extraCapsuleScale', 'bbox',
+                 'bboxDown', 'bboxUp')
 
     def __init__(self, bspModelName=None, bspModelNameDown=None, bspModelNameUp=None, extraCapsuleScale=None):
         self.bbox = None
@@ -138,10 +136,10 @@ class ModelHitTester(object):
         if self.__bspModel is not None:
             _logger.error('Can not load bsp model, because it is already loaded!')
             return
-        elif self.bspModelName is None:
-            _logger.error('Can not load bsp model, bspModelName is None')
-            return
         else:
+            if self.bspModelName is None:
+                _logger.error('Can not load bsp model, bspModelName is None')
+                return
             bspModel = BigWorld.WGBspCollisionModel()
             if not bspModel.setModelName(self.bspModelName):
                 raise SoftException("wrong collision model '%s'" % self.bspModelName)
@@ -197,7 +195,8 @@ class ModelHitTester(object):
         else:
             res = []
             for dist, normal, hitAngleCos, matKind in testRes:
-                res.append((dist,
+                res.append((
+                 dist,
                  worldMatrix.applyVector(normal),
                  hitAngleCos,
                  matKind))
@@ -213,9 +212,9 @@ class ModelHitTester(object):
     def __getBspModel(self, value):
         if value > 0.5 and self.__bspModelUp:
             return self.__bspModelUp
-        elif value < -0.5 and self.__bspModelDown:
-            return self.__bspModelDown
         else:
+            if value < -0.5 and self.__bspModelDown:
+                return self.__bspModelDown
             return self.__bspModel
 
     def getModel(self, value):
@@ -226,8 +225,8 @@ class BoundingBoxManager(object):
 
     def __init__(self, normalBBox=None, crashedBBox=None):
         self.__status = ModelStatus.NORMAL
-        self.__bboxes = {ModelStatus.NORMAL: normalBBox,
-         ModelStatus.CRASHED: crashedBBox}
+        self.__bboxes = {ModelStatus.NORMAL: normalBBox, 
+           ModelStatus.CRASHED: crashedBBox}
 
     def setStatus(self, modelStatus):
         if self.__bboxes[modelStatus]:
@@ -269,7 +268,9 @@ def segmentMayHitVolume(boundingRadius, center, segmentStart, segmentEnd):
     e = ao.dot(ab)
     if e <= 0.0:
         return ao.lengthSquared <= radiusSquared
-    return bo.lengthSquared <= radiusSquared if e >= ab.lengthSquared else ao.lengthSquared - e * e / ab.lengthSquared <= radiusSquared
+    if e >= ab.lengthSquared:
+        return bo.lengthSquared <= radiusSquared
+    return ao.lengthSquared - e * e / ab.lengthSquared <= radiusSquared
 
 
 def coneMayHitVolume(boundingRadius, center, segmentStart, segmentEnd, startDeviation, endDeviation, do2DTest=True):
@@ -300,9 +301,9 @@ def combineBBoxes(bboxes):
     bboxesCount = len(bboxes)
     if bboxesCount == 0:
         return None
-    elif bboxesCount == 1:
-        return bboxes[0]
     else:
+        if bboxesCount == 1:
+            return bboxes[0]
         minBound, maxBound = bboxes[0][0], bboxes[0][1]
         for bbox in bboxes[1:]:
             minBound.x = min(minBound.x, bbox[0].x)
@@ -328,7 +329,8 @@ def createBBoxManagerForModels(hitTesterManagers):
     return BoundingBoxManager(combineBBoxes(normalBBoxes), combineBBoxes(crashedBBoxes))
 
 
-SegmentCollisionResult = namedtuple('SegmentCollisionResult', ('dist', 'hitAngleCos', 'armor'))
+SegmentCollisionResult = namedtuple('SegmentCollisionResult', ('dist', 'hitAngleCos',
+                                                               'armor'))
 if hasattr(BigWorld, 'wg_segmentMayHitVolume'):
     segmentMayHitVolume = BigWorld.wg_segmentMayHitVolume
 if hasattr(BigWorld, 'wg_coneMayHitVolume'):

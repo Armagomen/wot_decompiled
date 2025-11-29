@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/SettingsCache.py
 from Event import Event
 from adisp import adisp_async
 from gui.ClientUpdateManager import g_clientUpdateManager

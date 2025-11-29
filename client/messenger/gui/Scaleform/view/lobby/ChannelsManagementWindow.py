@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ChannelsManagementWindow.py
 from constants import IS_CHINA
 from debug_utils import LOG_ERROR
 from gui.Scaleform.locale.MESSENGER import MESSENGER
@@ -24,7 +22,7 @@ class ChannelsManagementWindow(ChannelsManagementWindowMeta, ISearchHandler):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def onWindowClose(self):
         self.destroy()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/utils.py
 import copy
 from operator import sub
 from functools import partial
@@ -18,15 +16,15 @@ from account_shared import AmmoIterator
 import ResMgr
 __defaultGlossTexture = None
 _FORMAT_VEH_INFO_STRING_REXP = re.compile('{([a-zA-Z]+)}')
-_VEH_INFO_STRING_CONVERTERS = {'level': lambda descr: str(descr.type.level),
- 'class': lambda descr: descr.type.getVehicleClass(),
- 'vehName': lambda descr: descr.type.name.split(':')[1],
- 'clip': lambda descr: 'hasClip' if 'clip' in descr.gun.tags else 'noClip',
- 'autoreload': lambda descr: 'hasAutoReload' if 'autoreload' in descr.gun.tags else 'noAutoreload',
- 'wheels': lambda descr: 'hasWheels' if descr.isWheeledVehicle else 'noWheels',
- 'burst': lambda descr: 'hasBurst' if descr.hasBurst else 'noBurst',
- 'dualGun': lambda descr: 'hasDualGun' if descr.isDualgunVehicle else 'noDualGun',
- 'hydraulicChassis': lambda descr: 'hasHydraulicChassis' if descr.type.hasSiegeMode and descr.type.hasHydraulicChassis else 'noHydraulicChassis'}
+_VEH_INFO_STRING_CONVERTERS = {'level': lambda descr: str(descr.type.level), 
+   'class': lambda descr: descr.type.getVehicleClass(), 
+   'vehName': lambda descr: descr.type.name.split(':')[1], 
+   'clip': lambda descr: 'hasClip' if 'clip' in descr.gun.tags else 'noClip', 
+   'autoreload': lambda descr: 'hasAutoReload' if 'autoreload' in descr.gun.tags else 'noAutoreload', 
+   'wheels': lambda descr: 'hasWheels' if descr.isWheeledVehicle else 'noWheels', 
+   'burst': lambda descr: 'hasBurst' if descr.hasBurst else 'noBurst', 
+   'dualGun': lambda descr: 'hasDualGun' if descr.isDualgunVehicle else 'noDualGun', 
+   'hydraulicChassis': lambda descr: 'hasHydraulicChassis' if descr.type.hasSiegeMode and descr.type.hasHydraulicChassis else 'noHydraulicChassis'}
 
 def getDefaultGlossTexture():
     global __defaultGlossTexture
@@ -60,14 +58,12 @@ def _makeDefaultVehicleFactors(sample):
     for key, value in sample.iteritems():
         if value is None:
             default[key] = value
-        if isinstance(value, (float,
-         int,
-         long,
-         basestring)):
+        elif isinstance(value, (float, int, long, basestring)):
             default[key] = value
-        if isinstance(value, (list, tuple)):
+        elif isinstance(value, (list, tuple)):
             default[key] = value[:]
-        LOG_ERROR('Default value of vehicle attribute can not be resolved', key, value)
+        else:
+            LOG_ERROR('Default value of vehicle attribute can not be resolved', key, value)
 
     return default
 
@@ -79,12 +75,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 def generateDefaultCrew(vehicleType, level):
     nationID, vehicleTypeID = vehicleType.id
     skills = ()
-    passport = (nationID,
-     False,
-     False,
-     0,
-     0,
-     0)
+    passport = (nationID, False, False, 0, 0, 0)
     res = []
     for roles in vehicleType.crewRoles:
         cd = tankmen.generateCompactDescr(passport, vehicleTypeID, roles[0], level, skills, level)
@@ -95,12 +86,7 @@ def generateDefaultCrew(vehicleType, level):
 
 def _generateTankman(vehicleDescr, roles, level):
     nationID, vehicleTypeID = vehicleDescr.type.id
-    passport = (nationID,
-     False,
-     False,
-     0,
-     0,
-     0)
+    passport = (nationID, False, False, 0, 0, 0)
     skills = ()
     return tankmen.stripNonBattle(tankmen.generateCompactDescr(passport, vehicleTypeID, roles[0], level, skills, level))
 
@@ -110,7 +96,8 @@ def _replaceMissingTankmenWithDefaultOnes(vehicleDescr, crewCompactDescrs, level
     for tankmanCompactDescr, roles in zip(crewCompactDescrs, vehicleDescr.type.crewRoles):
         if tankmanCompactDescr is None:
             result.append(_generateTankman(vehicleDescr, roles, level))
-        result.append(tankmanCompactDescr)
+        else:
+            result.append(tankmanCompactDescr)
 
     return result
 
@@ -130,7 +117,8 @@ def getVehicleShotSpeedByFactors(factors, speed, gravity=1.0):
     newProjectileSpeedFactor = projectileSpeedFactor * factors.get('gunShotsSpeed', 1.0)
     speed = speed / projectileSpeedFactor * newProjectileSpeedFactor
     gravity = gravity / projectileSpeedFactor ** 2 * newProjectileSpeedFactor ** 2
-    return (speed, gravity)
+    return (
+     speed, gravity)
 
 
 def getFirstReloadTime(vehicleDescr, factors, ignoreRespawn=False, shellsAmount=0):
@@ -140,7 +128,7 @@ def getFirstReloadTime(vehicleDescr, factors, ignoreRespawn=False, shellsAmount=
     if 'dualGun' in vehicleDescr.gun.tags:
         firstShellReload = vehicleDescr.gun.dualGun.reloadTimes[0]
     elif 'clip' in vehicleDescr.gun.tags and 'autoreload' in vehicleDescr.gun.tags:
-        firstShellReload = vehicleDescr.gun.autoreload.reloadTime[-1]
+        firstShellReload = vehicleDescr.gun.autoreload.reloadTime[(-1)]
     elif 'twinGun' in vehicleDescr.gun.tags and shellsAmount > 1:
         firstShellReload = vehicleDescr.gun.twinGun.twinGunReloadTime
     reloadTime = firstShellReload * factor if ignoreRespawn else firstShellReload * factor * respawnReloadFactor
@@ -158,21 +146,20 @@ def getClipReloadTime(vehicleDescr, factors):
     if 'clip' in vehicleDescr.gun.tags:
         factor = vehicleDescr.miscAttrs['gunReloadTimeFactor'] * max(factors['gun/reloadTime'], 0.0)
         if 'autoreload' in vehicleDescr.gun.tags:
-            return tuple((reloadTime * factor for reloadTime in vehicleDescr.gun.autoreload.reloadTime))
-        elif 'autoShoot' in vehicleDescr.gun.tags:
-            return (0.0,)
-        else:
-            return (vehicleDescr.gun.reloadTime * factor + factors['gun/extraReloadTime'],)
+            return tuple(reloadTime * factor for reloadTime in vehicleDescr.gun.autoreload.reloadTime)
+        if 'autoShoot' in vehicleDescr.gun.tags:
+            return (0.0, )
+        return (vehicleDescr.gun.reloadTime * factor + factors['gun/extraReloadTime'],)
     else:
-        return (0.0,)
+        return (0.0, )
 
 
 def getDualGunReloadTime(vehicleDescr, factors):
     if 'dualGun' in vehicleDescr.gun.tags:
         factor = vehicleDescr.miscAttrs['gunReloadTimeFactor'] * max(factors['gun/reloadTime'], 0.0)
-        return tuple((reloadTime * factor for reloadTime in vehicleDescr.gun.dualGun.reloadTimes))
+        return tuple(reloadTime * factor for reloadTime in vehicleDescr.gun.dualGun.reloadTimes)
     else:
-        return (0.0,)
+        return (0.0, )
 
 
 def geTwinGunReloadTime(vehicleDescr, factors):
@@ -180,7 +167,9 @@ def geTwinGunReloadTime(vehicleDescr, factors):
         factor = vehicleDescr.miscAttrs['gunReloadTimeFactor'] * max(factors['gun/reloadTime'], 0.0)
         oneGunReloadTime = vehicleDescr.gun.reloadTime * factor
         twinGunsReloadTime = vehicleDescr.gun.twinGun.twinGunReloadTime * factor
-        return (oneGunReloadTime, twinGunsReloadTime)
+        return (
+         oneGunReloadTime, twinGunsReloadTime)
+    return (0.0, )
 
 
 def getExtraReloadTime(vehicleDescr):
@@ -189,7 +178,9 @@ def getExtraReloadTime(vehicleDescr):
         return 0.0
     else:
         params = mechanicsParams.get(ExtraShotClipParams.MECHANICS_NAME)
-        return 0.0 if params is None else params.extraReloadTime
+        if params is None:
+            return 0.0
+        return params.extraReloadTime
 
 
 def getTurretRotationSpeed(vehicleDescr, factors):
@@ -212,7 +203,9 @@ def getGunAimingTime(vehicleDescr, factors, gunDescr=None, miscFactorName=None):
 
 
 def getClipTimeBetweenShots(vehicleDescr, factors):
-    return vehicleDescr.gun.clip[1] * max(factors['gun/clipTimeBetweenShots'], 0.0) if 'autoShoot' not in vehicleDescr.gun.tags else 0.0
+    if 'autoShoot' not in vehicleDescr.gun.tags:
+        return vehicleDescr.gun.clip[1] * max(factors['gun/clipTimeBetweenShots'], 0.0)
+    return 0.0
 
 
 def getChassisRotationSpeed(vehicleDescr, factors):
@@ -220,16 +213,16 @@ def getChassisRotationSpeed(vehicleDescr, factors):
 
 
 def getInvisibility(vehicleDescr, factors, baseInvisibility, isMoving):
-    baseValue = baseInvisibility[0 if isMoving else 1]
+    baseValue = baseInvisibility[(0 if isMoving else 1)]
     additiveTerm = factors['invisibility'][0] + factors.get('invisibilityAdditiveTerm', 0.0) + vehicleDescr.miscAttrs['invisibilityBaseAdditive'] + vehicleDescr.miscAttrs['invisibilityAdditiveTerm']
     multFactor = factors['invisibility'][1] * factors.get('invisibilityMultFactor', 1.0)
     return (baseValue + additiveTerm) * multFactor
 
 
 if IS_CLIENT:
-    CLIENT_VEHICLE_ATTRIBUTE_FACTORS = {'camouflage': 1.0,
-     'shotDispersion': 1.0,
-     'dualAccuracyCoolingDelay': 1.0}
+    CLIENT_VEHICLE_ATTRIBUTE_FACTORS = {'camouflage': 1.0, 
+       'shotDispersion': 1.0, 
+       'dualAccuracyCoolingDelay': 1.0}
     CLIENT_VEHICLE_ATTRIBUTE_FACTORS.update(vehicleAttributeFactors())
 
     def makeDefaultClientVehicleAttributeFactors():
@@ -241,8 +234,8 @@ if IS_CLIENT:
 
 
     def _comparableFactors(original, changed):
-        if all((isinstance(x, list) for x in (original, changed))):
-            return all((_isFactor(a) and _isFactor(b) for a, b in zip(original, changed)))
+        if all(isinstance(x, list) for x in (original, changed)):
+            return all(_isFactor(a) and _isFactor(b) for a, b in zip(original, changed))
         else:
             return _isFactor(original) and _isFactor(changed)
 
@@ -252,10 +245,10 @@ if IS_CLIENT:
         for factor in original.iterkeys():
             if not _comparableFactors(original[factor], changed[factor]):
                 continue
-            if all((isinstance(x, list) for x in (original[factor], changed[factor]))):
+            if all(isinstance(x, list) for x in (original[factor], changed[factor])):
                 if not all(map(isclose, original[factor], changed[factor])):
                     result[factor] = map(sub, original[factor], changed[factor])
-            if not isclose(original[factor], changed[factor]):
+            elif not isclose(original[factor], changed[factor]):
                 originalFactor = original.get(factor, CLIENT_VEHICLE_ATTRIBUTE_FACTORS[factor])
                 changedFactor = changed[factor]
                 if originalFactor == changedFactor:
@@ -301,7 +294,7 @@ if IS_CLIENT:
 
     def updateAttrFactorsWithSplit(vehicleDescr, crewCompactDescrs, eqs, factors, additionalCrewLevelIncrease=0, isModifySkillProcessors=False):
         extras = {}
-        extraAspects = {VEHICLE_TTC_ASPECTS.WHEN_STILL: ('invisibility',)}
+        extraAspects = {VEHICLE_TTC_ASPECTS.WHEN_STILL: ('invisibility', )}
         for aspect in extraAspects.iterkeys():
             currFactors = copy.deepcopy(factors)
             updateVehicleAttrFactors(vehicleDescr, crewCompactDescrs, eqs, currFactors, aspect, additionalCrewLevelIncrease, isModifySkillProcessors)
@@ -446,6 +439,8 @@ def formatVehicleInfoString(fmtStr, descr):
 
     def _replaceMatch(match):
         converter = _VEH_INFO_STRING_CONVERTERS.get(match.group(1))
-        return converter(descr) if converter else match.group(0)
+        if converter:
+            return converter(descr)
+        return match.group(0)
 
     return _FORMAT_VEH_INFO_STRING_REXP.sub(_replaceMatch, fmtStr)

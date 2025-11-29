@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/states.py
 import BigWorld
 from frameworks.wulf import WindowLayer
 from frameworks.state_machine.transitions import TransitionType
@@ -38,7 +36,7 @@ class _LootBoxBaseState(SFViewLobbyState):
 
     def getNavigationDescription(self):
         eventName = self.__cachedParams.get('ctx', {}).get('eventName')
-        return LobbyStateDescription(title=backport.text(getTextResource('preview/backLabel'.split('/'), eventName)()))
+        return LobbyStateDescription(title=backport.text(getTextResource(('preview/backLabel').split('/'), eventName)()))
 
     def registerTransitions(self):
         from gui.Scaleform.daapi.view.lobby.store.browser.states import ShopState
@@ -64,7 +62,11 @@ class _LootBoxBaseState(SFViewLobbyState):
         self.__cachedParams['ctx'] = ctx
 
     def _getEvents(self):
-        return ((self.__lootBoxes.onStatusChanged, self.__onStatusChanged), (self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChanged))
+        return (
+         (
+          self.__lootBoxes.onStatusChanged, self.__onStatusChanged),
+         (
+          self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChanged))
 
     def _subscribe(self):
         for event, handler in self._getEvents():
@@ -125,10 +127,8 @@ class LootBoxState(LobbyState):
         BigWorld.worldDrawEnabled(True)
 
     def _getVisibleLayers(self):
-        return [WindowLayer.TOP_WINDOW,
-         WindowLayer.FULLSCREEN_WINDOW,
-         WindowLayer.TOOLTIP,
-         WindowLayer.OVERLAY]
+        return [
+         WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW, WindowLayer.TOOLTIP, WindowLayer.OVERLAY]
 
 
 @LootBoxState.parentOf

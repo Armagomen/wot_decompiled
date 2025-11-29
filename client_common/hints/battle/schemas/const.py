@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/hints/battle/schemas/const.py
 HTML_TEMPLATE_PATH = 'html_templates:battleHints'
 MIN_SHOW_TIME_LOWER_LIMIT = 0.1
 MIN_SHOW_TIME_UPPER_LIMIT = 10

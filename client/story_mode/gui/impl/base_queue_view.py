@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/base_queue_view.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from helpers import dependency
@@ -8,7 +6,7 @@ from shared_utils import safeCancelCallback
 from story_mode.skeletons.story_mode_controller import IStoryModeController
 
 class BaseWaitQueueView(ViewImpl):
-    __slots__ = ('_timerCallback',)
+    __slots__ = ('_timerCallback', )
     storyModeCtrl = dependency.descriptor(IStoryModeController)
 
     def __init__(self, *args, **kwargs):

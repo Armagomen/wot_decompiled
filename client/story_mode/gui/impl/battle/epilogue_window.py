@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/battle/epilogue_window.py
 from functools import partial
-import typing
-import SoundGroups
+import typing, SoundGroups
 from frameworks.wulf import WindowFlags, ViewSettings
 from gui.app_loader import app_getter
 from gui.impl.gen import R
@@ -21,7 +18,7 @@ if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.application import AppEntry
 
 class EpilogueView(ViewImpl):
-    __slots__ = ('_uiLogger',)
+    __slots__ = ('_uiLogger', )
     LAYOUT_ID = R.views.story_mode.battle.EpilogueWindow()
     _storyModeCtrl = dependency.descriptor(IStoryModeController)
     _appLoader = dependency.instance(IAppLoader)
@@ -48,7 +45,11 @@ class EpilogueView(ViewImpl):
         super(EpilogueView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onCloseHandler), (self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
+        return (
+         (
+          self.viewModel.onClose, self._onCloseHandler),
+         (
+          self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
 
     @UseStoryModeFading(hide=False)
     def _onCloseHandler(self):
@@ -73,7 +74,7 @@ class EpilogueWindow(DestroyWindowOnDisconnectMixin, WindowImpl):
 
     @app_getter
     def app(self):
-        return None
+        return
 
     def _onContentReady(self):
         super(EpilogueWindow, self)._onContentReady()

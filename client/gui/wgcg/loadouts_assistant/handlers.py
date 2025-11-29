@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/loadouts_assistant/handlers.py
 from typing import Callable
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.loadouts_assistant.context import LoadoutsAssistantCtx

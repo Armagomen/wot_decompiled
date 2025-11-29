@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/timers_common.py
 import BigWorld
 from gui.shared.utils.TimeInterval import TimeInterval
 
 class TimerComponent(object):
-    __slots__ = ('_viewObject', '_typeID', '_viewID', '_totalTime', '_startTime', '_finishTime', '_secondInRow')
+    __slots__ = ('_viewObject', '_typeID', '_viewID', '_totalTime', '_startTime', '_finishTime',
+                 '_secondInRow')
 
     def __init__(self, viewObject, typeID, viewID, totalTime, finishTime, startTime=None, secondInRow=False, **kwargs):
         super(TimerComponent, self).__init__(**kwargs)
@@ -21,7 +20,7 @@ class TimerComponent(object):
             self._finishTime = self._startTime + totalTime if totalTime > 0 else self._startTime
 
     def __repr__(self):
-        return 'TimerComponent(typeID = {}, viewID = {}, totalTime = {})'.format(self._typeID, self._viewID, self._totalTime)
+        return ('TimerComponent(typeID = {}, viewID = {}, totalTime = {})').format(self._typeID, self._viewID, self._totalTime)
 
     def clear(self):
         self._viewObject = None
@@ -97,7 +96,7 @@ class PythonTimer(TimerComponent):
 
 
 class PrecisePythonTimer(PythonTimer):
-    __slots__ = ('__short1stPeriodCbId', '__interval', '_timeInterval', '_startTime')
+    __slots__ = ('__short1stPeriodCbId', '__interval')
 
     def __init__(self, viewObject, typeID, viewID, totalTime, finishTime, startTime=None, interval=1.0, secondInRow=False, **kwargs):
         super(PrecisePythonTimer, self).__init__(viewObject, typeID, viewID, totalTime, finishTime, startTime, interval, secondInRow, **kwargs)

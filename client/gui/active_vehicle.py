@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/active_vehicle.py
 from typing import TYPE_CHECKING
-import logging
-import BigWorld
-import AccountCommands
+import logging, BigWorld, AccountCommands
 from items.components.c11n_constants import SeasonType
 from soft_exception import SoftException
 if TYPE_CHECKING:
@@ -17,11 +13,13 @@ class ActiveVehicleSeasonType(object):
 
     def get(self, vehTypeDescr, defaultSeasonType):
         season = self._vehTypeDescrToSeason.get(vehTypeDescr, defaultSeasonType)
-        return defaultSeasonType if season == SeasonType.UNDEFINED else season
+        if season == SeasonType.UNDEFINED:
+            return defaultSeasonType
+        return season
 
     def __setitem__(self, vehTypeDescr, seasonType):
         if seasonType not in SeasonType.RANGE and seasonType != SeasonType.UNDEFINED:
-            raise SoftException("Invalid SeasonType '{}'".format(seasonType))
+            raise SoftException(("Invalid SeasonType '{}'").format(seasonType))
         if self.get(vehTypeDescr, SeasonType.UNDEFINED) != seasonType:
             self._vehTypeDescrToSeason[vehTypeDescr] = seasonType
             self.__updateServer(vehTypeDescr, seasonType)

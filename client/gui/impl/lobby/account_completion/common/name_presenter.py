@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/name_presenter.py
 import typing
 from wg_async import wg_async, wg_await
 from helpers import dependency
@@ -9,7 +7,7 @@ if typing.TYPE_CHECKING:
     from gui.platform.wgnp.demo_account.request import ValidateNicknameParams
 
 class ValidationRequestWrapper(object):
-    __slots__ = ('_isDisposed',)
+    __slots__ = ('_isDisposed', )
     _wgnpDemoAccCtrl = dependency.descriptor(IWGNPDemoAccRequestController)
     _instances = list()
 
@@ -30,7 +28,9 @@ class ValidationRequestWrapper(object):
 
     @staticmethod
     def create():
-        return ValidationRequestWrapper._instances.pop() if ValidationRequestWrapper._instances else ValidationRequestWrapper()
+        if ValidationRequestWrapper._instances:
+            return ValidationRequestWrapper._instances.pop()
+        return ValidationRequestWrapper()
 
     @staticmethod
     def utilize(wrapper):

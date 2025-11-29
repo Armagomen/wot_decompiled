@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/subview/platoon_tiers_filter_subview.py
 import logging
 from account_helpers.settings_core.settings_constants import GAME
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
@@ -28,7 +26,7 @@ class TiersFilterSubview(ViewImpl):
         super(TiersFilterSubview, self).__init__(settings)
 
     def update(self, *args):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             filterTypesArray = model.getSearchFilterTypes()
             filterTypesArray.clear()
             if self.__platoonCtrl.isTankLevelPreferenceEnabled():
@@ -52,7 +50,7 @@ class TiersFilterSubview(ViewImpl):
 
     def __updateTierSettings(self):
         userSearchFlags = BitfieldHelper(self.__platoonCtrl.getUserSearchFlags())
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             tierArray = model.tiersSettings.getTierButtons()
             tierArray.clear()
             for lvl in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1):
@@ -63,13 +61,13 @@ class TiersFilterSubview(ViewImpl):
             tierArray.invalidate()
 
     def __addListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.tiersSettings.onSwitchTier += self.__onSwitchTier
             model.voiceSettings.switchVoiceChat += self.__onSwitchVoiceChat
         self.__settingsCore.onSettingsChanged += self.__onSettingsChanged
 
     def __removeListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.tiersSettings.onSwitchTier -= self.__onSwitchTier
             model.voiceSettings.switchVoiceChat -= self.__onSwitchVoiceChat
         self.__settingsCore.onSettingsChanged -= self.__onSettingsChanged
@@ -81,7 +79,7 @@ class TiersFilterSubview(ViewImpl):
     def __updateVoiceChat(self):
         userSearchFlags = BitfieldHelper(self.__platoonCtrl.getUserSearchFlags())
         enableVoiceChat = userSearchFlags.isSetFlag(UnitAssemblerSearchFlags.USE_VOICE)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.voiceSettings.setIsVoiceChatEnabled(enableVoiceChat)
 
     @staticmethod

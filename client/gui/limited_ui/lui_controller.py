@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/limited_ui/lui_controller.py
-import enum
-import logging
+import enum, logging
 from collections import defaultdict
 import typing
 from future.utils import itervalues
@@ -57,8 +54,8 @@ class _LimitedUIConditionsService(object):
         if not tokens - set(self.__conditions):
             return {token:self.__conditions[token].value() for token in tokens}
         else:
-            _logger.error('fillContext: Tokens: %s are not defined.', ', '.join(tokens))
-            return None
+            _logger.error('fillContext: Tokens: %s are not defined.', (', ').join(tokens))
+            return
 
     def updateActiveTokens(self, tokens):
         inactivateTokens = self.__activeTokens - tokens
@@ -141,7 +138,9 @@ class LimitedUIController(ILimitedUIController):
 
     @property
     def configVersion(self):
-        return self.__luiConfig.version if self.__luiConfig else 0
+        if self.__luiConfig:
+            return self.__luiConfig.version
+        return 0
 
     @property
     def version(self):
@@ -302,12 +301,13 @@ class LimitedUIController(ILimitedUIController):
             self.__storeSkippedObservers()
 
     def __updateActiveRules(self):
-        activeRulesIDs = set((ruleID for ruleID in self.__observers if self.__observers[ruleID]))
+        activeRulesIDs = set(ruleID for ruleID in self.__observers if self.__observers[ruleID])
         activeTokens = set().union(*(self.__rules.getTokens(ruleID) for ruleID in activeRulesIDs))
         self.__luiService.updateActiveTokens(activeTokens)
 
     def __onConditionUpdated(self, tokenID):
-        notifyRules = [ ruleID for ruleID in self.__observers if self.__observers[ruleID] and tokenID in self.__rules.getTokens(ruleID) ]
+        notifyRules = [ ruleID for ruleID in self.__observers if self.__observers[ruleID] and tokenID in self.__rules.getTokens(ruleID)
+                      ]
         for ruleID in notifyRules:
             if not self.__isRuleCompleted(ruleID) and self.__checkRule(ruleID):
                 for handler in self.__observers[ruleID]:
@@ -360,7 +360,9 @@ class LimitedUIController(ILimitedUIController):
             return True
         else:
             ctx = self.__luiService.fillContext(rule.tokens)
-            return rule.expression(ctx) if ctx else False
+            if ctx:
+                return rule.expression(ctx)
+            return False
 
     def __isRuleCompleted(self, ruleID):
         return self.__rules.isCompleted(ruleID)
@@ -379,22 +381,20 @@ class LimitedUIController(ILimitedUIController):
     def __sendSysMessage(self, ruleID):
         sysMessageTemplate = self.__rules.getSysMessage(ruleID)
         if sysMessageTemplate:
-            auxData = [sysMessageTemplate,
-             NotificationPriorityLevel.MEDIUM,
-             None,
-             None]
+            auxData = [
+             sysMessageTemplate, NotificationPriorityLevel.MEDIUM, None, None]
             self.__systemMessages.proto.serviceChannel.pushClientMessage('', SCH_CLIENT_MSG_TYPE.SYS_MSG_TYPE, auxData=auxData)
         return
 
     def __tryNotifyStateChanged(self):
         if self.version <= 0 or not self.__rules.hasRulesByTypes(LuiRuleTypes.NOVICE) or self.__isRulesForNoviceCompleted():
             return
+        isLuiConfigEnabled = self.__luiConfig.enabled
+        luiSwitcherState = AccountSettings.getUIFlag(_ACC_SETTINGS_SWITCHER_FLAG)
+        if luiSwitcherState is None:
+            AccountSettings.setUIFlag(_ACC_SETTINGS_SWITCHER_FLAG, isLuiConfigEnabled)
+            return
         else:
-            isLuiConfigEnabled = self.__luiConfig.enabled
-            luiSwitcherState = AccountSettings.getUIFlag(_ACC_SETTINGS_SWITCHER_FLAG)
-            if luiSwitcherState is None:
-                AccountSettings.setUIFlag(_ACC_SETTINGS_SWITCHER_FLAG, isLuiConfigEnabled)
-                return
             if luiSwitcherState != isLuiConfigEnabled:
                 AccountSettings.setUIFlag(_ACC_SETTINGS_SWITCHER_FLAG, isLuiConfigEnabled)
                 self.__changeSwitcherNotifier(isLuiConfigEnabled)
@@ -410,7 +410,7 @@ class LimitedUIController(ILimitedUIController):
         self.__systemMessages.pushMessage(backport.text(textID), msgType)
 
     def __isRulesForNoviceCompleted(self):
-        return all((self.__isRuleCompleted(ruleID) or self.__checkCondition(ruleID) for ruleID in self.__rules.getRulesIDsByTypes(LuiRuleTypes.NOVICE)))
+        return all(self.__isRuleCompleted(ruleID) or self.__checkCondition(ruleID) for ruleID in self.__rules.getRulesIDsByTypes(LuiRuleTypes.NOVICE))
 
     def __checkNoviceRulesCompletion(self):
         if self.__settingsCore.serverSettings.settingsCache.isSynced():

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/CONTEXT_MENU_HANDLER_TYPE.py
 
 
 class CONTEXT_MENU_HANDLER_TYPE(object):

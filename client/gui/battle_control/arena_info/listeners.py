@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/listeners.py
-import operator
-import weakref
+import operator, weakref
 from collections import namedtuple
 import BigWorld
 from constants import ARENA_PERIOD, FINISH_REASON
@@ -30,7 +27,7 @@ def _getPeriodAdditionalInfo(arenaDP, period, additionalInfo):
         winnerTeam, finishReason = additionalInfo
         return _PeriodAdditionalInfo(arenaDP.getWinStatus(winnerTeam), winnerTeam, finishReason)
     else:
-        return None
+        return
 
 
 class _Listener(object):
@@ -91,7 +88,7 @@ class _Listener(object):
 
 
 class ArenaVehiclesListener(_Listener):
-    __slots__ = ('__callbackID',)
+    __slots__ = ('__callbackID', )
 
     def __init__(self):
         super(ArenaVehiclesListener, self).__init__()
@@ -215,7 +212,7 @@ class ArenaVehiclesListener(_Listener):
             flags, vo = self._arenaDP.updateGameModeSpecificStats(vehicleID, isStatic, vehicleStats)
             if isStatic:
                 self._invokeListenersMethod('updateVehiclesInfo', [(flags, vo)], self._arenaDP)
-            if flags != INVALIDATE_OP.NONE:
+            elif flags != INVALIDATE_OP.NONE:
                 self._invokeListenersMethod('updateVehiclesStats', [(flags, vo)], self._arenaDP)
 
     def __arena_onChatCommandTargetUpdate(self, isStatic, chatCommandStates):
@@ -264,10 +261,8 @@ class ArenaVehiclesListener(_Listener):
         return
 
 
-_TAGS_TO_UPDATE = {USER_TAG.FRIEND,
- USER_TAG.IGNORED,
- USER_TAG.IGNORED_TMP,
- USER_TAG.MUTED}
+_TAGS_TO_UPDATE = {
+ USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.IGNORED_TMP, USER_TAG.MUTED}
 
 class ContactsListener(_Listener):
     __slots__ = ()
@@ -287,7 +282,8 @@ class ContactsListener(_Listener):
             self._invokeListenersMethod('invalidateUsersTags')
 
     def __me_onBattleUserActionReceived(self, actionID, user):
-        if actionID in (USER_ACTION_ID.FRIEND_ADDED,
+        if actionID in (
+         USER_ACTION_ID.FRIEND_ADDED,
          USER_ACTION_ID.FRIEND_REMOVED,
          USER_ACTION_ID.IGNORED_ADDED,
          USER_ACTION_ID.IGNORED_REMOVED,
@@ -299,7 +295,7 @@ class ContactsListener(_Listener):
 
 
 class PersonalInvitationsListener(_Listener):
-    __slots__ = ('__filter',)
+    __slots__ = ('__filter', )
 
     def __init__(self):
         super(PersonalInvitationsListener, self).__init__()
@@ -307,7 +303,7 @@ class PersonalInvitationsListener(_Listener):
 
     @prbInvitesProperty
     def prbInvites(self):
-        return None
+        return
 
     def start(self, setup):
         super(PersonalInvitationsListener, self).start(setup)
@@ -569,11 +565,12 @@ class PositionsListener(_Listener):
         else:
 
             def getter(_):
-                return None
+                return
 
         def _iterator():
             for vehicleID, position in positions.iteritems():
-                yield (getter(vehicleID), position)
+                yield (
+                 getter(vehicleID), position)
 
         self._invokeListenersMethod('updatePositions', _iterator)
         return
@@ -601,7 +598,8 @@ class ViewPointsListener(_Listener):
 
 
 class ListenersCollection(_Listener):
-    __slots__ = ('__vehicles', '__teamsBases', '__loader', '__contacts', '__period', '__invitations', '__positions', '__viewPoints', '__battleCtx')
+    __slots__ = ('__vehicles', '__teamsBases', '__loader', '__contacts', '__period',
+                 '__invitations', '__positions', '__viewPoints', '__battleCtx')
 
     def __init__(self):
         super(ListenersCollection, self).__init__()

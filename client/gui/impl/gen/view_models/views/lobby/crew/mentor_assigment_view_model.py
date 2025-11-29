@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/mentor_assigment_view_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.crew.common.base_crew_view_model import BaseCrewViewModel
 from gui.impl.gen.view_models.views.lobby.crew.common.info_tip_model import InfoTipModel
 from gui.impl.gen.view_models.views.lobby.crew.mentor_assigment_tankman_model import MentorAssigmentTankmanModel
 
 class MentorAssigmentViewModel(BaseCrewViewModel):
-    __slots__ = ('onResetFilters', 'onLoadCards', 'onTankmanSelected', 'onCardMouseEnter', 'onCardMouseLeave', 'onTipClose', 'onTipsReadyToShow')
+    __slots__ = ('onResetFilters', 'onLoadCards', 'onTankmanSelected', 'onCardMouseEnter',
+                 'onCardMouseLeave', 'onTipClose', 'onTipsReadyToShow')
 
     def __init__(self, properties=10, commands=11):
         super(MentorAssigmentViewModel, self).__init__(properties=properties, commands=commands)

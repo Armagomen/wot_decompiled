@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/gift_system/hubs/base/gifter.py
 import typing
 from account_helpers import isLongDisconnectedFromCenter
 from adisp import adisp_async, adisp_process
@@ -46,12 +44,14 @@ class GiftEventBaseGifter(IGiftEventGifter):
     def getRequestRestriction(self):
         if not self._isRequestsEnabled():
             return GifterResponseState.REQUESTS_DISABLED
-        elif isLongDisconnectedFromCenter():
-            return GifterResponseState.CENTER_DISCONNECTED
-        elif not self.__webController.isAvailable():
-            return GifterResponseState.WGCG_NOT_AVAILABLE
         else:
-            return GifterResponseState.REQUEST_IN_PROGRESS if self.__requestCtx is not None else None
+            if isLongDisconnectedFromCenter():
+                return GifterResponseState.CENTER_DISCONNECTED
+            if not self.__webController.isAvailable():
+                return GifterResponseState.WGCG_NOT_AVAILABLE
+            if self.__requestCtx is not None:
+                return GifterResponseState.REQUEST_IN_PROGRESS
+            return
 
     @adisp_async
     @adisp_process

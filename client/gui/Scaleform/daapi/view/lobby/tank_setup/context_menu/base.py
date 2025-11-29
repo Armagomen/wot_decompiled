@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/base.py
 import typing
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import ContextMenu, CMLabel
 from gui.Scaleform.framework.managers.context_menu import CM_BUY_COLOR
@@ -25,7 +23,8 @@ class TankSetupCMLabel(object):
     PUT_ON_THIRD = 'putOnThird'
     TAKE_OFF = 'takeOff'
     UNLOAD = 'unload'
-    PUT_ON_LIST = (PUT_ON_FIRST, PUT_ON_SECOND, PUT_ON_THIRD)
+    PUT_ON_LIST = (
+     PUT_ON_FIRST, PUT_ON_SECOND, PUT_ON_THIRD)
 
 
 class ITankSetupCMHandler(object):
@@ -51,14 +50,11 @@ class BaseTankSetupContextMenu(ContextMenu):
         view = self._getEmitterView()
         if view is None or self._slotType != view.getSelectedSetup():
             return
-        else:
-            actionArgs = {'actionType': actionType,
-             'intCD': kwargs.get('intCD', self._intCD),
-             'installedSlotId': kwargs.get('installedSlotId', self._installedSlotId)}
-            if 'currentSlotId' in kwargs:
-                actionArgs['currentSlotId'] = kwargs['currentSlotId']
-            view.sendSlotAction(actionArgs)
-            return
+        actionArgs = {'actionType': actionType, 'intCD': kwargs.get('intCD', self._intCD), 'installedSlotId': kwargs.get('installedSlotId', self._installedSlotId)}
+        if 'currentSlotId' in kwargs:
+            actionArgs['currentSlotId'] = kwargs['currentSlotId']
+        view.sendSlotAction(actionArgs)
+        return
 
     def _sendLastSlotAction(self, setupName, actionType, kwargs):
         view = self._getEmitterView()
@@ -92,7 +88,7 @@ class BaseTankSetupContextMenu(ContextMenu):
         return self._itemsCache.items.getItemByCD(self._intCD)
 
     def _getVehicleItems(self):
-        return None
+        return
 
     def _isInstalledInCurrentLayout(self):
         return self._installedSlotId != NONE_ID
@@ -112,7 +108,9 @@ class BaseTankSetupContextMenu(ContextMenu):
             return self._slotsCount > 1 and self._installedSlotId != FIRST_SLOT
         if label == TankSetupCMLabel.PUT_ON_SECOND:
             return self._slotsCount > 1 and self._installedSlotId != SECOND_SLOT
-        return self._slotsCount > 2 and self._installedSlotId != THIRD_SLOT if label == TankSetupCMLabel.PUT_ON_THIRD else super(BaseTankSetupContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.PUT_ON_THIRD:
+            return self._slotsCount > 2 and self._installedSlotId != THIRD_SLOT
+        return super(BaseTankSetupContextMenu, self)._isVisible(label)
 
 
 class BaseItemContextMenu(BaseTankSetupContextMenu):
@@ -131,7 +129,9 @@ class BaseItemContextMenu(BaseTankSetupContextMenu):
         return optionData
 
     def _isVisible(self, label):
-        return self._slotsCount == 1 and not self._isInstalledInCurrentLayout() if label == TankSetupCMLabel.SELECT else super(BaseItemContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.SELECT:
+            return self._slotsCount == 1 and not self._isInstalledInCurrentLayout()
+        return super(BaseItemContextMenu, self)._isVisible(label)
 
 
 class BaseSlotContextMenu(BaseTankSetupContextMenu):
@@ -153,4 +153,6 @@ class BaseSlotContextMenu(BaseTankSetupContextMenu):
     def _isVisible(self, label):
         if label == TankSetupCMLabel.TAKE_OFF:
             return not self._isMounted and not self._isItemInInventory() or self._isItemInOtherLayout()
-        return (self._isMounted or self._isItemInInventory()) and not self._isItemInOtherLayout() if label == TankSetupCMLabel.UNLOAD else super(BaseSlotContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.UNLOAD:
+            return (self._isMounted or self._isItemInInventory()) and not self._isItemInOtherLayout()
+        return super(BaseSlotContextMenu, self)._isVisible(label)

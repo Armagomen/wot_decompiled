@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/LoginQueueWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class LoginQueueWindowMeta(AbstractWindowView):
@@ -11,13 +9,17 @@ class LoginQueueWindowMeta(AbstractWindowView):
         self._printOverrideError('onAutoLoginClick')
 
     def as_setTitleS(self, title):
-        return self.flashObject.as_setTitle(title) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTitle(title)
 
     def as_setMessageS(self, message):
-        return self.flashObject.as_setMessage(message) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setMessage(message)
 
     def as_setCancelLabelS(self, cancelLabel):
-        return self.flashObject.as_setCancelLabel(cancelLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCancelLabel(cancelLabel)
 
     def as_showAutoLoginBtnS(self, value):
-        return self.flashObject.as_showAutoLoginBtn(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showAutoLoginBtn(value)

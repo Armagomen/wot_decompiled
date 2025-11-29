@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/persistent_data_cache_common/__init__.py
-import typing
-import wg_async
+import typing, wg_async
 from persistent_data_cache_common.common import getLogger, DEFAULT_SAVING_TIMEOUT
 from persistent_data_cache_common.manager import ForceCreatingPDCManager
 from persistent_data_cache_common.serializers import defaultSerializer

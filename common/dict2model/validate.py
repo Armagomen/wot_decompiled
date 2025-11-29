@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/validate.py
 from __future__ import absolute_import
-import typing
-import re
+import typing, re
 from soft_exception import SoftException
 from dict2model.exceptions import ValidationError, ValidationErrorMessage
 if typing.TYPE_CHECKING:
@@ -12,13 +9,14 @@ def prepareValidators(validators):
     prepared = []
     if isinstance(validators, (list, tuple)):
         prepared += list(validators)
-    elif validators is not None:
-        prepared.append(validators)
-    errors = None
-    for validator in prepared:
-        if not callable(validator):
-            error = ValidationErrorMessage('Unsupported validator type: {}.'.format(type(validator)))
-            errors = errors + error if errors else error
+    else:
+        if validators is not None:
+            prepared.append(validators)
+        errors = None
+        for validator in prepared:
+            if not callable(validator):
+                error = ValidationErrorMessage(('Unsupported validator type: {}.').format(type(validator)))
+                errors = errors + error if errors else error
 
     if errors:
         raise SoftException(str(errors))
@@ -45,10 +43,10 @@ class Validator(object):
         pass
 
     def __repr__(self):
-        return '<{}({})>'.format(self.__class__.__name__, self._reprArgs() or '')
+        return ('<{}({})>').format(self.__class__.__name__, self._reprArgs() or '')
 
     def _reprArgs(self):
-        pass
+        return ''
 
 
 class Range(Validator):
@@ -71,7 +69,7 @@ class Range(Validator):
         return
 
     def _reprArgs(self):
-        return 'min={}, max={}'.format(self._min, self._max)
+        return ('min={}, max={}').format(self._min, self._max)
 
     def _formatError(self, message):
         return message.format(min=self._min, max=self._max)
@@ -82,7 +80,7 @@ class Length(Range):
     _messageMax = 'Longer than maximum length {max}.'
     _messageAll = 'Length must be between {min} and {max}.'
     _messageEqual = 'Length must be {equal}.'
-    __slots__ = ('_equal',)
+    __slots__ = ('_equal', )
 
     def __init__(self, minValue=None, maxValue=None, equalValue=None):
         if equalValue is not None and any([minValue, maxValue]):
@@ -97,12 +95,11 @@ class Length(Range):
             if length != self._equal:
                 raise ValidationError(self._formatError(self._messageEqual))
             return
-        else:
-            super(Length, self).__call__(length)
-            return
+        super(Length, self).__call__(length)
+        return
 
     def _reprArgs(self):
-        return 'min={}, max={}, equal={}'.format(self._min, self._max, self._equal)
+        return ('min={}, max={}, equal={}').format(self._min, self._max, self._equal)
 
     def _formatError(self, message):
         return message.format(min=self._min, max=self._max, equal=self._equal)
@@ -111,20 +108,22 @@ class Length(Range):
 class URL(Validator):
 
     class RegexMemoizer(object):
-        __slots__ = ('_memoized',)
+        __slots__ = ('_memoized', )
 
         def __init__(self):
             self._memoized = {}
 
         def __call__(self, relative, requireTld):
-            key = (relative, requireTld)
+            key = (
+             relative, requireTld)
             if key not in self._memoized:
                 self._memoized[key] = self._regexGenerator(relative, requireTld)
             return self._memoized[key]
 
         @staticmethod
         def _regexGenerator(relative, requireTld):
-            return re.compile(''.join(('^',
+            return re.compile(('').join((
+             '^',
              '(' if relative else '',
              '(?:[a-z0-9\\.\\-\\+]*)://',
              '(?:[^:@]+?(:[^:@]*?)?@|)',
@@ -140,10 +139,7 @@ class URL(Validator):
 
     _regex = RegexMemoizer()
     _message = 'Not a valid URL.'
-    _schemes = {'http',
-     'https',
-     'ftp',
-     'ftps'}
+    _schemes = {'http', 'https', 'ftp', 'ftps'}
     __slots__ = ('relative', 'requireTld')
 
     def __init__(self, relative=False, requireTld=True):
@@ -162,7 +158,7 @@ class URL(Validator):
             raise ValidationError(self._message)
 
     def _reprArgs(self):
-        return 'relative={}'.format(self.relative)
+        return ('relative={}').format(self.relative)
 
 
 class NoneOf(Validator):
@@ -171,7 +167,7 @@ class NoneOf(Validator):
 
     def __init__(self, choices):
         self._choices = choices
-        self._choicesText = ', '.join((str(each) for each in self._choices))
+        self._choicesText = (', ').join(str(each) for each in self._choices)
 
     def __call__(self, incoming):
         try:
@@ -181,7 +177,7 @@ class NoneOf(Validator):
             pass
 
     def _reprArgs(self):
-        return 'choices={}'.format(self._choices)
+        return ('choices={}').format(self._choices)
 
 
 class OneOf(NoneOf):
@@ -198,7 +194,7 @@ class OneOf(NoneOf):
 
 class Regexp(Validator):
     _message = 'String: {value} does not match pattern: {pattern}.'
-    __slots__ = ('_regex',)
+    __slots__ = ('_regex', )
 
     def __init__(self, regex, flags=0):
         self._regex = re.compile(regex, flags) if isinstance(regex, str) else regex
@@ -209,4 +205,4 @@ class Regexp(Validator):
         return
 
     def _reprArgs(self):
-        return 'regex={}'.format(self._regex.pattern)
+        return ('regex={}').format(self._regex.pattern)

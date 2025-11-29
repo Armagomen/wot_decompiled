@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/death_cam/marker_view.py
-import logging
-import math
+import logging, math
 from typing import Optional
-import GUI
-import BigWorld
+import GUI, BigWorld
 from constants import IMPACT_TYPES
 import Math
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
@@ -25,26 +21,26 @@ def hasShellPenetrationDistanceLoss(shellType):
 class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
     __guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
     _HIDE_MARKERS_DURING_PAUSE = False
-    shellIconMap = {'ARMOR_PIERCING': ShellType.ARMORPIERCING,
-     'ARMOR_PIERCING_CR': ShellType.ARMORPIERCINGCR,
-     'ARMOR_PIERCING_CR_GOLD': ShellType.ARMORPIERCINGCRPREMIUM,
-     'ARMOR_PIERCING_GOLD': ShellType.ARMORPIERCINGPREMIUM,
-     'HIGH_EXPLOSIVE': ShellType.HIGHEXPLOSIVE,
-     'HIGH_EXPLOSIVE_MODERN': ShellType.HIGHEXPLOSIVEMODERN,
-     'HIGH_EXPLOSIVE_MODERN_GOLD': ShellType.HIGHEXPLOSIVEMODERNPREMIUM,
-     'HIGH_EXPLOSIVE_GOLD': ShellType.HIGHEXPLOSIVEPREMIUM,
-     'HIGH_EXPLOSIVE_LEGACY_NO_STUN': ShellType.HIGHEXPLOSIVESPG,
-     'HIGH_EXPLOSIVE_LEGACY_STUN': ShellType.HIGHEXPLOSIVESPGSTUN,
-     'HOLLOW_CHARGE': ShellType.HOLLOWCHARGE,
-     'HOLLOW_CHARGE_GOLD': ShellType.HOLLOWCHARGEPREMIUM}
-    __DEATH_REASONS = {'hp': DeathReason.HP,
-     'crew': DeathReason.CREW,
-     'ignition': DeathReason.IGNITION,
-     'detonation': DeathReason.DETONATION}
-    __IMPACT_MODES = {IMPACT_TYPES.PENETRATION: ImpactMode.PENETRATION,
-     IMPACT_TYPES.LEGACY_HE: ImpactMode.LEGACYHE,
-     IMPACT_TYPES.MODERN_HE: ImpactMode.MODERNHE,
-     IMPACT_TYPES.NON_PENETRATION_DAMAGE: ImpactMode.NONPENETRATIONDAMAGE}
+    shellIconMap = {'ARMOR_PIERCING': ShellType.ARMORPIERCING, 
+       'ARMOR_PIERCING_CR': ShellType.ARMORPIERCINGCR, 
+       'ARMOR_PIERCING_CR_GOLD': ShellType.ARMORPIERCINGCRPREMIUM, 
+       'ARMOR_PIERCING_GOLD': ShellType.ARMORPIERCINGPREMIUM, 
+       'HIGH_EXPLOSIVE': ShellType.HIGHEXPLOSIVE, 
+       'HIGH_EXPLOSIVE_MODERN': ShellType.HIGHEXPLOSIVEMODERN, 
+       'HIGH_EXPLOSIVE_MODERN_GOLD': ShellType.HIGHEXPLOSIVEMODERNPREMIUM, 
+       'HIGH_EXPLOSIVE_GOLD': ShellType.HIGHEXPLOSIVEPREMIUM, 
+       'HIGH_EXPLOSIVE_LEGACY_NO_STUN': ShellType.HIGHEXPLOSIVESPG, 
+       'HIGH_EXPLOSIVE_LEGACY_STUN': ShellType.HIGHEXPLOSIVESPGSTUN, 
+       'HOLLOW_CHARGE': ShellType.HOLLOWCHARGE, 
+       'HOLLOW_CHARGE_GOLD': ShellType.HOLLOWCHARGEPREMIUM}
+    __DEATH_REASONS = {'hp': DeathReason.HP, 
+       'crew': DeathReason.CREW, 
+       'ignition': DeathReason.IGNITION, 
+       'detonation': DeathReason.DETONATION}
+    __IMPACT_MODES = {IMPACT_TYPES.PENETRATION: ImpactMode.PENETRATION, 
+       IMPACT_TYPES.LEGACY_HE: ImpactMode.LEGACYHE, 
+       IMPACT_TYPES.MODERN_HE: ImpactMode.MODERNHE, 
+       IMPACT_TYPES.NON_PENETRATION_DAMAGE: ImpactMode.NONPENETRATIONDAMAGE}
 
     def __init__(self, viewModel, parentView):
         super(DeathCamMarkerView, self).__init__(viewModel, parentView)
@@ -262,4 +258,6 @@ class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
 
     def __isSimplifiedView(self):
         avatar = BigWorld.player()
-        return False if not avatar else avatar.isSimpleDeathCam()
+        if not avatar:
+            return False
+        return avatar.isSimpleDeathCam()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/awards.py
 from gui.shared.money import Currency, Money, ZERO_MONEY
 from helpers import dependency
 from messenger.formatters.service_channel_helpers import getCustomizationItem

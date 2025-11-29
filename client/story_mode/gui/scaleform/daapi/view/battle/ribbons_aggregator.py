@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/ribbons_aggregator.py
 import BattleReplay
 from constants import VEHICLE_BUNKER_TURRET_TAG, ATTACK_REASON
 from gui.Scaleform.daapi.view.battle.shared.ribbons_aggregator import RibbonsAggregator, _ACCUMULATED_RIBBON_TYPES, _FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY as _DEFAULT_RIBBON_FACTORIES, _Ribbon, _RibbonSingleClassFactory, _RibbonClassFactory, _DamageRibbonClassFactory, _ReceivedDamageHitRibbon, _ReceivedFireHitRibbon, _ReceivedRamHitRibbon, _ReceivedWorldCollisionHitRibbon, _ArtilleryReceivedDamageHitRibbon, _BombersReceivedDamageHitRibbon, _ArtilleryReceivedFireHitRibbon, _BombersReceivedFireHitRibbon, _EpicRecoveryRibbon, _DeathZoneRibbon, _ReceivedBerserkerHitRibbon, _ReceivedBySpawnedBotHitRibbon, _ReceivedByMinefieldRibbon, _ReceivedByDamagingSmokeRibbon, _ReceivedByDamagingCorrodingShotRibbon, _ReceivedByFireCircleRibbon, _ReceivedByClingBranderRibbon, _ReceivedByDamagingThunderStrikeRibbon, _FortArtilleryReceivedDamageHitRibbon, _ReceivedByAirStrikeRibbon, _ReceivedByArtilleryRibbon, _StaticDeathZoneRibbon, _MinefieldZoneRibbon, _BattleshipRibbon, DAMAGE_SOURCE, _ReceivedFireDamageZoneRibbon
@@ -15,7 +13,7 @@ def _bunkerRibbonFormatter(ribbon, _, updater):
 
 
 class _BunkerRibbon(_Ribbon):
-    __slots__ = ('_damagePoints',)
+    __slots__ = ('_damagePoints', )
 
     def __init__(self, ribbonID, damagePoints):
         super(_BunkerRibbon, self).__init__(ribbonID)
@@ -43,7 +41,7 @@ class _BunkerRibbon(_Ribbon):
 
     @staticmethod
     def getVehicleID():
-        pass
+        return 0
 
 
 class StoryModeReceivedArtilleryDamageRibbon(_ReceivedByArtilleryRibbon):
@@ -99,12 +97,14 @@ class _BunkerDamagedRibbonClassFactory(_RibbonClassFactory):
     def getRibbonClass(self, event):
         if event.getExtra().isAttackReason(ATTACK_REASON.BATTLESHIP):
             return self.__damageByBattleship
-        return self.__damageByDestroyer if event.getExtra().isAttackReason(ATTACK_REASON.DESTROYER) else self.__damageCls
+        if event.getExtra().isAttackReason(ATTACK_REASON.DESTROYER):
+            return self.__damageByDestroyer
+        return self.__damageCls
 
 
-_SM_FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY.update({FEEDBACK_EVENT_ID.DESTRUCTIBLE_DAMAGED: _BunkerDamagedRibbonClassFactory(BunkerDamagedRibbon, BunkerBattleshipDamagedRibbon, BunkerDestroyerDamagedRibbon),
- FEEDBACK_EVENT_ID.DESTRUCTIBLE_DESTROYED: _RibbonSingleClassFactory(BunkerDestroyedRibbon),
- FEEDBACK_EVENT_ID.ENEMY_DAMAGED_HP_PLAYER: _DamageRibbonClassFactory(damageCls=_ReceivedDamageHitRibbon, fireCls=_ReceivedFireHitRibbon, ramCls=_ReceivedRamHitRibbon, wcCls=_ReceivedWorldCollisionHitRibbon, artDmgCls=_ArtilleryReceivedDamageHitRibbon, bombDmgCls=_BombersReceivedDamageHitRibbon, artFireCls=_ArtilleryReceivedFireHitRibbon, bombFireCls=_BombersReceivedFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_ReceivedBySpawnedBotHitRibbon, minefieldDamageCls=_ReceivedByMinefieldRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_ReceivedByDamagingCorrodingShotRibbon, dmgByFireCircle=_ReceivedByFireCircleRibbon, dmgByClingBrander=_ReceivedByClingBranderRibbon, dmgByThunderStrike=_ReceivedByDamagingThunderStrikeRibbon, damagedByFortArtillery=_FortArtilleryReceivedDamageHitRibbon, airStrikeDamageCls=_ReceivedByAirStrikeRibbon, artilleryDamageCls=StoryModeReceivedArtilleryDamageRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon)})
+_SM_FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY.update({FEEDBACK_EVENT_ID.DESTRUCTIBLE_DAMAGED: _BunkerDamagedRibbonClassFactory(BunkerDamagedRibbon, BunkerBattleshipDamagedRibbon, BunkerDestroyerDamagedRibbon), 
+   FEEDBACK_EVENT_ID.DESTRUCTIBLE_DESTROYED: _RibbonSingleClassFactory(BunkerDestroyedRibbon), 
+   FEEDBACK_EVENT_ID.ENEMY_DAMAGED_HP_PLAYER: _DamageRibbonClassFactory(damageCls=_ReceivedDamageHitRibbon, fireCls=_ReceivedFireHitRibbon, ramCls=_ReceivedRamHitRibbon, wcCls=_ReceivedWorldCollisionHitRibbon, artDmgCls=_ArtilleryReceivedDamageHitRibbon, bombDmgCls=_BombersReceivedDamageHitRibbon, artFireCls=_ArtilleryReceivedFireHitRibbon, bombFireCls=_BombersReceivedFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_ReceivedBySpawnedBotHitRibbon, minefieldDamageCls=_ReceivedByMinefieldRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_ReceivedByDamagingCorrodingShotRibbon, dmgByFireCircle=_ReceivedByFireCircleRibbon, dmgByClingBrander=_ReceivedByClingBranderRibbon, dmgByThunderStrike=_ReceivedByDamagingThunderStrikeRibbon, damagedByFortArtillery=_FortArtilleryReceivedDamageHitRibbon, airStrikeDamageCls=_ReceivedByAirStrikeRibbon, artilleryDamageCls=StoryModeReceivedArtilleryDamageRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon)})
 
 class StoryModeRibbonsAggregator(RibbonsAggregator):
     FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY = _SM_FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY
@@ -128,4 +128,6 @@ class StoryModeRibbonsAggregatorPlayer(StoryModeRibbonsAggregator):
 
 
 def createRibbonsAggregator():
-    return StoryModeRibbonsAggregatorPlayer() if BattleReplay.g_replayCtrl.isPlaying else StoryModeRibbonsAggregator()
+    if BattleReplay.g_replayCtrl.isPlaying:
+        return StoryModeRibbonsAggregatorPlayer()
+    return StoryModeRibbonsAggregator()

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vehicle_passenger/passenger_ctrl.py
-import typing
-import weakref
-import Event
+import typing, weakref, Event
 from gui.battle_control import avatar_getter
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID, VEHICLE_VIEW_STATE, UNKNOWN_VEHICLE_ID
 from gui.battle_control.controllers.vehicle_passenger.passenger_interfaces import IVehiclePassengerController
@@ -11,7 +7,8 @@ if typing.TYPE_CHECKING:
     from Vehicle import Vehicle
 
 class VehiclePassengerController(IVehiclePassengerController):
-    __slots__ = ('__playerVehicleID', '__isCurrentVehicleAlive', '__isCurrentVehicleFPV', '__vehStateCtrl', '__eManager', 'onVehiclePassengerUpdating', 'onVehiclePassengerUpdate')
+    __slots__ = ('__playerVehicleID', '__isCurrentVehicleAlive', '__isCurrentVehicleFPV',
+                 '__vehStateCtrl', '__eManager', 'onVehiclePassengerUpdating', 'onVehiclePassengerUpdate')
 
     def __init__(self, vehStateCtrl):
         self.__vehStateCtrl = weakref.proxy(vehStateCtrl)

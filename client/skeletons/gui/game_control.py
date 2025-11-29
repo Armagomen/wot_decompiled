@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/game_control.py
 import typing
 from constants import ARENA_BONUS_TYPE
 if typing.TYPE_CHECKING:
@@ -61,7 +59,7 @@ if typing.TYPE_CHECKING:
     from renewable_subscription_common.optional_devices_usage_config import VehicleLoadout
     from gui.game_control.wotlda.loadout_model import BaseOptDeviceLoadoutModel
     from gui.shared.view_helpers.blur_manager import ImmediateSceneBlurConfig, SceneBlurConfig, UILayerBlurConfig
-    BattlePassBonusOpts = Optional[TokensBonus, BattlePassSelectTokensBonus]
+    BattlePassBonusOpts = Optional[(TokensBonus, BattlePassSelectTokensBonus)]
 
 class IGameController(object):
 
@@ -2865,9 +2863,6 @@ class IComp7Controller(IGameController, ISeasonProvider):
     onNewMaxRank = None
     onEntitlementsUpdated = None
     onEntitlementsUpdateFailed = None
-    onTournamentBannerStateChanged = None
-    onGrandTournamentBannerAvailabilityChanged = None
-    onGrandTournamentBannerUpdate = None
 
     @property
     def rating(self):
@@ -2911,14 +2906,6 @@ class IComp7Controller(IGameController, ISeasonProvider):
 
     @property
     def qualificationState(self):
-        raise NotImplementedError
-
-    @property
-    def isTournamentBannerEnabled(self):
-        raise NotImplementedError
-
-    @property
-    def isGrandTournamentBannerEnabled(self):
         raise NotImplementedError
 
     @property
@@ -3034,15 +3021,6 @@ class IComp7Controller(IGameController, ISeasonProvider):
         raise NotImplementedError
 
     def isEliteForSeason(self, seasonNumber=None):
-        raise NotImplementedError
-
-    def getTournamentBannerAvailability(self):
-        raise NotImplementedError
-
-    def getTournamentBannerData(self):
-        raise NotImplementedError
-
-    def getGrandTournamentBannerData(self):
         raise NotImplementedError
 
     def updateEntitlementsCache(self, force=False, retryTimes=None):
@@ -3894,3 +3872,23 @@ class ICrewController(IGameController):
 
     def getWidgetData(self):
         raise NotImplementedError
+
+
+class IIngameTournamentController(IGameController):
+    onTournamentBannerUpdated = None
+    onTournamentWGCGDataUpdated = None
+
+    def isTournamentBannerAvailable(self):
+        raise NotImplementedError()
+
+    def getActiveBannerData(self):
+        raise NotImplementedError()
+
+    def getTournamentDates(self):
+        raise NotImplementedError()
+
+    def requestTournamentWGCGData(self):
+        raise NotImplementedError()
+
+    def openShop(self):
+        raise NotImplementedError()

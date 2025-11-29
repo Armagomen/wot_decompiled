@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_no_chapter_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_pass_no_chapter_tooltip_view_model import BattlePassNoChapterTooltipViewModel
@@ -22,5 +20,5 @@ class BattlePassNoChapterTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(BattlePassNoChapterTooltipView, self)._onLoading(*args, **kwargs)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setPoints(self.__battlePassController.getFreePoints())

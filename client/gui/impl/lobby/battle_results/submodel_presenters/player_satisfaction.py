@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/player_satisfaction.py
 from typing import TYPE_CHECKING
 import logging
 from helpers import dependency
@@ -15,10 +13,10 @@ if TYPE_CHECKING:
     from typing import Type
     from gui.battle_results.stats_ctrl import BattleResults
 _logger = logging.getLogger(__name__)
-_RATING_TO_CHOICE_MAP = {RatingEnum.NONE: PlayerSatisfactionStates.NONE,
- RatingEnum.USUAL: PlayerSatisfactionStates.USUAL,
- RatingEnum.WORSE: PlayerSatisfactionStates.WORSE,
- RatingEnum.BETTER: PlayerSatisfactionStates.BETTER}
+_RATING_TO_CHOICE_MAP = {RatingEnum.NONE: PlayerSatisfactionStates.NONE, 
+   RatingEnum.USUAL: PlayerSatisfactionStates.USUAL, 
+   RatingEnum.WORSE: PlayerSatisfactionStates.WORSE, 
+   RatingEnum.BETTER: PlayerSatisfactionStates.BETTER}
 _CHOICE_TO_RATING_MAP = {choice:rating for rating, choice in _RATING_TO_CHOICE_MAP.iteritems()}
 
 class PlayerSatisfactionSubPresenter(BattleResultsSubPresenter):
@@ -38,7 +36,9 @@ class PlayerSatisfactionSubPresenter(BattleResultsSubPresenter):
         return PlayerSatisfactionModel
 
     def _getEvents(self):
-        events = [(self.viewModel.onSatisfactionRatingSelected, self.selectedChoice)]
+        events = [
+         (
+          self.viewModel.onSatisfactionRatingSelected, self.selectedChoice)]
         return events
 
     def packBattleResults(self, battleResults):

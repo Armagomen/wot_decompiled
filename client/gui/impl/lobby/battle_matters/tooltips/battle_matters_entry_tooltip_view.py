@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/tooltips/battle_matters_entry_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.battle_pass.battle_pass_bonuses_packers import ExtendedItemBonusUIPacker
 from gui.impl.gen import R
@@ -30,7 +28,7 @@ class BattleMattersEntryTooltipView(ViewImpl):
         currentQuest = self.__battleMattersController.getCurrentQuest()
         questsCount = self.__battleMattersController.getCountBattleMattersQuests()
         isWithToken = self.__battleMattersController.hasDelayedRewards()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setIsPaused(self.__battleMattersController.isPaused())
             tx.setHasToken(isWithToken)
             tx.setCurrentQuest(currentQuest.getOrder() if currentQuest else questsCount + 1)
@@ -57,6 +55,6 @@ class BattleMattersEntryTooltipView(ViewImpl):
     @staticmethod
     def __getBonusBacker():
         packer = getDefaultBonusPacker()
-        packer.getPackers().update({'entitlements': BattleMattersEntitlementsBonusUIPacker(),
-         'items': ExtendedItemBonusUIPacker()})
+        packer.getPackers().update({'entitlements': BattleMattersEntitlementsBonusUIPacker(), 
+           'items': ExtendedItemBonusUIPacker()})
         return packer

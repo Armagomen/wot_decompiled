@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/gen/view_models/views/lobby/event_welcome_view_model.py
 from story_mode.gui.impl.gen.view_models.views.lobby.advertising_view_model import AdvertisingViewModel
 
 class EventWelcomeViewModel(AdvertisingViewModel):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/base/events.py
 from functools import partial
 from Event import Event
 from debug_utils import LOG_DEBUG_DEV
@@ -14,7 +12,9 @@ class EventsProviderSourceProxy(object):
 
     def __getattr__(self, name):
         attr = getattr(self.__eventsProvider, name)
-        return self._proxy(attr) if callable(attr) and isinstance(attr, Event) else attr
+        if callable(attr) and isinstance(attr, Event):
+            return self._proxy(attr)
+        return attr
 
     def _proxy(self, method):
 
@@ -81,14 +81,14 @@ class ContainerLifecycleEventsDebugger(EventsDebugger):
         super(ContainerLifecycleEventsDebugger, self).__init__(events)
 
     def _getDebugPrefix(self):
-        pass
+        return '[CONTAINER_LIFECYCLE_EVENT]'
 
     def _logEvent(self, event, *args, **kwargs):
         prefix = self._getDebugPrefix()
-        LOG_DEBUG_DEV('{prefix} {event} called with args={args}, kwargs={kwargs}'.format(prefix=prefix, event=event, args=args, kwargs=kwargs))
+        LOG_DEBUG_DEV(('{prefix} {event} called with args={args}, kwargs={kwargs}').format(prefix=prefix, event=event, args=args, kwargs=kwargs))
 
 
 class ComponentEventsDebugger(ContainerLifecycleEventsDebugger):
 
     def _getDebugPrefix(self):
-        pass
+        return '[COMPONENT_EVENT]'

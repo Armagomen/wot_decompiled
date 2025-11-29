@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/lobby/outro_video.py
 import typing
 from story_mode.gui.scaleform.daapi.view.common.base_video import BaseVideo
 from story_mode.gui.scaleform.daapi.view.model.video_settings_model import getOutroVideoSettings
@@ -26,4 +24,4 @@ class OutroVideo(BaseVideo):
         return OutroVideoLogger()
 
     def _getLoadingImage(self):
-        pass
+        return ''

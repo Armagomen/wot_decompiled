@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/gui_vehicle_builder.py
 from gui.veh_post_progression.helpers import getInstalledShells, setFeatures, setDisabledSwitches, updateInvInstalled
 from helpers import dependency
 from items import vehicles
@@ -29,18 +27,15 @@ class VehicleBuilder(object):
         gunDescr = vehDescr.gun
         shellsCDs = vehicles.getDefaultAmmoForGun(gunDescr)[::2]
         shellsLayoutKey = (vehDescr.turret.compactDescr, gunDescr.compactDescr)
-        self.__updateInvData({'shells': getInstalledShells(shellsCDs, vehSetups['shellsSetups']),
-         'shellsLayout': {shellsLayoutKey: vehSetups['shellsSetups']}})
+        self.__updateInvData({'shells': getInstalledShells(shellsCDs, vehSetups['shellsSetups']), 
+           'shellsLayout': {shellsLayoutKey: vehSetups['shellsSetups']}})
 
     def setAmmunitionSetups(self, vehSetups, setupIndexes):
-        self.__assertNotSet(self.__invData, {'eqsLayout',
-         'boostersLayout',
-         'devicesLayout',
-         'layoutIndexes'})
-        setupData = {'eqsLayout': vehSetups['eqsSetups'],
-         'boostersLayout': vehSetups['boostersSetups'],
-         'devicesLayout': vehSetups['devicesSetups'],
-         'layoutIndexes': setupIndexes}
+        self.__assertNotSet(self.__invData, {'eqsLayout', 'boostersLayout', 'devicesLayout', 'layoutIndexes'})
+        setupData = {'eqsLayout': vehSetups['eqsSetups'], 
+           'boostersLayout': vehSetups['boostersSetups'], 
+           'devicesLayout': vehSetups['devicesSetups'], 
+           'layoutIndexes': setupIndexes}
         updateInvInstalled(setupData, setupIndexes)
         self.__updateInvData(setupData)
 
@@ -95,27 +90,10 @@ class VehicleBuilder(object):
         return
 
     @staticmethod
-    def __assertNotSet--- This code section failed: ---
-
- 115       0	LOAD_FAST         'target'
-           3	LOAD_CONST        ''
-           6	COMPARE_OP        'is'
-           9	POP_JUMP_IF_FALSE '16'
-
- 116      12	LOAD_CONST        ''
-          15	JUMP_FORWARD      37
-
- 118      16	LOAD_GLOBAL       'isinstance'
-          19	LOAD_FAST         'keys'
-          22	LOAD_GLOBAL       'set'
-          25	CALL_FUNCTION_2   ''
-          28	POP_JUMP_IF_FALSE '34'
-
- 119      31	JUMP_FORWARD      '34'
-        34_0	COME_FROM         '31'
-
- 121      34	LOAD_CONST        ''
-        37_0	COME_FROM         '15'
-          37	RETURN_VALUE      ''
-
-Syntax error at or near 'COME_FROM' token at offset 34_0
+    def __assertNotSet(target, keys):
+        if target is None:
+            return
+        else:
+            if isinstance(keys, set):
+                pass
+            return

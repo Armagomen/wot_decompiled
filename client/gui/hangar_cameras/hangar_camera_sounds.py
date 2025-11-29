@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_sounds.py
 import WWISE
 from SoundGroups import g_instance as SoundGroupsInstance
 from skeletons.gui.hangar_cameras import IHangarCameraSounds

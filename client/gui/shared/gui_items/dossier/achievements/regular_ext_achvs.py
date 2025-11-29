@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/regular_ext_achvs.py
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
 from abstract import RegularExtAchievement
 from abstract.mixins import NoProgressBar

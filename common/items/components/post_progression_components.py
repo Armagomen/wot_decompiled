@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/post_progression_components.py
-import ResMgr
-import constants
+import ResMgr, constants
 from constants import IS_CLIENT, IS_WEB, TTC_TOOLTIP_SECTIONS, IS_LOAD_GLOSSARY
 from items import _xml
 from items.attributes_helpers import readModifiers
@@ -29,7 +26,7 @@ def getActiveModifications(actionCDs, vppCache, postProgressionTree=0):
         actionType, itemID, subID = parseActionCompDescr(actionCD)
         if actionType == ACTION_TYPES.MODIFICATION:
             result.append(itemID)
-        if actionType == ACTION_TYPES.PAIR_MODIFICATION:
+        elif actionType == ACTION_TYPES.PAIR_MODIFICATION:
             if subID == PAIR_TYPES.FIRST:
                 result.append(vppCache.pairs[itemID].first[0])
             elif subID == PAIR_TYPES.SECOND:
@@ -39,7 +36,7 @@ def getActiveModifications(actionCDs, vppCache, postProgressionTree=0):
 
 
 class SimpleItem(object):
-    __slots__ = ('id',)
+    __slots__ = ('id', )
 
     def __init__(self):
         self.id = None
@@ -64,7 +61,7 @@ class ActionItem(SimpleItem):
     def readFromXML(self, xmlCtx, section, *args):
         super(ActionItem, self).readFromXML(xmlCtx, section, *args)
         if self.id >= ID_THRESHOLD:
-            _xml.raiseWrongXml(xmlCtx, 'id', 'id: {} must be less than {}'.format(self.id, ID_THRESHOLD))
+            _xml.raiseWrongXml(xmlCtx, 'id', ('id: {} must be less than {}').format(self.id, ID_THRESHOLD))
         self.name = section.name
         if IS_CLIENT or IS_WEB:
             self.imgName = _xml.readStringWithDefaultValue(xmlCtx, section, 'imgName', self.name)
@@ -80,7 +77,7 @@ class ActionItem(SimpleItem):
             categories.update(_xml.readTupleOfStrings(xmlCtx, section, 'categories'))
             for category in categories:
                 if category not in ALLOWED_ACTIONS_CATEGORIES:
-                    raise SoftException("Unknown category '{}'".format(category))
+                    raise SoftException(("Unknown category '{}'").format(category))
 
         return categories
 
@@ -129,7 +126,8 @@ class PairModification(ActionItem):
         modificationID = modificationIDs.get(name)
         if modificationID is None:
             _xml.raiseWrongXml(xmlCtx, name, 'Unknown modification')
-        return (modificationID, priceTag)
+        return (
+         modificationID, priceTag)
 
 
 class ProgressionFeature(ActionItem):
@@ -146,7 +144,8 @@ class ProgressionFeature(ActionItem):
 
 
 class TreeStep(SimpleItem):
-    __slots__ = ('priceTag', 'action', 'unlocks', 'requiredUnlocks', 'vehicleFilter', 'level', 'position', 'directions', 'type', 'unlockStrategy')
+    __slots__ = ('priceTag', 'action', 'unlocks', 'requiredUnlocks', 'vehicleFilter',
+                 'level', 'position', 'directions', 'type', 'unlockStrategy')
 
     def __init__(self):
         super(TreeStep, self).__init__()
@@ -191,7 +190,8 @@ class TreeStep(SimpleItem):
     def _readAction(xmlCtx, section, actionResolvers):
         if section is None:
             _xml.raiseWrongXml(xmlCtx, None, 'Action not found')
-        xmlCtx = (xmlCtx, section.name)
+        xmlCtx = (
+         xmlCtx, section.name)
         actionType = _xml.readString(xmlCtx, section, 'type')
         actionValue = _xml.readString(xmlCtx, section, 'value')
         resolver = actionResolvers.get(actionType)
@@ -200,7 +200,8 @@ class TreeStep(SimpleItem):
         typeID, valueID = resolver(actionValue)
         if valueID is None:
             _xml.raiseWrongXml(xmlCtx, actionValue, 'Unknown value for specified action type')
-        return (typeID, valueID)
+        return (
+         typeID, valueID)
 
 
 class ProgressionTree(SimpleItem):
@@ -219,9 +220,12 @@ class ProgressionTree(SimpleItem):
         if not section.has_key('steps'):
             _xml.raiseWrongXml(xmlCtx, None, 'Steps not found')
         features, modifications, pairModifications = args
-        _ACTION_RESOLVERS = {'modification': lambda x: (ACTION_TYPES.MODIFICATION, modifications.get(x)),
-         'pair_modification': lambda x: (ACTION_TYPES.PAIR_MODIFICATION, pairModifications.get(x)),
-         'feature': lambda x: (ACTION_TYPES.FEATURE, features.get(x))}
+        _ACTION_RESOLVERS = {'modification': lambda x: (
+                          ACTION_TYPES.MODIFICATION, modifications.get(x)), 
+           'pair_modification': lambda x: (
+                               ACTION_TYPES.PAIR_MODIFICATION, pairModifications.get(x)), 
+           'feature': lambda x: (
+                     ACTION_TYPES.FEATURE, features.get(x))}
         steps = {}
         for name, data in section['steps'].items():
             if name != 'step':
@@ -237,7 +241,7 @@ class ProgressionTree(SimpleItem):
         self.steps = steps
         self.rootStep = _xml.readInt(xmlCtx, section, 'rootStep')
         if self.rootStep not in self.steps or steps[self.rootStep].requiredUnlocks:
-            _xml.raiseWrongXml(xmlCtx, None, 'Invalid root step id {}'.format(self.rootStep))
+            _xml.raiseWrongXml(xmlCtx, None, ('Invalid root step id {}').format(self.rootStep))
         self._validateLevels(xmlCtx)
         self.ppBattleIndex = steps.values()
         self.ppBattleIndex.sort(key=lambda step: step.id)
@@ -250,16 +254,15 @@ class ProgressionTree(SimpleItem):
                 unlockerLevel = step.level
                 unlocksLevel = steps[unlockID].level
                 if unlocksLevel < unlockerLevel:
-                    _xml.raiseWrongXml(xmlCtx, None, 'Invalid step level for stepID=%s, unlocksID=%s, unlockerLevel=%s, unlocksLevel=%s' % (stepID,
-                     unlockID,
-                     unlockerLevel,
-                     unlocksLevel))
+                    _xml.raiseWrongXml(xmlCtx, None, 'Invalid step level for stepID=%s, unlocksID=%s, unlockerLevel=%s, unlocksLevel=%s' % (
+                     stepID, unlockID, unlockerLevel, unlocksLevel))
 
         return
 
 
 class PostProgressionCache(object):
-    __slots__ = ('_features', '_featureIDs', '_modifications', '_modificationIDs', '_pairs', '_pairIDs', '_trees', '_treeIDs', '_prices', 'actionToStorage')
+    __slots__ = ('_features', '_featureIDs', '_modifications', '_modificationIDs',
+                 '_pairs', '_pairIDs', '_trees', '_treeIDs', '_prices', 'actionToStorage')
 
     def __init__(self, featuresXML, modificationsXML, pairsXML, treesXML, pricesXML):
         self._features, self._featureIDs = self._readItems(featuresXML, ProgressionFeature)
@@ -267,9 +270,9 @@ class PostProgressionCache(object):
         self._pairs, self._pairIDs = self._readItems(pairsXML, PairModification, self._modificationIDs)
         self._trees, self._treeIDs = self._readItems(treesXML, ProgressionTree, self.featureIDs, self.modificationIDs, self.pairIDs)
         self._prices = self._readPrices(pricesXML)
-        self.actionToStorage = {ACTION_TYPES.FEATURE: self._features,
-         ACTION_TYPES.MODIFICATION: self._modifications,
-         ACTION_TYPES.PAIR_MODIFICATION: self._pairs}
+        self.actionToStorage = {ACTION_TYPES.FEATURE: self._features, 
+           ACTION_TYPES.MODIFICATION: self._modifications, 
+           ACTION_TYPES.PAIR_MODIFICATION: self._pairs}
 
     @property
     def features(self):
@@ -311,13 +314,19 @@ class PostProgressionCache(object):
         return self.actionToStorage[actionType][actionID]
 
     def getChildActions(self, parent):
-        return [ (self.modifications[modificationID], priceTag) for modificationID, priceTag in (parent.first, parent.second) ]
+        return [ (self.modifications[modificationID], priceTag) for modificationID, priceTag in (
+         parent.first, parent.second)
+               ]
 
     def getModificationByName(self, name):
-        return self._modifications[self._modificationIDs[name]] if name in self._modificationIDs else None
+        if name in self._modificationIDs:
+            return self._modifications[self._modificationIDs[name]]
+        else:
+            return
 
     def _readItems(self, xmlPath, classObj, *args):
-        xmlCtx = (None, xmlPath)
+        xmlCtx = (
+         None, xmlPath)
         section = ResMgr.openSection(xmlPath)
         if section is None:
             _xml.raiseWrongXml(None, xmlPath, 'Unable to open or read')
@@ -348,7 +357,8 @@ class PostProgressionCache(object):
         for name, data in section.items():
             if name not in POST_PROGRESSION_UNLOCK_AND_BUY_MODIFICATIONS_PRICES:
                 _xml.raiseWrongXml(xmlCtx, name, 'Incorrect price tag <%s>' % name)
-            ctx = (xmlCtx, name)
+            ctx = (
+             xmlCtx, name)
             prices[name] = dict()
             for sname, _ in data.items():
                 _, level = str(sname).split('_', 1)
@@ -357,11 +367,11 @@ class PostProgressionCache(object):
             if name in POST_PROGRESSION_UNLOCK_MODIFICATIONS_PRICES:
                 for _, value in prices[name].iteritems():
                     if not ALLOWED_CURRENCIES_FOR_TREE_STEP.issuperset(value.keys()):
-                        raise SoftException('Wrong currency for section: {}, path: {}'.format(name, xmlPath))
+                        raise SoftException(('Wrong currency for section: {}, path: {}').format(name, xmlPath))
 
             if name in POST_PROGRESSION_BUY_MODIFICATIONS_PRICES:
                 for _, value in prices[name].iteritems():
                     if not ALLOWED_CURRENCIES_FOR_BUY_MODIFICATION_STEP.issuperset(value.keys()):
-                        raise SoftException('Wrong currency for section: {}, path: {}'.format(name, xmlPath))
+                        raise SoftException(('Wrong currency for section: {}, path: {}').format(name, xmlPath))
 
         return prices

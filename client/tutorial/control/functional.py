@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/control/functional.py
-import re
-import Event
+import re, Event
 from helpers import dependency
 from tutorial.control import TutorialProxyHolder, game_vars
 from tutorial.control.context import GlobalStorage
@@ -25,21 +22,27 @@ class FunctionalFlagCondition(FunctionalCondition):
 
     def isConditionOk(self, condition):
         result = self._tutorial.getFlags().isActiveFlag(condition.getID())
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalGlobalFlagCondition(FunctionalCondition):
 
     def isConditionOk(self, condition):
         result = GlobalStorage(condition.getID(), False).value()
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalWindowOnSceneCondition(FunctionalCondition):
 
     def isConditionOk(self, condition):
         result = self._gui.isTutorialWindowDisplayed(condition.getID())
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalComponentOnSceneCondition(FunctionalCondition):
@@ -47,7 +50,9 @@ class FunctionalComponentOnSceneCondition(FunctionalCondition):
     def isConditionOk(self, condition):
         itemsOnScene = self._gui.getItemsOnScene()
         result = condition.getID() in itemsOnScene
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalCurrentSceneCondition(FunctionalCondition):
@@ -55,7 +60,9 @@ class FunctionalCurrentSceneCondition(FunctionalCondition):
     def isConditionOk(self, condition):
         currentSceneID = self._gui.getSceneID()
         result = currentSceneID == condition.getID()
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalViewPresentCondition(FunctionalCondition):
@@ -64,7 +71,9 @@ class FunctionalViewPresentCondition(FunctionalCondition):
         layer = condition.getLayer()
         viewAlias = condition.getViewAlias()
         result = self._gui.isViewPresent(layer, criteria={POP_UP_CRITERIA.VIEW_ALIAS: viewAlias})
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalConnectedItemCondition(FunctionalCondition):
@@ -77,7 +86,9 @@ class FunctionalConnectedItemCondition(FunctionalCondition):
             LOG_DEBUG('invalid hintID in condition: ', condition.getID())
             return False
         else:
-            return False if isHintShown != condition.isShown() else True
+            if isHintShown != condition.isShown():
+                return False
+            return True
 
 
 class FunctionalComplexConditionAnd(FunctionalCondition):
@@ -121,7 +132,9 @@ class FunctionalEffectTriggeredCondition(FunctionalCondition):
 
     def isConditionOk(self, condition):
         result = self._tutorial.isEffectTriggered(condition.getID())
-        return result if condition.isPositiveState() else not result
+        if condition.isPositiveState():
+            return result
+        return not result
 
 
 class FunctionalGameItemSimpleStateCondition(FunctionalCondition):
@@ -179,7 +192,9 @@ class FunctionalServiceCondition(FunctionalCondition):
                 LOG_ERROR('Service does not implement isEnabled method!', service)
                 return False
             result = service.isEnabled()
-            return result if condition.isPositiveState() else not result
+            if condition.isPositiveState():
+                return result
+            return not result
 
 
 class FunctionalClassCondition(FunctionalCondition):
@@ -195,25 +210,27 @@ class FunctionalClassCondition(FunctionalCondition):
                 LOG_ERROR('Condition does not implement check method!', conditionInstance)
                 return False
             result = conditionInstance.check(condition.getArguments())
-            return result if condition.isPositiveState() else not result
+            if condition.isPositiveState():
+                return result
+            return not result
 
 
-_SUPPORTED_CONDITIONS = {CONDITION_TYPE.FLAG: FunctionalFlagCondition,
- CONDITION_TYPE.GLOBAL_FLAG: FunctionalGlobalFlagCondition,
- CONDITION_TYPE.WINDOW_ON_SCENE: FunctionalWindowOnSceneCondition,
- CONDITION_TYPE.VAR_DEFINED: FunctionalVarDefinedCondition,
- CONDITION_TYPE.VAR_COMPARE: FunctionalVarCompareCondition,
- CONDITION_TYPE.EFFECT_TRIGGERED: FunctionalEffectTriggeredCondition,
- CONDITION_TYPE.GAME_ITEM_SIMPLE_STATE: FunctionalGameItemSimpleStateCondition,
- CONDITION_TYPE.GAME_ITEM_RELATE_STATE: FunctionalGameItemRelateStateCondition,
- CONDITION_TYPE.SERVICE: FunctionalServiceCondition,
- CONDITION_TYPE.CLASS_CONDITION: FunctionalClassCondition,
- CONDITION_TYPE.COMPONENT_ON_SCENE: FunctionalComponentOnSceneCondition,
- CONDITION_TYPE.CURRENT_SCENE: FunctionalCurrentSceneCondition,
- CONDITION_TYPE.VIEW_PRESENT: FunctionalViewPresentCondition,
- CONDITION_TYPE.CONNECTED_ITEM: FunctionalConnectedItemCondition,
- CONDITION_TYPE.CONDITION_AND: FunctionalComplexConditionAnd,
- CONDITION_TYPE.CONDITION_OR: FunctionalComplexConditionOr}
+_SUPPORTED_CONDITIONS = {CONDITION_TYPE.FLAG: FunctionalFlagCondition, 
+   CONDITION_TYPE.GLOBAL_FLAG: FunctionalGlobalFlagCondition, 
+   CONDITION_TYPE.WINDOW_ON_SCENE: FunctionalWindowOnSceneCondition, 
+   CONDITION_TYPE.VAR_DEFINED: FunctionalVarDefinedCondition, 
+   CONDITION_TYPE.VAR_COMPARE: FunctionalVarCompareCondition, 
+   CONDITION_TYPE.EFFECT_TRIGGERED: FunctionalEffectTriggeredCondition, 
+   CONDITION_TYPE.GAME_ITEM_SIMPLE_STATE: FunctionalGameItemSimpleStateCondition, 
+   CONDITION_TYPE.GAME_ITEM_RELATE_STATE: FunctionalGameItemRelateStateCondition, 
+   CONDITION_TYPE.SERVICE: FunctionalServiceCondition, 
+   CONDITION_TYPE.CLASS_CONDITION: FunctionalClassCondition, 
+   CONDITION_TYPE.COMPONENT_ON_SCENE: FunctionalComponentOnSceneCondition, 
+   CONDITION_TYPE.CURRENT_SCENE: FunctionalCurrentSceneCondition, 
+   CONDITION_TYPE.VIEW_PRESENT: FunctionalViewPresentCondition, 
+   CONDITION_TYPE.CONNECTED_ITEM: FunctionalConnectedItemCondition, 
+   CONDITION_TYPE.CONDITION_AND: FunctionalComplexConditionAnd, 
+   CONDITION_TYPE.CONDITION_OR: FunctionalComplexConditionOr}
 
 def _areAllConditionsOk(item):
     return FunctionalConditions(item.getConditions()).allConditionsOk()
@@ -328,7 +345,10 @@ class FunctionalEffect(TutorialProxyHolder):
 
     def isAllConditionsOK(self):
         result = True
-        return FunctionalConditions(self._effect.getConditions()).allConditionsOk() if self._effect is not None else result
+        if self._effect is not None:
+            return FunctionalConditions(self._effect.getConditions()).allConditionsOk()
+        else:
+            return result
 
 
 class FunctionalEffectsGroup(FunctionalEffect):
@@ -398,7 +418,10 @@ class FunctionalRunTriggerEffect(FunctionalEffect):
 
     def isStillRunning(self):
         trigger = self.getTarget()
-        return trigger.isRunning if trigger is not None else False
+        if trigger is not None:
+            return trigger.isRunning
+        else:
+            return False
 
     def triggerEffect(self):
         trigger = self.getTarget()
@@ -489,7 +512,8 @@ class FunctionalShowWindowEffect(FunctionalEffect):
                 query = self._ctrlFactory.createContentQuery(window.getType())
                 query.invoke(content, window.getVarRef())
             self._setActions(window)
-            isRunning = self._gui.playEffect(GUI_EFFECT_NAME.SHOW_WINDOW, [window.getID(), window.getType(), content])
+            isRunning = self._gui.playEffect(GUI_EFFECT_NAME.SHOW_WINDOW, [
+             window.getID(), window.getType(), content])
             if not isRunning:
                 LOG_ERROR('Can not play effect "ShowWindow"', window.getID(), window.getType())
         else:
@@ -519,14 +543,16 @@ class FunctionalSetGuiItemCriteria(FunctionalEffect):
 
     def _playEffect(self, criteria, value):
         LOG_DEBUG('Set gui item criteria', criteria.getTargetID(), value)
-        return self._gui.playEffect(GUI_EFFECT_NAME.SET_CRITERIA, (criteria.getTargetID(), value))
+        return self._gui.playEffect(GUI_EFFECT_NAME.SET_CRITERIA, (
+         criteria.getTargetID(), value))
 
 
 class FunctionalSetGuiItemViewCriteria(FunctionalSetGuiItemCriteria):
 
     def _playEffect(self, criteria, value):
         LOG_DEBUG('Set gui item view criteria', criteria.getComponentIDs(), value)
-        return self._gui.playEffect(GUI_EFFECT_NAME.SET_VIEW_CRITERIA, (criteria.getComponentIDs(), value))
+        return self._gui.playEffect(GUI_EFFECT_NAME.SET_VIEW_CRITERIA, (
+         criteria.getComponentIDs(), value))
 
 
 class FunctionalSetAction(FunctionalEffect):
@@ -763,7 +789,9 @@ class FunctionalPlayAnimationEffect(FunctionalEffect):
         return not self._effect.needWaitForFinish()
 
     def isStillRunning(self):
-        return False if self.isInstantaneous() else self._gui.isEffectRunning(GUI_EFFECT_NAME.PLAY_ANIMATION, *self._args)
+        if self.isInstantaneous():
+            return False
+        return self._gui.isEffectRunning(GUI_EFFECT_NAME.PLAY_ANIMATION, *self._args)
 
     def triggerEffect(self):
         self._gui.release()

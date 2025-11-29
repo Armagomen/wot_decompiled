@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_formatters.py
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import CurtailingAwardsComposer
 from gui.impl import backport
 from gui.ranked_battles.constants import AWARDS_ORDER, DEFAULT_REWARDS_COUNT, YEAR_AWARDS_BONUS_ORDER
@@ -32,15 +30,21 @@ class _BonusNameRankedAwardsComposer(_RankedAwardsComposer):
 
 
 def getFloatPercentStrStat(value):
-    return _UNAVAILABLE_SYMBOL if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE else text_styles.concatStylesToSingleLine(backport.getNiceNumberFormat(value * 100), _PERCENT_SYMBOL)
+    if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE:
+        return _UNAVAILABLE_SYMBOL
+    return text_styles.concatStylesToSingleLine(backport.getNiceNumberFormat(value * 100), _PERCENT_SYMBOL)
 
 
 def getIntegerStrStat(value):
-    return _UNAVAILABLE_SYMBOL if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE else backport.getNiceNumberFormat(value)
+    if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE:
+        return _UNAVAILABLE_SYMBOL
+    return backport.getNiceNumberFormat(value)
 
 
 def getTimeLongStr(value):
-    return _UNAVAILABLE_SYMBOL if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE else backport.getLongTimeFormat(value)
+    if _getValueOrUnavailable(value) == _UNAVAILABLE_VALUE:
+        return _UNAVAILABLE_SYMBOL
+    return backport.getLongTimeFormat(value)
 
 
 def getRankedAwardsFormatter(maxRewardsCount=DEFAULT_REWARDS_COUNT):
@@ -62,11 +66,16 @@ def rankedYearAwardsSortFunction(b1, b2):
 
 
 def _getOrderByBonusType(bonusName, order=AWARDS_ORDER):
-    return order.index(bonusName) if bonusName in order else -1
+    if bonusName in order:
+        return order.index(bonusName)
+    return -1
 
 
 def _getValueOrUnavailable(targetValue):
-    return targetValue if targetValue is not None else _UNAVAILABLE_VALUE
+    if targetValue is not None:
+        return targetValue
+    else:
+        return _UNAVAILABLE_VALUE
 
 
 def _sortBonusesFunc(b1, b2):

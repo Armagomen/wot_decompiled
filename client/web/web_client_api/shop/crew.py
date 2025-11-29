@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/shop/crew.py
-import typing
-import nations
+import typing, nations
 from gui import GUI_NATIONS
 from gui.impl import backport
 from gui.impl.gen import R
@@ -16,7 +13,7 @@ if typing.TYPE_CHECKING:
     from typing import Generator, Set, Tuple, Union
     from gui.server_events.recruit_helper import _BaseRecruitInfo
     from items.components.tankmen_components import NationConfig, NationGroup
-    TManPassport = Tuple[int, bool, bool, str, str, str]
+    TManPassport = Tuple[(int, bool, bool, str, str, str)]
 _NEW_SKILL = 'new_skill'
 _NEWBIE = 'newbie'
 _UNDEFINED = 'undefined'
@@ -43,7 +40,9 @@ class _ShopTankman(object):
     def location(self):
         if self.isDismissed:
             return TManLocation.DEMOBILIZED
-        return TManLocation.TANKS if self.isInTank else TManLocation.BARRACKS
+        if self.isInTank:
+            return TManLocation.TANKS
+        return TManLocation.BARRACKS
 
     @property
     def roleID(self):
@@ -59,7 +58,9 @@ class _ShopTankman(object):
 
     @property
     def gender(self):
-        return TManGender.FEMALE if self.isFemale else TManGender.MALE
+        if self.isFemale:
+            return TManGender.FEMALE
+        return TManGender.MALE
 
     @property
     def groupName(self):
@@ -128,7 +129,7 @@ class _ShopRecruit(_ShopTankman):
 
     @property
     def vehicleNativeDescr(self):
-        return None
+        return
 
     @property
     def iconRank(self):
@@ -147,12 +148,14 @@ class _ShopRecruit(_ShopTankman):
 
 
 def makeTankman(crewItem):
-    return _ShopTankman(crewItem) if isinstance(crewItem, Tankman) else _ShopRecruit(_recruit(crewItem))
+    if isinstance(crewItem, Tankman):
+        return _ShopTankman(crewItem)
+    return _ShopRecruit(_recruit(crewItem))
 
 
 def _recruit(recruitInfo):
     iterNationGroups = ((nationID, set(_iterNationGroups(config, recruitInfo.getIsPremium(), recruitInfo.getGroupName()))) for nationID, config in _iterNationsConfigs())
-    currentNationGroup = first(((nationID, first(nationGroups)) for nationID, nationGroups in iterNationGroups if nationGroups))
+    currentNationGroup = first((nationID, first(nationGroups)) for nationID, nationGroups in iterNationGroups if nationGroups)
     return Tankman(TankmanDescr(generateCompactDescr(passport=_makePassport(recruitInfo, currentNationGroup), vehicleTypeID=VEHICLE_TYPES_ORDER_INDICES[VEHICLE_CLASS_NAME.MEDIUM_TANK], role=Tankman.ROLES.COMMANDER, roleLevel=recruitInfo.getRoleLevel(), skills=[ s for s in recruitInfo.getAllKnownSkills() if s != _NEW_SKILL ], lastSkillLevel=recruitInfo.getLastSkillLevel())).makeCompactDescr())
 
 
@@ -167,7 +170,8 @@ def _iterNationsConfigs():
 
 def _makePassport(recruitInfo, nationGroup):
     nationID, group = nationGroup
-    return (nationID,
+    return (
+     nationID,
      recruitInfo.getIsPremium(),
      recruitInfo.isFemale(),
      first(group.firstNames),

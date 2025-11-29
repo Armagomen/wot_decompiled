@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/StationaryReloadController.py
 import typing
 from collections import namedtuple
 import BigWorld
@@ -18,7 +16,8 @@ def getVehicleStationaryReloadController(vehicle):
     return getVehicleMechanic(VehicleMechanic.STATIONARY_RELOAD, vehicle)
 
 
-class StationaryReloadState(namedtuple('StationaryReloadState', ('state', 'baseTime', 'timeLeft', 'gunLockMask', 'sequenceEndTime')), IMechanicState):
+class StationaryReloadState(namedtuple('StationaryReloadState', ('state', 'baseTime', 'timeLeft', 'gunLockMask',
+                                     'sequenceEndTime')), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status):

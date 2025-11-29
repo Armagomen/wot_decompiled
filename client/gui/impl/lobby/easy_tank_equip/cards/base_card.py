@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/cards/base_card.py
 import typing
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.common.preset_model import PresetModel
@@ -33,15 +31,20 @@ class BaseCard(SubModelPresenter):
         return
 
     def updateModel(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__fillProposalModel(model=tx)
             self.__fillPresetsModels(self.provider.presets, model=tx)
 
     def _getEvents(self):
-        return super(BaseCard, self)._getEvents() + ((self.provider.onSelect, self._onSelect),
-         (self.provider.onSwitchPreset, self._onSwitchPreset),
-         (self.provider.onPricesUpdated, self._onPricesUpdated),
-         (self.provider.onPresetsUpdated, self._onPresetsUpdated))
+        return super(BaseCard, self)._getEvents() + (
+         (
+          self.provider.onSelect, self._onSelect),
+         (
+          self.provider.onSwitchPreset, self._onSwitchPreset),
+         (
+          self.provider.onPricesUpdated, self._onPricesUpdated),
+         (
+          self.provider.onPresetsUpdated, self._onPresetsUpdated))
 
     def _getPreset(self):
         raise NotImplementedError

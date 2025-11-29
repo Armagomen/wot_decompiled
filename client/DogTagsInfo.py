@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DogTagsInfo.py
-import typing
-import BigWorld
-import Event
+import typing, BigWorld, Event
 if typing.TYPE_CHECKING:
     from typing import List, Tuple
 

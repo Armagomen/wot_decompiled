@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/SoundGroups.py
-import BigWorld
-import WWISE
-import Event
-import Settings
-import ResMgr
-import PlayerEvents
-import MusicControllerWWISE
-import Windowing
+import BigWorld, WWISE, Event, Settings, ResMgr, PlayerEvents, MusicControllerWWISE, Windowing
 from ReplayEvents import g_replayEvents
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_DEBUG
 from helpers import i18n, dependency
@@ -33,7 +24,8 @@ class CREW_GENDER_SWITCHES(object):
     MALE = 'SWITCH_ext_vo_gender_male'
     FEMALE = 'SWITCH_ext_vo_gender_female'
     DEFAULT = MALE
-    GENDER_ALL = (MALE, FEMALE)
+    GENDER_ALL = (
+     MALE, FEMALE)
 
 
 class SoundModes(object):
@@ -73,14 +65,17 @@ class SoundModes(object):
             return self.__isValid
 
         def __repr__(self):
-            return 'SoundModeDesc<name=%s; lang=%s; visible=%s>' % (self.name, self.voiceLanguage, not self.invisible)
+            return 'SoundModeDesc<name=%s; lang=%s; visible=%s>' % (
+             self.name, self.voiceLanguage, not self.invisible)
 
         def __cmp__(self, other):
             if not isinstance(other, SoundModes.SoundModeDesc):
                 return -1
             if self.name == 'default':
                 return -1
-            return 1 if other.name == 'default' else 1
+            if other.name == 'default':
+                return 1
+            return 1
 
     class NationalPresetDesc(object):
 
@@ -114,15 +109,16 @@ class SoundModes(object):
         self.__currentMode = SoundModes.DEFAULT_MODE_NAME
         self.__nationalPresets = {}
         self.__nationToSoundModeMapping = {'default': SoundModes.DEFAULT_MODE_NAME}
-        self.__currentNationalPreset = (SoundModes.DEFAULT_MODE_NAME, False)
+        self.__currentNationalPreset = (
+         SoundModes.DEFAULT_MODE_NAME, False)
         modesSettingsSection = ResMgr.openSection(SoundModes.__MODES_FOLDER + SoundModes.__MODES_FILENAME)
         if modesSettingsSection is None:
             LOG_ERROR('%s is not found' % SoundModes.__MODES_FILENAME)
             return
         else:
             soundModes, nationalPresets = self.__readSoundModesConfig(modesSettingsSection, self.__nationalPresets)
-            self.__modes = dict(((soundMode.name, soundMode) for soundMode in soundModes))
-            self.__nationalPresets = dict(((preset.name, preset) for preset in nationalPresets))
+            self.__modes = dict((soundMode.name, soundMode) for soundMode in soundModes)
+            self.__nationalPresets = dict((preset.name, preset) for preset in nationalPresets)
             if SoundModes.DEFAULT_MODE_NAME not in self.__modes:
                 LOG_ERROR('Default sound mode is not found!')
             folderSection = ResMgr.openSection(SoundModes.__MODES_FOLDER)
@@ -135,13 +131,17 @@ class SoundModes(object):
                         soundModes, nationalPresets = self.__readSoundModesConfig(modesConfigSection, defaultNationalPresets)
                         for mode in soundModes:
                             if self.__modes.has_key(mode.name):
-                                LOG_WARNING("%s config tries to redefine soundMode '%s', ignored" % (modesConfigSection.name, mode.name))
-                            self.__modes[mode.name] = mode
+                                LOG_WARNING("%s config tries to redefine soundMode '%s', ignored" % (
+                                 modesConfigSection.name, mode.name))
+                            else:
+                                self.__modes[mode.name] = mode
 
                         for preset in nationalPresets:
                             if self.__nationalPresets.has_key(preset.name):
-                                LOG_WARNING("%s config tries to redefine nationalPreset '%s', ignored" % (preset.name, preset.name))
-                            self.__nationalPresets[preset.name] = preset
+                                LOG_WARNING("%s config tries to redefine nationalPreset '%s', ignored" % (
+                                 preset.name, preset.name))
+                            else:
+                                self.__nationalPresets[preset.name] = preset
 
             self.setMode(initialModeName)
             return
@@ -164,9 +164,11 @@ class SoundModes(object):
                 for nationName, soundMode in overridePreset.mapping.iteritems():
                     nationalPresetToOverride.mapping[nationName] = soundMode
 
-            LOG_WARNING("Failed to override nationalPreset '%s'" % overridePreset.name)
+            else:
+                LOG_WARNING("Failed to override nationalPreset '%s'" % overridePreset.name)
 
-        return (soundModes, nationalPresets)
+        return (
+         soundModes, nationalPresets)
 
     def __readNationalPresets(self, rootSection):
         for nationalPresetSec in rootSection.values():
@@ -259,17 +261,16 @@ class SoundGroups(object):
         self.__muffledByReplay = False
         self.__spaceID = GuiGlobalSpaceID.UNDEFINED
         PlayerEvents.g_playerEvents.onAvatarReady += self.onAvatarReady
-        self.__categories = {'vehicles': ('outside/vehicles', 'vehicles'),
-         'effects': ('hits', 'outside/hits', 'inside/weapons', 'outside/weapons', 'outside/environment', 'battle_gui'),
-         'gui': ('gui', 'ingame_voice'),
-         'music': ('music',),
-         'ambient': ('outside/ambient', 'hangar_v2', 'ambientUR'),
-         'masterVivox': (),
-         'micVivox': (),
-         'masterFadeVivox': ()}
-        defCategoryVolumes = {'music': 0.5,
-         'masterVivox': 0.7,
-         'micVivox': 0.4}
+        self.__categories = {'vehicles': ('outside/vehicles', 'vehicles'), 
+           'effects': ('hits', 'outside/hits', 'inside/weapons', 'outside/weapons', 'outside/environment',
+ 'battle_gui'), 
+           'gui': ('gui', 'ingame_voice'), 
+           'music': ('music', ), 
+           'ambient': ('outside/ambient', 'hangar_v2', 'ambientUR'), 
+           'masterVivox': (), 
+           'micVivox': (), 
+           'masterFadeVivox': ()}
+        defCategoryVolumes = {'music': 0.5, 'masterVivox': 0.7, 'micVivox': 0.4}
         userPrefs = Settings.g_instance.userPrefs
         soundModeName = SoundModes.DEFAULT_MODE_NAME
         nationalMapping = None
@@ -298,19 +299,19 @@ class SoundGroups(object):
                 volume = ds.readFloat('volume_' + categoryName, defCategoryVolumes.get(categoryName, 1.0))
                 self.__volumeByCategory[categoryName] = volume
 
-            soundModeSec = ds['soundMode']
-            if soundModeSec is not None:
-                soundModeName = soundModeSec.asString
-                if soundModeName == '':
-                    soundModeName = SoundModes.DEFAULT_MODE_NAME
-                    if ds['soundMode'].has_key('nationalPreset'):
-                        nationalMapping = ds.readString('soundMode/nationalPreset', '')
-                    else:
-                        nationsSec = soundModeSec['nations']
-                        if nationsSec is not None:
-                            nationalMapping = {}
-                            for nation, sec in nationsSec.items():
-                                nationalMapping[nation] = sec.asString
+        soundModeSec = ds['soundMode']
+        if soundModeSec is not None:
+            soundModeName = soundModeSec.asString
+            if soundModeName == '':
+                soundModeName = SoundModes.DEFAULT_MODE_NAME
+                if ds['soundMode'].has_key('nationalPreset'):
+                    nationalMapping = ds.readString('soundMode/nationalPreset', '')
+                else:
+                    nationsSec = soundModeSec['nations']
+                    if nationsSec is not None:
+                        nationalMapping = {}
+                        for nation, sec in nationsSec.items():
+                            nationalMapping[nation] = sec.asString
 
         self.__soundModes = SoundModes(SoundModes.DEFAULT_MODE_NAME)
         if isinstance(nationalMapping, str):
@@ -364,13 +365,14 @@ class SoundGroups(object):
             self.setVolume(categoryName, volume, False)
 
     def enableEverythingExceptGui(self, enable):
-        for categoryName in ('ambient', 'music', 'music_hangar', 'vehicles', 'effects', 'voice'):
+        for categoryName in ('ambient', 'music', 'music_hangar', 'vehicles', 'effects',
+                             'voice'):
             enable = enable and not self.__muffledByReplay
             volume = 0.0 if not enable else self.__volumeByCategory[categoryName]
             self.setVolume(categoryName, volume, False)
 
     def enableVoiceSounds(self, enable):
-        for categoryName in ('gui',):
+        for categoryName in ('gui', ):
             volume = 0.0 if not enable else self.__volumeByCategory[categoryName]
             self.setVolume(categoryName, volume, False)
 
@@ -399,19 +401,21 @@ class SoundGroups(object):
         self.onMusicVolumeChanged('ambient', self.__masterVolume, self.getVolume('ambient'))
 
     def getMasterVolume(self):
-        return self.__masterVolume if BigWorld.isWindowVisible() else 0.0
+        if BigWorld.isWindowVisible():
+            return self.__masterVolume
+        return 0.0
 
     def getEnableStatus(self):
         return self.__enableStatus
 
     def setEnableStatus(self, status):
         if status not in SOUND_ENABLE_STATUS_VALUES:
-            raise SoftException('Status {} is out of range(3)'.format(status))
+            raise SoftException(('Status {} is out of range(3)').format(status))
         self.__enableStatus = status
         self.savePreferences()
 
     def setVolume(self, categoryName, volume, updatePrefs=True):
-        WWISE.WW_setRTPCBus('RTPC_ext_menu_volume_{}'.format(categoryName), volume * 100.0)
+        WWISE.WW_setRTPCBus(('RTPC_ext_menu_volume_{}').format(categoryName), volume * 100.0)
         if updatePrefs:
             self.__volumeByCategory[categoryName] = volume
             self.savePreferences()

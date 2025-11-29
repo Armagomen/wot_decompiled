@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/base_setup.py
-import logging
-import typing
+import logging, typing
 from BWUtil import AsyncReturn
 from wg_async import wg_async, await_callback
 from gui.impl.lobby.tank_setup.array_providers.base import BaseVehSectionContext
@@ -13,7 +10,8 @@ from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 
 class BaseSetupSubView(BaseSubModelView):
-    __slots__ = ('_interactor', '_tabsController', '_provider', '_filter', '_curSlotID', '__slotActions', '_currentTabName', '_asyncActionLock')
+    __slots__ = ('_interactor', '_tabsController', '_provider', '_filter', '_curSlotID',
+                 '__slotActions', '_currentTabName', '_asyncActionLock')
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, viewModel, interactor):
@@ -78,7 +76,7 @@ class BaseSetupSubView(BaseSubModelView):
         self.__slotActions.clear()
 
     def _createTabsController(self):
-        return None
+        return
 
     def _updateTabs(self):
         if self._tabsController is not None:
@@ -119,7 +117,7 @@ class BaseSetupSubView(BaseSubModelView):
         return BaseVehSectionContext(self._curSlotID)
 
     def _createFilter(self):
-        return None
+        return
 
     def _onFilterChanged(self, args):
         filterName = args.get('name')

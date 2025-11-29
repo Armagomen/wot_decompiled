@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/stronghold_event_requester.py
-import json
-import logging
+import json, logging
 from collections import defaultdict
-import typing
-import Event
-import wg_async
+import typing, Event, wg_async
 from gui.Scaleform.daapi.view.lobby.clans.clan_helpers import getStrongholdEventEnabled
 from gui.clans.clan_cache import g_clanCache
 from gui.game_control.reactive_comm import Subscription
@@ -157,10 +152,10 @@ class FrozenVehiclesRequester(object):
 
     @staticmethod
     def __getChannelName():
-        return 'wgshevents_clan_{}'.format(g_clanCache.clanDBID)
+        return ('wgshevents_clan_{}').format(g_clanCache.clanDBID)
 
     @staticmethod
     def __defaultCache():
-        return {'parts_balance': 0,
-         'frozen_vehicles': defaultdict(set),
-         'unfreeze_prices': {}}
+        return {'parts_balance': 0, 
+           'frozen_vehicles': defaultdict(set), 
+           'unfreeze_prices': {}}

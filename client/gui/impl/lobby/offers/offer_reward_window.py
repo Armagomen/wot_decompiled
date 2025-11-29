@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/offers/offer_reward_window.py
-import logging
-import shared_utils
+import logging, shared_utils
 from PlayerEvents import g_playerEvents
 from gui.impl.auxiliary.rewards_helper import getRewardsBonuses
 from gui.impl.backport import TooltipData, BackportTooltipWindow
@@ -63,7 +60,7 @@ class OfferRewardWindow(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(OfferRewardWindow, self)._onLoading(*args, **kwargs)
-        with self._viewModel.transaction() as model:
+        with self._viewModel.transaction() as (model):
             if self._gift.fromCdn:
                 title = self._cdnTitle
                 description = self._cdnDescription

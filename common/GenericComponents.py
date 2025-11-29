@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/GenericComponents.py
 import enum
 COMPOSITION_ROOT_SLOT_NAME = 'compositionRootSlot'
 
@@ -24,4 +22,6 @@ class HealthGradationComponent:
     def getHealthZone(self, health, maxHealth):
         if health < maxHealth * self.__redHealth / 100:
             return EHealthGradation.RED_ZONE
-        return EHealthGradation.YELLOW_ZONE if health < maxHealth * self.__yellowHealth / 100 else EHealthGradation.GREEN_ZONE
+        if health < maxHealth * self.__yellowHealth / 100:
+            return EHealthGradation.YELLOW_ZONE
+        return EHealthGradation.GREEN_ZONE

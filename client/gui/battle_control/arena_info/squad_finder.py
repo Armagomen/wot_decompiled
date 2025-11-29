@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/squad_finder.py
 from collections import defaultdict, namedtuple
 from constants import ARENA_GUI_TYPE
 from gui.battle_control.arena_info import settings
@@ -39,10 +37,10 @@ class EmptySquadFinder(ISquadFinder):
         pass
 
     def getNumberOfSquadmen(self, team, prebattleID):
-        pass
+        return 0
 
     def getNumberOfSquads(self):
-        pass
+        return 0
 
     def findSquads(self):
         return []
@@ -52,7 +50,7 @@ class EmptySquadFinder(ISquadFinder):
 
 
 class _SquadFinder(ISquadFinder):
-    __slots__ = ('_prbStats',)
+    __slots__ = ('_prbStats', )
 
     def __init__(self, teams):
         super(_SquadFinder, self).__init__()
@@ -87,7 +85,7 @@ class _SquadFinder(ISquadFinder):
 SquadSizeDescription = namedtuple('SquadSizeDescription', ('teamID', 'squadID', 'squadSize'))
 
 class TeamScopeNumberingFinder(_SquadFinder):
-    __slots__ = ('_teamsSquadIndices',)
+    __slots__ = ('_teamsSquadIndices', )
 
     def __init__(self, teams):
         super(TeamScopeNumberingFinder, self).__init__(teams)
@@ -100,7 +98,7 @@ class TeamScopeNumberingFinder(_SquadFinder):
         super(TeamScopeNumberingFinder, self).clear()
 
     def getNumberOfSquads(self):
-        return sum((max(indices.itervalues()) for indices in self._teamsSquadIndices.itervalues() if indices))
+        return sum(max(indices.itervalues()) for indices in self._teamsSquadIndices.itervalues() if indices)
 
     def findSquadSizes(self):
         squadRange = self._getSquadRange()
@@ -133,11 +131,12 @@ class TeamScopeNumberingFinder(_SquadFinder):
                     else:
                         squadIndices[prebattleID] = 1
                 for vehicleID in vehiclesIDs:
-                    yield (vehicleID, squadIndices[prebattleID])
+                    yield (
+                     vehicleID, squadIndices[prebattleID])
 
 
 class ContinuousNumberingFinder(_SquadFinder):
-    __slots__ = ('_squadIndices',)
+    __slots__ = ('_squadIndices', )
 
     def __init__(self, teams):
         super(ContinuousNumberingFinder, self).__init__(teams)
@@ -148,7 +147,9 @@ class ContinuousNumberingFinder(_SquadFinder):
         super(ContinuousNumberingFinder, self).clear()
 
     def getNumberOfSquads(self):
-        return max(self._squadIndices.itervalues()) if self._squadIndices else 0
+        if self._squadIndices:
+            return max(self._squadIndices.itervalues())
+        return 0
 
     def findSquads(self):
         squadRange = self._getSquadRange()
@@ -162,7 +163,8 @@ class ContinuousNumberingFinder(_SquadFinder):
                     else:
                         self._squadIndices[prebattleID] = 1
                 for vehicleID in vehiclesIDs:
-                    yield (vehicleID, self._squadIndices[prebattleID])
+                    yield (
+                     vehicleID, self._squadIndices[prebattleID])
 
     def findSquadSizes(self):
         raise SoftException('Deprecated class method called - code should not be reached')

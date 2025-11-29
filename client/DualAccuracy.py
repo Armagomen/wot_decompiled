@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DualAccuracy.py
-import typing
-import Event
+import typing, Event
 from constants import DUAL_ACCURACY_STATE
 from vehicles.components.vehicle_component import VehicleDynamicComponent
 from vehicles.mechanics.mechanic_constants import VehicleMechanic
@@ -34,7 +31,9 @@ class DualAccuracy(VehicleDynamicComponent):
         return self.__dualAccuracyFactor
 
     def getCurrentDualAccuracyFactor(self):
-        return self.__dualAccuracyFactor if self.isActive() else _DEFAULT_ACCURACY_FACTOR
+        if self.isActive():
+            return self.__dualAccuracyFactor
+        return _DEFAULT_ACCURACY_FACTOR
 
     def set_state(self, _=None):
         self._updateComponentAvatar()

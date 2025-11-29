@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/training/legacy/limits.py
 from CurrentVehicle import g_currentVehicle
 from constants import PREBATTLE_ACCOUNT_STATE, PREBATTLE_TYPE
 from gui.prb_control.entities.base.limits import AbstractTeamIsValid, LimitsCollection, VehicleIsValid, TeamNoPlayersInBattle, TeamIsValid, TeamAllPlayersReady
@@ -15,7 +13,10 @@ class ObserverInTeamIsValid(AbstractTeamIsValid):
         accountsInfo = self._getAccountsInfo(rosters, team)
         if len(accountsInfo) < teamLimits['minCount']:
             return (False, 'limit/minCount')
-        return (False, 'observers') if self.__isAllObservers(accountsInfo) else (True, '')
+        if self.__isAllObservers(accountsInfo):
+            return (False, 'observers')
+        return (
+         True, '')
 
     @classmethod
     def __isAllObservers(cls, accountsInfo):
@@ -39,13 +40,17 @@ class TrainingVehicleIsValid(VehicleIsValid):
 
     def check(self, teamLimits):
         isValid, restriction = super(TrainingVehicleIsValid, self).check(teamLimits)
-        return (False, PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED) if isValid and g_currentVehicle.isObserver() else (isValid, restriction)
+        if isValid and g_currentVehicle.isObserver():
+            return (False, PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED)
+        return (isValid, restriction)
 
 
 class TrainingLimits(LimitsCollection):
 
     def __init__(self, entity):
-        super(TrainingLimits, self).__init__(entity, (TrainingVehicleIsValid(),), (TeamNoPlayersInBattle(PREBATTLE_TYPE.TRAINING),
+        super(TrainingLimits, self).__init__(entity, (
+         TrainingVehicleIsValid(),), (
+         TeamNoPlayersInBattle(PREBATTLE_TYPE.TRAINING),
          TeamIsValid(),
          ObserverInTeamIsValid(),
          TeamAllPlayersReady()))

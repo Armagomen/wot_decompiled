@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/submodels/common.py
 from typing import TYPE_CHECKING
 from gui.impl.gen.view_models.views.lobby.lootbox_system.box_info_model import BoxInfoModel
 from gui.lootbox_system.base.utils import getIsAnimationActive, setIsAnimationActive
@@ -11,7 +9,7 @@ if TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.single_box_rewards_view_model import SingleBoxRewardsViewModel
     from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.multiple_boxes_rewards_view_model import MultipleBoxesRewardsViewModel
     from gui.shared.gui_items.loot_box import LootBox
-    IAnimatedViewModel = Union[HasBoxesViewModel, SingleBoxRewardsViewModel, MultipleBoxesRewardsViewModel]
+    IAnimatedViewModel = Union[(HasBoxesViewModel, SingleBoxRewardsViewModel, MultipleBoxesRewardsViewModel)]
 
 @dependency.replace_none_kwargs(lootBoxes=ILootBoxSystemController)
 def updateBoxesInfoModel(eventName, boxesInfo, lootBoxes=None):

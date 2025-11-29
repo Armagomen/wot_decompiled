@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/battle_type_selector_view_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -16,7 +14,7 @@ class AnimationState(Enum):
 
 
 class BattleTypeSelectorViewModel(ViewModel):
-    __slots__ = ('onSelectTab',)
+    __slots__ = ('onSelectTab', )
 
     def __init__(self, properties=3, commands=1):
         super(BattleTypeSelectorViewModel, self).__init__(properties=properties, commands=commands)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/post_progression_view_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.awards_widget_model import AwardsWidgetModel
@@ -13,7 +11,8 @@ class PostProgressionStatus(IntEnum):
 
 
 class PostProgressionViewModel(ViewModel):
-    __slots__ = ('onOpenPointsInfo', 'onOpenInfoPage', 'onOpenChaptersBuyView', 'onClose', 'onProgressAchieved', 'onCycleCompleted')
+    __slots__ = ('onOpenPointsInfo', 'onOpenInfoPage', 'onOpenChaptersBuyView', 'onClose',
+                 'onProgressAchieved', 'onCycleCompleted')
 
     def __init__(self, properties=12, commands=6):
         super(PostProgressionViewModel, self).__init__(properties=properties, commands=commands)

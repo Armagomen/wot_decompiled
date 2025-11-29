@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/popovers/replays_filter_popover_view.py
-import typing
-import Event
+import typing, Event
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from server_side_replay.gui.impl.gen.view_models.views.lobby.filter_toggle_group_model import FilterToggleGroupModel
@@ -24,7 +21,9 @@ if typing.TYPE_CHECKING:
     FilterGroups = Iterable[GroupSettings]
 
 class ReplaysFilterPopoverView(PopOverViewImpl):
-    __slots__ = ('__groupSettings', '__onStateUpdated', '__state', '__hasVehicleFilter', '__vehiclesSortColum', '__isVehicleSortAscending', '__canResetCallback', 'onTooltipCreated')
+    __slots__ = ('__groupSettings', '__onStateUpdated', '__state', '__hasVehicleFilter',
+                 '__vehiclesSortColum', '__isVehicleSortAscending', '__canResetCallback',
+                 'onTooltipCreated')
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, groupSettings, onStateUpdated, state=None, hasVehicleFilter=False, canResetCallback=None):
@@ -53,13 +52,21 @@ class ReplaysFilterPopoverView(PopOverViewImpl):
         return result
 
     def _getEvents(self):
-        return ((self.viewModel.onUpdateFilter, self.__onUpdateFilter),
-         (self.viewModel.onResetFilter, self.__onResetFilter),
-         (self.viewModel.onApplyFilter, self.__onApplyFilter),
-         (self.viewModel.onSortVehiclesByColumn, self.__onSortVehiclesByColumn),
-         (self.viewModel.onSelectVehicle, self.__onSelectVehicle),
-         (self.viewModel.onLastDaysOptionSelect, self.__onSelectVehicleLastDays),
-         (self.viewModel.onCheckboxSelect, self.__onCheckboxSelect))
+        return (
+         (
+          self.viewModel.onUpdateFilter, self.__onUpdateFilter),
+         (
+          self.viewModel.onResetFilter, self.__onResetFilter),
+         (
+          self.viewModel.onApplyFilter, self.__onApplyFilter),
+         (
+          self.viewModel.onSortVehiclesByColumn, self.__onSortVehiclesByColumn),
+         (
+          self.viewModel.onSelectVehicle, self.__onSelectVehicle),
+         (
+          self.viewModel.onLastDaysOptionSelect, self.__onSelectVehicleLastDays),
+         (
+          self.viewModel.onCheckboxSelect, self.__onCheckboxSelect))
 
     def _onLoading(self, *args, **kwargs):
         super(ReplaysFilterPopoverView, self)._onLoading(*args, **kwargs)
@@ -93,7 +100,7 @@ class ReplaysFilterPopoverView(PopOverViewImpl):
         else:
             self.__isVehicleSortAscending = column == VehicleSortColumn.NAME.value
         self.__vehiclesSortColum = column
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__fillVehicleList(tx)
 
     @args2params(int)
@@ -111,7 +118,7 @@ class ReplaysFilterPopoverView(PopOverViewImpl):
         self.__onStateUpdated()
 
     def __fillModel(self, updateVehicles=True):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             if self.__canResetCallback is not None:
                 tx.setCanResetFilter(self.__canResetCallback())
             groups = tx.getFilterGroups()

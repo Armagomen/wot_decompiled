@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgnc/image_notification_helper.py
 import logging
 from adisp import adisp_process, adisp_async
 from gui import SystemMessages
@@ -11,7 +9,8 @@ from WebBrowser import getWebCache
 _logger = logging.getLogger(__name__)
 
 class WebImageHelper(object):
-    __slots__ = ('__callbackMethod', '__imageUrl', '__callbackDelayer', '__webCache', '__defLocalDirPath')
+    __slots__ = ('__callbackMethod', '__imageUrl', '__callbackDelayer', '__webCache',
+                 '__defLocalDirPath')
     __DEFAULT_TIMEOUT = 10.0
 
     def __init__(self, defLocalDirPath='notifications'):
@@ -82,4 +81,6 @@ def showPaymentMethodUnlinkNotification(method, imageUrl):
 
 
 def _packImageBlock(imagePath):
-    return '' if not imagePath else "<br/><br/><img src='{path}'/>".format(path=getTextureLinkByID(imagePath))
+    if not imagePath:
+        return ''
+    return ("<br/><br/><img src='{path}'/>").format(path=getTextureLinkByID(imagePath))

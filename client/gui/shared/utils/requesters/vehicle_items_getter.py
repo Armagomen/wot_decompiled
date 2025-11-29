@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/vehicle_items_getter.py
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_parameters import params
 from items import vehicles, tankmen, EQUIPMENT_TYPES, ItemsPrices
@@ -131,31 +129,31 @@ def _getSequence(_):
     return vehicles.g_cache.customization20().sequences.itervalues()
 
 
-_MODULES_GETTERS = {GUI_ITEM_TYPE.VEHICLE: _getVehicles,
- GUI_ITEM_TYPE.CHASSIS: _getChassis,
- GUI_ITEM_TYPE.ENGINE: _getEngines,
- GUI_ITEM_TYPE.RADIO: _getRadios,
- GUI_ITEM_TYPE.TURRET: _getTurrets,
- GUI_ITEM_TYPE.GUN: _getGuns,
- GUI_ITEM_TYPE.SHELL: _getShells,
- GUI_ITEM_TYPE.EQUIPMENT: _getEquipments,
- GUI_ITEM_TYPE.BATTLE_BOOSTER: _getBattleBoosters,
- GUI_ITEM_TYPE.BATTLE_ABILITY: _getBattleAbilities,
- GUI_ITEM_TYPE.OPTIONALDEVICE: _getOptionalDevices,
- GUI_ITEM_TYPE.PAINT: _getPaints,
- GUI_ITEM_TYPE.CAMOUFLAGE: _getCamouflages,
- GUI_ITEM_TYPE.MODIFICATION: _getModifications,
- GUI_ITEM_TYPE.DECAL: _getDecals,
- GUI_ITEM_TYPE.EMBLEM: _getEmblems,
- GUI_ITEM_TYPE.INSCRIPTION: _getInscriptions,
- GUI_ITEM_TYPE.STYLE: _getStyles,
- GUI_ITEM_TYPE.PROJECTION_DECAL: _getProjectionDecal,
- GUI_ITEM_TYPE.PERSONAL_NUMBER: _getPersonalNumber,
- GUI_ITEM_TYPE.CREW_SKINS: _getCrewSkins,
- GUI_ITEM_TYPE.CREW_BOOKS: _getCrewBooks,
- GUI_ITEM_TYPE.SEQUENCE: _getSequence,
- GUI_ITEM_TYPE.ATTACHMENT: _getAttachment,
- GUI_ITEM_TYPE.STAT_TRACKER: _getStatTrackers}
+_MODULES_GETTERS = {GUI_ITEM_TYPE.VEHICLE: _getVehicles, 
+   GUI_ITEM_TYPE.CHASSIS: _getChassis, 
+   GUI_ITEM_TYPE.ENGINE: _getEngines, 
+   GUI_ITEM_TYPE.RADIO: _getRadios, 
+   GUI_ITEM_TYPE.TURRET: _getTurrets, 
+   GUI_ITEM_TYPE.GUN: _getGuns, 
+   GUI_ITEM_TYPE.SHELL: _getShells, 
+   GUI_ITEM_TYPE.EQUIPMENT: _getEquipments, 
+   GUI_ITEM_TYPE.BATTLE_BOOSTER: _getBattleBoosters, 
+   GUI_ITEM_TYPE.BATTLE_ABILITY: _getBattleAbilities, 
+   GUI_ITEM_TYPE.OPTIONALDEVICE: _getOptionalDevices, 
+   GUI_ITEM_TYPE.PAINT: _getPaints, 
+   GUI_ITEM_TYPE.CAMOUFLAGE: _getCamouflages, 
+   GUI_ITEM_TYPE.MODIFICATION: _getModifications, 
+   GUI_ITEM_TYPE.DECAL: _getDecals, 
+   GUI_ITEM_TYPE.EMBLEM: _getEmblems, 
+   GUI_ITEM_TYPE.INSCRIPTION: _getInscriptions, 
+   GUI_ITEM_TYPE.STYLE: _getStyles, 
+   GUI_ITEM_TYPE.PROJECTION_DECAL: _getProjectionDecal, 
+   GUI_ITEM_TYPE.PERSONAL_NUMBER: _getPersonalNumber, 
+   GUI_ITEM_TYPE.CREW_SKINS: _getCrewSkins, 
+   GUI_ITEM_TYPE.CREW_BOOKS: _getCrewBooks, 
+   GUI_ITEM_TYPE.SEQUENCE: _getSequence, 
+   GUI_ITEM_TYPE.ATTACHMENT: _getAttachment, 
+   GUI_ITEM_TYPE.STAT_TRACKER: _getStatTrackers}
 
 def getItemsIterator(data, nationID=None, itemTypeID=None, onlyWithPrices=False):
     if 'itemPrices' in data and onlyWithPrices:
@@ -165,20 +163,23 @@ def getItemsIterator(data, nationID=None, itemTypeID=None, onlyWithPrices=False)
     getters = _MODULES_GETTERS
     if itemTypeID is None:
         itemTypeIDs = getters.keys()
-    elif itemTypeID in getters:
-        itemTypeIDs = (itemTypeID,)
     else:
-        raise SoftException('itemTypeID is invalid: {}'.format(itemTypeID))
-    if nationID is None:
-        nationIDs = nations.INDICES.itervalues()
-    else:
-        nationIDs = (nationID,)
-    for nextID in nationIDs:
-        for typeID in itemTypeIDs:
-            getter = getters[typeID]
-            for item in getter(nextID):
-                intCD = item.compactDescr
-                if not onlyWithPrices or intCD in prices:
-                    yield intCD
+        if itemTypeID in getters:
+            itemTypeIDs = (
+             itemTypeID,)
+        else:
+            raise SoftException(('itemTypeID is invalid: {}').format(itemTypeID))
+        if nationID is None:
+            nationIDs = nations.INDICES.itervalues()
+        else:
+            nationIDs = (
+             nationID,)
+        for nextID in nationIDs:
+            for typeID in itemTypeIDs:
+                getter = getters[typeID]
+                for item in getter(nextID):
+                    intCD = item.compactDescr
+                    if not onlyWithPrices or intCD in prices:
+                        yield intCD
 
     return

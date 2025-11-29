@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/extension_utils.py
 import importlib
 from soft_exception import SoftException
 from ExtensionsManager import g_extensionsManager
@@ -45,21 +43,22 @@ class _MergeExtensionFile(object):
         if not xmlPaths:
             return ''
         else:
-            genString = cls._openTag('{} {}'.format(_ROOT_TAG, _XML_NAMESPACE))
+            genString = cls._openTag(('{} {}').format(_ROOT_TAG, _XML_NAMESPACE))
             operationTag = None
             if mergeType == READ_METHOD.MERGE:
                 operationTag = _MERGE_TAG
-            elif mergeType == READ_METHOD.INCLUDE_BY_PATH:
-                operationTag = _INCLUDE_BY_PATH_TAG
-            if operationTag:
-                attribs = None if params is None else [('params', params)]
-                genString += cls._openTag(operationTag, attribs)
-            for path in xmlPaths:
+            else:
+                if mergeType == READ_METHOD.INCLUDE_BY_PATH:
+                    operationTag = _INCLUDE_BY_PATH_TAG
                 if operationTag:
-                    genString += cls._openTag(_CONTENT_TAG)
-                genString += cls._attributeTag(_INCLUDE_TAG, 'href', path)
-                if operationTag:
-                    genString += cls._closeTag(_CONTENT_TAG)
+                    attribs = None if params is None else [('params', params)]
+                    genString += cls._openTag(operationTag, attribs)
+                for path in xmlPaths:
+                    if operationTag:
+                        genString += cls._openTag(_CONTENT_TAG)
+                    genString += cls._attributeTag(_INCLUDE_TAG, 'href', path)
+                    if operationTag:
+                        genString += cls._closeTag(_CONTENT_TAG)
 
             if operationTag:
                 genString += cls._closeTag(operationTag)
@@ -68,17 +67,20 @@ class _MergeExtensionFile(object):
 
     @classmethod
     def openSection(cls, xmlPath, mergeType, params):
-        xmlPaths = [ ext.path + xmlPath for ext in g_extensionsManager.activeExtensions if rmgr.isFile(ext.path + xmlPath) ]
+        xmlPaths = [ ext.path + xmlPath for ext in g_extensionsManager.activeExtensions if rmgr.isFile(ext.path + xmlPath)
+                   ]
         if not xmlPaths:
             return rmgr.openSection(xmlPath)
         if rmgr.isFile(xmlPath):
-            xmlPaths = [xmlPath] + xmlPaths
-        elif len(xmlPaths) > 1 and mergeType not in (READ_METHOD.INCLUDE, READ_METHOD.INCLUDE_BY_PATH):
-            raise SoftException('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!'.format(t=mergeType, f=xmlPath))
-        if len(xmlPaths) == 1:
-            return rmgr.openSection(xmlPaths[0])
+            xmlPaths = [
+             xmlPath] + xmlPaths
+        else:
+            if len(xmlPaths) > 1 and mergeType not in (READ_METHOD.INCLUDE, READ_METHOD.INCLUDE_BY_PATH):
+                raise SoftException(('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!').format(t=mergeType, f=xmlPath))
+            if len(xmlPaths) == 1:
+                return rmgr.openSection(xmlPaths[0])
         if not (IS_CLIENT or IS_EDITOR):
-            xmlPaths = [ (getRealmFilePath(xmlPath) if rmgr.isFile(getRealmFilePath(xmlPath)) else xmlPath) for xmlPath in xmlPaths ]
+            xmlPaths = [ getRealmFilePath(xmlPath) if rmgr.isFile(getRealmFilePath(xmlPath)) else xmlPath for xmlPath in xmlPaths ]
         section = rmgr.DataSection('root')
         section.createSectionFromString(cls.makeMergeXMLString(xmlPaths, mergeType, params))
         section = section.child(0)
@@ -89,7 +91,7 @@ class _MergeExtensionFile(object):
         text = '<' + tag
         if attributes:
             for name, value in attributes:
-                text = '{} {}="{}"'.format(text, name, value)
+                text = ('{} {}="{}"').format(text, name, value)
 
         text = text + '>\n'
         return text
@@ -100,7 +102,7 @@ class _MergeExtensionFile(object):
 
     @classmethod
     def _attributeTag(cls, tag, attrName, attrValue):
-        return '<{} {}="{}"/>\n'.format(tag, attrName, attrValue)
+        return ('<{} {}="{}"/>\n').format(tag, attrName, attrValue)
 
 
 def mergeSection(xmlPath, mergeType, params):
@@ -116,7 +118,9 @@ class ResMgr(object):
     class __metaclass__(type):
 
         def __getattr__(self, item):
-            return getattr(rmgr, item) if IS_CLIENT or IS_EDITOR or IS_BOT else getattr(self if item in ('openSection', 'addToCache') else rmgr, item)
+            if IS_CLIENT or IS_EDITOR or IS_BOT:
+                return getattr(rmgr, item)
+            return getattr(self if item in ('openSection', 'addToCache') else rmgr, item)
 
     @classmethod
     def openSection(cls, filepath, createIfMissing=False):
@@ -125,7 +129,9 @@ class ResMgr(object):
         if cls.isInCache(filepath):
             return rmgr.openSection(filepath, createIfMissing)
         readExtXML, readMethod, params = isExtXML(filepath)
-        return rmgr.openSection(filepath, createIfMissing) if not readExtXML else mergeSection(filepath, readMethod, params)
+        if not readExtXML:
+            return rmgr.openSection(filepath, createIfMissing)
+        return mergeSection(filepath, readMethod, params)
 
     @staticmethod
     def addToCache(ftPath, xml):
@@ -139,11 +145,14 @@ class ResMgr(object):
         if len(xmlPaths) > 1 and not mergeRequired:
             raise SoftException('Multiple standalone resources for one relative path found: %s', ftPath)
         if len(xmlPaths) > 1 and not corePath and mergeType not in (READ_METHOD.INCLUDE, READ_METHOD.INCLUDE_BY_PATH):
-            raise SoftException('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!'.format(t=mergeType, f=ftPath))
+            raise SoftException(('The operation of merging files for files which are not present in the core is prohibited for the merge type: {t}. File: {f} may be present in different extensions!').format(t=mergeType, f=ftPath))
         cachedPath = next(iter(xmlPaths))
         return rmgr.addToCache(cachedPath, xml)
 
     @staticmethod
     def isInCache(filePath):
         func = getattr(rmgr, 'isInCache', None)
-        return func(getRealmFilePath(filePath)) or func(filePath) if func is not None else False
+        if func is not None:
+            return func(getRealmFilePath(filePath)) or func(filePath)
+        else:
+            return False

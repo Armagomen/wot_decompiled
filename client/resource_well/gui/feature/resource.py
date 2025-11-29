@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/resource.py
 from collections import OrderedDict
-import typing
-import nations
+import typing, nations
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentTypes import getFragmentType
 from gui import NONE_NATION_NAME
@@ -20,10 +17,10 @@ from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from typing import Dict, List, Tuple
 _INTELLIGENCE_BLUEPRINT = 'intelligence'
-_CURRENCY_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_INFO_SIMPLE,
- Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_INFO_SIMPLE,
- Currency.CRYSTAL: TOOLTIPS_CONSTANTS.CRYSTAL_INFO_SIMPLE,
- CURRENCIES_CONSTANTS.FREE_XP: TOOLTIPS_CONSTANTS.FREEXP_INFO_SIMPLE}
+_CURRENCY_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_INFO_SIMPLE, 
+   Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_INFO_SIMPLE, 
+   Currency.CRYSTAL: TOOLTIPS_CONSTANTS.CRYSTAL_INFO_SIMPLE, 
+   CURRENCIES_CONSTANTS.FREE_XP: TOOLTIPS_CONSTANTS.FREEXP_INFO_SIMPLE}
 
 class Resource(object):
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -115,7 +112,8 @@ class IntelligenceBlueprintResource(BlueprintResource):
         return self._itemsCache.items.blueprints.getIntelligenceCount()
 
     def _getTooltipSpecialArgs(self):
-        return [int(makeIntelligenceCD(self._fragmentCD))]
+        return [
+         int(makeIntelligenceCD(self._fragmentCD))]
 
 
 class NationalBlueprintResource(BlueprintResource):
@@ -133,7 +131,8 @@ class NationalBlueprintResource(BlueprintResource):
         return self.__getNation(self._fragmentCD)
 
     def _getTooltipSpecialArgs(self):
-        return [int(makeNationalCD(self._fragmentCD))]
+        return [
+         int(makeNationalCD(self._fragmentCD))]
 
     @staticmethod
     def __getNation(fragmentCD):
@@ -141,7 +140,8 @@ class NationalBlueprintResource(BlueprintResource):
 
 
 def _currencyResourceFactory(resourceType, resources):
-    return [ CurrencyResource(resource.name, resource.rate, resource.limit, resourceType) for resource in resources if resource.name in Currency.GUI_ALL + (CURRENCIES_CONSTANTS.FREE_XP,) ]
+    return [ CurrencyResource(resource.name, resource.rate, resource.limit, resourceType) for resource in resources if resource.name in Currency.GUI_ALL + (CURRENCIES_CONSTANTS.FREE_XP,)
+           ]
 
 
 def _blueprintResourceFactory(resourceType, resources):
@@ -151,14 +151,14 @@ def _blueprintResourceFactory(resourceType, resources):
         fragmentType = getFragmentType(fragmentCD)
         if fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
             result.append(IntelligenceBlueprintResource(fragmentCD, resource.rate, resource.limit, resourceType))
-        if fragmentType == BlueprintTypes.NATIONAL:
+        elif fragmentType == BlueprintTypes.NATIONAL:
             result.append(NationalBlueprintResource(fragmentCD, resource.rate, resource.limit, resourceType))
 
     return result
 
 
-_RESOURCE_FACTORIES = {ResourceType.CURRENCY: _currencyResourceFactory,
- ResourceType.BLUEPRINTS: _blueprintResourceFactory}
+_RESOURCE_FACTORIES = {ResourceType.CURRENCY: _currencyResourceFactory, 
+   ResourceType.BLUEPRINTS: _blueprintResourceFactory}
 
 def processResourcesConfig(resourcesConfig):
     result = {}

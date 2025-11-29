@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/intro_ammunition_setup_view.py
-import logging
-import typing
+import logging, typing
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
 import wg_async
 from gui.impl.gen import R
@@ -16,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 class _IntroAmmunitionSetupView(InfoView):
     _guiLoader = dependency.descriptor(IGuiLoader)
-    __slots__ = ('__hasTankSetupView',)
+    __slots__ = ('__hasTankSetupView', )
 
     def __init__(self, *args, **kwargs):
         super(_IntroAmmunitionSetupView, self).__init__(*args, **kwargs)
@@ -35,8 +32,8 @@ class _IntroAmmunitionSetupView(InfoView):
 
 @wg_async.wg_async
 def showIntro(introKey, *args, **kwargs):
-    tankSetupToIntroWindowProc = {TankSetupConstants.OPT_DEVICES: getIntroAmmunitionSetupWindowProc,
-     TankSetupConstants.BATTLE_ABILITIES: getIntroBattleAbilitiesSetupWindowProc}
+    tankSetupToIntroWindowProc = {TankSetupConstants.OPT_DEVICES: getIntroAmmunitionSetupWindowProc, 
+       TankSetupConstants.BATTLE_ABILITIES: getIntroBattleAbilitiesSetupWindowProc}
     if introKey in tankSetupToIntroWindowProc:
         yield tankSetupToIntroWindowProc[introKey]().show(*args, **kwargs)
 

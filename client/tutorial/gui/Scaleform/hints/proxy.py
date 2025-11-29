@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/gui/Scaleform/hints/proxy.py
-import weakref
-import Event
+import weakref, Event
 from gui.Scaleform.genConsts.TUTORIAL_TRIGGER_TYPES import TUTORIAL_TRIGGER_TYPES
 from gui.app_loader.settings import APP_NAME_SPACE
 from gui.shared import g_eventBus, events
@@ -15,8 +12,8 @@ from tutorial.gui.Scaleform.lobby.proxy import SfLobbyProxy
 class HintsProxy(SfLobbyProxy):
 
     def __init__(self):
-        effects = {GUI_EFFECT_NAME.SHOW_HINT: effects_player.ShowOnceOnlyHint(),
-         GUI_EFFECT_NAME.SET_TRIGGER: effects_player.SetTriggerEffect()}
+        effects = {GUI_EFFECT_NAME.SHOW_HINT: effects_player.ShowOnceOnlyHint(), 
+           GUI_EFFECT_NAME.SET_TRIGGER: effects_player.SetTriggerEffect()}
         super(HintsProxy, self).__init__(effects_player.EffectsPlayer(effects))
         self.__eManager = Event.EventManager()
         self.onHintClicked = Event.Event(self.__eManager)

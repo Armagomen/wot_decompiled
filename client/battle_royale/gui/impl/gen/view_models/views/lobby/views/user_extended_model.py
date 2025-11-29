@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/user_extended_model.py
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.user_model import UserModel
 
 class UserExtendedModel(UserModel):

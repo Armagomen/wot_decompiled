@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/shared/event_dispatcher.py
 from functools import wraps
 from logging import getLogger
 import typing
@@ -19,7 +17,7 @@ from story_mode_common.story_mode_constants import LOGGER_NAME, FIRST_MISSION_ID
 _logger = getLogger(LOGGER_NAME)
 
 class _ArenaLoadedChecker(IArenaLoadController):
-    __slots__ = ('_isLoaded',)
+    __slots__ = ('_isLoaded', )
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -49,7 +47,9 @@ def ifNotArenaLoaded(func):
 
 def isViewLoaded(layoutID):
     uiLoader = dependency.instance(IGuiLoader)
-    return True if not uiLoader or not uiLoader.windowsManager or uiLoader.windowsManager.getViewByLayoutID(layoutID) else False
+    if not uiLoader or not uiLoader.windowsManager or uiLoader.windowsManager.getViewByLayoutID(layoutID):
+        return True
+    return False
 
 
 @ifNotArenaLoaded
@@ -72,8 +72,8 @@ def showIntroVideo(missionId):
 
 def showOutroVideo(missionId, arenaUniqueID):
     _logger.debug('showOutroVideo for mission with id: %s', missionId)
-    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.STORY_MODE_OUTRO_VIDEO_WINDOW), ctx={'missionId': missionId,
-     'arenaUniqueID': arenaUniqueID}), EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.STORY_MODE_OUTRO_VIDEO_WINDOW), ctx={'missionId': missionId, 
+       'arenaUniqueID': arenaUniqueID}), EVENT_BUS_SCOPE.LOBBY)
 
 
 @ifNotArenaLoaded

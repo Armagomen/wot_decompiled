@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/miniclient/shop.py
 from helpers import aop
 from helpers.i18n import makeString as _ms
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -24,4 +22,5 @@ class _OnShopItemWrapAspect(aop.Aspect):
 class OnShopItemWrapPointcut(aop.Pointcut):
 
     def __init__(self, config):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.store.tabs.shop', 'ShopVehicleTab', 'itemWrapper', aspects=(_OnShopItemWrapAspect(config),))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.store.tabs.shop', 'ShopVehicleTab', 'itemWrapper', aspects=(
+         _OnShopItemWrapAspect(config),))

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/twin_guns/mechanic_events.py
-import typing
-import weakref
-import BigWorld
+import typing, weakref, BigWorld
 from constants import DUPLET_GUN_INDEXES_TUPLE
 from Event import EventManager, Event, LateEvent
 from vehicles.mechanics.twin_guns.mechanic_interfaces import ITwinGunShootingEvents
@@ -59,7 +55,9 @@ class TwinGunShootingEvents(ITwinGunShootingEvents):
     def __getAnimatedGunIndexes(self, gunIndexes=None, nextGunIndexes=None):
         gunIndexes = gunIndexes or self.__controller.getActiveGunIndexes()
         nextGunIndexes = nextGunIndexes or self.__controller.getNextGunIndexes()
-        return gunIndexes if self.__needDelayGunsAnimation() else nextGunIndexes
+        if self.__needDelayGunsAnimation():
+            return gunIndexes
+        return nextGunIndexes
 
     def __lateAppearanceReady(self, handler):
         if self.__isAppearanceReady:

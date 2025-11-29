@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/vehicle_rotation_requester.py
 import BigWorld
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IVehicleRotationRequester
@@ -9,14 +7,18 @@ class VehicleRotationRequester(AbstractSyncDataRequester, IVehicleRotationReques
     def getBattlesCount(self, groupNum):
         battlesCount = self._groupLocks['groupBattles']
         groupIdx = max(0, groupNum - 1)
-        return battlesCount[groupIdx] if len(battlesCount) > groupIdx else -1
+        if len(battlesCount) > groupIdx:
+            return battlesCount[groupIdx]
+        return -1
 
     def isGroupLocked(self, groupNum):
         if groupNum == 0:
             return False
         groupsLocks = self._groupLocks['isGroupLocked']
         groupIdx = max(0, groupNum - 1)
-        return groupsLocks[groupIdx] if len(groupsLocks) > groupIdx else False
+        if len(groupsLocks) > groupIdx:
+            return groupsLocks[groupIdx]
+        return False
 
     def getGroupNum(self, vehIntCD):
         return self.getCacheValue('vehiclesGroupMapping', {}).get(vehIntCD, 0)
@@ -30,9 +32,7 @@ class VehicleRotationRequester(AbstractSyncDataRequester, IVehicleRotationReques
 
     @property
     def _groupLocks(self):
-        return self.getCacheValue('groupLocks', {'groupBattles': [],
-         'isGroupLocked': [],
-         'unlockedBy': {}})
+        return self.getCacheValue('groupLocks', {'groupBattles': [], 'isGroupLocked': [], 'unlockedBy': {}})
 
     def _requestCache(self, callback=None):
         BigWorld.player().vehicleRotation.getCache(lambda resID, value: self._response(resID, value, callback))

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/constants_utils.py
-import types
-import arena_bonus_type_caps
-import constants
+import types, arena_bonus_type_caps, constants
 from UnitBase import CMD_NAMES, ROSTER_TYPE, PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER, PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT, ROSTER_TYPE_TO_CLASS, UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE, UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME, UNIT_MGR_FLAGS_TO_INVITATION_TYPE, QUEUE_TYPE_BY_UNIT_MGR_ROSTER, UNIT_ERROR, VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS
 from constants import ARENA_GUI_TYPE, ARENA_GUI_TYPE_LABEL, ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, ARENA_BONUS_TYPE_IDS, ARENA_BONUS_MASK, QUEUE_TYPE, QUEUE_TYPE_NAMES, PREBATTLE_TYPE, PREBATTLE_TYPE_NAMES, INVITATION_TYPE, BATTLE_MODE_VEHICLE_TAGS, SEASON_TYPE_BY_NAME, SEASON_NAME_BY_TYPE, QUEUE_TYPE_IDS, ARENA_BONUS_TYPE_TO_QUEUE_TYPE, ATTACK_REASONS, ATTACK_REASON_INDICES, DAMAGE_INFO_CODES, DAMAGE_INFO_INDICES, DAMAGE_INFO_CODES_PER_ATTACK_REASON, IS_CLIENT
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE
@@ -12,7 +8,7 @@ from soft_exception import SoftException
 class ConstInjectorMeta(type):
 
     def __new__(mcs, clsname, bases, attrs):
-        attrs['_extra_attrs'] = tuple((attr for attr in attrs if attr[0] != '_'))
+        attrs['_extra_attrs'] = tuple(attr for attr in attrs if attr[0] != '_')
         return super(ConstInjectorMeta, mcs).__new__(mcs, clsname, bases, attrs)
 
 
@@ -34,7 +30,7 @@ class ConstInjector(object):
                 raise SoftException(msg.format(cls=cls, origin=origin, attr=attr, value=value))
             setattr(origin, attr, value)
 
-        LOG_DEBUG('{extraAttrs} was injected to {origin}. Personality: {personality}'.format(extraAttrs=cls.getExtraAttrs(), origin=origin, personality=personality))
+        LOG_DEBUG(('{extraAttrs} was injected to {origin}. Personality: {personality}').format(extraAttrs=cls.getExtraAttrs(), origin=origin, personality=personality))
 
     @classmethod
     def getExtraAttrs(cls):
@@ -125,7 +121,7 @@ def addAttackReasonTypesFromExtension(extAttackReasonType, personality):
     extraValues = sorted(extraAttrs.itervalues())
     extAttackReasonType.inject(personality)
     ATTACK_REASONS.extend(extraValues)
-    ATTACK_REASON_INDICES.update(dict(((value, index) for index, value in enumerate(ATTACK_REASONS))))
+    ATTACK_REASON_INDICES.update(dict((value, index) for index, value in enumerate(ATTACK_REASONS)))
 
 
 def addDamageResistanceReasonsFromExtension(extDmgResistReasonType, personality):
@@ -144,82 +140,82 @@ def addDamageInfoCodes(infoCodesPerAttackReason, personality):
 
 def addPrbTypeByUnitMgrRoster(prbType, unitMgrFlag, personality):
     if prbType in PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER:
-        raise SoftException('PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER already has prbType:{prbType}. Personality: {p}'.format(prbType=prbType, p=personality))
+        raise SoftException(('PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER already has prbType:{prbType}. Personality: {p}').format(prbType=prbType, p=personality))
     PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER.update({prbType: unitMgrFlag})
-    msg = 'prbType:{prbType} was added to PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER. Personality: {p}'.format(prbType=prbType, p=personality)
+    msg = ('prbType:{prbType} was added to PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER. Personality: {p}').format(prbType=prbType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addQueueTypeByUnitMgrRoster(queueType, rosterType, personality):
     if queueType in QUEUE_TYPE_BY_UNIT_MGR_ROSTER:
-        raise SoftException('QUEUE_TYPE_BY_UNIT_MGR_ROSTER already has queueType:{queueType}. Personality: {p}'.format(queueType=queueType, p=personality))
+        raise SoftException(('QUEUE_TYPE_BY_UNIT_MGR_ROSTER already has queueType:{queueType}. Personality: {p}').format(queueType=queueType, p=personality))
     QUEUE_TYPE_BY_UNIT_MGR_ROSTER.update({queueType: rosterType})
-    msg = 'queueType:{queueType} was added to QUEUE_TYPE_BY_UNIT_MGR_ROSTER. Personality: {p}'.format(queueType=queueType, p=personality)
+    msg = ('queueType:{queueType} was added to QUEUE_TYPE_BY_UNIT_MGR_ROSTER. Personality: {p}').format(queueType=queueType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addPrbTypeByUnitMgrRosterExt(prbType, unitMgrFlag, personality):
     if prbType in PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT:
-        raise SoftException('PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT already has prbType:{prbType}. Personality: {p}'.format(prbType=prbType, p=personality))
+        raise SoftException(('PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT already has prbType:{prbType}. Personality: {p}').format(prbType=prbType, p=personality))
     PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT.update({prbType: unitMgrFlag})
-    msg = 'prbType:{prbType} was added to PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT. Personality: {p}'.format(prbType=prbType, p=personality)
+    msg = ('prbType:{prbType} was added to PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT. Personality: {p}').format(prbType=prbType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addRosterTypeToClass(rosterType, rosterClass, personality):
     if rosterType in ROSTER_TYPE_TO_CLASS:
-        raise SoftException('ROSTER_TYPE_TO_CLASS already has rosterType:{rosterType}. Personality: {p}'.format(rosterType=rosterType, p=personality))
+        raise SoftException(('ROSTER_TYPE_TO_CLASS already has rosterType:{rosterType}. Personality: {p}').format(rosterType=rosterType, p=personality))
     ROSTER_TYPE_TO_CLASS.update({rosterType: rosterClass})
-    msg = 'rosterType:{rosterType} was added to ROSTER_TYPE_TO_CLASS. Personality: {p}'.format(rosterType=rosterType, p=personality)
+    msg = ('rosterType:{rosterType} was added to ROSTER_TYPE_TO_CLASS. Personality: {p}').format(rosterType=rosterType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addUnitMgrFlagToPrbType(prbType, unitMgrFlag, personality):
     if unitMgrFlag in UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE:
-        raise SoftException('UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE already has unitMgrFlag:{unitMgrFlag}. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality))
+        raise SoftException(('UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE already has unitMgrFlag:{unitMgrFlag}. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality))
     UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE.update({unitMgrFlag: prbType})
-    msg = 'unitMgrFlag:{unitMgrFlag} was added to UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality)
+    msg = ('unitMgrFlag:{unitMgrFlag} was added to UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality)
     LOG_DEBUG(msg)
 
 
 def addUnitMgrFlagsToUnitMgrEntityName(unitMgrFlag, entityName, personality):
     if unitMgrFlag in UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME:
-        raise SoftException('UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME already has unitMgrFlag:{unitMgrFlag}. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality))
+        raise SoftException(('UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME already has unitMgrFlag:{unitMgrFlag}. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality))
     UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME.update({unitMgrFlag: entityName})
-    msg = 'unitMgrFlag:{flag}->{name} was added to UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME. Personality: {p}'.format(flag=unitMgrFlag, name=entityName, p=personality)
+    msg = ('unitMgrFlag:{flag}->{name} was added to UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME. Personality: {p}').format(flag=unitMgrFlag, name=entityName, p=personality)
     LOG_DEBUG(msg)
 
 
 def addUnitMgrFlagToInvitationType(unitMgrFlag, invType, personality):
     if unitMgrFlag in UNIT_MGR_FLAGS_TO_INVITATION_TYPE:
-        raise SoftException('UNIT_MGR_FLAGS_TO_INVITATION_TYPE already has unitMgrFlag:{unitMgrFlag}. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality))
+        raise SoftException(('UNIT_MGR_FLAGS_TO_INVITATION_TYPE already has unitMgrFlag:{unitMgrFlag}. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality))
     UNIT_MGR_FLAGS_TO_INVITATION_TYPE.update({unitMgrFlag: invType})
-    msg = 'unitMgrFlag:{flag}->{invType} was added to UNIT_MGR_FLAGS_TO_INVITATION_TYPE. Personality: {p}'.format(flag=unitMgrFlag, invType=invType, p=personality)
+    msg = ('unitMgrFlag:{flag}->{invType} was added to UNIT_MGR_FLAGS_TO_INVITATION_TYPE. Personality: {p}').format(flag=unitMgrFlag, invType=invType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addArenaBonusTypeToQueueType(bonusType, queueType, personality):
     if bonusType in ARENA_BONUS_TYPE_TO_QUEUE_TYPE:
-        raise SoftException('ARENA_BONUS_TYPE_TO_QUEUE_TYPE already has bonusType:{bonusType}. Personality: {p}'.format(bonusType=bonusType, p=personality))
+        raise SoftException(('ARENA_BONUS_TYPE_TO_QUEUE_TYPE already has bonusType:{bonusType}. Personality: {p}').format(bonusType=bonusType, p=personality))
     ARENA_BONUS_TYPE_TO_QUEUE_TYPE.update({bonusType: queueType})
-    msg = 'bonusType:{bonusType}->{queueType} was added to ARENA_BONUS_TYPE_TO_QUEUE_TYPE. Personality: {p}'.format(bonusType=bonusType, queueType=queueType, p=personality)
+    msg = ('bonusType:{bonusType}->{queueType} was added to ARENA_BONUS_TYPE_TO_QUEUE_TYPE. Personality: {p}').format(bonusType=bonusType, queueType=queueType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addInvitationTypeFromArenaBonusTypeMapping(arenaBonusType, invitationType, personality):
     if arenaBonusType in INVITATION_TYPE.INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING:
-        raise SoftException('INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING already has ARENA_BONUS_TYPE:{arenaBonusType}. Personality: {p}'.format(arenaBonusType=arenaBonusType, p=personality))
+        raise SoftException(('INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING already has ARENA_BONUS_TYPE:{arenaBonusType}. Personality: {p}').format(arenaBonusType=arenaBonusType, p=personality))
     INVITATION_TYPE.INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING.update({arenaBonusType: invitationType})
-    msg = 'ARENA_BONUS_TYPE:{arenaBonusType} was added to INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING. Personality: {p}'.format(arenaBonusType=arenaBonusType, p=personality)
+    msg = ('ARENA_BONUS_TYPE:{arenaBonusType} was added to INVITATION_TYPE_FROM_ARENA_BONUS_TYPE_MAPPING. Personality: {p}').format(arenaBonusType=arenaBonusType, p=personality)
     LOG_DEBUG(msg)
 
 
 def addVehicleTags(unitMgrFlag, requiredTags, forbiddenTags, newTags, personality):
     BATTLE_MODE_VEHICLE_TAGS.update(newTags)
     if unitMgrFlag in VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS:
-        raise SoftException('VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS already has unitMgrFlag:{unitMgrFlag}. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality))
+        raise SoftException(('VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS already has unitMgrFlag:{unitMgrFlag}. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality))
     VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS.update({unitMgrFlag: (requiredTags, forbiddenTags)})
-    msg = 'unitMgrFlag:{unitMgrFlag} was added to VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS. Personality: {p}'.format(unitMgrFlag=unitMgrFlag, p=personality)
+    msg = ('unitMgrFlag:{unitMgrFlag} was added to VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS. Personality: {p}').format(unitMgrFlag=unitMgrFlag, p=personality)
     LOG_DEBUG(msg)
 
 
@@ -288,19 +284,16 @@ class AbstractBattleMode(object):
 
     @property
     def _rosterClass(self):
-        return None
+        return
 
     @property
     def _battleMgrConfig(self):
         from server_constants import SINGLETON_DEFAULT_GROUP
-        return (self._BATTLE_MGR_NAME,
-         0.2,
-         SINGLETON_DEFAULT_GROUP,
-         ('periphery', 'standalone'))
+        return (self._BATTLE_MGR_NAME, 0.2, SINGLETON_DEFAULT_GROUP, ('periphery', 'standalone'))
 
     @property
     def _client_prbEntityClass(self):
-        return None
+        return
 
     @property
     def _client_canSelectPrbEntity(self):
@@ -308,51 +301,51 @@ class AbstractBattleMode(object):
 
     @property
     def _client_prbEntryPointClass(self):
-        return None
+        return
 
     @property
     def _client_selectorColumn(self):
-        return None
+        return
 
     @property
     def _client_selectorItemsCreator(self):
-        return None
+        return
 
     @property
     def _client_modeSelectorItemsClass(self):
-        return None
+        return
 
     @property
     def _client_bannerEntryPointValidatorMethod(self):
-        return None
+        return
 
     @property
     def _client_bannerEntryPointLUIRule(self):
-        return None
+        return
 
     @property
     def _client_prbSquadEntityClass(self):
-        return None
+        return
 
     @property
     def _client_prbSquadEntryPointClass(self):
-        return None
+        return
 
     @property
     def _client_selectorSquadItemsCreator(self):
-        return None
+        return
 
     @property
     def _client_platoonViewClass(self):
-        return None
+        return
 
     @property
     def _client_platoonWelcomeViewClass(self):
-        return None
+        return
 
     @property
     def _client_platoonLayouts(self):
-        return None
+        return
 
     @property
     def _client_gameControllers(self):
@@ -360,27 +353,27 @@ class AbstractBattleMode(object):
 
     @property
     def _client_battleControllersRepository(self):
-        return None
+        return
 
     @property
     def _client_sharedControllersRepository(self):
-        return None
+        return
 
     @property
     def _client_providerBattleQueue(self):
-        return None
+        return
 
     @property
     def _client_arenaDescrClass(self):
-        return None
+        return
 
     @property
     def _client_squadFinderClass(self):
-        return None
+        return
 
     @property
     def _client_battleResultStatsCtrlClass(self):
-        return None
+        return
 
     @property
     def _client_battleResultsReusables(self):
@@ -440,11 +433,11 @@ class AbstractBattleMode(object):
 
     @property
     def _client_DynamicObjectCacheClass(self):
-        return None
+        return
 
     @property
     def _client_advancedChatComponent(self):
-        return None
+        return
 
     @property
     def _client_battleChannelController(self):
@@ -489,7 +482,7 @@ class AbstractBattleMode(object):
 
     @property
     def _server_invitationSquadExtraHandler(self):
-        return None
+        return
 
     @property
     def _server_unitCmdHandlers(self):
@@ -521,11 +514,11 @@ class AbstractBattleMode(object):
 
     @property
     def _client_hangarPresetsReader(self):
-        return None
+        return
 
     @property
     def _client_hangarDynamicGuiProvider(self):
-        return None
+        return
 
     @property
     def _client_controlModes(self):
@@ -533,11 +526,15 @@ class AbstractBattleMode(object):
 
     @property
     def _client_arenaInfoKeys(self):
-        return None
+        return
 
     @property
     def _client_hangarEventBannerType(self):
-        return None
+        return
+
+    @property
+    def _client_prebattleCtrlMode(self):
+        return
 
     def registerHangarEventBanner(self):
         if IS_CLIENT:
@@ -747,7 +744,7 @@ class AbstractBattleMode(object):
         from battle_results import ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT
         from chat_shared import SYS_MESSAGE_TYPE
         if self._ARENA_BONUS_TYPE in ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT:
-            raise SoftException('ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT already has ARENA_BONUS_TYPE:{t}. Personality: {p}'.format(t=self._ARENA_BONUS_TYPE, p=self._personality))
+            raise SoftException(('ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT already has ARENA_BONUS_TYPE:{t}. Personality: {p}').format(t=self._ARENA_BONUS_TYPE, p=self._personality))
         try:
             msgTypeIndex = SYS_MESSAGE_TYPE.__getattr__(self._SM_TYPE_BATTLE_RESULT).index()
         except AttributeError:
@@ -761,7 +758,7 @@ class AbstractBattleMode(object):
         from battle_results.battle_results_constants import ARENA_BONUS_TYPE_TO_SM_TYPE_AUTO_MAINTENANCE
         from chat_shared import SYS_MESSAGE_TYPE
         if self._ARENA_BONUS_TYPE in ARENA_BONUS_TYPE_TO_SM_TYPE_AUTO_MAINTENANCE:
-            raise SoftException('ARENA_BONUS_TYPE_TO_SM_TYPE_AUTO_MAINTENANCE already has ARENA_BONUS_TYPE:{t}. Personality: {p}'.format(t=self._ARENA_BONUS_TYPE, p=self._personality))
+            raise SoftException(('ARENA_BONUS_TYPE_TO_SM_TYPE_AUTO_MAINTENANCE already has ARENA_BONUS_TYPE:{t}. Personality: {p}').format(t=self._ARENA_BONUS_TYPE, p=self._personality))
         try:
             msgTypeIndex = SYS_MESSAGE_TYPE.__getattr__(self._SM_TYPE_AUTO_MAINTENANCE).index()
         except AttributeError:
@@ -880,3 +877,7 @@ class AbstractBattleMode(object):
     def registerPrbTypeForWotPlusAssistant(self, loadoutType):
         from gui.game_control.wot_plus_assistant import registerAllowedPrebattleType
         registerAllowedPrebattleType(self._PREBATTLE_TYPE, loadoutType)
+
+    def registerPrebattleCtrlMode(self):
+        from gui.shared.system_factory import registerPrebattleCtrlMode
+        registerPrebattleCtrlMode(self._ARENA_BONUS_TYPE, self._client_prebattleCtrlMode)

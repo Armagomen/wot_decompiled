@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/basic_missions_tab.py
 from PlayerEvents import g_playerEvents
 from config_schemas.umg_config import umgConfigSchema
 from helpers import dependency
@@ -32,9 +30,9 @@ class BasicMissionsTab(UpdateChildrenMixin, ViewComponent[BasicMissionsTabModel]
         return super(BasicMissionsTab, self).getViewModel()
 
     def _getChildComponents(self):
-        return {DailyMissionsSectionPresenter.LAYOUT_ID: lambda : DailyMissionsSectionPresenter(self._targetQuestId),
-         WeeklyMissions.LAYOUT_ID: WeeklyMissions,
-         PersonalMissionsPresenter.LAYOUT_ID: PersonalMissionsPresenter}
+        return {DailyMissionsSectionPresenter.LAYOUT_ID: lambda : DailyMissionsSectionPresenter(self._targetQuestId), 
+           WeeklyMissions.LAYOUT_ID: WeeklyMissions, 
+           PersonalMissionsPresenter.LAYOUT_ID: PersonalMissionsPresenter}
 
     def _onLoaded(self, *args, **kwargs):
         super(BasicMissionsTab, self)._onLoaded()
@@ -42,7 +40,13 @@ class BasicMissionsTab(UpdateChildrenMixin, ViewComponent[BasicMissionsTabModel]
         self.__updatePersonalMissionSection()
 
     def _getEvents(self):
-        return ((g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated), (self.eventsCache.onSyncCompleted, self.__onCacheSyncCompleted), (self.itemsCache.onSyncCompleted, self.__onInventoryCacheSyncCompleted))
+        return (
+         (
+          g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated),
+         (
+          self.eventsCache.onSyncCompleted, self.__onCacheSyncCompleted),
+         (
+          self.itemsCache.onSyncCompleted, self.__onInventoryCacheSyncCompleted))
 
     def _updateDailyBlockStatus(self):
         self.viewModel.setIsDailySectionAvailable(umgConfigSchema.getModel().enableAllDaily)
@@ -68,7 +72,7 @@ class BasicMissionsTab(UpdateChildrenMixin, ViewComponent[BasicMissionsTabModel]
 
     def __isCampaignCompleted(self):
         campaignOperations = self.personalMissionsCache.getOperationsForBranch('pm3')
-        return all((op.isFullCompleted() for op in campaignOperations.values()))
+        return all(op.isFullCompleted() for op in campaignOperations.values())
 
     def __isCampaignPaused(self):
         return False

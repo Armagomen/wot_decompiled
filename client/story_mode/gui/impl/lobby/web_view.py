@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/web_view.py
 import typing
 from gui.Scaleform.daapi.view.lobby.shared.web_view import WebViewTransparent
 from story_mode.uilogging.story_mode.consts import LogWindows

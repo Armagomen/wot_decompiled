@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/frontline/__init__.py
 import functools
 from battle_pass_common import BattlePassState
 from debug_utils import LOG_ERROR_DEV
@@ -39,7 +37,7 @@ class FrontLineWebApi(W2CSchema):
     __battlePassController = dependency.descriptor(IBattlePassController)
     __eventsCache = dependency.descriptor(IEventsCache)
     __itemsCache = dependency.descriptor(IItemsCache)
-    _NOT_SUPPORTED_BONUSES = ('battleToken',)
+    _NOT_SUPPORTED_BONUSES = ('battleToken', )
 
     @frontlineDeprecated
     @w2c(_RewardsSchema, name='get_rewards_data')
@@ -53,7 +51,7 @@ class FrontLineWebApi(W2CSchema):
             if cmd.category == 'styles':
                 rewardsData = {}
                 return rewardsData
-        return None
+        return
 
     @frontlineDeprecated
     @w2c(W2CSchema, name='get_all_skills')
@@ -96,28 +94,28 @@ class FrontLineWebApi(W2CSchema):
     def handleGetMetaScreenData(self, _):
         currentLevel, levelProgress = self.__epicController.getPlayerLevelInfo()
         nextLevelExp = self.__epicController.getPointsProgressForLevel(currentLevel)
-        data = {'lvl': currentLevel,
-         'mode_alias': 'frontline',
-         'max_lvl': self.__epicController.getMaxPlayerLevel(),
-         'exp': levelProgress,
-         'exp_for_lvl': nextLevelExp,
-         'rewards_for_lvl': self.__getLevelAwards(currentLevel + 1),
-         'rewards_count': self.__epicController.getNotChosenRewardCount()}
+        data = {'lvl': currentLevel, 
+           'mode_alias': 'frontline', 
+           'max_lvl': self.__epicController.getMaxPlayerLevel(), 
+           'exp': levelProgress, 
+           'exp_for_lvl': nextLevelExp, 
+           'rewards_for_lvl': self.__getLevelAwards(currentLevel + 1), 
+           'rewards_count': self.__epicController.getNotChosenRewardCount()}
         return data
 
     @w2c(W2CSchema, name='get_calendar_info')
     def handleGetCalendarInfo(self, _):
         calendarData = dict()
-        seasons = (self.__epicController.getCurrentSeason(), self.__epicController.getNextSeason(), self.__epicController.getPreviousSeason())
+        seasons = (
+         self.__epicController.getCurrentSeason(),
+         self.__epicController.getNextSeason(),
+         self.__epicController.getPreviousSeason())
         for season in seasons:
             if season is not None:
-                calendarData['season'] = {'id': season.getSeasonID(),
-                 'start': season.getStartDate(),
-                 'end': season.getEndDate()}
-                calendarData['cycles'] = [ {'id': cycle.ID,
-                 'start': cycle.startDate,
-                 'end': cycle.endDate,
-                 'announce_only': cycle.announceOnly} for cycle in season.getAllCycles().values() ]
+                calendarData['season'] = {'id': season.getSeasonID(), 'start': season.getStartDate(), 
+                   'end': season.getEndDate()}
+                calendarData['cycles'] = [ {'id': cycle.ID, 'start': cycle.startDate, 'end': cycle.endDate, 'announce_only': cycle.announceOnly} for cycle in season.getAllCycles().values()
+                                         ]
                 break
 
         return calendarData
@@ -134,17 +132,19 @@ class FrontLineWebApi(W2CSchema):
 
     def __getLevelAwards(self, level):
         allAwards = self.__getAllLevelAwards()
-        return allAwards[level] if level in allAwards else []
+        if level in allAwards:
+            return allAwards[level]
+        return []
 
     @classmethod
     def __packBonuses(cls, bonuses, level, abilityPts):
         result = []
-        if abilityPts and abilityPts[level - 1]:
-            result.append({'id': 0,
-             'type': ItemPackType.CUSTOM_SUPPLY_POINT,
-             'value': abilityPts[level - 1],
-             'icon': {AWARDS_SIZES.SMALL: getRelativeUrl(backport.image(R.images.gui.maps.icons.epicBattles.awards.c_48x48.abilityToken())),
-                      AWARDS_SIZES.BIG: getRelativeUrl(backport.image(R.images.gui.maps.icons.epicBattles.awards.c_80x80.abilityToken()))}})
+        if abilityPts and abilityPts[(level - 1)]:
+            result.append({'id': 0, 
+               'type': ItemPackType.CUSTOM_SUPPLY_POINT, 
+               'value': abilityPts[(level - 1)], 
+               'icon': {AWARDS_SIZES.SMALL: getRelativeUrl(backport.image(R.images.gui.maps.icons.epicBattles.awards.c_48x48.abilityToken())), 
+                        AWARDS_SIZES.BIG: getRelativeUrl(backport.image(R.images.gui.maps.icons.epicBattles.awards.c_80x80.abilityToken()))}})
         for bonus in bonuses:
             if bonus.getName() in cls._NOT_SUPPORTED_BONUSES:
                 continue

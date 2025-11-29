@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/ui/profile.py
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.event_bus import EVENT_BUS_SCOPE
@@ -11,11 +9,11 @@ class _OpenProfileWindowSchema(W2CSchema):
     user_name = Field(required=True, type=basestring)
 
 
-_PROFILE_TAB_ALIASES = {'hof': VIEW_ALIAS.PROFILE_HOF,
- 'technique': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE,
- 'summary': VIEW_ALIAS.PROFILE_TOTAL_PAGE,
- 'awards': VIEW_ALIAS.PROFILE_AWARDS,
- 'statistics': VIEW_ALIAS.PROFILE_STATISTICS}
+_PROFILE_TAB_ALIASES = {'hof': VIEW_ALIAS.PROFILE_HOF, 
+   'technique': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE, 
+   'summary': VIEW_ALIAS.PROFILE_TOTAL_PAGE, 
+   'awards': VIEW_ALIAS.PROFILE_AWARDS, 
+   'statistics': VIEW_ALIAS.PROFILE_STATISTICS}
 
 class _OpenProfileTabSchema(W2CSchema):
     selected_id = Field(type=basestring, validator=lambda value, data: value in _PROFILE_TAB_ALIASES)

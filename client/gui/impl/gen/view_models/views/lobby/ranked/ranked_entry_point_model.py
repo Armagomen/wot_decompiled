@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/ranked/ranked_entry_point_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.ranked.ranked_season_model import RankedSeasonModel
 
 class RankedEntryPointModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
     STATE_RANKED_DISABLED = 0
     STATE_BEFORE_SEASON = 1
     STATE_ACTIVE_SEASON = 2

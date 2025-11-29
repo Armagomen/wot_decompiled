@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/base/contexts.py
 from gui.clans import items
 from gui.clans.settings import DEFAULT_COOLDOWN
 from gui.shared.utils.decorators import ReprInjector
@@ -26,7 +24,7 @@ class CommonWebRequestCtx(RequestCtx):
         return False
 
     def getFields(self):
-        return None
+        return
 
     def isClanSyncRequired(self):
         return True
@@ -35,13 +33,14 @@ class CommonWebRequestCtx(RequestCtx):
         return incomeData
 
     def getDefDataObj(self):
-        return None
+        return
 
     def _getOwnClanDbID(self):
         return self.itemsCache.items.stats.clanDBID
 
 
-@ReprInjector.withParent(('getTokenID', 'token'), ('getUserDatabaseID', 'dbID'), ('isJwt', 'jwt'))
+@ReprInjector.withParent(('getTokenID', 'token'), ('getUserDatabaseID', 'dbID'), ('isJwt',
+                                                                                  'jwt'))
 class LogInCtx(CommonWebRequestCtx):
 
     def __init__(self, databaseID, tokenID, isJwt):
@@ -122,7 +121,9 @@ class AccountsInfoBaseCtx(CommonWebRequestCtx):
         return self.__accountsIDs
 
 
-@ReprInjector.withParent(('getOffset', 'offset'), ('getLimit', 'limit'), ('isGetTotalCount', 'isGetTotalCount'), ('getFields', 'fields'))
+@ReprInjector.withParent(('getOffset', 'offset'), ('getLimit', 'limit'), ('isGetTotalCount',
+                                                                          'isGetTotalCount'), ('getFields',
+                                                                                               'fields'))
 class PaginatorCtx(CommonWebRequestCtx):
 
     def __init__(self, offset, limit, getTotalCount=False, fields=None, waitingID=''):
@@ -145,7 +146,10 @@ class PaginatorCtx(CommonWebRequestCtx):
         return self.__fields
 
     def getTotalCount(self, incomeData):
-        return incomeData.get('total', None) if incomeData else None
+        if incomeData:
+            return incomeData.get('total', None)
+        else:
+            return
 
     def getDataObj(self, incomeData):
         data = incomeData.get('items', self.getDefDataObj()) if incomeData else self.getDefDataObj()
@@ -166,7 +170,9 @@ class TotalInfoCtx(CommonWebRequestCtx):
         return self.__itemID
 
     def getDataObj(self, incomeData):
-        return incomeData['total'] if incomeData else self.getDefDataObj()
+        if incomeData:
+            return incomeData['total']
+        return self.getDefDataObj()
 
     def getDefDataObj(self):
-        pass
+        return 0

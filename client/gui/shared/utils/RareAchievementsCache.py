@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/RareAchievementsCache.py
 import re
 from functools import partial
-import ResMgr
-import Event
+import ResMgr, Event
 from debug_utils import LOG_WARNING, LOG_CURRENT_EXCEPTION, LOG_DEBUG
 from helpers import i18n, getClientLanguage
 from account_helpers.rare_achievements import getRareAchievementImage, getRareAchievementImageUrl, getRareAchievementImageBig, getRareAchievementText
@@ -19,8 +16,8 @@ class IMAGE_PATH(object):
     IT_180X180 = 'gui/maps/icons/achievement/big/'
 
 
-URL_NAMES = {IMAGE_TYPE.IT_67X71: 'rare_achievements_images',
- IMAGE_TYPE.IT_180X180: 'rare_achievements_images_big'}
+URL_NAMES = {IMAGE_TYPE.IT_67X71: 'rare_achievements_images', 
+   IMAGE_TYPE.IT_180X180: 'rare_achievements_images_big'}
 
 class RaresCache(IRaresCache):
     RARE_ACHIEVEMENT_PREFIX = 'rare'

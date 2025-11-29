@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/main_view_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.has_boxes_view_model import HasBoxesViewModel
@@ -15,7 +13,7 @@ class SubViewID(IntEnum):
 
 
 class MainViewModel(ViewModel):
-    __slots__ = ('onResourcesLoadCompleted',)
+    __slots__ = ('onResourcesLoadCompleted', )
 
     def __init__(self, properties=5, commands=1):
         super(MainViewModel, self).__init__(properties=properties, commands=commands)

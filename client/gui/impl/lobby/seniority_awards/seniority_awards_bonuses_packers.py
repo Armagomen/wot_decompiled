@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/seniority_awards_bonuses_packers.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
@@ -46,6 +44,6 @@ class _SeniorityAwardsCustomizationBonusUIPacker(CustomizationBonusUIPacker):
 
 def getSeniorityAwardsBonusPacker():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'customizations': _SeniorityAwardsCustomizationBonusUIPacker(),
-     'tokens': _SeniorityAwardsTokenBonusUIPacker()})
+    mapping.update({'customizations': _SeniorityAwardsCustomizationBonusUIPacker(), 
+       'tokens': _SeniorityAwardsTokenBonusUIPacker()})
     return BonusUIPacker(mapping)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/ammunition_panel/ammunition_blocks_controller.py
 import typing
 from gui.impl.common.ammunition_panel.ammunition_panel_blocks import OptDeviceBlock, ShellsBlock, ConsumablesBlock, BattleBoostersBlock, BattleAbilitiesBlock
 from gui.impl.common.tabs_controller import TabsController, tabUpdateFunc
@@ -67,4 +65,6 @@ class AmmunitionBlocksController(BaseAmmunitionBlocksController):
         BattleAbilitiesBlock(self._vehicle, self._currentSection).adapt(viewModel, isFirst)
 
     def _createViewModel(self, name):
-        return AmmunitionShellsSection() if name == TankSetupConstants.SHELLS else AmmunitionItemsSection()
+        if name == TankSetupConstants.SHELLS:
+            return AmmunitionShellsSection()
+        return AmmunitionItemsSection()

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/OldSpaceData.py
-import BigWorld
-import logging
-import struct
+import BigWorld, logging, struct
 NewAPINotice = '\nInstead of old SpaceData API, please use space properties:\nBigWorld.spaces[ spaceID ].property_name.\nUser level space properties must be defined in space .def file.\n'
 WarningFlag = True
 
@@ -16,16 +12,16 @@ def ShowWarningOnce():
 
 
 def getPropertyNameForKey(key):
-    supportedKeys = {0: 'timeOfDay',
-     1: 'mappingKeyClientServer',
-     2: 'mappingKeyClientOnly',
-     32768: 'isRecording',
-     32769: 'artificialMinLoad',
-     32770: 'serverLoadBounds',
-     300: 'itemsVisibilityMask',
-     17408: 'recorderFragment',
-     16384: 'geometryLoaded',
-     16385: 'spaceLoader'}
+    supportedKeys = {0: 'timeOfDay', 
+       1: 'mappingKeyClientServer', 
+       2: 'mappingKeyClientOnly', 
+       32768: 'isRecording', 
+       32769: 'artificialMinLoad', 
+       32770: 'serverLoadBounds', 
+       300: 'itemsVisibilityMask', 
+       17408: 'recorderFragment', 
+       16384: 'geometryLoaded', 
+       16385: 'spaceLoader'}
     try:
         return supportedKeys[key]
     except KeyError:
@@ -85,8 +81,9 @@ def timeOfDay(spaceID):
 
 def setSpaceTimeOfDay(spaceID, initialTimeOfDay, gameSecondsPerSecond):
     ShowWarningOnce()
-    BigWorld.spaces[spaceID].timeOfDay = {'initialTimeOfDay': initialTimeOfDay,
-     'gameSecondsPerSecond': gameSecondsPerSecond}
+    BigWorld.spaces[spaceID].timeOfDay = {'initialTimeOfDay': initialTimeOfDay, 
+       'gameSecondsPerSecond': gameSecondsPerSecond}
+    return 0
 
 
 def addSpaceGeometryMapping(spaceID, mapper, path, shouldLoadOnServer=True):

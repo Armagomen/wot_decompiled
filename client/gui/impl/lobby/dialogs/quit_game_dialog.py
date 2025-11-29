@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/quit_game_dialog.py
-import logging
-import GUI
+import logging, GUI
 from gui.Scaleform.managers.battle_input import BattleGUIKeyHandler
 from gui.app_loader.settings import APP_NAME_SPACE
 from gui.impl.gen.resources import R
@@ -32,7 +29,7 @@ class QuitGameDialogWindow(DialogWindow, BattleGUIKeyHandler):
         if battleApp:
             battleApp.registerGuiKeyHandler(self)
             battleApp.enterGuiControlMode(self.uniqueID)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self._addButton(DialogButtons.SUBMIT, R.strings.dialogs.quit.submit())
             self._addButton(DialogButtons.CANCEL, R.strings.dialogs.quit.cancel(), isFocused=True, invalidateAll=True)
             width = GUI.screenResolution()

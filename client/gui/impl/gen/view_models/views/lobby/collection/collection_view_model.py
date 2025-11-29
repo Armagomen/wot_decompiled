@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/collection/collection_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.collection.item_model import ItemModel
 from gui.impl.gen.view_models.views.lobby.collection.page_backgrounds_model import PageBackgroundsModel
@@ -7,7 +5,9 @@ from gui.impl.gen.view_models.views.lobby.collection.reward_info_model import Re
 from gui.impl.gen.view_models.views.lobby.collection.tab_model import TabModel
 
 class CollectionViewModel(ViewModel):
-    __slots__ = ('onViewLoaded', 'onSetItemReceived', 'onSetRewardReceived', 'onSetProgressItemsReceived', 'onOpenItemPreview', 'onFinishTutorial', 'onTabSelected', 'onPageChanged', 'onClose')
+    __slots__ = ('onViewLoaded', 'onSetItemReceived', 'onSetRewardReceived', 'onSetProgressItemsReceived',
+                 'onOpenItemPreview', 'onFinishTutorial', 'onTabSelected', 'onPageChanged',
+                 'onClose')
 
     def __init__(self, properties=14, commands=9):
         super(CollectionViewModel, self).__init__(properties=properties, commands=commands)

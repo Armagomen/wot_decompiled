@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/ArenaInfoComp7Component.py
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from comp7.gui.battle_control.arena_info.arena_vos import Comp7Keys
 from gui.battle_control import avatar_getter
@@ -67,8 +65,7 @@ class ArenaInfoComp7Component(DynamicScriptComponent, IArenaVehiclesController):
             return
         stats = dict()
         for vehID, rank in ranks.iteritems():
-            stats[vehID] = {Comp7Keys.RANK: rank['divisionRank'],
-             Comp7Keys.IS_QUAL_ACTIVE: rank['isQualActive']}
+            stats[vehID] = {Comp7Keys.RANK: rank['divisionRank'], Comp7Keys.IS_QUAL_ACTIVE: rank['isQualActive']}
 
         if stats:
             arena.updateGameModeSpecificStats(isStatic=True, stats=stats)

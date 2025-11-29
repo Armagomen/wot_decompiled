@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/Scaleform/daapi/view/battle/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.shared.page import BattlePageBusinessHandler
@@ -12,7 +10,9 @@ from gui.shared.event_bus import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return ((BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
+    return (
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
 
 
 def getViewSettings():
@@ -44,7 +44,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared.points_of_interest import poi_notification_panel
     from gui.Scaleform.framework import getSwfExtensionUrl
     SETTINGS_WINDOW_SCOPE = ScopeTemplates.SimpleScope(VIEW_ALIAS.SETTINGS_WINDOW, ScopeTemplates.DEFAULT_SCOPE)
-    return (ViewSettings(VIEW_ALIAS.COMP7_LIGHT_BATTLE_PAGE, Comp7BattlePage, getSwfExtensionUrl('comp7_light', 'comp7LightBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.COMP7_LIGHT_BATTLE_PAGE, Comp7BattlePage, getSwfExtensionUrl('comp7_light', 'comp7LightBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.STATUS_NOTIFICATIONS_PANEL, sn_panel.Comp7StatusNotificationTimerPanel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.MINIMAP, minimap.Comp7MinimapComponent, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.DAMAGE_PANEL, damage_panel.Comp7DamagePanel, ScopeTemplates.DEFAULT_SCOPE),
@@ -73,11 +74,15 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (BattlePageBusinessHandler(VIEW_ALIAS.COMP7_LIGHT_BATTLE_PAGE), Comp7LightBattlePageBusinessHandler())
+    return (
+     BattlePageBusinessHandler(VIEW_ALIAS.COMP7_LIGHT_BATTLE_PAGE),
+     Comp7LightBattlePageBusinessHandler())
 
 
 class Comp7LightBattlePageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        super(Comp7LightBattlePageBusinessHandler, self).__init__(((BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),), APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
+        super(Comp7LightBattlePageBusinessHandler, self).__init__((
+         (
+          BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),), APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)

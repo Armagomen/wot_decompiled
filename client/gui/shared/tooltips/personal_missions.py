@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/personal_missions.py
 from __future__ import absolute_import
 import typing
 from CurrentVehicle import g_currentVehicle
@@ -72,7 +70,9 @@ class BasicFreeSheetTooltip(BlocksTooltipData):
     def _packBlocks(self, *args, **kwargs):
         blocks = super(BasicFreeSheetTooltip, self)._packBlocks(*args, **kwargs)
         campaign = self.context.buildItem(*args, **kwargs)
-        topItems = [formatters.packTextBlockData(text_styles.highTitle(_ms(TOOLTIPS.PERSONALMISSIONS_FREESHEET_TITLE, campaignName=campaign.getUserName()))), formatters.packImageBlockData(AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.BIG), BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))]
+        topItems = [
+         formatters.packTextBlockData(text_styles.highTitle(_ms(TOOLTIPS.PERSONALMISSIONS_FREESHEET_TITLE, campaignName=campaign.getUserName()))),
+         formatters.packImageBlockData(AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.BIG), BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))]
         blocks.append(formatters.packBuildUpBlockData(topItems))
         infoBlock = self._getInfoBlock()
         if infoBlock is not None:
@@ -86,7 +86,7 @@ class BasicFreeSheetTooltip(BlocksTooltipData):
         return blocks
 
     def _getInfoBlock(self):
-        return None
+        return
 
     def _getDescriptionBlock(self):
         return []
@@ -95,34 +95,43 @@ class BasicFreeSheetTooltip(BlocksTooltipData):
 class FreeSheetTooltip(BasicFreeSheetTooltip):
 
     def _getDescriptionBlock(self):
-        return (self._getMainBlock(), self._getFooterBlock())
+        return (
+         self._getMainBlock(), self._getFooterBlock())
 
     def _getMainBlock(self):
-        return formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOGET_TITLE), padding=formatters.packPadding(bottom=-2)), formatters.packTextBlockData(text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOGET_DESCR))], padding=formatters.packPadding(top=-4))
+        return formatters.packBuildUpBlockData([
+         formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOGET_TITLE), padding=formatters.packPadding(bottom=-2)),
+         formatters.packTextBlockData(text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOGET_DESCR))], padding=formatters.packPadding(top=-4))
 
     def _getFooterBlock(self):
-        return formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOUSE_TITLE), padding=formatters.packPadding(bottom=-2)), formatters.packTextBlockData(text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOUSE_DESCR))], padding=formatters.packPadding(top=16))
+        return formatters.packBuildUpBlockData([
+         formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOUSE_TITLE), padding=formatters.packPadding(bottom=-2)),
+         formatters.packTextBlockData(text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_HOWTOUSE_DESCR))], padding=formatters.packPadding(top=16))
 
 
 class FreeSheetReturnTooltip(FreeSheetTooltip):
 
     def _getInfoBlock(self):
-        return formatters.packBuildUpBlockData([formatters.packTextParameterWithIconBlockData(text_styles.neutral(TOOLTIPS.PERSONALMISSIONS_FREESHEET_INFO), '', ICON_TEXT_FRAMES.ATTENTION, padding=formatters.packPadding(left=-60, bottom=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3))
+        return formatters.packBuildUpBlockData([
+         formatters.packTextParameterWithIconBlockData(text_styles.neutral(TOOLTIPS.PERSONALMISSIONS_FREESHEET_INFO), '', ICON_TEXT_FRAMES.ATTENTION, padding=formatters.packPadding(left=-60, bottom=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3))
 
 
 class FreeSheetNotEnoughTooltip(FreeSheetTooltip):
 
     def _getInfoBlock(self):
-        return formatters.packBuildUpBlockData([formatters.packTextParameterWithIconBlockData(text_styles.alert(TOOLTIPS.PERSONALMISSIONS_FREESHEET_NOTENOUGH), '', ICON_TEXT_FRAMES.ALERT, padding=formatters.packPadding(left=-60, bottom=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3))
+        return formatters.packBuildUpBlockData([
+         formatters.packTextParameterWithIconBlockData(text_styles.alert(TOOLTIPS.PERSONALMISSIONS_FREESHEET_NOTENOUGH), '', ICON_TEXT_FRAMES.ALERT, padding=formatters.packPadding(left=-60, bottom=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3))
 
     def _getFooterBlock(self):
-        return None
+        return
 
 
 class FreeSheetUsedTooltip(BasicFreeSheetTooltip):
 
     def _getDescriptionBlock(self):
-        return (formatters.packBuildUpBlockData([formatters.packTextParameterWithIconBlockData(text_styles.concatStylesToMultiLine(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_USED_HEADER), text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_USED_TEXT)), '', ICON_TEXT_FRAMES.LOCK, padding=formatters.packPadding(left=-60, bottom=-2))]),)
+        return (
+         formatters.packBuildUpBlockData([
+          formatters.packTextParameterWithIconBlockData(text_styles.concatStylesToMultiLine(text_styles.middleTitle(TOOLTIPS.PERSONALMISSIONS_FREESHEET_USED_HEADER), text_styles.main(TOOLTIPS.PERSONALMISSIONS_FREESHEET_USED_TEXT)), '', ICON_TEXT_FRAMES.LOCK, padding=formatters.packPadding(left=-60, bottom=-2))]),)
 
 
 class BadgeTooltipData(BlocksTooltipData):
@@ -136,20 +145,25 @@ class BadgeTooltipData(BlocksTooltipData):
 
     def _packBlocks(self, badgeID, isSuffixLayout=False):
         badge = self.__itemsCache.items.getBadges()[badgeID]
-        blocks = [formatters.packTextBlockData(text_styles.highTitle(badge.getUserName()), padding=formatters.packPadding(bottom=10))]
+        blocks = [
+         formatters.packTextBlockData(text_styles.highTitle(badge.getUserName()), padding=formatters.packPadding(bottom=10))]
         imgBlock = self.__getImageBlock(badge)
         if imgBlock is not None:
             blocks.append(imgBlock)
         if g_currentVehicle.isPresent():
             vehicle = g_currentVehicle.item
             blocks.append(formatters.packBadgeInfoBlockData(badge.getAwardBadgeIcon(BADGES_ICONS.X24), vehicle.iconContour, text_styles.bonusPreviewText(getPlayerName()), text_styles.bonusPreviewText(vehicle.shortUserName), RES_ICONS.getBadgeStripIcon(BADGES_STRIPS_ICONS.X64, badgeID) if isSuffixLayout else '', padding=formatters.packPadding(bottom=25, top=0 if imgBlock is not None else 15)))
-        blocks.append(formatters.packTextBlockData(text_styles.main(backport.text(R.strings.badge.dyn('badge_{}_descr'.format(badgeID))()))))
-        return [formatters.packBuildUpBlockData(blocks)]
+        blocks.append(formatters.packTextBlockData(text_styles.main(backport.text(R.strings.badge.dyn(('badge_{}_descr').format(badgeID))()))))
+        return [
+         formatters.packBuildUpBlockData(blocks)]
 
     @staticmethod
     def __getImageBlock(badge):
         badgeIcon = badge.getAwardBadgeIcon(BADGES_ICONS.X220)
-        return formatters.packImageBlockData(badgeIcon, BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11)) if badgeIcon is not None else None
+        if badgeIcon is not None:
+            return formatters.packImageBlockData(badgeIcon, BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))
+        else:
+            return
 
 
 class LoyalServiceTooltipData(BadgeTooltipData):
@@ -168,7 +182,8 @@ class OperationsChainDetailsTooltipData(BlocksTooltipData):
     def _packBlocks(self, chainID):
         personalMissions = dependency.instance(IEventsCache).getPersonalMissions()
         operation = first(personalMissions.getOperationsForBranch(PM_BRANCH.PERSONAL_MISSION_2).values())
-        blocks = [formatters.packImageTextBlockData(title=text_styles.highTitle(operation.getChainName(chainID)), desc=text_styles.standard(operation.getChainDescription(chainID)), img=RES_ICONS.getAlliance54x54Icon(chainID), imgPadding=formatters.packPadding(top=3, left=-5), txtOffset=78)]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.highTitle(operation.getChainName(chainID)), desc=text_styles.standard(operation.getChainDescription(chainID)), img=RES_ICONS.getAlliance54x54Icon(chainID), imgPadding=formatters.packPadding(top=3, left=-5), txtOffset=78)]
         nations = getNationsForChain(operation, chainID)
         nationBlocks = []
         separator = '   '
@@ -180,7 +195,9 @@ class OperationsChainDetailsTooltipData(BlocksTooltipData):
 
         blocks.append(formatters.packBuildUpBlockData(nationBlocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(left=40)))
         allianceID = operation.getAllianceID(chainID)
-        blocks.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.CHAINTOOLTIPDATA_DESCRIPTION_TITLE), padding=formatters.packPadding(bottom=4)), formatters.packTextBlockData(text_styles.main(PERSONAL_MISSIONS.getAllianceChainTooltipDescr(allianceID)), padding=formatters.packPadding(bottom=7))], padding=formatters.packPadding(top=-7, bottom=-3)))
+        blocks.append(formatters.packBuildUpBlockData([
+         formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.CHAINTOOLTIPDATA_DESCRIPTION_TITLE), padding=formatters.packPadding(bottom=4)),
+         formatters.packTextBlockData(text_styles.main(PERSONAL_MISSIONS.getAllianceChainTooltipDescr(allianceID)), padding=formatters.packPadding(bottom=7))], padding=formatters.packPadding(top=-7, bottom=-3)))
         return blocks
 
 
@@ -242,13 +259,21 @@ class OperationTooltipData(BlocksTooltipData):
         firstRowPadding = formatters.packPadding(top=10, left=-6)
         secondRowPadding = formatters.packPadding(top=-2, bottom=10)
         if operation.isDisabled():
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_DISABLED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.disabled())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_DISABLED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.disabled())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         elif cls._isOperationUnavailable(operation):
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.doPrevOperation())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.doPrevOperation())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         elif operation.isFullCompleted():
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_FULL_STATE), text_styles.bonusAppliedText(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.excellentDone()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.excellentDone())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_FULL_STATE), text_styles.bonusAppliedText(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.excellentDone()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.excellentDone())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         elif not isOperationAvailableByVehicles(operation):
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.noVehicle())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.noVehicle())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         elif cls._isOperationPaused(operation):
             if operation.isAwardAchieved():
                 footerText = text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.mainRewardReceived()))
@@ -256,7 +281,9 @@ class OperationTooltipData(BlocksTooltipData):
                 currentCount, totalCount = cls._getOperationCompletionTokensCount(operation)
                 footerDescrKey = cls._getOperationCompletionTokensDescription(operation)
                 footerText = text_styles.concatStylesWithSpace(text_styles.main(backport.text(footerDescrKey)), formatCompleteCount(currentCount, totalCount), text_styles.main(cls.PROGRESS_COUNT_TEMPLATE % totalCount))
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_PAUSED_STATE), text_styles.neutral(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.onPause()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=footerText, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_PAUSED_STATE), text_styles.neutral(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.onPause()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=footerText, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         elif operation.isAwardAchieved():
             blocksData.append(formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_STATE), text_styles.bonusAppliedText(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.done()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding))
             if operation.getBranch() == PM_BRANCH.PERSONAL_MISSION_3:
@@ -273,9 +300,13 @@ class OperationTooltipData(BlocksTooltipData):
         elif cls._isOperationInProgress(operation):
             currentCount, totalCount = cls._getOperationCompletionTokensCount(operation)
             footerDescrKey = cls._getOperationCompletionTokensDescription(operation)
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_CURRENT_STATE), text_styles.neutral(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.inProgress()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.concatStylesWithSpace(text_styles.main(backport.text(footerDescrKey)), formatCompleteCount(currentCount, totalCount), text_styles.main(cls.PROGRESS_COUNT_TEMPLATE % totalCount)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_CURRENT_STATE), text_styles.neutral(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.inProgress()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.concatStylesWithSpace(text_styles.main(backport.text(footerDescrKey)), formatCompleteCount(currentCount, totalCount), text_styles.main(cls.PROGRESS_COUNT_TEMPLATE % totalCount)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         else:
-            blocksData.extend([formatters.packAlignedTextBlockData(text=text_styles.stats(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.available())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding), formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.selectQuest())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
+            blocksData.extend([
+             formatters.packAlignedTextBlockData(text=text_styles.stats(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.available())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=firstRowPadding),
+             formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.selectQuest())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=secondRowPadding)])
         return formatters.packBuildUpBlockData(blocksData)
 
     @classmethod
@@ -331,13 +362,16 @@ class OperationPostponedTooltipData(OperationTooltipData):
 
     @classmethod
     def _getAwardsBlock(cls, bonuses, _):
-        items = [formatters.packAwardsExBlockData(bonuses, columnWidth=80, rowHeight=80, horizontalGap=5, verticalGap=20, renderersAlign=formatters.RENDERERS_ALIGN_CENTER)]
+        items = [
+         formatters.packAwardsExBlockData(bonuses, columnWidth=80, rowHeight=80, horizontalGap=5, verticalGap=20, renderersAlign=formatters.RENDERERS_ALIGN_CENTER)]
         return formatters.packBuildUpBlockData(blocks=items, stretchBg=False, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WIDE_AWARD_BIG_BG_LINKAGE if len(bonuses) > 3 else BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WIDE_AWARD_SMALL_BG_LINKAGE, padding=formatters.packPadding(top=14, bottom=15))
 
     @classmethod
     def _getStatusBlock(cls, operation):
         _, postpone = missions_helper.getPostponedOperationState(operation.getID())
-        return formatters.packBuildUpBlockData([formatters.packAlignedTextBlockData(text=text_styles.concatStylesWithSpace(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_DISABLED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=10, left=-6)), formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.postponed())), cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_POSTPONED_STATE), text_styles.vehicleStatusCriticalText(postpone)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-2, bottom=10))])
+        return formatters.packBuildUpBlockData([
+         formatters.packAlignedTextBlockData(text=text_styles.concatStylesWithSpace(cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_DISABLED_STATE), text_styles.error(backport.text(R.strings.tooltips.personalMissions.operation.footer.title.notAvailable()))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=10, left=-6)),
+         formatters.packAlignedTextBlockData(text=text_styles.concatStylesToSingleLine(text_styles.main(backport.text(R.strings.tooltips.personalMissions.operation.footer.descr.postponed())), cls._getOperationOperationStateIcon(PERSONAL_MISSIONS_ALIASES.OPERATION_POSTPONED_STATE), text_styles.vehicleStatusCriticalText(postpone)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-2, bottom=10))])
 
     @staticmethod
     def _getTooltipFormatter():
@@ -357,40 +391,50 @@ class PersonalMissionInfoTooltipData(BlocksTooltipData):
         description = quest.getUserDescription()
         title = text_styles.highTitle(PERSONAL_MISSIONS.DETAILEDVIEW_INFOPANEL_HEADER)
         if doesTextExist(description):
-            description = '\n\n'.join([_ms(quest.getUserDescription()), _ms(quest.getUserAdvice())])
+            description = ('\n\n').join([_ms(quest.getUserDescription()), _ms(quest.getUserAdvice())])
             info = text_styles.main(description)
         else:
-            info = text_styles.main('{}/description'.format(description))
+            info = text_styles.main(('{}/description').format(description))
         titleBlock = formatters.packTextBlockData(title, padding=formatters.packPadding(left=0, right=0, bottom=23))
         infoBlock = formatters.packTextBlockData(info, padding=formatters.packPadding(left=0, right=0, bottom=17))
-        return formatters.packBuildUpBlockData([titleBlock, infoBlock], gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False)
+        return formatters.packBuildUpBlockData([
+         titleBlock, infoBlock], gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False)
 
     def _getDescriptionBlock(self, localizationKey):
         blocks = []
         for i in range(1, 4):
-            keyTitle = '{}/info/{}/title'.format(localizationKey, i)
-            keyDescr = '{}/info/{}/description'.format(localizationKey, i)
+            keyTitle = ('{}/info/{}/title').format(localizationKey, i)
+            keyDescr = ('{}/info/{}/description').format(localizationKey, i)
             if doesTextExist(keyTitle) and doesTextExist(keyDescr):
                 blocks.append(formatters.packTextBlockData(text_styles.concatStylesWithSpace(text_styles.middleTitle(keyTitle), text_styles.main(keyDescr)), padding=formatters.packPadding(left=0, right=0, bottom=17)))
 
-        return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False) if blocks else None
+        if blocks:
+            return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False)
+        else:
+            return
 
     def _getLimiterBlock(self, localizationKey):
         blocks = []
         for i in range(1, 3):
-            keyTitle = '{}/limiter/{}/title'.format(localizationKey, i)
-            keyDescr = '{}/limiter/{}/description'.format(localizationKey, i)
+            keyTitle = ('{}/limiter/{}/title').format(localizationKey, i)
+            keyDescr = ('{}/limiter/{}/description').format(localizationKey, i)
             if doesTextExist(keyTitle) and doesTextExist(keyDescr):
                 blocks.append(formatters.packTextBlockData(text_styles.concatStylesWithSpace(text_styles.alert(keyTitle), text_styles.standard(keyDescr)), padding=formatters.packPadding(left=0, right=0, bottom=17)))
 
-        return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False) if blocks else None
+        if blocks:
+            return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False)
+        else:
+            return
 
     def _getWarningBlock(self, localizationKey):
         blocks = []
-        keyWarning = '{}/warning'.format(localizationKey)
+        keyWarning = ('{}/warning').format(localizationKey)
         if doesTextExist(keyWarning):
             blocks.append(formatters.packImageTextBlockData('', text_styles.alert(keyWarning), RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON, imgPadding=formatters.packPadding(right=5, top=3), padding=formatters.packPadding(bottom=8)))
-        return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False) if blocks else None
+        if blocks:
+            return formatters.packBuildUpBlockData(blocks, gap=-4, padding=formatters.packPadding(left=0, right=0, top=0, bottom=0), stretchBg=False)
+        else:
+            return
 
     def _packBlocks(self, *args, **kwargs):
         items = super(PersonalMissionInfoTooltipData, self)._packBlocks()
@@ -436,7 +480,9 @@ class PersonalMissionsMapRegionTooltipData(BlocksTooltipData):
             orConditions = [ q for q in conditions if q.isInOrGroup ]
             andConditions = [ q for q in conditions if not q.isInOrGroup ]
             self._hasOrCondition = bool(orConditions)
-            blocksData = [self._getTitleBlock(), self._getConditionsTitleBlock()]
+            blocksData = [
+             self._getTitleBlock(),
+             self._getConditionsTitleBlock()]
             if not self._hasOrCondition:
                 blocksData.append(self._getAndConditionsBlock(andConditions, padding=formatters.packPadding(bottom=15, right=20)))
                 items.append(formatters.packBuildUpBlockData(blocksData))
@@ -445,7 +491,9 @@ class PersonalMissionsMapRegionTooltipData(BlocksTooltipData):
                 items.append(self._getOrConditionBlock(orConditions))
                 if andConditions:
                     items.append(self._getAndConditionsBlock(andConditions, padding=formatters.packPadding(top=10, bottom=15, right=20)))
-            items.extend([self._getAwardsBlock(self._quest), self._getStatusBlock(self._quest)])
+            items.extend([
+             self._getAwardsBlock(self._quest),
+             self._getStatusBlock(self._quest)])
         return items
 
     def _getTitleBlock(self):
@@ -562,7 +610,15 @@ class TankwomanTooltipData(BlocksTooltipData):
         self._setWidth(364)
 
     def _packBlocks(self, *args, **kwargs):
-        blocks = [formatters.packImageTextBlockData(title=text_styles.highTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_TITLE), desc=text_styles.standard(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_SUBTITLE), img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKWOMAN), formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_DESC_TITLE), padding=formatters.packPadding(bottom=4)), formatters.packTextBlockData(text_styles.main(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_DESC_BODY), padding=formatters.packPadding(bottom=7))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3)), formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_TITLE), padding=formatters.packPadding(bottom=20)), self.__makeImageBlock('../maps/icons/tankmen/skills/big/new_skill.png', PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_NEWPERK), self.__makeImageBlock('../maps/icons/tankmen/skills/big/brotherhood.png', PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_BROTHERHOOD)])]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.highTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_TITLE), desc=text_styles.standard(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_SUBTITLE), img=RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_BIG_TANKWOMAN),
+         formatters.packBuildUpBlockData([
+          formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_DESC_TITLE), padding=formatters.packPadding(bottom=4)),
+          formatters.packTextBlockData(text_styles.main(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_DESC_BODY), padding=formatters.packPadding(bottom=7))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-7, bottom=-3)),
+         formatters.packBuildUpBlockData([
+          formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_TITLE), padding=formatters.packPadding(bottom=20)),
+          self.__makeImageBlock('../maps/icons/tankmen/skills/big/new_skill.png', PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_NEWPERK),
+          self.__makeImageBlock('../maps/icons/tankmen/skills/big/brotherhood.png', PERSONAL_MISSIONS.TANKWOMANTOOLTIPDATA_ADVANTAGES_BROTHERHOOD)])]
         return blocks
 
     def __makeImageBlock(self, icon, text, imgPaddingLeft=15, imgPaddingRight=30, imgPaddingTop=0):
@@ -593,22 +649,27 @@ class TankModuleTooltipData(BlocksTooltipData):
         else:
             statusText = self.__getNotObtainedStatus(isAlliance)
         vehIcon = RES_ICONS.vehicleTypeInactiveOutline(classifier)
-        blocks = [formatters.packImageTextBlockData(title=text_styles.highTitle(formattedBonus.userName), desc=text_styles.standard(_ms(PERSONAL_MISSIONS.OPERATIONTITLE_TITLE, title=operationTitle)), img=formattedBonus.getImage(AWARDS_SIZES.BIG), imgPadding=formatters.packPadding(right=20), txtPadding=formatters.packPadding(top=10)), formatters.packBuildUpBlockData([formatters.packImageTextBlockData(title=text_styles.main(_ms(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_INFO if not isAlliance else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_ALLIANCE_INFO, vehName=text_styles.neutral(operationTitle))), img=RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, imgPadding=formatters.packPadding(left=8, right=10, top=2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(bottom=-3))]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.highTitle(formattedBonus.userName), desc=text_styles.standard(_ms(PERSONAL_MISSIONS.OPERATIONTITLE_TITLE, title=operationTitle)), img=formattedBonus.getImage(AWARDS_SIZES.BIG), imgPadding=formatters.packPadding(right=20), txtPadding=formatters.packPadding(top=10)),
+         formatters.packBuildUpBlockData([
+          formatters.packImageTextBlockData(title=text_styles.main(_ms((isAlliance or PERSONAL_MISSIONS).TANKMODULETOOLTIPDATA_INFO if 1 else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_ALLIANCE_INFO, vehName=text_styles.neutral(operationTitle))), img=RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, imgPadding=formatters.packPadding(left=8, right=10, top=2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(bottom=-3))]
         if not finalQuest.isCompleted():
             if isAlliance:
                 allianceId = ALLIANCE_IDS[classifier]
                 vehType = _ms(PERSONAL_MISSIONS.getAllianceName(allianceId))
             else:
                 vehType = _ms(PERSONAL_MISSIONS.chainNameByVehicleType(classifier))
-            blocks.append(formatters.packBuildUpBlockData([formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_HELP_TITLE), padding=formatters.packPadding(bottom=4)), formatters.packImageTextBlockData(title=text_styles.main(_ms(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_HELP_BODY if not isAlliance else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_ALLIANCE_HELP_BODY, vehType=vehType)), img=vehIcon, imgPadding=formatters.packPadding(top=6, left=4), txtOffset=34)]))
+            blocks.append(formatters.packBuildUpBlockData([
+             formatters.packTextBlockData(text_styles.middleTitle(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_HELP_TITLE), padding=formatters.packPadding(bottom=4)),
+             formatters.packImageTextBlockData(title=text_styles.main(_ms((isAlliance or PERSONAL_MISSIONS).TANKMODULETOOLTIPDATA_HELP_BODY if 1 else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_ALLIANCE_HELP_BODY, vehType=vehType)), img=vehIcon, imgPadding=formatters.packPadding(top=6, left=4), txtOffset=34)]))
         blocks.append(formatters.packAlignedTextBlockData(text=statusText, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
         return blocks
 
     def __getObtainedStatus(self, isAlliance):
-        return text_styles.concatStylesWithSpace(icons.checkmark(-2), text_styles.statInfo(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_OBTAINED if not isAlliance else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_ALLIANCE_OBTAINED))
+        return text_styles.concatStylesWithSpace(icons.checkmark(-2), text_styles.statInfo((isAlliance or PERSONAL_MISSIONS).TANKMODULETOOLTIPDATA_STATUS_OBTAINED if 1 else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_ALLIANCE_OBTAINED))
 
     def __getNotObtainedStatus(self, isAlliance):
-        return text_styles.critical(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_NOTOBTAINED if not isAlliance else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_ALLIANCE_NOTOBTAINED)
+        return text_styles.critical((isAlliance or PERSONAL_MISSIONS).TANKMODULETOOLTIPDATA_STATUS_NOTOBTAINED if 1 else PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_ALLIANCE_NOTOBTAINED)
 
     def __getAvailableStatus(self, pawnsCount):
         return text_styles.warning(_ms(PERSONAL_MISSIONS.TANKMODULETOOLTIPDATA_STATUS_AVAILABLE, count=pawnsCount, img=icons.makeImageTag(AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.TINY), 24, 24, -6, 0)))

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/prestige/global_onboarding_view.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
@@ -19,7 +17,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
 
 class GlobalOnboardingView(ViewImpl):
-    __slots__ = ('__topPrestigeVehIntCD',)
+    __slots__ = ('__topPrestigeVehIntCD', )
     __itemsCache = dependency.descriptor(IItemsCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __settingsCore = dependency.descriptor(ISettingsCore)
@@ -38,7 +36,11 @@ class GlobalOnboardingView(ViewImpl):
         return super(GlobalOnboardingView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose), (self.viewModel.onGoToVehicleStatistic, self.__onClose))
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onGoToVehicleStatistic, self.__onClose))
 
     def _onLoading(self, *args, **kwargs):
         super(GlobalOnboardingView, self)._onLoading(*args, **kwargs)
@@ -63,8 +65,8 @@ class GlobalOnboardingView(ViewImpl):
             sortedTopVehicles.append((vehicle, (level, vehicle.level, vehicle.name.split(':')[1])))
 
         sortedTopVehicles.sort(key=lambda x: x[1])
-        self.__topPrestigeVehIntCD = sortedTopVehicles[-1][0].intCD if sortedTopVehicles else g_currentVehicle.intCD
-        with self.viewModel.transaction() as tx:
+        self.__topPrestigeVehIntCD = sortedTopVehicles[(-1)][0].intCD if sortedTopVehicles else g_currentVehicle.intCD
+        with self.viewModel.transaction() as (tx):
             tx.setEliteVehicleAmount(len(prestigeVehicles))
             vehiclesList = tx.getVehicles()
             vehiclesList.clear()

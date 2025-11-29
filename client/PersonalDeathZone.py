@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PersonalDeathZone.py
-import Math
-import BigWorld
+import Math, BigWorld
 from AreaOfEffect import AreaOfEffect
 import TriggersManager
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -47,10 +44,9 @@ class PersonalDeathZone(AreaOfEffect, TriggersManager.ITriggerListener):
         vehicle = BigWorld.player().vehicle
         if vehicle is None or not vehicle.isAlive():
             return
-        else:
-            if self._isOwnTrigger(args) and self._guiController:
-                self._guiController.onPlayerEntered(self)
-            return
+        if self._isOwnTrigger(args) and self._guiController:
+            self._guiController.onPlayerEntered(self)
+        return
 
     def onTriggerDeactivated(self, args):
         if self._isOwnTrigger(args) and self._guiController:

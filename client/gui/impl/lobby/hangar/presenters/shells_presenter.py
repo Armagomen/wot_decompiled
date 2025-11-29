@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/shells_presenter.py
 from __future__ import absolute_import
 import typing
 from CurrentVehicle import g_currentVehicle
@@ -25,7 +23,8 @@ from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.vehicle_modules import Shell
     from gui.impl.lobby.tank_setup.interactors.base import InteractingItem
-_SHELLS_INFO_PARAMS = ('avgDamage', 'avgDamagePerSecond', 'avgPiercingPower', 'shotSpeed', 'explosionRadius', 'stunDurationList')
+_SHELLS_INFO_PARAMS = ('avgDamage', 'avgDamagePerSecond', 'avgPiercingPower', 'shotSpeed',
+                       'explosionRadius', 'stunDurationList')
 
 class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -38,7 +37,13 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
         self._guiItemType = GUI_ITEM_TYPE.SHELL
 
     def _getEvents(self):
-        return super(ShellsPresenter, self)._getEvents() + ((self.getViewModel().onShellUpdate, self.__onShellUpdate), (self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate), (self.__exchangeRates.goldToCredits.onUpdated, self._onCurrencyUpdate))
+        return super(ShellsPresenter, self)._getEvents() + (
+         (
+          self.getViewModel().onShellUpdate, self.__onShellUpdate),
+         (
+          self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),
+         (
+          self.__exchangeRates.goldToCredits.onUpdated, self._onCurrencyUpdate))
 
     @property
     def isShellState(self):
@@ -73,37 +78,38 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
     def _updateModel(self, recreate=True):
         if not g_currentVehicle.isPresent() or not self._provider:
             return
-        else:
-            currentVehicle = self._vehInteractingItem.getItem()
-            currentSetup = currentVehicle.shells.installed
-            ammoMaxSize = currentVehicle.ammoMaxSize
-            interactorShells = self._interactor.getCurrentLayout()
-            if not self.isShellState:
-                interactorShells = self._interactor.getInstalledLayout()
-            installedCount = sum((shell.count for shell in interactorShells))
-            gun = currentVehicle.gun.descriptor
-            clip = self.__setupClipCount(gun)
-            with self.getViewModel().transaction() as model:
-                model.setAmmoMaxSize(ammoMaxSize)
-                model.setInstalledCount(installedCount)
-                model.setClip(clip)
-                model.setAutoloadEnabled(self._interactor.getAutoRenewal().getLocalValue())
-                shells = model.getShells()
-                shells.clear()
-                for shell in interactorShells:
-                    if shell is not None:
-                        installedShell = first((s for s in currentSetup if s.intCD == shell.intCD))
-                        shellItem = self.__createShellItem(shell, installedShell)
-                        self.__updateShellItem(shells, shellItem)
+        currentVehicle = self._vehInteractingItem.getItem()
+        currentSetup = currentVehicle.shells.installed
+        ammoMaxSize = currentVehicle.ammoMaxSize
+        interactorShells = self._interactor.getCurrentLayout()
+        if not self.isShellState:
+            interactorShells = self._interactor.getInstalledLayout()
+        installedCount = sum(shell.count for shell in interactorShells)
+        gun = currentVehicle.gun.descriptor
+        clip = self.__setupClipCount(gun)
+        with self.getViewModel().transaction() as (model):
+            model.setAmmoMaxSize(ammoMaxSize)
+            model.setInstalledCount(installedCount)
+            model.setClip(clip)
+            model.setAutoloadEnabled(self._interactor.getAutoRenewal().getLocalValue())
+            shells = model.getShells()
+            shells.clear()
+            for shell in interactorShells:
+                if shell is not None:
+                    installedShell = first(s for s in currentSetup if s.intCD == shell.intCD)
+                    shellItem = self.__createShellItem(shell, installedShell)
+                    self.__updateShellItem(shells, shellItem)
 
-                shells.invalidate()
-            self._updateDealPanel()
-            return
+            shells.invalidate()
+        self._updateDealPanel()
+        return
 
     def __setupClipCount(self, gun):
         if isAutoReloadGun(gun):
             return 1
-        return 2 if isTwinGun(gun) else gun.clip[0]
+        if isTwinGun(gun):
+            return 2
+        return gun.clip[0]
 
     def __updateShellItem(self, shellModels, shellModel):
         for index, item in enumerate(shellModels):
@@ -182,7 +188,7 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
         return specificationModel
 
     def __fillShellItemPriceModel(self, shellItemPrice, itemPriceModel):
-        with itemPriceModel.transaction() as model:
+        with itemPriceModel.transaction() as (model):
             currency = shellItemPrice.getCurrency()
             value = shellItemPrice.get(currency)
             model.setName(currency)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/header_helpers/quest_flags.py
 import logging
 from gui.impl import backport
 from gui.impl.gen import R
@@ -43,19 +41,19 @@ class BattleQuestsFlag(BaseQuestFlag):
     def formatQuests(cls, vehicle, params):
         if vehicle is None or not cls._limitedUIController.isRuleCompleted(LUI_RULES.BattleMissions):
             return
+        quests = cls._getQuests(vehicle)
+        totalCount = len(quests)
+        completedQuests = len([ q for q in quests if q.isCompleted() ])
+        festivityFlagData = cls._festivityController.getHangarQuestsFlagData()
+        if totalCount > 0:
+            commonQuestsIcon = festivityFlagData.icon or RES_ICONS.MAPS_ICONS_LIBRARY_OUTLINE_QUESTS_AVAILABLE
+            label, questType = cls._getLabelAndFlagType(totalCount, completedQuests)
         else:
-            quests = cls._getQuests(vehicle)
-            totalCount = len(quests)
-            completedQuests = len([ q for q in quests if q.isCompleted() ])
-            festivityFlagData = cls._festivityController.getHangarQuestsFlagData()
-            if totalCount > 0:
-                commonQuestsIcon = festivityFlagData.icon or RES_ICONS.MAPS_ICONS_LIBRARY_OUTLINE_QUESTS_AVAILABLE
-                label, questType = cls._getLabelAndFlagType(totalCount, completedQuests)
-            else:
-                commonQuestsIcon = festivityFlagData.iconDisabled or RES_ICONS.MAPS_ICONS_LIBRARY_OUTLINE_QUESTS_DISABLED
-                label, questType = '', cls._QUEST_TYPE
-            quests = [headerQuestFormatterVo(totalCount > 0, commonQuestsIcon, label, questType, flag=festivityFlagData.flagBackground, tooltip=TOOLTIPS_CONSTANTS.QUESTS_PREVIEW, isTooltipSpecial=True)]
-            return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_COMMON, '', quests)
+            commonQuestsIcon = festivityFlagData.iconDisabled or RES_ICONS.MAPS_ICONS_LIBRARY_OUTLINE_QUESTS_DISABLED
+            label, questType = '', cls._QUEST_TYPE
+        quests = [
+         headerQuestFormatterVo(totalCount > 0, commonQuestsIcon, label, questType, flag=festivityFlagData.flagBackground, tooltip=TOOLTIPS_CONSTANTS.QUESTS_PREVIEW, isTooltipSpecial=True)]
+        return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_COMMON, '', quests)
 
     @classmethod
     def showQuestsInfo(cls, questType, questID):
@@ -68,7 +66,8 @@ class BattleQuestsFlag(BaseQuestFlag):
             label = getActiveQuestLabel(totalCount, completedQuests)
         else:
             label = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_OUTLINE_QUESTS_ALL_DONE)
-        return (label, cls._QUEST_TYPE)
+        return (
+         label, cls._QUEST_TYPE)
 
     @classmethod
     def _getQuests(cls, vehicle):
@@ -102,7 +101,8 @@ class MapboxQuestsFlag(BaseQuestFlag):
                 flag = backport.image(R.images.gui.maps.icons.library.hangarFlag.flag_gray())
                 progressionIcon = backport.image(R.images.gui.maps.icons.quests.headerFlagIcons.mapbox_disabled())
                 label = ''
-            quests = [headerQuestFormatterVo(data is not None, progressionIcon, label, cls._QUEST_TYPE, flag=flag, tooltip=TOOLTIPS_CONSTANTS.MAPBOX_PROGRESSION_PREVIEW, isTooltipSpecial=True)]
+            quests = [
+             headerQuestFormatterVo(data is not None, progressionIcon, label, cls._QUEST_TYPE, flag=flag, tooltip=TOOLTIPS_CONSTANTS.MAPBOX_PROGRESSION_PREVIEW, isTooltipSpecial=True)]
             return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_PERSONAL, '', quests)
 
     @classmethod
@@ -140,7 +140,8 @@ class RankedQuestsFlag(BaseQuestFlag):
                 label = icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1()))
             else:
                 label = icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.time_icon()))
-        questsVo = [headerQuestFormatterVo(enable=totalCount > 0, icon=backport.image(commonQuestsIcon), label=label, questType=cls._QUEST_TYPE, flag=backport.image(R.images.gui.maps.icons.library.hangarFlag.flag_ranked()), tooltip=TOOLTIPS_CONSTANTS.RANKED_QUESTS_PREVIEW, isTooltipSpecial=True)]
+        questsVo = [
+         headerQuestFormatterVo(enable=totalCount > 0, icon=backport.image(commonQuestsIcon), label=label, questType=cls._QUEST_TYPE, flag=backport.image(R.images.gui.maps.icons.library.hangarFlag.flag_ranked()), tooltip=TOOLTIPS_CONSTANTS.RANKED_QUESTS_PREVIEW, isTooltipSpecial=True)]
         return wrapQuestGroup(cls._QUEST_TYPE, '', questsVo)
 
     @classmethod
@@ -209,7 +210,8 @@ class ElenQuestsFlag(BaseQuestFlag):
                 eventQuestsTooltipIsSpecial = False
                 eventQuestsLabel = '--'
                 eventQuestsIcon = RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_CUP_DISABLE_ICON
-            quests = [headerQuestFormatterVo(enable, eventQuestsIcon, eventQuestsLabel, cls._QUEST_TYPE, questID=eventId, isReward=True, tooltip=eventQuestsTooltip, isTooltipSpecial=eventQuestsTooltipIsSpecial)]
+            quests = [
+             headerQuestFormatterVo(enable, eventQuestsIcon, eventQuestsLabel, cls._QUEST_TYPE, questID=eventId, isReward=True, tooltip=eventQuestsTooltip, isTooltipSpecial=eventQuestsTooltipIsSpecial)]
             return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_EVENTS, '', quests)
 
     @classmethod
@@ -239,12 +241,14 @@ class MarathonQuestsFlag(BaseQuestFlag):
             for index, marathonEvent in enumerate(marathons):
                 flagVO = marathonEvent.getMarathonFlagState(vehicle)
                 if flagVO['visible']:
-                    quest = headerQuestFormatterVo(flagVO['enable'], flagVO['flagHeaderIcon'], '', ''.join((cls._QUEST_TYPE, str(index))), flag=flagVO['flagMain'], stateIcon=flagVO['flagStateIcon'], questID=marathonEvent.prefix, tooltip=flagVO['tooltip'], isTooltipSpecial=flagVO['enable'])
+                    quest = headerQuestFormatterVo(flagVO['enable'], flagVO['flagHeaderIcon'], '', ('').join((cls._QUEST_TYPE, str(index))), flag=flagVO['flagMain'], stateIcon=flagVO['flagStateIcon'], questID=marathonEvent.prefix, tooltip=flagVO['tooltip'], isTooltipSpecial=flagVO['enable'])
                     if not isGroupped:
-                        wrappedGroup = wrapQuestGroup(''.join((HANGAR_HEADER_QUESTS.QUEST_GROUP_MARATHON, str(index))), '', [quest])
+                        wrappedGroup = wrapQuestGroup(('').join((HANGAR_HEADER_QUESTS.QUEST_GROUP_MARATHON, str(index))), '', [quest])
                     result.append(quest if isGroupped else wrappedGroup)
 
-            return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_MARATHON, RES_ICONS.MAPS_ICONS_QUESTS_HEADERFLAGICONS_MARATHONS, result) if result and isGroupped else result
+            if result and isGroupped:
+                return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_MARATHON, RES_ICONS.MAPS_ICONS_QUESTS_HEADERFLAGICONS_MARATHONS, result)
+            return result
 
     @classmethod
     def showQuestsInfo(cls, questType, questID):

@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/shared_utils/account_helpers/ClientInvitations.py
 from collections import namedtuple
 from functools import partial
 from shared_utils import safeCancelCallback
-import BigWorld
-import AccountCommands
+import BigWorld, AccountCommands
 from constants import INVITATION_STATUS
 from helpers.time_utils import getCurrentTimestamp, getServerUTCTime
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION

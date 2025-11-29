@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/client_arena_component_assembler.py
 from debug_utils import LOG_WARNING
 from client_arena_component_system import ClientArenaComponentSystem
 from arena_components.player_type_specific_components import getDefaultComponents

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/personal_missions_navigation.py
 from operator import methodcaller
 import WWISE
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
@@ -10,8 +8,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 
 class _PMNavigationInfo(object):
-    _DEFAULT_OPERATIONS = {PM_BRANCH.REGULAR: 1,
-     PM_BRANCH.PERSONAL_MISSION_2: 5}
+    _DEFAULT_OPERATIONS = {PM_BRANCH.REGULAR: 1, PM_BRANCH.PERSONAL_MISSION_2: 5}
 
     def __init__(self):
         self.__operationIDs = self._DEFAULT_OPERATIONS.copy()
@@ -19,13 +16,13 @@ class _PMNavigationInfo(object):
         self.__branch = PM_BRANCH.REGULAR
 
     def getOperationID(self, branchID=None):
-        return self.__operationIDs[branchID or self.__branch]
+        return self.__operationIDs[(branchID or self.__branch)]
 
     def setOperationID(self, operationID, branchID=None):
         self.__operationIDs[branchID or self.__branch] = operationID
 
     def getChainID(self, branchID=None):
-        return self.__chainIDs[branchID or self.__branch]
+        return self.__chainIDs[(branchID or self.__branch)]
 
     def setChainID(self, chainID, branchID=None):
         self.__chainIDs[branchID or self.__branch] = chainID

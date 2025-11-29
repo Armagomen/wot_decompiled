@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/shared/utils/__init__.py
 from typing import TYPE_CHECKING, Optional, Dict
 from skeletons.gui.shared.utils import requesters
 if TYPE_CHECKING:
@@ -92,6 +90,10 @@ class IItemsRequester(requesters.IRequester):
         raise NotImplementedError
 
     @property
+    def petSystem(self):
+        raise NotImplementedError
+
+    @property
     def tankmenStatsCache(self):
         raise NotImplementedError
 
@@ -176,6 +178,9 @@ class IItemsRequester(requesters.IRequester):
     def getItemByCD(self, typeCompDescr):
         raise NotImplementedError
 
+    def getTypedItemsByCDs(self, itemType, itemCDs):
+        raise NotImplementedError
+
     def getItem(self, itemTypeID, nationID, innationID):
         raise NotImplementedError
 
@@ -239,6 +244,10 @@ class IHangarSpace(object):
     onSpaceChanged = None
     onNotifyCursorOver3dScene = None
     onSpaceChangedByAction = None
+
+    @property
+    def videoCameraController(self):
+        raise NotImplementedError
 
     @property
     def space(self):

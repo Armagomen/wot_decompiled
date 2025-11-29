@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_builders/season_gap_vos.py
 from collections import namedtuple
-import logging
-import typing
+import logging, typing
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles, icons
@@ -22,7 +19,7 @@ def _buildLeaguesVO(stateBlock):
     sprinterImg = ''
     if stateBlock.isSprinter:
         sprinterImg = backport.image(R.images.gui.maps.icons.rankedBattles.sprinter_icon())
-    return _getDataVO(RANKEDBATTLES_ALIASES.SEASON_GAP_VIEW_LEAGUE_STATE, leagueID=stateBlock.leagueID, title=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.dyn('league{}'.format(stateBlock.leagueID))()), descr=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.league.descr()), btnLabel=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.league.ratingBtn()), btnVisible=True, sprinterImg=sprinterImg)
+    return _getDataVO(RANKEDBATTLES_ALIASES.SEASON_GAP_VIEW_LEAGUE_STATE, leagueID=stateBlock.leagueID, title=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.dyn(('league{}').format(stateBlock.leagueID))()), descr=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.league.descr()), btnLabel=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.league.ratingBtn()), btnVisible=True, sprinterImg=sprinterImg)
 
 
 def _buildDivisionVO(stateBlock):
@@ -87,22 +84,22 @@ def _buildQualificationVO(stateBlock):
     return _getDataVO(RANKEDBATTLES_ALIASES.SEASON_GAP_VIEW_DIVISION_STATE, disabled=False, title=backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.notInDivisions.title()), descr=description, btnLabel=buttonLabel, btnVisible=buttonVisible)
 
 
-_DATA_VOS_BUILDERS = {SeasonGapStates.WAITING_IN_LEAGUES: _buildWaitingVO,
- SeasonGapStates.WAITING_IN_DIVISIONS: _buildDivisionVO,
- SeasonGapStates.WAITING_NOT_IN_SEASON: _buildNotInSeasonVO,
- SeasonGapStates.WAITING_NOT_IN_DIVISIONS: _buildQualificationVO,
- SeasonGapStates.IN_LEAGUES: _buildLeaguesVO,
- SeasonGapStates.IN_DIVISIONS: _buildDivisionVO,
- SeasonGapStates.NOT_IN_DIVISIONS: _buildQualificationVO,
- SeasonGapStates.NOT_IN_SEASON: _buildNotInSeasonVO,
- SeasonGapStates.BANNED_IN_LEAGUES: _buildDivisionVO,
- SeasonGapStates.BANNED_IN_DIVISIONS: _buildDivisionVO,
- SeasonGapStates.BANNED_NOT_IN_SEASON: _buildNotInSeasonVO,
- SeasonGapStates.BANNED_NOT_IN_DIVISIONS: _buildQualificationVO,
- SeasonGapStates.ROLLED_IN_LEAGUES: _buildDivisionVO,
- SeasonGapStates.ROLLED_IN_DIVISIONS: _buildDivisionVO,
- SeasonGapStates.ROLLED_NOT_IN_SEASON: _buildNotInSeasonVO,
- SeasonGapStates.ROLLED_NOT_IN_DIVISIONS: _buildQualificationVO}
+_DATA_VOS_BUILDERS = {SeasonGapStates.WAITING_IN_LEAGUES: _buildWaitingVO, 
+   SeasonGapStates.WAITING_IN_DIVISIONS: _buildDivisionVO, 
+   SeasonGapStates.WAITING_NOT_IN_SEASON: _buildNotInSeasonVO, 
+   SeasonGapStates.WAITING_NOT_IN_DIVISIONS: _buildQualificationVO, 
+   SeasonGapStates.IN_LEAGUES: _buildLeaguesVO, 
+   SeasonGapStates.IN_DIVISIONS: _buildDivisionVO, 
+   SeasonGapStates.NOT_IN_DIVISIONS: _buildQualificationVO, 
+   SeasonGapStates.NOT_IN_SEASON: _buildNotInSeasonVO, 
+   SeasonGapStates.BANNED_IN_LEAGUES: _buildDivisionVO, 
+   SeasonGapStates.BANNED_IN_DIVISIONS: _buildDivisionVO, 
+   SeasonGapStates.BANNED_NOT_IN_SEASON: _buildNotInSeasonVO, 
+   SeasonGapStates.BANNED_NOT_IN_DIVISIONS: _buildQualificationVO, 
+   SeasonGapStates.ROLLED_IN_LEAGUES: _buildDivisionVO, 
+   SeasonGapStates.ROLLED_IN_DIVISIONS: _buildDivisionVO, 
+   SeasonGapStates.ROLLED_NOT_IN_SEASON: _buildNotInSeasonVO, 
+   SeasonGapStates.ROLLED_NOT_IN_DIVISIONS: _buildQualificationVO}
 
 def getDataVO(stateBlock):
     builder = _DATA_VOS_BUILDERS.get(stateBlock.state)
@@ -114,9 +111,9 @@ def getDataVO(stateBlock):
 
 
 def getEfficiencyVO(currentSeasonEfficiency):
-    return {'icon': 'efficiency',
-     'label': text_styles.alignText(text_styles.mainBig(backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.stats.efficiency())), 'center'),
-     'value': ranked_formatters.getFloatPercentStrStat(currentSeasonEfficiency)}
+    return {'icon': 'efficiency', 
+       'label': text_styles.alignText(text_styles.mainBig(backport.text(R.strings.ranked_battles.rankedBattleMainView.seasonGap.stats.efficiency())), 'center'), 
+       'value': ranked_formatters.getFloatPercentStrStat(currentSeasonEfficiency)}
 
 
 def getRatingVO(rating, isMastered):
@@ -136,18 +133,18 @@ def _getDataVO(state, leagueID=UNDEFINED_LEAGUE_ID, divisionID=ZERO_DIVISION_ID,
         smallImage = backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_114x160.c_0())
         bigImage = backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_190x260.c_0())
     else:
-        smallImage = backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_114x160.dyn('rank{}_{}'.format(divisionID, rankID))())
-        bigImage = backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_190x260.dyn('rank{}_{}'.format(divisionID, rankID))())
-    return {'state': state,
-     'leagueID': leagueID,
-     'divisionImgSmall': smallImage,
-     'divisionImgBig': bigImage,
-     'disabled': disabled,
-     'title': title,
-     'descr': descr,
-     'btnLabel': btnLabel,
-     'btnVisible': btnVisible,
-     'sprinterImg': sprinterImg}
+        smallImage = backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_114x160.dyn(('rank{}_{}').format(divisionID, rankID))())
+        bigImage = backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_190x260.dyn(('rank{}_{}').format(divisionID, rankID))())
+    return {'state': state, 
+       'leagueID': leagueID, 
+       'divisionImgSmall': smallImage, 
+       'divisionImgBig': bigImage, 
+       'disabled': disabled, 
+       'title': title, 
+       'descr': descr, 
+       'btnLabel': btnLabel, 
+       'btnVisible': btnVisible, 
+       'sprinterImg': sprinterImg}
 
 
 def _addAlertIcon(description):

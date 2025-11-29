@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RankedBattlesHangarWidgetMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class RankedBattlesHangarWidgetMeta(BaseDAAPIComponent):
@@ -14,7 +12,9 @@ class RankedBattlesHangarWidgetMeta(BaseDAAPIComponent):
         self._printOverrideError('onSoundTrigger')
 
     def as_setDataS(self, states):
-        return self.flashObject.as_setData(states) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(states)
 
     def as_setBonusBattlesLabelS(self, label):
-        return self.flashObject.as_setBonusBattlesLabel(label) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBonusBattlesLabel(label)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_hints.py
-import typing
-import BigWorld
+import typing, BigWorld
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from constants import QUEUE_TYPE, ARENA_BONUS_TYPE, IS_DEVELOPMENT
@@ -81,7 +78,8 @@ class BattleMattersHintsHelper(object):
         for hint in self.__hints:
             if hint.isShown() and not hint.canBeShownInFuture():
                 hint.stop()
-            availableHints.append(hint)
+            else:
+                availableHints.append(hint)
 
         self.__hints = availableHints
         if self.__hints:
@@ -338,12 +336,12 @@ class EntryPointHint(_BMManualTriggeredHint):
 
     @staticmethod
     def _getHintSettings():
-        return {'updateRuntime': True,
-         'hintText': backport.text(R.strings.battle_matters.entryPoint.hint()),
-         'hasArrow': True,
-         'arrowDir': 'B',
-         'arrowLoop': True,
-         'positionValue': 0.5}
+        return {'updateRuntime': True, 
+           'hintText': backport.text(R.strings.battle_matters.entryPoint.hint()), 
+           'hasArrow': True, 
+           'arrowDir': 'B', 
+           'arrowLoop': True, 
+           'positionValue': 0.5}
 
     def _onStart(self):
         super(EntryPointHint, self)._onStart()

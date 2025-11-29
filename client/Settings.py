@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Settings.py
 import BigWorld
 g_instance = None
 KEY_UPDATE_URL = 'updateUrl'

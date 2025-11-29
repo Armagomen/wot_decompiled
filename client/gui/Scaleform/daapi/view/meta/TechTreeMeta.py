@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TechTreeMeta.py
 from gui.Scaleform.daapi.view.lobby.techtree.research_view import ResearchView
 
 class TechTreeMeta(ResearchView):
@@ -35,31 +33,41 @@ class TechTreeMeta(ResearchView):
         self._printOverrideError('onPlayHintAnimation')
 
     def as_setAvailableNationsS(self, nations):
-        return self.flashObject.as_setAvailableNations(nations) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setAvailableNations(nations)
 
     def as_setSelectedNationS(self, nationName):
-        return self.flashObject.as_setSelectedNation(nationName) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSelectedNation(nationName)
 
     def as_refreshNationTreeDataS(self, nationName):
-        return self.flashObject.as_refreshNationTreeData(nationName) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_refreshNationTreeData(nationName)
 
     def as_setUnlockPropsS(self, data):
-        return self.flashObject.as_setUnlockProps(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setUnlockProps(data)
 
     def as_showMiniClientInfoS(self, description, hyperlink):
-        return self.flashObject.as_showMiniClientInfo(description, hyperlink) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showMiniClientInfo(description, hyperlink)
 
     def as_setBlueprintsSwitchButtonStateS(self, enabled, selected, tooltip, visible=True):
-        return self.flashObject.as_setBlueprintsSwitchButtonState(enabled, selected, tooltip, visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBlueprintsSwitchButtonState(enabled, selected, tooltip, visible)
 
     def as_setBlueprintModeS(self, enabled):
-        return self.flashObject.as_setBlueprintMode(enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBlueprintMode(enabled)
 
     def as_setBlueprintBalanceS(self, balanceVO):
-        return self.flashObject.as_setBlueprintBalance(balanceVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBlueprintBalance(balanceVO)
 
     def as_closePremiumPanelS(self):
-        return self.flashObject.as_closePremiumPanel() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_closePremiumPanel()
 
     def as_setVehicleCollectorStateS(self, enabled):
-        return self.flashObject.as_setVehicleCollectorState(enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVehicleCollectorState(enabled)

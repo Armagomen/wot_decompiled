@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/hangar_switch_controller.py
-import json
-import logging
-import BigWorld
-import Event
-import ResMgr
+import json, logging, BigWorld, Event, ResMgr
 from constants import DEFAULT_HANGAR_SCENE
 from gui.prb_control.settings import FUNCTIONAL_FLAG
 from soft_exception import SoftException
@@ -22,19 +16,20 @@ _logger = logging.getLogger(__name__)
 class DefaultHangarSpaceConfig(object):
 
     def __init__(self):
-        self._visibilityMask = {True: None,
-         False: None}
+        self._visibilityMask = {True: None, False: None}
         self._spaceIdOverride = {}
         return
 
     def clear(self):
-        self._visibilityMask = {True: None,
-         False: None}
+        self._visibilityMask = {True: None, False: None}
         self._spaceIdOverride = {}
         return
 
     def getVisibilityMask(self, isPremium):
-        return self._visibilityMask[isPremium] if self._visibilityMask[isPremium] is not None else getHangarFullVisibilityMask(self.getHangarSpaceId(isPremium))
+        if self._visibilityMask[isPremium] is not None:
+            return self._visibilityMask[isPremium]
+        else:
+            return getHangarFullVisibilityMask(self.getHangarSpaceId(isPremium))
 
     def discardVisibilityMaskOverride(self, isPremium):
         self._visibilityMask[isPremium] = None
@@ -45,7 +40,10 @@ class DefaultHangarSpaceConfig(object):
 
     def getHangarSpaceId(self, isPremium):
         path = self._spaceIdOverride.get(isPremium)
-        return path if path is not None else getDefaultHangarPath(isPremium)
+        if path is not None:
+            return path
+        else:
+            return getDefaultHangarPath(isPremium)
 
     def setSpaceIdOverride(self, isPremium, newId):
         self._spaceIdOverride[isPremium] = newId
@@ -72,7 +70,10 @@ class SceneSpaceConfig(object):
         return self._waitingBackground
 
     def getVisibilityMask(self):
-        return self._visibilityMask if self._visibilityMask is not None else getHangarFullVisibilityMask(self.getHangarSpaceId())
+        if self._visibilityMask is not None:
+            return self._visibilityMask
+        else:
+            return getHangarFullVisibilityMask(self.getHangarSpaceId())
 
     def discardVisibilityMaskOverride(self):
         self._visibilityMask = None
@@ -82,7 +83,10 @@ class SceneSpaceConfig(object):
         self._visibilityMask = visibilityMask
 
     def getHangarSpaceId(self):
-        return self._spaceIdOverride if self._spaceIdOverride is not None else self._spaceId
+        if self._spaceIdOverride is not None:
+            return self._spaceIdOverride
+        else:
+            return self._spaceId
 
     def setSpaceIdOverride(self, newId):
         self._spaceIdOverride = newId
@@ -291,27 +295,27 @@ class HangarSpaceSwitchController(IHangarSpaceSwitchController, IGlobalListener)
                 if self.currentSceneName == DEFAULT_HANGAR_SCENE:
                     spaceId = self._defaultHangarSpaceConfig.getHangarSpaceId(self.hangarSpace.isPremium)
                     visibilityMask = self._defaultHangarSpaceConfig.getVisibilityMask(self.hangarSpace.isPremium)
-                    if not self.hangarSpace.inited:
-                        g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isPremium=self.hangarSpace.isPremium, isReload=False)
-                        spaceId = self._defaultHangarSpaceConfig.getHangarSpaceId(not self.hangarSpace.isPremium)
-                        visibilityMask = self._defaultHangarSpaceConfig.getVisibilityMask(not self.hangarSpace.isPremium)
-                        g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isPremium=not self.hangarSpace.isPremium, isReload=False)
-                        return
-                    success, err = self.hangarSpaceReloader.changeHangarSpace(spaceId, visibilityMask)
-                else:
-                    currentSceneConfig = self._sceneSpaceParams[self.currentSceneName]
-                    spaceId = currentSceneConfig.getHangarSpaceId()
-                    visibilityMask = currentSceneConfig.getVisibilityMask()
-                    if not self.hangarSpace.inited:
-                        g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isReload=False)
-                        return
-                    success, err = self.hangarSpaceReloader.changeHangarSpace(spaceId, visibilityMask, currentSceneConfig.waitingMessage, currentSceneConfig.waitingBackground)
-                if success:
-                    self.hangarSpace.onSpaceCreate += self._onSpaceCreatedCallback
-                elif err == ErrorFlags.DUPLICATE_REQUEST:
+                    self.hangarSpace.inited or g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isPremium=self.hangarSpace.isPremium, isReload=False)
+                    spaceId = self._defaultHangarSpaceConfig.getHangarSpaceId(not self.hangarSpace.isPremium)
+                    visibilityMask = self._defaultHangarSpaceConfig.getVisibilityMask(not self.hangarSpace.isPremium)
+                    g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isPremium=not self.hangarSpace.isPremium, isReload=False)
+                    return
+                success, err = self.hangarSpaceReloader.changeHangarSpace(spaceId, visibilityMask)
+            else:
+                currentSceneConfig = self._sceneSpaceParams[self.currentSceneName]
+                spaceId = currentSceneConfig.getHangarSpaceId()
+                visibilityMask = currentSceneConfig.getVisibilityMask()
+                if not self.hangarSpace.inited:
+                    g_clientHangarSpaceOverride.setPath(spaceId, visibilityMask, isReload=False)
+                    return
+                success, err = self.hangarSpaceReloader.changeHangarSpace(spaceId, visibilityMask, currentSceneConfig.waitingMessage, currentSceneConfig.waitingBackground)
+            if success:
+                self.hangarSpace.onSpaceCreate += self._onSpaceCreatedCallback
+            else:
+                if err == ErrorFlags.DUPLICATE_REQUEST:
                     self.onSpaceUpdated()
                 elif err != ErrorFlags.NONE:
-                    raise SoftException('Could not perform space reload, see hangar_space_reloader.py error flag {}.'.format(err))
+                    raise SoftException(('Could not perform space reload, see hangar_space_reloader.py error flag {}.').format(err))
                 return
             if currentSceneMaskChanged and self.hangarSpace.inited:
                 if self.currentSceneName == DEFAULT_HANGAR_SCENE:

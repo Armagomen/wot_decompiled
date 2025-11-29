@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/service_record/service_record_view.py
 import typing
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.impl import backport
@@ -30,7 +28,8 @@ class ServiceRecordView(ContainerBase, IPersonalTab, ViewImpl):
         super(ServiceRecordView, self).__init__(settings, **kwargs)
 
     def _getComponents(self):
-        return [TankmanInfoComponent(key='tankman_info', parent=self)]
+        return [
+         TankmanInfoComponent(key='tankman_info', parent=self)]
 
     def _getContext(self, *args, **kwargs):
         return ServiceRecordViewContext(kwargs.get('tankmanID'))
@@ -50,7 +49,8 @@ class ServiceRecordView(ContainerBase, IPersonalTab, ViewImpl):
         if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == TooltipConstants.ACHIEVEMENT:
-                return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(self.context.dossier.getDossierType(),
+                return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(
+                 self.context.dossier.getDossierType(),
                  dumpDossier(self.context.dossier),
                  event.getArgument('block'),
                  event.getArgument('name'),

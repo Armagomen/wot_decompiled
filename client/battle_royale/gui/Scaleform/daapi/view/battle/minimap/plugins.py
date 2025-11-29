@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/minimap/plugins.py
-import logging
-import heapq
-import time
-import BigWorld
-import Math
-import typing
+import logging, heapq, time, BigWorld, Math, typing
 from Event import EventsSubscriber
 from battle_royale.gui.Scaleform.daapi.view.battle.minimap.loot_detector import LootDetector
 from battle_royale.gui.battle_control.controllers.radar_ctrl import IRadarListener
@@ -207,7 +200,10 @@ class BattleRoyalePersonalEntriesPlugin(CenteredPersonalEntriesPlugin):
 
     def __getDirectionLineEntryID(self):
         cameraIDs = self._getCameraIDs()
-        return cameraIDs[_S_NAME.ARCADE_CAMERA] if _S_NAME.ARCADE_CAMERA in cameraIDs else None
+        if _S_NAME.ARCADE_CAMERA in cameraIDs:
+            return cameraIDs[_S_NAME.ARCADE_CAMERA]
+        else:
+            return
 
 
 class DeathZonesPlugin(SimplePlugin):
@@ -221,7 +217,8 @@ class DeathZonesPlugin(SimplePlugin):
         super(DeathZonesPlugin, self).initControlMode(mode, available)
         bottomLeft, upperRight = self._arenaVisitor.type.getBoundingBox()
         arenaWidth, arenaHeight = upperRight - bottomLeft
-        deathZoneMatrix = minimap_utils.makePointInBBoxMatrix((-arenaWidth * _ARENA_SIZE_DEATH_ZONE_MULTIPLIER, 0, arenaHeight * _ARENA_SIZE_DEATH_ZONE_MULTIPLIER), bottomLeft, upperRight)
+        deathZoneMatrix = minimap_utils.makePointInBBoxMatrix((
+         -arenaWidth * _ARENA_SIZE_DEATH_ZONE_MULTIPLIER, 0, arenaHeight * _ARENA_SIZE_DEATH_ZONE_MULTIPLIER), bottomLeft, upperRight)
         self.__deathZonesEntryID = self._addEntry(BattleRoyaleEntries.BATTLE_ROYALE_DEATH_ZONE, _C_NAME.PERSONAL, matrix=deathZoneMatrix, active=True)
         self._parentObj.setEntryParameters(self.__deathZonesEntryID, doClip=False, scaleType=MINIMAP_SCALE_TYPES.REAL_SCALE)
         self.__initDeathZones(bottomLeft, upperRight)
@@ -453,7 +450,8 @@ class DetectorPlugin(BaseBattleRoyaleEntriesPlugin):
 
     @staticmethod
     def __getMarkers(typeID):
-        return (MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(typeID), MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(typeID))
+        return (MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(typeID),
+         MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(typeID))
 
 
 class RadarPlugin(BaseBattleRoyaleEntriesPlugin, IRadarListener):
@@ -536,10 +534,10 @@ class RadarPlugin(BaseBattleRoyaleEntriesPlugin, IRadarListener):
     def __addVehicleEntry(self, vehicleID, vehicleData):
         if self._arenaDP.getPlayerVehicleID() == vehicleID:
             return
-        elif vehicleID in self.__visibilitySystemSpottedVehicles:
-            _logger.debug('Vehicle marker spotted by radar is not displayeddue to vehicle marker spotted by visibility system is still visible!')
-            return
         else:
+            if vehicleID in self.__visibilitySystemSpottedVehicles:
+                _logger.debug('Vehicle marker spotted by radar is not displayeddue to vehicle marker spotted by visibility system is still visible!')
+                return
             position = vehicleData[0]
             marker, markerBig = self.__getVehicleMarkers(vehicleID)
             entry = self._createEntry(vehicleID, Math.Vector3(position[0], 0.0, position[1]), _S_NAME.DISCOVERED_ITEM_MARKER, _C_NAME.ALIVE_VEHICLES)
@@ -564,19 +562,24 @@ class RadarPlugin(BaseBattleRoyaleEntriesPlugin, IRadarListener):
 
     @staticmethod
     def __getLootMarkers(typeID):
-        return (MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(typeID), MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(typeID))
+        return (MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(typeID),
+         MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(typeID))
 
     def __getVehicleMarkers(self, vehicleID):
         vInfo = self._arenaDP.getVehicleInfo(vehicleID)
         if vInfo and isSpawnedBot(vInfo.vehicleType.tags):
             return (MarkersAs3Descr.AS_ADD_MARKER_BOT_VEHICLE, MarkersAs3Descr.AS_ADD_MARKER_BOT_VEHICLE)
-        return (MarkersAs3Descr.AS_ADD_MARKER_ENEMY_BOT_VEHICLE, MarkersAs3Descr.AS_ADD_MARKER_ENEMY_BOT_VEHICLE_BIG) if vInfo and vInfo.team == 21 else (MarkersAs3Descr.AS_ADD_MARKER_ENEMY_VEHICLE, MarkersAs3Descr.AS_ADD_MARKER_ENEMY_VEHICLE_BIG)
+        if vInfo and vInfo.team == 21:
+            return (MarkersAs3Descr.AS_ADD_MARKER_ENEMY_BOT_VEHICLE, MarkersAs3Descr.AS_ADD_MARKER_ENEMY_BOT_VEHICLE_BIG)
+        return (MarkersAs3Descr.AS_ADD_MARKER_ENEMY_VEHICLE, MarkersAs3Descr.AS_ADD_MARKER_ENEMY_VEHICLE_BIG)
 
     def __getVehicleEntryName(self, vehicleID):
         vInfo = self._arenaDP.getVehicleInfo(vehicleID)
         if avatar_getter.isVehiclesColorized():
-            return 'team{}'.format(vInfo.team)
-        return 'br_enemy_bot' if vInfo.team == 21 else 'enemy'
+            return ('team{}').format(vInfo.team)
+        if vInfo.team == 21:
+            return 'br_enemy_bot'
+        return 'enemy'
 
 
 class AirDropPlugin(EntriesPlugin):
@@ -637,7 +640,9 @@ class AirDropPlugin(EntriesPlugin):
             self._invoke(entry.getID(), MarkersAs3Descr.AS_ADD_MARKER, self.__getMarkerType())
 
     def __getMarkerType(self):
-        return MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(LOOT_TYPE.AIRDROP) if self.__isMinimapSmall else MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(LOOT_TYPE.AIRDROP)
+        if self.__isMinimapSmall:
+            return MarkersAs3Descr.AS_ADD_MARKER_LOOT_BY_TYPE_ID.get(LOOT_TYPE.AIRDROP)
+        return MarkersAs3Descr.AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID.get(LOOT_TYPE.AIRDROP)
 
 
 class BattleRoyalStaticMarkerPlugin(IntervalPlugin):
@@ -764,12 +769,12 @@ class BattleRoyaleVehiclePlugin(ArenaVehiclesPlugin):
         return
 
     def _onMinimapFeedbackReceived(self, eventID, entityID, value):
-        if eventID == FEEDBACK_EVENT_ID.MINIMAP_SHOW_MARKER and entityID != self._getPlayerVehicleID():
-            if entityID in self._entries:
-                entry = self._entries[entityID]
-                if (self._getIsObserver() or not avatar_getter.isVehicleAlive()) and avatar_getter.getVehicleIDAttached() == entityID:
-                    return
-                marker, _ = entry.isInAoI() and value
+        if eventID == FEEDBACK_EVENT_ID.MINIMAP_SHOW_MARKER and entityID != self._getPlayerVehicleID() and entityID in self._entries:
+            entry = self._entries[entityID]
+            if (self._getIsObserver() or not avatar_getter.isVehicleAlive()) and avatar_getter.getVehicleIDAttached() == entityID:
+                return
+            if entry.isInAoI():
+                marker, _ = value
                 self._parentObj.invoke(entry.getID(), 'setAnimation', marker)
 
     def _addEntry(self, symbol, container, matrix=None, active=False, transformProps=settings.TRANSFORM_FLAG.DEFAULT):
@@ -806,13 +811,13 @@ class BattleRoyaleVehiclePlugin(ArenaVehiclesPlugin):
             else:
                 marker = self.__getEnemyVehMarker()
         if not self.__isMinimapSmall and not isSpawnedBotVehicle:
-            marker = '_'.join((marker, 'big'))
+            marker = ('_').join((marker, 'big'))
         if avatar_getter.isVehiclesColorized():
             arenaBonusType = self.__sessionProvider.arenaVisitor.getArenaBonusType()
             if arenaBonusType == ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO:
                 playerName = ''
             if not isBot:
-                entryName = 'team{}'.format(vInfo.team)
+                entryName = ('team{}').format(vInfo.team)
         self.parentObj.invoke(entry.getID(), 'show', marker, playerName, playerFakeName, playerClan, entryName)
 
     def _hideVehicle(self, entry):

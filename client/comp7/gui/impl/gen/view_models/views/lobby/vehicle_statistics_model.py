@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/vehicle_statistics_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 

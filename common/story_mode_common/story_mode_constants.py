@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/common/story_mode_common/story_mode_constants.py
-import enum
-import constants
+import enum, constants
 from constants import ARENA_BONUS_TYPE, ARENA_GUI_TYPE
 from constants_utils import ConstInjector
 EXTENSION_NAME = 'story_mode'
@@ -12,9 +9,10 @@ PLAYERS_COUNT_KEY = 'stats/story_mode/Queue{}Players'
 PLAYER_BATTLES_COUNT_KEY = 'stats/story_mode/Queue{}PlayerBattlesCount'
 AVG_WAIT_TIME_KEY = 'stats/story_mode/Queue{}AvgWaitTime'
 SM_CONGRATULATIONS_MESSAGE = 'StoryModeCongratulationsMessage'
-STORY_MODE_BONUS_TYPES = (ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING, ARENA_BONUS_TYPE.STORY_MODE_REGULAR)
-STORY_MODE_GUI_TYPE_BY_BONUS_TYPE = {ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING: ARENA_GUI_TYPE.STORY_MODE_ONBOARDING,
- ARENA_BONUS_TYPE.STORY_MODE_REGULAR: ARENA_GUI_TYPE.STORY_MODE_REGULAR}
+STORY_MODE_BONUS_TYPES = (
+ ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING, ARENA_BONUS_TYPE.STORY_MODE_REGULAR)
+STORY_MODE_GUI_TYPE_BY_BONUS_TYPE = {ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING: ARENA_GUI_TYPE.STORY_MODE_ONBOARDING, 
+   ARENA_BONUS_TYPE.STORY_MODE_REGULAR: ARENA_GUI_TYPE.STORY_MODE_REGULAR}
 EVENT_NAME = 'story_mode_scc'
 
 class PRIORITY(enum.IntEnum):

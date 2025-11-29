@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/TimeInterval.py
-import logging
-import typing
-import weakref
-import BigWorld
+import logging, typing, weakref, BigWorld
 from Event import SafeEvent
 if typing.TYPE_CHECKING:
     from Event import EventManager

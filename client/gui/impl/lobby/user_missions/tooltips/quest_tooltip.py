@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/tooltips/quest_tooltip.py
 from abc import ABCMeta
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -37,7 +35,7 @@ class BaseQuestTooltip(ViewImpl):
         self._fillViewModel()
 
     def _fillViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setId(self._quest.itemId)
             vm.setMissionType(str(self._quest.itemType))
             vm.setCountdown(int(self._quest.countdown))
@@ -64,7 +62,7 @@ class DailyQuestTooltip(BaseQuestTooltip):
         return settings
 
     def _getRewardsSortFunc(self):
-        return None
+        return
 
 
 class WeeklyQuestTooltip(BaseQuestTooltip):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/tooltips/simple_icon_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.common.tooltips.simple_icon_tooltip_model import SimpleIconTooltipModel, HeaderType
 from gui.impl.gen import R
@@ -21,7 +19,7 @@ class SimpleIconTooltipView(ViewImpl):
         return super(SimpleIconTooltipView, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setHeader(self.__header)
             tx.setBody(self.__body)
             tx.setIcon(self.__icon)

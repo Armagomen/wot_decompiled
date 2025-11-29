@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousel_event_entry_widget.py
-import itertools
-import typing
+import itertools, typing
 from gui.Scaleform.daapi.view.meta.CarouselEventEntryMeta import CarouselEventEntryMeta
 from gui.impl.gen import R
 from gui.impl.lobby.lootbox_system.base.entry_point import LootBoxSystemEntryPoint

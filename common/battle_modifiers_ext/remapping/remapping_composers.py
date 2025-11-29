@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/remapping/remapping_composers.py
 from typing import TYPE_CHECKING, Optional, Any, Dict, List, FrozenSet, Type
 from battle_modifiers_ext.constants_ext import ModifiersWithRemapping
 if TYPE_CHECKING:
@@ -33,12 +31,12 @@ class _BaseComposer(IComposer):
         else:
             resStr = self._targetTemplate
             for condition in self._conditions:
-                resStr = resStr.replace(''.join((_START_PATTERN, condition.getName(), _END_PATTERN)), condition(ctx))
+                resStr = resStr.replace(('').join((_START_PATTERN, condition.getName(), _END_PATTERN)), condition(ctx))
 
             return resStr
 
     def getValues(self, oldValue):
-        return None
+        return
 
     @classmethod
     def _getItemName(cls, ctx, oldValue):
@@ -46,14 +44,14 @@ class _BaseComposer(IComposer):
 
     def __applySpecialRules(self, ctx, oldValue):
         if not self._specialRules:
-            return None
+            return
         else:
             itemName = self._getItemName(ctx, oldValue)
             for sources, target in self._specialRules.iteritems():
                 if itemName in sources:
                     return target
 
-            return None
+            return
 
 
 class _DefaultGunEffectsComposer(_BaseComposer):
@@ -65,7 +63,7 @@ class _DefaultGunEffectsComposer(_BaseComposer):
             if v == oldValue:
                 return k
 
-        return None
+        return
 
 
 class _DefaultShotEffectsComposer(_BaseComposer):
@@ -81,7 +79,9 @@ class _DefaultSoundNotificationsComposer(_BaseComposer):
 
     def getValue(self, ctx, oldValue):
         resStr = super(_DefaultSoundNotificationsComposer, self).getValue(ctx, oldValue)
-        return oldValue if not resStr else self.__applyRemoveRule(resStr)
+        if not resStr:
+            return oldValue
+        return self.__applyRemoveRule(resStr)
 
     def getValues(self, oldValue):
         result = oldValue.copy()
@@ -91,12 +91,15 @@ class _DefaultSoundNotificationsComposer(_BaseComposer):
         return result
 
     def __applyRemoveRule(self, value):
-        return None if value == self._REMOVE_NOTIFICATION else value
+        if value == self._REMOVE_NOTIFICATION:
+            return None
+        else:
+            return value
 
 
-_DEFAULT_COMPOSERS = {ModifiersWithRemapping.GUN_EFFECTS: _DefaultGunEffectsComposer,
- ModifiersWithRemapping.SHOT_EFFECTS: _DefaultShotEffectsComposer,
- ModifiersWithRemapping.SOUND_NOTIFICATIONS: _DefaultSoundNotificationsComposer}
+_DEFAULT_COMPOSERS = {ModifiersWithRemapping.GUN_EFFECTS: _DefaultGunEffectsComposer, 
+   ModifiersWithRemapping.SHOT_EFFECTS: _DefaultShotEffectsComposer, 
+   ModifiersWithRemapping.SOUND_NOTIFICATIONS: _DefaultSoundNotificationsComposer}
 _COMPOSERS_FACTORY = {}
 
 def getComposerClass(remappingName, modifierName):

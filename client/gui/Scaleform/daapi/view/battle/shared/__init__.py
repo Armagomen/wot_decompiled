@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/__init__.py
 import typing
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -11,10 +9,10 @@ from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
 if typing.TYPE_CHECKING:
     from gui.shared.events import LoadViewEvent
-__all__ = ('SharedPage',)
+__all__ = ('SharedPage', )
 
 def getContextMenuHandlers():
-    pass
+    return ()
 
 
 def getViewSettings():
@@ -35,7 +33,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared import death_cam_ui
     from gui.Scaleform.daapi.view.battle.shared import postmortem_info_panel
     from gui.Scaleform.daapi.view.battle.shared import spectator_view
-    return (ViewSettings(VIEW_ALIAS.INGAME_MENU, ingame_menu.IngameMenu, 'ingameMenu.swf', WindowLayer.TOP_WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canClose=False, canDrag=False),
+    return (
+     ViewSettings(VIEW_ALIAS.INGAME_MENU, ingame_menu.IngameMenu, 'ingameMenu.swf', WindowLayer.TOP_WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canClose=False, canDrag=False),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL, damage_log_panel.DamageLogPanel, ScopeTemplates.DEFAULT_SCOPE),
      ViewSettings(VIEW_ALIAS.INGAME_HELP, ingame_help.IngameHelpWindow, 'ingameHelpWindow.swf', WindowLayer.WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, canClose=False, canDrag=False, isModal=True),
      ViewSettings(VIEW_ALIAS.INGAME_DETAILS_HELP, ingame_help.IngameDetailsHelpWindow, 'ingameDetailsHelpWindow.swf', WindowLayer.WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, canClose=False, canDrag=False, isModal=True),
@@ -59,17 +58,23 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (BattlePackageBusinessHandler(),)
+    return (
+     BattlePackageBusinessHandler(),)
 
 
 class BattlePackageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.ACOUSTIC_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.INGAME_MENU, self.__handleIngameMenuEvent),
-         (VIEW_ALIAS.INGAME_HELP, self.__handleHelpEvent),
-         (VIEW_ALIAS.INGAME_DETAILS_HELP, self.__handleDetailsHelpEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.ACOUSTIC_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.INGAME_MENU, self.__handleIngameMenuEvent),
+         (
+          VIEW_ALIAS.INGAME_HELP, self.__handleHelpEvent),
+         (
+          VIEW_ALIAS.INGAME_DETAILS_HELP, self.__handleDetailsHelpEvent))
         super(BattlePackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
     def __handleIngameMenuEvent(self, event):

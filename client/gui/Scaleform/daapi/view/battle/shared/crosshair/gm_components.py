@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/crosshair/gm_components.py
 import logging
 from collections import namedtuple
 import GUI
@@ -188,7 +186,7 @@ class GunMarkersComponents(object):
         for component in components:
             name = component.getName()
             if name in self.__components:
-                raise SoftException('Name of component must be unique. {} is already existed'.format(name))
+                raise SoftException(('Name of component must be unique. {} is already existed').format(name))
             self.__components[name] = component
 
     def addView(self, container, name):
@@ -240,7 +238,10 @@ class GunMarkersComponents(object):
         return len(self.__components)
 
     def getComponentByName(self, name):
-        return self.__components[name] if name in self.__components else None
+        if name in self.__components:
+            return self.__components[name]
+        else:
+            return
 
     def getComponentByType(self, markerType, isActive=True):
         for component in self.__components.itervalues():
@@ -251,7 +252,7 @@ class GunMarkersComponents(object):
                 else:
                     return component
 
-        return None
+        return
 
     def getViewSettings(self):
         return [ c.getViewSettings() for c in self.__components.itervalues() ]

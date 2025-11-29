@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/achievements/advanced_achievements_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.subcategory_advanced_achievement_model import SubcategoryAdvancedAchievementModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.achievements.upcoming_model import UpcomingModel
 
 class AdvancedAchievementsViewModel(ViewModel):
-    __slots__ = ('onOpenTrophies', 'onOpenDetails', 'onCupClick', 'onAnimationInProgress', 'onAllAnimationEnd', 'onAchievementHover')
+    __slots__ = ('onOpenTrophies', 'onOpenDetails', 'onCupClick', 'onAnimationInProgress',
+                 'onAllAnimationEnd', 'onAchievementHover')
 
     def __init__(self, properties=12, commands=6):
         super(AdvancedAchievementsViewModel, self).__init__(properties=properties, commands=commands)

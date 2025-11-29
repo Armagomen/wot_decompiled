@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/common/dialog_with_exchange.py
 from gui.impl.gen.view_models.common.exchange_panel_model import ExchangePanelModel
 from gui.impl.gen.view_models.common.price_item_model import PriceItemModel
 from gui.impl.gen.view_models.windows.full_screen_dialog_window_model import FullScreenDialogWindowModel

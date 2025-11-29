@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/personal_case/post_progression_widget_model.py
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.components.component_base_model import ComponentBaseModel
 
 class PostProgressionWidgetModel(ComponentBaseModel):
-    __slots__ = ('onWidgetClick',)
+    __slots__ = ('onWidgetClick', )
 
     def __init__(self, properties=5, commands=1):
         super(PostProgressionWidgetModel, self).__init__(properties=properties, commands=commands)

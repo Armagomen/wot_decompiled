@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/contacts_data_provider.py
-import re
-import Event
+import re, Event
 from gui.Scaleform.framework.entities.DAAPIDataProvider import DAAPIDataProvider
 from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
 from helpers import dependency
@@ -92,7 +89,7 @@ class _Category(object):
         return data
 
     def getContactsDict(self):
-        return None
+        return
 
     def setAction(self, actionID, contact):
         return self.updateContact(contact)
@@ -117,7 +114,8 @@ class _FriendsCategory(_Category):
         super(_FriendsCategory, self).clear(full)
 
     def getTags(self):
-        return {_TAG.FRIEND}
+        return {
+         _TAG.FRIEND}
 
     def isEmpty(self):
         return self._woGroup.isEmpty() and self._groups.isEmpty()
@@ -248,7 +246,7 @@ class _FormationCategory(_Category):
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return None
+        return
 
     def clear(self, full=False):
         self._clan.clear(full)
@@ -258,7 +256,8 @@ class _FormationCategory(_Category):
         return self._clan.getContacts()
 
     def getTags(self):
-        return {_TAG.CLAN_MEMBER}
+        return {
+         _TAG.CLAN_MEMBER}
 
     def isEmpty(self):
         return self._clan.isEmpty()
@@ -340,7 +339,8 @@ class _OthersCategory(_Category):
         super(_OthersCategory, self).clear(full)
 
     def getTags(self):
-        return {_TAG.IGNORED, _TAG.IGNORED_TMP, _TAG.SUB_PENDING_IN}
+        return {
+         _TAG.IGNORED, _TAG.IGNORED_TMP, _TAG.SUB_PENDING_IN}
 
     def isEmpty(self):
         for group in self._iterGroups():
@@ -402,7 +402,9 @@ class _OthersCategory(_Category):
         result = False
         if actionID in (_ACTION_ID.IGNORED_ADDED, _ACTION_ID.TMP_IGNORED_ADDED):
             result = self._ignored.setContact(contact)
-        elif actionID in (_ACTION_ID.IGNORED_REMOVED, _ACTION_ID.TMP_IGNORED_REMOVED, _ACTION_ID.FRIEND_ADDED):
+        elif actionID in (
+         _ACTION_ID.IGNORED_REMOVED, _ACTION_ID.TMP_IGNORED_REMOVED,
+         _ACTION_ID.FRIEND_ADDED):
             result = self._ignored.removeContact(dbID)
         elif actionID == _ACTION_ID.SUBSCRIPTION_CHANGED:
             if not contact.isFriend() and _TAG.SUB_PENDING_IN in contact.getTags():
@@ -436,7 +438,9 @@ class _ContactsCategories(object):
 
     def __init__(self):
         super(_ContactsCategories, self).__init__()
-        self._categories = [_FriendsCategory(), _FormationCategory()]
+        self._categories = [
+         _FriendsCategory(),
+         _FormationCategory()]
         self._onlineMode = None
         self._pattern = None
         self._cache = []
@@ -488,7 +492,8 @@ class _ContactsCategories(object):
         data = filter(bool, self._cache)
         if len(data) == 1 and self.isEmpty():
             data = []
-        return (result, data)
+        return (
+         result, data)
 
     def setStatus(self, contact):
         result = False
@@ -502,7 +507,8 @@ class _ContactsCategories(object):
         data = filter(bool, self._cache)
         if len(data) == 1 and self.isEmpty():
             data = []
-        return (result, data)
+        return (
+         result, data)
 
     def getCriteria(self, full=False):
         tags = set()
@@ -554,7 +560,8 @@ class _ContactsCategories(object):
         data = filter(bool, self._cache)
         if len(data) == 1 and self.isEmpty():
             data = []
-        return (result, data)
+        return (
+         result, data)
 
     def changeGroups(self, categoryID, include=None, exclude=None, isOpened=False):
         result = False
@@ -571,7 +578,8 @@ class _ContactsCategories(object):
         data = filter(bool, self._cache)
         if len(data) == 1 and self.isEmpty():
             data = []
-        return (result, data)
+        return (
+         result, data)
 
     def findCategory(self, categoryID):
         idx = 0
@@ -594,7 +602,8 @@ class _ContactsCategories(object):
             if self._pattern is not None:
                 if self._pattern.match(contact['criteria'][1]) is not None:
                     resultList.append(contact['data'])
-            resultList.append(contact['data'])
+            else:
+                resultList.append(contact['data'])
 
         return resultList
 
@@ -645,7 +654,7 @@ class ContactsDataProvider(DAAPIDataProvider):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @property
     def collection(self):
@@ -670,7 +679,7 @@ class ContactsDataProvider(DAAPIDataProvider):
         self.__updateCollection(self.__categories.getData())
 
     def emptyItem(self):
-        return None
+        return
 
     def pyRequestItemRange(self, startIndex, endIndex):
         item_range = super(ContactsDataProvider, self).pyRequestItemRange(startIndex, endIndex)
@@ -683,7 +692,8 @@ class ContactsDataProvider(DAAPIDataProvider):
         return self.__isEmpty
 
     def hasDisplayingContacts(self):
-        for cName in (CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID, CONTACTS_ALIASES.GROUP_FORMATIONS_CATEGORY_ID, CONTACTS_ALIASES.GROUP_OTHER_CATEGORY_ID):
+        for cName in (CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID, CONTACTS_ALIASES.GROUP_FORMATIONS_CATEGORY_ID,
+         CONTACTS_ALIASES.GROUP_OTHER_CATEGORY_ID):
             _, category = self.__categories.findCategory(cName)
             if category and category.hasContacts():
                 return True

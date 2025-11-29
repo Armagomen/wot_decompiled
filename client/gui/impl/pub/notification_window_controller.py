@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/notification_window_controller.py
-import logging
-import typing
-import BigWorld
-import Event
+import logging, typing, BigWorld, Event
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import WindowStatus, WindowLayer
 from gui.impl.pub.notification_commands import WindowNotificationCommand
@@ -19,7 +14,9 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class NotificationWindowController(INotificationWindowController, IGlobalListener):
-    __slots__ = ('__accountID', '__activeQueue', '__postponedQueue', '__currentWindow', '__callbackID', '__isWaitingShown', '__processAfterWaiting', '__isLobbyLoaded', '__locks', '__isExecuting')
+    __slots__ = ('__accountID', '__activeQueue', '__postponedQueue', '__currentWindow',
+                 '__callbackID', '__isWaitingShown', '__processAfterWaiting', '__isLobbyLoaded',
+                 '__locks', '__isExecuting')
     __gui = dependency.descriptor(IGuiLoader)
     __gameplay = dependency.descriptor(IGameplayLogic)
 
@@ -145,7 +142,9 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
         self.__notifyWithPostponedQueueCount()
 
     def isEnabled(self):
-        return False if not self.__isLobbyLoaded or self.prbDispatcher is None else not self.prbDispatcher.getFunctionalState().isNavigationDisabled()
+        if not self.__isLobbyLoaded or self.prbDispatcher is None:
+            return False
+        return not self.prbDispatcher.getFunctionalState().isNavigationDisabled()
 
     def isExecuting(self):
         return self.__isExecuting
@@ -172,8 +171,9 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
         for cmd in queue:
             if cmd.isPersistent:
                 result.append(cmd)
-            _logger.debug('Throwing away non-persistent notification command: %s', cmd)
-            cmd.fini()
+            else:
+                _logger.debug('Throwing away non-persistent notification command: %s', cmd)
+                cmd.fini()
 
         return result
 
@@ -214,16 +214,15 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
         self.__callbackID = None
         if not self.__activeQueue or self.__isWaitingShown:
             return
-        else:
-            self.__processAfterWaiting = False
-            if self.isEnabled() and not self.__locks and not self.__gui.windowsManager.findWindows(self.__overlappingWindowsPredicate):
-                command = self.__activeQueue.pop(0)
-                _logger.debug('Executing next command: %r', command)
-                self.__currentWindow = command.getWindow()
-                self.__isExecuting = True
-                command.execute()
-                self.__isExecuting = False
-            return
+        self.__processAfterWaiting = False
+        if self.isEnabled() and not self.__locks and not self.__gui.windowsManager.findWindows(self.__overlappingWindowsPredicate):
+            command = self.__activeQueue.pop(0)
+            _logger.debug('Executing next command: %r', command)
+            self.__currentWindow = command.getWindow()
+            self.__isExecuting = True
+            command.execute()
+            self.__isExecuting = False
+        return
 
     def __destroyCurrentWindow(self):
         if self.__currentWindow is not None:
@@ -253,4 +252,5 @@ class NotificationWindowController(INotificationWindowController, IGlobalListene
 
     @staticmethod
     def __overlappingWindowsPredicate(window):
-        return window.windowStatus in (WindowStatus.LOADING, WindowStatus.LOADED) and window.layer in (WindowLayer.OVERLAY, WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW)
+        return window.windowStatus in (WindowStatus.LOADING, WindowStatus.LOADED) and window.layer in (
+         WindowLayer.OVERLAY, WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW)

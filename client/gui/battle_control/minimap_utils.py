@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/minimap_utils.py
-import math
-import string
-import BigWorld
-import Math
-import math_utils
+import math, string, BigWorld, Math, math_utils
 from constants import AOI
 AOI_TO_FAR_TIME = 5.0
 MINIMAP_SIZE = (210.0, 210.0)
@@ -31,7 +25,8 @@ def getPositionByLocal(localX, localY, bottomLeft, upperRight):
     spaceSize = upperRight - bottomLeft
     x = (localX - MINIMAP_SIZE[0] * 0.5) / MINIMAP_SIZE[0] * spaceSize[0]
     z = -((localY - MINIMAP_SIZE[1] * 0.5) / MINIMAP_SIZE[1]) * spaceSize[1]
-    return (x, 0.0, z)
+    return (
+     x, 0.0, z)
 
 
 def makePositionMatrix(position):
@@ -89,7 +84,9 @@ def getPositionByCellIndex(cellIndex, bottomLeft, upperRight, dimensions):
     spaceSize = upperRight - bottomLeft
     xOffset = -bottomLeft[0]
     yOffset = -bottomLeft[1]
-    return (column * spaceSize[0] / dimensions - xOffset, 0, -row * spaceSize[1] / dimensions + spaceSize[1] - yOffset)
+    return (
+     column * spaceSize[0] / dimensions - xOffset, 0,
+     -row * spaceSize[1] / dimensions + spaceSize[1] - yOffset)
 
 
 def getCellName(cellId, dimensions):
@@ -97,8 +94,8 @@ def getCellName(cellId, dimensions):
     if row < 8:
         name = string.ascii_uppercase[row]
     else:
-        name = string.ascii_uppercase[row + 1]
-    return '{}{}'.format(name, int((column + 1) % dimensions))
+        name = string.ascii_uppercase[(row + 1)]
+    return ('{}{}').format(name, int((column + 1) % dimensions))
 
 
 def getMinimapBasePingScale(minimapSizeIndex, minScale, maxScale):

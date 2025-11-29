@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/BattleTypeSelectPopover.py
 from __future__ import absolute_import
 from adisp import adisp_process
 from frameworks.wulf import WindowLayer
@@ -60,8 +58,8 @@ class BattleTypeSelectPopover(BattleTypeSelectPopoverMeta):
             elif itemData == PREBATTLE_ACTION_NAME.MAPBOX:
                 tooltip = TOOLTIPS_CONSTANTS.MAPBOX_SELECTOR_INFO
                 isSpecial = True
-            result = {'isSpecial': isSpecial,
-             'tooltip': tooltip}
+            result = {'isSpecial': isSpecial, 
+               'tooltip': tooltip}
             self._tooltip = tooltip
             return result
 
@@ -82,10 +80,13 @@ class BattleTypeSelectPopover(BattleTypeSelectPopoverMeta):
         self.update()
 
     def __getRankedAvailabilityData(self):
-        return (TOOLTIPS_CONSTANTS.RANKED_SELECTOR_INFO, True) if self.__rankedController.isAvailable() else (TOOLTIPS_CONSTANTS.RANKED_UNAVAILABLE_INFO, True)
+        if self.__rankedController.isAvailable():
+            return (TOOLTIPS_CONSTANTS.RANKED_SELECTOR_INFO, True)
+        return (TOOLTIPS_CONSTANTS.RANKED_UNAVAILABLE_INFO, True)
 
     def __getEpicAvailabilityData(self):
-        return (TOOLTIPS_CONSTANTS.EPIC_BATTLE_SELECTOR_INFO, True)
+        return (
+         TOOLTIPS_CONSTANTS.EPIC_BATTLE_SELECTOR_INFO, True)
 
     @adisp_process
     def __selectFight(self, actionName):

@@ -1,15 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/HangarSpace.py
 import weakref
 from Queue import Queue
 from functools import wraps, partial
-import BigWorld
-import Math
-import CGF
-import Event
-import Keys
-import ResMgr
-import constants
+import BigWorld, Math, CGF, Event, Keys, ResMgr, constants
 from debug_utils import LOG_DEBUG
 from PlayerEvents import g_playerEvents
 from gui import g_mouseEventHandlers, InputHandler
@@ -39,7 +31,7 @@ _Q_CHECK_DELAY = 0.0
 
 class _execute_after_hangar_space_inited(object):
     hangarSpace = dependency.descriptor(IHangarSpace)
-    __slots__ = ('__queue',)
+    __slots__ = ('__queue', )
 
     def __init__(self):
         self.__queue = Queue()
@@ -75,11 +67,17 @@ class HangarVideoCameraController(object):
     appLoader = dependency.descriptor(IAppLoader)
 
     def __init__(self):
+        self.__eventManager = em = Event.EventManager()
         self.__videoCamera = None
         self.__enabled = False
         self.__lastCameraName = None
         self.__videoCamera = None
+        self.onEnabledChange = Event.SafeEvent(em)
         return
+
+    @property
+    def isEnabled(self):
+        return self.__enabled
 
     def init(self):
         if not IS_DEVELOPMENT:
@@ -99,31 +97,36 @@ class HangarVideoCameraController(object):
             return
 
     def destroy(self):
-        if self.__videoCamera is None:
-            return
-        else:
+        self.__eventManager.clear()
+        if self.__videoCamera is not None:
             self.__videoCamera.destroy()
-            InputHandler.g_instance.onKeyDown -= self.handleKeyEvent
-            InputHandler.g_instance.onKeyUp -= self.handleKeyEvent
-            g_mouseEventHandlers.discard(self.handleMouseEvent)
-            return
+        InputHandler.g_instance.onKeyDown -= self.handleKeyEvent
+        InputHandler.g_instance.onKeyUp -= self.handleKeyEvent
+        g_mouseEventHandlers.discard(self.handleMouseEvent)
+        return
 
     def handleKeyEvent(self, event):
         if self.__videoCamera is None:
             return
         else:
             if BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and event.isKeyDown() and event.key == Keys.KEY_F3:
-                self.__enabled = not self.__enabled
-                if self.__enabled:
+                self.__setEnabled(not self.isEnabled)
+                if self.isEnabled:
                     self.__enableVideoCamera()
                 else:
                     self.__disableVideoCamera()
-            return self.__videoCamera.handleKeyEvent(event.key, event.isKeyDown()) if self.__enabled else False
+            if self.isEnabled:
+                return self.__videoCamera.handleKeyEvent(event.key, event.isKeyDown())
+            return False
+
+    def __setEnabled(self, enabled):
+        self.__enabled = enabled
+        self.onEnabledChange(self.__enabled)
 
     def __enableVideoCamera(self):
         playerVehicle = self.hangarSpace.space.getVehicleEntity()
         if playerVehicle is not None and playerVehicle.state != CameraMovementStates.ON_OBJECT:
-            self.__enabled = False
+            self.__setEnabled(False)
             return
         else:
             cameraManager = CGF.getManager(self.hangarSpace.spaceID, HangarCameraManager)
@@ -150,7 +153,9 @@ class HangarVideoCameraController(object):
         if self.__videoCamera is None:
             return
         else:
-            return self.__videoCamera.handleMouseEvent(event.dx, event.dy, event.dz) if self.__enabled else False
+            if self.isEnabled:
+                return self.__videoCamera.handleMouseEvent(event.dx, event.dy, event.dz)
+            return False
 
 
 class HangarSpace(IHangarSpace):
@@ -200,12 +205,22 @@ class HangarSpace(IHangarSpace):
         return
 
     @property
+    def videoCameraController(self):
+        return self.__videoCameraController
+
+    @property
     def space(self):
-        return self.__space if self.spaceInited else None
+        if self.spaceInited:
+            return self.__space
+        else:
+            return
 
     @property
     def spaceID(self):
-        return self.__space.getSpaceID() if self.__space else None
+        if self.__space:
+            return self.__space.getSpaceID()
+        else:
+            return
 
     @property
     def inited(self):
@@ -229,14 +244,23 @@ class HangarSpace(IHangarSpace):
 
     @property
     def spacePath(self):
-        return None if self.__space is None else self.__space.spacePath
+        if self.__space is None:
+            return
+        else:
+            return self.__space.spacePath
 
     @property
     def visibilityMask(self):
-        return None if self.__space is None else self.__space.visibilityMask
+        if self.__space is None:
+            return
+        else:
+            return self.__space.visibilityMask
 
     def spaceLoading(self):
-        return self.__space.spaceLoading() if self.__space is not None else False
+        if self.__space is not None:
+            return self.__space.spaceLoading()
+        else:
+            return False
 
     def getAnchorParams(self, slotId, areaId, regionId):
         return self.__space.getAnchorParams(slotId, areaId, regionId)
@@ -287,13 +311,13 @@ class HangarSpace(IHangarSpace):
         else:
             self.onSpaceRefresh()
             if not self.__spaceInited and self.__space.spaceLoading():
-                LOG_DEBUG('HangarSpace::refreshSpace(isPremium={0!r:s}) - is delayed until space load is done'.format(isPremium))
+                LOG_DEBUG(('HangarSpace::refreshSpace(isPremium={0!r:s}) - is delayed until space load is done').format(isPremium))
                 if self.__delayedRefreshCallback is None:
                     self.__delayedRefreshCallback = BigWorld.callback(0.1, self.__delayedRefresh)
                 self.__delayedIsPremium = isPremium
                 self.__delayedForceRefresh = forceRefresh
                 return
-            LOG_DEBUG('HangarSpace::refreshSpace(isPremium={0!r:s})'.format(isPremium))
+            LOG_DEBUG(('HangarSpace::refreshSpace(isPremium={0!r:s})').format(isPremium))
             self.destroy()
             self.init(isPremium)
             self.__isSpacePremium = isPremium
@@ -375,18 +399,24 @@ class HangarSpace(IHangarSpace):
             self.__lastUpdatedVehicle = vehicle
 
     def getVehicleEntity(self):
-        return self.__space.getVehicleEntity() if self.__inited else None
+        if self.__inited:
+            return self.__space.getVehicleEntity()
 
     def getVehicleEntityAppearance(self):
         entity = self.getVehicleEntity()
-        return entity.appearance if entity is not None else None
+        if entity is not None:
+            return entity.appearance
+        else:
+            return
 
     def updateVehicleOutfit(self, outfit):
         if self.__inited:
             self.__space.updateVehicleCustomization(outfit)
 
     def getCentralPointForArea(self, areaId):
-        return self.__space.getCentralPointForArea(areaId) if self.__inited else Math.Vector3(0.0)
+        if self.__inited:
+            return self.__space.getCentralPointForArea(areaId)
+        return Math.Vector3(0.0)
 
     @g_execute_after_hangar_space_inited
     def removeVehicle(self):

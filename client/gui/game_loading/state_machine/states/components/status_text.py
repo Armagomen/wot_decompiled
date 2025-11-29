@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/state_machine/states/components/status_text.py
-import typing
-import game_loading_bindings
+import typing, game_loading_bindings
 from frameworks.state_machine import StateFlags, StateEvent
 from gui.game_loading import loggers
 from gui.game_loading.resources.consts import MilestonesTypes, Milestones

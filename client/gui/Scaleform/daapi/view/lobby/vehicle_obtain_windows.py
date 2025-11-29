@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_obtain_windows.py
 from collections import namedtuple
 from soft_exception import SoftException
 import constants
@@ -41,10 +39,7 @@ class _TABS(CONST_CONTAINER):
     TRADE = 1
 
 
-VehicleBuyWindowState = namedtuple('VehicleBuyWindowState', ('buyAmmo',
- 'buySlot',
- 'crewType',
- 'rentID'))
+VehicleBuyWindowState = namedtuple('VehicleBuyWindowState', ('buyAmmo', 'buySlot', 'crewType', 'rentID'))
 
 class VehicleBuyWindow(VehicleBuyWindowMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -108,26 +103,26 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
         return
 
     def _getGuiFields(self, vehicle):
-        return {'title': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TITLE, vehiclename=vehicle.userName),
-         'submitBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_SUBMITBTN),
-         'cancelBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_CANCELBTN)}
+        return {'title': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TITLE, vehiclename=vehicle.userName), 
+           'submitBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_SUBMITBTN), 
+           'cancelBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_CANCELBTN)}
 
     def _isTradeIn(self):
         return self.tradeIn.isEnabled() and self.vehicle.canTradeIn
 
     def __getTradeInGuiFields(self, vehicle):
-        return {'tradeInTitle': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_TITLE, vehiclename=vehicle.userName),
-         'tradeInSubmitBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_SUBMITBTN),
-         'tradeInCancelBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_CANCELBTN)}
+        return {'tradeInTitle': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_TITLE, vehiclename=vehicle.userName), 
+           'tradeInSubmitBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_SUBMITBTN), 
+           'tradeInCancelBtnLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_CANCELBTN)}
 
     def _getContentFields(self, vehicle):
         slotCheckboxTooltip = None
         if self.itemsCache.items.inventory.getFreeSlots(self.itemsCache.items.stats.vehicleSlots) <= 0:
             slotCheckboxTooltip = makeTooltip(TOOLTIPS.CONTENTBUYVIEW_SLOTCHECKBOX_NOTENOUGHSLOTS_HEADER, TOOLTIPS.CONTENTBUYVIEW_SLOTCHECKBOX_NOTENOUGHSLOTS_BODY)
-        return {'slotCheckboxTooltip': slotCheckboxTooltip,
-         'priceLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_PRICELABEL, vehiclename=vehicle.shortUserName),
-         'crewCheckbox': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TANKMENCHECKBOX),
-         'warningMsg': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_WARNING) if constants.IS_KOREA else None}
+        return {'slotCheckboxTooltip': slotCheckboxTooltip, 
+           'priceLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_PRICELABEL, vehiclename=vehicle.shortUserName), 
+           'crewCheckbox': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TANKMENCHECKBOX), 
+           'warningMsg': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_WARNING) if constants.IS_KOREA else None}
 
     def __getTradeInContentFields(self, vehicle):
         if self.selectedTab == _TABS.UNDEFINED:
@@ -135,13 +130,13 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
                 self.selectedTab = _TABS.BUY
             else:
                 self.selectedTab = _TABS.TRADE
-        return {'tradeInPriceLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_PRICELABEL, vehiclename=vehicle.shortUserName),
-         'tradeInCrewCheckbox': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_TANKMENCHECKBOX),
-         'tradeInVehiclePrices': self._getVehiclePrice(vehicle).price.toMoneyTuple(),
-         'tradeInVehiclePricesActionData': self._getItemPriceActionData(vehicle),
-         'tradeInStudyLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_STUDYLABEL, count=text_styles.stats(str(len(vehicle.crew)))),
-         'hasTradeOffVehicles': self.tradeIn.getTradeInDiscounts(vehicle) is not None,
-         'selectedTab': self.selectedTab}
+        return {'tradeInPriceLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_PRICELABEL, vehiclename=vehicle.shortUserName), 
+           'tradeInCrewCheckbox': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_TANKMENCHECKBOX), 
+           'tradeInVehiclePrices': self._getVehiclePrice(vehicle).price.toMoneyTuple(), 
+           'tradeInVehiclePricesActionData': self._getItemPriceActionData(vehicle), 
+           'tradeInStudyLabel': i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_STUDYLABEL, count=text_styles.stats(str(len(vehicle.crew)))), 
+           'hasTradeOffVehicles': self.tradeIn.getTradeInDiscounts(vehicle) is not None, 
+           'selectedTab': self.selectedTab}
 
     def _isSubmitBtnEnabled(self):
         if self.vehicle.isPurchased:
@@ -166,9 +161,9 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
             self.onWindowClose()
         else:
             isTradeIn = self._isTradeIn()
-            initData = {'headerData': self._getOptainHeaderData(self.vehicle),
-             'isTradeIn': isTradeIn,
-             'contentData': self._getBuyContentData(self.vehicle, stats, isTradeIn)}
+            initData = {'headerData': self._getOptainHeaderData(self.vehicle), 
+               'isTradeIn': isTradeIn, 
+               'contentData': self._getBuyContentData(self.vehicle, stats, isTradeIn)}
             initData.update(self._getContentLinkageFields())
             initData.update(self._getGuiFields(self.vehicle))
             if isTradeIn:
@@ -179,8 +174,8 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
     def _getContentLinkageFields(self):
         tradeInUI = VEHICLE_BUY_WINDOW_ALIASES.CONTENT_BUY_TRADE_IN_CONTAINER_VIEW_UI
         buyUI = VEHICLE_BUY_WINDOW_ALIASES.CONTENT_BUY_VIEW_UI
-        return {'contentLinkage': tradeInUI if self._isTradeIn() else buyUI,
-         'isContentDAAPI': False}
+        return {'contentLinkage': tradeInUI if self._isTradeIn() else buyUI, 
+           'isContentDAAPI': False}
 
     def _getOptainHeaderData(self, vehicle):
         from helpers import int2roman
@@ -189,16 +184,16 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
             description = TOOLTIPS.tankcaruseltooltip_vehicletype_elite(vehicle.type)
         else:
             description = DIALOGS.vehicleselldialog_vehicletype(vehicle.type)
-        return {'userName': vehicle.userName,
-         'levelStr': levelStr,
-         'description': description,
-         'intCD': vehicle.intCD,
-         'icon': vehicle.icon,
-         'level': vehicle.level,
-         'isElite': vehicle.isElite,
-         'isPremium': vehicle.isPremium,
-         'type': vehicle.type,
-         'nationID': self.nationID}
+        return {'userName': vehicle.userName, 
+           'levelStr': levelStr, 
+           'description': description, 
+           'intCD': vehicle.intCD, 
+           'icon': vehicle.icon, 
+           'level': vehicle.level, 
+           'isElite': vehicle.isElite, 
+           'isPremium': vehicle.isPremium, 
+           'type': vehicle.type, 
+           'nationID': self.nationID}
 
     def _getBuyContentData(self, vehicle, stats, isTradeIn):
         shop = self.itemsCache.items.shop
@@ -216,7 +211,9 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
             slotActionPriceData = packActionTooltipData(ACTION_TOOLTIPS_TYPE.ECONOMICS, 'slotsPrices', True, slotPrice, slotDefaultPrice)
         tankmenTotalLabel = i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TANKMENTOTALLABEL, count=str(tankMenCount))
         studyData = []
-        for index, (tCost, defTCost, typeID) in enumerate(zip(shop.getTankmanCostWithGoodyDiscount(vehicle.level), shopDefaults.tankmanCost, ('free', 'school', 'academy'))):
+        for index, (tCost, defTCost, typeID) in enumerate(zip(shop.getTankmanCostWithGoodyDiscount(vehicle.level), shopDefaults.tankmanCost, ('free',
+                                                                                                                                              'school',
+                                                                                                                                              'academy'))):
             if tCost['isPremium']:
                 currency = Currency.GOLD
             else:
@@ -232,25 +229,25 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
             studyPriceActionData = None
             if price != defPrice:
                 studyPriceActionData = packActionTooltipData(ACTION_TOOLTIPS_TYPE.ECONOMICS, '%sTankmanCost' % currency, True, totalPrice, totalDefPrice)
-            studyData.insert(0, {'id': typeID,
-             'price': price,
-             'crewType': index,
-             'actionPrice': studyPriceActionData,
-             'label': '%d%% - %s' % (tCost['roleLevel'], formatedPrice)})
+            studyData.insert(0, {'id': typeID, 
+               'price': price, 
+               'crewType': index, 
+               'actionPrice': studyPriceActionData, 
+               'label': '%d%% - %s' % (tCost['roleLevel'], formatedPrice)})
 
-        initData = {'tankmenTotalLabel': tankmenTotalLabel,
-         'vehiclePrices': self._getVehiclePrice(vehicle).price.toMoneyTuple(),
-         'vehiclePricesActionData': vehiclePricesActionData,
-         'isRentable': vehicle.isRentable,
-         'rentDataDD': self._getRentData(vehicle, vehiclePricesActionData),
-         'ammoPrice': ammoPrice.price.getSignValue(Currency.CREDITS),
-         'ammoActionPriceData': ammoActionPriceData,
-         'slotPrice': slotPrice,
-         'slotActionPriceData': slotActionPriceData,
-         'isStudyDisabled': vehicle.hasCrew,
-         'isNoAmmo': not vehicle.hasShells,
-         'studyData': studyData,
-         'nation': self.nationID}
+        initData = {'tankmenTotalLabel': tankmenTotalLabel, 
+           'vehiclePrices': self._getVehiclePrice(vehicle).price.toMoneyTuple(), 
+           'vehiclePricesActionData': vehiclePricesActionData, 
+           'isRentable': vehicle.isRentable, 
+           'rentDataDD': self._getRentData(vehicle, vehiclePricesActionData), 
+           'ammoPrice': ammoPrice.price.getSignValue(Currency.CREDITS), 
+           'ammoActionPriceData': ammoActionPriceData, 
+           'slotPrice': slotPrice, 
+           'slotActionPriceData': slotActionPriceData, 
+           'isStudyDisabled': vehicle.hasCrew, 
+           'isNoAmmo': not vehicle.hasShells, 
+           'studyData': studyData, 
+           'nation': self.nationID}
         initData.update(self._getContentFields(vehicle))
         if isTradeIn:
             initData.update(self.__getTradeInContentFields(vehicle))
@@ -283,9 +280,12 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
     def _getCrewPrice(self):
         if self.__state.crewType != -1:
             shop = self.itemsCache.items.shop
-            costs = (shop.getTankmanCostWithGoodyDiscount(self.vehicle.level)[self.__state.crewType], shop.defaults.tankmanCost[self.__state.crewType])
+            costs = (
+             shop.getTankmanCostWithGoodyDiscount(self.vehicle.level)[self.__state.crewType],
+             shop.defaults.tankmanCost[self.__state.crewType])
             tankmanCount = len(self.vehicle.crew)
-            return ItemPrice(*[ Money(gold=cost[Currency.GOLD], credits=cost[Currency.CREDITS]) for cost in costs ]) * tankmanCount
+            return ItemPrice(*[ Money(gold=cost[Currency.GOLD], credits=cost[Currency.CREDITS]) for cost in costs
+                              ]) * tankmanCount
         return ITEM_PRICE_EMPTY
 
     def _getVehiclePrice(self, vehicle):
@@ -296,7 +296,10 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
         return ItemPrice(price, defPrice)
 
     def _getItemPriceActionData(self, vehicle):
-        return packItemActionTooltipData(vehicle) if vehicle.buyPrices.itemPrice.isActionPrice() else None
+        if vehicle.buyPrices.itemPrice.isActionPrice():
+            return packItemActionTooltipData(vehicle)
+        else:
+            return
 
     def _getRentData(self, vehicle, vehiclePricesActionData):
         result = []
@@ -316,15 +319,15 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
                 label = i18n.makeString(MENU.SHOP_MENU_VEHICLE_RENT_CYCLE, cycle=packageID, seasonType=seasonType)
                 enabled = True
             else:
-                raise SoftException('Unknown rentType=[{}] in rentPackages ID [{}]!'.format(rentType, rentID))
+                raise SoftException(('Unknown rentType=[{}] in rentPackages ID [{}]!').format(rentType, rentID))
             actionRentPrice = None
             if rentPackage['rentPrice'] != rentPackage['defaultRentPrice']:
                 actionRentPrice = packItemRentActionTooltipData(vehicle, rentPackage)
-            result.append({'itemId': rentID,
-             'label': label,
-             'price': rentPackage['rentPrice'].toMoneyTuple(),
-             'enabled': enabled,
-             'actionPrice': actionRentPrice})
+            result.append({'itemId': rentID, 
+               'label': label, 
+               'price': rentPackage['rentPrice'].toMoneyTuple(), 
+               'enabled': enabled, 
+               'actionPrice': actionRentPrice})
 
         result = self._addPriceBlock(result, vehicle, vehiclePricesActionData)
         selectedId = -1
@@ -333,15 +336,14 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
                 selectedId = ddItem['itemId']
                 break
 
-        return {'data': result,
-         'selectedId': selectedId}
+        return {'data': result, 'selectedId': selectedId}
 
     def _addPriceBlock(self, result, vehicle, vehiclePricesActionData):
-        result.append({'itemId': -1,
-         'label': i18n.makeString(MENU.SHOP_MENU_VEHICLE_RENT_FOREVER),
-         'price': vehicle.buyPrices.itemPrice.price.toMoneyTuple(),
-         'enabled': not vehicle.isDisabledForBuy and not vehicle.isHidden,
-         'actionPrice': vehiclePricesActionData})
+        result.append({'itemId': -1, 
+           'label': i18n.makeString(MENU.SHOP_MENU_VEHICLE_RENT_FOREVER), 
+           'price': vehicle.buyPrices.itemPrice.price.toMoneyTuple(), 
+           'enabled': not vehicle.isDisabledForBuy and not vehicle.isHidden, 
+           'actionPrice': vehiclePricesActionData})
         return result
 
     def _getObtainVehicleProcessor(self, vehicle, data):
@@ -381,9 +383,8 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
                 operations.append('pairModifications')
             if operations:
                 operationsStr = [ i18n.makeString('#dialogs:%s/message/%s' % (confirmationType, o)) for o in operations ]
-                addition = i18n.makeString('#dialogs:%s/message/addition' % confirmationType, operations=', '.join(operationsStr))
-            ctx = {'vehName': neutral(tradeOffVehicle.userName),
-             'addition': addition}
+                addition = i18n.makeString('#dialogs:%s/message/addition' % confirmationType, operations=(', ').join(operationsStr))
+            ctx = {'vehName': neutral(tradeOffVehicle.userName), 'addition': addition}
             result = yield showI18nConfirmDialog(confirmationType, meta=I18nConfirmDialogMeta(confirmationType, ctx, ctx), focusedID=DIALOG_BUTTON_ID.SUBMIT)
             if not result:
                 return
@@ -421,9 +422,9 @@ class VehicleBuyWindow(VehicleBuyWindowMeta):
         tradeOffVehicleStatus = i18n.makeString(DIALOGS.BUYVEHICLEWINDOW_TRADEIN_INFO_SAVING, cost=tradeOffVehicleHtml)
         tradeOffVehicleVo = makeVehicleVO(self.tradeInVehicleToSell)
         tradeOffVehicleVo['actionPrice'] = self._getItemPriceActionData(self.tradeInVehicleToSell)
-        tradeOffData = {'vehicleVo': tradeOffVehicleVo,
-         'price': self.tradeInVehicleToSell.tradeOffPrice.getSignValue(Currency.GOLD),
-         'status': tradeOffVehicleStatus}
+        tradeOffData = {'vehicleVo': tradeOffVehicleVo, 
+           'price': self.tradeInVehicleToSell.tradeOffPrice.getSignValue(Currency.GOLD), 
+           'status': tradeOffVehicleStatus}
         self.as_updateTradeOffVehicleS(tradeOffData)
         self.as_setTradeInWarningMessagegeS(i18n.makeString(DIALOGS.TRADEINCONFIRMATION_MESSAGE, vehName=self.tradeInVehicleToSell.userName, addition=''))
 
@@ -444,11 +445,11 @@ class VehicleRestoreWindow(VehicleBuyWindow):
 
     def _addPriceBlock(self, result, vehicle, vehiclePricesActionData):
         disabled = not vehicle.isRestoreAvailable() or constants.IS_CHINA and vehicle.rentalIsActive
-        result.insert(0, {'itemId': -1,
-         'label': i18n.makeString(MENU.SHOP_MENU_VEHICLE_RESTORE),
-         'price': vehicle.restorePrice.toMoneyTuple(),
-         'enabled': not disabled,
-         'actionPrice': vehiclePricesActionData})
+        result.insert(0, {'itemId': -1, 
+           'label': i18n.makeString(MENU.SHOP_MENU_VEHICLE_RESTORE), 
+           'price': vehicle.restorePrice.toMoneyTuple(), 
+           'enabled': not disabled, 
+           'actionPrice': vehiclePricesActionData})
         return result
 
     def _getObtainVehicleProcessor(self, vehicle, data):
@@ -458,18 +459,18 @@ class VehicleRestoreWindow(VehicleBuyWindow):
         return ItemPrice(vehicle.restorePrice, vehicle.restorePrice)
 
     def _getItemPriceActionData(self, vehicle):
-        return None
+        return
 
     def _getGuiFields(self, vehicle):
-        return {'title': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_TITLE, vehiclename=vehicle.userName),
-         'cancelBtnLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_CANCELBTN),
-         'submitBtnLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_SUBMITBTN)}
+        return {'title': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_TITLE, vehiclename=vehicle.userName), 
+           'cancelBtnLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_CANCELBTN), 
+           'submitBtnLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_SUBMITBTN)}
 
     def _getContentFields(self, vehicle):
         vehicleName = vehicle.shortUserName if vehicle.isRentable else vehicle.userName
-        return {'priceLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_PRICELABEL, vehiclename=vehicleName),
-         'crewCheckbox': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_TANKMENCHECKBOX),
-         'warningMsg': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_WARNING) if constants.IS_KOREA else None}
+        return {'priceLabel': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_PRICELABEL, vehiclename=vehicleName), 
+           'crewCheckbox': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_TANKMENCHECKBOX), 
+           'warningMsg': i18n.makeString(DIALOGS.RESTOREVEHICLEDIALOG_WARNING) if constants.IS_KOREA else None}
 
     def _isTradeIn(self):
         return False

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/notification/decorators.py
 from comp7_light.skeletons.gui.game_control import IComp7LightProgressionController
 from helpers import dependency
 from notification.decorators import MessageDecorator

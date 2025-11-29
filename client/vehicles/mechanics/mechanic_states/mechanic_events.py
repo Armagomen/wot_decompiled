@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_states/mechanic_events.py
-import typing
-import weakref
+import typing, weakref
 from Event import LateEvent, SafeEvent
 from gui.shared.utils.TimeInterval import TimeIntervalEvent
 from vehicles.components.component_events import ComponentEvents

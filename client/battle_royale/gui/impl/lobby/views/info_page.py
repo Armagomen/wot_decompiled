@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/info_page.py
 import itertools
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.Scaleform.genConsts.BATTLEROYALE_ALIASES import BATTLEROYALE_ALIASES
@@ -23,7 +21,7 @@ _rBattleRoyale = R.strings.battle_royale_infopage.battleTypes
 class InfoPage(ViewImpl):
     __battleRoyaleCtrl = dependency.descriptor(IBattleRoyaleController)
     __battlePassCtrl = dependency.descriptor(IBattlePassController)
-    __slots__ = ('_isModeSelector',)
+    __slots__ = ('_isModeSelector', )
 
     def __init__(self, layoutID, isModeSelector):
         settings = ViewSettings(layoutID)
@@ -40,7 +38,7 @@ class InfoPage(ViewImpl):
         self.__updateModel()
 
     def __updateModel(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__fillSeasonDateModel(tx)
             self.__fillPlatoonTooltipData(tx)
             tx.setIsModeSelector(self._isModeSelector)
@@ -109,12 +107,14 @@ class InfoPage(ViewImpl):
     def __createCellName(points, previousLevel):
         cell = GameModeCellModel()
         if points.label - previousLevel > 0:
-            numRange = (previousLevel, points.label)
-            cell.setText(backport.text(_rBattleRoyale.text.places(), place='-'.join(map(str, numRange))))
+            numRange = (
+             previousLevel, points.label)
+            cell.setText(backport.text(_rBattleRoyale.text.places(), place=('-').join(map(str, numRange))))
         else:
             cell.setText(backport.text(_rBattleRoyale.text.place(), place=points.label))
         previousLevel = points.label + 1
-        return (cell, previousLevel)
+        return (
+         cell, previousLevel)
 
     @staticmethod
     def __createEmptyCell():

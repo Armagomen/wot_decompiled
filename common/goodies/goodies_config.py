@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/goodies_config.py
-import time
-import calendar
-import datetime
-import XmlConfigReader
-import helpers_common
+import time, calendar, datetime, XmlConfigReader, helpers_common
 from debug_utils import LOG_WARNING
 from goodie_constants import GOODIE_VARIETY
 from . import goodie_helpers
@@ -23,14 +17,15 @@ def _readGoodieResource(section):
         v = section.readString(n, '')
         if v:
             value, isPercentage = XmlConfigReader.parsePercentage(v)
-            return (t, value, isPercentage)
+            return (
+             t, value, isPercentage)
 
     raise SoftException('Goodie without any resources')
 
 
 def _readGoodieTarget(reader, subsectionName):
     for n, t in goodie_helpers.GOODIE_TEXT_TO_TARGET.iteritems():
-        section = reader.getSubsection('/'.join((subsectionName, n)))
+        section = reader.getSubsection(('/').join((subsectionName, n)))
         if section:
             name = section.readString('name', '')
             if name == '':
@@ -41,7 +36,9 @@ def _readGoodieTarget(reader, subsectionName):
             if limit == 0:
                 limit = None
             resource = _readGoodieResource(section)
-            return ((t, name, limit), resource)
+            return (
+             (
+              t, name, limit), resource)
 
     return
 
@@ -90,9 +87,7 @@ def _readGoodies(reader, subsectionName):
     if section is None:
         return {}
     else:
-        goodies = {'goodies': {},
-         'prices': {},
-         'notInShop': set()}
+        goodies = {'goodies': {}, 'prices': {}, 'notInShop': set()}
         for packet_name, packet in section.items():
             v, uid = (None, -1)
             if '_' in packet_name:
@@ -119,26 +114,18 @@ def _readGoodies(reader, subsectionName):
                 useby = None
             else:
                 useby = calendar.timegm(datetime.datetime.strptime(useby, '%d.%m.%Y %H:%M:%S').timetuple())
-            condition = _readGoodieCondition(reader.getSubsection('/'.join((subsectionName, packet_name, 'condition'))))
-            target, resource = _readGoodieTarget(reader, '/'.join((subsectionName, packet_name)))
-            price = _readPrice(reader, '/'.join((subsectionName, packet_name)))
+            condition = _readGoodieCondition(reader.getSubsection(('/').join((subsectionName, packet_name, 'condition'))))
+            target, resource = _readGoodieTarget(reader, ('/').join((subsectionName, packet_name)))
+            price = _readPrice(reader, ('/').join((subsectionName, packet_name)))
             _validator(uid, variety, resource, price)
-            goodies['goodies'][uid] = (variety,
-             target,
-             enabled,
-             lifetime,
-             useby,
-             counter,
-             autostart,
-             condition,
-             resource,
-             expireAfter,
-             roundToEndOfGameDay)
+            goodies['goodies'][uid] = (
+             variety, target, enabled, lifetime, useby, counter,
+             autostart, condition, resource, expireAfter, roundToEndOfGameDay)
             if price is not None:
                 goodies['prices'][uid] = price
             if notInShop or price is None:
                 goodies['notInShop'].add(uid)
-            if useby is not None and useby < time.time():
+            elif useby is not None and useby < time.time():
                 LOG_WARNING('Expired goodie is removed from the shop %d' % uid)
                 goodies['notInShop'].add(uid)
 

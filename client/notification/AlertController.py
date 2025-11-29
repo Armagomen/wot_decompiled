@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/notification/AlertController.py
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.SystemMessageMeta import SystemMessageMeta
 from notification.BaseMessagesController import BaseMessagesController

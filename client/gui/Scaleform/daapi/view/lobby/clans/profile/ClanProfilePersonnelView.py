@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfilePersonnelView.py
 from account_helpers import getAccountDatabaseID
 from adisp import adisp_process
 from constants import CLAN_MEMBER_FLAGS
@@ -29,7 +27,8 @@ from messenger.storage import storage_getter
 OPEN_INVITES_ACTION_ID = 'openInvites'
 OPEN_CLAN_CHANNEL_ACTION_ID = 'openClanChannel'
 _UNAVAILABLE_EFFICIENCY_VALUE = -1
-_CLAN_MEMBERS_SORT_INDEXES = (CLAN_MEMBER_FLAGS.RESERVIST,
+_CLAN_MEMBERS_SORT_INDEXES = (
+ CLAN_MEMBER_FLAGS.RESERVIST,
  CLAN_MEMBER_FLAGS.RECRUIT,
  CLAN_MEMBER_FLAGS.PRIVATE,
  CLAN_MEMBER_FLAGS.JUNIOR,
@@ -52,24 +51,24 @@ class _SORT_IDS(object):
 
 
 def _packStat(description, tooltip, icon, isEnabled, text):
-    return {'type': HeaderItemsTypes.COMMON,
-     'text': text,
-     'description': _ms(description),
-     'iconPath': ProfileUtils.getIconPath(icon),
-     'tooltip': tooltip,
-     'enabled': isEnabled}
+    return {'type': HeaderItemsTypes.COMMON, 
+       'text': text, 
+       'description': _ms(description), 
+       'iconPath': ProfileUtils.getIconPath(icon), 
+       'tooltip': tooltip, 
+       'enabled': isEnabled}
 
 
 def _packColumn(columdID, label, buttonWidth, tooltip, icon='', sortOrder=-1, showSeparator=True, defaultSortDirection='descending'):
-    return {'id': columdID,
-     'label': _ms(label),
-     'iconSource': icon,
-     'buttonWidth': buttonWidth,
-     'toolTip': tooltip,
-     'sortOrder': sortOrder,
-     'defaultSortDirection': defaultSortDirection,
-     'buttonHeight': 34,
-     'showSeparator': showSeparator}
+    return {'id': columdID, 
+       'label': _ms(label), 
+       'iconSource': icon, 
+       'buttonWidth': buttonWidth, 
+       'toolTip': tooltip, 
+       'sortOrder': sortOrder, 
+       'defaultSortDirection': defaultSortDirection, 
+       'buttonHeight': 34, 
+       'showSeparator': showSeparator}
 
 
 def _getAvgStringValue(dataList, key, formatter=None):
@@ -80,12 +79,15 @@ def _getAvgStringValue(dataList, key, formatter=None):
         if isValueAvailable(getter):
             count += 1
             total += getter()
-        return (False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
+        else:
+            return (
+             False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
 
     if count > 0:
         value = float(total) / count
         return (True, formatter(value) if formatter else value)
-    return (False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
+    return (
+     False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
 
 
 def _getWeighedAvgStringValue(dataList, key, weightKey, formatter=None):
@@ -100,7 +102,9 @@ def _getWeighedAvgStringValue(dataList, key, weightKey, formatter=None):
             vals.append(valueGetter())
             weights.append(weight)
             weightsSum += weight
-        return (False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
+        else:
+            return (
+             False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
 
     if weightsSum == 0:
         return (False, clans_fmts.DUMMY_UNAVAILABLE_DATA)
@@ -117,7 +121,7 @@ class ClanProfilePersonnelView(ClanProfilePersonnelViewMeta):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     @adisp_process
     def setClanDossier(self, clanDossier):
@@ -137,22 +141,24 @@ class ClanProfilePersonnelView(ClanProfilePersonnelViewMeta):
         self._updateClanInfo(clanInfo)
         membersCount = len(members)
         self.__membersDP.buildList(members, syncUserInfo=True)
-        statistics = [_packStat(CLANS.PERSONNELVIEW_CLANSTATS_AVGPERSONALRATING, CLANS.PERSONNELVIEW_CLANSTATS_AVGPERSONALRATING_TOOLTIP, 'avgPersonalRating40x32.png', *self.__membersDP.getAvgGlobalRating()),
+        statistics = [
+         _packStat(CLANS.PERSONNELVIEW_CLANSTATS_AVGPERSONALRATING, CLANS.PERSONNELVIEW_CLANSTATS_AVGPERSONALRATING_TOOLTIP, 'avgPersonalRating40x32.png', *self.__membersDP.getAvgGlobalRating()),
          _packStat(CLANS.PERSONNELVIEW_CLANSTATS_AVGBATTLESCOUNT, CLANS.PERSONNELVIEW_CLANSTATS_AVGBATTLESCOUNT_TOOLTIP, 'avgBattlesCount40x32.png', *self.__membersDP.getAvgBattlesCount()),
          _packStat(CLANS.PERSONNELVIEW_CLANSTATS_AVGWINS, CLANS.PERSONNELVIEW_CLANSTATS_AVGWINS_TOOLTIP, 'avgWins40x32.png', *self.__membersDP.getAvgPerformanceBattles()),
          _packStat(CLANS.PERSONNELVIEW_CLANSTATS_AVGEXP, CLANS.PERSONNELVIEW_CLANSTATS_AVGEXP_TOOLTIP, 'avgExp40x32.png', *self.__membersDP.getAvgXp())]
-        headers = [_packColumn(_SORT_IDS.USER_NAME, _ms(CLANS.PERSONNELVIEW_TABLE_PLAYER, count=text_styles.stats(str(membersCount)), max=str(MAX_MEMBERS_IN_CLAN)), 223, CLANS.PERSONNELVIEW_TABLE_PLAYER_TOOLTIP, defaultSortDirection='ascending'),
+        headers = [
+         _packColumn(_SORT_IDS.USER_NAME, _ms(CLANS.PERSONNELVIEW_TABLE_PLAYER, count=text_styles.stats(str(membersCount)), max=str(MAX_MEMBERS_IN_CLAN)), 223, CLANS.PERSONNELVIEW_TABLE_PLAYER_TOOLTIP, defaultSortDirection='ascending'),
          _packColumn(_SORT_IDS.POST, CLANS.PERSONNELVIEW_TABLE_POST, 275, CLANS.PERSONNELVIEW_TABLE_POST_TOOLTIP),
          _packColumn(_SORT_IDS.RATING, '', 100, CLANS.PERSONNELVIEW_TABLE_PERSONALRATING_TOOLTIP, RES_ICONS.MAPS_ICONS_STATISTIC_RATING24),
          _packColumn(_SORT_IDS.BATTLES_COUNT, '', 100, CLANS.PERSONNELVIEW_TABLE_BATTLESCOUNT_TOOLTIP, RES_ICONS.MAPS_ICONS_STATISTIC_BATTLES24),
          _packColumn(_SORT_IDS.BATTLES_PERFORMANCE, '', 100, CLANS.PERSONNELVIEW_TABLE_WINS_TOOLTIP, RES_ICONS.MAPS_ICONS_STATISTIC_WINS24),
          _packColumn(_SORT_IDS.AWG_XP, '', 100, CLANS.PERSONNELVIEW_TABLE_AVGEXP_TOOLTIP, RES_ICONS.MAPS_ICONS_STATISTIC_AVGEXP24),
          _packColumn(_SORT_IDS.DAYS_IN_CLAN, '', 100, CLANS.PERSONNELVIEW_TABLE_DAYSINCLAN_TOOLTIP, RES_ICONS.MAPS_ICONS_STATISTIC_DAYSINCLAN24, showSeparator=False)]
-        self.as_setDataS({'title': text_styles.standard(CLANS.PERSONNELVIEW_TITLE),
-         'tableHeaders': headers,
-         'statistics': statistics,
-         'defaultSortField': _SORT_IDS.POST,
-         'defaultSortDirection': 'descending'})
+        self.as_setDataS({'title': text_styles.standard(CLANS.PERSONNELVIEW_TITLE), 
+           'tableHeaders': headers, 
+           'statistics': statistics, 
+           'defaultSortField': _SORT_IDS.POST, 
+           'defaultSortDirection': 'descending'})
         self._updateHeaderState()
         self._hideWaiting()
 
@@ -211,13 +217,13 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
         self.__mapping = {}
         self.__selectedID = None
         self.__accountsList = []
-        self.__sortMapping = {_SORT_IDS.USER_NAME: lambda memberData: self.__getMemberName(memberData).lower(),
-         _SORT_IDS.POST: self.__getMemberRole,
-         _SORT_IDS.RATING: self.__getMemberRating,
-         _SORT_IDS.BATTLES_COUNT: self.__getMemberBattlesCount,
-         _SORT_IDS.BATTLES_PERFORMANCE: self.__getMemberBattlesPerformance,
-         _SORT_IDS.AWG_XP: self.__getMemberAwgExp,
-         _SORT_IDS.DAYS_IN_CLAN: self.__getMemberDaysInClan}
+        self.__sortMapping = {_SORT_IDS.USER_NAME: lambda memberData: self.__getMemberName(memberData).lower(), 
+           _SORT_IDS.POST: self.__getMemberRole, 
+           _SORT_IDS.RATING: self.__getMemberRating, 
+           _SORT_IDS.BATTLES_COUNT: self.__getMemberBattlesCount, 
+           _SORT_IDS.BATTLES_PERFORMANCE: self.__getMemberBattlesPerformance, 
+           _SORT_IDS.AWG_XP: self.__getMemberAwgExp, 
+           _SORT_IDS.DAYS_IN_CLAN: self.__getMemberDaysInClan}
         return
 
     def setFlashObject(self, movieClip, autoPopulate=True, setScript=True):
@@ -229,7 +235,7 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
 
     @storage_getter('users')
     def userStorage(self):
-        return None
+        return
 
     @property
     def collection(self):
@@ -240,7 +246,7 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
         return self._list
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self._list = []
@@ -254,7 +260,9 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
         self.destroy()
 
     def getSelectedIdx(self):
-        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
+        if self.__selectedID in self.__mapping:
+            return self.__mapping[self.__selectedID]
+        return -1
 
     def setSelectedID(self, clanID):
         self.__selectedID = clanID
@@ -272,14 +280,16 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
     def buildList(self, accounts, syncUserInfo=False):
         self.clear()
         self.__accountsList = accounts
-        self._list = list((self._makeVO(acc) for acc in accounts))
+        self._list = list(self._makeVO(acc) for acc in accounts)
         if syncUserInfo:
             self.syncUsersInfo()
 
     def refreshItem(self, cache, clanDBID):
         isSelected = self.__selectedID == clanDBID
         self.buildList(cache)
-        return True if isSelected and clanDBID not in self.__mapping else False
+        if isSelected and clanDBID not in self.__mapping:
+            return True
+        return False
 
     def pyGetSelectedIdx(self):
         return self.getSelectedIdx()
@@ -316,17 +326,17 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
             userVO['userProps']['clanAbbrev'] = ''
         else:
             userVO = {'userProps': {'userName': self.__getMemberName(memberData)}}
-        return {'dbID': memberDBID,
-         'userName': self.__getMemberName(memberData),
-         'post': formatField(getter=memberData.getRoleString),
-         'postIcon': memberData.getRoleIcon(),
-         'personalRating': formatField(getter=memberData.getGlobalRating, formatter=backport.getIntegralFormat),
-         'battlesCount': formatField(getter=memberData.getBattlesCount, formatter=backport.getIntegralFormat),
-         'wins': formatField(getter=memberData.getBattlesPerformanceAvg, formatter=lambda x: backport.getNiceNumberFormat(x) + '%'),
-         'awgExp': formatField(getter=memberData.getBattleXpAvg, formatter=backport.getIntegralFormat),
-         'daysInClan': formatField(getter=memberData.getDaysInClan, formatter=backport.getIntegralFormat),
-         'canShowContextMenu': memberDBID != getAccountDatabaseID(),
-         'contactItem': userVO}
+        return {'dbID': memberDBID, 
+           'userName': self.__getMemberName(memberData), 
+           'post': formatField(getter=memberData.getRoleString), 
+           'postIcon': memberData.getRoleIcon(), 
+           'personalRating': formatField(getter=memberData.getGlobalRating, formatter=backport.getIntegralFormat), 
+           'battlesCount': formatField(getter=memberData.getBattlesCount, formatter=backport.getIntegralFormat), 
+           'wins': formatField(getter=memberData.getBattlesPerformanceAvg, formatter=lambda x: backport.getNiceNumberFormat(x) + '%'), 
+           'awgExp': formatField(getter=memberData.getBattleXpAvg, formatter=backport.getIntegralFormat), 
+           'daysInClan': formatField(getter=memberData.getDaysInClan, formatter=backport.getIntegralFormat), 
+           'canShowContextMenu': memberDBID != getAccountDatabaseID(), 
+           'contactItem': userVO}
 
     def _dispose(self):
         usersEvents = g_messengerEvents.users
@@ -357,7 +367,9 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
         return formatField(getter=memberData.getDbID, formatter=self.getUserName)
 
     def __getMemberRole(self, memberData):
-        return len(_CLAN_MEMBERS_SORT_INDEXES) if not isValueAvailable(memberData.getRole) else _CLAN_MEMBERS_SORT_INDEXES.index(memberData.getRole())
+        if not isValueAvailable(memberData.getRole):
+            return len(_CLAN_MEMBERS_SORT_INDEXES)
+        return _CLAN_MEMBERS_SORT_INDEXES.index(memberData.getRole())
 
     def __getMemberRating(self, memberData):
         return memberData.getGlobalRating()
@@ -366,10 +378,14 @@ class _ClanMembersDataProvider(SortableDAAPIDataProvider, UsersInfoHelper):
         return memberData.getBattlesCount()
 
     def __getMemberBattlesPerformance(self, memberData):
-        return memberData.getBattlesPerformanceAvg() if memberData.getBattlesCount() > 0 else _UNAVAILABLE_EFFICIENCY_VALUE
+        if memberData.getBattlesCount() > 0:
+            return memberData.getBattlesPerformanceAvg()
+        return _UNAVAILABLE_EFFICIENCY_VALUE
 
     def __getMemberAwgExp(self, memberData):
-        return memberData.getBattleXpAvg() if memberData.getBattlesCount() > 0 else _UNAVAILABLE_EFFICIENCY_VALUE
+        if memberData.getBattlesCount() > 0:
+            return memberData.getBattleXpAvg()
+        return _UNAVAILABLE_EFFICIENCY_VALUE
 
     def __getMemberDaysInClan(self, memberData):
         return memberData.getDaysInClan()

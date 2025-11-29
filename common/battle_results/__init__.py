@@ -1,31 +1,24 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/battle_results/__init__.py
 import importlib
 from DictPackers import Meta, MergeDictPacker
 from battle_pass_integration import getAllIntergatedGameModes
 from battle_results_common import BATTLE_RESULTS, BATTLE_PASS_RESULTS
 from battle_results_constants import BATTLE_RESULT_ENTRY_TYPE as ENTRY_TYPE, PATH_TO_CONFIG, POSSIBLE_TYPES, ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT
 from constants import ARENA_BONUS_TYPE
-g_config = {'checksums': {},
- 'bonusTypes': {},
- 'allResults': Meta()}
+g_config = {'checksums': {}, 'bonusTypes': {}, 'allResults': Meta()}
 
 def __processBonusTypeResults(config, allResults, bonusType, serverResults):
     modeConfig = {}
     for name, transportType, default, packer, aggFunc, entryType in allResults:
         if transportType is None:
             pass
-        value = (name,
-         transportType,
-         default,
-         packer,
-         aggFunc)
+        value = (
+         name, transportType, default, packer, aggFunc)
         if name in serverResults:
             if value != serverResults[name]:
                 basePacker = serverResults[name][3]
                 if isinstance(basePacker, MergeDictPacker) and isinstance(packer, MergeDictPacker):
                     basePacker.merge(packer)
-                    if name in set((item[0] for item in modeConfig.get(entryType, []))):
+                    if name in set(item[0] for item in modeConfig.get(entryType, [])):
                         continue
         else:
             serverResults[name] = value
@@ -70,7 +63,10 @@ def packClientBattleResults(data, bonusType, packingType):
 
 def unpackClientBattleResults(data):
     checksum = data[0]
-    return None if checksum not in g_config['checksums'] else g_config['checksums'][checksum].unpack(data)
+    if checksum not in g_config['checksums']:
+        return None
+    else:
+        return g_config['checksums'][checksum].unpack(data)
 
 
 def getBattleResultsNames():
@@ -78,7 +74,9 @@ def getBattleResultsNames():
 
 
 def getBattleResultsSysMsgType(bonusType):
-    return ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT[ARENA_BONUS_TYPE.REGULAR] if bonusType not in ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT else ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT[bonusType]
+    if bonusType not in ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT:
+        return ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT[ARENA_BONUS_TYPE.REGULAR]
+    return ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT[bonusType]
 
 
 def init():

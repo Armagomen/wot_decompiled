@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/frontline/rewards_selection_view.py
 from functools import partial
 from AccountCommands import RES_SUCCESS
 from epic_constants import EPIC_OFFER_TYPES
@@ -17,12 +15,13 @@ from helpers import dependency
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 
 def _isValidReward(level, tokenID):
-    tokenLevel = tokenID.split(':')[-1]
+    tokenLevel = tokenID.split(':')[(-1)]
     return not level or int(tokenLevel) <= level
 
 
 class RewardsSelectionView(SelectableRewardBase):
-    __slots__ = ('__onRewardsReceivedCallback', '__onCloseCallback', '__onLoadedCallback', '__isViewLoaded', '__isAutoDestroyWindowsOnReceivedRewards')
+    __slots__ = ('__onRewardsReceivedCallback', '__onCloseCallback', '__onLoadedCallback',
+                 '__isViewLoaded', '__isAutoDestroyWindowsOnReceivedRewards')
     _helper = EpicSelectableRewardManager
     _epicController = dependency.descriptor(IEpicBattleMetaGameController)
 
@@ -69,7 +68,9 @@ class RewardsSelectionView(SelectableRewardBase):
 
         def _safeExtract(path):
             folder = artefacts.dyn(path)
-            return backport.text(folder.name()) if folder else ''
+            if folder:
+                return backport.text(folder.name())
+            return ''
 
         return cmp(_safeExtract(first[0]), _safeExtract(second[0]))
 
@@ -81,7 +82,9 @@ class RewardsSelectionView(SelectableRewardBase):
         return self._defaultComparator
 
     def _getItemsComparator(self, tabName):
-        return self._compareRewardsByArtifactName if tabName in EPIC_OFFER_TYPES else self._defaultComparator
+        if tabName in EPIC_OFFER_TYPES:
+            return self._compareRewardsByArtifactName
+        return self._defaultComparator
 
     def _processReceivedRewards(self, result):
         if result.success and result.auxData:
@@ -95,7 +98,7 @@ class RewardsSelectionView(SelectableRewardBase):
             self.destroyWindow()
 
     def _getReceivedRewards(self, rewardName):
-        pass
+        return 0
 
     def __onViewLoaded(self):
         if not self.__isViewLoaded:

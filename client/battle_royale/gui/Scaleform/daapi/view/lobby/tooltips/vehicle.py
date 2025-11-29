@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/tooltips/vehicle.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -39,7 +37,10 @@ class VehicleTooltipData(BlocksTooltipData):
     def __constructStatusBlock(self, vehicle):
         statusConfig = self.context.getStatusConfiguration(vehicle)
         statusBlock, operationError, _ = StatusBlockConstructor(vehicle, statusConfig).construct()
-        return formatters.packBuildUpBlockData(statusBlock) if statusBlock and not operationError else None
+        if statusBlock and not operationError:
+            return formatters.packBuildUpBlockData(statusBlock)
+        else:
+            return
 
     @classmethod
     def __constructHeaderBlock(cls, vehicle):
@@ -51,7 +52,8 @@ class VehicleTooltipData(BlocksTooltipData):
 
     @staticmethod
     def __constructDescriptionBlock(vehicle):
-        return [formatters.packTextBlockData(text=text_styles.standard(backport.text(R.strings.tooltips.battle_royale.hangar.vehicle.description.dyn(vehicle.nationName)())))]
+        return [
+         formatters.packTextBlockData(text=text_styles.standard(backport.text(R.strings.tooltips.battle_royale.hangar.vehicle.description.dyn(vehicle.nationName)())))]
 
     @staticmethod
     def __setBackground(vehicle):

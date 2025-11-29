@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_compare/compare_modification_model.py
 from gui.impl.gen.view_models.views.lobby.post_progression.base_modification_model import BaseModificationModel
 
 class CompareModificationModel(BaseModificationModel):

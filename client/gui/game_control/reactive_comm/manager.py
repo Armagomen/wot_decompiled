@@ -1,19 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/reactive_comm/manager.py
-import itertools
-import logging
+import itertools, logging
 from collections import deque
-import typing
-import BigWorld
-import wg_async
-import websocket
+import typing, BigWorld, wg_async, websocket
 from gui.game_control.reactive_comm import packer
 from gui.game_control.reactive_comm import channel as _ce
 from gui.game_control.reactive_comm import constants
 _logger = logging.getLogger(__name__)
 
 class ChannelsManager(object):
-    __slots__ = ('__url', '__eventsSender', '__client', '__channels', '__cids', '__pending', '__callbackIDs')
+    __slots__ = ('__url', '__eventsSender', '__client', '__channels', '__cids', '__pending',
+                 '__callbackIDs')
 
     def __init__(self, url, eventsSender=None):
         super(ChannelsManager, self).__init__()
@@ -50,7 +45,8 @@ class ChannelsManager(object):
             BigWorld.cancelCallback(callbackID)
             if channel in self.__channels:
                 self.__channels[channel].unsubscribe(self.__client)
-            _logger.warning('Channel %s is not in channels', channel)
+            else:
+                _logger.warning('Channel %s is not in channels', channel)
 
         self.__callbackIDs.clear()
 
@@ -128,10 +124,14 @@ class ChannelsManager(object):
         return False
 
     def getChannelHistory(self, name):
-        return self.__channels[name].messages if name in self.__channels else deque()
+        if name in self.__channels:
+            return self.__channels[name].messages
+        return deque()
 
     def getChannelStatus(self, name):
-        return self.__channels[name].status if name in self.__channels else _ce.SubscriptionStatus(constants.SubscriptionClientStatus.NotExists)
+        if name in self.__channels:
+            return self.__channels[name].status
+        return _ce.SubscriptionStatus(constants.SubscriptionClientStatus.NotExists)
 
     def __tryToCreateClient(self):
         if self.__client is None:

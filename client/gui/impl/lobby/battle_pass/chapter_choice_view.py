@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/chapter_choice_view.py
-import logging
-import typing
+import logging, typing
 from battle_pass_common import BattlePassConsts, FinalReward
 from frameworks.wulf import Array
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -22,10 +19,10 @@ from tutorial.control.game_vars import getVehicleByIntCD
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
 _logger = logging.getLogger(__name__)
-_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
- ChapterState.COMPLETED: ChapterStates.COMPLETED,
- ChapterState.PAUSED: ChapterStates.PAUSED,
- ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
+_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE, 
+   ChapterState.COMPLETED: ChapterStates.COMPLETED, 
+   ChapterState.PAUSED: ChapterStates.PAUSED, 
+   ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
 _FULL_PROGRESS = 100
 
 class ChapterChoicePresenter(ViewComponent[ChapterChoiceViewModel]):
@@ -56,16 +53,24 @@ class ChapterChoicePresenter(ViewComponent[ChapterChoiceViewModel]):
         self._fillModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onAboutClick, self.__showAboutView),
-         (self.viewModel.onPreviewClick, self.__showPreview),
-         (self.viewModel.onPointsInfoClick, self.__showPointsInfoView),
-         (self.__battlePass.onBattlePassSettingsChange, self.__checkBPState),
-         (self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
-         (self.__battlePass.onSeasonStateChanged, self.__checkBPState),
-         (self.__battlePass.onBattlePassIsBought, self.__updateBoughtChapters))
+        return (
+         (
+          self.viewModel.onAboutClick, self.__showAboutView),
+         (
+          self.viewModel.onPreviewClick, self.__showPreview),
+         (
+          self.viewModel.onPointsInfoClick, self.__showPointsInfoView),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__checkBPState),
+         (
+          self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
+         (
+          self.__battlePass.onSeasonStateChanged, self.__checkBPState),
+         (
+          self.__battlePass.onBattlePassIsBought, self.__updateBoughtChapters))
 
     def _fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateFreePoints(model=model)
             self.__updateChapters(model.getChapters())
             model.setIsSeasonWithAdditionalBackground(isSeasonWithAdditionalBackground())
@@ -142,7 +147,7 @@ class ChapterChoicePresenter(ViewComponent[ChapterChoiceViewModel]):
         model.setFreePoints(self.__battlePass.getFreePoints())
 
     def __onPointsUpdated(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateChaptersProgression(model.getChapters())
             self.__updateFreePoints(model=model)
 
@@ -153,7 +158,7 @@ class ChapterChoicePresenter(ViewComponent[ChapterChoiceViewModel]):
         if self.__battlePass.isPaused():
             showBattlePass()
             return
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsSeasonWithAdditionalBackground(isSeasonWithAdditionalBackground())
             activeChapters = self.__battlePass.getMainChapterIDs()
             if len(activeChapters) != len(self.viewModel.getChapters()):
@@ -178,10 +183,10 @@ class ChapterChoicePresenter(ViewComponent[ChapterChoiceViewModel]):
         rewardTypes = getAllFinalRewards(chapterID, battlePass=self.__battlePass)
         if FinalReward.VEHICLE in rewardTypes:
             return FinalRewardTypes.VEHICLE
-        elif FinalReward.STYLE in rewardTypes or FinalReward.PROGRESSIVE_STYLE in rewardTypes:
-            return FinalRewardTypes.STYLE
-        elif FinalReward.TANKMAN in rewardTypes:
-            return FinalRewardTypes.TANKMAN
         else:
+            if FinalReward.STYLE in rewardTypes or FinalReward.PROGRESSIVE_STYLE in rewardTypes:
+                return FinalRewardTypes.STYLE
+            if FinalReward.TANKMAN in rewardTypes:
+                return FinalRewardTypes.TANKMAN
             _logger.error('Final reward types for chapter <%s> do not contain any supported types', chapterID)
-            return None
+            return

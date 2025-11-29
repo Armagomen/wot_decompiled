@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/item_price.py
 from goodies.GoodieResources import Gold, Credits
 
 class PRICE_TYPE:
-    DEFAULT = (0,)
-    PROMO = (1,)
-    PERSONAL = (2,)
+    DEFAULT = (0, )
+    PROMO = (1, )
+    PERSONAL = (2, )
 
 
 def getItemPrice(item, gameParams, goodies=None, goodieTarget=None):
@@ -20,13 +18,16 @@ def getItemPrice(item, gameParams, goodies=None, goodieTarget=None):
         personalDiscounts = goodies.test(goodieTarget, {Credits(defaultPrice[0]), Gold(defaultPrice[1])})
         for _, discount in personalDiscounts.iteritems():
             if isinstance(discount, Gold) and discount.value <= actualPrice[1]:
-                actualPrice = (0, discount.value)
+                actualPrice = (
+                 0, discount.value)
                 priceType = PRICE_TYPE.PERSONAL
-            if isinstance(discount, Credits) and discount.value <= actualPrice[0]:
-                actualPrice = (discount.value, 0)
+            elif isinstance(discount, Credits) and discount.value <= actualPrice[0]:
+                actualPrice = (
+                 discount.value, 0)
                 priceType = PRICE_TYPE.PERSONAL
 
-    return (defaultPrice, actualPrice, priceType)
+    return (
+     defaultPrice, actualPrice, priceType)
 
 
 def getNextSlotPrice(slots, slotsPrices):
@@ -35,11 +36,15 @@ def getNextSlotPrice(slots, slotsPrices):
         if len(slotsPrices[1]):
             return (slotsPrices[1][0][0], 0)
         return ('credits', 0)
-    return slotsPrices[1][addSlotNumber] if addSlotNumber < len(slotsPrices[1]) else slotsPrices[1][-1]
+    if addSlotNumber < len(slotsPrices[1]):
+        return slotsPrices[1][addSlotNumber]
+    return slotsPrices[1][(-1)]
 
 
 def getNextBerthPackPrice(berths, berthsPrices):
     addPackNumber = (berths - berthsPrices[0]) / berthsPrices[1]
     if addPackNumber < 0:
         return 0
-    return berthsPrices[2][addPackNumber] if addPackNumber < len(berthsPrices[2]) else berthsPrices[2][-1]
+    if addPackNumber < len(berthsPrices[2]):
+        return berthsPrices[2][addPackNumber]
+    return berthsPrices[2][(-1)]

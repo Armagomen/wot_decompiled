@@ -1,18 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/base/request.py
-import typing
-import copy
-import hashlib
-import httplib
-import json
-import urllib
-import urlparse
+import typing, copy, hashlib, httplib, json, urllib, urlparse
 from functools import partial
 from enum import Enum
-import adisp
-import wg_async
-import BigWorld
-import soft_exception
+import adisp, wg_async, BigWorld, soft_exception
 from BWUtil import AsyncReturn
 from constants import WG_GAMES, CURRENT_REALM
 from gui.platform.base.settings import REQUEST_TIMEOUT, POLLING_PERIOD, POLLING_REQUEST_TIMEOUT, SOLVE_POW_TIMEOUT, ACCEPTED_HTTP_CODES
@@ -49,41 +38,36 @@ class Params(object):
 
     def getHash(self):
         hashBuilder = hashlib.md5()
-        attrs = (self.url,
-         self.headers,
-         self.method,
-         self.queryParams,
-         self.postData,
-         self.auth,
-         self.proofOfWorkURL)
-        hashBuilder.update(''.join((str(attr) for attr in attrs)))
+        attrs = (self.url, self.headers, self.method, self.queryParams, self.postData, self.auth, self.proofOfWorkURL)
+        hashBuilder.update(('').join(str(attr) for attr in attrs))
         return hashBuilder.hexdigest()
 
     def encodePostData(self):
         contentType = self.headers.get('Content-Type')
         if contentType is None or contentType == 'multipart/form-data':
             return self.postData
-        elif contentType == 'application/x-www-form-urlencoded':
-            return urllib.urlencode(self.postData)
-        elif contentType == 'application/json':
-            return json.dumps(self.postData)
         else:
-            raise soft_exception.SoftException('Unsupported header content type: {}'.format(contentType))
+            if contentType == 'application/x-www-form-urlencoded':
+                return urllib.urlencode(self.postData)
+            if contentType == 'application/json':
+                return json.dumps(self.postData)
+            raise soft_exception.SoftException(('Unsupported header content type: {}').format(contentType))
             return
 
     def _prepareUrl(self):
         if not self.url:
-            raise soft_exception.SoftException('Broken request url: {} '.format(self.url))
+            raise soft_exception.SoftException(('Broken request url: {} ').format(self.url))
         url = self.url
         if self.queryParams:
             values = []
             for k, val in self.queryParams.iteritems():
                 if not isinstance(val, (list, tuple)):
-                    val = [val]
-                values.append((k, ','.join((str(i) for i in val))))
+                    val = [
+                     val]
+                values.append((k, (',').join(str(i) for i in val)))
 
             urlencodedString = urllib.urlencode(values)
-            url = '{}?{}'.format(self.url, urlencodedString)
+            url = ('{}?{}').format(self.url, urlencodedString)
         return url
 
     def _prepareHeaders(self):
@@ -91,7 +75,7 @@ class Params(object):
         if self.addUserAgentHeader:
             if 'User-Agent' in headers:
                 self._logger.warning('User-Agent=%s in default headers will be replaced.', headers['User-Agent'])
-            headers['User-Agent'] = '{app}-{realm}/{version}'.format(app=WG_GAMES.TANKS, realm=CURRENT_REALM, version=getClientVersion(force=False))
+            headers['User-Agent'] = ('{app}-{realm}/{version}').format(app=WG_GAMES.TANKS, realm=CURRENT_REALM, version=getClientVersion(force=False))
         return headers
 
     def _addHost(self, host, url):
@@ -103,7 +87,7 @@ class Params(object):
         return url
 
     def __str__(self):
-        return '<{cls_}> auth:{auth}, url:{url}, method:{method}, headers:{headers}, powUrl:{powUrl}, response:{response}.'.format(cls_=self.__class__.__name__, auth=self.auth, url=self.url, method=self.method, headers=self.headers, powUrl=self.proofOfWorkURL, response=self.response)
+        return ('<{cls_}> auth:{auth}, url:{url}, method:{method}, headers:{headers}, powUrl:{powUrl}, response:{response}.').format(cls_=self.__class__.__name__, auth=self.auth, url=self.url, method=self.method, headers=self.headers, powUrl=self.proofOfWorkURL, response=self.response)
 
 
 class Request(object):
@@ -130,7 +114,7 @@ class Request(object):
                 raise AsyncReturn(self.params.response.createRequestCanceled())
             if accessTokenData is None:
                 raise AsyncReturn(self.params.response.createAuthorizationError())
-            self.params.headers['Authorization'] = 'Bearer {}'.format(accessTokenData.accessToken)
+            self.params.headers['Authorization'] = ('Bearer {}').format(accessTokenData.accessToken)
         if self.params.proofOfWorkURL:
             response = yield wg_async.await_callback(self._fetchUrl)(url=self.params.proofOfWorkURL, headers={'User-Agent': self.params.headers.get('User-Agent')} if self.params.addUserAgentHeader else None)
             if self.isCanceled:

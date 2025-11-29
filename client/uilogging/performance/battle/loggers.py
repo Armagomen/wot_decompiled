@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/performance/battle/loggers.py
-import BigWorld
-import logging
-import typing
+import BigWorld, logging, typing
 from helpers import dependency
 from skeletons.helpers.statistics import IStatisticsCollector
 from uilogging.base.logger import _BaseLogger as Logger
@@ -50,8 +46,8 @@ class BattleMetricsLogger(object):
     statsCollector = dependency.descriptor(IStatisticsCollector)
 
     def __init__(self):
-        self._loggers = {Groups.SESSION.value: _ClientSessionLogger(),
-         Groups.SYSTEM.value: _ClientSystemLogger()}
+        self._loggers = {Groups.SESSION.value: _ClientSessionLogger(), 
+           Groups.SYSTEM.value: _ClientSystemLogger()}
         self._defaultLogger = self._loggers[Groups.SYSTEM.value]
 
     def initialize(self):

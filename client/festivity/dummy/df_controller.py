@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/festivity/dummy/df_controller.py
 import Event
 from festivity.base import FestivityQuestsHangarFlag
 from skeletons.gui.game_control import IFestivityController

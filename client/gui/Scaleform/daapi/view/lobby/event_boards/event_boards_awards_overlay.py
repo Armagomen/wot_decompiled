@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_awards_overlay.py
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeFiltersVO, vehicleValueGetter
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleBasicVO
@@ -62,38 +60,39 @@ class EventBoardsAwardsOverlay(EventBoardsAwardsOverlayMeta):
             self._setVehicle(leaderboard)
             title = _ms('#event_boards:awards/vehicle')
             bgPath = None
-        elif eventType == EVENT_TYPE.NATION:
-            title = _ms('#event_boards:awards/nation/{}'.format(leaderboard))
-            bgPath = '../maps/icons/eventBoards/flagsOverlay/{}.png'.format(leaderboard)
-        elif eventType == EVENT_TYPE.LEVEL:
-            title = _ms('#event_boards:awards/level', level=int2roman(leaderboard))
-            bgPath = None
-        elif eventType == EVENT_TYPE.CLASS:
-            title = _ms('#event_boards:awards/class/{}'.format(leaderboard))
-            bgPath = None
         else:
-            title = None
-            bgPath = None
-        awardsFormatter = QuestsBonusComposer(getEventBoardsAwardPacker())
-        awardsGroups = eventData.getRewardsByRank().getRewardByRank(lid).getRewardGroups()
-        awards = []
-        categoryNumber = 0
-        for group in awardsGroups:
-            if categoryNumber == group.getRewardCategoryNumber():
-                icon = ''
+            if eventType == EVENT_TYPE.NATION:
+                title = _ms(('#event_boards:awards/nation/{}').format(leaderboard))
+                bgPath = ('../maps/icons/eventBoards/flagsOverlay/{}.png').format(leaderboard)
+            elif eventType == EVENT_TYPE.LEVEL:
+                title = _ms('#event_boards:awards/level', level=int2roman(leaderboard))
+                bgPath = None
+            elif eventType == EVENT_TYPE.CLASS:
+                title = _ms(('#event_boards:awards/class/{}').format(leaderboard))
+                bgPath = None
             else:
-                categoryNumber = group.getRewardCategoryNumber()
-                icon = RES_ICONS.getEventBoardGroup(categoryNumber)
-            _min, _max = group.getRankMinMax()
-            awards.append({'icon': icon,
-             'positionDescr': str(_min) if _min == _max else '{} - {}'.format(_min, _max),
-             'awards': awardsFormatter.getFormattedBonuses(group.getRewards()),
-             'tooltip': _ms(TOOLTIPS.ELEN_AWARDSOVERLAY_GROUP_HEADER, number=int2roman(categoryNumber))})
+                title = None
+                bgPath = None
+            awardsFormatter = QuestsBonusComposer(getEventBoardsAwardPacker())
+            awardsGroups = eventData.getRewardsByRank().getRewardByRank(lid).getRewardGroups()
+            awards = []
+            categoryNumber = 0
+            for group in awardsGroups:
+                if categoryNumber == group.getRewardCategoryNumber():
+                    icon = ''
+                else:
+                    categoryNumber = group.getRewardCategoryNumber()
+                    icon = RES_ICONS.getEventBoardGroup(categoryNumber)
+                _min, _max = group.getRankMinMax()
+                awards.append({'icon': icon, 
+                   'positionDescr': str(_min) if _min == _max else ('{} - {}').format(_min, _max), 
+                   'awards': awardsFormatter.getFormattedBonuses(group.getRewards()), 
+                   'tooltip': _ms(TOOLTIPS.ELEN_AWARDSOVERLAY_GROUP_HEADER, number=int2roman(categoryNumber))})
 
-        data = {'eventID': eventData.getEventID(),
-         'title': title,
-         'bgPath': bgPath,
-         'awardsData': {'tableData': awards}}
+        data = {'eventID': eventData.getEventID(), 
+           'title': title, 
+           'bgPath': bgPath, 
+           'awardsData': {'tableData': awards}}
         self.as_setDataS(data)
         return
 

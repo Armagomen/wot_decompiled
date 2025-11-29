@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/miniclient/lobby/header/battle_type_selector/pointcuts.py
 from helpers import aop
 import aspects
 
@@ -12,34 +10,40 @@ class _BattleItemSelector(aop.Pointcut):
 class RankedBattle(_BattleItemSelector):
 
     def __init__(self):
-        _BattleItemSelector.__init__(self, '_addRankedBattleType', (aspects.RankedBattle,))
+        _BattleItemSelector.__init__(self, '_addRankedBattleType', (
+         aspects.RankedBattle,))
 
 
 class CommandBattle(_BattleItemSelector):
 
     def __init__(self):
-        _BattleItemSelector.__init__(self, '_addCommandBattleType', (aspects.CommandBattle,))
+        _BattleItemSelector.__init__(self, '_addCommandBattleType', (
+         aspects.CommandBattle,))
 
 
 class TrainingBattle(_BattleItemSelector):
 
     def __init__(self):
-        _BattleItemSelector.__init__(self, '_addTrainingBattleType', (aspects.TrainingBattle,))
+        _BattleItemSelector.__init__(self, '_addTrainingBattleType', (
+         aspects.TrainingBattle,))
 
 
 class SpecialBattle(_BattleItemSelector):
 
     def __init__(self):
-        _BattleItemSelector.__init__(self, '_addSpecialBattleType', (aspects.SpecialBattle,))
+        _BattleItemSelector.__init__(self, '_addSpecialBattleType', (
+         aspects.SpecialBattle,))
 
 
 class StrongholdBattle(_BattleItemSelector):
 
     def __init__(self):
-        _BattleItemSelector.__init__(self, '_addStrongholdsBattleType', (aspects.StrongholdBattle,))
+        _BattleItemSelector.__init__(self, '_addStrongholdsBattleType', (
+         aspects.StrongholdBattle,))
 
 
 class OnBattleTypeSelectorPopulate(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.header.BattleTypeSelectPopover', 'BattleTypeSelectPopover', '_populate', aspects=(aspects.OnBattleTypeSelectorPopulate,))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.header.BattleTypeSelectPopover', 'BattleTypeSelectPopover', '_populate', aspects=(
+         aspects.OnBattleTypeSelectorPopulate,))

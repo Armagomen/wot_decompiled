@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/special_mode/pre_queue/entity.py
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
 from gui.prb_control.entities.base import vehicleAmmoCheck
@@ -25,7 +23,9 @@ class SpecialModeSubscriber(PreQueueSubscriber):
 class SpecialModeEntryPoint(PreQueueEntryPoint):
 
     def _getFilterStates(self):
-        return (PrimeTimeStatus.NOT_SET, PrimeTimeStatus.NOT_AVAILABLE)
+        return (
+         PrimeTimeStatus.NOT_SET,
+         PrimeTimeStatus.NOT_AVAILABLE)
 
 
 class SpecialModeEntity(PreQueueEntity):
@@ -39,7 +39,7 @@ class SpecialModeEntity(PreQueueEntity):
 
     @property
     def storage(self):
-        return None
+        return
 
     def init(self, ctx=None):
         self.storage.release()

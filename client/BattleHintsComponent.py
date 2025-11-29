@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BattleHintsComponent.py
-import typing
-import logging
+import typing, logging
 from BigWorld import DynamicScriptComponent
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider

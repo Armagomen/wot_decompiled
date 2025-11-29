@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/screencast_controller.py
 import BigWorld
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.shared.utils import getPlayerDatabaseID

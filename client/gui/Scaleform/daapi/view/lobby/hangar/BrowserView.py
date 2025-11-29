@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/BrowserView.py
 import BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
@@ -18,11 +16,11 @@ from skeletons.gui.lobby_context import ILobbyContext
 def makeBrowserParams(waitingMessage=R.invalid(), isModal=False, isHidden=False, bgAlpha=1.0, isCloseBtnVisible=False):
     if not waitingMessage:
         waitingMessage = R.strings.waiting.loadContent()
-    return {'waitingMessage': backport.msgid(waitingMessage),
-     'isModal': isModal,
-     'isHidden': isHidden,
-     'bgAlpha': bgAlpha,
-     'isCloseBtnVisible': isCloseBtnVisible}
+    return {'waitingMessage': backport.msgid(waitingMessage), 
+       'isModal': isModal, 
+       'isHidden': isHidden, 
+       'bgAlpha': bgAlpha, 
+       'isCloseBtnVisible': isCloseBtnVisible}
 
 
 class BrowserView(LobbySubView, BrowserScreenMeta):
@@ -119,7 +117,9 @@ class BrowserView(LobbySubView, BrowserScreenMeta):
 
     def __getFromCtx(self, name, default=None):
         ctx = self.__ctx
-        return ctx.get(name, default) if ctx else default
+        if ctx:
+            return ctx.get(name, default)
+        return default
 
     @adisp_process
     def __loadBrowser(self):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/faq_data.py
 import logging
 from collections import namedtuple
 from gui.impl.gen import R
@@ -10,7 +8,8 @@ from skeletons.gui.impl import IGuiLoader
 _logger = logging.getLogger(__name__)
 QUESTION_FORMAT = 'question_{0:d}'
 ANSWER_FORMAT = 'answer_{0:d}'
-SUPPORTED_LINKS_EVENTS = (OpenLinkEvent.SUPPORT,)
+SUPPORTED_LINKS_EVENTS = (
+ OpenLinkEvent.SUPPORT,)
 FAQItem = namedtuple('FAQItem', ('number', 'question', 'answer'))
 
 class FAQList(object):
@@ -42,8 +41,8 @@ class FAQList(object):
         htmlFormat = g_settings.htmlTemplates.format
         endTag = htmlFormat('closeLinkTagInFAQ')
         for link in SUPPORTED_LINKS_EVENTS:
-            links[link] = {'openTag': htmlFormat('openLinkTagInFAQ', ctx={'eventType': link}),
-             'closeTag': endTag}
+            links[link] = {'openTag': htmlFormat('openLinkTagInFAQ', ctx={'eventType': link}), 
+               'closeTag': endTag}
 
         return links
 

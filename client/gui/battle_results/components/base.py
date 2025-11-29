@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/components/base.py
 import typing
 from collections import defaultdict, namedtuple
-import inspect
-import operator
+import inspect, operator
 from soft_exception import SoftException
 from debug_utils import LOG_WARNING
 from gui.shared.utils.decorators import ReprInjector
@@ -81,7 +78,7 @@ class StatsItem(StatsComponent):
 
 
 class DirectStatsItem(StatsItem):
-    __slots__ = ('_value',)
+    __slots__ = ()
 
     def __init__(self, field, value=None):
         super(DirectStatsItem, self).__init__(field)
@@ -95,7 +92,7 @@ class DirectStatsItem(StatsItem):
 
 
 class VOMeta(object):
-    __slots__ = ('_meta',)
+    __slots__ = ('_meta', )
 
     def __init__(self, meta):
         super(VOMeta, self).__init__()
@@ -111,7 +108,7 @@ class VOMeta(object):
         pass
 
     def getDefault(self, field):
-        return None
+        return
 
     def isComponentGenerated(self, index):
         return False
@@ -120,7 +117,7 @@ class VOMeta(object):
         pass
 
     def generateComponents(self):
-        pass
+        return ()
 
     def generateVO(self, components):
         raise NotImplementedError
@@ -154,9 +151,9 @@ class DictMeta(VOMeta):
         field = component.getField()
         if field:
             if field not in self._meta:
-                raise StatsComponentError('Field {} is not found in meta {}'.format(field, self._meta))
+                raise StatsComponentError(('Field {} is not found in meta {}').format(field, self._meta))
             if field not in self._unregistered:
-                raise StatsComponentError('Component is already set to field {}'.format(field))
+                raise StatsComponentError(('Component is already set to field {}').format(field))
             self._unregistered.discard(field)
 
     def generateComponents(self):
@@ -178,7 +175,7 @@ class DictMeta(VOMeta):
                     vo[field] = value
                 else:
                     vo[field] = self._meta[field]
-            if value is not None:
+            elif value is not None:
                 vo.update(value)
 
         return vo
@@ -196,7 +193,7 @@ class ListMeta(VOMeta):
         self._runtime = runtime
 
     def getDefault(self, field):
-        return None
+        return
 
     def isComponentGenerated(self, index):
         return not self._runtime
@@ -218,7 +215,10 @@ def _getPropertyGetter(idx):
 
     def _getter(self):
         component = self.getComponent(idx)
-        return component.getVO() if component is not None else None
+        if component is not None:
+            return component.getVO()
+        else:
+            return
 
     return _getter
 
@@ -242,7 +242,7 @@ def _getPropertySetter(idx):
 PropertyValue = namedtuple('PropertyValue', 'record reusable')
 
 class PropertyMeta(DictMeta):
-    __slots__ = ('_bind',)
+    __slots__ = ('_bind', )
 
     def __init__(self, meta):
         if not isinstance(meta, tuple):
@@ -257,11 +257,9 @@ class PropertyMeta(DictMeta):
                 field, default = item[:2]
                 converted[field] = default
                 if length > 2:
-                    self._bind.append((idx,
-                     field,
-                     item[2],
-                     default))
-            raise StatsComponentError('Number of items must be more than 1')
+                    self._bind.append((idx, field, item[2], default))
+            else:
+                raise StatsComponentError('Number of items must be more than 1')
 
         super(PropertyMeta, self).__init__(converted)
 
@@ -275,13 +273,11 @@ class PropertyMeta(DictMeta):
             searchField, default, attribute = item[:3]
             for idx, field, _, _ in self._bind:
                 if field == searchField:
-                    bind[idx] = (idx,
-                     field,
-                     attribute,
-                     default)
+                    bind[idx] = (
+                     idx, field, attribute, default)
                     break
             else:
-                raise StatsComponentError('Item {} to replace is not found'.format(searchField))
+                raise StatsComponentError(('Item {} to replace is not found').format(searchField))
 
         destination = PropertyMeta(())
         destination._bind = bind
@@ -303,17 +299,20 @@ class PropertyMeta(DictMeta):
             slots = slots.union(getattr(parent, '__slots__', ()))
 
         if not slots:
-            raise StatsComponentError('__slots__ must be defined in stats component {}'.format(clazz))
+            raise StatsComponentError(('__slots__ must be defined in stats component {}').format(clazz))
         for idx, _, attribute, _ in self._bind:
             if attribute not in slots:
-                raise StatsComponentError('Attribute {} is not found in __slots__ for {}'.format(attribute, clazz))
+                raise StatsComponentError(('Attribute {} is not found in __slots__ for {}').format(attribute, clazz))
             setattr(clazz, attribute, property(_getPropertyGetter(idx), _getPropertySetter(idx)))
 
     def generateComponents(self):
         for idx, field, _, default in self._bind:
             if isinstance(default, StatsComponent):
-                yield (idx, default.clone())
-            yield (idx, DirectStatsItem(field, default))
+                yield (
+                 idx, default.clone())
+            else:
+                yield (
+                 idx, DirectStatsItem(field, default))
 
 
 @ReprInjector.simple(('_field', 'field'), ('_path', 'path'))
@@ -328,7 +327,7 @@ class StatsBlock(StatsComponent):
         if isinstance(meta, VOMeta):
             self._meta = meta.clone()
         else:
-            raise StatsComponentError('Type of meta must be VOMeta. Received type is {}'.format(type(meta)))
+            raise StatsComponentError(('Type of meta must be VOMeta. Received type is {}').format(type(meta)))
         self._components = []
         self._field = field
         self._path = path
@@ -350,19 +349,22 @@ class StatsBlock(StatsComponent):
 
     def addComponent(self, index, component):
         if index < 0:
-            raise StatsComponentError('Index must be positive. Received index is {}'.format(index))
+            raise StatsComponentError(('Index must be positive. Received index is {}').format(index))
         while index > len(self._components) - 1:
             self._components.append(None)
 
         if self._components[index] is not None:
-            raise StatsComponentError('Component is already set to position {}'.format(index))
+            raise StatsComponentError(('Component is already set to position {}').format(index))
         self._meta.registerComponent(component)
         self._records[component.getRecordPath()].append(index)
         self._components[index] = component
         return
 
     def getComponent(self, index):
-        return self._components[index] if -1 < index < len(self._components) else None
+        if -1 < index < len(self._components):
+            return self._components[index]
+        else:
+            return
 
     def addNextComponent(self, component):
         self.addComponent(self.getNextComponentIndex(), component)
@@ -380,8 +382,9 @@ class StatsBlock(StatsComponent):
             for sub in path:
                 if sub in record:
                     record = record[sub]
-                LOG_WARNING('Path of record is not found', path)
-                record = None
+                else:
+                    LOG_WARNING('Path of record is not found', path)
+                    record = None
 
             for idx in idxs:
                 component = self._components[idx]

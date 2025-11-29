@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_progression_view.py
 from __future__ import absolute_import
-import BigWorld
-import math_utils
+import BigWorld, math_utils
 from account_helpers.AccountSettings import AccountSettings, FUN_RANDOM_PROGRESSION_OPENED, FUN_RANDOM_PROGRESSION, FUN_RANDOM_PROGR_PREV_COUNTER, FUN_RANDOM_INF_PROGR_PREV_COUNTER, FUN_RANDOM_INF_PROGR_PREV_COMPLETE_COUNT
 from frameworks.wulf import ViewSettings, WindowFlags
 from fun_random.gui.feature.fun_sounds import FUN_PROGRESSION_SOUND_SPACE
@@ -23,7 +20,7 @@ from gui.shared.event_dispatcher import showHangar
 _DESTROY_ACTION_NAME = 'showHangar'
 
 class FunRandomProgressionView(ViewImpl, FunAssetPacksMixin, FunProgressionWatcher, FunSubModesWatcher):
-    __slots__ = ('__tooltips',)
+    __slots__ = ('__tooltips', )
     _COMMON_SOUND_SPACE = FUN_PROGRESSION_SOUND_SPACE
 
     def __init__(self, *_, **__):
@@ -53,38 +50,43 @@ class FunRandomProgressionView(ViewImpl, FunAssetPacksMixin, FunProgressionWatch
             if packedRewards:
                 return AdditionalRewardsTooltip(packedRewards)
             return
-        elif contentID == R.views.fun_random.mono.lobby.tooltips.loot_box_tooltip():
+        if contentID == R.views.fun_random.mono.lobby.tooltips.loot_box_tooltip():
             tooltipData = self.getTooltipData(event)
             lootboxID = tooltipData.specialArgs[0] if tooltipData and tooltipData.specialArgs else None
             if lootboxID:
                 return FunRandomLootBoxTooltipView(lootboxID)
             return
-        else:
-            tooltipId = event.getArgument('tooltipId')
-            tc = R.views.lobby.awards.tooltips.RewardCompensationTooltip()
-            if event.contentID == tc:
-                if tooltipId in self.__tooltips:
-                    tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
-                     'labelBefore': event.getArgument('labelBefore', ''),
-                     'iconAfter': event.getArgument('iconAfter', ''),
-                     'labelAfter': event.getArgument('labelAfter', ''),
-                     'bonusName': event.getArgument('bonusName', ''),
-                     'countBefore': event.getArgument('countBefore', 1),
-                     'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
-                    tooltipData.update(self.__tooltips[tooltipId].specialArgs)
-                    settings = ViewSettings(tc, model=LootBoxVehicleCompensationTooltipModel(), kwargs=tooltipData)
-                    return VehicleCompensationTooltipContent(settings)
-            return super(FunRandomProgressionView, self).createToolTipContent(event, contentID)
+        tooltipId = event.getArgument('tooltipId')
+        tc = R.views.lobby.awards.tooltips.RewardCompensationTooltip()
+        if event.contentID == tc:
+            if tooltipId in self.__tooltips:
+                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
+                   'iconAfter': event.getArgument('iconAfter', ''), 
+                   'labelAfter': event.getArgument('labelAfter', ''), 
+                   'bonusName': event.getArgument('bonusName', ''), 
+                   'countBefore': event.getArgument('countBefore', 1), 
+                   'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                tooltipData.update(self.__tooltips[tooltipId].specialArgs)
+                settings = ViewSettings(tc, model=LootBoxVehicleCompensationTooltipModel(), kwargs=tooltipData)
+                return VehicleCompensationTooltipContent(settings)
+        return super(FunRandomProgressionView, self).createToolTipContent(event, contentID)
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def _showTierList(self, *_):
         showFunRandomTierList(parent=self.getParentWindow())
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.showHangar), (self.viewModel.onOpenTierList, self._showTierList))
+        return (
+         (
+          self.viewModel.onClose, self.showHangar),
+         (
+          self.viewModel.onOpenTierList, self._showTierList))
 
     def _finalize(self):
         self.__tooltips.clear()
@@ -104,7 +106,7 @@ class FunRandomProgressionView(ViewImpl, FunAssetPacksMixin, FunProgressionWatch
     def __invalidate(self):
         self.__tooltips.clear()
         progression = self.getActiveProgression()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             settingsKey = FUN_RANDOM_PROGRESSION_OPENED
             wasOpened = AccountSettings.getSettings(settingsKey)
             model.setAssetsPointer(self.getModeAssetsPointer())

@@ -1,15 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ReloadEffect.py
-import typing
-import logging
+import typing, logging
 from copy import copy
 from math import fabs
 from constants import ExtraShotClipStates, STATIONARY_RELOAD_STATE
 from helpers.CallbackDelayer import CallbackDelayer
 from helpers import gEffectsDisabled, dependency
 from debug_utils import LOG_DEBUG
-import SoundGroups
-import BigWorld
+import SoundGroups, BigWorld
 from skeletons.gui.battle_session import IBattleSessionProvider
 if typing.TYPE_CHECKING:
     from ChargeableBurstComponent import ChargeableBurstModeState
@@ -32,36 +28,38 @@ class ReloadEffectsType(object):
 
 def _createReloadEffectDesc(eType, dataSection, parentSection):
     if not dataSection.values():
-        return None
-    elif eType == ReloadEffectsType.SIMPLE_RELOAD:
-        return _SimpleReloadDesc(dataSection, eType)
-    elif eType == ReloadEffectsType.BARREL_RELOAD:
-        return _BarrelReloadDesc(dataSection, eType)
-    elif eType == ReloadEffectsType.AUTO_RELOAD:
-        return _AutoReloadDesc(dataSection, eType)
-    elif eType == ReloadEffectsType.DUALGUN_RELOAD:
-        return _DualGunReloadDesc(dataSection, eType)
-    elif eType == ReloadEffectsType.TWINGUN_RELOAD:
-        return _TwinGunReloadDesc(dataSection, eType)
-    elif eType == ReloadEffectsType.EXTRASHOTCLIP_RELOAD:
-        return _ExtraShotClipReloadDesc(dataSection, eType, parentSection)
-    elif eType == ReloadEffectsType.CHARGEABLEBURST_RELOAD:
-        return _ChargeableBurstReloadDesc(dataSection, eType)
+        return
     else:
-        return _StationaryReloadDesc(dataSection, eType, parentSection) if eType == ReloadEffectsType.STATIONARY_RELOAD else None
+        if eType == ReloadEffectsType.SIMPLE_RELOAD:
+            return _SimpleReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.BARREL_RELOAD:
+            return _BarrelReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.AUTO_RELOAD:
+            return _AutoReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.DUALGUN_RELOAD:
+            return _DualGunReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.TWINGUN_RELOAD:
+            return _TwinGunReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.EXTRASHOTCLIP_RELOAD:
+            return _ExtraShotClipReloadDesc(dataSection, eType, parentSection)
+        if eType == ReloadEffectsType.CHARGEABLEBURST_RELOAD:
+            return _ChargeableBurstReloadDesc(dataSection, eType)
+        if eType == ReloadEffectsType.STATIONARY_RELOAD:
+            return _StationaryReloadDesc(dataSection, eType, parentSection)
+        return
 
 
 class _ReloadDesc(object):
-    __slots__ = ('_intuitionOverrides',)
+    __slots__ = ('_intuitionOverrides', )
 
     def __init__(self):
         self._intuitionOverrides = {}
 
     def create(self):
-        return None
+        return
 
     def createIntuitionReload(self):
-        return None
+        return
 
     def hasUniqueIntuitionReload(self):
         return bool(self._intuitionOverrides)
@@ -92,7 +90,7 @@ class _SimpleReloadDesc(_ReloadDesc):
 
 
 class _DualGunReloadDesc(_SimpleReloadDesc):
-    __slots__ = ('ammoLowSound', 'soundEvent', 'runTimeDelta', 'runTimeDeltaAmmoLow', 'caliber')
+    __slots__ = ('ammoLowSound', 'runTimeDelta', 'runTimeDeltaAmmoLow', 'caliber')
 
     def __init__(self, dataSection, eType):
         super(_DualGunReloadDesc, self).__init__(dataSection, eType)
@@ -126,7 +124,8 @@ class _TwinGunReloadDesc(_SimpleReloadDesc):
 
 
 class _BarrelReloadDesc(_SimpleReloadDesc):
-    __slots__ = ('lastShellAlert', 'shellDuration', 'startLong', 'startLoop', 'stopLoop', 'loopShell', 'loopShellLast', 'ammoLow', 'caliber', 'shellDt', 'shellDtLast')
+    __slots__ = ('lastShellAlert', 'shellDuration', 'startLong', 'startLoop', 'stopLoop',
+                 'loopShell', 'loopShellLast', 'ammoLow', 'caliber', 'shellDt', 'shellDtLast')
 
     def __init__(self, dataSection, eType):
         super(_BarrelReloadDesc, self).__init__(dataSection, eType)
@@ -163,7 +162,9 @@ class _BarrelReloadDesc(_SimpleReloadDesc):
 
 
 class _AutoReloadDesc(_ReloadDesc):
-    __slots__ = ('duration', 'soundEvent', 'reloadStart', 'autoLoaderFull', 'lastShellAlert', 'shotFail', 'clipShellLoad', 'clipShellLoadT', 'ammoLow', 'caliber', 'almostComplete', 'almostCompleteT', 'effectType')
+    __slots__ = ('duration', 'soundEvent', 'reloadStart', 'autoLoaderFull', 'lastShellAlert',
+                 'shotFail', 'clipShellLoad', 'clipShellLoadT', 'ammoLow', 'caliber',
+                 'almostComplete', 'almostCompleteT', 'effectType')
 
     def __init__(self, dataSection, eType):
         super(_AutoReloadDesc, self).__init__()
@@ -201,7 +202,8 @@ class _AutoReloadDesc(_ReloadDesc):
 
 
 class _ExtraShotClipReloadDesc(_BarrelReloadDesc):
-    __slots__ = ('extraShellStart', 'extraShellFinish', 'extraShellDtLast', 'extraShellduration', 'extraShellCancel', 'extraShellStopUtility')
+    __slots__ = ('extraShellStart', 'extraShellFinish', 'extraShellDtLast', 'extraShellduration',
+                 'extraShellCancel', 'extraShellStopUtility')
 
     def __init__(self, dataSection, eType, parentSection):
         barrelSection = dataSection.readString('barrel_reload', '')
@@ -219,7 +221,9 @@ class _ExtraShotClipReloadDesc(_BarrelReloadDesc):
 
 
 class _ChargeableBurstReloadDesc(_SimpleReloadDesc):
-    __slots__ = ('burstOneShellOffset', 'burstOneShell', 'burstLastShellOffset', 'burstLastShell', 'burstReady', 'nextBurstShellLoadingOffset', 'nextBurstShellLoading', 'nextBurstShellLoadedOffset', 'nextBurstShellLoaded')
+    __slots__ = ('burstOneShellOffset', 'burstOneShell', 'burstLastShellOffset', 'burstLastShell',
+                 'burstReady', 'nextBurstShellLoadingOffset', 'nextBurstShellLoading',
+                 'nextBurstShellLoadedOffset', 'nextBurstShellLoaded')
 
     def __init__(self, dataSection, eType):
         super(_ChargeableBurstReloadDesc, self).__init__(dataSection, eType)
@@ -278,7 +282,7 @@ def playByInstance(soundInstance):
 
 
 class _GunReload(CallbackDelayer):
-    __slots__ = ('_desc',)
+    __slots__ = ('_desc', )
 
     def __init__(self, effectDesc):
         super(_GunReload, self).__init__()
@@ -396,15 +400,15 @@ class BarrelReload(SimpleReload):
                     self._startLongSound = SoundGroups.g_instance.getSound2D(self._desc.startLong)
                     self.__playStartLongSound()
                     if BARREL_DEBUG_ENABLED:
-                        LOG_DEBUG('!!! Play Long  = {0} {1}'.format(currentTime, self._desc.startLong))
+                        LOG_DEBUG(('!!! Play Long  = {0} {1}').format(currentTime, self._desc.startLong))
                 if alert:
                     playByName(self._desc.ammoLow)
                     if BARREL_DEBUG_ENABLED:
-                        LOG_DEBUG('!!! Play Ammo Low  = {0} {1}'.format(currentTime, self._desc.ammoLow))
+                        LOG_DEBUG(('!!! Play Ammo Low  = {0} {1}').format(currentTime, self._desc.ammoLow))
             else:
                 if shellCount == 1 and clipCapacity > 2:
                     if BARREL_DEBUG_ENABLED:
-                        LOG_DEBUG('!!! Play Alert  = {0} {1}'.format(currentTime, self._desc.lastShellAlert))
+                        LOG_DEBUG(('!!! Play Alert  = {0} {1}').format(currentTime, self._desc.lastShellAlert))
                     playByName(self._desc.lastShellAlert)
                 time = shellReloadTime - self._desc.shellDuration
                 self.delayCallback(time, self._startOneShoot, currentTime + time)
@@ -412,7 +416,7 @@ class BarrelReload(SimpleReload):
 
     def stop(self):
         if BARREL_DEBUG_ENABLED:
-            LOG_DEBUG('!!! Stop Loop = {0}'.format(self._desc.stopLoop))
+            LOG_DEBUG(('!!! Stop Loop = {0}').format(self._desc.stopLoop))
         self.stopCallback(self._startOneShoot)
         self._stopGunRammerEffect()
         self.__reloadSequence.stop()
@@ -435,7 +439,7 @@ class BarrelReload(SimpleReload):
     def _startOneShoot(self, invokeTime):
         if fabs(invokeTime - BigWorld.time()) < 0.1:
             if BARREL_DEBUG_ENABLED:
-                LOG_DEBUG('!!!{0} Play One Shoot = {1}'.format(BigWorld.time(), self._desc.soundEvent))
+                LOG_DEBUG(('!!!{0} Play One Shoot = {1}').format(BigWorld.time(), self._desc.soundEvent))
             playByName(self._desc.soundEvent)
 
     def __playStartLongSound(self):
@@ -470,7 +474,7 @@ class LoopSequence(CallbackDelayer):
         self.stop()
         time = BigWorld.time()
         if BARREL_DEBUG_ENABLED:
-            LOG_DEBUG('LoopSequence::schedule time = {0} end time = {1} duration = {2}'.format(BigWorld.time(), time + reloadD, reloadD))
+            LOG_DEBUG(('LoopSequence::schedule time = {0} end time = {1} duration = {2}').format(BigWorld.time(), time + reloadD, reloadD))
         loopDuration = self.duration
         if reloadD < self.duration:
             loopDuration = reloadD
@@ -482,7 +486,7 @@ class LoopSequence(CallbackDelayer):
         self.__sequence = self.__generateTimeLine(startLoopD, loopDuration, shellCount)
         if BARREL_DEBUG_ENABLED:
             for item in self.__sequence:
-                LOG_DEBUG('LoopSequence::schedule dt = {0} name = {1}'.format(item[0], item[1]))
+                LOG_DEBUG(('LoopSequence::schedule dt = {0} name = {1}').format(item[0], item[1]))
 
         self.__start()
 
@@ -507,12 +511,12 @@ class LoopSequence(CallbackDelayer):
     def __startCallback(self):
         self.__inProgress = True
         if not self.__sequence:
-            return None
+            return
         else:
             invokeTime, name = self.__sequence.pop(0)
             if fabs(invokeTime - BigWorld.time()) < 0.1 or not self.__sequence:
                 if BARREL_DEBUG_ENABLED:
-                    LOG_DEBUG('LoopSequence::__startCallback time = {0} {1}'.format(BigWorld.time(), name))
+                    LOG_DEBUG(('LoopSequence::__startCallback time = {0} {1}').format(BigWorld.time(), name))
                 playByName(name)
             if self.__sequence:
                 callTime, _ = self.__sequence[0]
@@ -521,8 +525,8 @@ class LoopSequence(CallbackDelayer):
                     dt = 0.0
                 return dt
             self.__inProgress = False
-            return None
-            return None
+            return
+            return
 
     def __generateTimeLine(self, loopStartDT, loopDuration, count):
         time = BigWorld.time()
@@ -577,7 +581,7 @@ class AutoReload(_GunReload):
             return
         else:
             if BARREL_DEBUG_ENABLED:
-                LOG_DEBUG('AutoReload::start time = {0} {1} {2} {3} {4} {5} {6} '.format(BigWorld.time(), shellReloadTime, alert, shellCount, reloadShellCount, shellID, reloadStart))
+                LOG_DEBUG(('AutoReload::start time = {0} {1} {2} {3} {4} {5} {6} ').format(BigWorld.time(), shellReloadTime, alert, shellCount, reloadShellCount, shellID, reloadStart))
             SoundGroups.g_instance.setSwitch(_CALIBER_RELOAD_SOUND_SWITCH, self._desc.caliber)
             self.stopCallback(self.__onShellInTheBarrel)
             self._almostCompleteSnd = None
@@ -613,7 +617,7 @@ class AutoReload(_GunReload):
 
     def onClipLoad(self, timeLeft, shellCount, lastShell, canBeFull):
         if BARREL_DEBUG_ENABLED:
-            LOG_DEBUG('AutoReload::onClipLoad time = {0} {1} {2} {3}'.format(BigWorld.time(), timeLeft, shellCount, lastShell))
+            LOG_DEBUG(('AutoReload::onClipLoad time = {0} {1} {2} {3}').format(BigWorld.time(), timeLeft, shellCount, lastShell))
         self.stopCallback(self.__onAlmostComplete)
         self.stopCallback(self.__onClipShellLoad)
         self.updateReloadTime(timeLeft, shellCount, lastShell, canBeFull)
@@ -683,20 +687,19 @@ class DualGunReload(_GunReload):
     def start(self, shellReloadTime, ammoLow, directTrigger=False):
         if gEffectsDisabled() or not directTrigger:
             return
-        else:
-            SoundGroups.g_instance.setSwitch(_CALIBER_RELOAD_SOUND_SWITCH, self._desc.caliber)
-            self.stopCallback(self.__onReloadStart)
-            timeToStart = shellReloadTime - self._desc.runTimeDelta
-            if self.__sound is None:
-                self.__sound = SoundGroups.g_instance.getSound2D(self._desc.soundEvent)
-            if timeToStart > 0:
-                self.delayCallback(timeToStart, self.__onReloadStart, BigWorld.time() + timeToStart)
-            if ammoLow:
-                timeToStart = shellReloadTime - self._desc.runTimeDeltaAmmoLow
-                self.__ammoLowSound = SoundGroups.g_instance.getSound2D(self._desc.ammoLowSound)
-                self.delayCallback(timeToStart, self.__onAmmoLow, BigWorld.time() + timeToStart)
-            self._checkAndPlayGunRammerEffect(shellReloadTime)
-            return
+        SoundGroups.g_instance.setSwitch(_CALIBER_RELOAD_SOUND_SWITCH, self._desc.caliber)
+        self.stopCallback(self.__onReloadStart)
+        timeToStart = shellReloadTime - self._desc.runTimeDelta
+        if self.__sound is None:
+            self.__sound = SoundGroups.g_instance.getSound2D(self._desc.soundEvent)
+        if timeToStart > 0:
+            self.delayCallback(timeToStart, self.__onReloadStart, BigWorld.time() + timeToStart)
+        if ammoLow:
+            timeToStart = shellReloadTime - self._desc.runTimeDeltaAmmoLow
+            self.__ammoLowSound = SoundGroups.g_instance.getSound2D(self._desc.ammoLowSound)
+            self.delayCallback(timeToStart, self.__onAmmoLow, BigWorld.time() + timeToStart)
+        self._checkAndPlayGunRammerEffect(shellReloadTime)
+        return
 
     def stop(self):
         for sound in (self.__sound, self.__ammoLowSound):
@@ -773,9 +776,8 @@ class TwinGunReload(_GunReload):
     def __onReloadStart(self, time):
         if fabs(time - BigWorld.time()) > 0.1 or self.__sound is None:
             return
-        else:
-            playByInstance(self.__sound)
-            return
+        playByInstance(self.__sound)
+        return
 
 
 class ExtraShotClipReload(SimpleReload):
@@ -900,11 +902,8 @@ class ChargeableBurstReload(SimpleReload):
 
     def stop(self):
         SimpleReload.stop(self)
-        for sound in (self.__soundBurstReady,
-         self.__soundBurstOneShell,
-         self.__soundBurstLastShell,
-         self.__soundNextBurstShellLoading,
-         self.__soundNextBurstShellLoaded):
+        for sound in (self.__soundBurstReady, self.__soundBurstOneShell, self.__soundBurstLastShell,
+         self.__soundNextBurstShellLoading, self.__soundNextBurstShellLoaded):
             if sound is not None:
                 sound.stop()
 
@@ -1070,7 +1069,8 @@ class StationaryReload(SimpleReload):
 
 class ReloadEffectStrategy(object):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('__gunReloadEffect', '__intuitionReloadEffect', '__currentReloadEffect', '__reloadInProgress')
+    __slots__ = ('__gunReloadEffect', '__intuitionReloadEffect', '__currentReloadEffect',
+                 '__reloadInProgress')
 
     def __init__(self, gunReloadEffectDesc):
         self.__gunReloadEffect = gunReloadEffectDesc.create()
@@ -1165,7 +1165,10 @@ class ReloadEffectStrategy(object):
 
 @dependency.replace_none_kwargs(sessionProvider=IBattleSessionProvider)
 def _needGunRammerEffect(sessionProvider=None):
-    return sessionProvider.shared.optionalDevices.soundManager.needGunRammerEffect() if sessionProvider is not None else None
+    if sessionProvider is not None:
+        return sessionProvider.shared.optionalDevices.soundManager.needGunRammerEffect()
+    else:
+        return
 
 
 def _playGunRammerEffect():

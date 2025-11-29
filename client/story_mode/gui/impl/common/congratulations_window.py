@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/common/congratulations_window.py
 from functools import partial
-import typing
-import SoundGroups
+import typing, SoundGroups
 from frameworks.wulf import WindowFlags, ViewSettings, View, WindowLayer
 from gui.impl.gen import R
 from gui.impl.pub import WindowImpl, ViewImpl
@@ -46,7 +43,9 @@ class CongratulationsView(ViewImpl):
             model.setName(R.strings.achievements.dyn(awardName)())
             model.setImage(R.images.gui.maps.icons.achievement.big.dyn(awardName)())
             return View(ViewSettings(contentID, model=model))
-        return BadgeTooltip(badgeId=int(event.getArgument('badgeId'))) if contentID == R.views.story_mode.common.BadgeTooltip() else super(CongratulationsView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.story_mode.common.BadgeTooltip():
+            return BadgeTooltip(badgeId=int(event.getArgument('badgeId')))
+        return super(CongratulationsView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(CongratulationsView, self)._onLoading(*args, **kwargs)
@@ -67,7 +66,11 @@ class CongratulationsView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._closeHandler), (self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
+        return (
+         (
+          self.viewModel.onClose, self._closeHandler),
+         (
+          self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
 
     def _finalize(self):
         self._onClose = None

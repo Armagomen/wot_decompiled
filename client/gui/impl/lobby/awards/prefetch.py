@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/awards/prefetch.py
-import logging
-import typing
+import logging, typing
 from adisp import adisp_async, adisp_process
 from gui.impl.lobby.awards import SupportedTokenTypes
 from helpers import dependency
@@ -61,6 +58,6 @@ class TokenDataPrefetcher(_IPrefetcher):
         callback((iconSmallPath, iconBigPath))
 
 
-PREFETCHERS = {SupportedTokenTypes.BATTLE_TOKEN: TokenDataPrefetcher,
- SupportedTokenTypes.TOKENS: TokenDataPrefetcher,
- SupportedTokenTypes.PROGRESSION_XP_TOKEN: TokenDataPrefetcher}
+PREFETCHERS = {SupportedTokenTypes.BATTLE_TOKEN: TokenDataPrefetcher, 
+   SupportedTokenTypes.TOKENS: TokenDataPrefetcher, 
+   SupportedTokenTypes.PROGRESSION_XP_TOKEN: TokenDataPrefetcher}

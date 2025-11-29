@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/items_actions/actions.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
 from functools import partial
 from itertools import chain
@@ -128,7 +125,7 @@ def _needExchangeForBuy(price, itemsCache=None):
 
 
 class IGUIItemAction(object):
-    __slots__ = ('__skipConfirm',)
+    __slots__ = ('__skipConfirm', )
 
     def __init__(self):
         self.__skipConfirm = False
@@ -164,7 +161,7 @@ class GroupedItemAction(CachedItemAction):
     def _pushGroupedMessages(result):
         if result and result.auxData:
             if result.success:
-                SystemMessages.pushMessage(result.userMsg + ' ' + ', '.join((m.userMsg for m in result.auxData if m)), type=result.sysMsgType, priority=result.msgPriority, messageData=result.msgData)
+                SystemMessages.pushMessage(result.userMsg + ' ' + (', ').join(m.userMsg for m in result.auxData if m), type=result.sysMsgType, priority=result.msgPriority, messageData=result.msgData)
             else:
                 SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
 
@@ -325,8 +322,8 @@ class _UnlockItem(CachedItemAction):
         self.__costCtx = None
         self._item = self._itemsCache.items.getItemByCD(itemCD)
         self._unlockProps = unlockProps
-        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged,
-         'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged})
+        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged, 
+           'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged})
         return
 
     def _isEnoughXpToUnlock(self):
@@ -337,7 +334,9 @@ class _UnlockItem(CachedItemAction):
     def _createPlugins(self):
         self.__costCtx = self.__getCostCtx()
         unlockCtx = unlock.UnlockItemCtx(self._item.intCD, self._item.itemTypeID, self._unlockProps.parentID, self._unlockProps.unlockIdx)
-        plugins = [self._itemConfirmatorCls(unlockCtx, self.__costCtx, isEnabled=not self.skipConfirm), self._itemValidatorCls(unlockCtx, self.__costCtx)]
+        plugins = [
+         self._itemConfirmatorCls(unlockCtx, self.__costCtx, isEnabled=not self.skipConfirm),
+         self._itemValidatorCls(unlockCtx, self.__costCtx)]
         return plugins
 
     def _showResult(self, result):
@@ -427,10 +426,10 @@ class InstallItemAction(BuyAction):
     def installItem(self, itemCD, rootCD, state):
         itemTypeID, _, __ = vehicles.parseIntCompactDescr(itemCD)
         if itemTypeID not in GUI_ITEM_TYPE.VEHICLE_MODULES:
-            raise SoftException('Specified type (itemTypeID={}) is not type of module'.format(itemTypeID))
+            raise SoftException(('Specified type (itemTypeID={}) is not type of module').format(itemTypeID))
         vehicle = self._itemsCache.items.getItemByCD(rootCD)
         if not vehicle.isInInventory:
-            raise SoftException('Vehicle (intCD={}) must be in inventory'.format(rootCD))
+            raise SoftException(('Vehicle (intCD={}) must be in inventory').format(rootCD))
         item = self._itemsCache.items.getItemByCD(itemCD)
         conflictedEqs = item.getConflictedEquipments(vehicle)
         RequestState.sent(state)
@@ -457,10 +456,10 @@ class BuyAndInstallItemAction(InstallItemAction):
     def buyAndInstallItem(self, itemCD, rootCD, state, callback):
         itemTypeID, _, __ = vehicles.parseIntCompactDescr(itemCD)
         if itemTypeID not in GUI_ITEM_TYPE.VEHICLE_MODULES:
-            raise SoftException('Specified type (itemTypeID={}) is not type of module'.format(itemTypeID))
+            raise SoftException(('Specified type (itemTypeID={}) is not type of module').format(itemTypeID))
         vehicle = self._itemsCache.items.getItemByCD(rootCD)
         if not vehicle.isInInventory:
-            raise SoftException('Vehicle (intCD={}) must be in inventory'.format(rootCD))
+            raise SoftException(('Vehicle (intCD={}) must be in inventory').format(rootCD))
         item = self._itemsCache.items.getItemByCD(itemCD)
         conflictedEqs = item.getConflictedEquipments(vehicle)
         if not self._mayObtainForMoney(item) and self._mayObtainWithMoneyExchange(item):
@@ -593,7 +592,7 @@ class AmmunitionBuyAndInstall(AsyncGUIItemAction):
             callback(True)
         else:
             result = yield future_async.wg_await(shared_events.showTankSetupConfirmDialog(items=self._changedItems, vehicle=self._vehicle, startState=startState))
-            callback(result.result[0] if not result.busy else False)
+            callback((result.busy or result.result)[0] if 1 else False)
 
 
 class BuyAndInstallOptDevices(AmmunitionBuyAndInstall):
@@ -601,7 +600,8 @@ class BuyAndInstallOptDevices(AmmunitionBuyAndInstall):
 
     def __init__(self, vehicle, confirmOnlyExchange=False):
         optDevices = vehicle.optDevices
-        changeItems = [ item for item in optDevices.layout.getItems() if not vehicle.optDevices.setupLayouts.isInSetup(item) ]
+        changeItems = [ item for item in optDevices.layout.getItems() if not vehicle.optDevices.setupLayouts.isInSetup(item)
+                      ]
         super(BuyAndInstallOptDevices, self).__init__(vehicle, changeItems, confirmOnlyExchange)
 
     @adisp_async
@@ -615,7 +615,8 @@ class BuyAndInstallConsumables(AmmunitionBuyAndInstall):
     __slots__ = ()
 
     def __init__(self, vehicle, confirmOnlyExchange=False):
-        changeItems = [ item for item in vehicle.consumables.layout.getItems() if not vehicle.consumables.setupLayouts.isInSetup(item) ]
+        changeItems = [ item for item in vehicle.consumables.layout.getItems() if not vehicle.consumables.setupLayouts.isInSetup(item)
+                      ]
         super(BuyAndInstallConsumables, self).__init__(vehicle, changeItems, confirmOnlyExchange)
 
     @adisp_async
@@ -629,7 +630,8 @@ class BuyAndInstallBattleBoosters(AmmunitionBuyAndInstall):
     __slots__ = ()
 
     def __init__(self, vehicle, confirmOnlyExchange=False):
-        changeItems = [ item for item in vehicle.battleBoosters.layout.getItems() if not vehicle.battleBoosters.setupLayouts.isInSetup(item) ]
+        changeItems = [ item for item in vehicle.battleBoosters.layout.getItems() if not vehicle.battleBoosters.setupLayouts.isInSetup(item)
+                      ]
         super(BuyAndInstallBattleBoosters, self).__init__(vehicle, changeItems, confirmOnlyExchange)
 
     @adisp_async
@@ -668,7 +670,7 @@ class BuyAndInstallShells(AsyncGUIItemAction):
             callback(True)
         else:
             result = yield future_async.wg_await(shared_events.showRefillShellsDialog(price=self.__price, shells=self.__vehicle.shells.layout.getItems(), startState=startState))
-            callback(result.result[0] if not result.busy else False)
+            callback((result.busy or result.result)[0] if 1 else False)
 
 
 class VehicleRepairAction(AsyncGUIItemAction):
@@ -694,7 +696,7 @@ class VehicleRepairAction(AsyncGUIItemAction):
         else:
             startState = BuyAndExchangeStateEnum.BUY_NOT_REQUIRED
         result = yield future_async.wg_await(shared_events.showNeedRepairDialog(vehicle=self.__vehicle, startState=startState, wrappedViewClass=self.__wrappedViewClass, repairClazz=self.__repairClazz))
-        callback(result.result if not result.busy else False)
+        callback((result.busy or result).result if 1 else False)
         return
 
 
@@ -728,7 +730,10 @@ class BuyVehicleSlotAction(CachedItemAction):
         availableMoney = self.__itemsCache.items.stats.money
         if self.__currency == Currency.GOLD and availableMoney.gold < self.__price.gold:
             return (False, self.__NO_ENOUGH_GOLD_FLOW)
-        return (False, self.__NO_ENOUGH_CREDITS_FLOW) if self.__currency == Currency.CREDITS and availableMoney.credits < self.__price.credits and _needExchangeForBuy(self.__price) else (True, self.__DEFAULT_FLOW)
+        if self.__currency == Currency.CREDITS and availableMoney.credits < self.__price.credits and _needExchangeForBuy(self.__price):
+            return (False, self.__NO_ENOUGH_CREDITS_FLOW)
+        return (
+         True, self.__DEFAULT_FLOW)
 
 
 class BuyBerthsAction(CachedItemAction):
@@ -1007,7 +1012,7 @@ class UseFreeXpToTankman(GroupedItemAction):
             if result.success:
                 msg = result.userMsg
                 if result.auxData:
-                    msg += ' ' + ', '.join((m.userMsg for m in result.auxData if m))
+                    msg += ' ' + (', ').join(m.userMsg for m in result.auxData if m)
                 SystemMessages.pushMessage(msg, type=result.sysMsgType, priority=result.msgPriority, messageData=result.msgData)
             else:
                 SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
@@ -1239,7 +1244,7 @@ class DeconstructMultOptDevice(AsyncGUIItemAction):
 
         for intCD, itemSpecs in sorted(itemsDict.items(), key=self.__sortItemsKey):
             item = self._itemsCache.items.getItemByCD(intCD)
-            count = sum(((itemSpec.count if isinstance(itemSpec, ItemSellSpec) else 1) for itemSpec in itemSpecs))
+            count = sum((itemSpec.count if isinstance(itemSpec, ItemSellSpec) else 1) for itemSpec in itemSpecs)
             modules.append((item, count))
 
         if modules:
@@ -1337,7 +1342,7 @@ class FrontlineInstallReserves(AsyncGUIItemAction):
 
 
 class BuyBattleAbilities(AsyncGUIItemAction):
-    __slots__ = ('__skillIDs',)
+    __slots__ = ('__skillIDs', )
 
     def __init__(self, skillIDs):
         super(BuyBattleAbilities, self).__init__()
@@ -1351,7 +1356,8 @@ class BuyBattleAbilities(AsyncGUIItemAction):
 
 
 class RemoveOptionalDevice(AsyncGUIItemAction):
-    __slots__ = ('__vehicle', '__device', '__slotID', '__destroy', '__forFitting', '__everywhere', '__removeProcessor')
+    __slots__ = ('__vehicle', '__device', '__slotID', '__destroy', '__forFitting',
+                 '__everywhere', '__removeProcessor')
     __goodiesCache = dependency.descriptor(IGoodiesCache)
     __wotPlusController = dependency.descriptor(IWotPlusController)
 
@@ -1452,7 +1458,7 @@ class DiscardPostProgressionPairs(AsyncGUIItemAction):
     @future_async.wg_async
     def _confirm(self, callback):
         result = yield future_async.wg_await(shared_events.showDestroyPairModificationsDialog)(self.__vehicle, self.__stepIDs)
-        callback(result.result[0] if not result.busy else False)
+        callback((result.busy or result.result)[0] if 1 else False)
 
 
 class PurchasePostProgressionPair(AsyncGUIItemAction):
@@ -1474,7 +1480,7 @@ class PurchasePostProgressionPair(AsyncGUIItemAction):
     @future_async.wg_async
     def _confirm(self, callback):
         result = yield future_async.wg_await(shared_events.showPostProgressionPairModDialog)(self.__vehicle, self.__stepID, self.__modificationID)
-        callback(result.result[0] if not result.busy else False)
+        callback((result.busy or result.result)[0] if 1 else False)
 
 
 class PurchasePostProgressionSteps(AsyncGUIItemAction):
@@ -1495,7 +1501,7 @@ class PurchasePostProgressionSteps(AsyncGUIItemAction):
     @future_async.wg_async
     def _confirm(self, callback):
         result = yield future_async.wg_await(shared_events.showPostProgressionResearchDialog)(self.__vehicle, self.__stepIDs)
-        callback(result.result[0] if not result.busy else False)
+        callback((result.busy or result.result)[0] if 1 else False)
 
 
 class SetEquipmentSlotType(AsyncGUIItemAction):
@@ -1554,8 +1560,11 @@ class PurchaseVehSkillTreeSteps(AsyncGUIItemAction):
     def _confirm(self, callback):
         shortage = self.__getXPShortage()
         if shortage > 0:
-            isOk, _, _ = yield future_async.wg_await(shared_events.showExchangeXPDialogWindow)(self.__formatValue(shortage))
-            callback(isOk and self.__getXPShortage() <= 0)
+            isOk, result, _ = yield future_async.wg_await(shared_events.showExchangeXPDialogWindow)(self.__formatValue(shortage))
+            confirm = isOk and self.__getXPShortage() <= 0
+            if confirm and result.userMsg:
+                self._showResult(result)
+            callback(confirm)
         else:
             callback(True)
 

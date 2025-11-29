@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/commands/mechanic_controls/nitro_control.py
-import typing
-import logging
-import BigWorld
-import CommandMapping
+import typing, logging, BigWorld, CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/app_loader/observers.py
 import typing
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.app_loader.observers import BattleLoadingObserver, registerBattleObserverOverrideHandler, SwitchToBattleObserver, BattlePageObserver, SwitchToLobbyObserver
@@ -19,7 +17,9 @@ def getStoryModeBattle():
         return
     else:
         containerManager = app.containerManager
-        return None if containerManager is None else containerManager.getViewByKey(ViewKey(VIEW_ALIAS.ONBOARDING_BATTLE_PAGE)) or containerManager.getViewByKey(ViewKey(VIEW_ALIAS.STORY_MODE_BATTLE_PAGE))
+        if containerManager is None:
+            return
+        return containerManager.getViewByKey(ViewKey(VIEW_ALIAS.ONBOARDING_BATTLE_PAGE)) or containerManager.getViewByKey(ViewKey(VIEW_ALIAS.STORY_MODE_BATTLE_PAGE))
 
 
 def isInStoryModeBattle():
@@ -73,7 +73,10 @@ class StoryModeObserverPredicate(object):
 
 
 def registerObservers(proxy):
-    return (StoryModeObserverPredicate(), (StoryModeSwitchToBattleObserver(GameplayStateID.AVATAR_ENTERING, proxy),
+    return (
+     StoryModeObserverPredicate(),
+     (
+      StoryModeSwitchToBattleObserver(GameplayStateID.AVATAR_ENTERING, proxy),
       BattleLoadingObserver(GameplayStateID.AVATAR_ARENA_INFO, proxy),
       BattleLoadingObserver(GameplayStateID.AVATAR_SHOW_GUI, proxy),
       StoryModeBattlePageObserver(GameplayStateID.AVATAR_ARENA_LOADED, proxy),

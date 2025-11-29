@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/filter/data_providers.py
 from typing import Optional
 from Event import Event
 from constants import MAX_VEHICLE_LEVEL
@@ -19,7 +17,9 @@ class _ItemCallProxy(object):
 
     def __getattr__(self, name):
         attr = getattr(self._item, name)
-        return self._proxy(attr) if callable(attr) else attr
+        if callable(attr):
+            return self._proxy(attr)
+        return attr
 
     def _proxy(self, method):
 
@@ -150,11 +150,11 @@ class CompoundDataProvider(object):
 
     @property
     def itemsCount(self):
-        return sum((provider.itemsCount for provider in self.__dataProviders.itervalues()))
+        return sum(provider.itemsCount for provider in self.__dataProviders.itervalues())
 
     @property
     def initialItemsCount(self):
-        return sum((provider.initialItemsCount for provider in self.__dataProviders.itervalues()))
+        return sum(provider.initialItemsCount for provider in self.__dataProviders.itervalues())
 
     def _onProviderDataChanged(self):
         self.__updatingCount -= 1
@@ -172,7 +172,8 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
     def items(self):
         items = super(VehiclesDataProvider, self).items()
         if items and self.__vehicle and self.__vehicle not in items:
-            items = [self.__vehicle] + items
+            items = [
+             self.__vehicle] + items
         return items
 
     @property
@@ -193,7 +194,8 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
         super(VehiclesDataProvider, self).updateRoot(vehicle)
 
     def _getFiltersList(self):
-        return [self._getFilterByVehicleTypeCriteria(),
+        return [
+         self._getFilterByVehicleTypeCriteria(),
          self._getFilterByVehicleTierCriteria(),
          self._getFilterByVehicleGradeCriteria(),
          self._getFilterByVehicleLocationCriteria(),
@@ -214,24 +216,38 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
 
     def _getFilterByVehicleTypeCriteria(self):
         vehicleTypes = self._state[ToggleGroupType.VEHICLETYPE.value]
-        return REQ_CRITERIA.VEHICLE.CLASSES(tuple(vehicleTypes)) if vehicleTypes else None
+        if vehicleTypes:
+            return REQ_CRITERIA.VEHICLE.CLASSES(tuple(vehicleTypes))
+        else:
+            return
 
     def _getFilterByVehicleTierCriteria(self):
         vehicleTiers = self._state[ToggleGroupType.VEHICLETIER.value]
         vehicleTiers = {int(t) for t in vehicleTiers}
-        return REQ_CRITERIA.VEHICLE.LEVELS(vehicleTiers) if vehicleTiers else None
+        if vehicleTiers:
+            return REQ_CRITERIA.VEHICLE.LEVELS(vehicleTiers)
+        else:
+            return
 
     def _getFilterByVehicleGradeCriteria(self):
         vehicleGrades = self._state[ToggleGroupType.VEHICLEGRADE.value]
         criteria = REQ_CRITERIA.VEHICLE.PREMIUM
-        return criteria if GRADE_PREMIUM in vehicleGrades else ~criteria
+        if GRADE_PREMIUM in vehicleGrades:
+            return criteria
+        return ~criteria
 
     def _getFilterByVehicleLocationCriteria(self):
         vehicleLocations = self._state[ToggleGroupType.LOCATION.value]
-        return REQ_CRITERIA.INVENTORY if VEHICLE_LOCATION_IN_HANGAR in vehicleLocations else None
+        if VEHICLE_LOCATION_IN_HANGAR in vehicleLocations:
+            return REQ_CRITERIA.INVENTORY
+        else:
+            return
 
     def _getSearchCriteria(self):
-        return REQ_CRITERIA.VEHICLE.NAME_VEHICLE_WITH_SHORT(self._state.searchString.lower()) if self._state.searchString else None
+        if self._state.searchString:
+            return REQ_CRITERIA.VEHICLE.NAME_VEHICLE_WITH_SHORT(self._state.searchString.lower())
+        else:
+            return
 
     def _getSortKeyCriteria(self):
         criteria = REQ_CRITERIA.CUSTOM(lambda item: VEHICLE_TYPES_ORDER_INDICES[item.type])

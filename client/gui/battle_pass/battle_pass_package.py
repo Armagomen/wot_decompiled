@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/battle_pass_package.py
 from collections import OrderedDict
 import typing
 from battle_pass_common import BattlePassConsts
@@ -41,13 +39,19 @@ class BattlePassPackage(object):
         return {priceDefaultID: compoundPrice.toDict()}
 
     def getLevelsCount(self):
-        pass
+        return 0
+
+    def getDynamicLevelsCount(self):
+        return 1
 
     def getCurrentLevel(self):
         return self.__battlePass.getLevelInChapter(chapterID=self.__chapterID)
 
     def getLevelsRange(self):
-        return (MIN_LEVEL, self.getCurrentLevel()) if not self.__buyWithRemainingLevels else (self.getCurrentLevel() + 1, self._getMaxLevel())
+        if not self.__buyWithRemainingLevels:
+            return (MIN_LEVEL, self.getCurrentLevel())
+        return (
+         self.getCurrentLevel() + 1, self._getMaxLevel())
 
     def getRemainingLevelsCount(self):
         return self._getMaxLevel() - self.getCurrentLevel()
@@ -121,7 +125,9 @@ class BattlePassPackage(object):
         return self.__battlePass.getMaxLevelInChapter(self.__chapterID)
 
     def __getPriceBP(self, battlePassCost):
-        return next(next(battlePassCost.itervalues()).itervalues()) if self.hasBattlePass() else 0
+        if self.hasBattlePass():
+            return next(next(battlePassCost.itervalues()).itervalues())
+        return 0
 
     def __getUnreachedLevelsPrice(self):
         levelsCount = self._getMaxLevel() - self.getCurrentLevel()
@@ -130,7 +136,7 @@ class BattlePassPackage(object):
 
 
 class PackageAnyLevels(BattlePassPackage):
-    __slots__ = ('__dynamicLevelsCount',)
+    __slots__ = ('__dynamicLevelsCount', )
     __itemsCache = dependency.descriptor(IItemsCache)
     __battlePass = dependency.descriptor(IBattlePassController)
 
@@ -144,6 +150,9 @@ class PackageAnyLevels(BattlePassPackage):
     def getLevelsCount(self):
         maxLevelCount = max(self._getMaxLevel() - self.getCurrentLevel(), 0)
         return min(maxLevelCount, self.__dynamicLevelsCount)
+
+    def getDynamicLevelsCount(self):
+        return self.__dynamicLevelsCount
 
     def isLocked(self):
         chapterID = self.getChapterID()
@@ -198,4 +207,4 @@ class PackageAnyLevels(BattlePassPackage):
 
 @replace_none_kwargs(battlePass=IBattlePassController)
 def generatePackages(battlePass=None):
-    return OrderedDict(sorted(((chapterID, BattlePassPackage(chapterID)) for chapterID in battlePass.getMainChapterIDs())))
+    return OrderedDict(sorted((chapterID, BattlePassPackage(chapterID)) for chapterID in battlePass.getMainChapterIDs()))

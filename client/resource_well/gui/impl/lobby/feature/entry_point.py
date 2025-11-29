@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/entry_point.py
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 from gui.impl.gen import R
@@ -53,17 +51,25 @@ class EntryPoint(ViewImpl):
         return super(EntryPoint, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return EntryPointTooltip() if contentID == R.views.resource_well.lobby.feature.tooltips.EntryPointTooltip() else super(EntryPoint, self).createToolTipContent(event, contentID)
+        if contentID == R.views.resource_well.lobby.feature.tooltips.EntryPointTooltip():
+            return EntryPointTooltip()
+        return super(EntryPoint, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return ((self.viewModel.showProgression, self.__showProgressionWindow), (self.__resourceWell.onSettingsChanged, self.__onSettingsChanged), (self.__resourceWell.onEventUpdated, self.__onEventUpdated))
+        return (
+         (
+          self.viewModel.showProgression, self.__showProgressionWindow),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onSettingsChanged),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventUpdated))
 
     def _onLoading(self, *args, **kwargs):
         super(EntryPoint, self)._onLoading(*args, **kwargs)
         self.__updateModel()
 
     def __updateModel(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             isFirstShow = _g_lastEntryPointState.isFirstShow
             progress = self.__getProgress()
             state = self.__getEventState()

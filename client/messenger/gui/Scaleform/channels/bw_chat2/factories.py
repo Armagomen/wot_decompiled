@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw_chat2/factories.py
 from constants import PREBATTLE_TYPE, ARENA_GUI_TYPE
 from messenger.gui.gameface.channels.GFChannelController import GFChannelController
 from messenger.gui.Scaleform.channels.bw_chat2 import battle_controllers
@@ -17,7 +15,7 @@ class LobbyControllersFactory(IControllerFactory):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     def init(self):
         controllers = []
@@ -52,7 +50,7 @@ class BattleControllersFactory(IControllerFactory):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     def init(self):
         controllers = []

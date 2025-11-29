@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/collection/resources/common.py
 import logging
 from gui.collection.resources.cdn.cache import CollectionsCdnCacheMgr
 from gui.collection.resources.local.cache import CollectionsLocalCacheMgr

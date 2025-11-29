@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/servers_data_provider.py
 import logging
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.impl import backport
@@ -16,12 +14,8 @@ _logger = logging.getLogger(__name__)
 class _INDICATOR_STATUSES(object):
     WAITING = -1
     IGNORED = -2
-    ALL = (PING_STATUSES.UNDEFINED,
-     PING_STATUSES.HIGH,
-     PING_STATUSES.NORM,
-     PING_STATUSES.LOW,
-     WAITING,
-     IGNORED)
+    ALL = (
+     PING_STATUSES.UNDEFINED, PING_STATUSES.HIGH, PING_STATUSES.NORM, PING_STATUSES.LOW, WAITING, IGNORED)
 
 
 class ServersDataProvider(SortableDAAPIDataProvider):
@@ -47,7 +41,7 @@ class ServersDataProvider(SortableDAAPIDataProvider):
         return self.__isColorBlind
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self.__clearLists()
@@ -60,7 +54,9 @@ class ServersDataProvider(SortableDAAPIDataProvider):
         self.destroy()
 
     def getSelectedIdx(self):
-        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
+        if self.__selectedID in self.__mapping:
+            return self.__mapping[self.__selectedID]
+        return -1
 
     def getSelectedID(self):
         return self.__selectedID
@@ -126,14 +122,14 @@ class ServersDataProvider(SortableDAAPIDataProvider):
         pingValueStr = formatPingStatus(csisStatus, self.__isColorBlind, False, pingStatus, pingValue)
         host = g_preDefinedHosts.byName(serverName)
         haveAccess = not host.peripheryID or self.__connectionManager.isAvailablePeriphery(host.peripheryID)
-        vo = {'id': item.get('id', 0),
-         'data': hostName,
-         'csisStatus': csisStatus,
-         'label': serverName,
-         'pingState': pingIndicatorState,
-         'pingValue': pingValueStr,
-         'enabled': enabled and haveAccess,
-         'haveAccess': haveAccess}
+        vo = {'id': item.get('id', 0), 
+           'data': hostName, 
+           'csisStatus': csisStatus, 
+           'label': serverName, 
+           'pingState': pingIndicatorState, 
+           'pingValue': pingValueStr, 
+           'enabled': enabled and haveAccess, 
+           'haveAccess': haveAccess}
         if not haveAccess:
             vo['tooltip'] = {'tooltip': backport.text(R.strings.tooltips.server.notAccess())}
         elif csisStatus == HOST_AVAILABILITY.NOT_RECOMMENDED:
@@ -166,7 +162,9 @@ class ServersDataProvider(SortableDAAPIDataProvider):
             return _INDICATOR_STATUSES.IGNORED
         if csisStatus == HOST_AVAILABILITY.REQUESTED:
             return _INDICATOR_STATUSES.WAITING
-        return _INDICATOR_STATUSES.IGNORED if item['data'] == AUTO_LOGIN_QUERY_URL else self.__checkPingForValidStatus(pingStatus)
+        if item['data'] == AUTO_LOGIN_QUERY_URL:
+            return _INDICATOR_STATUSES.IGNORED
+        return self.__checkPingForValidStatus(pingStatus)
 
     @staticmethod
     def __checkPingForValidStatus(incomeStatus):
@@ -174,4 +172,4 @@ class ServersDataProvider(SortableDAAPIDataProvider):
             return incomeStatus
         else:
             _logger.error('Mismatch ping status "%s" and available indicator statuses.', incomeStatus)
-            return None
+            return

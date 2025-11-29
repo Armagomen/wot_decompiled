@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/common/fun_random_common/fun_battle_mode.py
 from battle_results import fun_random
 from constants import PREBATTLE_TYPE, ARENA_BONUS_TYPE, QUEUE_TYPE
 from constants_utils import AbstractBattleMode

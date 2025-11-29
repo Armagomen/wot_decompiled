@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/models/progressions.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.feature.fun_constants import PROGRESSION_COUNTER_TEMPLATE, PROGRESSION_UNLIMITED_COUNTER_TEMPLATE
@@ -37,7 +35,7 @@ class FunProgressionConditions(object):
 
     @property
     def maximumCounter(self):
-        return self.__pConfig.executors[-1]
+        return self.__pConfig.executors[(-1)]
 
     @property
     def finishTimestamp(self):
@@ -45,7 +43,9 @@ class FunProgressionConditions(object):
 
     @property
     def text(self):
-        return backport.text(R.strings.fun_random.progression.defaultCondition.text()) if len(self.__triggers) > 1 else self.__triggers[0].getDescription()
+        if len(self.__triggers) > 1:
+            return backport.text(R.strings.fun_random.progression.defaultCondition.text())
+        return self.__triggers[0].getDescription()
 
     def setCounter(self, counter):
         self.__counter = counter
@@ -57,7 +57,7 @@ class FunProgressionStage(object):
     def __init__(self, pConfig, index, executor):
         self.__executorID = executor.getID()
         self.__requiredCounter = pConfig.executors[index]
-        self.__prevRequiredCounter = pConfig.executors[index - 1] if index else 0
+        self.__prevRequiredCounter = pConfig.executors[(index - 1)] if index else 0
         self.__bonuses = executor.getBonuses()
         self.__stageIndex = index
 
@@ -160,7 +160,7 @@ class FunProgression(object):
     def __init__(self, pConfig, isFirst, isLast, counter, triggers, executors, unlimitedProgress):
         self.__conditions = FunProgressionConditions(pConfig, counter, triggers)
         self.__pConfig = pConfig
-        self.__stages = tuple((FunProgressionStage(pConfig, idx, exe) for idx, exe in enumerate(executors)))
+        self.__stages = tuple(FunProgressionStage(pConfig, idx, exe) for idx, exe in enumerate(executors))
         self.__state = FunProgressionState(pConfig, isFirst, isLast, self.__conditions, self.__stages)
         self.__unlimitedProgress = FunProgressionUnlimitedProgress(pConfig, *unlimitedProgress) if unlimitedProgress else None
         self.__resetTimestamp = 0
@@ -219,7 +219,9 @@ class FunProgression(object):
 
     @property
     def statusTimer(self):
-        return self.resetTimer if self.state.isCompleted and not self.hasUnlimitedProgression and not self.state.isLastProgression else time_utils.getTimeDeltaFromNowInLocal(self.conditions.finishTimestamp)
+        if self.state.isCompleted and not self.hasUnlimitedProgression and not self.state.isLastProgression:
+            return self.resetTimer
+        return time_utils.getTimeDeltaFromNowInLocal(self.conditions.finishTimestamp)
 
     @property
     def resetTimer(self):

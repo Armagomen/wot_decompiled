@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/shared/event_dispatcher.py
-import logging
-import typing
+import logging, typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from frameworks.wulf import Window
 from gui.impl.pub.notification_commands import WindowNotificationCommand
@@ -46,6 +43,11 @@ def showComp7NoVehiclesScreen():
 def showComp7IntroScreen():
     from comp7.gui.impl.lobby.hangar.states import Comp7IntroState
     Comp7IntroState.goTo()
+
+
+def showComp7WCIScreen():
+    from comp7.gui.impl.lobby.hangar.states import Comp7WCIState
+    Comp7WCIState.goTo()
 
 
 @dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)
@@ -167,22 +169,34 @@ def showComp7InfoPage():
     from gui.impl.lobby.mode_selector.items.base_item import getInfoPageKey
     from gui.shared.event_dispatcher import showBrowserOverlayView
     url = GUI_SETTINGS.lookup(getInfoPageKey(SELECTOR_BATTLE_TYPES.COMP7))
-    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+
+
+def showWciInfoPage():
+    from frameworks.wulf import WindowLayer
+    from gui import GUI_SETTINGS
+    from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
+    from gui.shared.event_dispatcher import showBrowserOverlayView
+    from comp7.gui.comp7_constants import INFO_PAGE_WCI
+    url = GUI_SETTINGS.lookup(INFO_PAGE_WCI)
+    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
 
 def showComp7StylePreview(vehCD, style, **kwargs):
     from comp7.gui.impl.lobby.hangar.states import Comp7StylePreviewState
-    kwargs.update({'itemCD': vehCD,
-     'style': style,
-     'showBackButton': False})
+    kwargs.update({'itemCD': vehCD, 
+       'style': style, 
+       'showBackButton': False})
     params = {'ctx': kwargs}
     Comp7StylePreviewState.goTo(**params)
 
 
 def showComp7VehiclePreview(vehCD, **kwargs):
     from comp7.gui.impl.lobby.hangar.states import Comp7VehiclePreviewState
-    kwargs.update({'itemCD': vehCD,
-     'showBackButton': False,
-     'showCloseButton': False})
+    kwargs.update({'itemCD': vehCD, 
+       'showBackButton': False, 
+       'showCloseButton': False})
     params = {'ctx': kwargs}
     Comp7VehiclePreviewState.goTo(**params)

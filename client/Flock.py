@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Flock.py
-import math
-import random
-import math_utils
-import BigWorld
-import Math
-import ResMgr
-import SoundGroups
+import math, random, math_utils, BigWorld, Math, ResMgr, SoundGroups
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
 from Math import Vector3
 import AnimationSequence
@@ -81,7 +73,9 @@ class DebugLine(object):
         self.start = start
         self.end = end
         direction = end - start
-        m = math_utils.createSRTMatrix((self.__thickness, self.__thickness, direction.length), (direction.yaw, direction.pitch, 0), start + direction)
+        m = math_utils.createSRTMatrix((
+         self.__thickness, self.__thickness, direction.length), (
+         direction.yaw, direction.pitch, 0), start + direction)
         m.preMultiply(math_utils.createTranslationMatrix(Vector3(0.0, 0.0, -0.5)))
         self.motor.signal = m
 
@@ -210,7 +204,9 @@ class Flock(BigWorld.Entity, FlockLike):
         return
 
     def prerequisites(self):
-        return [] if BigWorld.isForwardPipeline() else self._getModelsToLoad()
+        if BigWorld.isForwardPipeline():
+            return []
+        return self._getModelsToLoad()
 
     def onEnterWorld(self, prereqs):
         if BigWorld.isForwardPipeline():
@@ -254,7 +250,7 @@ class Flock(BigWorld.Entity, FlockLike):
         pass
 
     def name(self):
-        pass
+        return 'Flock'
 
     def __setupFlyAroundCenter(self):
         self.__decisionStrategy = self.__doAroundCenterFly
@@ -263,7 +259,8 @@ class Flock(BigWorld.Entity, FlockLike):
             boid.position = Vector3(0.0, 0.0, self.deadZoneRadius)
             if self.flyAroundCenter == Flock.STRATEGY_FLY_AROUND_CW:
                 boid.yaw = math.pi / 2.0
-            boid.yaw = -math.pi / 2.0
+            else:
+                boid.yaw = -math.pi / 2.0
 
     def __doUsualFly(self):
         flightZoneHeight = self.maxHeight - self.minHeight

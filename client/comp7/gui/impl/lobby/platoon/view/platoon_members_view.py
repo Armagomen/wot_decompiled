@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/platoon/view/platoon_members_view.py
 import logging
 from itertools import izip
 import typing
@@ -51,16 +49,15 @@ class Comp7MembersView(SquadMembersView):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip():
             return SquadBonusTooltipContent(battleType=SELECTOR_BATTLE_TYPES.COMP7, bonusState=getPlatoonBonusState(True))
         if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'divisions': event.getArgument('divisions'),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
+            params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
+               'from': event.getArgument('from'), 
+               'to': event.getArgument('to')}
             return GeneralRankTooltip(params=params)
         if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
             return FifthRankTooltip()
@@ -71,10 +68,9 @@ class Comp7MembersView(SquadMembersView):
             rankRangeRestriction = self._comp7Controller.getPlatoonRankRestriction(squadSize)
             return RankCompatibilityTooltip(squadSize, rankRangeRestriction)
         if contentID == R.views.comp7.mono.lobby.tooltips.division_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'division': Division(event.getArgument('division')),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
+            params = {'rank': Rank(event.getArgument('rank')), 'division': Division(event.getArgument('division')), 
+               'from': event.getArgument('from'), 
+               'to': event.getArgument('to')}
             return DivisionTooltip(params=params)
         return super(Comp7MembersView, self).createToolTipContent(event=event, contentID=contentID)
 
@@ -153,7 +149,7 @@ class Comp7MembersView(SquadMembersView):
 
     def _updateHeader(self):
         super(Comp7MembersView, self)._updateHeader()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateDropDown(model)
             self.__updateRankTips(model)
 
@@ -166,7 +162,10 @@ class Comp7MembersView(SquadMembersView):
         return _LayoutStyle.VERTICAL
 
     def _hasFreeSlot(self):
-        return len(self.__unitMgr.unit.getPlayers()) < self.__unitMgr.unit.getSquadSize() if self.__unitMgr is not None and self.__unitMgr.unit is not None else False
+        if self.__unitMgr is not None and self.__unitMgr.unit is not None:
+            return len(self.__unitMgr.unit.getPlayers()) < self.__unitMgr.unit.getSquadSize()
+        else:
+            return False
 
     def _addListeners(self):
         super(Comp7MembersView, self)._addListeners()
@@ -234,5 +233,6 @@ class Comp7MembersView(SquadMembersView):
     @staticmethod
     def __playerTimeJoin(slot):
         player = slot['player'] or {}
-        roleIndex = -slot['role'] if not player.get('isOffline') else 0
-        return (not player, roleIndex, player.get('timeJoin', 0))
+        roleIndex = -(player.get('isOffline') or slot['role']) if 1 else 0
+        return (
+         not player, roleIndex, player.get('timeJoin', 0))

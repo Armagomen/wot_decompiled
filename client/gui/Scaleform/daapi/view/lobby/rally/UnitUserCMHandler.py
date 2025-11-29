@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/UnitUserCMHandler.py
 from account_helpers import getAccountDatabaseID
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
@@ -67,7 +65,7 @@ class UnitUserCMHandler(BaseUserCMHandler, IGlobalListener):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def isSquadCreator(self):
         return self.prbEntity.isCommander()
@@ -109,7 +107,9 @@ class UnitUserCMHandler(BaseUserCMHandler, IGlobalListener):
         return option
 
     def _addSquadInfo(self, options, userCMInfo):
-        return super(UnitUserCMHandler, self)._addSquadInfo(options, userCMInfo) if self.prbEntity.getEntityType() not in PREBATTLE_TYPE.SQUAD_PREBATTLES else options
+        if self.prbEntity.getEntityType() not in PREBATTLE_TYPE.SQUAD_PREBATTLES:
+            return super(UnitUserCMHandler, self)._addSquadInfo(options, userCMInfo)
+        return options
 
     def _addStrongholdsInfo(self, userCMInfo):
         if self.prbEntity.getEntityType() != PREBATTLE_TYPE.STRONGHOLD:

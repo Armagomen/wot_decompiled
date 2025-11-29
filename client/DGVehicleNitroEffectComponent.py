@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DGVehicleNitroEffectComponent.py
 import weakref
 from dyn_components_groups import groupComponent
 from script_component.DynamicScriptComponent import DynamicScriptComponent

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/secondary_objectives/state_machine/transitions.py
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.transitions import ToStateTransition
 from pve_battle_hud import SecondaryObjectiveState
 

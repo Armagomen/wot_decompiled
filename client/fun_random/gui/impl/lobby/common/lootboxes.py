@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/common/lootboxes.py
 from __future__ import absolute_import
 import typing
 from builtins import round
@@ -29,11 +27,8 @@ class FunRandomLootBoxTypes(object):
     RARE = 'fep_rare'
     EPIC = 'fep_epic'
     LEGENDARY = 'fep_legendary'
-    ALL = (ORDINARY,
-     UNUSUAL,
-     RARE,
-     EPIC,
-     LEGENDARY)
+    ALL = (
+     ORDINARY, UNUSUAL, RARE, EPIC, LEGENDARY)
     ORDERED = tuple(reversed(ALL))
 
 
@@ -43,6 +38,7 @@ def sortTokenFunc(token, itemsCache=IItemsCache):
         lootBox = itemsCache.items.tokens.getLootBoxByTokenID(token.id)
         if lootBox and lootBox.getType() in FunRandomLootBoxTypes.ORDERED:
             return FunRandomLootBoxTypes.ORDERED.index(lootBox.getType())
+    return -1
 
 
 class FunRandomLootBoxTokenBonusPacker(TokenBonusUIPacker, FunAssetPacksMixin):
@@ -65,7 +61,8 @@ class FunRandomLootBoxTokenBonusPacker(TokenBonusUIPacker, FunAssetPacksMixin):
         result = super(FunRandomLootBoxTokenBonusPacker, cls)._getToolTip(bonus)
         for token in sorted(viewvalues(bonus.getTokens()), key=sortTokenFunc):
             if cls.__isSuitable(token.id, token):
-                result.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[token.id]))
+                result.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
+                 token.id]))
 
         return result
 
@@ -85,7 +82,7 @@ class FunRandomLootBoxTokenBonusPacker(TokenBonusUIPacker, FunAssetPacksMixin):
     @classmethod
     def __packLootBox(cls, tokenID, model, bonus):
         lootBox = cls.itemsCache.items.tokens.getLootBoxByTokenID(tokenID)
-        rarity = lootBox.getType().split('_')[-1]
+        rarity = lootBox.getType().split('_')[(-1)]
         model.setIconSmall(backport.image(cls._getIconPath(AWARDS_SIZES.SMALL, rarity)))
         model.setIconBig(backport.image(cls._getIconPath(AWARDS_SIZES.BIG, rarity)))
         model.setLabel(backport.text(cls.getModeLocalsResRoot().lootbox.dyn(lootBox.getType())()))
@@ -99,7 +96,9 @@ class FunRandomLootBoxTokenBonusPacker(TokenBonusUIPacker, FunAssetPacksMixin):
     @classmethod
     def __isBoxAvailable(cls, tokenID):
         lootBox = cls.itemsCache.items.tokens.getLootBoxByTokenID(tokenID)
-        return lootBox.getCategory() == FEP_CATEGORY if lootBox else False
+        if lootBox:
+            return lootBox.getCategory() == FEP_CATEGORY
+        return False
 
 
 class FunRandomRewardLootBoxTokenBonusPacker(FunRandomLootBoxTokenBonusPacker):
@@ -110,9 +109,9 @@ class FunRandomRewardLootBoxTokenBonusPacker(FunRandomLootBoxTokenBonusPacker):
 
 
 class FunRandomLootBoxVehiclesBonusUIPacker(MultiAwardVehiclesBonusUIPacker):
-    COMPENSATION_BONUSES_MAP = {Currency.CREDITS: CreditsBonus,
-     Currency.GOLD: GoldBonus,
-     Currency.CRYSTAL: CrystalBonus}
+    COMPENSATION_BONUSES_MAP = {Currency.CREDITS: CreditsBonus, 
+       Currency.GOLD: GoldBonus, 
+       Currency.CRYSTAL: CrystalBonus}
 
     @classmethod
     def _getVehicleCompensationTooltipContent(cls):
@@ -141,7 +140,7 @@ def packLootboxes(lootboxes, lbConfig, lootboxesModel, packer, visibleLBAwardsNa
             lootboxModel = FunRandomLootbox()
             lootboxModel.setLabel(backport.text(localeRes.lootbox.dyn(lb.getType())()))
             lootboxType = lb.getType()
-            lootboxModel.setIconKey(lootboxType.split('_')[-1])
+            lootboxModel.setIconKey(lootboxType.split('_')[(-1)])
             lootboxModel.setShowRewardsNames(lootboxType in visibleLBAwardsNames)
             lootboxesModel.addViewModel(lootboxModel)
             packLootboxRewards(lootBoxData, lootboxModel.getRewards(), packer, tooltips)
@@ -201,7 +200,7 @@ def parseBonusesWithProbabilities(data):
                         for k, v in iteritems(rawData):
                             rawDataBonuses.extend(getNonQuestBonuses(k, v))
 
-                        bonuses.append({'probabilities': probabilities,
-                         'bonuses': rawDataBonuses})
+                        bonuses.append({'probabilities': probabilities, 
+                           'bonuses': rawDataBonuses})
 
     return bonuses

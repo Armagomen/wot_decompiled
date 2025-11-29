@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/frontline/crew_book_reward_option_model.py
 from gui.impl.gen.view_models.views.lobby.battle_pass.reward_option_model import RewardOptionModel
 
 class CrewBookRewardOptionModel(RewardOptionModel):

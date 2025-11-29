@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/wulf_adapter.py
-import logging
-from functools import partial
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from Event import Event, EventManager
 from frameworks.wulf import WindowStatus, WindowLayer
 from frameworks.wulf.gui_constants import ShowingStatus
@@ -12,7 +7,9 @@ from .View import ViewKey
 _logger = logging.getLogger(__name__)
 
 class WulfPackageLayoutAdapter(object):
-    __slots__ = ('__window', '__loadID', '__sfWindow', '__key', '__scope', '__settings', '__eManager', '__app', '__isDestroyed', 'onCreated', 'onDispose', 'onDisposed', 'onWulfViewLoaded', 'onWulfViewLoadError', '__background_alpha__')
+    __slots__ = ('__window', '__loadID', '__sfWindow', '__key', '__scope', '__settings',
+                 '__eManager', '__app', '__isDestroyed', 'onCreated', 'onDispose',
+                 'onDisposed', 'onWulfViewLoaded', 'onWulfViewLoadError', '__background_alpha__')
 
     def __init__(self):
         super(WulfPackageLayoutAdapter, self).__init__()
@@ -49,7 +46,7 @@ class WulfPackageLayoutAdapter(object):
         self.__window = window
         if hasattr(window, '__background_alpha__'):
             self.__background_alpha__ = window.__background_alpha__
-        self.__window.onReady += partial(self.onWulfViewLoaded, self)
+        self.__window.onReady += self.__onViewLoaded
 
     def load(self):
         if self.__window.content is None and self.__window.decorator is None:
@@ -87,7 +84,7 @@ class WulfPackageLayoutAdapter(object):
         return self.__key
 
     def getSubContainersSettings(self):
-        pass
+        return ()
 
     @property
     def alias(self):
@@ -156,15 +153,23 @@ class WulfPackageLayoutAdapter(object):
 
     @property
     def content(self):
-        return self.__window.content if self.__window else None
+        if self.__window:
+            return self.__window.content
+        else:
+            return
 
     def __repr__(self):
-        return '{} (key = {}, settings = {}, window = {}, isDestroyed = {})'.format(self.__class__.__name__, self.__key, self.__settings, self.__window, self.__isDestroyed)
+        return ('{} (key = {}, settings = {}, window = {}, isDestroyed = {})').format(self.__class__.__name__, self.__key, self.__settings, self.__window, self.__isDestroyed)
 
     def __windowLoad(self):
         self.__loadID = None
         self.__window.load()
         return
+
+    def __onViewLoaded(self):
+        self.onWulfViewLoaded(self)
+        if self.__sfWindow:
+            self.__sfWindow.isReady = True
 
     def __onStatusChanged(self, newStatus):
         if newStatus == WindowStatus.DESTROYING and self.__window.windowStatus != WindowStatus.LOADED:

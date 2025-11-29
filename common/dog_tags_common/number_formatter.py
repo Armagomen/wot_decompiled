@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dog_tags_common/number_formatter.py
 import re
 from collections import defaultdict
 from math import floor
@@ -11,30 +9,32 @@ def formatComponentValue(locale, value, numberType, specialReplacements=True):
         raw_value = formatPercentage(value)
     else:
         raw_value = formatNumber(locale, value, regionalPrefix=specialReplacements)
-    return raw_value if not specialReplacements else ''.join((_replacements.get(c, c) for c in raw_value))
+    if not specialReplacements:
+        return raw_value
+    return ('').join(_replacements.get(c, c) for c in raw_value)
 
 
 def formatPercentage(value):
     rounded = customRound(value, 2)
-    formatted = '{:.2f}'.format(rounded)
+    formatted = ('{:.2f}').format(rounded)
     formattedNoZeroes = _TRAILING_ZEROES_RE.sub('', formatted)
-    return '{}%'.format(formattedNoZeroes)
+    return ('{}%').format(formattedNoZeroes)
 
 
 def formatNumber(locale, value, regionalPrefix=True):
-    suffix = '{}_'.format(locale) if regionalPrefix else ''
+    suffix = ('{}_').format(locale) if regionalPrefix else ''
     suffix = suffix + '{}'
     if regionalPrefix:
-        suffix = '[{}]'.format(suffix)
+        suffix = ('[{}]').format(suffix)
     if value < 100000:
-        formatted = '{:,.2f}'.format(customRound(value, 2))
+        formatted = ('{:,.2f}').format(customRound(value, 2))
         formatted = _TRAILING_ZEROES_RE.sub('', formatted)
     elif value < 999500:
-        formatted = '{} {}'.format(_formatThousands(value), suffix.format('k'))
+        formatted = ('{} {}').format(_formatThousands(value), suffix.format('k'))
     elif value < 1000000:
-        formatted = '{} {}'.format(_formatThousands(value, floor), suffix.format('k'))
+        formatted = ('{} {}').format(_formatThousands(value, floor), suffix.format('k'))
     else:
-        formatted = '{} {}'.format(_formatMillions(locale, value), suffix.format('m'))
+        formatted = ('{} {}').format(_formatMillions(locale, value), suffix.format('m'))
     return formatted.replace(',', ' ')
 
 
@@ -49,12 +49,12 @@ def customRound(value, ndecimals=0):
 
 def _formatThousands(value, roundStrategy=customRound):
     shortValue = float(value) / 1000
-    return '{:,d}'.format(int(roundStrategy(shortValue)))
+    return ('{:,d}').format(int(roundStrategy(shortValue)))
 
 
 def _formatMillions(locale, value):
     shortValue = float(value) / _millionDivider[locale]
-    return '{:,.1f}'.format(customRound(shortValue, 1)).replace('.0', '')
+    return ('{:,.1f}').format(customRound(shortValue, 1)).replace('.0', '')
 
 
 _TRAILING_ZEROES_RE = re.compile('\\.?0+$')
@@ -62,5 +62,5 @@ _millionDivider = defaultdict(lambda : 1000000)
 for language in ['ja', 'zh_cn', 'ko']:
     _millionDivider[language] = 10000
 
-_replacements = {'%': '[percentage]',
- '.': '[dot]'}
+_replacements = {'%': '[percentage]', 
+   '.': '[dot]'}

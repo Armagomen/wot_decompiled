@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/requester.py
-import logging
-import time
-import BigWorld
+import logging, time, BigWorld
 from UnitBase import UNIT_ERROR
 from gui.prb_control.events_dispatcher import g_eventDispatcher
 from helpers import time_utils
@@ -45,7 +41,9 @@ class UnitAutoSearchHandler(object):
         return timeLeft
 
     def getAcceptDelta(self, acceptDeadlineUTC):
-        return max(0, int(time_utils.makeLocalServerTime(acceptDeadlineUTC) - time.time())) if acceptDeadlineUTC else 0
+        if acceptDeadlineUTC:
+            return max(0, int(time_utils.makeLocalServerTime(acceptDeadlineUTC) - time.time()))
+        return 0
 
     def start(self, vTypeDescrs=None):
         _logDeprecationError()

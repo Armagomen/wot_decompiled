@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/views_loaders.py
 import logging
 from typing import TYPE_CHECKING
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -8,6 +6,7 @@ from gui.customization.constants import CustomizationModes
 from gui.impl.gen import R
 from gui.lootbox_system.base.common import ViewID, Views
 from gui.lootbox_system.base.utils import getIntroVideoUrl, getIsShowIntro, getShopOverlayUrl, getVehicleForStyle
+from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import currentHangarIsBattleRoyale
 from gui.shared.event_dispatcher import hideVehiclePreview, selectVehicleInHangar, showBrowserOverlayView, showStylePreview, showShop, showVehiclePreviewWithoutBottomPanel
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -28,24 +27,21 @@ def showIntro(eventName):
 
 def showMain(eventName, subViewID=None, category='', count=0, bonuses=None, *args, **kwargs):
     from gui.impl.lobby.lootbox_system.states import LootBoxMainState
-    LootBoxMainState.goTo({'subViewID': subViewID,
-     'eventName': eventName,
-     'count': count,
-     'category': category,
-     'bonuses': bonuses})
+    LootBoxMainState.goTo({'subViewID': subViewID, 
+       'eventName': eventName, 
+       'count': count, 
+       'category': category, 
+       'bonuses': bonuses})
 
 
 def showInfo(eventName, category=''):
     from gui.impl.lobby.lootbox_system.states import LootBoxInfoState
-    LootBoxInfoState.goTo({'category': category,
-     'eventName': eventName})
+    LootBoxInfoState.goTo({'category': category, 'eventName': eventName})
 
 
 def showAutoOpen(eventName, rewards, boxes):
     from gui.impl.lobby.lootbox_system.states import LootBoxAutoOpenState
-    LootBoxAutoOpenState.goTo({'eventName': eventName,
-     'rewards': rewards,
-     'boxes': boxes})
+    LootBoxAutoOpenState.goTo({'eventName': eventName, 'rewards': rewards, 'boxes': boxes})
 
 
 @dependency.replace_none_kwargs(customization=ICustomizationService, itemsCache=IItemsCache)
@@ -62,7 +58,7 @@ def showItemPreview(itemType, itemID, styleID, customization=None, itemsCache=No
             showVehiclePreviewWithoutBottomPanel(itemID, style=style)
     elif itemType == 'customizations':
         style = customization.getItemByID(GUI_ITEM_TYPE.STYLE, itemID)
-        if style.is3D:
+        if style.is3D and not currentHangarIsBattleRoyale():
             showCustomizationHangar(style)
         else:
             showVehicleStylePreview(style)
@@ -114,11 +110,11 @@ def findActiveWindow(viewID, uiLoader=None):
 
 
 def registerViewsLoaders():
-    Views.setLoaders({ViewID.INTRO: showIntro,
-     ViewID.MAIN: showMain,
-     ViewID.INFO: showInfo,
-     ViewID.AUTOOPEN: showAutoOpen,
-     ViewID.SHOP: openShop})
+    Views.setLoaders({ViewID.INTRO: showIntro, 
+       ViewID.MAIN: showMain, 
+       ViewID.INFO: showInfo, 
+       ViewID.AUTOOPEN: showAutoOpen, 
+       ViewID.SHOP: openShop})
 
 
 def unregisterViewsLoaders():

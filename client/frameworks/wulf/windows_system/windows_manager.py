@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/windows_system/windows_manager.py
-import logging
-import typing
-import Event
+import logging, typing, Event
 from ..py_object_binder import PyObjectEntity
 from .windows_area import WindowsArea
 if typing.TYPE_CHECKING:
@@ -10,7 +6,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class WindowsManager(PyObjectEntity):
-    __slots__ = ('__eManager', 'onWindowStatusChanged', 'onWindowShowingStatusChanged', 'onViewStatusChanged', '__weakref__')
+    __slots__ = ('__eManager', 'onWindowStatusChanged', 'onWindowShowingStatusChanged',
+                 'onViewStatusChanged', '__weakref__')
 
     def __init__(self, cppObject=None):
         super(WindowsManager, self).__init__(cppObject)
@@ -42,7 +39,10 @@ class WindowsManager(PyObjectEntity):
         views = self.proxy.getPyViewsByLayoutId(layoutID)
         if len(views) > 1:
             _logger.warning('There are more than one view loaded with layoutID = %s', layoutID)
-        return None if not views else views[0]
+        if not views:
+            return None
+        else:
+            return views[0]
 
     def getWindow(self, uniqueID):
         return self.proxy.getPyWindow(uniqueID)
@@ -62,7 +62,7 @@ class WindowsManager(PyObjectEntity):
             return area
         else:
             area.unbind()
-            return None
+            return
 
     def removeWindowsArea(self, areaID):
         return self.proxy.removePyWindowsArea(areaID)

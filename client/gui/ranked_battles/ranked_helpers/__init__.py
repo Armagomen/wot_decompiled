@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/__init__.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
 from gui.impl import backport
 from gui.impl.gen import R
@@ -38,14 +35,19 @@ def getBonusBattlesIncome(resRoot, stepsCount, efficiencyCount, isStepsDaily):
     stepsKey = 'daily' if isStepsDaily else 'persistent'
     if stepsCount > 0:
         forStepsStr = backport.text(resRoot.steps.dyn(stepsKey)(), amount=text_styles.neutral(stepsCount))
-    return text_styles.concatStylesToSingleLine(forEfficiencyStr, forStepsStr) if forEfficiencyStr or forStepsStr else ''
+    if forEfficiencyStr or forStepsStr:
+        return text_styles.concatStylesToSingleLine(forEfficiencyStr, forStepsStr)
+    return ''
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getRankedBattlesSeasonRatingUrl(lobbyContext=None, spaID=None):
     url = lobbyContext.getServerSettings().rankedBattles.seasonRatingPageUrl
     params = SEASON_RATING_PARAM.format(spaID)
-    return url + params if spaID is not None else url
+    if spaID is not None:
+        return url + params
+    else:
+        return url
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -67,33 +69,40 @@ def getRankedBattlesSeasonGapUrl(lobbyContext=None):
 def getRankedBattlesYearRatingUrl(lobbyContext=None, isLobbySub=False):
     url = lobbyContext.getServerSettings().rankedBattles.yearRatingPageUrl
     params = LOBBY_SUB_LANDING_PARAM + str(isLobbySub).lower()
-    return url + params if url is not None else None
+    if url is not None:
+        return url + params
+    else:
+        return
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getRankedBattlesShopUrl(lobbyContext=None, isLobbySub=False):
     url = lobbyContext.getServerSettings().rankedBattles.shopPageUrl
     params = LOBBY_SUB_LANDING_PARAM + str(isLobbySub).lower()
-    return url + params if url is not None else None
+    if url is not None:
+        return url + params
+    else:
+        return
 
 
 def isSeasonTokenQuest(questID):
-    return questID.split('_')[-1] in (RankedTokenQuestPostfix.SPRINTER, RankedTokenQuestPostfix.COMMON)
+    return questID.split('_')[(-1)] in (RankedTokenQuestPostfix.SPRINTER, RankedTokenQuestPostfix.COMMON)
 
 
 def isFinalTokenQuest(questID):
-    return questID.split('_')[-1] == RankedTokenQuestPostfix.FINAL
+    return questID.split('_')[(-1)] == RankedTokenQuestPostfix.FINAL
 
 
 def isLeaderTokenQuest(questID):
-    return questID.split('_')[-1] == RankedTokenQuestPostfix.LEADER
+    return questID.split('_')[(-1)] == RankedTokenQuestPostfix.LEADER
 
 
 def getDataFromSeasonTokenQuestID(questID):
     seasonID, leagueID, postfix = questID.split('_')[-3:]
     if postfix not in (RankedTokenQuestPostfix.SPRINTER, RankedTokenQuestPostfix.COMMON):
         _logger.error('getDataFromSeasonTokenQuestID usage not for season token quest')
-    return (int(seasonID), int(leagueID), postfix == RankedTokenQuestPostfix.SPRINTER)
+    return (
+     int(seasonID), int(leagueID), postfix == RankedTokenQuestPostfix.SPRINTER)
 
 
 def getDataFromFinalTokenQuestID(questID):
@@ -104,7 +113,9 @@ def getDataFromFinalTokenQuestID(questID):
 
 
 def getShieldSizeByRankSize(rankSize):
-    return RANKEDBATTLES_ALIASES.WIDGET_HUGE if rankSize in RANKEDBATTLES_ALIASES.SHIELD_HUGE_SIZES else RANKEDBATTLES_ALIASES.WIDGET_MEDIUM
+    if rankSize in RANKEDBATTLES_ALIASES.SHIELD_HUGE_SIZES:
+        return RANKEDBATTLES_ALIASES.WIDGET_HUGE
+    return RANKEDBATTLES_ALIASES.WIDGET_MEDIUM
 
 
 def isRankedQuestID(questID):
@@ -123,6 +134,6 @@ def isQualificationQuestID(qID):
 
 def getQualificationBattlesCountFromID(qID):
     try:
-        return int(qID.split('_')[-1])
+        return int(qID.split('_')[(-1)])
     except ValueError:
         return 0

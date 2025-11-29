@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_buy_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_buy_confirm_view_model import BattlePassBuyConfirmViewModel
@@ -7,7 +5,7 @@ from gui.impl.gen.view_models.views.lobby.battle_pass.battle_pass_buy_rewards_vi
 from gui.impl.gen.view_models.views.lobby.battle_pass.package_item import PackageItem
 
 class BattlePassBuyViewModel(ViewModel):
-    __slots__ = ('onShopOfferClick',)
+    __slots__ = ('onShopOfferClick', )
     BUY_STATE = 'buyState'
     CONFIRM_STATE = 'confirmState'
     REWARDS_STATE = 'rewardsState'

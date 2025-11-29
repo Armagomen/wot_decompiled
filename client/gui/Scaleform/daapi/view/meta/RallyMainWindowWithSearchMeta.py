@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RallyMainWindowWithSearchMeta.py
 from gui.Scaleform.daapi.view.lobby.rally.BaseRallyMainWindow import BaseRallyMainWindow
 
 class RallyMainWindowWithSearchMeta(BaseRallyMainWindow):
@@ -14,22 +12,29 @@ class RallyMainWindowWithSearchMeta(BaseRallyMainWindow):
         self._printOverrideError('autoSearchCancel')
 
     def as_autoSearchEnableBtnS(self, value):
-        return self.flashObject.as_autoSearchEnableBtn(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_autoSearchEnableBtn(value)
 
     def as_changeAutoSearchStateS(self, value):
-        return self.flashObject.as_changeAutoSearchState(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeAutoSearchState(value)
 
     def as_changeAutoSearchBtnsStateS(self, waitingPlayers, searchEnemy):
-        return self.flashObject.as_changeAutoSearchBtnsState(waitingPlayers, searchEnemy) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeAutoSearchBtnsState(waitingPlayers, searchEnemy)
 
     def as_hideAutoSearchS(self):
-        return self.flashObject.as_hideAutoSearch() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideAutoSearch()
 
     def as_changeAutoSearchMainLabelS(self, value):
-        return self.flashObject.as_changeAutoSearchMainLabel(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeAutoSearchMainLabel(value)
 
     def as_changeAutoSearchTimeDirectionS(self, value):
-        return self.flashObject.as_changeAutoSearchTimeDirection(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeAutoSearchTimeDirection(value)
 
     def as_changeAutoSearchCountDownSecondsS(self, value):
-        return self.flashObject.as_changeAutoSearchCountDownSeconds(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeAutoSearchCountDownSeconds(value)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trade_in/trade_off_widget.py
 from gui.Scaleform.daapi.view.meta.TradeOffWidgetMeta import TradeOffWidgetMeta
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -47,8 +45,8 @@ class TradeOffWidget(TradeOffWidgetMeta, EventSystemEntity):
         else:
             tooltipType = TOOLTIPS_CONSTANTS.TRADE_IN_INFO_NOT_AVAILABLE
             data = ''
-        return {'type': tooltipType,
-         'data': data}
+        return {'type': tooltipType, 
+           'data': data}
 
     def _populate(self):
         super(TradeOffWidget, self)._populate()
@@ -71,17 +69,17 @@ class TradeOffWidget(TradeOffWidgetMeta, EventSystemEntity):
         vehiclesAvailable = False
         if self.__tradeInVehicle is not None:
             vehiclesAvailable = self.__tradeInVehicle.intCD in self.__tradeIn.getVehiclesToBuy(False)
-        vo = {'showTradeOff': vehicle is None,
-         'available': vehiclesAvailable}
+        vo = {'showTradeOff': vehicle is None, 'available': vehiclesAvailable}
         if vehicle is not None:
-            vo.update({'vehicleNationFlag': RES_ICONS.getTradeInNationFlag(vehicle.nationName),
-             'vehicleType': Vehicle.getTypeSmallIconPath(vehicle.type, vehicle.isElite),
-             'vehicleLevel': RES_ICONS.getLevelIcon(vehicle.level),
-             'vehicleIcon': getSmallIconPath(vehicle.name),
-             'vehicleTitle': vehicle.shortUserName})
+            vo.update({'vehicleNationFlag': RES_ICONS.getTradeInNationFlag(vehicle.nationName), 
+               'vehicleType': Vehicle.getTypeSmallIconPath(vehicle.type, vehicle.isElite), 
+               'vehicleLevel': RES_ICONS.getLevelIcon(vehicle.level), 
+               'vehicleIcon': getSmallIconPath(vehicle.name), 
+               'vehicleTitle': vehicle.shortUserName})
         return vo
 
     def __onCacheSyncCompleted(self, updateReason, _=None):
-        if updateReason in (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE):
+        if updateReason in (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC,
+         CACHE_SYNC_REASON.CLIENT_UPDATE):
             veh = self.__tradeIn.getSelectedVehicleToSell()
             self.__setData(veh)

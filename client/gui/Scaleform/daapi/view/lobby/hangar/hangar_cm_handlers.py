@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/hangar_cm_handlers.py
 from logging import getLogger
 from typing import TYPE_CHECKING
 import BigWorld
@@ -65,9 +63,9 @@ class TechnicalMaintenanceCMHandler(AbstractContextMenuHandler, EventSystemEntit
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, cmProxy, ctx=None):
-        super(TechnicalMaintenanceCMHandler, self).__init__(cmProxy, ctx, {MODULE.INFO: 'showModuleInfo',
-         MODULE.CANCEL_BUY: 'resetSlot',
-         MODULE.UNLOAD: 'resetSlot'})
+        super(TechnicalMaintenanceCMHandler, self).__init__(cmProxy, ctx, {MODULE.INFO: 'showModuleInfo', 
+           MODULE.CANCEL_BUY: 'resetSlot', 
+           MODULE.UNLOAD: 'resetSlot'})
 
     def showModuleInfo(self):
         if self._equipmentCD is not None and g_currentVehicle.isPresent():
@@ -133,24 +131,24 @@ class VehicleContextMenuHandler(SimpleVehicleCMHandler):
     _lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, cmProxy, ctx=None):
-        super(VehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.EXCHANGE: 'showVehicleExchange',
-         VEHICLE.INFO: 'showVehicleInfo',
-         VEHICLE.SELL: 'sellVehicle',
-         VEHICLE.RESEARCH: 'toResearch',
-         VEHICLE.POST_PROGRESSION: 'showPostProgression',
-         VEHICLE.CHECK: 'checkFavoriteVehicle',
-         VEHICLE.UNCHECK: 'uncheckFavoriteVehicle',
-         VEHICLE.STATS: 'showVehicleStats',
-         VEHICLE.BUY: 'buyVehicle',
-         VEHICLE.COMPARE: 'compareVehicle',
-         VEHICLE.NATION_CHANGE: 'changeVehicleNation',
-         VEHICLE.GO_TO_COLLECTION: 'goToCollection',
-         VEHICLE.TELECOM_RENT: 'showTelecomRent',
-         VEHICLE.VEH_SKILL_TREE: 'showVehSkillTree'})
+        super(VehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.EXCHANGE: 'showVehicleExchange', 
+           VEHICLE.INFO: 'showVehicleInfo', 
+           VEHICLE.SELL: 'sellVehicle', 
+           VEHICLE.RESEARCH: 'toResearch', 
+           VEHICLE.POST_PROGRESSION: 'showPostProgression', 
+           VEHICLE.CHECK: 'checkFavoriteVehicle', 
+           VEHICLE.UNCHECK: 'uncheckFavoriteVehicle', 
+           VEHICLE.STATS: 'showVehicleStats', 
+           VEHICLE.BUY: 'buyVehicle', 
+           VEHICLE.COMPARE: 'compareVehicle', 
+           VEHICLE.NATION_CHANGE: 'changeVehicleNation', 
+           VEHICLE.GO_TO_COLLECTION: 'goToCollection', 
+           VEHICLE.TELECOM_RENT: 'showTelecomRent', 
+           VEHICLE.VEH_SKILL_TREE: 'showVehSkillTree'})
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     def getVehCD(self):
         return self.vehCD
@@ -231,9 +229,11 @@ class VehicleContextMenuHandler(SimpleVehicleCMHandler):
                     vehicleWasInBattle = True
             if vehicle is not None:
                 if vehicle.canTradeOff:
-                    options.append(self._makeItem(VEHICLE.EXCHANGE, MENU.contextmenu(VEHICLE.EXCHANGE), {'enabled': vehicle.isReadyToTradeOff,
-                     'textColor': CM_BUY_COLOR}))
-                options.extend([self._makeItem(VEHICLE.INFO, MENU.contextmenu(VEHICLE.INFO)), self._makeItem(VEHICLE.STATS, MENU.contextmenu(VEHICLE.STATS), {'enabled': vehicleWasInBattle})])
+                    options.append(self._makeItem(VEHICLE.EXCHANGE, MENU.contextmenu(VEHICLE.EXCHANGE), {'enabled': vehicle.isReadyToTradeOff, 
+                       'textColor': CM_BUY_COLOR}))
+                options.extend([
+                 self._makeItem(VEHICLE.INFO, MENU.contextmenu(VEHICLE.INFO)),
+                 self._makeItem(VEHICLE.STATS, MENU.contextmenu(VEHICLE.STATS), {'enabled': vehicleWasInBattle})])
                 self._manageVehCompareOptions(options, vehicle)
                 if self.prbDispatcher is not None:
                     isNavigationEnabled = not self.prbDispatcher.getFunctionalState().isNavigationDisabled()
@@ -250,8 +250,7 @@ class VehicleContextMenuHandler(SimpleVehicleCMHandler):
                     options.append(self._makeItem(VEHICLE.GO_TO_COLLECTION, MENU.contextmenu(VEHICLE.GO_TO_COLLECTION), {'enabled': self._lobbyContext.getServerSettings().isCollectorVehicleEnabled()}))
                 if vehicle.hasNationGroup:
                     isNew = not AccountSettings.getSettings(NATION_CHANGE_VIEWED)
-                    options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': vehicle.isNationChangeAvailable,
-                     'isNew': isNew}))
+                    options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': vehicle.isNationChangeAvailable, 'isNew': isNew}))
                 if vehicle.isRented:
                     canSell = vehicle.canSell and vehicle.rentalIsOver
                     if vehicle.isWotPlus and not self._lobbyContext.getServerSettings().isWoTPlusExclusiveVehicleEnabled():

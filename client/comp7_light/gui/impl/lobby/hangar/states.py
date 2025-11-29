@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/hangar/states.py
-import logging
-import typing
+import logging, typing
 from WeakMethod import WeakMethodProxy
 from comp7_light.gui.Scaleform.genConsts.COMP7_LIGHT_HANGAR_ALIASES import COMP7_LIGHT_HANGAR_ALIASES
 from comp7_light.gui.impl.lobby.comp7_light_intro_screen import Comp7LightIntroScreen
@@ -55,7 +52,8 @@ class Comp7LightModeState(LobbyState):
         comp7LightHangar = lsm.getStateByCls(Comp7LightRootHangarState)
         parent.addNavigationTransition(comp7LightHangar)
         parent.addTransition(HijackTransition(HangarState, WeakMethodProxy(self._hijackTransitionCondition)), comp7LightHangar)
-        for cls in (Comp7LightProgressionState,
+        for cls in (
+         Comp7LightProgressionState,
          Comp7LightAllVehiclesState,
          Comp7LightNoVehiclesState,
          Comp7LightIntroState,
@@ -93,10 +91,20 @@ class Comp7LightRootHangarState(LobbyState):
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(Comp7LightRootHangarState, self).__init__(flags=flags | LobbyStateFlags.HANGAR)
 
+    def _onEntered(self, event):
+        super(Comp7LightRootHangarState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.disable()
+
 
 @Comp7LightHangarState.parentOf
 class Comp7LightAllVehiclesState(LobbyState):
     STATE_ID = 'allVehicles'
+
+    def _onEntered(self, event):
+        super(Comp7LightAllVehiclesState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.enable()
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.allVehicles()))
@@ -135,7 +143,8 @@ class Comp7LightProgressionState(GuiImplViewLobbyState):
         super(Comp7LightProgressionState, self).__init__(ProgressionMainView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7_light.progression()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7LightInfoPage, tooltipHeader=backport.text(R.strings.comp7_light.tooltip.infoPageButton.header())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7_light.progression()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7LightInfoPage, tooltipHeader=backport.text(R.strings.comp7_light.tooltip.infoPageButton.header())),))
 
 
 @Comp7LightModeState.parentOf

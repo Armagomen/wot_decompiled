@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/battle/prebattle_window.py
 from functools import partial
 from logging import getLogger
-import typing
-import WWISE
-import BattleReplay
-import BigWorld
-import SoundGroups
+import typing, WWISE, BattleReplay, BigWorld, SoundGroups
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.app_loader import app_getter
@@ -62,7 +56,7 @@ class PrebattleView(BaseWaitQueueView, IArenaLoadController):
 
     @app_getter
     def app(self):
-        return None
+        return
 
     def spaceLoadCompleted(self):
         if BattleReplay.isPlaying() or BigWorld.checkUnattended():
@@ -107,7 +101,11 @@ class PrebattleView(BaseWaitQueueView, IArenaLoadController):
         super(PrebattleView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onGotoBattle, self._gotoBattleHandler), (self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
+        return (
+         (
+          self.viewModel.onGotoBattle, self._gotoBattleHandler),
+         (
+          self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
 
     @UseStoryModeFading(hide=False)
     def _gotoBattleHandler(self):
@@ -138,4 +136,6 @@ class PrebattleWindow(DestroyWindowOnDisconnectMixin, WindowImpl):
 
 def getOpenedPrebattleView():
     uiLoader = dependency.instance(IGuiLoader)
-    return None if not uiLoader or not uiLoader.windowsManager else uiLoader.windowsManager.getViewByLayoutID(R.views.story_mode.battle.PrebattleWindow())
+    if not uiLoader or not uiLoader.windowsManager:
+        return None
+    return uiLoader.windowsManager.getViewByLayoutID(R.views.story_mode.battle.PrebattleWindow())

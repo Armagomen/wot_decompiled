@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/battle_booster.py
 import SoundGroups
 from adisp import adisp_process, adisp_async
 from gui import shop
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import CMLabel, option
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import BaseItemContextMenu, BaseSlotContextMenu, TankSetupCMLabel
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base_equipment import BaseHangarEquipmentSlotContextMenu
@@ -22,10 +19,12 @@ class BattleBoosterItemContextMenu(BaseItemContextMenu):
 
     @option(__sqGen.next(), CMLabel.BUY_MORE)
     def buyMore(self):
-        shop.showBattleBoosterOverlay(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB)
+        shop.showBattleBooster(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS)
 
     def _isVisible(self, label):
-        return not self._itemsCache.items.getItemByCD(self._intCD).isHidden if label == CMLabel.BUY_MORE else super(BattleBoosterItemContextMenu, self)._isVisible(label)
+        if label == CMLabel.BUY_MORE:
+            return not self._itemsCache.items.getItemByCD(self._intCD).isHidden
+        return super(BattleBoosterItemContextMenu, self)._isVisible(label)
 
     def _getVehicleItems(self):
         return self._getVehicle().battleBoosters
@@ -36,7 +35,7 @@ class BattleBoosterSlotContextMenu(BaseSlotContextMenu):
 
     @option(__sqGen.next(), CMLabel.BUY_MORE)
     def buyMore(self):
-        shop.showBattleBoosterOverlay(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB)
+        shop.showBattleBooster(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS)
 
     @option(__sqGen.next(), TankSetupCMLabel.UNLOAD)
     def unload(self):
@@ -50,7 +49,9 @@ class BattleBoosterSlotContextMenu(BaseSlotContextMenu):
         self._sendSlotAction(BaseSetupModel.REVERT_SLOT_ACTION)
 
     def _isVisible(self, label):
-        return not self._itemsCache.items.getItemByCD(self._intCD).isHidden if label == CMLabel.BUY_MORE else super(BattleBoosterSlotContextMenu, self)._isVisible(label)
+        if label == CMLabel.BUY_MORE:
+            return not self._itemsCache.items.getItemByCD(self._intCD).isHidden
+        return super(BattleBoosterSlotContextMenu, self)._isVisible(label)
 
     def _getVehicleItems(self):
         return self._getVehicle().battleBoosters
@@ -61,7 +62,7 @@ class HangarBattleBoosterSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
 
     @option(_sqGen.next(), CMLabel.BUY_MORE)
     def buyMore(self):
-        shop.showBattleBoosterOverlay(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB)
+        shop.showBattleBooster(itemId=self._intCD, source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS)
 
     @option(_sqGen.next(), TankSetupCMLabel.UNLOAD)
     def unload(self):
@@ -74,7 +75,9 @@ class HangarBattleBoosterSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
     def _isVisible(self, label):
         if label == CMLabel.INFORMATION:
             return False
-        return not self._itemsCache.items.getItemByCD(self._intCD).isHidden if label == CMLabel.BUY_MORE else super(HangarBattleBoosterSlotContextMenu, self)._isVisible(label)
+        if label == CMLabel.BUY_MORE:
+            return not self._itemsCache.items.getItemByCD(self._intCD).isHidden
+        return super(HangarBattleBoosterSlotContextMenu, self)._isVisible(label)
 
     @adisp_async
     @adisp_process

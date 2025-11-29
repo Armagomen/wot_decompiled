@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/info_page_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.box_model import BoxModel
 
 class InfoPageModel(ViewModel):
-    __slots__ = ('onShowVideo', 'onShowShop', 'onClose', 'onShowLootList', 'onPreview', 'onChosenCategory')
+    __slots__ = ('onShowVideo', 'onShowShop', 'onClose', 'onShowLootList', 'onPreview',
+                 'onChosenCategory')
 
     def __init__(self, properties=8, commands=6):
         super(InfoPageModel, self).__init__(properties=properties, commands=commands)

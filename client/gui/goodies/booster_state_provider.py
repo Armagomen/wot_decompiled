@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/goodies/booster_state_provider.py
-import typing
-import logging
-import BigWorld
+import typing, logging, BigWorld
 from Event import Event
 from gui.goodies.goodie_items import Booster
 from gui.shared.money import Money
@@ -72,16 +68,25 @@ class BoosterStateProvider(IBoostersStateProvider):
             return results
 
     def getBooster(self, boosterId):
-        return self.__boosters[boosterId] if self.__boosters is not None and boosterId in self.__boosters else None
+        if self.__boosters is not None and boosterId in self.__boosters:
+            return self.__boosters[boosterId]
+        else:
+            return
 
     def getClanReserves(self):
         return dict()
 
     def getActiveResources(self):
-        return [] if self.__activeResources is None else self.__activeResources
+        if self.__activeResources is None:
+            return []
+        else:
+            return self.__activeResources
 
     def getActiveBoosterTypes(self):
-        return [] if self.__activeBoosterTypes is None else self.__activeBoosterTypes
+        if self.__activeBoosterTypes is None:
+            return []
+        else:
+            return self.__activeBoosterTypes
 
     def isBoosterHiddenInShop(self, boosterID):
         return False
@@ -100,10 +105,7 @@ class BoosterStateProvider(IBoostersStateProvider):
 
     def getBoosterPriceData(self, boosterID):
         defMoney = Money()
-        return (defMoney,
-         defMoney,
-         defMoney,
-         defMoney)
+        return (defMoney, defMoney, defMoney, defMoney)
 
     def buildCache(self):
         self.__personalGoodies = {}
@@ -115,7 +117,9 @@ class BoosterStateProvider(IBoostersStateProvider):
             for snapshot in goodiesSnapshot:
                 bId = snapshot['goodieID']
                 resource = snapshot['resource']
-                descr = _NamedGoodieData(GOODIE_VARIETY.BOOSTER, (GOODIE_TARGET_TYPE.ON_POST_BATTLE, None, 0), True, snapshot['lifetime'], snapshot['useby'], 0, False, None, (resource['type'], resource['value'], resource['isPercentage']), bId in PR2BoosterIDs.ALL_EXPIRABLE_ITEMS, True)
+                descr = _NamedGoodieData(GOODIE_VARIETY.BOOSTER, (
+                 GOODIE_TARGET_TYPE.ON_POST_BATTLE, None, 0), True, snapshot['lifetime'], snapshot['useby'], 0, False, None, (
+                 resource['type'], resource['value'], resource['isPercentage']), bId in PR2BoosterIDs.ALL_EXPIRABLE_ITEMS, True)
                 booster = Booster(bId, descr, self)
                 self.addBooster(bId, booster, snapshot['stateInfo'], descr.resource)
                 _logger.debug('[BoosterStateProvider] %d: %s', bId, booster)
@@ -132,8 +136,9 @@ class BoosterStateProvider(IBoostersStateProvider):
         for timestamp, count in stateInfo['expirations'].iteritems():
             if getServerTimeDiffInLocal(timestamp):
                 valid[timestamp] = count
-            expired[timestamp] = count
-            newCount -= count
+            else:
+                expired[timestamp] = count
+                newCount -= count
 
         if stateInfo['state'] == GOODIE_STATE.ACTIVE and expired:
             nearest = min(expired.iterkeys())

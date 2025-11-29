@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/models/purchase.py
 from collections import namedtuple
 from account_helpers import isLongDisconnectedFromCenter
 from gui.veh_post_progression.models.ext_money import ExtendedMoney
@@ -42,7 +40,9 @@ class PurchaseProvider(object):
     def mayConsume(cls, balance, price):
         if isLongDisconnectedFromCenter():
             return PurchaseCheckResult(False, _ExtEconomyCode.CENTER_UNAVAILABLE)
-        return PurchaseCheckResult(False, _ExtEconomyCode.WALLET_NOT_AVAILABLE) if not cls.__wallet.isAvailable else cls.isEnoughMoney(balance, price)
+        if not cls.__wallet.isAvailable:
+            return PurchaseCheckResult(False, _ExtEconomyCode.WALLET_NOT_AVAILABLE)
+        return cls.isEnoughMoney(balance, price)
 
     @classmethod
     def mayConsumeWithExhange(cls, balance, price, creditsRate):

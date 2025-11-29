@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/platoon_dropdown_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.platoon.button_model import ButtonModel
 
 class PlatoonDropdownModel(ViewModel):
-    __slots__ = ('onOutsideClick',)
+    __slots__ = ('onOutsideClick', )
 
     def __init__(self, properties=10, commands=1):
         super(PlatoonDropdownModel, self).__init__(properties=properties, commands=commands)

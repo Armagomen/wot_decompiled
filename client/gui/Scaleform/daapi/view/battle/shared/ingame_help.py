@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ingame_help.py
 import Keys
 from account_helpers.settings_core.settings_constants import CONTROLS
 from gui.Scaleform.daapi.view.meta.IngameDetailsHelpWindowMeta import IngameDetailsHelpWindowMeta
@@ -13,26 +11,21 @@ from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-_CHANGED_KEYS_IN_HELP = (KEYBOARD_KEYS.FORWARD,
- KEYBOARD_KEYS.BACKWARD,
- KEYBOARD_KEYS.LEFT,
- KEYBOARD_KEYS.RIGHT,
- KEYBOARD_KEYS.AUTO_ROTATION,
- KEYBOARD_KEYS.FORWARD_CRUISE,
- KEYBOARD_KEYS.BACKWARD_CRUISE,
- KEYBOARD_KEYS.FIRE,
- KEYBOARD_KEYS.LOCK_TARGET,
- KEYBOARD_KEYS.LOCK_TARGET_OFF,
- KEYBOARD_KEYS.ALTERNATE_MODE,
- KEYBOARD_KEYS.RELOAD_PARTIAL_CLIP,
- KEYBOARD_KEYS.STOP_FIRE,
+_CHANGED_KEYS_IN_HELP = (
+ KEYBOARD_KEYS.FORWARD, KEYBOARD_KEYS.BACKWARD, KEYBOARD_KEYS.LEFT,
+ KEYBOARD_KEYS.RIGHT, KEYBOARD_KEYS.AUTO_ROTATION,
+ KEYBOARD_KEYS.FORWARD_CRUISE, KEYBOARD_KEYS.BACKWARD_CRUISE,
+ KEYBOARD_KEYS.FIRE, KEYBOARD_KEYS.LOCK_TARGET, KEYBOARD_KEYS.LOCK_TARGET_OFF,
+ KEYBOARD_KEYS.ALTERNATE_MODE, KEYBOARD_KEYS.RELOAD_PARTIAL_CLIP, KEYBOARD_KEYS.STOP_FIRE,
  KEYBOARD_KEYS.TOGGLE_FLASHLIGHT,
- KEYBOARD_KEYS.SHOW_RADIAL_MENU,
- KEYBOARD_KEYS.HIGHLIGHT_LOCATION,
- KEYBOARD_KEYS.HIGHLIGHT_TARGET,
+ KEYBOARD_KEYS.SHOW_RADIAL_MENU, KEYBOARD_KEYS.HIGHLIGHT_LOCATION, KEYBOARD_KEYS.HIGHLIGHT_TARGET,
  KEYBOARD_KEYS.PUSH_TO_TALK,
  KEYBOARD_KEYS.SHOW_HUD)
-_FIXED_KEYS_IN_HELP = ((KEYBOARD_KEYS.TOGGLE_PLAYER_PANEL_MODES, Keys.KEY_TAB), (KEYBOARD_KEYS.SHOW_EX_PLAYER_INFO, Keys.KEY_LALT))
+_FIXED_KEYS_IN_HELP = (
+ (
+  KEYBOARD_KEYS.TOGGLE_PLAYER_PANEL_MODES, Keys.KEY_TAB),
+ (
+  KEYBOARD_KEYS.SHOW_EX_PLAYER_INFO, Keys.KEY_LALT))
 
 def getChangedKeysInfo(settingsCore):
     setting = settingsCore.options.getSetting(CONTROLS.KEYBOARD)
@@ -67,8 +60,8 @@ class IngameHelpWindow(IngameHelpWindowMeta, BattleGUIKeyHandler):
         super(IngameHelpWindow, self)._populate()
         if self.app is not None:
             self.app.registerGuiKeyHandler(self)
-        vo = dict(((key, value) for key, value in getChangedKeysInfo(self.settingsCore)))
-        vo.update(dict(((key, value) for key, value in getFixedKeysInfo())))
+        vo = dict((key, value) for key, value in getChangedKeysInfo(self.settingsCore))
+        vo.update(dict((key, value) for key, value in getFixedKeysInfo()))
         self.as_setKeysS(vo)
         return
 
@@ -108,12 +101,8 @@ class IngameDetailsHelpWindow(IngameDetailsHelpWindowMeta, BattleGUIKeyHandler):
                 self.app.registerGuiKeyHandler(self)
                 if len(self.__detailedList) > 1:
                     self.app.enterGuiControlMode(BATTLE_VIEW_ALIASES.HELP_DETAILED, cursorVisible=True, enableAiming=False)
-            pages = [ {'buttonsGroup': 'DetailsHelpPageGroup',
-             'pageIndex': index,
-             'label': str(index + 1),
-             'status': '',
-             'selected': index == selectedIdx,
-             'tooltip': {}} for index in range(len(self.__detailedList)) ]
+            pages = [ {'buttonsGroup': 'DetailsHelpPageGroup', 'pageIndex': index, 'label': str(index + 1), 'status': '', 'selected': index == selectedIdx, 'tooltip': {}} for index in range(len(self.__detailedList))
+                    ]
             self.as_setPaginatorDataS(pages)
             return
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/cards/consumables_card.py
 import typing
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.consumables_preset_model import ConsumablesPresetModel

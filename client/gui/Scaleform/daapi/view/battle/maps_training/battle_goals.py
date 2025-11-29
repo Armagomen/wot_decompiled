@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/battle_goals.py
-import typing
-import BigWorld
+import typing, BigWorld
 from constants import ARENA_PERIOD
 from hints.battle.schemas.maps_training import HintType
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -29,8 +26,7 @@ class MapsTrainingBattleGoals(BattleHintComponent, MapsTrainingGoalsMeta, IArena
 
     def __init__(self):
         super(MapsTrainingBattleGoals, self).__init__(battleHintsQueueParams=BattleHintQueueParams(name='maps_training', withFadeOut=False))
-        self.goalsByType = {vehClass:{'vehClass': vehClass,
-         'total': 0} for vehClass in VEHICLE_CLASS_TAGS}
+        self.goalsByType = {vehClass:{'vehClass': vehClass, 'total': 0} for vehClass in VEHICLE_CLASS_TAGS}
         self._loaded = False
 
     def _populate(self):

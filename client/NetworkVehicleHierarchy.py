@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/NetworkVehicleHierarchy.py
 from BigWorld import DynamicScriptComponent
 from vehicle_hierarchy import createClientVehicleHierarchy, removeClientVehicleHierarchy, updateClientVehicleHierarchy, onClientVehicleRespawn
 

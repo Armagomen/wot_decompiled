@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/rewards_screen.py
 import logging
 from collections import namedtuple
 from copy import copy
-import Windowing
-import typing
+import Windowing, typing
 from shared_utils import first, findFirst
 import SoundGroups
 from account_helpers import AccountSettings
@@ -57,7 +54,7 @@ _MAIN_REWARDS = ('styleProgress', 'dossier_badge', 'dogTagComponents')
 _BonusData = namedtuple('_BonusData', ('bonus', 'tooltip'))
 
 class _BaseRewardsView(ViewImpl):
-    __slots__ = ('_bonusData',)
+    __slots__ = ('_bonusData', )
 
     def __init__(self, *args, **kwargs):
         settings = ViewSettings(R.views.comp7.mono.lobby.rewards_screen())
@@ -87,11 +84,11 @@ class _BaseRewardsView(ViewImpl):
             showCount += self._getMainRewardsCount()
             bonuses = [ d.bonus for d in self._bonusData[showCount:] ]
             return AdditionalRewardsTooltip(bonuses)
-        elif contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
-            vehicleCD = int(event.getArgument('vehicleCD'))
-            return VehicleRolesTooltipView(vehicleCD)
         else:
-            return None
+            if contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
+                vehicleCD = int(event.getArgument('vehicleCD'))
+                return VehicleRolesTooltipView(vehicleCD)
+            return
 
     def _finalize(self):
         self._bonusData = None
@@ -104,7 +101,9 @@ class _BaseRewardsView(ViewImpl):
         self._setRewards()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onClose),)
+        return (
+         (
+          self.viewModel.onClose, self._onClose),)
 
     def _packBonuses(self, *args, **kwargs):
         raise NotImplementedError
@@ -145,7 +144,11 @@ class _QuestRewardsView(_BaseRewardsView):
         raise NotImplementedError
 
     def _getEvents(self):
-        return super(_QuestRewardsView, self)._getEvents() + ((self.viewModel.onOpenShop, self.__onOpenShop), (self._comp7ShopController.onDataUpdated, self.__onShopStatusUpdated))
+        return super(_QuestRewardsView, self)._getEvents() + (
+         (
+          self.viewModel.onOpenShop, self.__onOpenShop),
+         (
+          self._comp7ShopController.onDataUpdated, self.__onShopStatusUpdated))
 
     def __onShopStatusUpdated(self, status):
         if status == ShopControllerStatus.DATA_READY:
@@ -170,7 +173,7 @@ class _QuestRewardsView(_BaseRewardsView):
 
 
 class RanksRewardsView(_QuestRewardsView):
-    __slots__ = ('__division',)
+    __slots__ = ('__division', )
     __comp7Controller = dependency.descriptor(IComp7Controller)
 
     def __init__(self, *args, **kwargs):
@@ -180,7 +183,7 @@ class RanksRewardsView(_QuestRewardsView):
 
     def _onLoading(self, *args, **kwargs):
         super(RanksRewardsView, self)._onLoading(self, *args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             rankValue = comp7_shared.getRankEnumValue(self.__division)
             divisionValue = comp7_shared.getDivisionEnumValue(self.__division)
             vm.setSeasonName(getSeasonNameEnum(self.__comp7Controller, SeasonName))
@@ -214,7 +217,9 @@ class RanksRewardsView(_QuestRewardsView):
 
     def _getType(self):
         ranksConfig = self.__comp7Controller.getRanksConfig()
-        return Type.RANK if len(ranksConfig.divisionsByRank[self.__division.rank]) == self.__division.index else Type.DIVISION
+        if len(ranksConfig.divisionsByRank[self.__division.rank]) == self.__division.index:
+            return Type.RANK
+        return Type.DIVISION
 
 
 class TokensRewardsView(_QuestRewardsView):
@@ -228,11 +233,11 @@ class TokensRewardsView(_QuestRewardsView):
 
     def _onLoading(self, *args, **kwargs):
         super(TokensRewardsView, self)._onLoading(self, *args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setSeasonName(getSeasonNameEnum(self._comp7Controller, SeasonName))
             vm.setType(Type.TOKENSREWARDS)
             quest = first(kwargs['quests'])
-            vm.setTokensCount(sum((token.getNeededCount() for token in quest.accountReqs.getTokens())))
+            vm.setTokensCount(sum(token.getNeededCount() for token in quest.accountReqs.getTokens()))
             isSelectableReward = self.__isSelectableReward(quest)
             vm.setHasNextScreen(isSelectableReward)
         if isSelectableReward:
@@ -248,7 +253,9 @@ class TokensRewardsView(_QuestRewardsView):
         return _MAX_MAIN_REWARDS_COUNT
 
     def _getEvents(self):
-        return super(TokensRewardsView, self)._getEvents() + ((self.getViewModel().onOpenNextScreen, self.__onOpenNextScreen),)
+        return super(TokensRewardsView, self)._getEvents() + (
+         (
+          self.getViewModel().onOpenNextScreen, self.__onOpenNextScreen),)
 
     def _onClose(self):
         self.__willOpenRewardsSelection = False
@@ -270,7 +277,7 @@ class TokensRewardsView(_QuestRewardsView):
 
 
 class QualificationRewardsView(_QuestRewardsView):
-    __slots__ = ('__divisions',)
+    __slots__ = ('__divisions', )
 
     def __init__(self, *args, **kwargs):
         super(QualificationRewardsView, self).__init__(*args, **kwargs)
@@ -278,7 +285,7 @@ class QualificationRewardsView(_QuestRewardsView):
 
     def _onLoading(self, *args, **kwargs):
         super(QualificationRewardsView, self)._onLoading(self, *args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             maxDivision = first(self.__divisions)
             rankEnumValues = self.__getRanks(self.__divisions)
             maxRankEnumValue = first(rankEnumValues)
@@ -344,7 +351,8 @@ class YearlyRewardsView(_BaseRewardsView):
             tooltipId = event.getArgument('tooltipId', None)
             if tooltipId == TOOLTIPS_CONSTANTS.SHOP_VEHICLE:
                 vehicleCD = int(event.getArgument('vehicleCD'))
-                data = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[vehicleCD])
+                data = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[
+                 vehicleCD])
                 window = BackportTooltipWindow(data, self.getParentWindow())
                 if window is None:
                     return
@@ -354,7 +362,7 @@ class YearlyRewardsView(_BaseRewardsView):
 
     def _onLoading(self, *args, **kwargs):
         super(YearlyRewardsView, self)._onLoading(self, *args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             showSeasonResults = kwargs['showSeasonResults']
             vm.setType(Type.YEARLYREWARDS)
             vm.setHasYearlyVehicle(self.__hasYearlyVehicle)
@@ -373,10 +381,15 @@ class YearlyRewardsView(_BaseRewardsView):
         return
 
     def _getEvents(self):
-        return super(YearlyRewardsView, self)._getEvents() + ((self.getViewModel().onOpenNextScreen, self.__onOpenNextScreen),
-         (self.getViewModel().onChangeType, self.__onChangeType),
-         (self.getViewModel().onVideoStateChange, self.__onVideoStateChange),
-         (self.__offersDataProvider.onOffersUpdated, self.__onOffersUpdated))
+        return super(YearlyRewardsView, self)._getEvents() + (
+         (
+          self.getViewModel().onOpenNextScreen, self.__onOpenNextScreen),
+         (
+          self.getViewModel().onChangeType, self.__onChangeType),
+         (
+          self.getViewModel().onVideoStateChange, self.__onVideoStateChange),
+         (
+          self.__offersDataProvider.onOffersUpdated, self.__onOffersUpdated))
 
     def _packBonuses(self, *args, **kwargs):
         bonuses = copy(kwargs['bonuses'])
@@ -387,7 +400,9 @@ class YearlyRewardsView(_BaseRewardsView):
             return packYearlyRewardsBonuses(bonuses=bonuses)
 
     def _getMainRewardsCount(self):
-        return 0 if self.viewModel.getType() == Type.YEARLYVEHICLE else _MAX_MAIN_REWARDS_COUNT
+        if self.viewModel.getType() == Type.YEARLYVEHICLE:
+            return 0
+        return _MAX_MAIN_REWARDS_COUNT
 
     def __updateSeasonsResults(self, model):
         results = []
@@ -466,7 +481,7 @@ class SelectedRewardsView(_BaseRewardsView):
 
     def _onLoading(self, *args, **kwargs):
         super(SelectedRewardsView, self)._onLoading(self, *args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setType(Type.SELECTEDREWARDS)
 
     def _packBonuses(self, *args, **kwargs):

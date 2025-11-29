@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMDisableShotSNComponent.py
 from dyn_components_groups import groupComponent
 from gui.battle_control.avatar_getter import getPlayerVehicleID
 from helpers import dependency

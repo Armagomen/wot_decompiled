@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/FortClanBattleRoomMeta.py
 from gui.Scaleform.daapi.view.lobby.rally.BaseRallyRoomView import BaseRallyRoomView
 
 class FortClanBattleRoomMeta(BaseRallyRoomView):
@@ -23,37 +21,49 @@ class FortClanBattleRoomMeta(BaseRallyRoomView):
         self._printOverrideError('onUnfrozenVehicleSlotClick')
 
     def as_updateTeamHeaderTextS(self, value):
-        return self.flashObject.as_updateTeamHeaderText(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateTeamHeaderText(value)
 
     def as_setBattleRoomDataS(self, data):
-        return self.flashObject.as_setBattleRoomData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBattleRoomData(data)
 
     def as_updateReadyStatusS(self, mineValue, enemyValue):
-        return self.flashObject.as_updateReadyStatus(mineValue, enemyValue) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateReadyStatus(mineValue, enemyValue)
 
     def as_updateReadyDirectionsS(self, value):
-        return self.flashObject.as_updateReadyDirections(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateReadyDirections(value)
 
     def as_setConfigureButtonStateS(self, data):
-        return self.flashObject.as_setConfigureButtonState(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setConfigureButtonState(data)
 
     def as_setTimerDeltaS(self, data):
-        return self.flashObject.as_setTimerDelta(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTimerDelta(data)
 
     def as_setDirectionS(self, value, animationNotAvailable):
-        return self.flashObject.as_setDirection(value, animationNotAvailable) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDirection(value, animationNotAvailable)
 
     def as_setReservesEnabledS(self, data):
-        return self.flashObject.as_setReservesEnabled(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReservesEnabled(data)
 
     def as_setReservesDataS(self, reservesData):
-        return self.flashObject.as_setReservesData(reservesData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReservesData(reservesData)
 
     def as_setOpenedS(self, buttonLabel, statusLabel, tooltipLabel):
-        return self.flashObject.as_setOpened(buttonLabel, statusLabel, tooltipLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setOpened(buttonLabel, statusLabel, tooltipLabel)
 
     def as_setTableHeaderS(self, data):
-        return self.flashObject.as_setTableHeader(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTableHeader(data)
 
     def as_setFiltersDataS(self, data):
-        return self.flashObject.as_setFiltersData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFiltersData(data)

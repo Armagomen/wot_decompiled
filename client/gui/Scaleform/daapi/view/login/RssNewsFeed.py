@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/RssNewsFeed.py
-import logging
-import uuid
-import BigWorld
-import ResMgr
+import logging, uuid, BigWorld, ResMgr
 from adisp import adisp_process, adisp_async
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.meta.RssNewsFeedMeta import RssNewsFeedMeta
@@ -113,6 +108,5 @@ class RssNewsFeed(RssNewsFeedMeta):
                 _logger.exception('Invalid RSS entry description: %r, %r', entryData, description)
                 return
 
-        return {'id': entryData.get('id', str(uuid.uuid4())),
-         'link': entryData.get('link'),
-         'description': description}
+        return {'id': entryData.get('id', str(uuid.uuid4())), 'link': entryData.get('link'), 
+           'description': description}

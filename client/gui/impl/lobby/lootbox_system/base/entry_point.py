@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/entry_point.py
 import logging
 from account_helpers.AccountSettings import LOOT_BOXES_HAS_NEW
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
@@ -15,7 +13,8 @@ from helpers.time_utils import getServerUTCTime
 from skeletons.gui.game_control import ILootBoxSystemController
 from skeletons.gui.hangar import ICarouselEventEntry
 _logger = logging.getLogger(__name__)
-_ENABLED_PRE_QUEUES = (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
+_ENABLED_PRE_QUEUES = (
+ QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
 
 class LootBoxSystemEntryPoint(ViewImpl, ICarouselEventEntry):
     __lootBoxes = dependency.descriptor(ILootBoxSystemController)
@@ -28,7 +27,9 @@ class LootBoxSystemEntryPoint(ViewImpl, ICarouselEventEntry):
         return super(LootBoxSystemEntryPoint, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return EntryPointTooltip(self.__lootBoxes.mainEntryPoint) if contentID == R.views.mono.lootbox.tooltips.entry_point() else super(LootBoxSystemEntryPoint, self).createToolTipContent(event, contentID)
+        if contentID == R.views.mono.lootbox.tooltips.entry_point():
+            return EntryPointTooltip(self.__lootBoxes.mainEntryPoint)
+        return super(LootBoxSystemEntryPoint, self).createToolTipContent(event, contentID)
 
     @staticmethod
     def getIsActive(state):
@@ -36,20 +37,25 @@ class LootBoxSystemEntryPoint(ViewImpl, ICarouselEventEntry):
         if lootBoxSystem.isActive(lootBoxSystem.mainEntryPoint) and not lootBoxSystem.getActiveBoxes(lootBoxSystem.mainEntryPoint):
             _logger.error('There is no boxes with %s type, check LootBox config.', lootBoxSystem.mainEntryPoint)
             return False
-        return lootBoxSystem.isActive(lootBoxSystem.mainEntryPoint) and (any((state.isInPreQueue(preQueue) for preQueue in _ENABLED_PRE_QUEUES)) or state.isInUnit(PREBATTLE_TYPE.SQUAD))
+        return lootBoxSystem.isActive(lootBoxSystem.mainEntryPoint) and (any(state.isInPreQueue(preQueue) for preQueue in _ENABLED_PRE_QUEUES) or state.isInUnit(PREBATTLE_TYPE.SQUAD))
 
     def _onLoading(self, *args, **kwargs):
         super(LootBoxSystemEntryPoint, self)._onLoading(*args, **kwargs)
         self.__fillEventInfo()
 
     def _getEvents(self):
-        return ((self.__lootBoxes.onBoxesCountChanged, self.__updateBoxesCount),
-         (self.__lootBoxes.onStatusChanged, self.__onLootBoxesStatusChanged),
-         (self.__lootBoxes.onBoxesAvailabilityChanged, self.__onAvailabilityChanged),
-         (self.viewModel.onEntryClick, self.__showMain))
+        return (
+         (
+          self.__lootBoxes.onBoxesCountChanged, self.__updateBoxesCount),
+         (
+          self.__lootBoxes.onStatusChanged, self.__onLootBoxesStatusChanged),
+         (
+          self.__lootBoxes.onBoxesAvailabilityChanged, self.__onAvailabilityChanged),
+         (
+          self.viewModel.onEntryClick, self.__showMain))
 
     def __fillEventInfo(self):
-        with self.viewModel.transaction() as vmTx:
+        with self.viewModel.transaction() as (vmTx):
             vmTx.setEventName(self.__lootBoxes.mainEntryPoint)
             vmTx.setIsEnabled(self.__lootBoxes.isLootBoxesAvailable)
             self.__updateTime(model=vmTx)

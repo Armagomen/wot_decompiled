@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/composer.py
 import typing
 from constants import ARENA_BONUS_TYPE
 from gui.battle_results import templates
@@ -16,7 +14,7 @@ if typing.TYPE_CHECKING:
     TooltipModelType = typing.TypeVar('TooltipModelType', bound=ViewModel)
 
 class StatsComposer(IBattleResultStatsCtrl):
-    __slots__ = ('_block',)
+    __slots__ = ('_block', )
 
     def __init__(self, reusable, common, personal, teams, text):
         super(StatsComposer, self).__init__()

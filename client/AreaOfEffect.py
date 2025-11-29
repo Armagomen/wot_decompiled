@@ -1,15 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AreaOfEffect.py
 from functools import partial
-import math
-import random
-import BigWorld
-import AnimationSequence
-import CGF
-import GenericComponents
-import Math
-import math_utils
-import CombatSelectedArea
+import math, random, BigWorld, AnimationSequence, CGF, GenericComponents, Math, math_utils, CombatSelectedArea
 from ProjectileMover import collideDynamicAndStatic
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from gui.battle_control import avatar_getter
@@ -41,7 +31,10 @@ class EffectRunner(object):
 
     @property
     def areaColor(self):
-        return self._equipment.areaColorBlind if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None else self._equipment.areaColor
+        if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None:
+            return self._equipment.areaColorBlind
+        else:
+            return self._equipment.areaColor
 
     def prerequisites(self):
         prereqs = []
@@ -136,7 +129,10 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
 
     @property
     def areaColor(self):
-        return self._equipment.areaColorBlind if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None else self._equipment.areaColor or CombatSelectedArea.COLOR_WHITE
+        if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None:
+            return self._equipment.areaColorBlind
+        else:
+            return self._equipment.areaColor or CombatSelectedArea.COLOR_WHITE
 
     def onEnterWorld(self, prereqs):
         timeOffset = BigWorld.serverTime() - self.launchTime
@@ -249,7 +245,10 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
         floatEpsilon = 0.001
         xScale = self._equipment.areaWidth * 0.5
         zScale = self._equipment.areaLength * 0.5
-        t.transform = math_utils.createSRTMatrix(Math.Vector3(xScale, 1.0, zScale), (0.0, 0.0, 0.0), (0.0, floatEpsilon, 0.0))
+        t.transform = math_utils.createSRTMatrix(Math.Vector3(xScale, 1.0, zScale), (0.0,
+                                                                                     0.0,
+                                                                                     0.0), (
+         0.0, floatEpsilon, 0.0))
 
     def __destroyAreaGO(self):
         if self.__areaGO is not None:

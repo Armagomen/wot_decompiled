@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/states.py
 from frameworks.state_machine import StateFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -69,22 +67,22 @@ class _VehiclePreviewStateProto(ViewLobbyState):
         self.__cachedParams = {}
 
     def _getViewLoadCtx(self, event):
-        return {'ctx': {'itemCD': event.params['itemCD'],
-                 'previewAlias': event.params.get('previewAlias', None),
-                 'vehicleStrCD': event.params.get('vehicleStrCD', None),
-                 'itemsPack': event.params.get('itemsPack', None),
-                 'offers': event.params.get('offers', None),
-                 'price': event.params.get('price', None),
-                 'oldPrice': event.params.get('oldPrice', None),
-                 'title': event.params.get('title', None),
-                 'description': event.params.get('description', None),
-                 'endTime': event.params.get('endTime', None),
-                 'buyParams': event.params.get('buyParams', None),
-                 'obtainingMethod': event.params.get('obtainingMethod', None),
-                 'vehParams': event.params.get('vehParams', None),
-                 'style': event.params.get('style', None),
-                 'resetAppearance': event.params.get('resetAppearance', False),
-                 'topPanelData': event.params.get('topPanelData', None)}}
+        return {'ctx': {'itemCD': event.params['itemCD'], 
+                   'previewAlias': event.params.get('previewAlias', None), 
+                   'vehicleStrCD': event.params.get('vehicleStrCD', None), 
+                   'itemsPack': event.params.get('itemsPack', None), 
+                   'offers': event.params.get('offers', None), 
+                   'price': event.params.get('price', None), 
+                   'oldPrice': event.params.get('oldPrice', None), 
+                   'title': event.params.get('title', None), 
+                   'description': event.params.get('description', None), 
+                   'endTime': event.params.get('endTime', None), 
+                   'buyParams': event.params.get('buyParams', None), 
+                   'obtainingMethod': event.params.get('obtainingMethod', None), 
+                   'vehParams': event.params.get('vehParams', None), 
+                   'style': event.params.get('style', None), 
+                   'resetAppearance': event.params.get('resetAppearance', False), 
+                   'topPanelData': event.params.get('topPanelData', None)}}
 
 
 @SubScopeSubLayerState.parentOf
@@ -119,11 +117,11 @@ class HeroTankPreviewState(_VehiclePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(HeroTankPreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'previewAppearance': event.params.get('previewAppearance', None),
-         'isHeroTank': event.params.get('isHeroTank', True),
-         'previousBackAlias': event.params.get('previousBackAlias', None),
-         'hangarVehicleCD': event.params.get('hangarVehicleCD', None),
-         'backOutfit': event.params.get('backOutfit', None)})
+        params['ctx'].update({'previewAppearance': event.params.get('previewAppearance', None), 
+           'isHeroTank': event.params.get('isHeroTank', True), 
+           'previousBackAlias': event.params.get('previousBackAlias', None), 
+           'hangarVehicleCD': event.params.get('hangarVehicleCD', None), 
+           'backOutfit': event.params.get('backOutfit', None)})
         return params
 
 
@@ -134,9 +132,9 @@ class ConfigurableVehiclePreviewState(_VehiclePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(ConfigurableVehiclePreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'hiddenBlocks': event.params.get('hiddenBlocks', None),
-         'heroInteractive': event.params.get('heroInteractive', True),
-         'subscriptions': event.params.get('subscriptions', ())})
+        params['ctx'].update({'hiddenBlocks': event.params.get('hiddenBlocks', None), 
+           'heroInteractive': event.params.get('heroInteractive', True), 
+           'subscriptions': event.params.get('subscriptions', ())})
         return params
 
 
@@ -159,9 +157,9 @@ class MarathonVehiclePreviewState(_VehiclePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(MarathonVehiclePreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'marathonPrefix': event.params.get('marathonPrefix', ''),
-         'previewAppearance': event.params.get('previewAppearance', None),
-         'backToHangar': event.params.get('backToHangar', False)})
+        params['ctx'].update({'marathonPrefix': event.params.get('marathonPrefix', ''), 
+           'previewAppearance': event.params.get('previewAppearance', None), 
+           'backToHangar': event.params.get('backToHangar', False)})
         return params
 
 
@@ -172,10 +170,10 @@ class OfferGiftVehiclePreviewState(_VehiclePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(OfferGiftVehiclePreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'offerID': event.params.get('offerID', None),
-         'giftID': event.params.get('giftID', None),
-         'confirmCallback': event.params.get('confirmCallback', None),
-         'customCallbacks': event.params.get('customCallbacks', {})})
+        params['ctx'].update({'offerID': event.params.get('offerID', None), 
+           'giftID': event.params.get('giftID', None), 
+           'confirmCallback': event.params.get('confirmCallback', None), 
+           'customCallbacks': event.params.get('customCallbacks', {})})
         return params
 
 
@@ -214,14 +212,14 @@ class _StylePreviewStateProto(ViewLobbyState):
         self.__cachedParams = {}
 
     def _getViewLoadCtx(self, event):
-        return {'ctx': {'itemCD': event.params['itemCD'],
-                 'style': event.params.get('style', None),
-                 'resetAppearance': event.params.get('resetAppearance', False),
-                 'styleDescr': event.params.get('styleDescr', ''),
-                 'backPreviewAlias': event.params.get('backPreviewAlias', None),
-                 'topPanelData': event.params.get('topPanelData', None),
-                 'outfit': event.params.get('outfit', None),
-                 'isHeroTank': event.params.get('isHeroTank', False)}}
+        return {'ctx': {'itemCD': event.params['itemCD'], 
+                   'style': event.params.get('style', None), 
+                   'resetAppearance': event.params.get('resetAppearance', False), 
+                   'styleDescr': event.params.get('styleDescr', ''), 
+                   'backPreviewAlias': event.params.get('backPreviewAlias', None), 
+                   'topPanelData': event.params.get('topPanelData', None), 
+                   'outfit': event.params.get('outfit', None), 
+                   'isHeroTank': event.params.get('isHeroTank', False)}}
 
 
 @VehiclePreviewStateWithTopPanel.parentOf
@@ -237,8 +235,8 @@ class StyleProgressionPreviewState(_StylePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(StyleProgressionPreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'styleLevel': event.params.get('styleLevel', None),
-         'chapterId': event.params.get('chapterId', None)})
+        params['ctx'].update({'styleLevel': event.params.get('styleLevel', None), 
+           'chapterId': event.params.get('chapterId', None)})
         return params
 
 
@@ -249,9 +247,9 @@ class StyleBuyingPreviewState(_StylePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(StyleBuyingPreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'styleLevel': event.params.get('styleLevel', None),
-         'price': event.params.get('price', None),
-         'buyParams': event.params.get('buyParams', None)})
+        params['ctx'].update({'styleLevel': event.params.get('styleLevel', None), 
+           'price': event.params.get('price', None), 
+           'buyParams': event.params.get('buyParams', None)})
         return params
 
 
@@ -262,10 +260,10 @@ class ShowcaseStyleBuyingPreviewState(_StylePreviewStateProto):
 
     def _getViewLoadCtx(self, event):
         params = super(ShowcaseStyleBuyingPreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'price': event.params.get('price', None),
-         'originalPrice': event.params.get('originalPrice', None),
-         'buyParams': event.params.get('buyParams', None),
-         'obtainingMethod': event.params.get('obtainingMethod', None),
-         'endTime': event.params.get('endTime', None),
-         'discountPercent': event.params.get('discountPercent', None)})
+        params['ctx'].update({'price': event.params.get('price', None), 
+           'originalPrice': event.params.get('originalPrice', None), 
+           'buyParams': event.params.get('buyParams', None), 
+           'obtainingMethod': event.params.get('obtainingMethod', None), 
+           'endTime': event.params.get('endTime', None), 
+           'discountPercent': event.params.get('discountPercent', None)})
         return params

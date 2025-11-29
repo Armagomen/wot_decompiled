@@ -1,13 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/wotdecorators.py
 import inspect
 from functools import update_wrapper
 from typing import TypeVar, Type, Generic
 from constants import IS_CLIENT, IS_BOT, IS_CGF_DUMP, IS_VS_EDITOR, IS_UE_EDITOR
 from debug_utils import LOG_CURRENT_EXCEPTION, CRITICAL_ERROR, LOG_ERROR
 from time_tracking import LOG_TIME_WARNING
-import time
-import time_tracking
+import time, time_tracking
 CLASS = TypeVar('CLASS')
 if not IS_CLIENT and not IS_BOT and not IS_CGF_DUMP and not IS_VS_EDITOR and not IS_UE_EDITOR:
     from insights.measurements import incrTickOverspends
@@ -80,10 +77,7 @@ def exposedtoclient(func):
             result = func(*args, **kwArgs)
             timeSinceLastTick = time.time() - lastTick
             if timeSinceLastTick > time_tracking.DEFAULT_TIME_LIMIT:
-                LOG_TIME_WARNING(timeSinceLastTick, context=(getattr(args[0], 'id', 0),
-                 func.__name__,
-                 args,
-                 kwArgs))
+                LOG_TIME_WARNING(timeSinceLastTick, context=(getattr(args[0], 'id', 0), func.__name__, args, kwArgs))
                 if not IS_CLIENT and not IS_BOT:
                     incrTickOverspends()
             return result

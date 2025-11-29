@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/blueprints/fragments_balance_content.py
-import logging
-import nations
+import logging, nations
 from blueprints.BlueprintTypes import BlueprintTypes
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -20,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class FragmentsBalanceContent(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__vehicle',)
+    __slots__ = ('__vehicle', )
 
     def __init__(self, vehicleCD):
         settings = ViewSettings(R.views.lobby.blueprints.fragments_balance_content.FragmentsBalanceContent())
@@ -43,11 +40,12 @@ class FragmentsBalanceContent(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(FragmentsBalanceContent, self).createToolTip(event)
+        return super(FragmentsBalanceContent, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
-        return BlueprintsAllianceTooltipView(self.__vehicle.nationName, self.__vehicle.intCD, self.__vehicle.level) if contentID == R.views.lobby.blueprints.tooltips.BlueprintsAlliancesTooltipView() else super(FragmentsBalanceContent, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.blueprints.tooltips.BlueprintsAlliancesTooltipView():
+            return BlueprintsAllianceTooltipView(self.__vehicle.nationName, self.__vehicle.intCD, self.__vehicle.level)
+        return super(FragmentsBalanceContent, self).createToolTipContent(event, contentID)
 
     def _initialize(self, *args, **kwargs):
         super(FragmentsBalanceContent, self)._initialize(*args, **kwargs)
@@ -56,7 +54,7 @@ class FragmentsBalanceContent(ViewImpl):
         if not nationName:
             logger.warning('Can not get a vehicle object and nation name')
         g_clientUpdateManager.addCallbacks({'blueprints': self.__onUpdateBlueprints})
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             nationId = nations.INDICES[nationName]
             allianceId = nations.NATION_TO_ALLIANCE_IDS_MAP[nationId]
             model.setAllianceName(nations.ALLIANCES_TAGS_ORDER[allianceId].replace('-', '_'))
@@ -88,7 +86,7 @@ class FragmentsBalanceContent(ViewImpl):
 
     def __updateModel(self):
         intelligenceFragments, nationalFragments = self.__getFragmentCount()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             intelItem = model.intelligenceBalance
             intelItem.setValue(self.gui.systemLocale.getNumberFormat(intelligenceFragments))
             for index, fragmentsCoout in enumerate(nationalFragments.itervalues()):
@@ -108,4 +106,8 @@ class FragmentsBalanceContent(ViewImpl):
         return (intelligenceFragmentCount, existingAllianceFragments)
 
     def __getTooltipData(self, ttId, fragmentCD):
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO, specialArgs=[fragmentCD]) if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT else None
+        if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_FRAGMENT_INFO, specialArgs=[
+             fragmentCD])
+        else:
+            return

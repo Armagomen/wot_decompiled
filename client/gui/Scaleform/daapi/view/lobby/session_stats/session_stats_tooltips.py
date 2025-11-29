@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/session_stats/session_stats_tooltips.py
 import logging
 from collections import namedtuple
 from account_helpers.settings_core.settings_constants import SESSION_STATS
@@ -19,16 +17,27 @@ from gui.shared.tooltips.common import BlocksTooltipData
 from helpers import dependency, int2roman
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
-TankStatsHeaderVO = namedtuple('TankStatsHeaderVO', ('tankName', 'flagImage', 'tankImage', 'isFavorite', 'favoriteText', 'tankParams', 'smallSize', 'tankType', 'tankTier', 'tankNameSmall', 'isElite'))
-TankBattleResultsStatsVO = namedtuple('TankBattleResultsStatsVO', ('lastBattle',))
-TankBattleEfficiencyStatsVO = namedtuple('TankBattleEfficiencyStatsVO', ('battleEfficiency', 'collapseLabel'))
+TankStatsHeaderVO = namedtuple('TankStatsHeaderVO', ('tankName', 'flagImage', 'tankImage',
+                                                     'isFavorite', 'favoriteText',
+                                                     'tankParams', 'smallSize', 'tankType',
+                                                     'tankTier', 'tankNameSmall',
+                                                     'isElite'))
+TankBattleResultsStatsVO = namedtuple('TankBattleResultsStatsVO', ('lastBattle', ))
+TankBattleEfficiencyStatsVO = namedtuple('TankBattleEfficiencyStatsVO', ('battleEfficiency',
+                                                                         'collapseLabel'))
 TankStatusVO = namedtuple('TankStatusVO', 'status')
-_TANK_MASTER_TYPES_TEXT = [backport.text(R.strings.achievements.achievement.master1()),
+_TANK_MASTER_TYPES_TEXT = [
+ backport.text(R.strings.achievements.achievement.master1()),
  backport.text(R.strings.achievements.achievement.master2()),
  backport.text(R.strings.achievements.achievement.master3()),
  backport.text(R.strings.achievements.achievement.master4())]
-_MARK_ON_GUN_ICONS = [backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_1()), backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_2()), backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_3())]
-_TOTAL_BLOCK_PARAMS = [SESSION_STATS_CONSTANTS.SESSION_STATS_PROPS_NET_CREDITS, SESSION_STATS_CONSTANTS.SESSION_STATS_PROPS_NET_CRYSTAL]
+_MARK_ON_GUN_ICONS = [
+ backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_1()),
+ backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_2()),
+ backport.image(R.images.gui.maps.icons.library.marksOnGun.mark_3())]
+_TOTAL_BLOCK_PARAMS = [
+ SESSION_STATS_CONSTANTS.SESSION_STATS_PROPS_NET_CREDITS,
+ SESSION_STATS_CONSTANTS.SESSION_STATS_PROPS_NET_CRYSTAL]
 
 class SessionStatsEfficiencyParam(BlocksTooltipData):
     itemsCache = dependency.instance(IItemsCache)
@@ -114,7 +123,7 @@ class SessionStatsTankInfo(BlocksTooltipData):
         if tankImage == -1:
             _logger.error('no background image for tooltip for tank %s', str(self._tankNameToRClassName(vehInfo[1])))
             tankImage = R.images.gui.maps.icons.vehicle.c_420x307.dyn('tank_empty')()
-        return TankStatsHeaderVO(tankName=text_styles.grandTitle(self.vehicle.userName), isFavorite=self.vehicle.isFavorite, flagImage=backport.image(R.images.gui.maps.icons.flags.c_362x362.dyn(vehInfo[0])()), tankImage=backport.image(tankImage) if tankImage != -1 else '', tankParams=self._getTankParamsVO(True), favoriteText=text_styles.bonusPreviewText(backport.text(R.strings.session_stats.tankInfo.main())), smallSize=True, tankType='{}_elite'.format(self.vehicle.type) if self.vehicle.isElite else self.vehicle.type, tankTier=text_styles.grandTitle(str(int2roman(self.vehicle.level))), tankNameSmall=text_styles.grandTitle(self.vehicle.shortUserName), isElite=self.vehicle.isElite)
+        return TankStatsHeaderVO(tankName=text_styles.grandTitle(self.vehicle.userName), isFavorite=self.vehicle.isFavorite, flagImage=backport.image(R.images.gui.maps.icons.flags.c_362x362.dyn(vehInfo[0])()), tankImage=backport.image(tankImage) if tankImage != -1 else '', tankParams=self._getTankParamsVO(True), favoriteText=text_styles.bonusPreviewText(backport.text(R.strings.session_stats.tankInfo.main())), smallSize=True, tankType=('{}_elite').format(self.vehicle.type) if self.vehicle.isElite else self.vehicle.type, tankTier=text_styles.grandTitle(str(int2roman(self.vehicle.level))), tankNameSmall=text_styles.grandTitle(self.vehicle.shortUserName), isElite=self.vehicle.isElite)
 
     def _getTankParamsVO(self, smallLayout=False):
         self._headerPadding = 0
@@ -122,17 +131,17 @@ class SessionStatsTankInfo(BlocksTooltipData):
         tankItems = []
         if not smallLayout:
             tankItems.append(self._getTankParamVO(text_styles.stats(self.vehicle.typeUserName), self._getTankIcon()))
-            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.level())), backport.image(R.images.gui.maps.icons.levels.dyn('tank_level_{}'.format(self.vehicle.level))())))
+            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.level())), backport.image(R.images.gui.maps.icons.levels.dyn(('tank_level_{}').format(self.vehicle.level))())))
         markOfMastery = self.randomStats.getMarkOfMasteryForVehicle(self.vehicle.intCD)
         if isMarkOfMasteryAchieved(markOfMastery):
-            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.achievements.markOfMastery(), name=text_styles.stats(_TANK_MASTER_TYPES_TEXT[markOfMastery - 1]))), backport.image(R.images.gui.maps.icons.library.proficiency.dyn('class_icons_{}_small'.format(markOfMastery))())))
+            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.achievements.markOfMastery(), name=text_styles.stats(_TANK_MASTER_TYPES_TEXT[(markOfMastery - 1)]))), backport.image(R.images.gui.maps.icons.library.proficiency.dyn(('class_icons_{}_small').format(markOfMastery))())))
         vehDossier = self.itemsCache.items.getVehicleDossier(self.vehicle.intCD)
         vehStats = vehDossier.getTotalStats()
         marksOnGun = vehStats.getAchievement(MARK_ON_GUN_RECORD)
         if marksOnGun.getValue() > 0:
-            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.markOnGun(), progress=text_styles.stats('{}{}'.format(marksOnGun.getDamageRating(), '%')))), _MARK_ON_GUN_ICONS[marksOnGun.getValue() - 1]))
+            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.markOnGun(), progress=text_styles.stats(('{}{}').format(marksOnGun.getDamageRating(), '%')))), _MARK_ON_GUN_ICONS[(marksOnGun.getValue() - 1)]))
         else:
-            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.markOnGun.warning(), progress=text_styles.stats('{}{}'.format(marksOnGun.getDamageRating(), '%')))), backport.image(R.images.gui.maps.icons.library.mark_on_gun_icon())))
+            tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.markOnGun.warning(), progress=text_styles.stats(('{}{}').format(marksOnGun.getDamageRating(), '%')))), backport.image(R.images.gui.maps.icons.library.mark_on_gun_icon())))
         tankItems.append(self._getTankParamVO(text_styles.main(backport.text(R.strings.session_stats.tankInfo.status.total(), total=text_styles.stats(self.vehicleStats.battleCnt))), backport.image(R.images.gui.maps.icons.statistic.battles24())))
         if smallLayout:
             self._headerPadding = -itemOffset * 2
@@ -140,12 +149,14 @@ class SessionStatsTankInfo(BlocksTooltipData):
 
     @staticmethod
     def _getTankParamVO(text, icon):
-        return {'text': text,
-         'icon': icon}
+        return {'text': text, 
+           'icon': icon}
 
     @staticmethod
     def _tankNameToRClassName(name):
         return name.lower().replace('-', '_')
 
     def _getTankIcon(self):
-        return RES_ICONS.maps_icons_vehicletypes_elite_all_png(self.vehicle.type) if self.vehicle.isElite else RES_ICONS.maps_icons_vehicletypes_all_png(self.vehicle.type)
+        if self.vehicle.isElite:
+            return RES_ICONS.maps_icons_vehicletypes_elite_all_png(self.vehicle.type)
+        return RES_ICONS.maps_icons_vehicletypes_all_png(self.vehicle.type)

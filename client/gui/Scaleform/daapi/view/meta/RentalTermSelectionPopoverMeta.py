@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RentalTermSelectionPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class RentalTermSelectionPopoverMeta(SmartPopOverView):
@@ -8,4 +6,5 @@ class RentalTermSelectionPopoverMeta(SmartPopOverView):
         self._printOverrideError('selectTerm')
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/custom_popover.py
 from itertools import ifilter
 import typing
 from CurrentVehicle import g_currentVehicle
@@ -15,7 +13,8 @@ from helpers import dependency
 from gui import makeHtmlString
 from items.components.c11n_constants import CustomizationDisplayType, SeasonType
 from skeletons.gui.customization import ICustomizationService
-POPOVER_SEASONS_ORDER = (SeasonType.ALL,) + SEASONS_ORDER
+POPOVER_SEASONS_ORDER = (
+ SeasonType.ALL,) + SEASONS_ORDER
 
 class CustomPopover(CustomizationItemsPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)
@@ -35,22 +34,23 @@ class CustomPopover(CustomizationItemsPopoverMeta):
     def removeAll(self):
         if self.__isHistoric and self.__isNonHistoric and self.__isFantastical:
             filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
-        elif self.__isHistoric and self.__isNonHistoric:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
-        elif self.__isHistoric and self.__isFantastical:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
-        elif self.__isNonHistoric and self.__isFantastical:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
-        elif self.__isHistoric:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL
-        elif self.__isNonHistoric:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
-        elif self.__isFantastical:
-            filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
         else:
-            filterMethod = None
-        for season in SeasonType.REGULAR:
-            self.__ctx.mode.removeItemsFromSeason(season=season, filterMethod=filterMethod)
+            if self.__isHistoric and self.__isNonHistoric:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
+            elif self.__isHistoric and self.__isFantastical:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            elif self.__isNonHistoric and self.__isFantastical:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL or item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            elif self.__isHistoric:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.HISTORICAL
+            elif self.__isNonHistoric:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
+            elif self.__isFantastical:
+                filterMethod = lambda item: item.customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+            else:
+                filterMethod = None
+            for season in SeasonType.REGULAR:
+                self.__ctx.mode.removeItemsFromSeason(season=season, filterMethod=filterMethod)
 
         return
 
@@ -94,11 +94,14 @@ class CustomPopover(CustomizationItemsPopoverMeta):
         fantasticalItemsCount = 0
         allOutfitsEmpty = True
         for outfit in self.__ctx.mode.getModifiedOutfits().values() + [self.__ctx.commonModifiedOutfit]:
-            historicItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.HISTORICAL ]
+            historicItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.HISTORICAL
+                            ]
             historicItemsCount += len(historicItems)
-            nonHistoricItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL ]
+            nonHistoricItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.NON_HISTORICAL
+                               ]
             nonHistoricItemsCount += len(nonHistoricItems)
-            fantasticalItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.FANTASTICAL ]
+            fantasticalItems = [ intCD for intCD in outfit.items() if self.__service.getItemByCD(intCD).customizationDisplayType() == CustomizationDisplayType.FANTASTICAL
+                               ]
             fantasticalItemsCount += len(fantasticalItems)
             if not isOutfitVisuallyEmpty(outfit):
                 allOutfitsEmpty = False
@@ -151,7 +154,7 @@ class CustomPopoverDataProvider(SortableDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self._list = []
@@ -207,7 +210,8 @@ class CustomPopoverDataProvider(SortableDAAPIDataProvider):
             originalSlotData = getSlotDataFromSlot(originalOutfit, slotId)
             if modifiedSlotData is None or originalSlotData is None or modifiedSlotData.isEqual(originalSlotData):
                 continue
-            key = (pItem.item.intCD, pItem.isFromInventory)
+            key = (
+             pItem.item.intCD, pItem.isFromInventory)
             if key not in itemData:
                 itemData[key] = C11nPopoverItemData(item=pItem.item, season=season, isFromInventory=pItem.isFromInventory)
             itemData[key].slotsIds.append(slotId._asdict())
@@ -248,7 +252,9 @@ class CustomPopoverDataProvider(SortableDAAPIDataProvider):
             return True
         if not self.__isHistoric and self.__isNonHistoric and not self.__isFantastical and itemCustomizationDisplayType != CustomizationDisplayType.NON_HISTORICAL:
             return True
-        return True if not self.__isHistoric and not self.__isNonHistoric and self.__isFantastical and itemCustomizationDisplayType != CustomizationDisplayType.FANTASTICAL else False
+        if not self.__isHistoric and not self.__isNonHistoric and self.__isFantastical and itemCustomizationDisplayType != CustomizationDisplayType.FANTASTICAL:
+            return True
+        return False
 
     @staticmethod
     def __makeItemDataVO(itemData, isModified):
@@ -257,10 +263,10 @@ class CustomPopoverDataProvider(SortableDAAPIDataProvider):
         icon = item.icon if progressionLevel == -1 else item.iconByProgressionLevel(progressionLevel)
         name = text_styles.main(item.userName)
         if isModified and not itemData.isFromInventory:
-            countLabel = text_styles.main('{} x '.format(len(itemData.slotsIds)))
+            countLabel = text_styles.main(('{} x ').format(len(itemData.slotsIds)))
             price = getItemPricesVO(item.buyPrices.itemPrice)[0]
         else:
-            countLabel = text_styles.main('{} '.format(len(itemData.slotsIds)))
+            countLabel = text_styles.main(('{} ').format(len(itemData.slotsIds)))
             price = None
         isApplied = not isModified
         rarity = item.rarity
@@ -270,27 +276,27 @@ class CustomPopoverDataProvider(SortableDAAPIDataProvider):
         if isRare:
             rarityIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.sign.s20x20.dyn(rarity)())
             rarityBackgroundIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.glow.s104x104.dyn(rarity)())
-        itemDataVO = {'id': item.intCD,
-         'icon': icon,
-         'userName': name,
-         'numItems': countLabel,
-         'customizationDisplayType': item.customizationDisplayType(),
-         'price': price,
-         'isApplied': isApplied,
-         'isWide': item.isWide(),
-         'itemsList': itemData.slotsIds,
-         'seasonType': itemData.season,
-         'isDim': item.isDim(),
-         'rarityIcon': rarityIconSource,
-         'rarityBackground': rarityBackgroundIconSource}
+        itemDataVO = {'id': item.intCD, 
+           'icon': icon, 
+           'userName': name, 
+           'numItems': countLabel, 
+           'customizationDisplayType': item.customizationDisplayType(), 
+           'price': price, 
+           'isApplied': isApplied, 
+           'isWide': item.isWide(), 
+           'itemsList': itemData.slotsIds, 
+           'seasonType': itemData.season, 
+           'isDim': item.isDim(), 
+           'rarityIcon': rarityIconSource, 
+           'rarityBackground': rarityBackgroundIconSource}
         return itemDataVO
 
     @staticmethod
     def __getSeasonGroupVO(season):
         seasonName = SEASON_TYPE_TO_NAME[season]
         seasonTitle = makeHtmlString('html_templates:lobby/customization/StylePopoverSeasonName', seasonName, ctx={'align': 'CENTER'})
-        seasonGroupVO = {'titleLabel': seasonTitle,
-         'isTitle': True}
+        seasonGroupVO = {'titleLabel': seasonTitle, 
+           'isTitle': True}
         return seasonGroupVO
 
     def __getNotModifiedItems(self, season):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/perks/PerksLoadStrategy.py
 from perks.vse_plan import VsePlan, PlanStatus
 from wg_async import wg_async, wg_await, distributeLoopOverTicks2
 
@@ -15,7 +13,8 @@ class LoadState:
     LOAD = 2
     PRE_START = 3
     START = 4
-    STATUS_LOADED = (LOAD, PRE_START, START)
+    STATUS_LOADED = (
+     LOAD, PRE_START, START)
 
 
 class BaseLoadStrategy(object):
@@ -55,10 +54,10 @@ class BaseLoadStrategy(object):
         pass
 
     def _checkIsAllPlansReady(self):
-        return all((plan.isPlanStarted for plan in self._plans))
+        return all(plan.isPlanStarted for plan in self._plans)
 
     def _checkIsAllPlansLoaded(self):
-        return all((plan.status == PlanStatus.LOAD for plan in self._plans))
+        return all(plan.status == PlanStatus.LOAD for plan in self._plans)
 
     def _clearPlansCallback(self):
         for plan in self._plans:
@@ -177,9 +176,9 @@ class DelayLoadStartStrategy(DefaultLoadStrategy):
         super(DelayLoadStartStrategy, self)._stateLogic()
 
 
-BUILDER = {LoadType.DEFAULT: DefaultLoadStrategy,
- LoadType.AUTO_START: AutoStartStrategy,
- LoadType.DELAYED_LOAD_START: DelayLoadStartStrategy}
+BUILDER = {LoadType.DEFAULT: DefaultLoadStrategy, 
+   LoadType.AUTO_START: AutoStartStrategy, 
+   LoadType.DELAYED_LOAD_START: DelayLoadStartStrategy}
 
 def getLoadStarategy(value):
     return BUILDER.get(value)

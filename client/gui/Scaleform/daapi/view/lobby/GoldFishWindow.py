@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/GoldFishWindow.py
 from account_helpers.AccountSettings import AccountSettings, GOLD_FISH_LAST_SHOW_TIME
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
 from gui.Scaleform.daapi.view.meta.GoldFishWindowMeta import GoldFishWindowMeta
@@ -35,8 +33,9 @@ class GoldFishWindow(GoldFishWindowMeta):
         self.as_setImageS(RES_ICONS.MAPS_ICONS_WINDOWS_GOLDFISH_GOLDFISHBG, 0)
         self.as_setWindowTitleS(MENU.GOLDFISH_WINDOWHEADER)
         self.as_setWindowTextsS(MENU.GOLDFISH_HEADER, MENU.GOLDFISH_EVENTTITLE, MENU.GOLDFISH_EVENTTEXT, MENU.GOLDFISH_EVENTLINK)
-        self.as_setButtonsS([{'label': MENU.GOLDFISH_BUTTONCLOSE,
-          'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK,
-          'action': 'closeAction',
-          'isFocused': True,
-          'tooltip': ''}], TEXT_ALIGN.RIGHT, BTN_WIDTH)
+        self.as_setButtonsS([
+         {'label': MENU.GOLDFISH_BUTTONCLOSE, 
+            'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK, 
+            'action': 'closeAction', 
+            'isFocused': True, 
+            'tooltip': ''}], TEXT_ALIGN.RIGHT, BTN_WIDTH)

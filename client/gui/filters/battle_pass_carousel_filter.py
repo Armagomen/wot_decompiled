@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/filters/battle_pass_carousel_filter.py
 from account_helpers.AccountSettings import CAROUSEL_FILTER_1, CAROUSEL_FILTER_2, CAROUSEL_FILTER_3, CAROUSEL_FILTER_CLIENT_1, BATTLEPASS_CAROUSEL_FILTER_1, BATTLEPASS_CAROUSEL_FILTER_CLIENT_1
 from gui.filters.carousel_filter import CarouselFilter, CustomizationCriteriesGroup, EventCriteriesGroup
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -12,12 +10,11 @@ class BattlePassCarouselFilter(CarouselFilter):
 
     def __init__(self):
         super(BattlePassCarouselFilter, self).__init__()
-        self._serverSections = (CAROUSEL_FILTER_1,
-         CAROUSEL_FILTER_2,
-         BATTLEPASS_CAROUSEL_FILTER_1,
+        self._serverSections = (CAROUSEL_FILTER_1, CAROUSEL_FILTER_2, BATTLEPASS_CAROUSEL_FILTER_1,
          CAROUSEL_FILTER_3)
         self._clientSections = (CAROUSEL_FILTER_CLIENT_1, BATTLEPASS_CAROUSEL_FILTER_CLIENT_1)
-        self._criteriesGroups = (EventCriteriesGroup(), BattlePassCriteriesGroup())
+        self._criteriesGroups = (
+         EventCriteriesGroup(), BattlePassCriteriesGroup())
         self.currentSeasonID = 0
 
     def save(self):

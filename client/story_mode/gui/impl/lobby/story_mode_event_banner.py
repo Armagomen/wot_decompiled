@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/story_mode_event_banner.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -31,11 +29,13 @@ class StoryModeNewbieBanner(BaseEventBanner):
 
     @property
     def borderColor(self):
-        pass
+        return '#F5C87C'
 
     @property
     def bannerState(self):
-        return EventBannerState.INTRO if self._controller.isNewNeededForNewbies() else EventBannerState.IN_PROGRESS
+        if self._controller.isNewNeededForNewbies():
+            return EventBannerState.INTRO
+        return EventBannerState.IN_PROGRESS
 
     @property
     def playAppearAnim(self):
@@ -75,11 +75,13 @@ class StoryModeEventBanner(BaseEventBanner):
 
     @property
     def borderColor(self):
-        pass
+        return '#37B4CA'
 
     @property
     def bannerState(self):
-        return EventBannerState.IN_PROGRESS if getEventVisited() else EventBannerState.INTRO
+        if getEventVisited():
+            return EventBannerState.IN_PROGRESS
+        return EventBannerState.INTRO
 
     @property
     def timerValue(self):

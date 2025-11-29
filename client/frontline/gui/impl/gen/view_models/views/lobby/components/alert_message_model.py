@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/components/alert_message_model.py
 from frameworks.wulf import ViewModel
 
 class AlertMessageModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
     def __init__(self, properties=2, commands=1):
         super(AlertMessageModel, self).__init__(properties=properties, commands=commands)

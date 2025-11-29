@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/resources/cdn/cache.py
-import os
-import random
-import itertools
-import typing
-import urlparse
+import os, random, itertools, typing, urlparse
 from helpers import dependency, isPlayerAccount
 from gui.game_loading import loggers
 from gui.game_loading.resources.cdn import history
@@ -47,7 +41,9 @@ class GameLoadingCdnCache(BaseExternalCache):
 
     def nextSlide(self):
         selectedSequence = self._history.selectedSequence
-        return self._safeSelectSlideFromSequence(selectedSequence) or self._selectSlideFromDefaultSequence() if selectedSequence and selectedSequence.isActive else self._selectSlideFromDefaultSequence()
+        if selectedSequence and selectedSequence.isActive:
+            return self._safeSelectSlideFromSequence(selectedSequence) or self._selectSlideFromDefaultSequence()
+        return self._selectSlideFromDefaultSequence()
 
     @property
     def _history(self):
@@ -56,7 +52,7 @@ class GameLoadingCdnCache(BaseExternalCache):
     def _selectSlideFromSequence(self, sequence):
         if not sequence:
             _logger.debug('No sequence to select slide.')
-            return None
+            return
         else:
             _logger.debug('Selecting slide from sequence: %s.', sequence)
             downloadedSlides = 0
@@ -66,33 +62,34 @@ class GameLoadingCdnCache(BaseExternalCache):
                     viewsCount = self._history.getSequenceSlideViewsCount(sequence, slide)
                     existingSlidesByViewsCount.setdefault(viewsCount, []).append(slide)
                     downloadedSlides += 1
-                _logger.debug('Sequence [%s] slide [%s] not downloaded.', sequence.name, slide)
+                else:
+                    _logger.debug('Sequence [%s] slide [%s] not downloaded.', sequence.name, slide)
 
             if downloadedSlides < sequence.minSlidesCountToView:
                 _logger.debug('Sequence [%s] has not reached minimal slides count to view. [%s < %s].', sequence.name, downloadedSlides, sequence.minSlidesCountToView)
-                return None
+                return
             for _viewsCount in sorted(existingSlidesByViewsCount):
                 slides = existingSlidesByViewsCount[_viewsCount]
                 if sequence.order == SequenceOrders.RANDOM:
                     random.shuffle(slides)
                     _logger.debug('Sequence [%s] slides with views [%s] shuffled.', sequence.name, _viewsCount)
                 for _slide in slides:
-                    localSlide = _slide.convertToLocal(self, self.defaults.minShowTimeSec, self.defaults.transition) if not isinstance(_slide, LocalSlideModel) else _slide
+                    localSlide = (isinstance(_slide, LocalSlideModel) or _slide.convertToLocal)(self, self.defaults.minShowTimeSec, self.defaults.transition) if 1 else _slide
                     if localSlide:
                         self._history.addSequenceSlideViewsCount(sequence, _slide)
                         return localSlide
                     _logger.debug('Sequence [%s] slide [%s] files was deleted manually.', sequence.name, localSlide)
 
-            return None
+            return
 
     def _safeSelectSlideFromSequence(self, sequence):
         try:
             return self._selectSlideFromSequence(sequence)
         except Exception:
             _logger.exception('Can not select slide from sequence: %s.', sequence.name)
-            return None
+            return
 
-        return None
+        return
 
     def _selectSlideFromDefaultSequence(self):
         return self._safeSelectSlideFromSequence(self.defaults.sequence)
@@ -102,7 +99,7 @@ class GameLoadingCdnCache(BaseExternalCache):
         config = createConfigModel(config)
         if config is None:
             return
-        elif not config.enabled:
+        if not config.enabled:
             self._history.delete()
             return []
         else:
@@ -121,7 +118,8 @@ class GameLoadingCdnCache(BaseExternalCache):
                         _logger.debug('Sequence [%s] skipped be cohort: %s.', sequence.name, self._cohort)
                         continue
                     prioritizedSequences.setdefault(sequence.priority, []).append(sequence)
-                self._history.removeSequenceFromHistory(sequence)
+                else:
+                    self._history.removeSequenceFromHistory(sequence)
 
             toDownloadUrls = []
             if prioritizedSequences:
@@ -131,10 +129,11 @@ class GameLoadingCdnCache(BaseExternalCache):
                 for slide in selectedSequence.slides:
                     if not slide.isDownloaded(self):
                         notDownloadedUrls.append(slide.urls)
-                    _logger.debug('Sequence [%s] slide [%s] already downloaded.', selectedSequence.name, slide)
-                    if not self._history.getSequenceSlideViewsCount(selectedSequence, slide):
-                        _logger.debug('Sequence [%s] slide [%s] not viewed.', selectedSequence.name, slide)
-                        notViewedSlidesCount += 1
+                    else:
+                        _logger.debug('Sequence [%s] slide [%s] already downloaded.', selectedSequence.name, slide)
+                        if not self._history.getSequenceSlideViewsCount(selectedSequence, slide):
+                            _logger.debug('Sequence [%s] slide [%s] not viewed.', selectedSequence.name, slide)
+                            notViewedSlidesCount += 1
 
                 if notDownloadedUrls:
                     maxSlidesCount = selectedSequence.minSlidesCountToView * DOWNLOAD_SLIDES_MULTIPLAYER
@@ -150,14 +149,11 @@ class GameLoadingCdnCache(BaseExternalCache):
             toDownloadByHosts = {}
             for url in set(urlsToKeepInCache + list(itertools.chain(*toDownloadUrls))):
                 parsedUrl = urlparse.urlparse(url)
-                host = urlparse.urlunsplit((parsedUrl.scheme,
-                 parsedUrl.netloc,
-                 '',
-                 '',
-                 ''))
+                host = urlparse.urlunsplit((parsedUrl.scheme, parsedUrl.netloc, '', '', ''))
                 toDownloadByHosts.setdefault(host, []).append(parsedUrl.path)
 
-            return [ createManifestRecord(appName='slides', host=host, files=relativeUrls) for host, relativeUrls in toDownloadByHosts.iteritems() ]
+            return [ createManifestRecord(appName='slides', host=host, files=relativeUrls) for host, relativeUrls in toDownloadByHosts.iteritems()
+                   ]
 
 
 class GameLoadingCdnCacheMgr(BaseExternalCacheManager):
@@ -267,7 +263,9 @@ class GameLoadingCdnCacheMgr(BaseExternalCacheManager):
             return
         else:
             battlesCount = self._itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
-            return SequenceCohorts.NEWBIES if battlesCount < NEWBIES_BATTLES_LIMIT else SequenceCohorts.DEFAULT
+            if battlesCount < NEWBIES_BATTLES_LIMIT:
+                return SequenceCohorts.NEWBIES
+            return SequenceCohorts.DEFAULT
 
     def _getExternalConfigUrl(self):
         if self._lobbyCtx is None:

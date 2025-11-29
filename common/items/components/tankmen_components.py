@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/tankmen_components.py
 from debug_utils import LOG_ERROR
 from items.components import component_constants
 from items.components import legacy_stuff
@@ -39,19 +37,38 @@ class SPECIAL_VOICE_TAG(object):
     HW25_TITI_CN = 'hw25_Titi_CN_SpecialVoice'
     HW25_DA_KUN_CN = 'hw25_DaKun_CN_SpecialVoice'
     HW25_PANCHEZHANG_CN = 'hw25_Panchezhang_CN_SpecialVoice'
-    BATTLE_OF_BLOGGERS = ('ru1_LebwaSpecialVoice', 'ru2_YushaSpecialVoice', 'ru3_Amway921SpecialVoice', 'ru4_KorbenDallasSpecialVoice', 'eu1_MailandSpecialVoice', 'eu2_Skill4ltuSpecialVoice', 'eu3_DezgamezSpecialVoice', 'eu4_AwesomeEpicGuysSpecialVoice')
-    BATTLE_OF_BLOGGERS_2021 = ('bb21_ru1_Yusha_specialVoice', 'bb21_ru1_Vspishka_specialVoice', 'bb21_ru2_Amway921_specialVoice', 'bb21_ru2_Korbendailas_specialVoice', 'bb21_ru3_Lebwa_specialVoice', 'bb21_ru3_Inspirer_specialVoice', 'bb21_ru4_Evilgranny_specialVoice', 'bb21_ru4_Nearyou_specialVoice', 'bb21_eu1_Circon_specialVoice', 'bb21_eu2_Dakillzor_specialVoice', 'bb21_eu3_Newmulti2k_specialVoice', 'bb21_eu4_Orzanel_specialVoice', 'bb21_na1_Cabbagemechanic_specialVoice', 'bb21_na2_Tragicloss_specialVoice', 'bb21_na3_Cmdraf_specialVoice', 'bb21_asia1_Mastertortoise_specialVoice', 'bb21_asia2_Summertiger_specialVoice', 'bb21_asia3_Maharlika_specialVoice')
+    BATTLE_OF_BLOGGERS = ('ru1_LebwaSpecialVoice', 'ru2_YushaSpecialVoice', 'ru3_Amway921SpecialVoice',
+                          'ru4_KorbenDallasSpecialVoice', 'eu1_MailandSpecialVoice',
+                          'eu2_Skill4ltuSpecialVoice', 'eu3_DezgamezSpecialVoice',
+                          'eu4_AwesomeEpicGuysSpecialVoice')
+    BATTLE_OF_BLOGGERS_2021 = ('bb21_ru1_Yusha_specialVoice', 'bb21_ru1_Vspishka_specialVoice',
+                               'bb21_ru2_Amway921_specialVoice', 'bb21_ru2_Korbendailas_specialVoice',
+                               'bb21_ru3_Lebwa_specialVoice', 'bb21_ru3_Inspirer_specialVoice',
+                               'bb21_ru4_Evilgranny_specialVoice', 'bb21_ru4_Nearyou_specialVoice',
+                               'bb21_eu1_Circon_specialVoice', 'bb21_eu2_Dakillzor_specialVoice',
+                               'bb21_eu3_Newmulti2k_specialVoice', 'bb21_eu4_Orzanel_specialVoice',
+                               'bb21_na1_Cabbagemechanic_specialVoice', 'bb21_na2_Tragicloss_specialVoice',
+                               'bb21_na3_Cmdraf_specialVoice', 'bb21_asia1_Mastertortoise_specialVoice',
+                               'bb21_asia2_Summertiger_specialVoice', 'bb21_asia3_Maharlika_specialVoice')
     G_I_JOE_TWITCH_2021 = ('duke_specialVoice', 'cobra_specialVoice')
-    WHITE_TIGER_EVENT_2021 = ('letov_SpecialVoice', 'armand_SpecialVoice', 'elisa_SpecialVoice', 'krieger_SpecialVoice')
+    WHITE_TIGER_EVENT_2021 = ('letov_SpecialVoice', 'armand_SpecialVoice', 'elisa_SpecialVoice',
+                              'krieger_SpecialVoice')
     WHITE_TIGER_EVENT_2022 = ('villanelle_SpecialVoice', 'ermelinda_SpecialVoice')
     WHITE_TIGER_EVENT_2023 = ('hannelore_SpecialVoice', 'jana_SpecialVoice')
-    WHITE_TIGER_EVENT_2024 = ('ermelinda24_SpecialVoice', 'krieger24_SpecialVoice', 'mouzAkrobat24_SpecialVoice', 'quickyBaby24_SpecialVoice', 'dakillzor24_SpecialVoice', 'skill4ltu24_SpecialVoice', 'bMeng24_SpecialVoice', 'saoNian24_SpecialVoice', 'yiTuanTuan24_SpecialVoice', 'zhongPengFei24_SpecialVoice')
+    WHITE_TIGER_EVENT_2024 = ('ermelinda24_SpecialVoice', 'krieger24_SpecialVoice',
+                              'mouzAkrobat24_SpecialVoice', 'quickyBaby24_SpecialVoice',
+                              'dakillzor24_SpecialVoice', 'skill4ltu24_SpecialVoice',
+                              'bMeng24_SpecialVoice', 'saoNian24_SpecialVoice', 'yiTuanTuan24_SpecialVoice',
+                              'zhongPengFei24_SpecialVoice')
     SABATON_2021 = 'sabaton21_specialVoice'
     G_I_JOE_2022 = ('baroness22SpecialVoice', 'coverGirl22SpecialVoice')
-    BPH_2022 = ('commander_bph_2022_1', 'commander_bph_2022_2', 'commander_bph_2022_3', 'commander_bph_2022_4')
+    BPH_2022 = ('commander_bph_2022_1', 'commander_bph_2022_2', 'commander_bph_2022_3',
+                'commander_bph_2022_4')
     BP_12_M = ('tankman_bp_12_m_5', 'tankman_bp_12_m_8', 'tankman_bp_12_m_9', 'tankman_bp_12_m_10')
     BP_H2 = ('tankmen_bp1002_1', 'tankmen_bp1002_3')
-    BP_13 = ('tankmen_bp13_1', 'tankmen_bp13_2', 'tankmen_bp13_3', 'tankmen_bp13_4', 'tankmen_bp13_5', 'tankmen_bp13_6', 'tankmen_bp13_7', 'tankmen_bp13_8', 'tankmen_bp13_9')
+    BP_13 = ('tankmen_bp13_1', 'tankmen_bp13_2', 'tankmen_bp13_3', 'tankmen_bp13_4',
+             'tankmen_bp13_5', 'tankmen_bp13_6', 'tankmen_bp13_7', 'tankmen_bp13_8',
+             'tankmen_bp13_9')
     CYGAN = 'cygan_SpecialVoice'
     MARTY_VOLE = 'martyVole_SpecialVoice'
     CTM_24 = ('kirk_SpecialVoice', 'spock_SpecialVoice', 'uhura_SpecialVoice')
@@ -59,48 +76,19 @@ class SPECIAL_VOICE_TAG(object):
     MIKA = 'mikaSpecialVoice'
     BP_14_M = ('tankmen_bp14_5', 'tankmen_bp14_6')
     MT_LB_1 = 'tankmen_mtlb1_1'
-    BP_15_M = ('tankmen_bp15_5', 'tankmen_bp15_6', 'tankmen_bp15_7', 'tankmen_bp15_8', 'tankmen_bp15_9')
-    BP_H4 = ('tankmen_bp1004_1', 'tankmen_bp1004_2', 'tankmen_bp1004_3', 'tankmen_bp1004_4', 'tankmen_bp1004_5')
-    BP_16_M = ('tankmen_bp16_5', 'tankmen_bp16_6', 'tankmen_bp16_7', 'tankmen_bp16_8', 'tankmen_bp16_9')
+    BP_15_M = ('tankmen_bp15_5', 'tankmen_bp15_6', 'tankmen_bp15_7', 'tankmen_bp15_8',
+               'tankmen_bp15_9')
+    BP_H4 = ('tankmen_bp1004_1', 'tankmen_bp1004_2', 'tankmen_bp1004_3', 'tankmen_bp1004_4',
+             'tankmen_bp1004_5')
+    BP_16_M = ('tankmen_bp16_5', 'tankmen_bp16_6', 'tankmen_bp16_7', 'tankmen_bp16_8',
+               'tankmen_bp16_9')
     BP_17_DC_M = ('tankmen_bp17_5', 'tankmen_bp17_8')
-    BP_18_M = ('tankmen_bp18_5', 'tankmen_bp18_6', 'tankmen_bp18_7', 'tankmen_bp18_8', 'tankmen_bp18_9')
-    ALL = (BUFFON,
-     SABATON,
-     OFFSPRING,
-     RACER,
-     RACER_EN,
-     CELEBRITY_2021,
-     MIHO,
-     YHA,
-     ALICE,
-     DARJEELING,
-     CELEBRITY_2022,
-     DAY_OF_COSMONAUTICS_21,
-     SABATON_2021,
-     QUICKY_BABY,
-     WITCHES_CREW,
-     CELEBRITY_2023,
-     HAND_OF_BLOOD,
-     NAMELESS,
-     EDELWEISS,
-     SKILL_4_LTU,
-     TALKTOME_GOOSE,
-     CELEBRITY_2024,
-     CYGAN,
-     ERIKA,
-     MIKA,
-     MARTY_VOLE,
-     MT_LB_1,
-     CELEBRITY_2025,
-     KEI,
-     HW25_QUICKYBABY,
-     HW25_MAILAND,
-     HW25_MOUZ_AKROBAT,
-     HW25_SKILL4LTU,
-     HW25_LU_JUN_CN,
-     HW25_TITI_CN,
-     HW25_DA_KUN_CN,
-     HW25_PANCHEZHANG_CN) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022 + BPH_2022 + WHITE_TIGER_EVENT_2023 + BP_12_M + BP_H2 + BP_13 + CTM_24 + BP_14_M + WHITE_TIGER_EVENT_2024 + BP_15_M + BP_H4 + BP_16_M + BP_17_DC_M + BP_18_M
+    BP_18_M = ('tankmen_bp18_5', 'tankmen_bp18_6', 'tankmen_bp18_7', 'tankmen_bp18_8',
+               'tankmen_bp18_9')
+    BP_18_NM = ('tankmen_bp18_10', 'tankmen_bp18_11', 'tankmen_bp18_12', 'tankmen_bp18_13',
+                'tankmen_bp18_14')
+    ALL = (
+     BUFFON, SABATON, OFFSPRING, RACER, RACER_EN, CELEBRITY_2021, MIHO, YHA, ALICE, DARJEELING, CELEBRITY_2022, DAY_OF_COSMONAUTICS_21, SABATON_2021, QUICKY_BABY, WITCHES_CREW, CELEBRITY_2023, HAND_OF_BLOOD, NAMELESS, EDELWEISS, SKILL_4_LTU, TALKTOME_GOOSE, CELEBRITY_2024, CYGAN, ERIKA, MIKA, MARTY_VOLE, MT_LB_1, CELEBRITY_2025, KEI, HW25_QUICKYBABY, HW25_MAILAND, HW25_MOUZ_AKROBAT, HW25_SKILL4LTU, HW25_LU_JUN_CN, HW25_TITI_CN, HW25_DA_KUN_CN, HW25_PANCHEZHANG_CN) + BATTLE_OF_BLOGGERS + BATTLE_OF_BLOGGERS_2021 + G_I_JOE_TWITCH_2021 + WHITE_TIGER_EVENT_2021 + G_I_JOE_2022 + WHITE_TIGER_EVENT_2022 + BPH_2022 + WHITE_TIGER_EVENT_2023 + BP_12_M + BP_H2 + BP_13 + CTM_24 + BP_14_M + WHITE_TIGER_EVENT_2024 + BP_15_M + BP_H4 + BP_16_M + BP_17_DC_M + BP_18_M + BP_18_NM
 
 
 class SPECIAL_CREW_TAG(object):
@@ -113,20 +101,14 @@ class SPECIAL_CREW_TAG(object):
     DARJEELING_CREW = 'darjeelingCrew'
     HW25_CREW = 'hw25_Crew'
     HW25_CREW_CN = 'hw25_Crew_CN'
-    ALL = (SABATON,
-     OFFSPRING,
-     MIHO,
-     YHA,
-     WITCHES_CREW,
-     MIKA_CREW,
-     DARJEELING_CREW,
-     HW25_CREW,
-     HW25_CREW_CN)
+    ALL = (
+     SABATON, OFFSPRING, MIHO, YHA, WITCHES_CREW, MIKA_CREW, DARJEELING_CREW, HW25_CREW, HW25_CREW_CN)
 
 
 class GROUP_TAG(object):
     PASSPORT_REPLACEMENT_FORBIDDEN = 'passportReplacementForbidden'
-    RESTRICTIONS = (PASSPORT_REPLACEMENT_FORBIDDEN,)
+    RESTRICTIONS = (
+     PASSPORT_REPLACEMENT_FORBIDDEN,)
     RANGE = RESTRICTIONS + tuple(skills_constants.ROLES) + SPECIAL_VOICE_TAG.ALL + SPECIAL_CREW_TAG.ALL
 
 
@@ -140,7 +122,7 @@ class Rank(legacy_stuff.LegacyStuff):
         self.__icon = icon or component_constants.EMPTY_STRING
 
     def __repr__(self):
-        return 'Rank({})'.format(self.__name)
+        return ('Rank({})').format(self.__name)
 
     @property
     def name(self):
@@ -168,7 +150,7 @@ class RanksSet(object):
         self.__rankIDsByNames = {}
 
     def __repr__(self):
-        return 'RanksSet({})'.format(self.__rankIDsByNames.keys())
+        return ('RanksSet({})').format(self.__rankIDsByNames.keys())
 
     def add(self, rank):
         self.__rankIDsByNames[rank.name] = len(self.__ranks)
@@ -178,28 +160,29 @@ class RanksSet(object):
         if 0 <= rankID < len(self.__ranks):
             return self.__ranks[rankID]
         else:
-            return None
-            return None
+            return
+            return
 
     def getRankByName(self, name):
         if name in self.__rankIDsByNames:
             return self.__ranks[self.__rankIDsByNames[name]]
         else:
-            return None
-            return None
+            return
+            return
 
     def getIDByName(self, name):
         if name in self.__rankIDsByNames:
             return self.__rankIDsByNames[name]
-        raise SoftException('Name of rank "{}" is not found'.format(name))
+        raise SoftException(('Name of rank "{}" is not found').format(name))
 
     def generator(self):
         for rank in self.__ranks:
-            yield (self.__rankIDsByNames[rank.name], rank)
+            yield (
+             self.__rankIDsByNames[rank.name], rank)
 
 
 class RoleRanks(legacy_stuff.LegacyStuff):
-    __slots__ = ('__ranks',)
+    __slots__ = ('__ranks', )
 
     def __init__(self):
         super(RoleRanks, self).__init__()
@@ -208,7 +191,7 @@ class RoleRanks(legacy_stuff.LegacyStuff):
             self.__ranks[skill] = component_constants.EMPTY_TUPLE
 
     def __repr__(self):
-        return 'RoleRanks(ranks={}, radioman={}, driver={}, gunner={}, loader={})'.format(self.commander, self.radioman, self.driver, self.gunner, self.loader)
+        return ('RoleRanks(ranks={}, radioman={}, driver={}, gunner={}, loader={})').format(self.commander, self.radioman, self.driver, self.gunner, self.loader)
 
     @property
     def commander(self):
@@ -241,17 +224,18 @@ class RoleRanks(legacy_stuff.LegacyStuff):
         if 0 <= rankIdx < len(ranks):
             return ranks[rankIdx]
         else:
-            return None
-            return None
+            return
+            return
 
     def setRanksIDs(self, roleName, roleIDs):
         if roleName not in skills_constants.ROLES:
-            raise SoftException('Role {} is not found'.format(roleName))
+            raise SoftException(('Role {} is not found').format(roleName))
         self.__ranks[roleName] = roleIDs
 
 
 class NationGroup(legacy_stuff.LegacyStuff):
-    __slots__ = ('__name', '__isFemales', '__notInShop', '__firstNamesIDs', '__lastNamesIDs', '__iconsIDs', '__weight', '__tags', '__roles', '__groupID')
+    __slots__ = ('__name', '__isFemales', '__notInShop', '__firstNamesIDs', '__lastNamesIDs',
+                 '__iconsIDs', '__weight', '__tags', '__roles', '__groupID')
 
     def __init__(self, groupID, name, isFemales, notInShop, firstNamesIDs, lastNamesIDs, iconsIDs, weight, tags, roles):
         super(NationGroup, self).__init__()
@@ -267,7 +251,7 @@ class NationGroup(legacy_stuff.LegacyStuff):
         self.__roles = roles
 
     def __repr__(self):
-        return 'NationGroup(groupID={}, name={}, isFemales={}, notInShop={}, weight={}, tags={}, roles={})'.format(self.__groupID, self.__name, self.__isFemales, self.__notInShop, self.__weight, self.__tags, self.__roles)
+        return ('NationGroup(groupID={}, name={}, isFemales={}, notInShop={}, weight={}, tags={}, roles={})').format(self.__groupID, self.__name, self.__isFemales, self.__notInShop, self.__weight, self.__tags, self.__roles)
 
     @property
     def groupID(self):
@@ -335,7 +319,8 @@ class NationGroup(legacy_stuff.LegacyStuff):
 
 
 class NationConfig(legacy_stuff.LegacyStuff):
-    __slots__ = ('__name', '__normalGroups', '__premiumGroups', '__roleRanks', '__firstNames', '__lastNames', '__icons', '__ranks')
+    __slots__ = ('__name', '__normalGroups', '__premiumGroups', '__roleRanks', '__firstNames',
+                 '__lastNames', '__icons', '__ranks')
 
     def __init__(self, name, normalGroups=None, premiumGroups=None, roleRanks=None, firstNames=None, lastNames=None, icons=None, ranks=None):
         super(NationConfig, self).__init__()
@@ -349,7 +334,7 @@ class NationConfig(legacy_stuff.LegacyStuff):
         self.__ranks = ranks
 
     def __repr__(self):
-        return 'NationConfig({})'.format(self.__name)
+        return ('NationConfig({})').format(self.__name)
 
     @property
     def normalGroups(self):
@@ -434,15 +419,17 @@ class LoreGroupComponent(object):
 
     def addDescrForNation(self, nation, descr):
         if nation in self.descr_by_nation:
-            LOG_ERROR('Lore description: {0} for nation: {1}, already exist '.format(descr, nation))
+            LOG_ERROR(('Lore description: {0} for nation: {1}, already exist ').format(descr, nation))
         self.descr_by_nation[nation] = descr
 
     def getDescrForNation(self, nation):
-        return self.descr_by_nation[nation] if nation in self.descr_by_nation else self.descr_by_nation[LoreGroupComponent.DEFAULT]
+        if nation in self.descr_by_nation:
+            return self.descr_by_nation[nation]
+        return self.descr_by_nation[LoreGroupComponent.DEFAULT]
 
 
 class LoreComponent(object):
-    __slots__ = ('descr_by_group',)
+    __slots__ = ('descr_by_group', )
     SECTION = 'descr_by_group'
     NATION_SECTION = 'nations'
     __DEFAULT = 'default'
@@ -452,7 +439,7 @@ class LoreComponent(object):
 
     def addDescrForGroup(self, group, descr):
         if group in self.descr_by_group:
-            LOG_ERROR('Description: {0} for group: {1}, already exist '.format(group, descr))
+            LOG_ERROR(('Description: {0} for group: {1}, already exist ').format(group, descr))
         self.descr_by_group[group] = LoreGroupComponent(descr)
 
     def addNationDescrForGroup(self, group, naiton, descr):
@@ -467,4 +454,4 @@ class LoreComponent(object):
         return result
 
     def __repr__(self):
-        return '{}()'.format(self.__class__.__name__)
+        return ('{}()').format(self.__class__.__name__)

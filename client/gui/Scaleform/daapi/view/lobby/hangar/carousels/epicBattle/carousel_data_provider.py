@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/epicBattle/carousel_data_provider.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import UNLOCK_VEHICLES_IN_BATTLE_HINTS
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL
@@ -42,7 +40,9 @@ class EpicBattleCarouselDataProvider(HangarCarouselDataProvider):
         self.__indexToScroll = -1
 
     def getIndexToScroll(self):
-        return -1 if self.__isHintsShown() else self.__indexToScroll
+        if self.__isHintsShown():
+            return -1
+        return self.__indexToScroll
 
     def updateVehicles(self, vehiclesCDs=None, filterCriteria=None, forceUpdate=False):
         if self.__epicController.isUnlockVehiclesInBattleEnabled() and not self.__separatorItems:
@@ -92,12 +92,13 @@ class EpicBattleCarouselDataProvider(HangarCarouselDataProvider):
         if not self.__epicController.isUnlockVehiclesInBattleEnabled():
             return
         for level in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1):
-            self.__separatorItems.append({'levelInfo': self.__getLevelInfo(level),
-             'clickEnabled': isVehLevelUnlockableInBattle(level)})
+            self.__separatorItems.append({'levelInfo': self.__getLevelInfo(level), 
+               'clickEnabled': isVehLevelUnlockableInBattle(level)})
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (not vehicle.isInInventory,
+        return (
+         not vehicle.isInInventory,
          not vehicle.isEvent,
          not vehicle.isOnlyForBattleRoyaleBattles,
          not cls._isSuitableForQueue(vehicle),
@@ -130,14 +131,14 @@ class EpicBattleCarouselDataProvider(HangarCarouselDataProvider):
         if isVehLevelUnlockableInBattle(level):
             levelTxt = text_styles.neutral(backport.text(R.strings.epic_battle.epicBattlesCarousel.lobby.levelInfo.level(), lvl=int2roman(level)))
             levelInfoText = backport.text(R.strings.epic_battle.epicBattlesCarousel.lobby.levelInfo(), level=levelTxt)
-            return {'level': level,
-             'isCollapsed': self.__isHintsShown(),
-             'isCollapsible': True,
-             'infoText': levelInfoText}
-        return {'level': level,
-         'isCollapsed': True,
-         'isCollapsible': False,
-         'infoText': ''}
+            return {'level': level, 
+               'isCollapsed': self.__isHintsShown(), 
+               'isCollapsible': True, 
+               'infoText': levelInfoText}
+        return {'level': level, 
+           'isCollapsed': True, 
+           'isCollapsible': False, 
+           'infoText': ''}
 
     def __isHintsShown(self):
         hintCount = AccountSettings.getSettingsDefault(UNLOCK_VEHICLES_IN_BATTLE_HINTS)

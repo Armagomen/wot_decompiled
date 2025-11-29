@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/vehicle_playlists_controller.py
-import logging
-import os
-import BigWorld
-import typing
-import Event
+import logging, os, BigWorld, typing, Event
 from PlayerEvents import g_playerEvents
 from helpers.local_cache import FileLocalCache
 from params_schemas.veh_playlists_schema import vehPlaylistsConfigSchema
@@ -34,7 +28,8 @@ class _VehiclePlaylistsCache(FileLocalCache):
     __SPACE = 'playlists_cache'
 
     def __init__(self, userDatabaseID):
-        fileTags = ('playlists', userDatabaseID)
+        fileTags = (
+         'playlists', userDatabaseID)
         super(_VehiclePlaylistsCache, self).__init__(self.__SPACE, fileTags, async=True)
         self.__filePath = self._buildLocalCachePath(self.__SPACE, fileTags)
         self.data = {}
@@ -114,7 +109,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         return self.__isEnabled
 
     def getSelectedID(self):
-        return '' if not self.isEnabled else self.__cache.selectedID
+        if not self.isEnabled:
+            return ''
+        return self.__cache.selectedID
 
     def setSelectedID(self, val):
         if not self.isEnabled:
@@ -126,7 +123,8 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def iterPlaylists(self):
         if self.isEnabled and self.__cache:
             for plID, pStrData in self.__cache.data.iteritems():
-                yield (plID, pStrData)
+                yield (
+                 plID, pStrData)
 
     def updateModifiedPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:
@@ -173,7 +171,8 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         self.setSelectedID(playlisID)
         self.__cache.write()
         self.onPlaylistSaved(playlisID, playlist)
-        return (playlisID, playlist)
+        return (
+         playlisID, playlist)
 
     def setModifiedPlaylistChanged(self, isChanged):
         if not self.isEnabled:
@@ -189,7 +188,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def isModifiedPlaylistChanged(self):
         if not self.isEnabled:
             return False
-        return False if not self.__modifiedPlaylist.id else self.__modifiedPlaylist.isReallyChanged
+        if not self.__modifiedPlaylist.id:
+            return False
+        return self.__modifiedPlaylist.isReallyChanged
 
     def createPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:

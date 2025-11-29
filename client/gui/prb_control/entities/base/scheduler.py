@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/scheduler.py
 import weakref
 from gui.shared.utils.scheduled_notifications import Notifiable
 

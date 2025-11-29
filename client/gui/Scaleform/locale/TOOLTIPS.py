@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/TOOLTIPS.py
 from debug_utils import LOG_WARNING
 
 class TOOLTIPS(object):
@@ -4341,12 +4339,32 @@ class TOOLTIPS(object):
     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_9/label'
     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_9/desc'
     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_9/howToGetInfo'
-    ELEN_SUMMARY_RANK_ENUM = (ELEN_SUMMARY_RANK_1,
+    NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_LABEL = '#tooltips:notrecruitedtankman/john_christmas/label'
+    NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_DESC = '#tooltips:notrecruitedtankman/john_christmas/desc'
+    NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_HOWTOGETINFO = '#tooltips:notrecruitedtankman/john_christmas/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_10/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_10/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_10/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_11/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_11/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_11/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_12/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_12/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_12/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_13/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_13/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_13/howToGetInfo'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_LABEL = '#tooltips:notrecruitedtankman/tankmen_bp18_14/label'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_DESC = '#tooltips:notrecruitedtankman/tankmen_bp18_14/desc'
+    NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_HOWTOGETINFO = '#tooltips:notrecruitedtankman/tankmen_bp18_14/howToGetInfo'
+    ELEN_SUMMARY_RANK_ENUM = (
+     ELEN_SUMMARY_RANK_1,
      ELEN_SUMMARY_RANK_2,
      ELEN_SUMMARY_RANK_3,
      ELEN_SUMMARY_RANK_4,
      ELEN_SUMMARY_RANK_NORANK)
-    ELEN_SUMMARY_PARAM_ALL_ALL_HEADER_ENUM = (ELEN_SUMMARY_PARAM_MAX_ORIGINALXP_HEADER,
+    ELEN_SUMMARY_PARAM_ALL_ALL_HEADER_ENUM = (
+     ELEN_SUMMARY_PARAM_MAX_ORIGINALXP_HEADER,
      ELEN_SUMMARY_PARAM_MAX_XP_HEADER,
      ELEN_SUMMARY_PARAM_MAX_DAMAGEDEALT_HEADER,
      ELEN_SUMMARY_PARAM_MAX_DAMAGEASSISTED_HEADER,
@@ -4354,7 +4372,8 @@ class TOOLTIPS(object):
      ELEN_SUMMARY_PARAM_SUMALL_XP_HEADER,
      ELEN_SUMMARY_PARAM_SUMALL_DAMAGEDEALT_HEADER,
      ELEN_SUMMARY_PARAM_SUMALL_DAMAGEASSISTED_HEADER)
-    ELEN_SUMMARY_PARAM_ALL_ALL_BODY_ENUM = (ELEN_SUMMARY_PARAM_MAX_ORIGINALXP_BODY,
+    ELEN_SUMMARY_PARAM_ALL_ALL_BODY_ENUM = (
+     ELEN_SUMMARY_PARAM_MAX_ORIGINALXP_BODY,
      ELEN_SUMMARY_PARAM_MAX_XP_BODY,
      ELEN_SUMMARY_PARAM_MAX_DAMAGEDEALT_BODY,
      ELEN_SUMMARY_PARAM_MAX_DAMAGEASSISTED_BODY,
@@ -4362,11 +4381,13 @@ class TOOLTIPS(object):
      ELEN_SUMMARY_PARAM_SUMALL_XP_BODY,
      ELEN_SUMMARY_PARAM_SUMALL_DAMAGEDEALT_BODY,
      ELEN_SUMMARY_PARAM_SUMALL_DAMAGEASSISTED_BODY)
-    ELEN_SUMMARY_BATTLES_ALL_BODY_ENUM = (ELEN_SUMMARY_BATTLES_VEHICLE_BODY,
+    ELEN_SUMMARY_BATTLES_ALL_BODY_ENUM = (
+     ELEN_SUMMARY_BATTLES_VEHICLE_BODY,
      ELEN_SUMMARY_BATTLES_NATION_BODY,
      ELEN_SUMMARY_BATTLES_LEVEL_BODY,
      ELEN_SUMMARY_BATTLES_CLASS_BODY)
-    ELEN_SUMMARY_TABLE_ALL_HEADER_ENUM = (ELEN_SUMMARY_TABLE_DATE_HEADER,
+    ELEN_SUMMARY_TABLE_ALL_HEADER_ENUM = (
+     ELEN_SUMMARY_TABLE_DATE_HEADER,
      ELEN_SUMMARY_TABLE_PLATOON_HEADER,
      ELEN_SUMMARY_TABLE_VEHICLES_HEADER,
      ELEN_SUMMARY_TABLE_RESULT_HEADER,
@@ -4375,33 +4396,42 @@ class TOOLTIPS(object):
      ELEN_SUMMARY_TABLE_XP_HEADER,
      ELEN_SUMMARY_TABLE_DAMAGEDEALT_HEADER,
      ELEN_SUMMARY_TABLE_DAMAGEASSISTED_HEADER)
-    ELEN_SUMMARY_TABLE_ALL_BODY_ENUM = (ELEN_SUMMARY_TABLE_PLATOON_BODY,
+    ELEN_SUMMARY_TABLE_ALL_BODY_ENUM = (
+     ELEN_SUMMARY_TABLE_PLATOON_BODY,
      ELEN_SUMMARY_TABLE_FRAGS_BODY,
      ELEN_SUMMARY_TABLE_ORIGINALXP_BODY,
      ELEN_SUMMARY_TABLE_XP_BODY,
      ELEN_SUMMARY_TABLE_DAMAGEDEALT_BODY,
      ELEN_SUMMARY_TABLE_DAMAGEASSISTED_BODY)
-    ELEN_TASK_SELECTION_ENUM = (ELEN_TASK_SELECTION_SUMN,
+    ELEN_TASK_SELECTION_ENUM = (
+     ELEN_TASK_SELECTION_SUMN,
      ELEN_TASK_SELECTION_MAX,
      ELEN_TASK_SELECTION_SUMALL,
      ELEN_TASK_SELECTION_SUMSEQN,
      ELEN_TASK_SELECTION_SUMMSEQN)
-    ELEN_TASK_EVENTTYPE_FULL_ENUM = (ELEN_TASK_EVENTTYPE_FULL_NATION, ELEN_TASK_EVENTTYPE_FULL_LEVEL, ELEN_TASK_EVENTTYPE_FULL_CLASS)
-    ELEN_TASK_EVENTTYPE_NOTFULL_ENUM = (ELEN_TASK_EVENTTYPE_NOTFULL_NATION,
+    ELEN_TASK_EVENTTYPE_FULL_ENUM = (
+     ELEN_TASK_EVENTTYPE_FULL_NATION,
+     ELEN_TASK_EVENTTYPE_FULL_LEVEL,
+     ELEN_TASK_EVENTTYPE_FULL_CLASS)
+    ELEN_TASK_EVENTTYPE_NOTFULL_ENUM = (
+     ELEN_TASK_EVENTTYPE_NOTFULL_NATION,
      ELEN_TASK_EVENTTYPE_NOTFULL_LEVEL,
      ELEN_TASK_EVENTTYPE_NOTFULL_CLASS,
      ELEN_TASK_EVENTTYPE_NOTFULL_VEHICLE)
-    TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_ENUM = (TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_LIGHTTANK,
+    TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_ENUM = (
+     TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_LIGHTTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_MEDIUMTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_HEAVYTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_AT_SPG,
      TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_SPG)
-    TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_ENUM = (TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_LIGHTTANK,
+    TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_ENUM = (
+     TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_LIGHTTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_MEDIUMTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_HEAVYTANK,
      TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_AT_SPG,
      TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_SPG)
-    LEVEL_ENUM = (LEVEL_1,
+    LEVEL_ENUM = (
+     LEVEL_1,
      LEVEL_2,
      LEVEL_3,
      LEVEL_4,
@@ -4412,7 +4442,8 @@ class TOOLTIPS(object):
      LEVEL_9,
      LEVEL_10,
      LEVEL_11)
-    CONTACT_STATUS_INBATTLE_ENUM = (CONTACT_STATUS_INBATTLE_UNKNOWN,
+    CONTACT_STATUS_INBATTLE_ENUM = (
+     CONTACT_STATUS_INBATTLE_UNKNOWN,
      CONTACT_STATUS_INBATTLE_RANDOM,
      CONTACT_STATUS_INBATTLE_TRAINING,
      CONTACT_STATUS_INBATTLE_EPIC_RANDOM_TRAINING,
@@ -4422,7 +4453,8 @@ class TOOLTIPS(object):
      CONTACT_STATUS_INBATTLE_HISTORICAL,
      CONTACT_STATUS_INBATTLE_FORTIFICATIONS,
      CONTACT_STATUS_INBATTLE_SPECIAL)
-    TANK_PARAMS_DESC_ENUM = (TANK_PARAMS_DESC_FURYMAXRELOADEFFAVGDPM,
+    TANK_PARAMS_DESC_ENUM = (
+     TANK_PARAMS_DESC_FURYMAXRELOADEFFAVGDPM,
      TANK_PARAMS_DESC_FURYMAXRELOADEFFICIENCYLEVEL,
      TANK_PARAMS_DESC_FURYRELOADSPEEDBONUSPEREFFICIENCYLEVEL,
      TANK_PARAMS_DESC_FURYRELOADEFFICIENCYLEVELDURATION,
@@ -4566,7 +4598,8 @@ class TOOLTIPS(object):
      TANK_PARAMS_DESC_CHARGEABLEBURSTDISPERSION,
      TANK_PARAMS_DESC_STATIONARYRELOADSWITCHONTIME,
      TANK_PARAMS_DESC_STATIONARYRELOADSWITCHOFFTIME)
-    BATTLERESULTS_EFFICIENCYHEADER_ENUM = (BATTLERESULTS_EFFICIENCYHEADER_SUMMSPOTTED,
+    BATTLERESULTS_EFFICIENCYHEADER_ENUM = (
+     BATTLERESULTS_EFFICIENCYHEADER_SUMMSPOTTED,
      BATTLERESULTS_EFFICIENCYHEADER_SUMMASSIST,
      BATTLERESULTS_EFFICIENCYHEADER_SUMMARMOR,
      BATTLERESULTS_EFFICIENCYHEADER_SUMMCRITS,
@@ -4574,7 +4607,8 @@ class TOOLTIPS(object):
      BATTLERESULTS_EFFICIENCYHEADER_SUMMKILL,
      BATTLERESULTS_EFFICIENCYHEADER_SUMMSTUN,
      BATTLERESULTS_EFFICIENCYHEADER_VALUE)
-    AWARDITEM_ALL_HEADER_ENUM = (AWARDITEM_GROUPS_HEADER,
+    AWARDITEM_ALL_HEADER_ENUM = (
+     AWARDITEM_GROUPS_HEADER,
      AWARDITEM_CREDITS_HEADER,
      AWARDITEM_CRYSTAL_HEADER,
      AWARDITEM_RANDOMBOOKLET_HEADER,
@@ -4664,7 +4698,8 @@ class TOOLTIPS(object):
      AWARDITEM_RANDOMNATIONALBROCHURE_HEADER,
      AWARDITEM_RANDOMNATIONALGUIDE_HEADER,
      AWARDITEM_RANDOMNATIONALCREWBOOK_HEADER)
-    AWARDITEM_ALL_BODY_ENUM = (AWARDITEM_GROUPS_BODY,
+    AWARDITEM_ALL_BODY_ENUM = (
+     AWARDITEM_GROUPS_BODY,
      AWARDITEM_CREDITS_BODY,
      AWARDITEM_CRYSTAL_BODY,
      AWARDITEM_RANDOMBOOKLET_BODY,
@@ -4754,14 +4789,20 @@ class TOOLTIPS(object):
      AWARDITEM_RANDOMNATIONALBROCHURE_BODY,
      AWARDITEM_RANDOMNATIONALGUIDE_BODY,
      AWARDITEM_RANDOMNATIONALCREWBOOK_BODY)
-    TEMPLATE_ALL_SHORT_ENUM = (TEMPLATE_DAYS_SHORT, TEMPLATE_HOURS_SHORT, TEMPLATE_MINUTES_SHORT)
-    VEHICLEPARAMS_BONUS_TANKMANLEVEL_ENUM = (VEHICLEPARAMS_BONUS_TANKMANLEVEL_COMMANDER,
+    TEMPLATE_ALL_SHORT_ENUM = (
+     TEMPLATE_DAYS_SHORT,
+     TEMPLATE_HOURS_SHORT,
+     TEMPLATE_MINUTES_SHORT)
+    VEHICLEPARAMS_BONUS_TANKMANLEVEL_ENUM = (
+     VEHICLEPARAMS_BONUS_TANKMANLEVEL_COMMANDER,
      VEHICLEPARAMS_BONUS_TANKMANLEVEL_GUNNER,
      VEHICLEPARAMS_BONUS_TANKMANLEVEL_LOADER,
      VEHICLEPARAMS_BONUS_TANKMANLEVEL_DRIVER,
      VEHICLEPARAMS_BONUS_TANKMANLEVEL_RADIOMAN)
-    VEHICLEPARAMS_BONUS_EXTRA_ENUM = (VEHICLEPARAMS_BONUS_EXTRA_CAMOUFLAGEEXTRAS,)
-    VEHICLEPREVIEW_BUYBUTTON_ALL_ENUM = (VEHICLEPREVIEW_BUYBUTTON_PARENTMODULEISLOCKED_HEADER,
+    VEHICLEPARAMS_BONUS_EXTRA_ENUM = (
+     VEHICLEPARAMS_BONUS_EXTRA_CAMOUFLAGEEXTRAS,)
+    VEHICLEPREVIEW_BUYBUTTON_ALL_ENUM = (
+     VEHICLEPREVIEW_BUYBUTTON_PARENTMODULEISLOCKED_HEADER,
      VEHICLEPREVIEW_BUYBUTTON_PARENTMODULEISLOCKED_BODY,
      VEHICLEPREVIEW_BUYBUTTON_PARENTVEHICLEISLOCKED_HEADER,
      VEHICLEPREVIEW_BUYBUTTON_PARENTVEHICLEISLOCKED_BODY,
@@ -4779,24 +4820,28 @@ class TOOLTIPS(object):
      VEHICLEPREVIEW_BUYBUTTON_NOTUNLOCKEDNATION_BODY,
      VEHICLEPREVIEW_BUYBUTTON_RESTOREREQUESTED_HEADER,
      VEHICLEPREVIEW_BUYBUTTON_RESTOREREQUESTED_BODY)
-    TANK_PARAMS_AVGPARAMCOMMENT_ENUM = (TANK_PARAMS_AVGPARAMCOMMENT_DAMAGE,
+    TANK_PARAMS_AVGPARAMCOMMENT_ENUM = (
+     TANK_PARAMS_AVGPARAMCOMMENT_DAMAGE,
      TANK_PARAMS_AVGPARAMCOMMENT_MAXMUTABLEDAMAGE,
      TANK_PARAMS_AVGPARAMCOMMENT_MINMUTABLEDAMAGE,
      TANK_PARAMS_AVGPARAMCOMMENT_PIERCINGPOWER,
      TANK_PARAMS_AVGPARAMCOMMENT_MAXPIERCINGPOWER,
      TANK_PARAMS_AVGPARAMCOMMENT_MINPIERCINGPOWER)
-    SKILLS_FORROLE_ENUM = (SKILLS_FORROLE_COMMANDER,
+    SKILLS_FORROLE_ENUM = (
+     SKILLS_FORROLE_COMMANDER,
      SKILLS_FORROLE_DRIVER,
      SKILLS_FORROLE_RADIOMAN,
      SKILLS_FORROLE_LOADER,
      SKILLS_FORROLE_GUNNER,
      SKILLS_FORROLE_COMMON)
-    CREW_ROLE_ENUM = (CREW_ROLE_COMMANDER,
+    CREW_ROLE_ENUM = (
+     CREW_ROLE_COMMANDER,
      CREW_ROLE_DRIVER,
      CREW_ROLE_RADIOMAN,
      CREW_ROLE_LOADER,
      CREW_ROLE_GUNNER)
-    ELEN_EXCEL_OBJPARAM_ALL_ALL_HEADER_ENUM = (ELEN_EXCEL_OBJPARAM_MAX_ORIGINALXP_HEADER,
+    ELEN_EXCEL_OBJPARAM_ALL_ALL_HEADER_ENUM = (
+     ELEN_EXCEL_OBJPARAM_MAX_ORIGINALXP_HEADER,
      ELEN_EXCEL_OBJPARAM_MAX_XP_HEADER,
      ELEN_EXCEL_OBJPARAM_MAX_DAMAGEDEALT_HEADER,
      ELEN_EXCEL_OBJPARAM_MAX_DAMAGEASSISTED_HEADER,
@@ -4817,7 +4862,8 @@ class TOOLTIPS(object):
      ELEN_EXCEL_OBJPARAM_SUMALL_DAMAGEDEALT_HEADER,
      ELEN_EXCEL_OBJPARAM_SUMALL_DAMAGEASSISTED_HEADER,
      ELEN_EXCEL_OBJPARAM_SUMALL_WINS_HEADER)
-    ELEN_EXCEL_OBJPARAM_ALL_ALL_BODY_ENUM = (ELEN_EXCEL_OBJPARAM_MAX_ORIGINALXP_BODY,
+    ELEN_EXCEL_OBJPARAM_ALL_ALL_BODY_ENUM = (
+     ELEN_EXCEL_OBJPARAM_MAX_ORIGINALXP_BODY,
      ELEN_EXCEL_OBJPARAM_MAX_XP_BODY,
      ELEN_EXCEL_OBJPARAM_MAX_DAMAGEDEALT_BODY,
      ELEN_EXCEL_OBJPARAM_MAX_DAMAGEASSISTED_BODY,
@@ -4838,7 +4884,8 @@ class TOOLTIPS(object):
      ELEN_EXCEL_OBJPARAM_SUMALL_DAMAGEDEALT_BODY,
      ELEN_EXCEL_OBJPARAM_SUMALL_DAMAGEASSISTED_BODY,
      ELEN_EXCEL_OBJPARAM_SUMALL_WINS_BODY)
-    ELEN_EXCEL_ADDPARAM_ALL_ALL_HEADER_ENUM = (ELEN_EXCEL_ADDPARAM_MAX_ORIGINALXP_HEADER,
+    ELEN_EXCEL_ADDPARAM_ALL_ALL_HEADER_ENUM = (
+     ELEN_EXCEL_ADDPARAM_MAX_ORIGINALXP_HEADER,
      ELEN_EXCEL_ADDPARAM_MAX_XP_HEADER,
      ELEN_EXCEL_ADDPARAM_MAX_DAMAGEDEALT_HEADER,
      ELEN_EXCEL_ADDPARAM_MAX_DAMAGEASSISTED_HEADER,
@@ -4859,7 +4906,8 @@ class TOOLTIPS(object):
      ELEN_EXCEL_ADDPARAM_SUMALL_DAMAGEDEALT_HEADER,
      ELEN_EXCEL_ADDPARAM_SUMALL_DAMAGEASSISTED_HEADER,
      ELEN_EXCEL_ADDPARAM_SUMALL_WINS_HEADER)
-    ELEN_EXCEL_ADDPARAM_ALL_ALL_BODY_ENUM = (ELEN_EXCEL_ADDPARAM_MAX_ORIGINALXP_BODY,
+    ELEN_EXCEL_ADDPARAM_ALL_ALL_BODY_ENUM = (
+     ELEN_EXCEL_ADDPARAM_MAX_ORIGINALXP_BODY,
      ELEN_EXCEL_ADDPARAM_MAX_XP_BODY,
      ELEN_EXCEL_ADDPARAM_MAX_DAMAGEDEALT_BODY,
      ELEN_EXCEL_ADDPARAM_MAX_DAMAGEASSISTED_BODY,
@@ -4880,11 +4928,13 @@ class TOOLTIPS(object):
      ELEN_EXCEL_ADDPARAM_SUMALL_DAMAGEDEALT_BODY,
      ELEN_EXCEL_ADDPARAM_SUMALL_DAMAGEASSISTED_BODY,
      ELEN_EXCEL_ADDPARAM_SUMALL_WINS_BODY)
-    ELEN_EXCEL_INFOPARAM_WINS_ALL_BODY_ENUM = (ELEN_EXCEL_INFOPARAM_WINS_VEHICLE_BODY,
+    ELEN_EXCEL_INFOPARAM_WINS_ALL_BODY_ENUM = (
+     ELEN_EXCEL_INFOPARAM_WINS_VEHICLE_BODY,
      ELEN_EXCEL_INFOPARAM_WINS_NATION_BODY,
      ELEN_EXCEL_INFOPARAM_WINS_LEVEL_BODY,
      ELEN_EXCEL_INFOPARAM_WINS_CLASS_BODY)
-    ADVANCED_ENUM = (ADVANCED_INFO,
+    ADVANCED_ENUM = (
+     ADVANCED_INFO,
      ADVANCED_SERVICE,
      ADVANCED_HOLLOW_CHARGE,
      ADVANCED_HIGH_EXPLOSIVE,
@@ -4965,11 +5015,13 @@ class TOOLTIPS(object):
      ADVANCED_ADDITIONALINVISIBILITYDEVICE,
      ADVANCED_IMPROVEDCONFIGURATION,
      ADVANCED_TURBOCHARGER)
-    ADVANCED_HEADER_SHELLTYPE_ENUM = (ADVANCED_HEADER_SHELLTYPE_HOLLOW_CHARGE,
+    ADVANCED_HEADER_SHELLTYPE_ENUM = (
+     ADVANCED_HEADER_SHELLTYPE_HOLLOW_CHARGE,
      ADVANCED_HEADER_SHELLTYPE_HIGH_EXPLOSIVE,
      ADVANCED_HEADER_SHELLTYPE_ARMOR_PIERCING,
      ADVANCED_HEADER_SHELLTYPE_ARMOR_PIERCING_CR)
-    CUSTOMIZATION_TABS_ALL_BODY_ENUM = (CUSTOMIZATION_TABS_PAINT_BODY,
+    CUSTOMIZATION_TABS_ALL_BODY_ENUM = (
+     CUSTOMIZATION_TABS_PAINT_BODY,
      CUSTOMIZATION_TABS_CAMOUFLAGE_BODY,
      CUSTOMIZATION_TABS_EMBLEM_BODY,
      CUSTOMIZATION_TABS_INSCRIPTION_BODY,
@@ -4979,7 +5031,8 @@ class TOOLTIPS(object):
      CUSTOMIZATION_TABS_UNCUSTOMSTYLE_BODY,
      CUSTOMIZATION_TABS_ATTACHMENT_BODY,
      CUSTOMIZATION_TABS_STATTRACKER_BODY)
-    CUSTOMIZATION_DISABLEDTABS_ALL_BODY_ENUM = (CUSTOMIZATION_DISABLEDTABS_PAINT_BODY,
+    CUSTOMIZATION_DISABLEDTABS_ALL_BODY_ENUM = (
+     CUSTOMIZATION_DISABLEDTABS_PAINT_BODY,
      CUSTOMIZATION_DISABLEDTABS_CAMOUFLAGE_BODY,
      CUSTOMIZATION_DISABLEDTABS_EMBLEM_BODY,
      CUSTOMIZATION_DISABLEDTABS_INSCRIPTION_BODY,
@@ -4988,22 +5041,26 @@ class TOOLTIPS(object):
      CUSTOMIZATION_DISABLEDTABS_CUSTOMSTYLE_BODY,
      CUSTOMIZATION_DISABLEDTABS_UNCUSTOMSTYLE_BODY,
      CUSTOMIZATION_DISABLEDTABS_ATTACHMENT_BODY)
-    HEADER_BUTTONS_ALL_CLICKDESC_ENUM = (HEADER_BUTTONS_CRYSTAL_CLICKDESC,
+    HEADER_BUTTONS_ALL_CLICKDESC_ENUM = (
+     HEADER_BUTTONS_CRYSTAL_CLICKDESC,
      HEADER_BUTTONS_GOLD_CLICKDESC,
      HEADER_BUTTONS_GOLDALTERNATIVE_CLICKDESC,
      HEADER_BUTTONS_CREDITS_CLICKDESC,
      HEADER_BUTTONS_FREEXP_CLICKDESC)
-    HEADER_BUTTONS_ALL_FIRSTDESC_ENUM = (HEADER_BUTTONS_GOLD_FIRSTDESC,
+    HEADER_BUTTONS_ALL_FIRSTDESC_ENUM = (
+     HEADER_BUTTONS_GOLD_FIRSTDESC,
      HEADER_BUTTONS_CREDITS_FIRSTDESC,
      HEADER_BUTTONS_BRCOIN_FIRSTDESC,
      HEADER_BUTTONS_FREEXP_FIRSTDESC)
-    HEADER_BUTTONS_ALL_TITLE_ENUM = (HEADER_BUTTONS_CRYSTAL_TITLE,
+    HEADER_BUTTONS_ALL_TITLE_ENUM = (
+     HEADER_BUTTONS_CRYSTAL_TITLE,
      HEADER_BUTTONS_EQUIPCOIN_TITLE,
      HEADER_BUTTONS_GOLD_TITLE,
      HEADER_BUTTONS_CREDITS_TITLE,
      HEADER_BUTTONS_BRCOIN_TITLE,
      HEADER_BUTTONS_FREEXP_TITLE)
-    VEHICLEPREVIEW_BOXTOOLTIP_ALL_HEADER_ENUM = (VEHICLEPREVIEW_BOXTOOLTIP_SHELL_HEADER,
+    VEHICLEPREVIEW_BOXTOOLTIP_ALL_HEADER_ENUM = (
+     VEHICLEPREVIEW_BOXTOOLTIP_SHELL_HEADER,
      VEHICLEPREVIEW_BOXTOOLTIP_CAMOUFLAGE_HEADER,
      VEHICLEPREVIEW_BOXTOOLTIP_STYLE_HEADER,
      VEHICLEPREVIEW_BOXTOOLTIP_EMBLEM_HEADER,
@@ -5017,7 +5074,8 @@ class TOOLTIPS(object):
      VEHICLEPREVIEW_BOXTOOLTIP_BATTLEBOOSTER_HEADER,
      VEHICLEPREVIEW_BOXTOOLTIP_ATTACHMENT_HEADER,
      VEHICLEPREVIEW_BOXTOOLTIP_STATTRACKER_HEADER)
-    NOTRECRUITEDTANKMAN_ALL_EVENT_ENUM = (NOTRECRUITEDTANKMAN_BASE_EVENT,
+    NOTRECRUITEDTANKMAN_ALL_EVENT_ENUM = (
+     NOTRECRUITEDTANKMAN_BASE_EVENT,
      NOTRECRUITEDTANKMAN_CZECH_WOMAN_EVENT,
      NOTRECRUITEDTANKMAN_OOW21_STRATEGIST_COMMANDER_EVENT,
      NOTRECRUITEDTANKMAN_OOW21_TANKER_1_COMMANDER_EVENT,
@@ -5028,7 +5086,8 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_NY23_GIRL_M_EVENT,
      NOTRECRUITEDTANKMAN_NY25DEFAULTGIRL_EVENT,
      NOTRECRUITEDTANKMAN_NY25_MEN_EVENT)
-    NOTRECRUITEDTANKMAN_ALL_LABEL_ENUM = (NOTRECRUITEDTANKMAN_BASE_LABEL,
+    NOTRECRUITEDTANKMAN_ALL_LABEL_ENUM = (
+     NOTRECRUITEDTANKMAN_BASE_LABEL,
      NOTRECRUITEDTANKMAN_BUFFON_LABEL,
      NOTRECRUITEDTANKMAN_TANKWOMAN_LABEL,
      NOTRECRUITEDTANKMAN_CZECH_WOMAN_LABEL,
@@ -5348,8 +5407,15 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_6_LABEL,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_7_LABEL,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_8_LABEL,
-     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_LABEL)
-    NOTRECRUITEDTANKMAN_ALL_DESC_ENUM = (NOTRECRUITEDTANKMAN_BASE_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_LABEL,
+     NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_LABEL,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_LABEL)
+    NOTRECRUITEDTANKMAN_ALL_DESC_ENUM = (
+     NOTRECRUITEDTANKMAN_BASE_DESC,
      NOTRECRUITEDTANKMAN_BUFFON_DESC,
      NOTRECRUITEDTANKMAN_TANKWOMAN_DESC,
      NOTRECRUITEDTANKMAN_CZECH_WOMAN_DESC,
@@ -5673,8 +5739,15 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_6_DESC,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_7_DESC,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_8_DESC,
-     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_DESC)
-    NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_DESC,
+     NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_DESC,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_DESC)
+    NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (
+     NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
@@ -5852,9 +5925,19 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_6_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_7_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_8_HOWTOGETINFO,
-     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_HOWTOGETINFO)
-    QUESTS_AWARDS_VEHICLERENT_RENTLEFT_ENUM = (QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTDAYS, QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTBATTLES, QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTWINS)
-    NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_HOWTOGETINFO)
+    QUESTS_AWARDS_VEHICLERENT_RENTLEFT_ENUM = (
+     QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTDAYS,
+     QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTBATTLES,
+     QUESTS_AWARDS_VEHICLERENT_RENTLEFT_RENTWINS)
+    NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM = (
+     NOTRECRUITEDTANKMAN_TANKMAN_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERA_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_RACE19_COMMANDERB_HOWTOGETINFO,
@@ -6032,387 +6115,393 @@ class TOOLTIPS(object):
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_6_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_7_HOWTOGETINFO,
      NOTRECRUITEDTANKMAN_TANKMEN_BP18_8_HOWTOGETINFO,
-     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_HOWTOGETINFO)
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_9_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_JOHN_CHRISTMAS_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_10_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_11_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_12_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_13_HOWTOGETINFO,
+     NOTRECRUITEDTANKMAN_TANKMEN_BP18_14_HOWTOGETINFO)
 
     @classmethod
     def elen_summary_rank(cls, key0):
-        outcome = '#tooltips:elen/summary/rank/{}'.format(key0)
+        outcome = ('#tooltips:elen/summary/rank/{}').format(key0)
         if outcome not in cls.ELEN_SUMMARY_RANK_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_summary_param_all_all_header(cls, key0, key1):
-        outcome = '#tooltips:elen/summary/param/{}/{}/header'.format(key0, key1)
+        outcome = ('#tooltips:elen/summary/param/{}/{}/header').format(key0, key1)
         if outcome not in cls.ELEN_SUMMARY_PARAM_ALL_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_summary_param_all_all_body(cls, key0, key1):
-        outcome = '#tooltips:elen/summary/param/{}/{}/body'.format(key0, key1)
+        outcome = ('#tooltips:elen/summary/param/{}/{}/body').format(key0, key1)
         if outcome not in cls.ELEN_SUMMARY_PARAM_ALL_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_summary_battles_all_body(cls, key0):
-        outcome = '#tooltips:elen/summary/battles/{}/body'.format(key0)
+        outcome = ('#tooltips:elen/summary/battles/{}/body').format(key0)
         if outcome not in cls.ELEN_SUMMARY_BATTLES_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_summary_table_all_header(cls, key0):
-        outcome = '#tooltips:elen/summary/table/{}/header'.format(key0)
+        outcome = ('#tooltips:elen/summary/table/{}/header').format(key0)
         if outcome not in cls.ELEN_SUMMARY_TABLE_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_summary_table_all_body(cls, key0):
-        outcome = '#tooltips:elen/summary/table/{}/body'.format(key0)
+        outcome = ('#tooltips:elen/summary/table/{}/body').format(key0)
         if outcome not in cls.ELEN_SUMMARY_TABLE_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_task_selection(cls, key0):
-        outcome = '#tooltips:elen/task/selection/{}'.format(key0)
+        outcome = ('#tooltips:elen/task/selection/{}').format(key0)
         if outcome not in cls.ELEN_TASK_SELECTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_task_eventtype_full(cls, key0):
-        outcome = '#tooltips:elen/task/eventType/full/{}'.format(key0)
+        outcome = ('#tooltips:elen/task/eventType/full/{}').format(key0)
         if outcome not in cls.ELEN_TASK_EVENTTYPE_FULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_task_eventtype_notfull(cls, key0):
-        outcome = '#tooltips:elen/task/eventType/notFull/{}'.format(key0)
+        outcome = ('#tooltips:elen/task/eventType/notFull/{}').format(key0)
         if outcome not in cls.ELEN_TASK_EVENTTYPE_NOTFULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankcaruseltooltip_vehicletype_normal(cls, key0):
-        outcome = '#tooltips:tankCaruselTooltip/vehicleType/normal/{}'.format(key0)
+        outcome = ('#tooltips:tankCaruselTooltip/vehicleType/normal/{}').format(key0)
         if outcome not in cls.TANKCARUSELTOOLTIP_VEHICLETYPE_NORMAL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankcaruseltooltip_vehicletype_elite(cls, key0):
-        outcome = '#tooltips:tankCaruselTooltip/vehicleType/elite/{}'.format(key0)
+        outcome = ('#tooltips:tankCaruselTooltip/vehicleType/elite/{}').format(key0)
         if outcome not in cls.TANKCARUSELTOOLTIP_VEHICLETYPE_ELITE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def level(cls, key0):
-        outcome = '#tooltips:level/{}'.format(key0)
+        outcome = ('#tooltips:level/{}').format(key0)
         if outcome not in cls.LEVEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def contact_status_inbattle(cls, key0):
-        outcome = '#tooltips:Contact/status/inBattle/{}'.format(key0)
+        outcome = ('#tooltips:Contact/status/inBattle/{}').format(key0)
         if outcome not in cls.CONTACT_STATUS_INBATTLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tank_params_desc(cls, key0):
-        outcome = '#tooltips:tank_params/desc/{}'.format(key0)
+        outcome = ('#tooltips:tank_params/desc/{}').format(key0)
         if outcome not in cls.TANK_PARAMS_DESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def battleresults_efficiencyheader(cls, key0):
-        outcome = '#tooltips:battleResults/efficiencyHeader/{}'.format(key0)
+        outcome = ('#tooltips:battleResults/efficiencyHeader/{}').format(key0)
         if outcome not in cls.BATTLERESULTS_EFFICIENCYHEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAwardHeader(cls, key0):
-        outcome = '#tooltips:awardItem/{}/header'.format(key0)
+        outcome = ('#tooltips:awardItem/{}/header').format(key0)
         if outcome not in cls.AWARDITEM_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAwardBody(cls, key0):
-        outcome = '#tooltips:awardItem/{}/body'.format(key0)
+        outcome = ('#tooltips:awardItem/{}/body').format(key0)
         if outcome not in cls.AWARDITEM_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def template_all_short(cls, key0):
-        outcome = '#tooltips:template/{}/short'.format(key0)
+        outcome = ('#tooltips:template/{}/short').format(key0)
         if outcome not in cls.TEMPLATE_ALL_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def vehicleparams_bonus_tankmanlevel(cls, key0):
-        outcome = '#tooltips:vehicleParams/bonus/tankmanLevel/{}'.format(key0)
+        outcome = ('#tooltips:vehicleParams/bonus/tankmanLevel/{}').format(key0)
         if outcome not in cls.VEHICLEPARAMS_BONUS_TANKMANLEVEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def vehicleparams_bonus_extra(cls, key0):
-        outcome = '#tooltips:vehicleParams/bonus/extra/{}'.format(key0)
+        outcome = ('#tooltips:vehicleParams/bonus/extra/{}').format(key0)
         if outcome not in cls.VEHICLEPARAMS_BONUS_EXTRA_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def vehiclepreview_buybutton_all(cls, key0, part):
-        outcome = '#tooltips:vehiclePreview/buyButton/{}/{}'.format(key0, part)
+        outcome = ('#tooltips:vehiclePreview/buyButton/{}/{}').format(key0, part)
         if outcome not in cls.VEHICLEPREVIEW_BUYBUTTON_ALL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAvgParameterCommentKey(cls, key0):
-        outcome = '#tooltips:tank_params/avgParamComment/{}'.format(key0)
+        outcome = ('#tooltips:tank_params/avgParamComment/{}').format(key0)
         if outcome not in cls.TANK_PARAMS_AVGPARAMCOMMENT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def roleForSkill(cls, role):
-        outcome = '#tooltips:skills/forRole/{}'.format(role)
+        outcome = ('#tooltips:skills/forRole/{}').format(role)
         if outcome not in cls.SKILLS_FORROLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def crewRole(cls, role):
-        outcome = '#tooltips:crew/role/{}'.format(role)
+        outcome = ('#tooltips:crew/role/{}').format(role)
         if outcome not in cls.CREW_ROLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_excel_objparam_all_all_header(cls, key0, key1):
-        outcome = '#tooltips:elen/excel/objParam/{}/{}/header'.format(key0, key1)
+        outcome = ('#tooltips:elen/excel/objParam/{}/{}/header').format(key0, key1)
         if outcome not in cls.ELEN_EXCEL_OBJPARAM_ALL_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_excel_objparam_all_all_body(cls, key0, key1):
-        outcome = '#tooltips:elen/excel/objParam/{}/{}/body'.format(key0, key1)
+        outcome = ('#tooltips:elen/excel/objParam/{}/{}/body').format(key0, key1)
         if outcome not in cls.ELEN_EXCEL_OBJPARAM_ALL_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_excel_addparam_all_all_header(cls, key0, key1):
-        outcome = '#tooltips:elen/excel/addParam/{}/{}/header'.format(key0, key1)
+        outcome = ('#tooltips:elen/excel/addParam/{}/{}/header').format(key0, key1)
         if outcome not in cls.ELEN_EXCEL_ADDPARAM_ALL_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_excel_addparam_all_all_body(cls, key0, key1):
-        outcome = '#tooltips:elen/excel/addParam/{}/{}/body'.format(key0, key1)
+        outcome = ('#tooltips:elen/excel/addParam/{}/{}/body').format(key0, key1)
         if outcome not in cls.ELEN_EXCEL_ADDPARAM_ALL_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def elen_excel_infoparam_wins_all_body(cls, key0):
-        outcome = '#tooltips:elen/excel/infoParam/wins/{}/body'.format(key0)
+        outcome = ('#tooltips:elen/excel/infoParam/wins/{}/body').format(key0)
         if outcome not in cls.ELEN_EXCEL_INFOPARAM_WINS_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAdvancedDescription(cls, key):
-        outcome = '#tooltips:advanced/{}'.format(key)
+        outcome = ('#tooltips:advanced/{}').format(key)
         if outcome not in cls.ADVANCED_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAdvancedHeaderShellType(cls, key):
-        outcome = '#tooltips:advanced/header/shellType/{}'.format(key)
+        outcome = ('#tooltips:advanced/header/shellType/{}').format(key)
         if outcome not in cls.ADVANCED_HEADER_SHELLTYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def customizationItemTab(cls, typeName):
-        outcome = '#tooltips:customization/tabs/{}/body'.format(typeName)
+        outcome = ('#tooltips:customization/tabs/{}/body').format(typeName)
         if outcome not in cls.CUSTOMIZATION_TABS_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def customizationDisabledItemTab(cls, typeName):
-        outcome = '#tooltips:customization/disabledTabs/{}/body'.format(typeName)
+        outcome = ('#tooltips:customization/disabledTabs/{}/body').format(typeName)
         if outcome not in cls.CUSTOMIZATION_DISABLEDTABS_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getHeaderBtnClickDesc(cls, btnType):
-        outcome = '#tooltips:header/buttons/{}/clickDesc'.format(btnType)
+        outcome = ('#tooltips:header/buttons/{}/clickDesc').format(btnType)
         if outcome not in cls.HEADER_BUTTONS_ALL_CLICKDESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getHeaderBtnDesc(cls, btnType):
-        outcome = '#tooltips:header/buttons/{}/firstDesc'.format(btnType)
+        outcome = ('#tooltips:header/buttons/{}/firstDesc').format(btnType)
         if outcome not in cls.HEADER_BUTTONS_ALL_FIRSTDESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getHeaderBtnTitle(cls, btnType):
-        outcome = '#tooltips:header/buttons/{}/title'.format(btnType)
+        outcome = ('#tooltips:header/buttons/{}/title').format(btnType)
         if outcome not in cls.HEADER_BUTTONS_ALL_TITLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getItemBoxTooltip(cls, itemTypeName):
-        outcome = '#tooltips:vehiclePreview/boxTooltip/{}/header'.format(itemTypeName)
+        outcome = ('#tooltips:vehiclePreview/boxTooltip/{}/header').format(itemTypeName)
         if outcome not in cls.VEHICLEPREVIEW_BOXTOOLTIP_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNotRecruitedTankmanEventName(cls, eventName):
-        outcome = '#tooltips:notrecruitedtankman/{}/event'.format(eventName)
+        outcome = ('#tooltips:notrecruitedtankman/{}/event').format(eventName)
         if outcome not in cls.NOTRECRUITEDTANKMAN_ALL_EVENT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNotRecruitedTankmanEventLabel(cls, eventName):
-        outcome = '#tooltips:notrecruitedtankman/{}/label'.format(eventName)
+        outcome = ('#tooltips:notrecruitedtankman/{}/label').format(eventName)
         if outcome not in cls.NOTRECRUITEDTANKMAN_ALL_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNotRecruitedTankmanEventDesc(cls, eventName):
-        outcome = '#tooltips:notrecruitedtankman/{}/desc'.format(eventName)
+        outcome = ('#tooltips:notrecruitedtankman/{}/desc').format(eventName)
         if outcome not in cls.NOTRECRUITEDTANKMAN_ALL_DESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNotRecruitedTankmanEventGetInfo(cls, eventName):
-        outcome = '#tooltips:notrecruitedtankman/{}/howToGetInfo'.format(eventName)
+        outcome = ('#tooltips:notrecruitedtankman/{}/howToGetInfo').format(eventName)
         if outcome not in cls.NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRentLeftTypeLabel(cls, rentType):
-        outcome = '#tooltips:quests/awards/vehicleRent/rentLeft/{}'.format(rentType)
+        outcome = ('#tooltips:quests/awards/vehicleRent/rentLeft/{}').format(rentType)
         if outcome not in cls.QUESTS_AWARDS_VEHICLERENT_RENTLEFT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hasNotRecruitedTankmanEventGetInfo(cls, eventName):
-        outcome = '#tooltips:notrecruitedtankman/{}/howToGetInfo'.format(eventName)
+        outcome = ('#tooltips:notrecruitedtankman/{}/howToGetInfo').format(eventName)
         return outcome in cls.NOTRECRUITEDTANKMAN_ALL_HOWTOGETINFO_ENUM

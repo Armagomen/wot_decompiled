@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/frag_panel.py
 from gui.Scaleform.daapi.view.meta.FragPanelMeta import FragPanelMeta
 from battle_royale.gui.battle_control.controllers.vehicles_count_ctrl import IVehicleCountListener
 from gui.battle_control.avatar_getter import getArena
@@ -18,5 +16,6 @@ class FragPanel(IVehicleCountListener, FragPanelMeta):
         isSquad = getArena().hasBonusCap(ARENA_BONUS_TYPE_CAPS.SQUADS)
         countText = str(vehicles)
         if isSquad:
-            countText = ' '.join((countText, self.__ADDITIONAL_FRAG_TEMPLATE.format(backport.text(R.strings.battle_royale.fragPanel.squadsCount(), squadsCount=str(teams)))))
+            countText = (' ').join((countText,
+             self.__ADDITIONAL_FRAG_TEMPLATE.format(backport.text(R.strings.battle_royale.fragPanel.squadsCount(), squadsCount=str(teams)))))
         self.as_setLeftFieldS(countText)

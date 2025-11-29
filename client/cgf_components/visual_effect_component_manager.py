@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/visual_effect_component_manager.py
-import BigWorld
-import CGF
-import GenericComponents
-import Triggers
+import BigWorld, CGF, GenericComponents, Triggers
 from VehicleEffects import DamageFromShotDecoder
 from account_helpers.settings_core.settings_constants import CONTOUR
 from cgf_components.highlight_component import HighlightComponent
@@ -72,4 +67,4 @@ class KillCamVisualEffectComponentManagerRule(Rule):
 
     @registerManager(KillCamVisualEffectComponentManager)
     def registerKillCamVisualEffectComponentManager(self):
-        return None
+        return

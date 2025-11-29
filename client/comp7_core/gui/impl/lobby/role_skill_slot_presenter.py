@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/role_skill_slot_presenter.py
 from __future__ import absolute_import
 from CurrentVehicle import g_currentVehicle
 from constants import ROLE_TYPE_TO_LABEL
@@ -35,7 +33,10 @@ class RoleSkillSlotPresenter(ViewComponent[RoleSkillSlotModel]):
             tooltipId = event.getArgument('tooltipId')
             tooltipData = None
             if tooltipId == self._roleSkillTooltipId:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(event.getArgument('roleSkill'), self.__getCurrentVehicleRole(), self.__getCurrentVehicleRoleSkillLevel()))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
+                 event.getArgument('roleSkill'),
+                 self.__getCurrentVehicleRole(),
+                 self.__getCurrentVehicleRoleSkillLevel()))
             if tooltipData is not None:
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
@@ -43,7 +44,9 @@ class RoleSkillSlotPresenter(ViewComponent[RoleSkillSlotModel]):
         return super(RoleSkillSlotPresenter, self).createToolTip(event)
 
     def _getEvents(self):
-        return ((g_currentVehicle.onChanged, self.__updateRoleSkillSlot),)
+        return (
+         (
+          g_currentVehicle.onChanged, self.__updateRoleSkillSlot),)
 
     def __updateRoleSkillSlot(self):
         roleSkill = self.__getCurrentVehicleRoleSkill()
@@ -52,16 +55,24 @@ class RoleSkillSlotPresenter(ViewComponent[RoleSkillSlotModel]):
 
     def __getCurrentVehicleRoleSkill(self):
         roleName = self.__getCurrentVehicleRole()
-        return None if roleName is None else self._modeController.getRoleEquipment(roleName)
+        if roleName is None:
+            return
+        else:
+            return self._modeController.getRoleEquipment(roleName)
 
     def __getCurrentVehicleRoleSkillLevel(self):
         roleName = self.__getCurrentVehicleRole()
-        return None if roleName is None else self._modeController.getEquipmentStartLevel(roleName)
+        if roleName is None:
+            return
+        else:
+            return self._modeController.getEquipmentStartLevel(roleName)
 
     def __getCurrentVehicleRole(self):
         if not g_currentVehicle.isPresent():
-            return None
+            return
         else:
             vehicle = g_currentVehicle.item
             restriction = self._modeController.isSuitableVehicle(vehicle)
-            return None if restriction is not None else ROLE_TYPE_TO_LABEL.get(vehicle.descriptor.role)
+            if restriction is not None:
+                return
+            return ROLE_TYPE_TO_LABEL.get(vehicle.descriptor.role)

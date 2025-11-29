@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/basic/tank_carousel.py
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core import settings_constants
 from BonusCaps import BonusCapsConst
@@ -21,7 +19,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 
 def _removeFilterByNames(filters, filterNames):
-    return tuple((f for f in filters if f not in filterNames))
+    return tuple(f for f in filters if f not in filterNames)
 
 
 class TankCarousel(TankCarouselMeta):
@@ -85,11 +83,11 @@ class TankCarousel(TankCarouselMeta):
         self.lobbyContext.getServerSettings().onServerSettingsChange += self.__onFittingUpdate
         self.restoreCtrl.onRestoreChangeNotify += self.__onFittingUpdate
         self.app.loaderManager.onViewLoaded += self.__onViewLoaded
-        g_clientUpdateManager.addCallbacks({'stats.credits': self.__onFittingUpdate,
-         'stats.gold': self.__onFittingUpdate,
-         'stats.vehicleSellsLeft': self.__onFittingUpdate,
-         'stats.slots': self.__onFittingUpdate,
-         'goodies': self.__onFittingUpdate})
+        g_clientUpdateManager.addCallbacks({'stats.credits': self.__onFittingUpdate, 
+           'stats.gold': self.__onFittingUpdate, 
+           'stats.vehicleSellsLeft': self.__onFittingUpdate, 
+           'stats.slots': self.__onFittingUpdate, 
+           'goodies': self.__onFittingUpdate})
         if self.hasCustomization():
             g_clientUpdateManager.addCallback('inventory', self.__onInventoryUpdate)
         setting = self.settingsCore.options.getSetting(settings_constants.GAME.CAROUSEL_TYPE)
@@ -116,11 +114,11 @@ class TankCarousel(TankCarouselMeta):
         return VIEW_ALIAS.HANGAR_TANK_CAROUSEL_FILTER_POPOVER
 
     def _getInitialFilterVO(self, contexts):
-        filtersVO = {'isVisible': self._getFiltersVisible(),
-         'popoverAlias': self._getFiltersPopoverAlias(),
-         'mainBtn': {'value': getButtonsAssetPath('params'),
-                     'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_PARAMS},
-         'hotFilters': []}
+        filtersVO = {'isVisible': self._getFiltersVisible(), 
+           'popoverAlias': self._getFiltersPopoverAlias(), 
+           'mainBtn': {'value': getButtonsAssetPath('params'), 
+                       'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_PARAMS}, 
+           'hotFilters': []}
         if self.filter is not None:
             filters = self.filter.getFilters(self._usedFilters)
             for entry in self._usedFilters:

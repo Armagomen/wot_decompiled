@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/markers2d.py
 import math
 from logging import getLogger
-import BigWorld
-import CGF
+import BigWorld, CGF
 from AvatarInputHandler import aih_global_binding
 from AvatarInputHandler.aih_global_binding import BINDING_ID
 from BunkerLogicComponent import BunkerLogicComponent
@@ -23,7 +20,10 @@ from story_mode.skeletons.voiceover_controller import IVoiceoverManager
 from story_mode.skeletons.story_mode_controller import IStoryModeController
 from story_mode_common.story_mode_constants import LOGGER_NAME
 from vehicle_systems.tankStructure import TankNodeNames, TankPartIndexes
-_MARKER_CRITICAL_HIT_STATES = {FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT, FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT_CHASSIS, FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT_CHASSIS_PIERCED}
+_MARKER_CRITICAL_HIT_STATES = {
+ FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT,
+ FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT_CHASSIS,
+ FEEDBACK_EVENT_ID.VEHICLE_CRITICAL_HIT_CHASSIS_PIERCED}
 _logger = getLogger(LOGGER_NAME)
 _MEDIUM_MARKER_MIN_SCALE = 100
 _MAX_CULL_DISTANCE = 1000000.0
@@ -149,7 +149,9 @@ class StoryModeVehicleMarkerPlugin(RespawnableVehicleMarkerPlugin, MarkerPluginW
     def _getHitState(self, eventID):
         isOnboarding = self._storyModeCtrl.isOnboarding
         isSelectedMissionOnboarding = self._storyModeCtrl.isSelectedMissionOnboarding
-        return MARKER_EMPTY_HIT_STATE if (isOnboarding or isSelectedMissionOnboarding) and eventID in _MARKER_CRITICAL_HIT_STATES else super(StoryModeVehicleMarkerPlugin, self)._getHitState(eventID)
+        if (isOnboarding or isSelectedMissionOnboarding) and eventID in _MARKER_CRITICAL_HIT_STATES:
+            return MARKER_EMPTY_HIT_STATE
+        return super(StoryModeVehicleMarkerPlugin, self)._getHitState(eventID)
 
     def _voiceoverHandler(self):
         ctx = self._voiceoverManager.currentCtx
@@ -175,7 +177,8 @@ class StoryModeVehicleMarkerPlugin(RespawnableVehicleMarkerPlugin, MarkerPluginW
 
 
 class BunkersPlugin(MarkerPluginWithOffsetInZoom):
-    __slots__ = ('_markers', '__clazz', '__entitiesDamageType', '_distanceUpdateCallback', '__offsetCache')
+    __slots__ = ('_markers', '__clazz', '__entitiesDamageType', '_distanceUpdateCallback',
+                 '__offsetCache')
     _DISTANCE_UPDATE_TIME = 1
 
     def __init__(self, parentObj, clazz=BaseMarker):
@@ -236,10 +239,10 @@ class BunkersPlugin(MarkerPluginWithOffsetInZoom):
         if destructibleComponent is None:
             _logger.error('Expected DestructibleEntityComponent not present!')
             return
-        elif entity is None:
-            _logger.error('Expected DestructibleEntity not present!')
-            return
         else:
+            if entity is None:
+                _logger.error('Expected DestructibleEntity not present!')
+                return
             handle = self._createMarkerWithMatrix(BUNKER_SYMBOL, self.__getMarkerMatrix(entity))
             if handle is None:
                 return
@@ -316,9 +319,11 @@ class BunkersPlugin(MarkerPluginWithOffsetInZoom):
         bunkerLogic = next((bunker for _, bunker in bunkerQuery if bunker.destructibleEntityId == destructibleEntity.destructibleEntityID), None)
         turretsSpotted = False
         if bunkerLogic:
-            vehOffsets = list([ _calculateVehicleTurretOffset(v) + v.position.y - destructibleEntity.position.y for v in BigWorld.player().vehicles if v.id in bunkerLogic.vehicleIDs and v.isAlive ])
+            vehOffsets = list([ _calculateVehicleTurretOffset(v) + v.position.y - destructibleEntity.position.y for v in BigWorld.player().vehicles if v.id in bunkerLogic.vehicleIDs and v.isAlive
+                              ])
             turretsSpotted = len(bunkerLogic.vehicleIDs) == len(vehOffsets)
-        return (max(topY, *vehOffsets) if vehOffsets else topY, turretsSpotted)
+        return (
+         max(topY, *vehOffsets) if vehOffsets else topY, turretsSpotted)
 
     def __onDestructibleEntityHealthChanged(self, entityId, newHealth, maxHealth, attackerID, attackReason, hitFlags):
         marker = self._markers.get(entityId, None)
@@ -329,7 +334,7 @@ class BunkersPlugin(MarkerPluginWithOffsetInZoom):
             battleSpamCtrl = self.sessionProvider.shared.battleSpamCtrl
             aInfo = self.sessionProvider.getArenaDP().getVehicleInfo(attackerID)
             if battleSpamCtrl is not None and aInfo and aInfo.isAutoShootGunVehicle():
-                hasImpactMask = battleSpamCtrl.filterMarkersHitState(entityId, 'impact{}'.format(attackerID))
+                hasImpactMask = battleSpamCtrl.filterMarkersHitState(entityId, ('impact{}').format(attackerID))
             self.__entitiesDamageType[entityId] = self.__getVehicleDamageType(aInfo)
             self._invokeMarker(marker.getMarkerID(), 'setHealth', newHealth, self.__entitiesDamageType[entityId], hasImpactMask)
             return
@@ -369,4 +374,6 @@ class BunkersPlugin(MarkerPluginWithOffsetInZoom):
         if attackerID == BigWorld.player().playerVehicleID:
             return settings.DamageType.FROM_PLAYER
         entityName = self.sessionProvider.getCtx().getPlayerGuiProps(attackerID, attackerInfo.team)
-        return settings.DamageType.FROM_SQUAD if entityName == PLAYER_GUI_PROPS.squadman else settings.DamageType.FROM_OTHER
+        if entityName == PLAYER_GUI_PROPS.squadman:
+            return settings.DamageType.FROM_SQUAD
+        return settings.DamageType.FROM_OTHER

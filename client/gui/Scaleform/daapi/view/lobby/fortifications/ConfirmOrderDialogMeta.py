@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/ConfirmOrderDialogMeta.py
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta, I18nConfirmDialogMeta, DIALOG_BUTTON_ID
 from gui.Scaleform.framework import ScopeTemplates
@@ -60,7 +58,7 @@ class UnfreezeVehicleDialogMeta(I18nConfirmDialogMeta):
 
     def getMessage(self):
         priceStyle = text_styles.discountSmallText if self.__price <= self.__balance else text_styles.failedStatusText
-        return makeHtmlString('html_templates:lobby/dialogs', 'wgshEventUnreezeVehicle', {'first_part': text_styles.leadingText(text_styles.alert(backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.first())), 8),
-         'second_part': backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.second(), player_name=text_styles.discountSmallText(self.__playerName)),
-         'third_part': text_styles.leadingText(backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.third(), vehicle_name=text_styles.discountSmallText(self.__vehicleName)), 8),
-         'fourth_part': backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.fourth(), price=priceStyle(self.__price), balance=text_styles.discountSmallText(self.__balance), icon=icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.wgshSpareParts())))})
+        return makeHtmlString('html_templates:lobby/dialogs', 'wgshEventUnreezeVehicle', {'first_part': text_styles.leadingText(text_styles.alert(backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.first())), 8), 
+           'second_part': backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.second(), player_name=text_styles.discountSmallText(self.__playerName)), 
+           'third_part': text_styles.leadingText(backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.third(), vehicle_name=text_styles.discountSmallText(self.__vehicleName)), 8), 
+           'fourth_part': backport.text(R.strings.dialogs.wgshEventUnfreezeVehicle.messagePart.fourth(), price=priceStyle(self.__price), balance=text_styles.discountSmallText(self.__balance), icon=icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.wgshSpareParts())))})

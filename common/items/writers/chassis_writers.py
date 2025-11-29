@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/writers/chassis_writers.py
 from items import _xml
 from . import shared_writers
 from items.components import component_constants
@@ -18,7 +16,7 @@ def writeWheelsAndGroups(wheelsConfig, section, materialData, chassisName):
             _xml.rewriteInt(subsection, 'startIndex', group.startIndex)
             _xml.rewriteFloat(subsection, 'radius', group.radius)
             groupId += 1
-        if sname == 'wheel':
+        elif sname == 'wheel':
             from items.vehicles import _writeHitTester, _writeArmor
             index = _xml.readIntOrNone(None, subsection, 'index')
             if index is not None:
@@ -147,20 +145,19 @@ def writeTrackNodes(nodes, section):
         if section.has_key('trackNodes'):
             section.deleteSection('trackNodes')
         return
-    else:
-        sectionParent = section['trackNodes'] if section.has_key('trackNodes') else section.createSection('trackNodes')
-        sectionToSave = None
-        for node in nodes:
-            for childSectionName, childSection in sectionParent.items():
-                if childSectionName == 'node' and node.name == childSection.readString('name'):
-                    sectionToSave = childSection
-                    break
-            else:
-                sectionToSave = sectionParent.createSection('node')
+    sectionParent = section['trackNodes'] if section.has_key('trackNodes') else section.createSection('trackNodes')
+    sectionToSave = None
+    for node in nodes:
+        for childSectionName, childSection in sectionParent.items():
+            if childSectionName == 'node' and node.name == childSection.readString('name'):
+                sectionToSave = childSection
+                break
+        else:
+            sectionToSave = sectionParent.createSection('node')
 
-            writeTrackNode(node, sectionToSave)
+        writeTrackNode(node, sectionToSave)
 
-        return
+    return
 
 
 def writeGroundNodes(groups, section):

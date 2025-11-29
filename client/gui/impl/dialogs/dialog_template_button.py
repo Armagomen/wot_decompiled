@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/dialog_template_button.py
 import typing
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -121,7 +119,7 @@ class CustomSoundButtonPresenter(ButtonPresenter):
 
 
 class CheckMoneyButton(ButtonPresenter):
-    __slots__ = ('__money',)
+    __slots__ = ('__money', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, money, label=R.strings.dialogs.dialogTemplates.confirm(), buttonID=DialogButtons.SUBMIT, buttonType=ButtonType.PRIMARY, isDisabled=False):
@@ -165,7 +163,8 @@ class CheckMoneyButton(ButtonPresenter):
 
     def __notEnoughMoneyTooltipFactory(self):
         currency = self.shortage.getCurrency()
-        return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (self.shortage.get(currency), currency))
+        return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (
+         self.shortage.get(currency), currency))
 
 
 def getConfirmButton(presenter=ButtonPresenter, label=R.strings.dialogs.dialogTemplates.confirm(), buttonID=DialogButtons.SUBMIT, buttonType=ButtonType.PRIMARY, tooltipFactory=None, isBackportTooltip=False, isDisabled=False, *args, **kwargs):

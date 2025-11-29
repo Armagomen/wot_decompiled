@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/header/helpers/fight_btn_tooltips.py
 from __future__ import absolute_import
 from gui.Scaleform.daapi.view.lobby.header.helpers.fight_btn_tooltips import getRandomTooltipData
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -13,14 +11,13 @@ _STR_PATH = R.strings.menu.headerButtons.fightBtn.tooltip
 
 def getComp7BattlesOnlyVehicleTooltipData(result):
     state = result.restriction
-    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED,
-     UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
-     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER,
-     PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER,
+    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED, UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
+     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER, PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER,
      PREBATTLE_RESTRICTION.VEHICLE_WOT_PLUS_EXCLUSIVE_UNAVAILABLE):
         header = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.comp7BattleOnly.header())
         body = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.comp7BattleOnly.body())
         return makeTooltip(header, body)
+    return ''
 
 
 def getComp7FightBtnTooltipData(result, isInSquad):

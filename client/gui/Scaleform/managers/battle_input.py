@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/managers/battle_input.py
 import Keys
 from AvatarInputHandler import aih_global_binding
 from aih_constants import CTRL_MODE_NAME

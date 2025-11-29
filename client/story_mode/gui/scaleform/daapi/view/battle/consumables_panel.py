@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/consumables_panel.py
 from typing import TYPE_CHECKING
 from gui.Scaleform.daapi.view.battle.shared.consumables_panel import ConsumablesPanel
 from gui.Scaleform.genConsts.CONSUMABLES_PANEL_SETTINGS import CONSUMABLES_PANEL_SETTINGS
@@ -12,7 +10,9 @@ if TYPE_CHECKING:
 class SMConsumablesPanel(ConsumablesPanel):
 
     def _getActiveItemGlowType(self, item):
-        return CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN_ESPECIAL_LARGE if isinstance(item, (DistractionAbilityItem, ReconAbilityItem)) and self._isNormalDifficultyMission() and item.getPrevStage() == STAGES.STARTUP_COOLDOWN and item.getStage() == STAGES.READY else CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN_ESPECIAL
+        if isinstance(item, (DistractionAbilityItem, ReconAbilityItem)) and self._isNormalDifficultyMission() and item.getPrevStage() == STAGES.STARTUP_COOLDOWN and item.getStage() == STAGES.READY:
+            return CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN_ESPECIAL_LARGE
+        return CONSUMABLES_PANEL_SETTINGS.GLOW_ID_GREEN_ESPECIAL
 
     def _isNormalDifficultyMission(self):
         currectMissionId = self.sessionProvider.arenaVisitor.extra.getValue('missionId')

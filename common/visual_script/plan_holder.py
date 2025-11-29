@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/plan_holder.py
 from debug_utils import LOG_ERROR
 
 class PlanHolder(object):
-    __slots__ = ('plan', 'loadState', 'autoStart', '__inputParamCache', 'params', '__planName', 'key')
+    __slots__ = ('plan', 'loadState', 'autoStart', '__inputParamCache', 'params', '__planName',
+                 'key')
     INACTIVE = 0
     LOADING = 1
     LOADED = 2

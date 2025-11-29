@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/shop/trade.py
 from collections import namedtuple
 from gui import SystemMessages
 from gui.SystemMessages import pushMessagesFromResult
@@ -20,11 +18,11 @@ _EXCHANGER = {Currency.GOLD: lambda value: GoldToCreditsExchanger(value, withCon
 def parseItemsSpec(specList):
     specList = specList or tuple()
     fields = {'type', 'id', 'count'}
-    if not all((set(spec).issubset(fields) for spec in specList)):
+    if not all(set(spec).issubset(fields) for spec in specList):
         raise SoftException('invalid item buy spec')
     for spec in specList:
         if not ShopItemType.hasValue(spec['type']):
-            raise SoftException('unsupported item type "{}"'.format(spec['type']))
+            raise SoftException(('unsupported item type "{}"').format(spec['type']))
 
     return [ _ItemBuySpec(spec['type'], spec['id'], spec['count']) for spec in specList ]
 
@@ -39,7 +37,7 @@ def itemsSpecValidator(specList):
 
 
 def _currencyExchangeValidator(_, data):
-    return all((v > 0 and c in _EXCHANGER.iterkeys() for c, v in data.get('currencies', {}).iteritems()))
+    return all(v > 0 and c in _EXCHANGER.iterkeys() for c, v in data.get('currencies', {}).iteritems())
 
 
 class _BuyItemsSchema(W2CSchema):
@@ -59,8 +57,8 @@ class TradeWebApiMixin(object):
         exchangeResults = {}
         for currencyType, currencyValue in cmd.currencies.iteritems():
             result = yield _EXCHANGER[currencyType](currencyValue).request()
-            exchangeResults[currencyType] = {'success': result.success,
-             'message': result.userMsg}
+            exchangeResults[currencyType] = {'success': result.success, 
+               'message': result.userMsg}
             pushMessagesFromResult(result)
 
         yield exchangeResults
@@ -85,11 +83,12 @@ class TradeWebApiMixin(object):
                 daysCount = spec.count
                 buyer = PremiumAccountBuyer(daysCount, price=items.shop.getPremiumCostWithDiscount()[daysCount], requireConfirm=False)
             else:
-                raise SoftException('Invalid item type: "{}".'.format(spec.type))
+                raise SoftException(('Invalid item type: "{}".').format(spec.type))
             if buyer:
                 response = yield buyer.request()
                 responses.append(self.__makeResult(spec.type, spec.id, response))
-            responses.append(None)
+            else:
+                responses.append(None)
 
         results = []
         for response in responses:
@@ -105,14 +104,12 @@ class TradeWebApiMixin(object):
                 else:
                     result = statusData['errStr']
                 results.append(self.__makeResult(response['type'], response['id'], status.success, result))
-            results.append(self.__makeResult(response['type'], response['id'], False))
+            else:
+                results.append(self.__makeResult(response['type'], response['id'], False))
 
         yield results
         return
 
     @staticmethod
     def __makeResult(itemType, itemId, success, result='error'):
-        return {'type': itemType,
-         'id': itemId,
-         'success': success,
-         'result': result}
+        return {'type': itemType, 'id': itemId, 'success': success, 'result': result}

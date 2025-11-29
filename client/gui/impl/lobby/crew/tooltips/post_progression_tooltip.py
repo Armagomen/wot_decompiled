@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/post_progression_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.impl.gen import R
@@ -12,7 +10,7 @@ from shared_utils import first
 from skeletons.gui.shared import IItemsCache
 
 class PostProgressionTooltip(ViewImpl):
-    __slots__ = ('_tankmanID',)
+    __slots__ = ('_tankmanID', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, tankmanID, *args, **kwargs):
@@ -35,7 +33,7 @@ class PostProgressionTooltip(ViewImpl):
         crewBook = first(self._itemsCache.items.getItems(GUI_ITEM_TYPE.CREW_BOOKS, REQ_CRITERIA.CREW_ITEM.ID(rewardBookId)).values())
         _, progress = divmod(self._itemsCache.items.stats.postProgressionXP, crewBook.getXP())
         tankman = self._itemsCache.items.getTankman(self._tankmanID)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setBookXp(crewBook.getXP())
             vm.setProgressCurrent(progress)
             vm.setProgressMax(crewBooksViewedCache().xppToConvert())

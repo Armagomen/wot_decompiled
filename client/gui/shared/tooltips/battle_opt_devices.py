@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/battle_opt_devices.py
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
 from gui.impl.gen import R
@@ -37,9 +35,11 @@ class BattleOptDeviceTooltipData(BlocksTooltipData):
             desc = backport.text(battleDescr())
         else:
             desc = descriptor.shortDescriptionSpecial.format(colorTagOpen='', colorTagClose='')
-        items.append(formatters.packBuildUpBlockData([formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.artefacts.dyn(descriptor.tierlessName).name())), desc=text_styles.main(desc), padding=formatters.packPadding(bottom=-10))], padding=formatters.packPadding(left=leftPadding, right=rightPadding, top=topPadding)))
+        items.append(formatters.packBuildUpBlockData([
+         formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.artefacts.dyn(descriptor.tierlessName).name())), desc=text_styles.main(desc), padding=formatters.packPadding(bottom=-10))], padding=formatters.packPadding(left=leftPadding, right=rightPadding, top=topPadding)))
         battleStatuses = itemInBattle.getBattleStatus()
         for ind, statusStr in enumerate(battleStatuses):
-            items.append(formatters.packBuildUpBlockData([formatters.packAlignedTextBlockData(text=statusStr, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-26 if ind + 1 != len(battleStatuses) else -10))]))
+            items.append(formatters.packBuildUpBlockData([
+             formatters.packAlignedTextBlockData(text=statusStr, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-26 if ind + 1 != len(battleStatuses) else -10))]))
 
         return items

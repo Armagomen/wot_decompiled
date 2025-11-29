@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/player_satisfaction_schema.py
 from base_schema_manager import GameParamsSchema
 from constants import Configs
 from dict2model import fields, models
@@ -14,11 +12,11 @@ class _InterfacesModel(models.Model):
         self.spectatorMode = spectatorMode
 
     def _reprArgs(self):
-        return 'postbattle={}, spectatorMode={}'.format(self.postbattle, self.spectatorMode)
+        return ('postbattle={}, spectatorMode={}').format(self.postbattle, self.spectatorMode)
 
 
-_interfacesSchema = Schema[_InterfacesModel](fields={'postbattle': fields.Boolean(required=False, default=False),
- 'spectatorMode': fields.Boolean(required=False, default=False)}, modelClass=_InterfacesModel, checkUnknown=True)
+_interfacesSchema = Schema[_InterfacesModel](fields={'postbattle': fields.Boolean(required=False, default=False), 
+   'spectatorMode': fields.Boolean(required=False, default=False)}, modelClass=_InterfacesModel, checkUnknown=True)
 
 class PlayerSatisfactionConfigModel(models.Model):
     __slots__ = ('enabled', 'enabledInterfaces')
@@ -29,8 +27,8 @@ class PlayerSatisfactionConfigModel(models.Model):
         self.enabledInterfaces = enabledInterfaces
 
     def _reprArgs(self):
-        return 'enabled={}, enabledInterfaces={}'.format(self.enabled, self.enabledInterfaces)
+        return ('enabled={}, enabledInterfaces={}').format(self.enabled, self.enabledInterfaces)
 
 
-playerSatisfactionSchema = GameParamsSchema[PlayerSatisfactionConfigModel](gameParamsKey=Configs.PLAYER_SATISFACTION_CONFIG.value, fields={'enabled': fields.Boolean(required=True),
- 'enabledInterfaces': fields.Nested(_interfacesSchema, required=True)}, modelClass=PlayerSatisfactionConfigModel, checkUnknown=True)
+playerSatisfactionSchema = GameParamsSchema[PlayerSatisfactionConfigModel](gameParamsKey=Configs.PLAYER_SATISFACTION_CONFIG.value, fields={'enabled': fields.Boolean(required=True), 
+   'enabledInterfaces': fields.Nested(_interfacesSchema, required=True)}, modelClass=PlayerSatisfactionConfigModel, checkUnknown=True)

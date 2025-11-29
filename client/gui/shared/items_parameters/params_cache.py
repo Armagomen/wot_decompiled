@@ -1,13 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/items_parameters/params_cache.py
-import itertools
-import math
-import sys
+import itertools, math, sys
 from collections import namedtuple
 from functools import partial
-import typing
-import nations
-import persistent_data_cache_common as pdc
+import typing, nations, persistent_data_cache_common as pdc
 from constants import BonusTypes
 from gui.shared.items_parameters import calcGunParams, calcShellParams, getEquipmentParameters, isAutoReloadGun, isAutoShootGun, isDualGun, isDualAccuracy, isTwinGun
 from gui.shared.items_parameters import xml_reader
@@ -39,29 +33,25 @@ class _PrecachedChassisTypes(object):
     ON_SPOT_ROTATION_WHEELED = PrecachedChassis(isHydraulic=False, isWheeled=True, hasAutoSiege=False, isTrackWithinTrack=False, isWheeledOnSpotRotation=True)
     HYDRAULIC_AUTO_SIEGE = PrecachedChassis(isHydraulic=True, isWheeled=False, hasAutoSiege=True, isTrackWithinTrack=False, isWheeledOnSpotRotation=False)
     TRACK_WITHIN_TRACK = PrecachedChassis(isHydraulic=False, isWheeled=False, hasAutoSiege=False, isTrackWithinTrack=True, isWheeledOnSpotRotation=False)
-    ALL = (DEFAULT,
-     HYDRAULIC,
-     WHEELED,
-     HYDRAULIC_WHEELED,
-     HYDRAULIC_AUTO_SIEGE,
-     TRACK_WITHIN_TRACK,
-     ON_SPOT_ROTATION_WHEELED)
-    MAP = dict((((pC.isHydraulic,
-      pC.isWheeled,
-      pC.hasAutoSiege,
-      pC.isTrackWithinTrack,
-      pC.isWheeledOnSpotRotation), pC) for pC in ALL))
+    ALL = (
+     DEFAULT, HYDRAULIC, WHEELED, HYDRAULIC_WHEELED, HYDRAULIC_AUTO_SIEGE,
+     TRACK_WITHIN_TRACK, ON_SPOT_ROTATION_WHEELED)
+    MAP = dict(((pC.isHydraulic, pC.isWheeled, pC.hasAutoSiege, pC.isTrackWithinTrack, pC.isWheeledOnSpotRotation), pC) for pC in ALL)
 
 
 def isHydraulicChassis(vDescr):
-    return vDescr.hasHydraulicChassis or vDescr.isWheeledVehicle or vDescr.hasAutoSiegeMode if vDescr.hasSiegeMode else False
+    if vDescr.hasSiegeMode:
+        return vDescr.hasHydraulicChassis or vDescr.isWheeledVehicle or vDescr.hasAutoSiegeMode
+    return False
 
 
 def isTrackWithinTrackChassis(vChassis):
     return vChassis.isTrackWithinTrack
 
 
-class PrecachedGun(namedtuple('PrecachedGun', ('clipVehicles', 'autoReloadVehicles', 'autoShootVehicles', 'dualGunVehicles', 'twinGunVehicles', 'dualAccuracyVehicles', 'params', 'turretsByVehicles'))):
+class PrecachedGun(namedtuple('PrecachedGun', ('clipVehicles', 'autoReloadVehicles', 'autoShootVehicles',
+                            'dualGunVehicles', 'twinGunVehicles', 'dualAccuracyVehicles',
+                            'params', 'turretsByVehicles'))):
 
     @property
     def clipVehiclesNames(self):
@@ -126,12 +116,12 @@ def _getVehicleSuitablesByType(vehicleType, itemTypeId, turretPID=0):
                     result.append(shot.shell)
 
     else:
-        raise SoftException('Type ID {} is not supported'.format(itemTypeId))
+        raise SoftException(('Type ID {} is not supported').format(itemTypeId))
     return result
 
 
 class VehicleDescrsCache(object):
-    __slots__ = ('_local',)
+    __slots__ = ('_local', )
 
     def __init__(self):
         super(VehicleDescrsCache, self).__init__()
@@ -143,13 +133,15 @@ class VehicleDescrsCache(object):
     def load(self):
         vehilesList = vehicles.g_list.getList
         for nationID in nations.INDICES.itervalues():
-            self._local[nationID] = [ vehicles.VehicleDescr(typeID=(nationID, cd)) for cd in vehilesList(nationID).iterkeys() ]
+            self._local[nationID] = [ vehicles.VehicleDescr(typeID=(nationID, cd)) for cd in vehilesList(nationID).iterkeys()
+                                    ]
 
     def generator(self, nationID=None):
         if nationID is None:
             nationIDs = nations.INDICES.values()
         else:
-            nationIDs = (nationID,)
+            nationIDs = (
+             nationID,)
         for nextID in nationIDs:
             if nextID not in self._local:
                 continue
@@ -176,11 +168,8 @@ def _readCache(vehiclesCache):
     vehiclesCache.clear()
     del vehiclesCache
     coefficients, bonuses = xml_reader.read()
-    return (coefficients,
-     bonuses,
-     data.cache,
-     data.wheeledChassisParams,
-     tuple(data.noCamouflageVehicles))
+    return (
+     coefficients, bonuses, data.cache, data.wheeledChassisParams, tuple(data.noCamouflageVehicles))
 
 
 def _precacheEquipments(data):
@@ -289,7 +278,12 @@ def _precacheChassis(data):
         for vDescr in data.vehiclesCache.generator(nationIdx):
             for vChs in vDescr.type.chassis:
                 chassisCD = vChs.compactDescr
-                cachedChassisByNation[chassisCD] = _PrecachedChassisTypes.MAP[isHydraulicChassis(vDescr), vDescr.isWheeledVehicle, vDescr.hasAutoSiegeMode, isTrackWithinTrackChassis(vChs), vDescr.isWheeledOnSpotRotation]
+                cachedChassisByNation[chassisCD] = _PrecachedChassisTypes.MAP[(
+                 isHydraulicChassis(vDescr),
+                 vDescr.isWheeledVehicle,
+                 vDescr.hasAutoSiegeMode,
+                 isTrackWithinTrackChassis(vChs),
+                 vDescr.isWheeledOnSpotRotation)]
                 processedItems.add(chassisCD)
                 if vDescr.isWheeledVehicle:
                     chassisPhysics = vDescr.type.xphysics['chassis'][vChs.name]
@@ -348,7 +342,8 @@ def _getVehiclesWithoutCamouflage(data):
 
 
 class _ParamsCache(object):
-    __slots__ = ('__cache', '__simplifiedParamsCoefficients', '__bonuses', '__noCamouflageVehicles', '__wheeledChassisParams')
+    __slots__ = ('__cache', '__simplifiedParamsCoefficients', '__bonuses', '__noCamouflageVehicles',
+                 '__wheeledChassisParams')
 
     def __init__(self):
         super(_ParamsCache, self).__init__()
@@ -429,7 +424,7 @@ class _ParamsCache(object):
                     receivedBaseMod[action.getLocName()] = action.getTechName()
                 elif action.getLocName() not in lockedBaseMod and action.getLocName() not in receivedBaseMod:
                     lockedBaseMod[action.getLocName()] = action.getTechName()
-            if action.actionType == ACTION_TYPES.PAIR_MODIFICATION and not step.isRestricted():
+            elif action.actionType == ACTION_TYPES.PAIR_MODIFICATION and not step.isRestricted():
                 for subAction in action.modifications:
                     compatibles.append((subAction.getTechName(), BonusTypes.PAIR_MODIFICATION))
 

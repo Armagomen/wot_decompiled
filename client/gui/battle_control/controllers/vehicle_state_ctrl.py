@@ -1,12 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vehicle_state_ctrl.py
 from functools import partial
-import weakref
-import BigWorld
-import BattleReplay
-import Event
-import SoundGroups
-import nations
+import weakref, BigWorld, BattleReplay, Event, SoundGroups, nations
 from BattleReplay import CallbackDataNames
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.battle_control import avatar_getter
@@ -16,7 +9,7 @@ from gui.shared.utils.TimeInterval import TimeInterval
 from shared_utils import first
 
 class _StateHandler(object):
-    __slots__ = ('__updater',)
+    __slots__ = ('__updater', )
 
     def __init__(self, updater):
         super(_StateHandler, self).__init__()
@@ -33,7 +26,7 @@ class _StateHandler(object):
         self.__updater.notifyStateChanged(state, value)
 
     def _invalidate(self, vehicle):
-        pass
+        return ()
 
     def __call__(self, vehicle):
         return self._invalidate(vehicle)
@@ -82,7 +75,7 @@ class _SpeedStateHandler(_StateHandler):
 
 
 class _HealthStateHandler(_StateHandler):
-    __slots__ = ('__health',)
+    __slots__ = ('__health', )
 
     def __init__(self, updater):
         super(_HealthStateHandler, self).__init__(updater)
@@ -164,12 +157,13 @@ class _VehicleUpdater(object):
                     states.append((VEHICLE_VIEW_STATE.CREW_DEACTIVATED, 0))
                 else:
                     states.append((VEHICLE_VIEW_STATE.DESTROYED, 0))
-            elif vehicle.isAlive() and not self.__isAlive:
-                self.__isAlive = True
-                self.__ctrl.switchToOther(vehicle.id, True)
-            for handler in self.__handlers:
-                newStates = handler(vehicle)
-                states.extend(newStates)
+            else:
+                if vehicle.isAlive() and not self.__isAlive:
+                    self.__isAlive = True
+                    self.__ctrl.switchToOther(vehicle.id, True)
+                for handler in self.__handlers:
+                    newStates = handler(vehicle)
+                    states.extend(newStates)
 
         for item in states:
             self.notifyStateChanged(*item)
@@ -182,11 +176,14 @@ class _VehicleUpdater(object):
             isPlayerVehicle = vehicle.isPlayerVehicle
             if isPlayerVehicle:
                 if not vehicle.isAlive():
-                    self.__handlers = (_SpeedStateHandler(self, True),)
+                    self.__handlers = (
+                     _SpeedStateHandler(self, True),)
                 else:
                     self.__handlers = (_SpeedStateHandler(self, True),)
             else:
-                self.__handlers = (_HealthStateHandler(self), _SpeedStateHandler(self, False))
+                self.__handlers = (
+                 _HealthStateHandler(self),
+                 _SpeedStateHandler(self, False))
         return
 
 
@@ -280,8 +277,7 @@ class VehicleStateController(IBattleController):
             else:
                 value = self.__cachedStateValues[stateID]
             return value
-        else:
-            return None
+        return
 
     def refreshVehicleStateValue(self, stateID):
         if stateID in self.__cachedStateValues:
@@ -371,7 +367,8 @@ class VehicleStateReplayRecorder(VehicleStateController):
 
     def invalidate(self, state, value, vehicleID=0):
         if state in VEHICLE_VIEW_STATE.CLIENT_ONLY:
-            BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.CLIENT_VEHICLE_STATE_GROUP.format(state), (state, value, vehicleID))
+            BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.CLIENT_VEHICLE_STATE_GROUP.format(state), (
+             state, value, vehicleID))
         super(VehicleStateReplayRecorder, self).invalidate(state, value, vehicleID)
 
 

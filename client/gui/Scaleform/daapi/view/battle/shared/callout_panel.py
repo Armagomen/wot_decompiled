@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/callout_panel.py
-import CommandMapping
-import Event
+import CommandMapping, Event
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
 from gui.Scaleform.daapi.view.meta.CalloutPanelMeta import CalloutPanelMeta
 from gui.Scaleform.genConsts.BATTLEDAMAGELOG_IMAGES import BATTLEDAMAGELOG_IMAGES as _IMAGES
@@ -13,19 +10,19 @@ from helpers import dependency
 from helpers.i18n import makeString
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-_VEHICLE_CLASS_TAGS_ICONS = {'lightTank': _IMAGES.WHITE_ICON_LIGHTTANK_16X16,
- 'mediumTank': _IMAGES.WHITE_ICON_MEDIUM_TANK_16X16,
- 'heavyTank': _IMAGES.WHITE_ICON_HEAVYTANK_16X16,
- 'SPG': _IMAGES.WHITE_ICON_SPG_16X16,
- 'AT-SPG': _IMAGES.WHITE_ICON_AT_SPG_16X16}
-_CALLOUT_COMMMAND_TO_UI_VISUAL_STATE = {BATTLE_CHAT_COMMAND_NAMES.HELPME: BATTLE_CHAT_COMMAND_NAMES.HELPME,
- BATTLE_CHAT_COMMAND_NAMES.TURNBACK: BATTLE_CHAT_COMMAND_NAMES.REPLY,
- BATTLE_CHAT_COMMAND_NAMES.THANKS: BATTLE_CHAT_COMMAND_NAMES.REPLY,
- BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: BATTLE_CHAT_COMMAND_NAMES.THANKS,
- BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: BATTLE_CHAT_COMMAND_NAMES.COMMENDATION}
-_HINT_TEXT_MAP = {BATTLE_CHAT_COMMAND_NAMES.HELPME: R.strings.ingame_gui.quickReply.hint.toHelp(),
- BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: R.strings.ingame_gui.quickReply.hint.toThank(),
- BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: R.strings.ingame_gui.quickReply.hint.toCommend()}
+_VEHICLE_CLASS_TAGS_ICONS = {'lightTank': _IMAGES.WHITE_ICON_LIGHTTANK_16X16, 
+   'mediumTank': _IMAGES.WHITE_ICON_MEDIUM_TANK_16X16, 
+   'heavyTank': _IMAGES.WHITE_ICON_HEAVYTANK_16X16, 
+   'SPG': _IMAGES.WHITE_ICON_SPG_16X16, 
+   'AT-SPG': _IMAGES.WHITE_ICON_AT_SPG_16X16}
+_CALLOUT_COMMMAND_TO_UI_VISUAL_STATE = {BATTLE_CHAT_COMMAND_NAMES.HELPME: BATTLE_CHAT_COMMAND_NAMES.HELPME, 
+   BATTLE_CHAT_COMMAND_NAMES.TURNBACK: BATTLE_CHAT_COMMAND_NAMES.REPLY, 
+   BATTLE_CHAT_COMMAND_NAMES.THANKS: BATTLE_CHAT_COMMAND_NAMES.REPLY, 
+   BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: BATTLE_CHAT_COMMAND_NAMES.THANKS, 
+   BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: BATTLE_CHAT_COMMAND_NAMES.COMMENDATION}
+_HINT_TEXT_MAP = {BATTLE_CHAT_COMMAND_NAMES.HELPME: R.strings.ingame_gui.quickReply.hint.toHelp(), 
+   BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: R.strings.ingame_gui.quickReply.hint.toThank(), 
+   BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: R.strings.ingame_gui.quickReply.hint.toCommend()}
 _HINT_TEXT_DEFAULT = R.strings.ingame_gui.quickReply.hint.toAcknowledge()
 
 class CalloutPanel(CalloutPanelMeta):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ItemsWithTypeFilterTabViewMeta.py
 from gui.Scaleform.daapi.view.lobby.storage.inventory.inventory_view import InventoryCategoryView
 
 class ItemsWithTypeFilterTabViewMeta(InventoryCategoryView):
@@ -20,10 +18,13 @@ class ItemsWithTypeFilterTabViewMeta(InventoryCategoryView):
         self._printOverrideError('upgradeItem')
 
     def as_initTypeFilterS(self, typeFiltersVO):
-        return self.flashObject.as_initTypeFilter(typeFiltersVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_initTypeFilter(typeFiltersVO)
 
     def as_resetFilterS(self, resetData):
-        return self.flashObject.as_resetFilter(resetData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_resetFilter(resetData)
 
     def as_updateCounterS(self, shouldShow, displayString, isZeroCount):
-        return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount)

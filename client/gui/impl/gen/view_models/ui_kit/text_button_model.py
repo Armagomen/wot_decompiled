@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/ui_kit/text_button_model.py
 from gui.impl.gen import R
 from gui.impl.gen.view_models.ui_kit.button_common_model import ButtonCommonModel
 

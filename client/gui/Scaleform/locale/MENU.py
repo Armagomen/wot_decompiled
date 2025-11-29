@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/MENU.py
 from debug_utils import LOG_WARNING
 
 class MENU(object):
@@ -784,6 +782,8 @@ class MENU(object):
     HEADERBUTTONS_BATTLE_TYPES_RANKEDLEAVE_DESCR = '#menu:headerButtons/battle/types/rankedLeave/descr'
     HEADERBUTTONS_BATTLE_TYPES_RTS = '#menu:headerButtons/battle/types/rts'
     PREBATTLE_RTS_TANKLABEL = '#menu:prebattle/rts/tankLabel'
+    HEADERBUTTONS_BATTLE_VEHICLEINFO = '#menu:headerButtons/battle/vehicleInfo'
+    HEADERBUTTONS_BATTLE_MODEINFO = '#menu:headerButtons/battle/modeInfo'
     HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_DEFAULT = '#menu:headerButtons/battle/types/rts/availability/default'
     HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_AFTERCYCLE = '#menu:headerButtons/battle/types/rts/availability/afterCycle'
     HEADERBUTTONS_BATTLE_TYPES_RTS_AVAILABILITY_FROZEN = '#menu:headerButtons/battle/types/rts/availability/frozen'
@@ -2133,6 +2133,7 @@ class MENU(object):
     BOOSTER_QUALITY_BIG = '#menu:booster/quality/big'
     DISCOUNT_USERNAME_VEHICLE = '#menu:discount/userName/vehicle'
     DISCOUNT_DESCRIPTION_VEHICLE = '#menu:discount/description/vehicle'
+    DISCOUNT_DESCRIPTION_PET = '#menu:discount/description/pet'
     CONTEXTMENU_VIEWCLANPROFILE = '#menu:contextMenu/viewClanProfile'
     CONTEXTMENU_COPYCLANNAME = '#menu:contextMenu/copyClanName'
     CONTEXTMENU_TELECOMRENT = '#menu:contextMenu/telecomRent'
@@ -2377,7 +2378,8 @@ class MENU(object):
     CONTEXTMENU_CREWWIDGETQUICKTRAINING = '#menu:contextMenu/crewWidgetQuickTraining'
     CONTEXTMENU_MENTORASSIGNMENT = '#menu:contextMenu/mentorAssignment'
     CONTEXTMENU_CREWWIDGETCHANGESPECIALIZATION = '#menu:contextMenu/crewWidgetChangeSpecialization'
-    CONTEXTMENU_ENUM = (CONTEXTMENU_EXCHANGE,
+    CONTEXTMENU_ENUM = (
+     CONTEXTMENU_EXCHANGE,
      CONTEXTMENU_VEHICLEINFO,
      CONTEXTMENU_VEHICLEINFOEX,
      CONTEXTMENU_GOTONATIONTREE,
@@ -2484,7 +2486,8 @@ class MENU(object):
      CONTEXTMENU_CREWWIDGETQUICKTRAINING,
      CONTEXTMENU_MENTORASSIGNMENT,
      CONTEXTMENU_CREWWIDGETCHANGESPECIALIZATION)
-    NATIONS_ENUM = (NATIONS_TITLE,
+    NATIONS_ENUM = (
+     NATIONS_TITLE,
      NATIONS_USSR,
      NATIONS_GERMANY,
      NATIONS_USA,
@@ -2497,7 +2500,8 @@ class MENU(object):
      NATIONS_POLAND,
      NATIONS_ITALY,
      NATIONS_ALL)
-    TANKMEN_ENUM = (TANKMEN_LIGHTTANK,
+    TANKMEN_ENUM = (
+     TANKMEN_LIGHTTANK,
      TANKMEN_MEDIUMTANK,
      TANKMEN_HEAVYTANK,
      TANKMEN_AT_SPG,
@@ -2506,7 +2510,8 @@ class MENU(object):
      TANKMEN_LOCKREASON_PREBATTLE,
      TANKMEN_LOCKREASON_BROKEN,
      TANKMEN_LOCKREASON_DISABLED)
-    TANKCAROUSEL_VEHICLESTATES_ENUM = (TANKCAROUSEL_VEHICLESTATES_BATTLE,
+    TANKCAROUSEL_VEHICLESTATES_ENUM = (
+     TANKCAROUSEL_VEHICLESTATES_BATTLE,
      TANKCAROUSEL_VEHICLESTATES_LOCKED,
      TANKCAROUSEL_VEHICLESTATES_CLANLOCKED,
      TANKCAROUSEL_VEHICLESTATES_INPREBATTLE,
@@ -2551,21 +2556,24 @@ class MENU(object):
      TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED_NOT,
      TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPUNLOCKED,
      TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPLOCKED)
-    DATETIME_WEEKDAYS_FULL_ENUM = (DATETIME_WEEKDAYS_FULL_1,
+    DATETIME_WEEKDAYS_FULL_ENUM = (
+     DATETIME_WEEKDAYS_FULL_1,
      DATETIME_WEEKDAYS_FULL_2,
      DATETIME_WEEKDAYS_FULL_3,
      DATETIME_WEEKDAYS_FULL_4,
      DATETIME_WEEKDAYS_FULL_5,
      DATETIME_WEEKDAYS_FULL_6,
      DATETIME_WEEKDAYS_FULL_7)
-    DATETIME_WEEKDAYS_SHORT_ENUM = (DATETIME_WEEKDAYS_SHORT_1,
+    DATETIME_WEEKDAYS_SHORT_ENUM = (
+     DATETIME_WEEKDAYS_SHORT_1,
      DATETIME_WEEKDAYS_SHORT_2,
      DATETIME_WEEKDAYS_SHORT_3,
      DATETIME_WEEKDAYS_SHORT_4,
      DATETIME_WEEKDAYS_SHORT_5,
      DATETIME_WEEKDAYS_SHORT_6,
      DATETIME_WEEKDAYS_SHORT_7)
-    DATETIME_MONTHS_FULL_ENUM = (DATETIME_MONTHS_FULL_1,
+    DATETIME_MONTHS_FULL_ENUM = (
+     DATETIME_MONTHS_FULL_1,
      DATETIME_MONTHS_FULL_2,
      DATETIME_MONTHS_FULL_3,
      DATETIME_MONTHS_FULL_4,
@@ -2577,7 +2585,8 @@ class MENU(object):
      DATETIME_MONTHS_FULL_10,
      DATETIME_MONTHS_FULL_11,
      DATETIME_MONTHS_FULL_12)
-    DATETIME_MONTHS_SHORT_ENUM = (DATETIME_MONTHS_SHORT_1,
+    DATETIME_MONTHS_SHORT_ENUM = (
+     DATETIME_MONTHS_SHORT_1,
      DATETIME_MONTHS_SHORT_2,
      DATETIME_MONTHS_SHORT_3,
      DATETIME_MONTHS_SHORT_4,
@@ -2589,7 +2598,8 @@ class MENU(object):
      DATETIME_MONTHS_SHORT_10,
      DATETIME_MONTHS_SHORT_11,
      DATETIME_MONTHS_SHORT_12)
-    DATETIME_MONTHS_ENUM = (DATETIME_MONTHS_FULL_1,
+    DATETIME_MONTHS_ENUM = (
+     DATETIME_MONTHS_FULL_1,
      DATETIME_MONTHS_FULL_2,
      DATETIME_MONTHS_FULL_3,
      DATETIME_MONTHS_FULL_4,
@@ -2649,7 +2659,8 @@ class MENU(object):
      DATETIME_MONTHS_SHORTSMALL_10,
      DATETIME_MONTHS_SHORTSMALL_11,
      DATETIME_MONTHS_SHORTSMALL_12)
-    LEVELS_ENUM = (LEVELS_1,
+    LEVELS_ENUM = (
+     LEVELS_1,
      LEVELS_2,
      LEVELS_3,
      LEVELS_4,
@@ -2672,7 +2683,8 @@ class MENU(object):
      LEVELS_ROMAN_10,
      LEVELS_ROMAN_11,
      LEVELS_ALL)
-    LEVELS_ROMAN_ENUM = (LEVELS_ROMAN_1,
+    LEVELS_ROMAN_ENUM = (
+     LEVELS_ROMAN_1,
      LEVELS_ROMAN_2,
      LEVELS_ROMAN_3,
      LEVELS_ROMAN_4,
@@ -2683,18 +2695,21 @@ class MENU(object):
      LEVELS_ROMAN_9,
      LEVELS_ROMAN_10,
      LEVELS_ROMAN_11)
-    MODULEINFO_COMPATIBLE_ENUM = (MODULEINFO_COMPATIBLE_TURRETS,
+    MODULEINFO_COMPATIBLE_ENUM = (
+     MODULEINFO_COMPATIBLE_TURRETS,
      MODULEINFO_COMPATIBLE_SHELLS,
      MODULEINFO_COMPATIBLE_GUNS,
      MODULEINFO_COMPATIBLE_SHELLGUNS,
      MODULEINFO_COMPATIBLE_VEHICLES,
      MODULEINFO_COMPATIBLE_UNICHARGEDVEHICLES,
      MODULEINFO_COMPATIBLE_CLIPVEHICLES)
-    DENUNCIATION_ENUM = (DENUNCIATION_1,
+    DENUNCIATION_ENUM = (
+     DENUNCIATION_1,
      DENUNCIATION_2,
      DENUNCIATION_3,
      DENUNCIATION_7)
-    HEADER_LEVEL_ENUM = (HEADER_LEVEL_1,
+    HEADER_LEVEL_ENUM = (
+     HEADER_LEVEL_1,
      HEADER_LEVEL_2,
      HEADER_LEVEL_3,
      HEADER_LEVEL_4,
@@ -2705,7 +2720,8 @@ class MENU(object):
      HEADER_LEVEL_9,
      HEADER_LEVEL_10,
      HEADER_LEVEL_11)
-    HEADER_VEHICLETYPE_ENUM = (HEADER_VEHICLETYPE_LIGHTTANK,
+    HEADER_VEHICLETYPE_ENUM = (
+     HEADER_VEHICLETYPE_LIGHTTANK,
      HEADER_VEHICLETYPE_MEDIUMTANK,
      HEADER_VEHICLETYPE_HEAVYTANK,
      HEADER_VEHICLETYPE_AT_SPG,
@@ -2719,12 +2735,14 @@ class MENU(object):
      HEADER_VEHICLETYPE_ALLIANCE_GERMANY,
      HEADER_VEHICLETYPE_ALLIANCE_USA,
      HEADER_VEHICLETYPE_ALLIANCE_FRANCE)
-    HEADER_VEHICLETYPE_ELITE_ENUM = (HEADER_VEHICLETYPE_ELITE_LIGHTTANK,
+    HEADER_VEHICLETYPE_ELITE_ENUM = (
+     HEADER_VEHICLETYPE_ELITE_LIGHTTANK,
      HEADER_VEHICLETYPE_ELITE_MEDIUMTANK,
      HEADER_VEHICLETYPE_ELITE_HEAVYTANK,
      HEADER_VEHICLETYPE_ELITE_AT_SPG,
      HEADER_VEHICLETYPE_ELITE_SPG)
-    CLASSES_SHORT_ENUM = (CLASSES_SHORT_LIGHTTANK,
+    CLASSES_SHORT_ENUM = (
+     CLASSES_SHORT_LIGHTTANK,
      CLASSES_SHORT_MEDIUMTANK,
      CLASSES_SHORT_HEAVYTANK,
      CLASSES_SHORT_SPG,
@@ -2733,13 +2751,19 @@ class MENU(object):
      CLASSES_SHORT_ALLIANCE_GERMANY,
      CLASSES_SHORT_ALLIANCE_USA,
      CLASSES_SHORT_ALLIANCE_FRANCE)
-    HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM = (HANGAR_HEADER_BATTLE_QUESTS_LABEL_ACTIVE, HANGAR_HEADER_BATTLE_QUESTS_LABEL_INACTIVE)
-    HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM = (HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ACTIVE,
+    HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM = (
+     HANGAR_HEADER_BATTLE_QUESTS_LABEL_ACTIVE,
+     HANGAR_HEADER_BATTLE_QUESTS_LABEL_INACTIVE)
+    HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM = (
+     HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ACTIVE,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_EMPTY,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_INACTIVE,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ALL_DONE)
-    HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM = (HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ACTIVE, HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_INACTIVE)
-    TANK_PARAMS_ENUM = (TANK_PARAMS_FURYMAXRELOADEFFAVGDPM,
+    HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM = (
+     HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ACTIVE,
+     HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_INACTIVE)
+    TANK_PARAMS_ENUM = (
+     TANK_PARAMS_FURYMAXRELOADEFFAVGDPM,
      TANK_PARAMS_FURYMAXRELOADEFFICIENCYLEVEL,
      TANK_PARAMS_FURYRELOADSPEEDBONUSPEREFFICIENCYLEVEL,
      TANK_PARAMS_FURYRELOADEFFICIENCYLEVELDURATION,
@@ -2934,8 +2958,11 @@ class MENU(object):
      TANK_PARAMS_NO_BRACKETS_KG,
      TANK_PARAMS_NO_BRACKETS_S,
      TANK_PARAMS_NO_BRACKETS_MM)
-    BROWSER_CUSTOMTITLE_ENUM = (BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT, BROWSER_CUSTOMTITLE_FORT_CONGRATULATION)
-    LOADING_BATTLETYPES_DESC_ENUM = (LOADING_BATTLETYPES_DESC_0,
+    BROWSER_CUSTOMTITLE_ENUM = (
+     BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT,
+     BROWSER_CUSTOMTITLE_FORT_CONGRATULATION)
+    LOADING_BATTLETYPES_DESC_ENUM = (
+     LOADING_BATTLETYPES_DESC_0,
      LOADING_BATTLETYPES_DESC_1,
      LOADING_BATTLETYPES_DESC_2,
      LOADING_BATTLETYPES_DESC_4,
@@ -2967,7 +2994,8 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_33,
      LOADING_BATTLETYPES_DESC_34,
      LOADING_BATTLETYPES_DESC_35)
-    LOADING_BATTLETYPES_ENUM = (LOADING_BATTLETYPES_0,
+    LOADING_BATTLETYPES_ENUM = (
+     LOADING_BATTLETYPES_0,
      LOADING_BATTLETYPES_DESC_0,
      LOADING_BATTLETYPES_1,
      LOADING_BATTLETYPES_DESC_1,
@@ -3031,7 +3059,8 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_34,
      LOADING_BATTLETYPES_35,
      LOADING_BATTLETYPES_DESC_35)
-    CST_ITEM_CTX_MENU_ENUM = (CST_ITEM_CTX_MENU_BUY,
+    CST_ITEM_CTX_MENU_ENUM = (
+     CST_ITEM_CTX_MENU_BUY,
      CST_ITEM_CTX_MENU_EXCHANGE,
      CST_ITEM_CTX_MENU_BUYMORE,
      CST_ITEM_CTX_MENU_SELL,
@@ -3074,30 +3103,35 @@ class MENU(object):
      CST_ITEM_CTX_MENU_PUTONTHIRD,
      CST_ITEM_CTX_MENU_UNLOAD,
      CST_ITEM_CTX_MENU_DECONSTRUCT)
-    INTERNET_PROVIDER_ALL_NAME_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_NAME,
+    INTERNET_PROVIDER_ALL_NAME_ENUM = (
+     INTERNET_PROVIDER_LOCALPARTNER2_NAME,
      INTERNET_PROVIDER_LOCALPARTNER3_NAME,
      INTERNET_PROVIDER_LOCALPARTNER4_NAME,
      INTERNET_PROVIDER_KAZAKHTELECOM_NAME,
      INTERNET_PROVIDER_BEELINEKZ_NAME)
-    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_TARIFF,
+    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (
+     INTERNET_PROVIDER_LOCALPARTNER2_TARIFF,
      INTERNET_PROVIDER_LOCALPARTNER3_TARIFF,
      INTERNET_PROVIDER_LOCALPARTNER4_TARIFF,
      INTERNET_PROVIDER_KAZAKHTELECOM_TARIFF,
      INTERNET_PROVIDER_BEELINEKZ_TARIFF)
-    BOOSTER_USERNAME_ENUM = (BOOSTER_USERNAME_BOOSTER_XP,
+    BOOSTER_USERNAME_ENUM = (
+     BOOSTER_USERNAME_BOOSTER_XP,
      BOOSTER_USERNAME_BOOSTER_FREE_XP,
      BOOSTER_USERNAME_BOOSTER_CREW_XP,
      BOOSTER_USERNAME_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_USERNAME_BOOSTER_CREDITS,
      BOOSTER_USERNAME_BOOSTER_REPAIR,
      BOOSTER_USERNAME_BOOSTER_FL_XP)
-    BOOSTER_INFLUENCE_ENUM = (BOOSTER_INFLUENCE_BOOSTER_XP,
+    BOOSTER_INFLUENCE_ENUM = (
+     BOOSTER_INFLUENCE_BOOSTER_XP,
      BOOSTER_INFLUENCE_BOOSTER_FREE_XP,
      BOOSTER_INFLUENCE_BOOSTER_CREW_XP,
      BOOSTER_INFLUENCE_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_INFLUENCE_BOOSTER_CREDITS,
      BOOSTER_INFLUENCE_BOOSTER_FL_XP)
-    BOOSTER_DESCRIPTION_ENUM = (BOOSTER_DESCRIPTION_BOOSTER_XP,
+    BOOSTER_DESCRIPTION_ENUM = (
+     BOOSTER_DESCRIPTION_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BOOSTER_FREE_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP,
@@ -3112,21 +3146,28 @@ class MENU(object):
      BOOSTER_DESCRIPTION_EFFECTVALUETIME,
      BOOSTER_DESCRIPTION_BOOSTER_FL_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FL_XP)
-    BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM = (BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
+    BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM = (
+     BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_CREW_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_CREDITS,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FL_XP)
-    BOOSTER_QUALITY_ENUM = (BOOSTER_QUALITY_SMALL, BOOSTER_QUALITY_MEDIUM, BOOSTER_QUALITY_BIG)
-    BOOSTER_BONUS_ENUM = (BOOSTER_BONUS_BOOSTER_XP,
+    BOOSTER_QUALITY_ENUM = (
+     BOOSTER_QUALITY_SMALL,
+     BOOSTER_QUALITY_MEDIUM,
+     BOOSTER_QUALITY_BIG)
+    BOOSTER_BONUS_ENUM = (
+     BOOSTER_BONUS_BOOSTER_XP,
      BOOSTER_BONUS_BOOSTER_FREE_XP,
      BOOSTER_BONUS_BOOSTER_CREW_XP,
      BOOSTER_BONUS_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_BONUS_BOOSTER_CREDITS,
      BOOSTER_BONUS_BOOSTER_FL_XP)
-    BOOSTER_LIMIT_ENUM = (BOOSTER_LIMIT_BOOSTER_FL_XP,)
-    NATION_TREE_TITLE_ENUM = (NATION_TREE_TITLE_USSR,
+    BOOSTER_LIMIT_ENUM = (
+     BOOSTER_LIMIT_BOOSTER_FL_XP,)
+    NATION_TREE_TITLE_ENUM = (
+     NATION_TREE_TITLE_USSR,
      NATION_TREE_TITLE_GERMANY,
      NATION_TREE_TITLE_USA,
      NATION_TREE_TITLE_FRANCE,
@@ -3140,315 +3181,315 @@ class MENU(object):
 
     @classmethod
     def contextmenu(cls, key0):
-        outcome = '#menu:contextMenu/{}'.format(key0)
+        outcome = ('#menu:contextMenu/{}').format(key0)
         if outcome not in cls.CONTEXTMENU_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def nations(cls, key0):
-        outcome = '#menu:nations/{}'.format(key0)
+        outcome = ('#menu:nations/{}').format(key0)
         if outcome not in cls.NATIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankmen(cls, key0):
-        outcome = '#menu:tankmen/{}'.format(key0)
+        outcome = ('#menu:tankmen/{}').format(key0)
         if outcome not in cls.TANKMEN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankcarousel_vehiclestates(cls, key0):
-        outcome = '#menu:tankCarousel/vehicleStates/{}'.format(key0)
+        outcome = ('#menu:tankCarousel/vehicleStates/{}').format(key0)
         if outcome not in cls.TANKCAROUSEL_VEHICLESTATES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_weekdays_full(cls, key0):
-        outcome = '#menu:dateTime/weekDays/full/{}'.format(key0)
+        outcome = ('#menu:dateTime/weekDays/full/{}').format(key0)
         if outcome not in cls.DATETIME_WEEKDAYS_FULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_weekdays_short(cls, key0):
-        outcome = '#menu:dateTime/weekDays/short/{}'.format(key0)
+        outcome = ('#menu:dateTime/weekDays/short/{}').format(key0)
         if outcome not in cls.DATETIME_WEEKDAYS_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months_full(cls, key0):
-        outcome = '#menu:dateTime/months/full/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/full/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_FULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months_short(cls, key0):
-        outcome = '#menu:dateTime/months/short/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/short/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months(cls, key0):
-        outcome = '#menu:dateTime/months/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def levels(cls, key0):
-        outcome = '#menu:levels/{}'.format(key0)
+        outcome = ('#menu:levels/{}').format(key0)
         if outcome not in cls.LEVELS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def levels_roman(cls, key0):
-        outcome = '#menu:levels/roman/{}'.format(key0)
+        outcome = ('#menu:levels/roman/{}').format(key0)
         if outcome not in cls.LEVELS_ROMAN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def moduleinfo_compatible(cls, key0):
-        outcome = '#menu:moduleInfo/compatible/{}'.format(key0)
+        outcome = ('#menu:moduleInfo/compatible/{}').format(key0)
         if outcome not in cls.MODULEINFO_COMPATIBLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def denunciation(cls, key0):
-        outcome = '#menu:denunciation/{}'.format(key0)
+        outcome = ('#menu:denunciation/{}').format(key0)
         if outcome not in cls.DENUNCIATION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_level(cls, key0):
-        outcome = '#menu:header/level/{}'.format(key0)
+        outcome = ('#menu:header/level/{}').format(key0)
         if outcome not in cls.HEADER_LEVEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_vehicletype(cls, key0):
-        outcome = '#menu:header/vehicleType/{}'.format(key0)
+        outcome = ('#menu:header/vehicleType/{}').format(key0)
         if outcome not in cls.HEADER_VEHICLETYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_vehicletype_elite(cls, key0):
-        outcome = '#menu:header/vehicleType/elite/{}'.format(key0)
+        outcome = ('#menu:header/vehicleType/elite/{}').format(key0)
         if outcome not in cls.HEADER_VEHICLETYPE_ELITE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def classesShort(cls, key0):
-        outcome = '#menu:classes/short/{}'.format(key0)
+        outcome = ('#menu:classes/short/{}').format(key0)
         if outcome not in cls.CLASSES_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderBattleQuestsLabel(cls, key0):
-        outcome = '#menu:hangar_header/battle_quests_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/battle_quests_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderPersonalMissionsLabel(cls, key0):
-        outcome = '#menu:hangar_header/personal_quests_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/personal_quests_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderMapboxProgressionLabel(cls, key0):
-        outcome = '#menu:hangar_header/mapbox_progression_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/mapbox_progression_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tank_params(cls, key0):
-        outcome = '#menu:tank_params/{}'.format(key0)
+        outcome = ('#menu:tank_params/{}').format(key0)
         if outcome not in cls.TANK_PARAMS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def browser_customtitle(cls, key0):
-        outcome = '#menu:browser/customTitle/{}'.format(key0)
+        outcome = ('#menu:browser/customTitle/{}').format(key0)
         if outcome not in cls.BROWSER_CUSTOMTITLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def loading_battletypes_desc(cls, key0):
-        outcome = '#menu:loading/battleTypes/desc/{}'.format(key0)
+        outcome = ('#menu:loading/battleTypes/desc/{}').format(key0)
         if outcome not in cls.LOADING_BATTLETYPES_DESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def loading_battletypes(cls, key0):
-        outcome = '#menu:loading/battleTypes/{}'.format(key0)
+        outcome = ('#menu:loading/battleTypes/{}').format(key0)
         if outcome not in cls.LOADING_BATTLETYPES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def cst_item_ctx_menu(cls, key0):
-        outcome = '#menu:cst_item_ctx_menu/{}'.format(key0)
+        outcome = ('#menu:cst_item_ctx_menu/{}').format(key0)
         if outcome not in cls.CST_ITEM_CTX_MENU_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def internetProviderName(cls, key0):
-        outcome = '#menu:internet_provider/{}/name'.format(key0)
+        outcome = ('#menu:internet_provider/{}/name').format(key0)
         if outcome not in cls.INTERNET_PROVIDER_ALL_NAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def internetProviderTariff(cls, key0):
-        outcome = '#menu:internet_provider/{}/tariff'.format(key0)
+        outcome = ('#menu:internet_provider/{}/tariff').format(key0)
         if outcome not in cls.INTERNET_PROVIDER_ALL_TARIFF_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterTypeLocale(cls, value):
-        outcome = '#menu:booster/userName/{}'.format(value)
+        outcome = ('#menu:booster/userName/{}').format(value)
         if outcome not in cls.BOOSTER_USERNAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterInfluenceLocale(cls, value):
-        outcome = '#menu:booster/influence/{}'.format(value)
+        outcome = ('#menu:booster/influence/{}').format(value)
         if outcome not in cls.BOOSTER_INFLUENCE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterDescriptionLocale(cls, value):
-        outcome = '#menu:booster/description/{}'.format(value)
+        outcome = ('#menu:booster/description/{}').format(value)
         if outcome not in cls.BOOSTER_DESCRIPTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterDescriptionBVTLocale(cls, value):
-        outcome = '#menu:booster/description/bonusValueTime/{}'.format(value)
+        outcome = ('#menu:booster/description/bonusValueTime/{}').format(value)
         if outcome not in cls.BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterQualityLocale(cls, value):
-        outcome = '#menu:booster/quality/{}'.format(value)
+        outcome = ('#menu:booster/quality/{}').format(value)
         if outcome not in cls.BOOSTER_QUALITY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterBonusLocale(cls, value):
-        outcome = '#menu:booster/bonus/{}'.format(value)
+        outcome = ('#menu:booster/bonus/{}').format(value)
         if outcome not in cls.BOOSTER_BONUS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterLimitLocale(cls, value):
-        outcome = '#menu:booster/limit/{}'.format(value)
+        outcome = ('#menu:booster/limit/{}').format(value)
         if outcome not in cls.BOOSTER_LIMIT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNationTreeTitle(cls, key0):
-        outcome = '#menu:nation_tree/title/{}'.format(key0)
+        outcome = ('#menu:nation_tree/title/{}').format(key0)
         if outcome not in cls.NATION_TREE_TITLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

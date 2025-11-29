@@ -1,11 +1,15 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/subhangar/subhangar_state_groups.py
 from enum import Enum
 
 class CameraMover(object):
 
     def moveCamera(self, cameraManager, cameraName):
         cameraManager.switchByCameraName(cameraName)
+
+
+class SmoothCameraMover(object):
+
+    def moveCamera(self, cameraManager, cameraName):
+        cameraManager.switchByCameraName(cameraName, False)
 
 
 class SubhangarStateGroupConfig(object):
@@ -25,6 +29,7 @@ class SubhangarStateGroups(Enum):
     Customization = 'CustomizationStates'
     PersonalMissions = 'PersonalMissionsStates'
     VehicleHub = 'VehicleHubStates'
+    PetDenStorage = 'PetDenStorage'
     VehicleHubOverviewLargeTank = 'VehicleHubOverviewLargeTankStates'
     VehicleHubModulesLargeTank = 'VehicleHubModulesLargeTankStates'
     VehicleHubUpgradesLargeTank = 'VehicleHubUpgradesLargeTankStates'

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/power_mode_components.py
-import bisect
-import CGF
+import bisect, CGF
 from GenericComponents import Sequence
 from constants import IS_CLIENT
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
@@ -37,7 +34,7 @@ class PowerModeActiveProgressLayers(object):
     category = 'Vehicle Mechanics'
     domain = CGF.DomainOption.DomainClient
     editorTitle = 'Power Mode Active Progress Layers'
-    points = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Points', value=(0.0,))
+    points = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Points', value=(0.0, ))
     transitionTime = ComponentProperty(type=CGFMetaTypes.FLOAT, editorName='Transition time', value=2.0)
     layerNamePattern = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Layer name pattern', value='layer_{}')
 
@@ -85,7 +82,10 @@ class PowerModeMechanicManager(CGF.ComponentManager):
     @classmethod
     def __getPowerModeActiveProgress(cls, powerModeControllerGO):
         powerModeController = powerModeControllerGO.findComponentByType(PowerModeController)
-        return powerModeController.getMechanicState().activeProgress if powerModeController is not None else 0.0
+        if powerModeController is not None:
+            return powerModeController.getMechanicState().activeProgress
+        else:
+            return 0.0
 
     @classmethod
     def __setEnginePowerMode(cls, powerModeRTPCComponent):

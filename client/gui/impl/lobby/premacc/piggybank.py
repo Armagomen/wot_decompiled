@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/premacc/piggybank.py
 import logging
 from math import ceil
 from constants import PremiumConfigs
@@ -42,7 +40,7 @@ class PiggyBankView(PiggyBankBaseView):
 
     def _initialize(self, *args, **kwargs):
         super(PiggyBankView, self)._initialize(*args, **kwargs)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setBackBtnLabel(_getBackBtnLabel())
             self._updatePercentDiscount(model=model)
             self._updateIsPremUsed(model=model)

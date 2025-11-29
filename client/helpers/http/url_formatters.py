@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/http/url_formatters.py
-import typing
-import urllib
-import urlparse
+import typing, urllib, urlparse
 
 class URL_PARTS_IDS(object):
     SCHEME = 0

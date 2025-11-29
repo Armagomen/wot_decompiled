@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/base/state_machine/machine.py
-import typing
-import BigWorld
+import typing, BigWorld
 from frameworks.state_machine import StateMachine, StateEvent
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.events import OneSecondEvent, ToStateEvent
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.states import BaseTimerState

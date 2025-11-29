@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/shared/event_dispatcher.py
 from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -29,13 +27,14 @@ def showFunRandomBattleResults(arenaUniqueID, subModeImpl, uiLoader=None):
     from fun_random.gui.impl.lobby.feature.states import FunPostBattleResultsState
     from fun_random.gui.impl.lobby.feature.fun_random_battle_results_view import FunRandomBattleResultsView
     views = uiLoader.windowsManager.findViews(lambda v: isinstance(v, FunRandomBattleResultsView))
-    if views and all((view.arenaUniqueID == arenaUniqueID for view in views)):
+    if views and all(view.arenaUniqueID == arenaUniqueID for view in views):
         return
     FunPostBattleResultsState.goTo(arenaUniqueID=arenaUniqueID, subModeImpl=subModeImpl)
 
 
 def showFunRandomInfoPage(infoPageUrl):
-    showBrowserOverlayView(infoPageUrl, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+    showBrowserOverlayView(infoPageUrl, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
 
 @dependency.replace_none_kwargs(uiLoader=IGuiLoader)

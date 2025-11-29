@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/functions.py
-import random
-import re
-import typing
-import ArenaType
-import wg_async as future_async
+import random, re, typing, ArenaType, wg_async as future_async
 from adisp import adisp_async
 from gui import GUI_SETTINGS, SystemMessages
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
@@ -37,11 +31,15 @@ def rnd_choice_loop(*args):
 def clamp(value, minRange, maxRange):
     if value < minRange:
         return minRange
-    return maxRange if value > maxRange else value
+    if value > maxRange:
+        return maxRange
+    return value
 
 
 def roundToMinOrZero(value, minValue):
-    return value if value == 0 else max(minValue, value)
+    if value == 0:
+        return value
+    return max(minValue, value)
 
 
 def getShortDescr(descr):
@@ -114,7 +112,8 @@ def checkAmmoLevel(vehicles, callback):
             builder.setPreset(DialogPresets.TROPHY_DEVICE_UPGRADE)
             success = yield future_async.wg_await(dialogs.showSimple(builder.buildInLobby()))
             callback(success)
-        callback(True)
+        else:
+            callback(True)
 
 
 def getModuleGoldStatus(price, money):
@@ -128,14 +127,16 @@ def getModuleGoldStatus(price, money):
         couldBeBought |= availableForCredits
     if price.gold and price.gold < money.gold:
         couldBeBought |= availableForGold
-    return (False, '#menu:moduleFits/%s_error' % currency, '#tooltips:moduleFits/%s_error' % currency) if not couldBeBought else (True, '', '')
+    if not couldBeBought:
+        return (False, '#menu:moduleFits/%s_error' % currency, '#tooltips:moduleFits/%s_error' % currency)
+    return (True, '', '')
 
 
 def findConflictedEquipments(itemCompactDescr, itemTypeID, vehicle):
     conflictEqs = []
     if itemTypeID != ITEM_TYPE_INDICES['vehicleEngine']:
         return conflictEqs
-    oldModule = vehicle.descriptor.installComponent(itemCompactDescr)
+    oldModule, = vehicle.descriptor.installComponent(itemCompactDescr)
     for equipmentDescr in vehicle.equipments:
         if equipmentDescr:
             equipment = vehs_core.getItemByCompactDescr(equipmentDescr)
@@ -171,7 +172,8 @@ def getArenaFullName(arenaTypeID):
     arenaType = ArenaType.g_cache[arenaTypeID]
     arenaName = arenaType.name
     if arenaType.gameplayName != 'ctf':
-        arenaName = '%s - %s' % (arenaName, backport.text(R.strings.arenas.type.dyn(arenaType.gameplayName).dyn('name')()))
+        arenaName = '%s - %s' % (arenaName,
+         backport.text(R.strings.arenas.type.dyn(arenaType.gameplayName).dyn('name')()))
     return arenaName
 
 
@@ -180,33 +182,36 @@ def getArenaImage(geometryName, subdir=''):
     if subdir:
         dynAccessor = dynAccessor.dyn(subdir)
     imgDynAccessor = dynAccessor.num(geometryName)
-    return backport.image(imgDynAccessor()) if imgDynAccessor.isValid() else ''
+    if imgDynAccessor.isValid():
+        return backport.image(imgDynAccessor())
+    return ''
 
 
 def getBattleSubTypeWinText(arenaTypeID, teamID):
     root = R.strings.arenas.type.dyn(ArenaType.g_cache[arenaTypeID].gameplayName)
     description = root.dyn('description')
     if not description:
-        description = root.dyn('description{}'.format(teamID))
+        description = root.dyn(('description{}').format(teamID))
     return backport.text(description())
 
 
 def getBattleSubTypeBaseNumber(arenaTypeID, team, baseID):
     teamBasePositions = ArenaType.g_cache[arenaTypeID].teamBasePositions
     if len(teamBasePositions) >= team:
-        points = teamBasePositions[team - 1]
+        points = teamBasePositions[(team - 1)]
         if len(points) > 1:
             return ' %d' % (sorted(points.keys()).index(baseID) + 1)
     points = ArenaType.g_cache[arenaTypeID].controlPoints
     if points:
         if len(points) > 1:
             return ' %d' % baseID
+    return ''
 
 
 def isBaseExists(arenaTypeID, team):
     teamBasePositions = ArenaType.g_cache[arenaTypeID].teamBasePositions
     if len(teamBasePositions) >= team:
-        points = teamBasePositions[team - 1]
+        points = teamBasePositions[(team - 1)]
         if points:
             return True
     return False
@@ -214,7 +219,9 @@ def isBaseExists(arenaTypeID, team):
 
 def isControlPointExists(arenaTypeID):
     controlPoint = ArenaType.g_cache[arenaTypeID].controlPoints
-    return True if controlPoint else False
+    if controlPoint:
+        return True
+    return False
 
 
 def getAbsoluteUrl(url):
@@ -231,7 +238,7 @@ def getViewName(viewAlias, *args):
     l = list(args)
     if viewAlias:
         l.insert(0, viewAlias)
-    return '_'.join(map(str, l))
+    return ('_').join(map(str, l))
 
 
 def getUniqueViewName(viewAlias):
@@ -242,7 +249,8 @@ def getUniqueViewName(viewAlias):
 
 
 def getPostBattleUniqueSubUrl(svrPackedData, clientPackedData):
-    return '%s/%s/%s ' % (GUI_SETTINGS.postBattleExchange.url, svrPackedData, clientPackedData)
+    return '%s/%s/%s ' % (
+     GUI_SETTINGS.postBattleExchange.url, svrPackedData, clientPackedData)
 
 
 def parsePostBattleUniqueSubUrl(uniqueSubUrl):
@@ -264,7 +272,9 @@ def replaceHyphenToUnderscore(text):
 
 def getVehTypeIconName(vType, isElite=False):
     vType = replaceHyphenToUnderscore(vType)
-    return '{}_elite'.format(vType) if isElite else vType
+    if isElite:
+        return ('{}_elite').format(vType)
+    return vType
 
 
 def getImageResourceFromPath(path):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/sub_helper.py
 from messenger import g_settings
 from messenger.m_constants import USER_TAG, PROTO_TYPE
 from messenger.proto.events import g_messengerEvents
@@ -12,7 +10,8 @@ from messenger.proto.xmpp.log_output import g_logOutput, CLIENT_LOG_AREA as _LOG
 from messenger.proto.xmpp.xmpp_constants import XMPP_ITEM_TYPE, CONTACT_ERROR_ID, LIMIT_ERROR_ID, CONTACT_LIMIT
 from messenger.proto.xmpp.xmpp_items import SubPendingItem
 from messenger.storage import storage_getter
-_INBOUND_SUB_REMOVE_TAGS = {USER_TAG.SUB_IN_PROCESS, USER_TAG.SUB_CANCELED, USER_TAG.SUB_APPROVED}
+_INBOUND_SUB_REMOVE_TAGS = {
+ USER_TAG.SUB_IN_PROCESS, USER_TAG.SUB_CANCELED, USER_TAG.SUB_APPROVED}
 
 class InboundSubscriptionsBatch(object):
     __slots__ = ('_subs', '_cancelTasks', '_approveTasks', '_newRqs', '_oldRqs')
@@ -27,7 +26,7 @@ class InboundSubscriptionsBatch(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def clear(self):
         self._subs = []
@@ -47,14 +46,17 @@ class InboundSubscriptionsBatch(object):
         self._oldRqs = []
 
     def _cancel(self, jid, _):
-        self._cancelTasks[jid] = (CancelSubscriptionTask(jid, auto=True),)
+        self._cancelTasks[jid] = (
+         CancelSubscriptionTask(jid, auto=True),)
         return True
 
     def _approve(self, jid, contact):
         if contact.getSubscription()[0] == _SUB.OFF:
-            tasks = (ApproveSubscriptionTask(jid, auto=True), AskSubscriptionTask(jid))
+            tasks = (ApproveSubscriptionTask(jid, auto=True),
+             AskSubscriptionTask(jid))
         else:
-            tasks = (ApproveSubscriptionTask(jid, auto=True),)
+            tasks = (
+             ApproveSubscriptionTask(jid, auto=True),)
         self._approveTasks[jid] = tasks
         return True
 
@@ -136,7 +138,7 @@ class SubscriptionsRestrictions(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def setToUseCachedCounts(self, flag):
         if self._useCachedCounts == flag:
@@ -152,44 +154,65 @@ class SubscriptionsRestrictions(object):
             length = self._cachedRosterCount
         else:
             length = self._getRosterCount()
-        return (False, ClientIntLimitError(LIMIT_ERROR_ID.MAX_ROSTER_ITEMS, CONTACT_LIMIT.ROSTER_MAX_COUNT)) if length >= CONTACT_LIMIT.ROSTER_MAX_COUNT else (True, None)
+        if length >= CONTACT_LIMIT.ROSTER_MAX_COUNT:
+            return (False,
+             ClientIntLimitError(LIMIT_ERROR_ID.MAX_ROSTER_ITEMS, CONTACT_LIMIT.ROSTER_MAX_COUNT))
+        else:
+            return (
+             True, None)
 
     def canApproveFriendship(self, contact):
         if not contact or contact.getItemType() == XMPP_ITEM_TYPE.EMPTY_ITEM:
-            return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
-        tags = contact.getTags()
-        if USER_TAG.SUB_APPROVED in tags:
-            return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
-        elif contact.getItemType() in XMPP_ITEM_TYPE.ROSTER_ITEMS:
-            if USER_TAG.SUB_FROM in contact.getTags():
-                return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
-            return (True, None)
-        elif contact.getItemType() in XMPP_ITEM_TYPE.SUB_PENDING_ITEMS:
-            if USER_TAG.SUB_IN_PROCESS in tags:
-                return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_RQ_PROCESS, contact.getFullName()))
-            if USER_TAG.SUB_CANCELED in tags:
-                return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_CANCELED, contact.getFullName()))
-            result, error = self.canAddFriends()
-            if not result:
-                return (False, error)
-            return (True, None)
+            return (False,
+             ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
         else:
+            tags = contact.getTags()
+            if USER_TAG.SUB_APPROVED in tags:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
+            if contact.getItemType() in XMPP_ITEM_TYPE.ROSTER_ITEMS:
+                if USER_TAG.SUB_FROM in contact.getTags():
+                    return (False,
+                     ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
+                return (
+                 True, None)
+            if contact.getItemType() in XMPP_ITEM_TYPE.SUB_PENDING_ITEMS:
+                if USER_TAG.SUB_IN_PROCESS in tags:
+                    return (False,
+                     ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_RQ_PROCESS, contact.getFullName()))
+                if USER_TAG.SUB_CANCELED in tags:
+                    return (False,
+                     ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_CANCELED, contact.getFullName()))
+                result, error = self.canAddFriends()
+                if not result:
+                    return (False, error)
+                return (
+                 True, None)
             return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
 
     def canCancelFriendship(self, contact):
         if not contact or contact.getItemType() == XMPP_ITEM_TYPE.EMPTY_ITEM:
-            return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
-        tags = contact.getTags()
-        if USER_TAG.SUB_APPROVED in tags:
-            return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
-        elif USER_TAG.SUB_FROM in tags:
-            return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
-        elif USER_TAG.SUB_IN_PROCESS in tags:
-            return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_RQ_PROCESS, contact.getFullName()))
-        elif USER_TAG.SUB_CANCELED in tags:
-            return (False, ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_CANCELED, contact.getFullName()))
+            return (False,
+             ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
         else:
-            return (False, ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_EXISTS, contact.getFullName())) if contact.getItemType() in XMPP_ITEM_TYPE.ROSTER_ITEMS else (True, None)
+            tags = contact.getTags()
+            if USER_TAG.SUB_APPROVED in tags:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
+            if USER_TAG.SUB_FROM in tags:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_APPROVED, contact.getFullName()))
+            if USER_TAG.SUB_IN_PROCESS in tags:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_RQ_PROCESS, contact.getFullName()))
+            if USER_TAG.SUB_CANCELED in tags:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.FRIENDSHIP_CANCELED, contact.getFullName()))
+            if contact.getItemType() in XMPP_ITEM_TYPE.ROSTER_ITEMS:
+                return (False,
+                 ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_EXISTS, contact.getFullName()))
+            return (
+             True, None)
 
     def _getRosterCount(self):
         return self.usersStorage.getCount(ItemsFindCriteria(XMPP_ITEM_TYPE.ROSTER_ITEMS))

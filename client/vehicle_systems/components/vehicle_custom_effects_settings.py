@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/vehicle_custom_effects_settings.py
-import CGF
-import Vehicular
+import CGF, Vehicular
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import onAddedQuery, autoregister
 from constants import IS_CGF_DUMP

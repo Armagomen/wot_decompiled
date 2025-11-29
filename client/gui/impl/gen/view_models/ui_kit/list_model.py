@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/ui_kit/list_model.py
 import typing
 from frameworks.wulf import Array, ViewModel
 T = typing.TypeVar('T')

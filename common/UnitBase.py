@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/UnitBase.py
-import cPickle
-import copy
-import struct
-import weakref
+import cPickle, copy, struct, weakref
 from collections import namedtuple
 from typing import TYPE_CHECKING
 from constants import VEHICLE_CLASS_INDICES, PREBATTLE_TYPE, QUEUE_TYPE, INVITATION_TYPE, BATTLE_MODE_VEHICLE_TAGS
@@ -17,8 +12,10 @@ from unit_helpers.ExtrasHandler import SquadExtrasHandler, ExternalExtrasHandler
 from unit_roster_config import SquadRoster, UnitRoster, SpecRoster, EventRoster, EpicRoster, BattleRoyaleRoster, MapBoxRoster
 if TYPE_CHECKING:
     from typing import List as TList, Tuple as TTuple, Dict as TDict
-UnitVehicle = namedtuple('UnitVehicle', ('vehInvID', 'vehTypeCompDescr', 'vehLevel', 'vehClassIdx'))
-ProfileVehicle = namedtuple('ProfileVehicle', ('vehCompDescr', 'vehOutfitCD', 'seasonType', 'marksOnGun', 'prestigeLevel', 'stFrags'))
+UnitVehicle = namedtuple('UnitVehicle', ('vehInvID', 'vehTypeCompDescr', 'vehLevel',
+                                         'vehClassIdx'))
+ProfileVehicle = namedtuple('ProfileVehicle', ('vehCompDescr', 'vehOutfitCD', 'seasonType',
+                                               'marksOnGun', 'prestigeLevel', 'stFrags'))
 
 class UNIT_MGR_STATE:
     IDLE = 0
@@ -67,10 +64,8 @@ class UNIT_CREATE_TYPE:
     FALLOUT = 1
     SQUAD = 2
     EVENT = 3
-    EXPOSED_TYPES = (DEFAULT,
-     FALLOUT,
-     SQUAD,
-     EVENT)
+    EXPOSED_TYPES = (
+     DEFAULT, FALLOUT, SQUAD, EVENT)
 
 
 class UNIT_ERROR:
@@ -191,7 +186,7 @@ class UNIT_ERROR:
 
 
 OK = UNIT_ERROR.OK
-UNIT_ERROR_NAMES = dict(((v, k) for k, v in UNIT_ERROR.__dict__.iteritems()))
+UNIT_ERROR_NAMES = dict((v, k) for k, v in UNIT_ERROR.__dict__.iteritems())
 
 class UNIT_SLOT:
     ANY = -1
@@ -344,7 +339,8 @@ class CLIENT_UNIT_CMD:
 
 
 CMD_NAMES = dict([ (v, k) for k, v in CLIENT_UNIT_CMD.__dict__.items() if not k.startswith('__') ])
-FORCED_CLIENT_UNIT_CMDS = (CLIENT_UNIT_CMD.LEAVE_UNIT,)
+FORCED_CLIENT_UNIT_CMDS = (
+ CLIENT_UNIT_CMD.LEAVE_UNIT,)
 
 class UNIT_NOTIFY_ID:
     PARENT_UNIT_MGR = -1
@@ -388,10 +384,10 @@ class UnitAssemblerImplType(object):
     EPIC = 2
 
 
-UNIT_ASSEMBLER_IMPL_TO_CONFIG = {UnitAssemblerImplType.SQUAD: 'squad',
- UnitAssemblerImplType.EPIC: 'epic'}
-PREBATTLE_TYPE_TO_UNIT_ASSEMBLER = {PREBATTLE_TYPE.SQUAD: UnitAssemblerImplType.SQUAD,
- PREBATTLE_TYPE.EPIC: UnitAssemblerImplType.EPIC}
+UNIT_ASSEMBLER_IMPL_TO_CONFIG = {UnitAssemblerImplType.SQUAD: 'squad', 
+   UnitAssemblerImplType.EPIC: 'epic'}
+PREBATTLE_TYPE_TO_UNIT_ASSEMBLER = {PREBATTLE_TYPE.SQUAD: UnitAssemblerImplType.SQUAD, 
+   PREBATTLE_TYPE.EPIC: UnitAssemblerImplType.EPIC}
 
 class BitfieldHelper:
 
@@ -436,18 +432,22 @@ class BitfieldHelper:
         return self.value & value
 
 
-VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS = {UNIT_MGR_FLAGS.EVENT: (('event_battles',), tuple()),
- UNIT_MGR_FLAGS.EPIC: (tuple(), BATTLE_MODE_VEHICLE_TAGS - {'epic_battles'}),
- UNIT_MGR_FLAGS.BATTLE_ROYALE: (('battle_royale',), tuple()),
- UNIT_MGR_FLAGS.STRONGHOLD: (tuple(), BATTLE_MODE_VEHICLE_TAGS - {'clanWarsBattles'})}
-UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE = {UNIT_MGR_FLAGS.EVENT: PREBATTLE_TYPE.EVENT,
- UNIT_MGR_FLAGS.EPIC: PREBATTLE_TYPE.EPIC,
- UNIT_MGR_FLAGS.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE,
- UNIT_MGR_FLAGS.MAPBOX: PREBATTLE_TYPE.MAPBOX,
- UNIT_MGR_FLAGS.SQUAD: PREBATTLE_TYPE.SQUAD,
- UNIT_MGR_FLAGS.SPEC_BATTLE: PREBATTLE_TYPE.CLAN,
- UNIT_MGR_FLAGS.STRONGHOLD: PREBATTLE_TYPE.STRONGHOLD,
- UNIT_MGR_FLAGS.TOURNAMENT: PREBATTLE_TYPE.TOURNAMENT}
+VEHICLE_TAGS_GROUP_BY_UNIT_MGR_FLAGS = {UNIT_MGR_FLAGS.EVENT: (
+                        ('event_battles', ), tuple()), 
+   UNIT_MGR_FLAGS.EPIC: (
+                       tuple(), BATTLE_MODE_VEHICLE_TAGS - {'epic_battles'}), 
+   UNIT_MGR_FLAGS.BATTLE_ROYALE: (
+                                ('battle_royale', ), tuple()), 
+   UNIT_MGR_FLAGS.STRONGHOLD: (
+                             tuple(), BATTLE_MODE_VEHICLE_TAGS - {'clanWarsBattles'})}
+UNIT_MGR_FLAGS_TO_PREBATTLE_TYPE = {UNIT_MGR_FLAGS.EVENT: PREBATTLE_TYPE.EVENT, 
+   UNIT_MGR_FLAGS.EPIC: PREBATTLE_TYPE.EPIC, 
+   UNIT_MGR_FLAGS.BATTLE_ROYALE: PREBATTLE_TYPE.BATTLE_ROYALE, 
+   UNIT_MGR_FLAGS.MAPBOX: PREBATTLE_TYPE.MAPBOX, 
+   UNIT_MGR_FLAGS.SQUAD: PREBATTLE_TYPE.SQUAD, 
+   UNIT_MGR_FLAGS.SPEC_BATTLE: PREBATTLE_TYPE.CLAN, 
+   UNIT_MGR_FLAGS.STRONGHOLD: PREBATTLE_TYPE.STRONGHOLD, 
+   UNIT_MGR_FLAGS.TOURNAMENT: PREBATTLE_TYPE.TOURNAMENT}
 
 def _prebattleTypeFromFlags(flags):
     flag = flags ^ UNIT_MGR_FLAGS.SQUAD if flags != UNIT_MGR_FLAGS.SQUAD and flags & UNIT_MGR_FLAGS.SQUAD else flags
@@ -458,13 +458,13 @@ def _prebattleTypeFromFlags(flags):
     return PREBATTLE_TYPE.UNIT
 
 
-UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME = {UNIT_MGR_FLAGS.EVENT: 'EventUnitMgr',
- UNIT_MGR_FLAGS.MAPBOX: 'MapBoxUnitMgr',
- UNIT_MGR_FLAGS.SQUAD: 'SquadUnitMgr',
- UNIT_MGR_FLAGS.EPIC: 'SquadUnitMgr',
- UNIT_MGR_FLAGS.BATTLE_ROYALE: 'SquadUnitMgr',
- UNIT_MGR_FLAGS.SPEC_BATTLE: 'SpecUnitMgr',
- UNIT_MGR_FLAGS.STRONGHOLD: 'StrongholdUnitMgr'}
+UNIT_MGR_FLAGS_TO_UNIT_MGR_ENTITY_NAME = {UNIT_MGR_FLAGS.EVENT: 'EventUnitMgr', 
+   UNIT_MGR_FLAGS.MAPBOX: 'MapBoxUnitMgr', 
+   UNIT_MGR_FLAGS.SQUAD: 'SquadUnitMgr', 
+   UNIT_MGR_FLAGS.EPIC: 'SquadUnitMgr', 
+   UNIT_MGR_FLAGS.BATTLE_ROYALE: 'SquadUnitMgr', 
+   UNIT_MGR_FLAGS.SPEC_BATTLE: 'SpecUnitMgr', 
+   UNIT_MGR_FLAGS.STRONGHOLD: 'StrongholdUnitMgr'}
 
 def _entityNameFromFlags(flags):
     flag = flags ^ UNIT_MGR_FLAGS.SQUAD if flags != UNIT_MGR_FLAGS.SQUAD and flags & UNIT_MGR_FLAGS.SQUAD else flags
@@ -472,13 +472,15 @@ def _entityNameFromFlags(flags):
         if flag & unitMgrFlag:
             return unitMgrName
 
+    return 'UnitMgr'
 
-UNIT_MGR_FLAGS_TO_INVITATION_TYPE = {UNIT_MGR_FLAGS.EVENT: INVITATION_TYPE.EVENT,
- UNIT_MGR_FLAGS.EPIC: INVITATION_TYPE.EPIC,
- UNIT_MGR_FLAGS.BATTLE_ROYALE: INVITATION_TYPE.BATTLE_ROYALE,
- UNIT_MGR_FLAGS.MAPBOX: INVITATION_TYPE.MAPBOX,
- UNIT_MGR_FLAGS.SQUAD: INVITATION_TYPE.SQUAD,
- UNIT_MGR_FLAGS.DEFAULT: INVITATION_TYPE.SQUAD}
+
+UNIT_MGR_FLAGS_TO_INVITATION_TYPE = {UNIT_MGR_FLAGS.EVENT: INVITATION_TYPE.EVENT, 
+   UNIT_MGR_FLAGS.EPIC: INVITATION_TYPE.EPIC, 
+   UNIT_MGR_FLAGS.BATTLE_ROYALE: INVITATION_TYPE.BATTLE_ROYALE, 
+   UNIT_MGR_FLAGS.MAPBOX: INVITATION_TYPE.MAPBOX, 
+   UNIT_MGR_FLAGS.SQUAD: INVITATION_TYPE.SQUAD, 
+   UNIT_MGR_FLAGS.DEFAULT: INVITATION_TYPE.SQUAD}
 
 def _invitationTypeFromFlags(flags):
     flag = flags ^ UNIT_MGR_FLAGS.SQUAD if flags != UNIT_MGR_FLAGS.SQUAD and flags & UNIT_MGR_FLAGS.SQUAD else flags
@@ -486,7 +488,7 @@ def _invitationTypeFromFlags(flags):
         if flag & unitMgrFlag:
             return invitationType
 
-    return None
+    return
 
 
 def _unitAssemblerTypeFromFlags(flags):
@@ -546,70 +548,64 @@ class UnitPlayerDataKey(object):
     EXTRA_DATA = 'extraData'
 
 
-PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER = {PREBATTLE_TYPE.UNIT: UNIT_MGR_FLAGS.DEFAULT,
- PREBATTLE_TYPE.EVENT: ROSTER_TYPE.EVENT_ROSTER,
- PREBATTLE_TYPE.EPIC: ROSTER_TYPE.EPIC_ROSTER,
- PREBATTLE_TYPE.BATTLE_ROYALE: ROSTER_TYPE.BATTLE_ROYALE_ROSTER,
- PREBATTLE_TYPE.MAPBOX: ROSTER_TYPE.MAPBOX_ROSTER}
-PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT = {PREBATTLE_TYPE.SQUAD: ROSTER_TYPE.SQUAD_ROSTER,
- PREBATTLE_TYPE.EVENT: ROSTER_TYPE.EVENT_ROSTER,
- PREBATTLE_TYPE.EPIC: ROSTER_TYPE.EPIC_ROSTER,
- PREBATTLE_TYPE.BATTLE_ROYALE: ROSTER_TYPE.BATTLE_ROYALE_ROSTER,
- PREBATTLE_TYPE.MAPBOX: ROSTER_TYPE.MAPBOX_ROSTER}
+PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER = {PREBATTLE_TYPE.UNIT: UNIT_MGR_FLAGS.DEFAULT, 
+   PREBATTLE_TYPE.EVENT: ROSTER_TYPE.EVENT_ROSTER, 
+   PREBATTLE_TYPE.EPIC: ROSTER_TYPE.EPIC_ROSTER, 
+   PREBATTLE_TYPE.BATTLE_ROYALE: ROSTER_TYPE.BATTLE_ROYALE_ROSTER, 
+   PREBATTLE_TYPE.MAPBOX: ROSTER_TYPE.MAPBOX_ROSTER}
+PREBATTLE_TYPE_BY_UNIT_MGR_ROSTER_EXT = {PREBATTLE_TYPE.SQUAD: ROSTER_TYPE.SQUAD_ROSTER, 
+   PREBATTLE_TYPE.EVENT: ROSTER_TYPE.EVENT_ROSTER, 
+   PREBATTLE_TYPE.EPIC: ROSTER_TYPE.EPIC_ROSTER, 
+   PREBATTLE_TYPE.BATTLE_ROYALE: ROSTER_TYPE.BATTLE_ROYALE_ROSTER, 
+   PREBATTLE_TYPE.MAPBOX: ROSTER_TYPE.MAPBOX_ROSTER}
 QUEUE_TYPE_BY_UNIT_MGR_ROSTER = {QUEUE_TYPE.EVENT_BATTLES: ROSTER_TYPE.EVENT_ROSTER}
-ROSTER_TYPE_TO_CLASS = {ROSTER_TYPE.UNIT_ROSTER: UnitRoster,
- ROSTER_TYPE.SQUAD_ROSTER: SquadRoster,
- ROSTER_TYPE.SPEC_ROSTER: SpecRoster,
- ROSTER_TYPE.EVENT_ROSTER: EventRoster,
- ROSTER_TYPE.STRONGHOLD_ROSTER: SpecRoster,
- ROSTER_TYPE.TOURNAMENT_ROSTER: SpecRoster,
- ROSTER_TYPE.EPIC_ROSTER: EpicRoster,
- ROSTER_TYPE.BATTLE_ROYALE_ROSTER: BattleRoyaleRoster,
- ROSTER_TYPE.MAPBOX_ROSTER: MapBoxRoster}
-EXTRAS_HANDLER_TYPE_TO_HANDLER = {EXTRAS_HANDLER_TYPE.EMPTY: EmptyExtrasHandler,
- EXTRAS_HANDLER_TYPE.SQUAD: SquadExtrasHandler,
- EXTRAS_HANDLER_TYPE.SPEC_BATTLE: ClanBattleExtrasHandler,
- EXTRAS_HANDLER_TYPE.EXTERNAL: ExternalExtrasHandler}
+ROSTER_TYPE_TO_CLASS = {ROSTER_TYPE.UNIT_ROSTER: UnitRoster, 
+   ROSTER_TYPE.SQUAD_ROSTER: SquadRoster, 
+   ROSTER_TYPE.SPEC_ROSTER: SpecRoster, 
+   ROSTER_TYPE.EVENT_ROSTER: EventRoster, 
+   ROSTER_TYPE.STRONGHOLD_ROSTER: SpecRoster, 
+   ROSTER_TYPE.TOURNAMENT_ROSTER: SpecRoster, 
+   ROSTER_TYPE.EPIC_ROSTER: EpicRoster, 
+   ROSTER_TYPE.BATTLE_ROYALE_ROSTER: BattleRoyaleRoster, 
+   ROSTER_TYPE.MAPBOX_ROSTER: MapBoxRoster}
+EXTRAS_HANDLER_TYPE_TO_HANDLER = {EXTRAS_HANDLER_TYPE.EMPTY: EmptyExtrasHandler, 
+   EXTRAS_HANDLER_TYPE.SQUAD: SquadExtrasHandler, 
+   EXTRAS_HANDLER_TYPE.SPEC_BATTLE: ClanBattleExtrasHandler, 
+   EXTRAS_HANDLER_TYPE.EXTERNAL: ExternalExtrasHandler}
 
 class UnitBase(OpsUnpacker):
-    _opsFormatDefs = initOpsFormatDef({UNIT_OP.SET_VEHICLE: ('qIi', '_setVehicle'),
-     UNIT_OP.SET_MEMBER: ('qB', '_setMember'),
-     UNIT_OP.DEL_MEMBER: ('B', '_delMemberBySlot'),
-     UNIT_OP.ADD_PLAYER: ('', '_unpackPlayer'),
-     UNIT_OP.REMOVE_PLAYER: ('q', '_removePlayer'),
-     UNIT_OP.READY_MASK: ('H', '_setReadyMask'),
-     UNIT_OP.SET_SLOT: ('', '_unpackRosterSlot'),
-     UNIT_OP.CLEAR_VEHICLE: ('q', '_clearVehicle'),
-     UNIT_OP.VEHICLE_DICT: ('', '_unpackVehicleDict'),
-     UNIT_OP.UNIT_FLAGS: ('H', '_setUnitFlags'),
-     UNIT_OP.CLOSE_SLOT: ('B', '_closeSlot'),
-     UNIT_OP.OPEN_SLOT: ('B', '_openSlot'),
-     UNIT_OP.SET_COMMENT: ('',
-                           'setComment',
-                           'S',
-                           ['']),
-     UNIT_OP.CHANGE_ROLE: ('qH', '_changePlayerRole'),
-     UNIT_OP.MODAL_TIMESTAMP: ('i', '_setModalTimestamp'),
-     UNIT_OP.GIVE_LEADERSHIP: ('Q', '_giveLeadership'),
-     UNIT_OP.EXTRAS_UPDATE: ('',
-                             'updateUnitExtras',
-                             'S',
-                             ['']),
-     UNIT_OP.EXTRAS_RESET: (None, 'resetExtras'),
-     UNIT_OP.GAMEPLAYS_MASK: ('i', '_setGameplaysMask'),
-     UNIT_OP.SET_VEHICLE_LIST: ('q',
-                                '_setVehicleList',
-                                'N',
-                                [('H', 'iI')]),
-     UNIT_OP.ARENA_TYPE: ('i', '_setArenaType'),
-     UNIT_OP.SET_PLAYER_PROFILE: ('', '_setProfileVehicleByData'),
-     UNIT_OP.DEL_PLAYER_PROFILE: ('q', '_delProfileVehicle'),
-     UNIT_OP.ESTIMATED_TIME_IN_QUEUE: ('i', '_setEstimatedTimeInQueue'),
-     UNIT_OP.RANDOM_FLAGS: ('?', '_setRandomFlags'),
-     UNIT_OP.SQUAD_SIZE: ('i', '_setSquadSize'),
-     UNIT_OP.SET_SEARCH_FLAGS: ('qH', 'setAutoSearchFlags'),
-     UNIT_OP.CLEAR_SEARCH_FLAGS: (None, 'clearAutoSearchFlags'),
-     UNIT_OP.REMOVE_SEARCH_FLAGS: ('H', 'removeAutoSearchFlags')})
+    _opsFormatDefs = initOpsFormatDef({UNIT_OP.SET_VEHICLE: ('qIi', '_setVehicle'), 
+       UNIT_OP.SET_MEMBER: ('qB', '_setMember'), 
+       UNIT_OP.DEL_MEMBER: ('B', '_delMemberBySlot'), 
+       UNIT_OP.ADD_PLAYER: ('', '_unpackPlayer'), 
+       UNIT_OP.REMOVE_PLAYER: ('q', '_removePlayer'), 
+       UNIT_OP.READY_MASK: ('H', '_setReadyMask'), 
+       UNIT_OP.SET_SLOT: ('', '_unpackRosterSlot'), 
+       UNIT_OP.CLEAR_VEHICLE: ('q', '_clearVehicle'), 
+       UNIT_OP.VEHICLE_DICT: ('', '_unpackVehicleDict'), 
+       UNIT_OP.UNIT_FLAGS: ('H', '_setUnitFlags'), 
+       UNIT_OP.CLOSE_SLOT: ('B', '_closeSlot'), 
+       UNIT_OP.OPEN_SLOT: ('B', '_openSlot'), 
+       UNIT_OP.SET_COMMENT: (
+                           '', 'setComment', 'S', ['']), 
+       UNIT_OP.CHANGE_ROLE: ('qH', '_changePlayerRole'), 
+       UNIT_OP.MODAL_TIMESTAMP: ('i', '_setModalTimestamp'), 
+       UNIT_OP.GIVE_LEADERSHIP: ('Q', '_giveLeadership'), 
+       UNIT_OP.EXTRAS_UPDATE: (
+                             '', 'updateUnitExtras', 'S', ['']), 
+       UNIT_OP.EXTRAS_RESET: (None, 'resetExtras'), 
+       UNIT_OP.GAMEPLAYS_MASK: ('i', '_setGameplaysMask'), 
+       UNIT_OP.SET_VEHICLE_LIST: (
+                                'q', '_setVehicleList', 'N', [('H', 'iI')]), 
+       UNIT_OP.ARENA_TYPE: ('i', '_setArenaType'), 
+       UNIT_OP.SET_PLAYER_PROFILE: ('', '_setProfileVehicleByData'), 
+       UNIT_OP.DEL_PLAYER_PROFILE: ('q', '_delProfileVehicle'), 
+       UNIT_OP.ESTIMATED_TIME_IN_QUEUE: ('i', '_setEstimatedTimeInQueue'), 
+       UNIT_OP.RANDOM_FLAGS: ('?', '_setRandomFlags'), 
+       UNIT_OP.SQUAD_SIZE: ('i', '_setSquadSize'), 
+       UNIT_OP.SET_SEARCH_FLAGS: ('qH', 'setAutoSearchFlags'), 
+       UNIT_OP.CLEAR_SEARCH_FLAGS: (None, 'clearAutoSearchFlags'), 
+       UNIT_OP.REMOVE_SEARCH_FLAGS: ('H', 'removeAutoSearchFlags')})
     MAX_PLAYERS = 250
 
     def __init__(self, limitsDefs={}, slotDefs={}, slotCount=0, packedRoster='', extrasInit=None, packedUnit='', rosterTypeID=ROSTER_TYPE.UNIT_ROSTER, extrasHandlerID=EXTRAS_HANDLER_TYPE.EMPTY, prebattleTypeID=PREBATTLE_TYPE.UNIT):
@@ -681,7 +677,8 @@ class UnitBase(OpsUnpacker):
         self._autoSelectProfileVehicle(accountDBID, vehs)
         self.storeOp(UNIT_OP.SET_VEHICLE_LIST, accountDBID, vehShortList)
         self._storeNotification(accountDBID, UNIT_NOTIFY_CMD.SET_VEHICLE_LIST, [vehInvIDs])
-        self._storeNotification(UNIT_NOTIFY_ID.PARENT_UNIT_MGR, UNIT_NOTIFY_CMD.UPD_VEHICLE_DESCRS, [accountDBID, vehTypeCompDescrs])
+        self._storeNotification(UNIT_NOTIFY_ID.PARENT_UNIT_MGR, UNIT_NOTIFY_CMD.UPD_VEHICLE_DESCRS, [
+         accountDBID, vehTypeCompDescrs])
         self._dirty = 1
         return True
 
@@ -740,7 +737,7 @@ class UnitBase(OpsUnpacker):
         pass
 
     def _setProfileVehicle(self, accountDBID, vehCompDescr, vehOutfitCD, seasonType, marksOnGun, prestigeLevel, stFrags):
-        LOG_DEBUG('_setProfileVehicle: accountDBID={}'.format(accountDBID))
+        LOG_DEBUG(('_setProfileVehicle: accountDBID={}').format(accountDBID))
         newProfileVehicle = ProfileVehicle(vehCompDescr, vehOutfitCD, seasonType, marksOnGun, prestigeLevel, stFrags)
         if newProfileVehicle != self._playerProfileVehicles.get(accountDBID, None):
             self._playerProfileVehicles[accountDBID] = newProfileVehicle
@@ -750,7 +747,7 @@ class UnitBase(OpsUnpacker):
         return
 
     def _delProfileVehicle(self, accountDBID):
-        LOG_DEBUG('_delProfileVehicle: accountDBID={}'.format(accountDBID))
+        LOG_DEBUG(('_delProfileVehicle: accountDBID={}').format(accountDBID))
         self._playerProfileVehicles.pop(accountDBID, None)
         self.storeOp(UNIT_OP.DEL_PLAYER_PROFILE, accountDBID)
         return
@@ -849,21 +846,11 @@ class UnitBase(OpsUnpacker):
         extrasStr = self._extrasHandler.pack(extras)
         profileVehicles = self._playerProfileVehicles
         searchFlags = self._unitAssemblerSearchFlags
-        args = (len(members),
-         len(vehs),
-         len(players),
-         len(profileVehicles),
-         len(searchFlags),
-         len(extrasStr),
-         self._readyMask,
-         self._flags,
-         self._closedSlotMask,
-         self._modalTimestamp,
-         self._estimatedTimeInQueue,
-         self._gameplaysMask,
-         self._arenaType,
-         self._squadSize,
-         self._randomFlags)
+        args = (
+         len(members), len(vehs), len(players), len(profileVehicles), len(searchFlags), len(extrasStr),
+         self._readyMask, self._flags, self._closedSlotMask,
+         self._modalTimestamp, self._estimatedTimeInQueue, self._gameplaysMask, self._arenaType,
+         self._squadSize, self._randomFlags)
         packed += struct.pack(self._HEADER, *args)
         for accountDBID, vehList in vehs.iteritems():
             packed += struct.pack(self._PLAYER_VEHICLES_LIST, accountDBID, len(vehList))
@@ -919,19 +906,19 @@ class UnitBase(OpsUnpacker):
         for i in xrange(0, playerCount):
             blockLength, accountDBID, accountID, timeJoin, role, igrType, rating, accountWTR, peripheryID, clanDBID, isPremium, nickName, clanAbbrev, badges, extraData = self.__unpackPlayerData(unpacking)
             unpacking = unpacking[blockLength:]
-            playerData = {UnitPlayerDataKey.ACCOUNT_ID: accountID,
-             UnitPlayerDataKey.TIME_JOIN: timeJoin,
-             UnitPlayerDataKey.ROLE: role,
-             UnitPlayerDataKey.RATING: rating,
-             UnitPlayerDataKey.ACCOUNT_WTR: accountWTR,
-             UnitPlayerDataKey.NICKNAME: nickName,
-             UnitPlayerDataKey.CLAN_DBID: clanDBID,
-             UnitPlayerDataKey.CLAN_ABBREV: clanAbbrev,
-             UnitPlayerDataKey.PERIPHERY_ID: peripheryID,
-             UnitPlayerDataKey.IGRTYPE: igrType,
-             UnitPlayerDataKey.BADGES: badges,
-             UnitPlayerDataKey.IS_PREMIUM: isPremium,
-             UnitPlayerDataKey.EXTRA_DATA: extraData}
+            playerData = {UnitPlayerDataKey.ACCOUNT_ID: accountID, 
+               UnitPlayerDataKey.TIME_JOIN: timeJoin, 
+               UnitPlayerDataKey.ROLE: role, 
+               UnitPlayerDataKey.RATING: rating, 
+               UnitPlayerDataKey.ACCOUNT_WTR: accountWTR, 
+               UnitPlayerDataKey.NICKNAME: nickName, 
+               UnitPlayerDataKey.CLAN_DBID: clanDBID, 
+               UnitPlayerDataKey.CLAN_ABBREV: clanAbbrev, 
+               UnitPlayerDataKey.PERIPHERY_ID: peripheryID, 
+               UnitPlayerDataKey.IGRTYPE: igrType, 
+               UnitPlayerDataKey.BADGES: badges, 
+               UnitPlayerDataKey.IS_PREMIUM: isPremium, 
+               UnitPlayerDataKey.EXTRA_DATA: extraData}
             self._addPlayer(accountDBID, **playerData)
 
         for i in xrange(0, profilesCount):
@@ -971,7 +958,10 @@ class UnitBase(OpsUnpacker):
         isMemberReadyFunc = self.isMemberReady
         for accountDBID, playerData in self._players.iteritems():
             vehs = accountsVehicles.get(accountDBID)
-            statesDict[accountDBID] = (vehs[0].vehTypeCompDescr if vehs else None, accountDBID in assignedPlayers, isMemberReadyFunc(accountDBID))
+            statesDict[accountDBID] = (
+             vehs[0].vehTypeCompDescr if vehs else None,
+             accountDBID in assignedPlayers,
+             isMemberReadyFunc(accountDBID))
 
         return statesDict
 
@@ -1043,10 +1033,8 @@ class UnitBase(OpsUnpacker):
             repr += '\n    [%d] %s' % (slotIdx, member)
 
         repr += '\n  },'
-        repr += '\n  state=0x%02X, readyMask=0x%02X, fullReadyMask=0x%02X, closedSlotMask=0x%02X' % (self._flags,
-         self._readyMask,
-         self._fullReadyMask,
-         self._closedSlotMask)
+        repr += '\n  state=0x%02X, readyMask=0x%02X, fullReadyMask=0x%02X, closedSlotMask=0x%02X' % (
+         self._flags, self._readyMask, self._fullReadyMask, self._closedSlotMask)
         repr += '\n  state(names):%s' % reprBitMaskFromDict(self._flags, UNIT_STATE_NAMES)
         repr += '\n  modalTimestamp:%s' % self._modalTimestamp
         repr += '\n  estimatedTimeInQueue:%s' % self._estimatedTimeInQueue
@@ -1057,7 +1045,8 @@ class UnitBase(OpsUnpacker):
         repr += '\n  },'
         repr += '\n  _players len=%s {' % len(self._players)
         for accountDBID, playerData in self._players.iteritems():
-            repr += '\n    [%d] %s role=%s' % (accountDBID, playerData, reprBitMaskFromDict(playerData.get('role', 0), UNIT_ROLE_NAMES))
+            repr += '\n    [%d] %s role=%s' % (accountDBID, playerData,
+             reprBitMaskFromDict(playerData.get('role', 0), UNIT_ROLE_NAMES))
 
         repr += '\n  },'
         repr += '\n  _freeSlots=%r,' % self._freeSlots
@@ -1073,11 +1062,10 @@ class UnitBase(OpsUnpacker):
             repr += '%d:%s, ' % (slotIdx, member.get('accountDBID', 0))
 
         repr += '},'
-        repr += '\n state=%02X, rdy=%02X, fullRdy=%02X, closed=%02X' % (self._flags,
-         self._readyMask,
-         self._fullReadyMask,
-         self._closedSlotMask)
-        repr += ', stamp:%s, timeInQueue:%d, free=%r' % (self._modalTimestamp, self._estimatedTimeInQueue, list(self._freeSlots))
+        repr += '\n state=%02X, rdy=%02X, fullRdy=%02X, closed=%02X' % (
+         self._flags, self._readyMask, self._fullReadyMask, self._closedSlotMask)
+        repr += ', stamp:%s, timeInQueue:%d, free=%r' % (self._modalTimestamp, self._estimatedTimeInQueue,
+         list(self._freeSlots))
         repr += '\n vehs(%s)={' % len(self._vehicles)
         for accountDBID, veh in self._vehicles.iteritems():
             repr += '%d:%s, ' % (accountDBID, str(veh))
@@ -1085,7 +1073,8 @@ class UnitBase(OpsUnpacker):
         repr += '},'
         repr += '\n plrs(%s)={' % len(self._players)
         for accountDBID, playerData in self._players.iteritems():
-            repr += '%d:%r:%02X, ' % (accountDBID, playerData.get('nickName', ''), playerData.get('role', 0))
+            repr += '%d:%r:%02X, ' % (accountDBID, playerData.get('nickName', ''),
+             playerData.get('role', 0))
 
         repr += '},'
         repr += '\n roster=%r' % self._roster.getPacked()
@@ -1097,9 +1086,9 @@ class UnitBase(OpsUnpacker):
         slotIdx = self._playerSlots.get(accountDBID)
         if slotIdx is None:
             return UNIT_ERROR.BAD_SLOT_IDX
-        elif isReady and not self._isValidMember(accountDBID):
-            return UNIT_ERROR.INVALID_ACCOUNT
         else:
+            if isReady and not self._isValidMember(accountDBID):
+                return UNIT_ERROR.INVALID_ACCOUNT
             prevReadyMask = self._readyMask
             if isReady:
                 vehs = self._vehicles.get(accountDBID)
@@ -1216,7 +1205,10 @@ class UnitBase(OpsUnpacker):
 
     def isMemberReady(self, accountDBID):
         slotIdx = self._playerSlots.get(accountDBID)
-        return bool(self._readyMask & 1 << slotIdx) if slotIdx is not None else False
+        if slotIdx is not None:
+            return bool(self._readyMask & 1 << slotIdx)
+        else:
+            return False
 
     def _setModalTimestamp(self, timestamp):
         self._modalTimestamp = timestamp
@@ -1297,10 +1289,12 @@ class UnitBase(OpsUnpacker):
                     vehicleCount[vehTypeCompDescr] = 0
                 vehicleCount[vehTypeCompDescr] += 1
 
-        if any((value < vehicleTypes[key][0] for key, value in vehicleCount.iteritems())):
+        if any(value < vehicleTypes[key][0] for key, value in vehicleCount.iteritems()):
             return UNIT_ERROR.TOO_FEW_VEHICLE_TYPE
         else:
-            return UNIT_ERROR.TOO_MANY_VEHICLE_TYPE if any((value > vehicleTypes[key][1] for key, value in vehicleCount.iteritems())) else OK
+            if any(value > vehicleTypes[key][1] for key, value in vehicleCount.iteritems()):
+                return UNIT_ERROR.TOO_MANY_VEHICLE_TYPE
+            return OK
 
     def hasInArenaMembers(self):
         for slotIdx, member in self._members.iteritems():
@@ -1391,19 +1385,19 @@ class UnitBase(OpsUnpacker):
 
     def _unpackPlayer(self, packedOps):
         blockLength, accountDBID, accountID, timeJoin, role, igrType, rating, accountWTR, peripheryID, clanDBID, isPremium, nickName, clanAbbrev, badges, extraData = self.__unpackPlayerData(packedOps)
-        playerData = {UnitPlayerDataKey.ACCOUNT_ID: accountID,
-         UnitPlayerDataKey.TIME_JOIN: timeJoin,
-         UnitPlayerDataKey.ROLE: role,
-         UnitPlayerDataKey.RATING: rating,
-         UnitPlayerDataKey.ACCOUNT_WTR: accountWTR,
-         UnitPlayerDataKey.NICKNAME: nickName,
-         UnitPlayerDataKey.CLAN_DBID: clanDBID,
-         UnitPlayerDataKey.CLAN_ABBREV: clanAbbrev,
-         UnitPlayerDataKey.PERIPHERY_ID: peripheryID,
-         UnitPlayerDataKey.IGRTYPE: igrType,
-         UnitPlayerDataKey.BADGES: badges,
-         UnitPlayerDataKey.IS_PREMIUM: isPremium,
-         UnitPlayerDataKey.EXTRA_DATA: extraData}
+        playerData = {UnitPlayerDataKey.ACCOUNT_ID: accountID, 
+           UnitPlayerDataKey.TIME_JOIN: timeJoin, 
+           UnitPlayerDataKey.ROLE: role, 
+           UnitPlayerDataKey.RATING: rating, 
+           UnitPlayerDataKey.ACCOUNT_WTR: accountWTR, 
+           UnitPlayerDataKey.NICKNAME: nickName, 
+           UnitPlayerDataKey.CLAN_DBID: clanDBID, 
+           UnitPlayerDataKey.CLAN_ABBREV: clanAbbrev, 
+           UnitPlayerDataKey.PERIPHERY_ID: peripheryID, 
+           UnitPlayerDataKey.IGRTYPE: igrType, 
+           UnitPlayerDataKey.BADGES: badges, 
+           UnitPlayerDataKey.IS_PREMIUM: isPremium, 
+           UnitPlayerDataKey.EXTRA_DATA: extraData}
         self._addPlayer(accountDBID, **playerData)
         return packedOps[blockLength:]
 
@@ -1429,12 +1423,13 @@ class UnitBase(OpsUnpacker):
             for indx in xrange(newMax, prevMax):
                 self._freeSlots.discard(indx)
 
-        elif prevMax < newMax:
-            for indx in xrange(prevMax, newMax):
-                self._freeSlots.add(indx)
+        else:
+            if prevMax < newMax:
+                for indx in xrange(prevMax, newMax):
+                    self._freeSlots.add(indx)
 
-        for idx in self._freeSlots - set(xrange(0, newMax)):
-            self._freeSlots.discard(idx)
+            for idx in self._freeSlots - set(xrange(0, newMax)):
+                self._freeSlots.discard(idx)
 
     def _getLeaderDBID(self):
         return self._members.get(LEADER_SLOT, {}).get('accountDBID', 0)
@@ -1458,7 +1453,8 @@ class UnitBase(OpsUnpacker):
             if not res:
                 return (False, veh.vehInvID)
 
-        return (True, None)
+        return (
+         True, None)
 
     def _makePlayerExtraDataForClient(self, extraData):
         return {}
@@ -1484,21 +1480,9 @@ class UnitBase(OpsUnpacker):
         offset += lenBadgesInfo
         extraData, lenExtraData = self.__unpackPlayerExtraData(packedData, offset)
         offset += lenExtraData
-        return (offset,
-         accountDBID,
-         accountID,
-         timeJoin,
-         role,
-         igrType,
-         rating,
-         accountWTR,
-         peripheryID,
-         clanDBID,
-         isPremium,
-         nickName,
-         clanAbbrev,
-         badges,
-         extraData)
+        return (
+         offset, accountDBID, accountID, timeJoin, role, igrType, rating, accountWTR, peripheryID,
+         clanDBID, isPremium, nickName, clanAbbrev, badges, extraData)
 
     @staticmethod
     def __packPlayerExtraData(packedData):

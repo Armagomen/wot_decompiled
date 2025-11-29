@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/decorators.py
 from typing import TYPE_CHECKING
 from constants import IS_DEVELOPMENT
 from frameworks.wulf import ViewSettings
@@ -19,7 +17,7 @@ if TYPE_CHECKING:
     from gui.impl.backport import TooltipData
 
 def onNotImplementedCall(callName, taskID):
-    message = '"{}" is not implemented, will done in "{}"'.format(callName, taskID)
+    message = ('"{}" is not implemented, will done in "{}"').format(callName, taskID)
     if IS_DEVELOPMENT:
         SystemMessages.pushMessage(message, type=SystemMessages.SM_TYPE.Error)
 
@@ -31,34 +29,33 @@ def createTooltipContentDecorator():
         def wrapper(self, event, contentID):
             if contentID == R.views.mono.lootbox.tooltips.guaranteed_reward_info():
                 return GuaranteedRewardInfoTooltip(event.getArgument('category'), event.getArgument('eventName'))
-            elif contentID == R.views.mono.lootbox.tooltips.box_tooltip():
-                return BoxTooltip(event.getArgument('boxCategory'), event.getArgument('eventName'))
-            elif contentID == R.views.mono.lootbox.tooltips.statistics_category():
-                return StatisticsCategoryTooltipView(event.getArgument('bonusesCategory'), event.getArgument('eventName'))
-            elif contentID == R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView():
-                return BattlePassCoinTooltipView()
-            elif contentID == R.views.lobby.battle_pass.tooltips.BattlePassTalerTooltip():
-                return BattlePassTalerTooltip()
-            tooltipData = getattr(self, 'getTooltipData', lambda _: None)(event)
-            if tooltipData is not None:
-                if contentID == R.views.lobby.awards.tooltips.RewardCompensationTooltip():
-                    compTooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
-                     'labelBefore': event.getArgument('labelBefore', ''),
-                     'iconAfter': event.getArgument('iconAfter', ''),
-                     'labelAfter': event.getArgument('labelAfter', ''),
-                     'bonusName': event.getArgument('bonusName', ''),
-                     'countBefore': event.getArgument('countBefore', 1),
-                     'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
-                    compTooltipData.update(tooltipData.specialArgs)
-                    settings = ViewSettings(R.views.lobby.awards.tooltips.RewardCompensationTooltip(), model=LootBoxVehicleCompensationTooltipModel(), kwargs=compTooltipData)
-                    return VehicleCompensationTooltipContent(settings)
-                if contentID == R.views.mono.lootbox.tooltips.random_national_bonus():
-                    return RandomNationalBonusTooltipView(*tooltipData.specialArgs)
-            if contentID == R.views.mono.lootbox.tooltips.box_compensation():
-                if tooltipData is None:
-                    return
-                return BoxCompensationTooltip(*tooltipData.specialArgs)
             else:
+                if contentID == R.views.mono.lootbox.tooltips.box_tooltip():
+                    return BoxTooltip(event.getArgument('boxCategory'), event.getArgument('eventName'))
+                if contentID == R.views.mono.lootbox.tooltips.statistics_category():
+                    return StatisticsCategoryTooltipView(event.getArgument('bonusesCategory'), event.getArgument('eventName'))
+                if contentID == R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView():
+                    return BattlePassCoinTooltipView()
+                if contentID == R.views.lobby.battle_pass.tooltips.BattlePassTalerTooltip():
+                    return BattlePassTalerTooltip()
+                tooltipData = getattr(self, 'getTooltipData', lambda _: None)(event)
+                if tooltipData is not None:
+                    if contentID == R.views.lobby.awards.tooltips.RewardCompensationTooltip():
+                        compTooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
+                           'iconAfter': event.getArgument('iconAfter', ''), 
+                           'labelAfter': event.getArgument('labelAfter', ''), 
+                           'bonusName': event.getArgument('bonusName', ''), 
+                           'countBefore': event.getArgument('countBefore', 1), 
+                           'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                        compTooltipData.update(tooltipData.specialArgs)
+                        settings = ViewSettings(R.views.lobby.awards.tooltips.RewardCompensationTooltip(), model=LootBoxVehicleCompensationTooltipModel(), kwargs=compTooltipData)
+                        return VehicleCompensationTooltipContent(settings)
+                    if contentID == R.views.mono.lootbox.tooltips.random_national_bonus():
+                        return RandomNationalBonusTooltipView(*tooltipData.specialArgs)
+                if contentID == R.views.mono.lootbox.tooltips.box_compensation():
+                    if tooltipData is None:
+                        return
+                    return BoxCompensationTooltip(*tooltipData.specialArgs)
                 return func(self, event, contentID)
 
         return wrapper

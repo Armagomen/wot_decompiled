@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/tooltips/fun_random_battle_results_efficiency_tooltip_view.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from fun_random.gui.battle_results.tooltips.total_efficiency_tooltips import FunEfficiencyTooltipsPacker
@@ -28,5 +26,5 @@ class PersonalEfficiencyParamTooltip(ViewImpl):
 
     def __invalidateAll(self):
         statsCtrl = self.__battleResults.getStatsCtrl(self.arenaUniqueID)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             FunEfficiencyTooltipsPacker.packTooltip(model, statsCtrl.getResults(), ctx={'paramType': self.__efficiencyParam})

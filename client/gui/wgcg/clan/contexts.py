@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/clan/contexts.py
 from gui.clans import items
 from gui.clans.data_wrapper import stronghold_event
 from gui.clans.settings import SEND_INVITES_COOLDOWN, DECLINE_INVITES_COOLDOWN, ACCEPT_INVITES_COOLDOWN
@@ -55,7 +53,9 @@ class ClanInfoCtx(ClanRequestBaseCtx):
         return WebRequestDataType.CLAN_INFO
 
     def getDataObj(self, incomeData):
-        return makeTupleByDict(items.ClanExtInfoData, incomeData[0]) if incomeData else items.ClanExtInfoData()
+        if incomeData:
+            return makeTupleByDict(items.ClanExtInfoData, incomeData[0])
+        return items.ClanExtInfoData()
 
     def getDefDataObj(self):
         return items.ClanExtInfoData()
@@ -162,7 +162,9 @@ class GetClanInfoCtx(AccountsInfoCtx):
         self.__defDataObj = items.AccountClanData(accountDbID)
 
     def getDataObj(self, incomeData):
-        return makeTupleByDict(items.AccountClanData, incomeData.pop()) if incomeData else self.getDefDataObj()
+        if incomeData:
+            return makeTupleByDict(items.AccountClanData, incomeData.pop())
+        return self.getDefDataObj()
 
     def getDefDataObj(self):
         return self.__defDataObj
@@ -296,7 +298,8 @@ class AccountInvitesCtx(PaginatorCtx):
         return True
 
 
-@ReprInjector.withParent(('getClanDbID', 'clanDbID'), ('getAccountDbIDs', 'accountDbIDs'), ('getComment', 'comment'))
+@ReprInjector.withParent(('getClanDbID', 'clanDbID'), ('getAccountDbIDs', 'accountDbIDs'), ('getComment',
+                                                                                            'comment'))
 class CreateInviteCtx(CommonWebRequestCtx):
 
     def __init__(self, clanDbID, accountDbIDs, comment='', waitingID=''):
@@ -443,7 +446,7 @@ class GetFrontsCtx(CommonWebRequestCtx):
 
     def getDataObj(self, incomeData):
         incomeData = incomeData or []
-        return dict(((v['front_name'], makeTupleByDict(items.GlobalMapFrontInfoData, v)) for v in incomeData))
+        return dict((v['front_name'], makeTupleByDict(items.GlobalMapFrontInfoData, v)) for v in incomeData)
 
     def getDefDataObj(self):
         return items.GlobalMapFrontInfoData({})

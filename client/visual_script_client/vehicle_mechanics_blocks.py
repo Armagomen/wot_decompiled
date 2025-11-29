@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/vehicle_mechanics_blocks.py
-import BigWorld
-import typing
+import BigWorld, typing
 from constants import OVERHEAT_GAIN_STATE, TARGET_DESIGNATOR_STATE
 from events_handler import eventHandler
 from vehicles.mechanics.mechanic_commands import IMechanicCommandsListenerLogic
@@ -41,7 +38,7 @@ class OnVehicleMechanicCommand(VehicleSelectableMechanicEventsBlock, IMechanicCo
 
     @classmethod
     def _getInitParamMechanics(cls):
-        return sorted((mechanic.value for mechanic in VEHICLE_MECHANIC_USED_COMMANDS))
+        return sorted(mechanic.value for mechanic in VEHICLE_MECHANIC_USED_COMMANDS)
 
     def _subscribeToMechanicComponent(self, mechanicComponent):
         super(OnVehicleMechanicCommand, self)._subscribeToMechanicComponent(mechanicComponent)
@@ -460,11 +457,11 @@ class ServerTime(Block):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/time'
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Time'
 
     def _execValue(self):
         self._currentTimestamp.setValue(BigWorld.serverTime())

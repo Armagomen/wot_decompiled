@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/battle_results/reusable/shared.py
 from gui.battle_results.reusable.shared import VehicleDetailedInfo, VehicleSummarizeInfo, no_key_error
 from constants import DEATH_REASON_ALIVE
 
 class Comp7CoreVehicleDetailedInfo(VehicleDetailedInfo):
-    __slots__ = ('_prestigePoints', '_roleSkillUsed', '_healthRepair', '_alliedHealthRepair', '_entityCaptured')
+    __slots__ = ('_prestigePoints', '_roleSkillUsed', '_healthRepair', '_alliedHealthRepair',
+                 '_entityCaptured')
 
     def __init__(self, vehicleID, vehicle, player, deathReason=DEATH_REASON_ALIVE):
         super(Comp7CoreVehicleDetailedInfo, self).__init__(vehicleID, vehicle, player, deathReason)

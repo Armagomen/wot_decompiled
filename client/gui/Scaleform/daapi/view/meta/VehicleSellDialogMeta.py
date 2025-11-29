@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleSellDialogMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class VehicleSellDialogMeta(AbstractWindowView):
@@ -20,22 +18,29 @@ class VehicleSellDialogMeta(AbstractWindowView):
         self._printOverrideError('onSelectionChanged')
 
     def as_setDataS(self, data):
-        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(data)
 
     def as_visibleControlBlockS(self, value):
-        return self.flashObject.as_visibleControlBlock(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_visibleControlBlock(value)
 
     def as_enableButtonS(self, value, tooltip):
-        return self.flashObject.as_enableButton(value, tooltip) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableButton(value, tooltip)
 
     def as_setSellEnabledS(self, value, message):
-        return self.flashObject.as_setSellEnabled(value, message) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSellEnabled(value, message)
 
     def as_setControlQuestionDataS(self, isGold, value, question):
-        return self.flashObject.as_setControlQuestionData(isGold, value, question) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setControlQuestionData(isGold, value, question)
 
     def as_setTotalS(self, common, total):
-        return self.flashObject.as_setTotal(common, total) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTotal(common, total)
 
     def as_updateAccountMoneyS(self, currency, value):
-        return self.flashObject.as_updateAccountMoney(currency, value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateAccountMoney(currency, value)

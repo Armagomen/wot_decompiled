@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 from __future__ import absolute_import
 from builtins import object
 from future.utils import viewvalues
 from functools import total_ordering
 from itertools import chain
-import logging
-import typing
+import logging, typing
 from battle_royale.gui.constants import BattleRoyalePerfProblems
 from CurrentVehicle import g_currentVehicle
 from account_helpers import isDemonstrator
@@ -34,8 +31,8 @@ from skeletons.gui.game_control import IRankedBattlesController, IBattleRoyaleCo
 from skeletons.gui.lobby_context import ILobbyContext
 if typing.TYPE_CHECKING:
     from skeletons.gui.game_control import ISeasonProvider
-    cycleStrGetter = typing.Callable[[ISeasonProvider, str, typing.Optional[typing.Callable[[int], str]]], str]
-    tillTimeStrGetter = typing.Callable[[int], str]
+    cycleStrGetter = typing.Callable[([ISeasonProvider, str, typing.Optional[typing.Callable[([int], str)]]], str)]
+    tillTimeStrGetter = typing.Callable[([int], str)]
 _logger = logging.getLogger(__name__)
 _R_HEADER_BUTTONS = R.strings.menu.headerButtons
 _R_BATTLE_TYPES = R.strings.menu.headerButtons.battle.types
@@ -45,7 +42,8 @@ _R_BR_TOURNAMENT_BUTTON = R.strings.battle_royale.tournament.fightButton
 
 @total_ordering
 class SelectorItem(object):
-    __slots__ = ('_label', '_data', '_order', '_selectorType', '_isVisible', '_isExtra', '_isSelected', '_isNew', '_isDisabled', '_isLocked')
+    __slots__ = ('_label', '_data', '_order', '_selectorType', '_isVisible', '_isExtra',
+                 '_isSelected', '_isNew', '_isDisabled', '_isLocked')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, label, data, order, selectorType=None, isVisible=True, isExtra=False):
@@ -98,7 +96,7 @@ class SelectorItem(object):
         return backport.image(_R_ICONS.battleTypes.c_64x64.dyn(self._data)())
 
     def getSpecialBGIcon(self):
-        pass
+        return ''
 
     def getHighlightLinkage(self, isNewbie, defaultLinkage=''):
         return defaultLinkage
@@ -110,7 +108,7 @@ class SelectorItem(object):
         return backport.text(label())
 
     def getFightButtonHighlight(self, isNewbie):
-        pass
+        return ''
 
     def hasSparksAnimation(self, isNewbie, hasEventIndication):
         return not isNewbie and hasEventIndication
@@ -135,13 +133,13 @@ class SelectorItem(object):
         return self._isLocked or not self._isDisabled
 
     def getVO(self):
-        return {'label': self.getFormattedLabel(),
-         'data': self._data,
-         'disabled': self._isDisabled,
-         'icon': self.getLargerIcon(),
-         'active': self._isSelected,
-         'isNew': self.isShowNewIndicator(),
-         'specialBgIcon': self.getSpecialBGIcon()}
+        return {'label': self.getFormattedLabel(), 
+           'data': self._data, 
+           'disabled': self._isDisabled, 
+           'icon': self.getLargerIcon(), 
+           'active': self._isSelected, 
+           'isNew': self.isShowNewIndicator(), 
+           'specialBgIcon': self.getSpecialBGIcon()}
 
     def isShowEventIndication(self):
         return False
@@ -297,7 +295,7 @@ class _SpecBattleItem(SelectorItem):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def getFightButtonLabel(self, state, playerInfo):
         if self.__battleRoyaleTournamentController.isSelected():
@@ -337,7 +335,7 @@ class _EpicTrainingItem(SelectorItem):
     def getFormattedLabel(self):
         title = super(_EpicTrainingItem, self).getFormattedLabel()
         descr = text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.epicTraining.descr()))
-        return '{}\n{}'.format(title, descr)
+        return ('{}\n{}').format(title, descr)
 
     def select(self):
         super(_EpicTrainingItem, self).select()
@@ -448,7 +446,8 @@ class _BattleSelectorItems(object):
         def getVisibleVOs(items):
             return [ item.getVO() for item in sorted(viewvalues(items)) if item.isVisible() ]
 
-        return (getVisibleVOs(self.__items),
+        return (
+         getVisibleVOs(self.__items),
          getVisibleVOs(self.__extraItems),
          self.__isDemonstrator,
          self.__isDemoButtonEnabled)
@@ -465,10 +464,10 @@ class _BattleSelectorItems(object):
         return False
 
     def hasNew(self):
-        return any((item.isShowNewIndicator() and item.isVisible() and not item.isDisabled() for item in self.allItems))
+        return any(item.isShowNewIndicator() and item.isVisible() and not item.isDisabled() for item in self.allItems)
 
     def hasEventIndication(self):
-        return any((item.isShowEventIndication() and item.isVisible() for item in self.allItems))
+        return any(item.isShowEventIndication() and item.isVisible() for item in self.allItems)
 
     @property
     def isDemoButtonEnabled(self):
@@ -479,7 +478,9 @@ class _BattleSelectorItems(object):
         return self.__isDemonstrator
 
     def _getDefaultPAN(self):
-        return PREBATTLE_ACTION_NAME.WINBACK if self._winbackController.isModeAvailable() else _DEFAULT_PAN
+        if self._winbackController.isModeAvailable():
+            return PREBATTLE_ACTION_NAME.WINBACK
+        return _DEFAULT_PAN
 
 
 class _SquadSelectorItems(_BattleSelectorItems):
@@ -506,7 +507,7 @@ class _SquadItem(SelectorItem):
         title = text_styles.middleTitle(backport.text(R.strings.menu.headerButtons.battle.types.dyn(self._data)()))
         if self._isDescription:
             description = text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.dyn(self._data).description()))
-            return ''.join((title, '\n', description))
+            return ('').join((title, '\n', description))
         return title
 
     def getSmallIcon(self):
@@ -624,10 +625,15 @@ class _RankedItem(SelectorItem):
     def getFormattedLabel(self):
         battleTypeName = super(_RankedItem, self).getFormattedLabel()
         availabilityStr = self.__getAvailabilityStr()
-        return battleTypeName if availabilityStr is None else '{}\n{}'.format(battleTypeName, availabilityStr)
+        if availabilityStr is None:
+            return battleTypeName
+        else:
+            return ('{}\n{}').format(battleTypeName, availabilityStr)
 
     def getSpecialBGIcon(self):
-        return backport.image(_R_ICONS.buttons.selectorRendererBGEvent()) if self.rankedController.isAvailable() else ''
+        if self.rankedController.isAvailable():
+            return backport.image(_R_ICONS.buttons.selectorRendererBGEvent())
+        return ''
 
     def select(self):
         self.rankedController.doActionOnEntryPointClick()
@@ -691,7 +697,10 @@ class _BattleRoyaleItem(SelectorItem):
     def getFormattedLabel(self):
         battleTypeName = super(_BattleRoyaleItem, self).getFormattedLabel()
         availabilityStr = self.__getPerformanceAlarmStr() or self.__getScheduleStr()
-        return battleTypeName if availabilityStr is None else '%s\n%s' % (battleTypeName, availabilityStr)
+        if availabilityStr is None:
+            return battleTypeName
+        else:
+            return '%s\n%s' % (battleTypeName, availabilityStr)
 
     @adisp_process
     def _doSelect(self, dispatcher):
@@ -742,7 +751,10 @@ class _BattleRoyaleItem(SelectorItem):
         elif currPerformanceGroup == BattleRoyalePerfProblems.MEDIUM_RISK:
             attentionText = text_styles.alert(backport.text(R.strings.menu.headerButtons.battle.menu.attention.reducedPerformance()))
             iconPath = backport.image(R.images.gui.maps.icons.library.alertIcon())
-        return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText if attentionText and iconPath else None
+        if attentionText and iconPath:
+            return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText
+        else:
+            return
 
     def __getIsVisible(self):
         season = self.__battleRoyaleController.getCurrentSeason() or self.__battleRoyaleController.getNextSeason()
@@ -772,7 +784,10 @@ class _MapboxItem(SelectorItem):
     def getFormattedLabel(self):
         battleTypeName = super(_MapboxItem, self).getFormattedLabel()
         availabilityStr = self.__getScheduleStr()
-        return battleTypeName if availabilityStr is None else '%s\n%s' % (battleTypeName, availabilityStr)
+        if availabilityStr is None:
+            return battleTypeName
+        else:
+            return '%s\n%s' % (battleTypeName, availabilityStr)
 
     @adisp_process
     def _doSelect(self, dispatcher):
@@ -791,7 +806,9 @@ class _MapboxItem(SelectorItem):
         return
 
     def __getScheduleStr(self):
-        return text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.mapbox.extra.frozen())) if self.__isFrozen else _getSeasonInfoStr(self.__mapboxCtrl, SELECTOR_BATTLE_TYPES.MAPBOX, timeLeftStrGetter=mapbox_helpers.getTillTimeString)
+        if self.__isFrozen:
+            return text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.mapbox.extra.frozen()))
+        return _getSeasonInfoStr(self.__mapboxCtrl, SELECTOR_BATTLE_TYPES.MAPBOX, timeLeftStrGetter=mapbox_helpers.getTillTimeString)
 
     def __getIsVisible(self):
         hasActualSeason = (self.__mapboxCtrl.getCurrentSeason() or self.__mapboxCtrl.getNextSeason()) is not None
@@ -808,7 +825,10 @@ class EpicBattleItem(SelectorItem):
     def getFormattedLabel(self):
         battleTypeName = text_styles.middleTitle(self.getLabel())
         availabilityStr = self.__getPerformanceAlarmStr() or self.__getScheduleStr()
-        return battleTypeName if availabilityStr is None else '{}\n{}'.format(battleTypeName, availabilityStr)
+        if availabilityStr is None:
+            return battleTypeName
+        else:
+            return ('{}\n{}').format(battleTypeName, availabilityStr)
 
     def isRandomBattle(self):
         return True
@@ -862,7 +882,9 @@ class EpicBattleItem(SelectorItem):
                     scheduleStr = backport.text(_R_BATTLE_TYPES.epic.extra.startsAt(), time=startTime)
                 else:
                     scheduleStr = None
-            return text_styles.main(scheduleStr) if scheduleStr else None
+                if scheduleStr:
+                    return text_styles.main(scheduleStr)
+            return
 
     def __getPerformanceAlarmStr(self):
         currPerformanceGroup = self.__epicController.getPerformanceGroup()
@@ -873,7 +895,10 @@ class EpicBattleItem(SelectorItem):
         elif currPerformanceGroup == EPIC_PERF_GROUP.MEDIUM_RISK:
             attentionText = text_styles.alert(backport.text(_R_BATTLE_MENU.attention.reducedPerformance()))
             iconPath = backport.image(_R_ICONS.library.alertIcon())
-        return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText if attentionText and iconPath else None
+        if attentionText and iconPath:
+            return icons.makeImageTag(iconPath, vSpace=-3) + ' ' + attentionText
+        else:
+            return
 
 
 _g_items = None
@@ -953,18 +978,18 @@ def _addEventBattlesType(items):
     items.append(_EventBattlesItem(backport.text(_R_BATTLE_TYPES.event()), PREBATTLE_ACTION_NAME.EVENT_BATTLE, 2, SELECTOR_BATTLE_TYPES.EVENT))
 
 
-BATTLES_SELECTOR_ITEMS = {PREBATTLE_ACTION_NAME.RANDOM: _addRandomBattleType,
- PREBATTLE_ACTION_NAME.WINBACK: _addWinbackBattleType,
- PREBATTLE_ACTION_NAME.RANKED: _addRankedBattleType,
- PREBATTLE_ACTION_NAME.E_SPORT: _addCommandBattleType,
- PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST: _addStrongholdsBattleType,
- PREBATTLE_ACTION_NAME.TRAININGS_LIST: _addTrainingBattleType,
- PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST: _addEpicTrainingBattleType,
- PREBATTLE_ACTION_NAME.BATTLE_ROYALE: _addRoyaleBattleType,
- PREBATTLE_ACTION_NAME.MAPBOX: _addMapboxBattleType,
- PREBATTLE_ACTION_NAME.MAPS_TRAINING: _addMapsTrainingBattleType,
- PREBATTLE_ACTION_NAME.EPIC: _addEpicBattleType,
- PREBATTLE_ACTION_NAME.EVENT_BATTLE: _addEventBattlesType}
+BATTLES_SELECTOR_ITEMS = {PREBATTLE_ACTION_NAME.RANDOM: _addRandomBattleType, 
+   PREBATTLE_ACTION_NAME.WINBACK: _addWinbackBattleType, 
+   PREBATTLE_ACTION_NAME.RANKED: _addRankedBattleType, 
+   PREBATTLE_ACTION_NAME.E_SPORT: _addCommandBattleType, 
+   PREBATTLE_ACTION_NAME.STRONGHOLDS_BATTLES_LIST: _addStrongholdsBattleType, 
+   PREBATTLE_ACTION_NAME.TRAININGS_LIST: _addTrainingBattleType, 
+   PREBATTLE_ACTION_NAME.EPIC_TRAINING_LIST: _addEpicTrainingBattleType, 
+   PREBATTLE_ACTION_NAME.BATTLE_ROYALE: _addRoyaleBattleType, 
+   PREBATTLE_ACTION_NAME.MAPBOX: _addMapboxBattleType, 
+   PREBATTLE_ACTION_NAME.MAPS_TRAINING: _addMapsTrainingBattleType, 
+   PREBATTLE_ACTION_NAME.EPIC: _addEpicBattleType, 
+   PREBATTLE_ACTION_NAME.EVENT_BATTLE: _addEventBattlesType}
 
 def _createItems():
     items = []
@@ -992,10 +1017,10 @@ def _addMapboxSquadType(items):
     items.append(_MapboxSquadItem(backport.text(_R_BATTLE_TYPES.mapboxSquad()), PREBATTLE_ACTION_NAME.MAPBOX_SQUAD, 2))
 
 
-BATTLES_SELECTOR_SQUAD_ITEMS = {PREBATTLE_ACTION_NAME.SQUAD: _addSimpleSquadType,
- PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD: _addBattleRoyaleSquadType,
- PREBATTLE_ACTION_NAME.MAPBOX_SQUAD: _addMapboxSquadType,
- PREBATTLE_ACTION_NAME.EVENT_SQUAD: _addEventSquadType}
+BATTLES_SELECTOR_SQUAD_ITEMS = {PREBATTLE_ACTION_NAME.SQUAD: _addSimpleSquadType, 
+   PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD: _addBattleRoyaleSquadType, 
+   PREBATTLE_ACTION_NAME.MAPBOX_SQUAD: _addMapboxSquadType, 
+   PREBATTLE_ACTION_NAME.EVENT_SQUAD: _addEventSquadType}
 
 def _createSquadSelectorItems():
     items = []
@@ -1038,8 +1063,8 @@ def _getSeasonInfoStr(modeCtrl, modeName, activeCycleStrGetter=_getCycleEndsInSt
 
 
 def create():
-    global _g_squadItems
     global _g_items
+    global _g_squadItems
     if _g_items is None:
         _g_items = _createItems()
         _g_items.init()
@@ -1054,8 +1079,8 @@ def create():
 
 
 def clear():
-    global _g_squadItems
     global _g_items
+    global _g_squadItems
     if _g_items:
         _g_items.fini()
         _g_items = None

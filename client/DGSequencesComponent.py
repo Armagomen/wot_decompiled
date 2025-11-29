@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DGSequencesComponent.py
-import enum
-import typing
-import CGF
-import BigWorld
-import GenericComponents
+import enum, typing, CGF, BigWorld, GenericComponents
 from aih_constants import CTRL_MODE_NAME
 from dyn_components_groups import groupComponent
 from script_component.DynamicScriptComponent import DynamicScriptComponent
@@ -19,7 +13,8 @@ class SequenceVisibilityMode(enum.IntEnum):
 
 
 class DGEffectComponentCommon(DynamicScriptComponent):
-    _SNIPER_MODES = (CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN)
+    _SNIPER_MODES = (
+     CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN)
 
     def __init__(self):
         super(DGEffectComponentCommon, self).__init__()
@@ -82,7 +77,9 @@ class DGEffectComponentCommon(DynamicScriptComponent):
             return True
         if visibleTo == SequenceVisibilityMode.SELF and self._isVehicleObservedByAvatar():
             return True
-        return True if visibleTo == SequenceVisibilityMode.OTHERS and not self._isVehicleObservedByAvatar() else False
+        if visibleTo == SequenceVisibilityMode.OTHERS and not self._isVehicleObservedByAvatar():
+            return True
+        return False
 
     def _needsListenToSniperMode(self, visibleTo):
         return self._isSniperModeAvailable and not self._isVisible(visibleTo)
@@ -201,7 +198,8 @@ class DGSequencesComponent(DGEffectComponentCommon):
                 continue
             if isEnabled:
                 go.deactivate()
-            go.activate()
+            else:
+                go.activate()
 
     def _onAppearanceReady(self):
         if self._isActive:
@@ -212,7 +210,9 @@ class DGSequencesComponent(DGEffectComponentCommon):
         if not config.checkNodeExists:
             return True
         else:
-            return False if not self._hasAppearance or not getattr(self.entity, 'model', None) else self.entity.model.node(config.bindNode)
+            if not self._hasAppearance or not getattr(self.entity, 'model', None):
+                return False
+            return self.entity.model.node(config.bindNode)
 
     def __destroyObject(self, gameObject):
         if gameObject.isValid():

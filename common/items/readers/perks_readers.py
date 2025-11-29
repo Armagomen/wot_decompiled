@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/readers/perks_readers.py
 import os
 from collections import OrderedDict
-import typing
-import ResMgr
+import typing, ResMgr
 from items import _xml
 from items.components import perks_constants
 from items.components.perks_components import Perk, PerkArgument
@@ -42,7 +39,8 @@ def _readPerksCacheFromXMLSection(xmlCtx, section, sectionName, storage):
 PERKS_READERS = {'perk': _readPerkItem}
 
 def readPerksCacheFromXML(cache, folder):
-    xmlCtx = (None, perks_constants.PERKS_XML_FILE)
+    xmlCtx = (
+     None, perks_constants.PERKS_XML_FILE)
     pgFile = os.path.join(folder, perks_constants.PERKS_XML_FILE)
     _readPerksCacheFromXMLSection(xmlCtx, ResMgr.openSection(pgFile), 'perk', cache)
     ResMgr.purge(pgFile)

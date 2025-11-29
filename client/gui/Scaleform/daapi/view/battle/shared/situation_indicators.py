@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/situation_indicators.py
-import BigWorld
-import WWISE
+import BigWorld, WWISE
 from gui.Scaleform.daapi.view.meta.SituationIndicatorsMeta import SituationIndicatorsMeta
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, VEHICLE_VIEW_STATE_ID_TO_WEATHER_ZONE_NAME
 from gui.impl import backport
@@ -39,10 +36,10 @@ class SituationIndicators(SituationIndicatorsMeta):
         for perkData in sorted(perks, key=lambda k: k['perkID']):
             perkID = perkData['perkID']
             skillName = tankmen.getSkillsConfig().vsePerkToSkill.get(perkID)
-            perk = {'perkName': skillName,
-             'state': perkData['state'],
-             'duration': perkData['coolDown'],
-             'lifeTime': self._getLifeTime(perkData)}
+            perk = {'perkName': skillName, 
+               'state': perkData['state'], 
+               'duration': perkData['coolDown'], 
+               'lifeTime': self._getLifeTime(perkData)}
             perksData.append(perk)
 
         self.as_setPerksS(perksData)
@@ -56,7 +53,7 @@ class SituationIndicators(SituationIndicatorsMeta):
             if state == PerkState.ACTIVE:
                 if perkID not in prevPerks or prevPerks[perkID]['state'] != PerkState.ACTIVE:
                     WWISE.WW_eventGlobal(PerksSounds.PERK)
-            if perkID in prevPerks and prevPerks[perkID]['state'] == PerkState.ACTIVE:
+            elif perkID in prevPerks and prevPerks[perkID]['state'] == PerkState.ACTIVE:
                 WWISE.WW_eventGlobal(PerksSounds.PERK_STOP)
 
     def clearHUD(self):
@@ -85,12 +82,14 @@ class SituationIndicators(SituationIndicatorsMeta):
 
     def _getLifeTime(self, perkData):
         lifeTimeServer = perkData['lifeTime']
-        return lifeTimeServer - BigWorld.serverTime() if BigWorld.serverTime() < lifeTimeServer else -1
+        if BigWorld.serverTime() < lifeTimeServer:
+            return lifeTimeServer - BigWorld.serverTime()
+        return -1
 
     def __onVehicleStateUpdated(self, state, value):
         if state in VEHICLE_VIEW_STATE.WEATHER_ZONES:
             weatherName = VEHICLE_VIEW_STATE_ID_TO_WEATHER_ZONE_NAME[state]
-            self.as_updateWeatherS(weatherName, WeatherState.ACTIVE if not value.needToCloseTimer() else WeatherState.INACTIVE, _getTooltip(weatherName))
+            self.as_updateWeatherS(weatherName, (value.needToCloseTimer() or WeatherState).ACTIVE if 1 else WeatherState.INACTIVE, _getTooltip(weatherName))
 
     def __onVehicleControlling(self, _):
         ctrl = self.sessionProvider.shared.vehicleState
@@ -101,9 +100,9 @@ class SituationIndicators(SituationIndicatorsMeta):
             for state in VEHICLE_VIEW_STATE.WEATHER_ZONES:
                 value = ctrl.getStateValue(state)
                 weatherName = VEHICLE_VIEW_STATE_ID_TO_WEATHER_ZONE_NAME[state]
-                weatherItemsToSet.append({'weatherName': weatherName,
-                 'state': WeatherState.ACTIVE if value is not None and not value.needToCloseTimer() else WeatherState.INACTIVE,
-                 'toolTip': _getTooltip(weatherName)})
+                weatherItemsToSet.append({'weatherName': weatherName, 
+                   'state': WeatherState.ACTIVE if value is not None and not value.needToCloseTimer() else WeatherState.INACTIVE, 
+                   'toolTip': _getTooltip(weatherName)})
 
             self.as_setWeatherS(weatherItemsToSet)
             return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/battle_ability_tooltip.py
 from frameworks.wulf import ViewSettings
 from frontline.gui.frontline_helpers import AbilitiesTemplates
 from frontline.gui.impl.gen.view_models.views.lobby.tooltips.battle_ability_tooltip_levels_model import BattleAbilityTooltipLevelsModel
@@ -15,7 +13,7 @@ from skeletons.gui.shared import IItemsCache
 TEMPLATES = AbilitiesTemplates(R.strings.fl_battle_abilities_setup.infoPanel.param.valueTemplate)
 
 class BattleAbilityTooltipView(ViewImpl):
-    _slots__ = ('intCD',)
+    _slots__ = ('intCD', )
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __itemsCache = dependency.descriptor(IItemsCache)
 
@@ -35,7 +33,7 @@ class BattleAbilityTooltipView(ViewImpl):
         item = self.__itemsCache.items.getItemByCD(self.intCD)
         if not item:
             return
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             skill = self.__epicSkills[item.innationID]
             realLevel = self.__epicController.getSkillLevels().get(skill.skillID)
             info = skill.getSkillInfo()
@@ -67,5 +65,5 @@ class BattleAbilityTooltipView(ViewImpl):
                     skillParam.setValueTemplate(param.get('valueTemplate'))
                     if param['isDynamic']:
                         paramslevel.addViewModel(skillParam)
-                    if lvl == 1:
+                    elif lvl == 1:
                         characteristics.addViewModel(skillParam)

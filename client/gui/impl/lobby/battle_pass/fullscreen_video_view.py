@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/fullscreen_video_view.py
-import logging
-import BigWorld
-import SoundGroups
-import Windowing
+import logging, BigWorld, SoundGroups, Windowing
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.battle_pass.sounds import BattlePassSounds
 from gui.impl.gen import R
@@ -17,7 +12,7 @@ from gui.sounds.filters import switchVideoOverlaySoundFilter
 _logger = logging.getLogger(__name__)
 
 class FullscreenVideoView(ViewImpl):
-    __slots__ = ('__onVideoClosedHandle',)
+    __slots__ = ('__onVideoClosedHandle', )
     __appFactory = dependency.descriptor(IAppLoader)
 
     def __init__(self, *args, **kwargs):
@@ -37,7 +32,7 @@ class FullscreenVideoView(ViewImpl):
 
     def _onLoading(self, videoName, audioName, *args, **kwargs):
         super(FullscreenVideoView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setVideoName(videoName)
             model.setAudioName(audioName)
             self.__setWindowAccessible(model=model)
@@ -45,7 +40,9 @@ class FullscreenVideoView(ViewImpl):
         switchVideoOverlaySoundFilter(on=True)
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.onClose),)
 
     def _initialize(self, *args, **kwargs):
         super(FullscreenVideoView, self)._initialize(*args, **kwargs)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/manual/manual_chapter_view.py
 import logging
 from helpers import dependency
 from skeletons.gui.game_control import IMapsTrainingController
@@ -52,9 +50,9 @@ class ManualChapterView(ManualViewBase, ManualChapterViewMeta):
 
     def openVideo(self, url):
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, ui_web_api.UtilWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)
-        ctx = {'url': url,
-         'webHandlers': webHandlers,
-         'returnAlias': VIEW_ALIAS.MANUAL_CHAPTER_VIEW}
+        ctx = {'url': url, 
+           'webHandlers': webHandlers, 
+           'returnAlias': VIEW_ALIAS.MANUAL_CHAPTER_VIEW}
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.MANUAL_BROWSER_VIEW), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
 
     def onPreviewClicked(self, url):

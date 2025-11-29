@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/helpers/tips.py
 from __future__ import absolute_import
 import random
 from cgf_components.marker_component import IBattleSessionProvider
@@ -16,8 +14,11 @@ class FunRandomTipsCriteria(TipsCriteria, FunSubModesWatcher):
     def find(self):
         battleSubMode = self.getBattleSubMode(self.__sessionProvider.arenaVisitor)
         iconsRoot = battleSubMode.getIconsResRoot()
-        tips = [ TipData(tipRes.title(), tipRes.description(), iconsRoot.tips.dyn(tipID)()) for tipID, tipRes in battleSubMode.getLocalsResRoot().dyn('tips').items() ]
-        return random.choice(tips) if tips else TipData(R.invalid(), R.invalid(), R.invalid())
+        tips = [ TipData(tipRes.title(), tipRes.description(), iconsRoot.tips.dyn(tipID)()) for tipID, tipRes in battleSubMode.getLocalsResRoot().dyn('tips').items()
+               ]
+        if tips:
+            return random.choice(tips)
+        return TipData(R.invalid(), R.invalid(), R.invalid())
 
     def _getTipsValidator(self):
-        return None
+        return

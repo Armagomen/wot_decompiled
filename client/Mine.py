@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/Mine.py
-import logging
-import typing
-import BigWorld
-import CGF
+import logging, typing, BigWorld, CGF
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from battleground.mines_object import loadMines
 from cgf_script.bonus_caps_rules import bonusCapsManager
@@ -58,7 +53,8 @@ class Mine(EntityGameObject):
 
     @property
     def fieldID(self):
-        return (self.ownerVehicleID, self.deployTime)
+        return (
+         self.ownerVehicleID, self.deployTime)
 
     def _loadGameObject(self):
         return loadMines(self.ownerVehicleID, self._registerGameObject)
@@ -161,7 +157,7 @@ class MineField(CallbackDelayer):
 
     @property
     def __soundObjectName(self):
-        return 'MineField_{}_{}'.format(self.__id[0], self.__id[1])
+        return ('MineField_{}_{}').format(self.__id[0], self.__id[1])
 
     @property
     def __timeTillDetonation(self):

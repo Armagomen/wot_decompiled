@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_cm_handlers.py
 from __future__ import absolute_import
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.hangar_cm_handlers import SimpleVehicleCMHandler, VEHICLE
@@ -26,12 +24,12 @@ class CommonContextMenuHandler(SimpleVehicleCMHandler):
     def __init__(self, cmProxy, ctx=None, handlers=None):
         self.__itemIndexInBasket = -1
         if handlers is not None:
-            handlers.update({VEHICLE.PREVIEW: 'showVehiclePreview',
-             VEHICLE.SELL: 'sellVehicle',
-             VEHICLE.RESEARCH: 'researchVehicle',
-             VEHICLE.BUY: 'buyVehicle',
-             VEHICLE.SELECT: 'selectVehicleInHangar',
-             VEHICLE.NATION_CHANGE: 'changeVehicleNation'})
+            handlers.update({VEHICLE.PREVIEW: 'showVehiclePreview', 
+               VEHICLE.SELL: 'sellVehicle', 
+               VEHICLE.RESEARCH: 'researchVehicle', 
+               VEHICLE.BUY: 'buyVehicle', 
+               VEHICLE.SELECT: 'selectVehicleInHangar', 
+               VEHICLE.NATION_CHANGE: 'changeVehicleNation'})
         super(CommonContextMenuHandler, self).__init__(cmProxy, ctx, handlers)
         return
 
@@ -68,8 +66,7 @@ class CommonContextMenuHandler(SimpleVehicleCMHandler):
         self._manageStartOptions(options, vehicle)
         if vehicle.hasNationGroup:
             isNew = not AccountSettings.getSettings(NATION_CHANGE_VIEWED)
-            options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': vehicle.isNationChangeAvailable,
-             'isNew': isNew}))
+            options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': vehicle.isNationChangeAvailable, 'isNew': isNew}))
         if vehicle.isPurchased:
             options.append(self._makeItem(VEHICLE.SELL, MENU.contextmenu(VEHICLE.SELL), {'enabled': vehicle.canSell}))
         elif self.__isPurchaseEnabled(vehicle):
@@ -125,8 +122,8 @@ class VehicleCompareContextMenuHandler(CommonContextMenuHandler):
     comparisonBasket = dependency.descriptor(IVehicleComparisonBasket)
 
     def __init__(self, cmProxy, ctx=None):
-        handlers = {VEHICLE.STATS: 'showVehicleStats',
-         _OptIds.COPY: 'copyComparedVehicle'}
+        handlers = {VEHICLE.STATS: 'showVehicleStats', 
+           _OptIds.COPY: 'copyComparedVehicle'}
         super(VehicleCompareContextMenuHandler, self).__init__(cmProxy, ctx, handlers)
 
     def copyComparedVehicle(self):

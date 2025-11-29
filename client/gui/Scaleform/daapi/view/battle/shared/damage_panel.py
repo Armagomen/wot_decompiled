@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/damage_panel.py
-import logging
-import math
-import typing
-import weakref
-import BattleReplay
-import BigWorld
-import GUI
-import Math
+import logging, math, typing, weakref, BattleReplay, BigWorld, GUI, Math
 from account_helpers.settings_core import settings_constants
 from constants import VEHICLE_SIEGE_STATE as _SIEGE_STATE
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -34,26 +25,26 @@ if typing.TYPE_CHECKING:
     from gui.battle_control.arena_info.arena_dp import ArenaDataProvider
     from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 _logger = logging.getLogger(__name__)
-_STATE_HANDLERS = {VEHICLE_VIEW_STATE.HEALTH: '_updateHealthFromServer',
- VEHICLE_VIEW_STATE.SPEED: 'as_updateSpeedS',
- VEHICLE_VIEW_STATE.CRUISE_MODE: 'as_setCruiseModeS',
- VEHICLE_VIEW_STATE.FIRE: 'as_setFireInVehicleS',
- VEHICLE_VIEW_STATE.AUTO_ROTATION: '_setAutoRotation',
- VEHICLE_VIEW_STATE.DESTROYED: '_updateDestroyed',
- VEHICLE_VIEW_STATE.CREW_DEACTIVATED: '_updateCrewDeactivated',
- VEHICLE_VIEW_STATE.PLAYER_INFO: '_updatePlayerInfo',
- VEHICLE_VIEW_STATE.DEVICES: '_updateDeviceState',
- VEHICLE_VIEW_STATE.REPAIRING: '_updateRepairingDevice',
- VEHICLE_VIEW_STATE.SWITCHING: '_switching',
- VEHICLE_VIEW_STATE.STUN: '_updateStun',
- VEHICLE_VIEW_STATE.DEBUFF: '_updateDebuff',
- VEHICLE_VIEW_STATE.INSPIRE: '_updateInspire',
- VEHICLE_VIEW_STATE.SIEGE_MODE: '_changeSpeedoType',
- VEHICLE_VIEW_STATE.REPAIR_POINT: '_updateRepairPoint',
- VEHICLE_VIEW_STATE.BERSERKER: '_updateBerserker',
- VEHICLE_VIEW_STATE.THUNDER_STRIKE: '_updateThunderStrike',
- VEHICLE_VIEW_STATE.AOE_INSPIRE: '_updateAoeInspire',
- VEHICLE_VIEW_STATE.ALLY_SUPPORT: '_updateAllySupport'}
+_STATE_HANDLERS = {VEHICLE_VIEW_STATE.HEALTH: '_updateHealthFromServer', 
+   VEHICLE_VIEW_STATE.SPEED: 'as_updateSpeedS', 
+   VEHICLE_VIEW_STATE.CRUISE_MODE: 'as_setCruiseModeS', 
+   VEHICLE_VIEW_STATE.FIRE: 'as_setFireInVehicleS', 
+   VEHICLE_VIEW_STATE.AUTO_ROTATION: '_setAutoRotation', 
+   VEHICLE_VIEW_STATE.DESTROYED: '_updateDestroyed', 
+   VEHICLE_VIEW_STATE.CREW_DEACTIVATED: '_updateCrewDeactivated', 
+   VEHICLE_VIEW_STATE.PLAYER_INFO: '_updatePlayerInfo', 
+   VEHICLE_VIEW_STATE.DEVICES: '_updateDeviceState', 
+   VEHICLE_VIEW_STATE.REPAIRING: '_updateRepairingDevice', 
+   VEHICLE_VIEW_STATE.SWITCHING: '_switching', 
+   VEHICLE_VIEW_STATE.STUN: '_updateStun', 
+   VEHICLE_VIEW_STATE.DEBUFF: '_updateDebuff', 
+   VEHICLE_VIEW_STATE.INSPIRE: '_updateInspire', 
+   VEHICLE_VIEW_STATE.SIEGE_MODE: '_changeSpeedoType', 
+   VEHICLE_VIEW_STATE.REPAIR_POINT: '_updateRepairPoint', 
+   VEHICLE_VIEW_STATE.BERSERKER: '_updateBerserker', 
+   VEHICLE_VIEW_STATE.THUNDER_STRIKE: '_updateThunderStrike', 
+   VEHICLE_VIEW_STATE.AOE_INSPIRE: '_updateAoeInspire', 
+   VEHICLE_VIEW_STATE.ALLY_SUPPORT: '_updateAllySupport'}
 
 class STATUS_ID(CONST_CONTAINER):
     STUN = 0
@@ -130,7 +121,7 @@ class _PythonTimer(PythonTimer, _IStatusAnimPlayer):
 class _TankIndicatorCtrl(object):
 
     def __init__(self, app):
-        self.__component = GUI.WGTankIndicatorFlash(app.movie, '_level0.root.{}.main.damagePanel.tankIndicator'.format(LAYER_NAMES.VIEWS))
+        self.__component = GUI.WGTankIndicatorFlash(app.movie, ('_level0.root.{}.main.damagePanel.tankIndicator').format(LAYER_NAMES.VIEWS))
         self.__component.wg_inputKeyMode = InputKeyMode.NO_HANDLE
         self.__app = app
         self.__vId = None
@@ -404,10 +395,9 @@ class DamagePanel(DamagePanelMeta, IPrebattleSetupsListener, IArenaVehiclesContr
             self._crewBuffManager.deleteStatus(buffName)
 
     def _updateBerserker(self, berserkerData):
-        data = {'isSourceVehicle': True,
-         'isInactivation': False if berserkerData['duration'] > 0.0 else None,
-         'endTime': berserkerData['duration'] + BigWorld.serverTime(),
-         'duration': berserkerData['duration']}
+        data = {'isSourceVehicle': True, 'isInactivation': False if berserkerData['duration'] > 0.0 else None, 
+           'endTime': berserkerData['duration'] + BigWorld.serverTime(), 
+           'duration': berserkerData['duration']}
         self._updateInspire(data)
         return
 
@@ -432,7 +422,10 @@ class DamagePanel(DamagePanelMeta, IPrebattleSetupsListener, IArenaVehiclesContr
 
     def __getControllingVehicle(self):
         vehStateCtrl = self.sessionProvider.shared.vehicleState
-        return vehStateCtrl.getControllingVehicle() if vehStateCtrl is not None else None
+        if vehStateCtrl is not None:
+            return vehStateCtrl.getControllingVehicle()
+        else:
+            return
 
     def __updateStunAnimations(self, stunInfo):
         if STATUS_ID.STUN in self._statusAnimPlayers:
@@ -480,7 +473,8 @@ class DamagePanel(DamagePanelMeta, IPrebattleSetupsListener, IArenaVehiclesContr
         vType = vTypeDesc.type
         yawLimits = vehicle_getter.getYawLimits(vTypeDesc)
         if yawLimits:
-            inDegrees = (math.degrees(-yawLimits[0]), math.degrees(yawLimits[1]))
+            inDegrees = (
+             math.degrees(-yawLimits[0]), math.degrees(yawLimits[1]))
         else:
             inDegrees = None
         self.__isAutoRotationShown = False
@@ -580,7 +574,7 @@ class ConcurrentStatusManager(object):
             endTime = self._currentStatuses[buffName]
             if currTime > endTime:
                 del self._currentStatuses[buffName]
-            if endTime > self._exposedStatusEndTime:
+            elif endTime > self._exposedStatusEndTime:
                 self._exposedStatus = buffName
                 self._exposedStatusEndTime = endTime
 
@@ -590,4 +584,4 @@ class ConcurrentStatusManager(object):
             player.showStatus(timeLeft, not player.hasStatus())
         else:
             player.hideStatus(True)
-        return None
+        return

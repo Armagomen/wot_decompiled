@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/resources/cdn/images.py
 import typing
 from gui.game_loading import loggers
 from gui.game_loading.resources.base import BaseResources
@@ -10,7 +8,7 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getResourcesLogger()
 
 class CdnImagesResources(BaseResources):
-    __slots__ = ('_cdnCacheMgr',)
+    __slots__ = ('_cdnCacheMgr', )
 
     def __init__(self, defaults):
         super(CdnImagesResources, self).__init__()

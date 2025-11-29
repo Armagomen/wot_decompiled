@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/state_machine/machine.py
-import logging
-import typing
+import logging, typing
 from frameworks.state_machine import ConditionTransition, StateMachine
 from gui.battle_pass.state_machine import lockNotificationManager, states
 from gui.battle_pass.state_machine.state_machine_helpers import isProgressionComplete, packToken
@@ -11,7 +8,8 @@ _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 class BattlePassStateMachine(StateMachine):
-    __slots__ = ('__rewards', '__data', '__rewardsToChoose', '__packageRewards', '__chapterStyle', '__manualFlow')
+    __slots__ = ('__rewards', '__data', '__rewardsToChoose', '__packageRewards', '__chapterStyle',
+                 '__manualFlow')
 
     def __init__(self):
         super(BattlePassStateMachine, self).__init__()
@@ -84,7 +82,8 @@ class BattlePassStateMachine(StateMachine):
         self.__manualFlow = True
 
     def getRewardsData(self):
-        return (self.__rewards, self.__data, self.__packageRewards)
+        return (
+         self.__rewards, self.__data, self.__packageRewards)
 
     def extendRewards(self, rewards):
         if not self.__rewards:

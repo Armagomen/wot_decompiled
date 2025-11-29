@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/profile_utils.py
-import typing
-import BigWorld
+import typing, BigWorld
 from adisp import adisp_process
 from advanced_achievements_client.items import VirtualStepAchievement, RegularAchievement, SteppedAchievement
 from dossiers2.custom.dependencies import VEHICLE_ACHIEVEMENTS_DEPENDENCIES, CUSTOMIZATION_ACHIEVEMENTS_DEPENDENCIES
@@ -41,10 +38,9 @@ if typing.TYPE_CHECKING:
     from dog_tags_common.config.dog_tag_framework import ComponentDefinition
     from typing import Optional, Dict, Tuple, Iterator, List
     from gui.server_events.bonuses import CustomizationsBonus, DogTagComponentBonus
-_ACHIEVEMENT_TYPE_MAP = {AchievementType.REGULAR: AdvancedAchievementType.SINGLE,
- AchievementType.STEPPED: AdvancedAchievementType.STAGED,
- AchievementType.CUMULATIVE: AdvancedAchievementType.CUMULATIVE,
- AchievementType.SUBCATEGORY: AdvancedAchievementType.SUBCATEGORY}
+_ACHIEVEMENT_TYPE_MAP = {AchievementType.REGULAR: AdvancedAchievementType.SINGLE, AchievementType.STEPPED: AdvancedAchievementType.STAGED, 
+   AchievementType.CUMULATIVE: AdvancedAchievementType.CUMULATIVE, 
+   AchievementType.SUBCATEGORY: AdvancedAchievementType.SUBCATEGORY}
 MAX_PERCENT_VALUE = 100
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -102,11 +98,11 @@ def isEditingEnabled(itemsCache=None, lobbyContext=None):
 def getRating(itemsCache=None, userId=None):
     if isWTREnabled():
         return itemsCache.items.getWTR(userId)
-    elif userId is not None:
-        result = dict()
-        _receiveRating(itemsCache, userId, result)
-        return result.get('globalRating', 0)
     else:
+        if userId is not None:
+            result = dict()
+            _receiveRating(itemsCache, userId, result)
+            return result.get('globalRating', 0)
         return itemsCache.items.stats.globalRating
 
 
@@ -126,13 +122,14 @@ def getAllAchievements(itemsCache=None):
             unique += 1
             if achievement.isDone():
                 total += 1
-            if achievement.getValue() > 0:
+            elif achievement.getValue() > 0:
                 if achievement.getSection() == ACHIEVEMENT_SECTION.CLASS:
                     total += 1
                 else:
                     total += achievement.getValue()
 
-    return (total, unique)
+    return (
+     total, unique)
 
 
 def getProfileCommonInfo(dossier):
@@ -142,9 +139,9 @@ def getProfileCommonInfo(dossier):
         lbt = dossier['total']['lastBattleTime']
         lastBattleDate = getRegionalDateTime(lbt, DateTimeFormatsEnum.FULLDATE)
         lastBattleTime = getRegionalDateTime(lbt, DateTimeFormatsEnum.SHORTTIME)
-    return {'registrationDate': '%s' % getRegionalDateTime(dossier['total']['creationTime'], DateTimeFormatsEnum.FULLDATE),
-     'lastBattleDate': lastBattleDate,
-     'lastBattleTime': lastBattleTime}
+    return {'registrationDate': '%s' % getRegionalDateTime(dossier['total']['creationTime'], DateTimeFormatsEnum.FULLDATE), 
+       'lastBattleDate': lastBattleDate, 
+       'lastBattleTime': lastBattleTime}
 
 
 def getMasteryStatistic(dossier):
@@ -155,7 +152,10 @@ def getMasteryStatistic(dossier):
 
 
 def getNormalizedValue(targetValue):
-    return targetValue if targetValue is not None else 0
+    if targetValue is not None:
+        return targetValue
+    else:
+        return 0
 
 
 def getFormattedValue(targetValue):
@@ -173,7 +173,7 @@ def fillAdvancedAchievementModel(achievement, achievementModel=None, withCurrent
     if withCurrentStage and isinstance(achievement, SteppedAchievement):
         stageID = achievement.getNextOrLastStageID() if achievement.getProgress().isCompleted() else achievement.getNextOrLastStageID() - 1
         achievement = achievement.getFakeAchievementForStage(stageID)
-    with achievementModel.transaction() as model:
+    with achievementModel.transaction() as (model):
         displayType = achievement.getDisplayType()
         model.setType(_ACHIEVEMENT_TYPE_MAP[displayType])
         model.setKey(achievement.getStringKey())
@@ -202,7 +202,7 @@ def fillAdvancedAchievementModel(achievement, achievementModel=None, withCurrent
 def fillSubcategoryAdvancedAchievementModel(achievement, bubbles, prevScore, prevValue, achievementModel=None):
     if achievementModel is None:
         achievementModel = SubcategoryAdvancedAchievementModel()
-    with achievementModel.transaction() as model:
+    with achievementModel.transaction() as (model):
         model.setType(AchievementType.SUBCATEGORY)
         model.setKey(achievement.getStringKey())
         model.setId(achievement.getID())
@@ -247,9 +247,12 @@ class AdvancedAchievementsDogTagsBonusPacker(DogTagComponentsUIPacker):
         for dogTagRecord in unlockedBonuses:
             component = componentConfig.getComponentById(dogTagRecord.componentId)
             if component.purpose == ComponentPurpose.COUPLED:
-                if component.viewType == ComponentViewType.ENGRAVING and any((value is not None and component.coupledComponentId == value['id'] for value in bonus.getValue())):
-                    yield (component, dogTagRecord)
-            yield (component, dogTagRecord)
+                if component.viewType == ComponentViewType.ENGRAVING and any(value is not None and component.coupledComponentId == value['id'] for value in bonus.getValue()):
+                    yield (
+                     component, dogTagRecord)
+            else:
+                yield (
+                 component, dogTagRecord)
 
     @classmethod
     def _pack(cls, bonus):
@@ -257,7 +260,8 @@ class AdvancedAchievementsDogTagsBonusPacker(DogTagComponentsUIPacker):
         for component, dogTagRecord in cls._getBonusIterator(bonus):
             if component.purpose == ComponentPurpose.COUPLED:
                 result.append(cls._packCoupledDogTag(bonus, component, dogTagRecord))
-            result.append(cls._packDogTag(bonus, component, dogTagRecord))
+            else:
+                result.append(cls._packDogTag(bonus, component, dogTagRecord))
 
         return result
 
@@ -267,7 +271,8 @@ class AdvancedAchievementsDogTagsBonusPacker(DogTagComponentsUIPacker):
         for component, dogTagRecord in cls._getBonusIterator(bonus):
             if component.purpose == ComponentPurpose.COUPLED:
                 tooltips.append(cls._getCoupledDogTagTooltip(component))
-            tooltips.append(cls._getDogTagTooltip(dogTagRecord))
+            else:
+                tooltips.append(cls._getDogTagTooltip(dogTagRecord))
 
         return tooltips
 
@@ -277,14 +282,14 @@ class AdvancedAchievementsDogTagsBonusPacker(DogTagComponentsUIPacker):
         for component, _ in cls._getBonusIterator(bonus):
             if component.purpose == ComponentPurpose.COUPLED:
                 tooltipContentIds.append(R.views.lobby.dog_tags.CatalogAnimatedDogTagTooltip())
-            tooltipContentIds.append(BACKPORT_TOOLTIP_CONTENT_ID)
+            else:
+                tooltipContentIds.append(BACKPORT_TOOLTIP_CONTENT_ID)
 
         return tooltipContentIds
 
     @classmethod
     def _getCoupledDogTagTooltip(cls, component):
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[{'backgroundId': component.coupledComponentId,
-          'engravingId': component.componentId}])
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[{'backgroundId': component.coupledComponentId, 'engravingId': component.componentId}])
 
     @classmethod
     def _packDogTag(cls, bonus, component, dogTagRecord):
@@ -308,8 +313,8 @@ class AdvancedAchievementsDogTagsBonusPacker(DogTagComponentsUIPacker):
 
 def getAdvancedAchievementsBonusPackersMap():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'customizations': AdvancedAchievementsCustomizationsBonusPacker(),
-     'dogTagComponents': AdvancedAchievementsDogTagsBonusPacker()})
+    mapping.update({'customizations': AdvancedAchievementsCustomizationsBonusPacker(), 
+       'dogTagComponents': AdvancedAchievementsDogTagsBonusPacker()})
     return mapping
 
 
@@ -321,11 +326,11 @@ def getAdvancedAchievementsBonusPacker():
 def fillDetailsModel(achievement, tooltipData, detailsModel=None, itemsCache=None):
     if detailsModel is None:
         detailsModel = DetailsModel()
-    with detailsModel.transaction() as model:
+    with detailsModel.transaction() as (model):
         fillAdvancedAchievementModel(achievement, model)
         rewards = achievement.getRewards()
         packer = getAdvancedAchievementsBonusPacker()
-        with model.getRewards().transaction() as rewardArray:
+        with model.getRewards().transaction() as (rewardArray):
             rewardArray.clear()
             packBonusModelAndTooltipData(rewards.getBonuses(), rewardArray, tooltipData=tooltipData, packer=packer)
         progress = achievement.getProgress()
@@ -348,7 +353,7 @@ def fillDetailsModel(achievement, tooltipData, detailsModel=None, itemsCache=Non
 def fillAchievementCardModel(achievement, tooltipData, bubbles, itemsCache=None, achievementCardModel=None):
     if achievementCardModel is None:
         achievementCardModel = AchievementCardModel()
-    with achievementCardModel.transaction() as model:
+    with achievementCardModel.transaction() as (model):
         fillDetailsModel(achievement, tooltipData, model, itemsCache=itemsCache)
         model.setId(achievement.getID())
         model.setNewItemsCount(bubbles)
@@ -375,7 +380,7 @@ def fillAchievementCardModel(achievement, tooltipData, bubbles, itemsCache=None,
 def fillBreadcrumbModel(achievement, breadcrumbModel=None):
     if breadcrumbModel is None:
         breadcrumbModel = BreadcrumbModel()
-    with breadcrumbModel.transaction() as model:
+    with breadcrumbModel.transaction() as (model):
         model.setAchievementId(achievement.getID())
         model.setKey(achievement.getStringKey())
     return breadcrumbModel
@@ -386,27 +391,31 @@ def getVehicleByName(name):
 
 
 def getTrophiesData():
-    return {'key': 'trophies',
-     'type': AdvancedAchievementType.CATEGORY,
-     'background': 'trophies',
-     'iconPosition': AdvancedAchievementIconPosition.CENTER,
-     'isTrophy': True}
+    return {'key': 'trophies', 
+       'type': AdvancedAchievementType.CATEGORY, 
+       'background': 'trophies', 
+       'iconPosition': AdvancedAchievementIconPosition.CENTER, 
+       'isTrophy': True}
 
 
 def createAdvancedAchievementsCatalogInitAchievementIDs(achievementID, achievementCategory):
     if achievementCategory == 'vehicleAchievements':
         categoryDependencies = VEHICLE_ACHIEVEMENTS_DEPENDENCIES
-    elif achievementCategory == 'customizationAchievements':
-        categoryDependencies = CUSTOMIZATION_ACHIEVEMENTS_DEPENDENCIES
     else:
-        raise SoftException('Unknown advanced achievement category: {}'.format(achievementCategory))
-    initAchievementIDs = [achievementID]
-    parentAchievementID = first((achievementDependency.args[0].id for achievementDependency in categoryDependencies.get(achievementID, [])))
-    while parentAchievementID is not None:
-        initAchievementIDs.append(parentAchievementID)
-        parentAchievementID = first((achievementDependency.args[0].id for achievementDependency in categoryDependencies.get(parentAchievementID, [])))
+        if achievementCategory == 'customizationAchievements':
+            categoryDependencies = CUSTOMIZATION_ACHIEVEMENTS_DEPENDENCIES
+        else:
+            raise SoftException(('Unknown advanced achievement category: {}').format(achievementCategory))
+        initAchievementIDs = [achievementID]
+        parentAchievementID = first(achievementDependency.args[0].id for achievementDependency in categoryDependencies.get(achievementID, []))
+        while parentAchievementID is not None:
+            initAchievementIDs.append(parentAchievementID)
+            parentAchievementID = first(achievementDependency.args[0].id for achievementDependency in categoryDependencies.get(parentAchievementID, []))
 
-    return initAchievementIDs[1::][::-1] if getAchievementByID(achievementID, achievementCategory).getType() == AchievementType.REGULAR else initAchievementIDs[::-1]
+    if getAchievementByID(achievementID, achievementCategory).getType() == AchievementType.REGULAR:
+        return initAchievementIDs[1::][::-1]
+    else:
+        return initAchievementIDs[::-1]
 
 
 def createBackportTooltipDecorator():
@@ -473,7 +482,9 @@ class RewardViewDogTagsBonusPacker(AdvancedAchievementsDogTagsBonusPacker):
 
     @classmethod
     def _getDogTagProgress(cls, component):
-        return getCoupledDogTagProgress(cls._getDossier(), component) if component.purpose == ComponentPurpose.COUPLED else BigWorld.player().dogTags.getComponentProgress(component.componentId)
+        if component.purpose == ComponentPurpose.COUPLED:
+            return getCoupledDogTagProgress(cls._getDossier(), component)
+        return BigWorld.player().dogTags.getComponentProgress(component.componentId)
 
     @classmethod
     @dependency.replace_none_kwargs(itemsCache=IItemsCache)

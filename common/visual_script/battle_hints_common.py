@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/battle_hints_common.py
 import typing
 from abc import ABCMeta
 from visual_script.block import Block, Meta, InitParam
@@ -25,22 +23,22 @@ class HintsMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 4259648
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Battle hints'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/hint'
 
 
 class BaseSelectHint(Block, HintsMeta):
 
     def __init__(self, *args, **kwargs):
         super(BaseSelectHint, self).__init__(*args, **kwargs)
-        selected = self._getInitParams()
+        selected, = self._getInitParams()
         _, self._hintId = selected.split('.', 1)
         if not self._hintId:
             errorVScript(self, 'No hints to select.')
@@ -54,18 +52,22 @@ class BaseSelectHint(Block, HintsMeta):
         modelsMgr = self._getModelsManager(initialize=False)
         if not modelsMgr:
             return 'No hints models manager initialized.'
-        return 'Hint [{}] does not exist.'.format(self._hintId) if not modelsMgr.get(self._hintId) else super(BaseSelectHint, self).validate()
+        if not modelsMgr.get(self._hintId):
+            return ('Hint [{}] does not exist.').format(self._hintId)
+        return super(BaseSelectHint, self).validate()
 
     @classmethod
     def initParams(cls):
-        return [InitParam(name='scope, hintId', slotType=SLOT_TYPE.STR, defaultValue='', editorType=EDITOR_TYPE.COMPLEX_KEY_SELECTOR, editorData=_getHintsChoices(cls._getModelsManager(initialize=True)))]
+        return [
+         InitParam(name='scope, hintId', slotType=SLOT_TYPE.STR, defaultValue='', editorType=EDITOR_TYPE.COMPLEX_KEY_SELECTOR, editorData=_getHintsChoices(cls._getModelsManager(initialize=True)))]
 
     def captionText(self):
-        return 'Hint: {}'.format(self._hintId)
+        return ('Hint: {}').format(self._hintId)
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT, ASPECT.SERVER]
+        return [
+         ASPECT.CLIENT, ASPECT.SERVER]
 
     @classmethod
     def _getModelsManager(cls, initialize=False):
@@ -96,11 +98,11 @@ class BaseHintAction(Block, HintsMeta):
 
 
 class HintActionParamsMixin(object):
-    RESERVED = ('hintId',)
+    RESERVED = ('hintId', )
 
     def __init__(self, *args, **kwargs):
         super(HintActionParamsMixin, self).__init__(*args, **kwargs)
-        paramsString = self._getInitParams()[-1:]
+        paramsString, = self._getInitParams()[-1:]
         params = self._prepareParams(paramsString)
         self._params = [ (name, self._makeDataInputSlot(name, SLOT_TYPE.STR)) for name in params ]
 
@@ -113,10 +115,10 @@ class HintActionParamsMixin(object):
         params = []
         for name in paramsString.split():
             if name in params:
-                errorVScript(self, 'Name <{}> already in use.'.format(name))
+                errorVScript(self, ('Name <{}> already in use.').format(name))
                 continue
             elif name in self.RESERVED:
-                errorVScript(self, 'Name <{}> reserved and can be used in params.'.format(name))
+                errorVScript(self, ('Name <{}> reserved and can be used in params.').format(name))
                 continue
             params.append(name)
 

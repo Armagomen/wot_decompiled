@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/progression_qualification_model.py
 from frameworks.wulf import Array
 from comp7.gui.impl.gen.view_models.views.lobby.qualification_battle import QualificationBattle
 from comp7.gui.impl.gen.view_models.views.lobby.qualification_model import QualificationModel
 
 class ProgressionQualificationModel(QualificationModel):
-    __slots__ = ('onRankRewardsPageOpen',)
+    __slots__ = ('onRankRewardsPageOpen', )
 
     def __init__(self, properties=5, commands=1):
         super(ProgressionQualificationModel, self).__init__(properties=properties, commands=commands)

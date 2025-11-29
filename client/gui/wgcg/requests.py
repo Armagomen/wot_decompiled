@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/requests.py
-import types
-import weakref
+import types, weakref
 from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.clans import formatters as clan_fmts
@@ -10,28 +7,31 @@ from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 from gui.shared.utils.requesters.RequestsController import RequestsController
 from gui.shared.utils.requesters.abstract import Response, ClientRequestsByIDProcessor
 from gui.wgcg.advent_calendar.handlers import AdventCalendarRequestHandlers
+from gui.wgcg.agate.handlers import AgateRequestHandlers
 from gui.wgcg.base.handlers import BaseRequestHandlers
 from gui.wgcg.clan.handlers import ClanRequestHandlers
 from gui.wgcg.clan_supply.handlers import ClanSupplyRequestHandlers
+from gui.wgcg.craftmachine.handlers import CraftmachineRequestHandlers
 from gui.wgcg.elen.handlers import ElenRequestHandlers
-from gui.wgcg.agate.handlers import AgateRequestHandlers
-from gui.wgcg.utils.handlers import UtilsRequestHandlers
+from gui.wgcg.external_battle_handlers import BaseExternalBattleUnitRequestHandlers
+from gui.wgcg.gift_system.handlers import GiftSystemRequestHandlers
 from gui.wgcg.hof.handlers import HofRequestHandlers
+from gui.wgcg.ingame_tournaments.handlers import IngameTournamentHandlers
+from gui.wgcg.loadouts_assistant.handlers import LoadoutsAssistantRequestHandlers
 from gui.wgcg.mapbox.handlers import MapboxRequestHandlers
 from gui.wgcg.promo_screens.handlers import PromoScreensRequestHandlers
 from gui.wgcg.rank.handlers import RankRequestHandlers
 from gui.wgcg.settings import WebRequestDataType
-from gui.wgcg.external_battle_handlers import BaseExternalBattleUnitRequestHandlers
-from gui.wgcg.craftmachine.handlers import CraftmachineRequestHandlers
-from gui.wgcg.gift_system.handlers import GiftSystemRequestHandlers
 from gui.wgcg.uilogging.handlers import UILoggingRequestHandlers
+from gui.wgcg.utils.handlers import UtilsRequestHandlers
 from gui.wgcg.wot_shop.handlers import WotShopRequestHandlers
-from gui.wgcg.loadouts_assistant.handlers import LoadoutsAssistantRequestHandlers
 
 class WgcgRequestResponse(Response):
 
     def isSuccess(self):
-        return self.getCode() in (ResponseCodes.NO_ERRORS, ResponseCodes.STRONGHOLD_NOT_FOUND)
+        return self.getCode() in (
+         ResponseCodes.NO_ERRORS,
+         ResponseCodes.STRONGHOLD_NOT_FOUND)
 
     def getCode(self):
         return self.code
@@ -117,6 +117,7 @@ class WgcgRequestsController(RequestsController):
         self.__handlers.update(WotShopRequestHandlers(requester).get())
         self.__handlers.update(ClanSupplyRequestHandlers(requester).get())
         self.__handlers.update(LoadoutsAssistantRequestHandlers(requester).get())
+        self.__handlers.update(IngameTournamentHandlers(requester).get())
 
     def fini(self):
         super(WgcgRequestsController, self).fini()
@@ -124,7 +125,10 @@ class WgcgRequestsController(RequestsController):
         return
 
     def _getHandlerByRequestType(self, requestTypeID):
-        return self.__handlers.get(requestTypeID) if self.__handlers else None
+        if self.__handlers:
+            return self.__handlers.get(requestTypeID)
+        else:
+            return
 
     def _getRequestTimeOut(self):
         return REQUEST_TIMEOUT

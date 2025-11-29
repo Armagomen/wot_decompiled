@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/processors/goodies.py
-import logging
-import typing
-import BigWorld
-import AccountCommands
+import logging, typing, BigWorld, AccountCommands
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.impl import backport
 from gui.shared.formatters import formatPrice
@@ -33,7 +28,7 @@ class BoosterProcessor(Processor):
 
     def _formMessage(self, msg):
         _logger.debug('Generating response for BoosterProcessor: %s %s', self.opType, msg)
-        return 'booster_{opType}/{msg}'.format(opType=self.opType, msg=msg)
+        return ('booster_{opType}/{msg}').format(opType=self.opType, msg=msg)
 
     def _errorHandler(self, code, errStr='', ctx=None):
         if not errStr:
@@ -47,8 +42,8 @@ class BoosterActivator(BoosterProcessor):
         super(BoosterActivator, self).__init__(booster, 'activate', [proc_plugs.BoosterActivateValidator(booster)])
 
     def _getMsgCtx(self):
-        return {'boosterName': self.booster.userName,
-         'time': self.booster.getEffectTimeStr()}
+        return {'boosterName': self.booster.userName, 
+           'time': self.booster.getEffectTimeStr()}
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(self._formMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())
@@ -65,9 +60,9 @@ class BoosterTradeProcessor(BoosterProcessor):
         self.count = count
 
     def _getMsgCtx(self):
-        return {'boosterName': self.booster.userName,
-         'count': backport.getIntegralFormat(int(self.count)),
-         'money': formatPrice(self._getOpPrice().price)}
+        return {'boosterName': self.booster.userName, 
+           'count': backport.getIntegralFormat(int(self.count)), 
+           'money': formatPrice(self._getOpPrice().price)}
 
     def _getOpPrice(self):
         raise NotImplementedError
@@ -79,7 +74,8 @@ class BoosterBuyer(BoosterTradeProcessor):
         super(BoosterBuyer, self).__init__(booster, count, 'buy')
         self.buyCurrency = currency
         self.doActivation = doActivation
-        self.addPlugins((proc_plugs.MoneyValidator(self._getOpPrice().price),))
+        self.addPlugins((
+         proc_plugs.MoneyValidator(self._getOpPrice().price),))
 
     def _getOpPrice(self):
         minItemPrice = self.booster.buyPrices.getMinItemPriceByCurrency(self.buyCurrency)

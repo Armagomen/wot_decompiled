@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_data_provider.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from constants import SEASON_NAME_BY_TYPE
@@ -29,19 +27,19 @@ def sortedIndices(seq, getter, reverse=False):
 def getStatusCountStyle(vStateLvl):
     if vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.CRITICAL:
         return (text_styles.stats, text_styles.vehicleStatusCriticalText)
-    return (text_styles.tutorial, text_styles.tutorial) if vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.RENTABLE else (text_styles.stats, text_styles.vehicleStatusInfoText)
+    if vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.RENTABLE:
+        return (text_styles.tutorial, text_styles.tutorial)
+    return (
+     text_styles.stats, text_styles.vehicleStatusInfoText)
 
 
 def _isLockedBackground(vState, vStateLvl):
     if vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.CRITICAL:
         result = True
     elif vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.WARNING:
-        result = vState in (Vehicle.VEHICLE_STATE.BATTLE,
-         Vehicle.VEHICLE_STATE.IN_PREBATTLE,
-         Vehicle.VEHICLE_STATE.UNSUITABLE_TO_UNIT,
-         Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE,
-         Vehicle.VEHICLE_STATE.NOT_PRESENT,
-         Vehicle.VEHICLE_STATE.GROUP_IS_NOT_READY,
+        result = vState in (Vehicle.VEHICLE_STATE.BATTLE, Vehicle.VEHICLE_STATE.IN_PREBATTLE,
+         Vehicle.VEHICLE_STATE.UNSUITABLE_TO_UNIT, Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE,
+         Vehicle.VEHICLE_STATE.NOT_PRESENT, Vehicle.VEHICLE_STATE.GROUP_IS_NOT_READY,
          Vehicle.VEHICLE_STATE.DISABLED)
     else:
         result = False
@@ -59,7 +57,9 @@ def getStatusStrings(vState, vStateLvl=Vehicle.VEHICLE_STATE_LEVEL.INFO, substit
     if status:
         return (smallStyle(status), largeStyle(status))
     else:
-        return (text_styles.middleTitle(substitute), status) if substitute else (status, status)
+        if substitute:
+            return (text_styles.middleTitle(substitute), status)
+        return (status, status)
 
 
 def getVehicleDataVO(vehicle):
@@ -72,7 +72,8 @@ def _getVehicleDataVO(vehicle):
         rentInfoText = RentLeftFormatter(vehicle.rentInfo, vehicle.isPremiumIGR).getRentLeftStr()
     vState, vStateLvl = vehicle.getState()
     if vehicle.isRotationApplied():
-        if vState in (Vehicle.VEHICLE_STATE.AMMO_NOT_FULL, Vehicle.VEHICLE_STATE.LOCKED):
+        if vState in (Vehicle.VEHICLE_STATE.AMMO_NOT_FULL,
+         Vehicle.VEHICLE_STATE.LOCKED):
             vState = Vehicle.VEHICLE_STATE.ROTATION_GROUP_UNLOCKED
     if not vehicle.activeInNationGroup:
         vState = Vehicle.VEHICLE_STATE.NOT_PRESENT
@@ -81,57 +82,55 @@ def _getVehicleDataVO(vehicle):
         rentPackagesInfo = vehicle.getRentPackagesInfo
         if rentPackagesInfo.seasonType:
             customStateExt = '/' + SEASON_NAME_BY_TYPE.get(rentPackagesInfo.seasonType)
-    smallStatus, largeStatus = getStatusStrings(vState + customStateExt, vStateLvl, substitute=rentInfoText, ctx={'icon': icons.premiumIgrSmall(),
-     'battlesLeft': getBattlesLeft(vehicle)})
+    smallStatus, largeStatus = getStatusStrings(vState + customStateExt, vStateLvl, substitute=rentInfoText, ctx={'icon': icons.premiumIgrSmall(), 'battlesLeft': getBattlesLeft(vehicle)})
     smallHoverStatus, largeHoverStatus = smallStatus, largeStatus
     if vState == Vehicle.VEHICLE_STATE.RENTABLE:
-        smallHoverStatus, largeHoverStatus = getStatusStrings(vState + '/hover', vStateLvl, substitute=rentInfoText, ctx={'icon': icons.premiumIgrSmall(),
-         'battlesLeft': getBattlesLeft(vehicle)})
+        smallHoverStatus, largeHoverStatus = getStatusStrings(vState + '/hover', vStateLvl, substitute=rentInfoText, ctx={'icon': icons.premiumIgrSmall(), 'battlesLeft': getBattlesLeft(vehicle)})
     if vehicle.dailyXPFactor > 1:
-        bonusImage = getButtonsAssetPath('bonus_x{}'.format(vehicle.dailyXPFactor))
+        bonusImage = getButtonsAssetPath(('bonus_x{}').format(vehicle.dailyXPFactor))
     else:
         bonusImage = ''
     label = vehicle.shortUserName if vehicle.isPremiumIGR else vehicle.userName
     labelStyle = text_styles.premiumVehicleName if vehicle.isPremium else text_styles.vehicleName
-    tankType = '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type
+    tankType = ('{}_elite').format(vehicle.type) if vehicle.isElite else vehicle.type
     current, maximum = vehicle.getCrystalsEarnedInfo()
     isCrystalsLimitReached = current == maximum
     showIcon = vehicle.isTelecomRent and not vehicle.rentExpiryState
     extraImage = RES_ICONS.MAPS_ICONS_LIBRARY_RENT_ICO_BIG if showIcon else ''
-    return {'id': vehicle.invID,
-     'intCD': vehicle.intCD,
-     'infoText': largeStatus,
-     'infoHoverText': largeHoverStatus,
-     'smallInfoText': smallStatus,
-     'smallInfoHoverText': smallHoverStatus,
-     'clanLock': vehicle.clanLock,
-     'lockBackground': _isLockedBackground(vState, vStateLvl),
-     'unlockedInBattle': False,
-     'icon': vehicle.icon,
-     'iconAlt': getIconPath('noImage'),
-     'iconSmall': vehicle.iconSmall,
-     'iconSmallAlt': getSmallIconPath('noImage'),
-     'label': labelStyle(label),
-     'level': vehicle.level,
-     'premium': vehicle.isPremium,
-     'favorite': vehicle.isFavorite,
-     'nation': vehicle.nationID,
-     'xpImgSource': bonusImage,
-     'tankType': tankType,
-     'rentLeft': rentInfoText,
-     'clickEnabled': vehicle.isInInventory and vehicle.activeInNationGroup or vehicle.isRentPromotion,
-     'alpha': 1,
-     'infoImgSrc': getVehicleStateIcon(vState),
-     'additionalImgSrc': getVehicleStateAddIcon(vState),
-     'isCritInfo': vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.CRITICAL,
-     'isRentPromotion': vehicle.isRentPromotion and not vehicle.isRented,
-     'isNationChangeAvailable': vehicle.hasNationGroup,
-     'isEarnCrystals': vehicle.isEarnCrystals,
-     'isCrystalsLimitReached': isCrystalsLimitReached,
-     'isUseRightBtn': True,
-     'tooltip': TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE,
-     'isWotPlusSlot': vehicle.isWotPlus,
-     'extraImage': extraImage}
+    return {'id': vehicle.invID, 
+       'intCD': vehicle.intCD, 
+       'infoText': largeStatus, 
+       'infoHoverText': largeHoverStatus, 
+       'smallInfoText': smallStatus, 
+       'smallInfoHoverText': smallHoverStatus, 
+       'clanLock': vehicle.clanLock, 
+       'lockBackground': _isLockedBackground(vState, vStateLvl), 
+       'unlockedInBattle': False, 
+       'icon': vehicle.icon, 
+       'iconAlt': getIconPath('noImage'), 
+       'iconSmall': vehicle.iconSmall, 
+       'iconSmallAlt': getSmallIconPath('noImage'), 
+       'label': labelStyle(label), 
+       'level': vehicle.level, 
+       'premium': vehicle.isPremium, 
+       'favorite': vehicle.isFavorite, 
+       'nation': vehicle.nationID, 
+       'xpImgSource': bonusImage, 
+       'tankType': tankType, 
+       'rentLeft': rentInfoText, 
+       'clickEnabled': vehicle.isInInventory and vehicle.activeInNationGroup or vehicle.isRentPromotion, 
+       'alpha': 1, 
+       'infoImgSrc': getVehicleStateIcon(vState), 
+       'additionalImgSrc': getVehicleStateAddIcon(vState), 
+       'isCritInfo': vStateLvl == Vehicle.VEHICLE_STATE_LEVEL.CRITICAL, 
+       'isRentPromotion': vehicle.isRentPromotion and not vehicle.isRented, 
+       'isNationChangeAvailable': vehicle.hasNationGroup, 
+       'isEarnCrystals': vehicle.isEarnCrystals, 
+       'isCrystalsLimitReached': isCrystalsLimitReached, 
+       'isUseRightBtn': True, 
+       'tooltip': TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE, 
+       'isWotPlusSlot': vehicle.isWotPlus, 
+       'extraImage': extraImage}
 
 
 class CarouselDataProvider(SortableDAAPIDataProvider):
@@ -163,7 +162,9 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
         return bool(self._getFilteredVehicles(REQ_CRITERIA.VEHICLE.EVENT))
 
     def hasBattleRoyaleVehicles(self):
-        return False if not self._battleRoyaleController.isEnabled() else bool(self._getFilteredVehicles(REQ_CRITERIA.VEHICLE.BATTLE_ROYALE))
+        if not self._battleRoyaleController.isEnabled():
+            return False
+        return bool(self._getFilteredVehicles(REQ_CRITERIA.VEHICLE.BATTLE_ROYALE))
 
     def getTotalVehiclesCount(self):
         return len(self._vehicles)
@@ -192,7 +193,7 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
         return self._selectedIdx
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self._vehicles = []
@@ -334,8 +335,8 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
 
     def _getVehicleStats(self, vehicle):
         if vehicle.isOnlyForBattleRoyaleBattles:
-            return {'statsText': '',
-             'visibleStats': False}
+            return {'statsText': '', 
+               'visibleStats': False}
         else:
             intCD = vehicle.intCD
             vehicleRandomStats = self._randomStats.getVehicles() if self._randomStats is not None else {}
@@ -359,8 +360,8 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
                 statsText = template.format(markOfMasteryText, winsText, marksOnGunText)
             else:
                 statsText = '#menu:tankCarousel/statsStatus/unavailable'
-            return {'statsText': text_styles.stats(statsText),
-             'visibleStats': self._showVehicleStats}
+            return {'statsText': text_styles.stats(statsText), 
+               'visibleStats': self._showVehicleStats}
 
     def _updateVehicleItems(self, vehiclesCollection, forceUpdate=False):
         updateIndices = []
@@ -393,7 +394,8 @@ class CarouselDataProvider(SortableDAAPIDataProvider):
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (not vehicle.isInInventory,
+        return (
+         not vehicle.isInInventory,
          vehicle.isOnlyForClanWarsBattles,
          not vehicle.isEvent,
          not vehicle.isOnlyForBattleRoyaleBattles,

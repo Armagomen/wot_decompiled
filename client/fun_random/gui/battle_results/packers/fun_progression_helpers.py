@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/packers/fun_progression_helpers.py
 from __future__ import absolute_import
 import typing
 from collections import namedtuple
@@ -10,7 +8,10 @@ from shared_utils import first, findFirst
 if typing.TYPE_CHECKING:
     from fun_random.gui.feature.models.progressions import FunProgression
 _START_STAGE = 0
-_PbsProgress = namedtuple('_PbsProgress', ('description', 'isUnlimitedProgression', 'bonuses', 'previousStage', 'currentStage', 'maximumStage', 'previousPoints', 'currentPoints', 'maximumPoints', 'earnedPoints', 'stageRequiredCounters'))
+_PbsProgress = namedtuple('_PbsProgress', ('description', 'isUnlimitedProgression',
+                                           'bonuses', 'previousStage', 'currentStage',
+                                           'maximumStage', 'previousPoints', 'currentPoints',
+                                           'maximumPoints', 'earnedPoints', 'stageRequiredCounters'))
 
 class _PostbattleProgressionHelper(object):
     __slots__ = ('_triggers', '_altTriggers', '_executors', '_countersProgress')
@@ -27,7 +28,10 @@ class _PostbattleProgressionHelper(object):
 
     def getProgressionData(self, progression, questsProgress, questsTokens):
         self.__parseProgress(progression, questsProgress, questsTokens)
-        return self._collectProgressionData(progression) if self._hasProgress() else None
+        if self._hasProgress():
+            return self._collectProgressionData(progression)
+        else:
+            return
 
     def _collectProgressionData(self, progression):
         raise NotImplementedError
@@ -36,7 +40,9 @@ class _PostbattleProgressionHelper(object):
         return []
 
     def _getPoints(self):
-        return (sum((data.get('diff', 0) for data in viewvalues(self._countersProgress))), sum((data.get('total', 0) for data in viewvalues(self._countersProgress))))
+        return (
+         sum(data.get('diff', 0) for data in viewvalues(self._countersProgress)),
+         sum(data.get('total', 0) for data in viewvalues(self._countersProgress)))
 
     def _hasProgress(self):
         return bool(self._countersProgress and (self._triggers or self._altTriggers))
@@ -50,9 +56,9 @@ class _PostbattleProgressionHelper(object):
         for qID, pr in viewitems(questsProgress):
             if qID.startswith(triggerQuestID):
                 self._triggers[qID] = pr
-            if qID.startswith(altTriggerQuestID):
+            elif qID.startswith(altTriggerQuestID):
                 self._altTriggers[qID] = pr
-            if qID.startswith(executorQuestID):
+            elif qID.startswith(executorQuestID):
                 self._executors[qID] = pr
 
         self._countersProgress = {tID:progress for tID, progress in viewitems(questsTokens) if tID.startswith(counterID)}
@@ -74,7 +80,7 @@ class FunPbsProgressionHelper(_PostbattleProgressionHelper):
         currentPoints = math_utils.clamp(0, maximumPoints, fullCurrentPoints)
         if fullCurrentPoints > maximumPoints:
             earnedPoints = currentPoints - previousPoints
-        currentStage = findFirst(lambda s: currentPoints < s.requiredCounter, progression.stages, progression.stages[-1])
+        currentStage = findFirst(lambda s: currentPoints < s.requiredCounter, progression.stages, progression.stages[(-1)])
         currentStageIdx = math_utils.clamp(0, len(progression.stages), currentStage.stageIndex + 1)
         previousStageIdx = findFirst(lambda s: previousPoints < s.requiredCounter, progression.stages, progression.stages[0]).stageIndex
         previousStage = progression.stages[previousStageIdx]
@@ -125,4 +131,7 @@ class FunPbsUnlimitedProgressionHelper(_PostbattleProgressionHelper):
 
     def _getBonuses(self, progression, diffStage=None):
         diffStage = diffStage if diffStage is not None and diffStage > 1 else 1
-        return progression.unlimitedProgression.bonuses * diffStage if self._executors else []
+        if self._executors:
+            return progression.unlimitedProgression.bonuses * diffStage
+        else:
+            return []

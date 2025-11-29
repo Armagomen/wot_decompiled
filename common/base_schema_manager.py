@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/base_schema_manager.py
-import logging
-import typing
+import logging, typing
 from constants import IS_CLIENT, IS_BASEAPP
 from dict2model.schemas import Schema, SchemaModelType
 from soft_exception import SoftException

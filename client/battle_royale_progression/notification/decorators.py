@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/notification/decorators.py
 from helpers import dependency
 from notification.decorators import MessageDecorator
 from notification.settings import NOTIFICATION_BUTTON_STATE

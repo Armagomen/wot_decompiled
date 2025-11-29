@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/battleground/berserker_effect.py
-import logging
-import BigWorld
-import AnimationSequence
-import Math
-import math_utils
-import ResMgr
+import logging, BigWorld, AnimationSequence, Math, math_utils, ResMgr
 from battle_royale.gui.constants import BattleRoyaleEquipments
 from helpers import dependency, newFakeModel, CallbackDelayer
 from vehicle_systems.tankStructure import TankPartIndexes
@@ -123,7 +116,10 @@ class _VehicleNodeEffect(SequenceComponent):
 
     @property
     def finished(self):
-        return self.sequenceAnimator.getCurrNodeName() == 'end' and not self.sequenceAnimator.isCurrNodePlaying() if self.sequenceAnimator is not None else False
+        if self.sequenceAnimator is not None:
+            return self.sequenceAnimator.getCurrNodeName() == 'end' and not self.sequenceAnimator.isCurrNodePlaying()
+        else:
+            return False
 
     def setVehicleId(self, vId):
         self.__vehicleId = vId
@@ -261,4 +257,6 @@ class _TransformationParser(object):
             return
         else:
             partTransform = vehTransform.get(vehPartName)
-            return None if not partTransform else partTransform.get(moduleName) or partTransform.get(cls.__DEFAULT_SECTION)
+            if not partTransform:
+                return
+            return partTransform.get(moduleName) or partTransform.get(cls.__DEFAULT_SECTION)

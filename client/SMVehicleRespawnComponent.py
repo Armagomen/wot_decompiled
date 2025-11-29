@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMVehicleRespawnComponent.py
 import BigWorld
 from VehicleRespawnComponent import VehicleRespawnComponent
 from aih_constants import CTRL_MODE_NAME

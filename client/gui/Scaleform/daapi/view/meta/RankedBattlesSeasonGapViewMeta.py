@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RankedBattlesSeasonGapViewMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class RankedBattlesSeasonGapViewMeta(BaseDAAPIComponent):
@@ -8,10 +6,13 @@ class RankedBattlesSeasonGapViewMeta(BaseDAAPIComponent):
         self._printOverrideError('onBtnClick')
 
     def as_setDataS(self, data):
-        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(data)
 
     def as_setEfficiencyDataS(self, data):
-        return self.flashObject.as_setEfficiencyData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setEfficiencyData(data)
 
     def as_setRatingDataS(self, data):
-        return self.flashObject.as_setRatingData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setRatingData(data)

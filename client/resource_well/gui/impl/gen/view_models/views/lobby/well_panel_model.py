@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/gen/view_models/views/lobby/well_panel_model.py
 from resource_well.gui.impl.gen.view_models.views.lobby.enums import EventMode
 from frameworks.wulf import ViewModel
 
 class WellPanelModel(ViewModel):
-    __slots__ = ('onAction',)
+    __slots__ = ('onAction', )
 
     def __init__(self, properties=5, commands=1):
         super(WellPanelModel, self).__init__(properties=properties, commands=commands)

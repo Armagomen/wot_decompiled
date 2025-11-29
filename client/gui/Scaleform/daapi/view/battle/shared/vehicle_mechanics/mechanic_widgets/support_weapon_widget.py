@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/support_weapon_widget.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from backports.functools_lru_cache import lru_cache
 from constants import SECONDARY_GUN_STATE, UNKNOWN_GUN_INSTALLATION_INDEX
 from events_handler import eventHandler
@@ -21,12 +18,13 @@ if typing.TYPE_CHECKING:
     from SupportWeaponComponent import SupportWeaponState
 
 class SupportWeaponMechanicWidget(SupportWeaponWidgetMeta, ComponentListener, IMechanicStatesListenerLogic, IShootingReactionsView):
-    _SUPPORT_WEAPON_UI_STATES = {SECONDARY_GUN_STATE.IDLE: MECHANICS_WIDGET_CONST.IDLE,
-     SECONDARY_GUN_STATE.READY: MECHANICS_WIDGET_CONST.READY,
-     SECONDARY_GUN_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE,
-     SECONDARY_GUN_STATE.COOLDOWN: MECHANICS_WIDGET_CONST.PREPARING,
-     SECONDARY_GUN_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE}
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)]}
+    _SUPPORT_WEAPON_UI_STATES = {SECONDARY_GUN_STATE.IDLE: MECHANICS_WIDGET_CONST.IDLE, 
+       SECONDARY_GUN_STATE.READY: MECHANICS_WIDGET_CONST.READY, 
+       SECONDARY_GUN_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE, 
+       SECONDARY_GUN_STATE.COOLDOWN: MECHANICS_WIDGET_CONST.PREPARING, 
+       SECONDARY_GUN_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)]}
 
     def __init__(self):
         super(SupportWeaponMechanicWidget, self).__init__()
@@ -51,8 +49,8 @@ class SupportWeaponMechanicWidget(SupportWeaponWidgetMeta, ComponentListener, IM
         self.__invalidateProgress(self.__getDisplayState(state), state.progress, state.timeLeft)
 
     def _populate(self):
-        self.__progressUpdaters = {MECHANICS_WIDGET_CONST.PREPARING: self.as_setPreparingProgressS,
-         MECHANICS_WIDGET_CONST.ACTIVE: self.as_setActiveProgressS}
+        self.__progressUpdaters = {MECHANICS_WIDGET_CONST.PREPARING: self.as_setPreparingProgressS, 
+           MECHANICS_WIDGET_CONST.ACTIVE: self.as_setActiveProgressS}
         super(SupportWeaponMechanicWidget, self)._populate()
 
     def _dispose(self):
@@ -60,7 +58,8 @@ class SupportWeaponMechanicWidget(SupportWeaponWidgetMeta, ComponentListener, IM
         self.__progressUpdaters.clear()
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.SUPPORT_WEAPON, self),
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.SUPPORT_WEAPON, self),
          VehicleMechanicStatesUpdater(VehicleMechanic.SUPPORT_WEAPON, self),
          HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self),
          ShootingReactionsUpdater(self)]

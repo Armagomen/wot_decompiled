@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/reserves_entry_point_presenter.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from goodies.goodie_constants import BoosterCategory
 from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import addToReserveArrayByCategory
 from gui.impl.gen import R
@@ -34,25 +31,33 @@ class ReservesEntryPointPresenter(ViewComponent[ReservesEntryPointModel]):
         return super(ReservesEntryPointPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return PersonalReservesTooltipView() if contentID == R.views.lobby.personal_reserves.PersonalReservesTooltip() else super(ReservesEntryPointPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.personal_reserves.PersonalReservesTooltip():
+            return PersonalReservesTooltipView()
+        return super(ReservesEntryPointPresenter, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(ReservesEntryPointPresenter, self)._onLoading(*args, **kwargs)
         self.__updateModel()
 
     def _getEvents(self):
-        return ((self.__boosters.onPersonalReserveTick, self.__updateModel),
-         (self.__boosters.onClanReserveTick, self.__updateClanReserves),
-         (self.__boosters.onGameModeStatusChange, self.__updateModel),
-         (self.__boosters.onBoostersDataUpdate, self.__updateModel),
-         (self.viewModel.openBoosterNavigation, self.__openBoosterNavigation))
+        return (
+         (
+          self.__boosters.onPersonalReserveTick, self.__updateModel),
+         (
+          self.__boosters.onClanReserveTick, self.__updateClanReserves),
+         (
+          self.__boosters.onGameModeStatusChange, self.__updateModel),
+         (
+          self.__boosters.onBoostersDataUpdate, self.__updateModel),
+         (
+          self.viewModel.openBoosterNavigation, self.__openBoosterNavigation))
 
     def __updateClanReserves(self):
         self.__updateModel()
 
     def __updateModel(self):
         self._hasActiveBoosters = False
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             activeBoosters = getActiveBoosters(goodiesCache=self.__goodiesCache, webController=self.__webCtrl)
             self._hasActiveBoosters = active = bool(activeBoosters)
             reservesArray = model.getReserves()

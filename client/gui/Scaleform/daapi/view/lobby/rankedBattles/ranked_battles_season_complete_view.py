@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_season_complete_view.py
-import logging
-import SoundGroups
+import logging, SoundGroups
 from gui.Scaleform.daapi.view.meta.RankedBattlesSeasonCompleteViewMeta import RankedBattlesSeasonCompleteViewMeta
 from gui.impl import backport
 from gui.ranked_battles import ranked_helpers
@@ -56,7 +53,9 @@ class RankedBattlesSeasonCompleteView(RankedBattlesSeasonCompleteViewMeta):
         webSeasonInfo = self.__rankedController.getWebSeasonProvider().seasonInfo
         if webSeasonInfo.league == UNDEFINED_LEAGUE_ID:
             webSeasonInfo = self.__rankedController.getClientSeasonInfo()
-        return backport.getNiceNumberFormat(webSeasonInfo.position) if webSeasonInfo.position else '0'
+        if webSeasonInfo.position:
+            return backport.getNiceNumberFormat(webSeasonInfo.position)
+        return '0'
 
     def __packAwards(self):
         result = []

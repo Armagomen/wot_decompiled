@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/filters/epic_battle_carousel_filter.py
 from account_helpers.AccountSettings import EPICBATTLE_CAROUSEL_FILTER_1, EPICBATTLE_CAROUSEL_FILTER_2, EPICBATTLE_CAROUSEL_FILTER_CLIENT_1, EPICBATTLE_CAROUSEL_FILTER_CLIENT_2, EPICBATTLE_CAROUSEL_FILTER_3
 from gui.filters.carousel_filter import CarouselFilter
 from helpers import dependency
@@ -11,5 +9,7 @@ class EpicBattleCarouselFilter(CarouselFilter):
     def __init__(self):
         super(EpicBattleCarouselFilter, self).__init__()
         clientFilter = EPICBATTLE_CAROUSEL_FILTER_CLIENT_1 if self.__epicController.isUnlockVehiclesInBattleEnabled() else EPICBATTLE_CAROUSEL_FILTER_CLIENT_2
-        self._serverSections = (EPICBATTLE_CAROUSEL_FILTER_1, EPICBATTLE_CAROUSEL_FILTER_2, EPICBATTLE_CAROUSEL_FILTER_3)
+        self._serverSections = (
+         EPICBATTLE_CAROUSEL_FILTER_1, EPICBATTLE_CAROUSEL_FILTER_2,
+         EPICBATTLE_CAROUSEL_FILTER_3)
         self._clientSections = (clientFilter,)

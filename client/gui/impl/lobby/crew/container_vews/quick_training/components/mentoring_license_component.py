@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/components/mentoring_license_component.py
 import typing
 from gui.impl.gen import R
 from gui.impl.lobby.container_views.base.components import ComponentBase
@@ -15,10 +13,13 @@ class MentoringLicenseComponent(ComponentBase):
         return vm.mentoringLicense
 
     def _getEvents(self):
-        return super(MentoringLicenseComponent, self)._getEvents() + ((self.viewModel.openMentoring, self.events.onMentoringClick),)
+        return super(MentoringLicenseComponent, self)._getEvents() + (
+         (
+          self.viewModel.openMentoring, self.events.onMentoringClick),)
 
     def createToolTipContent(self, event, contentID):
-        return MentoringLicenseTooltip(getMetoringLicensesAmount()) if contentID == R.views.lobby.crew.tooltips.MentoringLicenseTooltip() else None
+        if contentID == R.views.lobby.crew.tooltips.MentoringLicenseTooltip():
+            return MentoringLicenseTooltip(getMetoringLicensesAmount())
 
     def _fillViewModel(self, vm):
         amount = getMetoringLicensesAmount()

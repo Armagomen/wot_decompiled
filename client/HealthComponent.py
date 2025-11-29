@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/HealthComponent.py
 from Event import Event
 from cgf_components_common.state_components import HealthComponentDescriptor
 from cgf_script.component_meta_class import registerReplicableComponent

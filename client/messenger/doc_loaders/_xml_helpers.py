@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/doc_loaders/_xml_helpers.py
 import types
 from helpers.html import translation as html_translation
 from soft_exception import SoftException
 
 def _convertVector3ToRGB(xmlCtx, rgb, msg):
-    rgb = (int(rgb.x), int(rgb.y), int(rgb.z))
+    rgb = (
+     int(rgb.x), int(rgb.y), int(rgb.z))
     for value in rgb:
         if value < 0 or value > 255:
             raise XMLError(xmlCtx, msg)
@@ -21,7 +20,7 @@ class XMLError(SoftException):
         self.message = message
 
     def __str__(self):
-        return 'Error in {0:>s}. {1:>s}'.format(self.ctx, self.message)
+        return ('Error in {0:>s}. {1:>s}').format(self.ctx, self.message)
 
 
 class XMLCtx(object):
@@ -48,7 +47,7 @@ class XMLCtx(object):
     def __str__(self):
         path = self.__xpath[:]
         path.insert(0, self.__filePath)
-        return '/'.join(path)
+        return ('/').join(path)
 
 
 def readNoEmptyStr(xmlCtx, section, name, msg):
@@ -77,7 +76,7 @@ def readItem(xmlCtx, section, getter, converter=None, settings=None):
         if hasattr(settings, name):
             setattr(settings, name, value)
         else:
-            raise XMLError(xmlCtx, 'Settings has not attribute {0:>s}'.format(name))
+            raise XMLError(xmlCtx, ('Settings has not attribute {0:>s}').format(name))
     return (name, value)
 
 
@@ -91,7 +90,8 @@ def readFloatItem(xmlCtx, section, settings=None):
 
 def readRGBItem(xmlCtx, section, settings=None):
     name, value = readItem(xmlCtx, section, 'readVector3', settings=settings)
-    return (name, _convertVector3ToRGB(xmlCtx, value, 'Value is not valid'))
+    return (
+     name, _convertVector3ToRGB(xmlCtx, value, 'Value is not valid'))
 
 
 def readStringItem(xmlCtx, section, settings=None):
@@ -104,4 +104,5 @@ def readUnicodeItem(xmlCtx, section, settings=None):
 
 def readI18nStringItem(xmlCtx, section, settings=None):
     name, value = readItem(xmlCtx, section, 'readWideString', converter=html_translation, settings=settings)
-    return (name, value)
+    return (
+     name, value)

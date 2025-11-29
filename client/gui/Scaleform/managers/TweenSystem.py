@@ -1,16 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/managers/TweenSystem.py
-import time
-import math
-import BigWorld
-import Math
-import resource_helper
-import ResMgr
+import time, math, BigWorld, Math, resource_helper, ResMgr
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.entities.abstract.TweenManagerMeta import TweenManagerMeta
 TWEEN_CONSTRAINTS_FILE_PATH = 'gui/tween_constraints.xml'
 ERROR_NOT_SUCH_FILE = 'Not such file '
-REQUIRED_PARAMETERS = ['moveDuration',
+REQUIRED_PARAMETERS = [
+ 'moveDuration',
  'fadeDuration',
  'shadowDuration',
  'blinkingDuration',
@@ -199,7 +193,7 @@ class TweenManager(TweenManagerMeta):
                         BigWorld.cancelCallback(self.__animCallback)
                         self.__animCallback = None
                 tween.complete()
-            if tween.getPaused():
+            elif tween.getPaused():
                 self.__clearPlayStackElement(self.__playStack[tweenIdx])
                 del self.__playStack[tweenIdx]
                 if self.__playStack:
@@ -207,17 +201,18 @@ class TweenManager(TweenManagerMeta):
                 else:
                     BigWorld.cancelCallback(self.__animCallback)
                     self.__animCallback = None
-            position = tween.position
-            deltaTime = self.__lastUpdateTime - locLastUpdateTime
-            position += deltaTime
-            tween.position = position
-            if position > 0:
-                ratio = position / duration
-                if ratio >= 1:
-                    tween.isComplete = True
-                    ratio = 1
-                tween.setPropToTargetDO(self.checkAnimProps(startData, deltaData, ratio), ratio)
-            tweenIdx += 1
+            else:
+                position = tween.position
+                deltaTime = self.__lastUpdateTime - locLastUpdateTime
+                position += deltaTime
+                tween.position = position
+                if position > 0:
+                    ratio = position / duration
+                    if ratio >= 1:
+                        tween.isComplete = True
+                        ratio = 1
+                    tween.setPropToTargetDO(self.checkAnimProps(startData, deltaData, ratio), ratio)
+                tweenIdx += 1
 
         return
 
@@ -241,12 +236,12 @@ class _AbstractTween(AbstractTweenMeta):
     X = 'x'
     Y = 'y'
     NAN = 'nan'
-    PROPS_IN_USE = {X: True,
-     Y: True,
-     ROTATION: True,
-     SCALE_X: True,
-     SCALE_Y: True,
-     ALPHA: True}
+    PROPS_IN_USE = {X: True, 
+       Y: True, 
+       ROTATION: True, 
+       SCALE_X: True, 
+       SCALE_Y: True, 
+       ALPHA: True}
 
     def __init__(self, idx):
         super(_AbstractTween, self).__init__()
@@ -313,19 +308,20 @@ class _AbstractTween(AbstractTweenMeta):
     def __createStartProps(self, target):
         matrix = target.displayMatrix
         info = target.getDisplayInfo()
-        return {_AbstractTween.X: info.x,
-         _AbstractTween.Y: info.y,
-         _AbstractTween.SCALE_X: info.xScale / 100,
-         _AbstractTween.SCALE_Y: info.yScale / 100,
-         _AbstractTween.ALPHA: info.alpha,
-         _AbstractTween.ROTATION: matrix.roll}
+        return {_AbstractTween.X: info.x, 
+           _AbstractTween.Y: info.y, 
+           _AbstractTween.SCALE_X: info.xScale / 100, 
+           _AbstractTween.SCALE_Y: info.yScale / 100, 
+           _AbstractTween.ALPHA: info.alpha, 
+           _AbstractTween.ROTATION: matrix.roll}
 
     def __creatDeltaData(self):
         deltaProps = {}
         for prop in _AbstractTween.PROPS_IN_USE.iterkeys():
             if self.__animTargetProps.has_key(prop) and self.__animTargetProps[prop] is not None:
                 deltaProps[prop] = self.__animTargetProps[prop] - self.__startTargetProps[prop]
-            deltaProps[prop] = 0
+            else:
+                deltaProps[prop] = 0
 
         return deltaProps
 
@@ -507,7 +503,8 @@ class _AbstractTween(AbstractTweenMeta):
         return self.position == -self.getDelay()
 
     def getDataForAnim(self):
-        resultData = [self,
+        resultData = [
+         self,
          self.__target,
          self.getStartData(),
          self.getDeltaData(),
@@ -532,7 +529,8 @@ class _PythonTween(_AbstractTween, PythonTweenMeta):
             info.x = translation.x
             info.y = translation.y
             target.setDisplayInfo(info)
-        matrixProps = set([_AbstractTween.X,
+        matrixProps = set([
+         _AbstractTween.X,
          _AbstractTween.Y,
          _AbstractTween.ROTATION,
          _AbstractTween.SCALE_X,
@@ -544,7 +542,9 @@ class _PythonTween(_AbstractTween, PythonTweenMeta):
                 matrix.preMultiply(matrixRotation)
             if _AbstractTween.X in data:
                 matrixTranslation = Math.Matrix()
-                matrixTranslation.setTranslate((data[_AbstractTween.X] - translation.x, data[_AbstractTween.Y] - translation.y, 0))
+                matrixTranslation.setTranslate((
+                 data[_AbstractTween.X] - translation.x,
+                 data[_AbstractTween.Y] - translation.y, 0))
                 matrix.preMultiply(matrixTranslation)
             target.displayMatrix = matrix
             self.resetDisplayInfo(target)

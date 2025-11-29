@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/consumable.py
 import typing
 from wg_async import wg_async, await_callback
 from gui import shop
 from adisp import adisp_process
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.tank_setup.interactors.base import BaseAutoRenewal
@@ -43,7 +40,7 @@ class BaseConsumableInteractor(BaseEquipmentInteractor):
 
 
 class ConsumableInteractor(BaseConsumableInteractor):
-    __slots__ = ('__installedIndices',)
+    __slots__ = ('__installedIndices', )
 
     def getVehicleAfterInstall(self):
         vehicle = super(ConsumableInteractor, self).getVehicleAfterInstall()
@@ -76,7 +73,7 @@ class ConsumableInteractor(BaseConsumableInteractor):
 
     def buyMore(self, itemCD):
         if itemCD is not None:
-            shop.showBuyEquipmentOverlay(itemId=int(itemCD), source=shop.Source.EXTERNAL, origin=shop.Origin.CONSUMABLES, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB)
+            shop.showBuyEquipment(itemId=int(itemCD), source=shop.Source.EXTERNAL, origin=shop.Origin.CONSUMABLES)
         return
 
     def updateFrom(self, vehicle, onlyInstalled=True):

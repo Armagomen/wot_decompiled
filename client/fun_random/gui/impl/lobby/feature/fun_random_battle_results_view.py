@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_battle_results_view.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import ViewSettings, WindowFlags
@@ -37,11 +35,17 @@ class FunRandomBattleResultsView(ViewImpl):
 
     def createContextMenu(self, event):
         window = self.__subPresenter.createContextMenu(event)
-        return window if window is not None else super(FunRandomBattleResultsView, self).createContextMenu(event)
+        if window is not None:
+            return window
+        else:
+            return super(FunRandomBattleResultsView, self).createContextMenu(event)
 
     def createToolTipContent(self, event, contentID):
         content = self.__subPresenter.createToolTipContent(event, contentID)
-        return content if content is not None else super(FunRandomBattleResultsView, self).createToolTipContent(event, contentID)
+        if content is not None:
+            return content
+        else:
+            return super(FunRandomBattleResultsView, self).createToolTipContent(event, contentID)
 
     def _initialize(self, *args, **kwargs):
         super(FunRandomBattleResultsView, self)._initialize(*args, **kwargs)
@@ -55,7 +59,9 @@ class FunRandomBattleResultsView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def _onLoading(self, *args, **kwargs):
         super(FunRandomBattleResultsView, self)._onLoading(*args, **kwargs)

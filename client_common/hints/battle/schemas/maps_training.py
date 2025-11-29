@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/hints/battle/schemas/maps_training.py
-import enum
-import typing
+import enum, typing
 from dict2model import fields
 from dict2model import validate
 from hints_common.battle.schemas.base import HMCContextType, CommonHintPropsModel, CommonHintPropsSchema
@@ -21,14 +18,14 @@ class HintType(str, enum.Enum):
 
 
 class MTClientHintPropsModel(CommonHintPropsModel):
-    __slots__ = ('hintType',)
+    __slots__ = ('hintType', )
 
     def __init__(self, name, scope, component, unique, priority, battleTypes, hintType):
         super(MTClientHintPropsModel, self).__init__(name=name, scope=scope, component=component, unique=unique, priority=priority, battleTypes=battleTypes)
         self.hintType = hintType
 
     def _reprArgs(self):
-        return '{}, {}'.format(super(MTClientHintPropsModel, self)._reprArgs(), 'hintType={}'.format(self.hintType))
+        return ('{}, {}').format(super(MTClientHintPropsModel, self)._reprArgs(), ('hintType={}').format(self.hintType))
 
 
 class MTClientHintTextModel(ClientHintTextModel):
@@ -44,11 +41,11 @@ class MTClientHintTextModel(ClientHintTextModel):
         return self._message2
 
     def _reprArgs(self):
-        return '{}, {}'.format(super(MTClientHintTextModel, self)._reprArgs(), 'key2={}, msg2={}'.format(self.key2, self._message2))
+        return ('{}, {}').format(super(MTClientHintTextModel, self)._reprArgs(), ('key2={}, msg2={}').format(self.key2, self._message2))
 
 
 class MTClientHintSoundModel(ClientHintSoundModel):
-    __slots__ = ('notifyNewbie',)
+    __slots__ = ('notifyNewbie', )
 
     def __init__(self, fx, notify, aliveOnly, notifyNewbie):
         super(MTClientHintSoundModel, self).__init__(fx=fx, notify=notify, aliveOnly=aliveOnly)
@@ -56,10 +53,12 @@ class MTClientHintSoundModel(ClientHintSoundModel):
 
     def _createNotify(self):
         settingsCore = dependency.instance(ISettingsCore)
-        return self.notifyNewbie if self.notifyNewbie and not settingsCore.serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT, default=False) else self.notify
+        if self.notifyNewbie and not settingsCore.serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.MAPS_TRAINING_NEWBIE_HINT, default=False):
+            return self.notifyNewbie
+        return self.notify
 
     def _reprArgs(self):
-        return '{}, {}'.format(super(MTClientHintSoundModel, self)._reprArgs(), 'notifyNewbie={}'.format(self.notifyNewbie))
+        return ('{}, {}').format(super(MTClientHintSoundModel, self)._reprArgs(), ('notifyNewbie={}').format(self.notifyNewbie))
 
 
 class MTClientHintPropsSchema(CommonHintPropsSchema[MTClientHintPropsModel]):
@@ -75,7 +74,8 @@ class MTClientHintTextSchema(ClientHintTextSchema[MTClientHintTextModel]):
 
     def __init__(self):
         super(MTClientHintTextSchema, self).__init__(checkUnknown=True, modelClass=MTClientHintTextModel)
-        self._fields['key2'] = fields.String(required=False, default='', deserializedValidators=[validate.Length(minValue=1, maxValue=100), validateHintTextKey])
+        self._fields['key2'] = fields.String(required=False, default='', deserializedValidators=[
+         validate.Length(minValue=1, maxValue=100), validateHintTextKey])
 
 
 class MTClientHintSoundSchema(ClientHintSoundSchema[MTClientHintSoundModel]):
@@ -86,7 +86,8 @@ class MTClientHintSoundSchema(ClientHintSoundSchema[MTClientHintSoundModel]):
         self._fields['notifyNewbie'] = fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=50))
 
 
-class MTClientHintModel(ClientHintModel[MTClientHintPropsModel, HMCContextType, MTClientHintTextModel, CHMVisualType, MTClientHintSoundModel, CHMLifecycleType, CHMHistoryType]):
+class MTClientHintModel(ClientHintModel[(MTClientHintPropsModel, HMCContextType, MTClientHintTextModel, CHMVisualType,
+ MTClientHintSoundModel, CHMLifecycleType, CHMHistoryType)]):
     __slots__ = ()
 
     def _createVO(self, data):
@@ -97,7 +98,7 @@ class MTClientHintModel(ClientHintModel[MTClientHintPropsModel, HMCContextType, 
                     vo['message'] = self.text.message.format(count=param1, total=param2)
                 elif self.props.hintType in (HintType.TIMER_RED, HintType.TIMER_GREEN) and param1:
                     minutes, seconds = divmod(int(param1), time_utils.ONE_MINUTE)
-                    minutesStr, secondsStr = '{}'.format(minutes), '{:02d}'.format(seconds)
+                    minutesStr, secondsStr = ('{}').format(minutes), ('{:02d}').format(seconds)
                     vo['message'] = self.text.message.format(minutes=minutesStr, seconds=secondsStr)
                 else:
                     vo['message'] = self.text.message

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/page.py
 from logging import getLogger
 import BigWorld
 from aih_constants import CTRL_MODE_NAME
@@ -23,11 +21,23 @@ class DynamicAliases(CONST_CONTAINER):
     PREBATTLE_TIMER_SOUND_PLAYER = 'prebattleTimerSoundPlayer'
 
 
-ONBOARDING_CONFIG = ComponentsConfig(config=((BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.PREBATTLE_TIMER, DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, STORY_MODE_BATTLE_VIEW_ALIASES.STORY_MODE_TIMER)),
- (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
- (BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.NEWBIE_HINT,)),
- (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
- (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,))), viewsConfig=((DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer),))
+ONBOARDING_CONFIG = ComponentsConfig(config=(
+ (
+  BATTLE_CTRL_ID.ARENA_PERIOD,
+  (
+   BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
+   DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
+   STORY_MODE_BATTLE_VIEW_ALIASES.STORY_MODE_TIMER)),
+ (
+  BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
+ (
+  BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.NEWBIE_HINT,)),
+ (
+  BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+ (
+  BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,))), viewsConfig=(
+ (
+  DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer),))
 
 class OnboardingBattlePage(StoryModeBattlePageBase, ClassicPage):
     storyModeCtrl = dependency.descriptor(IStoryModeController)

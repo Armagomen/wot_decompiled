@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ArenaInfo.py
 import BigWorld
 from cgf_script.entity_dyn_components import BWEntitiyComponentTracker
 from helpers import dependency

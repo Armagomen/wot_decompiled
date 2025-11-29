@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattle/tooltips/common_blocks.py
 import typing
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import getTimeToEndStr, getTimeToStartStr
 from gui.impl import backport
@@ -42,4 +40,5 @@ def packEpicBattleSeasonBlock(epicController=None):
             description = getTimeToStr(getDate(cycle) - currentTime)
         else:
             description = backport.text(R.strings.epic_battle.tooltips.widget.finished())
-        return formatters.packBuildUpBlockData([formatters.packImageTextBlockData(desc=text_styles.main(description), padding=formatters.packPadding(left=20, right=20))])
+        return formatters.packBuildUpBlockData([
+         formatters.packImageTextBlockData(desc=text_styles.main(description), padding=formatters.packPadding(left=20, right=20))])

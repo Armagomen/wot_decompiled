@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/supply_slots_components.py
 from typing import *
 from extension_utils import ResMgr, importClass
 from ResMgr import DataSection
@@ -25,7 +23,9 @@ class SupplySlot(CategoriesHolder):
         return
 
     def __eq__(self, other):
-        return False if other is None or not isinstance(other, SupplySlot) else self.slotID == other.slotID
+        if other is None or not isinstance(other, SupplySlot):
+            return False
+        return self.slotID == other.slotID
 
     def __ne__(self, other):
         return not self == other
@@ -44,13 +44,17 @@ class SupplySlot(CategoriesHolder):
         if compDescr is None:
             compDescr = descr.compactDescr
         itemTypeID, nationID, itemID = parseIntCompactDescr(compDescr)
-        return (False, 'Item type of slot ({}) does not match type of item ({})'.format(self.itemType, itemTypeID)) if itemTypeID != self.itemType else self._checkSlotCompatibility((itemTypeID, nationID, itemID), descr)
+        if itemTypeID != self.itemType:
+            return (False, ('Item type of slot ({}) does not match type of item ({})').format(self.itemType, itemTypeID))
+        else:
+            return self._checkSlotCompatibility((itemTypeID, nationID, itemID), descr)
 
     def _checkSlotCompatibility(self, parsedCompDescr=None, descr=None):
-        return (True, None)
+        return (
+         True, None)
 
     def getSubType(self):
-        return None
+        return
 
     @staticmethod
     def initSlot(slotSection):
@@ -81,14 +85,19 @@ class OptionalDeviceSlot(SupplySlot):
 
 
 class EquipmentSlot(SupplySlot):
-    __slots__ = ('equipmentType',)
+    __slots__ = ('equipmentType', )
     itemType = ITEM_TYPES.equipment
 
     def _checkSlotCompatibility(self, parsedCompDescr=None, descr=None):
         if descr is None:
             _, _, itemID = parsedCompDescr
             descr = vehicles.g_cache.equipments()[itemID]
-        return (False, 'Equipment type of slot ({}) does not match type of item ({})'.format(self.equipmentType, descr.equipmentType)) if descr.equipmentType != self.equipmentType else (True, None)
+        if descr.equipmentType != self.equipmentType:
+            return (False,
+             ('Equipment type of slot ({}) does not match type of item ({})').format(self.equipmentType, descr.equipmentType))
+        else:
+            return (
+             True, None)
 
     def _readMeta(self, metaSection):
         equipmentType = metaSection.readString('equipmentType')
@@ -104,7 +113,10 @@ class EpicEquipmentSlot(WeakMixin):
 
     @classmethod
     def fromEquipmentSlot(cls, equipmentSlot):
-        return EpicEquipmentSlot(equipmentSlot) if isinstance(equipmentSlot, EquipmentSlot) and cls.FL_AVATAR_TAGS.issubset(equipmentSlot.tags) else None
+        if isinstance(equipmentSlot, EquipmentSlot) and cls.FL_AVATAR_TAGS.issubset(equipmentSlot.tags):
+            return EpicEquipmentSlot(equipmentSlot)
+        else:
+            return
 
     def _checkSlotCompatibility(self, parsedCompDescr=None, descr=None):
         res, _ = super(EpicEquipmentSlot, self)._checkSlotCompatibility(parsedCompDescr, descr)
@@ -147,7 +159,9 @@ class SupplySlotsCache(object):
 
     def getSlotDescrsByTags(self, itags=(), etags=()):
         itags, etags = set(itags), etags
-        return {} if not itags.isdisjoint(etags) else {i:sd for i, sd in self.__slotDescrs.iteritems() if sd.tags.isdisjoint(etags) and bool(itags) ^ sd.tags.isdisjoint(itags)}
+        if not itags.isdisjoint(etags):
+            return {}
+        return {i:sd for i, sd in self.__slotDescrs.iteritems() if sd.tags.isdisjoint(etags) and bool(itags) ^ sd.tags.isdisjoint(itags)}
 
     @property
     def categories(self):
@@ -163,5 +177,5 @@ def getSlotByItemTypeName(itemType):
     if slotType is not None:
         return slotType
     else:
-        raise SoftException("No supplySlot for type '{}'".format(itemType))
+        raise SoftException(("No supplySlot for type '{}'").format(itemType))
         return

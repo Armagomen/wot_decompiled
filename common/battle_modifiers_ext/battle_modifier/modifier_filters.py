@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/battle_modifier/modifier_filters.py
 from __future__ import absolute_import
 from future.utils import viewitems, viewvalues
 from typing import TYPE_CHECKING, Optional, Any, Tuple, Union, List, Dict
@@ -17,7 +15,8 @@ if TYPE_CHECKING:
     from battle_modifiers_common import ModifiersContext
 
 class ModificationNode(Serializable):
-    __slots__ = ('param', 'useType', 'value', 'minValue', 'maxValue', '__descr', '__id', '__valueLimiter')
+    __slots__ = ('param', 'useType', 'value', 'minValue', 'maxValue', '__descr', '__id',
+                 '__valueLimiter')
 
     def __init__(self, source, param):
         self.param = param
@@ -36,14 +35,14 @@ class ModificationNode(Serializable):
         if self.__valueLimiter:
             modifiedValue = self.__valueLimiter(modifiedValue)
         if DEBUG_MODIFIERS:
-            LOG_DEBUG('[BattleModifiers][Debug] Apply modifier {} ({} {}, min {}, max {}): {} -> {}'.format(self.param.id, UseType.ID_TO_NAME[self.useType], self.value, self.minValue if self.minValue is not None else self.param.minValue, self.maxValue if self.maxValue is not None else self.param.maxValue, value, modifiedValue))
+            LOG_DEBUG(('[BattleModifiers][Debug] Apply modifier {} ({} {}, min {}, max {}): {} -> {}').format(self.param.id, UseType.ID_TO_NAME[self.useType], self.value, self.minValue if self.minValue is not None else self.param.minValue, self.maxValue if self.maxValue is not None else self.param.maxValue, value, modifiedValue))
         return modifiedValue
 
     def __hash__(self):
         return self.id()
 
     def __repr__(self):
-        return 'ModificationNode(value = {}, useTypeName = {}, minValue = {}, maxValue = {})'.format(self.value, UseType.ID_TO_NAME[self.useType], self.minValue, self.maxValue)
+        return ('ModificationNode(value = {}, useTypeName = {}, minValue = {}, maxValue = {})').format(self.value, UseType.ID_TO_NAME[self.useType], self.minValue, self.maxValue)
 
     def descr(self):
         if self.__descr is None:
@@ -88,7 +87,9 @@ class ModificationNode(Serializable):
         return tuple(descr)
 
     def __makeId(self):
-        return hash(self.descr()) if self.param.isHashable() else 0
+        if self.param.isHashable():
+            return hash(self.descr())
+        return 0
 
     def __setLimits(self, minValue, maxValue):
         self.minValue = minValue
@@ -106,7 +107,7 @@ class ModificationNode(Serializable):
             raise SoftException(ERROR_TEMPLATE.format('Missing use type', config.name))
         useTypeName = config['useType'].asString
         if useTypeName not in UseType.NAMES:
-            raise SoftException("[BattleModifiers] Unknown use type '{}'".format(useTypeName))
+            raise SoftException(("[BattleModifiers] Unknown use type '{}'").format(useTypeName))
         return UseType.NAME_TO_ID[useTypeName]
 
     def __applyRestrictions(self, config):
@@ -139,13 +140,15 @@ class ModificationTree(Serializable):
 
     def __call__(self, value, ctx=None):
         modificationNode = self.__retrieveModificationNode(ctx)
-        return value if not modificationNode else modificationNode(value, ctx)
+        if not modificationNode:
+            return value
+        return modificationNode(value, ctx)
 
     def __hash__(self):
         return self.id()
 
     def __repr__(self):
-        return 'ModificationTree({})'.format(self.__descr)
+        return ('ModificationTree({})').format(self.__descr)
 
     def descr(self):
         return self.__descr
@@ -161,9 +164,9 @@ class ModificationTree(Serializable):
             nodeType = node[0]
             if nodeType == NodeType.ROOT:
                 self.__parseRootNode(node, resDict)
-            if nodeType == NodeType.SHELL:
+            elif nodeType == NodeType.SHELL:
                 self.__parseShellNode(node, resDict)
-            if nodeType == NodeType.VEHICLE:
+            elif nodeType == NodeType.VEHICLE:
                 self.__parseVehicleNode(node, resDict)
 
         self.nodes = resDict
@@ -187,7 +190,8 @@ class ModificationTree(Serializable):
                 for subKey, subValue in viewitems(value):
                     ids.append(hash((key + subKey, subValue)))
 
-            ids.append(hash((key, value)))
+            else:
+                ids.append(hash((key, value)))
 
         return hash(tuple(sorted(ids)))
 
@@ -198,7 +202,7 @@ class ModificationTree(Serializable):
     def __parseShellNode(self, descr, accDict):
         _, shellKeys, nodeDescr = descr
         modificationNode = ModificationNode(nodeDescr, self.param)
-        accDict.update(dict(((key, modificationNode) for key in shellKeys)))
+        accDict.update(dict((key, modificationNode) for key in shellKeys))
 
     def __parseVehicleNode(self, descr, accDict):
         _, vehicleKeys = descr[:2]
@@ -207,28 +211,32 @@ class ModificationTree(Serializable):
             nodeType = node[0]
             if nodeType == NodeType.ROOT:
                 self.__parseRootNode(node, vehicleDict)
-            if nodeType == NodeType.SHELL:
+            elif nodeType == NodeType.SHELL:
                 self.__parseShellNode(node, vehicleDict)
 
-        accDict.update(dict(((key, vehicleDict) for key in vehicleKeys)))
+        accDict.update(dict((key, vehicleDict) for key in vehicleKeys))
 
     def __readNodes(self, config, nodeType, accDict, accDescr):
         if not config.has_key(nodeType):
             return
         if not self.param.domain & NodeType.SUPPORTED_DOMAINS[nodeType]:
-            raise SoftException(ERROR_TEMPLATE.format("'{}' filters can't be used".format(nodeType), self.param.id))
+            raise SoftException(ERROR_TEMPLATE.format(("'{}' filters can't be used").format(nodeType), self.param.id))
         if nodeType == NodeType.SHELL:
             reader = self.__readShellNode
-        elif nodeType == NodeType.VEHICLE:
-            reader = self.__readVehicleNode
         else:
-            raise SoftException("[BattleModifiers] Node type '{}' is unsupported for list reading".format(nodeType))
-        for sectionName, section in config.items():
-            if sectionName == nodeType:
-                reader(section, accDict, accDescr)
+            if nodeType == NodeType.VEHICLE:
+                reader = self.__readVehicleNode
+            else:
+                raise SoftException(("[BattleModifiers] Node type '{}' is unsupported for list reading").format(nodeType))
+            for sectionName, section in config.items():
+                if sectionName == nodeType:
+                    reader(section, accDict, accDescr)
 
     def __readModificationNode(self, config):
-        return None if not config.has_key('value') and not config.has_key('useType') else ModificationNode(config, self.param)
+        if not config.has_key('value') and not config.has_key('useType'):
+            return None
+        else:
+            return ModificationNode(config, self.param)
 
     def __readRootNode(self, config, accDict, accDescr):
         rootNode = self.__readModificationNode(config)
@@ -250,7 +258,7 @@ class ModificationTree(Serializable):
         shellNode = self.__readModificationNode(config)
         if not shellNode:
             raise SoftException(ERROR_TEMPLATE.format('Shell node should contain root part', self.param.id))
-        accDict.update(dict(((key, shellNode) for key in shellKeys)))
+        accDict.update(dict((key, shellNode) for key in shellKeys))
         accDescr.append((NodeType.SHELL, tuple(shellKeys), shellNode.descr()))
 
     def __readShellFilterKeys(self, config, isImproved):
@@ -259,7 +267,7 @@ class ModificationTree(Serializable):
             return list(ShellKind.ALL_IMPROVED if isImproved else ShellKind.ALL_REGULAR)
         for key in keys:
             if key not in ShellKind.ALL_REGULAR:
-                raise SoftException(ERROR_TEMPLATE.format("Unknown shell filter key '{}'".format(key), self.param.id))
+                raise SoftException(ERROR_TEMPLATE.format(("Unknown shell filter key '{}'").format(key), self.param.id))
 
         if isImproved:
             return [ key + ShellKind.IMPROVED_POSTFIX for key in keys ]
@@ -272,12 +280,13 @@ class ModificationTree(Serializable):
         if not vehiclKeys:
             raise SoftException(ERROR_TEMPLATE.format('Some filter keys should be provided for vehicle node', self.param.id))
         vehicleDict = {}
-        vehicleDescr = [NodeType.VEHICLE, tuple(vehiclKeys)]
+        vehicleDescr = [
+         NodeType.VEHICLE, tuple(vehiclKeys)]
         self.__readRootNode(config, vehicleDict, vehicleDescr)
         self.__readNodes(config, NodeType.SHELL, vehicleDict, vehicleDescr)
         if not vehicleDict:
             raise SoftException(ERROR_TEMPLATE.format('Invalid vehicle node', self.param.id))
-        accDict.update(dict(((key, vehicleDict) for key in vehiclKeys)))
+        accDict.update(dict((key, vehicleDict) for key in vehiclKeys))
         accDescr.append(tuple(vehicleDescr))
 
     def __readVehicleFilterKeys(self, config):
@@ -287,9 +296,9 @@ class ModificationTree(Serializable):
             if g_list.isVehicleExisting(key) or key in ROLE_LABEL_TO_TYPE or key in VEHICLE_CLASSES:
                 continue
             level = parseLevelTag(key)
-            if (level is not None and MIN_VEHICLE_LEVEL) <= level <= MAX_VEHICLE_LEVEL:
+            if level is not None and MIN_VEHICLE_LEVEL <= level <= MAX_VEHICLE_LEVEL:
                 continue
-            raise SoftException(ERROR_TEMPLATE.format("Unknown vehicle filter key '{}'".format(key), self.param.id))
+            raise SoftException(ERROR_TEMPLATE.format(("Unknown vehicle filter key '{}'").format(key), self.param.id))
 
         return keys
 

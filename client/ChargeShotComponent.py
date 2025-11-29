@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ChargeShotComponent.py
-import typing
-import weakref
-import BigWorld
+import typing, weakref, BigWorld
 from constants import CHARGE_SHOT_FLAGS as FLAGS
 from constants import VEHICLE_SETTING
 from gui.battle_control.battle_constants import CANT_SHOOT_ERROR
@@ -19,7 +15,8 @@ if typing.TYPE_CHECKING:
     from items.components.gun_installation_components import GunInstallationSlot
 
 class ChargeShotState(IMechanicState):
-    __slots__ = ('flags', 'level', 'baseTime', 'endTime', 'hasCharging', 'hasShotBlock', 'canStart', 'isGunDestroyed')
+    __slots__ = ('flags', 'level', 'baseTime', 'endTime', 'hasCharging', 'hasShotBlock',
+                 'canStart', 'isGunDestroyed')
 
     def __init__(self, flags, level=0, baseTime=0.0, endTime=0.0):
         self.flags = flags
@@ -42,7 +39,7 @@ class ChargeShotState(IMechanicState):
 
     def __str__(self):
         timeLeft = self.timeLeft()
-        return 'ChargeShotState(flags={}, level={}, baseTime={}, endTime={}, canStart={}, hasShotBlock={}, timeLeft={}, progress={})'.format(bin(self.flags), self.level, self.baseTime, self.endTime, self.canStart, self.hasShotBlock, timeLeft, self.progress(timeLeft))
+        return ('ChargeShotState(flags={}, level={}, baseTime={}, endTime={}, canStart={}, hasShotBlock={}, timeLeft={}, progress={})').format(bin(self.flags), self.level, self.baseTime, self.endTime, self.canStart, self.hasShotBlock, timeLeft, self.progress(timeLeft))
 
     __repr__ = __str__
 
@@ -157,7 +154,7 @@ class ChargeShotComponent(VehicleMechanicPrefabDynamicComponent, IMechanicComman
 
 class _ChargeShotShellChangeBlocker(IShellChangeBlocker):
     session = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('__component',)
+    __slots__ = ('__component', )
 
     def __init__(self):
         self.__component = None
@@ -176,12 +173,13 @@ class _ChargeShotShellChangeBlocker(IShellChangeBlocker):
         return res
 
 
-CAN_SHOOT = (True, None)
+CAN_SHOOT = (
+ True, None)
 CANT_SHOOT = (False, CANT_SHOOT_ERROR.CHARGE_SHOT_BLOCKING)
 
 class _ChargeShotShotBlocker(IShotBlocker):
     session = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('__canShoot',)
+    __slots__ = ('__canShoot', )
 
     def __init__(self):
         self.__canShoot = CAN_SHOOT

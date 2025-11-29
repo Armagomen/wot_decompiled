@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AutoShootGunController.py
-import typing
-import BigWorld
+import typing, BigWorld
 from auto_shoot_guns.auto_shoot_guns_common import AutoShootGunState
 from constants import DEFAULT_GUN_INSTALLATION_INDEX
 from vehicles.components.component_wrappers import checkStateStatus

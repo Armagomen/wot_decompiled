@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_main_reward_view.py
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_main_reward_view_model import BattleMattersMainRewardViewModel
@@ -70,11 +67,17 @@ class BattleMattersMainRewardView(ViewImpl):
         self.__update()
 
     def _getEvents(self):
-        return ((self.viewModel.onPreview, self.onPreview),
-         (self.viewModel.onBack, self.onBack),
-         (self.viewModel.onClose, self.onClose),
-         (self.__battleMattersController.onStateChanged, self.onStateChanged),
-         (self.__eventsCache.onSyncCompleted, self.__update))
+        return (
+         (
+          self.viewModel.onPreview, self.onPreview),
+         (
+          self.viewModel.onBack, self.onBack),
+         (
+          self.viewModel.onClose, self.onClose),
+         (
+          self.__battleMattersController.onStateChanged, self.onStateChanged),
+         (
+          self.__eventsCache.onSyncCompleted, self.__update))
 
     def __update(self):
         finalQuest = self.__battleMattersController.getFinalQuest()
@@ -90,7 +93,7 @@ class BattleMattersMainRewardView(ViewImpl):
             return
         else:
             vehicleVMs = sorted(BattleMattersVehiclesBonusUIPacker.pack(vehiclesBonus), cmp=_vehiclesSortOrder)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 vehicles = tx.getVehicles()
                 vehicles.clear()
                 for vehicle in vehicleVMs:

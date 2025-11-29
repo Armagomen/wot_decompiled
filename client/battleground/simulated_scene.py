@@ -1,15 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/battleground/simulated_scene.py
-import math
-import logging
-import typing
+import math, logging, typing
 from collections import namedtuple
-import Event
-import BigWorld
-import Math
-import SimulatedVehicle
-import math_utils
-import CGF
+import Event, BigWorld, Math, SimulatedVehicle, math_utils, CGF
 from GenericComponents import Sequence, StateSwitcherComponent
 import AreaDestructibles
 from avatar_components.avatar_postmortem_component import SimulatedVehicleType
@@ -33,14 +24,9 @@ _ANIMATION_DISTANCE_UPPER_LIMIT = 8.0
 ANIMATION_DURATION_BEFORE_SHOT = 3.0
 ANIMATION_REAL_TIME_DURATION = 1.0
 DATA_POINTS_AMOUNT = 5
-_GAMEPLAY_ENTITIES_TO_HIDE = ['Vehicle',
- 'DetachedTurret',
- 'BasicMine',
- 'AreaOfEffect',
- 'AttackArtilleryFort',
- 'AttackBomber',
- 'PersonalDeathZone',
- 'ApplicationPoint']
+_GAMEPLAY_ENTITIES_TO_HIDE = [
+ 'Vehicle', 'DetachedTurret', 'BasicMine', 'AreaOfEffect', 'AttackArtilleryFort', 'AttackBomber',
+ 'PersonalDeathZone', 'ApplicationPoint']
 PostEffectSettings = namedtuple('PostEffectSettings', 'contrast, saturation, vignette')
 _logger = logging.getLogger(__name__)
 
@@ -139,7 +125,7 @@ class SimulatedScene(object):
             vehMovementData = [ point.get(realID) for point in movementData if realID in point ]
             lastSectionDuration = lastSectionT0 if shouldUseT0 else lastSectionT1
             if vehMovementData:
-                lastPointDuration = vehMovementData[-1].duration
+                lastPointDuration = vehMovementData[(-1)].duration
             else:
                 lastPointDuration = 0
             currentTurretYaw, currentGunPitch = simVehicle.simulationData_gunAngles
@@ -267,31 +253,30 @@ class SimulatedScene(object):
         rotationTuple = simulatedData.get('rotation', None)
         if positionTuple is None or publicInfo is None or rotationTuple is None:
             return
-        else:
-            avatar = BigWorld.player()
-            spaceID = avatar.spaceID
-            vehID = BigWorld.createEntity('SimulatedVehicle', spaceID, 0, positionTuple, rotationTuple, {'publicInfo': publicInfo,
-             'isPlayerVehicle': isPlayerVehicle,
-             'realVehicleID': simulatedData.get('vehicleID', None),
-             'simulationData_position': simulatedData.get('position', (0, 0, 0)),
-             'simulationData_dynAttachmentsInfo': simulatedData.get('dynAttachmentsInfo', None),
-             'simulationData_rotation': simulatedData.get('rotation', (0, 0, 0)),
-             'simulationData_velocity': simulatedData.get('velocity', (0, 0, 0)),
-             'simulationData_angVelocity': simulatedData.get('angVelocity', (0, 0, 0)),
-             'simulationData_simulationType': simulatedData.get('simulationType', None),
-             'simulationData_health': simulatedData.get('health', publicInfo['maxHealth']),
-             'simulationData_engineMode': simulatedData.get('engineMode', (1, 0)),
-             'simulationData_gunAngles': simulatedData.get('gunAngles', (0, 0)),
-             'simulationData_turretAndGunSpeed': simulatedData.get('turretAndGunSpeed', (0, 0)),
-             'simulationData_damageStickers': simulatedData.get('damageStickers', []),
-             'simulationData_brokenTracks': simulatedData.get('brokenTracks', []),
-             'simulationData_siegeState': simulatedData.get('siegeState', False),
-             'simulationData_wheelsState': simulatedData.get('wheelsState', 0),
-             'simulationData_wheelsSteering': simulatedData.get('wheelsSteering', []),
-             'simulationData_tracksInAir': simulatedData.get('trackInAir', (False, False))})
-            simulatedVehicle = BigWorld.entities.get(vehID)
-            simulatedVehicle.onAppearanceLoaded += self.vehicleLoaded
-            return vehID
+        avatar = BigWorld.player()
+        spaceID = avatar.spaceID
+        vehID = BigWorld.createEntity('SimulatedVehicle', spaceID, 0, positionTuple, rotationTuple, {'publicInfo': publicInfo, 
+           'isPlayerVehicle': isPlayerVehicle, 
+           'realVehicleID': simulatedData.get('vehicleID', None), 
+           'simulationData_position': simulatedData.get('position', (0, 0, 0)), 
+           'simulationData_dynAttachmentsInfo': simulatedData.get('dynAttachmentsInfo', None), 
+           'simulationData_rotation': simulatedData.get('rotation', (0, 0, 0)), 
+           'simulationData_velocity': simulatedData.get('velocity', (0, 0, 0)), 
+           'simulationData_angVelocity': simulatedData.get('angVelocity', (0, 0, 0)), 
+           'simulationData_simulationType': simulatedData.get('simulationType', None), 
+           'simulationData_health': simulatedData.get('health', publicInfo['maxHealth']), 
+           'simulationData_engineMode': simulatedData.get('engineMode', (1, 0)), 
+           'simulationData_gunAngles': simulatedData.get('gunAngles', (0, 0)), 
+           'simulationData_turretAndGunSpeed': simulatedData.get('turretAndGunSpeed', (0, 0)), 
+           'simulationData_damageStickers': simulatedData.get('damageStickers', []), 
+           'simulationData_brokenTracks': simulatedData.get('brokenTracks', []), 
+           'simulationData_siegeState': simulatedData.get('siegeState', False), 
+           'simulationData_wheelsState': simulatedData.get('wheelsState', 0), 
+           'simulationData_wheelsSteering': simulatedData.get('wheelsSteering', []), 
+           'simulationData_tracksInAir': simulatedData.get('trackInAir', (False, False))})
+        simulatedVehicle = BigWorld.entities.get(vehID)
+        simulatedVehicle.onAppearanceLoaded += self.vehicleLoaded
+        return vehID
 
     def __truncateMovementData(self, movementDataT0, movementDataT1):
         killerVehicle = BigWorld.entities.get(self.__simulatedKillerID) if self.__simulatedKillerID else None
@@ -306,7 +291,7 @@ class SimulatedScene(object):
             if not killerMovement or not playerMovement:
                 return (movementDataT0, movementDataT1)
             totalDistance = 0.0
-            totalDuration = killerMovement[-1].duration if killerMovement else 0.0
+            totalDuration = killerMovement[(-1)].duration if killerMovement else 0.0
             lastPosition = None
             firstIndexT0 = len(killerMovement)
             for point in reversed(killerMovement):
@@ -332,7 +317,8 @@ class SimulatedScene(object):
                     continue
                 playerDuration += point.duration
 
-            return (movementDataT0[firstIndexT0:], movementDataT1[firstIndexT1:])
+            return (
+             movementDataT0[firstIndexT0:], movementDataT1[firstIndexT1:])
 
     @staticmethod
     def __pauseParticlesAndEffects(isPause):
@@ -414,7 +400,8 @@ class SimulatedScene(object):
             gunPitchLimits = simVeh.typeDescriptor.gun.pitchLimits['absolute']
         else:
             turretYawLimits = gunPitchLimits = None
-        return (turretYawLimits, gunPitchLimits)
+        return (
+         turretYawLimits, gunPitchLimits)
 
     class _PostEffectsManager(object):
 
@@ -492,7 +479,7 @@ class SimulationAnimator(CallbackPauseManager, TimeDeltaMeter):
         self._duration = 0.0
         self.__stopTick()
         if self.__movementData:
-            endPoint = self.__movementData[-1]
+            endPoint = self.__movementData[(-1)]
             self.__setVehiclePosition(endPoint.position, endPoint.direction, endPoint.turretYaw, endPoint.gunPitch)
         self.delayCallback(0.0, self.__onFinish)
 
@@ -542,7 +529,7 @@ class SimulationAnimator(CallbackPauseManager, TimeDeltaMeter):
         rotationT = (rotationMatrixT.roll, rotationMatrixT.pitch, rotationMatrixT.yaw)
         turretRotT = Math.slerp(self._tRot0, self._tRot1, progress)
         if self._trackStates:
-            trackState = self._trackStates[self.__section + 1]
+            trackState = self._trackStates[(self.__section + 1)]
             self._simulatedVehicle.updateBrokenTracks(trackState)
         self.__setVehiclePosition(positionT, rotationT, turretRotT.yaw, turretRotT.pitch)
         leftScroll, rightScroll = self._trackScroll
@@ -551,6 +538,7 @@ class SimulationAnimator(CallbackPauseManager, TimeDeltaMeter):
         if et >= d:
             self.__initSection(self.__section + 1)
             return
+        return 0.0
 
     def __stopTick(self):
         self.clearCallbacks()
@@ -651,7 +639,7 @@ def _calculateWorldHitPoint(vehicle, segments):
         decodedPoints = DamageFromShotDecoder.parseHitPoints(points, vehicle.appearance.collisions)
         if not decodedPoints:
             return None
-        decodedPoint = decodedPoints[-1]
+        decodedPoint = decodedPoints[(-1)]
         compoundModel = vehicle.appearance.compoundModel
         decodedPointPosition = decodedPoint.matrix.translation
         compoundMatrix = Math.Matrix(compoundModel.node(decodedPoint.componentName))

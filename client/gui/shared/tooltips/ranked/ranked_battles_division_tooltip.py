@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_battles_division_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -42,7 +40,7 @@ class RankedDivisionTooltip(BlocksTooltipData):
             descKey += 'Final'
         qualBattles = sorted(self.rankedController.getQualificationQuests().keys())
         qualBattles.append(self.rankedController.getTotalQualificationBattles())
-        descText = text_styles.standard(backport.text(R.strings.ranked_battles.division.tooltip.desc.dyn(descKey).text(), battles=', '.join([ str(x) for x in qualBattles ])))
+        descText = text_styles.standard(backport.text(R.strings.ranked_battles.division.tooltip.desc.dyn(descKey).text(), battles=(', ').join([ str(x) for x in qualBattles ])))
         return formatters.packImageTextBlockData(title=descTitle, desc=descText, txtPadding=formatters.packPadding(left=10))
 
     @staticmethod

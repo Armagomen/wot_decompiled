@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/formatters/service_channel_helpers.py
 import logging
 from collections import namedtuple
 from itertools import chain
@@ -47,9 +45,10 @@ def mergeRewards(resultRewards, rewards):
     for bonusName, bonusValue in rewards.items():
         if bonusName in BONUS_MERGERS:
             BONUS_MERGERS[bonusName](resultRewards, bonusName, bonusValue, False, 1, None)
-        if bonusName == 'selectableCrewbook':
+        elif bonusName == 'selectableCrewbook':
             _mergeSelectableCrewbook(resultRewards, bonusName, bonusValue)
-        _logger.warning('BONUS_MERGERS has not bonus %s', bonusName)
+        else:
+            _logger.warning('BONUS_MERGERS has not bonus %s', bonusName)
 
     return
 
@@ -79,12 +78,11 @@ def getCustomizationItemData(itemId, customizationName):
 _CustomizationItemData = namedtuple('_CustomizationItemData', ('guiItemType', 'userName'))
 
 def getDefaultMessage(normal='', bold=''):
-    return g_settings.msgTemplates.format(DEFAULT_MESSAGE, {'normal': normal,
-     'bold': bold})
+    return g_settings.msgTemplates.format(DEFAULT_MESSAGE, {'normal': normal, 'bold': bold})
 
 
 def popCollectionEntitlements(rewards):
-    entitlements = {name:data for name, data in rewards['entitlements'].iteritems() if name.startswith(COLLECTION_ITEM_PREFIX_NAME)} if 'entitlements' in rewards else {}
+    entitlements = {name:data for name, data in rewards['entitlements'].iteritems() if name.startswith(COLLECTION_ITEM_PREFIX_NAME) if name.startswith(COLLECTION_ITEM_PREFIX_NAME)} if 'entitlements' in rewards else {}
     for eName in entitlements.iterkeys():
         rewards['entitlements'].pop(eName)
 
@@ -92,7 +90,9 @@ def popCollectionEntitlements(rewards):
 
 
 def parseTokenBonusCount(bonus, tokenName):
-    return bonus.getValue().get(tokenName, {}).get('count', 0) if isinstance(bonus, BattleTokensBonus) else 0
+    if isinstance(bonus, BattleTokensBonus):
+        return bonus.getValue().get(tokenName, {}).get('count', 0)
+    return 0
 
 
 def extractLockedStyle(data):
@@ -117,11 +117,13 @@ def getPMOperationAndQuest(operationID, chainID, questID, eventsCache=None):
     operation = eventsCache.getPersonalMissions().getOperationsForBranch(branch).get(operationID)
     if operation is None:
         return (None, None)
-    elif chainID is None:
-        return (operation, operation.getQuestsByFilter(filterFunc=lambda q: q.getID() == questID).get(questID))
     else:
+        if chainID is None:
+            return (operation, operation.getQuestsByFilter(filterFunc=lambda q: q.getID() == questID).get(questID))
         quest = operation.getQuests().get(chainID, {}).get(questID)
-        return (None, None) if quest is None else (operation, quest)
+        if quest is None:
+            return (None, None)
+        return (operation, quest)
 
 
 def getPotapovQuestPopUps(message, isQuestOfThisGroup):
@@ -131,7 +133,7 @@ def getPotapovQuestPopUps(message, isQuestOfThisGroup):
     for achievesID, achievesCount in popUPs:
         achievesRecord = DB_ID_TO_RECORD[achievesID]
         for questID, questData in data.get('detailedRewards', {}).iteritems():
-            records = [ (r.keys() if isinstance(r, dict) else [ rec[0] for rec in r ]) for r in questData.get('dossier', {}).values() ]
+            records = [ r.keys() if isinstance(r, dict) else [ rec[0] for rec in r ] for r in questData.get('dossier', {}).values() ]
             for dossierRecord in chain.from_iterable(records):
                 if achievesRecord == dossierRecord and not isQuestOfThisGroup(questID):
                     otherQuestsPopUP.add((achievesID, achievesCount))

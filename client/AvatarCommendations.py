@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarCommendations.py
 import logging
 from typing import TYPE_CHECKING
 import AccountCommands

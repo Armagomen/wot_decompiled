@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tooltips/tankman_tooltip_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.wrappers.user_list_model import UserListModel
 from gui.impl.gen.view_models.views.lobby.tooltips.tankman_tooltip_view_icon_model import TankmanTooltipViewIconModel

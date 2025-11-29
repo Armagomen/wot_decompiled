@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/machine.py
-import logging
-import operator
-import typing
+import logging, operator, typing
 from itertools import chain
 from . import states as _states
 from . import validator
@@ -137,7 +133,7 @@ class StateMachine(_states.State):
             _logger.debug('%r: %r is selected', self, transition)
             return transition
         else:
-            return None
+            return
 
     def __exit(self, transitions):
         result = []
@@ -147,7 +143,7 @@ class StateMachine(_states.State):
                 if state in result or not visitor.isDescendantOf(state, domain):
                     continue
                 isLcaParallel = visitor.getLCA(transition.getTargets() + [state]).isParallel()
-                anyTargetStateRelations = any((visitor.isDescendantOf(t, state) or visitor.isDescendantOf(state, t) for t in transition.getTargets()))
+                anyTargetStateRelations = any(visitor.isDescendantOf(t, state) or visitor.isDescendantOf(state, t) for t in transition.getTargets())
                 inDifferentSubtrees = isLcaParallel and not anyTargetStateRelations
                 if inDifferentSubtrees:
                     continue
@@ -165,7 +161,8 @@ class StateMachine(_states.State):
             for history in state.getHistoryStates():
                 historyFlag = history.getFlags() & _states.StateFlags.HISTORY_TYPE_MASK
                 if historyFlag == _states.StateFlags.DEEP_HISTORY:
-                    snapshot = [ entered for entered in self._entered if entered.isAtomic() and visitor.isDescendantOf(entered, state) ]
+                    snapshot = [ entered for entered in self._entered if entered.isAtomic() and visitor.isDescendantOf(entered, state)
+                               ]
                 else:
                     snapshot = [ entered for entered in self._entered if entered.getParent() == state ]
                 self.__history[history.getStateID()] = snapshot
@@ -183,7 +180,7 @@ class StateMachine(_states.State):
         for transition in transitions:
             transitionEnterStates = []
             self.__collect(transition, transitionEnterStates)
-            statesToEnter.update((state for state in transitionEnterStates if not ((transition.getType() == TransitionType.INTERNAL or state.getParent().isParallel()) and state in self._entered)))
+            statesToEnter.update(state for state in transitionEnterStates if not ((transition.getType() == TransitionType.INTERNAL or state.getParent().isParallel()) and state in self._entered))
 
         sortedStatesToEnter = sorted(statesToEnter, key=_states.StateEnteringSortKey)
         for state in sortedStatesToEnter:
@@ -238,14 +235,15 @@ class StateMachine(_states.State):
         else:
             transitions = history.getTransitions()
             if transitions:
-                states = (transitions[0].getTarget(),)
+                states = (
+                 transitions[0].getTarget(),)
             else:
                 states = ()
-        for state in states:
-            self.__dcollect(state, accumulation)
-            parent = state.getParent()
-            if parent is not None:
-                self.__acollect(state, parent, accumulation)
+            for state in states:
+                self.__dcollect(state, accumulation)
+                parent = state.getParent()
+                if parent is not None:
+                    self.__acollect(state, parent, accumulation)
 
         return
 

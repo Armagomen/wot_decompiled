@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/TrainingRoomBase.py
 import BigWorld
 from adisp import adisp_process
 import ArenaType
@@ -44,8 +42,8 @@ from prebattle_shared import decodeRoster
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from skeletons.helpers.statistics import IStatisticsCollector
-BATTLE_TYPES_ICONS = {PREBATTLE_TYPE.TRAINING: BATTLE_TYPES.TRAINING,
- PREBATTLE_TYPE.EPIC_TRAINING: BATTLE_TYPES.EPIC_TRAINING}
+BATTLE_TYPES_ICONS = {PREBATTLE_TYPE.TRAINING: BATTLE_TYPES.TRAINING, 
+   PREBATTLE_TYPE.EPIC_TRAINING: BATTLE_TYPES.EPIC_TRAINING}
 
 class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
     __sound_env__ = LobbySubViewEnv
@@ -78,19 +76,29 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
         return True
 
     def canSendInvite(self):
-        return self.prbEntity.getPermissions().canSendInvite() if self.prbEntity else False
+        if self.prbEntity:
+            return self.prbEntity.getPermissions().canSendInvite()
+        return False
 
     def canChangePlayerTeam(self):
-        return self.prbEntity.getPermissions().canChangePlayerTeam() if self.prbEntity else False
+        if self.prbEntity:
+            return self.prbEntity.getPermissions().canChangePlayerTeam()
+        return False
 
     def canChangeSetting(self):
-        return self.prbEntity.getPermissions().canChangeSetting() if self.prbEntity else False
+        if self.prbEntity:
+            return self.prbEntity.getPermissions().canChangeSetting()
+        return False
 
     def canStartBattle(self):
-        return self.prbEntity.getPermissions().canStartBattle() if self.prbEntity else False
+        if self.prbEntity:
+            return self.prbEntity.getPermissions().canStartBattle()
+        return False
 
     def canAssignToTeam(self, team):
-        return self.prbEntity.getPermissions().canAssignToTeam(int(team)) if self.prbEntity else False
+        if self.prbEntity:
+            return self.prbEntity.getPermissions().canAssignToTeam(int(team))
+        return False
 
     def canDestroyRoom(self):
         if self.prbEntity:
@@ -103,8 +111,8 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
         return self.prbEntity.getPlayerTeam(accID)
 
     def showPrebattleInvitationsForm(self):
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': 'training',
-         'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': 'training', 
+           'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def startTraining(self):
         self._closeWindows()
@@ -229,11 +237,11 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def _populate(self):
         super(TrainingRoomBase, self)._populate()
@@ -314,31 +322,33 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
                 vLevel = int2roman(vehicle.level)
             badge = account.getBadge()
             badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': False}) if badge else {}
-            listData.append({'accID': account.accID,
-             'dbID': account.dbID,
-             'userName': account.name,
-             'fullName': account.getFullName(),
-             'stateString': formatters.getPlayerStateString(account.state),
-             'icon': vContourIcon,
-             'vShortName': vShortName,
-             'vLevel': vLevel,
-             'tags': list(user.getTags()) if user else [],
-             'isPlayerSpeaking': bool(isPlayerSpeaking(account.dbID)),
-             'clanAbbrev': account.clanAbbrev,
-             'region': self.lobbyContext.getRegionCode(account.dbID),
-             'igrType': account.igrType,
-             'badgeVisualVO': badgeVO})
+            listData.append({'accID': account.accID, 
+               'dbID': account.dbID, 
+               'userName': account.name, 
+               'fullName': account.getFullName(), 
+               'stateString': formatters.getPlayerStateString(account.state), 
+               'icon': vContourIcon, 
+               'vShortName': vShortName, 
+               'vLevel': vLevel, 
+               'tags': list(user.getTags()) if user else [], 
+               'isPlayerSpeaking': bool(isPlayerSpeaking(account.dbID)), 
+               'clanAbbrev': account.clanAbbrev, 
+               'region': self.lobbyContext.getRegionCode(account.dbID), 
+               'igrType': account.igrType, 
+               'badgeVisualVO': badgeVO})
 
         label = ''
         if rLabel is not None:
             label = text_styles.main(backport.text(rLabel, total=text_styles.stats(str(len(listData)))))
-        result = {'listData': listData,
-         'teamLabel': label}
+        result = {'listData': listData, 
+           'teamLabel': label}
         return result
 
     def _showActionErrorMessage(self, errType=None):
-        errors = {PREBATTLE_ERRORS.ROSTER_LIMIT: (SYSTEM_MESSAGES.TRAINING_ERROR_ADDPLAYER, {}),
-         PREBATTLE_ERRORS.PLAYERS_LIMIT: (SYSTEM_MESSAGES.TRAINING_ERROR_SELECTOBSERVER, {'numPlayers': self.__getPlayersMaxCount()})}
+        errors = {PREBATTLE_ERRORS.ROSTER_LIMIT: (
+                                         SYSTEM_MESSAGES.TRAINING_ERROR_ADDPLAYER, {}), 
+           PREBATTLE_ERRORS.PLAYERS_LIMIT: (
+                                          SYSTEM_MESSAGES.TRAINING_ERROR_SELECTOBSERVER, {'numPlayers': self.__getPlayersMaxCount()})}
         errMsg = self.__getErrorClientMessageData(errType)
         if errMsg is None:
             errMsg = errors.get(errType, (SYSTEM_MESSAGES.TRAINING_ERROR_DOACTION, {}))
@@ -385,7 +395,9 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
             arenaTypeID = settings['arenaTypeID']
             arenaType = ArenaType.g_cache.get(arenaTypeID)
             comment = passCensor(settings['comment'])
-            creatorFullName, creatorClan, creatorRegion, creatorIgrType = (None, None, None, 0)
+            creatorFullName, creatorClan, creatorRegion, creatorIgrType = (None, None,
+                                                                           None,
+                                                                           0)
             creator = self.__getCreatorFromRosters()
             badgeVO = {}
             if creator:
@@ -395,26 +407,26 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
                 creatorIgrType = creator.igrType
                 badge = creator.getBadge()
                 badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': False}) if badge else {}
-            self.as_setInfoS({'isCreator': isCreator,
-             'creator': settings[PREBATTLE_SETTING_NAME.CREATOR],
-             'creatorFullName': creatorFullName,
-             'creatorClan': creatorClan,
-             'creatorRegion': creatorRegion,
-             'creatorIgrType': creatorIgrType,
-             'title': formatters.getTrainingRoomTitle(arenaType),
-             'arenaName': arenaType.name,
-             'arenaTypeID': arenaTypeID,
-             'arenaSubType': formatters.getArenaSubTypeString(arenaTypeID),
-             'battleTypeIco': self.__battleTypeIcon(settings[PREBATTLE_SETTING_NAME.BATTLE_TYPE]),
-             'additionalInfo': self.__getAdditionalInfo(),
-             'description': arenaType.description,
-             'maxPlayersCount': self.__getMaxPlayersInTeam() * 2,
-             'roundLenString': formatters.getRoundLenString(settings['roundLength']),
-             'comment': comment,
-             'arenaVoipChannels': settings[PREBATTLE_SETTING_NAME.ARENA_VOIP_CHANNELS],
-             'canChangeArenaVOIP': permissions.canChangeArenaVOIP(),
-             'isObserverModeEnabled': self._isObserverModeEnabled(),
-             'badgeVisualVO': badgeVO})
+            self.as_setInfoS({'isCreator': isCreator, 
+               'creator': settings[PREBATTLE_SETTING_NAME.CREATOR], 
+               'creatorFullName': creatorFullName, 
+               'creatorClan': creatorClan, 
+               'creatorRegion': creatorRegion, 
+               'creatorIgrType': creatorIgrType, 
+               'title': formatters.getTrainingRoomTitle(arenaType), 
+               'arenaName': arenaType.name, 
+               'arenaTypeID': arenaTypeID, 
+               'arenaSubType': formatters.getArenaSubTypeString(arenaTypeID), 
+               'battleTypeIco': self.__battleTypeIcon(settings[PREBATTLE_SETTING_NAME.BATTLE_TYPE]), 
+               'additionalInfo': self.__getAdditionalInfo(), 
+               'description': arenaType.description, 
+               'maxPlayersCount': self.__getMaxPlayersInTeam() * 2, 
+               'roundLenString': formatters.getRoundLenString(settings['roundLength']), 
+               'comment': comment, 
+               'arenaVoipChannels': settings[PREBATTLE_SETTING_NAME.ARENA_VOIP_CHANNELS], 
+               'canChangeArenaVOIP': permissions.canChangeArenaVOIP(), 
+               'isObserverModeEnabled': self._isObserverModeEnabled(), 
+               'badgeVisualVO': badgeVO})
             return
 
     def __getCreatorFromRosters(self):
@@ -424,15 +436,21 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
                 if account.isCreator:
                     return account
 
-        return None
+        return
 
     def __getAdditionalInfo(self):
         additionalInfo = getTrainingRoomHandler(self.__trainingArenaGuiType()).getAdditionalInfo()
-        return additionalInfo if additionalInfo is not None else ''
+        if additionalInfo is not None:
+            return additionalInfo
+        else:
+            return ''
 
     def __battleTypeIcon(self, prebattleType):
         icon = getTrainingRoomHandler(self.__trainingArenaGuiType()).getIcon()
-        return icon if icon is not None else BATTLE_TYPES_ICONS.get(prebattleType, BATTLE_TYPES.TRAINING)
+        if icon is not None:
+            return icon
+        else:
+            return BATTLE_TYPES_ICONS.get(prebattleType, BATTLE_TYPES.TRAINING)
 
     def __getMaxPlayersInTeam(self):
         maxPlayersInTeam = getTrainingRoomHandler(self.__trainingArenaGuiType()).getMaxPlayersInTeam()
@@ -444,7 +462,10 @@ class TrainingRoomBase(LobbySubView, TrainingRoomBaseMeta, ILegacyListener):
             return arenaType.maxPlayersInTeam
 
     def __trainingArenaGuiType(self):
-        return None if not isinstance(self.prbEntity, TrainingEntity) else self.prbEntity.getSettings()['arenaGuiType']
+        if not isinstance(self.prbEntity, TrainingEntity):
+            return None
+        else:
+            return self.prbEntity.getSettings()['arenaGuiType']
 
     def __getErrorClientMessageData(self, errorType):
         handlers = getAllTrainingRoomHandlers()

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SPGZone.py
-import math
-import BigWorld
-import Math
-import TriggersManager
+import math, BigWorld, Math, TriggersManager
 from AreaOfEffect import AreaOfEffect
 
 class SPGZone(AreaOfEffect, TriggersManager.ITriggerListener):

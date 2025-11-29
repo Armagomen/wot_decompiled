@@ -1,15 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/hangar/states.py
-import logging
-import typing
+import logging, typing
 from WeakMethod import WeakMethodProxy
 from comp7.gui.Scaleform.genConsts.COMP7_HANGAR_ALIASES import COMP7_HANGAR_ALIASES
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from comp7.gui.impl.lobby.comp7_intro_screen import Comp7IntroScreen
+from comp7.gui.impl.lobby.wci.wci_view import WCIView
 from comp7.gui.impl.lobby.comp7_no_vehicles_screen import Comp7NoVehiclesScreen
 from comp7.gui.impl.lobby.hangar.meta_tab_state import IMetaTabState
 from comp7.gui.impl.lobby.meta_view.meta_root_view import MetaRootView
-from comp7.gui.shared.event_dispatcher import showComp7InfoPage, showComp7WhatsNewScreen
+from comp7.gui.shared.event_dispatcher import showComp7InfoPage, showComp7WhatsNewScreen, showWciInfoPage
 from frameworks.state_machine import StateFlags
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -54,6 +52,7 @@ class Comp7ModeState(LobbyState):
         lsm.addState(Comp7MetaState())
         lsm.addState(Comp7StylePreviewState())
         lsm.addState(Comp7VehiclePreviewState())
+        lsm.addState(Comp7WCIState())
 
     def registerTransitions(self):
         lsm = self.getMachine()
@@ -61,12 +60,13 @@ class Comp7ModeState(LobbyState):
         comp7Hangar = lsm.getStateByCls(Comp7RootHangarState)
         parent.addNavigationTransition(comp7Hangar)
         parent.addTransition(HijackTransition(HangarState, WeakMethodProxy(self._hijackTransitionCondition)), comp7Hangar)
-        for cls in (Comp7AllVehiclesState,
-         Comp7NoVehiclesState,
-         Comp7IntroState,
-         Comp7PrimeTimeState):
+        for cls in (Comp7AllVehiclesState, Comp7NoVehiclesState, Comp7IntroState, Comp7PrimeTimeState):
             state = lsm.getStateByCls(cls)
             comp7Hangar.addNavigationTransition(state)
+
+        randomHangar = lsm.getStateByCls(HangarState)
+        wci = lsm.getStateByCls(Comp7WCIState)
+        randomHangar.addNavigationTransition(wci)
 
     def _hijackTransitionCondition(self, _):
         return self.__comp7Controller.isEnabled() and self.__comp7Controller.isModePrbActive()
@@ -98,10 +98,20 @@ class Comp7RootHangarState(LobbyState):
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(Comp7RootHangarState, self).__init__(flags=flags | LobbyStateFlags.HANGAR)
 
+    def _onEntered(self, event):
+        super(Comp7RootHangarState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.disable()
+
 
 @Comp7HangarState.parentOf
 class Comp7AllVehiclesState(LobbyState):
     STATE_ID = 'allVehicles'
+
+    def _onEntered(self, event):
+        super(Comp7AllVehiclesState, self)._onEntered(event)
+        lsm = self.getMachine()
+        lsm.getRelatedView(self).blur.enable()
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.allVehicles()))
@@ -129,6 +139,19 @@ class Comp7IntroState(GuiImplViewLobbyState):
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.intro()), infos=metaStateNavigationButtons)
+
+
+@SubScopeSubLayerState.parentOf
+class Comp7WCIState(GuiImplViewLobbyState):
+    STATE_ID = 'wci'
+    VIEW_KEY = ViewKey(R.views.comp7.mono.lobby.wci())
+
+    def __init__(self):
+        super(Comp7WCIState, self).__init__(WCIView, ScopeTemplates.LOBBY_SUB_SCOPE)
+
+    def getNavigationDescription(self):
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.wci()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showWciInfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.wci.tooltip.infoPageButton.header())),))
 
 
 @Comp7ModeState.parentOf
@@ -187,7 +210,9 @@ class Comp7MetaState(GuiImplViewLobbyState):
         Comp7MetaProgressionState.goTo()
 
 
-metaStateNavigationButtons = (LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7InfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.infoPageButton.header())), LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.QUESTION, onMoreInfoRequested=showComp7WhatsNewScreen, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.whatsNewButton.header())))
+metaStateNavigationButtons = (
+ LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7InfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.infoPageButton.header())),
+ LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.QUESTION, onMoreInfoRequested=showComp7WhatsNewScreen, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.whatsNewButton.header())))
 
 @Comp7MetaState.parentOf
 class Comp7MetaProgressionState(LobbyState, IMetaTabState):

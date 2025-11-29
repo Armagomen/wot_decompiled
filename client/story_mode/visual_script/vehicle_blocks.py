@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/visual_script/vehicle_blocks.py
 from typing import List, TYPE_CHECKING
 import weakref
 from story_mode.visual_script.enums import SMAwarenessStateEnum
@@ -12,7 +10,8 @@ if TYPE_CHECKING:
     import Vehicle
 
 class OnPlayerAwarenessStateChange(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = ['onChanged']
+    _EVENT_SLOT_NAMES = [
+     'onChanged']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerAwarenessStateChange, self).__init__(*args, **kwargs)
@@ -33,7 +32,8 @@ class OnPlayerAwarenessStateChange(TunablePlayerVehicleEventBlock, PlayerEventMe
 
 
 class OnSMReconAbilityActivated(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = ['onDeactivate', 'onActivate']
+    _EVENT_SLOT_NAMES = [
+     'onDeactivate', 'onActivate']
 
     def onStartScript(self):
         from SMReconAbilityVehicleComponent import SMReconAbilityVehicleComponent
@@ -49,7 +49,8 @@ class OnSMReconAbilityActivated(TunablePlayerVehicleEventBlock, PlayerEventMeta)
 
 
 class OnSMReconAbilitySpottedVehicles(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = ['onReconSpotVehicle']
+    _EVENT_SLOT_NAMES = [
+     'onReconSpotVehicle']
 
     def __init__(self, *args, **kwargs):
         super(OnSMReconAbilitySpottedVehicles, self).__init__(*args, **kwargs)
@@ -70,7 +71,8 @@ class OnSMReconAbilitySpottedVehicles(TunablePlayerVehicleEventBlock, PlayerEven
 
 
 class OnSMDistractionAbilityActivated(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = ['onActivate']
+    _EVENT_SLOT_NAMES = [
+     'onActivate']
 
     def __init__(self, *args, **kwargs):
         super(OnSMDistractionAbilityActivated, self).__init__(*args, **kwargs)
@@ -91,7 +93,8 @@ class OnSMDistractionAbilityActivated(TunablePlayerVehicleEventBlock, PlayerEven
 
 
 class OnSMAbilityWrongPoint(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = ['onPlaced']
+    _EVENT_SLOT_NAMES = [
+     'onPlaced']
 
     def __init__(self, *args, **kwargs):
         super(OnSMAbilityWrongPoint, self).__init__(*args, **kwargs)

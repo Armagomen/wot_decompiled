@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/attack_artillery_fort_components.py
-import CGF
-import GenericComponents
-import Math
+import CGF, GenericComponents, Math
 from GenericComponents import EntityGOSync
 from cache import cached_property
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent

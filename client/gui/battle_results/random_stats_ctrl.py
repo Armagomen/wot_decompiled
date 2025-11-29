@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/random_stats_ctrl.py
 import typing
 from soft_exception import SoftException
 from gui.battle_results.pbs_helpers.common import pushNoBattleResultsDataMessage
@@ -40,4 +38,4 @@ class RandomBattleResultStatsCtrl(IBattleResultStatsCtrl):
 
     @staticmethod
     def onShowResults(arenaUniqueID):
-        return None
+        return

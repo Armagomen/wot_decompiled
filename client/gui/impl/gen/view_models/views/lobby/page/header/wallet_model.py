@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/page/header/wallet_model.py
 from frameworks.wulf import Map, ViewModel
 from gui.impl.gen.view_models.views.lobby.page.header.currency_model import CurrencyModel
 
 class WalletModel(ViewModel):
-    __slots__ = ('onCurrencyAction',)
+    __slots__ = ('onCurrencyAction', )
 
     def __init__(self, properties=1, commands=1):
         super(WalletModel, self).__init__(properties=properties, commands=commands)

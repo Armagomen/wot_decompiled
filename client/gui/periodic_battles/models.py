@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/periodic_battles/models.py
 import logging
 from functools import partial
 import typing
@@ -45,14 +43,14 @@ class PeriodType(Enum):
     STANDALONE_NOT_SET = 'standaloneNotSet'
 
 
-PERIOD_TO_STANDALONE = {PeriodType.FROZEN: PeriodType.FROZEN,
- PeriodType.AVAILABLE: PeriodType.AVAILABLE,
- PeriodType.NOT_AVAILABLE: PeriodType.STANDALONE_NOT_AVAILABLE,
- PeriodType.ALL_NOT_AVAILABLE: PeriodType.STANDALONE_NOT_AVAILABLE,
- PeriodType.NOT_SET: PeriodType.STANDALONE_NOT_SET,
- PeriodType.ALL_NOT_SET: PeriodType.STANDALONE_NOT_SET,
- PeriodType.NOT_AVAILABLE_END: PeriodType.STANDALONE_NOT_AVAILABLE_END,
- PeriodType.ALL_NOT_AVAILABLE_END: PeriodType.STANDALONE_NOT_AVAILABLE_END}
+PERIOD_TO_STANDALONE = {PeriodType.FROZEN: PeriodType.FROZEN, 
+   PeriodType.AVAILABLE: PeriodType.AVAILABLE, 
+   PeriodType.NOT_AVAILABLE: PeriodType.STANDALONE_NOT_AVAILABLE, 
+   PeriodType.ALL_NOT_AVAILABLE: PeriodType.STANDALONE_NOT_AVAILABLE, 
+   PeriodType.NOT_SET: PeriodType.STANDALONE_NOT_SET, 
+   PeriodType.ALL_NOT_SET: PeriodType.STANDALONE_NOT_SET, 
+   PeriodType.NOT_AVAILABLE_END: PeriodType.STANDALONE_NOT_AVAILABLE_END, 
+   PeriodType.ALL_NOT_AVAILABLE_END: PeriodType.STANDALONE_NOT_AVAILABLE_END}
 
 @ReprInjector.simple('userName', 'timestamp', 'techData')
 class PeriodBorder(object):
@@ -62,10 +60,10 @@ class PeriodBorder(object):
     def __init__(self, userName, timestamp):
         self.userName = userName
         self.timestamp = timestamp
-        self.techData = {'Name': '',
-         'Time': '',
-         'Date': '',
-         'Delta': ''}
+        self.techData = {'Name': '', 
+           'Time': '', 
+           'Date': '', 
+           'Delta': ''}
 
     def delta(self, now):
         return abs(now - self.timestamp)
@@ -78,7 +76,8 @@ class PeriodBorder(object):
 
 @ReprInjector.simple('now', 'periodType', 'seasonBorderLeft', 'seasonBorderRight', 'cycleBorderLeft', 'cycleBorderRight', 'primeDelta')
 class PeriodInfo(object):
-    __slots__ = ('now', 'periodType', 'seasonBorderLeft', 'seasonBorderRight', 'cycleBorderLeft', 'cycleBorderRight', 'primeDelta', 'borders')
+    __slots__ = ('now', 'periodType', 'seasonBorderLeft', 'seasonBorderRight', 'cycleBorderLeft',
+                 'cycleBorderRight', 'primeDelta', 'borders')
 
     def __init__(self, now, pType, seasonLeft=None, seasonRight=None, cycleLeft=None, cycleRight=None, primeDelta=0):
         self.now = now
@@ -88,11 +87,8 @@ class PeriodInfo(object):
         self.cycleBorderLeft = self.__addBorderTechName(cycleLeft, 'leftCycle')
         self.cycleBorderRight = self.__addBorderTechName(cycleRight, 'rightCycle')
         self.primeDelta = primeDelta
-        bordersWithNones = (self.seasonBorderLeft,
-         self.cycleBorderLeft,
-         self.cycleBorderRight,
-         self.seasonBorderRight)
-        self.borders = tuple((border for border in bordersWithNones if border is not None))
+        bordersWithNones = (self.seasonBorderLeft, self.cycleBorderLeft, self.cycleBorderRight, self.seasonBorderRight)
+        self.borders = tuple(border for border in bordersWithNones if border is not None)
 
     @staticmethod
     def defaultDeltaFormatter(resRoot):
@@ -100,19 +96,31 @@ class PeriodInfo(object):
 
     @staticmethod
     def leftSeasonBorder(season):
-        return PeriodBorder(season.getUserName(), season.getStartDate()) if season else None
+        if season:
+            return PeriodBorder(season.getUserName(), season.getStartDate())
+        else:
+            return
 
     @staticmethod
     def rightSeasonBorder(season):
-        return PeriodBorder(season.getUserName(), season.getEndDate()) if season else None
+        if season:
+            return PeriodBorder(season.getUserName(), season.getEndDate())
+        else:
+            return
 
     @staticmethod
     def leftCycleBorder(cycle):
-        return PeriodBorder(cycle.getUserName(), cycle.startDate) if cycle else None
+        if cycle:
+            return PeriodBorder(cycle.getUserName(), cycle.startDate)
+        else:
+            return
 
     @staticmethod
     def rightCycleBorder(cycle):
-        return PeriodBorder(cycle.getUserName(), cycle.endDate) if cycle else None
+        if cycle:
+            return PeriodBorder(cycle.getUserName(), cycle.endDate)
+        else:
+            return
 
     def getVO(self, withBNames=False, withBDeltas=False, deltaFmt=None, timeFmt=None, dateFmt=None):
         result = self.__buildNames() if withBNames else {}
@@ -168,12 +176,15 @@ class PrimeTime(object):
             currentPeriod = findFirst(lambda (pS, pE): pS <= forTime < pE, periodsIter)
             if currentPeriod is not None:
                 _, currentPeriodEnd = currentPeriod
-                return (True, currentPeriodEnd - forTime)
+                return (
+                 True, currentPeriodEnd - forTime)
             nextPeriod = first(periods)
             if nextPeriod is not None:
                 nextPeriodStart, _ = nextPeriod
-                return (False, nextPeriodStart - forTime)
-        return (False, 0)
+                return (
+                 False, nextPeriodStart - forTime)
+        return (
+         False, 0)
 
     def getNextPeriodStart(self, fromTime, tillTime, includeBeginning=False):
         periods = self.getPeriodsBetween(fromTime, tillTime, includeBeginning=includeBeginning)
@@ -219,16 +230,14 @@ class PrimeTime(object):
 class AlertData(object):
     _RES_ROOT = None
     _PERIOD_TYPES_WITH_BUTTON = (PeriodType.NOT_AVAILABLE, PeriodType.NOT_AVAILABLE_END, PeriodType.NOT_SET)
-    _PERIOD_TYPES_PRIME_ALERT = (PeriodType.AVAILABLE,
-     PeriodType.NOT_AVAILABLE_END,
-     PeriodType.NOT_SET,
-     PeriodType.ALL_NOT_SET,
-     PeriodType.STANDALONE_NOT_SET,
-     PeriodType.NOT_AVAILABLE,
-     PeriodType.ALL_NOT_AVAILABLE,
-     PeriodType.STANDALONE_NOT_AVAILABLE)
+    _PERIOD_TYPES_PRIME_ALERT = (
+     PeriodType.AVAILABLE, PeriodType.NOT_AVAILABLE_END,
+     PeriodType.NOT_SET, PeriodType.ALL_NOT_SET, PeriodType.STANDALONE_NOT_SET,
+     PeriodType.NOT_AVAILABLE, PeriodType.ALL_NOT_AVAILABLE, PeriodType.STANDALONE_NOT_AVAILABLE)
     _RES_REASON_ROOT = None
-    __slots__ = ('state', 'alertIcon', 'buttonIcon', 'buttonLabel', 'buttonVisible', 'buttonTooltip', 'statusText', 'additionalText', 'popoverAlias', 'bgVisible', 'shadowFilterVisible', 'tooltip', 'isSimpleTooltip')
+    __slots__ = ('state', 'alertIcon', 'buttonIcon', 'buttonLabel', 'buttonVisible',
+                 'buttonTooltip', 'statusText', 'additionalText', 'popoverAlias',
+                 'bgVisible', 'shadowFilterVisible', 'tooltip', 'isSimpleTooltip')
 
     def __init__(self, state=ALERTMESSAGE_CONSTANTS.ALERT_MESSAGE_STATE_DEFAULT, alertIcon=None, buttonIcon='', buttonLabel='', buttonVisible=False, buttonTooltip=None, statusText='', additionalText='', popoverAlias=None, bgVisible=True, shadowFilterVisible=False, tooltip=None, isSimpleTooltip=False):
         self.state = state
@@ -264,23 +273,22 @@ class AlertData(object):
 
     @classmethod
     def packCallbacks(cls, onBtnClickCallback=None, onBlockClickCallback=None):
-        return {'onButtonClick': onBtnClickCallback,
-         'onBlockClick': onBlockClickCallback}
+        return {'onButtonClick': onBtnClickCallback, 'onBlockClick': onBlockClickCallback}
 
     def asDict(self):
-        return {'state': self.state,
-         'alertIcon': self.alertIcon,
-         'buttonIcon': self.buttonIcon,
-         'buttonLabel': self.buttonLabel,
-         'buttonVisible': self.buttonVisible,
-         'buttonTooltip': self.buttonTooltip,
-         'statusText': self.statusText,
-         'additionalText': self.additionalText,
-         'popoverAlias': self.popoverAlias,
-         'bgVisible': self.bgVisible,
-         'shadowFilterVisible': self.shadowFilterVisible,
-         'tooltip': self.tooltip,
-         'isSimpleTooltip': self.isSimpleTooltip}
+        return {'state': self.state, 
+           'alertIcon': self.alertIcon, 
+           'buttonIcon': self.buttonIcon, 
+           'buttonLabel': self.buttonLabel, 
+           'buttonVisible': self.buttonVisible, 
+           'buttonTooltip': self.buttonTooltip, 
+           'statusText': self.statusText, 
+           'additionalText': self.additionalText, 
+           'popoverAlias': self.popoverAlias, 
+           'bgVisible': self.bgVisible, 
+           'shadowFilterVisible': self.shadowFilterVisible, 
+           'tooltip': self.tooltip, 
+           'isSimpleTooltip': self.isSimpleTooltip}
 
     @classmethod
     def _getAlertLabel(cls, periodInfo, serverShortName):
@@ -294,4 +302,4 @@ class AlertData(object):
 
     @classmethod
     def _getTooltip(cls, periodInfo):
-        return None
+        return

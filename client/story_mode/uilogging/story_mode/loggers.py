@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/uilogging/story_mode/loggers.py
-import json
-import typing
+import json, typing
 from gui.game_loading import loading as gameLoading
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
@@ -19,7 +16,7 @@ def _getBattlesInfo():
 
 
 class BaseMetricsLogger(MetricsLogger):
-    __slots__ = ('_item',)
+    __slots__ = ('_item', )
     _storyModeCtrl = dependency.descriptor(IStoryModeController)
 
     def __init__(self, item):
@@ -29,7 +26,7 @@ class BaseMetricsLogger(MetricsLogger):
 
 
 class WindowLogger(BaseMetricsLogger):
-    __slots__ = ('_isOpened',)
+    __slots__ = ('_isOpened', )
 
     def __init__(self, item):
         super(WindowLogger, self).__init__(item)

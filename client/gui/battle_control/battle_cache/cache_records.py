@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/battle_cache/cache_records.py
 from collections import defaultdict
-import struct
-import weakref
+import struct, weakref
 from debug_utils import LOG_ERROR
 from gui.battle_control.battle_constants import CACHE_RECORDS_IDS
 from helpers import dependency

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/mapbox/carousel_data_provider.py
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.Scaleform.daapi.view.lobby.hangar.carousels.battle_pass.carousel_data_provider import BattlePassCarouselDataProvider
 from gui.Scaleform.daapi.view.lobby.hangar.carousels.carousel_helpers import getUnsuitable2queueTooltip
@@ -11,7 +9,8 @@ class MapboxCarouselDataProvider(BattlePassCarouselDataProvider):
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (cls._isSuitableForQueue(vehicle),
+        return (
+         cls._isSuitableForQueue(vehicle),
          not vehicle.isInInventory,
          not vehicle.isEvent,
          not vehicle.isOnlyForBattleRoyaleBattles,

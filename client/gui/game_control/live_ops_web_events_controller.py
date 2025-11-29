@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/live_ops_web_events_controller.py
 import BigWorld
 from enum import Enum
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES
@@ -99,7 +97,8 @@ class LiveOpsWebEventsController(Notifiable, ILiveOpsWebEventsController):
     def isHighQualityPreset(self):
         if self.__isHighQualityPreset is None:
             presetIdx = BigWorld.detectGraphicsPresetFromSystemSettings()
-            lowQualityPresets = [ BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in _LOW_QUALITY_PRESETS ]
+            lowQualityPresets = [ BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in _LOW_QUALITY_PRESETS
+                                ]
             self.__isHighQualityPreset = presetIdx not in lowQualityPresets
         return self.__isHighQualityPreset
 
@@ -157,10 +156,12 @@ class LiveOpsWebEventsController(Notifiable, ILiveOpsWebEventsController):
         time = self.__getTimeNow()
         if 0 < self.preEventStart < time < self.eventStart:
             return EventState.PRE_EVENT
-        elif self.eventStart < time < self.eventEnd:
-            return EventState.EVENT_ACTIVE
         else:
-            return EventState.POST_EVENT if self.eventEnd < time < self.postEventEnd else None
+            if self.eventStart < time < self.eventEnd:
+                return EventState.EVENT_ACTIVE
+            if self.eventEnd < time < self.postEventEnd:
+                return EventState.POST_EVENT
+            return
 
     def __getTimerDelta(self):
         if self.isEnabled():
@@ -175,6 +176,7 @@ class LiveOpsWebEventsController(Notifiable, ILiveOpsWebEventsController):
             elif timeNow < self.postEventEnd:
                 startTime = self.postEventEnd
             return max(0, startTime - timeNow)
+        return 0
 
     @staticmethod
     def __getTimeNow():

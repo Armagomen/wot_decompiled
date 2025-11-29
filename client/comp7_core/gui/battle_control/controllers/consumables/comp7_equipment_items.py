@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/battle_control/controllers/consumables/comp7_equipment_items.py
-import logging
-import BigWorld
+import logging, BigWorld
 from PlayerEvents import g_playerEvents
 from comp7_core_constants import ROLE_EQUIPMENT_TAG
 from constants import EQUIPMENT_STAGES
@@ -37,10 +34,9 @@ class Comp7RoleSkillCooldown(_ActivationError):
 
 
 class _RoleSkillVSItem(_VisualScriptItem):
-    __FORBIDDEN_STAGES_TO_ACTIVATE = (EQUIPMENT_STAGES.COOLDOWN,
-     EQUIPMENT_STAGES.ACTIVE,
-     EQUIPMENT_STAGES.UNAVAILABLE,
-     EQUIPMENT_STAGES.STARTUP_COOLDOWN)
+    __FORBIDDEN_STAGES_TO_ACTIVATE = (
+     EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.ACTIVE,
+     EQUIPMENT_STAGES.UNAVAILABLE, EQUIPMENT_STAGES.STARTUP_COOLDOWN)
 
     def update(self, quantity, stage, timeRemaining, totalTime):
         prevQuantity = self._prevQuantity
@@ -53,7 +49,9 @@ class _RoleSkillVSItem(_VisualScriptItem):
             return Comp7RoleSkillUnavailable(self._descriptor.userString)
         if self._stage == EQUIPMENT_STAGES.ACTIVE:
             return Comp7RoleSkillAlreadyActivated(self._descriptor.userString)
-        return Comp7RoleSkillCooldown(self._descriptor.userString) if self._stage in (EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.STARTUP_COOLDOWN) else super(_RoleSkillVSItem, self)._getErrorMsg()
+        if self._stage in (EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.STARTUP_COOLDOWN):
+            return Comp7RoleSkillCooldown(self._descriptor.userString)
+        return super(_RoleSkillVSItem, self)._getErrorMsg()
 
     def getQuantity(self):
         component = self._getComponent()
@@ -64,7 +62,9 @@ class _RoleSkillVSItem(_VisualScriptItem):
             return int(available)
 
     def canActivate(self, entityName=None, avatar=None):
-        return (False, self._getErrorMsg()) if self._stage in self.__FORBIDDEN_STAGES_TO_ACTIVATE else super(_RoleSkillVSItem, self).canActivate(entityName, avatar)
+        if self._stage in self.__FORBIDDEN_STAGES_TO_ACTIVATE:
+            return (False, self._getErrorMsg())
+        return super(_RoleSkillVSItem, self).canActivate(entityName, avatar)
 
 
 class _DeferredRoleSkillVSItem(_RoleSkillVSItem):
@@ -107,7 +107,7 @@ class _RoleSkillArtyVSItem(_DeferredRoleSkillVSItem):
         return MapCaseControlMode
 
     def getMarker(self):
-        pass
+        return 'artillery_fort_ally'
 
     def getMarkerColor(self):
         return BATTLE_MARKERS_CONSTS.COLOR_GREEN
@@ -132,7 +132,7 @@ class _ReplayRoleSkillVSItem(_ReplayItem, _RoleSkillVSItem):
 class _ReplayRoleSkillArtyVSItem(_ReplayRoleSkillVSItem):
 
     def getMarker(self):
-        pass
+        return 'artillery_fort_ally'
 
 
 _ROLE_SKILL_ITEM_CLASS_BY_NAME = {}

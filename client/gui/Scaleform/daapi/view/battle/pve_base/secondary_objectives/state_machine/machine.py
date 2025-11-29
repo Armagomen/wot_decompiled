@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/secondary_objectives/state_machine/machine.py
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.machine import BaseTimerStateMachine
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.transitions import PostponedTransition, CountdownTimerCondition, RegularTimerCondition
 from gui.Scaleform.daapi.view.battle.pve_base.secondary_objectives.state_machine import states

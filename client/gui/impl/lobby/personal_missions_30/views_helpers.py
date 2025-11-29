@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/views_helpers.py
 import itertools
 from collections import OrderedDict, namedtuple
 from typing import TYPE_CHECKING
@@ -60,7 +58,7 @@ def markBannerAnimationShown(animationKey, reset=False, settingsCore=None):
 
 
 def isVehDetailInstalled(lastInstalledDetail, detail):
-    return int(detail.rsplit(':')[-1]) <= lastInstalledDetail
+    return int(detail.rsplit(':')[(-1)]) <= lastInstalledDetail
 
 
 def firstUnclaimedOperation(operation, operations):
@@ -80,16 +78,16 @@ def getMissionConfigData(mission):
         initData = conditionsCfg.get('initData')
         if not allQuestsRequired:
             allQuestsRequired = not initData.get('isInOrGroup')
-        questID = '{}_{}'.format(mission.getGeneralQuestID(), conditionsCfg.get('progressID'))
-        missionQuests[questID] = {'title': initData.get('title'),
-         'description': initData.get('description'),
-         'icon': initData.get('iconID')}
+        questID = ('{}_{}').format(mission.getGeneralQuestID(), conditionsCfg.get('progressID'))
+        missionQuests[questID] = {'title': initData.get('title'), 
+           'description': initData.get('description'), 
+           'icon': initData.get('iconID')}
 
     return ConditionsConfig(maxProgressValue, allQuestsRequired, missionQuests)
 
 
 def getDetailNameByToken(token):
-    return '_'.join(token.split(':')[2:])
+    return ('_').join(token.split(':')[2:])
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
@@ -138,7 +136,8 @@ def getMainRewardInfo(operation, allOperations, rewardType):
     elif rewardType == RewardsType.OPERATION:
         completedTasks = len(operation.getCompletedQuests())
         tasksNumber = len(list(itertools.chain.from_iterable(operation.getQuests().values())))
-    return (completedTasks, tasksNumber)
+    return (
+     completedTasks, tasksNumber)
 
 
 def getNextNotStartedOperation(currentOperation, operations):
@@ -171,7 +170,7 @@ def showRewardVehicleInHangar(operation, itemsCache=None):
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def isPMCampaignsStarted(branches=PM_BRANCH.V1_BRANCHES, eventsCache=None):
-    return any((operation for operation in eventsCache.getPersonalMissions().getAllOperations(branches=branches).values() if operation.isStarted()))
+    return any(operation for operation in eventsCache.getPersonalMissions().getAllOperations(branches=branches).values() if operation.isStarted())
 
 
 def setVideoOverlayOn():
@@ -182,12 +181,39 @@ def setVideoOverlayOff():
     SoundGroups.g_instance.setState(StatesGroup.VIDEO_OVERLAY, States.VIDEO_OVERLAY_OFF)
 
 
-def isOperationAvailableByVehicles(operation):
-    return isPMCampaignsStarted(branches=PM_BRANCH.ALL) or operation.hasRequiredVehicles() if operation.getBranch() == PM_BRANCH.PERSONAL_MISSION_3 else operation.hasRequiredVehicles()
+def isOperationAvailableByVehicles--- This code section failed: ---
+
+ L. 210         0  LOAD_FAST             0  'operation'
+                3  LOAD_ATTR             0  'getBranch'
+                6  CALL_FUNCTION_0       0  None
+                9  LOAD_GLOBAL           1  'PM_BRANCH'
+               12  LOAD_ATTR             2  'PERSONAL_MISSION_3'
+               15  COMPARE_OP            2  ==
+               18  POP_JUMP_IF_FALSE    49  'to 49'
+               21  LOAD_GLOBAL           3  'isPMCampaignsStarted'
+               24  LOAD_CONST               'branches'
+               27  LOAD_GLOBAL           1  'PM_BRANCH'
+               30  LOAD_ATTR             4  'ALL'
+               33  CALL_FUNCTION_256   256  None
+               36  JUMP_IF_TRUE_OR_POP    58  'to 58'
+               39  LOAD_FAST             0  'operation'
+               42  LOAD_ATTR             5  'hasRequiredVehicles'
+               45  CALL_FUNCTION_0       0  None
+               48  RETURN_END_IF    
+             49_0  COME_FROM            36  '36'
+             49_1  COME_FROM            18  '18'
+
+ L. 211        49  LOAD_FAST             0  'operation'
+               52  LOAD_ATTR             5  'hasRequiredVehicles'
+               55  CALL_FUNCTION_0       0  None
+               58  RETURN_VALUE     
+               -1  RETURN_LAST      
+
+Parse error at or near `None' instruction at offset -1
 
 
 def getStageNumberByDetailId(detailId):
-    return int(detailId.split('_')[-1])
+    return int(detailId.split('_')[(-1)])
 
 
 def hasAssemblingVideo(operationID, stageNumber):
@@ -232,4 +258,5 @@ def getRegularQuestsPMPoints(missionType, eventsCache=None):
                 if quest.isCompleted():
                     earnedPoints += points
 
-    return (earnedPoints, totalPoints)
+    return (
+     earnedPoints, totalPoints)# Decompile failed :(

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/MemoryCriticalController.py
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from debug_utils import LOG_NOTE, LOG_CURRENT_EXCEPTION, LOG_ERROR
 from helpers import dependency
 from skeletons.gui.game_control import IGameSessionController
@@ -38,15 +35,16 @@ class MemoryCriticalController(object):
             return
         self.__selfCheckInProgress = False
         self.__needReboot = True
-        self.__loweredSettings = [ t for t in BigWorld.graphicsSettings() if t[0] == 'TEXTURE_QUALITY' ]
+        self.__loweredSettings = [ t for t in BigWorld.graphicsSettings() if t[0] == 'TEXTURE_QUALITY'
+                                 ]
         texQuality = BigWorld.getGraphicsSetting('TEXTURE_QUALITY')
         isLowPreset = BigWorld.isForwardPipeline() or BigWorld.isSimplifiedPipeline()
         textureSettings = [ t for t in self.__loweredSettings if t[0] == 'TEXTURE_QUALITY' ][0][2]
         textureMinQuality = len(textureSettings) - 1
         if textureSettings[textureMinQuality][0] == 'OFF':
             textureMinQuality -= 1
-        while 1:
-            (textureSettings[textureMinQuality][1] is False or isLowPreset and textureSettings[textureMinQuality][2] is True) and textureMinQuality -= 1
+        while textureSettings[textureMinQuality][1] is False or isLowPreset and textureSettings[textureMinQuality][2] is True:
+            textureMinQuality -= 1
 
         if textureMinQuality < texQuality:
             textureMinQuality = texQuality
@@ -74,7 +72,8 @@ class MemoryCriticalController(object):
             if self.__setGraphicsSetting(label, originalIndex):
                 commit = True
                 LOG_NOTE('The setting was restored to the original value.', label, self.__getLoweredOptionLabel(label, originalIndex))
-            LOG_ERROR('The setting was not restored to the original value.', label, self.__getLoweredOptionLabel(label, originalIndex), BigWorld.getGraphicsSetting(label), self.__getLoweredOption(label))
+            else:
+                LOG_ERROR('The setting was not restored to the original value.', label, self.__getLoweredOptionLabel(label, originalIndex), BigWorld.getGraphicsSetting(label), self.__getLoweredOption(label))
 
         if commit:
             BigWorld.commitPendingGraphicsSettings()
@@ -118,7 +117,9 @@ class MemoryCriticalController(object):
 
     def __getLoweredOptionLabel(self, token, index):
         options = self.__getLoweredOption(token)
-        return options[index][0] if -1 < index < len(options) else str(index)
+        if -1 < index < len(options):
+            return options[index][0]
+        return str(index)
 
 
 g_critMemHandler = MemoryCriticalController()

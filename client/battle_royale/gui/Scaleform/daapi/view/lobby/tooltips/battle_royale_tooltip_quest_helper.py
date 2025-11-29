@@ -1,12 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/tooltips/battle_royale_tooltip_quest_helper.py
 from gui.shared.tooltips import formatters
 from gui.shared.formatters import text_styles, icons
 from gui.server_events.awards_formatters import AWARDS_SIZES, getEpicViewAwardPacker
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 
 def getQuestTooltipBlock(quest):
-    return formatters.packBuildUpBlockData([_packQuestInfo(quest), _packQuestRewards(quest)])
+    return formatters.packBuildUpBlockData([
+     _packQuestInfo(quest),
+     _packQuestRewards(quest)])
 
 
 def _packQuestInfo(quest):
@@ -36,4 +36,5 @@ def _packQuestReward(bonus):
         padding = formatters.packPadding(top=-14)
     iconBlock = formatters.packQuestRewardItemBlockData(img=bonus.getImage(AWARDS_SIZES.SMALL), overlayPath=bonus.getOverlayIcon(AWARDS_SIZES.SMALL), overlayPadding=formatters.packPadding(left=-24, top=-24), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
     textBlock = formatters.packAlignedTextBlockData(text=bonus.getFormattedLabel(), align=align, padding=padding)
-    return formatters.packBuildUpBlockData(blocks=[iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))
+    return formatters.packBuildUpBlockData(blocks=[
+     iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))

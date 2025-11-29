@@ -1,19 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/customization/slots.py
-import logging
-import Math
+import logging, Math
 from shared_utils import first
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_constants import ProjectionDecalFormTags, SLOT_DEFAULT_ALLOWED_MODEL, ProjectionDecalMatchingTags
 from gui.shared.gui_items.customization import directionByTag
 _logger = logging.getLogger(__name__)
-SLOT_ASPECT_RATIO = {GUI_ITEM_TYPE.EMBLEM: 1.0,
- GUI_ITEM_TYPE.INSCRIPTION: 0.5}
-FORMFACTOR_ASPECT_RATIO = {ProjectionDecalFormTags.SQUARE: 1.0,
- ProjectionDecalFormTags.RECT1X2: 1.0 / 2,
- ProjectionDecalFormTags.RECT1X3: 1.0 / 3,
- ProjectionDecalFormTags.RECT1X4: 1.0 / 4,
- ProjectionDecalFormTags.RECT1X6: 1.0 / 6}
+SLOT_ASPECT_RATIO = {GUI_ITEM_TYPE.EMBLEM: 1.0, 
+   GUI_ITEM_TYPE.INSCRIPTION: 0.5}
+FORMFACTOR_ASPECT_RATIO = {ProjectionDecalFormTags.SQUARE: 1.0, 
+   ProjectionDecalFormTags.RECT1X2: 1.0 / 2, 
+   ProjectionDecalFormTags.RECT1X3: 1.0 / 3, 
+   ProjectionDecalFormTags.RECT1X4: 1.0 / 4, 
+   ProjectionDecalFormTags.RECT1X6: 1.0 / 6}
 
 class BaseSlot(object):
     __slots__ = ('_areaId', '_regionIdx', '_descriptor')
@@ -166,7 +163,7 @@ class ProjectionDecalSlot(BaseCustomizationSlot):
 
     @property
     def formfactors(self):
-        return tuple((tag for tag in self.tags if tag.startswith(ProjectionDecalFormTags.PREFIX)))
+        return tuple(tag for tag in self.tags if tag.startswith(ProjectionDecalFormTags.PREFIX))
 
     @property
     def matchingTag(self):
@@ -174,7 +171,7 @@ class ProjectionDecalSlot(BaseCustomizationSlot):
             if tag in ProjectionDecalMatchingTags.ALL:
                 return tag
 
-        return None
+        return
 
     def isFitForFormfactor(self, formfactor):
         return formfactor in self.formfactors
@@ -228,7 +225,7 @@ class AttachmentSlot(BaseCustomizationSlot):
 
 
 def getProgectionDecalAspect(slotDescriptor):
-    formfactor = first((tag for tag in slotDescriptor.tags if tag.startswith(ProjectionDecalFormTags.PREFIX)))
+    formfactor = first(tag for tag in slotDescriptor.tags if tag.startswith(ProjectionDecalFormTags.PREFIX))
     if formfactor not in FORMFACTOR_ASPECT_RATIO:
         _logger.warning('Missing aspect ratio for forfactor: %s', formfactor)
         return 1.0

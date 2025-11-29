@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/view/view_model.py
 import logging
 from contextlib import contextmanager
 import typing as t
@@ -22,7 +20,7 @@ class ViewModel(PyObjectEntity):
         super(ViewModel, self).__init__(PyObjectViewModel(properties, commands))
 
     def __repr__(self):
-        return '{}(fields={})'.format(self.__class__.__name__, self.proxy.toString() if self.proxy is not None else None)
+        return ('{}(fields={})').format(self.__class__.__name__, self.proxy.toString() if self.proxy is not None else None)
 
     def __str__(self):
         return self.proxy.toString()

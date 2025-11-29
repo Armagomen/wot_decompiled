@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/_WWISEStubs.py
-import typing
-import Math
+import typing, Math
 
 class Sound:
 
@@ -77,7 +74,7 @@ class MusicSystem:
         pass
 
     def getParameterValue(self, name):
-        pass
+        return 0.0
 
     def setCallback(self, fn):
         pass
@@ -142,7 +139,7 @@ def setMasterVolume(*args, **kwargs):
 
 
 def getFxSoundDuration(*args, **kwargs):
-    pass
+    return 0.0
 
 
 def registerEventReverb(*args, **kwargs):

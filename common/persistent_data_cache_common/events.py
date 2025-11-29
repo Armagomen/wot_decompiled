@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/persistent_data_cache_common/events.py
 from Event import EventManager, SafeEvent
 
 class DefaultPDCEventsDispatcher(object):
-    __slots__ = ('onDataDeserialized', 'onCachedDataLoaded', 'onFailedToLoadCachedData', 'onCachedDataSaved', 'onFailedToSaveCachedData', '_manager', 'onCacheDataSavingStarted')
+    __slots__ = ('onDataDeserialized', 'onCachedDataLoaded', 'onFailedToLoadCachedData',
+                 'onCachedDataSaved', 'onFailedToSaveCachedData', '_manager', 'onCacheDataSavingStarted')
 
     def __init__(self):
         super(DefaultPDCEventsDispatcher, self).__init__()

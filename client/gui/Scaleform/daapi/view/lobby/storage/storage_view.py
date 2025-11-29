@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/storage_view.py
 from account_helpers.AccountSettings import LAST_STORAGE_VISITED_TIMESTAMP
 from helpers.time_utils import getCurrentTimestamp
 from account_helpers import AccountSettings
@@ -54,14 +52,15 @@ class StorageView(LobbySubView, StorageViewMeta):
         for section in self.components.values():
             if not section or not section.getActive():
                 continue
-            sectionId = first((s['id'] for s in sectionsList if s['linkage'] == section.getAlias()))
+            sectionId = first(s['id'] for s in sectionsList if s['linkage'] == section.getAlias())
             tabs = section.getTabsData() if hasattr(section, 'getTabsData') else []
-            activeTabLinkage = first((tabLinkage for tabLinkage, tabComponent in section.components.items() if tabComponent.getActive()))
+            activeTabLinkage = first(tabLinkage for tabLinkage, tabComponent in section.components.items() if tabComponent.getActive())
             for tab in tabs:
                 if tab['linkage'] == activeTabLinkage:
                     return (sectionId, tab['id'])
 
-            return (sectionId, None)
+            return (
+             sectionId, None)
 
         return (None, None)
 
@@ -86,9 +85,9 @@ class StorageView(LobbySubView, StorageViewMeta):
             viewPy.setActiveTab(self.__activeTab)
 
     def __initialize(self):
-        self.as_setDataS({'bgSource': backport.image(R.images.gui.maps.icons.storage.background()),
-         'sections': self.__sections,
-         'showDummyScreen': self.__showDummyScreen})
+        self.as_setDataS({'bgSource': backport.image(R.images.gui.maps.icons.storage.background()), 
+           'sections': self.__sections, 
+           'showDummyScreen': self.__showDummyScreen})
         self.as_selectSectionS(self.__activeSectionIdx)
         self.__onStorageNoveltyUpdated()
         self.__onOffersNoveltyUpdated()
@@ -99,8 +98,8 @@ class StorageView(LobbySubView, StorageViewMeta):
     def __addHandlers(self):
         serverSettings = self.__lobbyContext.getServerSettings()
         serverSettings.onServerSettingsChange += self.__onServerSettingChanged
-        g_clientUpdateManager.addCallbacks({'inventory': self.__onInventoryUpdated,
-         'serverSettings.blueprints_config': self.__onBlueprintsModeChanged})
+        g_clientUpdateManager.addCallbacks({'inventory': self.__onInventoryUpdated, 
+           'serverSettings.blueprints_config': self.__onBlueprintsModeChanged})
         self.__offersProvider.onOffersUpdated += self.__onOffersChanged
         self.__storageNovelty.onUpdated += self.__onStorageNoveltyUpdated
         self.__offersNovelty.onUpdated += self.__onOffersNoveltyUpdated
@@ -180,9 +179,10 @@ class StorageView(LobbySubView, StorageViewMeta):
                         if tab.getActive():
                             return (alias, tabAlias)
 
-                return (alias, None)
+                return (
+                 alias, None)
 
-        return None
+        return
 
     def __getItemsForSellEmpty(self):
         invVehicles = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY).values()

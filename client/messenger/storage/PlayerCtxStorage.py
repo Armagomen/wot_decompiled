@@ -1,13 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/PlayerCtxStorage.py
-import types
-import Event
+import types, Event
 from constants import ACCOUNT_ATTR, WG_GAMES
 from debug_utils import LOG_WARNING
 from messenger.storage import SimpleCachedStorage
 
 class PlayerCtxStorage(SimpleCachedStorage):
-    __slots__ = ('__accAttrs', '__clanInfo', '__banInfo', '__cachedItems', '__eManager', '__denunciations', 'onAccountAttrsChanged', 'onClanInfoChanged', 'onDenunciationsChanged')
+    __slots__ = ('__accAttrs', '__clanInfo', '__banInfo', '__cachedItems', '__eManager',
+                 '__denunciations', 'onAccountAttrsChanged', 'onClanInfoChanged',
+                 'onDenunciationsChanged')
 
     def __init__(self):
         super(PlayerCtxStorage, self).__init__()
@@ -23,7 +22,7 @@ class PlayerCtxStorage(SimpleCachedStorage):
         return
 
     def __repr__(self):
-        return 'PlayerCtxStorage(id=0x{0:08X}, accAttrs={1:n}, clanInfo={2!r:s})'.format(id(self), self.__accAttrs, self.__clanInfo)
+        return ('PlayerCtxStorage(id=0x{0:08X}, accAttrs={1:n}, clanInfo={2!r:s})').format(id(self), self.__accAttrs, self.__clanInfo)
 
     def clear(self):
         self.__accAttrs = 0
@@ -36,13 +35,19 @@ class PlayerCtxStorage(SimpleCachedStorage):
         return self.__clanInfo
 
     def getClanAbbrev(self):
-        return self.__clanInfo.abbrev if self.__clanInfo else ''
+        if self.__clanInfo:
+            return self.__clanInfo.abbrev
+        return ''
 
     def getClanRole(self):
-        return self.__clanInfo.role if self.__clanInfo else 0
+        if self.__clanInfo:
+            return self.__clanInfo.role
+        return 0
 
     def getClanDbID(self):
-        return self.__clanInfo.dbID if self.__clanInfo else 0
+        if self.__clanInfo:
+            return self.__clanInfo.dbID
+        return 0
 
     def setClanInfo(self, clanInfo):
         self.__clanInfo = clanInfo
@@ -73,7 +78,8 @@ class PlayerCtxStorage(SimpleCachedStorage):
         self.__banInfo = banInfo
 
     def hasDenunciationFor(self, violatorID, topicID, arenaUniqueID):
-        return (violatorID, topicID, arenaUniqueID) in self.__denunciations
+        return (
+         violatorID, topicID, arenaUniqueID) in self.__denunciations
 
     def hasAnyDenunciationSubmitted(self, violatorID):
         return violatorID in [ violationInfo[0] for violationInfo in self.__denunciations ]
@@ -95,7 +101,10 @@ class PlayerCtxStorage(SimpleCachedStorage):
             LOG_WARNING('Item is not enabled', key)
 
     def getCachedItem(self, key):
-        return self.__cachedItems[key] if key in self.__cachedItems else None
+        if key in self.__cachedItems:
+            return self.__cachedItems[key]
+        else:
+            return
 
     def _getCachedData(self):
         data = []

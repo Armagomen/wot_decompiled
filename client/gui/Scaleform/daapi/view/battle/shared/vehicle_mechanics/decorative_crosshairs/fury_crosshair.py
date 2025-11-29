@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/decorative_crosshairs/fury_crosshair.py
 import typing
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.meta.FuryDecorativeCrosshairMeta import FuryDecorativeCrosshairMeta
@@ -33,7 +31,9 @@ class FuryDecorativeCrosshair(FuryDecorativeCrosshairMeta, ComponentListener, IM
         self.__invalidateState(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.BATTLE_FURY, self), VehicleMechanicStatesUpdater(VehicleMechanic.BATTLE_FURY, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.BATTLE_FURY, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.BATTLE_FURY, self)]
 
     def __invalidateState(self, state):
         if state.level != self.__level or state.progress != self.__progress:

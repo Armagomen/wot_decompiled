@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_common/cgf_helpers.py
-import typing
-import CGF
+import typing, CGF
 from constants import IS_EDITOR, IS_CGF_DUMP
 if IS_EDITOR or IS_CGF_DUMP:
 
@@ -23,16 +20,25 @@ def getVehicleEntityByVehicleGameObject(vehicleGameObject):
 def getVehicleGameObjectByGameObject(gameObject):
     hierarchy = CGF.HierarchyManager(gameObject.spaceID)
     findResult = hierarchy.findComponentInParent(gameObject, Vehicle)
-    return findResult[0] if findResult is not None else None
+    if findResult is not None:
+        return findResult[0]
+    else:
+        return
 
 
 def getParentComponentByGameObject(gameObject, componentType):
     hierarchy = CGF.HierarchyManager(gameObject.spaceID)
     findResult = hierarchy.findComponentInParent(gameObject, componentType)
-    return findResult[1] if findResult is not None else None
+    if findResult is not None:
+        return findResult[1]
+    else:
+        return
 
 
 def getParentGameObjectByComponent(gameObject, componentType):
     hierarchy = CGF.HierarchyManager(gameObject.spaceID)
     findResult = hierarchy.findComponentInParent(gameObject, componentType)
-    return findResult[0] if findResult is not None else None
+    if findResult is not None:
+        return findResult[0]
+    else:
+        return

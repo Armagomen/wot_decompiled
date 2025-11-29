@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/offers/__init__.py
 from gui.offers.offers_banner_controller import OffersBannerController
 from gui.offers.data_provider import OffersDataProvider
 from gui.offers.offers_novelty import OffersNovelty

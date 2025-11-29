@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/SystemMessagesInterface.py
-import time
-import account_helpers
+import time, account_helpers
 from MemoryCriticalController import g_critMemHandler
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -48,7 +45,7 @@ class SystemMessagesInterface(ISystemMessages):
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return None
+        return
 
     def pushMessage(self, text, type, priority=None, messageData=None, savedData=None):
         if GUI_SETTINGS.isGuiEnabled():
@@ -106,8 +103,10 @@ class SystemMessagesInterface(ISystemMessages):
         LOG_DEBUG('onGameSessionNotification', sessionDuration, timeTillMidnight, playTimeLeft)
         if getClientLanguage() == 'ko':
             key = '#system_messages:gameSessionControl/korea/{0:>s}'
-            msgList = [i18n.makeString(key.format('sessionTime'), sessionTime=time.strftime('%H:%M', time.gmtime(sessionDuration))), i18n.makeString(key.format('note'))]
-            self.proto.serviceChannel.pushClientMessage('\n'.join(msgList), SCH_CLIENT_MSG_TYPE.KOREA_PARENTAL_CONTROL_TYPE, auxData=SessionControlAuxData(SESSION_CONTROL_TYPE.KOREA_PARENTAL_CONTROL, timeoutMS=0))
+            msgList = [
+             i18n.makeString(key.format('sessionTime'), sessionTime=time.strftime('%H:%M', time.gmtime(sessionDuration))),
+             i18n.makeString(key.format('note'))]
+            self.proto.serviceChannel.pushClientMessage(('\n').join(msgList), SCH_CLIENT_MSG_TYPE.KOREA_PARENTAL_CONTROL_TYPE, auxData=SessionControlAuxData(SESSION_CONTROL_TYPE.KOREA_PARENTAL_CONTROL, timeoutMS=0))
 
     def __onReceiveEventNotification(self, added, removed):
         self.__processNotifications(added, 'Begin')
@@ -118,9 +117,7 @@ class SystemMessagesInterface(ISystemMessages):
             msgType = notification.eventType
             text = notification.text
             if msgType is not None and not msgType.startswith(self.__CMD_BLOCK_PREFIX) and not msgType.startswith(self.__PROMO_BLOCK_PREFIX) and text:
-                message = {'data': text,
-                 'type': msgType,
-                 'state': state}
+                message = {'data': text, 'type': msgType, 'state': state}
                 self.proto.serviceChannel.pushClientMessage(message, SCH_CLIENT_MSG_TYPE.ACTION_NOTIFY_TYPE)
 
         return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/components/post_progression_widget_component.py
 import typing
 from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.impl.gen import R
@@ -21,13 +19,16 @@ class PostProgressionWidgetComponent(ComponentBase):
     _appLoader = dependency.descriptor(IAppLoader)
 
     def createToolTipContent(self, event, contentID):
-        return PostProgressionTooltip(self.context.tankmanID) if contentID == R.views.lobby.crew.tooltips.PostProgressionTooltip() else None
+        if contentID == R.views.lobby.crew.tooltips.PostProgressionTooltip():
+            return PostProgressionTooltip(self.context.tankmanID)
 
     def _getViewModel(self, vm):
         return vm.postProgression
 
     def _getEvents(self):
-        return super(PostProgressionWidgetComponent, self)._getEvents() + ((self.viewModel.onWidgetClick, self._onWidgetClick),)
+        return super(PostProgressionWidgetComponent, self)._getEvents() + (
+         (
+          self.viewModel.onWidgetClick, self._onWidgetClick),)
 
     def _fillViewModel(self, vm):
         self._setPostProgression(vm)
@@ -37,7 +38,8 @@ class PostProgressionWidgetComponent(ComponentBase):
         rewardBookId = crewBooksCache.rewardBookId()
         crewBook = first(self._itemsCache.items.getItems(GUI_ITEM_TYPE.CREW_BOOKS, REQ_CRITERIA.CREW_ITEM.ID(rewardBookId)).values())
         postProgressionXP = self._itemsCache.items.stats.postProgressionXP
-        _, postProgressionXP = divmod(postProgressionXP, crewBook.getXP()) if postProgressionXP > 0 else (0, 0)
+        _, postProgressionXP = divmod(postProgressionXP, crewBook.getXP()) if postProgressionXP > 0 else (0,
+                                                                                                          0)
         vm.setIcon(R.images.gui.maps.icons.crewBooks.books.big.dyn(crewBook.getBookType(), None)())
         vm.setProgressCurrent(postProgressionXP)
         vm.setProgressMax(crewBooksViewedCache().xppToConvert())

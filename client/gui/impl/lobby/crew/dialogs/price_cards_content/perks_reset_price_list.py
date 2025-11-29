@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/price_cards_content/perks_reset_price_list.py
 import typing
 from frameworks.wulf import ViewSettings, Array
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -50,7 +48,8 @@ class PerksResetPriceList(BasePriceList):
         index = int(event.getArgument('index'))
         if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent() and index == self.recertificationIndex:
             form = self.__goodiesCache.getRecertificationForm(currency='gold')
-            return createBackportTooltipContent(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP, specialArgs=[form.intCD])
+            return createBackportTooltipContent(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP, specialArgs=[
+             form.intCD])
         return super(PerksResetPriceList, self).createToolTipContent(event, contentID)
 
     @property
@@ -114,6 +113,8 @@ class PerksResetPriceList(BasePriceList):
             maxAvailbleSkillsNum = self._tankman.maxSkillsCount
             tmanDescr.dropSkills(xpReuseFraction)
             if prevSkillsCount < maxAvailbleSkillsNum:
-                return (xpReuseFraction, prevTmanXP - tmanDescr.totalXP(), prevSkillsCount - tmanDescr.getFullSkillsCount())
+                return (xpReuseFraction, prevTmanXP - tmanDescr.totalXP(),
+                 prevSkillsCount - tmanDescr.getFullSkillsCount())
             return (xpReuseFraction, prevTmanXP - tmanDescr.totalXP(), 0)
-        return (xpReuseFraction, 0, 0)
+        return (
+         xpReuseFraction, 0, 0)

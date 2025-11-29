@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/game_control/awards_controller.py
 from __future__ import absolute_import
 from future.utils import viewitems
 from chat_shared import SYS_MESSAGE_TYPE
@@ -66,9 +64,8 @@ class FunRandomLootBoxAutoOpenHandler(ServiceChannelHandler, FunProgressionWatch
                 awardList.append(lootboxData.get('rewards', {}))
 
         if legendaryRewards:
-            data = {'lootBoxType': FunRandomLootBoxTypes.LEGENDARY,
-             'mainRewards': getMergedCompensatedBonuses(legendaryRewards),
-             'addRewards': getMergedCompensatedBonuses(otherRewards)}
+            data = {'lootBoxType': FunRandomLootBoxTypes.LEGENDARY, 'mainRewards': getMergedCompensatedBonuses(legendaryRewards), 
+               'addRewards': getMergedCompensatedBonuses(otherRewards)}
             showFunRandomLootBoxAwardWindow(data)
 
     def __onItemCacheSyncCompleted(self, *_):

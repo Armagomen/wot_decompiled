@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/leaderboard_page.py
-import logging
-import BigWorld
-import adisp
-import typing
+import logging, BigWorld, adisp, typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews, Rank
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.pages.leaderboard_model import LeaderboardModel, State
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.pages.table_record_model import TableRecordModel
@@ -23,13 +18,14 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 def _getBackportContextMenuData(event):
-    contextMenuArgs = {'dbID': event.getArgument('spaID'),
-     'userName': event.getArgument('userName')}
+    contextMenuArgs = {'dbID': event.getArgument('spaID'), 
+       'userName': event.getArgument('userName')}
     return createContextMenuData(CONTEXT_MENU_HANDLER_TYPE.COMP_LEADERBOARD_USER, contextMenuArgs)
 
 
 class LeaderboardPage(PageSubModelPresenter):
-    __slots__ = ('__elitePosition', '__loadingStateManager', '__requestedPageData', '__lastUpdateTime')
+    __slots__ = ('__elitePosition', '__loadingStateManager', '__requestedPageData',
+                 '__lastUpdateTime')
     __comp7Controller = dependency.descriptor(IComp7Controller)
     __connectionMgr = dependency.descriptor(IConnectionManager)
 
@@ -83,7 +79,13 @@ class LeaderboardPage(PageSubModelPresenter):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onRefresh, self.__onRefresh), (self.viewModel.getTableRecords, self.__getTableRecords), (self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged))
+        return (
+         (
+          self.viewModel.onRefresh, self.__onRefresh),
+         (
+          self.viewModel.getTableRecords, self.__getTableRecords),
+         (
+          self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged))
 
     def __onRefresh(self, *_):
         self.viewModel.setState(State.INITIAL)
@@ -125,7 +127,7 @@ class LeaderboardPage(PageSubModelPresenter):
             return
 
     def __updateRecords(self, records):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             itemsArray = vm.getItems()
             itemsArray.clear()
             for record in records:
@@ -226,5 +228,5 @@ class _LoadingStateManager(object):
 
     @classmethod
     def __makeNewChainBlock(cls):
-        return {cls.__REQUESTS_COUNT_KEY: 0,
-         cls.__ERRORS_KEY: 0}
+        return {cls.__REQUESTS_COUNT_KEY: 0, 
+           cls.__ERRORS_KEY: 0}

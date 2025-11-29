@@ -1,21 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AreaDestructibles.py
-import math
-import random
+import math, random
 from collections import namedtuple
 from functools import partial
 from time import clock
-import BigWorld
-import DestructiblesCache
-import Math
-import WWISE
-import persistent_data_cache_common as pdc
-import physics_shared
+import BigWorld, DestructiblesCache, Math, WWISE, persistent_data_cache_common as pdc, physics_shared
 from constants import DESTRUCTIBLE_MATKIND
 from debug_utils import LOG_ERROR, LOG_CODEPOINT_WARNING
 from helpers import isPlayerAccount
-COLOR_WHITE = 4294967295L
-COLOR_RED = 4294901760L
+COLOR_WHITE = 4294967295
+COLOR_RED = 4294901760
 g_cache = None
 g_destructiblesManager = None
 g_destructiblesAnimator = None
@@ -25,9 +17,9 @@ _SHOT_EXPLOSION_SYNC_TIMEOUT = 0.11
 LaunchEffectArgs = namedtuple('LaunchEffectArgs', 'chunkID, destrIndex, moduleIndex,destrType, effectType, effectCategory, effectName, isHavokSpawnedDestructibles,pos, dir, scale')
 
 def init():
-    global g_destructiblesManager
     global g_cache
     global g_destructiblesAnimator
+    global g_destructiblesManager
     g_cache = pdc.load('area_destructibles_cache', ClientDestructiblesCache)
     g_destructiblesManager = DestructiblesManager()
     g_destructiblesAnimator = _DestructiblesAnimator()
@@ -51,21 +43,22 @@ def _extractEffectLists(desc):
     if descType == DestructiblesCache.DESTR_TYPE_TREE:
         effTypes = ('fractureEffect', 'touchdownEffect')
         effDescs = (desc,)
-    elif descType == DestructiblesCache.DESTR_TYPE_FALLING_ATOM:
-        effTypes = ('fractureEffect', 'touchdownEffect', 'touchdownBreakEffect')
-        effDescs = (desc,)
-    elif descType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
-        effTypes = ('ramEffect', 'hitEffect', 'decayEffect')
-        effDescs = desc['modules'].itervalues()
     else:
-        effTypes = ('effect', 'decayEffect')
-        effDescs = (desc,)
-    for effDesc in effDescs:
-        for effType in effTypes:
-            v = effDesc.get(effType)
-            if v is not None:
-                for stuff in v:
-                    effectLists.append(stuff[1])
+        if descType == DestructiblesCache.DESTR_TYPE_FALLING_ATOM:
+            effTypes = ('fractureEffect', 'touchdownEffect', 'touchdownBreakEffect')
+            effDescs = (desc,)
+        elif descType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
+            effTypes = ('ramEffect', 'hitEffect', 'decayEffect')
+            effDescs = desc['modules'].itervalues()
+        else:
+            effTypes = ('effect', 'decayEffect')
+            effDescs = (desc,)
+        for effDesc in effDescs:
+            for effType in effTypes:
+                v = effDesc.get(effType)
+                if v is not None:
+                    for stuff in v:
+                        effectLists.append(stuff[1])
 
     return effectLists
 
@@ -129,40 +122,36 @@ class AreaDestructibles(BigWorld.Entity):
 
     def isDestructibleBroken(self, itemIndex, matKind, destrType=None):
         if destrType is None:
-            for t in (DestructiblesCache.DESTR_TYPE_FRAGILE,
-             DestructiblesCache.DESTR_TYPE_STRUCTURE,
-             DestructiblesCache.DESTR_TYPE_FALLING_ATOM,
-             DestructiblesCache.DESTR_TYPE_TREE):
+            for t in (DestructiblesCache.DESTR_TYPE_FRAGILE, DestructiblesCache.DESTR_TYPE_STRUCTURE, DestructiblesCache.DESTR_TYPE_FALLING_ATOM, DestructiblesCache.DESTR_TYPE_TREE):
                 if self.isDestructibleBroken(itemIndex, matKind, t):
                     return True
 
             return False
+        if destrType == DestructiblesCache.DESTR_TYPE_FRAGILE:
+            for fragileData in self.destroyedFragiles:
+                itemIndex_, _ = DestructiblesCache.decodeFragile(fragileData)
+                if itemIndex_ == itemIndex:
+                    return True
+
+        elif destrType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
+            for moduleData in self.destroyedModules:
+                itemIndex_, matKind_, _ = DestructiblesCache.decodeDestructibleModule(moduleData)
+                if itemIndex_ == itemIndex and matKind_ == matKind:
+                    return True
+
+        elif destrType == DestructiblesCache.DESTR_TYPE_TREE:
+            for fallData in self.fallenTrees:
+                itemIndex_, _, _, _ = DestructiblesCache.decodeFallenTree(fallData)
+                if itemIndex_ == itemIndex:
+                    return True
+
         else:
-            if destrType == DestructiblesCache.DESTR_TYPE_FRAGILE:
-                for fragileData in self.destroyedFragiles:
-                    itemIndex_, _ = DestructiblesCache.decodeFragile(fragileData)
-                    if itemIndex_ == itemIndex:
-                        return True
+            for fallData in self.fallenColumns:
+                itemIndex_, _, _ = DestructiblesCache.decodeFallenColumn(fallData)
+                if itemIndex_ == itemIndex:
+                    return True
 
-            elif destrType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
-                for moduleData in self.destroyedModules:
-                    itemIndex_, matKind_, _ = DestructiblesCache.decodeDestructibleModule(moduleData)
-                    if itemIndex_ == itemIndex and matKind_ == matKind:
-                        return True
-
-            elif destrType == DestructiblesCache.DESTR_TYPE_TREE:
-                for fallData in self.fallenTrees:
-                    itemIndex_, _, _, _ = DestructiblesCache.decodeFallenTree(fallData)
-                    if itemIndex_ == itemIndex:
-                        return True
-
-            else:
-                for fallData in self.fallenColumns:
-                    itemIndex_, _, _ = DestructiblesCache.decodeFallenColumn(fallData)
-                    if itemIndex_ == itemIndex:
-                        return True
-
-            return False
+        return False
 
     def set_fallenTrees(self, _):
         if self.__isPaused:
@@ -234,7 +223,8 @@ def _printErrDescNotAvailable(spaceID, chunkID, destrIndex):
     objName = BigWorld.wg_getDestructibleFilename(spaceID, chunkID, destrIndex)
     if not objName:
         objName = 'unknown'
-    LOG_ERROR('Destructible descriptor is not available, space: %s, object: %s, id: %d' % (spaceName, objName, destrIndex))
+    LOG_ERROR('Destructible descriptor is not available, space: %s, object: %s, id: %d' % (
+     spaceName, objName, destrIndex))
 
 
 class DestructiblesManager(object):
@@ -303,7 +293,8 @@ class DestructiblesManager(object):
                     if dmgType == DestructiblesCache.DESTR_TYPE_FALLING_ATOM:
                         destrIndex, _, _ = DestructiblesCache.decodeFallenColumn(destrData)
                         self.__setFragileDestroyed(self.__spaceID, chunkID, destrIndex, False, False)
-                    self.__destroyDestructible(chunkID, dmgType, destrData, isNeedAnimation)
+                    else:
+                        self.__destroyDestructible(chunkID, dmgType, destrData, isNeedAnimation)
 
                 del self.__destructiblesWaitDestroy[chunkID]
             for destrIndex in xrange(numDestructibles):
@@ -322,7 +313,8 @@ class DestructiblesManager(object):
 
     def onProjectileExploded(self, hitParams, damagedDestructibles):
         self.__reduceExplosionCacheByTimeout()
-        explosionInfo = [hitParams, True]
+        explosionInfo = [
+         hitParams, True]
         explDestrs = self.__explodedDestructibles
         gotDestrs = False
         restDamagedDestructibles = []
@@ -342,7 +334,8 @@ class DestructiblesManager(object):
                 restDamagedDestructibles.append((chunkID, itemIndex, matKind))
 
         if restDamagedDestructibles:
-            newExpl = (BigWorld.time(), explosionInfo, restDamagedDestructibles)
+            newExpl = (
+             BigWorld.time(), explosionInfo, restDamagedDestructibles)
             self.__projectileExplosions.append(newExpl)
         if not gotDestrs:
             BigWorld.callback(_SHOT_EXPLOSION_SYNC_TIMEOUT, partial(self.__delayedHavokExplosion, self.__spaceID, explosionInfo))
@@ -359,34 +352,33 @@ class DestructiblesManager(object):
                 if dmgType == DestructiblesCache.DESTR_TYPE_FRAGILE:
                     itemIndex, _ = DestructiblesCache.decodeFragile(destrData)
                     matKind = 0
-                elif dmgType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
-                    itemIndex, matKind, _ = DestructiblesCache.decodeDestructibleModule(destrData)
                 else:
-                    LOG_CODEPOINT_WARNING()
-                    return
-                self.__reduceExplosionCacheByTimeout()
-                for expl in reversed(self.__projectileExplosions):
-                    _, _, damagedDestrs = expl
-                    for destr in damagedDestrs:
-                        chunkID_, itemIndex_, matKind_ = destr
-                        if chunkID == chunkID_ and itemIndex == itemIndex_ and (dmgType == DestructiblesCache.DESTR_TYPE_FRAGILE or matKind == matKind_):
-                            self.__destroyDestructible(chunkID, dmgType, destrData, isNeedAnimation)
-                            damagedDestrs.remove(destr)
-                            if not damagedDestrs:
-                                self.__projectileExplosions.remove(expl)
-                            return
+                    if dmgType == DestructiblesCache.DESTR_TYPE_STRUCTURE:
+                        itemIndex, matKind, _ = DestructiblesCache.decodeDestructibleModule(destrData)
+                    else:
+                        LOG_CODEPOINT_WARNING()
+                        return
+                    self.__reduceExplosionCacheByTimeout()
+                    for expl in reversed(self.__projectileExplosions):
+                        _, _, damagedDestrs = expl
+                        for destr in damagedDestrs:
+                            chunkID_, itemIndex_, matKind_ = destr
+                            if chunkID == chunkID_ and itemIndex == itemIndex_ and (dmgType == DestructiblesCache.DESTR_TYPE_FRAGILE or matKind == matKind_):
+                                self.__destroyDestructible(chunkID, dmgType, destrData, isNeedAnimation)
+                                damagedDestrs.remove(destr)
+                                if not damagedDestrs:
+                                    self.__projectileExplosions.remove(expl)
+                                return
 
-                itemInfo = (chunkID,
-                 itemIndex,
-                 matKind,
-                 dmgType,
-                 destrData)
+                itemInfo = (
+                 chunkID, itemIndex, matKind, dmgType, destrData)
                 self.__explodedDestructibles.append((BigWorld.time(), itemInfo))
                 BigWorld.callback(_SHOT_EXPLOSION_SYNC_TIMEOUT + 0.01, self.__reduceExplosionCacheByTimeout)
             else:
                 self.__destroyDestructible(chunkID, dmgType, destrData, isNeedAnimation)
         else:
-            entry = (dmgType, destrData, isNeedAnimation)
+            entry = (
+             dmgType, destrData, isNeedAnimation)
             self.__destructiblesWaitDestroy.setdefault(chunkID, []).append(entry)
 
     def onBeforeReplayTimeWarp(self, rewind):
@@ -431,8 +423,9 @@ class DestructiblesManager(object):
             time, itemInfo = destr
             if currTime - time < _SHOT_EXPLOSION_SYNC_TIMEOUT:
                 newItemCache.append(destr)
-            chunkID, _, _, dmgType, destrData = itemInfo
-            self.__destroyDestructible(chunkID, dmgType, destrData, True)
+            else:
+                chunkID, _, _, dmgType, destrData = itemInfo
+                self.__destroyDestructible(chunkID, dmgType, destrData, True)
 
         self.__explodedDestructibles = newItemCache
 
@@ -565,10 +558,16 @@ class DestructiblesManager(object):
         return
 
     def __setFragileDestroyed(self, spaceID, chunkID, destrIndex, isNeedAnimation, isShotDamage):
-        return None if spaceID != self.__spaceID else BigWorld.wg_destroyFragile(spaceID, chunkID, destrIndex, isNeedAnimation, isShotDamage)
+        if spaceID != self.__spaceID:
+            return None
+        else:
+            return BigWorld.wg_destroyFragile(spaceID, chunkID, destrIndex, isNeedAnimation, isShotDamage)
 
     def __setModuleDestroyed(self, spaceID, chunkID, destrIndex, moduleIndex, isNeedAnimation, isShotDamage):
-        return None if spaceID != self.__spaceID else BigWorld.wg_destroyModule(spaceID, chunkID, destrIndex, moduleIndex, isNeedAnimation, isShotDamage)
+        if spaceID != self.__spaceID:
+            return None
+        else:
+            return BigWorld.wg_destroyModule(spaceID, chunkID, destrIndex, moduleIndex, isNeedAnimation, isShotDamage)
 
     def __dropDestructible(self, chunkID, destrIndex, dmgType, fallDirYaw, pitchConstr, fallSpeed, isAnimate, obstacleCollisionFlags):
         self.__stopLifetimeEffect(chunkID, destrIndex, 0)
@@ -615,14 +614,13 @@ class DestructiblesManager(object):
         chance = BigWorld.wg_getDestructibleLifetimeEffectChance(self.__spaceID, chunkID, destrIndex, moduleIndex)
         if chance is None or random.random() > chance:
             return
-        else:
-            lArgs = LaunchEffectArgs(chunkID=chunkID, destrIndex=destrIndex, moduleIndex=moduleIndex, destrType='', effectType='lifetimeEffect', effectName='', effectCategory='', pos='', dir='', scale='', isHavokSpawnedDestructibles=False)
-            lArgs = self.__getEffectParams(lArgs)
-            lifetimeEffectID = self.__launchEffect(lArgs)
-            if lifetimeEffectID is not None:
-                code = _encodeModule(chunkID, destrIndex)
-                self.__lifetimeEffects[code] = lifetimeEffectID
-            return
+        lArgs = LaunchEffectArgs(chunkID=chunkID, destrIndex=destrIndex, moduleIndex=moduleIndex, destrType='', effectType='lifetimeEffect', effectName='', effectCategory='', pos='', dir='', scale='', isHavokSpawnedDestructibles=False)
+        lArgs = self.__getEffectParams(lArgs)
+        lifetimeEffectID = self.__launchEffect(lArgs)
+        if lifetimeEffectID is not None:
+            code = _encodeModule(chunkID, destrIndex)
+            self.__lifetimeEffects[code] = lifetimeEffectID
+        return
 
     def __stopLifetimeEffect(self, chunkID, destrIndex, moduleKind):
         code = _encodeModule(chunkID, destrIndex)
@@ -669,10 +667,10 @@ class DestructiblesManager(object):
         player = BigWorld.player()
         if player is None or isPlayerAccount():
             return
+        effectName = BigWorld.wg_getDestructibleEffectName(self.__spaceID, chunkID, destrIndex, -1, effectType)
+        if effectName == 'none':
+            return
         else:
-            effectName = BigWorld.wg_getDestructibleEffectName(self.__spaceID, chunkID, destrIndex, -1, effectType)
-            if effectName == 'none':
-                return
             effectVars = g_cache.getEffect(effectName, 'fallingAtoms', False)
             if effectVars is None:
                 return
@@ -689,10 +687,10 @@ class DestructiblesManager(object):
         player = BigWorld.player()
         if player is None or isPlayerAccount():
             return
+        effectName = BigWorld.wg_getDestructibleEffectName(self.__spaceID, chunkID, destrIndex, -1, effectType)
+        if effectName == 'none':
+            return
         else:
-            effectName = BigWorld.wg_getDestructibleEffectName(self.__spaceID, chunkID, destrIndex, -1, effectType)
-            if effectName == 'none':
-                return
             effectVars = g_cache.getEffect(effectName, 'trees', False)
             if effectVars is None:
                 return
@@ -749,25 +747,25 @@ class _DestructiblesAnimator(object):
         destrMatrix.postMultiply(invFallYawRot)
         fallYawRot = Math.Matrix()
         fallYawRot.setRotateY(fallDirYaw)
-        body = {'pitch': pitch,
-         'pitchSpeed': pitchSpeed,
-         'inertiaMoment': inertiaMoment,
-         'mass': mass,
-         'height': height,
-         'springAngle': fallingParams.get(1, 1),
-         'springStiffnes': stiffness,
-         'springResist': fallingParams.get(1, 2) * scale * scale,
-         'airResist': fallingParams.get(0, 2) * scale * scale,
-         'pitchConstr': pitchConstr,
-         'preRot': destrMatrix,
-         'postRot': fallYawRot,
-         'translation': translation,
-         'chunkID': chunkID,
-         'spaceID': spaceID,
-         'destrIndex': destrIndex,
-         'simulationTime': 0.0,
-         'buryDepth': fallingParams.get(0, 3) * scale,
-         'destrType': self.__FALL_ATOM}
+        body = {'pitch': pitch, 
+           'pitchSpeed': pitchSpeed, 
+           'inertiaMoment': inertiaMoment, 
+           'mass': mass, 
+           'height': height, 
+           'springAngle': fallingParams.get(1, 1), 
+           'springStiffnes': stiffness, 
+           'springResist': fallingParams.get(1, 2) * scale * scale, 
+           'airResist': fallingParams.get(0, 2) * scale * scale, 
+           'pitchConstr': pitchConstr, 
+           'preRot': destrMatrix, 
+           'postRot': fallYawRot, 
+           'translation': translation, 
+           'chunkID': chunkID, 
+           'spaceID': spaceID, 
+           'destrIndex': destrIndex, 
+           'simulationTime': 0.0, 
+           'buryDepth': fallingParams.get(0, 3) * scale, 
+           'destrType': self.__FALL_ATOM}
         if touchdownCallback is not None:
             body['touchdownCallback'] = touchdownCallback
         if isNeedAnimation:
@@ -805,25 +803,25 @@ class _DestructiblesAnimator(object):
         destrMatrix.postMultiply(invFallYawRot)
         fallYawRot = Math.Matrix()
         fallYawRot.setRotateY(fallDirYaw)
-        body = {'pitch': pitch,
-         'pitchSpeed': pitchSpeed,
-         'inertiaMoment': inertiaMoment,
-         'mass': massScaled,
-         'height': heightScaled,
-         'springAngle': springAngle,
-         'springStiffnes': stiffnessScaled,
-         'springResist': springResist * scale * scale,
-         'airResist': airResist * scale * scale,
-         'pitchConstr': pitchConstr,
-         'preRot': destrMatrix,
-         'postRot': fallYawRot,
-         'translation': translation,
-         'chunkID': chunkID,
-         'spaceID': spaceID,
-         'destrIndex': destrIndex,
-         'simulationTime': 0.0,
-         'buryDepth': buryDepth * scale,
-         'destrType': self.__FALL_TREE}
+        body = {'pitch': pitch, 
+           'pitchSpeed': pitchSpeed, 
+           'inertiaMoment': inertiaMoment, 
+           'mass': massScaled, 
+           'height': heightScaled, 
+           'springAngle': springAngle, 
+           'springStiffnes': stiffnessScaled, 
+           'springResist': springResist * scale * scale, 
+           'airResist': airResist * scale * scale, 
+           'pitchConstr': pitchConstr, 
+           'preRot': destrMatrix, 
+           'postRot': fallYawRot, 
+           'translation': translation, 
+           'chunkID': chunkID, 
+           'spaceID': spaceID, 
+           'destrIndex': destrIndex, 
+           'simulationTime': 0.0, 
+           'buryDepth': buryDepth * scale, 
+           'destrType': self.__FALL_TREE}
         if touchdownCallback is not None:
             body['touchdownCallback'] = touchdownCallback
         if isNeedAnimation:

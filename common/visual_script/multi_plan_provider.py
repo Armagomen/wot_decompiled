@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/multi_plan_provider.py
 import VSE
 from context import VScriptContext
 from typing import Iterable, Any
@@ -63,10 +61,10 @@ class MultiPlanProvider(object):
         map(lambda holder: holder.plan.pause() if holder.isLoaded else None, self._plans.itervalues())
 
     def isLoaded(self):
-        return all((holder.isLoaded or holder.isLoadCanceled for holder in self._plans.itervalues()))
+        return all(holder.isLoaded or holder.isLoadCanceled for holder in self._plans.itervalues())
 
     def isError(self):
-        return any((holder.isError for holder in self._plans.itervalues()))
+        return any(holder.isError for holder in self._plans.itervalues())
 
     def load(self, planNames, autoStart=False):
         self.reset()
@@ -74,7 +72,8 @@ class MultiPlanProvider(object):
             if isinstance(entry, dict):
                 loadOverTime, params = self.__convertParams(entry['params'])
                 self._loadPlan(entry['name'], params, False, entry.get('plan_id', ''), loadOverTime=loadOverTime)
-            self._loadPlan(entry)
+            else:
+                self._loadPlan(entry)
 
     def __convertParams(self, inputParams):
         loadOverTime = False
@@ -82,7 +81,8 @@ class MultiPlanProvider(object):
         if self.LOAD_OVER_TIME in params:
             loadOverTime = params[self.LOAD_OVER_TIME] == 'true'
             del params[self.LOAD_OVER_TIME]
-        return (loadOverTime, params)
+        return (
+         loadOverTime, params)
 
     def startPlan(self, planName, params={}, key='', contextInstance=None, loadOverTime=False):
         self._loadPlan(planName, params, True, key, contextInstance, loadOverTime)
@@ -151,11 +151,11 @@ class CallableProviderType:
 if IS_DEVELOPMENT:
 
     class CallablePlanProvider(MultiPlanProvider):
-        providers = {CallableProviderType.ARENA: set(),
-         CallableProviderType.HANGAR: set(),
-         CallableProviderType.DEATH_ZONES: set(),
-         CallableProviderType.LOOT: set(),
-         CallableProviderType.ENTITY: set()}
+        providers = {CallableProviderType.ARENA: set(), 
+           CallableProviderType.HANGAR: set(), 
+           CallableProviderType.DEATH_ZONES: set(), 
+           CallableProviderType.LOOT: set(), 
+           CallableProviderType.ENTITY: set()}
         plansOnLoad = dict()
 
         def __init__(self, aspect, name, arenaBonusType=0):
@@ -173,7 +173,8 @@ if IS_DEVELOPMENT:
                     if isinstance(entry, dict):
                         loadOverTime, params = self.__convertParams(entry['params'])
                         self._loadPlan(entry['name'], params, autoStart, loadOverTime=loadOverTime)
-                    self._loadPlan(entry, {}, autoStart)
+                    else:
+                        self._loadPlan(entry, {}, autoStart)
 
 
     def setPlansOnLoad(name, planNames):
@@ -195,7 +196,9 @@ if IS_DEVELOPMENT:
 
 
 def makeMultiPlanProvider(aspect, name, arenaBonusType=0):
-    return CallablePlanProvider(aspect, name, arenaBonusType) if IS_DEVELOPMENT else MultiPlanProvider(aspect, arenaBonusType)
+    if IS_DEVELOPMENT:
+        return CallablePlanProvider(aspect, name, arenaBonusType)
+    return MultiPlanProvider(aspect, arenaBonusType)
 
 
 class MultiPlanCache(object):
@@ -214,10 +217,10 @@ class MultiPlanCache(object):
         self._plansBucket.clear()
 
     def getPlan(self, componentName, planNamesAndParams):
-        planNames = set(((entry['name'] if isinstance(entry, dict) else entry) for entry in planNamesAndParams))
+        planNames = set((entry['name'] if isinstance(entry, dict) else entry) for entry in planNamesAndParams)
         if componentName in self._plansBucket:
             for vsePlans in self._plansBucket[componentName]:
-                if vsePlans.isLoaded() and all((not vsePlans.get(planName).isActive() for planName in planNames)):
+                if vsePlans.isLoaded() and all(not vsePlans.get(planName).isActive() for planName in planNames):
                     return vsePlans
 
         vsePlans = makeMultiPlanProvider(self._aspect, componentName)

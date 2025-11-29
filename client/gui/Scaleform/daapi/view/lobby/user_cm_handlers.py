@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_cm_handlers.py
 import math
 from Event import Event
 from adisp import adisp_process
@@ -173,15 +171,15 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def doSelect(self, prebattleActionName, accountsToInvite=None, extData=None):
         action = PrbAction(prebattleActionName, accountsToInvite=accountsToInvite, extData=extData)
@@ -190,7 +188,7 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def canInvite(self):
         if self.prbEntity is not None:
@@ -206,7 +204,10 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
         return False
 
     def getOptions(self, ctx=None):
-        return self._generateOptions(ctx) if not self._getUseCmInfo().isCurrentPlayer else None
+        if not self._getUseCmInfo().isCurrentPlayer:
+            return self._generateOptions(ctx)
+        else:
+            return
 
     def createSquad(self, prbActionName=PREBATTLE_ACTION_NAME.SQUAD):
         self.doSelect(prbActionName, (self.databaseID,))
@@ -246,7 +247,8 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
         if userCMInfo.isBot:
             return self._makeAIBotOptions()
         else:
-            options = [self._makeItem(USER.INFO, MENU.contextmenu(USER.INFO))]
+            options = [
+             self._makeItem(USER.INFO, MENU.contextmenu(USER.INFO))]
             options = self._addVehicleInfo(options)
             options = self._addClanProfileInfo(options, userCMInfo)
             options = self._addFriendshipInfo(options, userCMInfo)
@@ -296,16 +298,15 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
                 isEnabled = isEnabled and (isRandomSquadAction or not self.__winbackController.isModeAvailable())
                 options.append(self._makeItem(USER.CREATE_SQUAD, MENU.contextmenu(USER.CREATE_SQUAD), optInitData={'enabled': canCreate and isEnabled}))
             if self.__eventBattlesCtrl.isEnabled() and not self.isSquadAlreadyCreated(PREBATTLE_TYPE.EVENT):
-                options.append(self._makeItem(USER.CREATE_EVENT_SQUAD, MENU.contextmenu(USER.CREATE_EVENT_SQUAD), optInitData={'enabled': canCreate,
-                 'textColor': 13347959}))
+                options.append(self._makeItem(USER.CREATE_EVENT_SQUAD, MENU.contextmenu(USER.CREATE_EVENT_SQUAD), optInitData={'enabled': canCreate, 'textColor': 13347959}))
             if self.__battleRoyale.isEnabled() and not self.isSquadAlreadyCreated(PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT) and not self.isSquadAlreadyCreated(PREBATTLE_TYPE.BATTLE_ROYALE):
                 primeTimeStatus, _, _ = self.__battleRoyale.getPrimeTimeStatus()
-                options.append(self._makeItem(USER.CREATE_BATTLE_ROYALE_SQUAD, MENU.contextmenu(USER.CREATE_BATTLE_ROYALE_SQUAD), optInitData={'enabled': canCreate and primeTimeStatus == PrimeTimeStatus.AVAILABLE,
-                 'textColor': 13347959}))
+                options.append(self._makeItem(USER.CREATE_BATTLE_ROYALE_SQUAD, MENU.contextmenu(USER.CREATE_BATTLE_ROYALE_SQUAD), optInitData={'enabled': canCreate and primeTimeStatus == PrimeTimeStatus.AVAILABLE, 
+                   'textColor': 13347959}))
             if self.__mapboxCtrl.isEnabled() and not self.isSquadAlreadyCreated(PREBATTLE_TYPE.MAPBOX):
                 isOptionEnabled = canCreate and self.__mapboxCtrl.isActive() and self.__mapboxCtrl.isInPrimeTime()
-                options.append(self._makeItem(USER.CREATE_MAPBOX_SQUAD, backport.text(R.strings.menu.contextMenu.createMapboxSquad()), optInitData={'enabled': isOptionEnabled,
-                 'textColor': 13347959}))
+                options.append(self._makeItem(USER.CREATE_MAPBOX_SQUAD, backport.text(R.strings.menu.contextMenu.createMapboxSquad()), optInitData={'enabled': isOptionEnabled, 
+                   'textColor': 13347959}))
         return options
 
     def _addPrebattleInfo(self, options, userCMInfo):
@@ -356,7 +357,8 @@ class BaseUserCMHandler(AbstractContextMenuCollectEventsHandler, EventSystemEnti
         return options
 
     def _makeAIBotOptions(self):
-        return [self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO))]
+        return [
+         self._makeItem(USER.VEHICLE_INFO, MENU.contextmenu(USER.VEHICLE_INFO))]
 
 
 def appealIncorrectBehavior(cm):
@@ -446,10 +448,11 @@ class AppealCMHandler(BaseUserCMHandler):
         else:
             order = DENUNCIATIONS.ENEMY_ORDER
         make = self._makeItem
-        return [ make(denunciation, MENU.contextmenu(denunciation), optInitData={'enabled': self._isAppealsForTopicEnabled(denunciation)}) for denunciation in order ]
+        return [ make(denunciation, MENU.contextmenu(denunciation), optInitData={'enabled': self._isAppealsForTopicEnabled(denunciation)}) for denunciation in order
+               ]
 
     def _createSubMenuItem(self):
-        labelStr = u'{} {}/{}'.format(i18n.makeString(MENU.CONTEXTMENU_APPEAL), self._denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
+        labelStr = ('{} {}/{}').format(i18n.makeString(MENU.CONTEXTMENU_APPEAL), self._denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
         return self._makeItem(DENUNCIATIONS.APPEAL, labelStr, optInitData={'enabled': self._denunciator.isAppealsEnabled()}, optSubMenu=self._getSubmenuData())
 
 
@@ -482,7 +485,7 @@ class UserVehicleCMHandler(AppealCMHandler):
         return options
 
     def _manageVehCompareOptions(self, options):
-        if self.comparisonBasket.isEnabled():
+        if self.comparisonBasket.isEnabled() and self._vehicleCD:
             options.insert(2, self._makeItem(_EXTENDED_OPT_IDS.VEHICLE_COMPARE, MENU.contextmenu(_EXTENDED_OPT_IDS.VEHICLE_COMPARE), {'enabled': self.comparisonBasket.isReadyToAdd(self.itemsCache.items.getItemByCD(self._vehicleCD))}))
 
 
@@ -567,7 +570,7 @@ class UserContextMenuInfo(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @property
     def isSameRealm(self):
@@ -583,14 +586,21 @@ class UserContextMenuInfo(object):
         return canCreate
 
     def getTags(self):
-        return self.user.getTags() if self.user is not None else set()
+        if self.user is not None:
+            return self.user.getTags()
+        else:
+            return set()
 
     def getNote(self):
-        return self.user.getNote() if self.user is not None else ''
+        if self.user is not None:
+            return self.user.getNote()
+        else:
+            return ''
 
     def __getUser(self, dbId, username, clanAbbrev):
         user = self.usersStorage.getUser(dbId)
         if user is None:
-            user = SharedUserEntity(dbId, name=username, clanInfo=UserClanInfo(abbrev=clanAbbrev), scope=UserEntityScope.LOBBY, tags={USER_TAG.SEARCH, USER_TAG.TEMP})
+            user = SharedUserEntity(dbId, name=username, clanInfo=UserClanInfo(abbrev=clanAbbrev), scope=UserEntityScope.LOBBY, tags={
+             USER_TAG.SEARCH, USER_TAG.TEMP})
             self.usersStorage.addUser(user)
         return user

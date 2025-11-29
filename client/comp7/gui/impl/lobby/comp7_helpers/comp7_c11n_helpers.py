@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_c11n_helpers.py
-import logging
-import typing
+import logging, typing
 from shared_utils import first
 from CurrentVehicle import g_currentVehicle
 from comp7.gui.shared.gui_items.dossier.stats import getComp7DossierStats
@@ -28,12 +25,12 @@ def getComp7ProgressionStyleCamouflage(styleID, branch, level, c11nService=None)
     if level >= len(groupItems):
         _logger.error('Wrong progress level [%s] for customization progress group [%s]', level, tokenID)
         return
-    levelItems = groupItems[level]
-    camoID = first(levelItems.get(CustomizationType.CAMOUFLAGE, ()))
-    if camoID is None:
-        _logger.error('Missing camouflage for level [%s] in customization progress group [%s]', level, tokenID)
-        return
     else:
+        levelItems = groupItems[level]
+        camoID = first(levelItems.get(CustomizationType.CAMOUFLAGE, ()))
+        if camoID is None:
+            _logger.error('Missing camouflage for level [%s] in customization progress group [%s]', level, tokenID)
+            return
         return c11nService.getItemByID(GUI_ITEM_TYPE.CAMOUFLAGE, camoID)
 
 

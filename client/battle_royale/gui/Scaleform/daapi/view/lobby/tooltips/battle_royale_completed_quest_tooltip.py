@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/tooltips/battle_royale_completed_quest_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -23,7 +21,8 @@ class BattleRoyaleQuestsTooltip(BlocksTooltipData):
         allQuests = self.__eventsCache.getAllQuests()
         quests = [ allQuests.get(qId) for qId in args[1] ]
         if quests:
-            return [self._packHeader()] + [ getQuestTooltipBlock(q) for q in quests ]
+            return [
+             self._packHeader()] + [ getQuestTooltipBlock(q) for q in quests ]
         return super(BattleRoyaleQuestsTooltip, self)._packBlocks()
 
     def _packHeader(self):

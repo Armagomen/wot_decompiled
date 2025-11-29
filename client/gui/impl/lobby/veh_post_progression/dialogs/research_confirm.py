@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/dialogs/research_confirm.py
 from __future__ import absolute_import
 import logging
 from frameworks.wulf import ViewSettings
@@ -18,9 +16,9 @@ from gui.veh_post_progression.models.ext_money import EXT_MONEY_ZERO, getFullXPF
 from gui.veh_post_progression.models.purchase import PurchaseProvider
 from post_progression_common import ACTION_TYPES
 _logger = logging.getLogger(__name__)
-_ACTION_TYPE_TO_MODIFICATION_TYPE = {ACTION_TYPES.MODIFICATION: ModificationType.MODIFICATION,
- ACTION_TYPES.PAIR_MODIFICATION: ModificationType.PAIRMODIFICATION,
- ACTION_TYPES.FEATURE: ModificationType.MODIFICATIONWITHFEATURE}
+_ACTION_TYPE_TO_MODIFICATION_TYPE = {ACTION_TYPES.MODIFICATION: ModificationType.MODIFICATION, 
+   ACTION_TYPES.PAIR_MODIFICATION: ModificationType.PAIRMODIFICATION, 
+   ACTION_TYPES.FEATURE: ModificationType.MODIFICATIONWITHFEATURE}
 
 class PostProgressionResearchConfirm(FullScreenDialogView[ResearchStepsDialog]):
 
@@ -78,7 +76,7 @@ class PostProgressionResearchConfirm(FullScreenDialogView[ResearchStepsDialog]):
     def __updateData(self):
         if self.__vehicle is None or not self.__stepIDs:
             return False
-        elif not self.__vehicle.postProgressionAvailability():
+        if not self.__vehicle.postProgressionAvailability():
             return False
         else:
             self.__steps = []
@@ -105,7 +103,7 @@ class PostProgressionResearchBottomContent(BaseSubModelView):
     def update(self, price, balance, vehicle):
         super(PostProgressionResearchBottomContent, self).update()
         mayConsume = PurchaseProvider.mayConsume(balance, price).result
-        with self._viewModel.transaction() as viewModel:
+        with self._viewModel.transaction() as (viewModel):
             viewModel.getPrice().clear()
             BuyPriceModelBuilder.fillPriceModel(viewModel, convertPrice(mayConsume, balance, price), balance=balance)
             viewModel.getPrice().invalidate()
@@ -123,7 +121,7 @@ class PostProgressionResearchMainContent(BaseSubModelView):
         super(PostProgressionResearchMainContent, self).update()
         unlockedSteps = []
         kpiList = []
-        with self._viewModel.transaction() as viewModel:
+        with self._viewModel.transaction() as (viewModel):
             stepsResearch = viewModel.getStepsResearch()
             features = viewModel.getUnlockFeatures()
             stepsResearch.clear()
@@ -133,7 +131,7 @@ class PostProgressionResearchMainContent(BaseSubModelView):
                 if step.action.actionType == ACTION_TYPES.FEATURE:
                     feature = self.__fillModificationModel(step)
                     features.addViewModel(feature)
-                unlockedSteps.extend((postProgression.getStep(unlockStepID) for unlockStepID in step.getNextStepIDs()))
+                unlockedSteps.extend(postProgression.getStep(unlockStepID) for unlockStepID in step.getNextStepIDs())
                 kpiList.extend(step.action.getKpi())
                 stepsResearch.addViewModel(stepModel)
 
@@ -180,6 +178,5 @@ class PostProgressionResearchMainContent(BaseSubModelView):
 def convertPrice(mayConsume, balance, price):
     if mayConsume:
         price = getFullXPFromXPPrice(balance, price)
-        price = price.replaceAll({ExtendedCurrency.XP: price.vehXP,
-         ExtendedCurrency.VEH_XP: 0})
+        price = price.replaceAll({ExtendedCurrency.XP: price.vehXP, ExtendedCurrency.VEH_XP: 0})
     return price

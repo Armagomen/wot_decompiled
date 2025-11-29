@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/perks_constants.py
 import typing
 PERKS_XML_FILE = 'perks.xml'
 PERK_BONUS_VALUE_PRECISION = 5
-SKIP_SE_PERKS = ('commander_sixthSense',)
+SKIP_SE_PERKS = ('commander_sixthSense', )
 
 class PerkState(object):
     INACTIVE = 0

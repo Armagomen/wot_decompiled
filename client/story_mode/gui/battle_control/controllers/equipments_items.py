@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/battle_control/controllers/equipments_items.py
-import math
-import typing
+import math, typing
 from functools import partial
-import BigWorld
-import CGF
-import Math
-import SoundGroups
+import BigWorld, CGF, Math, SoundGroups
 from AvatarInputHandler import MapCaseMode
 from SMReconAbilityEntityComponent import SMReconAbilityEntityComponent
 from aih_constants import CTRL_MODE_NAME
@@ -25,8 +19,12 @@ from story_mode_common.story_mode_constants import RECON_ABILITY, EQUIPMENT_STAG
 if typing.TYPE_CHECKING:
     from Avatar import Avatar
     from items import artefacts
-_SMN_ARCADE_ARTILLERY_ITEMS = ('arcade_artillery_smn_battleship_lvl1', 'arcade_artillery_smn_battleship_lvl1_hard', 'arcade_artillery_smn_battleship_lvl2', 'arcade_artillery_smn_battleship_lvl2_hard', 'arcade_artillery_smn_battleship_lvl3', 'arcade_artillery_smn_battleship_lvl3_hard')
-_SMN_ARCADE_ARTILLERY_DESTROYER_ITEMS = {'arcade_artillery_smn_destroyer', 'arcade_artillery_smn_destroyer_hard'}
+_SMN_ARCADE_ARTILLERY_ITEMS = ('arcade_artillery_smn_battleship_lvl1', 'arcade_artillery_smn_battleship_lvl1_hard',
+                               'arcade_artillery_smn_battleship_lvl2', 'arcade_artillery_smn_battleship_lvl2_hard',
+                               'arcade_artillery_smn_battleship_lvl3', 'arcade_artillery_smn_battleship_lvl3_hard')
+_SMN_ARCADE_ARTILLERY_DESTROYER_ITEMS = {
+ 'arcade_artillery_smn_destroyer',
+ 'arcade_artillery_smn_destroyer_hard'}
 _EQUIPMENT_STAGE_DESTROYER_SHOOTING = -1
 
 class _SmnRefillEquipmentItem(equipment_ctrl._RefillEquipmentItem):
@@ -85,11 +83,14 @@ class AbilityItem(equipment_ctrl._RefillEquipmentItem, equipment_ctrl._OrderItem
     def canActivate(self, entityName=None, avatar=None):
         if self._stage in [STAGES.STARTUP_COOLDOWN, STAGES.COOLDOWN] and self._timeRemaining > 0:
             error = equipment_ctrl._ActivationError(ABILITY_ON_COOLDOWN_ACTIVATION_ERROR_KEY, {'name': self.getDescriptor().userString})
-            return (False, error)
+            return (
+             False, error)
         return super(AbilityItem, self).canActivate(entityName, avatar)
 
     def getTimeRemaining(self):
-        return min(math.ceil(self._timeRemaining), self._totalTime) if self._timeRemaining else self._timeRemaining
+        if self._timeRemaining:
+            return min(math.ceil(self._timeRemaining), self._totalTime)
+        return self._timeRemaining
 
     def getAimingControlMode(self):
         return StoryModeArcadeMinefieldControlMode
@@ -190,16 +191,21 @@ class ReconAbilityItem(SMStrategicAbilityItem):
 
     def canDeactivate(self):
         battleApp = self.appLoader.getDefBattleApp()
-        return False if bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_MENU))) or bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_HELP))) else super(ReconAbilityItem, self).canDeactivate()
+        if bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_MENU))) or bool(battleApp.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.INGAME_HELP))):
+            return False
+        return super(ReconAbilityItem, self).canDeactivate()
 
     @property
     def becomeReady(self):
-        return super(ReconAbilityItem, self).becomeReady or self.isReady and self._serverPrevStage in [STAGES.ACTIVATING, STAGES.ACTIVE, STAGES.DEACTIVATING]
+        return super(ReconAbilityItem, self).becomeReady or self.isReady and self._serverPrevStage in [
+         STAGES.ACTIVATING, STAGES.ACTIVE, STAGES.DEACTIVATING]
 
     def getAnimationType(self):
         if self._stage == STAGES.COOLDOWN:
             return ANIMATION_TYPES.MOVE_ORANGE_BAR_UP | ANIMATION_TYPES.SHOW_COUNTER_ORANGE
-        return ANIMATION_TYPES.MOVE_GREEN_BAR_UP | ANIMATION_TYPES.TIMER_INVISIBLE if self._stage in (STAGES.ACTIVATING, STAGES.DEACTIVATING) else super(ReconAbilityItem, self).getAnimationType()
+        if self._stage in (STAGES.ACTIVATING, STAGES.DEACTIVATING):
+            return ANIMATION_TYPES.MOVE_GREEN_BAR_UP | ANIMATION_TYPES.TIMER_INVISIBLE
+        return super(ReconAbilityItem, self).getAnimationType()
 
     def updateMapCase(self, stage=None):
         if not BigWorld.player().isObserver() or BigWorld.player().isObserverFPV:

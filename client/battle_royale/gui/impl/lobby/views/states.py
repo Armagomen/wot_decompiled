@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/states.py
 import typing
 from WeakMethod import WeakMethodProxy
 from battle_royale_progression.skeletons.game_controller import IBRProgressionOnTokensController
@@ -84,7 +82,8 @@ class BattleRoyaleTournamentQueueState(ViewLobbyState):
 class BattleRoyaleProgressionState(ViewLobbyState):
     STATE_ID = 'battleRoyaleProgression'
     VIEW_KEY = ViewKey(BATTLEROYALE_ALIASES.BR_PROGRESSION)
-    NAVIGATION_BUTTONS = (LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showInfoPage),)
+    NAVIGATION_BUTTONS = (
+     LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showInfoPage),)
 
     def _onExited(self):
         brProgression = dependency.instance(IBRProgressionOnTokensController)
@@ -99,6 +98,9 @@ class BattleRoyaleProgressionState(ViewLobbyState):
 class BattleRoyaleBattleResultsState(ViewLobbyState):
     STATE_ID = 'battleRoyaleBattleResults'
     VIEW_KEY = ViewKey(BATTLEROYALE_ALIASES.BR_BATTLE_RESULTS)
+
+    def __init__(self, flags=StateFlags.UNDEFINED):
+        super(BattleRoyaleBattleResultsState, self).__init__(flags=flags | LobbyStateFlags.POST_BATTLE_RESULTS)
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.battleRoyale.battle_results()))

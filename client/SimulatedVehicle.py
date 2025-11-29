@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/SimulatedVehicle.py
 import logging
 from copy import copy
 from functools import partial
-import BigWorld
-import Math
-import GenericComponents
+import BigWorld, Math, GenericComponents
 from cgf_network import C_INVALID_NETWORK_OBJECT_ID
 from Event import Event
 from VehicleEffects import DamageFromShotDecoder
@@ -25,7 +21,7 @@ _UNSPOTTED_CONE_WIDTH_SCALE = 1
 _UNSPOTTED_CONE_LENGTH_SCALE = 1
 
 class _SimulatedVehicleSpeedProvider(object):
-    __slots__ = ('__value',)
+    __slots__ = ('__value', )
 
     @property
     def value(self):
@@ -109,7 +105,9 @@ class VehicleBase(object):
         pass
 
     def getOptionalDevices(self):
-        return vehicle_getter.getOptionalDevices() if self.isPlayerVehicle else []
+        if self.isPlayerVehicle:
+            return vehicle_getter.getOptionalDevices()
+        return []
 
 
 class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
@@ -311,7 +309,7 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
             _logger.warning('this code point should have never been reached')
 
     def getMaxComponentIndex(self, skipWheels=False):
-        maxComponentIdx = TankPartIndexes.ALL[-1]
+        maxComponentIdx = TankPartIndexes.ALL[(-1)]
         wheelsConfig = self.appearance.typeDescriptor.chassis.generalWheelsAnimatorConfig
         if wheelsConfig and not skipWheels:
             maxComponentIdx = maxComponentIdx + wheelsConfig.getNonTrackWheelsCount()
@@ -323,7 +321,8 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
             if shotPoint.hitEffectCode > maxHitEffectCode:
                 maxHitEffectCode = shotPoint.hitEffectCode
 
-        return (maxHitEffectCode, DamageFromShotDecoder.hasDamaged(maxHitEffectCode))
+        return (
+         maxHitEffectCode, DamageFromShotDecoder.hasDamaged(maxHitEffectCode))
 
     def __showDamageStickers(self, stickers):
         for sticker in stickers:
@@ -346,7 +345,8 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
 
     def updateBrokenTracks(self, trackStates):
         if not self.__brokenTrackVisible:
-            self.__brokenTrackVisible = [False] * len(trackStates)
+            self.__brokenTrackVisible = [
+             False] * len(trackStates)
         for index, trackState in enumerate(trackStates):
             if trackState['isBroken'] and not self.__brokenTrackVisible[index]:
                 self.__brokenTrackVisible[index] = True

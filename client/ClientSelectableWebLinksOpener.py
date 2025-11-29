@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ClientSelectableWebLinksOpener.py
 from ClientSelectableObject import ClientSelectableObject
 from gui.shared import g_eventBus, events
 

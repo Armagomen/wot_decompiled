@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_operations.py
 import operator
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -69,13 +67,13 @@ class PersonalMissionOperations(LobbySubView, PersonalMissionOperationsMeta, Per
                     state = PERSONAL_MISSIONS_ALIASES.OPERATION_CURRENT_STATE
                 elif o.isUnlocked():
                     state = PERSONAL_MISSIONS_ALIASES.OPERATION_UNLOCKED_STATE
-                operationVO = {'id': oID,
-                 'pmType': branch,
-                 'state': state,
-                 'icon': RES_ICONS.getPersonalMissionOperation(str(oID), self.__formatImageState(state)),
-                 'postponedTime': postponedTime if not timeIconAlreadySet else '',
-                 'enabled': enabled,
-                 'tooltipAlias': tooltipAlias}
+                operationVO = {'id': oID, 
+                   'pmType': branch, 
+                   'state': state, 
+                   'icon': RES_ICONS.getPersonalMissionOperation(str(oID), self.__formatImageState(state)), 
+                   'postponedTime': postponedTime if not timeIconAlreadySet else '', 
+                   'enabled': enabled, 
+                   'tooltipAlias': tooltipAlias}
                 if postponedTime:
                     timeIconAlreadySet = True
                 operations.append(operationVO)
@@ -91,18 +89,19 @@ class PersonalMissionOperations(LobbySubView, PersonalMissionOperationsMeta, Per
         self.__update()
 
     def __setTitle(self):
-        titleVO = {'title': PERSONAL_MISSIONS.OPERATIONINFO_TITLE,
-         'tooltip': {'tooltip': '',
-                     'specialArgs': [],
-                     'specialAlias': None,
-                     'isSpecial': False}}
+        titleVO = {'title': PERSONAL_MISSIONS.OPERATIONINFO_TITLE, 
+           'tooltip': {'tooltip': '', 
+                       'specialArgs': [], 'specialAlias': None, 
+                       'isSpecial': False}}
         self.as_setTitleS(titleVO)
         return
 
     def __formatImageState(self, state):
         if state == PERSONAL_MISSIONS_ALIASES.OPERATION_DISABLED_STATE:
             return PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE
-        return PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_STATE if state == PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_FULL_STATE else state
+        if state == PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_FULL_STATE:
+            return PERSONAL_MISSIONS_ALIASES.OPERATION_COMPLETE_STATE
+        return state
 
     def _onSettingsChanged(self, diff):
         if 'isRegularQuestEnabled' in diff and not diff['isRegularQuestEnabled'] or 'isPM2QuestEnabled' in diff and not diff['isPM2QuestEnabled'] or 'disabledPMOperations' in diff and diff['disabledPMOperations'] or 'disabledPersonalMissions' in diff and diff['disabledPersonalMissions']:

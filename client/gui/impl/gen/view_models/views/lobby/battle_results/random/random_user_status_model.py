@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/random/random_user_status_model.py
 from gui.impl.gen.view_models.common.account_model import AccountModel
 from gui.impl.gen.view_models.views.lobby.battle_results.user_status_model import UserStatusModel
 

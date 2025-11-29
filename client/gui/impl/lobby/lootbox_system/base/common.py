@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/common.py
 import weakref
 from typing import TYPE_CHECKING
 from frameworks.wulf import View, ViewEvent, Window
@@ -58,22 +56,22 @@ class SubViewImpl(EventsHandler):
         self.parentView.destroyWindow()
 
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     def createPopOverContent(self, event):
-        return None
+        return
 
     def createContextMenuContent(self, event):
-        return None
+        return
 
     def createToolTip(self, event):
-        return None
+        return
 
     def createPopOver(self, event):
-        return None
+        return
 
     def createContextMenu(self, event):
-        return None
+        return
 
 
 class PresentersMap(object):

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/resource_well_helpers.py
-import logging
-import typing
+import logging, typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import RESOURCE_WELL_END_SHOWN, RESOURCE_WELL_START_SHOWN, RESOURCE_WELL_NOTIFICATIONS
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -20,9 +17,9 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from resource_well.helpers.server_settings import RewardConfig
 _logger = logging.getLogger(__name__)
-_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT,
- PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT,
- PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
+_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT, 
+   PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT, 
+   PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
 
 def convertPurchaseToEventMode(mode):
     return _PurchaseModeToEventModeMap.get(mode, EventMode.ONE_SERIAL_PRODUCT)
@@ -51,16 +48,21 @@ def getSerialNumber(rewardID, resourceWell=None, itemsCache=IItemsCache):
 def getNextSerialRewardID(rewardID, resourceWell=None):
     mode = resourceWell.getPurchaseMode()
     if mode is not PurchaseMode.SEQUENTIAL_PRODUCT:
-        return None
+        return
     else:
         result = findFirst(lambda item: item[1].availableAfter == rewardID, resourceWell.config.rewards.items())
-        return result[0] if result is not None else None
+        if result is not None:
+            return result[0]
+        return
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController, c11nService=ICustomizationService)
 def getRewardStyle(rewardID, resourceWell=None, c11nService=None):
     styleID = resourceWell.getRewardStyleID(rewardID)
-    return None if styleID is None else c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
+    if styleID is None:
+        return
+    else:
+        return c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController)
@@ -71,7 +73,9 @@ def hasRequiredStyle(rewardID, rewardConfig=None, resourceWell=None):
         return True
     else:
         style = getRewardStyle(rewardID, resourceWell=resourceWell)
-        return style.fullCount() > 0 if style is not None else False
+        if style is not None:
+            return style.fullCount() > 0
+        return False
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController)

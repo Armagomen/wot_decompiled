@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/markers2d/markers.py
 from enum import Enum
-import Event
-import GUI
-import Math
+import Event, GUI, Math
 from chat_commands_consts import INVALID_TARGET_ID, MarkerType
 from gun_rotation_shared import getLocalAimPoint
 from vehicle_systems.tankStructure import TankNodeNames
@@ -71,7 +67,7 @@ class Marker(object):
         return self._state
 
     def getActiveCommandID(self):
-        return None
+        return
 
     def destroy(self):
         pass
@@ -173,10 +169,16 @@ class VehicleMarker(Marker):
         return self._vProxy
 
     def isAlive(self):
-        return self._vProxy.isAlive() if self._vProxy is not None else 0
+        if self._vProxy is not None:
+            return self._vProxy.isAlive()
+        else:
+            return 0
 
     def getHealth(self):
-        return self._vProxy.health if self._vProxy is not None else 0
+        if self._vProxy is not None:
+            return self._vProxy.health
+        else:
+            return 0
 
     def getIsPlayerTeam(self):
         return self._isPlayerTeam
@@ -198,7 +200,10 @@ class VehicleMarker(Marker):
             return GUI.WGVehicleMarkersMatrixProvider(rootCalculator, cls._calculateGuiOffset(vProxy))
 
     def getMatrixProvider(self):
-        return self.fetchMatrixProvider(self._vProxy) if self._vProxy is not None else None
+        if self._vProxy is not None:
+            return self.fetchMatrixProvider(self._vProxy)
+        else:
+            return
 
     def isSpeaking(self):
         return self._speaking

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/members_window_model.py
 from enum import Enum
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.platoon.button_find_players_cancel_search_model import ButtonFindPlayersCancelSearchModel
@@ -21,7 +19,7 @@ class PrebattleTypes(Enum):
 
 
 class MembersWindowModel(WindowModel):
-    __slots__ = ('onFocusChange',)
+    __slots__ = ('onFocusChange', )
 
     def __init__(self, properties=17, commands=3):
         super(MembersWindowModel, self).__init__(properties=properties, commands=commands)

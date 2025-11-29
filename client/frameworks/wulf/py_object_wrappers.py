@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/py_object_wrappers.py
 from constants import IS_EDITOR, IS_WEB
 if not (IS_EDITOR or IS_WEB):
     import _wulf as _py_objects
@@ -32,4 +30,10 @@ getRealFormat = _py_objects.getRealFormat
 getTimeFormat = _py_objects.getTimeFormat
 getDateFormat = _py_objects.getDateFormat
 caseMap = _py_objects.caseMap
-__all__ = ('ValueType', 'Resource', 'PyObjectArray', 'PyObjectMap', 'PyObjectCommand', 'PyGuiApplication', 'PyObjectViewSettings', 'PyObjectView', 'PyObjectViewModel', 'PyObjectWindowSettings', 'PyObjectWindow', 'PyObjectWindowsArea', 'isTranslatedKeyValid', 'isTranslatedTextExisted', 'getTranslatedText', 'getTranslatedPluralText', 'getImagePath', 'getSoundEffectId', 'getLayoutPath', 'getTranslatedTextByResId', 'getTranslatedPluralTextByResId', 'getTranslatedKey', 'getNumberFormat', 'getRealFormat', 'getTimeFormat', 'getDateFormat', 'caseMap')
+__all__ = ('ValueType', 'Resource', 'PyObjectArray', 'PyObjectMap', 'PyObjectCommand',
+           'PyGuiApplication', 'PyObjectViewSettings', 'PyObjectView', 'PyObjectViewModel',
+           'PyObjectWindowSettings', 'PyObjectWindow', 'PyObjectWindowsArea', 'isTranslatedKeyValid',
+           'isTranslatedTextExisted', 'getTranslatedText', 'getTranslatedPluralText',
+           'getImagePath', 'getSoundEffectId', 'getLayoutPath', 'getTranslatedTextByResId',
+           'getTranslatedPluralTextByResId', 'getTranslatedKey', 'getNumberFormat',
+           'getRealFormat', 'getTimeFormat', 'getDateFormat', 'caseMap')

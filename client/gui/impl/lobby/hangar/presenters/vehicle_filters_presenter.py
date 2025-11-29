@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/vehicle_filters_presenter.py
 from __future__ import absolute_import
-import json
-import typing
-import BigWorld
+import json, typing, BigWorld
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import CarouselTypeSetting
 from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
@@ -19,9 +15,8 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 if typing.TYPE_CHECKING:
     from typing import List, Dict
     from gui.filters.carousel_filter import CarouselFilter
-_VEHICLE_LEVEL_FILTERS = [ 'level_{}'.format(level) for level in VEHICLE_LEVELS ]
-_CAROUSEL_ROW_COUNT_TYPE = {1: CarouselTypeSetting.CAROUSEL_TYPES.index(CarouselTypeSetting.OPTIONS.SINGLE),
- 2: CarouselTypeSetting.CAROUSEL_TYPES.index(CarouselTypeSetting.OPTIONS.DOUBLE)}
+_VEHICLE_LEVEL_FILTERS = [ ('level_{}').format(level) for level in VEHICLE_LEVELS ]
+_CAROUSEL_ROW_COUNT_TYPE = {1: CarouselTypeSetting.CAROUSEL_TYPES.index(CarouselTypeSetting.OPTIONS.SINGLE), 2: CarouselTypeSetting.CAROUSEL_TYPES.index(CarouselTypeSetting.OPTIONS.DOUBLE)}
 
 class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
     __settingsCore = dependency.descriptor(ISettingsCore)
@@ -45,14 +40,20 @@ class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
         self.__updateModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onSaveFilter, self.__onSaveFilter),
-         (self.viewModel.onCarouselTypeChange, self.__onCarouselTypeChanged),
-         (self.__settingsCore.onSettingsChanged, self.__onCarouselSettingsChange),
-         (self.viewModel.onResetFilter, self.__onResetFilter))
+        return (
+         (
+          self.viewModel.onSaveFilter, self.__onSaveFilter),
+         (
+          self.viewModel.onCarouselTypeChange, self.__onCarouselTypeChanged),
+         (
+          self.__settingsCore.onSettingsChanged, self.__onCarouselSettingsChange),
+         (
+          self.viewModel.onResetFilter, self.__onResetFilter))
 
     @classmethod
     def _getBaseSpecialSection(cls):
-        return [FILTER_KEYS.BONUS,
+        return [
+         FILTER_KEYS.BONUS,
          FILTER_KEYS.FAVORITE,
          FILTER_KEYS.PREMIUM,
          FILTER_KEYS.ELITE,
@@ -62,16 +63,17 @@ class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
          FILTER_KEYS.RENTED]
 
     def _generateMappings(self):
-        self.__mapping = {FilterSection.NATIONS.value: GUI_NATIONS,
-         FilterSection.VEHICLETYPES.value: VEHICLE_TYPES_ORDER,
-         FilterSection.LEVELS.value: _VEHICLE_LEVEL_FILTERS,
-         FilterSection.SPECIALS.value: self._getBaseSpecialSection(),
-         FilterSection.TEXTSEARCH.value: [FILTER_KEYS.SEARCH_NAME_VEHICLE],
-         FilterSection.BATTLEPASS.value: BattlePassFilterConsts.FILTERS_KEYS,
-         RoleSection.LIGHTTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.LIGHT_TANK],
-         RoleSection.MEDIUMTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.MEDIUM_TANK],
-         RoleSection.HEAVYTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.HEAVY_TANK],
-         RoleSection.ATSPG.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.AT_SPG]}
+        self.__mapping = {FilterSection.NATIONS.value: GUI_NATIONS, 
+           FilterSection.VEHICLETYPES.value: VEHICLE_TYPES_ORDER, 
+           FilterSection.LEVELS.value: _VEHICLE_LEVEL_FILTERS, 
+           FilterSection.SPECIALS.value: self._getBaseSpecialSection(), 
+           FilterSection.TEXTSEARCH.value: [
+                                          FILTER_KEYS.SEARCH_NAME_VEHICLE], 
+           FilterSection.BATTLEPASS.value: BattlePassFilterConsts.FILTERS_KEYS, 
+           RoleSection.LIGHTTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.LIGHT_TANK], 
+           RoleSection.MEDIUMTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.MEDIUM_TANK], 
+           RoleSection.HEAVYTANK.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.HEAVY_TANK], 
+           RoleSection.ATSPG.value: VEHICLE_ROLES_LABELS_BY_CLASS[VEHICLE_CLASS_NAME.AT_SPG]}
 
     def __onResetFilter(self):
         self.__filter.reset()
@@ -82,7 +84,7 @@ class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
         for key in self.__mapping[sectionKey]:
             if sectionKey == FilterSection.TEXTSEARCH.value and filters.get('searchNameVehicle'):
                 result.append(filters.get('searchNameVehicle'))
-            if filters.get(key):
+            elif filters.get(key):
                 result.append(key)
 
         return {sectionKey: result}
@@ -99,7 +101,7 @@ class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
 
     def __updateModel(self):
         filters = self.__filter.getFilters()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setFilters(json.dumps(self.__convertToModel(filters)))
             model.getNationsOrder().clear()
             for nation in GUI_NATIONS:
@@ -112,9 +114,10 @@ class VehicleFiltersDataProvider(ViewComponent[VehicleFilterModel]):
             for value in valueList:
                 if sectionKey == FilterSection.TEXTSEARCH.value:
                     self.__filter.update({FILTER_KEYS.SEARCH_NAME_VEHICLE: value}, save=False)
-                index = self.__mapping[sectionKey].index(value)
-                key = self.__mapping[sectionKey][index]
-                self.__filter.update({key: True}, False)
+                else:
+                    index = self.__mapping[sectionKey].index(value)
+                    key = self.__mapping[sectionKey][index]
+                    self.__filter.update({key: True}, False)
 
         self.__filter.save()
         self.__updateModel()

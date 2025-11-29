@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/settings_disable/disable_settings_ctrl.py
 from account_helpers.settings_core.settings_disable import aop as daop
 from typing import TYPE_CHECKING
 from debug_utils import LOG_WARNING
@@ -116,7 +114,8 @@ class DisableSettingsController(IGameController, IGlobalListener):
             if st in settingsCoreSt:
                 self.__disabledStorages[st] = settingsCoreSt[st]
                 del settingsCoreSt[st]
-            LOG_WARNING('Provided setting is not in the storages list. {}'.format(st))
+            else:
+                LOG_WARNING(('Provided setting is not in the storages list. {}').format(st))
 
     def __rollbackDisabledStorages(self):
         settingsCoreSt = self.__settingsCore.storages

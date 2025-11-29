@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/battle_loading.py
 import BattleReplay
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import BattleLoadingTipSetting
@@ -84,8 +82,8 @@ class BattleLoading(BaseBattleLoadingMeta, IArenaVehiclesController):
             if self.lobbyContext.getBattlesCount() is not None:
                 battlesCount = self._getBattlesCount()
             criteria = tips.getTipsCriteria(self._arenaVisitor)
-            criteria.setContext(ctx={'battlesCount': battlesCount,
-             'vehicleType': arenaDP.getVehicleInfo().vehicleType})
+            criteria.setContext(ctx={'battlesCount': battlesCount, 
+               'vehicleType': arenaDP.getVehicleInfo().vehicleType})
             translation = self.gui.resourceManager.getTranslatedText
             tip = criteria.find()
             self.as_setTipTitleS(self._formatTipTitle(translation(tip.status)))
@@ -104,18 +102,21 @@ class BattleLoading(BaseBattleLoadingMeta, IArenaVehiclesController):
         self.as_setMapIconS(self._arenaVisitor.getArenaIcon('battleLoading'))
 
     def _getSettingsID(self, loadingInfo, tip):
-        return self.settingsCore.options.getSetting(loadingInfo).getSettingID(isVisualOnly=self._arenaVisitor.gui.isEventBattle()) if tip is not None and tip.isValid() else BattleLoadingTipSetting.OPTIONS.TEXT
+        if tip is not None and tip.isValid():
+            return self.settingsCore.options.getSetting(loadingInfo).getSettingID(isVisualOnly=self._arenaVisitor.gui.isEventBattle())
+        else:
+            return BattleLoadingTipSetting.OPTIONS.TEXT
 
     def _makeVisualTipVO(self, arenaDP, tip=None):
         loadingInfo = settings_constants.GAME.BATTLE_LOADING_RANKED_INFO if self._arenaVisitor.gui.isRankedBattle() else settings_constants.GAME.BATTLE_LOADING_INFO
         settingID = self._getSettingsID(loadingInfo, tip)
         tipIconPath = self.gui.resourceManager.getImagePath(tip.icon)
-        vo = {'settingID': settingID,
-         'tipIcon': tipIconPath if settingID == BattleLoadingTipSetting.OPTIONS.VISUAL else None,
-         'arenaTypeID': self._arenaVisitor.type.getID(),
-         'minimapTeam': arenaDP.getNumberOfTeam(),
-         'showMinimap': settingID == BattleLoadingTipSetting.OPTIONS.MINIMAP,
-         'showTipsBackground': settingID == BattleLoadingTipSetting.OPTIONS.MINIMAP}
+        vo = {'settingID': settingID, 
+           'tipIcon': tipIconPath if settingID == BattleLoadingTipSetting.OPTIONS.VISUAL else None, 
+           'arenaTypeID': self._arenaVisitor.type.getID(), 
+           'minimapTeam': arenaDP.getNumberOfTeam(), 
+           'showMinimap': settingID == BattleLoadingTipSetting.OPTIONS.MINIMAP, 
+           'showTipsBackground': settingID == BattleLoadingTipSetting.OPTIONS.MINIMAP}
         viewSettings = self._getViewSettingByID(settingID)
         vo.update(viewSettings)
         return vo
@@ -123,17 +124,17 @@ class BattleLoading(BaseBattleLoadingMeta, IArenaVehiclesController):
     def _getViewSettingByID(self, settingID):
         result = {}
         if settingID == BattleLoadingTipSetting.OPTIONS.TEXT:
-            result.update({'leftTeamTitleLeft': -410,
-             'rightTeamTitleLeft': 204,
-             'tipTitleTop': 536,
-             'tipBodyTop': 562,
-             'showTableBackground': True,
-             'showTipsBackground': False})
+            result.update({'leftTeamTitleLeft': -410, 
+               'rightTeamTitleLeft': 204, 
+               'tipTitleTop': 536, 
+               'tipBodyTop': 562, 
+               'showTableBackground': True, 
+               'showTipsBackground': False})
         else:
-            result.update({'leftTeamTitleLeft': -475,
-             'rightTeamTitleLeft': 270,
-             'tipTitleTop': 366,
-             'tipBodyTop': 397,
-             'showTableBackground': False,
-             'showTipsBackground': True})
+            result.update({'leftTeamTitleLeft': -475, 
+               'rightTeamTitleLeft': 270, 
+               'tipTitleTop': 366, 
+               'tipBodyTop': 397, 
+               'showTableBackground': False, 
+               'showTipsBackground': True})
         return result

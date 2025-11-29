@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/mode_selector/story_mode_selector_item.py
 from frameworks.wulf import WindowLayer
 from gui import GUI_SETTINGS
 from gui.impl import backport
@@ -38,7 +36,10 @@ class StoryModeSelectorItem(ModeSelectorLegacyItem):
 
     def _getPositionByModeName(self):
         settings = settingsSchema.getModel()
-        return (settings.modeSelectorCardColumn, settings.modeSelectorCardPriority) if settings is not None else super(StoryModeSelectorItem, self)._getPositionByModeName()
+        if settings is not None:
+            return (settings.modeSelectorCardColumn, settings.modeSelectorCardPriority)
+        else:
+            return super(StoryModeSelectorItem, self)._getPositionByModeName()
 
     def handleClick(self):
         self._uiLogger.logSelfClick()
@@ -47,16 +48,22 @@ class StoryModeSelectorItem(ModeSelectorLegacyItem):
     def handleInfoPageClick(self):
         self._uiLogger.logInfoClick()
         url = self._urlProcessing(GUI_SETTINGS.lookup(self._storyModeCtrl.storyModeInfoPageKey))
-        showBrowserOverlayView(url, VIEW_ALIAS.STORY_MODE_WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+        showBrowserOverlayView(url, VIEW_ALIAS.STORY_MODE_WEB_VIEW_TRANSPARENT, hiddenLayers=(
+         WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
     def _isInfoIconVisible(self):
         return GUI_SETTINGS.lookup(self._storyModeCtrl.storyModeInfoPageKey) is not None
 
     def _isNewLabelVisible(self):
         missionsSettings = missionsSchema.getModel()
-        return True if missionsSettings is not None and missionsSettings.isEventEnabled and not isWelcomeScreenSeen() or self._storyModeCtrl.isNewNeededForNewbies() else super(StoryModeSelectorItem, self)._isNewLabelVisible()
+        if missionsSettings is not None and missionsSettings.isEventEnabled and not isWelcomeScreenSeen() or self._storyModeCtrl.isNewNeededForNewbies():
+            return True
+        return super(StoryModeSelectorItem, self)._isNewLabelVisible()
 
     @property
     def eventSuffix(self):
         missionsSettings = missionsSchema.getModel()
-        return EVENT_SUFFIX if missionsSettings is not None and missionsSettings.isEventEnabled else ''
+        if missionsSettings is not None and missionsSettings.isEventEnabled:
+            return EVENT_SUFFIX
+        else:
+            return ''

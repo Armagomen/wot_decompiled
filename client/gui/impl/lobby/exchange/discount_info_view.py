@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/exchange/discount_info_view.py
 from gui.impl.gen.view_models.views.lobby.exchange.exchange_rate_discount_model import DiscountType, ShowFormat
 from gui.impl.common.components_presenter import BaseSubModelViewWithToolTips
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel

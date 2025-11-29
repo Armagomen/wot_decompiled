@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/common/onboarding_queue_view.py
 from functools import partial
-import typing
-import BigWorld
+import typing, BigWorld
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import WindowFlags, ViewSettings
 from gui.game_loading import loading
@@ -42,7 +39,7 @@ class OnboardingQueueView(BaseWaitQueueView):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def _onLoading(self, *args, **kwargs):
         super(OnboardingQueueView, self)._onLoading(*args, **kwargs)
@@ -68,7 +65,11 @@ class OnboardingQueueView(BaseWaitQueueView):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onQuit, self._onQuitButtonClick), (self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
+        return (
+         (
+          self.viewModel.onQuit, self._onQuitButtonClick),
+         (
+          self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
 
     def _onWaitQueueTimeout(self):
         self._uiLogger.logButtonShown(LogButtons.SKIP)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/tooltips/entry_point_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -11,9 +9,9 @@ from resource_well.gui.impl.gen.view_models.views.lobby.enums import EventMode
 from resource_well.gui.impl.gen.view_models.views.lobby.tooltips.entry_point_tooltip_model import EntryPointTooltipModel, EventState
 from resource_well.gui.impl.gen.view_models.views.lobby.tooltips.reward_info_model import RewardInfoModel, RewardState
 from skeletons.gui.resource_well import IResourceWellController
-_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT,
- PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT,
- PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
+_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT, 
+   PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT, 
+   PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
 
 class EntryPointTooltip(ViewImpl):
     __resourceWell = dependency.descriptor(IResourceWellController)
@@ -29,7 +27,7 @@ class EntryPointTooltip(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(EntryPointTooltip, self)._onLoading(*args, **kwargs)
         self.__resourceWell.startNumberRequesters()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setEventMode(convertPurchaseToEventMode(self.__resourceWell.getPurchaseMode()))
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
@@ -40,7 +38,13 @@ class EntryPointTooltip(ViewImpl):
         super(EntryPointTooltip, self)._finalize()
 
     def _getEvents(self):
-        return ((self.__resourceWell.onNumberRequesterUpdated, self.__fillRewards), (self.__resourceWell.onEventUpdated, self.__onEventUpdated), (self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
+        return (
+         (
+          self.__resourceWell.onNumberRequesterUpdated, self.__fillRewards),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
 
     @replaceNoneKwargsModel
     def __fillEventTime(self, model=None):
@@ -89,12 +93,12 @@ class EntryPointTooltip(ViewImpl):
         model.setEventState(state)
 
     def __onEventUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
 
     def __onSettingsChanged(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
             self.__fillRewards(model=model)

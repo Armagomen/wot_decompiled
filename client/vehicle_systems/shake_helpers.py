@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/shake_helpers.py
-import typing
-import BigWorld
-import Math
+import typing, BigWorld, Math
 from aih_constants import ShakeReason
 from vehicle_systems.tankStructure import TankNodeNames
 if typing.TYPE_CHECKING:
@@ -13,19 +9,18 @@ def shakePlayerDynamicCamera(vehicle, gunInstallationSlot, shakeReason=ShakeReas
     appearance = vehicle.appearance
     if appearance is None or appearance.compoundModel is None:
         return
-    else:
-        gunNode = appearance.compoundModel.node(gunNodeName)
-        gunFireNode = appearance.compoundModel.node(gunFireNodeName)
-        if gunFireNode is None or gunNode is None:
-            return
-        BigWorld.player().inputHandler.onVehicleShaken(vehicle, shakeReason, Math.Matrix(gunFireNode).translation, Math.Matrix(gunNode).applyVector(Math.Vector3(0, 0, -1)), gunInstallationSlot.gun.effectsCaliber, withEvents=gunInstallationSlot.isMainInstallation())
+    gunNode = appearance.compoundModel.node(gunNodeName)
+    gunFireNode = appearance.compoundModel.node(gunFireNodeName)
+    if gunFireNode is None or gunNode is None:
         return
+    BigWorld.player().inputHandler.onVehicleShaken(vehicle, shakeReason, Math.Matrix(gunFireNode).translation, Math.Matrix(gunNode).applyVector(Math.Vector3(0, 0, -1)), gunInstallationSlot.gun.effectsCaliber, withEvents=gunInstallationSlot.isMainInstallation())
+    return
 
 
 def shakeMultiGunPlayerDynamicCamera(vehicle, gunInstallationSlot, gunIndex, shakeReason=ShakeReason.OWN_SHOT):
     multiGun = gunInstallationSlot.gun.multiGun
-    if multiGun is not None:
-        0 <= gunIndex < len(multiGun) and shakePlayerDynamicCamera(vehicle, gunInstallationSlot, shakeReason, multiGun[gunIndex].node, multiGun[gunIndex].gunFire)
+    if multiGun is not None and 0 <= gunIndex < len(multiGun):
+        shakePlayerDynamicCamera(vehicle, gunInstallationSlot, shakeReason, multiGun[gunIndex].node, multiGun[gunIndex].gunFire)
     else:
         shakePlayerDynamicCamera(vehicle, gunInstallationSlot, shakeReason)
     return

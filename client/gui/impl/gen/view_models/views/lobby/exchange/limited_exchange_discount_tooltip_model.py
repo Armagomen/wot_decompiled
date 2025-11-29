@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/exchange/limited_exchange_discount_tooltip_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.exchange.discount_presentation import DiscountPresentation
 from gui.impl.gen.view_models.views.lobby.exchange.exchange_discount_tooltip_model import ExchangeDiscountTooltipModel

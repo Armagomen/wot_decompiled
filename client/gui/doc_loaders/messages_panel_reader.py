@@ -1,20 +1,18 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/messages_panel_reader.py
 from helpers import html
 import resource_helper
 _EXPECTED_STYLES = {'entityStyle': ('fontSize', 'fontFace', 'fontColor')}
 
 def _getDefaultSettings():
-    return {'direction': 'up',
-     'lifeTime': 1000,
-     'alphaSpeed': 1000,
-     'maxLinesCount': 5,
-     'poolSettings': (),
-     'textBottomPadding': 0.0,
-     'textRightPadding': 0.0,
-     'useHtml': False,
-     'showUniqueOnly': False,
-     'messageGap': 0}
+    return {'direction': 'up', 
+       'lifeTime': 1000, 
+       'alphaSpeed': 1000, 
+       'maxLinesCount': 5, 
+       'poolSettings': (), 
+       'textBottomPadding': 0.0, 
+       'textRightPadding': 0.0, 
+       'useHtml': False, 
+       'showUniqueOnly': False, 
+       'messageGap': 0}
 
 
 def _readSettings(ctx, root):
@@ -66,5 +64,7 @@ def readXML(path):
     settings = _readSettings(ctx, root)
     styles = _readStyles(ctx, root)
     messages = _readMessages(ctx, root)
-    _cache[path] = (settings, styles, messages)
-    return (settings, styles, messages)
+    _cache[path] = (
+     settings, styles, messages)
+    return (
+     settings, styles, messages)

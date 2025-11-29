@@ -1,12 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/stronghold/unit/permissions.py
 from UnitBase import UNIT_FLAGS, UNIT_ROLE
 from constants import CLAN_MEMBER_FLAGS
 from gui.prb_control.entities.base.unit.permissions import UnitPermissions, IUnitPermissions
 from gui.prb_control.items.stronghold_items import UNIT_ROLE_BY_RESERVE_TYPE
 from gui.shared.utils.decorators import ReprInjector
 
-@ReprInjector.simple(('_clanRoles', 'clanRoles'), ('_isLegionary', 'isLegionary'), ('_strongholdManageReservesRoles', 'strongholdManageReservesRoles'), ('_strongholdStealLeadershipRoles', 'strongholdStealLeadershipRoles'), ('_isInSlot', 'isInSlot'), ('_isInIdle', 'isInIdle'), ('_isEquipmentCommander', 'isEquipmentCommander'), ('_isFreezed', 'isFreezed'))
+@ReprInjector.simple(('_clanRoles', 'clanRoles'), ('_isLegionary', 'isLegionary'), ('_strongholdManageReservesRoles',
+                                                                                    'strongholdManageReservesRoles'), ('_strongholdStealLeadershipRoles',
+                                                                                                                       'strongholdStealLeadershipRoles'), ('_isInSlot',
+                                                                                                                                                           'isInSlot'), ('_isInIdle',
+                                                                                                                                                                         'isInIdle'), ('_isEquipmentCommander',
+                                                                                                                                                                                       'isEquipmentCommander'), ('_isFreezed',
+                                                                                                                                                                                                                 'isFreezed'))
 class StrongholdPermissions(UnitPermissions):
 
     def __init__(self, roles=UNIT_ROLE.DEFAULT, flags=UNIT_FLAGS.DEFAULT, isCurrentPlayer=False, isPlayerReady=False, hasLockedState=False, clanRoles=None, strongholdManageReservesRoles=None, isLegionary=False, isInSlot=False, isInIdle=False, isFreezed=False, strongholdStealLeadershipRoles=None):
@@ -49,7 +53,9 @@ class StrongholdPermissions(UnitPermissions):
     def canAssignToSlot(self, dbID):
         if not super(StrongholdPermissions, self).canAssignToSlot(dbID) or not self.isNotFreezed():
             return False
-        return not self._isPlayerReady if not self.isCommander(self._roles) else True
+        if not self.isCommander(self._roles):
+            return not self._isPlayerReady
+        return True
 
     def canReassignToSlot(self):
         return super(StrongholdPermissions, self).canReassignToSlot() and self.isNotFreezed()
@@ -80,7 +86,9 @@ class StrongholdPermissions(UnitPermissions):
         return self.isCommander(self._roles) and not self._isLegionary and self.isNotFreezed()
 
     def isEquipmentCommander(self, equipmentType):
-        return False if equipmentType not in UNIT_ROLE_BY_RESERVE_TYPE else self._roles & UNIT_ROLE_BY_RESERVE_TYPE[equipmentType] > 0
+        if equipmentType not in UNIT_ROLE_BY_RESERVE_TYPE:
+            return False
+        return self._roles & UNIT_ROLE_BY_RESERVE_TYPE[equipmentType] > 0
 
     def canCreateSquad(self):
         return False

@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/tunable_event_block.py
 import BigWorld
 from functools import wraps
 from block import Block
 from slot_types import SLOT_TYPE
 
 class TunableEventBlock(Block):
-    _EVENT_SLOT_NAMES = ['onEvent']
+    _EVENT_SLOT_NAMES = [
+     'onEvent']
 
     def __init__(self, *args, **kwargs):
         super(TunableEventBlock, self).__init__(*args, **kwargs)
@@ -24,7 +23,9 @@ class TunableEventBlock(Block):
 
     def _isReady(self):
         i = self._index
-        return False if self._active.hasValue() and not self._active.getValue() or self._cooldown.hasValue() and BigWorld.time() - self.__lastCallTime[i] < self._cooldown.getValue() or self._maxCount.hasValue() and self.__currentCount[i] >= self._maxCount.getValue() else True
+        if self._active.hasValue() and not self._active.getValue() or self._cooldown.hasValue() and BigWorld.time() - self.__lastCallTime[i] < self._cooldown.getValue() or self._maxCount.hasValue() and self.__currentCount[i] >= self._maxCount.getValue():
+            return False
+        return True
 
     def _push(self):
         self.__lastCallTime[self._index] = BigWorld.time()
@@ -43,4 +44,4 @@ class TunableEventBlock(Block):
         return wrapper
 
     def validate(self):
-        pass
+        return ''

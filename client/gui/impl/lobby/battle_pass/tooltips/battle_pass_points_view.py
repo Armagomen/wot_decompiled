@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_points_view.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
@@ -29,7 +27,7 @@ class BattlePassPointsTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(BattlePassPointsTooltip, self)._onLoading(*args, **kwargs)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self.__setPointsInfo(model)
 
     def __setPointsInfo(self, model):

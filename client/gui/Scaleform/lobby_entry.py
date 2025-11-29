@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/lobby_entry.py
 from collections import namedtuple
-import typing
-import BigWorld
+import typing, BigWorld
 from PlayerEvents import g_playerEvents
 from frameworks.state_machine import BaseStateObserver
 from frameworks.wulf import WindowLayer
@@ -50,7 +47,10 @@ def getLobbyStateMachine():
     from skeletons.gui.app_loader import IAppLoader
     appLoader = dependency.instance(IAppLoader)
     app = appLoader.getApp()
-    return getattr(app, 'stateMachine', None) if app else None
+    if app:
+        return getattr(app, 'stateMachine', None)
+    else:
+        return
 
 
 _UntrackedStateForwardedParams = namedtuple('_UntrackedStateForwardedParams', ['loadParams', 'args', 'kwargs'])
@@ -240,4 +240,7 @@ class LobbyEntry(AppEntry):
         return
 
     def __getWaitingFromContainer(self):
-        return self._containerMgr.getView(WindowLayer.WAITING) if self._containerMgr is not None else None
+        if self._containerMgr is not None:
+            return self._containerMgr.getView(WindowLayer.WAITING)
+        else:
+            return

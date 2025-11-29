@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/dialog_template_utils.py
-import typing
-import constants
+import typing, constants
 from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
 from gui.impl import backport
 from gui.impl.gen_utils import DynAccessor
@@ -13,7 +10,9 @@ if typing.TYPE_CHECKING:
 def toString(value):
     if isinstance(value, DynAccessor):
         return backport.text(value())
-    return backport.text(value) if isinstance(value, (long, int)) else value
+    if isinstance(value, (long, int)):
+        return backport.text(value)
+    return value
 
 
 def findDialogTemplatesByUniqueID(uniqueID):
@@ -36,4 +35,6 @@ def closeDialogTemplate(uniqueID):
 
 
 def getCurrencyTooltipAlias(currency):
-    return currency + 'StatsFullScreen' if constants.IS_SINGAPORE and currency in CURRENCIES_CONSTANTS.SINGAPORE_ALTERNATIVE_CURRENCIES_SET else currency + 'InfoFullScreen'
+    if constants.IS_SINGAPORE and currency in CURRENCIES_CONSTANTS.SINGAPORE_ALTERNATIVE_CURRENCIES_SET:
+        return currency + 'StatsFullScreen'
+    return currency + 'InfoFullScreen'

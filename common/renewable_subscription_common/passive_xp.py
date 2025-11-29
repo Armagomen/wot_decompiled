@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/renewable_subscription_common/passive_xp.py
 import typing
 from constants import VEHICLE_NO_CREW_TRANSFER_PENALTY_TAG
 from items import vehicles, tankmen
@@ -28,7 +26,7 @@ class _Tank(object):
         return bool(VEHICLE_CLASS_TAGS & self.vehicleType.tags & tank.vehicleType.tags)
 
     def __str__(self):
-        return 'Tank: id:[{}], tags:[{}], isPremium:[{}], nation:[{}]'.format(self.vehicleType.id, self.vehicleType.tags, self.isPremium, self.nation)
+        return ('Tank: id:[{}], tags:[{}], isPremium:[{}], nation:[{}]').format(self.vehicleType.id, self.vehicleType.tags, self.isPremium, self.nation)
 
     def __eq__(self, other):
         return self.vehicleType.id == other.vehicleType.id
@@ -102,7 +100,8 @@ class CrewValidator(object):
             return result
 
 
-FORBIDDEN_TAGS = {'event_battles',
+FORBIDDEN_TAGS = {
+ 'event_battles',
  'fallout',
  'epic_battles',
  'bob',

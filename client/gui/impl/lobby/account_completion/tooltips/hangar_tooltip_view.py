@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_completion/tooltips/hangar_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.lobby.account_completion.utils.common import fillRewards
@@ -15,7 +13,7 @@ class HangarTooltipView(ViewImpl):
         self.__email = email
 
     def _onLoading(self, *args, **kwargs):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self._fillModel(model)
 
     def _fillModel(self, model):

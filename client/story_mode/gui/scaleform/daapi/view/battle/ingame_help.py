@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/ingame_help.py
 import typing
 from gui.Scaleform.daapi.view.battle.shared.ingame_help import IngameHelpWindow
 from story_mode.uilogging.story_mode.consts import LogWindows

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/shared_utils/vehicle_utils.py
-import NetworkFilters
-import BigWorld
+import NetworkFilters, BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -11,11 +8,9 @@ from helpers import dependency
 from items import getTypeOfCompactDescr, vehicles
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
-_MODULES_INSTALL_ORDER = (GUI_ITEM_TYPE.CHASSIS,
- GUI_ITEM_TYPE.TURRET,
- GUI_ITEM_TYPE.GUN,
- GUI_ITEM_TYPE.ENGINE,
- GUI_ITEM_TYPE.RADIO)
+_MODULES_INSTALL_ORDER = (
+ GUI_ITEM_TYPE.CHASSIS, GUI_ITEM_TYPE.TURRET, GUI_ITEM_TYPE.GUN,
+ GUI_ITEM_TYPE.ENGINE, GUI_ITEM_TYPE.RADIO)
 
 def createWheelFilters(typeDescriptor):
     wheelsScrollFilter = None
@@ -25,15 +20,16 @@ def createWheelFilters(typeDescriptor):
         wheelsScrollFilter = []
         for _ in range(scrollableWheelsCount):
             wheelsScrollFilter.append(NetworkFilters.FloatLatencyDelayingFilter())
-            wheelsScrollFilter[-1].input(BigWorld.time(), 0.0)
+            wheelsScrollFilter[(-1)].input(BigWorld.time(), 0.0)
 
         steerableWheelsCount = typeDescriptor.chassis.generalWheelsAnimatorConfig.getSteerableWheelsCount()
         wheelsSteeringFilter = []
         for _ in range(steerableWheelsCount):
             wheelsSteeringFilter.append(NetworkFilters.FloatLatencyDelayingFilter())
-            wheelsSteeringFilter[-1].input(BigWorld.time(), 0.0)
+            wheelsSteeringFilter[(-1)].input(BigWorld.time(), 0.0)
 
-    return (wheelsScrollFilter, wheelsSteeringFilter)
+    return (
+     wheelsScrollFilter, wheelsSteeringFilter)
 
 
 class ModuleDependencies(object):
@@ -74,7 +70,7 @@ class ModuleDependencies(object):
                     if stockGunCD is not None and not self._getModule(stockGunCD).isInstalled(vehicle):
                         self.__addConflicted(GUI_ITEM_TYPE.GUN, (stockGunCD,))
                 else:
-                    LOG_DEBUG('[Module dependencies]. Unsupported error type: "{}"'.format(reason))
+                    LOG_DEBUG(('[Module dependencies]. Unsupported error type: "{}"').format(reason))
         return self.__conflictedModulesCD
 
     def clearConflictedModules(self):

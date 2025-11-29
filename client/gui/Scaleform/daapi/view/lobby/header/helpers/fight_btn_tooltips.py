@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/helpers/fight_btn_tooltips.py
 from __future__ import absolute_import
 import typing
 from gui.impl import backport
@@ -122,14 +120,13 @@ def getMapsTrainingTooltipData():
 
 def getEpicBattlesOnlyVehicleTooltipData(result):
     state = result.restriction
-    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED,
-     UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
-     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER,
-     PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER,
+    if state in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED, UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
+     PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER, PREBATTLE_RESTRICTION.VEHICLE_TELECOM_RENTALS_IS_OVER,
      PREBATTLE_RESTRICTION.VEHICLE_WOT_PLUS_EXCLUSIVE_UNAVAILABLE):
         header = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.notSupported.header())
         body = backport.text(R.strings.menu.headerButtons.fightBtn.tooltip.notSupported.body())
         return makeTooltip(header, body)
+    return ''
 
 
 def getEventTooltipData():
@@ -175,7 +172,9 @@ def getRandomTooltipData(result, isInSquad):
     else:
         if isInSquad:
             return getSquadFightBtnTooltipData(result)
-        return ''
+        else:
+            return ''
+
     return makeTooltip(header, body)
 
 

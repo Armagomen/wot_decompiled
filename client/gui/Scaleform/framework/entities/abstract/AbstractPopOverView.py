@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/AbstractPopOverView.py
 from gui.Scaleform.daapi.view.meta.PopOverViewMeta import PopOverViewMeta
 from gui.shared.events import HidePopoverEvent
 

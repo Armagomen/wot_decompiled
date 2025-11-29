@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/example_view_skeleton/controller.py
 import typing
 from Event import Event
 from gui.impl.lobby.container_views.base.controllers import InteractionController
@@ -20,11 +18,17 @@ class ExampleInteractionController(InteractionController):
         return ExampleComponentViewEvents()
 
     def _getEvents(self):
-        return [(self.eventProvider.onMouseEnter, self._onMouseEnter),
-         (self.eventProvider.onMouseLeave, self._onMouseLeave),
-         (self.eventProvider.onSelected, self._onSelected),
-         (self.itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange)]
+        return [
+         (
+          self.eventProvider.onMouseEnter, self._onMouseEnter),
+         (
+          self.eventProvider.onMouseLeave, self._onMouseLeave),
+         (
+          self.eventProvider.onSelected, self._onSelected),
+         (
+          self.itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange)]
 
     def _onMouseEnter(self, source, *args, **kwargs):
         pass
@@ -36,7 +40,7 @@ class ExampleInteractionController(InteractionController):
         source.setData({'title': 'Selected'})
         for component in self.view.components.values():
             if source.key != component.key:
-                component.setData({'title': 'Book {} Not Selected'.format(component.key)})
+                component.setData({'title': ('Book {} Not Selected').format(component.key)})
 
         self.refresh()
 

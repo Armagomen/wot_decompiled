@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/post_progression_purchase_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
 from gui.impl.gen.view_models.common.price_model import PriceModel
 
 class PostProgressionPurchaseModel(ViewModel):
-    __slots__ = ('onPurchaseClick',)
+    __slots__ = ('onPurchaseClick', )
 
     def __init__(self, properties=6, commands=1):
         super(PostProgressionPurchaseModel, self).__init__(properties=properties, commands=commands)

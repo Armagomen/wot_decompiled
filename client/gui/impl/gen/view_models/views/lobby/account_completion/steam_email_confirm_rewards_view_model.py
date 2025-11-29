@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_completion/steam_email_confirm_rewards_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
 
 class SteamEmailConfirmRewardsViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=1, commands=1):
         super(SteamEmailConfirmRewardsViewModel, self).__init__(properties=properties, commands=commands)

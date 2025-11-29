@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/gen/view_models/views/lobby/views/progression/progression_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.battle_quests_model import BattleQuestsModel
@@ -11,7 +9,7 @@ class ProgressionState(Enum):
 
 
 class ProgressionViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=9, commands=1):
         super(ProgressionViewModel, self).__init__(properties=properties, commands=commands)

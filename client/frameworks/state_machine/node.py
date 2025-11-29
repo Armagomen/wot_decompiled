@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/node.py
 import weakref
 from .exceptions import NodeError
 
@@ -14,7 +12,7 @@ class Node(object):
         self.__children = []
 
     def __repr__(self):
-        return '{}(id={})'.format(self.__class__.__name__, self.__id)
+        return ('{}(id={})').format(self.__class__.__name__, self.__id)
 
     def clear(self):
         self.__parent = lambda : None
@@ -32,7 +30,10 @@ class Node(object):
         return filter(filter_, self.__children)
 
     def getChildByIndex(self, index):
-        return self.__children[index] if 0 <= index < len(self.__children) else None
+        if 0 <= index < len(self.__children):
+            return self.__children[index]
+        else:
+            return
 
     def addChild(self, child):
         self._addChild(child)
@@ -43,11 +44,12 @@ class Node(object):
     def visitInOrder(self, filter_=None):
         if filter_ is None:
             yield self
-        elif filter_(self):
-            yield self
-        for child in self.getChildren(filter_=filter_):
-            for item in child.visitInOrder(filter_=filter_):
-                yield item
+        else:
+            if filter_(self):
+                yield self
+            for child in self.getChildren(filter_=filter_):
+                for item in child.visitInOrder(filter_=filter_):
+                    yield item
 
         return
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_showcase_style_buying.py
 import typing
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.preview_bottom_panel_constants import ObtainingMethodInfo, ObtainingMethods, getShowcaseStyleObtainingInfo
 from gui.impl import backport
@@ -96,16 +94,16 @@ class VehiclePreviewBottomPanelShowcaseStyleBuying(VehiclePreviewBottomPanelShow
         originalPriceMoney = dyn_utils.getMoney(self.__originalPrice, self.__originalDynPrice)
         price = priceMoney.get(priceMoney.getCurrency()) or 0
         originalPrice = originalPriceMoney.get(originalPriceMoney.getCurrency()) or 0
-        return {'originalPrice': originalPrice if originalPrice > price else 0,
-         'price': price,
-         'discountPercent': int(self.__discountPercent),
-         'timeRemainingStr': '' if self.__endTime == 0 else self.__getTimeLeftStr(),
-         'isBought': False,
-         'priceType': priceMoney.getCurrency(),
-         'isNoVehicle': not self.__haveSuitableVehicles,
-         'actionBtnEnabled': self.__buyingProcessor.mayObtain(priceMoney),
-         'actionBtnTooltip': self.__getActionBtnTooltip(priceMoney),
-         'actionBtnLabel': self.__getActionBtnLabel()}
+        return {'originalPrice': originalPrice if originalPrice > price else 0, 
+           'price': price, 
+           'discountPercent': int(self.__discountPercent), 
+           'timeRemainingStr': '' if self.__endTime == 0 else self.__getTimeLeftStr(), 
+           'isBought': False, 
+           'priceType': priceMoney.getCurrency(), 
+           'isNoVehicle': not self.__haveSuitableVehicles, 
+           'actionBtnEnabled': self.__buyingProcessor.mayObtain(priceMoney), 
+           'actionBtnTooltip': self.__getActionBtnTooltip(priceMoney), 
+           'actionBtnLabel': self.__getActionBtnLabel()}
 
     def onBuyClick(self):
         self.__onBuy()
@@ -113,7 +111,9 @@ class VehiclePreviewBottomPanelShowcaseStyleBuying(VehiclePreviewBottomPanelShow
     def __getActionBtnTooltip(self, priceMoney):
         if self.__endTime and self.__getTimeDelta() <= 0:
             return backport.text(_ACTION_BTN_TOOLTIPS.unavailable())
-        return u'' if self.__buyingProcessor.mayObtain(priceMoney) else backport.text(_ACTION_BTN_TOOLTIPS.notEnoughFunds())
+        if self.__buyingProcessor.mayObtain(priceMoney):
+            return ''
+        return backport.text(_ACTION_BTN_TOOLTIPS.notEnoughFunds())
 
     def __getActionBtnLabel(self):
         return backport.text(self.__obtainingInfo.btn_label)

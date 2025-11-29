@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/radial_menu.py
 from collections import namedtuple
 import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import RadialMenu
@@ -10,7 +8,8 @@ from gui.shared import EVENT_BUS_SCOPE, events
 EventShortcut = namedtuple('EventShortcut', ('title', 'action', 'icon'))
 EventShortcut.__new__.__defaults__ = (None, None, None)
 _CMD_LOCALE_PFX = '#ingame_help:chatShortcuts/'
-SHORTCUTS_EVENT = (EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_1', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1),
+SHORTCUTS_EVENT = (
+ EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_1', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1),
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_2', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2),
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_3', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3),
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_4', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4),
@@ -24,35 +23,40 @@ SHORTCUTS_EVENT = (EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_1', action=
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_5_ex', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5_EX),
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_6_ex', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6_EX),
  EventShortcut(title=_CMD_LOCALE_PFX + 'event_chat_7_ex', action=BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7_EX))
-PAGE_DEFAULT = (BATTLE_CHAT_COMMAND_NAMES.SOS,
+PAGE_DEFAULT = (
+ BATTLE_CHAT_COMMAND_NAMES.SOS,
  BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
  None,
  None,
  BATTLE_CHAT_COMMAND_NAMES.POSITIVE,
  BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
  BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN)
-PAGE_ALLY = (BATTLE_CHAT_COMMAND_NAMES.SOS,
+PAGE_ALLY = (
+ BATTLE_CHAT_COMMAND_NAMES.SOS,
  BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
  None,
  None,
  None,
  BATTLE_CHAT_COMMAND_NAMES.TURNBACK,
  None)
-PAGE_ENEMY = (None,
+PAGE_ENEMY = (
+ None,
  BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
  None,
  None,
  None,
  None,
  None)
-PAGE_CHAT_DEFAULT = (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1,
+PAGE_CHAT_DEFAULT = (
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7)
-PAGE_CHAT_ALLY = (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX,
+PAGE_CHAT_ALLY = (
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2_EX,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3_EX,
  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4_EX,
@@ -62,7 +66,7 @@ PAGE_CHAT_ALLY = (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX,
 SHORTCUT_BY_ACTION = {shortcut.action:shortcut for shortcut in SHORTCUTS_EVENT}
 
 def __makeShortcutSet(commands):
-    return tuple(((SHORTCUT_BY_ACTION[action] if action is not None else None) for action in commands))
+    return tuple((SHORTCUT_BY_ACTION[action] if action is not None else None) for action in commands)
 
 
 class EventRadialMenu(RadialMenu, EventRadialMenuMeta):

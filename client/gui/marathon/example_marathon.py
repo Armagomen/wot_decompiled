@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/marathon/example_marathon.py
 from gui.impl.gen import R
 from gui.marathon.marathon_event import MarathonEvent
 from gui.marathon.marathon_event_container import MarathonEventContainer

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/schema_manager.py
-import typing
-import logging
+import typing, logging
 from base_schema_manager import BaseSchemaManager
 if typing.TYPE_CHECKING:
     from dict2model.schemas import SchemaModelType

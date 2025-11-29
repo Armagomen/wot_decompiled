@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/processors.py
 from functools import partial
 import BigWorld
 from adisp import adisp_async, adisp_process
@@ -83,7 +81,9 @@ class _PutRewardValidator(SyncValidator):
         mode = self.__resourceWell.getPurchaseMode()
         currentRewardID = self.__resourceWell.getCurrentRewardID()
         isCurrentRewardID = not currentRewardID or currentRewardID == self.__rewardID
-        return plugins.makeError() if mode is PurchaseMode.TWO_PARALLEL_PRODUCTS and not isCurrentRewardID else plugins.makeSuccess()
+        if mode is PurchaseMode.TWO_PARALLEL_PRODUCTS and not isCurrentRewardID:
+            return plugins.makeError()
+        return plugins.makeSuccess()
 
 
 class _BasePutResourcesProcessor(Processor):
@@ -120,7 +120,8 @@ class PutResourcesProcessor(_BasePutResourcesProcessor):
 
     def __init__(self, rewardID, resources):
         resources = processLoadingResources(rewardID, resources)
-        super(PutResourcesProcessor, self).__init__(rewardID, resources, [_ResourceLoadingConfirmator(rewardID, resources, False)])
+        super(PutResourcesProcessor, self).__init__(rewardID, resources, [
+         _ResourceLoadingConfirmator(rewardID, resources, False)])
 
 
 class _NextSerialVehicleConfirmator(MessageConfirmator):
@@ -150,4 +151,5 @@ class NextSerialVehicleProcessor(_BasePutResourcesProcessor):
     __resourceWell = dependency.descriptor(IResourceWellController)
 
     def __init__(self, rewardID, resources):
-        super(NextSerialVehicleProcessor, self).__init__(rewardID, processLoadingResources(rewardID, resources), [_NextSerialVehicleConfirmator(rewardID)])
+        super(NextSerialVehicleProcessor, self).__init__(rewardID, processLoadingResources(rewardID, resources), [
+         _NextSerialVehicleConfirmator(rewardID)])

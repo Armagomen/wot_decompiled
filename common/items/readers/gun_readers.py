@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/readers/gun_readers.py
-import typing
-import ResMgr
+import typing, ResMgr
 from items import _xml
 from items.components import component_constants
 from items.components import gun_components

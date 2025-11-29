@@ -1,12 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/customization_mode.py
 import logging
 from copy import copy
 from functools import partial
-import typing
-import math_utils
-import Math
-import AnimationSequence
+import typing, math_utils, Math, AnimationSequence
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process, adisp_async
 from gui import SystemMessages
@@ -190,18 +185,17 @@ class CustomizationMode(object):
                 error()
 
             return False
-        else:
-            if not self._installCommonItem(intCD, slotId, season, component):
-                if not self._installItem(intCD, slotId, season, component):
-                    return False
-            component = self.getComponentFromSlot(slotId, season)
-            if refresh:
-                self._ctx.refreshOutfit(season)
-                self._events.onItemInstalled(item, slotId, season, component)
-            if isItemLimitReached(item, self._modifiedOutfits, self):
-                if component is None or component.isFilled():
-                    self._events.onItemLimitReached(item)
-            return True
+        if not self._installCommonItem(intCD, slotId, season, component):
+            if not self._installItem(intCD, slotId, season, component):
+                return False
+        component = self.getComponentFromSlot(slotId, season)
+        if refresh:
+            self._ctx.refreshOutfit(season)
+            self._events.onItemInstalled(item, slotId, season, component)
+        if isItemLimitReached(item, self._modifiedOutfits, self):
+            if component is None or component.isFilled():
+                self._events.onItemLimitReached(item)
+        return True
 
     def removeItem(self, slotId, season=None, refresh=True):
         item = self.getItemFromSlot(slotId, season)
@@ -513,11 +507,12 @@ class CustomizationMode(object):
             outfits = self.originalOutfits
         else:
             outfits = self.outfits
-        seasons = (self._ctx.season, SeasonType.ALL)
+        seasons = (
+         self._ctx.season, SeasonType.ALL)
         appliedItems = set()
         for seasonType in seasons:
             outfit = outfits[seasonType]
-            appliedItems.update((intCD for intCD in outfit.items()))
+            appliedItems.update(intCD for intCD in outfit.items())
 
         return appliedItems
 

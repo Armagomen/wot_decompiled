@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/quest_progress.py
 from collections import Counter
 from itertools import izip
 from constants import QUEST_PROGRESS_STATE
@@ -139,9 +137,9 @@ class ValueProgress(Progress):
         super(ValueProgress, self).__init__(progressID, config)
 
     def getProgress(self):
-        return {'value': self.getValue(),
-         'state': self.getState(),
-         'goal': self.getGoal()}
+        return {'value': self.getValue(), 
+           'state': self.getState(), 
+           'goal': self.getGoal()}
 
     def updateProgress(self, progress):
         if progress:
@@ -226,8 +224,8 @@ class CounterProgress(Progress):
             self._markAsChanged()
 
     def getProgress(self):
-        return {'counter': self.getCounter(),
-         'state': self.getState()}
+        return {'counter': self.getCounter(), 
+           'state': self.getState()}
 
     def updateProgress(self, progress):
         if progress:
@@ -275,9 +273,9 @@ class BattlesSeries(Progress):
             self._markAsChanged()
 
     def getProgress(self):
-        return {'battles': self.getBattles(),
-         'state': self.getState(),
-         'goal': self.getGoal()}
+        return {'battles': self.getBattles(), 
+           'state': self.getState(), 
+           'goal': self.getGoal()}
 
     def updateProgress(self, progress):
         if progress:
@@ -445,7 +443,8 @@ class ProgressStorage(object):
         return [ value for value in self.__progresses.itervalues() if value.isMain() and value.isAward() ]
 
     def getAdditionalProgressIDs(self):
-        return [ progress.getProgressID() for progress in self.__progresses.itervalues() if not progress.isMain() and progress.isAward() ]
+        return [ progress.getProgressID() for progress in self.__progresses.itervalues() if not progress.isMain() and progress.isAward()
+               ]
 
     def save(self):
         return self._collectProgressInfo(CumulativeOnlyProgressCollector())
@@ -464,7 +463,8 @@ class ProgressStorage(object):
 
     @classmethod
     def _getBuilders(cls):
-        return (BinaryProgressBuilder,
+        return (
+         BinaryProgressBuilder,
          ValueProgressBuilder,
          CounterProgressBuilder,
          BattlesSeriesProgressBuilder)
@@ -480,7 +480,10 @@ class ProgressStorage(object):
                     progress.setState(QUEST_PROGRESS_STATE.COMPLETED)
 
     def __tryToGetBattlesUniqueVehiclesFromProgresses(self, savedProgresses):
-        return savedProgresses.get(CONFIG_KEYS.BATTLES_UNIQUE_VEHICLES, set()) if savedProgresses is not None else set()
+        if savedProgresses is not None:
+            return savedProgresses.get(CONFIG_KEYS.BATTLES_UNIQUE_VEHICLES, set())
+        else:
+            return set()
 
 
 class BaseQuestProgress(object):
@@ -567,10 +570,9 @@ class BaseQuestProgress(object):
         progress = self._progressStorage.getProgress(progressID)
         if isinstance(progress, ValueProgress):
             return bool(progress.getState() is QUEST_PROGRESS_STATE.IN_PROGRESS and progress.getValue() == 0)
-        elif isinstance(progress, BattlesSeries):
+        if isinstance(progress, BattlesSeries):
             return bool(progress.getState() is QUEST_PROGRESS_STATE.IN_PROGRESS and progress.getBattles() == [])
-        else:
-            return bool(progress.getState() is QUEST_PROGRESS_STATE.IN_PROGRESS and progress.getCounter() == Counter())
+        return bool(progress.getState() is QUEST_PROGRESS_STATE.IN_PROGRESS and progress.getCounter() == Counter())
 
     def setFailedIfNotCompleted(self, progressID):
         progress = self._progressStorage.getProgress(progressID)
@@ -673,14 +675,17 @@ class BaseQuestProgress(object):
 
     def increaseSumProgress(self, progressIDs, attemptsID, values, mainProgressIDs=None):
         if not isinstance(progressIDs, (tuple, list)):
-            progressIDs = (progressIDs,)
+            progressIDs = (
+             progressIDs,)
         if not isinstance(values, (tuple, list)):
-            values = (values,)
+            values = (
+             values,)
         if mainProgressIDs is not None and not isinstance(mainProgressIDs, (tuple, list)):
-            mainProgressIDs = (mainProgressIDs,)
+            mainProgressIDs = (
+             mainProgressIDs,)
         progressesCompleted = [ self.increaseUntilComplete(p, v) for p, v in izip(progressIDs, values) ]
         isProgressesCompleted = all(progressesCompleted)
-        isMainOrMainCompleted = True if not mainProgressIDs else all((self.isCompleted(p) for p in mainProgressIDs))
+        isMainOrMainCompleted = True if not mainProgressIDs else all(self.isCompleted(p) for p in mainProgressIDs)
         if isProgressesCompleted and not self.isFinished(attemptsID) and isMainOrMainCompleted:
             for progressID in progressIDs:
                 self.setCompleted(progressID)

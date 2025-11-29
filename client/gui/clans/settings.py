@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/settings.py
 import re
 from collections import namedtuple
 from constants import CLAN_MEMBER_FLAGS
@@ -21,17 +19,17 @@ CLAN_DOSSIER_LIFE_TIME = 3600
 DEFAULT_EMBLEM_PATH = 'gui/maps/icons/clans'
 DEFAULT_EMBLEM_NAME_PREFIX = 'default_clan_icon'
 NO_EMBLEM_NAME_PREFIX = 'no_clan_icon'
-CLAN_MEMBERS = {CLAN_MEMBER_FLAGS.LEADER: 'leader',
- CLAN_MEMBER_FLAGS.VICE_LEADER: 'vice_leader',
- CLAN_MEMBER_FLAGS.RECRUITER: 'recruiter',
- CLAN_MEMBER_FLAGS.TREASURER: 'treasurer',
- CLAN_MEMBER_FLAGS.DIPLOMAT: 'diplomat',
- CLAN_MEMBER_FLAGS.COMMANDER: 'commander',
- CLAN_MEMBER_FLAGS.PRIVATE: 'private',
- CLAN_MEMBER_FLAGS.RECRUIT: 'recruit',
- CLAN_MEMBER_FLAGS.STAFF: 'staff',
- CLAN_MEMBER_FLAGS.JUNIOR: 'junior',
- CLAN_MEMBER_FLAGS.RESERVIST: 'reservist'}
+CLAN_MEMBERS = {CLAN_MEMBER_FLAGS.LEADER: 'leader', 
+   CLAN_MEMBER_FLAGS.VICE_LEADER: 'vice_leader', 
+   CLAN_MEMBER_FLAGS.RECRUITER: 'recruiter', 
+   CLAN_MEMBER_FLAGS.TREASURER: 'treasurer', 
+   CLAN_MEMBER_FLAGS.DIPLOMAT: 'diplomat', 
+   CLAN_MEMBER_FLAGS.COMMANDER: 'commander', 
+   CLAN_MEMBER_FLAGS.PRIVATE: 'private', 
+   CLAN_MEMBER_FLAGS.RECRUIT: 'recruit', 
+   CLAN_MEMBER_FLAGS.STAFF: 'staff', 
+   CLAN_MEMBER_FLAGS.JUNIOR: 'junior', 
+   CLAN_MEMBER_FLAGS.RESERVIST: 'reservist'}
 _RE_SEARCH_CLANS = re.compile('^(\\[|\\])*[\\S]{2,}', re.IGNORECASE)
 
 def isValidPattern(pattern):
@@ -57,11 +55,9 @@ class CLAN_INVITE_STATES(CONST_CONTAINER):
     ERROR = 'error'
     DELETED = 'deleted'
     EXPIRED_RESENT = 'expired_resent'
-    PROCESSED = (ACCEPTED, DECLINED)
-    ALL = (ACTIVE,
-     DECLINED,
-     ACCEPTED,
-     EXPIRED)
+    PROCESSED = (
+     ACCEPTED, DECLINED)
+    ALL = (ACTIVE, DECLINED, ACCEPTED, EXPIRED)
 
     @classmethod
     def isActive(cls, status):
@@ -72,17 +68,18 @@ class CLAN_APPLICATION_STATES(CONST_CONTAINER):
     ACTIVE = 'active'
     DECLINED = 'declined'
     ACCEPTED = 'accepted'
-    ALL = (ACTIVE, DECLINED, ACCEPTED)
+    ALL = (
+     ACTIVE, DECLINED, ACCEPTED)
 
 
-CLAN_INVITE_STATES_SORT_RULES = {CLAN_INVITE_STATES.ACTIVE: 5,
- CLAN_INVITE_STATES.ACCEPTED: 4,
- CLAN_INVITE_STATES.DECLINED: 3,
- CLAN_INVITE_STATES.DECLINED_RESENT: 3,
- CLAN_INVITE_STATES.EXPIRED: 2,
- CLAN_INVITE_STATES.EXPIRED_RESENT: 2,
- CLAN_INVITE_STATES.ERROR: 1,
- CLAN_INVITE_STATES.DELETED: 0}
+CLAN_INVITE_STATES_SORT_RULES = {CLAN_INVITE_STATES.ACTIVE: 5, 
+   CLAN_INVITE_STATES.ACCEPTED: 4, 
+   CLAN_INVITE_STATES.DECLINED: 3, 
+   CLAN_INVITE_STATES.DECLINED_RESENT: 3, 
+   CLAN_INVITE_STATES.EXPIRED: 2, 
+   CLAN_INVITE_STATES.EXPIRED_RESENT: 2, 
+   CLAN_INVITE_STATES.ERROR: 1, 
+   CLAN_INVITE_STATES.DELETED: 0}
 
 class CLIENT_CLAN_RESTRICTIONS(CONST_CONTAINER):
     NO_RESTRICTIONS = 'NO_RESTRICTIONS'
@@ -139,21 +136,19 @@ def getNoClanEmblem32x32():
 
 
 def getClanRoleName(role):
-    return CLAN_MEMBERS[role] if role in CLAN_MEMBERS else ''
+    if role in CLAN_MEMBERS:
+        return CLAN_MEMBERS[role]
+    return ''
 
 
 def _getDefaultEmblemPath(size):
-    return '%s/%s%dx%d.png' % (DEFAULT_EMBLEM_PATH,
-     DEFAULT_EMBLEM_NAME_PREFIX,
-     size,
-     size)
+    return '%s/%s%dx%d.png' % (
+     DEFAULT_EMBLEM_PATH, DEFAULT_EMBLEM_NAME_PREFIX, size, size)
 
 
 def _getNoClanEmblemPath(size):
-    return '%s/%s%dx%d.png' % (DEFAULT_EMBLEM_PATH,
-     NO_EMBLEM_NAME_PREFIX,
-     size,
-     size)
+    return '%s/%s%dx%d.png' % (
+     DEFAULT_EMBLEM_PATH, NO_EMBLEM_NAME_PREFIX, size, size)
 
 
 AccessTokenData = namedtuple('AccessTokenData', ('accessToken', 'expiresAt'))

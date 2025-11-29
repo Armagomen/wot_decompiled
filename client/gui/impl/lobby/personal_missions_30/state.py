@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/state.py
 import logging
 from collections import OrderedDict
-import typing
-import SoundGroups
+import typing, SoundGroups
 from cgf_components.pm30_hangar_components import PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
@@ -60,7 +57,9 @@ class CampaignSelectorState(ViewLobbyState):
         self.addNavigationTransition(entryState, record=True)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.campaign_selector()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())), LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.VIDEO, onMoreInfoRequested=lambda : showPM30IntroWindow(force=True), tooltipBody=backport.text(R.strings.personal_missions.pages.button.video.description()))))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.campaign_selector()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.VIDEO, onMoreInfoRequested=lambda : showPM30IntroWindow(force=True), tooltipBody=backport.text(R.strings.personal_missions.pages.button.video.description()))))
 
     def getBackNavigationDescription(self, params):
         return backport.text(R.strings.personal_missions.navigation.backButton.campaignSelector())
@@ -79,7 +78,8 @@ class PersonalMissions3EntryState(LobbyState, SubhangarStateGroupConfigProvider)
         return
 
     def getSubhangarStateGroupConfig(self):
-        return SubhangarStateGroupConfig((SubhangarStateGroups.PersonalMissions,), PersonalMissions3CameraMover(callback=self.moveCamera))
+        return SubhangarStateGroupConfig((
+         SubhangarStateGroups.PersonalMissions,), PersonalMissions3CameraMover(callback=self.moveCamera))
 
     def registerStates(self):
         lsm = self.getMachine()
@@ -88,8 +88,10 @@ class PersonalMissions3EntryState(LobbyState, SubhangarStateGroupConfigProvider)
 
     def serializeParams(self):
         mainView = self.__uiLoader.windowsManager.getViewByLayoutID(R.views.mono.personal_missions_30.main())
-        return {'operationID': mainView.getOperationID(),
-         'state': mainView.viewModel.getMainScreenState().value} if mainView and mainView.viewStatus == ViewStatus.LOADED else self.__cachedParams
+        if mainView and mainView.viewStatus == ViewStatus.LOADED:
+            return {'operationID': mainView.getOperationID(), 
+               'state': mainView.viewModel.getMainScreenState().value}
+        return self.__cachedParams
 
     def _onEntered(self, event):
         super(PersonalMissions3EntryState, self)._onEntered(event)
@@ -131,7 +133,9 @@ class _LoadingState(LobbyState, EventsHandler):
         self.addNavigationTransition(lsm.getStateByCls(PersonalMissions3State))
 
     def _getListeners(self):
-        return ((PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY, self.__onSubHangarReady, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY, self.__onSubHangarReady, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onEntered(self, event):
         super(_LoadingState, self)._onEntered(event)
@@ -253,7 +257,8 @@ class ProgressionState(LobbyState):
     def getNavigationDescription(self):
         operationID = self.__cachedParams.get('operationID')
         operation = self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).get(operationID)
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.operation(), operationName=operation.getUserName()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.operation(), operationName=operation.getUserName()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
 
     def _onEntered(self, event):
         super(ProgressionState, self)._onEntered(event)
@@ -295,7 +300,8 @@ class MissionsState(LobbyState):
         self.addNavigationTransition(lsm.getStateByCls(_LoadingState), record=True)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.personal_missions()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.personal_missions()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
 
     def getBackNavigationDescription(self, params):
         return backport.text(R.strings.personal_missions.navigation.backButton.missions())
@@ -331,7 +337,8 @@ class AssemblingState(LobbyState):
         machine.getStateByCls(VehicleHubState).addNavigationTransition(self)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.assembling()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.assembling()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
 
     def getBackNavigationDescription(self, params):
         return backport.text(R.strings.personal_missions.navigation.backButton.assembling())

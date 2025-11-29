@@ -1,11 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_recovery_panel.py
 from functools import partial
 from frontline.gui.Scaleform.daapi.view.meta.RecoveryPanelMeta import RecoveryPanelMeta
 from gui.battle_control.avatar_getter import getSoundNotifications
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _EVENT_ID
-import BigWorld
-import CommandMapping
+import BigWorld, CommandMapping
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.shared.utils.key_mapping import getReadableKey
 from helpers import dependency
@@ -48,10 +45,8 @@ class FrontlineRecoveryPanel(RecoveryPanelMeta):
         if avatar_getter.getLastRecoveryArgs() is not None:
             activated, state, timerDuration, endOfTimer = avatar_getter.getLastRecoveryArgs()
             if state > RM_STATE.NOT_RECOVERING:
-                self.__onVehicleFeedbackReceived(_EVENT_ID.VEHICLE_RECOVERY_STATE_UPDATE, avatar_getter.getPlayerVehicleID(), (activated,
-                 state,
-                 timerDuration,
-                 endOfTimer))
+                self.__onVehicleFeedbackReceived(_EVENT_ID.VEHICLE_RECOVERY_STATE_UPDATE, avatar_getter.getPlayerVehicleID(), (
+                 activated, state, timerDuration, endOfTimer))
         return
 
     def _dispose(self):
@@ -88,7 +83,9 @@ class FrontlineRecoveryPanel(RecoveryPanelMeta):
                 self.as_displayCooldownS(False, False)
                 self.as_displayHintS(False, False)
             elif state in {RM_STATE.TEMPORARILY_BLOCKED_FROM_RECOVERING, RM_STATE.TEMPORARILY_BLOCKED_RECOVER_TRY}:
-                if state == RM_STATE.TEMPORARILY_BLOCKED_FROM_RECOVERING and self.__state in (RM_STATE.TEMPORARILY_BLOCKED_RECOVER_TRY, RM_STATE.TEMPORARILY_BLOCKED_FROM_RECOVERING, RM_STATE.NOT_RECOVERING):
+                if state == RM_STATE.TEMPORARILY_BLOCKED_FROM_RECOVERING and self.__state in (RM_STATE.TEMPORARILY_BLOCKED_RECOVER_TRY,
+                 RM_STATE.TEMPORARILY_BLOCKED_FROM_RECOVERING,
+                 RM_STATE.NOT_RECOVERING):
                     pass
                 else:
                     self.as_displayCooldownS(True, True)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/storages/__init__.py
 from constants import PREBATTLE_TYPE as _P_TYPE
 from constants import QUEUE_TYPE as _Q_TYPE
 from constants import PREBATTLE_TYPE_NAMES as _P_NAMES
@@ -17,21 +15,22 @@ from gui.prb_control.storages.stronghold_storage import StrongholdStorage
 from gui.prb_control.storages.tournament_storage import TournamentStorage
 from gui.prb_control.storages.mapbox_storage import MapboxStorage
 from soft_exception import SoftException
-__all__ = ('RECENT_PRB_STORAGE', 'storage_getter', 'legacy_storage_getter', 'prequeue_storage_getter', 'PrbStorageDecorator', 'makeQueueName')
+__all__ = ('RECENT_PRB_STORAGE', 'storage_getter', 'legacy_storage_getter', 'prequeue_storage_getter',
+           'PrbStorageDecorator', 'makeQueueName')
 
 def _makeUniqueName(ctrlName, entityName):
-    return '{}_{}'.format(ctrlName, entityName)
+    return ('{}_{}').format(ctrlName, entityName)
 
 
 def _makeLegacyName(legacyType):
     if legacyType not in _P_TYPE.LEGACY_PREBATTLES:
-        raise SoftException('Legacy type is invalid {}'.format(legacyType))
+        raise SoftException(('Legacy type is invalid {}').format(legacyType))
     return _makeUniqueName(_C_NAMES[_C_TYPE.LEGACY], _P_NAMES[legacyType])
 
 
 def makeQueueName(queueType):
     if queueType not in _Q_NAMES:
-        raise SoftException('Queue type is invalid {}'.format(queueType))
+        raise SoftException(('Queue type is invalid {}').format(queueType))
     return _makeUniqueName(_C_NAMES[_C_TYPE.PREQUEUE], _Q_NAMES[queueType])
 
 

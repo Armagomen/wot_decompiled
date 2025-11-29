@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collection/awards_view.py
-import logging
-import typing
-import SoundGroups
+import logging, typing, SoundGroups
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.Scaleform.Waiting import Waiting
 from gui.collection.collections_helpers import composeBonuses
@@ -58,13 +54,16 @@ class AwardsView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def _onLoading(self, *args, **kwargs):
         super(AwardsView, self)._onLoading(*args, **kwargs)
         self.__updateContentData()
         SoundGroups.g_instance.playSound2D(Sounds.REWARD_SCREEN.value)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCollectionName(self.__collectionsSystem.getCollection(self.__collectionId).name)
             self.__setAvailability(model=model)
             packBonusModelAndTooltipData(composeBonuses(self.__bonuses), model.getRewards(), self.__tooltips, getCollectionsBonusPacker())
@@ -75,7 +74,11 @@ class AwardsView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenCollection, self.__openCollection), (self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged))
+        return (
+         (
+          self.viewModel.onOpenCollection, self.__openCollection),
+         (
+          self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged))
 
     def __updateContentData(self):
         Waiting.show('loadContent')
@@ -111,7 +114,7 @@ class AwardsView(ViewImpl):
     def __getContent(self, group, sub, name):
         path = self.__content.get(group, {}).get(sub, {}).get(name, '')
         if not path:
-            _logger.warning('Resource: %s not found', '/'.join((group, sub, name)))
+            _logger.warning('Resource: %s not found', ('/').join((group, sub, name)))
         return path
 
 

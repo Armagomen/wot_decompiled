@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_kit_utils.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/bunks_confirm_discount_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.bunks_confirm_discount_tooltip_view_model import BunksConfirmDiscountTooltipViewModel
@@ -21,7 +19,7 @@ class BunksConfirmDiscountTooltip(ViewImpl):
         return super(BunksConfirmDiscountTooltip, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setBunksCount(self.__bunksCount)
             vm.setOldCost(self.__oldCost)
             vm.setNewCost(self.__newCost)

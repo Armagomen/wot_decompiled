@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/Placement.py
 import BigWorld
 from constants import AirdropType
 from debug_utils import LOG_DEBUG_DEV, LOG_ERROR
@@ -26,15 +24,14 @@ class _AirDropCmpHandler(IPlacementHandler):
         if cmpSystem:
             return getattr(cmpSystem, self.__CMP_NAME)
         else:
-            LOG_ERROR("Couldn't find {}!".format(self.__CMP_NAME))
-            return None
+            LOG_ERROR(("Couldn't find {}!").format(self.__CMP_NAME))
+            return
 
 
 class _AirdropLootHandler(_AirDropCmpHandler):
 
     def onCreated(self, placement):
-        event = AirDropEvent(AirDropEvent.AIR_DROP_SPAWNED, ctx={'id': placement.id,
-         'position': placement.position})
+        event = AirDropEvent(AirDropEvent.AIR_DROP_SPAWNED, ctx={'id': placement.id, 'position': placement.position})
         g_eventBus.handleEvent(event, scope=EVENT_BUS_SCOPE.BATTLE)
         acmp = self._getAirdropCmp()
         if acmp:
@@ -53,9 +50,9 @@ class _AirdropBotHandler(_AirDropCmpHandler):
             acmp.scheduleBot(placement.id, placement.position, placement.teamID, placement.yawAxis, placement.dropTime, placement.typeID)
 
 
-_TYPE_TO_PLACEMENT = {AirdropType.LOOT: _AirdropLootHandler,
- AirdropType.BOT: _AirdropBotHandler,
- AirdropType.BOT_CLING: _AirdropBotHandler}
+_TYPE_TO_PLACEMENT = {AirdropType.LOOT: _AirdropLootHandler, 
+   AirdropType.BOT: _AirdropBotHandler, 
+   AirdropType.BOT_CLING: _AirdropBotHandler}
 
 class Placement(BigWorld.Entity):
 
@@ -65,11 +62,11 @@ class Placement(BigWorld.Entity):
 
     def onEnterWorld(self, *args):
         self.__handler = _TYPE_TO_PLACEMENT[self.typeID]()
-        LOG_DEBUG_DEV('[Placement] type={} onEnterWorld'.format(self.typeID), BigWorld.time())
+        LOG_DEBUG_DEV(('[Placement] type={} onEnterWorld').format(self.typeID), BigWorld.time())
         self.__handler.onCreated(self)
 
     def onLeaveWorld(self):
-        LOG_DEBUG_DEV('[Placement] type={} onLeaveWorld'.format(self.typeID), BigWorld.time())
+        LOG_DEBUG_DEV(('[Placement] type={} onLeaveWorld').format(self.typeID), BigWorld.time())
         self.__handler.onDestroyed(self)
         self.__handler = None
         return

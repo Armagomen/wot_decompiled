@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/corroding_shot_preparing.py
-import CGF
-import math_utils
+import CGF, math_utils
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cgf_script.bonus_caps_rules import bonusCapsManager
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
@@ -26,13 +23,14 @@ else:
         pass
 
 
-_GUN_LENGTH_RANGES = {'short': (0.0, 2.2),
- 'med': (2.2, 4.0),
- 'med_02': (4.0, 5.0),
- 'long': (5.0, float('inf'))}
-_GUN_EFFECT_OFFSET = {'_105mm_F34M_G1_SH': 0.07646,
- '_85mm_56_85TG_FT_G3_SH': 0.03535,
- '_76mm_54-76T_G2_SH': 0.03767}
+_GUN_LENGTH_RANGES = {'short': (0.0, 2.2), 
+   'med': (2.2, 4.0), 
+   'med_02': (4.0, 5.0), 
+   'long': (
+          5.0, float('inf'))}
+_GUN_EFFECT_OFFSET = {'_105mm_F34M_G1_SH': 0.07646, 
+   '_85mm_56_85TG_FT_G3_SH': 0.03535, 
+   '_76mm_54-76T_G2_SH': 0.03767}
 
 @registerComponent
 class CorrodingShotPreparingComponent(object):
@@ -75,7 +73,10 @@ class CorrodingShotPreparingManager(CGF.ComponentManager):
         transformComponent = nodeGO.findComponentByType(GenericComponents.TransformComponent)
         offset = _GUN_EFFECT_OFFSET.get(vehicle.typeDescriptor.gun.name, 0.0)
         if transformComponent:
-            transformComponent.transform = math_utils.createSRTMatrix((1.0, 1.0, 1.0), (0.0, 0.0, 0.0), (0.0, offset, 0.0))
+            transformComponent.transform = math_utils.createSRTMatrix((1.0, 1.0, 1.0), (0.0,
+                                                                                        0.0,
+                                                                                        0.0), (
+             0.0, offset, 0.0))
         effectName = getEffectSuffixForGunLength(_GUN_LENGTH_RANGES, appearance)
         nodeGO.removeComponentByType(GenericComponents.AnimatorComponent)
         nodeGO.createComponent(GenericComponents.AnimatorComponent, nodeComponent.effectPathTemplate.format(effectName), 0, 1, -1, True, '')

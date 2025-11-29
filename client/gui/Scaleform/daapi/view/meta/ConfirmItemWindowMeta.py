@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ConfirmItemWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class ConfirmItemWindowMeta(AbstractWindowView):
@@ -8,7 +6,9 @@ class ConfirmItemWindowMeta(AbstractWindowView):
         self._printOverrideError('submit')
 
     def as_setDataS(self, value):
-        return self.flashObject.as_setData(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(value)
 
     def as_setSettingsS(self, value):
-        return self.flashObject.as_setSettings(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSettings(value)

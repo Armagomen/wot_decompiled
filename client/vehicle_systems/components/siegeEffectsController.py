@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/siegeEffectsController.py
-import Math
-import cgf_obsolete_script.py_component
+import Math, cgf_obsolete_script.py_component
 from constants import VEHICLE_SIEGE_STATE
 
 class SiegeEffectsController(cgf_obsolete_script.py_component.Component):

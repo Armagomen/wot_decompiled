@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/public/requester.py
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui.Scaleform.Waiting import Waiting
 from gui.prb_control import prb_getters
@@ -73,10 +71,10 @@ class UnitsListRequester(IPrbListRequester):
         browser = prb_getters.getClientUnitBrowser()
         if browser:
             self.__cooldown.process(REQUEST_TYPE.UNITS_LIST)
-            self.__handlers = {REQUEST_TYPE.UNITS_RECENTER: self.__recenter,
-             REQUEST_TYPE.UNITS_REFRESH: self.__refresh,
-             REQUEST_TYPE.UNITS_NAV_LEFT: self.__navLeft,
-             REQUEST_TYPE.UNITS_NAV_RIGHT: self.__navRight}
+            self.__handlers = {REQUEST_TYPE.UNITS_RECENTER: self.__recenter, 
+               REQUEST_TYPE.UNITS_REFRESH: self.__refresh, 
+               REQUEST_TYPE.UNITS_NAV_LEFT: self.__navLeft, 
+               REQUEST_TYPE.UNITS_NAV_RIGHT: self.__navRight}
             browser.subscribe(unitTypeFlags=unitTypeFlags)
             browser.onResultsReceived += self.__unitBrowser_onUnitsListReceived
             browser.onResultsUpdated += self.__unitBrowser_onUnitsListUpdated

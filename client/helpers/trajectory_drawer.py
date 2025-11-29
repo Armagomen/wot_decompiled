@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/trajectory_drawer.py
-import BigWorld
-import CGF
+import BigWorld, CGF
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_CURRENT_EXCEPTION
 
 class TrajectoryDrawer(object):
-    __slots__ = ('__impl',)
+    __slots__ = ('__impl', )
 
     def __init__(self, spaceID):
         self.__impl = _TrajectoryDrawerImpl(spaceID) if IS_DEVELOPMENT else None

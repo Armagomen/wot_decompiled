@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/personal_rewards.py
 from gui.battle_results.presenters.packers.interfaces import IBattleResultsPacker
 from gui.battle_results.pbs_helpers.economics import hasAogasFine
 from gui.impl.gen.view_models.views.lobby.battle_results.reward_item_model import RewardItemModel

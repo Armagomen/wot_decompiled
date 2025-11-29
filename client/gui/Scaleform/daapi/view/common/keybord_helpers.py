@@ -1,17 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/keybord_helpers.py
 import typing
 from collections import namedtuple
-import BigWorld
-import CommandMapping
+import BigWorld, CommandMapping
 from gui.Scaleform.locale.READABLE_KEY_NAMES import READABLE_KEY_NAMES
 from helpers.i18n import makeString
 
 class _HotKeysInfo(namedtuple('_HotKeysInfo', ('vKey', 'keyName'))):
 
     def asDict(self):
-        return {'vKey': self.vKey,
-         'keyName': self.keyName}
+        return {'vKey': self.vKey, 
+           'keyName': self.keyName}
 
 
 def getHotKeyList(command):

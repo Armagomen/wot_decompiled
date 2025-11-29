@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/states.py
 from __future__ import absolute_import
 import typing
 from frameworks.state_machine import StateFlags
@@ -10,7 +8,7 @@ from fun_random.gui.feature.util.fun_mixins import FunSubModesWatcher, FunAssetP
 from fun_random.gui.impl.lobby.feature.fun_random_tier_list_view import FunRandomTierListView
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.lobby_state_machine.states import GuiImplViewLobbyState, SubScopeSubLayerState, SubScopeTopLayerState, LobbyStateDescription, ViewLobbyState
+from gui.lobby_state_machine.states import GuiImplViewLobbyState, SubScopeSubLayerState, SubScopeTopLayerState, LobbyStateDescription, ViewLobbyState, LobbyStateFlags
 from gui.Scaleform.genConsts.FUNRANDOM_ALIASES import FUNRANDOM_ALIASES
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -38,7 +36,8 @@ class FunRandomProgressionState(ViewLobbyState):
         machine.addNavigationTransitionFromParent(funRandomProgression)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(FunAssetPacksMixin.getModeLocalsResRoot().progression.title()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.menu.viewHeader.aboutBtn.label()), type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=FunSubModesWatcher.showCommonInfoPage),))
+        return LobbyStateDescription(title=backport.text(FunAssetPacksMixin.getModeLocalsResRoot().progression.title()), infos=(
+         LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.menu.viewHeader.aboutBtn.label()), type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=FunSubModesWatcher.showCommonInfoPage),))
 
 
 @SubScopeTopLayerState.parentOf
@@ -68,10 +67,11 @@ class FunRandomTierListState(GuiImplViewLobbyState):
 class FunPostBattleResultsState(ViewLobbyState):
     STATE_ID = FUNRANDOM_ALIASES.FUN_POST_BATTLE_RESULTS
     VIEW_KEY = ViewKey(FUNRANDOM_ALIASES.FUN_POST_BATTLE_RESULTS)
-    __layoutIDsAndSubPresenters = {FunSubModeImpl.DEFAULT: (FunBattleResultsSubPresenter, R.views.fun_random.mono.lobby.battle_results())}
+    __layoutIDsAndSubPresenters = {FunSubModeImpl.DEFAULT: (
+                              FunBattleResultsSubPresenter, R.views.fun_random.mono.lobby.battle_results())}
 
     def __init__(self, flags=StateFlags.UNDEFINED):
-        super(FunPostBattleResultsState, self).__init__(flags=flags)
+        super(FunPostBattleResultsState, self).__init__(flags=flags | LobbyStateFlags.POST_BATTLE_RESULTS)
         self.__cachedParams = {}
 
     def getViewKey(self, params=None):

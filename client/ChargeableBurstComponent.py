@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ChargeableBurstComponent.py
 import typing
 from collections import namedtuple
 from vehicles.components.vehicle_component import VehicleDynamicComponent
@@ -8,7 +6,8 @@ from vehicles.mechanics.mechanic_states import IMechanicState, IMechanicStatesCo
 if typing.TYPE_CHECKING:
     from items.vehicles import VehicleDescriptor
 
-class ChargeableBurstModeState(namedtuple('ChargeableBurstModeState', ('isBurstActive', 'charges', 'shots', 'penetrationCount', 'burstCount')), IMechanicState):
+class ChargeableBurstModeState(namedtuple('ChargeableBurstModeState', ('isBurstActive', 'charges', 'shots', 'penetrationCount',
+                                        'burstCount')), IMechanicState):
 
     def isTransition(self, other):
         return self.isBurstActive != other.isBurstActive

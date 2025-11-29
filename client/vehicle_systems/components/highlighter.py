@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/highlighter.py
 import BigWorld
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -77,47 +75,30 @@ class Highlighter(cgf_obsolete_script.py_component.Component):
     def highlight(self, enable, forceSimpleEdge=False):
         if bool(enable) == bool(self.isOn):
             return
-        elif self.isDisabled or self.__vehicle is None:
-            return
         else:
+            if self.isDisabled or self.__vehicle is None:
+                return
             vehicle = self.__vehicle
             if self.isOn:
                 BigWorld.wgDelEdgeDetectEntity(vehicle)
-            args = (0,
-             False,
-             1,
-             True)
+            args = (0, False, 1, True)
             if enable:
                 self.__highlightStatus |= self.HIGHLIGHT_ON
                 if self.__isPlayersVehicle:
                     if forceSimpleEdge:
                         self.__highlightStatus |= self.HIGHLIGHT_SIMPLE
-                        args = (0,
-                         False,
-                         0,
-                         False)
+                        args = (0, False, 0, False)
                     else:
-                        args = (0,
-                         False,
-                         1,
-                         True)
+                        args = (
+                         0, False, 1, True)
                 else:
                     arenaDP = self.sessionProvider.getArenaDP()
                     isAllyTeam = arenaDP.isAllyTeam(vehicle.publicInfo['team'])
-                    args = (2,
-                     False,
-                     0,
-                     False) if isAllyTeam else (1,
-                     False,
-                     0,
-                     False)
+                    args = (2, False, 0, False) if isAllyTeam else (1, False, 0, False)
             else:
                 if self.__isPlayersVehicle and forceSimpleEdge:
                     self.__highlightStatus &= ~self.HIGHLIGHT_SIMPLE
-                    args = (0,
-                     False,
-                     1,
-                     True)
+                    args = (0, False, 1, True)
                 self.__highlightStatus &= ~self.HIGHLIGHT_ON
             self.__doHighlightOperation(self.__highlightStatus, args)
             return

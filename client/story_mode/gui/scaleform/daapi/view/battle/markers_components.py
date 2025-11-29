@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/markers_components.py
-import BigWorld
-import Math
-import SoundGroups
-import WWISE
+import BigWorld, Math, SoundGroups, WWISE
 from typing import TYPE_CHECKING
 from StoryModeLootableComponent import StoryModeLootableComponent
 from chat_commands_consts import MarkerType, INVALID_TARGET_ID
@@ -33,7 +28,8 @@ class SMPolygonalZoneMinimapMarkerComponent(PolygonalZoneMinimapMarkerComponent)
         else:
             xc = minimap_utils.MINIMAP_SIZE[0] / hSide * 2
             yc = minimap_utils.MINIMAP_SIZE[1] / hSide * 2
-        return (xc, yc)
+        return (
+         xc, yc)
 
 
 class LootMarkerComponent(World2DLocationMarkerComponent):

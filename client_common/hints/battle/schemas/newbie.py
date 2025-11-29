@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/hints/battle/schemas/newbie.py
 import typing
 from dict2model import fields, validate
 from helpers import dependency
@@ -14,14 +12,14 @@ _logger = getLogger('Model')
 _DEFAULT_DISPLAY_COUNT = 5
 
 class NewbieClientHintHistoryModel(ClientHintHistoryModel):
-    __slots__ = ('displayCount',)
+    __slots__ = ('displayCount', )
 
     def __init__(self, modifyPriority, cooldown, totalDisplayCount, perBattleCount, displayCount):
         super(NewbieClientHintHistoryModel, self).__init__(modifyPriority, cooldown, totalDisplayCount, perBattleCount)
         self.displayCount = displayCount
 
     def _reprArgs(self):
-        return '{}, displayCount={}'.format(super(NewbieClientHintHistoryModel, self)._reprArgs(), self.displayCount)
+        return ('{}, displayCount={}').format(super(NewbieClientHintHistoryModel, self)._reprArgs(), self.displayCount)
 
 
 class NewbieClientHintHistorySchema(ClientHintHistorySchema[NewbieClientHintHistoryModel]):
@@ -32,7 +30,8 @@ class NewbieClientHintHistorySchema(ClientHintHistorySchema[NewbieClientHintHist
         self._fields['displayCount'] = fields.Integer(required=False, default=_DEFAULT_DISPLAY_COUNT, deserializedValidators=validate.Range(minValue=1))
 
 
-class NewbieClientHintModel(ClientHintModel[HMCPropsType, HMCContextType, CHMTextType, CHMVisualType, CHMSoundType, CHMLifecycleType, NewbieClientHintHistoryModel]):
+class NewbieClientHintModel(ClientHintModel[(HMCPropsType, HMCContextType, CHMTextType, CHMVisualType,
+ CHMSoundType, CHMLifecycleType, NewbieClientHintHistoryModel)]):
     __slots__ = ()
     _newbieHintsCtrl = dependency.descriptor(INewbieBattleHintsController)
 

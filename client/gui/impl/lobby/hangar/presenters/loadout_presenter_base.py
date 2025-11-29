@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/loadout_presenter_base.py
 from __future__ import absolute_import
 import logging
 from functools import partial
-import typing
-import SoundGroups
+import typing, SoundGroups
 from CurrentVehicle import g_currentVehicle
 from account_helpers.settings_core.settings_constants import CONTROLS
 from gui.impl.gen import R
@@ -73,12 +70,12 @@ class LoadoutPresenterBase(ViewComponent[TViewModel], ITankSetupCMHandler):
         return
 
     def createSlotActions(self):
-        return {BaseSetupModel.SWAP_SLOTS_ACTION: partial(self._onSwapSlots, BaseSetupModel.SWAP_SLOTS_ACTION),
-         BaseSetupModel.DRAG_AND_DROP_SLOT_ACTION: partial(self._onDragAndDropSlots, BaseSetupModel.DRAG_AND_DROP_SLOT_ACTION),
-         BaseSetupModel.REVERT_SLOT_ACTION: self._onRevertItem,
-         BaseSetupModel.RETURN_TO_STORAGE_ACTION: self._onRevertItem,
-         BaseSetupModel.SELECT_SLOT_ACTION: self.__onSelectItem,
-         BaseSetupModel.SHOW_INFO_SLOT_ACTION: self.__onShowItemInfo}
+        return {BaseSetupModel.SWAP_SLOTS_ACTION: partial(self._onSwapSlots, BaseSetupModel.SWAP_SLOTS_ACTION), 
+           BaseSetupModel.DRAG_AND_DROP_SLOT_ACTION: partial(self._onDragAndDropSlots, BaseSetupModel.DRAG_AND_DROP_SLOT_ACTION), 
+           BaseSetupModel.REVERT_SLOT_ACTION: self._onRevertItem, 
+           BaseSetupModel.RETURN_TO_STORAGE_ACTION: self._onRevertItem, 
+           BaseSetupModel.SELECT_SLOT_ACTION: self.__onSelectItem, 
+           BaseSetupModel.SHOW_INFO_SLOT_ACTION: self.__onShowItemInfo}
 
     def getVehicleItem(self):
         return self._interactor
@@ -101,19 +98,36 @@ class LoadoutPresenterBase(ViewComponent[TViewModel], ITankSetupCMHandler):
         return self._sectionName
 
     def _getEvents(self):
-        return ((self.__loadoutController.onSlotSelected, self._onSlotSelected),
-         (self.__loadoutController.onUpdateFromItem, self.__onUpdateFromItem),
-         (self.__loadoutController.onResetItem, self.__onResetItem),
-         (self.__loadoutController.onSpecializationSelect, self.__onSpecializationSelect),
-         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.__settingsCore.onSettingsApplied, self.__onSettingsApplied),
-         (self.getViewModel().dealPanel.onDealConfirmed, self.__onDealConfirmed),
-         (self.getViewModel().dealPanel.onDealCancelled, self.__onDealCancelled),
-         (self.getViewModel().dealPanel.onAutoRenewalChanged, self.__onAutoRenewalChanged),
-         (self.getViewModel().onSlotAction, self._onSlotAction))
+        return (
+         (
+          self.__loadoutController.onSlotSelected, self._onSlotSelected),
+         (
+          self.__loadoutController.onUpdateFromItem, self.__onUpdateFromItem),
+         (
+          self.__loadoutController.onResetItem, self.__onResetItem),
+         (
+          self.__loadoutController.onSpecializationSelect, self.__onSpecializationSelect),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.__settingsCore.onSettingsApplied, self.__onSettingsApplied),
+         (
+          self.getViewModel().dealPanel.onDealConfirmed, self.__onDealConfirmed),
+         (
+          self.getViewModel().dealPanel.onDealCancelled, self.__onDealCancelled),
+         (
+          self.getViewModel().dealPanel.onAutoRenewalChanged, self.__onAutoRenewalChanged),
+         (
+          self.getViewModel().onSlotAction, self._onSlotAction))
 
     def _getCallbacks(self):
-        return (('stats.{}'.format(Currency.CRYSTAL), self._onCurrencyUpdate), ('stats.{}'.format(Currency.GOLD), self._onCurrencyUpdate), ('stats.{}'.format(Currency.CREDITS), self._onCurrencyUpdate))
+        return (
+         (
+          ('stats.{}').format(Currency.CRYSTAL), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.GOLD), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.CREDITS), self._onCurrencyUpdate))
 
     def _onLoading(self, *args, **kwargs):
         self._slotActions = self.createSlotActions()
@@ -139,7 +153,10 @@ class LoadoutPresenterBase(ViewComponent[TViewModel], ITankSetupCMHandler):
 
     @property
     def _interactor(self):
-        return None if not self._provider else self._provider.interactor
+        if not self._provider:
+            return None
+        else:
+            return self._provider.interactor
 
     def _getDealPanel(self):
         return BaseDealPanel

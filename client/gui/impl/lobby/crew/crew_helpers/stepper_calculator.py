@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/stepper_calculator.py
 from math import ceil
 from helpers import dependency
 from items.tankmen import MAX_SKILL_LEVEL

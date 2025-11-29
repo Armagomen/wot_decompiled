@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/CommandMapping.py
-import BigWorld
-import ResMgr
-import Keys
-import Event
-import Settings
+import BigWorld, ResMgr, Keys, Event, Settings
 from shared_utils import findFirst
 from debug_utils import LOG_DEBUG
 g_instance = None
@@ -107,7 +101,7 @@ class CommandMapping(object):
         try:
             command = int(self.getCommand(commandName))
             fireKey = int(Keys.__dict__.get(fireKeyName))
-            satelliteKeys = tuple((int(Keys.__dict__.get(x)) for x in satelliteKeyNames))
+            satelliteKeys = tuple(int(Keys.__dict__.get(x)) for x in satelliteKeyNames)
             keyInfo = (command, satelliteKeys, isDefault)
         except Exception:
             return False
@@ -135,9 +129,9 @@ class CommandMapping(object):
                         return fireKey
 
         except Exception:
-            return None
+            return
 
-        return None
+        return
 
     def getCommandKeys(self, command):
         for fireKey, listKeyInfo in self.__mapping.iteritems():
@@ -145,7 +139,7 @@ class CommandMapping(object):
                 if keyInfo[0] == command:
                     return (fireKey, keyInfo[1])
 
-        return None
+        return
 
     def remove(self, commandName, fireKeyName=None, satelliteKeyNames=None, isDefault=None):
         try:
@@ -154,7 +148,7 @@ class CommandMapping(object):
             if satelliteKeyNames is None:
                 delSatelliteKeys = None
             else:
-                delSatelliteKeys = tuple((int(Keys.__dict__.get(x)) for x in satelliteKeyNames))
+                delSatelliteKeys = tuple(int(Keys.__dict__.get(x)) for x in satelliteKeyNames)
             delIsDefault = isDefault
         except Exception:
             return False
@@ -238,22 +232,21 @@ class CommandMapping(object):
         listKeyInfo = self.__mapping.get(key)
         if listKeyInfo is None or key == Keys.KEY_NONE:
             return False
-        else:
-            for keyInfo in listKeyInfo:
-                if keyInfo[0] != command:
-                    continue
-                bContinue = False
-                satelliteKeys = keyInfo[1]
-                for satelliteKey in satelliteKeys:
-                    if not BigWorld.isKeyDown(satelliteKey):
-                        bContinue = True
-                        break
+        for keyInfo in listKeyInfo:
+            if keyInfo[0] != command:
+                continue
+            bContinue = False
+            satelliteKeys = keyInfo[1]
+            for satelliteKey in satelliteKeys:
+                if not BigWorld.isKeyDown(satelliteKey):
+                    bContinue = True
+                    break
 
-                if bContinue:
-                    continue
-                return True
+            if bContinue:
+                continue
+            return True
 
-            return False
+        return False
 
     def isFiredList(self, listCommands, key, bAndNor=False):
         if bAndNor:
@@ -269,7 +262,10 @@ class CommandMapping(object):
         return bool(bAndNor)
 
     def getName(self, command):
-        return self.__dictCommand2CommandName[command] if command in self.__dictCommand2CommandName else None
+        if command in self.__dictCommand2CommandName:
+            return self.__dictCommand2CommandName[command]
+        else:
+            return
 
     def getCommand(self, name):
         return globals().get(name)

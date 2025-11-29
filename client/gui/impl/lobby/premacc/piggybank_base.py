@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/premacc/piggybank_base.py
 import logging
 from constants import PREMIUM_TYPE, PremiumConfigs
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -51,7 +49,7 @@ class PiggyBankBaseView(ViewImpl, SoundViewMixin):
         self._config = self._lobbyContext.getServerSettings().getPiggyBankConfig()
         self._data = self._itemsCache.items.stats.piggyBank
         self._notifier = self._createNotifier()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self._updateIsTankPremiumActive(model=model)
             self._updateMaxAmount(model=model)
             self._updateCurrentAmount(model=model)
@@ -69,7 +67,9 @@ class PiggyBankBaseView(ViewImpl, SoundViewMixin):
         return
 
     def _getDeltaTime(self):
-        return 0 if not self._config or not self._data else getDeltaTimeHelper(self._config, self._data)
+        if not self._config or not self._data:
+            return 0
+        return getDeltaTimeHelper(self._config, self._data)
 
     def _updateTimerStatus(self):
         isTimerEnabled = self._getIsTimerEnabled()
@@ -137,9 +137,9 @@ class PiggyBankBaseView(ViewImpl, SoundViewMixin):
             self._updateTimerStatus()
 
     def _addListeners(self):
-        g_clientUpdateManager.addCallbacks({PiggyBankConstants.PIGGY_BANK: self._onPiggyBankChanged,
-         PiggyBankConstants.PIGGY_BANK_CREDITS: self._updateCredits,
-         PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_CREDITS: self._updateLastSmashTimestamp})
+        g_clientUpdateManager.addCallbacks({PiggyBankConstants.PIGGY_BANK: self._onPiggyBankChanged, 
+           PiggyBankConstants.PIGGY_BANK_CREDITS: self._updateCredits, 
+           PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_CREDITS: self._updateLastSmashTimestamp})
         self._gameSession.onPremiumNotify += self._updatePrem
         self._lobbyContext.getServerSettings().onServerSettingsChange += self._onServerSettingsChange
 

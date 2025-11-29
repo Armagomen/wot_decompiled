@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/entry_point_presenter.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_UI_SECTION, COMP7_UMG_PROGRESSION_POINTS_SEEN
 from comp7.gui.impl.gen.view_models.views.lobby.entry_point_model import EntryPointModel
@@ -32,7 +30,9 @@ class EntryPointPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin, ViewCom
         super(EntryPointPresenter, self)._onLoading(*args, **kwargs)
 
     def createToolTipContent(self, event, contentID):
-        return ProgressionTooltip() if contentID == R.views.comp7.mono.lobby.tooltips.progression_tooltip() else super(EntryPointPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.comp7.mono.lobby.tooltips.progression_tooltip():
+            return ProgressionTooltip()
+        return super(EntryPointPresenter, self).createToolTipContent(event, contentID)
 
     def _updateViewModel(self, *_, **__):
         self.queueUpdate()
@@ -47,7 +47,7 @@ class EntryPointPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin, ViewCom
         super(EntryPointPresenter, self)._rawUpdate()
         if self.__comp7Controller.isFrozen() or not self.__comp7Controller.isEnabled():
             return
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsEnabled(not self.__comp7Controller.isOffline)
             vm.setSeasonName(getSeasonNameEnum(self.__comp7Controller, SeasonName))
             vm.setIsEntryPointAnimationSeen(account_settings.getUmgEntryPointSeen())
@@ -74,16 +74,27 @@ class EntryPointPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin, ViewCom
         model.setRankInactivityCount(self.__comp7Controller.activityPoints)
 
     def _getEvents(self):
-        return super(EntryPointPresenter, self)._getEvents() + ((self.__comp7Controller.onStatusUpdated, self._updateViewModel),
-         (self.__comp7Controller.onRankUpdated, self.__updateRating),
-         (self.__comp7Controller.onComp7RanksConfigChanged, self._updateViewModel),
-         (self.__comp7Controller.onOfflineStatusUpdated, self._updateViewModel),
-         (self.__comp7Controller.onQualificationBattlesUpdated, self._updateViewModel),
-         (self.__comp7Controller.onQualificationStateUpdated, self._updateViewModel),
-         (self.__comp7Controller.onEntitlementsUpdated, self._updateViewModel),
-         (self.viewModel.onOpenMeta, self.__onOpenMetaClick),
-         (self.viewModel.onAnimationEnd, self.__onAnimationEnd),
-         (self.viewModel.onEntryPointAnimationSeen, self.__onEntryPointAnimationSeen))
+        return super(EntryPointPresenter, self)._getEvents() + (
+         (
+          self.__comp7Controller.onStatusUpdated, self._updateViewModel),
+         (
+          self.__comp7Controller.onRankUpdated, self.__updateRating),
+         (
+          self.__comp7Controller.onComp7RanksConfigChanged, self._updateViewModel),
+         (
+          self.__comp7Controller.onOfflineStatusUpdated, self._updateViewModel),
+         (
+          self.__comp7Controller.onQualificationBattlesUpdated, self._updateViewModel),
+         (
+          self.__comp7Controller.onQualificationStateUpdated, self._updateViewModel),
+         (
+          self.__comp7Controller.onEntitlementsUpdated, self._updateViewModel),
+         (
+          self.viewModel.onOpenMeta, self.__onOpenMetaClick),
+         (
+          self.viewModel.onAnimationEnd, self.__onAnimationEnd),
+         (
+          self.viewModel.onEntryPointAnimationSeen, self.__onEntryPointAnimationSeen))
 
     @staticmethod
     def __onOpenMetaClick():

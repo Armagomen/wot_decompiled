@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_rewards_view.py
 from __future__ import absolute_import
 from future.utils import viewitems
 from frameworks.wulf import ViewSettings
@@ -19,7 +17,7 @@ from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.server_events.bonuses import getNonQuestBonuses, LootBoxTokensBonus
 
 class FunRandomLootBoxAwardView(ViewImpl, FunAssetPacksMixin):
-    __slots__ = ('__tooltipData',)
+    __slots__ = ('__tooltipData', )
     _COMMON_SOUND_SPACE = FUN_REWARD_SCREEN_SOUND_SPACE
 
     def __init__(self, *args, **kwargs):
@@ -40,25 +38,27 @@ class FunRandomLootBoxAwardView(ViewImpl, FunAssetPacksMixin):
         tc = R.views.lobby.awards.tooltips.RewardCompensationTooltip()
         if event.contentID == tc:
             if tooltipId in self.__tooltips:
-                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
-                 'labelBefore': event.getArgument('labelBefore', ''),
-                 'iconAfter': event.getArgument('iconAfter', ''),
-                 'labelAfter': event.getArgument('labelAfter', ''),
-                 'bonusName': event.getArgument('bonusName', ''),
-                 'countBefore': event.getArgument('countBefore', 1),
-                 'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
+                   'iconAfter': event.getArgument('iconAfter', ''), 
+                   'labelAfter': event.getArgument('labelAfter', ''), 
+                   'bonusName': event.getArgument('bonusName', ''), 
+                   'countBefore': event.getArgument('countBefore', 1), 
+                   'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
                 tooltipData.update(self.__tooltips[tooltipId].specialArgs)
                 settings = ViewSettings(tc, model=LootBoxVehicleCompensationTooltipModel(), kwargs=tooltipData)
                 return VehicleCompensationTooltipContent(settings)
-        return None
+        return
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def _onLoading(self, data, *args, **kwargs):
         super(FunRandomLootBoxAwardView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setAssetsPointer(self.getModeAssetsPointer())
             packer = getCompensatedFunRandomBonusPacker()
             self.__tooltips = {}
@@ -70,7 +70,9 @@ class FunRandomLootBoxAwardView(ViewImpl, FunAssetPacksMixin):
         super(FunRandomLootBoxAwardView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onCloseClick),)
+        return (
+         (
+          self.viewModel.onClose, self.__onCloseClick),)
 
     def __onCloseClick(self):
         self.destroyWindow()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/hint_panel/dyn_squad_hint_plugin.py
 import logging
 from typing import TYPE_CHECKING
 import CommandMapping
@@ -112,7 +110,9 @@ class DynSquadHintPlugin(HintPanelPlugin):
             if not voipMgr.isVoiceSupported():
                 return False
         keyName = getReadableKey(CommandMapping.CMD_VOICECHAT_ENABLE)
-        return False if not keyName else self._haveHintsLeft(self.__settings)
+        if not keyName:
+            return False
+        return self._haveHintsLeft(self.__settings)
 
     def __addHint(self):
         if not self.__canShowHint():

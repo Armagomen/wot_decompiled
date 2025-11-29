@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/ServerStats.py
-import logging
-import BigWorld
-import constants
+import logging, BigWorld, constants
 from wg_async import wg_await, wg_async
 from gui.Scaleform.daapi.view.servers_data_provider import ServersDataProvider
 from gui.impl.dialogs.builders import ResSimpleDialogBuilder
@@ -98,16 +94,16 @@ class ServerStats(ServerStatsMeta, ILegacyListener):
         simpleHostList = g_preDefinedHosts.getSimpleHostsList(g_preDefinedHosts.hostsWithRoaming())
         if simpleHostList:
             for idx, (hostName, name, csisStatus, peripheryID) in enumerate(simpleHostList):
-                result.append({'label': name,
-                 'data': hostName,
-                 'id': peripheryID,
-                 'csisStatus': csisStatus})
+                result.append({'label': name, 
+                   'data': hostName, 
+                   'id': peripheryID, 
+                   'csisStatus': csisStatus})
 
         if self.connectionMgr.peripheryID == 0:
-            result.insert(0, {'label': self.connectionMgr.serverUserName,
-             'id': 0,
-             'csisStatus': HOST_AVAILABILITY.IGNORED,
-             'data': self.connectionMgr.url})
+            result.insert(0, {'label': self.connectionMgr.serverUserName, 
+               'id': 0, 
+               'csisStatus': HOST_AVAILABILITY.IGNORED, 
+               'data': self.connectionMgr.url})
         if not self.__isListSelected:
             self.__isListSelected = True
             index = 0

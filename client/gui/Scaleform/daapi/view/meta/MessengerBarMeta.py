@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/MessengerBarMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class MessengerBarMeta(BaseDAAPIComponent):
@@ -14,37 +12,49 @@ class MessengerBarMeta(BaseDAAPIComponent):
         self._printOverrideError('sessionStatsButtonClick')
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)
 
     def as_setVehicleCompareCartButtonVisibleS(self, value):
-        return self.flashObject.as_setVehicleCompareCartButtonVisible(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVehicleCompareCartButtonVisible(value)
 
     def as_setReferralProgramButtonVisibleS(self, value):
-        return self.flashObject.as_setReferralProgramButtonVisible(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReferralProgramButtonVisible(value)
 
     def as_setReferralProgramButtonTooltipS(self, tooltip, isSpecial):
-        return self.flashObject.as_setReferralProgramButtonTooltip(tooltip, isSpecial) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReferralProgramButtonTooltip(tooltip, isSpecial)
 
     def as_setReferralButtonEnabledS(self, value):
-        return self.flashObject.as_setReferralButtonEnabled(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReferralButtonEnabled(value)
 
     def as_enableReferralRecruterEffectS(self, value):
-        return self.flashObject.as_enableReferralRecruterEffect(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableReferralRecruterEffect(value)
 
     def as_setReferralBtnCounterS(self, value):
-        return self.flashObject.as_setReferralBtnCounter(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReferralBtnCounter(value)
 
     def as_openVehicleCompareCartPopoverS(self, value):
-        return self.flashObject.as_openVehicleCompareCartPopover(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_openVehicleCompareCartPopover(value)
 
     def as_showAddVehicleCompareAnimS(self, data):
-        return self.flashObject.as_showAddVehicleCompareAnim(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showAddVehicleCompareAnim(data)
 
     def as_setSessionStatsButtonVisibleS(self, value):
-        return self.flashObject.as_setSessionStatsButtonVisible(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSessionStatsButtonVisible(value)
 
     def as_setSessionStatsButtonEnableS(self, value, tooltip):
-        return self.flashObject.as_setSessionStatsButtonEnable(value, tooltip) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSessionStatsButtonEnable(value, tooltip)
 
     def as_setSessionStatsButtonSettingsUpdateS(self, show, value):
-        return self.flashObject.as_setSessionStatsButtonSettingsUpdate(show, value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSessionStatsButtonSettingsUpdate(show, value)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/tankmen_stats_cache.py
 from AccountCommands import LOCK_REASON
 from debug_utils import LOG_DEBUG_DEV
 from gui.shared.gui_items import GUI_ITEM_TYPE

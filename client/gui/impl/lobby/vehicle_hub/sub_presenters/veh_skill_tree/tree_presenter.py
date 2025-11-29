@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/veh_skill_tree/tree_presenter.py
 from __future__ import absolute_import, division
-import logging
-import typing
+import logging, typing
 from gui.shared.lock_overlays import lockNotificationManager
 from wg_async import wg_async
 from account_helpers import AccountSettings
@@ -28,6 +25,7 @@ from PlayerEvents import g_playerEvents
 from post_progression_common import ROLESLOT_FEATURE, SETUPS_FEATURES
 from helpers import dependency
 from helpers.algorithms import shortestPath
+from skeletons.gui.game_control import IExchangeRatesWithDiscountsProvider
 from skeletons.gui.shared import IItemsCache
 from uilogging.veh_skill_tree.logger import SkillTreeUILogger
 from gui.impl.lobby.exchange.exchange_rates_helper import calculateMaxPossibleFreeXp
@@ -36,30 +34,31 @@ from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill_tree.path_model import PathModel, LineType
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill_tree.node_model import NodeModel, Type, Status
 _logger = logging.getLogger(__name__)
-_DIRECTION_TO_LINE_TYPE = {'r2l': LineType.RIGHTTOLEFT,
- 'l2r': LineType.LEFTTORIGHT,
- 'b2t': LineType.BOTTOMTOTOP,
- 't2b': LineType.TOPTOBOTTOM,
- 'r2b': LineType.RIGHTTOBOTTOM,
- 'b2r': LineType.BOTTOMTORIGHT,
- 't2r': LineType.TOPTORIGHT,
- 'r2t': LineType.RIGHTTOTOP,
- 'l2b': LineType.LEFTTOBOTTOM,
- 'b2l': LineType.BOTTOMTOLEFT,
- 't2l': LineType.TOPTOLEFT,
- 'l2t': LineType.LEFTTOTOP}
-_AVAILABILITY_MAP = {PostProgressionAvailability.AVAILABLE: ResearchAvailability.AVAILABLE,
- PostProgressionAvailability.VEH_NOT_IN_INVENTORY: ResearchAvailability.NOT_IN_INVENTORY,
- PostProgressionAvailability.VEH_IN_BATTLE: ResearchAvailability.IN_BATTLE,
- PostProgressionAvailability.VEH_IN_QUEUE: ResearchAvailability.IN_BATTLE,
- PostProgressionAvailability.VEH_IN_FORMATION: ResearchAvailability.IN_FORMATION,
- PostProgressionAvailability.VEH_IS_BROKEN: ResearchAvailability.NEEDS_REPAIR}
-_STEP_TYPE_TO_TOOLTIP = {Type.MAJOR: MajorPerkTooltipView,
- Type.FINAL: FinalPerkTooltipView,
- Type.COMMON: CommonPerkTooltipView,
- Type.SPECIAL: SpecialPerkTooltipView}
+_DIRECTION_TO_LINE_TYPE = {'r2l': LineType.RIGHTTOLEFT, 
+   'l2r': LineType.LEFTTORIGHT, 
+   'b2t': LineType.BOTTOMTOTOP, 
+   't2b': LineType.TOPTOBOTTOM, 
+   'r2b': LineType.RIGHTTOBOTTOM, 
+   'b2r': LineType.BOTTOMTORIGHT, 
+   't2r': LineType.TOPTORIGHT, 
+   'r2t': LineType.RIGHTTOTOP, 
+   'l2b': LineType.LEFTTOBOTTOM, 
+   'b2l': LineType.BOTTOMTOLEFT, 
+   't2l': LineType.TOPTOLEFT, 
+   'l2t': LineType.LEFTTOTOP}
+_AVAILABILITY_MAP = {PostProgressionAvailability.AVAILABLE: ResearchAvailability.AVAILABLE, 
+   PostProgressionAvailability.VEH_NOT_IN_INVENTORY: ResearchAvailability.NOT_IN_INVENTORY, 
+   PostProgressionAvailability.VEH_IN_BATTLE: ResearchAvailability.IN_BATTLE, 
+   PostProgressionAvailability.VEH_IN_QUEUE: ResearchAvailability.IN_BATTLE, 
+   PostProgressionAvailability.VEH_IN_FORMATION: ResearchAvailability.IN_FORMATION, 
+   PostProgressionAvailability.VEH_IS_BROKEN: ResearchAvailability.NEEDS_REPAIR}
+_STEP_TYPE_TO_TOOLTIP = {Type.MAJOR: MajorPerkTooltipView, 
+   Type.FINAL: FinalPerkTooltipView, 
+   Type.COMMON: CommonPerkTooltipView, 
+   Type.SPECIAL: SpecialPerkTooltipView}
 
 class TreePresenter(SubModelPresenter, IPresenterLocationController):
+    __exchangeRates = dependency.descriptor(IExchangeRatesWithDiscountsProvider)
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, viewModel, parentView):
@@ -114,21 +113,34 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
                 stepType = Type(step.getType())
                 if stepType in _STEP_TYPE_TO_TOOLTIP:
                     return _STEP_TYPE_TO_TOOLTIP[stepType](self.__vehicle.intCD, step, self.__getNodeStatus(step))
-                _logger.error('Node type not in %s', ', '.join([ t.value for t in _STEP_TYPE_TO_TOOLTIP ]))
+                _logger.error('Node type not in %s', (', ').join([ t.value for t in _STEP_TYPE_TO_TOOLTIP ]))
             else:
                 _logger.error('Missing nodeID to show tooltip')
         return super(TreePresenter, self).createToolTipContent(event, contentID)
 
     def _getCallbacks(self):
-        return super(TreePresenter, self)._getCallbacks() + (('stats.freeXP', self.__onXPStatsChanged), ('stats.vehTypeXP', self.__onXPStatsChanged))
+        return super(TreePresenter, self)._getCallbacks() + (
+         (
+          'stats.freeXP', self.__onXPStatsChanged),
+         (
+          'stats.vehTypeXP', self.__onXPStatsChanged))
 
     def _getEvents(self):
-        return super(TreePresenter, self)._getEvents() + ((self.viewModel.onResearch, self.__onResearch),
-         (self.viewModel.onShowNodeConfigurationWindow, self.__onShowNodeConfigurationWindow),
-         (self.viewModel.onSelectNode, self.__onSelectNode),
-         (self.viewModel.onFinalNodeResearchAnimationFinished, self.__onFinalNodeResearchAnimationFinished),
-         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (g_playerEvents.onDisconnected, self.__onDisconnected))
+        return super(TreePresenter, self)._getEvents() + (
+         (
+          self.viewModel.onResearch, self.__onResearch),
+         (
+          self.viewModel.onShowNodeConfigurationWindow, self.__onShowNodeConfigurationWindow),
+         (
+          self.viewModel.onSelectNode, self.__onSelectNode),
+         (
+          self.viewModel.onFinalNodeResearchAnimationFinished, self.__onFinalNodeResearchAnimationFinished),
+         (
+          self.__exchangeRates.freeXpTranslation.onUpdated, self.__onXPStatsChanged),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def __onXPStatsChanged(self, *args):
         self.viewModel.setResearchAvailability(self.__getResearchState())
@@ -149,7 +161,7 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
                 node = progression.getStep(nodeID)
                 if Type(node.getType()) == Type.SPECIAL:
                     yield self.__showTreeNodeDialog(node.action, nodeID)
-            if Type(progression.getStep(self.__researchedNodeIDs[-1]).getType()) == Type.FINAL:
+            if Type(progression.getStep(self.__researchedNodeIDs[(-1)]).getType()) == Type.FINAL:
                 self.__shouldReleasePostponed = True
                 lockNotificationManager(True, source=VehSkillTreeProgressionState.STATE_ID)
             self.__update()
@@ -218,11 +230,11 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
         if not self.isLoaded:
             _logger.warning('TreePresenter is not loaded')
             return
-        elif self.__vehicle is None:
-            return
         else:
+            if self.__vehicle is None:
+                return
             rootStep = self.__vehicle.postProgression.getRawTree().rootStep
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self.__fillNodes(vm)
                 self.__fillIntsArray(vm.getResearchedPerks())
                 vm.setResearchAvailability(self.__getResearchState())
@@ -281,7 +293,9 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
             return nodeStatus == Status.DEFAULT and step.stepID == self.__vehicle.postProgression.getRawTree().rootStep
         if nodeType == Type.SPECIAL:
             return nodeStatus == Status.RESEARCHED and step.stepID not in AccountSettings.getUIFlag(VEH_SKILL_TREE_HINT_SHOWN).get(self.__vehicle.intCD, set())
-        return nodeStatus == Status.DEFAULT if nodeType == Type.FINAL else False
+        if nodeType == Type.FINAL:
+            return nodeStatus == Status.DEFAULT
+        return False
 
     def __generatePath(self, targetStep):
         progression = self.__vehicle.postProgression
@@ -290,7 +304,7 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
             graph[step] = []
             for nextStepID in step.getNextStepIDs():
                 nextStep = progression.getStep(nextStepID)
-                graph[step].append((nextStep, nextStep.getPrice().xp if not nextStep.isReceived() else 0.0))
+                graph[step].append((nextStep, (nextStep.isReceived() or nextStep.getPrice()).xp if 1 else 0.0))
 
         rootStep = progression.getStep(progression.getRawTree().rootStep)
         path = shortestPath(graph, rootStep, targetStep)
@@ -299,20 +313,23 @@ class TreePresenter(SubModelPresenter, IPresenterLocationController):
     def __getNodeStatus(self, step):
         if step.isReceived():
             return Status.RESEARCHED
-        return Status.SELECTED if step.stepID in self.__selectedNodeIDs else Status.DEFAULT
+        if step.stepID in self.__selectedNodeIDs:
+            return Status.SELECTED
+        return Status.DEFAULT
 
     def __notEnoughXp(self):
         progression = self.__vehicle.postProgression
         freeXP = self.__itemsCache.items.stats.freeXP
         eliteXP = getEliteExpirience(exclude=(self.__vehicle.intCD,))
-        maxXp = calculateMaxPossibleFreeXp(eliteXP, validateGold=False)
+        exchangeableEliteXp = calculateMaxPossibleFreeXp(eliteXP, validateGold=False)
         researchCost = sum([ progression.getStep(nodeID).getPrice().xp for nodeID in self.__selectedNodeIDs ])
-        sumXp = self.__vehicle.xp + freeXP + eliteXP
-        return researchCost > maxXp + freeXP if sumXp >= researchCost else True
+        return researchCost > self.__vehicle.xp + exchangeableEliteXp + freeXP
 
     def __getResearchState(self):
         _, reason = self.__vehicle.postProgressionAvailability()
-        return ResearchAvailability.NOT_ENOUGH_EXP if reason == PostProgressionAvailability.AVAILABLE and self.__notEnoughXp() else _AVAILABILITY_MAP.get(reason, ResearchAvailability.AVAILABLE)
+        if reason == PostProgressionAvailability.AVAILABLE and self.__notEnoughXp():
+            return ResearchAvailability.NOT_ENOUGH_EXP
+        return _AVAILABILITY_MAP.get(reason, ResearchAvailability.AVAILABLE)
 
     @adisp_async
     @wg_async

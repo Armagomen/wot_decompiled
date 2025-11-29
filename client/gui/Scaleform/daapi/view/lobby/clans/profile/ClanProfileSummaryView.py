@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileSummaryView.py
 from adisp import adisp_process
 from constants import IS_CHINA
 from gui.Scaleform.daapi.view.meta.ClanProfileSummaryViewMeta import ClanProfileSummaryViewMeta
@@ -22,12 +20,12 @@ from skeletons.gui.lobby_context import ILobbyContext
 _DIVISIONS = (6, 8, 10)
 
 def _stateVO(showRequestBtn, mainStatus=None, tooltip='', enabledRequestBtn=False, addStatus=None, showPersonalBtn=False):
-    return {'isShowRequestBtn': showRequestBtn,
-     'isEnabledRequestBtn': enabledRequestBtn,
-     'isShowPersonnelBtn': showPersonalBtn,
-     'mainStatus': mainStatus or '',
-     'additionalStatus': addStatus or '',
-     'tooltip': tooltip}
+    return {'isShowRequestBtn': showRequestBtn, 
+       'isEnabledRequestBtn': enabledRequestBtn, 
+       'isShowPersonnelBtn': showPersonalBtn, 
+       'mainStatus': mainStatus or '', 
+       'additionalStatus': addStatus or '', 
+       'tooltip': tooltip}
 
 
 def _status(i18nKey, style, icon=None):
@@ -39,18 +37,18 @@ def _status(i18nKey, style, icon=None):
     return style(message)
 
 
-_STATES = {_RES.NO_RESTRICTIONS: _stateVO(True, enabledRequestBtn=True),
- _RES.OWN_CLAN: _stateVO(False, showPersonalBtn=True),
- _RES.ALREADY_IN_CLAN: _stateVO(False, addStatus=_status('inAnotherClan', text_styles.success)),
- _RES.FORBIDDEN_ACCOUNT_TYPE: _stateVO(False, addStatus=_status('banned', text_styles.error)),
- _RES.CLAN_IS_FULL: _stateVO(False, addStatus=_status('banned', text_styles.error)),
- _RES.CLAN_APPLICATION_ALREADY_SENT: _stateVO(False, addStatus=_status('requestSubmitted', text_styles.success)),
- _RES.CLAN_INVITE_ALREADY_RECEIVED: _stateVO(False, addStatus=_status('invitationSubmitted', text_styles.success)),
- _RES.SENT_INVITES_LIMIT_REACHED: _stateVO(True, mainStatus=_status('inviteLimit', text_styles.alert, RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON), tooltip=CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_JOINUNAVAILABLE_INVITESHASBEENREACHED),
- _RES.CLAN_CONSCRIPTION_CLOSED: _stateVO(True, mainStatus=_status('requestNotBeConsidered', text_styles.main, RES_ICONS.MAPS_ICONS_LIBRARY_INFORMATIONICON), tooltip=CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_JOINUNAVAILABLE_RECEIVINGREQUESTSCLOSED),
- _RES.RESYNCHRONIZE: _stateVO(False, addStatus=_status('resynchronize', text_styles.main)),
- _RES.CLAN_ENTER_COOLDOWN: _stateVO(True, enabledRequestBtn=False),
- _RES.DEFAULT: _stateVO(False)}
+_STATES = {_RES.NO_RESTRICTIONS: _stateVO(True, enabledRequestBtn=True), 
+   _RES.OWN_CLAN: _stateVO(False, showPersonalBtn=True), 
+   _RES.ALREADY_IN_CLAN: _stateVO(False, addStatus=_status('inAnotherClan', text_styles.success)), 
+   _RES.FORBIDDEN_ACCOUNT_TYPE: _stateVO(False, addStatus=_status('banned', text_styles.error)), 
+   _RES.CLAN_IS_FULL: _stateVO(False, addStatus=_status('banned', text_styles.error)), 
+   _RES.CLAN_APPLICATION_ALREADY_SENT: _stateVO(False, addStatus=_status('requestSubmitted', text_styles.success)), 
+   _RES.CLAN_INVITE_ALREADY_RECEIVED: _stateVO(False, addStatus=_status('invitationSubmitted', text_styles.success)), 
+   _RES.SENT_INVITES_LIMIT_REACHED: _stateVO(True, mainStatus=_status('inviteLimit', text_styles.alert, RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON), tooltip=CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_JOINUNAVAILABLE_INVITESHASBEENREACHED), 
+   _RES.CLAN_CONSCRIPTION_CLOSED: _stateVO(True, mainStatus=_status('requestNotBeConsidered', text_styles.main, RES_ICONS.MAPS_ICONS_LIBRARY_INFORMATIONICON), tooltip=CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_JOINUNAVAILABLE_RECEIVINGREQUESTSCLOSED), 
+   _RES.RESYNCHRONIZE: _stateVO(False, addStatus=_status('resynchronize', text_styles.main)), 
+   _RES.CLAN_ENTER_COOLDOWN: _stateVO(True, enabledRequestBtn=False), 
+   _RES.DEFAULT: _stateVO(False)}
 
 class StrongholdDataReceiver(object):
 
@@ -64,39 +62,31 @@ class StrongholdDataReceiver(object):
     def getStatsVO(self):
         stats = self.__strongholdStats
         isActual = stats.hasSorties() or stats.hasFortBattles()
-        rows = (('rageLevel10',
-          stats.getElo10(),
-          isActual,
+        rows = (
+         (
+          'rageLevel10', stats.getElo10(), isActual,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_ELO_RAGE_10_BODY),
-         ('rageLevel8',
-          stats.getElo8(),
-          isActual,
+         (
+          'rageLevel8', stats.getElo8(), isActual,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_ELO_RAGE_8_BODY),
-         ('rageLevel6',
-          stats.getElo6(),
-          isActual,
+         (
+          'rageLevel6', stats.getElo6(), isActual,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_ELO_RAGE_6_BODY),
-         ('sortiesPerDay',
-          stats.getSortiesIn28Days(),
-          True,
+         (
+          'sortiesPerDay', stats.getSortiesIn28Days(), True,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_SORTIE_COUNT_28_BODY),
-         ('battlesPerDay',
-          stats.getFortBattlesIn28Days(),
-          True,
+         (
+          'battlesPerDay', stats.getFortBattlesIn28Days(), True,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_BATTLES_COUNT_28_BODY),
-         ('fortLevel',
-          stats.getStrongholdLevel(),
-          True,
+         (
+          'fortLevel', stats.getStrongholdLevel(), True,
           CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_FORT_LEVEL_BODY))
         if stats.getLeagues():
             excludes = ('rageLevel6', 'rageLevel8', 'rageLevel10')
         else:
             excludes = ('rageLevel6', 'rageLevel8') if IS_CHINA else ()
-        return [ {'local': key,
-         'value': DUMMY_UNAVAILABLE_DATA if elo is None or not isStrongholdsEnabled() else elo,
-         'timeExpired': True if elo is None else not actual,
-         'tooltip': tooltip,
-         'isHidden': False} for key, elo, actual, tooltip in rows if key not in excludes ]
+        return [ {'local': key, 'value': DUMMY_UNAVAILABLE_DATA if elo is None or not isStrongholdsEnabled() else elo, 'timeExpired': True if elo is None else not actual, 'tooltip': tooltip, 'isHidden': False} for key, elo, actual, tooltip in rows if key not in excludes
+               ]
 
     def getLeaguesVO(self):
         return self.__strongholdStats.getLeagues()
@@ -164,13 +154,13 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
         else:
             description = text_styles.standard(CLANS.CLANPROFILE_SUMMARYVIEW_DEFAULTCLANDESCR)
         hasGlobalMap = globalMapStats.hasGlobalMap() and self._isGlobalMapEnabled
-        self.as_setDataS({'totalRating': ratingStrBuilder.render(),
-         'totalRatingTooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_TOTALRATING,
-         'clanDescription': description,
-         'isShowFortBtn': True,
-         'isShowClanNavBtn': hasGlobalMap,
-         'isShowUrlString': not hasGlobalMap,
-         'isDetailLinkEnabled': self._isGlobalMapEnabled})
+        self.as_setDataS({'totalRating': ratingStrBuilder.render(), 
+           'totalRatingTooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_TOTALRATING, 
+           'clanDescription': description, 
+           'isShowFortBtn': True, 
+           'isShowClanNavBtn': hasGlobalMap, 
+           'isShowUrlString': not hasGlobalMap, 
+           'isDetailLinkEnabled': self._isGlobalMapEnabled})
         self.as_updateGeneralBlockS(self.__makeGeneralBlock(clanInfo, syncUserInfo=True))
         self.as_updateGlobalMapBlockS(self.__makeGlobalMapBlock(globalMapStats, ratings))
         self.__updateStatus()
@@ -239,52 +229,55 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
     def __updateStrongholdBlock(self, stats, leagues=None):
         if leagues:
             self.as_updateLeaguesBlockS({'leagues': self.__makeLeaguesBlock(leagues)})
-        self.as_updateFortBlockS({'isShowHeader': True,
-         'header': text_styles.highTitle(CLANS.CLANPROFILE_MAINWINDOWTAB_FORTIFICATION),
-         'statBlocks': self.__makeStatsBlock(stats),
-         'emptyLbl': '',
-         'isActivated': True})
+        self.as_updateFortBlockS({'isShowHeader': True, 
+           'header': text_styles.highTitle(CLANS.CLANPROFILE_MAINWINDOWTAB_FORTIFICATION), 
+           'statBlocks': self.__makeStatsBlock(stats), 
+           'emptyLbl': '', 
+           'isActivated': True})
         self._hideWaiting()
 
     def __makeGeneralBlock(self, clanInfo, syncUserInfo=False):
-        stats = [{'local': 'commander',
-          'value': formatField(getter=clanInfo.getLeaderDbID, formatter=self.getGuiUserName),
-          'textStyle': _STYLE.STATS_TEXT}, {'local': 'totalPlayers',
-          'value': formatField(getter=clanInfo.getMembersCount, formatter=backport.getIntegralFormat)}]
+        stats = [
+         {'local': 'commander', 
+            'value': formatField(getter=clanInfo.getLeaderDbID, formatter=self.getGuiUserName), 
+            'textStyle': _STYLE.STATS_TEXT},
+         {'local': 'totalPlayers', 
+            'value': formatField(getter=clanInfo.getMembersCount, formatter=backport.getIntegralFormat)}]
         canSeeTreasury = self.webCtrl.getLimits().canSeeTreasury(self._clanDossier)
         if canSeeTreasury.success:
-            stats.append({'local': 'gold',
-             'value': formatField(getter=clanInfo.getTreasuryValue, formatter=backport.getIntegralFormat),
-             'icon': RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2})
+            stats.append({'local': 'gold', 
+               'value': formatField(getter=clanInfo.getTreasuryValue, formatter=backport.getIntegralFormat), 
+               'icon': RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2})
         if syncUserInfo:
             self.syncUsersInfo()
-        return {'isShowHeader': False,
-         'header': '',
-         'statBlocks': self.__makeStatsBlock(stats),
-         'isActivated': True}
+        return {'isShowHeader': False, 
+           'header': '', 
+           'statBlocks': self.__makeStatsBlock(stats), 
+           'isActivated': True}
 
     def __makeGlobalMapBlock(self, globalMapStats, ratings):
         hasGlobalMap = globalMapStats.hasGlobalMap()
         if hasGlobalMap and self._isGlobalMapEnabled:
             notActual = ratings.getGlobalMapBattlesFor28Days() <= 0
-            stats = [{'local': 'rageLevel10',
-              'value': formatField(getter=ratings.getGlobalMapEloRating10, formatter=backport.getIntegralFormat),
-              'timeExpired': notActual,
-              'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_10_BODY},
-             {'local': 'rageLevel8',
-              'value': formatField(getter=ratings.getGlobalMapEloRating8, formatter=backport.getIntegralFormat),
-              'timeExpired': notActual,
-              'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_8_BODY},
-             {'local': 'rageLevel6',
-              'value': formatField(getter=ratings.getGlobalMapEloRating6, formatter=backport.getIntegralFormat),
-              'timeExpired': notActual,
-              'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_6_BODY},
-             {'local': 'battlesCount',
-              'value': formatField(getter=ratings.getGlobalMapBattlesFor28Days, formatter=backport.getIntegralFormat),
-              'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_BATTLES_COUNT_BODY},
-             {'local': 'provinces',
-              'value': formatField(getter=globalMapStats.getCurrentProvincesCount, formatter=backport.getIntegralFormat),
-              'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_PROVINCE_BODY}]
+            stats = [
+             {'local': 'rageLevel10', 
+                'value': formatField(getter=ratings.getGlobalMapEloRating10, formatter=backport.getIntegralFormat), 
+                'timeExpired': notActual, 
+                'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_10_BODY},
+             {'local': 'rageLevel8', 
+                'value': formatField(getter=ratings.getGlobalMapEloRating8, formatter=backport.getIntegralFormat), 
+                'timeExpired': notActual, 
+                'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_8_BODY},
+             {'local': 'rageLevel6', 
+                'value': formatField(getter=ratings.getGlobalMapEloRating6, formatter=backport.getIntegralFormat), 
+                'timeExpired': notActual, 
+                'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_ELO_RAGE_6_BODY},
+             {'local': 'battlesCount', 
+                'value': formatField(getter=ratings.getGlobalMapBattlesFor28Days, formatter=backport.getIntegralFormat), 
+                'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_BATTLES_COUNT_BODY},
+             {'local': 'provinces', 
+                'value': formatField(getter=globalMapStats.getCurrentProvincesCount, formatter=backport.getIntegralFormat), 
+                'tooltip': CLANS.CLANPROFILE_SUMMARYVIEW_TOOLTIP_GMAP_PROVINCE_BODY}]
             statsBlock = self.__makeStatsBlock(stats)
             emptyLbl = ''
         else:
@@ -297,11 +290,10 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
             else:
                 hasGlobalMap = False
                 emptyLbl = emptyLbl = '%s %s' % (icons.alert(), text_styles.standard(CLANS.GLOBALMAP_DISABLED))
-        return {'isShowHeader': True,
-         'header': text_styles.highTitle(CLANS.CLANPROFILE_MAINWINDOWTAB_GLOBALMAP),
-         'statBlocks': statsBlock,
-         'emptyLbl': emptyLbl,
-         'isActivated': hasGlobalMap}
+        return {'isShowHeader': True, 'header': text_styles.highTitle(CLANS.CLANPROFILE_MAINWINDOWTAB_GLOBALMAP), 
+           'statBlocks': statsBlock, 
+           'emptyLbl': emptyLbl, 
+           'isActivated': hasGlobalMap}
 
     def __makeStatsBlock(self, listValues):
         lst = []
@@ -332,18 +324,17 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
                 icon = icons.makeImageTag(icon, 16, 16, -4, 0)
                 value = icon + ' ' + value
             if isUseTextStylePattern:
-                truncateVo = {'isUseTruncate': isUseTextStylePattern,
-                 'textStyle': textStyle,
-                 'maxWidthTF': 140}
+                truncateVo = {'isUseTruncate': isUseTextStylePattern, 'textStyle': textStyle, 
+                   'maxWidthTF': 140}
             else:
                 truncateVo = None
-            lst.append({'label': text_styles.main(localKey),
-             'value': valueStyle(str(value)) if not isUseTextStylePattern else value,
-             'tooltipHeader': tooltipHeader,
-             'tooltipBody': i18n.makeString(tooltipBody) if tooltipBody is not None else '',
-             'isUseTextStyle': isUseTextStylePattern,
-             'truncateVo': truncateVo,
-             'isHidden': isHidden})
+            lst.append({'label': text_styles.main(localKey), 
+               'value': (isUseTextStylePattern or valueStyle)(str(value)) if 1 else value, 
+               'tooltipHeader': tooltipHeader, 
+               'tooltipBody': i18n.makeString(tooltipBody) if tooltipBody is not None else '', 
+               'isUseTextStyle': isUseTextStylePattern, 
+               'truncateVo': truncateVo, 
+               'isHidden': isHidden})
 
         return lst
 
@@ -362,9 +353,9 @@ class ClanProfileSummaryView(ClanProfileSummaryViewMeta, UsersInfoHelper):
             tooltip = league.get('tooltip')
             if tooltip:
                 tooltip = makeTooltip(tooltip.get('header'), tooltip.get('body'))
-            leaguesVO.append({'imgSource': imgSource,
-             'label': label,
-             'tooltip': tooltip})
+            leaguesVO.append({'imgSource': imgSource, 
+               'label': label, 
+               'tooltip': tooltip})
 
         return leaguesVO
 

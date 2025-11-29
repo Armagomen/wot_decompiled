@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/personal_progress/strategy.py
-import typing
-import logging
+import typing, logging
 from constants import QUEST_PROGRESS_STATE
 from gui.Scaleform.genConsts.QUEST_PROGRESS_BASE import QUEST_PROGRESS_BASE
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
@@ -40,7 +37,9 @@ class ValueProgressGetter(IProgressGetter):
 
     @classmethod
     def getCurrent(cls, progress):
-        return progress.getGoal() if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED else int(min(progress.getValue(), progress.getGoal()))
+        if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED:
+            return progress.getGoal()
+        return int(min(progress.getValue(), progress.getGoal()))
 
 
 class AverageProgressGetter(ValueProgressGetter):
@@ -88,7 +87,9 @@ class BiathlonProgressGetter(IProgressGetter):
 
     @classmethod
     def getCurrent(cls, progress):
-        return progress.getGoal() if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED else progress.getSuccessfullBattles()
+        if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED:
+            return progress.getGoal()
+        return progress.getSuccessfullBattles()
 
     @classmethod
     def getBiathlonProgress(cls, progress):
@@ -105,7 +106,8 @@ class BiathlonProgressGetter(IProgressGetter):
                     result.append(QUEST_PROGRESS_BASE.HEADER_PROGRESS_BLOCK_COMPLETED)
                 else:
                     result.append(QUEST_PROGRESS_BASE.HEADER_PROGRESS_BLOCK_FAILED)
-            result.append(QUEST_PROGRESS_BASE.HEADER_PROGRESS_BLOCK_NOT_STARTED)
+            else:
+                result.append(QUEST_PROGRESS_BASE.HEADER_PROGRESS_BLOCK_NOT_STARTED)
 
         return result
 
@@ -116,11 +118,15 @@ class ILabelGetter(object):
     def getBottomLabel(cls, progress):
         if progress.getState() == QUEST_PROGRESS_STATE.FAILED:
             return text_styles.error(PERSONAL_MISSIONS.CONDITIONS_FAILED_BOTTOMLABEL)
-        return cls._getCompleteLabel(progress) if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED else i18n.makeString(PERSONAL_MISSIONS.CONDITIONS_CURRENTPROGRESS_BOTTOMLABEL, currentProgress='%s / %s' % (text_styles.stats(progress.getCurrent()), progress.getGoal()))
+        if progress.getState() == QUEST_PROGRESS_STATE.COMPLETED:
+            return cls._getCompleteLabel(progress)
+        return i18n.makeString(PERSONAL_MISSIONS.CONDITIONS_CURRENTPROGRESS_BOTTOMLABEL, currentProgress='%s / %s' % (text_styles.stats(progress.getCurrent()), progress.getGoal()))
 
     @classmethod
     def _getCompleteLabel(cls, progress):
-        currentProgress = '%s / %s' % (text_styles.bonusAppliedText(progress.getCurrent()), text_styles.success(progress.getGoal()))
+        currentProgress = '%s / %s' % (
+         text_styles.bonusAppliedText(progress.getCurrent()),
+         text_styles.success(progress.getGoal()))
         label = i18n.makeString(PERSONAL_MISSIONS.CONDITIONS_CURRENTPROGRESS_BOTTOMLABEL, currentProgress=currentProgress)
         status = text_styles.bonusAppliedText(PERSONAL_MISSIONS.CONDITIONS_COMPLETED_BOTTOMLABEL)
         return '%s      %s' % (label, status)

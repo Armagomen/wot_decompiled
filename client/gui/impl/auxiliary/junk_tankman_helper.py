@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/junk_tankman_helper.py
-import BigWorld
-import time
-import Event
+import BigWorld, time, Event
 from constants import JUNK_CREW_CONVERSION_TOKEN
 from gui.impl.lobby.crew.filter.data_providers import JunkTankmenDataProvider
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -54,11 +50,14 @@ class JunkTankmanHelper(object):
         return timeLeft
 
     def isShowNovelty(self, showPlace):
-        return self.noveltyMask & showPlace != showPlace if self.isEnable and self.getJunkConversionToken() else None
+        if self.isEnable and self.getJunkConversionToken():
+            return self.noveltyMask & showPlace != showPlace
 
     @property
     def canShowConversionBanner(self):
-        return True if self.getJunkConversionToken() and self.isEnable else False
+        if self.getJunkConversionToken() and self.isEnable:
+            return True
+        return False
 
     @property
     def hasJunkTankmans(self):

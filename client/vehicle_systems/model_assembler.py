@@ -1,19 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/model_assembler.py
 from functools import partial
 import math
 from collections import namedtuple
-import logging
-import weakref
-import Vehicular
-import DataLinks
-import WWISE
-import BigWorld
-import Math
-import WoT
-import material_kinds
-import CGF
-import GenericComponents
+import logging, weakref, Vehicular, DataLinks, WWISE, BigWorld, Math, WoT, material_kinds, CGF, GenericComponents
 from constants import IS_DEVELOPMENT, IS_EDITOR, IS_UE_EDITOR
 from soft_exception import SoftException
 import math_utils
@@ -45,8 +33,8 @@ def __getWheelsRiseTime(vehicleDesc):
 
 
 def prepareCollisionAssembler(vehicleDesc, isTurretDetached, worldID):
-    hitTestersByPart = {TankPartNames.CHASSIS: vehicleDesc.chassis.hitTester,
-     TankPartNames.HULL: vehicleDesc.hull.hitTester}
+    hitTestersByPart = {TankPartNames.CHASSIS: vehicleDesc.chassis.hitTester, 
+       TankPartNames.HULL: vehicleDesc.hull.hitTester}
     if not isTurretDetached:
         hitTestersByPart[TankPartNames.TURRET] = vehicleDesc.turret.hitTester
         hitTestersByPart[TankPartNames.GUN] = vehicleDesc.gun.hitTester
@@ -68,7 +56,10 @@ def prepareCollisionAssembler(vehicleDesc, isTurretDetached, worldID):
 def collisionIdxToTrackPairIdx(collisionIdx, typeDesc):
     leftBound = len(TankPartNames.ALL)
     rightBound = leftBound + len(typeDesc.chassis.trackPairs) - 1
-    return collisionIdx - leftBound if leftBound < collisionIdx <= rightBound else None
+    if leftBound < collisionIdx <= rightBound:
+        return collisionIdx - leftBound
+    else:
+        return
 
 
 def trackPairIdxToCollisionIdx(trackPairIdx):
@@ -76,10 +67,10 @@ def trackPairIdxToCollisionIdx(trackPairIdx):
 
 
 def setupCollisions(vehicleDesc, collisions):
-    hitTestersByPart = {TankPartNames.CHASSIS: vehicleDesc.chassis.hitTester,
-     TankPartNames.HULL: vehicleDesc.hull.hitTester,
-     TankPartNames.TURRET: vehicleDesc.turret.hitTester,
-     TankPartNames.GUN: vehicleDesc.gun.hitTester}
+    hitTestersByPart = {TankPartNames.CHASSIS: vehicleDesc.chassis.hitTester, 
+       TankPartNames.HULL: vehicleDesc.hull.hitTester, 
+       TankPartNames.TURRET: vehicleDesc.turret.hitTester, 
+       TankPartNames.GUN: vehicleDesc.gun.hitTester}
     for partName, hitTester in hitTestersByPart.iteritems():
         partID = TankPartNames.getIdx(partName)
         hitTester.bbox = collisions.getBoundingBox(partID)
@@ -95,7 +86,8 @@ def setupCollisions(vehicleDesc, collisions):
 
 def prepareCompoundAssembler(vehicleDesc, modelsSetParams, spaceID, isTurretDetached=False, lodIdx=_DEFAULT_LOD_INDEX, skipMaterials=False, renderMode=None):
     if IS_DEVELOPMENT and modelsSetParams.state not in VehicleDamageState.MODEL_STATE_NAMES:
-        raise SoftException('Invalid modelStateName %s, must be in %s' % (modelsSetParams.state, VehicleDamageState.MODEL_STATE_NAMES))
+        raise SoftException('Invalid modelStateName %s, must be in %s' % (
+         modelsSetParams.state, VehicleDamageState.MODEL_STATE_NAMES))
     if spaceID is None:
         spaceID = BigWorld.player().spaceID
     assembler = BigWorld.CompoundAssembler()
@@ -114,7 +106,8 @@ def prepareCompoundAssembler(vehicleDesc, modelsSetParams, spaceID, isTurretDeta
 
 
 def attachModels(assembler, vehicleDesc, modelsSetParams, isTurretDetached, renderMode=None, overlayCollision=False):
-    collisionState = renderMode in (TankRenderMode.CLIENT_COLLISION,
+    collisionState = renderMode in (
+     TankRenderMode.CLIENT_COLLISION,
      TankRenderMode.SERVER_COLLISION,
      TankRenderMode.CRASH_COLLISION,
      TankRenderMode.ARMOR_WIDTH_COLLISION)
@@ -253,7 +246,10 @@ def assembleLeveredSuspensionIfNeed(appearance, lodStateLink):
 
 
 def createWheelsAnimator(appearance, colliderType, typeDescriptor, wheelsState, wheelsScroll, wheelsSteering, splineTracks, lodStateLink=None):
-    return createGeneralWheelsAnimator(appearance, colliderType, typeDescriptor, wheelsState, wheelsScroll, wheelsSteering, lodStateLink) if typeDescriptor.chassis.generalWheelsAnimatorConfig is not None else createTankWheelsAnimator(appearance, typeDescriptor, splineTracks, lodStateLink)
+    if typeDescriptor.chassis.generalWheelsAnimatorConfig is not None:
+        return createGeneralWheelsAnimator(appearance, colliderType, typeDescriptor, wheelsState, wheelsScroll, wheelsSteering, lodStateLink)
+    else:
+        return createTankWheelsAnimator(appearance, typeDescriptor, splineTracks, lodStateLink)
 
 
 def createGeneralWheelsAnimator(appearance, colliderType, typeDescriptor, wheelsState, wheelsScroll, wheelsSteering, lodStateLink=None):
@@ -310,10 +306,9 @@ def createTrackNodesAnimator(appearance, typeDescriptor, lodStateLink=None):
         for trackNode in trackNodesConfig.nodes:
             leftSibling = '' if trackNode.leftNodeName is None else trackNode.leftNodeName
             rightSibling = '' if trackNode.rightNodeName is None else trackNode.rightNodeName
-            trackNodesAnimator.addTrackNode(trackNode.name, trackNode.isLeft, trackNode.initialOffset, leftSibling, rightSibling, (trackNode.damping,
-             trackNode.elasticity,
-             trackNode.forwardElasticityCoeff,
-             trackNode.backwardElasticityCoeff))
+            trackNodesAnimator.addTrackNode(trackNode.name, trackNode.isLeft, trackNode.initialOffset, leftSibling, rightSibling, (
+             trackNode.damping, trackNode.elasticity,
+             trackNode.forwardElasticityCoeff, trackNode.backwardElasticityCoeff))
 
         trackNodesAnimator.setWheelsDataProvider(wheelsDataProvider)
         trackNodesAnimator.setLodLink(lodStateLink)
@@ -380,9 +375,9 @@ def assembleHullAimingController(appearance):
 def assembleSuspensionSound(appearance, lodLink, isPlayer):
     if not WWISE.WW_isInitialised():
         return
-    elif not appearance.typeDescriptor.hasSiegeMode:
-        return
     else:
+        if not appearance.typeDescriptor.hasSiegeMode:
+            return
         siegeVehicleDescr = appearance.typeDescriptor.siegeVehicleDescr
         if siegeVehicleDescr is None:
             return
@@ -400,7 +395,8 @@ def assembleSuspensionSound(appearance, lodLink, isPlayer):
         for sound in suspensionSoundParams.sounds:
             if isPlayer:
                 suspensionSound.setSoundsForState(sound.state, sound.underLimitSounds.PC, sound.overLimitSounds.PC)
-            suspensionSound.setSoundsForState(sound.state, sound.underLimitSounds.NPC, sound.overLimitSounds.NPC)
+            else:
+                suspensionSound.setSoundsForState(sound.state, sound.underLimitSounds.NPC, sound.overLimitSounds.NPC)
 
         suspensionSound.bodyMatrix = None
         suspensionSound.angleLimitValue = suspensionSoundParams.angleLimitValue
@@ -423,7 +419,10 @@ def assembleTerrainMatKindSensor(appearance, lodStateLink, spaceID):
     rightNodeMatrix.postMultiply(invertedOrigin)
     scanLength = 4.0
     offset = Math.Vector3(0.0, scanLength * 0.5, 0.0)
-    localPoints = (leftNodeMatrix.translation + offset, rightNodeMatrix.translation + offset, Math.Vector3(0.0, 0.0, 0.0) + offset)
+    localPoints = (
+     leftNodeMatrix.translation + offset,
+     rightNodeMatrix.translation + offset,
+     Math.Vector3(0.0, 0.0, 0.0) + offset)
     sensor = appearance.terrainMatKindSensor = appearance.createComponent(Vehicular.TerrainMatKindSensor, compoundModel.root, localPoints, scanLength)
     sensor.setLodLink(lodStateLink)
     sensor.setLodSettings(shared_components.LodSettings(TERRAIN_MAT_KIND_SENSOR_LOD_DIST, TERRAIN_MAT_KIND_SENSOR_MAX_PRIORITY))
@@ -439,7 +438,8 @@ def assembleVehicleAudition(isPlayer, appearance):
     if typeDescriptor.chassis.generalWheelsAnimatorConfig is not None:
         wheeledVehicle = typeDescriptor.chassis.generalWheelsAnimatorConfig.isWheeledVehicle()
     if wheeledVehicle:
-        vehicleData = (typeDescriptor.physics['enginePower'] / component_constants.HP_TO_WATTS,
+        vehicleData = (
+         typeDescriptor.physics['enginePower'] / component_constants.HP_TO_WATTS,
          typeDescriptor.physics['weight'],
          typeDescriptor.physics['rotationSpeedLimit'],
          engineEventName,
@@ -449,15 +449,15 @@ def assembleVehicleAudition(isPlayer, appearance):
          'RTPC_ext_client_rpm_rel',
          'RTPC_ext_client_rpm_abs')
     else:
-        vehicleData = (typeDescriptor.physics['enginePower'] / component_constants.HP_TO_WATTS,
+        vehicleData = (
+         typeDescriptor.physics['enginePower'] / component_constants.HP_TO_WATTS,
          typeDescriptor.physics['weight'],
          typeDescriptor.physics['rotationSpeedLimit'],
          engineEventName,
          chassisEventName,
-         ('repair_treads',),
-         ('brakedown_treads',),
-         '',
-         '')
+         ('repair_treads', ),
+         ('brakedown_treads', ),
+         '', '')
     vehicleAudition = appearance.createComponent(Vehicular.VehicleAudition, appearance.id, isPlayer, vehicleData)
     vehicleAudition.setEffectMaterialsInfo(lambda : appearance.terrainEffectMaterialNames)
     vehicleAudition.setSpeedInfo(lambda : appearance.filter.angularSpeed, lambda : appearance.filter.strafeSpeed)
@@ -478,7 +478,10 @@ def createVehicleFilter(typeDescriptor):
     vehicleFilter.maxMove = typeDescriptor.physics['speedLimits'][0] * 2.0
     vehicleFilter.vehicleMinNormalY = typeDescriptor.physics['minPlaneNormalY']
     for p1, p2, p3 in typeDescriptor.physics['carryingTriangles']:
-        vehicleFilter.addTriangle((p1[0], 0, p1[1]), (p2[0], 0, p2[1]), (p3[0], 0, p3[1]))
+        vehicleFilter.addTriangle((
+         p1[0], 0, p1[1]), (
+         p2[0], 0, p2[1]), (
+         p3[0], 0, p3[1]))
 
     vehicleFilter.forceGroundPlacingMatrix(typeDescriptor.isPitchHullAimingAvailable)
     vehicleFilter.enablePitchHullAiming(typeDescriptor.isPitchHullAimingAvailable)
@@ -556,11 +559,11 @@ def assembleWaterSensor(vehicleDesc, appearance, lodStateLink, spaceID):
     trPoint = vehicleDesc.chassis.topRightCarryingPoint
     lightVelocityThreshold = vehicleDesc.type.collisionEffectVelocities['waterContact']
     heavyVelocityThreshold = vehicleDesc.type.heavyCollisionEffectVelocities['waterContact']
-    sensorConfig = (turretOffset,
+    sensorConfig = (
+     turretOffset,
      trPoint,
      lightVelocityThreshold,
-     heavyVelocityThreshold,
-     MIN_DEPTH_FOR_HEAVY_SPLASH,
+     heavyVelocityThreshold, MIN_DEPTH_FOR_HEAVY_SPLASH,
      spaceID)
     sensor = appearance.createComponent(Vehicular.WaterSensor, sensorConfig)
     sensor.sensorPlaneLink = appearance.compoundModel.root
@@ -594,10 +597,19 @@ def assembleDrivetrain(appearance, isPlayerVehicle):
     if typeDescriptor.chassis.generalWheelsAnimatorConfig is not None:
         wheeledVehicle = typeDescriptor.chassis.generalWheelsAnimatorConfig.isWheeledVehicle()
     if wheeledVehicle and isPlayerVehicle:
-        gearShiftMap = (((1e-05, rpm_min * 1.2, rpm_max * 0.98),
-          (0.15 * speed_limits_0, rpm_min * 1.7, rpm_max * 0.98),
-          (0.5 * speed_limits_0, rpm_min * 2.2, rpm_max * 0.98),
-          (0.7 * speed_limits_0, rpm_max * 0.7, rpm_max * 0.9)), ((0.01, rpm_min * 1.2, rpm_max * 0.98),))
+        gearShiftMap = (
+         (
+          (
+           1e-05, rpm_min * 1.2, rpm_max * 0.98),
+          (
+           0.15 * speed_limits_0, rpm_min * 1.7, rpm_max * 0.98),
+          (
+           0.5 * speed_limits_0, rpm_min * 2.2, rpm_max * 0.98),
+          (
+           0.7 * speed_limits_0, rpm_max * 0.7, rpm_max * 0.9)),
+         (
+          (
+           0.01, rpm_min * 1.2, rpm_max * 0.98),))
         gearbox = appearance.createComponent(Vehicular.GearBox, speed_limits_0, speed_limits_1, rpm_min, rpm_max, gearShiftMap)
         gearbox.engineModeLink = DataLinks.createIntLink(engineState, 'mode')
         gearbox.vehicleSpeedLink = DataLinks.createFloatLink(vehicleFilter, 'averageSpeed')
@@ -616,7 +628,8 @@ def assembleDrivetrain(appearance, isPlayerVehicle):
         engineState.physicRPMLink = None
         engineState.physicGearLink = None
     engineState.updatePeriod = PLAYER_UPDATE_PERIOD if isPlayerVehicle else NPC_UPDATE_PERIOD
-    return (engineState, gearbox)
+    return (
+     engineState, gearbox)
 
 
 def subscribeEngineAuditionToEngineState(engineAudition, engineState):
@@ -645,20 +658,12 @@ def assembleSimpleTracks(vehicleDesc, fashion, wheelsDataProvider, tracks):
         leftTracks = []
         rightTracks = []
         for i in xrange(len(tracksCfg.trackPairs)):
-            left = (Vehicular.SimpleTrack,
-             True,
-             i,
-             tracksCfg.trackPairs[i].leftMaterial,
-             fashion,
-             wheelsDataProvider,
-             tracksCfg.trackPairs[i].textureScale)
-            right = (Vehicular.SimpleTrack,
-             False,
-             i,
-             tracksCfg.trackPairs[i].rightMaterial,
-             fashion,
-             wheelsDataProvider,
-             tracksCfg.trackPairs[i].textureScale)
+            left = (
+             Vehicular.SimpleTrack, True, i, tracksCfg.trackPairs[i].leftMaterial,
+             fashion, wheelsDataProvider, tracksCfg.trackPairs[i].textureScale)
+            right = (
+             Vehicular.SimpleTrack, False, i, tracksCfg.trackPairs[i].rightMaterial,
+             fashion, wheelsDataProvider, tracksCfg.trackPairs[i].textureScale)
             leftTracks.append(left)
             rightTracks.append(right)
 
@@ -679,7 +684,8 @@ def assembleSizePhysicalTrack(resourceRefs, resourceFormat, isLeft, trackPairsCo
                 name = resourceFormat.format(i)
                 trackBuilder = resourceRefs[name] if resourceRefs.has_key(name) else None
                 if trackBuilder is not None and trackBuilder.isValid() and not setupOnlyThickness:
-                    trackData = (Vehicular.PhysicalTrack,
+                    trackData = (
+                     Vehicular.PhysicalTrack,
                      trackBuilder,
                      appearance.compoundModel,
                      appearance.wheelsAnimator,
@@ -688,11 +694,12 @@ def assembleSizePhysicalTrack(resourceRefs, resourceFormat, isLeft, trackPairsCo
                      appearance.fashion,
                      instantWarmup)
                     allTracks.append(trackData)
-                if trackBuilder is not None:
+                elif trackBuilder is not None:
                     go = tracks.getTrackGameObject(isLeft, i)
                     compositeTrack = go.findComponentByType(Vehicular.CompositeTrack)
                     compositeTrack.trackThickness = trackBuilder.trackThickness
-                inited = False
+                else:
+                    inited = False
 
             if allTracks:
                 tracks.addTrackComponent(isLeft, allTracks, _PHYSICAL_TRACKS_LOD_SETTINGS)
@@ -719,14 +726,8 @@ def assembleSplineTracks(vehicleDesc, appearance, splineTracksImpl, tracks):
         leftSplineTracks = []
         rightSplineTracks = []
         for left, right in zip(splineTracksImpl[0], splineTracksImpl[1]):
-            leftSplineTracks.append((Vehicular.SplineTrack,
-             left,
-             appearance.compoundModel,
-             appearance.wheelsAnimator))
-            rightSplineTracks.append((Vehicular.SplineTrack,
-             right,
-             appearance.compoundModel,
-             appearance.wheelsAnimator))
+            leftSplineTracks.append((Vehicular.SplineTrack, left, appearance.compoundModel, appearance.wheelsAnimator))
+            rightSplineTracks.append((Vehicular.SplineTrack, right, appearance.compoundModel, appearance.wheelsAnimator))
 
         if leftSplineTracks:
             tracks.addTrackComponent(True, leftSplineTracks, lodSettings)
@@ -790,17 +791,18 @@ def assembleBurnoutProcessor(appearance):
 
 
 def assembleCustomLogicComponents(appearance, typeDescriptor, attachments, modelAnimators):
-    assemblers = [(AttachmentLogic.FLAG_ANIMATION, __assembleAnimationFlagComponent), (AttachmentLogic.PREFAB, __assemblePrefabComponent)]
+    assemblers = [
+     (
+      AttachmentLogic.FLAG_ANIMATION, __assembleAnimationFlagComponent),
+     (
+      AttachmentLogic.PREFAB, __assemblePrefabComponent)]
     for assemblerName, assembler in assemblers:
         for attachment in attachments:
             if attachment.attachmentLogic == assemblerName:
                 assembler(appearance, attachment, attachments, modelAnimators)
 
     skin = (appearance.outfit.modelsSet if appearance.outfit is not None else '') or 'default'
-    for item in (typeDescriptor.chassis,
-     typeDescriptor.hull,
-     typeDescriptor.turret,
-     typeDescriptor.gun):
+    for item in (typeDescriptor.chassis, typeDescriptor.hull, typeDescriptor.turret, typeDescriptor.gun):
         for prefab in item.prefabs.get(skin, {}).get('custom', ()):
             loadAppearancePrefab(prefab, appearance)
 
@@ -817,8 +819,9 @@ def __assembleAnimationFlagComponent(appearance, attachment, attachments, modelA
     if mainAnimator is None:
         return False
     else:
-        flagParts = tuple((a.partNodeAlias for a in attachments if a.attachmentLogic == AttachmentLogic.FLAG_PART))
-        appearance.flagComponent = appearance.createComponent(Vehicular.FlagComponent, mainAnimator.animator, mainAnimator.node, TankPartNames.TURRET, (attachment.partNodeAlias,) + flagParts)
+        flagParts = tuple(a.partNodeAlias for a in attachments if a.attachmentLogic == AttachmentLogic.FLAG_PART)
+        appearance.flagComponent = appearance.createComponent(Vehicular.FlagComponent, mainAnimator.animator, mainAnimator.node, TankPartNames.TURRET, (
+         attachment.partNodeAlias,) + flagParts)
         if appearance.filter is not None:
             appearance.flagComponent.vehicleSpeedLink = DataLinks.createFloatLink(appearance.filter, 'averageSpeed')
             appearance.flagComponent.allowTransparency(True)

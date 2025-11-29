@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/intro_screen.py
-import logging
-import typing
+import logging, typing
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_model_helpers
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.impl.backport import BackportTooltipWindow
@@ -58,7 +55,7 @@ class IntroScreen(ViewImpl, IGlobalListener):
             tooltipId = event.getArgument('tooltipId')
             tooltipData = None
             if tooltipId == self._calendarDayTooltipID:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None,))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None, ))
             if tooltipData is not None:
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
@@ -77,7 +74,7 @@ class IntroScreen(ViewImpl, IGlobalListener):
         self._updateData()
 
     def _updateData(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             comp7_core_model_helpers.setScheduleInfo(vm.scheduleInfo, self._modeController, self._calendarDayTooltipID, self._seasonStateClazz, self._yearStateClazz, self._seasonNameClazz)
             levelsArr = vm.getVehicleLevels()
             levelsArr.clear()

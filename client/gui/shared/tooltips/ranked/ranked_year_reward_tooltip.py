@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_year_reward_tooltip.py
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.ICON_TEXT_FRAMES import ICON_TEXT_FRAMES
 from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS as _RBC
@@ -40,7 +38,7 @@ class RankedYearReward(BlocksTooltipData):
             items.append(self.__packAwardBlock(listData))
         selectableDevice = findFirst(lambda b: b.getName() == SELECTABLE_BONUS_NAME, bonuses)
         if selectableDevice is not None:
-            selectableRewardsLeft = int(first(selectableDevice.getTokens()).split(':')[-1])
+            selectableRewardsLeft = int(first(selectableDevice.getTokens()).split(':')[(-1)])
             items.append(self.__packEquipmentChoiceBlock(selectableRewardsLeft))
         items.append(self.__packStatusBlock(status))
         return items
@@ -51,20 +49,23 @@ class RankedYearReward(BlocksTooltipData):
         if awardsWidth > _TOOLTIP_MIN_WIDTH:
             self._setWidth(awardsWidth)
         title = formatters.packTextBlockData(text_styles.middleTitle(backport.text(R.strings.ranked_battles.yearRewards.tooltip.any.reward.title())))
-        return formatters.packBuildUpBlockData([title, items])
+        return formatters.packBuildUpBlockData([
+         title, items])
 
     def __packTitleBlock(self, boxType):
         return formatters.packImageTextBlockData(title=text_styles.highTitle(backport.text(R.strings.ranked_battles.yearRewards.tooltip.box.dyn(boxType).title())), desc=text_styles.main(backport.text(R.strings.ranked_battles.yearRewards.tooltip.box.subTitle())))
 
     def __packPointsBlock(self):
         valueBlock = formatters.packTextParameterWithIconBlockData(name=text_styles.main(backport.text(R.strings.ranked_battles.yearRewards.tooltip.needPoints())), value=text_styles.stats(str(self.__points) if self.__points else ''), icon=ICON_TEXT_FRAMES.RANKED_POINTS, padding=formatters.packPadding(left=76, top=-5, bottom=-6), valueWidth=20, nameOffset=15, iconYOffset=2, gap=5)
-        return formatters.packBuildUpBlockData([valueBlock], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT)
+        return formatters.packBuildUpBlockData([
+         valueBlock], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT)
 
     def __packEquipmentChoiceBlock(self, equipmentCount):
         equipmentChoiceDyn = R.strings.ranked_battles.yearRewards.tooltip.equipmentChoice
         header = formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(equipmentChoiceDyn.title())), desc=text_styles.main(backport.text(equipmentChoiceDyn.description.num(equipmentCount)())), padding=formatters.packPadding(top=-20))
         descr = formatters.packItemTitleDescBlockData(desc=text_styles.main(backport.text(equipmentChoiceDyn.list())), img=backport.image(R.images.gui.maps.icons.rankedBattles.deluxe_gift()), imgAtLeft=False, imgPadding=formatters.packPadding(top=20, right=-10), padding=formatters.packPadding(top=5))
-        return formatters.packBuildUpBlockData([header, descr])
+        return formatters.packBuildUpBlockData([
+         header, descr])
 
     def __packStatusBlock(self, status):
         statusBlock = []

@@ -1,13 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/mixins.py
 import typing
 from frameworks.wulf import WindowLayer
 if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.managers import ContainerManager
-_LAYERS = [WindowLayer.FULLSCREEN_WINDOW,
- WindowLayer.CURSOR,
- WindowLayer.WAITING,
- WindowLayer.SERVICE_LAYOUT]
+_LAYERS = [
+ WindowLayer.FULLSCREEN_WINDOW, WindowLayer.CURSOR, WindowLayer.WAITING, WindowLayer.SERVICE_LAYOUT]
 
 class LayerVisibilityMixin(object):
 

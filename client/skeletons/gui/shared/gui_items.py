@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/shared/gui_items.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Optional
@@ -14,6 +12,9 @@ if typing.TYPE_CHECKING:
 class IGuiItemsFactory(object):
 
     def clear(self):
+        raise NotImplementedError
+
+    def createGuiItemsOfSameType(self, itemTypeIdx, compactDecrs, proxy, *args, **kwargs):
         raise NotImplementedError
 
     def createGuiItem(self, itemTypeIdx, *args, **kwargs):

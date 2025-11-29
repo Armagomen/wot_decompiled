@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/notification/actions_handlers.py
 from battle_royale_progression.gui.shared.event_dispatcher import showProgressionView
 from notification.actions_handlers import NavigationDisabledActionHandler
 from notification.settings import NOTIFICATION_TYPE
@@ -15,4 +13,4 @@ class ShowBRProgressionActionHandler(NavigationDisabledActionHandler):
 
     @classmethod
     def getActions(cls):
-        pass
+        return ('showBattleRoyaleProgression', )

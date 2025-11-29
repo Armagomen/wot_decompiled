@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/shared/event_dispatcher.py
 import logging
 from typing import Callable, List, Tuple, Optional, TYPE_CHECKING, Type
 from frameworks.wulf import WindowLayer
@@ -92,10 +90,10 @@ def showResourceWellAwardWindow(rewardID, serialNumber='', notificationMgr=None)
 
 
 def showResourceWellVehiclePreview(vehicleCD, rewardID, style=None, previewStyle=None, backCallback=None, topPanelData=None):
-    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW), ctx={'itemCD': vehicleCD,
-     'rewardID': rewardID,
-     'previewBackCb': backCallback,
-     'numberStyle': style,
-     'style': previewStyle,
-     'topPanelData': topPanelData,
-     'previewAlias': VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW}), EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW), ctx={'itemCD': vehicleCD, 
+       'rewardID': rewardID, 
+       'previewBackCb': backCallback, 
+       'numberStyle': style, 
+       'style': previewStyle, 
+       'topPanelData': topPanelData, 
+       'previewAlias': VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW}), EVENT_BUS_SCOPE.LOBBY)

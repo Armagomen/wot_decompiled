@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/data_providers.py
 from abc import abstractmethod
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
@@ -22,7 +20,7 @@ class BaseRallyListDataProvider(SortableDAAPIDataProvider):
 
     @abstractmethod
     def getVO(self, unitIndex=None):
-        return None
+        return
 
     @abstractmethod
     def updateList(self, selectedID, result):
@@ -51,10 +49,13 @@ class BaseRallyListDataProvider(SortableDAAPIDataProvider):
         return [ item for item in enumerate(self.__list) if item[0] in indexes ]
 
     def emptyItem(self):
-        return None
+        return
 
     def getItem(self, index):
-        return self.__list[index] if 0 <= index < len(self.__list) else None
+        if 0 <= index < len(self.__list):
+            return self.__list[index]
+        else:
+            return
 
     def getRally(self, index):
         cfdUnitID = 0
@@ -78,4 +79,4 @@ class BaseRallyListDataProvider(SortableDAAPIDataProvider):
         return self._selectedIdx
 
     def rebuildIndexes(self):
-        self.__mapping = dict(((item[1]['cfdUnitID'], item[0]) for item in enumerate(self.__list)))
+        self.__mapping = dict((item[1]['cfdUnitID'], item[0]) for item in enumerate(self.__list))

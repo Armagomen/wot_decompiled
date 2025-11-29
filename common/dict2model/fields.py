@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/fields.py
 from __future__ import absolute_import
-import typing
-import enum
+import typing, enum
 from datetime import datetime
 from soft_exception import SoftException
 from dict2model import utils
@@ -48,7 +45,7 @@ class AccessDeniedField(object):
     __nonzero__ = __bool__
 
     def __repr__(self):
-        pass
+        return 'AccessToFieldDenied'
 
 
 class Field(object):
@@ -79,24 +76,9 @@ class Field(object):
 
 
 class Boolean(Field):
-    _trueValues = {'t',
-     'T',
-     'true',
-     'True',
-     'TRUE',
-     '1',
-     1,
-     True}
-    _falseValues = {'f',
-     'F',
-     'false',
-     'False',
-     'FALSE',
-     '0',
-     0,
-     0.0,
-     False,
-     None}
+    _trueValues = {
+     't', 'T', 'true', 'True', 'TRUE', '1', 1, True}
+    _falseValues = {'f', 'F', 'false', 'False', 'FALSE', '0', 0, 0.0, False, None}
     __slots__ = ()
 
     def _serialize(self, incoming, **kwargs):
@@ -140,7 +122,7 @@ class String(Field):
 
 class Number(Field):
     numberType = float
-    __slots__ = ('_serializeAsString',)
+    __slots__ = ('_serializeAsString', )
 
     def __init__(self, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None, serializeAsString=False):
         super(Number, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -148,7 +130,9 @@ class Number(Field):
 
     def serialize(self, incoming, **kwargs):
         result = super(Number, self).serialize(incoming)
-        return self._toString(result) if self._serializeAsString else result
+        if self._serializeAsString:
+            return self._toString(result)
+        return result
 
     def _serialize(self, incoming, **kwargs):
         return self._convert(incoming)
@@ -175,7 +159,7 @@ class Float(Number):
 
 
 class DateTime(Field):
-    __slots__ = ('_localtime',)
+    __slots__ = ('_localtime', )
 
     def __init__(self, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None, localtime=False):
         super(DateTime, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -184,24 +168,18 @@ class DateTime(Field):
     def _serialize(self, incoming, **kwargs):
         try:
             return utils.isoFormat(incoming, localtime=self._localtime)
-        except (TypeError,
-         AttributeError,
-         ValueError,
-         SoftException):
+        except (TypeError, AttributeError, ValueError, SoftException):
             raise ValidationError('Not a valid datetime.')
 
     def _deserialize(self, incoming, **kwargs):
         try:
             return utils.fromIso(incoming)
-        except (TypeError,
-         AttributeError,
-         ValueError,
-         SoftException):
+        except (TypeError, AttributeError, ValueError, SoftException):
             raise ValidationError('Cannot be formatted as a datetime.')
 
 
 class Url(String):
-    __slots__ = ('_relative',)
+    __slots__ = ('_relative', )
 
     def __init__(self, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None, relative=False):
         super(Url, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -215,13 +193,14 @@ class NonEmptyString(String):
 
     def __init__(self, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None):
         super(NonEmptyString, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
-        validator = [validate.Length(minValue=1)]
+        validator = [
+         validate.Length(minValue=1)]
         self._serializedValidators = validator + self._serializedValidators
         self._deserializedValidators = validator + self._deserializedValidators
 
 
 class StrictEnum(Field):
-    __slots__ = ('_enumClass',)
+    __slots__ = ('_enumClass', )
 
     def __init__(self, enumClass, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None):
         super(StrictEnum, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -229,7 +208,7 @@ class StrictEnum(Field):
 
     def _serialize(self, incoming, **kwargs):
         if not isinstance(incoming, self._enumClass):
-            raise ValidationError('Not a enum: {} class.'.format(self._enumClass))
+            raise ValidationError(('Not a enum: {} class.').format(self._enumClass))
         return incoming.value
 
     def _deserialize(self, incoming, **kwargs):
@@ -237,7 +216,7 @@ class StrictEnum(Field):
             return self._enumClass(self._convert(incoming))
         except ValueError:
             enumValues = [ obj.value for obj in self._enumClass.__members__.values() ]
-            raise ValidationError('Value: {} must be one of: {}.'.format(incoming, enumValues))
+            raise ValidationError(('Value: {} must be one of: {}.').format(incoming, enumValues))
 
     def _convert(self, incoming):
         return incoming
@@ -258,7 +237,7 @@ class StrEnum(StrictEnum):
 
 
 class Nested(Field):
-    __slots__ = ('_schema',)
+    __slots__ = ('_schema', )
 
     def __init__(self, schema, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None):
         super(Nested, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -272,7 +251,7 @@ class Nested(Field):
 
 
 class List(Field):
-    __slots__ = ('_fieldOrSchema',)
+    __slots__ = ('_fieldOrSchema', )
 
     def __init__(self, fieldOrSchema, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None):
         super(List, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -292,10 +271,10 @@ class List(Field):
             try:
                 converter = getattr(self._fieldOrSchema, method, None)
                 if converter is None:
-                    raise ValidationError('{} method {} not found.'.format(self._fieldOrSchema, method))
+                    raise ValidationError(('{} method {} not found.').format(self._fieldOrSchema, method))
                 converted.append(converter(value, onlyPublic=onlyPublic, silent=False))
             except ValidationError as ve:
-                error = ValidationErrorMessage(ve.error.data, title='List[{}]'.format(index))
+                error = ValidationErrorMessage(ve.error.data, title=('List[{}]').format(index))
                 errors = errors + error if errors else error
 
         if errors:
@@ -308,7 +287,8 @@ class UniCapList(List):
 
     def _convert(self, incoming, onlyPublic, method):
         if not isinstance(incoming, (list, tuple)):
-            incoming = [incoming]
+            incoming = [
+             incoming]
         return super(UniCapList, self)._convert(incoming, onlyPublic, method)
 
 
@@ -318,7 +298,8 @@ class HexColorCode(String):
 
     def __init__(self, required=True, default=None, public=True, serializedValidators=None, deserializedValidators=None):
         super(HexColorCode, self).__init__(required=required, default=default, public=public, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
-        validator = [validate.Regexp(self.COLOR_CODE_RE)]
+        validator = [
+         validate.Regexp(self.COLOR_CODE_RE)]
         self._serializedValidators = validator + self._serializedValidators
         self._deserializedValidators = validator + self._deserializedValidators
 

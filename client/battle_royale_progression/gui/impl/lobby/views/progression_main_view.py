@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/lobby/views/progression_main_view.py
 import typing
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.progression.progression_main_view_model import ProgressionMainViewModel, MainViews
 from battle_royale_progression.gui.impl.lobby.views.progression_view import ProgressionView
@@ -44,7 +42,9 @@ class BattleRoyaleProgressionMainView(ViewImpl):
         if contentID == R.views.battle_royale.lobby.tooltips.LeaderboardRewardTooltipView():
             return LeaderboardRewardTooltipView()
         content = self.currentPresenter.createToolTipContent(event, contentID)
-        return content if content else super(BattleRoyaleProgressionMainView, self).createToolTipContent(event, contentID)
+        if content:
+            return content
+        return super(BattleRoyaleProgressionMainView, self).createToolTipContent(event, contentID)
 
     def createToolTip(self, event):
         return self.currentPresenter.createToolTip(event) or super(BattleRoyaleProgressionMainView, self).createToolTip(event)
@@ -70,7 +70,7 @@ class BattleRoyaleProgressionMainView(ViewImpl):
         if not menuName:
             menuName = MainViews.PROGRESSION
         self.__viewType = menuName
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.currentPresenter.initialize(**self.__ctx)
             tx.setViewType(self.__viewType)
 

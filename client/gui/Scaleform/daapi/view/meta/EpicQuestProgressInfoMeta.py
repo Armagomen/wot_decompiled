@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/EpicQuestProgressInfoMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class EpicQuestProgressInfoMeta(BaseDAAPIComponent):
@@ -8,4 +6,5 @@ class EpicQuestProgressInfoMeta(BaseDAAPIComponent):
         self._printOverrideError('showQuestById')
 
     def as_updateDataS(self, data):
-        return self.flashObject.as_updateData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateData(data)

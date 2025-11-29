@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/view/map.py
 import typing as t
 from collections import Mapping
 from ..py_object_binder import PyObjectEntity
@@ -23,10 +21,12 @@ def toValueType(pyType):
         return ValueType.ARRAY
     if issubclass(pyType, (str, unicode)):
         return ValueType.STRING
-    return ValueType.VIEW_MODEL if issubclass(pyType, ViewModel) else ValueType.NONE
+    if issubclass(pyType, ViewModel):
+        return ValueType.VIEW_MODEL
+    return ValueType.NONE
 
 
-class Map(PyObjectEntity, t.MutableMapping[KT, VT]):
+class Map(PyObjectEntity, t.MutableMapping[(KT, VT)]):
     __slots__ = ('__keyType', '__valueType')
 
     def __init__(self, keyType, valueType):
@@ -35,7 +35,7 @@ class Map(PyObjectEntity, t.MutableMapping[KT, VT]):
         super(Map, self).__init__(PyObjectMap.create(toValueType(keyType), toValueType(valueType)))
 
     def __repr__(self):
-        return u'Map({})'.format(dict(self.items()))
+        return ('Map({})').format(dict(self.items()))
 
     def __str__(self):
         return self.proxy.toString()
@@ -45,7 +45,7 @@ class Map(PyObjectEntity, t.MutableMapping[KT, VT]):
 
     def __getitem__(self, key):
         if not self.proxy.contains(key):
-            raise KeyError('Map key {} is absent'.format(key))
+            raise KeyError(('Map key {} is absent').format(key))
         return self.proxy.getValue(key)
 
     def __setitem__(self, key, value):
@@ -84,7 +84,8 @@ class Map(PyObjectEntity, t.MutableMapping[KT, VT]):
 
     def items(self):
         for key in self.proxy:
-            yield (key, self.proxy.getValue(key))
+            yield (
+             key, self.proxy.getValue(key))
 
     def values(self):
         for key in self.proxy:
@@ -98,7 +99,9 @@ class Map(PyObjectEntity, t.MutableMapping[KT, VT]):
         self.proxy.clear()
 
     def get(self, key, default=None):
-        return default if not self.proxy.contains(key) else self.proxy.getValue(key)
+        if not self.proxy.contains(key):
+            return default
+        return self.proxy.getValue(key)
 
     def set(self, key, value):
         if isinstance(value, PyObjectEntity):

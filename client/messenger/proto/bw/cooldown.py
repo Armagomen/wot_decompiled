@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw/cooldown.py
 from chat_shared import isOperationInCooldown, CHAT_COMMANDS, getOperationCooldownPeriod
 import chat_shared
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
@@ -13,7 +11,8 @@ def getBroadcastCoolDownMessage():
     return getBroadcastIsInCoolDownMessage(getOperationCooldownPeriod(CHAT_COMMANDS.broadcast))
 
 
-_battleChatShortcuts = (BATTLE_CHAT_COMMAND_NAMES.SOS,
+_battleChatShortcuts = (
+ BATTLE_CHAT_COMMAND_NAMES.SOS,
  BATTLE_CHAT_COMMAND_NAMES.POSITIVE,
  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY_WITH_SPG,
  BATTLE_CHAT_COMMAND_NAMES.TURNBACK,
@@ -37,10 +36,11 @@ _battleChatShortcuts = (BATTLE_CHAT_COMMAND_NAMES.SOS,
  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_WEST,
  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_CENTER,
  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_EAST)
-_reloadingChatCommandsWithParams = {BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN: ('rTime',),
- BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE: ('rTime', 'ammoQuantityLeft'),
- BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY_CASSETE: ('ammoInCassete',)}
-_moderationChatCommands = (CHAT_COMMANDS.CHGCHNLNAME.name(),
+_reloadingChatCommandsWithParams = {BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN: ('rTime', ), 
+   BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE: ('rTime', 'ammoQuantityLeft'), 
+   BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY_CASSETE: ('ammoInCassete', )}
+_moderationChatCommands = (
+ CHAT_COMMANDS.CHGCHNLNAME.name(),
  CHAT_COMMANDS.GREETING.name(),
  CHAT_COMMANDS.BAN.name(),
  CHAT_COMMANDS.UNBAN.name(),

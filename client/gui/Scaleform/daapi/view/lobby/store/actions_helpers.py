@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/actions_helpers.py
-import operator
-import time
+import operator, time
 from collections import namedtuple
-import constants
-import nations
+import constants, nations
 from gui.Scaleform.locale.QUESTS import QUESTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.impl import backport
@@ -36,14 +32,11 @@ _PRIORITY_FOR_FUTURE_ACTION = 4
 _MULTIPLIER = 'Multiplier'
 _ALL = 'All'
 _PREMIUM_PACKET = 'premiumPacket'
-_gold_bonus_list = ('berthsPrices',
- 'premiumPacket1Cost',
- 'premiumPacket3Cost',
- 'premiumPacket7Cost',
- 'premiumPacket14Cost',
- 'premiumPacket30Cost',
- 'premiumPacket90Cost',
- 'premiumPacket180Cost',
+_gold_bonus_list = (
+ 'berthsPrices', 'premiumPacket1Cost',
+ 'premiumPacket3Cost', 'premiumPacket7Cost',
+ 'premiumPacket14Cost', 'premiumPacket30Cost',
+ 'premiumPacket90Cost', 'premiumPacket180Cost',
  'premiumPacket360Cost')
 
 class ActionInfo(EventInfoModel):
@@ -69,11 +62,12 @@ class ActionInfo(EventInfoModel):
 
     def getID(self):
         if not self._id:
-            self._id = '/'.join((self.event.getID(), self.discount.getName(), self.discount.getParamName()))
+            self._id = ('/').join((self.event.getID(), self.discount.getName(), self.discount.getParamName()))
         return self._id
 
     def isAvailable(self):
-        return (True, None)
+        return (
+         True, None)
 
     def isCompleted(self):
         return False
@@ -123,11 +117,15 @@ class ActionInfo(EventInfoModel):
 
     def getDiscount(self):
         discount = self._getMaxDiscount()
-        return formatStrDiscount(discount) if discount else ''
+        if discount:
+            return formatStrDiscount(discount)
+        return ''
 
     def getBattleQuestsInfo(self):
         linkedQuests = self.event.linkedQuests
-        return i18n.makeString(QUESTS.ACTION_LABEL_BATTLEQUESTS, count=len(linkedQuests)) if linkedQuests else ''
+        if linkedQuests:
+            return i18n.makeString(QUESTS.ACTION_LABEL_BATTLEQUESTS, count=len(linkedQuests))
+        return ''
 
     def getLinkBtnLabel(self):
         pass
@@ -138,13 +136,13 @@ class ActionInfo(EventInfoModel):
     def getPicture(self):
         picture = getDecoration(self.uiDecoration)
         if picture:
-            return {'isWeb': True,
-             'src': picture}
+            return {'isWeb': True, 
+               'src': picture}
         paramName = self.discount.getParamName()
         if paramName.endswith(_MULTIPLIER):
             paramName = paramName[:-len(_MULTIPLIER)]
-        return {'isWeb': False,
-         'src': _PARAM_TO_IMG_DICT.get(paramName, '')}
+        return {'isWeb': False, 
+           'src': _PARAM_TO_IMG_DICT.get(paramName, '')}
 
     def getTriggerChainID(self):
         raise NotImplementedError
@@ -153,20 +151,23 @@ class ActionInfo(EventInfoModel):
         return []
 
     def getActionTime(self):
-        return {'id': self.getID(),
-         'isTimeOver': not self.event.isAvailable()[0],
-         'timeLeft': self._getActiveTimeDateText(),
-         'isShowTimeIco': self._showTimerIco()}
+        return {'id': self.getID(), 
+           'isTimeOver': not self.event.isAvailable()[0], 
+           'timeLeft': self._getActiveTimeDateText(), 
+           'isShowTimeIco': self._showTimerIco()}
 
     def setComposition(self, compositionType):
         self._compositionType = compositionType
 
     def getMaxDiscountValue(self):
         maxDiscount = self._getMaxDiscount()
-        return maxDiscount.discountValue if maxDiscount is not None else 0
+        if maxDiscount is not None:
+            return maxDiscount.discountValue
+        else:
+            return 0
 
     def getExtraData(self):
-        return None
+        return
 
     def _showTimerIco(self):
         return self.event.getFinishTimeLeft() <= time_utils.ONE_DAY
@@ -176,25 +177,25 @@ class ActionInfo(EventInfoModel):
         return text_styles.stats(timeStr)
 
     def _getAutoDescription(self, stepName):
-        formatter = 'auto/{}'.format(self.__modifyName(stepName))
+        formatter = ('auto/{}').format(self.__modifyName(stepName))
         return i18n.makeString(QUESTS.getActionDescription(formatter))
 
     def _getFullDescription(self, stepName, discount=None, forHeroCard=False):
         modifiedStepName = self.__modifyName(stepName)
         locKey = None
         if forHeroCard:
-            locKey = QUESTS.getActionDescription('hero/full/{}'.format(modifiedStepName))
+            locKey = QUESTS.getActionDescription(('hero/full/{}').format(modifiedStepName))
         if locKey is None:
-            locKey = QUESTS.getActionDescription('full/{}'.format(modifiedStepName))
+            locKey = QUESTS.getActionDescription(('full/{}').format(modifiedStepName))
         return i18n.makeString(locKey, discount=discount)
 
     def _getShortDescription(self, stepName, **kwargs):
-        formatter = 'short/{}'.format(self.__modifyName(stepName))
+        formatter = ('short/{}').format(self.__modifyName(stepName))
         return i18n.makeString(QUESTS.getActionDescription(formatter), **kwargs)
 
     @classmethod
     def _getButtonName(cls, stepName):
-        formatter = 'button/{}'.format(stepName)
+        formatter = ('button/{}').format(stepName)
         return i18n.makeString(QUESTS.getActionDescription(formatter))
 
     @classmethod
@@ -214,6 +215,7 @@ class ActionInfo(EventInfoModel):
                 if useBigIco:
                     return formatCreditPriceBig(sellCredits)
                 return formatCreditPrice(sellCredits)
+        return ''
 
     @classmethod
     def _formatRentPriceIcon(cls, item, useBigIco, forNormalCard=False):
@@ -231,6 +233,7 @@ class ActionInfo(EventInfoModel):
                 if useBigIco:
                     return formatCreditPriceBig(rentPrice[Currency.CREDITS])
                 return formatCreditPrice(rentPrice[Currency.CREDITS])
+        return ''
 
     def _getPackedDiscounts(self, sorting=False):
         if not self._packedDiscounts:
@@ -238,7 +241,7 @@ class ActionInfo(EventInfoModel):
             for key, discount in self.discount.packDiscounts(sorting=sorting).iteritems():
                 if discount.discountType == _DT.MULTIPLIER and not (discount.discountValue == 0 or discount.discountValue == 1):
                     self._packedDiscounts[key] = discount
-                if discount.discountValue > 0:
+                elif discount.discountValue > 0:
                     self._packedDiscounts[key] = discount
 
         return self._packedDiscounts
@@ -255,10 +258,14 @@ class ActionInfo(EventInfoModel):
 
     def _getAdditionalDescriptionData(self, useBigIco=False):
         discount = self._getMaxDiscount()
-        return formatPercentValue(discount.discountValue) if discount else None
+        if discount:
+            return formatPercentValue(discount.discountValue)
+        else:
+            return
 
     def _formatFinishTime(self):
-        return ' '.join((text_styles.main(i18n.makeString(QUESTS.ACTION_TIME_FINISH)), backport.getShortDateFormat(self.getFinishTime())))
+        return (' ').join((text_styles.main(i18n.makeString(QUESTS.ACTION_TIME_FINISH)),
+         backport.getShortDateFormat(self.getFinishTime())))
 
     def _getActiveDateTimeString(self):
         if self.event.getFinishTimeLeft() <= time_utils.ONE_DAY:
@@ -267,9 +274,9 @@ class ActionInfo(EventInfoModel):
                 fmt = i18n.makeString(QUESTS.ITEM_TIMER_TILLFINISH_LONGFORMAT)
             else:
                 fmt = i18n.makeString(QUESTS.ITEM_TIMER_TILLFINISH_SHORTFORMAT)
-            fmt %= {'hours': time.strftime('%H', gmtime),
-             'min': time.strftime('%M', gmtime)}
-            return ' '.join((text_styles.main(i18n.makeString(QUESTS.ACTION_TIME_LEFT)), fmt))
+            fmt %= {'hours': time.strftime('%H', gmtime), 
+               'min': time.strftime('%M', gmtime)}
+            return (' ').join((text_styles.main(i18n.makeString(QUESTS.ACTION_TIME_LEFT)), fmt))
         return self._formatFinishTime()
 
     def __modifyName(self, stepName):
@@ -285,7 +292,7 @@ class CalendarActionInfo(ActionInfo):
         return i18n.makeString(QUESTS.ACTION_SHORT_CALENDAR)
 
     def getTriggerChainID(self):
-        pass
+        return 'calendar'
 
     def getAutoDescription(self, useBigIco=False, forNormalCard=False):
         return i18n.makeString(QUESTS.ACTION_SUBHEADER_CALENDAR)
@@ -294,7 +301,9 @@ class CalendarActionInfo(ActionInfo):
 class EconomicsActionsInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        return 'winXPFactorMode' if 'winXPFactorMode' in self.discount.getParamName() else self.discount.getParamName()
+        if 'winXPFactorMode' in self.discount.getParamName():
+            return 'winXPFactorMode'
+        return self.discount.getParamName()
 
     def getDiscount(self):
         paramName = self.discount.getParamName()
@@ -303,21 +312,26 @@ class EconomicsActionsInfo(ActionInfo):
         else:
             discounts = self._getPackedDiscounts()
             discount = discounts.get(paramName) if discounts else None
-        return formatStrDiscount(discount) if discount else ''
+        if discount:
+            return formatStrDiscount(discount)
+        else:
+            return ''
 
     def getActionBtnLabel(self):
         discountParamName = self.discount.getParamName()
-        if discountParamName in ('clanCreationCost',):
+        if discountParamName in ('clanCreationCost', ):
             return ''
         if _PREMIUM_PACKET in discountParamName:
             isPremium = getEconomicalStatsDict().get('isPremium', False)
             if isPremium:
-                return self._getButtonName('{}/continue'.format(_PREMIUM_PACKET))
-            return self._getButtonName('{}/new'.format(_PREMIUM_PACKET))
+                return self._getButtonName(('{}/continue').format(_PREMIUM_PACKET))
+            return self._getButtonName(('{}/new').format(_PREMIUM_PACKET))
         return super(EconomicsActionsInfo, self).getActionBtnLabel()
 
     def getLinkBtnLabel(self):
-        return self._getButtonName(self.discount.getParamName()) if self.discount.getParamName() == 'clanCreationCost' else ''
+        if self.discount.getParamName() == 'clanCreationCost':
+            return self._getButtonName(self.discount.getParamName())
+        return ''
 
     def _getAutoDescriptionData(self, useBigIco=False):
         paramName = self.discount.getParamName()
@@ -381,7 +395,7 @@ class VehPriceActionInfo(ActionInfo):
     _DEFAULT_MARGIN_AFTER_SEPARATOR = 17
 
     def getTriggerChainID(self):
-        pass
+        return 'vehicleBuyPrice'
 
     def getAutoDescription(self, useBigIco=False, forNormalCard=False):
         vehs = self._getAdditionalDescriptionData(useBigIco, forNormalCard=forNormalCard)
@@ -389,16 +403,16 @@ class VehPriceActionInfo(ActionInfo):
         if vehsLen > 1:
             discValue = formatPercentValue(vehs[0]['discount'])
             paramKey = 'two' if vehsLen == 2 else 'more'
-            vehicles = ', '.join((vehs[0]['title'], vehs[1]['title']))
+            vehicles = (', ').join((vehs[0]['title'], vehs[1]['title']))
         elif vehsLen == 1:
             discValue = vehs[0]['price']
             paramKey = 'one'
             vehicles = vehs[0]['title']
         else:
             return ''
-        values = {'vehicles': vehicles,
-         'discount': discValue}
-        paramName = '/'.join((self.getTriggerChainID(), paramKey))
+        values = {'vehicles': vehicles, 
+           'discount': discValue}
+        paramName = ('/').join((self.getTriggerChainID(), paramKey))
         return self._getShortDescription(paramName, **values)
 
     def getActionBtnLabel(self):
@@ -406,39 +420,46 @@ class VehPriceActionInfo(ActionInfo):
 
     def getPicture(self):
         picture = getDecoration(self.uiDecoration)
-        return {'isWeb': True,
-         'src': picture} if picture else {'isWeb': False,
-         'src': _PARAM_TO_IMG_DICT.get(self.getTriggerChainID(), '')}
+        if picture:
+            return {'isWeb': True, 
+               'src': picture}
+        return {'isWeb': False, 
+           'src': _PARAM_TO_IMG_DICT.get(self.getTriggerChainID(), '')}
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         vehiclesCount = len(self._getPackedDiscounts())
-        return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_VEHICLES), count=vehiclesCount - _MAX_ITEMS_IN_TABLE) if vehiclesCount > _MAX_ITEMS_IN_TABLE else ''
+        if vehiclesCount > _MAX_ITEMS_IN_TABLE:
+            return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_VEHICLES), count=vehiclesCount - _MAX_ITEMS_IN_TABLE)
+        return ''
 
     def getTableData(self):
         result = []
         for item in self._sortVehicles():
             veh = item.discountName
-            item = {'icon': _VEHICLE_NATION_ICON_PATH % nations.NAMES[veh.nationID],
-             'additionalIcon': getTypeSmallIconPath(veh.type, veh.isPremium or veh.isElite),
-             'title': ' '.join((i18n.makeString(TOOLTIPS.level(veh.level)), veh.shortUserName)),
-             'discount': formatStrDiscount(item),
-             'price': self._getPrice(veh, False)}
+            item = {'icon': _VEHICLE_NATION_ICON_PATH % nations.NAMES[veh.nationID], 
+               'additionalIcon': getTypeSmallIconPath(veh.type, veh.isPremium or veh.isElite), 
+               'title': (' ').join((i18n.makeString(TOOLTIPS.level(veh.level)), veh.shortUserName)), 
+               'discount': formatStrDiscount(item), 
+               'price': self._getPrice(veh, False)}
             result.append(item)
 
         return result
 
     def getExtraData(self):
         items = self._getAdditionalDescriptionData(useBigIco=True, addVehInfo=True)
-        return self.__getCardWithTTCForVehicle(items[0]) if len(items) == 1 else None
+        if len(items) == 1:
+            return self.__getCardWithTTCForVehicle(items[0])
+        else:
+            return
 
     def _getAdditionalDescriptionData(self, useBigIco=False, addVehInfo=False, forNormalCard=False):
         result = []
         for item in self._sortVehicles():
             veh = item.discountName
             level = formatVehicleLevel(i18n.makeString(TOOLTIPS.level(veh.level)))
-            item = {'title': ' '.join((level, veh.shortUserName)),
-             'discount': item.discountValue,
-             'price': self._getPrice(veh, useBigIco, forNormalCard)}
+            item = {'title': (' ').join((level, veh.shortUserName)), 
+               'discount': item.discountValue, 
+               'price': self._getPrice(veh, useBigIco, forNormalCard)}
             if addVehInfo:
                 item.update({'veh': veh})
             result.append(item)
@@ -475,7 +496,8 @@ class VehPriceActionInfo(ActionInfo):
             oldPriceValue = defaultPrice.get(currency)
             block.append(self._makePriceBlock(oldPriceValue, CURRENCY_SETTINGS.getBuySetting(currency), percent=0, valueWidth=valueWidth))
             block.append(self._makePriceBlock(buyPriceValue, CURRENCY_SETTINGS.getBuySetting(currency), percent=actionPrc, valueWidth=valueWidth))
-        return [formatters.packBuildUpBlockData(block, gap=2, padding=formatters.packPadding(top=-2))]
+        return [
+         formatters.packBuildUpBlockData(block, gap=2, padding=formatters.packPadding(top=-2))]
 
     def _makePriceBlock(self, price, currencySetting, percent=0, valueWidth=-1):
         _int = backport.getIntegralFormat
@@ -513,19 +535,19 @@ class VehPriceActionInfo(ActionInfo):
         items.append(formatters.packBuildUpBlockData(self.__getHeaderBlock(vehItemDict), padding=leftRightPadding))
         items.append(formatters.packBuildUpBlockData(self._getPriceBlock(vehItemDict['veh'], statsConfig, valueWidth), gap=textGap, padding=blockPadding))
         items.append(formatters.packBuildUpBlockData(self.__getCommonStatsBlock(vehItemDict['veh']), gap=textGap, padding=blockPadding))
-        result.update({'blocksData': items,
-         'marginAfterBlock': self._DEFAULT_MARGIN_AFTER_BLOCK,
-         'marginAfterSeparator': self._DEFAULT_MARGIN_AFTER_SEPARATOR,
-         'width': 600,
-         'highlightType': SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT})
+        result.update({'blocksData': items, 
+           'marginAfterBlock': self._DEFAULT_MARGIN_AFTER_BLOCK, 
+           'marginAfterSeparator': self._DEFAULT_MARGIN_AFTER_SEPARATOR, 
+           'width': 600, 
+           'highlightType': SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT})
         return result
 
     def __getHeaderBlock(self, vehItemDict):
         block = []
         icon = getTypeBigIconPath(vehItemDict['veh'].type, vehItemDict['veh'].isElite)
-        paramName = '/'.join((self.getTriggerChainID(), 'one'))
-        values = {'vehicles': vehItemDict['title'],
-         'discount': vehItemDict['price']}
+        paramName = ('/').join((self.getTriggerChainID(), 'one'))
+        values = {'vehicles': vehItemDict['title'], 
+           'discount': vehItemDict['price']}
         titleDescr = text_styles.superPromoTitle(self._getShortDescription(paramName, **values))
         block.append(formatters.packImageTextBlockData(title=titleDescr, img=icon, imgPadding=formatters.packPadding(left=10, top=-15), txtGap=-6, txtOffset=84, padding=formatters.packPadding(top=15, bottom=-17)))
         return block
@@ -548,13 +570,13 @@ class VehPriceActionInfo(ActionInfo):
 class VehRentActionInfo(VehPriceActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'vehicleRentPrice'
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         return self._getFullDescription(self.getTriggerChainID(), forHeroCard=forHeroCard)
 
     def getTableData(self):
-        return None
+        return
 
     def _getPrice(self, veh, useBigIco, forNormalCard=False):
         return self._formatRentPriceIcon(veh, useBigIco)
@@ -619,22 +641,24 @@ class VehRentActionInfo(VehPriceActionInfo):
 class EquipmentActionInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'equipmentPrice'
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         equipCount = len(self._getPackedDiscounts())
-        return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_EQUIPMENT), count=equipCount - _MAX_ITEMS_IN_TABLE) if equipCount > _MAX_ITEMS_IN_TABLE else ''
+        if equipCount > _MAX_ITEMS_IN_TABLE:
+            return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_EQUIPMENT), count=equipCount - _MAX_ITEMS_IN_TABLE)
+        return ''
 
     def getTableData(self):
         items = self._getPackedDiscounts()
         res = []
         for _, data in items.iteritems():
             equip = data.discountName
-            item = {'icon': '',
-             'additionalIcon': '',
-             'title': ' '.join((icons.makeImageTag(equip.icon, vSpace=-3), equip.userName)),
-             'discount': formatStrDiscount(data),
-             'price': self._formatPriceIcon(equip, False)}
+            item = {'icon': '', 
+               'additionalIcon': '', 
+               'title': (' ').join((icons.makeImageTag(equip.icon, vSpace=-3), equip.userName)), 
+               'discount': formatStrDiscount(data), 
+               'price': self._formatPriceIcon(equip, False)}
             res.append(item)
 
         return res[:3]
@@ -643,22 +667,24 @@ class EquipmentActionInfo(ActionInfo):
 class OptDeviceActionInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'optionalDevicePrice'
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         optDeviceCount = len(self._getPackedDiscounts())
-        return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_OPTIONALDEVICES), count=optDeviceCount - _MAX_ITEMS_IN_TABLE) if optDeviceCount > _MAX_ITEMS_IN_TABLE else ''
+        if optDeviceCount > _MAX_ITEMS_IN_TABLE:
+            return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_OPTIONALDEVICES), count=optDeviceCount - _MAX_ITEMS_IN_TABLE)
+        return ''
 
     def getTableData(self):
         items = self._getPackedDiscounts()
         res = []
         for _, data in items.iteritems():
             optDevice = data.discountName
-            item = {'icon': '',
-             'additionalIcon': '',
-             'title': ' '.join((icons.makeImageTag(optDevice.icon, vSpace=-3), optDevice.userName)),
-             'discount': formatStrDiscount(data),
-             'price': self._formatPriceIcon(optDevice, False)}
+            item = {'icon': '', 
+               'additionalIcon': '', 
+               'title': (' ').join((icons.makeImageTag(optDevice.icon, vSpace=-3), optDevice.userName)), 
+               'discount': formatStrDiscount(data), 
+               'price': self._formatPriceIcon(optDevice, False)}
             res.append(item)
 
         return sorted(res, key=lambda x: x['discount'], reverse=True)[:3]
@@ -667,31 +693,33 @@ class OptDeviceActionInfo(ActionInfo):
 class ShellPriceActionInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'shellsPrice'
 
 
 class BoosterPriceActionInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'goodiePrice'
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         boostersCount = len(self._getPackedDiscounts())
-        return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_GOODIES), count=boostersCount - _MAX_ITEMS_IN_TABLE) if boostersCount > _MAX_ITEMS_IN_TABLE else ''
+        if boostersCount > _MAX_ITEMS_IN_TABLE:
+            return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_GOODIES), count=boostersCount - _MAX_ITEMS_IN_TABLE)
+        return ''
 
     def getTableData(self):
         res = []
         for data in self.__sortBoosters():
             booster = data.discountName
             guiType = booster.boosterGuiType
-            formatter = 'booster/{}'.format(guiType)
+            formatter = ('booster/{}').format(guiType)
             busterName = i18n.makeString(QUESTS.getActionDescription(formatter))
             busterSmallIcon = RES_ICONS.getBusterSmallIcon(guiType)
-            item = {'icon': busterSmallIcon,
-             'additionalIcon': '',
-             'title': busterName,
-             'discount': formatStrDiscount(data),
-             'price': self._formatPriceIcon(booster, False)}
+            item = {'icon': busterSmallIcon, 
+               'additionalIcon': '', 
+               'title': busterName, 
+               'discount': formatStrDiscount(data), 
+               'price': self._formatPriceIcon(booster, False)}
             res.append(item)
 
         return res
@@ -714,22 +742,24 @@ class BoosterPriceActionInfo(ActionInfo):
 class C11nPriceGroupPriceActionInfo(ActionInfo):
 
     def getTriggerChainID(self):
-        pass
+        return 'c11nPrice'
 
     def getAdditionalDescription(self, useBigIco=False, forHeroCard=False):
         itemsCount = len(self._getPackedDiscounts())
-        return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_CUSTOMIZATIONS), count=itemsCount - _MAX_ITEMS_IN_TABLE) if itemsCount > _MAX_ITEMS_IN_TABLE else ''
+        if itemsCount > _MAX_ITEMS_IN_TABLE:
+            return i18n.makeString(QUESTS.ACTION_DISCOUNT_MORE, deviceName=i18n.makeString(QUESTS.ACTION_MORE_TYPE_CUSTOMIZATIONS), count=itemsCount - _MAX_ITEMS_IN_TABLE)
+        return ''
 
     def getTableData(self):
         items = self._getPackedDiscounts()
         res = []
         for data in items.itervalues():
             c11n = data.discountName
-            item = {'icon': '',
-             'additionalIcon': '',
-             'title': ' '.join((c11n.userType, c11n.userName)),
-             'discount': formatStrDiscount(data),
-             'price': self._formatPriceIcon(c11n, False)}
+            item = {'icon': '', 
+               'additionalIcon': '', 
+               'title': (' ').join((c11n.userType, c11n.userName)), 
+               'discount': formatStrDiscount(data), 
+               'price': self._formatPriceIcon(c11n, False)}
             res.append(item)
 
         return sorted(res, key=lambda x: x['discount'], reverse=True)[:3]
@@ -740,17 +770,17 @@ class C11nPriceGroupPriceActionInfo(ActionInfo):
             return data
         paramName = self.discount.getParamName()
         if paramName.endswith(_ALL):
-            itemTypeIDs = set((item.itemTypeID for _, item in self.discount.parse()))
+            itemTypeIDs = set(item.itemTypeID for _, item in self.discount.parse())
         else:
-            itemTypeIDs = set((item.itemTypeID for item in self.discount.parse()))
+            itemTypeIDs = set(item.itemTypeID for item in self.discount.parse())
         if len(itemTypeIDs) == 1:
             paramName = GUI_ITEM_TYPE_NAMES[itemTypeIDs.pop()]
             image = RES_ICONS.getCustomActionImage(paramName)
         else:
             paramName = self.discount.getParamName()
             image = _PARAM_TO_IMG_DICT.get(paramName)
-        return {'isWeb': False,
-         'src': image}
+        return {'isWeb': False, 
+           'src': image}
 
 
 class ComingSoonActionInfo(ActionInfo):
@@ -763,7 +793,7 @@ class ComingSoonActionInfo(ActionInfo):
         super(ComingSoonActionInfo, self).__init__(object, ActionData(object, _PRIORITY_FOR_FUTURE_ACTION, 0))
 
     def getID(self):
-        return '/'.join((self.__announceTime, self.__startTime, self._getParamName()))
+        return ('/').join((self.__announceTime, self.__startTime, self._getParamName()))
 
     def getStartTime(self):
         return self.__startTime
@@ -772,19 +802,21 @@ class ComingSoonActionInfo(ActionInfo):
         pass
 
     def getActionTime(self):
-        return {'id': self.getID(),
-         'isTimeOver': False,
-         'timeLeft': self._getStartTime(),
-         'isShowTimeIco': False}
+        return {'id': self.getID(), 
+           'isTimeOver': False, 
+           'timeLeft': self._getStartTime(), 
+           'isShowTimeIco': False}
 
     def getTriggerChainID(self):
         pass
 
     def getPicture(self):
         picture = getDecoration(self.uiDecoration)
-        return {'isWeb': True,
-         'src': picture} if picture else {'isWeb': False,
-         'src': _PARAM_TO_IMG_DICT.get(self._getParamName(), '')}
+        if picture:
+            return {'isWeb': True, 
+               'src': picture}
+        return {'isWeb': False, 
+           'src': _PARAM_TO_IMG_DICT.get(self._getParamName(), '')}
 
     def getTitle(self):
         return i18n.makeString(QUESTS.ACTION_COMINGSOON_LABEL)
@@ -802,13 +834,13 @@ class ComingSoonActionInfo(ActionInfo):
         return self._getAutoDescription(self._getParamName())
 
     def getTooltipInfo(self):
-        pass
+        return ''
 
     def getDiscount(self):
-        pass
+        return ''
 
     def getBattleQuestsInfo(self):
-        pass
+        return ''
 
     def getLinkBtnLabel(self):
         pass
@@ -818,7 +850,10 @@ class ComingSoonActionInfo(ActionInfo):
 
     def _getStartTime(self):
         startTimeStr = backport.getShortDateFormat(self.__startTime)
-        return text_styles.main(i18n.makeString(QUESTS.ACTION_COMINGSOON_TIME, startTime=startTimeStr)) if startTimeStr is not None else ''
+        if startTimeStr is not None:
+            return text_styles.main(i18n.makeString(QUESTS.ACTION_COMINGSOON_TIME, startTime=startTimeStr))
+        else:
+            return ''
 
     def _getParamName(self):
         paramName = self.__name
@@ -846,25 +881,29 @@ class MarathonEventActionInfo(ActionInfo):
         return
 
     def getTitle(self):
-        return i18n.makeString(self._marathonEvent.data.quests.titleSetProgress) if self._marathonEvent else ''
+        if self._marathonEvent:
+            return i18n.makeString(self._marathonEvent.data.quests.titleSetProgress)
+        return ''
 
     def getAutoDescription(self, useBigIco=False, forNormalCard=False):
         if self._marathonEvent is None:
             return ''
-        values = {'level': formatVehicleLevel(i18n.makeString(TOOLTIPS.level(8)))}
-        name = self.discount.getParamName()
-        if name == 'set_MarathonAnnounce':
-            return i18n.makeString(self._marathonEvent.data.quests.autoSetAnnounce, **values)
         else:
-            return i18n.makeString(self._marathonEvent.data.quests.autoSetProgress, **values) if name == 'set_MarathonInProgress' else i18n.makeString(self._marathonEvent.data.quests.autoSetFinished, **values)
+            values = {'level': formatVehicleLevel(i18n.makeString(TOOLTIPS.level(8)))}
+            name = self.discount.getParamName()
+            if name == 'set_MarathonAnnounce':
+                return i18n.makeString(self._marathonEvent.data.quests.autoSetAnnounce, **values)
+            if name == 'set_MarathonInProgress':
+                return i18n.makeString(self._marathonEvent.data.quests.autoSetProgress, **values)
+            return i18n.makeString(self._marathonEvent.data.quests.autoSetFinished, **values)
 
     def _getFullDescription(self, stepName, discount=None, forHeroCard=False):
         if self._marathonEvent is None:
             return ''
-        elif stepName == 'set_MarathonFinished':
-            locKey = R.strings.quests.action.hero.full.dyn(stepName)()
-            return backport.text(locKey, value=self._marathonEvent.getExtraTimeToBuy())
         else:
+            if stepName == 'set_MarathonFinished':
+                locKey = R.strings.quests.action.hero.full.dyn(stepName)()
+                return backport.text(locKey, value=self._marathonEvent.getExtraTimeToBuy())
             return super(MarathonEventActionInfo, self)._getFullDescription(stepName, discount, forHeroCard)
 
     def getDiscount(self):
@@ -872,7 +911,7 @@ class MarathonEventActionInfo(ActionInfo):
         return formatStrDiscount(_ActionDiscountValue(discountValue=100, discountType=DISCOUNT_TYPE.PERCENT, discountName='marathon'))
 
     def getTriggerChainID(self):
-        pass
+        return 'showMarathon'
 
     def isDiscountVisible(self):
         return self._marathonEvent and not self._marathonEvent.isRewardObtained()
@@ -888,15 +927,24 @@ class MarathonEventActionInfo(ActionInfo):
         return ''
 
     def _formatFinishTime(self):
-        return '' if self._marathonEvent is None else ' '.join((text_styles.main(i18n.makeString(self._marathonEvent.data.quests.timeFinish)), backport.getLongDateFormat(self.getFinishTime())))
+        if self._marathonEvent is None:
+            return ''
+        else:
+            return (' ').join((text_styles.main(i18n.makeString(self._marathonEvent.data.quests.timeFinish)),
+             backport.getLongDateFormat(self.getFinishTime())))
 
     def _showTimerIco(self):
         name = self.discount.getParamName()
-        return False if name == 'set_MarathonFinished' else self.event.getFinishTimeLeft() <= time_utils.ONE_DAY
+        if name == 'set_MarathonFinished':
+            return False
+        return self.event.getFinishTimeLeft() <= time_utils.ONE_DAY
 
     def __getPrefix(self, event):
         modifier = next(iter(event.getModifiers()), None)
-        return modifier.getParams().get('prefix', None) if modifier is not None else None
+        if modifier is not None:
+            return modifier.getParams().get('prefix', None)
+        else:
+            return
 
 
 def getEconomicalStatsDict():
@@ -904,22 +952,21 @@ def getEconomicalStatsDict():
     shop = itemsCache.items.shop
     slotPrices = shop.slotsPrices[1]
     slotPricesValue = slotPrices[0][1]
-    return {'exchangeRate': shop.exchangeRate,
-     'slotsPrices': slotPricesValue,
-     'berthsPrices': shop.berthsPrices[2][0],
-     'premiumPacket1Cost': shop.getPremiumPacketCost(1),
-     'premiumPacket3Cost': shop.getPremiumPacketCost(3),
-     'premiumPacket7Cost': shop.getPremiumPacketCost(7),
-     'premiumPacket14Cost': shop.getPremiumPacketCost(14),
-     'premiumPacket30Cost': shop.getPremiumPacketCost(30),
-     'premiumPacket90Cost': shop.getPremiumPacketCost(90),
-     'premiumPacket180Cost': shop.getPremiumPacketCost(180),
-     'premiumPacket360Cost': shop.getPremiumPacketCost(360),
-     'winXPFactorMode': shop.winXPFactorMode,
-     'freeXPToTManXPRate': shop.freeXPToTManXPRate,
-     'dailyXPFactor': shop.dailyXPFactor,
-     'freeXPConversionDiscrecity': shop.freeXPConversion[0],
-     'isPremium': itemsCache.items.stats.isPremium}
+    return {'exchangeRate': shop.exchangeRate, 'slotsPrices': slotPricesValue, 
+       'berthsPrices': shop.berthsPrices[2][0], 
+       'premiumPacket1Cost': shop.getPremiumPacketCost(1), 
+       'premiumPacket3Cost': shop.getPremiumPacketCost(3), 
+       'premiumPacket7Cost': shop.getPremiumPacketCost(7), 
+       'premiumPacket14Cost': shop.getPremiumPacketCost(14), 
+       'premiumPacket30Cost': shop.getPremiumPacketCost(30), 
+       'premiumPacket90Cost': shop.getPremiumPacketCost(90), 
+       'premiumPacket180Cost': shop.getPremiumPacketCost(180), 
+       'premiumPacket360Cost': shop.getPremiumPacketCost(360), 
+       'winXPFactorMode': shop.winXPFactorMode, 
+       'freeXPToTManXPRate': shop.freeXPToTManXPRate, 
+       'dailyXPFactor': shop.dailyXPFactor, 
+       'freeXPConversionDiscrecity': shop.freeXPConversion[0], 
+       'isPremium': itemsCache.items.stats.isPremium}
 
 
 def getDecoration(uiDecoration):
@@ -928,99 +975,104 @@ def getDecoration(uiDecoration):
     return prefetcher.getMissionDecoration(uiDecoration, DECORATION_SIZES.DISCOUNT)
 
 
-_PARAM_TO_IMG_DICT = {'exchangeRate': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONVERT_GOLD,
- 'paidRemovalCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_REMOVE_EQUIPMENT,
- 'changeRoleCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_CHANGE_MAIN_SKILL,
- 'freeXPConversionDiscrecity': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONVERT_EXP,
- 'slotsPrices': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SLOT,
- 'berthsPrices': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PLACE_IN_BARRACKS,
- 'goldTankmanCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EDUCATION,
- 'creditsTankmanCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EDUCATION,
- 'creditsDropSkillsCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_SKILL_RESET,
- 'goldDropSkillsCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_SKILL_RESET,
- 'premiumPacket1Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_1,
- 'premiumPacket3Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_3,
- 'premiumPacket7Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_7,
- 'premiumPacket14Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_14,
- 'premiumPacket30Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_30,
- 'premiumPacket90Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_90,
- 'premiumPacket180Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_180,
- 'premiumPacket360Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_360,
- 'winXPFactorMode/always': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_EXP,
- 'winXPFactorMode/daily': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_EXP,
- 'freeXPToTManXPRate': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EXP,
- 'clanCreationCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CLAN,
- 'vehicleBuyPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_VEHICLES,
- 'vehicleRentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_CLOCK,
- 'equipment/goldPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES,
- 'equipment/creditsPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES,
- 'mul_EquipmentPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES,
- 'mul_EquipmentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES,
- 'set_EquipmentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES,
- 'mul_OptionalDevicePriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT,
- 'mul_OptionalDevicePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT,
- 'set_OptionalDevicePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT,
- 'shell/goldPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'shell/creditsPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'mul_ShellPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'mul_ShellPriceNation': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'mul_ShellPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'set_ShellPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS,
- 'set_PriceGroupPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED,
- 'mul_PriceGroupPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED,
- 'mul_PriceGroupPriceByTag': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED,
- 'mul_PriceGroupPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED,
- 'set_GoodiePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE,
- 'mul_GoodiePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE,
- 'mul_GoodiePriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE,
- 'tradeInSellPriceFactor': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TRADE_IN,
- 'set_MarathonAnnounce': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY,
- 'set_MarathonInProgress': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY,
- 'set_MarathonFinished': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY,
- 'calendar': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CALENDAR,
- 'AdventCalendarEnabled': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CALENDAR}
-_MODIFIERS_DICT = {'mul_EconomicsParams': EconomicsActionsInfo,
- 'set_EconomicsParams': EconomicsActionsInfo,
- 'mul_EconomicsPrices': EconomicsActionsInfo,
- 'set_EconomicsPrices': EconomicsActionsInfo,
- 'set_VehPrice': VehPriceActionInfo,
- 'mul_VehPriceNation': VehPriceActionInfo,
- 'mul_VehPriceAll': VehPriceActionInfo,
- 'cond_VehPrice': VehPriceActionInfo,
- 'mul_VehPrice': VehPriceActionInfo,
- 'set_VehRentPrice': VehRentActionInfo,
- 'mul_VehRentPriceNation': VehRentActionInfo,
- 'mul_VehRentPriceAll': VehRentActionInfo,
- 'mul_VehRentPrice': VehRentActionInfo,
- 'cond_VehRentPrice': VehRentActionInfo,
- 'mul_EquipmentPriceAll': EquipmentActionInfo,
- 'mul_EquipmentPrice': EquipmentActionInfo,
- 'set_EquipmentPrice': EquipmentActionInfo,
- 'mul_OptionalDevicePriceAll': OptDeviceActionInfo,
- 'mul_OptionalDevicePrice': OptDeviceActionInfo,
- 'set_OptionalDevicePrice': OptDeviceActionInfo,
- 'mul_ShellPriceAll': ShellPriceActionInfo,
- 'set_ShellPrice': ShellPriceActionInfo,
- 'mul_ShellPriceNation': ShellPriceActionInfo,
- 'mul_ShellPrice': ShellPriceActionInfo,
- 'set_PriceGroupPrice': C11nPriceGroupPriceActionInfo,
- 'mul_PriceGroupPrice': C11nPriceGroupPriceActionInfo,
- 'mul_PriceGroupPriceByTag': C11nPriceGroupPriceActionInfo,
- 'mul_PriceGroupPriceAll': C11nPriceGroupPriceActionInfo,
- 'set_GoodiePrice': BoosterPriceActionInfo,
- 'mul_GoodiePrice': BoosterPriceActionInfo,
- 'mul_GoodiePriceAll': BoosterPriceActionInfo,
- 'set_MarathonAnnounce': MarathonEventActionInfo,
- 'set_MarathonInProgress': MarathonEventActionInfo,
- 'set_MarathonFinished': MarathonEventActionInfo,
- 'AdventCalendarEnabled': CalendarActionInfo}
+_PARAM_TO_IMG_DICT = {'exchangeRate': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONVERT_GOLD, 
+   'paidRemovalCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_REMOVE_EQUIPMENT, 
+   'changeRoleCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_CHANGE_MAIN_SKILL, 
+   'freeXPConversionDiscrecity': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONVERT_EXP, 
+   'slotsPrices': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SLOT, 
+   'berthsPrices': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PLACE_IN_BARRACKS, 
+   'goldTankmanCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EDUCATION, 
+   'creditsTankmanCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EDUCATION, 
+   'creditsDropSkillsCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_SKILL_RESET, 
+   'goldDropSkillsCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_SKILL_RESET, 
+   'premiumPacket1Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_1, 
+   'premiumPacket3Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_3, 
+   'premiumPacket7Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_7, 
+   'premiumPacket14Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_14, 
+   'premiumPacket30Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_30, 
+   'premiumPacket90Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_90, 
+   'premiumPacket180Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_180, 
+   'premiumPacket360Cost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_PREM_360, 
+   'winXPFactorMode/always': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_EXP, 
+   'winXPFactorMode/daily': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_EXP, 
+   'freeXPToTManXPRate': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CREW_EXP, 
+   'clanCreationCost': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CLAN, 
+   'vehicleBuyPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_VEHICLES, 
+   'vehicleRentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TANK_CLOCK, 
+   'equipment/goldPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES, 
+   'equipment/creditsPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES, 
+   'mul_EquipmentPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES, 
+   'mul_EquipmentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES, 
+   'set_EquipmentPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CONSUMABLES, 
+   'mul_OptionalDevicePriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT, 
+   'mul_OptionalDevicePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT, 
+   'set_OptionalDevicePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_EQUIPMENT, 
+   'shell/goldPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'shell/creditsPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'mul_ShellPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'mul_ShellPriceNation': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'mul_ShellPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'set_ShellPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_SHELLS, 
+   'set_PriceGroupPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED, 
+   'mul_PriceGroupPrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED, 
+   'mul_PriceGroupPriceByTag': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED, 
+   'mul_PriceGroupPriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CUSTOM_MIXED, 
+   'set_GoodiePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE, 
+   'mul_GoodiePrice': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE, 
+   'mul_GoodiePriceAll': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_RESERVE, 
+   'tradeInSellPriceFactor': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_TRADE_IN, 
+   'set_MarathonAnnounce': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY, 
+   'set_MarathonInProgress': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY, 
+   'set_MarathonFinished': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_MARATHON_ITALY, 
+   'calendar': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CALENDAR, 
+   'AdventCalendarEnabled': RES_ICONS.MAPS_ICONS_ACTIONS_480X280_CALENDAR}
+_MODIFIERS_DICT = {'mul_EconomicsParams': EconomicsActionsInfo, 
+   'set_EconomicsParams': EconomicsActionsInfo, 
+   'mul_EconomicsPrices': EconomicsActionsInfo, 
+   'set_EconomicsPrices': EconomicsActionsInfo, 
+   'set_VehPrice': VehPriceActionInfo, 
+   'mul_VehPriceNation': VehPriceActionInfo, 
+   'mul_VehPriceAll': VehPriceActionInfo, 
+   'cond_VehPrice': VehPriceActionInfo, 
+   'mul_VehPrice': VehPriceActionInfo, 
+   'set_VehRentPrice': VehRentActionInfo, 
+   'mul_VehRentPriceNation': VehRentActionInfo, 
+   'mul_VehRentPriceAll': VehRentActionInfo, 
+   'mul_VehRentPrice': VehRentActionInfo, 
+   'cond_VehRentPrice': VehRentActionInfo, 
+   'mul_EquipmentPriceAll': EquipmentActionInfo, 
+   'mul_EquipmentPrice': EquipmentActionInfo, 
+   'set_EquipmentPrice': EquipmentActionInfo, 
+   'mul_OptionalDevicePriceAll': OptDeviceActionInfo, 
+   'mul_OptionalDevicePrice': OptDeviceActionInfo, 
+   'set_OptionalDevicePrice': OptDeviceActionInfo, 
+   'mul_ShellPriceAll': ShellPriceActionInfo, 
+   'set_ShellPrice': ShellPriceActionInfo, 
+   'mul_ShellPriceNation': ShellPriceActionInfo, 
+   'mul_ShellPrice': ShellPriceActionInfo, 
+   'set_PriceGroupPrice': C11nPriceGroupPriceActionInfo, 
+   'mul_PriceGroupPrice': C11nPriceGroupPriceActionInfo, 
+   'mul_PriceGroupPriceByTag': C11nPriceGroupPriceActionInfo, 
+   'mul_PriceGroupPriceAll': C11nPriceGroupPriceActionInfo, 
+   'set_GoodiePrice': BoosterPriceActionInfo, 
+   'mul_GoodiePrice': BoosterPriceActionInfo, 
+   'mul_GoodiePriceAll': BoosterPriceActionInfo, 
+   'set_MarathonAnnounce': MarathonEventActionInfo, 
+   'set_MarathonInProgress': MarathonEventActionInfo, 
+   'set_MarathonFinished': MarathonEventActionInfo, 
+   'AdventCalendarEnabled': CalendarActionInfo}
 
 def getModifierObj(name, event, modifier):
-    return _MODIFIERS_DICT[name](event, modifier) if name in _MODIFIERS_DICT else None
+    if name in _MODIFIERS_DICT:
+        return _MODIFIERS_DICT[name](event, modifier)
+    else:
+        return
 
 
 def getActionInfoData(event):
-    return _parseAction(event) if event.getType() == constants.EVENT_TYPE.ACTION else []
+    if event.getType() == constants.EVENT_TYPE.ACTION:
+        return _parseAction(event)
+    return []
 
 
 def getAnnouncedActionInfo(info):

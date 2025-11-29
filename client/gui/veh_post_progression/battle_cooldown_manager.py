@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/battle_cooldown_manager.py
 from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 
 class BattleCooldownManager(RequestCooldownManager):
@@ -9,7 +7,7 @@ class BattleCooldownManager(RequestCooldownManager):
         self.__default = default
 
     def lookupName(self, rqTypeID):
-        pass
+        return ''
 
     def getDefaultCoolDown(self):
         return self.__default

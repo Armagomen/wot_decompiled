@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/regular_ext.py
 from regular import RegularAchievement
 from helpers import i18n
 from gui.shared.formatters import text_styles
@@ -10,14 +8,14 @@ class RegularExtAchievement(RegularAchievement):
     USER_DESCR_WEB_TEMPLATE = '%(title)s\n%(standard)s\n%(ext)s'
 
     def getUserDescription(self):
-        return RegularExtAchievement.USER_DESCR_TEMPLATE % {'title': text_styles.main(self._getTranslatedText('#achievements:%s_descr')),
-         'standard': text_styles.main(self._getStandardDescription()),
-         'ext': text_styles.main(self._getExtDescription())}
+        return RegularExtAchievement.USER_DESCR_TEMPLATE % {'title': text_styles.main(self._getTranslatedText('#achievements:%s_descr')), 
+           'standard': text_styles.main(self._getStandardDescription()), 
+           'ext': text_styles.main(self._getExtDescription())}
 
     def getUserWebDescription(self):
-        return RegularExtAchievement.USER_DESCR_WEB_TEMPLATE % {'title': i18n.makeString('#achievements:%s_descr' % self._getActualName()),
-         'standard': i18n.makeString('#achievements:%s_standard_descr' % self._getActualName(), condition=str(self._getStandardValues()) + self._getConditionText()),
-         'ext': i18n.makeString('#achievements:%s_ext_descr' % self._getActualName(), condition=str(self._getExtValues()) + self._getConditionText())}
+        return RegularExtAchievement.USER_DESCR_WEB_TEMPLATE % {'title': i18n.makeString('#achievements:%s_descr' % self._getActualName()), 
+           'standard': i18n.makeString('#achievements:%s_standard_descr' % self._getActualName(), condition=str(self._getStandardValues()) + self._getConditionText()), 
+           'ext': i18n.makeString('#achievements:%s_ext_descr' % self._getActualName(), condition=str(self._getExtValues()) + self._getConditionText())}
 
     def _getTranslatedText(self, translationRef):
         return text_styles.main(i18n.makeString(translationRef % self._getActualName()))
@@ -36,4 +34,6 @@ class RegularExtAchievement(RegularAchievement):
 
     def _getConditionText(self):
         condTextKey = '#achievements:%s_condition_text' % self._getActualName()
-        return i18n.makeString(condTextKey) if i18n.doesTextExist(condTextKey) else ''
+        if i18n.doesTextExist(condTextKey):
+            return i18n.makeString(condTextKey)
+        return ''

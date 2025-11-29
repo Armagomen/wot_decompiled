@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/pathes_config/__init__.py
-import os
-import sys
-import site
+import os, sys, site
 
 def setupPaths():
     root = '../../../../..'
@@ -24,7 +20,8 @@ def setupPaths():
     platformSuffix = platform_info.getPlatformSuffix()
     if not platformSuffix:
         raise SoftException('Unable to determine platform suffix')
-    addPath = [root + '/tools/bigworld/server',
+    addPath = [
+     root + '/tools/bigworld/server',
      root + '/res/bigworld/scripts/common',
      root + '/res/bigworld/scripts/common/Lib',
      root + '/res/bigworld/scripts/common/site-packages',
@@ -43,7 +40,8 @@ def setupPaths():
         norm_path = expandPath(path)
         if norm_path.endswith('site-packages'):
             site.addsitedir(norm_path)
-        sys.path.append(norm_path)
+        else:
+            sys.path.append(norm_path)
 
     bw_xml = expandPath(root + '/res/wot/server/bw.xml')
     if not os.path.exists(bw_xml):

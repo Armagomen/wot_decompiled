@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/user_info.py
 import typing
 from constants import DEATH_REASON_ALIVE
 from gui.battle_results.pbs_helpers.common import isRealNameVisible, isPersonalBattleResult, getUserNames

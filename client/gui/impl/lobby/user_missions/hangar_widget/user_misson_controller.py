@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/user_misson_controller.py
 import Event
 from PlayerEvents import g_playerEvents
 from config_schemas.umg import WeightsModel
@@ -12,7 +10,7 @@ from skeletons.gui.game_control import IGameSessionController
 import typing
 
 class MissionLoader(object):
-    __slots__ = ('providers',)
+    __slots__ = ('providers', )
 
     def __init__(self):
         self.providers = []
@@ -94,7 +92,7 @@ class MissionController(object):
         self.onChanged()
 
     def getSortedQuests(self):
-        return sorted(self.quests, key=lambda q: (-q.weight, tuple((-x for x in q.secondaryKey))))
+        return sorted(self.quests, key=lambda q: (-q.weight, tuple(-x for x in q.secondaryKey)))
 
     def destroy(self):
         self.unsubscribe()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/common/utils.py
-import dossiers2
-import struct
+import dossiers2, struct
 from typing import Iterable, TYPE_CHECKING
 from constants import DOSSIER_TYPE
 if TYPE_CHECKING:
@@ -33,7 +30,7 @@ def printDossierFromDescr(dossierDescr, dossierGetter, format):
 
 
 def printDossier(dossier, format):
-    print '\n'.join(convertDossierToText(format, dossier))
+    print ('\n').join(convertDossierToText(format, dossier))
 
 
 def convertDossierToText(format, dossier):
@@ -41,4 +38,6 @@ def convertDossierToText(format, dossier):
 
 
 def getDossierVersion(dossierCompDescr, versionFormat, latestVersion):
-    return latestVersion if dossierCompDescr == '' else struct.unpack_from(versionFormat, dossierCompDescr)[0]
+    if dossierCompDescr == '':
+        return latestVersion
+    return struct.unpack_from(versionFormat, dossierCompDescr)[0]

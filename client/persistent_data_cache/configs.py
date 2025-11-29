@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/persistent_data_cache/configs.py
 import typing
 from dict2model import models, schemas, fields
 from section2dict import parse
@@ -17,12 +15,12 @@ class PDCSettingsModel(models.Model):
         self.useThread = useThread
 
     def _reprArgs(self):
-        return 'enabled={}, devEnabled={}, useThread={}'.format(self.enabled, self.devEnabled, self.useThread)
+        return ('enabled={}, devEnabled={}, useThread={}').format(self.enabled, self.devEnabled, self.useThread)
 
 
-pdcSettingsSchema = schemas.Schema[PDCSettingsModel](fields={'enabled': fields.Boolean(required=False, default=True),
- 'devEnabled': fields.Boolean(required=False, default=False),
- 'useThread': fields.Boolean(required=False, default=True)}, checkUnknown=True, modelClass=PDCSettingsModel)
+pdcSettingsSchema = schemas.Schema[PDCSettingsModel](fields={'enabled': fields.Boolean(required=False, default=True), 
+   'devEnabled': fields.Boolean(required=False, default=False), 
+   'useThread': fields.Boolean(required=False, default=True)}, checkUnknown=True, modelClass=PDCSettingsModel)
 
 def createPDCSettings(scriptsConfig, engineConfig):
     if scriptsConfig.has_key(PDC_SETTINGS_KEY):

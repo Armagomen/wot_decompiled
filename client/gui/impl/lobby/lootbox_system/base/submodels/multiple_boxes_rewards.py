@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/submodels/multiple_boxes_rewards.py
 from typing import TYPE_CHECKING
 import Windowing
 from frameworks.wulf import Array
@@ -62,7 +60,7 @@ class MultipleBoxesRewards(SubViewImpl):
         self.__openCount = kwargs.get('count', 0)
         self.__bonuses = kwargs.get('bonuses', [])
         self.__eventName = kwargs.get('eventName', '')
-        with self.viewModel.transaction() as vmTx:
+        with self.viewModel.transaction() as (vmTx):
             self.__setWindowAccessible(model=vmTx)
             self.__updateData(model=vmTx)
             self.__updateCounters(model=vmTx)
@@ -76,18 +74,30 @@ class MultipleBoxesRewards(SubViewImpl):
         super(MultipleBoxesRewards, self).finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onOpen, self.__openNext),
-         (self.viewModel.onGoBack, self.__goBack),
-         (self.viewModel.onPreview, self.__showPreview),
-         (self.viewModel.onBuyBoxes, self.__openShop),
-         (self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
-         (self.viewModel.onVideoPlaying, self.__setVideoPlaying),
-         (self.viewModel.onClose, self.__goBack),
-         (self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
-         (self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
+        return (
+         (
+          self.viewModel.onOpen, self.__openNext),
+         (
+          self.viewModel.onGoBack, self.__goBack),
+         (
+          self.viewModel.onPreview, self.__showPreview),
+         (
+          self.viewModel.onBuyBoxes, self.__openShop),
+         (
+          self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
+         (
+          self.viewModel.onVideoPlaying, self.__setVideoPlaying),
+         (
+          self.viewModel.onClose, self.__goBack),
+         (
+          self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
+         (
+          self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
 
     def _getListeners(self):
-        return ((events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
 
     def __setVideoPlaying(self, ctx=None):
         isPlaying = ctx.get('isPlaying')

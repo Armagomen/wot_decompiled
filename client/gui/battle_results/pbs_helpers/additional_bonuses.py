@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/pbs_helpers/additional_bonuses.py
 import typing
 from constants import PREMIUM_TYPE
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
@@ -13,39 +11,40 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.battle_results.reusable import _ReusableInfo
-ACCOUNT_STATUS_TO_BRPS = {(False, False, False): {(True, True): BRPS.PLUS_INFO,
-                         (False, True): BRPS.PLUS_INFO,
-                         (True, False): BRPS.PREMIUM_INFO,
-                         (False, False): BRPS.PREMIUM_INFO},
- (True, False, False): {(True, True): BRPS.PREMIUM_ADVERTISING,
-                        (False, True): BRPS.PREMIUM_ADVERTISING,
-                        (True, False): BRPS.PREMIUM_ADVERTISING,
-                        (False, False): BRPS.PREMIUM_ADVERTISING},
- (False, True, False): {(True, True): BRPS.PREMIUM_BONUS,
-                        (False, True): BRPS.PLUS_EARNINGS,
-                        (True, False): BRPS.PREMIUM_BONUS,
-                        (False, False): BRPS.PREMIUM_EARNINGS},
- (False, False, True): {(True, True): BRPS.PREMIUM_BONUS,
-                        (False, True): BRPS.PLUS_EARNINGS,
-                        (True, False): BRPS.PREMIUM_INFO,
-                        (False, False): BRPS.PREMIUM_INFO},
- (True, True, False): {(True, True): BRPS.PREMIUM_BONUS,
-                       (False, True): BRPS.PLUS_EARNINGS,
-                       (True, False): BRPS.PREMIUM_BONUS,
-                       (False, False): BRPS.PREMIUM_EARNINGS},
- (True, False, True): {(True, True): BRPS.PREMIUM_BONUS,
-                       (False, True): BRPS.PLUS_EARNINGS,
-                       (True, False): BRPS.PREMIUM_ADVERTISING,
-                       (False, False): BRPS.PREMIUM_ADVERTISING},
- (False, True, True): {(True, True): BRPS.PREMIUM_BONUS,
-                       (False, True): BRPS.PLUS_YOU_ROCK,
-                       (True, False): BRPS.PREMIUM_BONUS,
-                       (False, False): BRPS.PREMIUM_EARNINGS},
- (True, True, True): {(True, True): BRPS.PREMIUM_BONUS,
-                      (False, True): BRPS.PLUS_YOU_ROCK,
-                      (True, False): BRPS.PREMIUM_BONUS,
-                      (False, False): BRPS.PREMIUM_EARNINGS}}
-_ADDITIONAL_BONUS_AVAILABLE_STATUSES = {BRPS.PLUS_YOU_ROCK, BRPS.PREMIUM_BONUS, BRPS.PLUS_EARNINGS}
+ACCOUNT_STATUS_TO_BRPS = {(False, False, False): {(True, True): BRPS.PLUS_INFO, 
+                           (False, True): BRPS.PLUS_INFO, 
+                           (True, False): BRPS.PREMIUM_INFO, 
+                           (False, False): BRPS.PREMIUM_INFO}, 
+   (True, False, False): {(True, True): BRPS.PREMIUM_ADVERTISING, 
+                          (False, True): BRPS.PREMIUM_ADVERTISING, 
+                          (True, False): BRPS.PREMIUM_ADVERTISING, 
+                          (False, False): BRPS.PREMIUM_ADVERTISING}, 
+   (False, True, False): {(True, True): BRPS.PREMIUM_BONUS, 
+                          (False, True): BRPS.PLUS_EARNINGS, 
+                          (True, False): BRPS.PREMIUM_BONUS, 
+                          (False, False): BRPS.PREMIUM_EARNINGS}, 
+   (False, False, True): {(True, True): BRPS.PREMIUM_BONUS, 
+                          (False, True): BRPS.PLUS_EARNINGS, 
+                          (True, False): BRPS.PREMIUM_INFO, 
+                          (False, False): BRPS.PREMIUM_INFO}, 
+   (True, True, False): {(True, True): BRPS.PREMIUM_BONUS, 
+                         (False, True): BRPS.PLUS_EARNINGS, 
+                         (True, False): BRPS.PREMIUM_BONUS, 
+                         (False, False): BRPS.PREMIUM_EARNINGS}, 
+   (True, False, True): {(True, True): BRPS.PREMIUM_BONUS, 
+                         (False, True): BRPS.PLUS_EARNINGS, 
+                         (True, False): BRPS.PREMIUM_ADVERTISING, 
+                         (False, False): BRPS.PREMIUM_ADVERTISING}, 
+   (False, True, True): {(True, True): BRPS.PREMIUM_BONUS, 
+                         (False, True): BRPS.PLUS_YOU_ROCK, 
+                         (True, False): BRPS.PREMIUM_BONUS, 
+                         (False, False): BRPS.PREMIUM_EARNINGS}, 
+   (True, True, True): {(True, True): BRPS.PREMIUM_BONUS, 
+                        (False, True): BRPS.PLUS_YOU_ROCK, 
+                        (True, False): BRPS.PREMIUM_BONUS, 
+                        (False, False): BRPS.PREMIUM_EARNINGS}}
+_ADDITIONAL_BONUS_AVAILABLE_STATUSES = {
+ BRPS.PLUS_YOU_ROCK, BRPS.PREMIUM_BONUS, BRPS.PLUS_EARNINGS}
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, lobbyContext=ILobbyContext, wotPlusController=IWotPlusController)
 def getAccountStatusToBRPS(hadPremiumPlus, isBonusAppliedAlready, hasXpInBonusCaps, hasXpBonusInBonusCaps, negativeImpact=False, itemsCache=None, lobbyContext=None, wotPlusController=None):
@@ -71,8 +70,8 @@ def getAccountStatusToBRPS(hadPremiumPlus, isBonusAppliedAlready, hasXpInBonusCa
         hasWotPlus = wotPlusController.isEnabled()
         bonusesAvailable = hasPremiumPlus and isPremiumPlusBonusEnabled and premiumPlusBonusesLeft > 0 or hasWotPlus and isWotPlusBonusEnabled and wotPlusBonusesLeft > 0
         hasBasicPremium = itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.BASIC)
-        states = ACCOUNT_STATUS_TO_BRPS[hasBasicPremium, hasPremiumPlus, hasWotPlus]
-        state = states[bonusesAvailable, isWotPlusBonusEnabled]
+        states = ACCOUNT_STATUS_TO_BRPS[(hasBasicPremium, hasPremiumPlus, hasWotPlus)]
+        state = states[(bonusesAvailable, isWotPlusBonusEnabled)]
     if state in (BRPS.PREMIUM_INFO, BRPS.PREMIUM_ADVERTISING) and hadPremiumPlus:
         state = BRPS.PREMIUM_EARNINGS
     if state in (BRPS.PREMIUM_INFO,) and negativeImpact:
@@ -157,4 +156,6 @@ def getAdditionalXpBonusStatus(arenaUniqueID, isPersonalTeamWin, vehicleCD, isBo
         if battleResults.getVehicleForArena(arenaUniqueID).isXPToTman:
             return PremiumXpBonusRestriction.FASTEREDUCATIONCREWACTIVE
         return PremiumXpBonusRestriction.FASTEREDUCATIONCREWNOTACTIVE
-    return PremiumXpBonusRestriction.NOCREW if not battleResults.isCrewSameForArena(arenaUniqueID) else PremiumXpBonusRestriction.NORESTRICTION
+    if not battleResults.isCrewSameForArena(arenaUniqueID):
+        return PremiumXpBonusRestriction.NOCREW
+    return PremiumXpBonusRestriction.NORESTRICTION

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/event_boards_controllers.py
 import typing
 from adisp import adisp_process, adisp_async
 

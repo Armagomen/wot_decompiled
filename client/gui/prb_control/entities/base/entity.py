@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/entity.py
 import typing
 from adisp import adisp_process
 from constants import QUEUE_TYPE
@@ -41,7 +39,7 @@ class BasePrbEntryPoint(PrbFunctionalFlags):
         return False
 
     def makeDefCtx(self):
-        return None
+        return
 
     def create(self, ctx, callback=None):
         pass
@@ -135,25 +133,25 @@ class BasePrbEntity(IActionsValidator, PrbFunctionalFlags):
         return False
 
     def getConfirmDialogMeta(self, ctx):
-        return None
+        return
 
     def showDialog(self, meta, callback, parent=None):
         self.__showDefaultDialog(meta, callback, parent=parent)
 
     def getID(self):
-        pass
+        return 0
 
     def getCtrlType(self):
         return CTRL_ENTITY_TYPE.UNKNOWN
 
     def getEntityType(self):
-        pass
+        return 0
 
     def getIntroType(self):
-        pass
+        return 0
 
     def getRequestCtx(self):
-        return None
+        return
 
     def getQueueType(self):
         return QUEUE_TYPE.UNKNOWN
@@ -194,7 +192,7 @@ class BasePrbEntity(IActionsValidator, PrbFunctionalFlags):
         return BaseScheduler(self)
 
     def _createCooldownManager(self):
-        return None
+        return
 
     def _goToHangar(self):
         g_eventDispatcher.loadHangar()

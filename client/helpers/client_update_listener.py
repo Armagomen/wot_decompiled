@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/client_update_listener.py
-import typing
-import Event
+import typing, Event
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSyncData
 from helpers import dependency
@@ -9,7 +6,8 @@ from shared_utils.account_helpers.diff_utils import synchronizeDicts
 from skeletons.connection_mgr import IConnectionManager
 
 class ClientUpdateListener(object):
-    __slots__ = ('onDataUpdated', '__data', '__key', '__resetOnDisconnect', '__synced', '__default')
+    __slots__ = ('onDataUpdated', '__data', '__key', '__resetOnDisconnect', '__synced',
+                 '__default')
     __connectionMgr = dependency.descriptor(IConnectionManager)
 
     def __init__(self, key, resetOnDisconnect=True, default=None):

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_battle_carousel.py
-import logging
-import weakref
-import BigWorld
-import Event
+import logging, weakref, BigWorld, Event
 from account_helpers.AccountSettings import EPICBATTLE_CAROUSEL_FILTER_1, EPICBATTLE_CAROUSEL_FILTER_2, EPICBATTLE_CAROUSEL_FILTER_CLIENT_2
 from frontline.gui.Scaleform.daapi.view.battle.frontline_battle_carousel_filters import FLRentedCriteriaGroup, FL_RENT
 from frontline.gui.Scaleform.daapi.view.meta.BattleTankCarouselMeta import BattleTankCarouselMeta
@@ -24,7 +19,8 @@ from gui.shared.gui_items import ItemsCollection
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 _logger = logging.getLogger(__name__)
-_CAROUSEL_FILTERS = (FILTER_KEYS.FAVORITE, FILTER_KEYS.PREMIUM)
+_CAROUSEL_FILTERS = (
+ FILTER_KEYS.FAVORITE, FILTER_KEYS.PREMIUM)
 
 class BattleCarouselFilter(CarouselFilter):
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
@@ -35,22 +31,23 @@ class BattleCarouselFilter(CarouselFilter):
         self._clientSections = (EPICBATTLE_CAROUSEL_FILTER_CLIENT_2,)
 
     def _setCriteriaGroups(self):
-        self._criteriesGroups = (FLRentedCriteriaGroup(),)
+        self._criteriesGroups = (
+         FLRentedCriteriaGroup(),)
 
 
 def getEpicVehicleDataVO(vehicle):
-    return {'vehicleID': vehicle.intCD,
-     'vehicleName': vehicle.shortUserName if vehicle.isPremiumIGR else vehicle.userName,
-     'flagIcon': respawn_utils.FLAG_ICON_TEMPLATE % nations.NAMES[vehicle.nationID],
-     'vehicleIcon': vehicle.icon,
-     'vehicleTypeIcon': (respawn_utils.VEHICLE_ELITE_TYPE_TEMPLATE if vehicle.isElite else respawn_utils.VEHICLE_TYPE_TEMPLATE) % vehicle.type,
-     'isElite': vehicle.isElite,
-     'isPremium': vehicle.isPremium,
-     'vehicleLevelIcon': RES_ICONS.getLevelIcon(vehicle.level),
-     'favorite': vehicle.isFavorite,
-     'enabled': True,
-     'cooldown': '',
-     'settings': 0}
+    return {'vehicleID': vehicle.intCD, 
+       'vehicleName': vehicle.shortUserName if vehicle.isPremiumIGR else vehicle.userName, 
+       'flagIcon': respawn_utils.FLAG_ICON_TEMPLATE % nations.NAMES[vehicle.nationID], 
+       'vehicleIcon': vehicle.icon, 
+       'vehicleTypeIcon': (respawn_utils.VEHICLE_ELITE_TYPE_TEMPLATE if vehicle.isElite else respawn_utils.VEHICLE_TYPE_TEMPLATE) % vehicle.type, 
+       'isElite': vehicle.isElite, 
+       'isPremium': vehicle.isPremium, 
+       'vehicleLevelIcon': RES_ICONS.getLevelIcon(vehicle.level), 
+       'favorite': vehicle.isFavorite, 
+       'enabled': True, 
+       'cooldown': '', 
+       'settings': 0}
 
 
 class BattleCarouselDataProvider(CarouselDataProvider):
@@ -194,7 +191,8 @@ class BattleCarouselDataProvider(CarouselDataProvider):
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (vehicle.level,
+        return (
+         vehicle.level,
          not vehicle.isFavorite,
          GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
          VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
@@ -216,10 +214,10 @@ class BattleCarouselDataProvider(CarouselDataProvider):
         if not self.__isVehicleLevelsFilterNeeded():
             return
         for level in self.__availableLevels:
-            self.__separatorItems.append({'levelInfo': {'level': level,
-                           'isCollapsed': True,
-                           'isCollapsible': False,
-                           'infoText': ''}})
+            self.__separatorItems.append({'levelInfo': {'level': level, 
+                             'isCollapsed': True, 
+                             'isCollapsible': False, 
+                             'infoText': ''}})
 
     @staticmethod
     def __getVehLevelsUnlockInBattle():
@@ -270,7 +268,10 @@ class VehicleData(object):
         return result
 
     def getRawVehicleData(self, invID):
-        return None if invID >= len(self.__vehicles) else self.__vehicles[invID]
+        if invID >= len(self.__vehicles):
+            return None
+        else:
+            return self.__vehicles[invID]
 
     def __updateRespawnVehicles(self, vehs):
         self.__vehicles = vehs.values()
@@ -281,7 +282,8 @@ class VehicleData(object):
 
 
 class BattleTankCarousel(BattleTankCarouselMeta):
-    _DISABLED_FILTERS = ['bonus']
+    _DISABLED_FILTERS = [
+     'bonus']
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -307,7 +309,9 @@ class BattleTankCarousel(BattleTankCarouselMeta):
             return None
         else:
             vehicle = self._carouselDP.getSelectedVehicle()
-            return None if not hasattr(vehicle, 'intCD') else vehicle
+            if not hasattr(vehicle, 'intCD'):
+                return None
+            return vehicle
 
     def selectVehicleByID(self, vehicleID):
         self._carouselDP.selectVehicleByID(vehicleID)
@@ -342,8 +346,8 @@ class BattleTankCarousel(BattleTankCarouselMeta):
         return
 
     def _initDataProvider(self):
-        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(),
-         'itemsCache': self.__vehicleData})
+        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(), 
+           'itemsCache': self.__vehicleData})
         self._carouselDP = self._carouselDPCls(**self._carouselDPConfig)
 
     def _getFiltersVisible(self):
@@ -351,10 +355,9 @@ class BattleTankCarousel(BattleTankCarouselMeta):
 
     def _getInitialFilterVO(self, contexts):
         filters = self.filter.getFilters(self._usedFilters)
-        filtersVO = {'mainBtn': {'value': getButtonsAssetPath('params'),
-                     'tooltip': '#tank_carousel_filter:tooltip/params'},
-         'hotFilters': [],
-         'isVisible': self._getFiltersVisible()}
+        filtersVO = {'mainBtn': {'value': getButtonsAssetPath('params'), 
+                       'tooltip': '#tank_carousel_filter:tooltip/params'}, 
+           'hotFilters': [], 'isVisible': self._getFiltersVisible()}
         for entry in self._usedFilters:
             filtersVO['hotFilters'].append(self._makeFilterVO(entry, contexts, filters))
 

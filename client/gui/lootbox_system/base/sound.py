@@ -1,11 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/sound.py
 import logging
 from enum import Enum
 import typing
 from typing import TYPE_CHECKING
-import SoundGroups
-import WWISE
+import SoundGroups, WWISE
 from gui.impl import backport
 from gui.impl.gen import R
 if TYPE_CHECKING:
@@ -75,7 +72,7 @@ def _playSounds(soundNames, eventName):
 
 
 def _getSound(soundName, eventName):
-    eventSoundName = '_'.join((soundName, eventName))
+    eventSoundName = ('_').join((soundName, eventName))
     soundRes = R.sounds.dyn(eventSoundName)
     if not soundRes.exists():
         _logger.debug('Event sound: "%s" not found, try to use default: "%s"', eventSoundName, soundName.value)

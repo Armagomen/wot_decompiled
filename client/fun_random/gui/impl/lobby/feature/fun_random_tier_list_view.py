@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_tier_list_view.py
 from __future__ import absolute_import
 from future.utils import viewvalues
 from constants import Configs
@@ -23,7 +21,7 @@ from skeletons.gui.shared import IItemsCache
 class FunRandomTierListView(ViewImpl, FunProgressionWatcher, FunAssetPacksMixin):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__tooltips',)
+    __slots__ = ('__tooltips', )
     _COMMON_SOUND_SPACE = FUN_TIER_LIST_SOUND_SPACE
 
     def __init__(self, layoutID):
@@ -46,21 +44,23 @@ class FunRandomTierListView(ViewImpl, FunProgressionWatcher, FunAssetPacksMixin)
         tc = R.views.lobby.awards.tooltips.RewardCompensationTooltip()
         if event.contentID == tc:
             if tooltipId in self.__tooltips:
-                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
-                 'labelBefore': event.getArgument('labelBefore', ''),
-                 'iconAfter': event.getArgument('iconAfter', ''),
-                 'labelAfter': event.getArgument('labelAfter', ''),
-                 'bonusName': event.getArgument('bonusName', ''),
-                 'countBefore': event.getArgument('countBefore', 1),
-                 'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
+                   'iconAfter': event.getArgument('iconAfter', ''), 
+                   'labelAfter': event.getArgument('labelAfter', ''), 
+                   'bonusName': event.getArgument('bonusName', ''), 
+                   'countBefore': event.getArgument('countBefore', 1), 
+                   'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
                 tooltipData.update(self.__tooltips[tooltipId].specialArgs)
                 settings = ViewSettings(tc, model=LootBoxVehicleCompensationTooltipModel(), kwargs=tooltipData)
                 return VehicleCompensationTooltipContent(settings)
-        return None
+        return
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def _onLoading(self, *args, **kwargs):
         super(FunRandomTierListView, self)._onLoading(*args, **kwargs)
@@ -76,7 +76,9 @@ class FunRandomTierListView(ViewImpl, FunProgressionWatcher, FunAssetPacksMixin)
         super(FunRandomTierListView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.destroyWindow),)
+        return (
+         (
+          self.viewModel.onClose, self.destroyWindow),)
 
     @server_settings.serverSettingsChangeListener(Configs.LOOTBOXES_TOOLTIP_CONFIG.value)
     def __onServerSettingsChanged(self, _):
@@ -84,12 +86,13 @@ class FunRandomTierListView(ViewImpl, FunProgressionWatcher, FunAssetPacksMixin)
 
     @hasActiveProgression()
     def __update(self):
-        boxes = [ lb for lb in viewvalues(self.__itemsCache.items.tokens.getLootBoxes()) if lb.getCategory() == FEP_CATEGORY ]
+        boxes = [ lb for lb in viewvalues(self.__itemsCache.items.tokens.getLootBoxes()) if lb.getCategory() == FEP_CATEGORY
+                ]
         lbConfig = self.__lobbyContext.getServerSettings().getLootBoxesTooltipConfig()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             sortedBoxes = []
             model.setAssetsPointer(self.getModeAssetsPointer())
             for rarity in reversed(RARITY_ORDER):
-                sortedBoxes.extend([ b for b in boxes if b.getType().split('_')[-1] == rarity.value ])
+                sortedBoxes.extend([ b for b in boxes if b.getType().split('_')[(-1)] == rarity.value ])
 
             packLootboxes(sortedBoxes, lbConfig, model.getLootBoxes(), getFunRandomBonusPacker(), self.getActiveProgression().config.visibleLBAwardsNames, self.getModeLocalsResRoot(), self.__tooltips)

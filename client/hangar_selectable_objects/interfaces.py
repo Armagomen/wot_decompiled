@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/hangar_selectable_objects/interfaces.py
 
 
 class ISelectableObject(object):

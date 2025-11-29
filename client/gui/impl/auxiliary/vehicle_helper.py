@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/vehicle_helper.py
-import math
-import typing
+import math, typing
 from gui.shared.gui_items.Vehicle import VEHICLE_TAGS
 if typing.TYPE_CHECKING:
     from typing import Optional, Iterable
@@ -17,7 +14,7 @@ def fillVehicleInfo(vehInfo, vehicle, separateIGRTag=False, tags=None):
     vehInfo.setVehicleShortName(vehicle.descriptor.type.shortUserString)
     vehicleTags = set(tags or [])
     vehicleTags.add(VEHICLE_TAGS.PREMIUM_IGR)
-    vehInfo.setTags(','.join(vehicleTags & vehicle.tags))
+    vehInfo.setTags((',').join(vehicleTags & vehicle.tags))
     if separateIGRTag:
         vehInfo.setVehicleName(vehicle.descriptor.type.userString)
     else:
@@ -26,7 +23,7 @@ def fillVehicleInfo(vehInfo, vehicle, separateIGRTag=False, tags=None):
     vehInfo.setInventoryId(vehicle.invID)
     vehInfo.setVehicleLongName(vehicle.descriptor.type.userString)
     vehInfo.setVehicleRole(vehicle.role)
-    vehInfo.setRentLeftTime(vehicle.rentLeftTime if not math.isinf(vehicle.rentLeftTime) else -1)
+    vehInfo.setRentLeftTime((math.isinf(vehicle.rentLeftTime) or vehicle).rentLeftTime if 1 else -1)
     vehInfo.setRentLeftBattles(vehicle.rentLeftBattles or 0)
     vehInfo.setRentLeftWins(vehicle.rentLeftWins or 0)
     vState, _ = vehicle.getState()

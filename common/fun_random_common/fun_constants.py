@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/common/fun_random_common/fun_constants.py
-import constants
-import UnitBase
+import constants, UnitBase
 from constants_utils import ConstInjector
 DEFAULT_ASSETS_PACK = 'undefined'
 DEFAULT_SETTINGS_KEY = 'undefined'
@@ -16,8 +13,7 @@ BATTLE_MODE_VEH_TAGS_EXCEPT_FUN = constants.BATTLE_MODE_VEHICLE_TAGS - {'fun_ran
 class FunSubModeImpl(object):
     DEV_TEST = 0
     DEFAULT = 1
-    EQUALIZATION = 2
-    ALL = (DEFAULT, EQUALIZATION) + ((DEV_TEST,) if constants.IS_DEVELOPMENT else ())
+    ALL = (DEFAULT,) + ((DEV_TEST,) if constants.IS_DEVELOPMENT else ())
 
 
 class FunProgressionCondition(object):
@@ -25,10 +21,7 @@ class FunProgressionCondition(object):
     DAMAGE = 'damage'
     TOP = 'top'
     WIN = 'win'
-    ALL = (BATTLES,
-     DAMAGE,
-     TOP,
-     WIN)
+    ALL = (BATTLES, DAMAGE, TOP, WIN)
 
 
 class FunEfficiencyParameter(object):
@@ -40,14 +33,9 @@ class FunEfficiencyParameter(object):
     DAMAGE_BLOCKED_BY_ARMOR = 'damageBlockedByArmor'
     CAPTURE_POINTS = 'capturePoints'
     DROPPED_CAPTURE_POINTS = 'droppedCapturePoints'
-    ALL = (KILLS,
-     SPOTTED,
-     STUN,
-     DAMAGE_DEALT,
-     DAMAGE_ASSISTED,
-     DAMAGE_BLOCKED_BY_ARMOR,
-     CAPTURE_POINTS,
-     DROPPED_CAPTURE_POINTS)
+    ALL = (
+     KILLS, SPOTTED, STUN, DAMAGE_DEALT, DAMAGE_ASSISTED, DAMAGE_BLOCKED_BY_ARMOR,
+     CAPTURE_POINTS, DROPPED_CAPTURE_POINTS)
 
 
 class FunPerformanceParameter(object):
@@ -55,10 +43,7 @@ class FunPerformanceParameter(object):
     RENDER_PIPELINE = 'renderPipeline'
     MEDIUM_RISK = 'mediumRisk'
     HIGH_RISK = 'highRisk'
-    ALL = (RECOMMENDED_GRAPHICS_PRESET,
-     RENDER_PIPELINE,
-     MEDIUM_RISK,
-     HIGH_RISK)
+    ALL = (RECOMMENDED_GRAPHICS_PRESET, RENDER_PIPELINE, MEDIUM_RISK, HIGH_RISK)
 
 
 class FunEfficiencyParameterCount(object):

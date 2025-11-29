@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/battle/__init__.py
 from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -11,7 +9,9 @@ from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return ((BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
+    return (
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
 
 
 def getViewSettings():
@@ -37,7 +37,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared import messages
     from gui.Scaleform.daapi.view.battle.shared.battle_hint import DefaultBattleHint
     from gui.Scaleform.daapi.view.battle.classic.map_info_tip import MapInfoTip
-    return (ViewSettings(VIEW_ALIAS.CLASSIC_BATTLE_PAGE, ClassicPage, 'battlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.CLASSIC_BATTLE_PAGE, ClassicPage, 'battlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_LOADING, FepBattleLoading, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_STATISTIC_DATA_CONTROLLER, stats_exchange.ClassicStatisticsDataController, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, team_bases_panel.TeamBasesPanel, ScopeTemplates.DEFAULT_SCOPE),
@@ -65,4 +66,5 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (BattlePageBusinessHandler(VIEW_ALIAS.CLASSIC_BATTLE_PAGE),)
+    return (
+     BattlePageBusinessHandler(VIEW_ALIAS.CLASSIC_BATTLE_PAGE),)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/model_managers/balance_model_manager.py
-import logging
-import constants
+import logging, constants
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.gen.view_models.views.common_balance_content_model import CommonBalanceContentModel
 from shared_utils import CONST_CONTAINER
@@ -27,12 +24,12 @@ class BalanceModelManager(object):
     __wallet = dependency.descriptor(IWalletController)
     __gui = dependency.descriptor(IGuiLoader)
     __slots__ = ('__stats', '__currencyIndexes', '__isGoldAutoPurchaseEnabled', '__viewModel')
-    __CURRENCY_FORMATTER = {Currency.CREDITS: NumberFormatType.INTEGRAL,
-     Currency.GOLD: NumberFormatType.GOLD,
-     Currency.CRYSTAL: NumberFormatType.INTEGRAL,
-     'freeXP': NumberFormatType.INTEGRAL}
-    __SPECIAL_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_STATS,
-     Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_STATS}
+    __CURRENCY_FORMATTER = {Currency.CREDITS: NumberFormatType.INTEGRAL, 
+       Currency.GOLD: NumberFormatType.GOLD, 
+       Currency.CRYSTAL: NumberFormatType.INTEGRAL, 
+       'freeXP': NumberFormatType.INTEGRAL}
+    __SPECIAL_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_STATS, 
+       Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_STATS}
 
     def __init__(self, viewModel, *args, **kwargs):
         super(BalanceModelManager, self).__init__(*args, **kwargs)
@@ -56,8 +53,9 @@ class BalanceModelManager(object):
             if currency == ValuePrice.FREE_XP:
                 self.__addCurrency(ValuePrice.FREE_XP, self.__getCurrencyFormat(ValuePrice.FREE_XP, self.__stats.actualFreeXP))
                 self.__onCurrencyUpdated(currency, self.__stats.actualFreeXP)
-            self.__addCurrency(currency, self.__getCurrencyFormat(currency, self.__stats.actualMoney.get(currency)))
-            self.__onCurrencyUpdated(currency, self.__stats.actualMoney.get(currency))
+            else:
+                self.__addCurrency(currency, self.__getCurrencyFormat(currency, self.__stats.actualMoney.get(currency)))
+                self.__onCurrencyUpdated(currency, self.__stats.actualMoney.get(currency))
 
     def stop(self):
         self.__wallet.onWalletStatusChanged -= self.__onWalletChanged

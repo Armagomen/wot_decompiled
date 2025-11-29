@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/ingame_menu.py
 import BattleReplay
 from BWUtil import AsyncReturn
 from constants import ARENA_GUI_TYPE
@@ -91,7 +89,9 @@ class StoryModeIngameMenu(IngameMenu):
 
     def _setMenuButtons(self):
         if self.__isForceOnboarding and not BattleReplay.isPlaying():
-            buttons = (INGAMEMENU_CONSTANTS.SETTINGS, INGAMEMENU_CONSTANTS.QUIT, INGAMEMENU_CONSTANTS.CANCEL)
+            buttons = (INGAMEMENU_CONSTANTS.SETTINGS,
+             INGAMEMENU_CONSTANTS.QUIT,
+             INGAMEMENU_CONSTANTS.CANCEL)
         else:
             buttons = (INGAMEMENU_CONSTANTS.QUIT,
              INGAMEMENU_CONSTANTS.SETTINGS,

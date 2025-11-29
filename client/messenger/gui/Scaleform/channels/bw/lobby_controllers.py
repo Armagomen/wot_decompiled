@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw/lobby_controllers.py
-import types
-import BigWorld
-import constants
+import types, BigWorld, constants
 from chat_shared import CHAT_MEMBER_GROUP
 from debug_utils import LOG_DEBUG
 from gui.prb_control.dispatcher import g_prbLoader
@@ -27,15 +23,15 @@ class _ChannelController(LobbyLayout):
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto_v2(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def join(self):
         if not self._channel.isJoined():
@@ -140,8 +136,8 @@ class LazyChannelController(_ChannelController):
 
 
 class BSLazyChannelController(LazyChannelController):
-    NOTIFICATION_ICON = {constants.PREBATTLE_TYPE.CLAN: 'ClanBattleResultIcon-1',
-     constants.PREBATTLE_TYPE.TOURNAMENT: 'TournamentBattleResultIcon-1'}
+    NOTIFICATION_ICON = {constants.PREBATTLE_TYPE.CLAN: 'ClanBattleResultIcon-1', 
+       constants.PREBATTLE_TYPE.TOURNAMENT: 'TournamentBattleResultIcon-1'}
     NOTIFICATION_ICON_DEFAULT = 'BattleResultIcon-1'
 
     def __init__(self, channel):
@@ -169,8 +165,8 @@ class BSLazyChannelController(LazyChannelController):
         g_eventBus.removeListener(AutoInviteEvent.INVITE_RECEIVED, self.__handleAutoInviteReceived, scope=EVENT_BUS_SCOPE.LOBBY)
 
     def __addNotification(self, invite):
-        formatted = g_settings.htmlTemplates.format('inviteToSpecialBattle', ctx={'icon': self.NOTIFICATION_ICON.get(invite.prbType, self.NOTIFICATION_ICON_DEFAULT),
-         'text': AutoInviteTextFormatter().getText(invite)})
+        formatted = g_settings.htmlTemplates.format('inviteToSpecialBattle', ctx={'icon': self.NOTIFICATION_ICON.get(invite.prbType, self.NOTIFICATION_ICON_DEFAULT), 
+           'text': AutoInviteTextFormatter().getText(invite)})
         self.__notifications.append(formatted)
         if self._activated:
             for view in self._views:

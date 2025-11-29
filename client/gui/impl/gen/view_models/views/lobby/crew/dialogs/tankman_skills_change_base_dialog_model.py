@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/tankman_skills_change_base_dialog_model.py
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.gen.view_models.views.lobby.crew.dialogs.dialog_tankman_with_skills_model import DialogTankmanWithSkillsModel
 

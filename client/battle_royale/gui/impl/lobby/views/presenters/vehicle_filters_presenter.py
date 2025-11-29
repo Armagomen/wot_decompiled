@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/vehicle_filters_presenter.py
-import typing
-import BigWorld
+import typing, BigWorld
 from account_helpers.settings_core import settings_constants
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.vehicles_filter_model import VehiclesFilterModel
 from gui import GUI_NATIONS
@@ -28,10 +25,12 @@ class BattleRoyaleVehicleFiltersPresenter(ViewComponent[VehiclesFilterModel]):
         self.__updateCarousel()
 
     def _getEvents(self):
-        return ((self.__settingsCore.onSettingsChanged, self.__onCarouselSettingsChange),)
+        return (
+         (
+          self.__settingsCore.onSettingsChanged, self.__onCarouselSettingsChange),)
 
     def __updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCarouselRowCount(self.__rowCount)
             nationsOrder = model.getNationsOrder()
             nationsOrder.clear()

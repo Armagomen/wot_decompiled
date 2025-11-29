@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/login_modes/base_wgc_mode.py
 import WGC
 from account_helpers.settings_core.settings_constants import GAME
 from base_mode import BaseMode

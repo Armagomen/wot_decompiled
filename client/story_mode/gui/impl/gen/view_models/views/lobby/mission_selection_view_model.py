@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/gen/view_models/views/lobby/mission_selection_view_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from story_mode.gui.impl.gen.view_models.views.lobby.mission_model import MissionModel
@@ -14,7 +12,8 @@ class TabsEnum(IntEnum):
 
 
 class MissionSelectionViewModel(ViewModel):
-    __slots__ = ('onQuit', 'onMissionSelect', 'onLoaded', 'onChangeTab', 'onSelectedMissionTaskUnlocked', 'onAboutClick', 'onNavigate')
+    __slots__ = ('onQuit', 'onMissionSelect', 'onLoaded', 'onChangeTab', 'onSelectedMissionTaskUnlocked',
+                 'onAboutClick', 'onNavigate')
 
     def __init__(self, properties=10, commands=7):
         super(MissionSelectionViewModel, self).__init__(properties=properties, commands=commands)

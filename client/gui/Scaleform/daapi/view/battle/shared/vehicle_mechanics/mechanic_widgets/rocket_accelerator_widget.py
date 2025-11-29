@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/rocket_accelerator_widget.py
 import typing
 from gui.Scaleform.daapi.view.meta.RocketAcceleratorIndicatorMeta import RocketAcceleratorIndicatorMeta
 from gui.veh_mechanics.battle.updaters.mechanic_passenger_view_updater import VehicleMechanicPassengerUpdater
@@ -20,4 +18,6 @@ class RocketAcceleratorMechanicIndicator(RocketAcceleratorIndicatorMeta, IRocket
         self.as_setStateS(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.ROCKET_ACCELERATION, self), RocketAcceleratorUpdater(self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.ROCKET_ACCELERATION, self),
+         RocketAcceleratorUpdater(self)]

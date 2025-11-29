@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/SoundEventChecker.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.app_loader import sf_lobby
 from gui.shared.SoundEffectsId import SoundEffectsId
@@ -7,17 +5,17 @@ from gui.shared.money import Money, Currency, MONEY_UNDEFINED
 from helpers import dependency
 from skeletons.gui.game_control import ISoundEventChecker
 from skeletons.gui.shared import IItemsCache
-_SPEND_SINGLE_SOUNDS = {Currency.CREDITS: SoundEffectsId.SPEND_CREDITS,
- Currency.GOLD: SoundEffectsId.SPEND_CREDITS,
- Currency.CRYSTAL: SoundEffectsId.SPEND_CRYSTAL,
- Currency.EVENT_COIN: SoundEffectsId.SPEND_EVENT_COIN,
- Currency.BPCOIN: SoundEffectsId.SPEND_DEFAULT_SOUND}
-_EARN_SINGLE_SOUNDS = {Currency.CREDITS: SoundEffectsId.EARN_CREDITS,
- Currency.GOLD: SoundEffectsId.EARN_CREDITS,
- Currency.CRYSTAL: SoundEffectsId.EARN_CRYSTAL,
- Currency.EVENT_COIN: SoundEffectsId.EARN_EVENT_COIN,
- Currency.BPCOIN: SoundEffectsId.EARN_DEFAULT_SOUND,
- Currency.EQUIP_COIN: SoundEffectsId.EARN_EQUIP_COIN}
+_SPEND_SINGLE_SOUNDS = {Currency.CREDITS: SoundEffectsId.SPEND_CREDITS, 
+   Currency.GOLD: SoundEffectsId.SPEND_CREDITS, 
+   Currency.CRYSTAL: SoundEffectsId.SPEND_CRYSTAL, 
+   Currency.EVENT_COIN: SoundEffectsId.SPEND_EVENT_COIN, 
+   Currency.BPCOIN: SoundEffectsId.SPEND_DEFAULT_SOUND}
+_EARN_SINGLE_SOUNDS = {Currency.CREDITS: SoundEffectsId.EARN_CREDITS, 
+   Currency.GOLD: SoundEffectsId.EARN_CREDITS, 
+   Currency.CRYSTAL: SoundEffectsId.EARN_CRYSTAL, 
+   Currency.EVENT_COIN: SoundEffectsId.EARN_EVENT_COIN, 
+   Currency.BPCOIN: SoundEffectsId.EARN_DEFAULT_SOUND, 
+   Currency.EQUIP_COIN: SoundEffectsId.EARN_EQUIP_COIN}
 _SPEND_MULTI_SOUNDS = {(Currency.CREDITS, Currency.GOLD): SoundEffectsId.SPEND_CREDITS_GOLD}
 _EARN_MULTI_SOUNDS = {(Currency.CREDITS, Currency.GOLD): SoundEffectsId.EARN_CREDITS_GOLD}
 
@@ -33,7 +31,7 @@ class SoundEventChecker(ISoundEventChecker):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     def onLobbyStarted(self, ctx):
         self.__currentMoney = self.itemsCache.items.stats.money.copy()
@@ -82,7 +80,7 @@ class SoundEventChecker(ISoundEventChecker):
             for currency, value in newValues.iteritems():
                 if value < self.__currentMoney.get(currency, 0):
                     self.__spendCurrencies.append(currency)
-                if value > self.__currentMoney.get(currency, 0):
+                elif value > self.__currentMoney.get(currency, 0):
                     self.__earnCurrencies.append(currency)
 
             if not self.__isLocked:

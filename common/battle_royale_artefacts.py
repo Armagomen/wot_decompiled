@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/common/battle_royale_artefacts.py
 from Math import Vector3
 from constants import IS_CLIENT, ATTACK_REASON, ATTACK_REASON_INDICES, SERVER_TICK_LENGTH
 from items.artefacts import Repairkit, CountableConsumableConfigReader, Equipment, VehicleFactorsXmlReader, DOTParams, HOTParams, Bomber, ArcadeEquipmentConfigReader, Smoke, TooltipConfigReader, AreaMarkerConfigReader, HealPointConfigReader, PREDEFINED_HEAL_GROUPS, Minefield
@@ -13,7 +11,7 @@ if IS_CLIENT:
     from gui.impl.gen import R
 
 class BattleDescriptionConfigReader(object):
-    _BATTLE_DESCRIPTION_SLOTS = ('battleDescription',)
+    _BATTLE_DESCRIPTION_SLOTS = ('battleDescription', )
 
     def initBattleDescriptionSlots(self):
         self.battleDescription = component_constants.EMPTY_STRING
@@ -35,7 +33,8 @@ class RepairkitBattleRoyale(Repairkit, CountableConsumableConfigReader):
 
 
 class AfterburningBattleRoyale(Equipment, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = ('consumeSeconds', 'enginePowerFactor', 'maxSpeedFactor', 'vehicleRotationSpeed', 'deploySeconds', 'rechargeSeconds') + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS
+    __slots__ = ('consumeSeconds', 'enginePowerFactor', 'maxSpeedFactor', 'vehicleRotationSpeed',
+                 'deploySeconds', 'rechargeSeconds') + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS
 
     def __init__(self):
         super(AfterburningBattleRoyale, self).__init__()
@@ -76,7 +75,8 @@ class AfterburningBattleRoyale(Equipment, CountableConsumableConfigReader, Battl
 
 
 class InfluenceZone(object):
-    __slots__ = ('radius', 'height', 'depth', 'timer', 'terrainResistance', 'debuffFactors', 'dotParams', 'hotParams', 'influenceType', 'fireEffectName', 'componentName')
+    __slots__ = ('radius', 'height', 'depth', 'timer', 'terrainResistance', 'debuffFactors',
+                 'dotParams', 'hotParams', 'influenceType', 'fireEffectName', 'componentName')
 
     def __init__(self):
         self.radius = component_constants.ZERO_FLOAT
@@ -117,7 +117,7 @@ class InfluenceZone(object):
 
 
 class TrapPoint(Equipment, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('influenceZone',)
+    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('influenceZone', )
 
     def __init__(self):
         super(TrapPoint, self).__init__()
@@ -169,7 +169,16 @@ class BomberArcade(Bomber, ArcadeEquipmentConfigReader, BattleDescriptionConfigR
 
 
 class BomberArcadeWithOwnDamage(Bomber, ArcadeEquipmentConfigReader, BattleDescriptionConfigReader):
-    __slots__ = Bomber.__slots__ + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('abilityRadius', 'directHitRadius', 'stunRadius', 'maxDamage', 'minDamage', 'maxModuleDamage', 'minModuleDamage', 'damageSpread', 'stunTime', 'minStunTime')
+    __slots__ = Bomber.__slots__ + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('abilityRadius',
+                                                                                                                                                 'directHitRadius',
+                                                                                                                                                 'stunRadius',
+                                                                                                                                                 'maxDamage',
+                                                                                                                                                 'minDamage',
+                                                                                                                                                 'maxModuleDamage',
+                                                                                                                                                 'minModuleDamage',
+                                                                                                                                                 'damageSpread',
+                                                                                                                                                 'stunTime',
+                                                                                                                                                 'minStunTime')
 
     def __init__(self):
         super(BomberArcadeWithOwnDamage, self).__init__()
@@ -280,7 +289,7 @@ class SelfBuff(Equipment, TooltipConfigReader, CountableConsumableConfigReader, 
 
 
 class Berserker(SelfBuff):
-    __slots__ = ('dotParams',)
+    __slots__ = ('dotParams', )
 
     def __init__(self):
         super(Berserker, self).__init__()
@@ -306,7 +315,8 @@ class Berserker(SelfBuff):
 
 
 class _ClientSpawnBotVisuals(object):
-    __slots__ = ('markerPositionOffset', 'markerScale', 'deliveringAnimationDuration', 'deliveringAnimationStartDelay', 'highlightDelay')
+    __slots__ = ('markerPositionOffset', 'markerScale', 'deliveringAnimationDuration',
+                 'deliveringAnimationStartDelay', 'highlightDelay')
 
     def __init__(self, xmlCtx, scriptSection):
         self.markerPositionOffset = _xml.readVector3(xmlCtx, scriptSection, 'markerPositionOffset', Vector3(0, 0, 0))
@@ -317,7 +327,7 @@ class _ClientSpawnBotVisuals(object):
 
 
 class BRHealPoint(Equipment, TooltipConfigReader, CountableConsumableConfigReader, HealPointConfigReader, BattleDescriptionConfigReader):
-    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + HealPointConfigReader._HEAL_POINT_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('cooldownTime',)
+    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + HealPointConfigReader._HEAL_POINT_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('cooldownTime', )
 
     def __init__(self):
         super(BRHealPoint, self).__init__()
@@ -393,7 +403,19 @@ class BRMinefield(Minefield, BattleDescriptionConfigReader):
 
 
 class ConsumableSpawnBot(Equipment, TooltipConfigReader, CountableConsumableConfigReader, AreaMarkerConfigReader, ArcadeEquipmentConfigReader, BattleDescriptionConfigReader):
-    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + AreaMarkerConfigReader._MARKER_SLOTS_ + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('botType', 'botVehCompDescr', 'botLifeTime', 'botSpawnPointOffset', 'botXRayFactor', 'clientVisuals', 'explosionRadius', 'explosionDamage', 'explosionByShoot', 'damageReductionRate', 'delay', 'cooldownTime', 'disableAllyDamage')
+    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + AreaMarkerConfigReader._MARKER_SLOTS_ + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('botType',
+                                                                                                                                                                                                                                                                                  'botVehCompDescr',
+                                                                                                                                                                                                                                                                                  'botLifeTime',
+                                                                                                                                                                                                                                                                                  'botSpawnPointOffset',
+                                                                                                                                                                                                                                                                                  'botXRayFactor',
+                                                                                                                                                                                                                                                                                  'clientVisuals',
+                                                                                                                                                                                                                                                                                  'explosionRadius',
+                                                                                                                                                                                                                                                                                  'explosionDamage',
+                                                                                                                                                                                                                                                                                  'explosionByShoot',
+                                                                                                                                                                                                                                                                                  'damageReductionRate',
+                                                                                                                                                                                                                                                                                  'delay',
+                                                                                                                                                                                                                                                                                  'cooldownTime',
+                                                                                                                                                                                                                                                                                  'disableAllyDamage')
 
     def __init__(self):
         super(ConsumableSpawnBot, self).__init__()
@@ -497,7 +519,13 @@ class FireCircle(ZonesCircle, CountableConsumableConfigReader, BattleDescription
 
 
 class CorrodingShot(Equipment, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('damagePercentAfterShot', 'canBeStoppedRepairKit', 'increaseFactors', 'dotEffectDuration', 'dotParams', 'tooltipMovie', 'effectsIndex')
+    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('damagePercentAfterShot',
+                                                                           'canBeStoppedRepairKit',
+                                                                           'increaseFactors',
+                                                                           'dotEffectDuration',
+                                                                           'dotParams',
+                                                                           'tooltipMovie',
+                                                                           'effectsIndex')
 
     def __init__(self):
         super(CorrodingShot, self).__init__()
@@ -534,7 +562,13 @@ class CorrodingShot(Equipment, CountableConsumableConfigReader, BattleDescriptio
 
 
 class AdaptationHealthRestore(Equipment, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('duration', 'areaVisual', 'immediatelyRestore', 'posteffectPrefab', 'restoringCoefficient', 'restoringCoefficientTeamMates', 'teamMateRestoringRadius')
+    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('duration',
+                                                                           'areaVisual',
+                                                                           'immediatelyRestore',
+                                                                           'posteffectPrefab',
+                                                                           'restoringCoefficient',
+                                                                           'restoringCoefficientTeamMates',
+                                                                           'teamMateRestoringRadius')
 
     def __init__(self):
         super(AdaptationHealthRestore, self).__init__()
@@ -573,7 +607,21 @@ class AdaptationHealthRestore(Equipment, CountableConsumableConfigReader, Battle
 
 
 class ThunderStrike(Equipment, ArcadeEquipmentConfigReader, TooltipConfigReader, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('noOwner', 'areaLength', 'areaWidth', 'areaVisual', 'areaColor', 'delay', 'duration', 'damage', 'thunderCount', 'thunderPeriod', 'deployTime', 'cooldownTime', 'decreaseFactors', 'isDamageAll', 'canBeStoppedRepairKit')
+    __slots__ = ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('noOwner',
+                                                                                                                                                                                      'areaLength',
+                                                                                                                                                                                      'areaWidth',
+                                                                                                                                                                                      'areaVisual',
+                                                                                                                                                                                      'areaColor',
+                                                                                                                                                                                      'delay',
+                                                                                                                                                                                      'duration',
+                                                                                                                                                                                      'damage',
+                                                                                                                                                                                      'thunderCount',
+                                                                                                                                                                                      'thunderPeriod',
+                                                                                                                                                                                      'deployTime',
+                                                                                                                                                                                      'cooldownTime',
+                                                                                                                                                                                      'decreaseFactors',
+                                                                                                                                                                                      'isDamageAll',
+                                                                                                                                                                                      'canBeStoppedRepairKit')
 
     def __init__(self):
         super(ThunderStrike, self).__init__()
@@ -624,7 +672,16 @@ class ThunderStrike(Equipment, ArcadeEquipmentConfigReader, TooltipConfigReader,
 
 
 class ShotPassion(Equipment, CountableConsumableConfigReader, BattleDescriptionConfigReader):
-    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('duration', 'increaseFactors', 'enableRamDamage', 'enableHEDamage', 'damageIncreasePerShot', 'maxDamageIncreasePerShot', 'affectingAbilities', 'cooldownTime', 'enableThunderStrikeDamageIncrease', 'posteffectPrefab')
+    __slots__ = BattleDescriptionConfigReader._BATTLE_DESCRIPTION_SLOTS + ('duration',
+                                                                           'increaseFactors',
+                                                                           'enableRamDamage',
+                                                                           'enableHEDamage',
+                                                                           'damageIncreasePerShot',
+                                                                           'maxDamageIncreasePerShot',
+                                                                           'affectingAbilities',
+                                                                           'cooldownTime',
+                                                                           'enableThunderStrikeDamageIncrease',
+                                                                           'posteffectPrefab')
 
     def __init__(self):
         super(ShotPassion, self).__init__()

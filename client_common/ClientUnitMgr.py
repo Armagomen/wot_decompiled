@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/ClientUnitMgr.py
 import cPickle
 from ClientUnit import ClientUnit
 import Event
@@ -42,7 +40,8 @@ class ClientUnitMgr(UnitClientAPI):
         return self.__requestID
 
     def onUnitUpdate(self, unitMgrID, packedUnit, packedOps):
-        LOG_DEBUG('onUnitUpdate: unitMgrID=%s, packedUnit=%r, packedOps=%r' % (unitMgrID, packedUnit, packedOps))
+        LOG_DEBUG('onUnitUpdate: unitMgrID=%s, packedUnit=%r, packedOps=%r' % (
+         unitMgrID, packedUnit, packedOps))
         if self.id != unitMgrID:
             prevMgrID = self.id
             self.id = unitMgrID
@@ -69,7 +68,8 @@ class ClientUnitMgr(UnitClientAPI):
         return
 
     def onUnitError(self, requestID, unitMgrID, errorCode, errorString):
-        LOG_DEBUG('onUnitError: unitMgr=%s, errorCode=%s, errorString=%r' % (unitMgrID, errorCode, errorString))
+        LOG_DEBUG('onUnitError: unitMgr=%s, errorCode=%s, errorString=%r' % (
+         unitMgrID, errorCode, errorString))
         if errorCode == UNIT_ERROR.UNIT_RESTORED:
             self._restore()
         if errorCode == UNIT_ERROR.NO_UNIT_MGR and self.id:
@@ -84,10 +84,8 @@ class ClientUnitMgr(UnitClientAPI):
 
     def onUnitNotify(self, unitMgrID, notifyCode, notifyString='', argsList=None):
         argsList = argsList or []
-        LOG_DEBUG('onUnitNotify: unitMgr=%s, errorCode=%s, notifyString=%r argsList=%r' % (unitMgrID,
-         notifyCode,
-         notifyString,
-         argsList))
+        LOG_DEBUG('onUnitNotify: unitMgr=%s, errorCode=%s, notifyString=%r argsList=%r' % (
+         unitMgrID, notifyCode, notifyString, argsList))
         self.onUnitNotifyReceived(unitMgrID, notifyCode, notifyString, argsList)
 
     def onUnitCallOk(self, requestID):

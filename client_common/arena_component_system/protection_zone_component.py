@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/protection_zone_component.py
 from client_arena_component_system import ClientArenaComponent
 import Event
 
@@ -28,15 +26,24 @@ class ProtectionZoneComponent(ClientArenaComponent):
         self.__isPlayerInZone[protZone.zoneID] = False
 
     def getProtectionZoneById(self, zoneID):
-        return self.__protectionZones[zoneID] if zoneID in self.__protectionZones else None
+        if zoneID in self.__protectionZones:
+            return self.__protectionZones[zoneID]
+        else:
+            return
 
     def getOwningTeamForZone(self, zoneID):
         zone = self.getProtectionZoneById(zoneID)
-        return zone.team if zone is not None else None
+        if zone is not None:
+            return zone.team
+        else:
+            return
 
     def isProtectionZoneActive(self, zoneID):
         zone = self.getProtectionZoneById(zoneID)
-        return zone.isActive if zone is not None else False
+        if zone is not None:
+            return zone.isActive
+        else:
+            return False
 
     def playerInProtectedZone(self, zoneID, hasPlayerEntered):
         self.__isPlayerInZone[zoneID] = hasPlayerEntered
@@ -46,4 +53,6 @@ class ProtectionZoneComponent(ClientArenaComponent):
         if zoneID is None:
             return any(self.__isPlayerInZone.values())
         else:
-            return self.__isPlayerInZone[zoneID] if zoneID in self.__isPlayerInZone else False
+            if zoneID in self.__isPlayerInZone:
+                return self.__isPlayerInZone[zoneID]
+            return False

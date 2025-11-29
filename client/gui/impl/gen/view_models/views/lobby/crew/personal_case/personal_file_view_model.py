@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/personal_case/personal_file_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.crew.common.tankman_info_model import TankmanInfoModel
 from gui.impl.gen.view_models.views.lobby.crew.personal_case.post_progression_widget_model import PostProgressionWidgetModel

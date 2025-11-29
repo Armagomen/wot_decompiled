@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/wgnp/steam_account/request.py
 from constants import WG_GAMES
 from gui.platform.base.request import Params
 from gui.platform.wgnp.steam_account.response import WGNPSteamAccEmailAddResponse, WGNPSteamAccEmailConfirmResponse

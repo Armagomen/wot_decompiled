@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/MECHANIC_WIDGET_HOTKEY_CONST.py
 
 
 class MECHANIC_WIDGET_HOTKEY_CONST(object):
@@ -11,7 +9,4 @@ class MECHANIC_WIDGET_HOTKEY_CONST(object):
     ALTERNATIVE_ACTIVATE = 'altActivate'
     PREPARING = 'preparing'
     CANCELLED = 'cancelled'
-    COMMANDS = [COMMAND_ACTIVATE,
-     ALTERNATIVE_ACTIVATE,
-     PREPARING,
-     CANCELLED]
+    COMMANDS = [COMMAND_ACTIVATE, ALTERNATIVE_ACTIVATE, PREPARING, CANCELLED]

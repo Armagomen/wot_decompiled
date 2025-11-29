@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/base_tankman_list_view.py
 from base_crew_view import BaseCrewSoundView
 from gui.game_control import restore_contoller
 from gui.impl.backport.backport_tooltip import createBackportTooltipContent
@@ -70,7 +68,8 @@ class BaseTankmanListView(BaseCrewSoundView):
         if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId', None)
             if tooltipId == TooltipConstants.TANKMAN_NOT_RECRUITED:
-                return createBackportTooltipContent(specialAlias=TooltipConstants.TANKMAN_NOT_RECRUITED, specialArgs=(event.getArgument('targetId'),))
+                return createBackportTooltipContent(specialAlias=TooltipConstants.TANKMAN_NOT_RECRUITED, specialArgs=(
+                 event.getArgument('targetId'),))
         elif contentID == R.views.lobby.crew.tooltips.DismissedToggleTooltip():
             return DismissedToggleTooltip()
         return super(BaseTankmanListView, self).createToolTipContent(event, contentID)
@@ -83,7 +82,7 @@ class BaseTankmanListView(BaseCrewSoundView):
     def _onLoadCards(self, limit, offset):
         viewModel = self.getViewModel()
         self._itemsLimit = limit
-        with viewModel.transaction() as tx:
+        with viewModel.transaction() as (tx):
             self._itemsOffset = max(min(offset, tx.getItemsAmount() - 1), 0)
             tx.setItemsOffset(self._itemsOffset)
             self._fillVisibleCards(tx.getTankmanList())

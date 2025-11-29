@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/reactive_comm/service.py
 import weakref
 from collections import deque
-import typing
-import wg_async
+import typing, wg_async
 from gui.game_control.reactive_comm.constants import SubscriptionClientStatus
 from gui.game_control.reactive_comm.channel import SubscriptionStatus, ChannelsEventsSender
 from gui.game_control.reactive_comm.manager import ChannelsManager
@@ -36,16 +33,28 @@ class ReactiveCommunicationService(IReactiveCommunicationService, ChannelsEvents
         return
 
     def unsubscribeFromChannel(self, subscription):
-        return self.__manager.unsubscribe(subscription) if self.__manager is not None else False
+        if self.__manager is not None:
+            return self.__manager.unsubscribe(subscription)
+        else:
+            return False
 
     def getLastMessageFromChannel(self, subscription):
-        return self.__manager.getLastMessage(subscription) if self.__manager is not None else False
+        if self.__manager is not None:
+            return self.__manager.getLastMessage(subscription)
+        else:
+            return False
 
     def getChannelHistory(self, name):
-        return self.__manager.getChannelHistory(name) if self.__manager is not None else deque()
+        if self.__manager is not None:
+            return self.__manager.getChannelHistory(name)
+        else:
+            return deque()
 
     def getChannelStatus(self, name):
-        return self.__manager.getChannelStatus(name) if self.__manager is not None else SubscriptionStatus(SubscriptionClientStatus.Disabled)
+        if self.__manager is not None:
+            return self.__manager.getChannelStatus(name)
+        else:
+            return SubscriptionStatus(SubscriptionClientStatus.Disabled)
 
     def fini(self):
         self.clear()

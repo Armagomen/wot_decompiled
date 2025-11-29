@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/GuiSoundsLoader.py
-import typing
-import ResMgr
+import typing, ResMgr
 from debug_utils import LOG_WARNING
 from items import _xml
 from gui import doc_loaders
@@ -58,11 +55,14 @@ class GuiSoundsLoader(object):
             state = 'ww' + state
         if controlID is not None and controlID in self.__overrides:
             return (self.__overrides[controlID].get(state), UNKNOWN_SOUND_BANK)
-        elif controlType in self.__groups:
-            schemaName = self.__groups[controlType]
-            return (self.__schemas.get(schemaName, {}).get(state), UNKNOWN_SOUND_BANK)
         else:
-            return (self.__schemas[controlType].get(state), UNKNOWN_SOUND_BANK) if controlType in self.__schemas else (self.__default.get(state), DEFAULT_GUI_SOUND_BANK)
+            if controlType in self.__groups:
+                schemaName = self.__groups[controlType]
+                return (
+                 self.__schemas.get(schemaName, {}).get(state), UNKNOWN_SOUND_BANK)
+            if controlType in self.__schemas:
+                return (self.__schemas[controlType].get(state), UNKNOWN_SOUND_BANK)
+            return (self.__default.get(state), DEFAULT_GUI_SOUND_BANK)
 
     def getEffectSound(self, effectName):
         return self.__effects.get(effectName)

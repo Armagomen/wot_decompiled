@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/battle_info.py
 import typing
 from gui.battle_results.pbs_helpers.common import getArenaNameStr, getRegularFinishResultResource
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
@@ -20,7 +18,7 @@ class BattleInfoSubPresenter(BattleResultsSubPresenter):
         common = results[_RECORD.COMMON]
         personal = results[_RECORD.PERSONAL]
         teamResult = reusable.getPersonalTeamResult()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setArenaName(getArenaNameStr(reusable))
             model.setArenaGuiType(reusable.common.arenaGuiType)
             model.setBattleStartTime(common['arenaCreateTime'])

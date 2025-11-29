@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/chargeable_burst_widget.py
 import typing
 from gui.Scaleform.daapi.view.meta.ChargeableBurstWidgetMeta import ChargeableBurstWidgetMeta
 from gui.veh_mechanics.battle.updaters.mechanic_passenger_view_updater import VehicleMechanicPassengerUpdater
@@ -32,7 +30,9 @@ class ChargeableBurstMechanicWidget(ChargeableBurstWidgetMeta, ComponentListener
         self.__invalidateCharges(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.CHARGEABLE_BURST, self), VehicleMechanicStatesUpdater(VehicleMechanic.CHARGEABLE_BURST, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.CHARGEABLE_BURST, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.CHARGEABLE_BURST, self)]
 
     def _populate(self):
         super(ChargeableBurstMechanicWidget, self)._populate()

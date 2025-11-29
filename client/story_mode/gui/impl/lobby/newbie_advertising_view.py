@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/newbie_advertising_view.py
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl.gen import R
@@ -11,7 +9,7 @@ from story_mode.uilogging.story_mode.consts import LogButtons
 from story_mode.uilogging.story_mode.loggers import NewbieAdvertisingViewLogger
 
 class NewbieAdvertisingView(ViewImpl):
-    __slots__ = ('_uiLogger',)
+    __slots__ = ('_uiLogger', )
     layoutID = R.views.story_mode.lobby.NewbieAdvertisingView()
 
     def __init__(self, layoutID=None):
@@ -25,11 +23,17 @@ class NewbieAdvertisingView(ViewImpl):
 
     def _getEvents(self):
         viewModel = self.getViewModel()
-        return ((viewModel.onClose, self.__onClose),
-         (viewModel.onClose, self.__onCloseClicked),
-         (viewModel.onSubmit, self.__onClose),
-         (viewModel.onSubmit, self.__onSubmitClicked),
-         (g_playerEvents.onDisconnected, self.__onDisconnected))
+        return (
+         (
+          viewModel.onClose, self.__onClose),
+         (
+          viewModel.onClose, self.__onCloseClicked),
+         (
+          viewModel.onSubmit, self.__onClose),
+         (
+          viewModel.onSubmit, self.__onSubmitClicked),
+         (
+          g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def _onLoaded(self, *args, **kwargs):
         super(NewbieAdvertisingView, self)._onLoaded(*args, **kwargs)

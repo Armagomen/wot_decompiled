@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/reward_window.py
 import logging
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.gui_constants import WindowFlags, WindowLayer, ViewFlags
@@ -30,24 +28,10 @@ _ADDITIONAL_AWARDS_COUNT = 5
 
 class BaseRewardWindowContent(ViewImpl):
     __slots__ = ('__items', '_eventName')
-    _BONUSES_ORDER = ('vehicles',
-     'premium',
-     Currency.CRYSTAL,
-     Currency.GOLD,
-     'freeXP',
-     'freeXPFactor',
-     Currency.CREDITS,
-     'creditsFactor',
-     'tankmen',
-     'items',
-     'slots',
-     'berths',
-     'dossier',
-     'customizations',
-     'tokens',
-     'goodies',
-     Currency.EVENT_COIN,
-     Currency.BPCOIN)
+    _BONUSES_ORDER = (
+     'vehicles', 'premium', Currency.CRYSTAL, Currency.GOLD, 'freeXP', 'freeXPFactor',
+     Currency.CREDITS, 'creditsFactor', 'tankmen', 'items', 'slots', 'berths', 'dossier',
+     'customizations', 'tokens', 'goodies', Currency.EVENT_COIN, Currency.BPCOIN)
 
     def __init__(self, settings, ctx=None):
         super(BaseRewardWindowContent, self).__init__(settings)
@@ -75,11 +59,12 @@ class BaseRewardWindowContent(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(BaseRewardWindowContent, self).createToolTip(event)
+        return super(BaseRewardWindowContent, self).createToolTip(event)
 
     def _keySortOrder(self, bonus):
-        return self._BONUSES_ORDER.index(bonus.getName()) if bonus.getName() in self._BONUSES_ORDER else len(self._BONUSES_ORDER)
+        if bonus.getName() in self._BONUSES_ORDER:
+            return self._BONUSES_ORDER.index(bonus.getName())
+        return len(self._BONUSES_ORDER)
 
     def _initialize(self, *args, **kwargs):
         super(BaseRewardWindowContent, self)._initialize(*args, **kwargs)
@@ -99,14 +84,14 @@ class BaseRewardWindowContent(ViewImpl):
         return RewardRendererModel
 
     def _initRewardsList(self):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             rewardsList = self._getRewardsModel(tx)
             bonuses = self._getBonuses()
             bonuses.sort(key=self._keySortOrder)
             formatter = self._getAwardComposer()
             for index, bonus in enumerate(formatter.getFormattedBonuses(bonuses)):
                 rendererModel = self._getRewardRendererModelCls()()
-                with rendererModel.transaction() as rewardTx:
+                with rendererModel.transaction() as (rewardTx):
                     self._setBonusModel(rewardTx, bonus, index)
                 rewardsList.addViewModel(rendererModel)
                 self._initTooltip(bonus, index)
@@ -156,7 +141,8 @@ class PiggyBankRewardWindowContent(BaseRewardWindowContent):
         self.getViewModel().onHyperLinkClicked -= self.onHyperLinkClicked
 
     def _getBonuses(self):
-        return [CreditsBonus('credits', self._credits)]
+        return [
+         CreditsBonus('credits', self._credits)]
 
     def handleNextButton(self):
         self.getParentWindow().destroy()
@@ -217,7 +203,7 @@ class RewardWindowBase(WindowImpl):
         super(RewardWindowBase, self)._initialize()
         self.content.getViewModel().onConfirmBtnClicked += self._onConfirmBtnClicked
         self.content.getViewModel().onSecondBtnClicked += self._onSecondBtnClicked
-        with self.windowModel.transaction() as tx:
+        with self.windowModel.transaction() as (tx):
             tx.setTitle(R.strings.ingame_gui.rewardWindow.winHeaderText())
 
     def _finalize(self):
@@ -261,21 +247,10 @@ class TwitchRewardWindow(LobbyNotificationWindow):
 
 
 class DynamicRewardWindowContent(BaseRewardWindowContent):
-    __slots__ = ('__bonuses',)
-    _BONUSES_ORDER = (Currency.GOLD,
-     'vehicles',
-     'premium_plus',
-     'dossier',
-     'customizations',
-     'slots',
-     'goodies',
-     'blueprints',
-     'blueprintsAny',
-     'items',
-     Currency.CRYSTAL,
-     Currency.CREDITS,
-     'freeXP',
-     'tokens')
+    __slots__ = ('__bonuses', )
+    _BONUSES_ORDER = (
+     Currency.GOLD, 'vehicles', 'premium_plus', 'dossier', 'customizations', 'slots', 'goodies', 'blueprints',
+     'blueprintsAny', 'items', Currency.CRYSTAL, Currency.CREDITS, 'freeXP', 'tokens')
 
     def __init__(self, settings, ctx=None):
         super(DynamicRewardWindowContent, self).__init__(settings, ctx)
@@ -310,7 +285,7 @@ class DynamicRewardWindowContent(BaseRewardWindowContent):
 
 
 class DynamicRewardWindow(RewardWindowBase):
-    __slots__ = ('_eventName',)
+    __slots__ = ('_eventName', )
 
     def __init__(self, ctx=None, parent=None):
         self._eventName = ctx['eventName']
@@ -325,13 +300,8 @@ class DynamicRewardWindow(RewardWindowBase):
 
 class GiveAwayRewardWindowContent(QuestRewardWindowContent):
     __slots__ = ()
-    _BONUSES_ORDER = (Currency.CRYSTAL,
-     'badgesGroup',
-     'dossier',
-     'vehicles',
-     Currency.CREDITS,
-     'customizations',
-     'items')
+    _BONUSES_ORDER = (
+     Currency.CRYSTAL, 'badgesGroup', 'dossier', 'vehicles', Currency.CREDITS, 'customizations', 'items')
 
     def handleNextButton(self):
         self.destroyWindow()

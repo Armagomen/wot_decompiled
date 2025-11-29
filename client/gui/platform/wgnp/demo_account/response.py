@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/wgnp/demo_account/response.py
 from httplib import REQUEST_TIMEOUT
 from gui.platform.base.response import PlatformResponse
 

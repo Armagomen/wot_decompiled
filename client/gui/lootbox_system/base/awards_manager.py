@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/awards_manager.py
 from typing import TYPE_CHECKING
 from gui.lootbox_system.base.bonuses_layout import BonusesLayout
 from gui.server_events.bonuses import getNonQuestBonuses, mergeBonuses, splitBonuses

@@ -1,15 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BattleSessionWindow.py
-import functools
-import logging
-import BigWorld
+import functools, logging, BigWorld
 from account_helpers.AccountSettings import CLAN_PREBATTLE_SORTING_KEY
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.prb_control.entities.battle_session.legacy.ctx import BattleSessionSetPlayerStateCtx
 from shared_utils import safeCancelCallback
-import constants
-import nations
+import constants, nations
 from account_helpers import getAccountDatabaseID, getPlayerID, AccountSettings
 from adisp import adisp_process
 from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES, PREBATTLE_ERRORS, PREBATTLE_TYPE
@@ -33,10 +28,15 @@ class BattleSessionWindow(BattleSessionWindowMeta):
     __webCtrl = dependency.descriptor(IWebController)
     START_TIME_SYNC_PERIOD = 10
     NATION_ICON_PATH = '../maps/icons/filters/nations/%(nation)s.png'
-    __SORTINGS_AND_COMPARATORS = [(_R_SORT.byOrder(), PREBATTLE_PLAYERS_COMPARATORS.OBSERVERS_TO_BOTTOM, PREBATTLE_PLAYERS_COMPARATORS.REGULAR),
-     (_R_SORT.byVehicles(), PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE, PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE),
-     (_R_SORT.byStatus(), PREBATTLE_PLAYERS_COMPARATORS.BY_STATE, PREBATTLE_PLAYERS_COMPARATORS.BY_STATE),
-     (_R_SORT.byName(), PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME, PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME)]
+    __SORTINGS_AND_COMPARATORS = [
+     (
+      _R_SORT.byOrder(), PREBATTLE_PLAYERS_COMPARATORS.OBSERVERS_TO_BOTTOM, PREBATTLE_PLAYERS_COMPARATORS.REGULAR),
+     (
+      _R_SORT.byVehicles(), PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE, PREBATTLE_PLAYERS_COMPARATORS.BY_VEHICLE),
+     (
+      _R_SORT.byStatus(), PREBATTLE_PLAYERS_COMPARATORS.BY_STATE, PREBATTLE_PLAYERS_COMPARATORS.BY_STATE),
+     (
+      _R_SORT.byName(), PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME, PREBATTLE_PLAYERS_COMPARATORS.BY_PLAYER_NAME)]
 
     def __init__(self, ctx=None):
         super(BattleSessionWindow, self).__init__(prbName='battleSession')
@@ -127,13 +127,14 @@ class BattleSessionWindow(BattleSessionWindowMeta):
             winnerIfDraw = teamsPositions[0]
             if winnerIfDraw:
                 return teamsPositions[winnerIfDraw]
+        return 0
 
     def __showAttackDirection(self):
         self.as_setWinnerIfDrawS(self.__getWinnerIfDraw())
 
     def __checkObserversCondition(self):
         observerCount = 0
-        accounts = self.prbEntity.getRosters()[self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED]
+        accounts = self.prbEntity.getRosters()[(self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED)]
         for account in accounts:
             if account.isVehicleSpecified():
                 vehicle = account.getVehicle()
@@ -150,7 +151,7 @@ class BattleSessionWindow(BattleSessionWindowMeta):
 
     def __checkPlayersCondition(self):
         playerCount = 0
-        accounts = self.prbEntity.getRosters()[self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED]
+        accounts = self.prbEntity.getRosters()[(self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED)]
         for account in accounts:
             if account.isVehicleSpecified():
                 vehicle = account.getVehicle()
@@ -160,15 +161,16 @@ class BattleSessionWindow(BattleSessionWindowMeta):
         return playerCount >= self.__getPlayersMaxCount()
 
     def __getUnassignedPlayerByAccID(self, accID):
-        accounts = self.prbEntity.getRosters()[self._getPlayerTeam() | PREBATTLE_ROSTER.UNASSIGNED]
+        accounts = self.prbEntity.getRosters()[(self._getPlayerTeam() | PREBATTLE_ROSTER.UNASSIGNED)]
         for account in accounts:
             if account.accID == accID:
                 return account
 
-        return None
+        return
 
     def __isCurrentPlayerInAssigned(self):
-        dbIDs = [ playerInfo.dbID for playerInfo in self.prbEntity.getRosters()[self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED] ]
+        dbIDs = [ playerInfo.dbID for playerInfo in self.prbEntity.getRosters()[(self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED)]
+                ]
         return getAccountDatabaseID() in dbIDs
 
     def requestToAssignMember(self, pID):
@@ -257,8 +259,8 @@ class BattleSessionWindow(BattleSessionWindowMeta):
     def _setRosterList(self, rosters):
         playerTeam = self._getPlayerTeam()
         _, assignedComparator, unassignedComparator = self.__SORTINGS_AND_COMPARATORS[self.__currentSorting]
-        self.as_setRosterListS(playerTeam, True, self._makeAccountsData(rosters[playerTeam | PREBATTLE_ROSTER.ASSIGNED], assignedComparator))
-        self.as_setRosterListS(playerTeam, False, self._makeAccountsData(rosters[playerTeam | PREBATTLE_ROSTER.UNASSIGNED], unassignedComparator))
+        self.as_setRosterListS(playerTeam, True, self._makeAccountsData(rosters[(playerTeam | PREBATTLE_ROSTER.ASSIGNED)], assignedComparator))
+        self.as_setRosterListS(playerTeam, False, self._makeAccountsData(rosters[(playerTeam | PREBATTLE_ROSTER.UNASSIGNED)], unassignedComparator))
 
     def _makeAccountsData(self, accounts, playerComparatorType=PREBATTLE_PLAYERS_COMPARATORS.REGULAR):
         roster = super(BattleSessionWindow, self)._makeAccountsData(accounts, playerComparatorType)
@@ -348,9 +350,8 @@ class BattleSessionWindow(BattleSessionWindowMeta):
             teamLevelStr = text_styles.error(str(totalLvl))
         self.as_setCommonLimitsS(teamLevelStr, playersMaxCount)
         key = 'specBattlePlayersZero' if playersCount == 0 else 'specBattlePlayersCount'
-        self.as_setPlayersCountTextS(makeHtmlString('html_templates:lobby/prebattle', key, {'membersCount': playersCount,
-         'maxMembersCount': playersMaxCount}))
-        playerTeam = len(self._makeAccountsData(rosters[self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED]))
+        self.as_setPlayersCountTextS(makeHtmlString('html_templates:lobby/prebattle', key, {'membersCount': playersCount, 'maxMembersCount': playersMaxCount}))
+        playerTeam = len(self._makeAccountsData(rosters[(self._getPlayerTeam() | PREBATTLE_ROSTER.ASSIGNED)]))
         playersStyleFunc = text_styles.main if playerTeam < playersMaxCount else text_styles.error
         playersCountStr = playersStyleFunc('%d/%d' % (playerTeam, playersMaxCount))
         self.as_setTotalPlayersCountS(playersCountStr)
@@ -359,9 +360,9 @@ class BattleSessionWindow(BattleSessionWindowMeta):
         levelLimits = {}
         for className in constants.VEHICLE_CLASSES:
             classLvlLimits = prb_getters.getClassLevelLimits(teamLimits, className)
-            levelLimits[className] = {'minLevel': classLvlLimits[0],
-             'maxLevel': classLvlLimits[1],
-             'maxCurLevel': 0}
+            levelLimits[className] = {'minLevel': classLvlLimits[0], 
+               'maxLevel': classLvlLimits[1], 
+               'maxCurLevel': 0}
 
         for roster, players in rosters.iteritems():
             if roster & PREBATTLE_ROSTER.ASSIGNED:
@@ -369,7 +370,7 @@ class BattleSessionWindow(BattleSessionWindowMeta):
                     vehicle = player.getVehicle()
                     levelLimits[vehicle.type]['maxCurLevel'] = max(levelLimits[vehicle.type]['maxCurLevel'], vehicle.level)
 
-        strlevelLimits = dict(((t, '') for t in constants.VEHICLE_CLASSES))
+        strlevelLimits = dict((t, '') for t in constants.VEHICLE_CLASSES)
         classesLimitsAreIdentical, commonInfo = self.__compareVehicleLimits(levelLimits)
         if classesLimitsAreIdentical:
             strlevelLimits['lightTank'] = self.__makeMinMaxString(commonInfo)
@@ -383,22 +384,24 @@ class BattleSessionWindow(BattleSessionWindowMeta):
         if nationsLimits is not None and len(nationsLimits) != len(nations.AVAILABLE_NAMES):
             nationsLimitsResult = []
             for nation in nationsLimits:
-                nationsLimitsResult.append({'icon': self.NATION_ICON_PATH % {'nation': nation},
-                 'tooltip': MENU.nations(nation)})
+                nationsLimitsResult.append({'icon': self.NATION_ICON_PATH % {'nation': nation}, 
+                   'tooltip': MENU.nations(nation)})
 
         self.as_setNationsLimitsS(nationsLimitsResult)
         return
 
     def __compareVehicleLimits(self, levelLimits):
         levelsInfo = [ (v['minLevel'], v['maxLevel']) for v in levelLimits.values() ]
-        maxCurrentLevel = max((v['maxCurLevel'] for v in levelLimits.values()))
+        maxCurrentLevel = max(v['maxCurLevel'] for v in levelLimits.values())
         for lvlInfo in levelsInfo[1:]:
             if lvlInfo != levelsInfo[0]:
                 return (False, None)
 
-        return (True, {'minLevel': levelsInfo[0][0],
-          'maxLevel': levelsInfo[0][1],
-          'maxCurLevel': maxCurrentLevel})
+        return (
+         True,
+         {'minLevel': levelsInfo[0][0], 
+            'maxLevel': levelsInfo[0][1], 
+            'maxCurLevel': maxCurrentLevel})
 
     def __makeMinMaxString(self, classLimits):
         minValue = classLimits['minLevel']
@@ -412,11 +415,13 @@ class BattleSessionWindow(BattleSessionWindowMeta):
             maxString = makeHtmlString('html_templates:lobby/prebattle', 'markInvalidValue', {'value': maxValue})
         else:
             maxString = str(maxValue)
-        return '-' if minValue == 0 and maxValue == 0 else '{0:>s}-{1:>s}'.format(minString, maxString)
+        if minValue == 0 and maxValue == 0:
+            return '-'
+        return ('{0:>s}-{1:>s}').format(minString, maxString)
 
     def __setSorting(self):
-        data = [ {'name': backport.text(key),
-         'id': str(index)} for index, (key, _, _) in enumerate(self.__SORTINGS_AND_COMPARATORS) ]
+        data = [ {'name': backport.text(key), 'id': str(index)} for index, (key, _, _) in enumerate(self.__SORTINGS_AND_COMPARATORS)
+               ]
         sortingId = AccountSettings.getSettings(CLAN_PREBATTLE_SORTING_KEY)
         self.__currentSorting = sortingId
         self.as_setFiltersS(data, sortingId)
@@ -430,10 +435,14 @@ class BattleSessionWindow(BattleSessionWindowMeta):
             self._setRosterList(rosters)
 
     def _showActionErrorMessage(self, errType):
-        errors = {PREBATTLE_ERRORS.ROSTER_LIMIT: (SYSTEM_MESSAGES.BATTLESESSION_ERROR_LIMITS, {}),
-         PREBATTLE_ERRORS.PLAYERS_LIMIT: (SYSTEM_MESSAGES.BATTLESESSION_ERROR_ADDPLAYER, {'numPlayers': self.__getPlayersMaxCount()}),
-         PREBATTLE_ERRORS.OBSERVERS_LIMIT: (SYSTEM_MESSAGES.BATTLESESSION_ERROR_ADDOBSERVER, {'numPlayers': PREBATTLE_MAX_OBSERVERS_IN_TEAM}),
-         PREBATTLE_ERRORS.INSUFFICIENT_ROLE: (SYSTEM_MESSAGES.BATTLESESSION_ERROR_INSUFFICIENTROLE, {})}
+        errors = {PREBATTLE_ERRORS.ROSTER_LIMIT: (
+                                         SYSTEM_MESSAGES.BATTLESESSION_ERROR_LIMITS, {}), 
+           PREBATTLE_ERRORS.PLAYERS_LIMIT: (
+                                          SYSTEM_MESSAGES.BATTLESESSION_ERROR_ADDPLAYER, {'numPlayers': self.__getPlayersMaxCount()}), 
+           PREBATTLE_ERRORS.OBSERVERS_LIMIT: (
+                                            SYSTEM_MESSAGES.BATTLESESSION_ERROR_ADDOBSERVER, {'numPlayers': PREBATTLE_MAX_OBSERVERS_IN_TEAM}), 
+           PREBATTLE_ERRORS.INSUFFICIENT_ROLE: (
+                                              SYSTEM_MESSAGES.BATTLESESSION_ERROR_INSUFFICIENTROLE, {})}
         errMsg = errors.get(errType)
         if errMsg:
             SystemMessages.pushMessage(i18n.makeString(errMsg[0], **errMsg[1]), type=SystemMessages.SM_TYPE.Error)

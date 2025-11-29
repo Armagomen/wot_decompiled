@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/formatters/date_time.py
-import time
-import re
+import time, re
 from gui.impl.gen import R
 from gui.impl import backport
 from constants import CURRENT_REALM
@@ -10,7 +7,9 @@ from gui.impl.gen.view_models.constants.date_time_formats import DateTimeFormats
 
 def __getRealmLocale(path):
     accessor = path.dyn(CURRENT_REALM)
-    return accessor() if accessor.isValid() else path()
+    if accessor.isValid():
+        return accessor()
+    return path()
 
 
 class _MonthFormatKeys(object):
@@ -30,34 +29,35 @@ class _WeekdayFormatKeys(object):
 class _TimeFormatKeys(object):
     SHORT = '%TIME'
     FULL = '%FULL_TIME'
-    ALL = (SHORT, FULL)
+    ALL = (
+     SHORT, FULL)
 
 
 _R_MONTHS = R.strings.menu.dateTime.months
 _R_WEEKDAYS = R.strings.menu.dateTime.weekDays
 _R_REG_DATE = R.strings.datetime_formats.regionalDate
 _FORMAT_REXP = re.compile('%TIME|%FULL_TIME|%#?[a-zA-Z][ds]?')
-_FORMAT_ARGS_DICT = {_TimeFormatKeys.SHORT: lambda ts: _getRegionalTime(ts, True),
- _TimeFormatKeys.FULL: lambda ts: _getRegionalTime(ts, False),
- _MonthFormatKeys.FULL: lambda ts: backport.text(_R_MONTHS.full.num(ts.tm_mon)()),
- _MonthFormatKeys.FULL_D: lambda ts: backport.text(_R_MONTHS.num(ts.tm_mon)()),
- _MonthFormatKeys.FULL_S: lambda ts: backport.text(_R_MONTHS.fullSmall.num(ts.tm_mon)()),
- _MonthFormatKeys.ABBR: lambda ts: backport.text(_R_MONTHS.short.num(ts.tm_mon)()),
- _MonthFormatKeys.ABBR_D: lambda ts: backport.text(_R_MONTHS.shortSmall.num(ts.tm_mon)()),
- _MonthFormatKeys.ABBR_S: lambda ts: backport.text(_R_MONTHS.shortSmall.num(ts.tm_mon)()),
- _WeekdayFormatKeys.FULL: lambda ts: backport.text(_R_WEEKDAYS.full.num(ts.tm_wday + 1)()),
- _WeekdayFormatKeys.ABBR: lambda ts: backport.text(_R_WEEKDAYS.short.num(ts.tm_wday + 1)())}
-_DATE_TIME_FMT_MAP = {DateTimeFormatsEnum.DAYMONTHNUMERIC: __getRealmLocale(_R_REG_DATE.dayMonthNumeric),
- DateTimeFormatsEnum.DAYMONTHFULL: __getRealmLocale(_R_REG_DATE.dayMonthFull),
- DateTimeFormatsEnum.DAYMONTHFULLTIME: __getRealmLocale(_R_REG_DATE.dayMonthFullTime),
- DateTimeFormatsEnum.DAYMONTHABBREVIATED: __getRealmLocale(_R_REG_DATE.dayMonthAbbreviated),
- DateTimeFormatsEnum.DAYMONTHABBREVIATEDTIME: __getRealmLocale(_R_REG_DATE.dayMonthAbbreviatedTime),
- DateTimeFormatsEnum.SHORTDATE: __getRealmLocale(_R_REG_DATE.shortDate),
- DateTimeFormatsEnum.SHORTTIME: _TimeFormatKeys.SHORT,
- DateTimeFormatsEnum.SHORTDATETIME: __getRealmLocale(_R_REG_DATE.shortDateTime),
- DateTimeFormatsEnum.FULLDATE: __getRealmLocale(_R_REG_DATE.fullDate),
- DateTimeFormatsEnum.FULLTIME: _TimeFormatKeys.FULL,
- DateTimeFormatsEnum.FULLDATETIME: __getRealmLocale(_R_REG_DATE.fullDateTime)}
+_FORMAT_ARGS_DICT = {_TimeFormatKeys.SHORT: lambda ts: _getRegionalTime(ts, True), 
+   _TimeFormatKeys.FULL: lambda ts: _getRegionalTime(ts, False), 
+   _MonthFormatKeys.FULL: lambda ts: backport.text(_R_MONTHS.full.num(ts.tm_mon)()), 
+   _MonthFormatKeys.FULL_D: lambda ts: backport.text(_R_MONTHS.num(ts.tm_mon)()), 
+   _MonthFormatKeys.FULL_S: lambda ts: backport.text(_R_MONTHS.fullSmall.num(ts.tm_mon)()), 
+   _MonthFormatKeys.ABBR: lambda ts: backport.text(_R_MONTHS.short.num(ts.tm_mon)()), 
+   _MonthFormatKeys.ABBR_D: lambda ts: backport.text(_R_MONTHS.shortSmall.num(ts.tm_mon)()), 
+   _MonthFormatKeys.ABBR_S: lambda ts: backport.text(_R_MONTHS.shortSmall.num(ts.tm_mon)()), 
+   _WeekdayFormatKeys.FULL: lambda ts: backport.text(_R_WEEKDAYS.full.num(ts.tm_wday + 1)()), 
+   _WeekdayFormatKeys.ABBR: lambda ts: backport.text(_R_WEEKDAYS.short.num(ts.tm_wday + 1)())}
+_DATE_TIME_FMT_MAP = {DateTimeFormatsEnum.DAYMONTHNUMERIC: __getRealmLocale(_R_REG_DATE.dayMonthNumeric), 
+   DateTimeFormatsEnum.DAYMONTHFULL: __getRealmLocale(_R_REG_DATE.dayMonthFull), 
+   DateTimeFormatsEnum.DAYMONTHFULLTIME: __getRealmLocale(_R_REG_DATE.dayMonthFullTime), 
+   DateTimeFormatsEnum.DAYMONTHABBREVIATED: __getRealmLocale(_R_REG_DATE.dayMonthAbbreviated), 
+   DateTimeFormatsEnum.DAYMONTHABBREVIATEDTIME: __getRealmLocale(_R_REG_DATE.dayMonthAbbreviatedTime), 
+   DateTimeFormatsEnum.SHORTDATE: __getRealmLocale(_R_REG_DATE.shortDate), 
+   DateTimeFormatsEnum.SHORTTIME: _TimeFormatKeys.SHORT, 
+   DateTimeFormatsEnum.SHORTDATETIME: __getRealmLocale(_R_REG_DATE.shortDateTime), 
+   DateTimeFormatsEnum.FULLDATE: __getRealmLocale(_R_REG_DATE.fullDate), 
+   DateTimeFormatsEnum.FULLTIME: _TimeFormatKeys.FULL, 
+   DateTimeFormatsEnum.FULLDATETIME: __getRealmLocale(_R_REG_DATE.fullDateTime)}
 
 def _getRegionalTime(ts, isShort):
     hour = ts.tm_hour
@@ -79,7 +79,10 @@ def _expandTimeFmtArguments(rePattern, fmtStr, customArgsDict, ts):
     def replaceMatch(match):
         specifier = match.group(0)
         handler = customArgsDict.get(specifier, None)
-        return handler(ts) if handler else _fallbackArgHandler(specifier, ts)
+        if handler:
+            return handler(ts)
+        else:
+            return _fallbackArgHandler(specifier, ts)
 
     return rePattern.sub(replaceMatch, fmtStr)
 
@@ -98,4 +101,6 @@ def getRegionalDateTime(timestamp, dateTimeFormat, isConvertedToLocal=True):
     if dateTimeFormatEnum not in _DATE_TIME_FMT_MAP:
         raise SoftException('Provided date format constant is not present in format map')
     key = _DATE_TIME_FMT_MAP[dateTimeFormatEnum]
-    return getFormattedDateTime(timestamp, key, isConvertedToLocal) if key in _TimeFormatKeys.ALL else getFormattedDateTime(timestamp, backport.text(key), isConvertedToLocal)
+    if key in _TimeFormatKeys.ALL:
+        return getFormattedDateTime(timestamp, key, isConvertedToLocal)
+    return getFormattedDateTime(timestamp, backport.text(key), isConvertedToLocal)

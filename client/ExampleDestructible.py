@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ExampleDestructible.py
 import BigWorld
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from constants import DESTRUCTIBLE_MATKIND
@@ -13,7 +11,8 @@ class ExampleDestructible(BigWorld.Entity):
         return
 
     def prerequisites(self):
-        return [self.__MODEL_NAME]
+        return [
+         self.__MODEL_NAME]
 
     def showDamage(self, componentID, isShotDamage):
         LOG_DEBUG('ExampleDestructible.showDamage %d %b', componentID, isShotDamage)

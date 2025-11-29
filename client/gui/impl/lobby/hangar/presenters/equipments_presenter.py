@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/equipments_presenter.py
 from __future__ import absolute_import
 from functools import partial
-import typing
-import SoundGroups
+import typing, SoundGroups
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.loadout.equipments.equipments_model import EquipmentsModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -36,12 +33,12 @@ class EquipmentsPresenter(LoadoutPresenterBase[EquipmentsModel]):
         self._guiItemType = GUI_ITEM_TYPE.OPTIONALDEVICE
 
     def createSlotActions(self):
-        actions = {BaseSetupModel.DEMOUNT_SLOT_ACTION: self.__onDemountItem,
-         BaseSetupModel.DEMOUNT_SLOT_FROM_SETUP_ACTION: partial(self.__onDemountItem, everywhere=False),
-         BaseSetupModel.DEMOUNT_SLOT_FROM_SETUPS_ACTION: self.__onDemountItem,
-         BaseSetupModel.DESTROY_SLOT_ACTION: partial(self.__onDemountItem, isDestroy=True),
-         BaseSetupModel.DECONSTRUCT_SLOT_ACTION: partial(self.__onDemountItem, isDestroy=True),
-         BaseSetupModel.UPGRADE_SLOT_ACTION: self.__onUpgradeItem}
+        actions = {BaseSetupModel.DEMOUNT_SLOT_ACTION: self.__onDemountItem, 
+           BaseSetupModel.DEMOUNT_SLOT_FROM_SETUP_ACTION: partial(self.__onDemountItem, everywhere=False), 
+           BaseSetupModel.DEMOUNT_SLOT_FROM_SETUPS_ACTION: self.__onDemountItem, 
+           BaseSetupModel.DESTROY_SLOT_ACTION: partial(self.__onDemountItem, isDestroy=True), 
+           BaseSetupModel.DECONSTRUCT_SLOT_ACTION: partial(self.__onDemountItem, isDestroy=True), 
+           BaseSetupModel.UPGRADE_SLOT_ACTION: self.__onUpgradeItem}
         actions.update(super(EquipmentsPresenter, self).createSlotActions())
         return actions
 
@@ -52,19 +49,30 @@ class EquipmentsPresenter(LoadoutPresenterBase[EquipmentsModel]):
         return super(EquipmentsPresenter, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return super(EquipmentsPresenter, self)._getEvents() + ((self.getViewModel().onGetMoreCurrency, self.__onGetMoreCurrency), (self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate), (self.__wotPlusCtrl.onEnabledStatusChanged, self.__onWotPlusStatusChanged))
+        return super(EquipmentsPresenter, self)._getEvents() + (
+         (
+          self.getViewModel().onGetMoreCurrency, self.__onGetMoreCurrency),
+         (
+          self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),
+         (
+          self.__wotPlusCtrl.onEnabledStatusChanged, self.__onWotPlusStatusChanged))
 
     def _createProvider(self, vehInteractingItem):
-        self._provider = LoadoutEntityProvider(vehInteractingItem, OptDeviceInteractor, {OptDeviceTabs.SIMPLE: SimpleOptDeviceProvider,
-         OptDeviceTabs.DELUXE: DeluxeOptDeviceProvider,
-         OptDeviceTabs.TROPHY: TrophyOptDeviceProvider,
-         OptDeviceTabs.MODERNIZED: ModernisedOptDeviceProvider})
+        self._provider = LoadoutEntityProvider(vehInteractingItem, OptDeviceInteractor, {OptDeviceTabs.SIMPLE: SimpleOptDeviceProvider, 
+           OptDeviceTabs.DELUXE: DeluxeOptDeviceProvider, 
+           OptDeviceTabs.TROPHY: TrophyOptDeviceProvider, 
+           OptDeviceTabs.MODERNIZED: ModernisedOptDeviceProvider})
 
     def _getCallbacks(self):
-        return (('stats.{}'.format(Currency.EQUIP_COIN), self._onCurrencyUpdate),
-         ('stats.{}'.format(Currency.GOLD), self._onCurrencyUpdate),
-         ('stats.{}'.format(Currency.CREDITS), self._onCurrencyUpdate),
-         ('stats.{}'.format(Currency.CRYSTAL), self._onCurrencyUpdate))
+        return (
+         (
+          ('stats.{}').format(Currency.EQUIP_COIN), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.GOLD), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.CREDITS), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.CRYSTAL), self._onCurrencyUpdate))
 
     def _updateModel(self, recreate=True):
         hasEquipmentSlots = self._vehInteractingItem.getItem().optDevices.layoutCapacity != 0
@@ -75,7 +83,7 @@ class EquipmentsPresenter(LoadoutPresenterBase[EquipmentsModel]):
         deluxEquipmentsProvider = dataProviders[OptDeviceTabs.DELUXE]
         trophyEquipmentsProvider = dataProviders[OptDeviceTabs.TROPHY]
         modernizedEquipmentsProvider = dataProviders[OptDeviceTabs.MODERNIZED]
-        with self.getViewModel().transaction() as equipmentsModel:
+        with self.getViewModel().transaction() as (equipmentsModel):
             equipCoinCount = int(self.__itemsCache.items.stats.actualMoney.get(Currency.EQUIP_COIN, 0))
             equipmentsModel.setEquipCoinCount(equipCoinCount)
             equipmentsModel.setHasModernizedEquipmentToDisassemble(bool(modernizedEquipmentsProvider.hasUnfitItems()) or bool(modernizedEquipmentsProvider.getItems()))

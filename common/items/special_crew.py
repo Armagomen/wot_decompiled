@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/special_crew.py
 import typing
 from debug_utils import LOG_WARNING
 from items.components.component_constants import EMPTY_STRING
@@ -15,10 +13,10 @@ class CustomCrew(object):
     OFFSPRING = 'offspring'
     YHA = 'yha'
     WITCHES = 'witches'
-    TAG_MAP = {SPECIAL_CREW_TAG.SABATON: SABATON,
-     SPECIAL_CREW_TAG.OFFSPRING: OFFSPRING,
-     SPECIAL_CREW_TAG.YHA: YHA,
-     SPECIAL_CREW_TAG.WITCHES_CREW: WITCHES}
+    TAG_MAP = {SPECIAL_CREW_TAG.SABATON: SABATON, 
+       SPECIAL_CREW_TAG.OFFSPRING: OFFSPRING, 
+       SPECIAL_CREW_TAG.YHA: YHA, 
+       SPECIAL_CREW_TAG.WITCHES_CREW: WITCHES}
 
     @staticmethod
     def hasTagInTankmen(tankmanDescr, tag):
@@ -35,7 +33,9 @@ class CustomCrew(object):
             LOG_WARNING('special_crew.CustomCrew.getCrewName: wrong value of the groupID (unknown groupID)', groupID)
             return EMPTY_STRING
         tags = list(nationGroups[groupID].tags.intersection(CustomCrew.TAG_MAP.iterkeys()))
-        return CustomCrew.TAG_MAP.get(tags[0]) if tags else EMPTY_STRING
+        if tags:
+            return CustomCrew.TAG_MAP.get(tags[0])
+        return EMPTY_STRING
 
 
 class CustomSkills(object):
@@ -43,10 +43,7 @@ class CustomSkills(object):
     OFFSPRING_BROTHERHOOD = 'offspring_brotherhood'
     YHA_BROTHERHOOD = 'yha_brotherhood'
     WITCHES_BROTHERHOOD = 'witches_brotherhood'
-    CUSTOM_CREW_MAP = {CustomCrew.SABATON: {'brotherhood': SABATON_BROTHERHOOD},
-     CustomCrew.OFFSPRING: {'brotherhood': OFFSPRING_BROTHERHOOD},
-     CustomCrew.YHA: {'brotherhood': YHA_BROTHERHOOD},
-     CustomCrew.WITCHES: {'brotherhood': WITCHES_BROTHERHOOD}}
+    CUSTOM_CREW_MAP = {CustomCrew.SABATON: {'brotherhood': SABATON_BROTHERHOOD}, CustomCrew.OFFSPRING: {'brotherhood': OFFSPRING_BROTHERHOOD}, CustomCrew.YHA: {'brotherhood': YHA_BROTHERHOOD}, CustomCrew.WITCHES: {'brotherhood': WITCHES_BROTHERHOOD}}
 
     @staticmethod
     def _getCustomSkill(skillName, customCrewName):
@@ -58,7 +55,11 @@ class CustomSkills(object):
             crewName = CustomCrew.getTankmanCrewName(tankman.descriptor)
             if crewName:
                 return (crewName, CustomSkills._getCustomSkill(skillName, crewName))
-        return (EMPTY_STRING, EMPTY_STRING) if not customCrewName else (customCrewName, CustomSkills._getCustomSkill(skillName, customCrewName))
+        if not customCrewName:
+            return (EMPTY_STRING, EMPTY_STRING)
+        else:
+            return (
+             customCrewName, CustomSkills._getCustomSkill(skillName, customCrewName))
 
 
 def _isCrewCompleted(vehicleType, tankmenGroups, tag):
@@ -66,7 +67,9 @@ def _isCrewCompleted(vehicleType, tankmenGroups, tag):
     nationID, _ = vehicleType.id
     requiredCrew = getTankmenWithTag(nationID, isPremium, tag)
     actualCrew = [ unpackCrewParams(tGroup)[0] for tGroup in tankmenGroups ]
-    return set(actualCrew) <= requiredCrew if len(actualCrew) <= len(requiredCrew) else requiredCrew < set(actualCrew)
+    if len(actualCrew) <= len(requiredCrew):
+        return set(actualCrew) <= requiredCrew
+    return requiredCrew < set(actualCrew)
 
 
 def isWitchesCrew(tankmanDescr):

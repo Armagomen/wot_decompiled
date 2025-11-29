@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/blueprints/blueprints_cm_handlers.py
 from wg_async import wg_await, wg_async
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -50,4 +48,7 @@ class BlueprintsCMHandler(ContextMenu):
 
     def __getMaxFragmentCount(self):
         item = self.__itemsCache.items.getItemByCD(self._id)
-        return self.__itemsCache.items.blueprints.getConvertibleFragmentCount(item.intCD, item.level) if item is not None else 0
+        if item is not None:
+            return self.__itemsCache.items.blueprints.getConvertibleFragmentCount(item.intCD, item.level)
+        else:
+            return 0

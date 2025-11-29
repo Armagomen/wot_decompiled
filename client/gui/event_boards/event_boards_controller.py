@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/event_boards/event_boards_controller.py
-import logging
-import typing
-import constants
+import logging, typing, constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ELEN_NOTIFICATIONS
 from adisp import adisp_process, adisp_async
@@ -56,16 +52,28 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobal
         return (wrongBattleType, wrongSquadState)
 
     def getPlayerEventsData(self):
-        return self.__eventBoardsSettings.getPlayerEventsData() if self.__eventBoardsSettings is not None else None
+        if self.__eventBoardsSettings is not None:
+            return self.__eventBoardsSettings.getPlayerEventsData()
+        else:
+            return
 
     def getEventsSettingsData(self):
-        return self.__eventBoardsSettings.getEventsSettings() if self.__eventBoardsSettings is not None else None
+        if self.__eventBoardsSettings is not None:
+            return self.__eventBoardsSettings.getEventsSettings()
+        else:
+            return
 
     def hasEvents(self):
-        return self.__eventBoardsSettings.hasEvents() if self.__eventBoardsSettings is not None else False
+        if self.__eventBoardsSettings is not None:
+            return self.__eventBoardsSettings.hasEvents()
+        else:
+            return False
 
     def getMyEventsTopData(self):
-        return self.__eventBoardsSettings.getMyEventsTop() if self.__eventBoardsSettings is not None else None
+        if self.__eventBoardsSettings is not None:
+            return self.__eventBoardsSettings.getMyEventsTop()
+        else:
+            return
 
     def getHangarFlagData(self):
         return self.__hangarFlagData
@@ -220,7 +228,7 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobal
                     if eventID not in started and not event.hasCustomUI():
                         SystemMessages.pushMessage(_ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_BODY, eventName=event.getName()), messageData={'header': _ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_HEADER)}, type=SM_TYPE.OpenEventBoards)
                         started.add(eventID)
-                if event.isAfterEnd() and eventID in visited:
+                elif event.isAfterEnd() and eventID in visited:
                     if eventID not in finished and not event.hasCustomUI():
                         self.__complexWarningNotification(_ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_HEADER), _ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_BODY, eventName=event.getName()))
                         finished.add(eventID)

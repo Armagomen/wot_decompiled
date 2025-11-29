@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/crew_tab_helper.py
 from collections import namedtuple
 import typing
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -18,7 +16,7 @@ if typing.TYPE_CHECKING:
 GIRL_EMPTY = 'girl-empty'
 
 class PreviewTankman(Tankman):
-    __slots__ = ('_previewData',)
+    __slots__ = ('_previewData', )
 
     def __init__(self, slotIdx, tmanData=None, tankman=None, vehicle=None):
         if tankman is not None:
@@ -42,14 +40,18 @@ class PreviewTankman(Tankman):
         if self._previewData.get('firstNameID', None) and self._previewData.get('lastNameID', None):
             return super(PreviewTankman, self).fullUserName
         else:
-            return backport.text(R.strings.tooltips.awardItem.tankwomen.header()) if self.isFemale else ''
+            if self.isFemale:
+                return backport.text(R.strings.tooltips.awardItem.tankwomen.header())
+            return ''
 
     @property
     def extensionLessIcon(self):
         if self._previewData.get('iconID', None):
             return super(PreviewTankman, self).extensionLessIcon
         else:
-            return GIRL_EMPTY if self.isFemale else ''
+            if self.isFemale:
+                return GIRL_EMPTY
+            return ''
 
     @property
     def bigIconPath(self):
@@ -57,7 +59,9 @@ class PreviewTankman(Tankman):
         if self._previewData.get('iconID', None):
             return getBigIconPath(self.nationID, iconID)
         else:
-            return backport.image(R.images.gui.maps.icons.tankmen.icons.big.girl_empty()) if self.isFemale else backport.image(R.images.gui.maps.icons.tankmen.icons.big.empty())
+            if self.isFemale:
+                return backport.image(R.images.gui.maps.icons.tankmen.icons.big.girl_empty())
+            return backport.image(R.images.gui.maps.icons.tankmen.icons.big.empty())
 
     @property
     def backportSkillList(self):
@@ -66,7 +70,9 @@ class PreviewTankman(Tankman):
             newSkills, lastNewSkillLevel = self.newSkillsCount
             if newSkills:
                 img = backport.image(R.images.gui.maps.icons.tankmen.skills.big.preview_new_skill_trained())
-                result.extend([(img, TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER, MAX_SKILL_LEVEL)] * (newSkills - 1))
+                result.extend([
+                 (
+                  img, TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER, MAX_SKILL_LEVEL)] * (newSkills - 1))
                 result.extend([(img, TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER, lastNewSkillLevel)])
         return result
 
@@ -93,13 +99,13 @@ def isValidCrewForVehicle(tankmenItems, roles):
 
 
 def getCrewPreviewTitle(title, itemCrew):
-    if itemCrew and itemCrew.type in (ItemPackType.CREW_50,
-     ItemPackType.CREW_75,
-     ItemPackType.CREW_100,
+    if itemCrew and itemCrew.type in (ItemPackType.CREW_50, ItemPackType.CREW_75, ItemPackType.CREW_100,
      ItemPackType.CUSTOM_CREW_100):
         return makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_WITHCREW)
     else:
-        return title if title is not None else makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_NOCREW)
+        if title is not None:
+            return title
+        return makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_NOCREW)
 
 
 def getCustomTitle(skill, role, forOne):
@@ -121,48 +127,36 @@ _SIMPLE_SKILL = _SimpleSkill(CrewConstants.NEW_SKILL, '', CrewConstants.NEW_SKIL
 
 def getCustomHeader(customCrew):
     crew = [ tMan for _, tMan in sorted(customCrew) ]
-    skills = [ (tMan.skills[:] + [_SIMPLE_SKILL] if tMan.descriptor.freeXP > 0 else tMan.skills[:]) for tMan in crew ]
+    skills = [ tMan.skills[:] + [_SIMPLE_SKILL] if tMan.descriptor.freeXP > 0 else tMan.skills[:] for tMan in crew ]
     notEmptySkills = [ s for s in skills if s ]
     if not notEmptySkills:
-        return (makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_WITHCREW),
-         '',
-         '',
-         '')
-    if all((len(s) <= 1 for s in skills)):
+        return (makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_WITHCREW), '', '', '')
+    if all(len(s) <= 1 for s in skills):
         firstSkill = first(notEmptySkills)[0]
         icon = firstSkill.extensionLessIconName
         skillName = firstSkill.name
         customName = firstSkill.crewCustomName
         notEmptySkillsLen = len(notEmptySkills)
         if notEmptySkillsLen == 1:
-            role = first((tMan.role for tMan in crew if tMan.hasNewSkill)) if firstSkill.name == CrewConstants.NEW_SKILL else first((tMan.role for tMan in crew if tMan.skills))
-            return (getCustomTitle(firstSkill, role, True),
-             icon,
-             skillName,
-             customName)
-        if notEmptySkillsLen == len(skills) and all((firstSkill.name == s[0].name for s in notEmptySkills)):
-            return (getCustomTitle(firstSkill, '', False),
-             icon,
-             skillName,
-             customName)
-    return (makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_CREW_ANYSKILLS),
-     '',
-     '',
-     '')
+            role = first(tMan.role for tMan in crew if tMan.hasNewSkill) if firstSkill.name == CrewConstants.NEW_SKILL else first(tMan.role for tMan in crew if tMan.skills)
+            return (
+             getCustomTitle(firstSkill, role, True), icon, skillName, customName)
+        if notEmptySkillsLen == len(skills) and all(firstSkill.name == s[0].name for s in notEmptySkills):
+            return (getCustomTitle(firstSkill, '', False), icon, skillName, customName)
+    return (
+     makeString(TOOLTIPS.VEHICLEPREVIEW_VEHICLEPANEL_INFO_HEADER_CREW_ANYSKILLS), '', '', '')
 
 
 def getPreviewCrewMemberArgs(isCustom, slotIdx, tankman):
-    args = [tankman.role, NO_TANKMAN, slotIdx]
+    args = [
+     tankman.role, NO_TANKMAN, slotIdx]
     if isCustom:
-        args.extend([tankman.fullUserName,
+        args.extend([
+         tankman.fullUserName,
          tankman.previewVehicleName,
          tankman.bigIconPath,
          '',
          tankman.backportSkillList])
     else:
-        args.extend([None,
-         None,
-         None,
-         None,
-         None])
+        args.extend([None, None, None, None, None])
     return args

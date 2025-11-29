@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/__init__.py
 from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -12,7 +10,9 @@ from gui.shared import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_cm_handlers import PostProgressionContextMenuHandler
-    return ((CONTEXT_MENU_HANDLER_TYPE.POST_PROGRESSION_VEHICLE, PostProgressionContextMenuHandler),)
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.POST_PROGRESSION_VEHICLE, PostProgressionContextMenuHandler),)
 
 
 def getViewSettings():
@@ -21,7 +21,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_base_view import VehPostProgressionVehicleParams
     from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_cmp_view import VehiclePostProgressionCmpView
     from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_view_adaptor import VehiclePostProgressionViewAdaptor
-    return (ViewSettings(VIEW_ALIAS.VEH_POST_PROGRESSION, VehiclePostProgressionCfgView, 'vehPostProgressionView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.VEH_POST_PROGRESSION, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.VEH_POST_PROGRESSION, VehiclePostProgressionCfgView, 'vehPostProgressionView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.VEH_POST_PROGRESSION, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.VEH_POST_PROGRESSION_CMP, VehiclePostProgressionCmpView, 'vehPostProgressionCmpView.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.VEH_POST_PROGRESSION_CMP, ScopeTemplates.LOBBY_SUB_SCOPE),
      ComponentSettings(HANGAR_ALIASES.POST_PROGRESSION_INJECT, VehiclePostProgressionViewAdaptor, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.POST_PROGRESSION_CMP_INJECT, VehiclePostProgressionViewAdaptor, ScopeTemplates.DEFAULT_SCOPE),
@@ -29,16 +30,22 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_VehPostProgressionBusinessHandler(),)
+    return (
+     _VehPostProgressionBusinessHandler(),)
 
 
 def getStateMachineRegistrators():
     from gui.Scaleform.daapi.view.lobby.veh_post_progression.states import registerStates, registerTransitions
-    return (registerStates, registerTransitions)
+    return (
+     registerStates, registerTransitions)
 
 
 class _VehPostProgressionBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.VEH_POST_PROGRESSION, self.loadViewByCtxEvent), (VIEW_ALIAS.VEH_POST_PROGRESSION_CMP, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.VEH_POST_PROGRESSION, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.VEH_POST_PROGRESSION_CMP, self.loadViewByCtxEvent))
         super(_VehPostProgressionBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

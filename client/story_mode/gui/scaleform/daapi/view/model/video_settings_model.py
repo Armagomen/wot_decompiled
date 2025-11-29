@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/model/video_settings_model.py
-import ResMgr
-import section2dict
-import typing
+import ResMgr, section2dict, typing
 from dict2model import models, schemas, fields, validate
 from story_mode_common.configs.sounds_schema import SoundModel, SoundSchema
 INTRO_VIDEO_SETTINGS_PATH = 'story_mode/gui/intro_video.xml'
@@ -20,8 +16,8 @@ class SoundEventsModel(SoundModel):
 class SoundEventsSchema(SoundSchema[SoundEventsModel]):
 
     def __init__(self):
-        super(SoundEventsSchema, self).__init__(fields={'pause': fields.String(required=True, default=''),
-         'resume': fields.String(required=True, default='')}, checkUnknown=True, modelClass=SoundEventsModel)
+        super(SoundEventsSchema, self).__init__(fields={'pause': fields.String(required=True, default=''), 
+           'resume': fields.String(required=True, default='')}, checkUnknown=True, modelClass=SoundEventsModel)
 
 
 soundEventsSchema = SoundEventsSchema()
@@ -39,18 +35,18 @@ class VideoModel(models.Model):
 
 
 class VideoSettingsModel(models.Model):
-    __slots__ = ('missions',)
+    __slots__ = ('missions', )
 
     def __init__(self, missions):
         super(VideoSettingsModel, self).__init__()
         self.missions = missions
 
 
-videoSchema = schemas.Schema(fields={'id': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=1)),
- 'videoPath': fields.String(required=True),
- 'music': fields.Nested(soundEventsSchema, required=True),
- 'playSoundOnClose': fields.String(required=False),
- 'vo': fields.String(required=True)}, modelClass=VideoModel, checkUnknown=True)
+videoSchema = schemas.Schema(fields={'id': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=1)), 
+   'videoPath': fields.String(required=True), 
+   'music': fields.Nested(soundEventsSchema, required=True), 
+   'playSoundOnClose': fields.String(required=False), 
+   'vo': fields.String(required=True)}, modelClass=VideoModel, checkUnknown=True)
 introVideoSchema = schemas.Schema(fields={'missions': fields.UniCapList(fieldOrSchema=videoSchema, required=True, deserializedValidators=validate.Length(minValue=1))}, modelClass=VideoSettingsModel, checkUnknown=True)
 __introVideoSchema = None
 __outroVideoSchema = None

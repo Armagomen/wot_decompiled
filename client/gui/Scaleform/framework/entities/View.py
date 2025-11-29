@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/View.py
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from collections import namedtuple
 from gui.Scaleform.framework.settings import UIFrameworkImpl
 from gui.Scaleform.framework.entities.DisposableEntity import EntityState
@@ -31,16 +27,20 @@ class ViewKey(_ViewKey):
         return _ViewKey.__new__(cls, alias, name)
 
     def __repr__(self):
-        return '{}[alias={}, name={}]'.format(self.__class__.__name__, self.alias, self.name)
+        return ('{}[alias={}, name={}]').format(self.__class__.__name__, self.alias, self.name)
 
     def __eq__(self, other):
-        return self.name == other.name and self.alias == other.alias if isinstance(other, ViewKey) else False
+        if isinstance(other, ViewKey):
+            return self.name == other.name and self.alias == other.alias
+        return False
 
 
 class ViewKeyDynamic(ViewKey):
 
     def __eq__(self, other):
-        return self.alias == other.alias if isinstance(other, ViewKey) else False
+        if isinstance(other, ViewKey):
+            return self.alias == other.alias
+        return False
 
 
 class View(AbstractViewMeta, ViewInterface):
@@ -61,7 +61,7 @@ class View(AbstractViewMeta, ViewInterface):
         return
 
     def __repr__(self):
-        return '{}[{}]=[key={}, scope={}, state={}]'.format(self.__class__.__name__, hex(id(self)), self.key, self.__scope, self.getState())
+        return ('{}[{}]=[key={}, scope={}, state={}]').format(self.__class__.__name__, hex(id(self)), self.key, self.__scope, self.getState())
 
     def __del__(self):
         _logger.debug('View deleted: %r', self)
@@ -117,9 +117,9 @@ class View(AbstractViewMeta, ViewInterface):
                 if scope != ScopeTemplates.DYNAMIC_SCOPE:
                     self.__scope = scope
                 else:
-                    raise SoftException('View.__scope cannot be a ScopeTemplates.DYNAMIC value. This value might have only settings.scope for {} view.'.format(self.alias))
+                    raise SoftException(('View.__scope cannot be a ScopeTemplates.DYNAMIC value. This value might have only settings.scope for {} view.').format(self.alias))
             else:
-                raise SoftException('You can not change a non-dynamic scope. Declare ScopeTemplates.DYNAMIC in settings for {} view'.format(self.alias))
+                raise SoftException(('You can not change a non-dynamic scope. Declare ScopeTemplates.DYNAMIC in settings for {} view').format(self.alias))
         else:
             _logger.error('Can not change a current scope, until unimplemented __settings ')
         return
@@ -183,7 +183,7 @@ class View(AbstractViewMeta, ViewInterface):
         self.__window = None
         self.__soundExtension.destroySoundManager()
         if self.__key.name and self.__key.alias:
-            uniprof.exitFromRegion('Scaleform {} {}'.format(self.__key.name, self.__uid))
+            uniprof.exitFromRegion(('Scaleform {} {}').format(self.__key.name, self.__uid))
             BigWorld.notify(BigWorld.EventType.VIEW_DESTROYED, self.__key.alias, self.__uid, self.__key.name)
         super(View, self)._destroy()
         return

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/manual_xml_data_reader.py
-import itertools
-import logging
+import itertools, logging
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers.html import translation
@@ -18,13 +15,13 @@ class ManualPageTypes(object):
     VIDEO_PAGE = 'video_page'
 
 
-_MANUAL_LESSON_TEMPLATES = {ManualPageTypes.HINTS_PAGE: MANUAL_TEMPLATES.HINTS,
- ManualPageTypes.MAPS_TRAINING_PAGE: MANUAL_TEMPLATES.MAPS_TRAINING,
- ManualPageTypes.VIDEO_PAGE: MANUAL_TEMPLATES.VIDEO}
+_MANUAL_LESSON_TEMPLATES = {ManualPageTypes.HINTS_PAGE: MANUAL_TEMPLATES.HINTS, 
+   ManualPageTypes.MAPS_TRAINING_PAGE: MANUAL_TEMPLATES.MAPS_TRAINING, 
+   ManualPageTypes.VIDEO_PAGE: MANUAL_TEMPLATES.VIDEO}
 
 def getChapters(filterFunction):
     chaptersListPath = _CHAPTERS_DATA_PATH + _CHAPTERS_LIST_XML
-    with resource_helper.root_generator(chaptersListPath) as ctx, root:
+    with resource_helper.root_generator(chaptersListPath) as (ctx, root):
         chapters = __readChapters(ctx, root, filterFunction)
     return chapters
 
@@ -42,7 +39,7 @@ def getChaptersIndexesList(filterFunction):
 def getChapterData(chapterFileName, filterFunction, chapterTitle=''):
     _logger.debug('ManualXMLDataReader: requested chapter data: %s', chapterFileName)
     chapterPath = _CHAPTERS_DATA_PATH + chapterFileName
-    with resource_helper.root_generator(chapterPath) as ctx, root:
+    with resource_helper.root_generator(chapterPath) as (ctx, root):
         chapter = __readChapter(ctx, root, filterFunction, chapterTitle)
     return chapter
 
@@ -79,24 +76,24 @@ def __readChapter(ctx, root, filterFunction, chapterTitle=''):
             contentRendererData, hintsCount = __getHintsRendererData(lessonCtx, lessonSection)
             if hintsCount > 0:
                 contentRendererLinkage = _MANUAL_LESSON_TEMPLATES.get(template)
-        pages.append({'buttonsGroup': 'ManualChapterGroup',
-         'pageIndex': int(index),
-         'selected': False,
-         'hasNewContent': __isNew(lessonCtx, lessonSection),
-         'label': str(int(index) + 1),
-         'tooltip': {'tooltip': makeTooltip(title)}})
-        details.append({'title': title,
-         'chapterTitle': chapterTitle,
-         'description': description,
-         'background': background,
-         'contentRendererLinkage': contentRendererLinkage,
-         'contentRendererData': contentRendererData,
-         'id': pageId,
-         'pageType': template})
+        pages.append({'buttonsGroup': 'ManualChapterGroup', 
+           'pageIndex': int(index), 
+           'selected': False, 
+           'hasNewContent': __isNew(lessonCtx, lessonSection), 
+           'label': str(int(index) + 1), 
+           'tooltip': {'tooltip': makeTooltip(title)}})
+        details.append({'title': title, 
+           'chapterTitle': chapterTitle, 
+           'description': description, 
+           'background': background, 
+           'contentRendererLinkage': contentRendererLinkage, 
+           'contentRendererData': contentRendererData, 
+           'id': pageId, 
+           'pageType': template})
         index += 1
 
-    chapterData = {'pages': pages,
-     'details': details}
+    chapterData = {'pages': pages, 
+       'details': details}
     _logger.debug('ManualXMLDataReader:  Read chapter: %s', chapterData)
     return chapterData
 
@@ -113,14 +110,14 @@ def __readChapters(ctx, root, filterFunction):
         ids = attributes.get('ids', [])
         if len(ids) != len(set(ids)):
             _logger.warning('chapter %s has duplicate page ids', title)
-        chapter = {'filePath': filePath,
-         'pageIDs': ids,
-         'newPageIDs': attributes.get('newIds', []),
-         'uiData': {'index': int(index),
-                    'label': translation(title),
-                    'image': background,
-                    'tooltip': makeTooltip(translation(title), '\n'.join(attributes.get('chaptersTitles', [])))}}
-        if any((ids in chapter['pageIDs'] for chapter in chapters)):
+        chapter = {'filePath': filePath, 
+           'pageIDs': ids, 
+           'newPageIDs': attributes.get('newIds', []), 
+           'uiData': {'index': int(index), 
+                      'label': translation(title), 
+                      'image': background, 
+                      'tooltip': makeTooltip(translation(title), ('\n').join(attributes.get('chaptersTitles', [])))}}
+        if any(ids in chapter['pageIDs'] for chapter in chapters):
             _logger.warning('chapter %s has duplicate page ids from another chapters', title)
         _logger.debug('ManualXMLDataReader: Read chapters. Chapter: %s', chapter)
         chapters.append(chapter)
@@ -134,7 +131,7 @@ def __getChapterAttributes(chapterFileName, filterFunction):
     ids = []
     newIds = []
     chapterPath = _CHAPTERS_DATA_PATH + chapterFileName
-    with resource_helper.root_generator(chapterPath) as ctx, root:
+    with resource_helper.root_generator(chapterPath) as (ctx, root):
         ctx, section = resource_helper.getSubSection(ctx, root, 'lessons')
         for lessonCtx, lessonSection in resource_helper.getIterator(ctx, section):
             template = __getCustomSectionValue(lessonCtx, lessonSection, 'template')
@@ -146,9 +143,7 @@ def __getChapterAttributes(chapterFileName, filterFunction):
                 newIds.append(lessonId)
             chaptersTitles.append(translation(__getCustomSectionValue(lessonCtx, lessonSection, 'title')))
 
-    return {'ids': ids,
-     'newIds': newIds,
-     'chaptersTitles': chaptersTitles}
+    return {'ids': ids, 'newIds': newIds, 'chaptersTitles': chaptersTitles}
 
 
 def __getCustomSectionValue(ctx, section, name, safe=False):
@@ -167,8 +162,7 @@ def __getVideoRendererData(lessonCtx, lessonSection):
     preview = __getCustomSectionValue(lessonCtx, lessonSection, 'preview', safe=True)
     if preview is None:
         preview = ''
-    return {'previewImage': preview,
-     'videoUrl': video}
+    return {'previewImage': preview, 'videoUrl': video}
 
 
 def __getHintsRendererData(lessonCtx, lessonSection):
@@ -179,8 +173,8 @@ def __getHintsRendererData(lessonCtx, lessonSection):
         for hintCtx, hintSection in resource_helper.getIterator(hintsCtx, hintsSection):
             hintText = translation(__getCustomSectionValue(hintCtx, hintSection, 'text'))
             hintIcon = __getCustomSectionValue(hintCtx, hintSection, 'icon')
-            hints.append({'text': hintText,
-             'icon': hintIcon})
+            hints.append({'text': hintText, 
+               'icon': hintIcon})
 
         contentRendererData = {'hints': hints}
     return (contentRendererData, len(hints))

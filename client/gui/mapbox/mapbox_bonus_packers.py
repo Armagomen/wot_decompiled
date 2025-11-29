@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/mapbox/mapbox_bonus_packers.py
 import typing
 from gui.impl.auxiliary.rewards_helper import BlueprintBonusTypes
 from gui.shared.missions.packers.bonus import BonusUIPacker, BlueprintBonusUIPacker, getDefaultBonusPackersMap
@@ -9,9 +7,9 @@ if typing.TYPE_CHECKING:
 
 def getMapboxBonusPacker():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({BlueprintBonusTypes.BLUEPRINTS: _MapboxBlueprintBonusUIPacker,
-     BlueprintBonusTypes.FINAL_BLUEPRINTS: _MapboxBlueprintBonusUIPacker,
-     BlueprintBonusTypes.BLUEPRINTS_ANY: _MapboxBlueprintBonusUIPacker})
+    mapping.update({BlueprintBonusTypes.BLUEPRINTS: _MapboxBlueprintBonusUIPacker, 
+       BlueprintBonusTypes.FINAL_BLUEPRINTS: _MapboxBlueprintBonusUIPacker, 
+       BlueprintBonusTypes.BLUEPRINTS_ANY: _MapboxBlueprintBonusUIPacker})
     return BonusUIPacker(mapping)
 
 

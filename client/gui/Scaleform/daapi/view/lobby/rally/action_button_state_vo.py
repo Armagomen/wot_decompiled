@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/action_button_state_vo.py
 import re
 from gui.impl import backport
 from gui.impl.gen import R
@@ -15,7 +13,8 @@ from shared_utils import BoundMethodWeakref
 _EXT_INVALID_UNIT_MESSAGE_GETTERS = []
 
 class ActionButtonStateVO(dict):
-    __NOT_CRITICAL_STATES = (UNIT_RESTRICTION.UNDEFINED,
+    __NOT_CRITICAL_STATES = (
+     UNIT_RESTRICTION.UNDEFINED,
      UNIT_RESTRICTION.IS_IN_IDLE,
      UNIT_RESTRICTION.IS_IN_PRE_ARENA,
      UNIT_RESTRICTION.VEHICLE_NOT_VALID_FOR_EVENT,
@@ -32,62 +31,109 @@ class ActionButtonStateVO(dict):
         self.__flags = unitEntity.getFlags()
         self.__settings = unitEntity.getRosterSettings()
         self.__canTakeSlot = not self._playerInfo.isLegionary()
-        self.__INVALID_UNIT_MESSAGES = {UNIT_RESTRICTION.UNDEFINED: ('', {}),
-         UNIT_RESTRICTION.UNIT_IS_FULL: (CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISFULL, {}),
-         UNIT_RESTRICTION.UNIT_IS_LOCKED: (CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISLOCKED, {}),
-         UNIT_RESTRICTION.VEHICLE_NOT_SELECTED: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTSELECTED, {}),
-         UNIT_RESTRICTION.VEHICLE_NOT_VALID: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTVALID, {}),
-         UNIT_RESTRICTION.VEHICLE_BROKEN: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_BROKEN, {}),
-         UNIT_RESTRICTION.VEHICLE_CREW_NOT_FULL: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_CREWNOTFULL, {}),
-         UNIT_RESTRICTION.VEHICLE_RENT_IS_OVER: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_RENTISOVER, {}),
-         UNIT_RESTRICTION.VEHICLE_IS_IN_BATTLE: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ISINBATTLE, {}),
-         UNIT_RESTRICTION.MIN_SLOTS: (CYBERSPORT.WINDOW_UNIT_MESSAGE_MINSLOTS, {}),
-         UNIT_RESTRICTION.NOT_READY_IN_SLOTS: (CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITING, {}),
-         UNIT_RESTRICTION.MIN_TOTAL_LEVEL: (CYBERSPORT.WINDOW_UNIT_MESSAGE_LEVEL, self.__validationCtx),
-         UNIT_RESTRICTION.MAX_TOTAL_LEVEL: (CYBERSPORT.WINDOW_UNIT_MESSAGE_LEVEL, self.__validationCtx),
-         UNIT_RESTRICTION.INVALID_TOTAL_LEVEL: ActionButtonStateVO.getInvalidVehicleLevelsMessage(self.__validationCtx),
-         UNIT_RESTRICTION.IS_IN_IDLE: BoundMethodWeakref(self._getIdleStateStr),
-         UNIT_RESTRICTION.IS_IN_ARENA: BoundMethodWeakref(self._getArenaStateStr),
-         UNIT_RESTRICTION.NEED_PLAYERS_SEARCH: ('', {}),
-         UNIT_RESTRICTION.ZERO_TOTAL_LEVEL: ('', {}),
-         UNIT_RESTRICTION.IS_IN_PRE_ARENA: (CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITCOMMANDER, {}),
-         UNIT_RESTRICTION.NOT_IN_SLOT: BoundMethodWeakref(self._notInSlotMessage),
-         UNIT_RESTRICTION.VEHICLE_NOT_VALID_FOR_EVENT: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTVALIDFOREVENT, {}),
-         UNIT_RESTRICTION.CURFEW: (CYBERSPORT.WINDOW_UNIT_MESSAGE_CURFEW, {}),
-         UNIT_RESTRICTION.VEHICLE_WRONG_MODE: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGMODE, {}),
-         UNIT_RESTRICTION.UNIT_WRONG_DATA: (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGUNITDATA, {}),
-         UNIT_RESTRICTION.FORT_DISABLED: (CYBERSPORT.WINDOW_UNIT_MESSAGE_FORTIFICATIONNOTAVAILABLE, {}),
-         UNIT_RESTRICTION.VEHICLE_INVALID_LEVEL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_INVALIDVEHICLELEVEL), {}),
-         UNIT_RESTRICTION.SPG_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_SPGFULL), {}),
-         UNIT_RESTRICTION.SCOUT_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_SCOUTFULL), {}),
-         UNIT_RESTRICTION.WHEELED_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_WHEELEDFULL), {}),
-         UNIT_RESTRICTION.MEDIUMTANK_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_MEDIUMTANKFULL), {}),
-         UNIT_RESTRICTION.HEAVYTANK_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_HEAVYTANKFULL), {}),
-         UNIT_RESTRICTION.AT_SPG_IS_FULL: (self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_AT_SPG_FULL), {}),
-         UNIT_RESTRICTION.ROTATION_GROUP_LOCKED: BoundMethodWeakref(self._rotationGroupBlockMessage),
-         UNIT_RESTRICTION.UNIT_MAINTENANCE: (CYBERSPORT.WINDOW_UNIT_MESSAGE_MAINTENANCE, {}),
-         UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_UNDEF: (CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERY, {}),
-         UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_SORTIE: (CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERYSORTIE, {}),
-         UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_BATTLE: (CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERYBATTLE, {}),
-         UNIT_RESTRICTION.UNIT_WAITINGFORDATA: (TOOLTIPS.STRONGHOLDS_TIMER_WAITINGFORDATA, {}),
-         UNIT_RESTRICTION.UNIT_MIN_CLAN_MEMBERS: BoundMethodWeakref(self._clanMembersNotEnoughMessage),
-         UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING: (CYBERSPORT.WINDOW_UNIT_MESSAGE_IN_PLAYERS_MATCHING, {}),
-         UNIT_RESTRICTION.UNIT_NOT_FULL: ('', {}),
-         UNIT_RESTRICTION.UNSUITABLE_VEHICLE: (self.__getNotAvailableIcon() + backport.text(R.strings.system_messages.prebattle.vehicleInvalid.vehicleNotSupported()), {}),
-         UNIT_RESTRICTION.LIMIT_LEVEL: (self.__getNotAvailableIcon() + backport.text(R.strings.platoon.members.footer.invalidVehicleLevel()), {}),
-         UNIT_RESTRICTION.LIMIT_VEHICLE_TYPE: (backport.text(R.strings.cyberSport.window.unit.message.vehicleInNotReady.wrongMode()), {}),
-         UNIT_RESTRICTION.LIMIT_VEHICLE_CLASS: (backport.text(R.strings.cyberSport.window.unit.message.vehicleInNotReady.wrongMode()), {}),
-         UNIT_RESTRICTION.MODE_NO_BATTLES: ('', {}),
-         UNIT_RESTRICTION.MODE_NOT_SET: ('', {}),
-         UNIT_RESTRICTION.MODE_NOT_AVAILABLE: ('', {}),
-         UNIT_RESTRICTION.BAN_IS_SET: ('', {}),
-         UNIT_RESTRICTION.PLAY_LIMITS_IS_ACTIVE: (backport.text(R.strings.cyberSport.window.unit.message.play_limits_is_active()), {})}
+        self.__INVALID_UNIT_MESSAGES = {UNIT_RESTRICTION.UNDEFINED: (
+                                      '', {}), 
+           UNIT_RESTRICTION.UNIT_IS_FULL: (
+                                         CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISFULL, {}), 
+           UNIT_RESTRICTION.UNIT_IS_LOCKED: (
+                                           CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISLOCKED, {}), 
+           UNIT_RESTRICTION.VEHICLE_NOT_SELECTED: (
+                                                 CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTSELECTED, {}), 
+           UNIT_RESTRICTION.VEHICLE_NOT_VALID: (
+                                              CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTVALID, {}), 
+           UNIT_RESTRICTION.VEHICLE_BROKEN: (
+                                           CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_BROKEN, {}), 
+           UNIT_RESTRICTION.VEHICLE_CREW_NOT_FULL: (
+                                                  CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_CREWNOTFULL, {}), 
+           UNIT_RESTRICTION.VEHICLE_RENT_IS_OVER: (
+                                                 CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_RENTISOVER, {}), 
+           UNIT_RESTRICTION.VEHICLE_IS_IN_BATTLE: (
+                                                 CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ISINBATTLE, {}), 
+           UNIT_RESTRICTION.MIN_SLOTS: (
+                                      CYBERSPORT.WINDOW_UNIT_MESSAGE_MINSLOTS, {}), 
+           UNIT_RESTRICTION.NOT_READY_IN_SLOTS: (
+                                               CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITING, {}), 
+           UNIT_RESTRICTION.MIN_TOTAL_LEVEL: (
+                                            CYBERSPORT.WINDOW_UNIT_MESSAGE_LEVEL, self.__validationCtx), 
+           UNIT_RESTRICTION.MAX_TOTAL_LEVEL: (
+                                            CYBERSPORT.WINDOW_UNIT_MESSAGE_LEVEL, self.__validationCtx), 
+           UNIT_RESTRICTION.INVALID_TOTAL_LEVEL: ActionButtonStateVO.getInvalidVehicleLevelsMessage(self.__validationCtx), 
+           UNIT_RESTRICTION.IS_IN_IDLE: BoundMethodWeakref(self._getIdleStateStr), 
+           UNIT_RESTRICTION.IS_IN_ARENA: BoundMethodWeakref(self._getArenaStateStr), 
+           UNIT_RESTRICTION.NEED_PLAYERS_SEARCH: (
+                                                '', {}), 
+           UNIT_RESTRICTION.ZERO_TOTAL_LEVEL: (
+                                             '', {}), 
+           UNIT_RESTRICTION.IS_IN_PRE_ARENA: (
+                                            CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITCOMMANDER, {}), 
+           UNIT_RESTRICTION.NOT_IN_SLOT: BoundMethodWeakref(self._notInSlotMessage), 
+           UNIT_RESTRICTION.VEHICLE_NOT_VALID_FOR_EVENT: (
+                                                        CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLENOTVALIDFOREVENT, {}), 
+           UNIT_RESTRICTION.CURFEW: (
+                                   CYBERSPORT.WINDOW_UNIT_MESSAGE_CURFEW, {}), 
+           UNIT_RESTRICTION.VEHICLE_WRONG_MODE: (
+                                               CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGMODE, {}), 
+           UNIT_RESTRICTION.UNIT_WRONG_DATA: (
+                                            CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGUNITDATA, {}), 
+           UNIT_RESTRICTION.FORT_DISABLED: (
+                                          CYBERSPORT.WINDOW_UNIT_MESSAGE_FORTIFICATIONNOTAVAILABLE, {}), 
+           UNIT_RESTRICTION.VEHICLE_INVALID_LEVEL: (
+                                                  self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_INVALIDVEHICLELEVEL), {}), 
+           UNIT_RESTRICTION.SPG_IS_FULL: (
+                                        self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_SPGFULL), {}), 
+           UNIT_RESTRICTION.SCOUT_IS_FULL: (
+                                          self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_SCOUTFULL), {}), 
+           UNIT_RESTRICTION.WHEELED_IS_FULL: (
+                                            self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_WHEELEDFULL), {}), 
+           UNIT_RESTRICTION.MEDIUMTANK_IS_FULL: (
+                                               self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_MEDIUMTANKFULL), {}), 
+           UNIT_RESTRICTION.HEAVYTANK_IS_FULL: (
+                                              self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_HEAVYTANKFULL), {}), 
+           UNIT_RESTRICTION.AT_SPG_IS_FULL: (
+                                           self.__getNotAvailableIcon() + i18n.makeString(PLATOON.MEMBERS_FOOTER_AT_SPG_FULL), {}), 
+           UNIT_RESTRICTION.ROTATION_GROUP_LOCKED: BoundMethodWeakref(self._rotationGroupBlockMessage), 
+           UNIT_RESTRICTION.UNIT_MAINTENANCE: (
+                                             CYBERSPORT.WINDOW_UNIT_MESSAGE_MAINTENANCE, {}), 
+           UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_UNDEF: (
+                                                          CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERY, {}), 
+           UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_SORTIE: (
+                                                           CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERYSORTIE, {}), 
+           UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_BATTLE: (
+                                                           CYBERSPORT.WINDOW_UNIT_MESSAGE_INACTIVEPERIPHERYBATTLE, {}), 
+           UNIT_RESTRICTION.UNIT_WAITINGFORDATA: (
+                                                TOOLTIPS.STRONGHOLDS_TIMER_WAITINGFORDATA, {}), 
+           UNIT_RESTRICTION.UNIT_MIN_CLAN_MEMBERS: BoundMethodWeakref(self._clanMembersNotEnoughMessage), 
+           UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING: (
+                                                        CYBERSPORT.WINDOW_UNIT_MESSAGE_IN_PLAYERS_MATCHING, {}), 
+           UNIT_RESTRICTION.UNIT_NOT_FULL: (
+                                          '', {}), 
+           UNIT_RESTRICTION.UNSUITABLE_VEHICLE: (
+                                               self.__getNotAvailableIcon() + backport.text(R.strings.system_messages.prebattle.vehicleInvalid.vehicleNotSupported()), {}), 
+           UNIT_RESTRICTION.LIMIT_LEVEL: (
+                                        self.__getNotAvailableIcon() + backport.text(R.strings.platoon.members.footer.invalidVehicleLevel()), {}), 
+           UNIT_RESTRICTION.LIMIT_VEHICLE_TYPE: (
+                                               backport.text(R.strings.cyberSport.window.unit.message.vehicleInNotReady.wrongMode()), {}), 
+           UNIT_RESTRICTION.LIMIT_VEHICLE_CLASS: (
+                                                backport.text(R.strings.cyberSport.window.unit.message.vehicleInNotReady.wrongMode()), {}), 
+           UNIT_RESTRICTION.MODE_NO_BATTLES: (
+                                            '', {}), 
+           UNIT_RESTRICTION.MODE_NOT_SET: (
+                                         '', {}), 
+           UNIT_RESTRICTION.MODE_NOT_AVAILABLE: (
+                                               '', {}), 
+           UNIT_RESTRICTION.BAN_IS_SET: (
+                                       '', {}), 
+           UNIT_RESTRICTION.PLAY_LIMITS_IS_ACTIVE: (
+                                                  backport.text(R.strings.cyberSport.window.unit.message.play_limits_is_active()), {})}
         for getter in _EXT_INVALID_UNIT_MESSAGE_GETTERS:
             self.__INVALID_UNIT_MESSAGES.update(getter())
 
-        self.__WARNING_UNIT_MESSAGES = {UNIT_RESTRICTION.XP_PENALTY_VEHICLE_LEVELS: (PLATOON.MEMBERS_FOOTER_VEHICLES_DIFFERENTLEVELS, {})}
-        self.__NEUTRAL_UNIT_MESSAGES = {UNIT_RESTRICTION.UNIT_WILL_SEARCH_PLAYERS: (FORTIFICATIONS.UNIT_WINDOW_WILLSEARCHPLAYERS, {}),
-         UNIT_RESTRICTION.HAS_FROZEN_VEHICLES: (backport.text(R.strings.cyberSport.window.unit.message.has_frozen_vehicles()), {})}
+        self.__WARNING_UNIT_MESSAGES = {UNIT_RESTRICTION.XP_PENALTY_VEHICLE_LEVELS: (
+                                                      PLATOON.MEMBERS_FOOTER_VEHICLES_DIFFERENTLEVELS, {})}
+        self.__NEUTRAL_UNIT_MESSAGES = {UNIT_RESTRICTION.UNIT_WILL_SEARCH_PLAYERS: (
+                                                     FORTIFICATIONS.UNIT_WINDOW_WILLSEARCHPLAYERS, {}), 
+           UNIT_RESTRICTION.HAS_FROZEN_VEHICLES: (
+                                                backport.text(R.strings.cyberSport.window.unit.message.has_frozen_vehicles()), {})}
         stateKey, stateCtx = self.__getState()
         self['stateString'] = self.__stateTextStyleFormatter(i18n.makeString(stateKey, **stateCtx))
         self['label'] = self._getLabel()
@@ -106,13 +152,16 @@ class ActionButtonStateVO(dict):
         return icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_REDNOTAVAILABLE, 12, 12, 0, 0) + ' '
 
     def _getReadyValidInSlotStateStr(self):
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITING, {})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_WAITING, {})
 
     def _getIdleStateStr(self):
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_READY, {})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_READY, {})
 
     def _getArenaStateStr(self):
-        return ('', {})
+        return (
+         '', {})
 
     def _isEnabled(self, isValid, restriction):
         return isValid
@@ -127,13 +176,18 @@ class ActionButtonStateVO(dict):
 
     def _rotationGroupBlockMessage(self):
         from CurrentVehicle import g_currentVehicle
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ROTATIONGROUPLOCKED, {'groupNum': g_currentVehicle.item.rotationGroupNum})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ROTATIONGROUPLOCKED, {'groupNum': g_currentVehicle.item.rotationGroupNum})
 
     def _notInSlotMessage(self):
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_CANDIDATE, {}) if self.__canTakeSlot else (CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISFULL, {})
+        if self.__canTakeSlot:
+            return (CYBERSPORT.WINDOW_UNIT_MESSAGE_CANDIDATE, {})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISFULL, {})
 
     def _getUnitReadyMessage(self):
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_GETREADY, {})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_GETREADY, {})
 
     def __getState(self):
         if self.__isEnabled:
@@ -150,7 +204,9 @@ class ActionButtonStateVO(dict):
             if self.__flags.isLocked():
                 return (CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISLOCKED, {})
             return (CYBERSPORT.WINDOW_UNIT_MESSAGE_UNITISFULL, {})
-        return self.__INVALID_UNIT_MESSAGES[self.__restrictionType]() if callable(self.__INVALID_UNIT_MESSAGES[self.__restrictionType]) else self.__INVALID_UNIT_MESSAGES[self.__restrictionType]
+        if callable(self.__INVALID_UNIT_MESSAGES[self.__restrictionType]):
+            return self.__INVALID_UNIT_MESSAGES[self.__restrictionType]()
+        return self.__INVALID_UNIT_MESSAGES[self.__restrictionType]
 
     @property
     def __toolTipData(self):
@@ -158,26 +214,35 @@ class ActionButtonStateVO(dict):
             return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_NOTINSLOT
         if self.__restrictionType == UNIT_RESTRICTION.VEHICLE_NOT_VALID:
             return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_VEHICLENOTVALID
-        if self.__restrictionType in (UNIT_RESTRICTION.VEHICLE_WRONG_MODE, UNIT_RESTRICTION.UNSUITABLE_VEHICLE, UNIT_RESTRICTION.UNIT_WRONG_DATA):
+        if self.__restrictionType in (UNIT_RESTRICTION.VEHICLE_WRONG_MODE,
+         UNIT_RESTRICTION.UNSUITABLE_VEHICLE,
+         UNIT_RESTRICTION.UNIT_WRONG_DATA):
             return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_EVENTVEHICLEWRONGMODE
         if self.__isEnabled and not self._playerInfo.isReady:
             return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_PRESSFORREADY
-        return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_PRESSFORNOTREADY if self.__isEnabled and self._playerInfo.isReady else ''
+        if self.__isEnabled and self._playerInfo.isReady:
+            return TOOLTIPS.CYBERSPORT_UNIT_FIGHTBTN_PRESSFORNOTREADY
+        return ''
 
     def _clanMembersNotEnoughMessage(self):
         actualClanMembers = self.__stats.clanMembersInRoster
         minClanMembers = self.__settings.getMinClanMembersCount()
-        return (FORTIFICATIONS.ROSTER_CLANMEMBERSNOTENOUGH, {'minClanMembers': minClanMembers,
-          'actualClanMembers': actualClanMembers})
+        return (FORTIFICATIONS.ROSTER_CLANMEMBERSNOTENOUGH,
+         {'minClanMembers': minClanMembers, 
+            'actualClanMembers': actualClanMembers})
 
     def __stateTextStyleFormatter(self, state):
         if self.__restrictionType in self.__WARNING_UNIT_MESSAGES and self._playerInfo.isReady:
-            return ' '.join((icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON, vSpace=-3), text_styles.alert(state)))
+            return (' ').join((
+             icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON, vSpace=-3),
+             text_styles.alert(state)))
         if self.__restrictionType in self.__NEUTRAL_UNIT_MESSAGES:
             if self.__restrictionType is UNIT_RESTRICTION.HAS_FROZEN_VEHICLES:
                 return text_styles.alert(state)
             return text_styles.neutral(state)
-        return text_styles.error(state) if self.__restrictionType not in self.__NOT_CRITICAL_STATES else text_styles.main(state)
+        if self.__restrictionType not in self.__NOT_CRITICAL_STATES:
+            return text_styles.error(state)
+        return text_styles.main(state)
 
     @staticmethod
     def getInvalidVehicleLevelsMessage(ctx):
@@ -187,7 +252,8 @@ class ActionButtonStateVO(dict):
             vehLevels = ctx.get('vehLevels', ())
             stateString = CYBERSPORT.WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_UNRESOLVED
             if vehLevels:
-                stateStringCandidate = CYBERSPORT.window_unit_message_invalidlevelerror('_'.join((str(l) for l in vehLevels)))
+                stateStringCandidate = CYBERSPORT.window_unit_message_invalidlevelerror(('_').join(str(l) for l in vehLevels))
                 if stateStringCandidate is not None:
                     stateString = stateStringCandidate
-            return (stateString, {})
+            return (
+             stateString, {})

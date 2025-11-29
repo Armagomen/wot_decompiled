@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/ranked/rank_tooltip.py
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
 from gui.impl.gen import R
@@ -36,7 +34,8 @@ class RankedTooltipData(BlocksTooltipData):
         comment = self.__packComment()
         if comment is not None:
             items.append(comment)
-        items.append(formatters.packBuildUpBlockData([formatters.packRankBlockData(rank=self.item, padding=formatters.packPadding(top=10, bottom=15))]))
+        items.append(formatters.packBuildUpBlockData([
+         formatters.packRankBlockData(rank=self.item, padding=formatters.packPadding(top=10, bottom=15))]))
         if self.item.isQualification():
             quest = self.__getQualificationQuest()
         else:
@@ -56,7 +55,9 @@ class RankedTooltipData(BlocksTooltipData):
         quests[totalBattlesCount] = self.rankedController.getRank(ZERO_RANK_ID + 1).getQuest()
         battles = quests.keys()
         fitBattles = [ x for x in battles if x > currentBattlesCount ]
-        return quests[min(fitBattles) if fitBattles else max(battles)] if battles else None
+        if battles:
+            return quests[(min(fitBattles) if fitBattles else max(battles))]
+        return
 
     def __packTitle(self):
         divisionUserName = self.item.getDivisionUserName()
@@ -70,7 +71,10 @@ class RankedTooltipData(BlocksTooltipData):
 
     def __packComment(self):
         comment = self.__getDivisionComment() or self.__getShieldComment() or self.__getUnburnableComment()
-        return formatters.packTextBlockData(comment) if comment is not None else None
+        if comment is not None:
+            return formatters.packTextBlockData(comment)
+        else:
+            return
 
     def __getDivisionComment(self):
         comment = None

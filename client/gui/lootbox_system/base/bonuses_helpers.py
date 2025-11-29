@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/bonuses_helpers.py
 from collections import namedtuple
 from copy import deepcopy
 from itertools import izip_longest
@@ -32,7 +30,9 @@ def isCrewBook(itemTypeID, _):
 
 
 def noCompensation(info, _):
-    return not (info.get('compensatedNumber', 0) > 0 or info.get('customCompensation', (0, 0)) != (0, 0))
+    return not (info.get('compensatedNumber', 0) > 0 or info.get('customCompensation', (0,
+                                                                                        0)) != (0,
+                                                                                                0))
 
 
 def getVehiclesFilter(conditions):
@@ -42,7 +42,7 @@ def getVehiclesFilter(conditions):
         other = []
         for vehicle in vehicles:
             for vehCD, info in vehicle.items():
-                if any((condition(info, vehCD) for condition in conditions)):
+                if any(condition(info, vehCD) for condition in conditions):
                     filtered.append(vehicle)
                 else:
                     other.append(vehicle)
@@ -60,7 +60,7 @@ def getItemsFilter(conditions):
         filtered = {}
         for itemCD, count in items.items():
             itemTypeID, _, _ = parseIntCompactDescr(itemCD)
-            if any((condition(itemTypeID, itemCD) for condition in conditions)):
+            if any(condition(itemTypeID, itemCD) for condition in conditions):
                 filtered[itemCD] = count
                 del items[itemCD]
 
@@ -74,7 +74,7 @@ def getGoodiesFilter(conditions):
     def goodiesFilter(goodies):
         filtered = {}
         for goodieID, info in goodies.items():
-            if any((condition(int(goodieID)) for condition in conditions)):
+            if any(condition(int(goodieID)) for condition in conditions):
                 filtered[goodieID] = info
                 del goodies[goodieID]
 
@@ -129,12 +129,13 @@ def _groupBonuses(bonuses, groupsLayout):
                 continue
             if filterFunc is None:
                 group.bonuses[bonusType] = bonuses.pop(bonusType)
-            bonus = bonuses[bonusType]
-            filtered = filterFunc(bonus)
-            if filtered:
-                group.bonuses[bonusType] = filtered
-            if not bonus:
-                del bonuses[bonusType]
+            else:
+                bonus = bonuses[bonusType]
+                filtered = filterFunc(bonus)
+                if filtered:
+                    group.bonuses[bonusType] = filtered
+                if not bonus:
+                    del bonuses[bonusType]
 
         if not bonuses:
             break

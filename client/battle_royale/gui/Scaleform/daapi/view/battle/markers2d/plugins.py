@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/markers2d/plugins.py
 import logging
 from collections import defaultdict
 import BattleReplay
@@ -19,17 +17,30 @@ from gui.doc_loaders.battle_royale_settings_loader import getBattleRoyaleSetting
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 _logger = logging.getLogger(__name__)
-_BATTLE_ROYALE_STATUS_EFFECTS_PRIORITY = ((BATTLE_MARKER_STATES.FIRE_CIRCLE_STATE, BATTLE_MARKER_STATES.THUNDER_STRIKE_STATE),
- (BATTLE_MARKER_STATES.BERSERKER_STATE,),
- (BATTLE_MARKER_STATES.STUN_STATE,),
- (BATTLE_MARKER_STATES.DEBUFF_STATE,),
- (BATTLE_MARKER_STATES.SHOT_PASSION_STATE,),
- (BATTLE_MARKER_STATES.ADAPTATION_HEALTH_RESTORE_STATE,),
- (BATTLE_MARKER_STATES.HEALING_STATE,),
- (BATTLE_MARKER_STATES.REPAIRING_STATE,),
- (BATTLE_MARKER_STATES.INSPIRING_STATE,),
- (BATTLE_MARKER_STATES.INSPIRED_STATE,))
-_MARKERS_WITH_TIMER = (BATTLE_MARKER_STATES.INSPIRING_STATE, BATTLE_MARKER_STATES.HEALING_STATE)
+_BATTLE_ROYALE_STATUS_EFFECTS_PRIORITY = (
+ (
+  BATTLE_MARKER_STATES.FIRE_CIRCLE_STATE, BATTLE_MARKER_STATES.THUNDER_STRIKE_STATE),
+ (
+  BATTLE_MARKER_STATES.BERSERKER_STATE,),
+ (
+  BATTLE_MARKER_STATES.STUN_STATE,),
+ (
+  BATTLE_MARKER_STATES.DEBUFF_STATE,),
+ (
+  BATTLE_MARKER_STATES.SHOT_PASSION_STATE,),
+ (
+  BATTLE_MARKER_STATES.ADAPTATION_HEALTH_RESTORE_STATE,),
+ (
+  BATTLE_MARKER_STATES.HEALING_STATE,),
+ (
+  BATTLE_MARKER_STATES.REPAIRING_STATE,),
+ (
+  BATTLE_MARKER_STATES.INSPIRING_STATE,),
+ (
+  BATTLE_MARKER_STATES.INSPIRED_STATE,))
+_MARKERS_WITH_TIMER = (
+ BATTLE_MARKER_STATES.INSPIRING_STATE,
+ BATTLE_MARKER_STATES.HEALING_STATE)
 
 class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -78,13 +89,17 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
 
     def _getVehicleLevel(self, vInfo):
         isBot = vInfo.team == 21
-        return 0 if isBot else getVehicleLevel(vInfo.vehicleType)
+        if isBot:
+            return 0
+        return getVehicleLevel(vInfo.vehicleType)
 
     def _getMarkerSymbol(self, vehicleID):
         vehicleArenaInfoVO = self.__sessionProvider.getArenaDP().getVehicleInfo(vehicleID)
         if isSpawnedBot(vehicleArenaInfoVO.vehicleType.tags):
             return settings.BRmarkersSymbolsNames.BRANDER_BOT_SYMBOL
-        return settings.BRmarkersSymbolsNames.BOT_SYMBOL if isHunterBot(vehicleArenaInfoVO.vehicleType.tags) else settings.BRmarkersSymbolsNames.VEHICLE_MARKER
+        if isHunterBot(vehicleArenaInfoVO.vehicleType.tags):
+            return settings.BRmarkersSymbolsNames.BOT_SYMBOL
+        return settings.BRmarkersSymbolsNames.VEHICLE_MARKER
 
     def _getMarkerStatusPriority(self, statusID):
         try:
@@ -97,14 +112,18 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
 
     def _getCullDistanceForVehicle(self, vInfo):
         player = BigWorld.player()
-        return self.__observerMarkersVisibilityDistance if player.observerSeesAll() and not player.isObserverFPV and self.__shouldSetCullDistanceForObserver(vInfo) else super(BattleRoyaleVehicleMarkerPlugin, self)._getCullDistanceForVehicle(vInfo)
+        if player.observerSeesAll() and not player.isObserverFPV and self.__shouldSetCullDistanceForObserver(vInfo):
+            return self.__observerMarkersVisibilityDistance
+        return super(BattleRoyaleVehicleMarkerPlugin, self)._getCullDistanceForVehicle(vInfo)
 
     def __shouldSetCullDistanceForObserver(self, vInfo):
         vehicleID = vInfo.vehicleID
         if vehicleID == self._playerVehicleID or vInfo.isObserver():
             return False
         isBot = isSpawnedBot(vInfo.vehicleType.tags) or isHunterBot(vInfo.vehicleType.tags)
-        return False if not vInfo.isAlive() or not isBot else True
+        if not vInfo.isAlive() or not isBot:
+            return False
+        return True
 
     def _onVehicleFeedbackReceived(self, eventID, vehicleID, value):
         super(BattleRoyaleVehicleMarkerPlugin, self)._onVehicleFeedbackReceived(eventID, vehicleID, value)
@@ -137,7 +156,8 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
         if isRemove:
             self.__cache.pop(vehicleID, {}).pop(state, None)
         else:
-            self.__cache.setdefault(vehicleID, {})[state] = (value, markerID)
+            self.__cache.setdefault(vehicleID, {})[state] = (
+             value, markerID)
         return
 
     def __getStateByFeedbackID(self, eventID):
@@ -162,11 +182,13 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
         elif not isShown and self.__statusInActive(vehicleID, statusID):
             self.__removeStatus(vehicleID, statusID)
         if self.__markersStatesExtended[vehicleID]:
-            activeStatuses = sorted(self.__markersStatesExtended[vehicleID], key=lambda x: (x[1], self._getMarkerStatusPriority(x[0])))
+            activeStatuses = sorted(self.__markersStatesExtended[vehicleID], key=lambda x: (
+             x[1], self._getMarkerStatusPriority(x[0])))
             self.__markersStatesExtended[vehicleID] = activeStatuses
         self._markersStates[vehicleID] = [ state for state, _ in self.__markersStatesExtended[vehicleID] ]
         currentlyActiveStatusID = self._markersStates[vehicleID][0] if self._markersStates[vehicleID] else -1
-        if statusID in (BATTLE_MARKER_STATES.STUN_STATE, BATTLE_MARKER_STATES.HEALING_STATE, BATTLE_MARKER_STATES.INSPIRING_STATE):
+        if statusID in (BATTLE_MARKER_STATES.STUN_STATE, BATTLE_MARKER_STATES.HEALING_STATE,
+         BATTLE_MARKER_STATES.INSPIRING_STATE):
             isSourceVehicle = True
         elif statusID == BATTLE_MARKER_STATES.DEBUFF_STATE:
             isSourceVehicle = False
@@ -182,7 +204,7 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
         else:
             entryName = 'enemy'
         if avatar_getter.isVehiclesColorized() and not isBot:
-            entryName = 'team{}'.format(vInfo.team)
+            entryName = ('team{}').format(vInfo.team)
         return entryName
 
     def _getVehicleDamageType(self, attackerInfo, targetID):
@@ -253,7 +275,8 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
                     vehicle = BigWorld.entities.get(keyVehID)
                     if vehicle:
                         vehicle.updateStunInfo()
-            self.__hideStunMarker(keyVehID, marker.getMarkerID())
+            else:
+                self.__hideStunMarker(keyVehID, marker.getMarkerID())
 
     def __updateRepairingMarker(self, vehicleID, isShow=True):
         repairData = self.__cache.get(vehicleID, {}).get(VEHICLE_VIEW_STATE.REPAIR_POINT)
@@ -276,7 +299,7 @@ class BattleRoyaleVehicleMarkerPlugin(VehicleMarkerPlugin):
 
 
 class BRVehicleMarkerTargetPlugin(VehicleMarkerTargetPlugin):
-    __slots__ = ('__isVideoMode',)
+    __slots__ = ('__isVideoMode', )
 
     def __init__(self, parentObj, clazz=markers.VehicleTargetMarker):
         super(BRVehicleMarkerTargetPlugin, self).__init__(parentObj, clazz)

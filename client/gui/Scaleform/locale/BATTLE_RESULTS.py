@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/BATTLE_RESULTS.py
 from debug_utils import LOG_WARNING
 
 class BATTLE_RESULTS(object):
@@ -394,6 +392,8 @@ class BATTLE_RESULTS(object):
     DETAILS_CALCULATIONS_SQUAD_RESTRICTIONS_TITLE = '#battle_results:details/calculations/squad/restrictions/title'
     DETAILS_CALCULATIONS_CRYSTAL_TOTAL = '#battle_results:details/calculations/crystal/total'
     DETAILS_CALCULATIONS_CRYSTAL_EVENTS = '#battle_results:details/calculations/crystal/events'
+    DETAILS_CALCULATIONS_PETCREDITS_FULLLABEL = '#battle_results:details/calculations/petCredits/fullLabel'
+    DETAILS_CALCULATIONS_PETCREDITS_SIMPLELABEL = '#battle_results:details/calculations/petCredits/simpleLabel'
     TANKSELECTOR_NEXT = '#battle_results:tankSelector/next'
     VICTORYSCORE = '#battle_results:victoryScore'
     EXTERMINATIONVICTORY_ALLIES = '#battle_results:exterminationVictory/allies'
@@ -475,13 +475,15 @@ class BATTLE_RESULTS(object):
     BATTLERATING_TOOLTIP_USUAL_BODY = '#battle_results:battleRating/tooltip/usual/body'
     BATTLERATING_TOOLTIP_BETTER_HEADER = '#battle_results:battleRating/tooltip/better/header'
     BATTLERATING_TOOLTIP_BETTER_BODY = '#battle_results:battleRating/tooltip/better/body'
-    DETAILS_TIME_LBL_ENUM = (DETAILS_TIME_LBL_OBJECTIVESREACHED,
+    DETAILS_TIME_LBL_ENUM = (
+     DETAILS_TIME_LBL_OBJECTIVESREACHED,
      DETAILS_TIME_LBL_OBJECTIVESDESTROYED,
      DETAILS_TIME_LBL_BASESCAPTURED,
      DETAILS_TIME_LBL_ARENACREATETIMEONLYSTR,
      DETAILS_TIME_LBL_DURATION,
      DETAILS_TIME_LBL_PLAYERKILLED)
-    DETAILS_CALCULATIONS_ENUM = (DETAILS_CALCULATIONS_BOOSTERS,
+    DETAILS_CALCULATIONS_ENUM = (
+     DETAILS_CALCULATIONS_BOOSTERS,
      DETAILS_CALCULATIONS_BATTLEPAYMENTS,
      DETAILS_CALCULATIONS_TACTICALTRAINING,
      DETAILS_CALCULATIONS_MILITARYMANEUVERS,
@@ -536,8 +538,11 @@ class BATTLE_RESULTS(object):
      DETAILS_CALCULATIONS_MULTIPLIERINFO_VEHICLESEPARATOR,
      DETAILS_CALCULATIONS_SQUAD_RESTRICTIONS_TITLE,
      DETAILS_CALCULATIONS_CRYSTAL_TOTAL,
-     DETAILS_CALCULATIONS_CRYSTAL_EVENTS)
-    TEAM_STATS_LABELS_ENUM = (TEAM_STATS_LABELS_XP,
+     DETAILS_CALCULATIONS_CRYSTAL_EVENTS,
+     DETAILS_CALCULATIONS_PETCREDITS_FULLLABEL,
+     DETAILS_CALCULATIONS_PETCREDITS_SIMPLELABEL)
+    TEAM_STATS_LABELS_ENUM = (
+     TEAM_STATS_LABELS_XP,
      TEAM_STATS_LABELS_XPFORATTACK,
      TEAM_STATS_LABELS_XPFORASSIST,
      TEAM_STATS_LABELS_XPOTHER,
@@ -582,9 +587,16 @@ class BATTLE_RESULTS(object):
      TEAM_STATS_LABELS_DESTROYRECOVERYRATIO,
      TEAM_STATS_LABELS_ATKOBJECTIVES,
      TEAM_STATS_LABELS_DEFOBJECTIVES)
-    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_HEADER, TEAM_STATS_INFOTIP_XPFORASSIST_HEADER, TEAM_STATS_INFOTIP_XPOTHER_HEADER)
-    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_BODY, TEAM_STATS_INFOTIP_XPFORASSIST_BODY, TEAM_STATS_INFOTIP_XPOTHER_BODY)
-    COMMON_VEHICLESTATE_DEAD_ENUM = (COMMON_VEHICLESTATE_DEAD0,
+    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (
+     TEAM_STATS_INFOTIP_XPFORATTACK_HEADER,
+     TEAM_STATS_INFOTIP_XPFORASSIST_HEADER,
+     TEAM_STATS_INFOTIP_XPOTHER_HEADER)
+    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (
+     TEAM_STATS_INFOTIP_XPFORATTACK_BODY,
+     TEAM_STATS_INFOTIP_XPFORASSIST_BODY,
+     TEAM_STATS_INFOTIP_XPOTHER_BODY)
+    COMMON_VEHICLESTATE_DEAD_ENUM = (
+     COMMON_VEHICLESTATE_DEAD0,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME_AND_CLAN,
      COMMON_VEHICLESTATE_DEAD1,
@@ -615,54 +627,54 @@ class BATTLE_RESULTS(object):
 
     @classmethod
     def getDetailsTimeLbl(cls, statName):
-        outcome = '#battle_results:details/time/lbl_{}'.format(statName)
+        outcome = ('#battle_results:details/time/lbl_{}').format(statName)
         if outcome not in cls.DETAILS_TIME_LBL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDetailsCalculation(cls, statName):
-        outcome = '#battle_results:details/calculations/{}'.format(statName)
+        outcome = ('#battle_results:details/calculations/{}').format(statName)
         if outcome not in cls.DETAILS_CALCULATIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsLabel(cls, statName):
-        outcome = '#battle_results:team/stats/labels_{}'.format(statName)
+        outcome = ('#battle_results:team/stats/labels_{}').format(statName)
         if outcome not in cls.TEAM_STATS_LABELS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipHeader(cls, statName):
-        outcome = '#battle_results:team/stats/infotip_{}/header'.format(statName)
+        outcome = ('#battle_results:team/stats/infotip_{}/header').format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipBody(cls, statName):
-        outcome = '#battle_results:team/stats/infotip_{}/body'.format(statName)
+        outcome = ('#battle_results:team/stats/infotip_{}/body').format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getVehicleDeadState(cls, intType):
-        outcome = '#battle_results:common/vehicleState/dead{}'.format(intType)
+        outcome = ('#battle_results:common/vehicleState/dead{}').format(intType)
         if outcome not in cls.COMMON_VEHICLESTATE_DEAD_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

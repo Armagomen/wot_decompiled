@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/report_bug.py
 from adisp import adisp_process
 from gui import GUI_SETTINGS, DialogsInterface, makeHtmlString
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
@@ -23,8 +21,8 @@ class ReportBugPanel(ReportBugPanelMeta):
 
     @staticmethod
     def makeHyperLink(linkType, text):
-        ctx = {'linkType': linkType,
-         'text': text}
+        ctx = {'linkType': linkType, 
+           'text': text}
         linkHtml = makeHtmlString('html_templates:lobby/system_messages', 'link', ctx)
         return linkHtml
 

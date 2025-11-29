@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode_personality.py
 from aih_constants import CTRL_TYPE, CTRL_MODE_NAME
 from chat_shared import SYS_MESSAGE_TYPE
 from constants import HAS_DEV_RESOURCES, ARENA_GUI_TYPE, ARENA_BONUS_TYPE
@@ -49,7 +47,8 @@ class ClientStoryModeBattleMode(battle_mode.StoryModeBattleMode):
     @property
     def _client_selectorColumn(self):
         from gui.impl.lobby.mode_selector.items.items_constants import DEFAULT_COLUMN, DEFAULT_PRIORITY
-        return (DEFAULT_COLUMN, DEFAULT_PRIORITY)
+        return (
+         DEFAULT_COLUMN, DEFAULT_PRIORITY)
 
     @property
     def _client_selectorItemsCreator(self):
@@ -75,7 +74,13 @@ class ClientStoryModeBattleMode(battle_mode.StoryModeBattleMode):
         from story_mode.gui.game_control.story_mode_controller import StoryModeController
         from story_mode.gui.game_control.voiceover_manager import VoiceoverManager
         from story_mode.skeletons.voiceover_controller import IVoiceoverManager
-        return ((IStoryModeController, StoryModeController, False), (IVoiceoverManager, VoiceoverManager, False), (IStoryModeFadingController, StoryModeFadingController, False))
+        return (
+         (
+          IStoryModeController, StoryModeController, False),
+         (
+          IVoiceoverManager, VoiceoverManager, False),
+         (
+          IStoryModeFadingController, StoryModeFadingController, False))
 
     @property
     def _client_arenaDescrClass(self):
@@ -91,8 +96,8 @@ class ClientStoryModeBattleMode(battle_mode.StoryModeBattleMode):
     def _client_messengerServerFormatters(self):
         from story_mode.gui.messenger.formatters.service_channel import StoryModeResultsFormatter
         from story_mode.gui.messenger.formatters.service_channel import StoryModeAwardFormatter
-        return {SYS_MESSAGE_TYPE.storyModeBattleResults.index(): StoryModeResultsFormatter(),
-         SYS_MESSAGE_TYPE.lookup(story_mode_constants.SM_CONGRATULATIONS_MESSAGE).index(): StoryModeAwardFormatter()}
+        return {SYS_MESSAGE_TYPE.storyModeBattleResults.index(): StoryModeResultsFormatter(), 
+           SYS_MESSAGE_TYPE.lookup(story_mode_constants.SM_CONGRATULATIONS_MESSAGE).index(): StoryModeAwardFormatter()}
 
     @property
     def _client_battleControllersRepository(self):
@@ -109,11 +114,16 @@ class ClientStoryModeBattleMode(battle_mode.StoryModeBattleMode):
 
     @property
     def _client_controlModes(self):
-        return {CTRL_MODE_NAME.ARCADE: (StoryModeArcadeControlMode, 'arcadeMode', CTRL_TYPE.USUAL),
-         CTRL_MODE_NAME.SNIPER: (StoryModeSniperControlMode, 'sniperMode', CTRL_TYPE.USUAL),
-         CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD: (StoryModeArcadeMinefieldControlMode, 'arcadeEpicMinefieldMode', CTRL_TYPE.USUAL),
-         CTRL_MODE_NAME.SM_STRATEGIC: (SMStrategicMapCaseControlMode, 'strategicMode', CTRL_TYPE.USUAL),
-         CTRL_MODE_NAME.SM_ENTITY_VIEW: (SMEntityViewMode, 'postMortemMode', CTRL_TYPE.USUAL)}
+        return {CTRL_MODE_NAME.ARCADE: (
+                                 StoryModeArcadeControlMode, 'arcadeMode', CTRL_TYPE.USUAL), 
+           CTRL_MODE_NAME.SNIPER: (
+                                 StoryModeSniperControlMode, 'sniperMode', CTRL_TYPE.USUAL), 
+           CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD: (
+                                                         StoryModeArcadeMinefieldControlMode, 'arcadeEpicMinefieldMode', CTRL_TYPE.USUAL), 
+           CTRL_MODE_NAME.SM_STRATEGIC: (
+                                       SMStrategicMapCaseControlMode, 'strategicMode', CTRL_TYPE.USUAL), 
+           CTRL_MODE_NAME.SM_ENTITY_VIEW: (
+                                         SMEntityViewMode, 'postMortemMode', CTRL_TYPE.USUAL)}
 
     @property
     def _client_hangarEventBannerType(self):
@@ -135,8 +145,10 @@ class ClientOnboardingBattleMode(ClientStoryModeBattleMode):
 
     @property
     def _client_controlModes(self):
-        return {CTRL_MODE_NAME.ARCADE: (OnboardingArcadeControlMode, 'arcadeMode', CTRL_TYPE.USUAL),
-         CTRL_MODE_NAME.SNIPER: (OnboardingSniperControlMode, 'sniperMode', CTRL_TYPE.USUAL)}
+        return {CTRL_MODE_NAME.ARCADE: (
+                                 OnboardingArcadeControlMode, 'arcadeMode', CTRL_TYPE.USUAL), 
+           CTRL_MODE_NAME.SNIPER: (
+                                 OnboardingSniperControlMode, 'sniperMode', CTRL_TYPE.USUAL)}
 
 
 class ClientEventBattleMode(ClientStoryModeBattleMode):
@@ -161,7 +173,8 @@ def preInit():
     initGuiTypes(story_mode_gui_constants, __name__)
     initScaleformGuiTypes(story_mode_gui_constants, __name__)
     sm_client_settings.initialize()
-    battle_hints_overlap_controller.addSettings(ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING, HintScope.STORY_MODE.value, {STORY_MODE_BATTLE_VIEW_ALIASES.STORY_MODE_TIMER})
+    battle_hints_overlap_controller.addSettings(ARENA_BONUS_TYPE.STORY_MODE_ONBOARDING, HintScope.STORY_MODE.value, {
+     STORY_MODE_BATTLE_VIEW_ALIASES.STORY_MODE_TIMER})
     equipment_ctrl.register()
     equipments_items.register()
     battleMode = ClientStoryModeBattleMode(__name__)
@@ -197,8 +210,9 @@ def preInit():
 def init():
     LOG_DEBUG('init', __name__)
     account_settings.init()
-    g_overrideScaleFormViewsConfig.initExtensionLobbyPackages(__name__, ['story_mode.gui.scaleform.daapi.view.lobby'])
-    registerScaleformLobbyPackages(('story_mode.gui.impl.lobby',))
+    g_overrideScaleFormViewsConfig.initExtensionLobbyPackages(__name__, [
+     'story_mode.gui.scaleform.daapi.view.lobby'])
+    registerScaleformLobbyPackages(('story_mode.gui.impl.lobby', ))
     battlePackages = ('gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics', 'story_mode.gui.scaleform.daapi.view.battle')
     registerScaleformBattlePackages(story_mode_constants.ARENA_GUI_TYPE.STORY_MODE_ONBOARDING, battlePackages)
     registerScaleformBattlePackages(story_mode_constants.ARENA_GUI_TYPE.STORY_MODE_REGULAR, battlePackages)

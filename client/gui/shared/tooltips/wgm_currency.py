@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/wgm_currency.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -31,10 +29,12 @@ class WGMCurrencyTooltip(DynamicBlocksTooltipData):
     def getWGMCurrencyValue(self, key):
         if not self.isWGMAvailable():
             return _UNKNOWN_VALUE
-        elif self.__data is None:
-            return _WAITING_FOR_DATA
         else:
-            return backport.getIntegralFormat(int(self.__data[key])) if key in self.__data else _UNKNOWN_VALUE
+            if self.__data is None:
+                return _WAITING_FOR_DATA
+            if key in self.__data:
+                return backport.getIntegralFormat(int(self.__data[key]))
+            return _UNKNOWN_VALUE
 
     def updateData(self):
         if self.isVisible() and self.app is not None:
@@ -65,7 +65,7 @@ class WGMCurrencyTooltip(DynamicBlocksTooltipData):
             return formatters.packMoneyAndXpBlocks(tooltipBlocks, btnType=self._btnType, valueBlocks=self.__getValueBlocks(), alternativeData=self._getAlternativeData(), hideActionBlock=hideActionBlock)
 
     def _getAlternativeData(self):
-        return None
+        return
 
     def __onDataResponse(self, data):
         if self.__data is None or self.__checkDiff(self.__data, data):
@@ -93,14 +93,22 @@ class WGMCurrencyTooltip(DynamicBlocksTooltipData):
 
     def __getGoldString(self, goldType):
         result = self.getWGMCurrencyValue(goldType)
-        return text_styles.gold(result) if result != _WAITING_FOR_DATA else result
+        if result != _WAITING_FOR_DATA:
+            return text_styles.gold(result)
+        return result
 
     def __getGoldTotal(self):
-        return backport.getIntegralFormat(self.itemsCache.items.stats.gold) if self.isWGMAvailable() else _UNKNOWN_VALUE
+        if self.isWGMAvailable():
+            return backport.getIntegralFormat(self.itemsCache.items.stats.gold)
+        return _UNKNOWN_VALUE
 
     def __getCreditsString(self, creditsType):
         result = self.getWGMCurrencyValue(creditsType)
-        return text_styles.credits(result) if result != _WAITING_FOR_DATA else result
+        if result != _WAITING_FOR_DATA:
+            return text_styles.credits(result)
+        return result
 
     def __getCreditsTotal(self):
-        return backport.getIntegralFormat(self.itemsCache.items.stats.credits) if self.isWGMAvailable() else _UNKNOWN_VALUE
+        if self.isWGMAvailable():
+            return backport.getIntegralFormat(self.itemsCache.items.stats.credits)
+        return _UNKNOWN_VALUE

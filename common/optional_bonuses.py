@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/optional_bonuses.py
-import copy
-import random
-import time
-import typing
+import copy, random, time, typing
 from itertools import izip
 from account_shared import getCustomizationItem
 from battle_pass_common import NON_VEH_CD
@@ -28,7 +23,7 @@ def _packTrack(track):
                 curByte = curPos = 0
 
         result.append(curByte)
-        result = ''.join(('{:02x}'.format(x) for x in bytearray(result)))
+        result = ('').join(('{:02x}').format(x) for x in bytearray(result))
         return result
 
 
@@ -75,21 +70,24 @@ def __mergeCustomizations(total, key, value, isLeaf, count, vehTypeCompDescr):
         currentValue = __findCustomization(customizations, subvalue)
         if currentValue is not None:
             currentValue['value'] += subvalue['value'] * count
-        subvalue = copy.deepcopy(subvalue)
-        subvalue['value'] *= count
-        if 'boundToCurrentVehicle' in subvalue:
-            subvalue['vehTypeCompDescr'] = vehTypeCompDescr
-        customizations.append(subvalue)
+        else:
+            subvalue = copy.deepcopy(subvalue)
+            subvalue['value'] *= count
+            if 'boundToCurrentVehicle' in subvalue:
+                subvalue['vehTypeCompDescr'] = vehTypeCompDescr
+            customizations.append(subvalue)
 
     return
 
 
 def __findCustomization(customizations, value):
     for customization in customizations:
-        if all([ customization.get(param) == value.get(param) for param in ('custType', 'id', 'vehTypeCompDescr') ]):
+        if all([ customization.get(param) == value.get(param) for param in ('custType',
+                                                                            'id',
+                                                                            'vehTypeCompDescr') ]):
             return customization
 
-    return None
+    return
 
 
 def __mergeCrewSkins(total, key, value, isLeaf, count, *args):
@@ -99,9 +97,7 @@ def __mergeCrewSkins(total, key, value, isLeaf, count, *args):
 def __mergeTokens(total, key, value, isLeaf=False, count=1, *args):
     totalTokens = total.setdefault(key, {})
     for tokenID, tokenData in value.iteritems():
-        total = totalTokens.setdefault(tokenID, {'count': 0,
-         'expires': {},
-         'limit': 0})
+        total = totalTokens.setdefault(tokenID, {'count': 0, 'expires': {}, 'limit': 0})
         total['count'] += count * tokenData.get('count', 1)
         if total['count'] == 0:
             totalTokens.pop(tokenID)
@@ -120,9 +116,7 @@ def __mergeTokens(total, key, value, isLeaf=False, count=1, *args):
 def __mergeGoodies(total, key, value, isLeaf=False, count=1, *args):
     totalGoodies = total.setdefault(key, {})
     for goodieID, goodieData in value.iteritems():
-        total = totalGoodies.setdefault(goodieID, {'count': 0,
-         'expires': {},
-         'limit': 0})
+        total = totalGoodies.setdefault(goodieID, {'count': 0, 'expires': {}, 'limit': 0})
         total['count'] += count * goodieData.get('count', 1)
         if not total['expires'] and 'expires' in goodieData:
             total['expires'] = goodieData['expires']
@@ -144,6 +138,10 @@ def __mergeEntitlementList(total, key, value, isLeaf=False, count=1, *args):
     entitlementList.setdefault('items', []).extend(value.get('items', []) * count)
 
 
+def __mergePets(total, key, value, isLeaf, count, *args):
+    total.setdefault(key, set()).update(value)
+
+
 def __mergeCurrencies(total, key, value, isLeaf=False, count=1, *args):
     totalCurrency = total.setdefault(key, {})
     for currencyCode, currencyData in value.iteritems():
@@ -160,13 +158,14 @@ def __mergeDossier(total, key, value, isLeaf=False, count=1, *args):
         for record, data in it:
             block, name = record
             try:
-                record = (block, int(name))
+                record = (
+                 block, int(name))
             except:
                 pass
 
-            total = totalDossier.setdefault(record, {'value': 0,
-             'unique': False,
-             'type': 'add'})
+            total = totalDossier.setdefault(record, {'value': 0, 
+               'unique': False, 
+               'type': 'add'})
             dataValue = data['value']
             if isinstance(dataValue, basestring):
                 if dataValue == 'timestamp':
@@ -190,8 +189,8 @@ def __mergeEnhancements(total, key, value, isLeaf=False, count=1, *args):
     enhancementsTotal = total.setdefault(key, {})
     for enhancementID, enhancementData in value.iteritems():
         enhancementMerged = enhancementsTotal.setdefault(enhancementID, {})
-        enhancementMerged.update({'count': enhancementMerged.get('count', 0) + enhancementData.get('count', 0) * count,
-         'wipe': enhancementMerged.get('wipe', False) or enhancementData.get('wipe', False)})
+        enhancementMerged.update({'count': enhancementMerged.get('count', 0) + enhancementData.get('count', 0) * count, 
+           'wipe': enhancementMerged.get('wipe', False) or enhancementData.get('wipe', False)})
 
 
 def __mergeDogTag(total, key, value, isLeaf=False, count=1, *args):
@@ -231,51 +230,52 @@ def __mergeDailyQuestReroll(total, key, value, isLeaf, count, *args):
     total.setdefault(key, set()).update(value)
 
 
-BONUS_MERGERS = {'credits': __mergeValue,
- 'gold': __mergeValue,
- 'xp': __mergeValue,
- 'crystal': __mergeValue,
- 'eventCoin': __mergeValue,
- 'bpcoin': __mergeValue,
- 'equipCoin': __mergeValue,
- 'freeXP': __mergeValue,
- 'tankmenXP': __mergeValue,
- 'vehicleXP': __mergeValue,
- 'creditsFactor': __mergeFactor,
- 'xpFactor': __mergeFactor,
- 'freeXPFactor': __mergeFactor,
- 'tankmenXPFactor': __mergeFactor,
- 'vehicleXPFactor': __mergeFactor,
- 'items': __mergeItems,
- 'vehicles': __mergeVehicles,
- 'slots': __mergeValue,
- 'berths': __mergeValue,
- 'premium': __mergeValue,
- 'premium_plus': __mergeValue,
- 'premium_vip': __mergeValue,
- 'tokens': __mergeTokens,
- 'goodies': __mergeGoodies,
- 'dossier': __mergeDossier,
- 'tankmen': __mergeTankmen,
- 'customizations': __mergeCustomizations,
- 'crewSkins': __mergeCrewSkins,
- 'blueprintsAny': __mergeItems,
- 'blueprints': __mergeBlueprints,
- 'enhancements': __mergeEnhancements,
- 'entitlements': __mergeEntitlements,
- 'entitlementList': __mergeEntitlementList,
- 'currencies': __mergeCurrencies,
- 'rankedDailyBattles': __mergeValue,
- 'rankedBonusBattles': __mergeValue,
- 'dogTagComponents': __mergeDogTag,
- 'battlePassPoints': __mergeBattlePassPoints,
- 'freePremiumCrew': __mergeFreePremiumCrew,
- 'meta': __mergeMeta,
- 'dailyQuestReroll': __mergeDailyQuestReroll,
- 'noviceReset': __mergeNoviceReset}
-ITEM_INVENTORY_CHECKERS = {'vehicles': lambda account, key: account._inventory.getVehicleInvID(key) != 0 and not account._rent.isVehicleRented(account._inventory.getVehicleInvID(key)),
- 'customizations': lambda account, key: account._customizations20.getItems((key,), 0)[key] > 0,
- 'tokens': lambda account, key: account._quests.hasToken(key)}
+BONUS_MERGERS = {'credits': __mergeValue, 
+   'gold': __mergeValue, 
+   'xp': __mergeValue, 
+   'crystal': __mergeValue, 
+   'eventCoin': __mergeValue, 
+   'bpcoin': __mergeValue, 
+   'equipCoin': __mergeValue, 
+   'freeXP': __mergeValue, 
+   'tankmenXP': __mergeValue, 
+   'vehicleXP': __mergeValue, 
+   'creditsFactor': __mergeFactor, 
+   'xpFactor': __mergeFactor, 
+   'freeXPFactor': __mergeFactor, 
+   'tankmenXPFactor': __mergeFactor, 
+   'vehicleXPFactor': __mergeFactor, 
+   'items': __mergeItems, 
+   'vehicles': __mergeVehicles, 
+   'slots': __mergeValue, 
+   'berths': __mergeValue, 
+   'premium': __mergeValue, 
+   'premium_plus': __mergeValue, 
+   'premium_vip': __mergeValue, 
+   'tokens': __mergeTokens, 
+   'goodies': __mergeGoodies, 
+   'dossier': __mergeDossier, 
+   'tankmen': __mergeTankmen, 
+   'customizations': __mergeCustomizations, 
+   'crewSkins': __mergeCrewSkins, 
+   'blueprintsAny': __mergeItems, 
+   'blueprints': __mergeBlueprints, 
+   'enhancements': __mergeEnhancements, 
+   'entitlements': __mergeEntitlements, 
+   'entitlementList': __mergeEntitlementList, 
+   'currencies': __mergeCurrencies, 
+   'rankedDailyBattles': __mergeValue, 
+   'rankedBonusBattles': __mergeValue, 
+   'dogTagComponents': __mergeDogTag, 
+   'battlePassPoints': __mergeBattlePassPoints, 
+   'freePremiumCrew': __mergeFreePremiumCrew, 
+   'meta': __mergeMeta, 
+   'dailyQuestReroll': __mergeDailyQuestReroll, 
+   'noviceReset': __mergeNoviceReset, 
+   'pets': __mergePets}
+ITEM_INVENTORY_CHECKERS = {'vehicles': lambda account, key: account._inventory.getVehicleInvID(key) != 0 and not account._rent.isVehicleRented(account._inventory.getVehicleInvID(key)), 
+   'customizations': lambda account, key: account._customizations20.getItems((key,), 0)[key] > 0, 
+   'tokens': lambda account, key: account._quests.hasToken(key)}
 RENT_ITEM_INVENTORY_CHECKERS = {'vehicles': lambda account, key: account._rent.isVehicleRented(account._inventory.getVehicleInvID(key))}
 SKIP_INVENTORY_CHANGE_CHECKERS = {'tokens': lambda key: key.startswith(LOOTBOX_TOKEN_PREFIX)}
 
@@ -308,8 +308,9 @@ class BonusItemsCache(object):
             wasAccepted = False
             cache[itemKey][isRent] = (wasInInventory, wasAccepted)
         if isRent and itemName in ITEM_INVENTORY_CHECKERS and cache[itemKey].get(False, None) is None:
-            cache[itemKey][False] = (ITEM_INVENTORY_CHECKERS[itemName](self.__account, itemKey), False)
-        return wasInInventory or wasAccepted or isRent and any((state for state in cache[itemKey].get(False, ())))
+            cache[itemKey][False] = (
+             ITEM_INVENTORY_CHECKERS[itemName](self.__account, itemKey), False)
+        return wasInInventory or wasAccepted or isRent and any(state for state in cache[itemKey].get(False, ()))
 
     def getFinalizedCache(self):
         result = {}
@@ -318,7 +319,8 @@ class BonusItemsCache(object):
             for key, keyData in checks.iteritems():
                 keyResult = bonusResult.setdefault(key, {})
                 for flag, (wasInInventory, wasAccepted) in keyData.iteritems():
-                    keyResult[flag] = (wasInInventory or wasAccepted, False)
+                    keyResult[flag] = (
+                     wasInInventory or wasAccepted, False)
 
         return result
 
@@ -336,9 +338,9 @@ class BonusItemsCache(object):
         return False
 
 
-DEEP_CHECKERS = {'groups': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: all((nodeAcceptor.depthCheck(subBonusNode, checkInventory, depthLevel) for subBonusNode in bonusNode)),
- 'allof': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: all((nodeAcceptor.isAcceptable(subBonusNode[-1], False, depthLevel - 1) for subBonusNode in bonusNode)),
- 'oneof': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: any((nodeAcceptor.isAcceptable(subBonusNode[-1], checkInventory, depthLevel - 1) for subBonusNode in bonusNode[-1]))}
+DEEP_CHECKERS = {'groups': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: all(nodeAcceptor.depthCheck(subBonusNode, checkInventory, depthLevel) for subBonusNode in bonusNode), 
+   'allof': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: all(nodeAcceptor.isAcceptable(subBonusNode[(-1)], False, depthLevel - 1) for subBonusNode in bonusNode), 
+   'oneof': lambda nodeAcceptor, bonusNode, checkInventory, depthLevel: any(nodeAcceptor.isAcceptable(subBonusNode[(-1)], checkInventory, depthLevel - 1) for subBonusNode in bonusNode[(-1)])}
 
 class BonusNodeAcceptor(object):
 
@@ -353,7 +355,8 @@ class BonusNodeAcceptor(object):
         self.__shouldVisitNodes = None
         self.__bonusCache = bonusCache or BonusItemsCache(account)
         probabilityStage = min(probabilityStage, self.__maxStage)
-        self.__probabilitiesStage = [probabilityStage, probabilityStage]
+        self.__probabilitiesStage = [
+         probabilityStage, probabilityStage]
         self.__bonusProbabilityUses = None
         self.__shouldUseBonusProbability = False
         self.__isMaxStageReached = self.__maxStage <= probabilityStage
@@ -374,11 +377,13 @@ class BonusNodeAcceptor(object):
             self.__bonusProbabilityUses = bonusProbabilityUses = {}
             for limitID, config in self.__limitsConfig.iteritems():
                 if 'guaranteedFrequency' in config or 'maxFrequency' in config or 'useBonusProbabilityAfter' in config:
-                    cooldowns[limitID], uses[limitID], bonusProbabilityUses[limitID] = counters.get(limitID, (0, 0, 0))
+                    cooldowns[limitID], uses[limitID], bonusProbabilityUses[limitID] = counters.get(limitID, (0,
+                                                                                                              0,
+                                                                                                              0))
 
     def getCounters(self):
         if not self.__limitsConfig:
-            return None
+            return
         else:
             result = {}
             cooldowns = self.__cooldowns
@@ -386,7 +391,8 @@ class BonusNodeAcceptor(object):
             bonusProbabilityUses = self.__bonusProbabilityUses
             for limitID, config in self.__limitsConfig.iteritems():
                 if 'guaranteedFrequency' in config or 'maxFrequency' in config or 'useBonusProbabilityAfter' in config:
-                    result[limitID] = (cooldowns[limitID], uses[limitID], bonusProbabilityUses[limitID])
+                    result[limitID] = (
+                     cooldowns[limitID], uses[limitID], bonusProbabilityUses[limitID])
 
             return result or None
 
@@ -406,21 +412,28 @@ class BonusNodeAcceptor(object):
         if self.isSectionTrackedByNameLimitReached(bonusNodeProperties):
             return False
         trackedByNameLimit = bonusNodeProperties.get('trackedByNameLimit')
-        return False if checkInventory and not (dropInGroup or trackedByNameLimit) and self.isBonusExists(bonusNode) else self.depthCheck(bonusNode, checkInventory, depthLevel)
+        if checkInventory and not (dropInGroup or trackedByNameLimit) and self.isBonusExists(bonusNode):
+            return False
+        return self.depthCheck(bonusNode, checkInventory, depthLevel)
 
     def getNodesForVisit(self, ids):
-        return self.__shouldVisitNodes.intersection(ids) if ids and self.__shouldVisitNodes else None
+        if ids and self.__shouldVisitNodes:
+            return self.__shouldVisitNodes.intersection(ids)
+        else:
+            return
 
     def isLimitReached(self, bonusNode):
         if not self.__limitsConfig:
             return False
-        limitID = bonusNode.get('properties', {}).get('limitID', None)
-        if not limitID:
-            return False
-        elif self.__locals.get(limitID, 1) <= 0:
-            return True
         else:
-            return True if self.__cooldowns.get(limitID, 0) > 0 else False
+            limitID = bonusNode.get('properties', {}).get('limitID', None)
+            if not limitID:
+                return False
+            if self.__locals.get(limitID, 1) <= 0:
+                return True
+            if self.__cooldowns.get(limitID, 0) > 0:
+                return True
+            return False
 
     def updateBonusCache(self, bonusNode):
         cache = self.__bonusCache
@@ -510,7 +523,9 @@ class BonusNodeAcceptor(object):
             if trackedByNameLimit is None:
                 return False
             previousLimitValue = self.__trackedByNameSections.get(bonusNodeProperties.get('name'), 0)
-            return False if previousLimitValue < trackedByNameLimit else True
+            if previousLimitValue < trackedByNameLimit:
+                return False
+            return True
 
     def updateTrackedByNameSections(self, bonusNodeProperties):
         if bonusNodeProperties.get('trackedByNameLimit') is None:
@@ -522,7 +537,10 @@ class BonusNodeAcceptor(object):
 
     def depthCheck(self, bonusNode, checkInventory, depthLevel=None):
         currentDepthLevel = bonusNode.get('properties', {}).get('depthLevel', 0) if depthLevel is None else depthLevel
-        return True if currentDepthLevel <= 0 else all((DEEP_CHECKERS[bonusNodeName](self, bonusNodeValue, checkInventory, currentDepthLevel) for bonusNodeName, bonusNodeValue in bonusNode.iteritems() if bonusNodeName in DEEP_CHECKERS))
+        if currentDepthLevel <= 0:
+            return True
+        else:
+            return all(DEEP_CHECKERS[bonusNodeName](self, bonusNodeValue, checkInventory, currentDepthLevel) for bonusNodeName, bonusNodeValue in bonusNode.iteritems() if bonusNodeName in DEEP_CHECKERS)
 
     def getProbabilityStages(self):
         return self.__probabilitiesStage
@@ -550,7 +568,7 @@ class BonusNodeAcceptor(object):
         return self.__dropInGroupsBonuses
 
     def __updateDropInGroupLimits(self):
-        if self.__dropInGroupsBonusesLimit <= sum((len(v) for v in self.__dropInGroupsBonuses.itervalues())):
+        if self.__dropInGroupsBonusesLimit <= sum(len(v) for v in self.__dropInGroupsBonuses.itervalues()):
             for v in self.__dropInGroupsBonuses.itervalues():
                 v.clear()
 
@@ -656,13 +674,14 @@ class NodeVisitor(object):
         for bonusName, bonusValue in bonusSection.iteritems():
             if bonusName == 'oneof':
                 self.onOneOf(result, bonusValue)
-            if bonusName == 'allof':
+            elif bonusName == 'allof':
                 self.onAllOf(result, bonusValue)
-            if bonusName == 'groups':
+            elif bonusName == 'groups':
                 self.onGroup(result, bonusValue)
-            if bonusName in ('config', 'properties', 'needsExpansion'):
+            elif bonusName in ('config', 'properties', 'needsExpansion'):
                 continue
-            self.onMergeValue(result, bonusName, bonusValue, True)
+            else:
+                self.onMergeValue(result, bonusName, bonusValue, True)
 
         for name, value in result.iteritems():
             self.onMergeValue(storage, name, value, False)
@@ -768,7 +787,7 @@ class ProbabilityVisitor(NodeVisitor):
                         selectedIdx, _, selectedValue = bonusNode
                         break
                 else:
-                    raise SoftException('Unreachable code, oneof probability bug, random value: {}, available bonus nodes: {}'.format(randomValue, availableBonusNodes))
+                    raise SoftException(('Unreachable code, oneof probability bug, random value: {}, available bonus nodes: {}').format(randomValue, availableBonusNodes))
 
         for i in xrange(selectedIdx):
             self.__trackChoice(False)
@@ -788,7 +807,8 @@ class ProbabilityVisitor(NodeVisitor):
                 self.__trackChoice(True)
                 self.__nodeAcceptor.accept(bonusValue)
                 self._walkSubsection(storage, bonusValue)
-            self.__trackChoice(False)
+            else:
+                self.__trackChoice(False)
 
     def onGroup(self, storage, values):
         for bonusValue in values:
@@ -822,8 +842,8 @@ class StripVisitor(NodeVisitor):
             if prevProbability and probability != [0.0] * len(probability):
                 return [ currProb - prevProb for currProb, prevProb in izip(probability, prevProbability) ]
             return probability
-        else:
-            return [-1]
+        return [
+         -1]
 
     def onOneOf(self, storage, values):
         strippedValues = []
@@ -831,14 +851,11 @@ class StripVisitor(NodeVisitor):
         for index, (probability, bonusProbability, refGlobalID, bonusValue) in enumerate(values):
             stippedValue = {}
             self._walkSubsection(stippedValue, bonusValue)
-            prevProbability = values[index - 1][0] if index > 0 else None
+            prevProbability = values[(index - 1)][0] if index > 0 else None
             bonusValueName = bonusValue.get('properties', {}).get('name', None)
             if bonusValueName:
                 stippedValue['properties'] = {'name': bonusValueName}
-            strippedValues.append((self.__getShownProbability(probability, prevProbability),
-             -1,
-             None,
-             stippedValue))
+            strippedValues.append((self.__getShownProbability(probability, prevProbability), -1, None, stippedValue))
 
         storage['oneof'] = (None, strippedValues)
         return
@@ -851,10 +868,7 @@ class StripVisitor(NodeVisitor):
             bonusValueName = bonusValue.get('properties', {}).get('name', None)
             if bonusValueName:
                 stippedValue['properties'] = {'name': bonusValueName}
-            strippedValues.append((self.__getShownProbability(probability),
-             -1,
-             None,
-             stippedValue))
+            strippedValues.append((self.__getShownProbability(probability), -1, None, stippedValue))
 
         storage['allof'] = strippedValues
         return

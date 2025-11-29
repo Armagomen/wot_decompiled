@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleQueueMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class BattleQueueMeta(View):
@@ -14,19 +12,25 @@ class BattleQueueMeta(View):
         self._printOverrideError('onEscape')
 
     def as_setTimerS(self, textLabel, timeLabel):
-        return self.flashObject.as_setTimer(textLabel, timeLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTimer(textLabel, timeLabel)
 
     def as_setTypeInfoS(self, data):
-        return self.flashObject.as_setTypeInfo(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTypeInfo(data)
 
     def as_setPlayersS(self, text):
-        return self.flashObject.as_setPlayers(text) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayers(text)
 
     def as_setDPS(self, dataProvider):
-        return self.flashObject.as_setDP(dataProvider) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDP(dataProvider)
 
     def as_showStartS(self, vis):
-        return self.flashObject.as_showStart(vis) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showStart(vis)
 
     def as_showExitS(self, vis):
-        return self.flashObject.as_showExit(vis) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showExit(vis)

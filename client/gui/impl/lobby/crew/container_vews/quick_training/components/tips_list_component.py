@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/components/tips_list_component.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from gui.impl.gen.view_models.views.lobby.crew.common.info_tip_model import TipType
 from gui.impl.lobby.container_views.base.components import ComponentBase
 from gui.impl.lobby.crew.crew_sounds import SOUNDS

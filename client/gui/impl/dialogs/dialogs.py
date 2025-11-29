@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/dialogs.py
 import typing
 from BWUtil import AsyncReturn
 from frameworks.wulf import WindowStatus

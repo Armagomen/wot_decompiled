@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/wgcg/server_replays/contexts.py
 from typing import Dict, List
 import base64
 from gui.wgcg.base.contexts import CommonWebRequestCtx

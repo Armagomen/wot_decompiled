@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/ui/dialogs.py
-import adisp
-import wg_async
+import adisp, wg_async
 from gui.impl.pub.dialog_window import DialogButtons
 from gui.shared.event_dispatcher import showPreformattedDialog
 from shared_utils import first
@@ -10,7 +7,7 @@ from web.web_client_api import WebCommandException, w2c, W2CSchema, Field
 def _dialogButtonsValidator(buttonsList, _=None):
     for button in buttonsList:
         if first(button.keys()) not in DialogButtons.ALL:
-            raise WebCommandException('unsupported button label "{}"'.format(first(button.keys())))
+            raise WebCommandException(('unsupported button label "{}"').format(first(button.keys())))
 
     return True
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattle/after_battle_reward_view_helpers.py
 import logging
 from collections import namedtuple
 from itertools import chain
@@ -31,12 +29,14 @@ def getFinishBadgeBonuses(questsProgressData, finishQuestID, eventsCache=None, i
     finishQuest = allQuests.get(finishQuestID, None)
     if finishQuest is None:
         return []
-    elif finishQuestID in questsProgressData:
-        return finishQuest.getBonuses()
-    elif all((b.isAchieved for b in chain.from_iterable((d.getBadges() for d in finishQuest.getBonuses('dossier'))))):
-        return finishQuest.getBonuses()
     else:
-        return finishQuest.getBonuses() if all((t.getNeededCount() <= itemsCache.items.tokens.getTokenCount(t.getID()) for t in finishQuest.accountReqs.getTokens())) else []
+        if finishQuestID in questsProgressData:
+            return finishQuest.getBonuses()
+        if all(b.isAchieved for b in chain.from_iterable(d.getBadges() for d in finishQuest.getBonuses('dossier'))):
+            return finishQuest.getBonuses()
+        if all(t.getNeededCount() <= itemsCache.items.tokens.getTokenCount(t.getID()) for t in finishQuest.accountReqs.getTokens()):
+            return finishQuest.getBonuses()
+        return []
 
 
 @dependency.replace_none_kwargs(epicController=IEpicBattleMetaGameController)

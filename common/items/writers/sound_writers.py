@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/writers/sound_writers.py
-import math
-import ResMgr
+import math, ResMgr
 from items import _xml
 from items.components import sound_components
 from items.writers import shared_writers

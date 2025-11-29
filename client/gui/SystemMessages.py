@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/SystemMessages.py
 from collections import namedtuple
 from enumerations import Enumeration
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.system_messages import ISystemMessages
 ResultMsg = namedtuple('ResultMsg', 'success userMsg sysMsgType msgPriority msgData auxData')
-SM_TYPE = Enumeration('System message type', ['Error',
+SM_TYPE = Enumeration('System message type', [
+ 'Error',
  'ErrorHeader',
  'ErrorSimple',
  'Warning',
@@ -99,18 +98,18 @@ SM_TYPE = Enumeration('System message type', ['Error',
  'PmActiveOperation',
  'VehicleSkillTreePerksResearched',
  'OpenBundleRewards'])
-CURRENCY_TO_SM_TYPE = {Currency.CREDITS: SM_TYPE.PurchaseForCredits,
- Currency.GOLD: SM_TYPE.PurchaseForGold,
- Currency.CRYSTAL: SM_TYPE.PurchaseForCrystal,
- Currency.EVENT_COIN: SM_TYPE.PurchaseForEventCoin,
- Currency.BPCOIN: SM_TYPE.PurchaseForBpcoin,
- Currency.EQUIP_COIN: SM_TYPE.PurchaseForEquipCoin}
-CURRENCY_TO_SM_TYPE_DISMANTLING = {Currency.CREDITS: SM_TYPE.DismantlingForCredits,
- Currency.GOLD: SM_TYPE.DismantlingForGold,
- Currency.CRYSTAL: SM_TYPE.DismantlingForCrystal,
- Currency.EVENT_COIN: SM_TYPE.DismantlingForEventCoin,
- Currency.BPCOIN: SM_TYPE.DismantlingForBpcoin,
- Currency.EQUIP_COIN: SM_TYPE.DismantlingForEquipCoin}
+CURRENCY_TO_SM_TYPE = {Currency.CREDITS: SM_TYPE.PurchaseForCredits, 
+   Currency.GOLD: SM_TYPE.PurchaseForGold, 
+   Currency.CRYSTAL: SM_TYPE.PurchaseForCrystal, 
+   Currency.EVENT_COIN: SM_TYPE.PurchaseForEventCoin, 
+   Currency.BPCOIN: SM_TYPE.PurchaseForBpcoin, 
+   Currency.EQUIP_COIN: SM_TYPE.PurchaseForEquipCoin}
+CURRENCY_TO_SM_TYPE_DISMANTLING = {Currency.CREDITS: SM_TYPE.DismantlingForCredits, 
+   Currency.GOLD: SM_TYPE.DismantlingForGold, 
+   Currency.CRYSTAL: SM_TYPE.DismantlingForCrystal, 
+   Currency.EVENT_COIN: SM_TYPE.DismantlingForEventCoin, 
+   Currency.BPCOIN: SM_TYPE.DismantlingForBpcoin, 
+   Currency.EQUIP_COIN: SM_TYPE.DismantlingForEquipCoin}
 
 def _getSystemMessages():
     return dependency.instance(ISystemMessages)

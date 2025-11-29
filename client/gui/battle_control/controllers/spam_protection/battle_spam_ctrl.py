@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/spam_protection/battle_spam_ctrl.py
 import typing
 from gui.battle_control.arena_info.interfaces import IBattleSpamController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID

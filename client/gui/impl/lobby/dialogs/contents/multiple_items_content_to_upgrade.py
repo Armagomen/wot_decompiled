@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/multiple_items_content_to_upgrade.py
 import typing
 from gui.impl.lobby.dialogs.contents.multiple_items_content import MultipleItemsContent
 from gui.impl.lobby.dialogs.auxiliary.confirmed_items_packer import ConfirmedItemsToUpgradePacker

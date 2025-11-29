@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/customization/shared.py
 from collections import namedtuple, Counter, defaultdict
-import logging
-import typing
-import Math
+import logging, typing, Math
 from frameworks.wulf.gui_constants import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
@@ -32,19 +28,20 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 C11nId = namedtuple('C11nId', ('areaId', 'slotType', 'regionIdx'))
 C11nId.__new__.__defaults__ = (-1, -1, -1)
-C11N_ITEM_TYPE_MAP = {GUI_ITEM_TYPE.PAINT: CustomizationType.PAINT,
- GUI_ITEM_TYPE.CAMOUFLAGE: CustomizationType.CAMOUFLAGE,
- GUI_ITEM_TYPE.MODIFICATION: CustomizationType.MODIFICATION,
- GUI_ITEM_TYPE.DECAL: CustomizationType.DECAL,
- GUI_ITEM_TYPE.EMBLEM: CustomizationType.DECAL,
- GUI_ITEM_TYPE.INSCRIPTION: CustomizationType.DECAL,
- GUI_ITEM_TYPE.PERSONAL_NUMBER: CustomizationType.PERSONAL_NUMBER,
- GUI_ITEM_TYPE.STYLE: CustomizationType.STYLE,
- GUI_ITEM_TYPE.PROJECTION_DECAL: CustomizationType.PROJECTION_DECAL,
- GUI_ITEM_TYPE.ATTACHMENT: CustomizationType.ATTACHMENT,
- GUI_ITEM_TYPE.SEQUENCE: CustomizationType.SEQUENCE,
- GUI_ITEM_TYPE.STAT_TRACKER: CustomizationType.STAT_TRACKER}
-PURCHASE_ITEMS_ORDER = (GUI_ITEM_TYPE.STYLE,
+C11N_ITEM_TYPE_MAP = {GUI_ITEM_TYPE.PAINT: CustomizationType.PAINT, 
+   GUI_ITEM_TYPE.CAMOUFLAGE: CustomizationType.CAMOUFLAGE, 
+   GUI_ITEM_TYPE.MODIFICATION: CustomizationType.MODIFICATION, 
+   GUI_ITEM_TYPE.DECAL: CustomizationType.DECAL, 
+   GUI_ITEM_TYPE.EMBLEM: CustomizationType.DECAL, 
+   GUI_ITEM_TYPE.INSCRIPTION: CustomizationType.DECAL, 
+   GUI_ITEM_TYPE.PERSONAL_NUMBER: CustomizationType.PERSONAL_NUMBER, 
+   GUI_ITEM_TYPE.STYLE: CustomizationType.STYLE, 
+   GUI_ITEM_TYPE.PROJECTION_DECAL: CustomizationType.PROJECTION_DECAL, 
+   GUI_ITEM_TYPE.ATTACHMENT: CustomizationType.ATTACHMENT, 
+   GUI_ITEM_TYPE.SEQUENCE: CustomizationType.SEQUENCE, 
+   GUI_ITEM_TYPE.STAT_TRACKER: CustomizationType.STAT_TRACKER}
+PURCHASE_ITEMS_ORDER = (
+ GUI_ITEM_TYPE.STYLE,
  GUI_ITEM_TYPE.ATTACHMENT,
  GUI_ITEM_TYPE.STAT_TRACKER,
  GUI_ITEM_TYPE.SEQUENCE,
@@ -56,15 +53,17 @@ PURCHASE_ITEMS_ORDER = (GUI_ITEM_TYPE.STYLE,
  GUI_ITEM_TYPE.CAMOUFLAGE,
  GUI_ITEM_TYPE.EMBLEM)
 _EDITED_ITEM_ORDER_SHIFT = 8
-PURCHASE_ITEMS_ORDER += tuple((key << _EDITED_ITEM_ORDER_SHIFT for key in PURCHASE_ITEMS_ORDER))
-EDITABLE_STYLE_IRREMOVABLE_TYPES = (GUI_ITEM_TYPE.PAINT, GUI_ITEM_TYPE.CAMOUFLAGE, GUI_ITEM_TYPE.MODIFICATION)
-EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES = {GUI_ITEM_TYPE.PAINT: C11nId(Area.HULL, GUI_ITEM_TYPE.PAINT, 0),
- GUI_ITEM_TYPE.CAMOUFLAGE: C11nId(Area.HULL, GUI_ITEM_TYPE.CAMOUFLAGE, 0)}
-COMMON_C11N_TYPE_TO_OUTFIT_FIELD_MAP = {GUI_ITEM_TYPE.STAT_TRACKER: 'stat_trackers',
- GUI_ITEM_TYPE.ATTACHMENT: 'attachments'}
+PURCHASE_ITEMS_ORDER += tuple(key << _EDITED_ITEM_ORDER_SHIFT for key in PURCHASE_ITEMS_ORDER)
+EDITABLE_STYLE_IRREMOVABLE_TYPES = (
+ GUI_ITEM_TYPE.PAINT, GUI_ITEM_TYPE.CAMOUFLAGE, GUI_ITEM_TYPE.MODIFICATION)
+EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES = {GUI_ITEM_TYPE.PAINT: C11nId(Area.HULL, GUI_ITEM_TYPE.PAINT, 0), 
+   GUI_ITEM_TYPE.CAMOUFLAGE: C11nId(Area.HULL, GUI_ITEM_TYPE.CAMOUFLAGE, 0)}
+COMMON_C11N_TYPE_TO_OUTFIT_FIELD_MAP = {GUI_ITEM_TYPE.STAT_TRACKER: 'stat_trackers', 
+   GUI_ITEM_TYPE.ATTACHMENT: 'attachments'}
 
 class PurchaseItem(object):
-    __slots__ = ('item', 'price', 'areaID', 'slotType', 'regionIdx', 'selected', 'group', 'isFromInventory', 'component', 'locked', 'isEdited', 'progressionLevel')
+    __slots__ = ('item', 'price', 'areaID', 'slotType', 'regionIdx', 'selected', 'group',
+                 'isFromInventory', 'component', 'locked', 'isEdited', 'progressionLevel')
 
     def __init__(self, item, price, areaID, slotType, regionIdx, selected, group, isFromInventory=False, component=None, locked=False, isEdited=False, progressionLevel=-1):
         self.item = item
@@ -81,7 +80,9 @@ class PurchaseItem(object):
         self.progressionLevel = progressionLevel
 
     def getOrderKey(self):
-        return self.item.itemTypeID if not self.isEdited else self.item.itemTypeID << _EDITED_ITEM_ORDER_SHIFT
+        if not self.isEdited:
+            return self.item.itemTypeID
+        return self.item.itemTypeID << _EDITED_ITEM_ORDER_SHIFT
 
 
 class HighlightingMode(CONST_CONTAINER):
@@ -92,43 +93,46 @@ class HighlightingMode(CONST_CONTAINER):
     CAMO_REGIONS_SKIP_TURRET = 4
 
 
-MODE_TO_C11N_TYPE = {HighlightingMode.PAINT_REGIONS: GUI_ITEM_TYPE.PAINT,
- HighlightingMode.REPAINT_REGIONS_MERGED: GUI_ITEM_TYPE.PAINT,
- HighlightingMode.CAMO_REGIONS: GUI_ITEM_TYPE.CAMOUFLAGE,
- HighlightingMode.WHOLE_VEHICLE: GUI_ITEM_TYPE.STYLE,
- HighlightingMode.CAMO_REGIONS_SKIP_TURRET: GUI_ITEM_TYPE.CAMOUFLAGE}
-REGIONS_BY_AREA_ID = {Area.CHASSIS: ApplyArea.CHASSIS_REGIONS,
- Area.HULL: ApplyArea.HULL_REGIONS,
- Area.TURRET: ApplyArea.TURRET_REGIONS,
- Area.GUN: ApplyArea.GUN_REGIONS}
+MODE_TO_C11N_TYPE = {HighlightingMode.PAINT_REGIONS: GUI_ITEM_TYPE.PAINT, 
+   HighlightingMode.REPAINT_REGIONS_MERGED: GUI_ITEM_TYPE.PAINT, 
+   HighlightingMode.CAMO_REGIONS: GUI_ITEM_TYPE.CAMOUFLAGE, 
+   HighlightingMode.WHOLE_VEHICLE: GUI_ITEM_TYPE.STYLE, 
+   HighlightingMode.CAMO_REGIONS_SKIP_TURRET: GUI_ITEM_TYPE.CAMOUFLAGE}
+REGIONS_BY_AREA_ID = {Area.CHASSIS: ApplyArea.CHASSIS_REGIONS, 
+   Area.HULL: ApplyArea.HULL_REGIONS, 
+   Area.TURRET: ApplyArea.TURRET_REGIONS, 
+   Area.GUN: ApplyArea.GUN_REGIONS}
 AREA_ID_BY_REGION = {region:areaId for areaId, regions in REGIONS_BY_AREA_ID.iteritems() for region in regions}
 QUANTITY_LIMITED_CUSTOMIZATION_TYPES = {GUI_ITEM_TYPE.PROJECTION_DECAL: MAX_USERS_PROJECTION_DECALS}
-PROJECTION_DECAL_IMAGE_FORM_TAG = {ProjectionDecalFormTags.SQUARE: R.images.gui.maps.icons.customization.icon_form_1(),
- ProjectionDecalFormTags.RECT1X2: R.images.gui.maps.icons.customization.icon_form_2(),
- ProjectionDecalFormTags.RECT1X3: R.images.gui.maps.icons.customization.icon_form_3(),
- ProjectionDecalFormTags.RECT1X4: R.images.gui.maps.icons.customization.icon_form_4(),
- ProjectionDecalFormTags.RECT1X6: R.images.gui.maps.icons.customization.icon_form_6()}
-PROJECTION_DECAL_TEXT_FORM_TAG = {ProjectionDecalFormTags.SQUARE: R.strings.vehicle_customization.form.formfactor_square(),
- ProjectionDecalFormTags.RECT1X2: R.strings.vehicle_customization.form.formfactor_rect1x2(),
- ProjectionDecalFormTags.RECT1X3: R.strings.vehicle_customization.form.formfactor_rect1x3(),
- ProjectionDecalFormTags.RECT1X4: R.strings.vehicle_customization.form.formfactor_rect1x4(),
- ProjectionDecalFormTags.RECT1X6: R.strings.vehicle_customization.form.formfactor_rect1x6()}
-PROJECTION_DECAL_FORM_TO_UI_ID = {ProjectionDecalFormTags.SQUARE: 1,
- ProjectionDecalFormTags.RECT1X2: 2,
- ProjectionDecalFormTags.RECT1X3: 3,
- ProjectionDecalFormTags.RECT1X4: 4,
- ProjectionDecalFormTags.RECT1X6: 6}
-SEASON_IDX_TO_TYPE = {SEASONS_CONSTANTS.SUMMER_INDEX: SeasonType.SUMMER,
- SEASONS_CONSTANTS.WINTER_INDEX: SeasonType.WINTER,
- SEASONS_CONSTANTS.DESERT_INDEX: SeasonType.DESERT}
-SEASON_TYPE_TO_NAME = {SeasonType.SUMMER: SEASONS_CONSTANTS.SUMMER,
- SeasonType.WINTER: SEASONS_CONSTANTS.WINTER,
- SeasonType.DESERT: SEASONS_CONSTANTS.DESERT,
- SeasonType.ALL: SEASONS_CONSTANTS.ALL}
-SEASON_TYPE_TO_IDX = {SeasonType.SUMMER: SEASONS_CONSTANTS.SUMMER_INDEX,
- SeasonType.WINTER: SEASONS_CONSTANTS.WINTER_INDEX,
- SeasonType.DESERT: SEASONS_CONSTANTS.DESERT_INDEX}
-SEASONS_ORDER = (SeasonType.SUMMER, SeasonType.WINTER, SeasonType.DESERT)
+PROJECTION_DECAL_IMAGE_FORM_TAG = {ProjectionDecalFormTags.SQUARE: R.images.gui.maps.icons.customization.icon_form_1(), 
+   ProjectionDecalFormTags.RECT1X2: R.images.gui.maps.icons.customization.icon_form_2(), 
+   ProjectionDecalFormTags.RECT1X3: R.images.gui.maps.icons.customization.icon_form_3(), 
+   ProjectionDecalFormTags.RECT1X4: R.images.gui.maps.icons.customization.icon_form_4(), 
+   ProjectionDecalFormTags.RECT1X6: R.images.gui.maps.icons.customization.icon_form_6()}
+PROJECTION_DECAL_TEXT_FORM_TAG = {ProjectionDecalFormTags.SQUARE: R.strings.vehicle_customization.form.formfactor_square(), 
+   ProjectionDecalFormTags.RECT1X2: R.strings.vehicle_customization.form.formfactor_rect1x2(), 
+   ProjectionDecalFormTags.RECT1X3: R.strings.vehicle_customization.form.formfactor_rect1x3(), 
+   ProjectionDecalFormTags.RECT1X4: R.strings.vehicle_customization.form.formfactor_rect1x4(), 
+   ProjectionDecalFormTags.RECT1X6: R.strings.vehicle_customization.form.formfactor_rect1x6()}
+PROJECTION_DECAL_FORM_TO_UI_ID = {ProjectionDecalFormTags.SQUARE: 1, 
+   ProjectionDecalFormTags.RECT1X2: 2, 
+   ProjectionDecalFormTags.RECT1X3: 3, 
+   ProjectionDecalFormTags.RECT1X4: 4, 
+   ProjectionDecalFormTags.RECT1X6: 6}
+SEASON_IDX_TO_TYPE = {SEASONS_CONSTANTS.SUMMER_INDEX: SeasonType.SUMMER, 
+   SEASONS_CONSTANTS.WINTER_INDEX: SeasonType.WINTER, 
+   SEASONS_CONSTANTS.DESERT_INDEX: SeasonType.DESERT}
+SEASON_TYPE_TO_NAME = {SeasonType.SUMMER: SEASONS_CONSTANTS.SUMMER, 
+   SeasonType.WINTER: SEASONS_CONSTANTS.WINTER, 
+   SeasonType.DESERT: SEASONS_CONSTANTS.DESERT, 
+   SeasonType.ALL: SEASONS_CONSTANTS.ALL}
+SEASON_TYPE_TO_IDX = {SeasonType.SUMMER: SEASONS_CONSTANTS.SUMMER_INDEX, 
+   SeasonType.WINTER: SEASONS_CONSTANTS.WINTER_INDEX, 
+   SeasonType.DESERT: SEASONS_CONSTANTS.DESERT_INDEX}
+SEASONS_ORDER = (
+ SeasonType.SUMMER,
+ SeasonType.WINTER,
+ SeasonType.DESERT)
 CartInfo = namedtuple('CartInfo', ('totalPrice', 'selectedCount', 'boughtCount'))
 
 class _PurchaseItemRecord(object):
@@ -161,15 +165,20 @@ def chooseMode(itemTypeID, modeId, vehicle):
         if not __isTurretCustomizable(vehicle.descriptor):
             return HighlightingMode.CAMO_REGIONS_SKIP_TURRET
         return HighlightingMode.CAMO_REGIONS
-    return HighlightingMode.REPAINT_REGIONS_MERGED if itemTypeID == GUI_ITEM_TYPE.PAINT else HighlightingMode.WHOLE_VEHICLE
+    if itemTypeID == GUI_ITEM_TYPE.PAINT:
+        return HighlightingMode.REPAINT_REGIONS_MERGED
+    return HighlightingMode.WHOLE_VEHICLE
 
 
-def getAvailableRegions(areaId, slotType, vehicleDescr=None):
+def getAvailableRegions(areaId, slotType, vehicleDescr=None, vehicleOutfit=None):
     if vehicleDescr is None:
         if not g_currentVehicle.isPresent():
             return ()
         vehicleDescr = g_currentVehicle.item.descriptor
-    outfit = Outfit(vehicleCD=vehicleDescr.makeCompactDescr())
+    if vehicleOutfit is None:
+        outfit = Outfit(vehicleCD=vehicleDescr.makeCompactDescr())
+    else:
+        outfit = vehicleOutfit
     container = outfit.getContainer(areaId)
     if container is None:
         return ()
@@ -179,7 +188,7 @@ def getAvailableRegions(areaId, slotType, vehicleDescr=None):
             return ()
         if slotType in (GUI_ITEM_TYPE.MODIFICATION,):
             if areaId == Area.MISC:
-                return (0,)
+                return (0, )
             return ()
         if slotType in (GUI_ITEM_TYPE.PROJECTION_DECAL,):
             return tuple(range(len(slot.getRegions())))
@@ -196,7 +205,9 @@ def getAvailableRegions(areaId, slotType, vehicleDescr=None):
 
 
 def getCustomizationTankPartName(areaId, regionIdx):
-    return CustomizationTankPartNames.MASK if areaId == TankPartIndexes.GUN and regionIdx == C11N_MASK_REGION else TankPartIndexes.getName(areaId)
+    if areaId == TankPartIndexes.GUN and regionIdx == C11N_MASK_REGION:
+        return CustomizationTankPartNames.MASK
+    return TankPartIndexes.getName(areaId)
 
 
 def createCustomizationBaseRequestCriteria(vehicle, progress, season=None, itemTypeID=None):
@@ -207,7 +218,7 @@ def createCustomizationBaseRequestCriteria(vehicle, progress, season=None, itemT
 
 def isOutfitVisuallyEmpty(oufit):
     customizationService = dependency.instance(ICustomizationService)
-    return isEmpty((intCD for intCD in oufit.items() if not customizationService.getItemByCD(intCD).isHiddenInUI()))
+    return isEmpty(intCD for intCD in oufit.items() if not customizationService.getItemByCD(intCD).isHiddenInUI())
 
 
 def fromWorldCoordsToHangarVehicle(worldCoords):
@@ -279,7 +290,7 @@ def getTotalPurchaseInfo(purchaseItems):
                 itemCartInfo[itemCD].totalPrice += purchaseItem.price
 
     totalPrice = sum((item.totalPrice for item in itemCartInfo.itervalues() if item.totalPrice.price > ZERO_MONEY), ITEM_PRICE_EMPTY)
-    boughtCount = sum((item.boughtCount for item in itemCartInfo.itervalues() if item.boughtCount > 0))
+    boughtCount = sum(item.boughtCount for item in itemCartInfo.itervalues() if item.boughtCount > 0)
     return CartInfo(totalPrice=totalPrice, selectedCount=selectedCount, boughtCount=boughtCount)
 
 
@@ -298,7 +309,7 @@ def containsVehicleBound(purchaseItems):
     for item in fromInventoryCounter:
         fromInventoryCounter[item] -= item.installedCount(vehCD)
 
-    return any((count > item.boundInventoryCount(vehCD) for item, count in fromInventoryCounter.items()))
+    return any(count > item.boundInventoryCount(vehCD) for item, count in fromInventoryCounter.items())
 
 
 @dependency.replace_none_kwargs(exchangeProvider=IExchangeRatesWithDiscountsProvider)
@@ -436,7 +447,7 @@ def __getAvailableDecalRegions(areaId, slotType, vehicleDescr):
     else:
         return ()
     anchorType = SLOT_TYPE_TO_ANCHOR_TYPE_MAP[slotType]
-    anchors = tuple((anchor for anchor in anchors if anchor.type == anchorType))
+    anchors = tuple(anchor for anchor in anchors if anchor.type == anchorType)
     return tuple(range(len(anchors)))
 
 
@@ -458,7 +469,9 @@ def __getAppliedToRegions(areaId, slotType, vehicleDescr):
     itemTypeName = GUI_ITEM_TYPE_NAMES[slotType]
     vehiclePart = getVehiclePartByIdx(vehicleDescr, areaId)
     _, regionNames = vehiclePart.customizableVehicleAreas[itemTypeName]
-    return tuple((C11N_GUN_APPLY_REGIONS[regionName] for regionName in regionNames)) if areaId == TankPartIndexes.GUN else tuple(range(len(regionNames)))
+    if areaId == TankPartIndexes.GUN:
+        return tuple(C11N_GUN_APPLY_REGIONS[regionName] for regionName in regionNames)
+    return tuple(range(len(regionNames)))
 
 
 class _QuestGroupWrapper(object):
@@ -475,7 +488,9 @@ class _QuestGroupWrapper(object):
         if not groupID:
             return ''
         accessor = R.strings.vehicle_customization.questProgress.dyn(groupID)
-        return '' if not accessor.isValid() else backport.text(accessor())
+        if not accessor.isValid():
+            return ''
+        return backport.text(accessor())
 
 
 class _ClassicGroupWrapper(object):
@@ -491,7 +506,9 @@ class _ClassicGroupWrapper(object):
 
 
 def getGroupHelper(item):
-    return _QuestGroupWrapper(item) if not item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isQuestsProgression else _ClassicGroupWrapper(item)
+    if not item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isQuestsProgression:
+        return _QuestGroupWrapper(item)
+    return _ClassicGroupWrapper(item)
 
 
 class VehicleC11nFilterHintChecker(object):
@@ -500,7 +517,9 @@ class VehicleC11nFilterHintChecker(object):
     def check(self, _):
         container = self.__appLoader.getApp().containerManager.getContainer(WindowLayer.SUB_VIEW)
         view = container.getView()
-        return view.carouselComponent.hasCustomization() if view.alias in (VIEW_ALIAS.LOBBY_HANGAR, VIEW_ALIAS.LEGACY_LOBBY_HANGAR) else False
+        if view.alias in (VIEW_ALIAS.LOBBY_HANGAR, VIEW_ALIAS.LEGACY_LOBBY_HANGAR):
+            return view.carouselComponent.hasCustomization()
+        return False
 
 
 class NewC11nSectionHintChecker(object):
@@ -520,7 +539,7 @@ class C11nVehicleListHintChecker(object):
 def validateOutfitComponent(vehicleDescr, outfitComponent, service=None):
     for itemType in CustomizationType.STYLE_ONLY_RANGE:
         typeName = CustomizationTypeNames[itemType].lower()
-        componentsAttrName = '{}s'.format(typeName)
+        componentsAttrName = ('{}s').format(typeName)
         itemsComponents = getattr(outfitComponent, componentsAttrName, None)
         if itemsComponents:
             _logger.error('StyleOnly items cannot be installed manually: itemType=[%s]; components=[%s].Forbidden components removed.', typeName, itemsComponents)
@@ -531,7 +550,8 @@ def validateOutfitComponent(vehicleDescr, outfitComponent, service=None):
     for camoComponent in outfitComponent.camouflages:
         if camoComponent.id != HIDDEN_CAMOUFLAGE_ID:
             camouflages.append(camoComponent)
-        _logger.error('Hidden Camouflage cannot be installed manually. %s removed.', camoComponent)
+        else:
+            _logger.error('Hidden Camouflage cannot be installed manually. %s removed.', camoComponent)
 
     outfitComponent.camouflages = camouflages
     anchorType = SLOT_TYPE_TO_ANCHOR_TYPE_MAP[GUI_ITEM_TYPE.ATTACHMENT]
@@ -540,7 +560,8 @@ def validateOutfitComponent(vehicleDescr, outfitComponent, service=None):
         slotParams = getVehicleSlotParams(anchorType, vehicleDescr, attachment.slotId)
         if not slotParams.hiddenForUser:
             attachments.append(attachment)
-        _logger.error('Hidden Attachment cannot be installed manually. %s removed.', attachment)
+        else:
+            _logger.error('Hidden Attachment cannot be installed manually. %s removed.', attachment)
 
     outfitComponent.attachments = attachments
     style = None

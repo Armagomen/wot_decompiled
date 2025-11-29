@@ -1,26 +1,31 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TeamBasesPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class TeamBasesPanelMeta(BaseDAAPIComponent):
 
     def as_addS(self, barId, sortWeight, colorType, title, points, captureTime, vehiclesCount):
-        return self.flashObject.as_add(barId, sortWeight, colorType, title, points, captureTime, vehiclesCount) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_add(barId, sortWeight, colorType, title, points, captureTime, vehiclesCount)
 
     def as_removeS(self, id):
-        return self.flashObject.as_remove(id) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_remove(id)
 
     def as_stopCaptureS(self, id, points):
-        return self.flashObject.as_stopCapture(id, points) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_stopCapture(id, points)
 
     def as_updateCaptureDataS(self, id, points, rate, captureTime, vehiclesCount, captureString, colorType):
-        return self.flashObject.as_updateCaptureData(id, points, rate, captureTime, vehiclesCount, captureString, colorType) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateCaptureData(id, points, rate, captureTime, vehiclesCount, captureString, colorType)
 
     def as_setCapturedS(self, id, title):
-        return self.flashObject.as_setCaptured(id, title) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCaptured(id, title)
 
     def as_setOffsetForEnemyPointsS(self):
-        return self.flashObject.as_setOffsetForEnemyPoints() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setOffsetForEnemyPoints()
 
     def as_clearS(self):
-        return self.flashObject.as_clear() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_clear()

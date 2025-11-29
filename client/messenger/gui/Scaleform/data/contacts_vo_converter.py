@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/contacts_vo_converter.py
 from constants import WG_GAMES
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
@@ -16,9 +14,9 @@ from messenger.storage import storage_getter
 from predefined_hosts import g_preDefinedHosts
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
-_CATEGORY_I18N_KEY = {CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FRIENDS,
- CONTACTS_ALIASES.GROUP_FORMATIONS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FORMATIONS,
- CONTACTS_ALIASES.GROUP_OTHER_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_OTHER}
+_CATEGORY_I18N_KEY = {CONTACTS_ALIASES.GROUP_FRIENDS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FRIENDS, 
+   CONTACTS_ALIASES.GROUP_FORMATIONS_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_FORMATIONS, 
+   CONTACTS_ALIASES.GROUP_OTHER_CATEGORY_ID: I18N_MESSENGER.MESSENGER_CONTACTS_MAINGROPS_OTHER}
 _DEF_RULES = CONTACTS_ALIASES.GROUP_IS_RESIZABLE
 _MUTABLE_RULE = CONTACTS_ALIASES.GROUP_CAN_BE_MANAGED
 _FRIENDS_RULES = CONTACTS_ALIASES.GROUP_IS_DROP_ALLOWED | CONTACTS_ALIASES.GROUP_IS_RESIZABLE
@@ -34,7 +32,7 @@ class _WOT_GAME_RESOURCE(object):
 def makeClanFullName(clanAbbrev):
     formatted = ''
     if clanAbbrev:
-        formatted = u'{0} [{1}]'.format(i18n.makeString(I18N_MESSENGER.DIALOGS_CONTACTS_TREE_CLAN), clanAbbrev)
+        formatted = ('{0} [{1}]').format(i18n.makeString(I18N_MESSENGER.DIALOGS_CONTACTS_TREE_CLAN), clanAbbrev)
     return formatted
 
 
@@ -58,7 +56,7 @@ def makeContactStatusDescription(isOnline, tags, clientInfo=None):
         else:
             description = backport.text(R.strings.tooltips.Contact.status.online())
         if name:
-            description = '{0}, {1}'.format(description, name)
+            description = ('{0}, {1}').format(description, name)
     else:
         description = backport.text(R.strings.tooltips.Contact.status.offline())
     return description
@@ -96,8 +94,7 @@ class CategoryConverter(object):
         return baseVo
 
     def makeBaseVO(self):
-        return {'gui': {'id': self._categoryID},
-         'data': {'rules': self._rules}}
+        return {'gui': {'id': self._categoryID}, 'data': {'rules': self._rules}}
 
 
 class ContactConverter(object):
@@ -127,9 +124,11 @@ class ContactConverter(object):
     def getColor(cls, tags, isOnline):
         if USER_TAG.CURRENT in tags:
             colors = cls._getColors('currentUser')
-        elif {USER_TAG.FRIEND, USER_TAG.SUB_TO}.issubset(tags):
+        elif {
+         USER_TAG.FRIEND, USER_TAG.SUB_TO}.issubset(tags):
             colors = cls._getColors('friend')
-        elif {USER_TAG.CLAN_MEMBER, USER_TAG.OTHER_CLAN_MEMBER}.issubset(tags):
+        elif {
+         USER_TAG.CLAN_MEMBER, USER_TAG.OTHER_CLAN_MEMBER}.issubset(tags):
             colors = cls._getColors('clanMember')
         else:
             colors = cls._getColors('others')
@@ -163,17 +162,16 @@ class ContactConverter(object):
                     resourceIconId = _WOT_GAME_RESOURCE.ONLINE
             else:
                 resourceIconId = _WOT_GAME_RESOURCE.UNKNOWN
-        return {'userProps': baseUserProps,
-         'dbID': dbID,
-         'note': escape(note),
-         'resource': RES_ICONS.getContactStatusIcon('48x48' if useBigIcons else '24x24', resourceIconId)}
+        return {'userProps': baseUserProps, 'dbID': dbID, 
+           'note': escape(note), 
+           'resource': RES_ICONS.getContactStatusIcon('48x48' if useBigIcons else '24x24', resourceIconId)}
 
     @classmethod
     def makeBaseUserProps(cls, contact):
-        return {'userName': contact.getName(),
-         'tags': list(contact.getTags()),
-         'region': cls.lobbyContext.getRegionCode(contact.getID()),
-         'clanAbbrev': contact.getClanAbbrev()}
+        return {'userName': contact.getName(), 
+           'tags': list(contact.getTags()), 
+           'region': cls.lobbyContext.getRegionCode(contact.getID()), 
+           'clanAbbrev': contact.getClanAbbrev()}
 
     @classmethod
     def makeIconTag(cls, key='imgTag', iconPath=''):
@@ -201,16 +199,16 @@ class ContactConverter(object):
     def _getColors(cls, name):
         if not cls._colors:
             scheme = g_settings.getColorScheme('contacts')
-            cls._colors = {'friend': scheme.getColors('friend'),
-             'clanMember': scheme.getColors('clanMember'),
-             'others': scheme.getColors('others'),
-             'currentUser': scheme.getColors('currentUser')}
+            cls._colors = {'friend': scheme.getColors('friend'), 
+               'clanMember': scheme.getColors('clanMember'), 
+               'others': scheme.getColors('others'), 
+               'currentUser': scheme.getColors('currentUser')}
         return cls._colors[name]
 
 
-_CACHED_ICONS_TAGS = {'ignored': ContactConverter.makeIconTag(iconPath='contactIgnored.png'),
- 'pending': ContactConverter.makeIconTag(iconPath='contactConfirmNeeded.png'),
- 'note': ContactConverter.makeIconTag(iconPath='contactNote.png')}
+_CACHED_ICONS_TAGS = {'ignored': ContactConverter.makeIconTag(iconPath='contactIgnored.png'), 
+   'pending': ContactConverter.makeIconTag(iconPath='contactConfirmNeeded.png'), 
+   'note': ContactConverter.makeIconTag(iconPath='contactNote.png')}
 
 class _GroupCondition(object):
     __slots__ = ('_htmlString', '_allIDs')
@@ -248,7 +246,7 @@ class _GroupCondition(object):
         return self._htmlString
 
     def _makeHtmlString(self):
-        pass
+        return ''
 
 
 class TotalCondition(_GroupCondition):
@@ -263,7 +261,7 @@ class TotalCondition(_GroupCondition):
 
 
 class OnlineTotalCondition(TotalCondition):
-    __slots__ = ('_online',)
+    __slots__ = ('_online', )
 
     def __init__(self):
         super(OnlineTotalCondition, self).__init__()
@@ -290,8 +288,8 @@ class OnlineTotalCondition(TotalCondition):
     def _makeHtmlString(self):
         total = len(self._allIDs)
         if total:
-            result = makeHtmlString('html_templates:contacts/group', 'onlineUsersCounter', ctx={'onlineCount': sum(self._online.values()),
-             'totalCount': total})
+            result = makeHtmlString('html_templates:contacts/group', 'onlineUsersCounter', ctx={'onlineCount': sum(self._online.values()), 
+               'totalCount': total})
         else:
             result = ''
         return result
@@ -392,17 +390,17 @@ class _ContactsConverter(IContactsConverter):
 
     def _makeContactVO(self, contact):
         dbID = contact.getID()
-        return {'data': self._converter.makeVO(contact),
-         'criteria': (0 if contact.isOnline() else 1, contact.getName().lower()),
-         'gui': {'id': dbID},
-         'parentItemData': self._parent}
+        return {'data': self._converter.makeVO(contact), 
+           'criteria': (
+                      0 if contact.isOnline() else 1,
+                      contact.getName().lower()), 
+           'gui': {'id': dbID}, 'parentItemData': self._parent}
 
     @classmethod
     def makeEmptyRow(cls, parent, isVisible=True, isActive=True):
-        return {'gui': {'id': None},
-         'parentItemData': parent,
-         'data': {'isActive': isActive,
-                  'isVisible': isVisible}}
+        return {'gui': {'id': None}, 'parentItemData': parent, 
+           'data': {'isActive': isActive, 
+                    'isVisible': isVisible}}
 
     def _matchPattern(self, pattern, contacts):
         return [ vo for vo in contacts if pattern.match(vo['criteria'][1]) ]
@@ -460,10 +458,9 @@ class GroupConverter(_ContactsConverter):
         return vo
 
     def __makeBaseVO(self, parent):
-        return {'gui': {'id': self.getGuiID()},
-         'parentItemData': parent,
-         'data': {'headerTitle': self._name,
-                  'rules': self._rules}}
+        return {'gui': {'id': self.getGuiID()}, 'parentItemData': parent, 
+           'data': {'headerTitle': self._name, 
+                    'rules': self._rules}}
 
 
 class ClanConverter(GroupConverter):
@@ -504,7 +501,8 @@ class FriendsWoGroupConverter(_ContactsConverter):
 
 
 class FriendsGroupsConverter(IContactsConverter):
-    __slots__ = ('_groups', '_mapping', '_rules', '_showEmptyItem', '_conditionClass', '__parentCategory')
+    __slots__ = ('_groups', '_mapping', '_rules', '_showEmptyItem', '_conditionClass',
+                 '__parentCategory')
 
     def __init__(self, parent):
         super(FriendsGroupsConverter, self).__init__()
@@ -517,7 +515,7 @@ class FriendsGroupsConverter(IContactsConverter):
 
     @storage_getter('users')
     def userStorage(self):
-        return None
+        return
 
     def getContacts(self):
         result = {}
@@ -597,7 +595,8 @@ class FriendsGroupsConverter(IContactsConverter):
         return
 
     def setGroups(self, groups, isOpened=False):
-        self._groups.update([ (group, GroupConverter(group, self.__parentCategory, self._conditionClass(), self._rules, self._showEmptyItem, isOpened)) for group in groups ])
+        self._groups.update([ (group, GroupConverter(group, self.__parentCategory, self._conditionClass(), self._rules, self._showEmptyItem, isOpened)) for group in groups
+                            ])
 
     def makeVO(self, pattern=None):
         vos = []

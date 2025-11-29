@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/winback.py
-import typing
-import AccountCommands
+import typing, AccountCommands
 if typing.TYPE_CHECKING:
     from typing import Callable, Optional
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/profile_cm_handlers.py
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -18,8 +16,8 @@ class ProfileVehicleCMHandler(AbstractContextMenuHandler, EventSystemEntity):
     comparisonBasket = dependency.descriptor(IVehicleComparisonBasket)
 
     def __init__(self, cmProxy, ctx=None):
-        super(ProfileVehicleCMHandler, self).__init__(cmProxy, ctx, {PROFILE.VEHICLE_COMPARE: 'compareVehicle',
-         PROFILE.VEHICLE_INFO: 'showVehicleInfo'})
+        super(ProfileVehicleCMHandler, self).__init__(cmProxy, ctx, {PROFILE.VEHICLE_COMPARE: 'compareVehicle', 
+           PROFILE.VEHICLE_INFO: 'showVehicleInfo'})
 
     def compareVehicle(self):
         self.comparisonBasket.addVehicle(self.__vehCD)

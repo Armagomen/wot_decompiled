@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/rare.py
-import uuid
-import imghdr
-import BigWorld
+import uuid, imghdr, BigWorld
 from gui.shared.utils.RareAchievementsCache import IMAGE_TYPE
 from regular import RegularAchievement
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
@@ -11,7 +7,7 @@ from helpers import dependency
 from skeletons.gui.shared.utils import IRaresCache
 
 class RareAchievement(RegularAchievement):
-    __slots__ = ('_rareID',)
+    __slots__ = ('_rareID', )
     SHOW_COUNTER = True
     rareAchievesCache = dependency.descriptor(IRaresCache)
 
@@ -23,7 +19,8 @@ class RareAchievement(RegularAchievement):
         return self._rareID
 
     def getRecordName(self):
-        return (_AB.RARE, self._rareID)
+        return (
+         _AB.RARE, self._rareID)
 
     def getUserName(self):
         return self.rareAchievesCache.getTitle(self._rareID)
@@ -33,11 +30,17 @@ class RareAchievement(RegularAchievement):
 
     @classmethod
     def checkIsInDossier(cls, block, rareID, dossier):
-        return rareID in dossier.getBlock(_AB.RARE) if dossier is not None else False
+        if dossier is not None:
+            return rareID in dossier.getBlock(_AB.RARE)
+        else:
+            return False
 
     @classmethod
     def checkIsValid(cls, block, name, dossier):
-        return not validators.accountIsRoaming(dossier) if dossier is not None else True
+        if dossier is not None:
+            return not validators.accountIsRoaming(dossier)
+        else:
+            return True
 
     def getUserHeroInfo(self):
         return self.rareAchievesCache.getHeroInfo(self._rareID)
@@ -59,11 +62,17 @@ class RareAchievement(RegularAchievement):
 
     def requestImagePath(self):
         imgPath = self.rareAchievesCache.getAchievementImageUrl(IMAGE_TYPE.IT_67X71, self._rareID)
-        return 'R.images.gui.maps.icons.achievement.noImage' if imgPath is None else imgPath
+        if imgPath is None:
+            return 'R.images.gui.maps.icons.achievement.noImage'
+        else:
+            return imgPath
 
     def requestBigImagePath(self):
         imgPath = self.rareAchievesCache.getAchievementImageUrl(IMAGE_TYPE.IT_180X180, self._rareID)
-        return 'R.images.gui.maps.icons.achievement.big.noImage' if imgPath is None else imgPath
+        if imgPath is None:
+            return 'R.images.gui.maps.icons.achievement.big.noImage'
+        else:
+            return imgPath
 
     def _readValue(self, dossier):
         return dossier.getBlock(_AB.RARE).count(self._rareID)
@@ -88,10 +97,11 @@ class RareAchievement(RegularAchievement):
         return icons
 
     def getIconName(self):
-        pass
+        return 'actionUnknown'
 
     def __repr__(self):
-        return '%s<rareID=%s; value=%s>' % (self.__class__.__name__, str(self._rareID), str(self._value))
+        return '%s<rareID=%s; value=%s>' % (self.__class__.__name__,
+         str(self._rareID), str(self._value))
 
     def canDisplayAchievement(self):
         return True

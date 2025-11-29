@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/strongholds/sound_controller.py
 from gui.app_loader import sf_lobby
 from gui.shared.SoundEffectsId import SoundEffectsId
 
@@ -7,7 +5,7 @@ class _StrongholdSoundController(object):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     def init(self):
         pass

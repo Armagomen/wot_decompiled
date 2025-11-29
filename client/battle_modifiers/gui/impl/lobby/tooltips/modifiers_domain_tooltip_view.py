@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/client/battle_modifiers/gui/impl/lobby/tooltips/modifiers_domain_tooltip_view.py
 from __future__ import absolute_import
 import typing
 from battle_modifiers.gui.impl.lobby.feature.helpers import packModifierModel
@@ -11,7 +9,7 @@ if typing.TYPE_CHECKING:
     from battle_modifiers.gui.feature.modifiers_data_provider import ModifiersDataProvider
 
 class ModifiersDomainTooltipView(ViewImpl):
-    __slots__ = ('__modifiersDomain',)
+    __slots__ = ('__modifiersDomain', )
 
     def __init__(self, modifiersDomain, *args):
         settings = ViewSettings(layoutID=R.views.battle_modifiers.lobby.tooltips.ModifiersDomainTooltipView(), model=ModifiersDomainTooltipViewModel(), args=args)
@@ -27,7 +25,7 @@ class ModifiersDomainTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(ModifiersDomainTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setModifiersDomain(self.__modifiersDomain)
             self.__invalidateModifiers(model.getModifiers())
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/mapbox/tooltips/mapbox_calendar_tooltip.py
 from gui.impl.gen import R
 from gui.impl import backport
 from gui.Scaleform.daapi.view.lobby.formatters.tooltips import packCalendarBlock
@@ -19,7 +17,10 @@ class MapboxCalendarTooltip(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         blocks = super(MapboxCalendarTooltip, self)._packBlocks(args, kwargs)
-        blocks.append(formatters.packBuildUpBlockData([self.__packHeader(), self.__packTimeTableHeaderBlock(), formatters.packBuildUpBlockData(packCalendarBlock(self.__mapboxCtrl, time_utils.getCurrentTimestamp(), SELECTOR_BATTLE_TYPES.MAPBOX))]))
+        blocks.append(formatters.packBuildUpBlockData([
+         self.__packHeader(),
+         self.__packTimeTableHeaderBlock(),
+         formatters.packBuildUpBlockData(packCalendarBlock(self.__mapboxCtrl, time_utils.getCurrentTimestamp(), SELECTOR_BATTLE_TYPES.MAPBOX))]))
         return blocks
 
     def __packHeader(self):
@@ -27,7 +28,10 @@ class MapboxCalendarTooltip(BlocksTooltipData):
 
     def __getCurrentSeasonDate(self):
         currentSeason = self.__mapboxCtrl.getCurrentSeason()
-        return self.__getDate(currentSeason.getEndDate()) if currentSeason is not None else ''
+        if currentSeason is not None:
+            return self.__getDate(currentSeason.getEndDate())
+        else:
+            return ''
 
     def __getDate(self, date):
         timeStamp = time_utils.makeLocalServerTime(date)

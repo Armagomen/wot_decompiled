@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/readers/crewBooks_readers.py
-import ResMgr
-import nations
-import os
+import ResMgr, nations, os
 from items import _xml
 from items import vehicles
 from items.components import crew_books_constants
@@ -56,12 +52,12 @@ def _readGroupTags(xmlCtx, section, subsectionName):
         restrictions = []
         for tag in tags:
             if not (tag in tankmen_components.GROUP_TAG.RANGE or vehicles.g_list.isVehicleExisting(tag)):
-                _xml.raiseWrongXml(xmlCtx, subsectionName, 'unknown tag "{}"'.format(tag))
+                _xml.raiseWrongXml(xmlCtx, subsectionName, ('unknown tag "{}"').format(tag))
             if tag in tankmen_components.GROUP_TAG.RESTRICTIONS:
                 restrictions.append(tag)
 
         if restrictions and tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN not in restrictions:
-            _xml.raiseWrongXml(xmlCtx, subsectionName, 'Group contains tags of restrictions {}, so tag "{}" is mandatory'.format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
+            _xml.raiseWrongXml(xmlCtx, subsectionName, ('Group contains tags of restrictions {}, so tag "{}" is mandatory').format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
     else:
         tags = []
     return frozenset(tags)
@@ -92,7 +88,8 @@ def _readBookItem(pricesCache, cache, xmlCtx, section, storage):
     itemToGroup = cache.itemToPriceGroup
     if crewBookItem.priceGroup:
         if crewBookItem.priceGroup not in cache.priceGroupNames:
-            _xml.raiseWrongXml(xmlCtx, 'priceGroup', 'unknown price group %s for item %s' % (crewBookItem.priceGroup, crewBookItem.id))
+            _xml.raiseWrongXml(xmlCtx, 'priceGroup', 'unknown price group %s for item %s' % (
+             crewBookItem.priceGroup, crewBookItem.id))
         priceGroupId = cache.priceGroupNames[crewBookItem.priceGroup]
         crewBookItem.priceGroupTags = groupsDict[priceGroupId].tags
         itemToGroup[crewBookItem.compactDescr] = groupsDict[priceGroupId].compactDescr
@@ -132,5 +129,5 @@ def readCrewBooksCacheFromXML(pricesCache, cache, folder):
     return
 
 
-__xmlReaders = {'crewBook': _readBookItem,
- 'crewBookType': _readBookTypeItem}
+__xmlReaders = {'crewBook': _readBookItem, 
+   'crewBookType': _readBookTypeItem}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/battle_control/controllers/equipment_ctrl.py
 import SoundGroups
 from typing import Tuple, Optional, TYPE_CHECKING
 from constants import ARENA_BONUS_TYPE
@@ -21,11 +19,14 @@ class StoryModeEquipmentsController(equipment_ctrl.EquipmentsController):
                 isReconAbility = reconItem.getEquipmentID() == item.getEquipmentID()
                 if isReconAbility and reconItem.getStage() in (STAGES.PREPARING, STAGES.ACTIVE):
                     reconItem.deactivate()
-                    return (True, None)
-                if item.isAvatar() and reconItem.getStage() in (STAGES.ACTIVATING, STAGES.ACTIVE, STAGES.DEACTIVATING):
+                    return (
+                     True, None)
+                if item.isAvatar() and reconItem.getStage() in (
+                 STAGES.ACTIVATING, STAGES.ACTIVE, STAGES.DEACTIVATING):
                     SoundGroups.g_instance.playSound2D(ABILITY_CANT_ACTIVATE_SOUND)
                     error = equipment_ctrl._ActivationError('ability_unable_other_ability', {'name': reconItem.getDescriptor().userString})
-                    return (False, error)
+                    return (
+                     False, error)
         result, error = super(StoryModeEquipmentsController, self)._doChangeSetting(item, entityName, avatar)
         if error and error.key == ABILITY_ON_COOLDOWN_ACTIVATION_ERROR_KEY:
             SoundGroups.g_instance.playSound2D(ABILITY_ON_COOLDOWN_SOUND)

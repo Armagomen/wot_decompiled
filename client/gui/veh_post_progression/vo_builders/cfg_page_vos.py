@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/vo_builders/cfg_page_vos.py
 import typing
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDLER_TYPE
@@ -21,15 +19,15 @@ def _getButtonsVO(vehicle, goToVehicleAllowed, cmpBasket=None):
     baseVO = getBaseButtonsVO(vehicle)
     comparationFullTooltip = TOOLTIPS.VEHPOSTPROGRESSIONVIEW_BUTTON_COMPARE_DISABLED
     comparisonState, comparisonTooltip = resolveStateTooltip(cmpBasket, vehicle, '', comparationFullTooltip)
-    baseVO.update({'compareBtnEnabled': comparisonState,
-     'compareBtnLabel': backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.compare()),
-     'compareBtnTooltip': comparisonTooltip,
-     'previewBtnEnabled': vehicle.isPreviewAllowed() and goToVehicleAllowed,
-     'previewBtnLabel': backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.preview()),
-     'isInInventory': vehicle.isInInventory,
-     'vehicleState': 0,
-     'previewAlias': VIEW_ALIAS.VEH_POST_PROGRESSION,
-     'cmHandlerType': CONTEXT_MENU_HANDLER_TYPE.POST_PROGRESSION_VEHICLE})
+    baseVO.update({'compareBtnEnabled': comparisonState, 
+       'compareBtnLabel': backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.compare()), 
+       'compareBtnTooltip': comparisonTooltip, 
+       'previewBtnEnabled': vehicle.isPreviewAllowed() and goToVehicleAllowed, 
+       'previewBtnLabel': backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.preview()), 
+       'isInInventory': vehicle.isInInventory, 
+       'vehicleState': 0, 
+       'previewAlias': VIEW_ALIAS.VEH_POST_PROGRESSION, 
+       'cmHandlerType': CONTEXT_MENU_HANDLER_TYPE.POST_PROGRESSION_VEHICLE})
     return baseVO
 
 
@@ -38,22 +36,19 @@ def getDataVO(vehicle, freeExp, goToVehicleAllowed):
     progressionAvailability = vehicle.postProgressionAvailability()
     showDemountAllPairs = len(vehicle.postProgression.getInstalledMultiIds()[0]) >= _DEMOUNT_VISIBILITY_COUNT
     demountIcon = backport.image(R.images.gui.maps.icons.library.destroy_hummer())
-    baseVO.update({'showDemountAllPairsBtn': progressionAvailability.result and showDemountAllPairs,
-     'showExpBlock': progressionAvailability.result,
-     'vehicleButton': _getButtonsVO(vehicle, goToVehicleAllowed),
-     'vehicleInfo': {'isElite': vehicle.isElite,
-                     'freeExp': freeExp,
-                     'earnedXP': vehicle.xp},
-     'demountAllButtonLabel': text_styles.concatStylesToSingleLine(icons.makeImageTag(demountIcon, width=24, height=24, vSpace=-6), backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.demountAllPairs()))})
+    baseVO.update({'showDemountAllPairsBtn': progressionAvailability.result and showDemountAllPairs, 
+       'showExpBlock': progressionAvailability.result, 
+       'vehicleButton': _getButtonsVO(vehicle, goToVehicleAllowed), 
+       'vehicleInfo': {'isElite': vehicle.isElite, 'freeExp': freeExp, 'earnedXP': vehicle.xp}, 'demountAllButtonLabel': text_styles.concatStylesToSingleLine(icons.makeImageTag(demountIcon, width=24, height=24, vSpace=-6), backport.text(R.strings.veh_post_progression.vehPostProgressionView.button.demountAllPairs()))})
     return baseVO
 
 
 def getTitleVO(vehicle):
     baseVO = getBaseTitleVO(vehicle)
     tankTier = int2roman(vehicle.level)
-    baseVO.update({'showInfoIcon': True,
-     'tankTierStr': text_styles.grandTitle(tankTier),
-     'tankTierStrSmall': text_styles.promoTitle(tankTier),
-     'typeIconPath': getTypeBigIconPath(vehicle.type, vehicle.isElite),
-     'isElite': vehicle.isElite})
+    baseVO.update({'showInfoIcon': True, 
+       'tankTierStr': text_styles.grandTitle(tankTier), 
+       'tankTierStrSmall': text_styles.promoTitle(tankTier), 
+       'typeIconPath': getTypeBigIconPath(vehicle.type, vehicle.isElite), 
+       'isElite': vehicle.isElite})
     return baseVO

@@ -1,11 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TargetDesignatorUnspottedIndicatorMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class TargetDesignatorUnspottedIndicatorMeta(BaseDAAPIComponent):
 
     def as_showS(self):
-        return self.flashObject.as_show() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_show()
 
     def as_hideS(self, force):
-        return self.flashObject.as_hide(force) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hide(force)

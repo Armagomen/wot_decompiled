@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_top_modules.py
 from __future__ import absolute_import
 import operator
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -43,11 +41,13 @@ class _BaseModuleComparator(object):
         items = [ x for x in self._items.values() if x not in excludes ]
         if not items:
             return (False, None)
-        elif len(items) == 1:
-            return (True, self._items.values()[0])
         else:
+            if len(items) == 1:
+                return (True, self._items.values()[0])
             sortedItems = sorted(items, key=getter)
-            return (False, sortedItems[-1]) if getter(sortedItems[-1]) == getter(sortedItems[-2]) else (True, sortedItems[-1])
+            if getter(sortedItems[(-1)]) == getter(sortedItems[(-2)]):
+                return (False, sortedItems[(-1)])
+            return (True, sortedItems[(-1)])
 
     def _getValuableParam(self, paramName, excludes=None):
         res = []
@@ -62,7 +62,7 @@ class _BaseModuleComparator(object):
             return (False, None)
         else:
             res = sorted(res)
-            return (True, res[-1][1])
+            return (True, res[(-1)][1])
 
 
 class TopModulesChecker(object):
@@ -72,7 +72,8 @@ class TopModulesChecker(object):
         super(TopModulesChecker, self).__init__()
         self.__vehicle = vehicle
         self._requestCriteria = _COMMON_CRITERIA | REQ_CRITERIA.VEHICLE.SUITABLE([self.__vehicle])
-        self._comparators = [ChassisComparator(self._requestCriteria, self.__vehicle),
+        self._comparators = [
+         ChassisComparator(self._requestCriteria, self.__vehicle),
          TurretComparator(self._requestCriteria, self.__vehicle),
          GunComparator(self._requestCriteria, self.__vehicle),
          EngineComparator(self._requestCriteria, self.__vehicle),
@@ -101,9 +102,11 @@ class TopModulesChecker(object):
                 if module.mayInstall(self.__vehicle):
                     return (True, module)
                 excludes.append(module)
-            return (False, None)
+            else:
+                return (
+                 False, None)
 
-        return None
+        return
 
 
 class ChassisComparator(_BaseModuleComparator):
@@ -127,7 +130,7 @@ class TurretComparator(_BaseModuleComparator):
 
 
 class GunComparator(_BaseModuleComparator):
-    __slots__ = ('__vehicle',)
+    __slots__ = ('__vehicle', )
 
     def __init__(self, criteria, vehicle):
         items = self.itemsCache.items.getItems(GUI_ITEM_TYPE.GUN, criteria)
@@ -148,7 +151,7 @@ class GunComparator(_BaseModuleComparator):
             return (False, None)
         else:
             res = sorted(res)
-            return (True, res[-1][1])
+            return (True, res[(-1)][1])
 
 
 class EngineComparator(_BaseModuleComparator):

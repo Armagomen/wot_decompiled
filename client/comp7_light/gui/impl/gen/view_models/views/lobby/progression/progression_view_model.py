@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/progression/progression_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.battle_quests_model import BattleQuestsModel

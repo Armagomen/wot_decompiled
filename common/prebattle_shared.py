@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/prebattle_shared.py
 import nations
 from items import vehicles, ITEM_TYPES
 from items.badges_common import BadgesCommon
@@ -8,7 +6,8 @@ from constants import PREBATTLE_ACCOUNT_STATE, VEHICLE_CLASSES, ARENA_GUI_TYPE, 
 from debug_utils import LOG_DEBUG
 
 def decodeRoster(roster):
-    return (roster & 15, not roster & 240)
+    return (
+     roster & 15, not roster & 240)
 
 
 def encodeRoster(team, assigned):
@@ -25,7 +24,7 @@ def isVehicleValid(vehDescr, vehAmmo, limits):
             classMinLevel, classMaxLevel = classLevelLimits[classTag]
             if not classMinLevel <= vehDescr.level <= classMaxLevel:
                 return (False, 'limits/classLevel')
-        if not minLevel <= vehDescr.level <= maxLevel:
+        elif not minLevel <= vehDescr.level <= maxLevel:
             return (False, 'limits/level')
 
     classesLimits = limits['classes']
@@ -82,7 +81,8 @@ def isVehicleValid(vehDescr, vehAmmo, limits):
                 if not isValid and tag in vehDescr.type.tags:
                     return (False, 'limits/tags')
 
-        return (True, None)
+        return (
+         True, None)
 
 
 def isObserver(vehCompDescr):
@@ -140,7 +140,8 @@ def isTeamValid(accountsInfo, limits):
                 if not minCount <= count <= maxCount:
                     return (False, 'limits/vehicles')
 
-        return (True, '')
+        return (
+         True, '')
 
 
 class PrebattleSettings(object):
@@ -149,7 +150,9 @@ class PrebattleSettings(object):
         self.__settings = settings
 
     def __getitem__(self, key):
-        return self.__settings[key] if key in self.__settings else SETTING_DEFAULTS[key]
+        if key in self.__settings:
+            return self.__settings[key]
+        return SETTING_DEFAULTS[key]
 
     def __setitem__(self, key, value):
         self.__settings[key] = value
@@ -167,70 +170,58 @@ class TeamLimits(object):
     def __getitem__(self, key):
         if key in self.__limits.get(self.__team, {}):
             return self.__limits[self.__team][key]
-        return self.__limits[0][key] if key in self.__limits.get(0, {}) else LIMIT_DEFAULTS[key]
+        if key in self.__limits.get(0, {}):
+            return self.__limits[0][key]
+        return LIMIT_DEFAULTS[key]
 
 
-SETTING_DEFAULTS = {'ver': 1,
- 'arenaGuiType': ARENA_GUI_TYPE.UNKNOWN,
- 'roles': {},
- 'clanRoles': {},
- 'teamRoles': {1: PREBATTLE_ROLE.SEE_1,
-               2: PREBATTLE_ROLE.SEE_2},
- 'hideNames': False,
- 'hideVehicles': False,
- 'hideOpponentCount': False,
- 'concealFinalRoster': False,
- 'initialRosters': ({}, {}),
- 'defaultRoster': 1,
- 'accountsToInvite': [],
- 'clansToInvite': [],
- 'creator': '',
- 'creatorBadges': BadgesCommon.selectedBadgesEmpty(),
- 'creatorClanDBID': 0,
- 'creatorClanAbbrev': '',
- 'creatorIGRType': IGR_TYPE.NONE,
- 'creatorDBID': 0,
- 'creatorAttrs': 0,
- 'isOpened': False,
- 'battlesLimit': 0,
- 'winsLimit': 0,
- 'winnerIfDraw': 0,
- 'switchBattleTeams': False,
- 'lifeTime': 0,
- 'destroyIfCreatorOut': True,
- 'startTime': 0,
- 'startIfReady': True,
- 'timeBetweenBattles': 0,
- 'arenaTypeID': None,
- 'roundLength': None,
- 'comment': '',
- 'chatChannels': 1,
- 'arenaVoipChannels': 0,
- 'notifyWeb': False,
- 'extraData': {},
- 'gameplaysMask': 0,
- 'vehicleLockMode': 0,
- 'clanRentedVehicleLockMode': 0,
- 'vehicleLockTimeFactors': {},
- 'observeBothTeams': True,
- 'numGroupsPerTeam': 0,
- 'playerGroupLimit': 0,
- 'tournamentArenasTypeIDs': [],
- 'clanRankRoles': {1: {},
-                   2: {}}}
-LIMIT_DEFAULTS = {'maxCountTotal': 256,
- 'minCount': 1,
- 'maxCount': (0, 65535),
- 'totalLevel': (0, 65535),
- 'level': (0, 65535),
- 'classLevel': {},
- 'classes': None,
- 'vehicles': None,
- 'components': {},
- 'ammo': None,
- 'shells': {},
- 'tags': None,
- 'nations': None}
+SETTING_DEFAULTS = {'ver': 1, 
+   'arenaGuiType': ARENA_GUI_TYPE.UNKNOWN, 
+   'roles': {}, 'clanRoles': {}, 'teamRoles': {1: PREBATTLE_ROLE.SEE_1, 2: PREBATTLE_ROLE.SEE_2}, 'hideNames': False, 
+   'hideVehicles': False, 
+   'hideOpponentCount': False, 
+   'concealFinalRoster': False, 
+   'initialRosters': ({}, {}), 'defaultRoster': 1, 
+   'accountsToInvite': [], 'clansToInvite': [], 'creator': '', 
+   'creatorBadges': BadgesCommon.selectedBadgesEmpty(), 
+   'creatorClanDBID': 0, 
+   'creatorClanAbbrev': '', 
+   'creatorIGRType': IGR_TYPE.NONE, 
+   'creatorDBID': 0, 
+   'creatorAttrs': 0, 
+   'isOpened': False, 
+   'battlesLimit': 0, 
+   'winsLimit': 0, 
+   'winnerIfDraw': 0, 
+   'switchBattleTeams': False, 
+   'lifeTime': 0, 
+   'destroyIfCreatorOut': True, 
+   'startTime': 0, 
+   'startIfReady': True, 
+   'timeBetweenBattles': 0, 
+   'arenaTypeID': None, 
+   'roundLength': None, 
+   'comment': '', 
+   'chatChannels': 1, 
+   'arenaVoipChannels': 0, 
+   'notifyWeb': False, 
+   'extraData': {}, 'gameplaysMask': 0, 
+   'vehicleLockMode': 0, 
+   'clanRentedVehicleLockMode': 0, 
+   'vehicleLockTimeFactors': {}, 'observeBothTeams': True, 
+   'numGroupsPerTeam': 0, 
+   'playerGroupLimit': 0, 
+   'tournamentArenasTypeIDs': [], 'clanRankRoles': {1: {}, 2: {}}}
+LIMIT_DEFAULTS = {'maxCountTotal': 256, 
+   'minCount': 1, 
+   'maxCount': (0, 65535), 
+   'totalLevel': (0, 65535), 
+   'level': (0, 65535), 
+   'classLevel': {}, 'classes': None, 
+   'vehicles': None, 
+   'components': {}, 'ammo': None, 
+   'shells': {}, 'tags': None, 
+   'nations': None}
 
 def _collectCurrentReplaceableVehicleComponents(vehicleDescr):
     res = []
@@ -258,9 +249,9 @@ def getClanWarsExtraEquipments(clansEquipments, joinedAccountsDBIDs, prebattleID
     for team, info in clansEquipments.iteritems():
         accountDBIDs = filter(lambda dbID: dbID in joinedAccountsDBIDs, info['top_leaders'])
         if accountDBIDs:
-            extraEquipments[accountDBIDs[0]] = {'prebattleID': prebattleID,
-             'clanDBID': 0,
-             'rev': 0,
-             'equipments': [ equipments[equipmentIDs[equipmentName]].compactDescr for equipmentName in info['equipments'] ]}
+            extraEquipments[accountDBIDs[0]] = {'prebattleID': prebattleID, 'clanDBID': 0, 
+               'rev': 0, 
+               'equipments': [ equipments[equipmentIDs[equipmentName]].compactDescr for equipmentName in info['equipments']
+                           ]}
 
     return extraEquipments

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/random_quest_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -12,7 +10,7 @@ if typing.TYPE_CHECKING:
     from gui.server_events.event_items import Quest
 
 class RandomQuestTooltip(ViewImpl):
-    __slots__ = ('__quest',)
+    __slots__ = ('__quest', )
     __eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, requiredToken):
@@ -27,7 +25,7 @@ class RandomQuestTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(RandomQuestTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setExpireTime(self.__quest.getFinishTime())
             model.setCondition(self.__quest.getDescription())
             condition = first(self.__quest.vehicleReqs.getConditions().items)

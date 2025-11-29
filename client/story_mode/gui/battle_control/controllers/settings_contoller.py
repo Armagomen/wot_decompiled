@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/battle_control/controllers/settings_contoller.py
-import typing
-import ResMgr
-import section2dict
+import typing, ResMgr, section2dict
 from dict2model import models, schemas, fields, validate
 from gui.battle_control.arena_info.interfaces import IOverrideSettingsController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -10,7 +6,7 @@ from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore, ISettingsCache
 
 class OverrideSettingsController(IOverrideSettingsController):
-    __slots__ = ('_data',)
+    __slots__ = ('_data', )
     _OVERRIDE_SETTINGS_PATH = 'story_mode/gui/override_settings.xml'
     settingsCore = dependency.descriptor(ISettingsCore)
     settingsCache = dependency.descriptor(ISettingsCache)
@@ -51,7 +47,8 @@ class OverrideSettingsController(IOverrideSettingsController):
             storages.add(control.storage)
             if control.group:
                 settings.setdefault(control.group, {})[control.option] = control.value
-            settings[control.option] = control.value
+            else:
+                settings[control.option] = control.value
 
         self.settingsCore.setOverrideSettings(settings, storages)
 
@@ -85,11 +82,11 @@ class OverrideSettingsModel(models.Model):
         self.overrides = overrides
 
 
-_tabSettingsSchema = schemas.Schema(fields={'defaultTab': fields.Integer(required=True),
- 'disabledTabs': fields.UniCapList(fieldOrSchema=fields.Integer(required=True), required=False, default=list)}, modelClass=TabSettingsModel, checkUnknown=True)
-_overrideControlSchema = schemas.Schema(fields={'storage': fields.String(required=True, serializedValidators=validate.Length(minValue=1), deserializedValidators=validate.Length(minValue=1)),
- 'option': fields.String(required=True, serializedValidators=validate.Length(minValue=1), deserializedValidators=validate.Length(minValue=1)),
- 'group': fields.String(required=False, default=''),
- 'value': fields.Integer(required=True)}, modelClass=OverrideControlModel, checkUnknown=True)
-_overrideSettingsSchema = schemas.Schema(fields={'tabSettings': fields.Nested(schema=_tabSettingsSchema),
- 'overrides': fields.UniCapList(fieldOrSchema=_overrideControlSchema, required=True)}, modelClass=OverrideSettingsModel)
+_tabSettingsSchema = schemas.Schema(fields={'defaultTab': fields.Integer(required=True), 
+   'disabledTabs': fields.UniCapList(fieldOrSchema=fields.Integer(required=True), required=False, default=list)}, modelClass=TabSettingsModel, checkUnknown=True)
+_overrideControlSchema = schemas.Schema(fields={'storage': fields.String(required=True, serializedValidators=validate.Length(minValue=1), deserializedValidators=validate.Length(minValue=1)), 
+   'option': fields.String(required=True, serializedValidators=validate.Length(minValue=1), deserializedValidators=validate.Length(minValue=1)), 
+   'group': fields.String(required=False, default=''), 
+   'value': fields.Integer(required=True)}, modelClass=OverrideControlModel, checkUnknown=True)
+_overrideSettingsSchema = schemas.Schema(fields={'tabSettings': fields.Nested(schema=_tabSettingsSchema), 
+   'overrides': fields.UniCapList(fieldOrSchema=_overrideControlSchema, required=True)}, modelClass=OverrideSettingsModel)

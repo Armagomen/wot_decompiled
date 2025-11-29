@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/economics/fun_currency_packers.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.battle_results.pbs_helpers import isPremiumAdvertisingShown, getAdvertising
@@ -62,7 +60,8 @@ class FunCrystalsPacker(CrystalsPacker):
 
 
 class FunGoldPacker(CurrencyPacker):
-    _EARNED = CurrencyGroup(label=None, records=(GOLD_EVENT_PAYMENTS,))
+    _EARNED = CurrencyGroup(label=None, records=(
+     GOLD_EVENT_PAYMENTS,))
 
     @classmethod
     def packModel(cls, model, currencyType, battleResults):
@@ -71,4 +70,6 @@ class FunGoldPacker(CurrencyPacker):
 
     @classmethod
     def _getExtractors(cls, currencyType, battleResults):
-        return ((getDirectMoneyRecords,), zip)
+        return (
+         (
+          getDirectMoneyRecords,), zip)

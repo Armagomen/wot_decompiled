@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/map_zones/minimap.py
 import logging
 from constants import MinimapLayerType
 from gui.Scaleform.daapi.view.battle.shared.map_zones.mixins import MapZonesListener
@@ -7,8 +5,8 @@ from gui.Scaleform.daapi.view.battle.shared.minimap import common, settings
 from gui.Scaleform.genConsts.BATTLE_MINIMAP_CONSTS import BATTLE_MINIMAP_CONSTS
 from helpers import unicodeToStr
 _logger = logging.getLogger(__name__)
-_layerTypesMapping = {MinimapLayerType.BASE: BATTLE_MINIMAP_CONSTS.SCENARIO_EVENT_EFFECT,
- MinimapLayerType.ALERT: BATTLE_MINIMAP_CONSTS.SCENARIO_EVENT_ALERT}
+_layerTypesMapping = {MinimapLayerType.BASE: BATTLE_MINIMAP_CONSTS.SCENARIO_EVENT_EFFECT, 
+   MinimapLayerType.ALERT: BATTLE_MINIMAP_CONSTS.SCENARIO_EVENT_ALERT}
 
 class MapZonesEntriesPlugin(common.EntriesPlugin, MapZonesListener):
     MINIMAP_ENTRY_SYMBOL = 'ScenarioMinimapEntry'

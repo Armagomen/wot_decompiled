@@ -1,23 +1,17 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/server_settings.py
-import copy
-import functools
-import logging
-import types
+import copy, functools, logging, types, typing
 from collections import namedtuple
 from itertools import chain
-import typing
-import constants
-import post_progression_common
+from shared_utils import findFirst
+import constants, post_progression_common
 from BonusCaps import BonusCapsConst
 from Event import Event
 from UnitBase import PREBATTLE_TYPE_TO_UNIT_ASSEMBLER, UNIT_ASSEMBLER_IMPL_TO_CONFIG
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
-from battle_modifiers_common import BattleParams, BattleModifiers, ModifiersContext
+from battle_modifiers_common import BattleModifiers, BattleParams, ModifiersContext
 from battle_pass_common import BATTLE_PASS_CONFIG_NAME, BattlePassConfig
 from collections_common import CollectionsConfig
 from collector_vehicle import CollectorVehicleConsts
-from constants import BATTLE_NOTIFIER_CONFIG, ClansConfig, Configs, DAILY_QUESTS_CONFIG, DOG_TAGS_CONFIG, MAGNETIC_AUTO_AIM_CONFIG, MISC_GUI_SETTINGS, PremiumConfigs, RENEWABLE_SUBSCRIPTION_CONFIG, PLAYER_SUBSCRIPTIONS_CONFIG, TOURNAMENT_CONFIG, OPTIONAL_DEVICES_USAGE_CONFIG
+from constants import BATTLE_NOTIFIER_CONFIG, DAILY_QUESTS_CONFIG, DOG_TAGS_CONFIG, MAGNETIC_AUTO_AIM_CONFIG, MISC_GUI_SETTINGS, OPTIONAL_DEVICES_USAGE_CONFIG, PLAYER_SUBSCRIPTIONS_CONFIG, RENEWABLE_SUBSCRIPTION_CONFIG, TOURNAMENT_CONFIG, ClansConfig, Configs, PremiumConfigs
 from debug_utils import LOG_DEBUG, LOG_NOTE
 from gifts.gifts_common import ClientReqStrategy, GiftEventID, GiftEventState
 from gui import GUI_SETTINGS, SystemMessages
@@ -28,29 +22,40 @@ from gui.shared.utils.decorators import ReprInjector
 from helpers import time_utils
 from items import vehicles
 from personal_missions import PM_BRANCH
+from pet_system_common import pet_constants
+from pet_system_common.BonusConfig import BonusConfig as PetBonusConfig
+from pet_system_common.EventConfig import EventConfig as PetEventConfig
+from pet_system_common.GeneralConfig import GeneralConfig as PetGeneralConfig
+from pet_system_common.PetConfig import PetConfig
+from pet_system_common.PetPromoConfig import PetPromoConfig
+from pet_system_common.PetSynergyConfig import PetSynergyConfig
+from pet_system_common.pet_constants import PETS_SYSTEM_CONFIG
 from post_progression_common import FEATURE_BY_GROUP_ID, ROLESLOT_FEATURE
 from prestige_system.prestige_common import PrestigeConfig
 from prestige_system.prestige_milestones_common import PrestigeMilestonesConfig
 from ranked_common import SwitchState
-from renewable_subscription_common.settings_constants import GOLD_RESERVE_GAINS_SECTION, ADDITIONAL_BONUS_SECTION, ADDITIONAL_BONUS_APPLY_COUNT, ADDITIONAL_BONUS_ENABLED, ENABLE_BADGES
+from renewable_subscription_common.settings_constants import ADDITIONAL_BONUS_APPLY_COUNT, ADDITIONAL_BONUS_ENABLED, ADDITIONAL_BONUS_SECTION, ENABLE_BADGES, GOLD_RESERVE_GAINS_SECTION
 from schema_manager import getSchemaManager
 from shared_utils import makeTupleByDict, updateDict
 from soft_exception import SoftException
 from telecom_rentals_common import TELECOM_RENTALS_CONFIG
 from trade_in_common.constants_types import CONFIG_NAME as TRADE_IN_CONFIG_NAME
 from achievements20.Achievements20GeneralConfig import Achievements20GeneralConfig
+from helpers.ingame_tournament_helper import IngameTournamentState
 if typing.TYPE_CHECKING:
     from typing import Callable, Dict, List, Sequence, Set
     from dict2model.schemas import SchemaModelType
     from base_schema_manager import GameParamsSchema
 _logger = logging.getLogger(__name__)
-_CLAN_EMBLEMS_SIZE_MAPPING = {16: 'clan_emblems_16',
- 32: 'clan_emblems_small',
- 64: 'clan_emblems_big',
- 128: 'clan_emblems_128',
- 256: 'clan_emblems_256'}
+_CLAN_EMBLEMS_SIZE_MAPPING = {16: 'clan_emblems_16', 
+   32: 'clan_emblems_small', 
+   64: 'clan_emblems_big', 
+   128: 'clan_emblems_128', 
+   256: 'clan_emblems_256'}
 
-@ReprInjector.simple(('centerID', 'centerID'), ('dbidMin', 'dbidMin'), ('dbidMax', 'dbidMax'), ('regionCode', 'regionCode'))
+@ReprInjector.simple((
+ 'centerID', 'centerID'), ('dbidMin', 'dbidMin'), (
+ 'dbidMax', 'dbidMax'), ('regionCode', 'regionCode'))
 class _ServerInfo(object):
     __slots__ = ('centerID', 'dbidMin', 'dbidMax', 'regionCode')
 
@@ -100,17 +105,18 @@ class RoamingSettings(namedtuple('RoamingSettings', ('homeCenterID', 'curCenterI
     @classmethod
     def defaults(cls):
         dbIDMin = 0
-        dbIDMax = 9223372036854775807L
+        dbIDMax = 9223372036854775807
         regionCode = None
         homeCenterID = 0
         currentCenterID = 0
-        return cls(homeCenterID, currentCenterID, [_ServerInfo(currentCenterID, dbIDMin, dbIDMax, regionCode)])
+        return cls(homeCenterID, currentCenterID, [
+         _ServerInfo(currentCenterID, dbIDMin, dbIDMax, regionCode)])
 
 
 class _FileServerSettings(object):
 
     def __init__(self, fsSettings):
-        self.__urls = dict(((n, d.get('url_template', '')) for n, d in fsSettings.iteritems()))
+        self.__urls = dict((n, d.get('url_template', '')) for n, d in fsSettings.iteritems())
 
     def getUrls(self):
         return self.__urls
@@ -156,14 +162,17 @@ class _FileServerSettings(object):
         except (KeyError, TypeError):
             LOG_NOTE('There is invalid url while getting emblem from web', urlKey, args)
 
-        return None
+        return
 
     @classmethod
     def defaults(cls):
         return cls({})
 
 
-class _RegionalSettings(namedtuple('_RegionalSettings', ('starting_day_of_a_new_week', 'starting_time_of_a_new_day', 'starting_time_of_a_new_game_day'))):
+class _RegionalSettings(namedtuple('_RegionalSettings', (
+ 'starting_day_of_a_new_week',
+ 'starting_time_of_a_new_day',
+ 'starting_time_of_a_new_game_day'))):
     __slots__ = ()
 
     def getWeekStartingDay(self):
@@ -180,7 +189,10 @@ class _RegionalSettings(namedtuple('_RegionalSettings', ('starting_day_of_a_new_
         return cls(0, 0, 3)
 
 
-class _ESportCurrentSeason(namedtuple('_ESportSeason', ('eSportSeasonID', 'eSportSeasonStart', 'eSportSeasonFinish'))):
+class _ESportCurrentSeason(namedtuple('_ESportSeason', (
+ 'eSportSeasonID',
+ 'eSportSeasonStart',
+ 'eSportSeasonFinish'))):
     __slots__ = ()
 
     def getID(self):
@@ -197,11 +209,7 @@ class _ESportCurrentSeason(namedtuple('_ESportSeason', ('eSportSeasonID', 'eSpor
         return cls(0, 0, 0)
 
 
-class _Wgcg(namedtuple('_Wgcg', ('enabled',
- 'url',
- 'type',
- 'loginOnStart',
- 'isJwtAuthorizationEnabled'))):
+class _Wgcg(namedtuple('_Wgcg', ('enabled', 'url', 'type', 'loginOnStart', 'isJwtAuthorizationEnabled'))):
     __slots__ = ()
 
     def isEnabled(self):
@@ -288,7 +296,10 @@ class _StrongholdSettings(namedtuple('_StrongholdSettings', ('wgshHostUrl',))):
         return cls('')
 
 
-class _TournamentSettings(namedtuple('_TournamentSettings', ('isExternalBattleEnabled', 'isTournamentEnabled', 'igbHostUrl'))):
+class _TournamentSettings(namedtuple('_TournamentSettings', (
+ 'isExternalBattleEnabled',
+ 'isTournamentEnabled',
+ 'igbHostUrl'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -302,11 +313,12 @@ class _TournamentSettings(namedtuple('_TournamentSettings', ('isExternalBattleEn
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-class _FrontlineSettings(namedtuple('_FrontlineSettings', ('isEpicTrainingEnabled',))):
+class _FrontlineSettings(namedtuple('_FrontlineSettings', (
+ 'isEpicTrainingEnabled',))):
     __slots__ = ()
 
     @classmethod
@@ -314,7 +326,9 @@ class _FrontlineSettings(namedtuple('_FrontlineSettings', ('isEpicTrainingEnable
         return cls(False)
 
 
-class _SpgRedesignFeatures(namedtuple('_SpgRedesignFeatures', ('stunEnabled', 'markTargetAreaEnabled'))):
+class _SpgRedesignFeatures(namedtuple('_SpgRedesignFeatures', (
+ 'stunEnabled',
+ 'markTargetAreaEnabled'))):
     __slots__ = ()
 
     def isStunEnabled(self):
@@ -336,15 +350,17 @@ class _BwHallOfFame(namedtuple('_BwHallOfFame', ('hofHostUrl', 'isHofEnabled', '
         return cls()
 
 
-class _BwShop(namedtuple('_BwShop', ('hostUrl', 'isStorageEnabled'))):
+class _BwShop(namedtuple('_BwShop', (
+ 'hostUrl', 'isStorageEnabled'))):
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-_BwShop.__new__.__defaults__ = ('', '', False)
+_BwShop.__new__.__defaults__ = (
+ '', '', False)
 
 class _BwProductCatalog(namedtuple('_BwProductCatalog', ('url',))):
 
@@ -353,44 +369,17 @@ class _BwProductCatalog(namedtuple('_BwProductCatalog', ('url',))):
         return cls('')
 
 
-_BwProductCatalog.__new__.__defaults__ = ('',)
+_BwProductCatalog.__new__.__defaults__ = (
+ '',)
 
-class RankedBattlesConfig(namedtuple('RankedBattlesConfig', ('isEnabled',
- 'peripheryIDs',
- 'winnerRankChanges',
- 'loserRankChanges',
- 'minXP',
- 'unburnableRanks',
- 'unburnableStepRanks',
- 'minLevel',
- 'maxLevel',
- 'accRanks',
- 'accSteps',
- 'cycleFinishSeconds',
- 'primeTimes',
- 'seasons',
- 'cycleTimes',
- 'shields',
- 'divisions',
- 'bonusBattlesMultiplier',
- 'expectedSeasons',
- 'yearAwardsMarks',
- 'rankGroups',
- 'qualificationBattles',
- 'yearLBSize',
- 'leaguesBonusBattles',
- 'forbiddenClassTags',
- 'forbiddenVehTypes',
- 'shopState',
- 'yearLBState',
- 'yearRewardState',
- 'seasonRatingPageUrl',
- 'yearRatingPageUrl',
- 'infoPageUrl',
- 'introPageUrl',
- 'seasonGapPageUrl',
- 'shopPageUrl',
- 'hasSpecialSeason'))):
+class RankedBattlesConfig(namedtuple('RankedBattlesConfig', ('isEnabled', 'peripheryIDs', 'winnerRankChanges', 'loserRankChanges', 'minXP',
+ 'unburnableRanks', 'unburnableStepRanks', 'minLevel', 'maxLevel', 'accRanks',
+ 'accSteps', 'cycleFinishSeconds', 'primeTimes', 'seasons', 'cycleTimes', 'shields',
+ 'divisions', 'bonusBattlesMultiplier', 'expectedSeasons', 'yearAwardsMarks',
+ 'rankGroups', 'qualificationBattles', 'yearLBSize', 'leaguesBonusBattles',
+ 'forbiddenClassTags', 'forbiddenVehTypes', 'shopState', 'yearLBState',
+ 'yearRewardState', 'seasonRatingPageUrl', 'yearRatingPageUrl', 'infoPageUrl',
+ 'introPageUrl', 'seasonGapPageUrl', 'shopPageUrl', 'hasSpecialSeason'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -403,7 +392,7 @@ class RankedBattlesConfig(namedtuple('RankedBattlesConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -411,31 +400,20 @@ class RankedBattlesConfig(namedtuple('RankedBattlesConfig', ('isEnabled',
         return cls()
 
 
-class _ProgressiveReward(namedtuple('_ProgressiveReward', ('isEnabled',
- 'levelTokenID',
- 'probabilityTokenID',
- 'maxLevel'))):
+class _ProgressiveReward(namedtuple('_ProgressiveReward', (
+ 'isEnabled', 'levelTokenID', 'probabilityTokenID', 'maxLevel'))):
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-_ProgressiveReward.__new__.__defaults__ = (True,
- 'pr:level',
- 'pr:probability',
- 0)
+_ProgressiveReward.__new__.__defaults__ = (
+ True, 'pr:level', 'pr:probability', 0)
 
-class _EpicMetaGameConfig(namedtuple('_EpicMetaGameConfig', ['maxCombatReserveLevel',
- 'seasonData',
- 'metaLevel',
- 'rewards',
- 'defaultSlots',
- 'slots',
- 'inBattleReservesByRank',
- 'skipParamsValidation',
- 'randomReservesMode',
+class _EpicMetaGameConfig(namedtuple('_EpicMetaGameConfig', ['maxCombatReserveLevel', 'seasonData', 'metaLevel', 'rewards', 'defaultSlots', 'slots',
+ 'inBattleReservesByRank', 'skipParamsValidation', 'randomReservesMode',
  'randomReservesOpt'])):
 
     def asDict(self):
@@ -443,36 +421,17 @@ class _EpicMetaGameConfig(namedtuple('_EpicMetaGameConfig', ['maxCombatReserveLe
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-_EpicMetaGameConfig.__new__.__defaults__ = (0,
- (0, False),
- (0, 0, 0),
- {},
- {},
- {},
- {},
- 0,
- 0,
- {})
+_EpicMetaGameConfig.__new__.__defaults__ = (
+ 0, (0, False), (0, 0, 0), {}, {}, {}, {}, 0, 0, {})
 
-class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
- 'enableWelcomeScreen',
- 'validVehicleLevels',
- 'battlePassDataEnabled',
- 'levelsToUpgrateAllReserves',
- 'seasons',
- 'cycleTimes',
- 'unlockableInBattleVehLevels',
- 'inBattleModifiers',
- 'peripheryIDs',
- 'primeTimes',
- 'rentVehicles',
- 'tooltips',
- 'reservesModifiers',
- 'squadRestrictions'))):
+class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled', 'enableWelcomeScreen', 'validVehicleLevels', 'battlePassDataEnabled',
+ 'levelsToUpgrateAllReserves', 'seasons', 'cycleTimes', 'unlockableInBattleVehLevels',
+ 'inBattleModifiers', 'peripheryIDs', 'primeTimes', 'rentVehicles', 'tooltips',
+ 'reservesModifiers', 'squadRestrictions'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -485,7 +444,7 @@ class EpicGameConfig(namedtuple('EpicGameConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -501,7 +460,7 @@ class _UnitAssemblerConfig(namedtuple('_UnitAssemblerConfig', ('squad', 'epic'))
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @staticmethod
@@ -509,7 +468,9 @@ class _UnitAssemblerConfig(namedtuple('_UnitAssemblerConfig', ('squad', 'epic'))
         return prebattleType in PREBATTLE_TYPE_TO_UNIT_ASSEMBLER
 
     def getConfigOfQueue(self, prebattleType):
-        return {} if not self.isPrebattleSupported(prebattleType) else self.asDict().get(UNIT_ASSEMBLER_IMPL_TO_CONFIG[PREBATTLE_TYPE_TO_UNIT_ASSEMBLER[prebattleType]], {})
+        if not self.isPrebattleSupported(prebattleType):
+            return {}
+        return self.asDict().get(UNIT_ASSEMBLER_IMPL_TO_CONFIG[PREBATTLE_TYPE_TO_UNIT_ASSEMBLER[prebattleType]], {})
 
     def isVoicePreferenceEnabled(self, prebattleType):
         return self.getConfigOfQueue(prebattleType).get('voiceChatPreferenceEnabled', False)
@@ -563,23 +524,10 @@ class _SquadPremiumBonus(namedtuple('_SquadPremiumBonus', ('isEnabled', 'ownCred
         return result
 
 
-class BattleRoyaleConfig(namedtuple('BattleRoyaleConfig', ('isEnabled',
- 'peripheryIDs',
- 'unburnableTitles',
- 'eventProgression',
- 'primeTimes',
- 'seasons',
- 'cycleTimes',
- 'maps',
- 'battleXP',
- 'coneVisibility',
- 'loot',
- 'defaultAmmo',
- 'vehiclesSlotsConfig',
- 'economics',
- 'url',
- 'respawns',
- 'progressionTokenAward',
+class BattleRoyaleConfig(namedtuple('BattleRoyaleConfig', ('isEnabled', 'peripheryIDs', 'unburnableTitles',
+ 'eventProgression', 'primeTimes', 'seasons', 'cycleTimes',
+ 'maps', 'battleXP', 'coneVisibility', 'loot', 'defaultAmmo',
+ 'vehiclesSlotsConfig', 'economics', 'url', 'respawns', 'progressionTokenAward',
  'tournamentsWidget'))):
     __slots__ = ()
 
@@ -593,7 +541,7 @@ class BattleRoyaleConfig(namedtuple('BattleRoyaleConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -602,7 +550,7 @@ class BattleRoyaleConfig(namedtuple('BattleRoyaleConfig', ('isEnabled',
 
 
 class _TelecomConfig(object):
-    __slots__ = ('__bundleIdToProvider',)
+    __slots__ = ('__bundleIdToProvider', )
 
     def __init__(self, telecomConfig):
         self.__bundleIdToProvider = {bundleId:bundleData['operator'] for bundleId, bundleData in telecomConfig['bundles'].iteritems()}
@@ -639,17 +587,23 @@ class _BlueprintsConfig(namedtuple('_BlueprintsConfig', ('allowBlueprintsConvers
         return self.levels
 
     def getAllianceConversionCoeffs(self, level):
-        return {} if not self.isBlueprintsAvailable() or level not in self.levels else self.levels[level][4]
+        if not self.isBlueprintsAvailable() or level not in self.levels:
+            return {}
+        return self.levels[level][4]
 
     def getRequiredFragmentsForConversion(self, level):
-        return (0, 0) if not self.isBlueprintsAvailable() or level not in self.levels else self.levels[level][2]
+        if not self.isBlueprintsAvailable() or level not in self.levels:
+            return (0, 0)
+        return self.levels[level][2]
 
     def getFragmentCount(self, level):
         if not self.isBlueprintsAvailable():
             return 0
         if level == 1:
             return 1
-        return self.levels[level][0] if level in self.levels else 0
+        if level in self.levels:
+            return self.levels[level][0]
+        return 0
 
     def getFragmentDiscount(self, level):
         discount = 0
@@ -665,20 +619,35 @@ class _BlueprintsConfig(namedtuple('_BlueprintsConfig', ('allowBlueprintsConvers
         return 'isEnabled' in diff or 'useBlueprintsForUnlock' in diff
 
 
-class SeniorityAwardsConfig(typing.NamedTuple('SeniorityAwardsConfig', (('enabled', bool),
- ('active', bool),
- ('endTime', int),
- ('reminders', list),
- ('clockOnNotification', int),
- ('showRewardNotification', bool),
- ('receivedRewardsToken', str),
- ('claimVehicleRewardTokenPattern', str),
- ('rewardEligibilityToken', str),
- ('claimRewardToken', str),
- ('vehicleSelectionTokenPattern', str),
- ('rewardQuestsPrefix', str),
- ('categories', dict),
- ('vehicleSelectionQuestPattern', str)))):
+class SeniorityAwardsConfig(typing.NamedTuple('SeniorityAwardsConfig', (
+ (
+  'enabled', bool),
+ (
+  'active', bool),
+ (
+  'endTime', int),
+ (
+  'reminders', list),
+ (
+  'clockOnNotification', int),
+ (
+  'showRewardNotification', bool),
+ (
+  'receivedRewardsToken', str),
+ (
+  'claimVehicleRewardTokenPattern', str),
+ (
+  'rewardEligibilityToken', str),
+ (
+  'claimRewardToken', str),
+ (
+  'vehicleSelectionTokenPattern', str),
+ (
+  'rewardQuestsPrefix', str),
+ (
+  'categories', dict),
+ (
+  'vehicleSelectionQuestPattern', str)))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -691,11 +660,17 @@ class SeniorityAwardsConfig(typing.NamedTuple('SeniorityAwardsConfig', (('enable
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-class EasyTankEquipConfig(typing.NamedTuple('EasyTankEquipConfig', (('enabled', bool), ('minVehicleLevel', int), ('ammunitionReductionFactor', float)))):
+class EasyTankEquipConfig(typing.NamedTuple('EasyTankEquipConfig', (
+ (
+  'enabled', bool),
+ (
+  'minVehicleLevel', int),
+ (
+  'ammunitionReductionFactor', float)))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -708,7 +683,7 @@ class EasyTankEquipConfig(typing.NamedTuple('EasyTankEquipConfig', (('enabled', 
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
@@ -722,7 +697,7 @@ class _AdventCalendarConfig(namedtuple('_AdventCalendarConfig', ('calendarURL', 
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
@@ -732,8 +707,7 @@ class _crystalRewardConfigSection(namedtuple('_crystalRewardConfigSection', ('le
     __slots__ = ()
 
     def __new__(cls, params):
-        defaults = {'level': {},
-         'vehicle': {}}
+        defaults = {'level': {}, 'vehicle': {}}
         defaults.update(params)
         return super(_crystalRewardConfigSection, cls).__new__(cls, **defaults)
 
@@ -743,8 +717,7 @@ class _crystalRewardsConfig(namedtuple('_crystalRewardsConfig', ('limits', 'rewa
     CONFIG_NAME = 'crystal_rewards_config'
 
     def __new__(cls, **kwargs):
-        defaults = {'limits': _crystalRewardConfigSection(kwargs.get('limits', {})),
-         'rewards': _crystalRewardConfigSection(kwargs.get('rewards', {}))}
+        defaults = {'limits': _crystalRewardConfigSection(kwargs.get('limits', {})), 'rewards': _crystalRewardConfigSection(kwargs.get('rewards', {}))}
         return super(_crystalRewardsConfig, cls).__new__(cls, **defaults)
 
     def isCrystalEarnPossible(self, arenaType, battleModifiers=None):
@@ -772,7 +745,9 @@ class _crystalRewardsConfig(namedtuple('_crystalRewardsConfig', ('limits', 'rewa
         return results
 
     def __isCrystalEarnPossible(self, arenaType, rewardData):
-        return sum(chain(rewardData[arenaType][False].itervalues(), rewardData[arenaType][True].itervalues())) > 0 if arenaType in rewardData else False
+        if arenaType in rewardData:
+            return sum(chain(rewardData[arenaType][False].itervalues(), rewardData[arenaType][True].itervalues())) > 0
+        return False
 
 
 class _ReactiveCommunicationConfig(namedtuple('_ReactiveCommunicationConfig', ('isEnabled', 'url'))):
@@ -803,7 +778,7 @@ class _BlueprintsConvertSaleConfig(namedtuple('_BlueprintsConvertSaleConfig', ('
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     def isEnabled(self):
@@ -813,18 +788,9 @@ class _BlueprintsConvertSaleConfig(namedtuple('_BlueprintsConvertSaleConfig', ('
         return self.options
 
 
-class _MapboxConfig(namedtuple('_MapboxConfig', ('isEnabled',
- 'progressionUpdateInterval',
- 'peripheryIDs',
- 'forbiddenClassTags',
- 'forbiddenVehTypes',
- 'primeTimes',
- 'seasons',
- 'cycleTimes',
- 'levels',
- 'geometryIDs',
- 'squadRestrictions',
- 'infoPageUrl'))):
+class _MapboxConfig(namedtuple('_MapboxConfig', (
+ 'isEnabled', 'progressionUpdateInterval', 'peripheryIDs', 'forbiddenClassTags', 'forbiddenVehTypes',
+ 'primeTimes', 'seasons', 'cycleTimes', 'levels', 'geometryIDs', 'squadRestrictions', 'infoPageUrl'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -845,7 +811,8 @@ class _MapboxConfig(namedtuple('_MapboxConfig', ('isEnabled',
         return cls()
 
 
-class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', ('isPostProgressionEnabled',
+class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', (
+ 'isPostProgressionEnabled',
  'enabledFeatures',
  'forbiddenVehicles',
  'enabledRentedVehicles'))):
@@ -873,11 +840,12 @@ class VehiclePostProgressionConfig(namedtuple('_VehiclePostProgression', ('isPos
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-class _EventBattlesConfig(namedtuple('_EventBattlesConfig', ('isEnabled',
+class _EventBattlesConfig(namedtuple('_EventBattlesConfig', (
+ 'isEnabled',
  'peripheryIDs',
  'primeTimes',
  'seasons',
@@ -894,7 +862,7 @@ class _EventBattlesConfig(namedtuple('_EventBattlesConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -902,7 +870,8 @@ class _EventBattlesConfig(namedtuple('_EventBattlesConfig', ('isEnabled',
         return cls()
 
 
-class GiftEventConfig(namedtuple('_GiftEventConfig', ('eventID',
+class GiftEventConfig(namedtuple('_GiftEventConfig', (
+ 'eventID',
  'giftEventState',
  'giftItemIDs',
  'clientReqStrategy'))):
@@ -945,7 +914,7 @@ class GiftSystemConfig(namedtuple('_GiftSystemConfig', ('events',))):
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         self.__packEventConfigs(dataToUpdate)
         return self._replace(**dataToUpdate)
 
@@ -954,7 +923,8 @@ class GiftSystemConfig(namedtuple('_GiftSystemConfig', ('events',))):
         data['events'] = {eID:makeTupleByDict(GiftEventConfig, eData) for eID, eData in data['events'].iteritems()}
 
 
-class PlayLimitsConfig(namedtuple('PlayLimitsConfig', ('lockTimeBeforeBattle',))):
+class PlayLimitsConfig(namedtuple('PlayLimitsConfig', (
+ 'lockTimeBeforeBattle',))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -967,7 +937,7 @@ class PlayLimitsConfig(namedtuple('PlayLimitsConfig', ('lockTimeBeforeBattle',))
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -975,7 +945,8 @@ class PlayLimitsConfig(namedtuple('PlayLimitsConfig', ('lockTimeBeforeBattle',))
         return cls()
 
 
-class _BattleMattersConfig(namedtuple('_BattleMattersConfig', ('isEnabled',
+class _BattleMattersConfig(namedtuple('_BattleMattersConfig', (
+ 'isEnabled',
  'isPaused',
  'delayedRewardOfferVisibilityToken',
  'delayedRewardOfferCurrencyToken'))):
@@ -991,7 +962,7 @@ class _BattleMattersConfig(namedtuple('_BattleMattersConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1013,7 +984,7 @@ class PeripheryRoutingConfig(namedtuple('_PeripheryRoutingConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
@@ -1046,7 +1017,8 @@ def settingsBlock(className, fields):
     return SettingsBlock
 
 
-class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
+class WinbackConfig(namedtuple('WinbackConfig', (
+ 'isEnabled',
  'isModeEnabled',
  'isWhatsNewEnabled',
  'isProgressionEnabled',
@@ -1072,7 +1044,7 @@ class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1080,7 +1052,8 @@ class WinbackConfig(namedtuple('WinbackConfig', ('isEnabled',
         return cls()
 
 
-class PersonalReservesConfig(namedtuple('_PersonalReserves', ('isReservesInBattleActivationEnabled', 'supportedQueueTypes'))):
+class PersonalReservesConfig(namedtuple('_PersonalReserves', ('isReservesInBattleActivationEnabled',
+ 'supportedQueueTypes'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -1094,7 +1067,7 @@ class PersonalReservesConfig(namedtuple('_PersonalReserves', ('isReservesInBattl
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
@@ -1112,16 +1085,12 @@ class PreModerationConfig(namedtuple('_PreModerationConfig', ('prebattleDescript
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
 
-class LootBoxSystemEventConfig(namedtuple('_LootBoxSystemEventConfig', ('enabled',
- 'eventName',
- 'boxesPriority',
- 'start',
- 'finish',
- 'dailyPurchaseLimit'))):
+class LootBoxSystemEventConfig(namedtuple('_LootBoxSystemEventConfig', (
+ 'enabled', 'eventName', 'boxesPriority', 'start', 'finish', 'dailyPurchaseLimit'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -1130,7 +1099,8 @@ class LootBoxSystemEventConfig(namedtuple('_LootBoxSystemEventConfig', ('enabled
         return super(LootBoxSystemEventConfig, cls).__new__(cls, **defaults)
 
     def getActiveTime(self):
-        return (self.start, self.finish)
+        return (
+         self.start, self.finish)
 
 
 LOOTBOX_SYSTEM_CONFIG = 'lootbox_system_config'
@@ -1146,7 +1116,7 @@ class _LootBoxSystemConfig(namedtuple('_LootBoxSystemConfig', ('events', 'mainEn
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         self.__packEventConfigs(dataToUpdate)
         return self._replace(**dataToUpdate)
 
@@ -1171,7 +1141,7 @@ class _LimitedUIConfig(namedtuple('_LimitedUIConfig', ('enabled', 'rules', 'vers
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1192,7 +1162,7 @@ class _SteamShadeConfig(namedtuple('_SteamShadeConfig', ('battlesPlayed', 'sessi
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1213,7 +1183,7 @@ class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', ('newbieHints', 's
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1221,7 +1191,8 @@ class _ABFeatureTestConfig(namedtuple('_ABFeatureTestConfig', ('newbieHints', 's
         return cls()
 
 
-class ReferralProgramConfig(namedtuple('ReferralProgramConfig', ('periodNumber', 'periodStartDatetime', 'periodEndDatetime'))):
+class ReferralProgramConfig(namedtuple('ReferralProgramConfig', (
+ 'periodNumber', 'periodStartDatetime', 'periodEndDatetime'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -1234,7 +1205,7 @@ class ReferralProgramConfig(namedtuple('ReferralProgramConfig', ('periodNumber',
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1242,13 +1213,8 @@ class ReferralProgramConfig(namedtuple('ReferralProgramConfig', ('periodNumber',
         return cls()
 
 
-class LiveOpsWebEventsConfig(namedtuple('LiveOpsWebEventsConfig', ('eventUniqueName',
- 'isEnabled',
- 'url',
- 'preEventStart',
- 'eventStart',
- 'eventEnd',
- 'postEventEnd',
+class LiveOpsWebEventsConfig(namedtuple('LiveOpsWebEventsConfig', (
+ 'eventUniqueName', 'isEnabled', 'url', 'preEventStart', 'eventStart', 'eventEnd', 'postEventEnd',
  'isEntryPointSmall'))):
     __slots__ = ()
 
@@ -1262,7 +1228,7 @@ class LiveOpsWebEventsConfig(namedtuple('LiveOpsWebEventsConfig', ('eventUniqueN
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1270,7 +1236,8 @@ class LiveOpsWebEventsConfig(namedtuple('LiveOpsWebEventsConfig', ('eventUniqueN
         return cls()
 
 
-class _AdvancedAchievementsConfig(namedtuple('_AdvancedAchievementsConfig', ('enabled', 'vehicleAchievementsEnabled', 'customizationAchievementsEnabled'))):
+class _AdvancedAchievementsConfig(namedtuple('_AdvancedAchievementsConfig', (
+ 'enabled', 'vehicleAchievementsEnabled', 'customizationAchievementsEnabled'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -1283,7 +1250,7 @@ class _AdvancedAchievementsConfig(namedtuple('_AdvancedAchievementsConfig', ('en
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
 
     @classmethod
@@ -1291,7 +1258,8 @@ class _AdvancedAchievementsConfig(namedtuple('_AdvancedAchievementsConfig', ('en
         return cls()
 
 
-class _ExchangeRatesConfig(namedtuple('_ExchangeRatesConfig', ('isGoldExchangePesronalDiscountsAvailable', 'isExperienceExchangePesronalDiscountsAvailable'))):
+class _ExchangeRatesConfig(namedtuple('_ExchangeRatesConfig', ('isGoldExchangePesronalDiscountsAvailable',
+ 'isExperienceExchangePesronalDiscountsAvailable'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -1304,8 +1272,94 @@ class _ExchangeRatesConfig(namedtuple('_ExchangeRatesConfig', ('isGoldExchangePe
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
         return self._replace(**dataToUpdate)
+
+
+class PetSystemServerSettings(object):
+
+    def __init__(self, config):
+        self.__config = config
+
+    def getPetGeneralConfig(self):
+        return PetGeneralConfig(self.__config.get(pet_constants.PetSystemGeneralConsts.CONFIG_NAME, {}))
+
+    def getPetsConfig(self):
+        return PetConfig(self.__config.get(pet_constants.PetsConsts.CONFIG_NAME, {}))
+
+    def getPetBonusConfig(self):
+        return PetBonusConfig(self.__config.get(pet_constants.PetBonusesConsts.CONFIG_NAME, {}))
+
+    def getPetEventConfig(self):
+        return PetEventConfig(self.__config.get(pet_constants.PetEventsConsts.CONFIG_NAME, {}))
+
+    def getPetPromoConfig(self):
+        return PetPromoConfig(self.__config.get(pet_constants.PetPromoConsts.CONFIG_NAME, {}))
+
+    def getPetSynergyConfig(self):
+        return PetSynergyConfig(self.__config.get(pet_constants.PetSynergyConsts.CONFIG_NAME, {}))
+
+
+class _IngameTournamentBannerConfig(settingsBlock('_IngameTournamentBannerConfig', (
+ 'state',
+ 'startTime',
+ 'endTime'))):
+
+    @classmethod
+    def defaults(cls):
+        return {'state': None, 
+           'startTime': None, 
+           'endTime': None}
+
+    @classmethod
+    def _preprocessData(cls, data):
+        state = data.get('state')
+        if state is not None:
+            data['state'] = findFirst(lambda tournamentState: tournamentState.value == state, IngameTournamentState)
+        return data
+
+
+class _IngameTournamentShopConfig(settingsBlock('_IngameTournamentShopConfig', (
+ 'realms',
+ 'ingameShopRelativePath',
+ 'shopUrl'))):
+
+    @classmethod
+    def defaults(cls):
+        return {'realms': [], 'ingameShopRelativePath': '', 
+           'shopUrl': ''}
+
+    @classmethod
+    def _preprocessData(cls, data):
+        realms = data.get('realms')
+        if realms is not None:
+            data['realms'] = realms.split()
+        return data
+
+
+class _IngameTournamentConfig(settingsBlock('_IngameTournamentConfig', (
+ 'isEnabled',
+ 'banners',
+ 'shop'))):
+
+    @classmethod
+    def defaults(cls):
+        return {'isEnabled': False, 
+           'banners': [], 'shop': []}
+
+    @classmethod
+    def _preprocessData(cls, data):
+        banners = []
+        for bannerConfig in data.get('banners', []):
+            banners.append(makeTupleByDict(_IngameTournamentBannerConfig, bannerConfig))
+
+        data['banners'] = banners
+        shopConfigs = []
+        for shopConfig in data.get('shop', []):
+            shopConfigs.append(makeTupleByDict(_IngameTournamentShopConfig, shopConfig))
+
+        data['shop'] = shopConfigs
+        return data
 
 
 class ServerSettings(object):
@@ -1362,6 +1416,7 @@ class ServerSettings(object):
         self.__schemaManager = getSchemaManager()
         self.__exchangeRatesConfig = _ExchangeRatesConfig()
         self.__easyTankEquipConfig = EasyTankEquipConfig()
+        self.__ingameTournamentConfig = _IngameTournamentConfig()
         self.set(serverSettings)
 
     def set(self, serverSettings):
@@ -1521,6 +1576,10 @@ class ServerSettings(object):
             self.__liveOpsWebEventsConfig = makeTupleByDict(LiveOpsWebEventsConfig, self.__serverSettings[Configs.LIVE_OPS_EVENTS_CONFIG.value])
         else:
             self.__liveOpsWebEventsConfig = LiveOpsWebEventsConfig.defaults()
+        if Configs.INGAME_TOURNAMENT_CONFIG.value in self.__serverSettings:
+            self.__ingameTournamentConfig = makeTupleByDict(_IngameTournamentConfig, self.__serverSettings[Configs.INGAME_TOURNAMENT_CONFIG.value])
+        else:
+            self.__ingameTournamentConfig = _IngameTournamentConfig.defaults()
         self.onServerSettingsChange(serverSettings)
 
     def update(self, serverSettingsDiff):
@@ -1639,6 +1698,10 @@ class ServerSettings(object):
             self.__updateReferralProgramConfig(serverSettingsDiff)
         if Configs.LIVE_OPS_EVENTS_CONFIG.value in serverSettingsDiff:
             self.__updateLiveOpsWebEventsConfig(serverSettingsDiff)
+        if PETS_SYSTEM_CONFIG in serverSettingsDiff:
+            self.__serverSettings[PETS_SYSTEM_CONFIG] = serverSettingsDiff[PETS_SYSTEM_CONFIG]
+        if Configs.INGAME_TOURNAMENT_CONFIG.value in serverSettingsDiff:
+            self.__updateIngameTournamentConfig(serverSettingsDiff)
         self.onServerSettingsChange(serverSettingsDiff)
 
     def clear(self):
@@ -1826,6 +1889,10 @@ class ServerSettings(object):
     def advancedAchievementsConfig(self):
         return self.__advancedAchievementsConfig
 
+    @property
+    def ingameTournamentConfig(self):
+        return self.__ingameTournamentConfig
+
     def isEpicBattleEnabled(self):
         return self.epicBattles.isEnabled
 
@@ -1834,7 +1901,9 @@ class ServerSettings(object):
             return self.__getGlobalSetting('isRegularQuestEnabled', True)
         if branch == PM_BRANCH.PERSONAL_MISSION_2:
             return self.__getGlobalSetting('isPM2QuestEnabled', True)
-        return self.__getGlobalSetting('isPM3QuestEnabled', True) if branch == PM_BRANCH.PERSONAL_MISSION_3 else self.__getGlobalSetting('isRegularQuestEnabled', True) or self.__getGlobalSetting('isPM2QuestEnabled', True) or self.__getGlobalSetting('isPM3QuestEnabled', True)
+        if branch == PM_BRANCH.PERSONAL_MISSION_3:
+            return self.__getGlobalSetting('isPM3QuestEnabled', True)
+        return self.__getGlobalSetting('isRegularQuestEnabled', True) or self.__getGlobalSetting('isPM2QuestEnabled', True) or self.__getGlobalSetting('isPM3QuestEnabled', True)
 
     def isPMBattleProgressEnabled(self):
         return self.__getGlobalSetting('isPMBattleProgressEnabled', True)
@@ -2051,6 +2120,9 @@ class ServerSettings(object):
     def isAutoSellCheckBoxEnabled(self):
         return self.getMiscGUISettings().get('buyModuleDialog', {}).get('enableAutoSellCheckBox', False)
 
+    def isPhysicsSoundEnabled(self):
+        return self.getMiscGUISettings().get('soundSettings', {}).get('physicsSoundEnabled', True)
+
     def getMiscGUISettings(self):
         return self.__getGlobalSetting(MISC_GUI_SETTINGS, {})
 
@@ -2080,7 +2152,10 @@ class ServerSettings(object):
 
     def isMapsInDevelopmentEnabled(self):
         mapsInDevCongig = self.__getGlobalSetting(Configs.MAPS_IN_DEVELOPMENT_CONFIG.value, None)
-        return bool(mapsInDevCongig['isEnabled']) if mapsInDevCongig else False
+        if mapsInDevCongig:
+            return bool(mapsInDevCongig['isEnabled'])
+        else:
+            return False
 
     def getSquadRestrictions(self):
         return self.__getGlobalSetting('squadRestrictions', {})
@@ -2204,6 +2279,9 @@ class ServerSettings(object):
 
     def getLootBoxesTooltipConfig(self):
         return self.__getGlobalSetting(Configs.LOOTBOXES_TOOLTIP_CONFIG.value, {})
+
+    def getPetSystemConfig(self):
+        return PetSystemServerSettings(self.__getGlobalSetting(PETS_SYSTEM_CONFIG, {}))
 
     def __getGlobalSetting(self, settingsName, default=None):
         return self.__serverSettings.get(settingsName, default)
@@ -2355,6 +2433,9 @@ class ServerSettings(object):
     def __updateLiveOpsWebEventsConfig(self, serverSettingsDiff):
         self.__liveOpsWebEventsConfig = self.__liveOpsWebEventsConfig.replace(serverSettingsDiff[Configs.LIVE_OPS_EVENTS_CONFIG.value])
 
+    def __updateIngameTournamentConfig(self, serverSettingsDiff):
+        self.__ingameTournamentConfig = self.__ingameTournamentConfig.replace(serverSettingsDiff[Configs.INGAME_TOURNAMENT_CONFIG.value])
+
     def __updateAdvancedAchievementsConfig(self, serverSettingsDiff):
         if Configs.ADVANCED_ACHIEVEMENTS_CONFIG.value in serverSettingsDiff:
             self.__advancedAchievementsConfig = self.__advancedAchievementsConfig.replace(serverSettingsDiff[Configs.ADVANCED_ACHIEVEMENTS_CONFIG.value])
@@ -2366,7 +2447,7 @@ def serverSettingsChangeListener(*configKeys):
 
         @functools.wraps(func)
         def wrapper(self, diff):
-            if any((configKey in diff for configKey in configKeys)):
+            if any(configKey in diff for configKey in configKeys):
                 func(self, diff)
                 return True
             return False

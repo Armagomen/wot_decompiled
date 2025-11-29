@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/hints_common/common/manager.py
-import typing
-import logging
-import importlib
-import section2dict
+import typing, logging, importlib, section2dict
 from extension_utils import ResMgr
 from dict2model import exceptions
 if typing.TYPE_CHECKING:
@@ -22,7 +17,8 @@ def _readHintsXml(xmlPath):
     else:
         hints = section2dict.parse(section).get(HINTS_TAG, [])
         if not isinstance(hints, list):
-            hints = [hints]
+            hints = [
+             hints]
         if not hints:
             _logger.debug('File <%s> section [%s] empty or does not exist.', xmlPath, HINTS_TAG)
         ResMgr.purge(xmlPath, True)
@@ -46,7 +42,7 @@ class BaseHintsModelsManager(object):
                 schema = self._importSchema(schemaLocation) if schemaLocation else self._defaultSchema
                 self._register(schema, rawHintData)
             except exceptions.ValidationError as ve:
-                error = exceptions.ValidationErrorMessage(ve.error.data, title='Hint[{}]'.format(index))
+                error = exceptions.ValidationErrorMessage(ve.error.data, title=('Hint[{}]').format(index))
                 errors = errors + error if errors else error
 
         try:
@@ -66,7 +62,7 @@ class BaseHintsModelsManager(object):
 
     def _importSchema(self, location):
         if not isinstance(location, str):
-            raise exceptions.ValidationError('Wrong schema location type. {} != str.'.format(type(location)))
+            raise exceptions.ValidationError(('Wrong schema location type. {} != str.').format(type(location)))
         if location in self._importedSchemas:
             return self._importedSchemas[location]
         else:
@@ -77,11 +73,11 @@ class BaseHintsModelsManager(object):
             try:
                 module = importlib.import_module(modulePath)
             except ImportError:
-                raise exceptions.ValidationError('Wrong schema module path: {}.'.format(modulePath))
+                raise exceptions.ValidationError(('Wrong schema module path: {}.').format(modulePath))
 
             schema = getattr(module, name, None)
             if schema is None:
-                raise exceptions.ValidationError('Wrong schema variable name: {}.'.format(name))
+                raise exceptions.ValidationError(('Wrong schema variable name: {}.').format(name))
             self._checkSchemaType(schema)
             self._importedSchemas[location] = schema
             return self._importedSchemas[location]

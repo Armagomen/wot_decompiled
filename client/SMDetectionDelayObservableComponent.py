@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMDetectionDelayObservableComponent.py
 from Event import Event
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from story_mode_common.story_mode_constants import AwarenessState
@@ -23,7 +21,7 @@ class SMDetectionDelayObservableComponent(DynamicScriptComponent):
             if key not in prevValues:
                 if value['spotted']:
                     state = AwarenessState.SPOTTED
-            if not prevValues[key]['spotted'] and value['spotted']:
+            elif not prevValues[key]['spotted'] and value['spotted']:
                 state = AwarenessState.SPOTTED
 
         if state != self._state:

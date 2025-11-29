@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/subscription/subscription_award_view.py
 from helpers.time_utils import makeLocalServerTime
 from typing import TYPE_CHECKING
 import WWISE
@@ -27,7 +25,7 @@ if TYPE_CHECKING:
     from frameworks.wulf import ViewEvent, Window
 
 class LoggedBackportTooltipWindow(BackportTooltipWindow):
-    __slots__ = ('_wotPlusUILogger',)
+    __slots__ = ('_wotPlusUILogger', )
 
     def __init__(self, tooltipData, parent, bonusName):
         super(LoggedBackportTooltipWindow, self).__init__(tooltipData, parent)
@@ -78,7 +76,7 @@ class SubscriptionAwardView(ViewImpl):
         return self._wotPlusCtrl.getEnabledBonuses()
 
     def _fillViewModel(self):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             rewardsList = model.getRewards()
             rewardsList.clear()
             rewardsList.reserve(len(self.__bonuses))
@@ -121,13 +119,12 @@ class SubscriptionAwardView(ViewImpl):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = int(event.getArgument('tooltipId'))
             window = None
-            if tooltipId in self.__tooltips:
-                bonusName = 0 <= tooltipId < len(self.__bonuses) and self.__bonuses[tooltipId].getName()
+            if tooltipId in self.__tooltips and 0 <= tooltipId < len(self.__bonuses):
+                bonusName = self.__bonuses[tooltipId].getName()
                 window = LoggedBackportTooltipWindow(self.__tooltips[tooltipId], self.getParentWindow(), bonusName)
                 window.load()
             return window
-        else:
-            return super(SubscriptionAwardView, self).createToolTip(event)
+        return super(SubscriptionAwardView, self).createToolTip(event)
 
 
 class SubscriptionAwardWindow(LobbyNotificationWindow):

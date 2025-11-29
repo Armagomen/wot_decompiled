@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/base/statuses/controller_mixin.py
-import typing
-import operator
+import typing, operator
 from functools import partial
 from PlayerEvents import g_playerEvents
 from gui.platform.base.statuses.status import Status

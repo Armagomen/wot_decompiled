@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/rechargeable_nitro_widget.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from constants import RECHARGEABLE_NITRO_STATE
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import HotKeyData
@@ -18,15 +15,16 @@ if typing.TYPE_CHECKING:
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
 
 class RechargeableNitroMechanicWidget(RocketAcceleratorIndicatorMeta, ComponentListener, IMechanicStatesListenerLogic):
-    _UI_STATES = {RECHARGEABLE_NITRO_STATE.NOT_RUNNING: MECHANICS_WIDGET_CONST.IDLE,
-     RECHARGEABLE_NITRO_STATE.DEPLOYING: MECHANICS_WIDGET_CONST.PREPARING,
-     RECHARGEABLE_NITRO_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING,
-     RECHARGEABLE_NITRO_STATE.READY: MECHANICS_WIDGET_CONST.READY,
-     RECHARGEABLE_NITRO_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE,
-     RECHARGEABLE_NITRO_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE,
-     RECHARGEABLE_NITRO_STATE.PRIMED: MECHANICS_WIDGET_CONST.PRIME,
-     RECHARGEABLE_NITRO_STATE.DEPLETING: MECHANICS_WIDGET_CONST.ACTIVE}
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _UI_STATES = {RECHARGEABLE_NITRO_STATE.NOT_RUNNING: MECHANICS_WIDGET_CONST.IDLE, 
+       RECHARGEABLE_NITRO_STATE.DEPLOYING: MECHANICS_WIDGET_CONST.PREPARING, 
+       RECHARGEABLE_NITRO_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING, 
+       RECHARGEABLE_NITRO_STATE.READY: MECHANICS_WIDGET_CONST.READY, 
+       RECHARGEABLE_NITRO_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE, 
+       RECHARGEABLE_NITRO_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE, 
+       RECHARGEABLE_NITRO_STATE.PRIMED: MECHANICS_WIDGET_CONST.PRIME, 
+       RECHARGEABLE_NITRO_STATE.DEPLETING: MECHANICS_WIDGET_CONST.ACTIVE}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
 
     def __init__(self):
         super(RechargeableNitroMechanicWidget, self).__init__()
@@ -46,7 +44,10 @@ class RechargeableNitroMechanicWidget(RocketAcceleratorIndicatorMeta, ComponentL
         self.__invalidateProgress(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.RECHARGEABLE_NITRO, self), VehicleMechanicStatesUpdater(VehicleMechanic.RECHARGEABLE_NITRO, self), HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.RECHARGEABLE_NITRO, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.RECHARGEABLE_NITRO, self),
+         HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         self.as_setStateS(self._UI_STATES[state.state], isInstantly)

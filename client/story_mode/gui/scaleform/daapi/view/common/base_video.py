@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/common/base_video.py
 from logging import getLogger
-import BigWorld
-import SoundGroups
-import typing
-import WWISE
-import Windowing
+import BigWorld, SoundGroups, typing, WWISE, Windowing
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.settings_core.settings_constants import SOUND
@@ -95,11 +89,11 @@ class BaseVideo(IntroVideoMeta):
             Windowing.addWindowAccessibilitynHandler(self._onWindowAccessibilityChanged)
             if not Windowing.isWindowAccessible():
                 isPausedAfterLoad = True
-        self.as_setDataS({'skipButtonLabel': backport.text(R.strings.sm_battle.common.skipBtn()),
-         'loadingText': backport.text(R.strings.sm_battle.introVideo.loading()),
-         'loadingImage': self._getLoadingImage(),
-         'video': self._videoSettings.videoPath,
-         'isPausedAfterLoad': isPausedAfterLoad})
+        self.as_setDataS({'skipButtonLabel': backport.text(R.strings.sm_battle.common.skipBtn()), 
+           'loadingText': backport.text(R.strings.sm_battle.introVideo.loading()), 
+           'loadingImage': self._getLoadingImage(), 
+           'video': self._videoSettings.videoPath, 
+           'isPausedAfterLoad': isPausedAfterLoad})
         if self._videoSettings is not None:
             if not self._videoSettings.music.group and not self._videoSettings.music.state:
                 self._storyModeCtrl.startMusic()

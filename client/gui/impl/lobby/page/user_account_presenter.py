@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/user_account_presenter.py
 from __future__ import absolute_import
-import BigWorld
-import typing
-import constants
+import BigWorld, typing, constants
 from adisp import adisp_process
 from frameworks.wulf import ViewFlags
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getWotPlusShopUrl, getBuyPremiumUrl
@@ -27,12 +23,11 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.page.header.subscriptions_model import SubscriptionsModel
     from gui.impl.gen.view_models.views.lobby.page.header.user_info_model import UserInfoModel
     from gui.platform.wgnp.steam_account.statuses import SteamAccEmailStatus
-_STATUS_TYPES_MAP = {StatusTypes.UNDEFINED: SteamEmailStatusEnum.UNDEFINED,
- StatusTypes.ADD_NEEDED: SteamEmailStatusEnum.ADD_NEEDED,
- StatusTypes.ADDED: SteamEmailStatusEnum.ADDED,
- StatusTypes.CONFIRMATION_SENT: SteamEmailStatusEnum.CONFIRMATION_SENT,
- StatusTypes.CONFIRMED: SteamEmailStatusEnum.CONFIRMED,
- StatusTypes.PROCESSING: SteamEmailStatusEnum.PROCESSING}
+_STATUS_TYPES_MAP = {StatusTypes.UNDEFINED: SteamEmailStatusEnum.UNDEFINED, StatusTypes.ADD_NEEDED: SteamEmailStatusEnum.ADD_NEEDED, 
+   StatusTypes.ADDED: SteamEmailStatusEnum.ADDED, 
+   StatusTypes.CONFIRMATION_SENT: SteamEmailStatusEnum.CONFIRMATION_SENT, 
+   StatusTypes.CONFIRMED: SteamEmailStatusEnum.CONFIRMED, 
+   StatusTypes.PROCESSING: SteamEmailStatusEnum.PROCESSING}
 
 class UserAccountPresenter(ViewComponent[UserAccountModel]):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -54,18 +49,30 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
         return super(UserAccountPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return WotPlusTooltip() if contentID == R.views.lobby.subscription.WotPlusTooltip() else super(UserAccountPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.subscription.WotPlusTooltip():
+            return WotPlusTooltip()
+        return super(UserAccountPresenter, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenAccountDashboard, self.__onOpenAccountDashboard),
-         (self.viewModel.subscriptions.onOpenPremium, self.__onOpenPremium),
-         (self.viewModel.subscriptions.onOpenWotPlus, self.__onOpenWotPlus),
-         (self.__badgesController.onUpdated, self.__updateBadgeInfo),
-         (self.__gameSession.onPremiumTypeChanged, self.__onPremiumChanged),
-         (self.__gameSession.onPremiumNotify, self.__onPremiumChanged),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (self.__wotPlusCtrl.onDataChanged, self.__onWotPlusStatusChanged),
-         (self.__anonymizerController.onStateChanged, self.__updateAnonymizedState))
+        return (
+         (
+          self.viewModel.onOpenAccountDashboard, self.__onOpenAccountDashboard),
+         (
+          self.viewModel.subscriptions.onOpenPremium, self.__onOpenPremium),
+         (
+          self.viewModel.subscriptions.onOpenWotPlus, self.__onOpenWotPlus),
+         (
+          self.__badgesController.onUpdated, self.__updateBadgeInfo),
+         (
+          self.__gameSession.onPremiumTypeChanged, self.__onPremiumChanged),
+         (
+          self.__gameSession.onPremiumNotify, self.__onPremiumChanged),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
+         (
+          self.__wotPlusCtrl.onDataChanged, self.__onWotPlusStatusChanged),
+         (
+          self.__anonymizerController.onStateChanged, self.__updateAnonymizedState))
 
     def _subscribe(self):
         super(UserAccountPresenter, self)._subscribe()
@@ -80,7 +87,13 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
         self.__wgnpSteamAccCtrl.statusEvents.unsubscribe(StatusTypes.ADD_NEEDED, self.__updateSteamEmailStatus)
 
     def _getCallbacks(self):
-        return (('stats.clanInfo', self.__updateClanInfo), ('cache.activeOrders', self.__updateClanInfo), ('account.activePremiumExpiryTime', self.__onPremiumChanged))
+        return (
+         (
+          'stats.clanInfo', self.__updateClanInfo),
+         (
+          'cache.activeOrders', self.__updateClanInfo),
+         (
+          'account.activePremiumExpiryTime', self.__onPremiumChanged))
 
     def _onLoading(self, *args, **kwargs):
         super(UserAccountPresenter, self)._onLoading(*args, **kwargs)
@@ -104,7 +117,7 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
             isInClan = False
             clanRole = ''
             clanAbbrev = None
-        with self.viewModel.userInfo.transaction() as model:
+        with self.viewModel.userInfo.transaction() as (model):
             model.setIsInClan(isInClan)
             model.setRoleInClan(clanRole)
             model.setClanAbbrev(clanAbbrev)
@@ -117,7 +130,7 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
             nickname = 'player.name'
         else:
             nickname = player.name
-        with self.viewModel.userInfo.transaction() as model:
+        with self.viewModel.userInfo.transaction() as (model):
             model.setUserName(nickname)
             model.setAnonymized(self.__anonymizerController.isAnonymized)
             hasSteamAccount = self.__steamRegistrationCtrl.isSteamAccount
@@ -137,13 +150,13 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
 
     def __updatePremiumInfo(self):
         accountStats = self.__itemsCache.items.stats
-        with self.viewModel.subscriptions.transaction() as model:
+        with self.viewModel.subscriptions.transaction() as (model):
             model.setPremiumSubscriptionEnabled(accountStats.isPremium)
             model.setActivePremiumType(accountStats.activePremiumType)
             model.setActivePremiumExpiryTime(accountStats.activePremiumExpiryTime)
 
     def __updateWotPlusInfo(self):
-        with self.viewModel.subscriptions.transaction() as model:
+        with self.viewModel.subscriptions.transaction() as (model):
             model.setWotPlusEnabled(self.__wotPlusCtrl.isEnabled())
             model.setWotPlusState(self.__wotPlusCtrl.getState().value)
             model.setWotPlusExpiryTime(self.__wotPlusCtrl.getExpiryTime())
@@ -181,7 +194,8 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
         wotPlusEnabled = self.__wotPlusCtrl.isEnabled()
         self.__wotPlusUILogger.logClickEvent(wotPlusState)
         if wotPlusEnabled:
-            closeViewsWithFlags([R.views.lobby.player_subscriptions.PlayerSubscriptions()], [ViewFlags.LOBBY_TOP_SUB_VIEW])
+            closeViewsWithFlags([R.views.lobby.player_subscriptions.PlayerSubscriptions()], [
+             ViewFlags.LOBBY_TOP_SUB_VIEW])
             views = self.gui.windowsManager.findViews(lambda view: view.layoutID == R.views.lobby.player_subscriptions.PlayerSubscriptions())
             if not views:
                 self.__onOpenAccountDashboard()
@@ -193,7 +207,7 @@ class UserAccountPresenter(ViewComponent[UserAccountModel]):
         self.viewModel.userInfo.setAnonymized(self.__anonymizerController.isAnonymized)
 
     def __updateSteamEmailStatus(self, status=None):
-        with self.viewModel.userInfo.transaction() as model:
+        with self.viewModel.userInfo.transaction() as (model):
             if status is not None:
                 model.setSteamEmailStatus(_STATUS_TYPES_MAP[status.type])
                 model.setEmail(status.email)

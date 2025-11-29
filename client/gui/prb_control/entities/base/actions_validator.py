@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/actions_validator.py
-import logging
-import weakref
+import logging, weakref
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from gui.lobby_state_machine.states import LobbyStateFlags
 from gui.prb_control.items import ValidationResult
 from gui.prb_control.settings import PREBATTLE_RESTRICTION
 from helpers import dependency
@@ -29,20 +27,31 @@ class BaseActionsValidator(IActionsValidator):
         self._entity = weakref.proxy(entity)
 
     def canPlayerDoAction(self, ignoreEnable=False):
-        return self._validate() if ignoreEnable or self._isEnabled() else None
+        if ignoreEnable or self._isEnabled():
+            return self._validate()
 
     def _validate(self):
-        return None
+        return
 
     def _isEnabled(self):
         return True
 
 
+class CurrentPreviewVehicleActionsValidator(BaseActionsValidator):
+
+    def _validate(self):
+        if not g_currentVehicle.isReadyToFight():
+            from gui.Scaleform.lobby_entry import getLobbyStateMachine
+            lsm = getLobbyStateMachine()
+            inPBS = any(s.getFlags() & LobbyStateFlags.POST_BATTLE_RESULTS for s in lsm.getNonEmptyEnteredStates(onlyLeaves=False))
+            if g_currentPreviewVehicle.isPresent() and not inPBS:
+                return ValidationResult(False, PREBATTLE_RESTRICTION.PREVIEW_VEHICLE_IS_PRESENT)
+        return super(CurrentPreviewVehicleActionsValidator, self)._validate()
+
+
 class CurrentVehicleActionsValidator(BaseActionsValidator):
 
     def _validate(self):
-        if g_currentPreviewVehicle.isPresent():
-            return ValidationResult(False, PREBATTLE_RESTRICTION.PREVIEW_VEHICLE_IS_PRESENT)
         if not g_currentVehicle.isReadyToFight():
             if not g_currentVehicle.isPresent():
                 return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_NOT_PRESENT)
@@ -66,7 +75,9 @@ class CurrentVehicleActionsValidator(BaseActionsValidator):
                 return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_RENTALS_IS_OVER)
             if g_currentVehicle.isRotationGroupLocked():
                 return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_ROTATION_GROUP_LOCKED)
-        return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED) if g_currentVehicle.isUnsuitableToQueue() else super(CurrentVehicleActionsValidator, self)._validate()
+        if g_currentVehicle.isUnsuitableToQueue():
+            return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED)
+        return super(CurrentVehicleActionsValidator, self)._validate()
 
 
 class TutorialActionsValidator(BaseActionsValidator):
@@ -74,7 +85,10 @@ class TutorialActionsValidator(BaseActionsValidator):
 
     def _validate(self):
         tutorial = self.__tutorialLoader.tutorial
-        return ValidationResult(False, PREBATTLE_RESTRICTION.TUTORIAL_NOT_FINISHED) if tutorial is not None and not tutorial.isAllowedToFight() else super(TutorialActionsValidator, self)._validate()
+        if tutorial is not None and not tutorial.isAllowedToFight():
+            return ValidationResult(False, PREBATTLE_RESTRICTION.TUTORIAL_NOT_FINISHED)
+        else:
+            return super(TutorialActionsValidator, self)._validate()
 
 
 class ActionsValidatorComposite(BaseActionsValidator):

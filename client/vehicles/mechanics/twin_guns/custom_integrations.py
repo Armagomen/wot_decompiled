@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/twin_guns/custom_integrations.py
-import typing
-import weakref
-import TriggersManager
+import typing, weakref, TriggersManager
 from aih_constants import ShakeReason
 from events_handler import eventHandler
 from helpers import dependency

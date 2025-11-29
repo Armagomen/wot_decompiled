@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/serialization/serializable_component.py
 from cStringIO import StringIO
 from collections import OrderedDict
 from typing import MutableMapping, Any, TypeVar
@@ -47,7 +45,7 @@ class SerializableComponent(object):
                 v1 = tuple(v1)
             if isinstance(v1, Math.Vector2) or isinstance(v1, Math.Vector3) or isinstance(v1, Math.Vector4):
                 v1 = tuple(v1)
-            result = (result * 31 + hash(v1)) % 18446744073709551616L
+            result = (result * 31 + hash(v1)) % 18446744073709551616
 
         return result
 

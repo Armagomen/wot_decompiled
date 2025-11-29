@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/catalog_animated_dog_tag_tooltip.py
-import typing
-import BigWorld
+import typing, BigWorld
 from frameworks.wulf import ViewSettings
 from advanced_achievements_client.items import SteppedAchievement
 from dog_tags_common.components_config import componentConfigAdapter as componentConfig
@@ -39,7 +36,7 @@ class CatalogAnimatedDogTagTooltip(ViewImpl):
 
     def _onLoading(self, backgroundId, engravingId):
         super(CatalogAnimatedDogTagTooltip, self)._onLoading()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             achievement = self.__getRequiredAchievement(backgroundId)
             model.setStage(achievement.getNextOrLastStageID())
             progress = achievement.getProgress()
@@ -47,7 +44,8 @@ class CatalogAnimatedDogTagTooltip(ViewImpl):
             model.setItemsLeft(progress.total - progress.current)
             self.__backgroundId = backgroundId
             self.__engravingId = engravingId
-            dogTag = self.__dogTagsHelper.getDisplayableDTForComponents([backgroundId, engravingId])
+            dogTag = self.__dogTagsHelper.getDisplayableDTForComponents([
+             backgroundId, engravingId])
             self.__composer.fillModel(model.equippedDogTag, dogTag, isUnlocked=progress.isCompleted())
 
     def _onLoaded(self, *args, **kwargs):
@@ -57,7 +55,9 @@ class CatalogAnimatedDogTagTooltip(ViewImpl):
     def getLogInfo(self):
         unlockedIds = self.__dogTagsHelper.getUnlockedComps()
         isUnlocked = self.__backgroundId in unlockedIds and self.__engravingId in unlockedIds
-        return 'available' if isUnlocked else 'unavailable'
+        if isUnlocked:
+            return 'available'
+        return 'unavailable'
 
     def _finalize(self):
         self.__uiLogger.viewClosed(info=self.getLogInfo())

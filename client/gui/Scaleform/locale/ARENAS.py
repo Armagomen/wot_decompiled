@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/ARENAS.py
 from debug_utils import LOG_WARNING
 
 class ARENAS(object):
@@ -170,7 +168,8 @@ class ARENAS(object):
     C_120_GRAF_ZEPPELIN_SCC_DESCRIPTION = '#arenas:120_graf_zeppelin_scc/description'
     C_120_GRAF_ZEPPELIN_NAME = '#arenas:120_graf_zeppelin/name'
     C_120_GRAF_ZEPPELIN_DESCRIPTION = '#arenas:120_graf_zeppelin/description'
-    ALL_ENUM = (TYPE_CTF_NAME,
+    ALL_ENUM = (
+     TYPE_CTF_NAME,
      TYPE_CTF_DESCRIPTION,
      TYPE_DOMINATION_NAME,
      TYPE_DOMINATION_DESCRIPTION,
@@ -340,9 +339,9 @@ class ARENAS(object):
 
     @classmethod
     def all(cls, key0):
-        outcome = '#arenas:{}'.format(key0)
+        outcome = ('#arenas:{}').format(key0)
         if outcome not in cls.ALL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

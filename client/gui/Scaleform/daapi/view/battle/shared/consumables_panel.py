@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/consumables_panel.py
-import logging
-import math
-import weakref
+import logging, math, weakref
 from functools import partial
 import BigWorld
 from typing import TYPE_CHECKING
@@ -107,7 +103,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         self.__optDeviceRange = range(self._OPT_DEVICE_START_IDX, self._OPT_DEVICE_END_IDX + 1)
         self.__optDeviceFullMask = sum([ 1 << idx for idx in self.__optDeviceRange ])
         self._emptyEquipmentsSlice = [0] * (self._EQUIPMENT_END_IDX - self._EQUIPMENT_START_IDX + 1)
-        self._cds = [None] * self._PANEL_MAX_LENGTH
+        self._cds = [
+         None] * self._PANEL_MAX_LENGTH
         self._mask = 0
         self._keys = {}
         self._extraKeys = {}
@@ -234,7 +231,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             else:
                 cdSecVal = item.getTotalTime()
             paramsString = backport.text(tooltipStr, cooldownSeconds=str(int(cdSecVal)))
-            body = '\n\n'.join((body, paramsString))
+            body = ('\n\n').join((body, paramsString))
         toolTip = TOOLTIP_FORMAT.format(descriptor.userString, body)
         return toolTip
 
@@ -538,7 +535,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         return idx
 
     def _generateEquipmentKey(self, idx, item):
-        return self._genKey(idx) if item.getTags() else (None, None)
+        if item.getTags():
+            return self._genKey(idx)
+        else:
+            return (None, None)
 
     def _genKey(self, idx):
         cmdMappingKey = COMMAND_AMMO_CHOICE_MASK.format(idx + 1 if idx < 9 else 0)
@@ -566,7 +566,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             note = ''
             footNotes = []
             if descriptor.isDamageMutable:
-                damageValue = '%s-%s' % (backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]), backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
+                damageValue = '%s-%s' % (
+                 backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]),
+                 backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
                 showDistanceAsterisk = True
                 note = ASTERISK
                 footNotes.append(ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=int(DAMAGE_INTERPOLATION_DIST_FIRST), maxDist=int(min(vehicleDescriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))))
@@ -577,9 +579,11 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                 value = backport.getNiceNumberFormat(piercingPower)
                 if piercingPowerTable != NO_DATA and isDistanceDependent:
                     note = ASTERISK
-                    value = '%s-%s' % (backport.getNiceNumberFormat(piercingPowerTable[0][1]), backport.getNiceNumberFormat(piercingPowerTable[-1][1]))
+                    value = '%s-%s' % (
+                     backport.getNiceNumberFormat(piercingPowerTable[0][1]),
+                     backport.getNiceNumberFormat(piercingPowerTable[(-1)][1]))
                     if not showDistanceAsterisk:
-                        footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[-1][0])))
+                        footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[(-1)][0])))
                 else:
                     note = ASTERISK if not showDistanceAsterisk else ASTERISK * 2
                     footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
@@ -608,22 +612,19 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         getEquipment = self.sessionProvider.shared.equipments.getEquipment
         for idx, intCD in enumerate(self._cds):
             if not intCD:
-                yield (idx,
-                 None,
-                 None,
-                 None)
-            bwKey, sfKey = self._genKey(idx)
-            handler = None
-            if idx in self.__ammoRange:
-                handler = partial(self.__handleAmmoPressed, intCD)
-            elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
-                item = getEquipment(intCD)
-                if item is not None and item.getTags():
-                    handler = self._getEquipmentKeyHandler(intCD, idx)
-            yield (idx,
-             bwKey,
-             sfKey,
-             handler)
+                yield (
+                 idx, None, None, None)
+            else:
+                bwKey, sfKey = self._genKey(idx)
+                handler = None
+                if idx in self.__ammoRange:
+                    handler = partial(self.__handleAmmoPressed, intCD)
+                elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
+                    item = getEquipment(intCD)
+                    if item is not None and item.getTags():
+                        handler = self._getEquipmentKeyHandler(intCD, idx)
+                yield (
+                 idx, bwKey, sfKey, handler)
 
         return
 
@@ -668,9 +669,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         ctrl = self.sessionProvider.shared.equipments
         if ctrl is None:
             return
-        elif not self.as_isVisibleS():
-            return
         else:
+            if not self.as_isVisibleS():
+                return
             result, error = ctrl.changeSetting(intCD, entityName=entityName, avatar=BigWorld.player(), idx=idx)
             self._handleEquipmentPressedResult(result, error)
             return
@@ -683,7 +684,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         return
 
     def _getEquipmentIdxByKey(self, key):
-        return self._cds.index(key) if key in self._cds else None
+        if key in self._cds:
+            return self._cds.index(key)
+        else:
+            return
 
     def __onDebuffStarted(self, debuffTime=None):
         self.delayedReload = debuffTime
@@ -742,9 +746,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if state == VEHICLE_VIEW_STATE.DESTROYED:
             self._clearAllEquipmentGlow()
             return
-        elif self._cds.count(None) == self._PANEL_MAX_LENGTH:
-            return
         else:
+            if self._cds.count(None) == self._PANEL_MAX_LENGTH:
+                return
             ctrl = self.sessionProvider.shared.equipments
             if ctrl is None:
                 return
@@ -780,7 +784,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                             continue
                         if equipment.getDescriptor().autoactivate:
                             hasReadyAutoExt = True
-                        glowCandidates.append(intCD)
+                        else:
+                            glowCandidates.append(intCD)
 
                     if not hasReadyAutoExt:
                         for cID in glowCandidates:
@@ -850,7 +855,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                 intCD = shotDescr.shell.compactDescr
                 if intCD in self._cds and ammoCtrl.shellInAmmo(intCD):
                     quantity, _ = ammoCtrl.getShells(intCD)
-                    shotState, _ = shotStates.get(i, (-1, None)) if quantity > 0 else (-1, None)
+                    shotState, _ = shotStates.get(i, (-1, None)) if quantity > 0 else (-1,
+                                                                                       None)
                     self.as_setSPGShotResultS(self._cds.index(intCD), int(shotState))
 
         return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/battle/onboarding_battle_result_view.py
 from functools import partial
 import typing
 from frameworks.wulf import WindowFlags, ViewSettings
@@ -48,7 +46,11 @@ class OnboardingBattleResultView(ViewImpl):
         super(OnboardingBattleResultView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onContinue, self.__onContinueButtonClick), (self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
+        return (
+         (
+          self.viewModel.onContinue, self.__onContinueButtonClick),
+         (
+          self.viewModel.onLoaded, partial(sendViewLoadedEvent, self.LAYOUT_ID)))
 
     @UseStoryModeFading(hide=False)
     def __onContinueButtonClick(self):
@@ -65,7 +67,7 @@ class OnboardingBattleResultWindow(DestroyWindowOnDisconnectMixin, WindowImpl):
 
     @app_getter
     def app(self):
-        return None
+        return
 
     def __init__(self, finishReason, missionId):
         super(OnboardingBattleResultWindow, self).__init__(WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=OnboardingBattleResultView(finishReason=finishReason, missionId=missionId))

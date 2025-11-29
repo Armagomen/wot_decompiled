@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/target_designator_widget.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from constants import TARGET_DESIGNATOR_STATE as STATE
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import HotKeyData
@@ -16,13 +13,13 @@ from vehicles.components.component_events.events_listener import ComponentListen
 if typing.TYPE_CHECKING:
     from TargetDesignatorController import TargetDesignatorState
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
-_UI_STATE_MAP = {STATE.PRE_BATTLE: MECHANICS_WIDGET_CONST.IDLE,
- STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE,
- STATE.COOLDOWN: MECHANICS_WIDGET_CONST.PREPARING,
- STATE.READY: MECHANICS_WIDGET_CONST.READY}
+_UI_STATE_MAP = {STATE.PRE_BATTLE: MECHANICS_WIDGET_CONST.IDLE, STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE, 
+   STATE.COOLDOWN: MECHANICS_WIDGET_CONST.PREPARING, 
+   STATE.READY: MECHANICS_WIDGET_CONST.READY}
 
 class TargetDesignatorMechanicWidget(TargetDesignatorWidgetMeta, ComponentListener, IMechanicStatesListenerLogic):
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)]}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)]}
 
     @eventHandler
     def onStatePrepared(self, state):
@@ -44,4 +41,7 @@ class TargetDesignatorMechanicWidget(TargetDesignatorWidgetMeta, ComponentListen
             self.as_setTimeS(state.timeLeft())
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.TARGET_DESIGNATOR, self), VehicleMechanicStatesUpdater(VehicleMechanic.TARGET_DESIGNATOR, self), HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.TARGET_DESIGNATOR, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.TARGET_DESIGNATOR, self),
+         HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self)]

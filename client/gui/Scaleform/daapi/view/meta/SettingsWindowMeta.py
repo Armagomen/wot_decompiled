@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/SettingsWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class SettingsWindowMeta(AbstractWindowView):
@@ -55,47 +53,76 @@ class SettingsWindowMeta(AbstractWindowView):
     def restartNewbieBattleHints(self):
         self._printOverrideError('restartNewbieBattleHints')
 
+    def autodetectPhysicsSoundQuality(self):
+        self._printOverrideError('autodetectPhysicsSoundQuality')
+
+    def canSelectPhysicsSoundQuality(self, optionIdx):
+        self._printOverrideError('canSelectPhysicsSoundQuality')
+
     def as_setDataS(self, settingsData):
-        return self.flashObject.as_setData(settingsData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(settingsData)
 
     def as_setCaptureDevicesS(self, captureDeviceIdx, devicesData):
-        return self.flashObject.as_setCaptureDevices(captureDeviceIdx, devicesData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCaptureDevices(captureDeviceIdx, devicesData)
 
     def as_updateVideoSettingsS(self, videoSettings):
-        return self.flashObject.as_updateVideoSettings(videoSettings) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateVideoSettings(videoSettings)
 
     def as_confirmWarningDialogS(self, isOk, dialogID):
-        return self.flashObject.as_confirmWarningDialog(isOk, dialogID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_confirmWarningDialog(isOk, dialogID)
 
     def as_showLimitedUISettingS(self, isVisible):
-        return self.flashObject.as_showLimitedUISetting(isVisible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showLimitedUISetting(isVisible)
+
+    def as_showPhysicsSoundSettingsS(self, isVisible):
+        if self._isDAAPIInited():
+            return self.flashObject.as_showPhysicsSoundSettings(isVisible)
 
     def as_ConfirmationOfApplicationS(self, isApplied):
-        return self.flashObject.as_ConfirmationOfApplication(isApplied) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_ConfirmationOfApplication(isApplied)
 
     def as_openTabS(self, tabIndex):
-        return self.flashObject.as_openTab(tabIndex) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_openTab(tabIndex)
 
     def as_setGraphicsPresetS(self, presetNum):
-        return self.flashObject.as_setGraphicsPreset(presetNum) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setGraphicsPreset(presetNum)
 
     def as_isPresetAppliedS(self):
-        return self.flashObject.as_isPresetApplied() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_isPresetApplied()
 
     def as_setCountersDataS(self, countersData):
-        return self.flashObject.as_setCountersData(countersData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCountersData(countersData)
 
     def as_onSoundSpeakersPresetApplyS(self, isApply):
-        return self.flashObject.as_onSoundSpeakersPresetApply(isApply) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_onSoundSpeakersPresetApply(isApply)
 
     def as_disableControlS(self, tabId, controlID, subTabId):
-        return self.flashObject.as_disableControl(tabId, controlID, subTabId) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_disableControl(tabId, controlID, subTabId)
 
     def as_setColorGradingTechniqueS(self, icon, label):
-        return self.flashObject.as_setColorGradingTechnique(icon, label) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setColorGradingTechnique(icon, label)
 
     def as_setFeedbackDataProviderS(self, dataProvider):
-        return self.flashObject.as_setFeedbackDataProvider(dataProvider) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFeedbackDataProvider(dataProvider)
 
     def as_setDisabledTabsOverlayS(self, tabIndexes, text):
-        return self.flashObject.as_setDisabledTabsOverlay(tabIndexes, text) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDisabledTabsOverlay(tabIndexes, text)
+
+    def as_onPhysicsSoundQualityApplyS(self, isApply):
+        if self._isDAAPIInited():
+            return self.flashObject.as_onPhysicsSoundQualityApply(isApply)

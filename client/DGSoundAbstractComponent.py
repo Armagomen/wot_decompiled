@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DGSoundAbstractComponent.py
-import enum
-import typing
-import BigWorld
+import enum, typing, BigWorld
 from dyn_components_groups import groupComponent
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from xml_config_specs import StrParam, EnumParam, ListParam, ObjParam
@@ -36,7 +32,9 @@ class DGSoundAbstractComponent(DynamicScriptComponent):
 
     def _isPlayerVehicle(self):
         avatar = BigWorld.player()
-        return False if not avatar else self.entity.id == avatar.playerVehicleID
+        if not avatar:
+            return False
+        return self.entity.id == avatar.playerVehicleID
 
     def _needToPlay(self, param):
         playTo = getattr(DGSoundComponentPlayMode, param.upper())
@@ -44,7 +42,9 @@ class DGSoundAbstractComponent(DynamicScriptComponent):
             return True
         if playTo == DGSoundComponentPlayMode.SELF and self._isPlayerVehicle():
             return True
-        return True if playTo == DGSoundComponentPlayMode.OTHERS and not self._isPlayerVehicle() else False
+        if playTo == DGSoundComponentPlayMode.OTHERS and not self._isPlayerVehicle():
+            return True
+        return False
 
     def _playSound(self, playTo, soundName):
         if soundName and self._needToPlay(playTo):

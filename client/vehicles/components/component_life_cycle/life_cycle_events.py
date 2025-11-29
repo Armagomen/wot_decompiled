@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/component_life_cycle/life_cycle_events.py
-import typing
-import weakref
+import typing, weakref
 from Event import LateEvent, SafeEvent
 from vehicles.components.component_events import ComponentEvents
 from vehicles.components.component_life_cycle.life_cycle_interfaces import IComponentLifeCycleEventsLogic

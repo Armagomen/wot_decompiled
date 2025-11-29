@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/sub_presenters/fun_team_stats.py
 from __future__ import absolute_import
 import typing
 from constants import ARENA_BONUS_TYPE
@@ -25,7 +23,7 @@ class FunTeamStatsSubPresenter(BattleResultsSubPresenter):
         return FunTeamStatsModel
 
     def packBattleResults(self, battleResults):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             FunRandomTeamStats.packModel(model, battleResults)
 
     def createContextMenu(self, event):
@@ -42,10 +40,15 @@ class FunTeamStatsSubPresenter(BattleResultsSubPresenter):
         return super(FunTeamStatsSubPresenter, self).createContextMenu(event)
 
     def _getEvents(self):
-        return super(FunTeamStatsSubPresenter, self)._getEvents() + ((self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
+        return super(FunTeamStatsSubPresenter, self)._getEvents() + (
+         (
+          self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
 
     def __getBackportContextMenuData(self, databaseID, vehicleCD):
-        return createContextMenuData(self._CONTEXT_MENU_TYPE, self.__getContextMenuArgs(databaseID, vehicleCD)) if self._CONTEXT_MENU_TYPE is not None else None
+        if self._CONTEXT_MENU_TYPE is not None:
+            return createContextMenuData(self._CONTEXT_MENU_TYPE, self.__getContextMenuArgs(databaseID, vehicleCD))
+        else:
+            return
 
     def __getContextMenuArgs(self, databaseID, vehicleCD):
         return getPlayerContextMenuArgs(self.getBattleResults().reusable, databaseID, vehicleCD)

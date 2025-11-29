@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/daily_experience/daily_experience_view.py
 import typing
 from constants import PREMIUM_TYPE, PremiumConfigs, RENEWABLE_SUBSCRIPTION_CONFIG
 from frameworks.wulf import ViewSettings, ViewFlags
@@ -36,7 +34,7 @@ class DailyExperienceView(ViewImpl):
     def __updateViewModel(self):
         serverSettings = self.__lobbyContext.getServerSettings()
         premiumBonusConfig = serverSettings.getAdditionalBonusConfig()
-        hasPremium = any((self.__itemsCache.items.stats.isActivePremium(premiumType) for premiumType in PREMIUM_TYPE.AFFECTING_TYPES_SET))
+        hasPremium = any(self.__itemsCache.items.stats.isActivePremium(premiumType) for premiumType in PREMIUM_TYPE.AFFECTING_TYPES_SET)
         hasWotPlus = self.__wotPlusController.isEnabled()
         isPremiumBonusEnabled = premiumBonusConfig.get('enabled', False)
         isWotPlusBonusEnabled = serverSettings.isAdditionalWoTPlusEnabled()
@@ -47,7 +45,7 @@ class DailyExperienceView(ViewImpl):
             usesLeft += self.__itemsCache.items.stats.applyAdditionalXPCount
         if hasWotPlus and isWotPlusBonusEnabled:
             usesLeft += self.__itemsCache.items.stats.applyAdditionalWoTPlusXPCount
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setMultiplier(int(premiumBonusConfig.get('bonusFactor')))
             model.setLeftBonusCount(usesLeft)
             model.setTotalBonusCount(premiumAdditionalCount + wotPlusAdditionalCount)
@@ -64,17 +62,30 @@ class DailyExperienceView(ViewImpl):
         self.__updateViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onBackButtonClick, self.__onClose),
-         (self.viewModel.onWotPremiumUpgradeButtonClick, self.__onWotPremiumUpgradeBtnClick),
-         (self.viewModel.onWotPlusSubscribeButtonClick, self.__onWotPlusSubscribeBtnClick),
-         (self.viewModel.onWotPremiumDetailsButtonClick, self.__onWotPremiumDetailsBtnClick),
-         (self.viewModel.onWotPlusDetailsButtonClick, self.__onWotPlusDetailsBtnClick),
-         (self.__gameSession.onPremiumNotify, self._onPremiumNotify),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (self.__wotPlusController.onDataChanged, self.__onWotPlusChange))
+        return (
+         (
+          self.viewModel.onBackButtonClick, self.__onClose),
+         (
+          self.viewModel.onWotPremiumUpgradeButtonClick, self.__onWotPremiumUpgradeBtnClick),
+         (
+          self.viewModel.onWotPlusSubscribeButtonClick, self.__onWotPlusSubscribeBtnClick),
+         (
+          self.viewModel.onWotPremiumDetailsButtonClick, self.__onWotPremiumDetailsBtnClick),
+         (
+          self.viewModel.onWotPlusDetailsButtonClick, self.__onWotPlusDetailsBtnClick),
+         (
+          self.__gameSession.onPremiumNotify, self._onPremiumNotify),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
+         (
+          self.__wotPlusController.onDataChanged, self.__onWotPlusChange))
 
     def _getCallbacks(self):
-        return (('stats.applyAdditionalXPCount', self._onStatsUpdated), ('stats.applyAdditionalWoTPlusXPCount', self._onStatsUpdated))
+        return (
+         (
+          'stats.applyAdditionalXPCount', self._onStatsUpdated),
+         (
+          'stats.applyAdditionalWoTPlusXPCount', self._onStatsUpdated))
 
     def __onServerSettingsChange(self, diff):
         if PremiumConfigs.DAILY_BONUS in diff or RENEWABLE_SUBSCRIPTION_CONFIG in diff:

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_training/states.py
-import typing
-import WWISE
+import typing, WWISE
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType

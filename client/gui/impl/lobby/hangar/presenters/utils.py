@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/utils.py
 from __future__ import absolute_import
 import typing
 from collections import namedtuple, OrderedDict
@@ -20,24 +18,49 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
 from shared_utils import findFirst
 MenuItemEntry = namedtuple('MenuItemEntry', ['handler', 'showCondition', 'enabledCondition'])
-SHARED_MENU_ITEMS = OrderedDict([(MainMenuModel.MODE_SELECTOR, MenuItemEntry(showModeSelectorWindow, lambda : True, lambda : True))])
+SHARED_MENU_ITEMS = OrderedDict([
+ (
+  MainMenuModel.MODE_SELECTOR,
+  MenuItemEntry(showModeSelectorWindow, lambda : True, lambda : True))])
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def isPersonalMissionsEnabled(lobbyContext=None):
     serverSettings = lobbyContext.getServerSettings() if lobbyContext is not None else None
-    return serverSettings.isPersonalMissionsEnabled() if serverSettings is not None else False
+    if serverSettings is not None:
+        return serverSettings.isPersonalMissionsEnabled()
+    else:
+        return False
 
 
-SHOP_MENU_ITEM = (MainMenuModel.SHOP, MenuItemEntry(showShop, lambda : True, lambda : True))
-STORAGE_MENU_ITEM = (MainMenuModel.STORAGE, MenuItemEntry(showStorage, lambda : True, lambda : True))
-MISSIONS_MENU_ITEM = (MainMenuModel.MISSIONS, MenuItemEntry(showMissions, lambda : True, lambda : True))
-PERSONAL_MISSIONS_MENU_ITEM = (MainMenuModel.PERSONAL_MISSIONS, MenuItemEntry(showPersonalMissionCampaignSelectorWindow, lambda : True, isPersonalMissionsEnabled))
-ACHIEVEMENTS_MENU_ITEM = (MainMenuModel.ACHIEVEMENTS, MenuItemEntry(partial(showViewByAlias, VIEW_ALIAS.LOBBY_PROFILE), lambda : True, lambda : True))
-TECHTREE_MENU_ITEM = (MainMenuModel.TECHTREE, MenuItemEntry(showTechTree, lambda : True, lambda : True))
-BARRACKS_MENU_ITEM = (MainMenuModel.BARRACKS, MenuItemEntry(showBarracks, lambda : True, lambda : True))
-TOURNAMENT_MENU_ITEM = (MainMenuModel.TOURNAMENT, MenuItemEntry(showTournaments, isTournamentEnabled, isTournamentEnabled))
-CLANS_MENU_ITEM = (MainMenuModel.CLANS, MenuItemEntry(partial(showViewByAlias, VIEW_ALIAS.LOBBY_STRONGHOLD), lambda : True, isStrongholdsEnabled))
-RANDOM_MENU_ITEMS = OrderedDict(list(SHARED_MENU_ITEMS.items()) + [SHOP_MENU_ITEM,
+SHOP_MENU_ITEM = (
+ MainMenuModel.SHOP,
+ MenuItemEntry(showShop, lambda : True, lambda : True))
+STORAGE_MENU_ITEM = (
+ MainMenuModel.STORAGE,
+ MenuItemEntry(showStorage, lambda : True, lambda : True))
+MISSIONS_MENU_ITEM = (
+ MainMenuModel.MISSIONS,
+ MenuItemEntry(showMissions, lambda : True, lambda : True))
+PERSONAL_MISSIONS_MENU_ITEM = (
+ MainMenuModel.PERSONAL_MISSIONS,
+ MenuItemEntry(showPersonalMissionCampaignSelectorWindow, lambda : True, isPersonalMissionsEnabled))
+ACHIEVEMENTS_MENU_ITEM = (
+ MainMenuModel.ACHIEVEMENTS,
+ MenuItemEntry(partial(showViewByAlias, VIEW_ALIAS.LOBBY_PROFILE), lambda : True, lambda : True))
+TECHTREE_MENU_ITEM = (
+ MainMenuModel.TECHTREE,
+ MenuItemEntry(showTechTree, lambda : True, lambda : True))
+BARRACKS_MENU_ITEM = (
+ MainMenuModel.BARRACKS,
+ MenuItemEntry(showBarracks, lambda : True, lambda : True))
+TOURNAMENT_MENU_ITEM = (
+ MainMenuModel.TOURNAMENT,
+ MenuItemEntry(showTournaments, isTournamentEnabled, isTournamentEnabled))
+CLANS_MENU_ITEM = (
+ MainMenuModel.CLANS,
+ MenuItemEntry(partial(showViewByAlias, VIEW_ALIAS.LOBBY_STRONGHOLD), lambda : True, isStrongholdsEnabled))
+RANDOM_MENU_ITEMS = OrderedDict(list(SHARED_MENU_ITEMS.items()) + [
+ SHOP_MENU_ITEM,
  STORAGE_MENU_ITEM,
  MISSIONS_MENU_ITEM,
  PERSONAL_MISSIONS_MENU_ITEM,

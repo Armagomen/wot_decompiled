@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/decal_manager.py
-import CGF
-import GenericComponents
-import GpuDecals
+import CGF, GenericComponents, GpuDecals
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
 from vehicle_systems.vehicle_composition import findParentVehicleAppearance
 from vehicle_systems.tankStructure import TankPartIndexes, TankPartNames

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/player_satisfaction_rating/loggers.py
-import json
-import logging
+import json, logging
 from enum import Enum
 from typing import TYPE_CHECKING
 import BigWorld
@@ -28,10 +25,10 @@ def _serializeAdditionalInfo(sessionProvider):
         return
     else:
         isVehicleAlive = vehInfo['isAlive']
-        return json.dumps({PlayerSatisfactionRatingInfoKeys.ARENA_ID_KEY: arenaVisitor.getArenaUniqueID(),
-         PlayerSatisfactionRatingInfoKeys.BATTLE_PHASE_KEY: ARENA_PERIOD_TO_KEY[arenaPeriod],
-         PlayerSatisfactionRatingInfoKeys.PHASE_TIME_KEY: logTime,
-         PlayerSatisfactionRatingInfoKeys.IS_ALIVE_KEY: isVehicleAlive})
+        return json.dumps({PlayerSatisfactionRatingInfoKeys.ARENA_ID_KEY: arenaVisitor.getArenaUniqueID(), 
+           PlayerSatisfactionRatingInfoKeys.BATTLE_PHASE_KEY: ARENA_PERIOD_TO_KEY[arenaPeriod], 
+           PlayerSatisfactionRatingInfoKeys.PHASE_TIME_KEY: logTime, 
+           PlayerSatisfactionRatingInfoKeys.IS_ALIVE_KEY: isVehicleAlive})
 
 
 class PlayerSatisfactionRatingViewLogger(MetricsLogger):
@@ -52,7 +49,7 @@ class PlayerSatisfactionRatingViewLogger(MetricsLogger):
 
 
 class PostBattleContextMenuLogger(PlayerSatisfactionRatingViewLogger):
-    __slots__ = ('_contextMenuAction',)
+    __slots__ = ('_contextMenuAction', )
 
     def __init__(self):
         super(PostBattleContextMenuLogger, self).__init__(parent=PlayerSatisfactionRatingKeys.TEAM_SCORE_TAB, item=PlayerSatisfactionRatingKeys.CONTEXT_MENU)
@@ -93,14 +90,15 @@ class InviteToPlatoonLogger(MetricsLogger):
             return
         if source == PlayerSatisfationRatingInviteSource.FULL_STATS_VIEW:
             parentScreen = PlayerSatisfactionRatingKeys.TEAM_VIEW
-        elif source == PlayerSatisfationRatingInviteSource.IN_BATTLE_GUI:
-            parentScreen = PlayerSatisfactionRatingKeys.BATTLE_GUI
         else:
-            _logger.warning('logPlatoonInvite: inwite source (%s) does not map to log key', source)
-            return
-        info = self._serializeShortAdditionalInfo()
-        if not info:
-            return
+            if source == PlayerSatisfationRatingInviteSource.IN_BATTLE_GUI:
+                parentScreen = PlayerSatisfactionRatingKeys.BATTLE_GUI
+            else:
+                _logger.warning('logPlatoonInvite: inwite source (%s) does not map to log key', source)
+                return
+            info = self._serializeShortAdditionalInfo()
+            if not info:
+                return
         self.log(action=PlayerSatisfactionRatingLogActions.CLICK, item=PlayerSatisfactionRatingKeys.CREATE_PLATOON, parentScreen=parentScreen, info=info)
 
     def _serializeShortAdditionalInfo(self):
@@ -110,12 +108,12 @@ class InviteToPlatoonLogger(MetricsLogger):
             return
         else:
             prebattleID = vehInfo['prebattleID']
-            return json.dumps({PlayerSatisfactionRatingInfoKeys.ARENA_ID_KEY: arenaVisitor.getArenaUniqueID(),
-             PlayerSatisfactionRatingInfoKeys.PREBATTLE_ID_KEY: prebattleID})
+            return json.dumps({PlayerSatisfactionRatingInfoKeys.ARENA_ID_KEY: arenaVisitor.getArenaUniqueID(), 
+               PlayerSatisfactionRatingInfoKeys.PREBATTLE_ID_KEY: prebattleID})
 
 
 class InBattleContextMenuLogger(PlayerSatisfactionRatingViewLogger):
-    __slots__ = ('_contextMenuAction',)
+    __slots__ = ('_contextMenuAction', )
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -133,7 +131,7 @@ class InBattleContextMenuLogger(PlayerSatisfactionRatingViewLogger):
 
 
 class RadialMenuLogger(PlayerSatisfactionRatingViewLogger):
-    __slots__ = ('_radialMenuAction',)
+    __slots__ = ('_radialMenuAction', )
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -161,7 +159,7 @@ class KeyboardShortcutLogger(MetricsLogger):
 
 
 class BattleResponseLogger(PlayerSatisfactionRatingViewLogger):
-    __slots__ = ('_response',)
+    __slots__ = ('_response', )
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):

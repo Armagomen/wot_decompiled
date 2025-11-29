@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/gift_system_controller.py
 import typing
 from constants import Configs
 from Event import Event, EventManager
@@ -85,7 +83,7 @@ class GiftSystemController(IGiftSystemController):
     def __onHistoryReadyChanged(self, isHistoryReady):
         if not isHistoryReady:
             return
-        reqEventIDs = set((eID for eID, eHub in self.__eventHubs.iteritems() if eHub.isHistoryRequired()))
+        reqEventIDs = set(eID for eID, eHub in self.__eventHubs.iteritems() if eHub.isHistoryRequired())
         self.__historyRequester.request(reqEventIDs)
 
     def __onHistoryReceived(self, history):
@@ -96,7 +94,7 @@ class GiftSystemController(IGiftSystemController):
 
     def __onWebStateReadyChanged(self, strategy, eventIDs=None):
         eventIDs = eventIDs or self.__eventHubs.keys()
-        reqEventIDs = set((eID for eID in eventIDs if self.__eventHubs[eID].isWebStateRequired(strategy)))
+        reqEventIDs = set(eID for eID in eventIDs if self.__eventHubs[eID].isWebStateRequired(strategy))
         self.__webStateRequester.request(reqEventIDs)
 
     def __onWebStateReceived(self, webState):

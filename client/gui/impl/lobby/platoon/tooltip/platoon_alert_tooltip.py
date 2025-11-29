@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/tooltip/platoon_alert_tooltip.py
 from gui.impl.gen import R
 from gui.impl import backport
 from frameworks.wulf import ViewSettings
@@ -19,6 +17,6 @@ class AlertTooltip(ViewImpl):
         return self.getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setHeader(backport.text(self.__header))
             model.setBody(backport.text(self.__body))

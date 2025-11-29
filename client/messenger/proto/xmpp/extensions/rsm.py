@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/rsm.py
 from shared_utils import findFirst
 from messenger.proto.xmpp.extensions import PyExtension, SimpleExtension
 from messenger.proto.xmpp.extensions.ext_constants import XML_TAG_NAME as _TAG
 from messenger.proto.xmpp.extensions.ext_constants import XML_NAME_SPACE as _NS
 
 class ResultSet(PyExtension):
-    __slots__ = ('_converter',)
+    __slots__ = ('_converter', )
 
     def __init__(self, converter=int):
         super(ResultSet, self).__init__(_TAG.SET)

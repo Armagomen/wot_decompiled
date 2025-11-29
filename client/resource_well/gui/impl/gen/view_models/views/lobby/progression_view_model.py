@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/gen/view_models/views/lobby/progression_view_model.py
 from enum import Enum
 from resource_well.gui.impl.gen.view_models.views.lobby.enums import EventMode
 from frameworks.wulf import Array, ViewModel
@@ -13,7 +11,8 @@ class ProgressionState(Enum):
 
 
 class ProgressionViewModel(ViewModel):
-    __slots__ = ('onPreview', 'onAboutClick', 'onResourcesContribute', 'onResourcesReturn', 'onHangarShow', 'onClose', 'onRewardSelected')
+    __slots__ = ('onPreview', 'onAboutClick', 'onResourcesContribute', 'onResourcesReturn',
+                 'onHangarShow', 'onClose', 'onRewardSelected')
 
     def __init__(self, properties=8, commands=7):
         super(ProgressionViewModel, self).__init__(properties=properties, commands=commands)

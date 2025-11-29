@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/FlockExotic.py
-import math
-import random
+import math, random
 from functools import partial
-import BigWorld
-import Math
-import AnimationSequence
-import FlockManager
+import BigWorld, Math, AnimationSequence, FlockManager
 from Flock import FlockLike
 from helpers.CallbackDelayer import CallbackDelayer
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
@@ -35,7 +29,8 @@ class FlockExotic(BigWorld.Entity, FlockLike, CallbackDelayer):
         time2 = time1 + self.accelerationTime
         time3 = time2 + flightTime
         initSpeed = speed * random.uniform(self.initSpeedRandom[0], self.initSpeedRandom[1])
-        controlPoint1 = (positionStart, initSpeed, time1)
+        controlPoint1 = (
+         positionStart, initSpeed, time1)
         controlPoint2 = (positionStart + (initSpeed + speed) / 2.0, speed, time2)
         motor = BigWorld.PyTimedWarplaneMotor(controlPoint1, controlPoint2, 0.0)
         motor.addTrajectoryPoint(positionEnd, speed, time3)
@@ -53,7 +48,7 @@ class FlockExotic(BigWorld.Entity, FlockLike, CallbackDelayer):
         CallbackDelayer.destroy(self)
 
     def name(self):
-        pass
+        return 'FlockExotic'
 
     def __loadModels(self, prereqs):
         try:

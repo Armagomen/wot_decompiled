@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/money.py
 from collections import namedtuple
 from skeletons.gui.game_control import IExchangeRatesWithDiscountsProvider
 from helpers import dependency
@@ -8,9 +6,9 @@ from shared_utils import CONST_CONTAINER
 from soft_exception import SoftException
 if TYPE_CHECKING:
     from typing import Optional, Any, Union, Dict, Tuple, Iterable, Literal, Callable, List
-    CURRENCY_TYPE = Literal['credits', 'gold', 'crystal', 'eventCoin', 'bpcoin']
-    CURRENCIES_TYPE = Tuple[int, int, int, int, int]
-    CURRENCIES_NAMES_TYPE = Tuple[CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE]
+    CURRENCY_TYPE = Literal[('credits', 'gold', 'crystal', 'eventCoin', 'bpcoin')]
+    CURRENCIES_TYPE = Tuple[(int, int, int, int, int)]
+    CURRENCIES_NAMES_TYPE = Tuple[(CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE, CURRENCY_TYPE)]
     OPTIONAL_NUMBER_TYPE = Optional[float]
 
 class Currency(CONST_CONTAINER):
@@ -23,25 +21,18 @@ class Currency(CONST_CONTAINER):
     FREE_XP = 'freeXP'
     EQUIP_COIN = 'equipCoin'
     TOUR_COIN = 'tourcoin'
-    ALL = (CREDITS,
-     GOLD,
-     CRYSTAL,
-     EVENT_COIN,
-     BPCOIN,
-     EQUIP_COIN)
-    BY_WEIGHT = (GOLD,
-     CRYSTAL,
-     CREDITS,
-     EVENT_COIN,
-     BPCOIN,
-     EQUIP_COIN)
-    GUI_ALL = (CRYSTAL, GOLD, CREDITS)
-    _CURRENCY_EXTERNAL_MAP = {CREDITS: 'credits',
-     GOLD: 'gold',
-     CRYSTAL: 'crystal',
-     EVENT_COIN: 'event_coin',
-     BPCOIN: 'bpcoin',
-     EQUIP_COIN: 'equipCoin'}
+    ALL = (
+     CREDITS, GOLD, CRYSTAL, EVENT_COIN, BPCOIN, EQUIP_COIN)
+    BY_WEIGHT = (
+     GOLD, CRYSTAL, CREDITS, EVENT_COIN, BPCOIN, EQUIP_COIN)
+    GUI_ALL = (
+     CRYSTAL, GOLD, CREDITS)
+    _CURRENCY_EXTERNAL_MAP = {CREDITS: 'credits', 
+       GOLD: 'gold', 
+       CRYSTAL: 'crystal', 
+       EVENT_COIN: 'event_coin', 
+       BPCOIN: 'bpcoin', 
+       EQUIP_COIN: 'equipCoin'}
     _CURRENCY_INTERNAL_MAP = {external:internal for internal, external in _CURRENCY_EXTERNAL_MAP.iteritems()}
 
     @classmethod
@@ -74,7 +65,7 @@ _BPCOIN = Currency.BPCOIN
 _EQUIP_COIN = Currency.EQUIP_COIN
 
 class Money(object):
-    __slots__ = ('_values',)
+    __slots__ = ('_values', )
     ALL = Currency.ALL
     UNDEFINED = None
     WEIGHT = Currency.BY_WEIGHT
@@ -101,7 +92,7 @@ class Money(object):
         return self.get(self.ALL[index], 0)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, ', '.join([ '{}'.format(self.get(c)) for c in self.ALL ]))
+        return ('{}({})').format(self.__class__.__name__, (', ').join([ ('{}').format(self.get(c)) for c in self.ALL ]))
 
     def __iter__(self):
         for c in self.__getCurrenciesIterator(byWeight=False):
@@ -115,7 +106,8 @@ class Money(object):
         for c, _ in other.iteritems():
             if c in copy:
                 copy._values[c] += other.get(c)
-            copy._values[c] = other.get(c)
+            else:
+                copy._values[c] = other.get(c)
 
         return copy
 
@@ -127,7 +119,8 @@ class Money(object):
         for c, _ in other.iteritems():
             if c in copy:
                 copy._values[c] -= other.get(c)
-            copy._values[c] = -other.get(c)
+            else:
+                copy._values[c] = -other.get(c)
 
         return copy
 
@@ -207,54 +200,54 @@ class Money(object):
         try:
             return self._values[_CREDITS]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @property
     def gold(self):
         try:
             return self._values[_GOLD]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @property
     def crystal(self):
         try:
             return self._values[_CRYSTAL]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @property
     def eventCoin(self):
         try:
             return self._values[_EVENT_COIN]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @property
     def bpcoin(self):
         try:
             return self._values[_BPCOIN]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @property
     def equipCoin(self):
         try:
             return self._values[_EQUIP_COIN]
         except KeyError:
-            return None
+            return
 
-        return None
+        return
 
     @classmethod
     def makeFrom(cls, currency, value):
@@ -262,7 +255,7 @@ class Money(object):
 
     @classmethod
     def hasMoney(cls, data):
-        return any((c in cls.ALL for c in data.iterkeys()))
+        return any(c in cls.ALL for c in data.iterkeys())
 
     @classmethod
     def extractMoneyDict(cls, data):
@@ -272,10 +265,12 @@ class Money(object):
     def makeMoney(cls, data):
         if isinstance(data, cls):
             return data
-        elif isinstance(data, (tuple, list)):
-            return cls.makeFromMoneyTuple(data)
         else:
-            return cls(**data) if isinstance(data, dict) else None
+            if isinstance(data, (tuple, list)):
+                return cls.makeFromMoneyTuple(data)
+            if isinstance(data, dict):
+                return cls(**data)
+            return
 
     @classmethod
     def makeFromMoneyTuple(cls, moneyTuple):
@@ -283,7 +278,9 @@ class Money(object):
         return cls(**setValues)
 
     def get(self, currency, default=None):
-        return self._values[currency] if currency in self._values else default
+        if currency in self._values:
+            return self._values[currency]
+        return default
 
     @property
     def currencies(self):
@@ -306,9 +303,9 @@ class Money(object):
 
     def exchange(self, currency, toCurrency, rate, default=None, useDiscounts=False):
         if currency == toCurrency:
-            raise SoftException('Currencies are same: {}'.format(toCurrency))
+            raise SoftException(('Currencies are same: {}').format(toCurrency))
         if currency not in self._values:
-            raise SoftException('Current is not found: {}'.format(currency))
+            raise SoftException(('Current is not found: {}').format(currency))
         value = None
         if useDiscounts:
             value = self.get(toCurrency, 0) + self.exchange_rates_with_discount_provider.exchange(currency, toCurrency, self.get(currency))
@@ -355,14 +352,16 @@ class Money(object):
         return {c:v for c, v in self._values.iteritems()}
 
     def toSignDict(self):
-        return {c:v for c, v in self._values.iteritems() if v != 0}
+        return {c:v for c, v in self._values.iteritems() if v != 0 if v != 0}
 
     def toDictsList(self):
-        return [self.toSignDict()]
+        return [
+         self.toSignDict()]
 
     def iteritems(self, byWeight=False):
         for c in self.__getCurrenciesIterator(byWeight=byWeight):
-            yield (c, self._values.get(c))
+            yield (
+             c, self._values.get(c))
 
     def apply(self, formatter):
         return self.__convert(lambda c, v, o: formatter(v), None)
@@ -391,7 +390,8 @@ class Money(object):
     def iterallitems(self, byWeight=False):
         order = self.WEIGHT if byWeight else self.ALL
         for c in order:
-            yield (c, self._values.get(c, 0))
+            yield (
+             c, self._values.get(c, 0))
 
     @classmethod
     def _setValue(cls, values, currency, value):
@@ -442,7 +442,8 @@ class DynamicMoney(Money):
         return self.isCompound() and self.isDynCompound()
 
     def isDynCompound(self):
-        consist = [ currency for currency in self._values if currency not in Currency.ALL and self.get(currency, 0) != 0 ]
+        consist = [ currency for currency in self._values if currency not in Currency.ALL and self.get(currency, 0) != 0
+                  ]
         return len(consist) > 1
 
     def isSpecCompound(self, currencies):
@@ -476,7 +477,8 @@ class CurrencyCollection(_CurrencyCollection):
 
     def iteritems(self):
         for c in Currency.ALL:
-            yield (c, self.get(c))
+            yield (
+             c, self.get(c))
 
     def toDict(self):
         return {c:v for c, v in self.iteritems()}

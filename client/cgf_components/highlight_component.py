@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/highlight_component.py
-import BigWorld
-import CGF
+import BigWorld, CGF
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from GenericComponents import DynamicModelComponent
@@ -17,8 +14,10 @@ class HighlightComponent(object):
     domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
     editorTitle = 'Highlight'
     category = 'Common'
-    color = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Color', value=(0, 0, 0, 1), annotations={'colorPicker': {'255Range': False,
-                     'useAlpha': True}})
+    color = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Color', value=(0,
+                                                                                    0,
+                                                                                    0,
+                                                                                    1), annotations={'colorPicker': {'255Range': False, 'useAlpha': True}})
     groupName = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Group name')
     drawerMode = ComponentProperty(type=CGFMetaTypes.INT, value=0, editorName='drawerMode')
     colorIndex = ComponentProperty(type=CGFMetaTypes.INT, value=4, editorName='colorIndex')

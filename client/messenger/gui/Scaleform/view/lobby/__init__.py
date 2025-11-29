@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework import GroupedViewSettings, ComponentSettings
 from gui.Scaleform.framework import ScopeTemplates
@@ -23,7 +21,11 @@ class MESSENGER_VIEW_ALIAS(object):
 
 def getContextMenuHandlers():
     from messenger.gui.Scaleform.data import contacts_cm_handlers
-    return ((CONTEXT_MENU_HANDLER_TYPE.CONTACTS_GROUP, contacts_cm_handlers.SimpleContactsCMHandler), (CONTEXT_MENU_HANDLER_TYPE.PLAYER_CONTACTS, contacts_cm_handlers.PlayerContactsCMHandler))
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CONTACTS_GROUP, contacts_cm_handlers.SimpleContactsCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.PLAYER_CONTACTS, contacts_cm_handlers.PlayerContactsCMHandler))
 
 
 def getViewSettings():
@@ -40,7 +42,8 @@ def getViewSettings():
     from messenger.gui.Scaleform.view.lobby.SearchContactView import SearchContactView
     from messenger.gui.Scaleform.view.lobby.ContactsListPopover import ContactsListPopover
     from messenger.gui.Scaleform.view.lobby.group_manage_views import GroupRenameView, GroupCreateView
-    return (GroupedViewSettings(MESSENGER_VIEW_ALIAS.FAQ_WINDOW, FAQWindow, 'FAQWindow.swf', WindowLayer.WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, True, isCentered=False),
+    return (
+     GroupedViewSettings(MESSENGER_VIEW_ALIAS.FAQ_WINDOW, FAQWindow, 'FAQWindow.swf', WindowLayer.WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, True, isCentered=False),
      GroupedViewSettings(MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW, ChannelsManagementWindow, 'channelsManagementWindow.swf', WindowLayer.WINDOW, '', MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW, ScopeTemplates.DEFAULT_SCOPE, True, isCentered=False),
      GroupedViewSettings(MESSENGER_VIEW_ALIAS.LAZY_CHANNEL_WINDOW, LazyChannelWindow, 'lazyChannelWindow.swf', WindowLayer.WINDOW, '', MESSENGER_VIEW_ALIAS.LAZY_CHANNEL_WINDOW, ScopeTemplates.DEFAULT_SCOPE, True, isCentered=False, canClose=False),
      GroupedViewSettings(MESSENGER_VIEW_ALIAS.LOBBY_CHANNEL_WINDOW, LobbyChannelWindow, 'lobbyChannelWindow.swf', WindowLayer.WINDOW, '', MESSENGER_VIEW_ALIAS.LOBBY_CHANNEL_WINDOW, ScopeTemplates.DEFAULT_SCOPE, True, isCentered=False),
@@ -58,18 +61,26 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_MessengerPackageBusinessHandler(),)
+    return (
+     _MessengerPackageBusinessHandler(),)
 
 
 class _MessengerPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((MESSENGER_VIEW_ALIAS.FAQ_WINDOW, self.loadViewByCtxEvent),
-         (MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW, self.loadViewByCtxEvent),
-         (MESSENGER_VIEW_ALIAS.LAZY_CHANNEL_WINDOW, self.__showLazyChannelWindow),
-         (MESSENGER_VIEW_ALIAS.LOBBY_CHANNEL_WINDOW, self.__showLobbyChannelWindow),
-         (MESSENGER_VIEW_ALIAS.CONNECT_TO_SECURE_CHANNEL_WINDOW, self.loadViewByCtxEvent),
-         (CONTACTS_ALIASES.CONTACTS_POPOVER, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          MESSENGER_VIEW_ALIAS.FAQ_WINDOW, self.loadViewByCtxEvent),
+         (
+          MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW, self.loadViewByCtxEvent),
+         (
+          MESSENGER_VIEW_ALIAS.LAZY_CHANNEL_WINDOW, self.__showLazyChannelWindow),
+         (
+          MESSENGER_VIEW_ALIAS.LOBBY_CHANNEL_WINDOW, self.__showLobbyChannelWindow),
+         (
+          MESSENGER_VIEW_ALIAS.CONNECT_TO_SECURE_CHANNEL_WINDOW, self.loadViewByCtxEvent),
+         (
+          CONTACTS_ALIASES.CONTACTS_POPOVER, self.loadViewByCtxEvent))
         super(_MessengerPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)
 
     def __showLazyChannelWindow(self, event):

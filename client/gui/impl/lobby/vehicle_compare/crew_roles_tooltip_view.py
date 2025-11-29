@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/crew_roles_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.vehicle_compare.tooltips.crew_roles_tooltip_view_model import CrewRolesTooltipViewModel
@@ -10,7 +8,7 @@ from skeletons.gui.shared import IItemsCache
 
 class CrewRolesTooltipView(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__vehicle',)
+    __slots__ = ('__vehicle', )
 
     def __init__(self, vehicle):
         settings = ViewSettings(R.views.lobby.vehicle_compare.tooltips.CrewRolesTooltip())
@@ -24,7 +22,7 @@ class CrewRolesTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(CrewRolesTooltipView, self)._onLoading()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setVehicleName(self.__vehicle.descriptor.type.shortUserString)
             crew = vm.getCrew()
             for _, tankman in self.__vehicle.crew:

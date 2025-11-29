@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/PromoPremiumIgrWindow.py
 from account_helpers.AccountSettings import AccountSettings, IGR_PROMO
 from gui.Scaleform.daapi.view.meta.PromoPremiumIgrWindowMeta import PromoPremiumIgrWindowMeta
 from gui.shared.formatters import icons, text_styles

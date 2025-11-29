@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_page.py
-import logging
-import operator
+import logging, operator
 from collections import namedtuple
 import BigWorld
 from gui import SystemMessages
@@ -40,14 +37,11 @@ from shared_utils import findFirst, first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.server_events import IEventsCache
 _logger = logging.getLogger(__name__)
-_ChainState = namedtuple('_ChainState', ['hasUnlocked',
- 'hasVehicle',
- 'isCompleted',
- 'isFullCompleted',
- 'questInProgress'])
+_ChainState = namedtuple('_ChainState', [
+ 'hasUnlocked', 'hasVehicle', 'isCompleted', 'isFullCompleted', 'questInProgress'])
 _BranchState = namedtuple('_BranchState', ['notStartedYetNoVehicle', 'notStartedYet', 'isBranchActive'])
-_UI_CHAINS_LEN = {PM_BRANCH.REGULAR: 5,
- PM_BRANCH.PERSONAL_MISSION_2: 4}
+_UI_CHAINS_LEN = {PM_BRANCH.REGULAR: 5, 
+   PM_BRANCH.PERSONAL_MISSION_2: 4}
 
 class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissionsNavigation):
     _COMMON_SOUND_SPACE = PERSONAL_MISSIONS_CAMPAIGNS_1_2_SPACE
@@ -198,13 +192,14 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
                 label = text_styles.bonusAppliedText(PERSONAL_MISSIONS.SIDEBAR_COMPLETED)
             else:
                 label = text_styles.main(PERSONAL_MISSIONS.SIDEBAR_NOTSELECTED)
-            progressText = text_styles.main(' / ').join((currentProgress, text_styles.main(progress['maxValue'])))
-            chains.append({'chainID': chainID,
-             'progressText': progressText,
-             'label': label,
-             'tankIcon': currentOperation.getChainIcon(chainID),
-             'progress': progress,
-             'tooltip': tooltip})
+            progressText = text_styles.main(' / ').join((
+             currentProgress, text_styles.main(progress['maxValue'])))
+            chains.append({'chainID': chainID, 
+               'progressText': progressText, 
+               'label': label, 
+               'tankIcon': currentOperation.getChainIcon(chainID), 
+               'progress': progress, 
+               'tooltip': tooltip})
 
         return chains
 
@@ -261,16 +256,16 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
 
     def __getProgress(self, pmQuests):
         completed = filter(operator.methodcaller('isCompleted'), pmQuests.itervalues())
-        return {'value': len(completed),
-         'minValue': 0,
-         'maxValue': len(pmQuests),
-         'useAnim': False}
+        return {'value': len(completed), 
+           'minValue': 0, 
+           'maxValue': len(pmQuests), 
+           'useAnim': False}
 
     def __updateHeader(self):
-        self.as_setHeaderDataS({'operations': missions_helper.getOperations(self.getBranch(), self.getOperationID()),
-         'operationTitle': self.__getOperationTitle(),
-         'backBtnLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_LABEL,
-         'backBtnDescrLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_DESCRLABEL_CAMPAIGN})
+        self.as_setHeaderDataS({'operations': missions_helper.getOperations(self.getBranch(), self.getOperationID()), 
+           'operationTitle': self.__getOperationTitle(), 
+           'backBtnLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_LABEL, 
+           'backBtnDescrLabel': PERSONAL_MISSIONS.HEADER_BACKBTN_DESCRLABEL_CAMPAIGN})
 
     def __updateFooter(self):
         pm = self.__PMCache
@@ -291,63 +286,64 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
         freeSheets = pm.getFreeTokensCount(branch)
         if not chainState.hasUnlocked:
             status = text_styles.concatStylesWithSpace(icons.markerBlocked(), text_styles.error(PERSONAL_MISSIONS.STATUSPANEL_STATUS_LOCKED))
-        elif branchState.notStartedYetNoVehicle:
-            label = backport.text(R.strings.personal_missions.operationTitle.label.notStartedNoVehicle(), minLevel=int2roman(PERSONAL_MISSION_REGULAR_MIN_LEVEL))
-            status = text_styles.concatStylesWithSpace(icons.markerBlocked(), text_styles.error(label))
-        elif branchState.notStartedYet:
-            infoIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_INFO_YELLOW, 24, 24, -6)
-            label = backport.text(R.strings.personal_missions.operationTitle.label.notStarted(), currentOperation=self.getOperation().getShortUserName(), infoIcon=infoIcon)
-            status = text_styles.concatStylesWithSpace(text_styles.neutral(label))
-            btnVisible = True
-            btnEnabled = True
-            btnLabel = backport.text(R.strings.personal_missions.statusPanel.proceedExecution.label())
-            btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_PROCEED_EXECUTION
-            tooltip = TOOLTIPS.PERSONALMISSIONS_OPERATION_FOOTER_ACTIVATEMISSIONS
-            tooltipOnStatus = True
-        elif not branchState.isBranchActive:
-            compaingID = currentOperation.getCampaignID()
-            campaing = self.__PMCache.getAllCampaigns().get(compaingID)
-            campaignName = campaing.getUserName()
-            infoIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_INFO_YELLOW, 24, 24, -6)
-            label = backport.text(R.strings.personal_missions.statusPanel.status.suspended(), campaignName=campaignName, infoIcon=infoIcon)
-            opPause = icons.makeImageTag(RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_OPERATIONS_STATES_PAUSED, 24, 24, -6)
-            status = text_styles.concatStylesWithSpace(opPause, text_styles.neutral(label))
-            tooltip = TOOLTIPS.PERSONALMISSIONS_OPERATION_FOOTER_ACTIVATECAMPAIGN
-            tooltipOnStatus = True
-            btnVisible = True
-            btnEnabled = True
-            btnLabel = backport.text(R.strings.personal_missions.statusPanel.resumeCompaing.label())
-            btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_RESUME_TO_CAMPAIGN
-        elif chainState.questInProgress is not None:
-            quest = chainState.questInProgress
-            if quest.isOnPause:
-                status = text_styles.concatStylesWithSpace(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ONPAUSE, 16, 16, -3, 8), text_styles.playerOnline(quest.getUserName()))
-            else:
-                isQuestInProgress = True
-                status = text_styles.concatStylesWithSpace(icons.inProgress(), text_styles.tutorial(quest.getUserName()))
-            if quest.areTokensPawned():
-                descr = text_styles.neutral(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_PAWNED, count=quest.getPawnCost(), icon=getHtmlAwardSheetIcon(quest.getQuestBranch())))
-            elif quest.isMainCompleted():
-                descr = text_styles.neutral(PERSONAL_MISSIONS.STATUSPANEL_STATUS_IMPROVE)
-            elif quest.canBePawned() and not quest.isDisabled():
-                btnVisible = True
-                pawnCost = quest.getPawnCost()
-                btnLabel = _ms(PERSONAL_MISSIONS.STATUSPANEL_FREESHEETBTN_LABEL, count=pawnCost, icon=getHtmlAwardSheetIcon(quest.getQuestBranch()))
-                btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_COMPLETE_USING_SHEETS
-                if pawnCost <= freeSheets:
-                    btnEnabled = True
-        elif chainState.isFullCompleted:
-            status = text_styles.concatStylesWithSpace(icons.doubleCheckmark(1), text_styles.bonusAppliedText(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_ALLEXCELLENTDONE, vehicleClass=vehicleClass)))
-        elif chainState.isCompleted:
-            status = text_styles.concatStylesWithSpace(icons.checkmark(-2), text_styles.bonusAppliedText(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_ALLDONE, vehicleClass=vehicleClass)))
-        elif not chainState.hasVehicle:
-            label = self.__getNoVehicleStatusLabel(False)
-            status = text_styles.concatStylesWithSpace(icons.markerBlocked(), text_styles.error(label))
         else:
-            status = text_styles.concatStylesWithSpace(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, 16, 16, -2), text_styles.neutral(PERSONAL_MISSIONS.STATUSPANEL_STATUS_SELECTTASK))
-        tankwomanQuests = []
-        for operation in pm.getAllOperations().itervalues():
-            tankwomanQuests.extend(operation.getQuestsByFilter(PersonalMission.needToGetTankWoman).itervalues())
+            if branchState.notStartedYetNoVehicle:
+                label = backport.text(R.strings.personal_missions.operationTitle.label.notStartedNoVehicle(), minLevel=int2roman(PERSONAL_MISSION_REGULAR_MIN_LEVEL))
+                status = text_styles.concatStylesWithSpace(icons.markerBlocked(), text_styles.error(label))
+            elif branchState.notStartedYet:
+                infoIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_INFO_YELLOW, 24, 24, -6)
+                label = backport.text(R.strings.personal_missions.operationTitle.label.notStarted(), currentOperation=self.getOperation().getShortUserName(), infoIcon=infoIcon)
+                status = text_styles.concatStylesWithSpace(text_styles.neutral(label))
+                btnVisible = True
+                btnEnabled = True
+                btnLabel = backport.text(R.strings.personal_missions.statusPanel.proceedExecution.label())
+                btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_PROCEED_EXECUTION
+                tooltip = TOOLTIPS.PERSONALMISSIONS_OPERATION_FOOTER_ACTIVATEMISSIONS
+                tooltipOnStatus = True
+            elif not branchState.isBranchActive:
+                compaingID = currentOperation.getCampaignID()
+                campaing = self.__PMCache.getAllCampaigns().get(compaingID)
+                campaignName = campaing.getUserName()
+                infoIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_INFO_YELLOW, 24, 24, -6)
+                label = backport.text(R.strings.personal_missions.statusPanel.status.suspended(), campaignName=campaignName, infoIcon=infoIcon)
+                opPause = icons.makeImageTag(RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_OPERATIONS_STATES_PAUSED, 24, 24, -6)
+                status = text_styles.concatStylesWithSpace(opPause, text_styles.neutral(label))
+                tooltip = TOOLTIPS.PERSONALMISSIONS_OPERATION_FOOTER_ACTIVATECAMPAIGN
+                tooltipOnStatus = True
+                btnVisible = True
+                btnEnabled = True
+                btnLabel = backport.text(R.strings.personal_missions.statusPanel.resumeCompaing.label())
+                btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_RESUME_TO_CAMPAIGN
+            elif chainState.questInProgress is not None:
+                quest = chainState.questInProgress
+                if quest.isOnPause:
+                    status = text_styles.concatStylesWithSpace(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ONPAUSE, 16, 16, -3, 8), text_styles.playerOnline(quest.getUserName()))
+                else:
+                    isQuestInProgress = True
+                    status = text_styles.concatStylesWithSpace(icons.inProgress(), text_styles.tutorial(quest.getUserName()))
+                if quest.areTokensPawned():
+                    descr = text_styles.neutral(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_PAWNED, count=quest.getPawnCost(), icon=getHtmlAwardSheetIcon(quest.getQuestBranch())))
+                elif quest.isMainCompleted():
+                    descr = text_styles.neutral(PERSONAL_MISSIONS.STATUSPANEL_STATUS_IMPROVE)
+                elif quest.canBePawned() and not quest.isDisabled():
+                    btnVisible = True
+                    pawnCost = quest.getPawnCost()
+                    btnLabel = _ms(PERSONAL_MISSIONS.STATUSPANEL_FREESHEETBTN_LABEL, count=pawnCost, icon=getHtmlAwardSheetIcon(quest.getQuestBranch()))
+                    btnID = PERSONAL_MISSIONS_BUTTONS.OPERATION_FOOTER_BTN_COMPLETE_USING_SHEETS
+                    if pawnCost <= freeSheets:
+                        btnEnabled = True
+            elif chainState.isFullCompleted:
+                status = text_styles.concatStylesWithSpace(icons.doubleCheckmark(1), text_styles.bonusAppliedText(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_ALLEXCELLENTDONE, vehicleClass=vehicleClass)))
+            elif chainState.isCompleted:
+                status = text_styles.concatStylesWithSpace(icons.checkmark(-2), text_styles.bonusAppliedText(_ms(PERSONAL_MISSIONS.STATUSPANEL_STATUS_ALLDONE, vehicleClass=vehicleClass)))
+            elif not chainState.hasVehicle:
+                label = self.__getNoVehicleStatusLabel(False)
+                status = text_styles.concatStylesWithSpace(icons.markerBlocked(), text_styles.error(label))
+            else:
+                status = text_styles.concatStylesWithSpace(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, 16, 16, -2), text_styles.neutral(PERSONAL_MISSIONS.STATUSPANEL_STATUS_SELECTTASK))
+            tankwomanQuests = []
+            for operation in pm.getAllOperations().itervalues():
+                tankwomanQuests.extend(operation.getQuestsByFilter(PersonalMission.needToGetTankWoman).itervalues())
 
         counterText = ''
         tankwomanVisible = False
@@ -355,22 +351,22 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
             counterText = text_styles.highlightText('x%s' % len(tankwomanQuests))
             tankwomanVisible = True
         sheetsBlock = self.__getSheetsBlockData()
-        self.as_setStatusDataS({'statusText': status,
-         'descrText': descr,
-         'btnVisible': btnVisible,
-         'btnEnabled': btnEnabled,
-         'btnLabel': btnLabel,
-         'btnID': btnID,
-         'sheetsBlockData': sheetsBlock,
-         'tankgirlsBlockData': {'counterText': counterText,
-                                'visible': tankwomanVisible,
-                                'tooltipData': {'isSpecial': True,
-                                                'specialAlias': TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKWOMAN,
-                                                'specialArgs': []},
-                                'popover': PERSONAL_MISSIONS_ALIASES.TANK_GIRLS_POPOVER},
-         'tooltip': tooltip,
-         'tooltipOnStatus': tooltipOnStatus,
-         'isQuestInProgress': isQuestInProgress})
+        self.as_setStatusDataS({'statusText': status, 
+           'descrText': descr, 
+           'btnVisible': btnVisible, 
+           'btnEnabled': btnEnabled, 
+           'btnLabel': btnLabel, 
+           'btnID': btnID, 
+           'sheetsBlockData': sheetsBlock, 
+           'tankgirlsBlockData': {'counterText': counterText, 
+                                  'visible': tankwomanVisible, 
+                                  'tooltipData': {'isSpecial': True, 
+                                                  'specialAlias': TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKWOMAN, 
+                                                  'specialArgs': []}, 
+                                  'popover': PERSONAL_MISSIONS_ALIASES.TANK_GIRLS_POPOVER}, 
+           'tooltip': tooltip, 
+           'tooltipOnStatus': tooltipOnStatus, 
+           'isQuestInProgress': isQuestInProgress})
         return
 
     def __getSheetsBlockData(self):
@@ -382,15 +378,15 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
         freeSheets = pm.getFreeTokensCount(branch)
         pawnedSheets = pm.getPawnedTokensCount(branch)
         currentOperation = self.getOperation()
-        return {'freeSheetsIcon': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.MID),
-         'freeSheetsText': text_styles.main(_ms(PERSONAL_MISSIONS.STATUSPANEL_FREESHEETS, count=text_styles.highlightText(freeSheets))),
-         'pawnedSheetsText': text_styles.main(_ms(PERSONAL_MISSIONS.STATUSPANEL_PAWNEDSHEETS, count=text_styles.highlightText(pawnedSheets))),
-         'tooltipData': {'isSpecial': True,
-                         'specialAlias': TOOLTIPS_CONSTANTS.FREE_SHEET_RETURN if freeSheets or pawnedSheets else TOOLTIPS_CONSTANTS.FREE_SHEET,
-                         'specialArgs': [currentOperation.getCampaignID()]},
-         'popover': PERSONAL_MISSIONS_ALIASES.FREE_SHEET_POPOVER,
-         'popoverData': {'branch': branch},
-         'visible': True}
+        return {'freeSheetsIcon': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.MID), 
+           'freeSheetsText': text_styles.main(_ms(PERSONAL_MISSIONS.STATUSPANEL_FREESHEETS, count=text_styles.highlightText(freeSheets))), 
+           'pawnedSheetsText': text_styles.main(_ms(PERSONAL_MISSIONS.STATUSPANEL_PAWNEDSHEETS, count=text_styles.highlightText(pawnedSheets))), 
+           'tooltipData': {'isSpecial': True, 
+                           'specialAlias': TOOLTIPS_CONSTANTS.FREE_SHEET_RETURN if freeSheets or pawnedSheets else TOOLTIPS_CONSTANTS.FREE_SHEET, 
+                           'specialArgs': [
+                                         currentOperation.getCampaignID()]}, 
+           'popover': PERSONAL_MISSIONS_ALIASES.FREE_SHEET_POPOVER, 
+           'popoverData': {'branch': branch}, 'visible': True}
 
     def __getNoVehicleStatusLabel(self, useIcon):
         if self.getBranch() == PM_BRANCH.PERSONAL_MISSION_2:
@@ -411,10 +407,10 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
         chainState = self.__getChainState(self.getChain())
         branchState = self.__getBranchState(branch)
         state = PERSONAL_MISSIONS_ALIASES.OPERATION_UNLOCKED_STATE
-        tooltip = {'tooltip': None,
-         'isSpecial': False,
-         'specialAlias': None,
-         'specialArgs': None}
+        tooltip = {'tooltip': None, 
+           'isSpecial': False, 
+           'specialAlias': None, 
+           'specialArgs': None}
         if not currentOperation.isUnlocked():
             label = text_styles.stats(PERSONAL_MISSIONS.OPERATIONTITLE_LABEL_LOCKED)
             state = PERSONAL_MISSIONS_ALIASES.OPERATION_LOCKED_STATE
@@ -434,9 +430,10 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
                 count = str(currentCount)
                 total = str(totalCount)
                 label = text_styles.stats(_ms(PERSONAL_MISSIONS.OPERATIONTITLE_LABEL_DONE, icon=icon, count=count, total=total, infoIcon=infoIcon))
-                tooltip.update({'isSpecial': True,
-                 'specialAlias': TOOLTIPS_CONSTANTS.FREE_SHEET,
-                 'specialArgs': [currentOperation.getCampaignID()]})
+                tooltip.update({'isSpecial': True, 
+                   'specialAlias': TOOLTIPS_CONSTANTS.FREE_SHEET, 
+                   'specialArgs': [
+                                 currentOperation.getCampaignID()]})
             else:
                 count = str(len(currentOperation.getFullCompletedQuests()))
                 total = str(currentOperation.getQuestsCount())
@@ -469,10 +466,10 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
                 template = text_styles.stats(PERSONAL_MISSIONS.OPERATIONTITLE_LABEL_UNLOCKED_REGULAR)
             vehData = getChainVehRequirements(currentOperation, self.getChainID(), useIcons=True)
             label = text_styles.stats(_ms(template, vehData=vehData))
-        return {'title': text_styles.promoTitle(_ms(PERSONAL_MISSIONS.OPERATIONTITLE_TITLE, title=_ms('#personal_missions:operations/title%d' % currentOperation.getID()))),
-         'label': label,
-         'state': state,
-         'tooltip': tooltip}
+        return {'title': text_styles.promoTitle(_ms(PERSONAL_MISSIONS.OPERATIONTITLE_TITLE, title=_ms('#personal_missions:operations/title%d' % currentOperation.getID()))), 
+           'label': label, 
+           'state': state, 
+           'tooltip': tooltip}
 
     def __getChainState(self, pmQuests):
         hasUnlocked = False
@@ -525,10 +522,14 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
         return findFirst(lambda q: q.getID() not in completedQuests, activeOperation.getFinalQuests().values())
 
     def __getTutorMultipleState(self):
-        return _PTF.MULTIPLE_FAL_SHOWN if self.getBranch() == PM_BRANCH.REGULAR else _PTF.PM2_MULTIPLE_FAL_SHOWN
+        if self.getBranch() == PM_BRANCH.REGULAR:
+            return _PTF.MULTIPLE_FAL_SHOWN
+        return _PTF.PM2_MULTIPLE_FAL_SHOWN
 
     def __getTutorSingleState(self):
-        return _PTF.ONE_FAL_SHOWN if self.getBranch() == PM_BRANCH.REGULAR else _PTF.PM2_ONE_FAL_SHOWN
+        if self.getBranch() == PM_BRANCH.REGULAR:
+            return _PTF.ONE_FAL_SHOWN
+        return _PTF.PM2_ONE_FAL_SHOWN
 
     def __checkTutorState(self):
         if self.__callbackID is not None:
@@ -580,19 +581,17 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
 
     def _packFirstShowAwardTutorData(self):
         if self.getBranch() == PM_BRANCH.REGULAR:
-            res = {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_AWARD_SHEETS_BRANCH_0_FREE_SHEET_BIG,
-             'title': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLE,
-             'titleLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLELEFT,
-             'descrLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_DESCRLEFT,
-             'titleRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLERIGHT,
-             'descrRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_DESCRRIGHT}
+            res = {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_AWARD_SHEETS_BRANCH_0_FREE_SHEET_BIG, 'title': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLE, 
+               'titleLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLELEFT, 
+               'descrLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_DESCRLEFT, 
+               'titleRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_TITLERIGHT, 
+               'descrRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_REGULAR_DESCRRIGHT}
         else:
-            res = {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_AWARD_SHEETS_BRANCH_2_FREE_SHEET_BIG,
-             'title': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLE,
-             'titleLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLELEFT,
-             'descrLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_DESCRLEFT,
-             'titleRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLERIGHT,
-             'descrRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_DESCRRIGHT}
+            res = {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_AWARD_SHEETS_BRANCH_2_FREE_SHEET_BIG, 'title': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLE, 
+               'titleLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLELEFT, 
+               'descrLeft': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_DESCRLEFT, 
+               'titleRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_TITLERIGHT, 
+               'descrRight': PERSONAL_MISSIONS.FREESHEETOBTAINEDPOPUP_PM2_DESCRRIGHT}
         return res
 
     def __packUseFreeSheetsAwardTutorData(self, hasPawned):
@@ -609,11 +608,11 @@ class PersonalMissionsPage(LobbySubView, PersonalMissionsPageMeta, PersonalMissi
             description = _ms(freeSheetsPawnedDescr, pawnedCount=self.__PMCache.getPawnedTokensCount(self.getBranch()), questName=questName)
         else:
             description = _ms(freeSheetsDescr, questName=questName)
-        return {'icon0': {'icon': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.BIG),
-                   'label': 'x' + str(PM_BRANCH_TO_FINAL_PAWN_COST[self.getBranch()])},
-         'icon1': {'icon': iconSource,
-                   'label': questName},
-         'icon2': {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_GEAR_BIG,
-                   'label': 'x1'},
-         'description': description,
-         'header': PERSONAL_MISSIONS.FOURFREESHEETSOBTAINEDPOPUP_HEADER}
+        return {'icon0': {'icon': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.BIG), 
+                     'label': 'x' + str(PM_BRANCH_TO_FINAL_PAWN_COST[self.getBranch()])}, 
+           'icon1': {'icon': iconSource, 
+                     'label': questName}, 
+           'icon2': {'icon': RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_GEAR_BIG, 
+                     'label': 'x1'}, 
+           'description': description, 
+           'header': PERSONAL_MISSIONS.FOURFREESHEETSOBTAINEDPOPUP_HEADER}

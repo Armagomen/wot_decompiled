@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/data/events.py
 from tutorial.data.has_id import HasTargetID
 from shared_utils import CONST_CONTAINER
 
@@ -28,7 +26,8 @@ class _Event(HasTargetID):
         return self.__eventType
 
     def getActionCriteria(self):
-        return (self.__eventType, self._targetID)
+        return (
+         self.__eventType, self._targetID)
 
 
 class ClickEvent(_Event):

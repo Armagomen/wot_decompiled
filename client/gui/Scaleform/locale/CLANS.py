@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/CLANS.py
 from debug_utils import LOG_WARNING
 
 class CLANS(object):
@@ -503,7 +501,8 @@ class CLANS(object):
     CLANLANDING_NOTIFICATION_EDITED = '#clans:clanLanding/notification/edited'
     CLANLANDING_NOTIFICATION_ARCHIVED = '#clans:clanLanding/notification/archived'
     CLANLANDING_NOTIFICATION_DELETED = '#clans:clanLanding/notification/deleted'
-    CLANPROFILE_SUMMARYVIEW_BLOCKLBL_ENUM = (CLANPROFILE_SUMMARYVIEW_BLOCKLBL_RAGELEVEL10,
+    CLANPROFILE_SUMMARYVIEW_BLOCKLBL_ENUM = (
+     CLANPROFILE_SUMMARYVIEW_BLOCKLBL_RAGELEVEL10,
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_RAGELEVEL8,
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_RAGELEVEL6,
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_SORTIESPERDAY,
@@ -517,7 +516,8 @@ class CLANS(object):
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_GOLD,
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_BATTLESCOUNT,
      CLANPROFILE_SUMMARYVIEW_BLOCKLBL_EMPTYGLOBALMAP)
-    CLANPROFILE_SUMMARYVIEW_STATUSMSG_ENUM = (CLANPROFILE_SUMMARYVIEW_STATUSMSG_DETAILSCONDITIONS,
+    CLANPROFILE_SUMMARYVIEW_STATUSMSG_ENUM = (
+     CLANPROFILE_SUMMARYVIEW_STATUSMSG_DETAILSCONDITIONS,
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_REQUESTLIMIT,
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_INVITELIMIT,
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_INANOTHERCLAN,
@@ -526,7 +526,8 @@ class CLANS(object):
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_REQUESTSUBMITTED,
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_REQUESTNOTBECONSIDERED,
      CLANPROFILE_SUMMARYVIEW_STATUSMSG_RESYNCHRONIZE)
-    GLOBALMAPVIEW_STATISTICS6_ENUM = (GLOBALMAPVIEW_STATISTICS6_BATTLES,
+    GLOBALMAPVIEW_STATISTICS6_ENUM = (
+     GLOBALMAPVIEW_STATISTICS6_BATTLES,
      GLOBALMAPVIEW_STATISTICS6_BATTLES_TOOLTIP_HEADER,
      GLOBALMAPVIEW_STATISTICS6_BATTLES_TOOLTIP_BODY,
      GLOBALMAPVIEW_STATISTICS6_WINS,
@@ -541,7 +542,8 @@ class CLANS(object):
      GLOBALMAPVIEW_STATISTICS6_FAVORITEMAP,
      GLOBALMAPVIEW_STATISTICS6_FAVORITEMAP_TOOLTIP_HEADER,
      GLOBALMAPVIEW_STATISTICS6_FAVORITEMAP_TOOLTIP_BODY)
-    GLOBALMAPVIEW_STATISTICS8_ENUM = (GLOBALMAPVIEW_STATISTICS8_BATTLES,
+    GLOBALMAPVIEW_STATISTICS8_ENUM = (
+     GLOBALMAPVIEW_STATISTICS8_BATTLES,
      GLOBALMAPVIEW_STATISTICS8_BATTLES_TOOLTIP_HEADER,
      GLOBALMAPVIEW_STATISTICS8_BATTLES_TOOLTIP_BODY,
      GLOBALMAPVIEW_STATISTICS8_WINS,
@@ -556,7 +558,8 @@ class CLANS(object):
      GLOBALMAPVIEW_STATISTICS8_FAVORITEMAP,
      GLOBALMAPVIEW_STATISTICS8_FAVORITEMAP_TOOLTIP_HEADER,
      GLOBALMAPVIEW_STATISTICS8_FAVORITEMAP_TOOLTIP_BODY)
-    GLOBALMAPVIEW_STATISTICS10_ENUM = (GLOBALMAPVIEW_STATISTICS10_BATTLES,
+    GLOBALMAPVIEW_STATISTICS10_ENUM = (
+     GLOBALMAPVIEW_STATISTICS10_BATTLES,
      GLOBALMAPVIEW_STATISTICS10_BATTLES_TOOLTIP_HEADER,
      GLOBALMAPVIEW_STATISTICS10_BATTLES_TOOLTIP_BODY,
      GLOBALMAPVIEW_STATISTICS10_WINS,
@@ -574,45 +577,45 @@ class CLANS(object):
 
     @classmethod
     def clanprofile_summaryview_blocklbl(cls, key0):
-        outcome = '#clans:clanProfile/summaryView/blockLbl/{}'.format(key0)
+        outcome = ('#clans:clanProfile/summaryView/blockLbl/{}').format(key0)
         if outcome not in cls.CLANPROFILE_SUMMARYVIEW_BLOCKLBL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def clanprofile_summaryview_statusmsg(cls, key0):
-        outcome = '#clans:clanProfile/summaryView/statusMsg/{}'.format(key0)
+        outcome = ('#clans:clanProfile/summaryView/statusMsg/{}').format(key0)
         if outcome not in cls.CLANPROFILE_SUMMARYVIEW_STATUSMSG_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def globalmapview_statistics6(cls, key0):
-        outcome = '#clans:globalMapView/statistics6/{}'.format(key0)
+        outcome = ('#clans:globalMapView/statistics6/{}').format(key0)
         if outcome not in cls.GLOBALMAPVIEW_STATISTICS6_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def globalmapview_statistics8(cls, key0):
-        outcome = '#clans:globalMapView/statistics8/{}'.format(key0)
+        outcome = ('#clans:globalMapView/statistics8/{}').format(key0)
         if outcome not in cls.GLOBALMAPVIEW_STATISTICS8_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def globalmapview_statistics10(cls, key0):
-        outcome = '#clans:globalMapView/statistics10/{}'.format(key0)
+        outcome = ('#clans:globalMapView/statistics10/{}').format(key0)
         if outcome not in cls.GLOBALMAPVIEW_STATISTICS10_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

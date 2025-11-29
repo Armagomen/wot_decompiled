@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/tooltips/special_perk_tooltip.py
 from frameworks.wulf import ViewSettings
 from helpers import dependency
 from gui.impl.gen import R
@@ -7,7 +5,8 @@ from gui.impl.gen.view_models.views.lobby.veh_skill_tree.tooltips.special_perk_t
 from gui.impl.lobby.veh_skill_tree.tooltips.base_perk_tooltip import BasePerkTooltipView
 from gui.veh_post_progression.models.progression import PostProgressionAvailability
 from skeletons.gui.shared import IItemsCache
-_LOCKED_VEHICLE_MAP = [PostProgressionAvailability.VEH_NOT_IN_INVENTORY,
+_LOCKED_VEHICLE_MAP = [
+ PostProgressionAvailability.VEH_NOT_IN_INVENTORY,
  PostProgressionAvailability.VEH_IN_BATTLE,
  PostProgressionAvailability.VEH_IN_QUEUE,
  PostProgressionAvailability.VEH_IN_FORMATION,

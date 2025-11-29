@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/scheduler.py
 import BigWorld
 from adisp import adisp_process
 from gui import SystemMessages
@@ -23,7 +21,7 @@ class Comp7Scheduler(BaseScheduler):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     def init(self):
         status, _, _ = self.comp7Controller.getPrimeTimeStatus()

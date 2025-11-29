@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/auxiliary/confirmed_item_helpers.py
 import typing
 from enum import IntEnum
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
@@ -32,22 +30,22 @@ def _optionalDeviceModernizedWithLevelCriteria(level=None):
     return REQ_CRITERIA.ITEM_TYPES(GUI_ITEM_TYPE.OPTIONALDEVICE) | REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED | REQ_CRITERIA.CUSTOM(lambda i: i.level == level if level else True)
 
 
-_HIGHLIGHTS_TYPE_TO_CRITERIA = {ItemHighlightTypes.BATTLE_BOOSTER: REQ_CRITERIA.BATTLE_BOOSTER.ALL,
- ItemHighlightTypes.EQUIPMENT_PLUS: _equipmentPlusCriteria(),
- ItemHighlightTypes.BUILT_IN_EQUIPMENT: _equipmentBuiltInCriteria(),
- ItemHighlightTypes.OPTIONAL_DEVICE: _optionalDeviceSimpleCriteria(),
- ItemHighlightTypes.TROPHY_BASIC: _optionalDeviceTrophyBasicCriteria(),
- ItemHighlightTypes.TROPHY_UPGRADED: _optionalDeviceTrophyUpgradedCriteria(),
- ItemHighlightTypes.MODERNIZED: _optionalDeviceModernizedWithLevelCriteria()}
-_OVERLAY_TYPE_TO_CRITERIA = {ItemHighlightTypes.BATTLE_BOOSTER: REQ_CRITERIA.BATTLE_BOOSTER.ALL,
- ItemHighlightTypes.EQUIPMENT_PLUS: _equipmentPlusCriteria(),
- ItemHighlightTypes.BUILT_IN_EQUIPMENT: _equipmentBuiltInCriteria(),
- ItemHighlightTypes.OPTIONAL_DEVICE: _optionalDeviceSimpleCriteria(),
- ItemHighlightTypes.TROPHY_BASIC: _optionalDeviceTrophyBasicCriteria(),
- ItemHighlightTypes.TROPHY_UPGRADED: _optionalDeviceTrophyUpgradedCriteria(),
- ItemHighlightTypes.MODERNIZED1: _optionalDeviceModernizedWithLevelCriteria(1),
- ItemHighlightTypes.MODERNIZED2: _optionalDeviceModernizedWithLevelCriteria(2),
- ItemHighlightTypes.MODERNIZED3: _optionalDeviceModernizedWithLevelCriteria(3)}
+_HIGHLIGHTS_TYPE_TO_CRITERIA = {ItemHighlightTypes.BATTLE_BOOSTER: REQ_CRITERIA.BATTLE_BOOSTER.ALL, 
+   ItemHighlightTypes.EQUIPMENT_PLUS: _equipmentPlusCriteria(), 
+   ItemHighlightTypes.BUILT_IN_EQUIPMENT: _equipmentBuiltInCriteria(), 
+   ItemHighlightTypes.OPTIONAL_DEVICE: _optionalDeviceSimpleCriteria(), 
+   ItemHighlightTypes.TROPHY_BASIC: _optionalDeviceTrophyBasicCriteria(), 
+   ItemHighlightTypes.TROPHY_UPGRADED: _optionalDeviceTrophyUpgradedCriteria(), 
+   ItemHighlightTypes.MODERNIZED: _optionalDeviceModernizedWithLevelCriteria()}
+_OVERLAY_TYPE_TO_CRITERIA = {ItemHighlightTypes.BATTLE_BOOSTER: REQ_CRITERIA.BATTLE_BOOSTER.ALL, 
+   ItemHighlightTypes.EQUIPMENT_PLUS: _equipmentPlusCriteria(), 
+   ItemHighlightTypes.BUILT_IN_EQUIPMENT: _equipmentBuiltInCriteria(), 
+   ItemHighlightTypes.OPTIONAL_DEVICE: _optionalDeviceSimpleCriteria(), 
+   ItemHighlightTypes.TROPHY_BASIC: _optionalDeviceTrophyBasicCriteria(), 
+   ItemHighlightTypes.TROPHY_UPGRADED: _optionalDeviceTrophyUpgradedCriteria(), 
+   ItemHighlightTypes.MODERNIZED1: _optionalDeviceModernizedWithLevelCriteria(1), 
+   ItemHighlightTypes.MODERNIZED2: _optionalDeviceModernizedWithLevelCriteria(2), 
+   ItemHighlightTypes.MODERNIZED3: _optionalDeviceModernizedWithLevelCriteria(3)}
 
 def getHighlightsTypeByItem(item, typeToCriteria=None):
     criteriaMap = _HIGHLIGHTS_TYPE_TO_CRITERIA.copy()
@@ -56,6 +54,8 @@ def getHighlightsTypeByItem(item, typeToCriteria=None):
         if criteria(item):
             return highlightsType
 
+    return ''
+
 
 def getOverlayTypeByItem(item, typeToCriteria=None):
     criteriaMap = _OVERLAY_TYPE_TO_CRITERIA.copy()
@@ -63,6 +63,8 @@ def getOverlayTypeByItem(item, typeToCriteria=None):
     for overlayType, criteria in criteriaMap.items():
         if criteria(item):
             return overlayType
+
+    return ''
 
 
 class ConfirmedItemWarningTypes(IntEnum):
@@ -78,7 +80,7 @@ class BaseConfirmedItemWarning(object):
 
 
 class DependsOnDevicesWarning(BaseConfirmedItemWarning):
-    __slots__ = ('__devicesName',)
+    __slots__ = ('__devicesName', )
 
     def __init__(self, devicesName):
         self.__devicesName = devicesName

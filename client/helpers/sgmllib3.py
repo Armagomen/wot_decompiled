@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/sgmllib3.py
-import _markupbase
-import re
-__all__ = ['SGMLParser', 'SGMLParseError']
+import _markupbase, re
+__all__ = [
+ 'SGMLParser', 'SGMLParseError']
 interesting = re.compile('[&<]')
 incomplete = re.compile('&([a-zA-Z][a-zA-Z0-9]*|#[0-9]*)?|<([a-zA-Z][^<>]*|/([a-zA-Z][^<>]*)?|![^<>]*)?')
 entityref = re.compile('&([a-zA-Z][-.a-zA-Z0-9]*)[^a-zA-Z0-9]')
@@ -93,7 +91,8 @@ class SGMLParser(_markupbase.ParserBase):
                     if n > i + 1:
                         self.handle_data('<')
                         i = i + 1
-                    break
+                    else:
+                        break
                     continue
                 if rawdata.startswith('<!--', i):
                     k = self.parse_comment(i)
@@ -123,7 +122,7 @@ class SGMLParser(_markupbase.ParserBase):
                     name = match.group(1)
                     self.handle_charref(name)
                     i = match.end(0)
-                    if rawdata[i - 1] != ';':
+                    if rawdata[(i - 1)] != ';':
                         i = i - 1
                     continue
                 match = entityref.match(rawdata, i)
@@ -131,7 +130,7 @@ class SGMLParser(_markupbase.ParserBase):
                     name = match.group(1)
                     self.handle_entityref(name)
                     i = match.end(0)
-                    if rawdata[i - 1] != ';':
+                    if rawdata[(i - 1)] != ';':
                         i = i - 1
                     continue
             else:
@@ -208,8 +207,8 @@ class SGMLParser(_markupbase.ParserBase):
                 if not rest:
                     attrvalue = attrname
                 else:
-                    if not attrvalue[:1] == "'" == attrvalue[-1:]:
-                        attrvalue = attrvalue[:1] == '"' == attrvalue[-1:] and attrvalue[1:-1]
+                    if attrvalue[:1] == "'" == attrvalue[-1:] or attrvalue[:1] == '"' == attrvalue[-1:]:
+                        attrvalue = attrvalue[1:-1]
                     attrvalue = self.entity_or_charref.sub(self._convert_ref, attrvalue)
                 attrs.append((attrname.lower(), attrvalue))
                 k = match.end(0)
@@ -223,9 +222,9 @@ class SGMLParser(_markupbase.ParserBase):
     def _convert_ref(self, match):
         if match.group(2):
             return self.convert_charref(match.group(2)) or '&#%s%s' % match.groups()[1:]
-        elif match.group(3):
-            return self.convert_entityref(match.group(1)) or '&%s;' % match.group(1)
         else:
+            if match.group(3):
+                return self.convert_entityref(match.group(1)) or '&%s;' % match.group(1)
             return '&%s' % match.group(1)
 
     def parse_endtag(self, i):
@@ -283,18 +282,18 @@ class SGMLParser(_markupbase.ParserBase):
                 if self.stack[i] == tag:
                     found = i
 
-        while len(self.stack) > found:
-            tag = self.stack[-1]
-            try:
-                method = getattr(self, 'end_' + tag)
-            except AttributeError:
-                method = None
+            while len(self.stack) > found:
+                tag = self.stack[(-1)]
+                try:
+                    method = getattr(self, 'end_' + tag)
+                except AttributeError:
+                    method = None
 
-            if method:
-                self.handle_endtag(tag, method)
-            else:
-                self.unknown_endtag(tag)
-            del self.stack[-1]
+                if method:
+                    self.handle_endtag(tag, method)
+                else:
+                    self.unknown_endtag(tag)
+                del self.stack[-1]
 
         return
 
@@ -315,7 +314,9 @@ class SGMLParser(_markupbase.ParserBase):
         except ValueError:
             return
 
-        return None if not 0 <= n <= 127 else self.convert_codepoint(n)
+        if not 0 <= n <= 127:
+            return
+        return self.convert_codepoint(n)
 
     def convert_codepoint(self, codepoint):
         return chr(codepoint)
@@ -328,11 +329,7 @@ class SGMLParser(_markupbase.ParserBase):
             self.handle_data(replacement)
         return
 
-    entitydefs = {'lt': '<',
-     'gt': '>',
-     'amp': '&',
-     'quot': '"',
-     'apos': "'"}
+    entitydefs = {'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"', 'apos': "'"}
 
     def convert_entityref(self, name):
         table = self.entitydefs

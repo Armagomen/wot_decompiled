@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/schedule_info_model.py
 from frameworks.wulf import ViewModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.season_model import SeasonModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.year_model import YearModel

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/economics_records.py
 import itertools
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from constants import PREMIUM_TYPE
@@ -11,12 +9,14 @@ from gui.battle_results.settings import FACTOR_VALUE
 from gui.shared.money import Currency
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
-_DEFAULT_FACTORS = {_CAPS.PREM_CREDITS: FACTOR_VALUE.BASE_CREDITS_FACTOR,
- _CAPS.PREM_XP: FACTOR_VALUE.BASE_XP_FACTOR,
- _CAPS.PREM_TMEN_XP: FACTOR_VALUE.BASE_TMEN_XP_FACTOR}
+_DEFAULT_FACTORS = {_CAPS.PREM_CREDITS: FACTOR_VALUE.BASE_CREDITS_FACTOR, 
+   _CAPS.PREM_XP: FACTOR_VALUE.BASE_XP_FACTOR, 
+   _CAPS.PREM_TMEN_XP: FACTOR_VALUE.BASE_TMEN_XP_FACTOR}
 
 def _getPremiumBonusFactor(factor, bonusCaps, isPremBonusEnabled):
-    return factor if isPremBonusEnabled else _DEFAULT_FACTORS[bonusCaps]
+    if isPremBonusEnabled:
+        return factor
+    return _DEFAULT_FACTORS[bonusCaps]
 
 
 def _updateAdditionalFactorFromReplay(replay, results, setDefault=False):
@@ -69,7 +69,7 @@ class _CrystalRecords(records.RawRecords):
         for _, (appliedName, appliedValue), (_, _) in replay:
             if appliedName == 'originalCrystal' and appliedValue:
                 rawRecords[appliedName] = appliedValue
-            if appliedName.startswith(eventToken):
+            elif appliedName.startswith(eventToken):
                 eventsCrystals += appliedValue
 
         if eventsCrystals:
@@ -111,7 +111,7 @@ class _XPReplayRecords(records.ReplayRecords):
 
     def _getRecord(self, name):
         value = super(_XPReplayRecords, self)._getRecord(name)
-        if name in ('achievementXP',):
+        if name in ('achievementXP', ):
             value = records.makeReplayValueRound(value * self.getFactor('appliedPremiumXPFactor100'))
         return value
 
@@ -125,13 +125,14 @@ class _FreeXPReplayRecords(records.ReplayRecords):
 
     def _getRecord(self, name):
         value = super(_FreeXPReplayRecords, self)._getRecord(name)
-        if name in ('achievementFreeXP',):
+        if name in ('achievementFreeXP', ):
             value = records.makeReplayValueRound(value * self.getFactor('appliedPremiumXPFactor100'))
         return value
 
 
 class _TmenXPRecordsChains(object):
-    __slots__ = ('__baseTmenXP', '__premiumTmenXP', '__premiumPlusTmenXP', '__baseTmenXPAdd', '__premiumTmenXPAdd', '__premiumPlusTmenXPAdd', '__isPremTmenXpBonuxEnabled')
+    __slots__ = ('__baseTmenXP', '__premiumTmenXP', '__premiumPlusTmenXP', '__baseTmenXPAdd',
+                 '__premiumTmenXPAdd', '__premiumPlusTmenXPAdd', '__isPremTmenXpBonuxEnabled')
 
     def __init__(self, bonusType, bonusCapsOverrides):
         super(_TmenXPRecordsChains, self).__init__()
@@ -187,7 +188,18 @@ class _TmenXPRecordsChains(object):
 
 
 class EconomicsRecordsChains(object):
-    __slots__ = ('_baseCredits', '_premiumCredits', '_premiumPlusCredits', '_baseCreditsWithWotPlus', '_premiumCreditsWithWotPlus', '_premiumPlusCreditsWithWotPlus', '_goldRecords', '_additionalRecords', '_baseXP', '_premiumXP', '_premiumPlusXP', '_baseXPWithWotPlus', '_premiumXPWithWotPlus', '_premiumPlusXPWithWotPlus', '_baseXPAdd', '_premiumXPAdd', '_premiumPlusXPAdd', '_baseXPAddWithWotPlus', '_premiumXPAddWithWotPlus', '_premiumPlusXPAddWithWotPlus', '_baseFreeXP', '_premiumFreeXP', '_premiumPlusFreeXP', '_baseFreeXPWithWotPlus', '_premiumFreeXPWithWotPlus', '_premiumPlusFreeXPWithWotPlus', '_baseFreeXPAdd', '_premiumFreeXPAdd', '_premiumPlusFreeXPAdd', '_baseFreeXPAddWithWotPlus', '_premiumFreeXPAddWithWotPlus', '_premiumPlusFreeXPAddWithWotPlus', '_crystal', '_crystalDetails', '_tmenXPRecordsChains', '__isPremCreditsBonusEnabled', '__isPremXpBonusEnabled')
+    __slots__ = ('_baseCredits', '_premiumCredits', '_premiumPlusCredits', '_baseCreditsWithWotPlus',
+                 '_premiumCreditsWithWotPlus', '_premiumPlusCreditsWithWotPlus',
+                 '_goldRecords', '_additionalRecords', '_baseXP', '_premiumXP', '_premiumPlusXP',
+                 '_baseXPWithWotPlus', '_premiumXPWithWotPlus', '_premiumPlusXPWithWotPlus',
+                 '_baseXPAdd', '_premiumXPAdd', '_premiumPlusXPAdd', '_baseXPAddWithWotPlus',
+                 '_premiumXPAddWithWotPlus', '_premiumPlusXPAddWithWotPlus', '_baseFreeXP',
+                 '_premiumFreeXP', '_premiumPlusFreeXP', '_baseFreeXPWithWotPlus',
+                 '_premiumFreeXPWithWotPlus', '_premiumPlusFreeXPWithWotPlus', '_baseFreeXPAdd',
+                 '_premiumFreeXPAdd', '_premiumPlusFreeXPAdd', '_baseFreeXPAddWithWotPlus',
+                 '_premiumFreeXPAddWithWotPlus', '_premiumPlusFreeXPAddWithWotPlus',
+                 '_crystal', '_crystalDetails', '_tmenXPRecordsChains', '__isPremCreditsBonusEnabled',
+                 '__isPremXpBonusEnabled')
 
     def __init__(self, bonusType, bonusCapsOverrides):
         super(EconomicsRecordsChains, self).__init__()
@@ -445,9 +457,13 @@ class EconomicsRecordsChains(object):
         premiumType = PREMIUM_TYPE.activePremium(results.get('premMask', PREMIUM_TYPE.NONE))
         if targetPremiumType > premiumType:
             return lobbyContext.getServerSettings().squadPremiumBonus.ownCredits * 100
-        return 0 if targetPremiumType < premiumType else results.get('premSquadCreditsFactor100', 0)
+        if targetPremiumType < premiumType:
+            return 0
+        return results.get('premSquadCreditsFactor100', 0)
 
     @staticmethod
     @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
     def __getWotPlusFactor(factorName, lobbyContext=None):
-        return lobbyContext.getServerSettings().getWotPlusBattleBonusesConfig().get(factorName, 0.0) * 100 if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled() else 0.0
+        if lobbyContext.getServerSettings().isWotPlusBattleBonusesEnabled():
+            return lobbyContext.getServerSettings().getWotPlusBattleBonusesConfig().get(factorName, 0.0) * 100
+        return 0.0

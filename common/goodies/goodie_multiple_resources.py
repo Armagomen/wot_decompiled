@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/goodie_multiple_resources.py
 from typing import TYPE_CHECKING
 import GoodieResources as res
 from GoodieValue import GoodieValue
@@ -20,7 +18,7 @@ class GoodieMultiValueDescr(GoodieValue):
 
 
 class MultiValueResourceObject(object):
-    __slots__ = ('__values',)
+    __slots__ = ('__values', )
 
     def __init__(self, values):
         super(MultiValueResourceObject, self).__init__()
@@ -51,7 +49,7 @@ class MultiValueResourceObject(object):
 
 
 class GoodieMultiResourceList(res.GoodieResource):
-    __slots__ = ('_subResources',)
+    __slots__ = ('_subResources', )
 
     def __init__(self, values):
         self._subResources = self._getSupportedResourceSubTypes()

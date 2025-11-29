@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/EntityMarkerComponent.py
 import typing
 from chat_commands_consts import MarkerType, INVALID_TARGET_ID
 from script_component.DynamicScriptComponent import DynamicScriptComponent

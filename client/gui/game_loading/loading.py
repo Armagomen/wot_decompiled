@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/loading.py
-import inspect
-import typing
-import WWISE
-import game_loading_bindings
+import inspect, typing, WWISE, game_loading_bindings
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.game_loading import loggers
 from gui.game_loading.preferences import GameLoadingPreferences

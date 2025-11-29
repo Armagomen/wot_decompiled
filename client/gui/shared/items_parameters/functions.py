@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/items_parameters/functions.py
 from collections import defaultdict
 from operator import itemgetter
-import typing
-import BigWorld
+import typing, BigWorld
 from gui.shared.gui_items import KPI
 from gui.shared.gui_items.Tankman import crewMemberRealSkillLevel
 from items import utils, tankmen
@@ -38,7 +35,9 @@ class _KpiDict(object):
         if kpiName not in self.__dict:
             return 0.0
         kpiType = self.__typeDict[kpiName]
-        return self.__dict[kpiName] * 100 if kpiType == KPI.Type.MUL else self.__dict[kpiName]
+        if kpiType == KPI.Type.MUL:
+            return self.__dict[kpiName] * 100
+        return self.__dict[kpiName]
 
     def getFactors(self):
         return self.__dict
@@ -213,7 +212,11 @@ def extractCrewDescrs(vehicle, replaceNone=True):
                 tankmanCompDescr = createFakeTankmanDescr(role, vehicleDescr.type)
         crewCompactDescrs.append(tankmanCompDescr)
 
-    return crewCompactDescrs if replaceNone else (crewCompactDescrs, emptySlots, otherVehicleSlots)
+    if replaceNone:
+        return crewCompactDescrs
+    else:
+        return (
+         crewCompactDescrs, emptySlots, otherVehicleSlots)
 
 
 def createFakeTankmanDescr(role, vehicleType, roleLevel=100):

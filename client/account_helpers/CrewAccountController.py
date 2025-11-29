@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/CrewAccountController.py
 from CurrentVehicle import g_currentVehicle
 from gui import SystemMessages
 from gui.shared.gui_items.processors.tankman import TankmanAutoReturn

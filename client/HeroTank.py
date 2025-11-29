@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/HeroTank.py
-import math
-import random
+import math, random
 from typing import TYPE_CHECKING
 from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
 from CurrentVehicle import g_currentPreviewVehicle

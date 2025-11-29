@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/points_of_interest/managers.py
-import typing
-import CGF
-import GenericComponents
-import SoundGroups
+import typing, CGF, GenericComponents, SoundGroups
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, onProcessQuery
 from points_of_interest.components import PoiStateComponent, PoiVehicleStateComponent, PoiStateUIListenerComponent, PoiCaptureBlockerStateComponent, PoiStateUpdateMask
 from points_of_interest.poi_view_states import PointViewStateUpdater, VehicleViewStateUpdater
@@ -158,10 +153,10 @@ class PoiSoundManager(CGF.ComponentManager):
             self.__stop3D(self.__getSoundObjName(self.__POI_AVAILABLE, poiID))
             self.__play3D(self.__POI_NOT_AVAILABLE, poiID, go)
         self.__poiStates[poiID] = (statusID, invader)
-        return None
+        return
 
     def __getSoundObjName(self, soundName, poiID):
-        return '{}_{}'.format(soundName, poiID)
+        return ('{}_{}').format(soundName, poiID)
 
     def __play3D(self, soundName, poiID, go):
         soundObjName = self.__getSoundObjName(soundName, poiID)
@@ -191,4 +186,7 @@ class PoiSoundManager(CGF.ComponentManager):
         hierarchy = CGF.HierarchyManager(go.spaceID)
         parent = hierarchy.getTopMostParent(go)
         transform = parent.findComponentByType(GenericComponents.TransformComponent)
-        return SoundGroups.g_instance.WWgetSoundPos(soundName, soundObjName, transform.worldPosition) if transform is not None else None
+        if transform is not None:
+            return SoundGroups.g_instance.WWgetSoundPos(soundName, soundObjName, transform.worldPosition)
+        else:
+            return

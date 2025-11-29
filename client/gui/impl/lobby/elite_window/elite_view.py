@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/elite_window/elite_view.py
 import SoundGroups
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from frameworks.wulf import ViewSettings
@@ -26,7 +24,7 @@ class EliteView(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
     __guiLoader = dependency.descriptor(IGuiLoader)
     __settingsCore = dependency.descriptor(ISettingsCore)
-    __slots__ = ('__vehicle',)
+    __slots__ = ('__vehicle', )
 
     def __init__(self, *args, **kwargs):
         settings = ViewSettings(R.views.mono.lobby.elite_window())
@@ -41,7 +39,7 @@ class EliteView(ViewImpl):
 
     def _onLoading(self, vehicleCD, *args, **kwargs):
         currentLevel, _ = getVehiclePrestige(vehicleCD, itemsCache=self.__itemsCache)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__vehicle = self.__itemsCache.items.getItemByCD(vehicleCD)
             fillVehicleInfo(model.vehicleInfo, self.__vehicle)
             self.__updateWindowType(model=model)
@@ -55,7 +53,13 @@ class EliteView(ViewImpl):
         SoundGroups.g_instance.playSound2D(Sounds.ENTER_ELITE_VIEW)
 
     def _getEvents(self):
-        return super(EliteView, self)._getEvents() + ((self.__itemsCache.onSyncCompleted, self.__onSyncCompleted), (self.viewModel.onClose, self.__onClose), (self.viewModel.onGoToProgression, self.__onGoToProgression))
+        return super(EliteView, self)._getEvents() + (
+         (
+          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onGoToProgression, self.__onGoToProgression))
 
     def _finalize(self):
         g_eventBus.handleEvent(events.CloseWindowEvent(events.CloseWindowEvent.ELITE_WINDOW_CLOSED))
@@ -86,11 +90,13 @@ class EliteView(ViewImpl):
 
     def __onSyncCompleted(self, reason, diff):
         if GUI_ITEM_TYPE.VEH_POST_PROGRESSION in diff:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 self.__updateWindowType(model)
 
     def __isSkillTreeProgression(self):
-        return self.__vehicle.postProgression.isVehSkillTree() if self.__vehicle.postProgressionAvailability(unlockOnly=True).result else False
+        if self.__vehicle.postProgressionAvailability(unlockOnly=True).result:
+            return self.__vehicle.postProgression.isVehSkillTree()
+        return False
 
     @replaceNoneKwargsModel
     def __updateWindowType(self, model=None):

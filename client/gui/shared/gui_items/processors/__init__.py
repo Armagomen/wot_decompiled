@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/processors/__init__.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
 import BigWorld
 from adisp import adisp_process, adisp_async
@@ -23,21 +20,22 @@ def makeError(userMsg='', msgType=SM_TYPE.Error, auxData=None, msgData=None, msg
 
 
 def makeI18nSuccess(sysMsgKey='', auxData=None, *args, **kwargs):
-    return makeSuccess(i18n.makeString('#system_messages:{}'.format(sysMsgKey), *args, **kwargs), kwargs.get('type', SM_TYPE.Information), auxData)
+    return makeSuccess(i18n.makeString(('#system_messages:{}').format(sysMsgKey), *args, **kwargs), kwargs.get('type', SM_TYPE.Information), auxData)
 
 
 def makeI18nError(sysMsgKey='', defaultSysMsgKey='', auxData=None, *args, **kwargs):
-    localKey = '#system_messages:{}'.format(sysMsgKey)
+    localKey = ('#system_messages:{}').format(sysMsgKey)
     if localKey not in SYSTEM_MESSAGES.ALL_ENUM and defaultSysMsgKey:
-        localKey = '#system_messages:{}'.format(defaultSysMsgKey)
+        localKey = ('#system_messages:{}').format(defaultSysMsgKey)
     return makeError(i18n.makeString(localKey, *args, **kwargs), kwargs.get('type', SM_TYPE.Error), auxData, msgPriority=kwargs.get('msgPriority', None))
 
 
-class GroupedServerResponse(namedtuple('GroupedServerResponse', ['itemID', 'itemCount'])):
+class GroupedServerResponse(namedtuple('GroupedServerResponse', [
+ 'itemID', 'itemCount'])):
 
     def __new__(cls, *args, **kwargs):
         data = dict(itemID=-1, itemCount=0)
-        data.update(dict(((field, val) for field, val in zip(cls._fields[:len(args)], args))))
+        data.update(dict((field, val) for field, val in zip(cls._fields[:len(args)], args)))
         data.update(kwargs)
         return super(GroupedServerResponse, cls).__new__(cls, **data)
 
@@ -159,12 +157,13 @@ class GroupedRequestProcessor(Processor):
         self.__groupSize = kwargs.get('groupSize', 1)
 
     def _request(self, callback):
-        _logger.debug('Make server request {}: '.format(self.__request.__name__) + ', '.join((str(i) for i in self.__params)))
-        self.__request(*(self.__params + (self.__groupID, self.__groupSize, lambda code, errStr, ctx=None: self._response(code, callback, errStr=errStr, ctx=ctx))))
+        _logger.debug(('Make server request {}: ').format(self.__request.__name__) + (', ').join(str(i) for i in self.__params))
+        self.__request(*(self.__params + (self.__groupID, self.__groupSize,
+         lambda code, errStr, ctx=None: self._response(code, callback, errStr=errStr, ctx=ctx))))
         return
 
     def _response(self, code, callback, ctx=None, errStr=''):
-        items = list((GroupedServerResponse(*itemConfig) for itemConfig in ctx)) if ctx else []
+        items = list(GroupedServerResponse(*itemConfig) for itemConfig in ctx) if ctx else []
         if code < 0:
             _logger.warning('Server fail response: code=%r, error=%r, ctx=%r', code, errStr, ctx)
             return callback(self._errorHandler(code, errStr=errStr, ctx=items) if ctx else makeError())
@@ -172,16 +171,20 @@ class GroupedRequestProcessor(Processor):
         return callback(self._successHandler(code, ctx=items) if ctx else makeSuccess())
 
     def _makeSuccessData(self, *args, **kwargs):
-        return [makeSuccess()]
+        return [
+         makeSuccess()]
 
     def _makeErrorData(self, *args, **kwargs):
-        return [makeError()]
+        return [
+         makeError()]
 
 
 class VehicleItemProcessor(ItemProcessor):
 
     def __init__(self, vehicle, module, allowableTypes):
-        super(VehicleItemProcessor, self).__init__(module, [proc_plugs.VehicleValidator(vehicle, False, prop={'isBroken': True,
-          'isLocked': True}), proc_plugs.ModuleValidator(module), proc_plugs.ModuleTypeValidator(module, allowableTypes)])
+        super(VehicleItemProcessor, self).__init__(module, [
+         proc_plugs.VehicleValidator(vehicle, False, prop={'isBroken': True, 'isLocked': True}),
+         proc_plugs.ModuleValidator(module),
+         proc_plugs.ModuleTypeValidator(module, allowableTypes)])
         self.vehicle = vehicle
         self.allowableTypes = allowableTypes

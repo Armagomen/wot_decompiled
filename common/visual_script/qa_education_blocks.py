@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/qa_education_blocks.py
 import math
 from block import Block
 from slot_types import SLOT_TYPE
@@ -23,11 +21,12 @@ class CheckTriangleLesson1(Block, QAMeta):
     def validate(self):
         if not self._a.hasValue():
             return 'a value is required'
-        return 'b value is required' if not self._b.hasValue() else None
+        if not self._b.hasValue():
+            return 'b value is required'
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'QA Education Blocks'
 
 
 class CheckTriangleLesson2(Block, QAMeta):
@@ -52,8 +51,9 @@ class CheckTriangleLesson2(Block, QAMeta):
     def validate(self):
         if not self._r.hasValue():
             return 'r value is required'
-        return 'S value is required' if not self._S.hasValue() else None
+        if not self._S.hasValue():
+            return 'S value is required'
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'QA Education Blocks'

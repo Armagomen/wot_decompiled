@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_missions/states.py
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -48,7 +46,9 @@ class UserMissionsState(SFViewLobbyState, EventsHandler):
         return self.__cachedParams
 
     def _getListeners(self):
-        return ((UserMissionsEvent.CHANGE_TAB, self.__onTabChanged, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          UserMissionsEvent.CHANGE_TAB, self.__onTabChanged, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onEntered(self, event):
         super(UserMissionsState, self)._onEntered(event)
@@ -75,7 +75,8 @@ class UserMissionsState(SFViewLobbyState, EventsHandler):
 class _BasicMissionTab(LobbyState):
     STATE_ID = TabId.BASIC
     TAB_ID = TabId.BASIC
-    LOBBY_STATE_DESCR = LobbyStateDescription(title=backport.text(R.strings.pages.titles.userMissions()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.user_missions.tooltip.hub.info_button.header()), tooltipBody=backport.text(R.strings.user_missions.tooltip.hub.info_button.body()), onMoreInfoRequested=_onMoreInfoRequested),))
+    LOBBY_STATE_DESCR = LobbyStateDescription(title=backport.text(R.strings.pages.titles.userMissions()), infos=(
+     LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.user_missions.tooltip.hub.info_button.header()), tooltipBody=backport.text(R.strings.user_missions.tooltip.hub.info_button.body()), onMoreInfoRequested=_onMoreInfoRequested),))
 
     def registerTransitions(self):
         lsm = self.getMachine()
@@ -101,4 +102,5 @@ class _CommonMissionTab(LobbyState):
         self.addNavigationTransition(basicTab)
 
 
-MISSION_TABS = (_BasicMissionTab, _CommonMissionTab)
+MISSION_TABS = (
+ _BasicMissionTab, _CommonMissionTab)

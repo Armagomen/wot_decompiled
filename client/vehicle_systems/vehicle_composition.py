@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/vehicle_composition.py
-import typing
-import enum
-import BigWorld
-import Compound
-import CGF
-import Math
-import GenericComponents
-import math_utils
+import typing, enum, BigWorld, Compound, CGF, Math, GenericComponents, math_utils
 from constants import IS_UE_EDITOR
 from items.components import component_constants
 from items.components.c11n_constants import HANGER_POSTFIX, AttachmentType
@@ -24,7 +15,7 @@ if typing.TYPE_CHECKING:
     from common_tank_appearance import CommonTankAppearance
     from gui.hangar_vehicle_appearance import HangarVehicleAppearance
     from typing import Iterable
-    TAppearance = typing.Union[HangarVehicleAppearance, CommonTankAppearance, None]
+    TAppearance = typing.Union[(HangarVehicleAppearance, CommonTankAppearance, None)]
 
 class VehicleSlots(enum.Enum):
     CHASSIS = TankPartNames.CHASSIS
@@ -58,7 +49,9 @@ def createVehicleComposition(gameObject, vehicleGameObject=CGF.GameObject.INVALI
             return nodeName.startswith('HP_') or nodeName == TankPartNames.GUN or nodeName in dynSlotNodes
 
     def nodeInteractTypeResolver(_, nodeName):
-        return Compound.NodeInteractType.NONE if not followNodes else Compound.NodeInteractType.FOLLOW
+        if not followNodes:
+            return Compound.NodeInteractType.NONE
+        return Compound.NodeInteractType.FOLLOW
 
     slotsMap = {node:node for node in dynSlotNodes}
     slotsMap.update(_VEHICLE_SLOTS_MAP)
@@ -70,17 +63,17 @@ def _getSlotTransform(scale, rotation, position):
     return math_utils.createSRTMatrix(scale, rotationYPR, position)
 
 
-VEHICLE_PART_TO_SLOT = {TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value,
- TankPartNames.HULL: VehicleSlots.HULL.value,
- TankPartNames.TURRET: VehicleSlots.TURRET.value,
- TankPartNames.GUN: VehicleSlots.GUN_INCLINATION.value}
-DESTROYED_VEHICLE_PART_TO_SLOT = {TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value,
- TankPartNames.HULL: VehicleSlots.HULL.value,
- TankPartNames.TURRET: VehicleSlots.TURRET.value,
- TankPartNames.GUN: VehicleSlots.GUN_JOINT.value}
-ATTACHMENT_TYPE_TO_SLOT = {AttachmentType.GUN: VehicleSlots.GUN_RECOIL.value,
- AttachmentType.GUN_RIGHT: VehicleSlots.GUN_RECOIL_R.value,
- AttachmentType.GUN_LEFT: VehicleSlots.GUN_RECOIL_L.value}
+VEHICLE_PART_TO_SLOT = {TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value, 
+   TankPartNames.HULL: VehicleSlots.HULL.value, 
+   TankPartNames.TURRET: VehicleSlots.TURRET.value, 
+   TankPartNames.GUN: VehicleSlots.GUN_INCLINATION.value}
+DESTROYED_VEHICLE_PART_TO_SLOT = {TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value, 
+   TankPartNames.HULL: VehicleSlots.HULL.value, 
+   TankPartNames.TURRET: VehicleSlots.TURRET.value, 
+   TankPartNames.GUN: VehicleSlots.GUN_JOINT.value}
+ATTACHMENT_TYPE_TO_SLOT = {AttachmentType.GUN: VehicleSlots.GUN_RECOIL.value, 
+   AttachmentType.GUN_RIGHT: VehicleSlots.GUN_RECOIL_R.value, 
+   AttachmentType.GUN_LEFT: VehicleSlots.GUN_RECOIL_L.value}
 
 def getExtraSlotMap(vDesc, appearance):
     extraSlotMap = []
@@ -139,7 +132,10 @@ def findParentVehicle(gameObject):
 def findParentVehicleAppearance(gameObject):
     hierarchy = CGF.HierarchyManager(gameObject.spaceID)
     findResult = hierarchy.findComponentInParent(gameObject, VehicleAppearanceComponent)
-    return findResult[1].appearance if findResult is not None and len(findResult) > 1 else None
+    if findResult is not None and len(findResult) > 1:
+        return findResult[1].appearance
+    else:
+        return
 
 
 def getObjectSlots(typeDescriptor):
@@ -151,17 +147,17 @@ def getObjectSlots(typeDescriptor):
     return slots
 
 
-_VEHICLE_SLOTS_MAP = {TankNodeNames.HULL_SWINGING: VehicleSlots.HULL.value,
- TankPartNames.GUN: VehicleSlots.GUN.value,
- TankPartNames.TURRET: VehicleSlots.TURRET.value,
- TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value,
- TankNodeNames.GUN_FIRE: VehicleSlots.GUN_FIRE.value,
- TankNodeNames.GUN_INCLINATION: VehicleSlots.GUN_INCLINATION.value,
- TankNodeNames.GUN_RECOIL: VehicleSlots.GUN_RECOIL.value,
- TankNodeNames.GUN_RECOIL_L: VehicleSlots.GUN_RECOIL_L.value,
- TankNodeNames.GUN_RECOIL_R: VehicleSlots.GUN_RECOIL_R.value,
- TankNodeNames.GUN_JOINT: VehicleSlots.GUN_JOINT.value,
- TankCollisionPartNames.TURRET: VehicleSlots.TURRET_COLLISION.value,
- TankCollisionPartNames.GUN: VehicleSlots.GUN_COLLISION.value}
-_DETACHED_TURRET_SLOTS_MAP = {TankNodeNames.GUN_JOINT: VehicleSlots.GUN_JOINT.value,
- TankPartNames.TURRET: VehicleSlots.TURRET.value}
+_VEHICLE_SLOTS_MAP = {TankNodeNames.HULL_SWINGING: VehicleSlots.HULL.value, 
+   TankPartNames.GUN: VehicleSlots.GUN.value, 
+   TankPartNames.TURRET: VehicleSlots.TURRET.value, 
+   TankPartNames.CHASSIS: VehicleSlots.CHASSIS.value, 
+   TankNodeNames.GUN_FIRE: VehicleSlots.GUN_FIRE.value, 
+   TankNodeNames.GUN_INCLINATION: VehicleSlots.GUN_INCLINATION.value, 
+   TankNodeNames.GUN_RECOIL: VehicleSlots.GUN_RECOIL.value, 
+   TankNodeNames.GUN_RECOIL_L: VehicleSlots.GUN_RECOIL_L.value, 
+   TankNodeNames.GUN_RECOIL_R: VehicleSlots.GUN_RECOIL_R.value, 
+   TankNodeNames.GUN_JOINT: VehicleSlots.GUN_JOINT.value, 
+   TankCollisionPartNames.TURRET: VehicleSlots.TURRET_COLLISION.value, 
+   TankCollisionPartNames.GUN: VehicleSlots.GUN_COLLISION.value}
+_DETACHED_TURRET_SLOTS_MAP = {TankNodeNames.GUN_JOINT: VehicleSlots.GUN_JOINT.value, 
+   TankPartNames.TURRET: VehicleSlots.TURRET.value}

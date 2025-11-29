@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/battle/shared/premature_leave.py
 import BigWorld
 from BWUtil import AsyncReturn
 from comp7_common.comp7_constants import ARENA_GUI_TYPE

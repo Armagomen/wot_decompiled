@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_widget.py
-import logging
-import typing
-import Event
+import logging, typing, Event
 from frameworks.wulf import ViewSettings, ViewFlags
 from goodies.goodie_constants import BoosterCategory
 from gui.impl.gen import R
@@ -51,13 +47,20 @@ class PersonalReservesWidget(ViewImpl):
         return len(self.viewModel.getReserves())
 
     def _getCallbacks(self):
-        return (('stats.clanInfo', self._onClanInfoChanged),)
+        return (
+         (
+          'stats.clanInfo', self._onClanInfoChanged),)
 
     def _getEvents(self):
-        return ((self._boosters.onPersonalReserveTick, self._update),
-         (self._boosters.onClanReserveTick, self._updateClanReserves),
-         (self._boosters.onGameModeStatusChange, self._update),
-         (self._boosters.onBoostersDataUpdate, self._update))
+        return (
+         (
+          self._boosters.onPersonalReserveTick, self._update),
+         (
+          self._boosters.onClanReserveTick, self._updateClanReserves),
+         (
+          self._boosters.onGameModeStatusChange, self._update),
+         (
+          self._boosters.onBoostersDataUpdate, self._update))
 
     def _finalize(self):
         self.onUpdate.clear()
@@ -85,7 +88,7 @@ class PersonalReservesWidget(ViewImpl):
 
     def _update(self):
         self._hasActiveBoosters = False
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self._fillViewModel(model)
         self.onUpdate()
 

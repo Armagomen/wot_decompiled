@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/spam_protection/cooldown_manager.py
-import typing
-import BigWorld
+import typing, BigWorld
 from gui.battle_control.controllers.spam_protection.spam_constants import DEFAULT_COOLDOWN
 
 class SpamCooldownManager(object):
@@ -13,7 +10,9 @@ class SpamCooldownManager(object):
         self.__cooldowns.clear()
 
     def isInProcess(self, eventKey):
-        return self.__cooldowns[eventKey] > BigWorld.time() if eventKey in self.__cooldowns else False
+        if eventKey in self.__cooldowns:
+            return self.__cooldowns[eventKey] > BigWorld.time()
+        return False
 
     def process(self, eventKey, coolDown=None):
         coolDown = coolDown or DEFAULT_COOLDOWN

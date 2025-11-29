@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/GameSessionController.py
-import sys
-import time
-import typing
-import BigWorld
-import Event
-import account_shared
-import constants
+import sys, time, typing, BigWorld, Event, account_shared, constants
 from battle_modifiers_common import BattleParams
 from constants import SECONDS_IN_DAY
 from debug_utils import LOG_DEBUG
@@ -117,11 +109,11 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
             self.__notifyClient()
         self.startNotification()
         self.__loadBanCallback()
-        g_clientUpdateManager.addCallbacks({'premium': self.__onAccountChanged,
-         'stats.restrictions': self.__onRestrictionsChanged,
-         'stats.playLimits': self.__onPlayLimitsChanged,
-         'cache.gameRestrictions.session': self.__onParentControlChanged,
-         'cache.gameRestrictions.session_r': self.__onParentControlChanged})
+        g_clientUpdateManager.addCallbacks({'premium': self.__onAccountChanged, 
+           'stats.restrictions': self.__onRestrictionsChanged, 
+           'stats.playLimits': self.__onPlayLimitsChanged, 
+           'cache.gameRestrictions.session': self.__onParentControlChanged, 
+           'cache.gameRestrictions.session_r': self.__onParentControlChanged})
         g_eventBus.addListener(events.GameSessionEvent.UPDATE_KICK_NOTIFICATION, self.onPrbEntitySwitched, EVENT_BUS_SCOPE.LOBBY)
         self.startGlobalListening()
         return
@@ -167,7 +159,8 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
 
     @property
     def isPrivateMessagesForbidden(self):
-        return self._gameRestrictions.privateChat.get('bantype') in (constants.BAN_TYPE.PRIVATE_COMMUNICATION_DENIED, constants.BAN_TYPE.COMMUNICATION_DENIED)
+        return self._gameRestrictions.privateChat.get('bantype') in (
+         constants.BAN_TYPE.PRIVATE_COMMUNICATION_DENIED, constants.BAN_TYPE.COMMUNICATION_DENIED)
 
     @property
     def isNonFriendPrivateMessagesForbidden(self):
@@ -228,25 +221,28 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
             notifyStart = blockTime - self.getPlayTimeNotify()
         else:
             notifyStart = blockTime = 0
-        return (_checkForNegative(notifyStart), _checkForNegative(blockTime))
+        return (
+         _checkForNegative(notifyStart), _checkForNegative(blockTime))
 
     def getParentControlNotificationMeta(self):
         from gui.Scaleform.daapi.view.dialogs import I18nInfoDialogMeta
         if self.isPlayTimeBlock:
             return I18nInfoDialogMeta('koreaPlayTimeNotification')
-        elif self.__curfewBlockTime is not None:
-            notifyStartTime, blockTime = self.getCurfewBlockTime()
-
-            def formatter(t):
-                return time.strftime('%H:%M', time.localtime(t))
-
-            return I18nInfoDialogMeta('koreaParentNotification', messageCtx={'preBlockTime': formatter(notifyStartTime),
-             'blockTime': formatter(blockTime)})
         else:
+            if self.__curfewBlockTime is not None:
+                notifyStartTime, blockTime = self.getCurfewBlockTime()
+
+                def formatter(t):
+                    return time.strftime('%H:%M', time.localtime(t))
+
+                return I18nInfoDialogMeta('koreaParentNotification', messageCtx={'preBlockTime': formatter(notifyStartTime), 
+                   'blockTime': formatter(blockTime)})
             return
 
     def getKickAtTime(self):
-        return self._gameRestrictions.getKickAt() if self._gameRestrictions.hasSessionLimit else 0
+        if self._gameRestrictions.hasSessionLimit:
+            return self._gameRestrictions.getKickAt()
+        return 0
 
     def onStrongholdDataChanged(self, header, isFirstBattle, reserve, reserveOrder):
         self.__timeTillKickNotifier.startNotification()
@@ -361,7 +357,8 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         self.onNotifyTimeTillKick()
 
     def __notifyParentControlChanged(self, timeLimit):
-        msgList = [backport.text(R.strings.system_messages.gameSessionControl.parentControl.settingsChanged())]
+        msgList = [
+         backport.text(R.strings.system_messages.gameSessionControl.parentControl.settingsChanged())]
         if timeLimit:
             msgList.append(backport.text(R.strings.system_messages.gameSessionControl.parentControl.timeLimit(), timeLimit=backport.getDateTimeFormat(timeLimit)))
         else:
@@ -374,7 +371,8 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         playTimeLeft = min([self.getDailyPlayTimeLeft(), self.getWeeklyPlayTimeLeft()])
         playTimeLeft = max(playTimeLeft, 0)
         banTime = time.strftime('%H:%M', time.localtime(time_utils.getCurrentTimestamp() + playTimeLeft))
-        self.__lastBanMsg = (self.isPlayTimeBlock, banTime)
+        self.__lastBanMsg = (
+         self.isPlayTimeBlock, banTime)
         self.onTimeTillBan(*self.__lastBanMsg)
         self.__loadBanCallback()
 
@@ -412,7 +410,9 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         if _BAN_RESTR in restrictions and restrictions[_BAN_RESTR]:
             ban = cls.__getNearestCurfew(restrictions[_BAN_RESTR])
             if ban is not None and ban.get('reason') is not None:
-                return (ban['curfew'].get('from', time_utils.ONE_DAY) + cls.TIME_RESERVE, ban['curfew'].get('to', time_utils.ONE_DAY))
+                return (
+                 ban['curfew'].get('from', time_utils.ONE_DAY) + cls.TIME_RESERVE,
+                 ban['curfew'].get('to', time_utils.ONE_DAY))
         return (None, None)
 
     @classmethod

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/GameMessagesPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class GameMessagesPanelMeta(BaseDAAPIComponent):
@@ -17,7 +15,9 @@ class GameMessagesPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('onMessageHiding')
 
     def as_addMessageS(self, messageVO):
-        return self.flashObject.as_addMessage(messageVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_addMessage(messageVO)
 
     def as_clearMessagesS(self):
-        return self.flashObject.as_clearMessages() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_clearMessages()

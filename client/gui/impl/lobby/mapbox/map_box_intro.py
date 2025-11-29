@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mapbox/map_box_intro.py
 from constants import Configs
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
@@ -16,7 +14,7 @@ from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
 
 class MapBoxIntro(ViewImpl, IGlobalListener):
-    __slots__ = ('__closeCallback',)
+    __slots__ = ('__closeCallback', )
     _COMMON_SOUND_SPACE = getMapboxViewSoundSpace()
     __mapboxCtrl = dependency.descriptor(IMapboxController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
@@ -68,7 +66,7 @@ class MapBoxIntro(ViewImpl, IGlobalListener):
         if actualSeason is None:
             return
         else:
-            with self.getViewModel().transaction() as model:
+            with self.getViewModel().transaction() as (model):
                 model.setIsActive(self.__mapboxCtrl.isActive())
                 if not self.__mapboxCtrl.isActive() and nextSeason is not None:
                     model.setDate(time_utils.makeLocalServerTime(nextSeason.getStartDate()))

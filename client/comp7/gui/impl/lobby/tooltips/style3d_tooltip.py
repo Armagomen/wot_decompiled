@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tooltips/style3d_tooltip.py
 from comp7.gui.impl.gen.view_models.views.lobby.tooltips.style3d_tooltip_model import Style3dTooltipModel
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText
@@ -24,7 +22,7 @@ class Style3dTooltip(ViewImpl):
         return super(Style3dTooltip, self).getViewModel()
 
     def _onLoading(self, styleId, vehiclesStr, **kwargs):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setStyleId(styleId)
             if vehiclesStr is None:
                 customizationItem = self.__c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleId)

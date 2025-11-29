@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vehicle_passenger/passenger_mixins.py
 import typing
 from gui.battle_control.controllers.vehicle_passenger.passenger_interfaces import IVehiclePassengerWatcher
 from gui.battle_control.controllers.vehicle_passenger.passenger_wrappers import hasVehiclePassengerCtrl

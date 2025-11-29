@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/shop_cm_handlers.py
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -13,8 +11,8 @@ class MODULE(object):
 class ShopCMHandler(AbstractContextMenuHandler, EventSystemEntity):
 
     def __init__(self, cmProxy, ctx=None):
-        super(ShopCMHandler, self).__init__(cmProxy, ctx, {MODULE.UNEQUIP: 'resetSlot',
-         MODULE.UNLOAD: 'resetSlot'})
+        super(ShopCMHandler, self).__init__(cmProxy, ctx, {MODULE.UNEQUIP: 'resetSlot', 
+           MODULE.UNLOAD: 'resetSlot'})
 
     def resetSlot(self):
         self.fireEvent(events.TechnicalMaintenanceEvent(events.TechnicalMaintenanceEvent.RESET_EQUIPMENT, ctx={'eqCD': self._equipmentCD}), scope=EVENT_BUS_SCOPE.LOBBY)

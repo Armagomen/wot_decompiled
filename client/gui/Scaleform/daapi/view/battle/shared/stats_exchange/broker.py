@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/stats_exchange/broker.py
 import weakref
 from contextlib import contextmanager
 import Event
@@ -9,7 +7,7 @@ from messenger.storage import storage_getter
 from shared_utils import AlwaysValidObject
 
 class IExchangeComponent(object):
-    __slots__ = ('__weakref__',)
+    __slots__ = ('__weakref__', )
 
     def get(self, forced=False):
         raise NotImplementedError
@@ -22,6 +20,7 @@ class IExchangeComponent(object):
 
 
 class IExchangeComposer(object):
+    __slots__ = ()
 
     def clear(self):
         raise NotImplementedError
@@ -64,7 +63,8 @@ class CollectableStats(object):
         return self.__score
 
     def _setTotalScore(self, leftScope, rightScope):
-        self.__score = (leftScope, rightScope)
+        self.__score = (
+         leftScope, rightScope)
         self.onTotalScoreUpdated(leftScope, rightScope)
 
 
@@ -81,10 +81,10 @@ class NoCollectableStats(CollectableStats):
         pass
 
     def getTotalStats(self, arenaVisitor, sessionProvider):
-        return None
+        return
 
     def getTotalScore(self):
-        pass
+        return (0, 0)
 
 
 class ExchangeComponent(IExchangeComponent):
@@ -212,7 +212,7 @@ class ExchangeBlock(IExternalExchangeComponent):
 
 
 class VehicleComponent(ExchangeComponent):
-    __slots__ = ('_vehicleID',)
+    __slots__ = ('_vehicleID', )
 
     def __init__(self):
         super(VehicleComponent, self).__init__()
@@ -223,15 +223,15 @@ class VehicleComponent(ExchangeComponent):
         super(VehicleComponent, self).clear()
 
     def get(self, forced=False):
-        return {'isEnemy': self._isEnemy,
-         'vehicleID': self._vehicleID}
+        return {'isEnemy': self._isEnemy, 
+           'vehicleID': self._vehicleID}
 
     def setVehicleID(self, vehicleID):
         self._vehicleID = vehicleID
 
 
 class StatusComponent(VehicleComponent):
-    __slots__ = ('_status',)
+    __slots__ = ('_status', )
 
     def __init__(self, status=0):
         super(StatusComponent, self).__init__()
@@ -242,9 +242,9 @@ class StatusComponent(VehicleComponent):
         super(StatusComponent, self).clear()
 
     def get(self, forced=False):
-        return {'isEnemy': self._isEnemy,
-         'vehicleID': self._vehicleID,
-         'status': self._status}
+        return {'isEnemy': self._isEnemy, 
+           'vehicleID': self._vehicleID, 
+           'status': self._status}
 
     def setStatus(self, status):
         self._status = status
@@ -254,7 +254,7 @@ class NoExchangeComponent(ExchangeComponent, AlwaysValidObject):
     __slots__ = ()
 
     def get(self, forced=False):
-        return None
+        return
 
     def clear(self):
         pass
@@ -267,7 +267,7 @@ class NoExchangeBlock(ExchangeBlock, AlwaysValidObject):
         super(NoExchangeBlock, self).__init__(NoExchangeComponent())
 
     def get(self, forced=False):
-        return None
+        return
 
     @contextmanager
     def getCollectedComponent(self, isEnemy, forced=False):
@@ -289,7 +289,7 @@ class ExchangeCtx(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def clear(self):
         self.__playerFormatter = None
@@ -316,7 +316,8 @@ class ExchangeCtx(object):
 
 
 class ExchangeBroker(object):
-    __slots__ = ('_ctx', '_vehiclesInfo', '_vehiclesStatus', '_vehiclesStats', '_playerStatus', '_usersTags', '_invitations')
+    __slots__ = ('_ctx', '_vehiclesInfo', '_vehiclesStatus', '_vehiclesStats', '_playerStatus',
+                 '_usersTags', '_invitations')
 
     def __init__(self, ctx):
         super(ExchangeBroker, self).__init__()

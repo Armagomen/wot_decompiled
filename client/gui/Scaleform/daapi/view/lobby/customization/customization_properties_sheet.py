@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_properties_sheet.py
 from collections import namedtuple
 from itertools import islice
 import logging
@@ -44,18 +42,20 @@ _DEFAULT_COLORNUM = 1
 _PALETTE_BACKGROUND = 'gui/maps/vehicles/camouflages/camo_palettes_back.dds'
 _PALETTE_WIDTH = 42
 _PALETTE_HEIGHT = 42
-_SEASONS_REMOVE_TEXT = {SeasonType.SUMMER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER,
- SeasonType.WINTER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_WINTER,
- SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_DESERT,
- SeasonType.SUMMER | SeasonType.WINTER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER_WINTER,
- SeasonType.SUMMER | SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER_DESERT,
- SeasonType.WINTER | SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_WINTER_DESERT}
-_PROGRESSION_LEVEL_ICONS = (RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_I_NORMAL,
+_SEASONS_REMOVE_TEXT = {SeasonType.SUMMER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER, 
+   SeasonType.WINTER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_WINTER, 
+   SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_DESERT, 
+   SeasonType.SUMMER | SeasonType.WINTER: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER_WINTER, 
+   SeasonType.SUMMER | SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_SUMMER_DESERT, 
+   SeasonType.WINTER | SeasonType.DESERT: VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_WINTER_DESERT}
+_PROGRESSION_LEVEL_ICONS = (
+ RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_I_NORMAL,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_II_NORMAL,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_III_NORMAL,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_IV_NORMAL,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_V_NORMAL)
-_PROGRESSION_LEVEL_ICONS_HOVER = (RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_I_HOVER,
+_PROGRESSION_LEVEL_ICONS_HOVER = (
+ RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_I_HOVER,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_II_HOVER,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_III_HOVER,
  RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_IV_HOVER,
@@ -150,7 +150,10 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         self.__attachToAnchor(anchor)
 
     def handleEscBtn(self):
-        return self.__inscriptionController.handleEscBtn() if self.__inscriptionController is not None else False
+        if self.__inscriptionController is not None:
+            return self.__inscriptionController.handleEscBtn()
+        else:
+            return False
 
     def handleDelBtn(self):
         if self.__inscriptionController is not None:
@@ -163,7 +166,10 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             return False
 
     def handleLobbyClick(self):
-        return self.__inscriptionController.handleLobbyClick() if self.__inscriptionController is not None else False
+        if self.__inscriptionController is not None:
+            return self.__inscriptionController.handleLobbyClick()
+        else:
+            return False
 
     def handleBuyWindow(self):
         if self.__inscriptionController is not None:
@@ -283,37 +289,44 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         if slot is None:
             return
         else:
-            return slot.getSlotData(self._attachedAnchor.regionIdx) if self._attachedAnchor.regionIdx != -1 else None
+            if self._attachedAnchor.regionIdx != -1:
+                return slot.getSlotData(self._attachedAnchor.regionIdx)
+            return
 
     @property
     def _currentItem(self):
         slotData = self._currentSlotData
         if slotData is None or not slotData.intCD:
             return
-        else:
-            item = self.service.getItemByCD(slotData.intCD)
-            return item
+        item = self.service.getItemByCD(slotData.intCD)
+        return item
 
     @property
     def _currentComponent(self):
         slotData = self._currentSlotData
-        return None if slotData is None else slotData.component
+        if slotData is None:
+            return
+        else:
+            return slotData.component
 
     @property
     def _currentStyle(self):
-        return self.__ctx.mode.modifiedStyle if self._attachedAnchor.slotType == GUI_ITEM_TYPE.STYLE else None
+        if self._attachedAnchor.slotType == GUI_ITEM_TYPE.STYLE:
+            return self.__ctx.mode.modifiedStyle
+        else:
+            return
 
     def __update(self):
         if self._currentItem is None and self._currentStyle is None:
             self.hide()
             return False
-        elif self.visible and self.attached:
-            self.__updateInscriptionController()
-            self.__updateItemAppliedToAllFlag()
-            self.__updateProgressionLevel()
-            self.as_setDataAndShowS(self.__makeVO())
-            return True
         else:
+            if self.visible and self.attached:
+                self.__updateInscriptionController()
+                self.__updateItemAppliedToAllFlag()
+                self.__updateProgressionLevel()
+                self.as_setDataAndShowS(self.__makeVO())
+                return True
             return False
 
     def __attachToAnchor(self, anchor):
@@ -371,7 +384,10 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         message = R.strings.dialogs.customization.applyProjectionDecalToOtherSeasons
         this = backport.text(message.this() if len(lockedSeasons) == 1 else message.these())
         builder = WarningDialogBuilder()
-        builder.setMessageArgs(fmtArgs=[FmtArgs(season, 'season', R.styles.AlertTextStyle()), FmtArgs(removed, 'removed', R.styles.AlertTextStyle()), FmtArgs(this, 'this')])
+        builder.setMessageArgs(fmtArgs=[
+         FmtArgs(season, 'season', R.styles.AlertTextStyle()),
+         FmtArgs(removed, 'removed', R.styles.AlertTextStyle()),
+         FmtArgs(this, 'this')])
         builder.setMessagesAndButtons(message, focused=DialogButtons.CANCEL)
         subview = self.app.containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
         result = yield wg_await(dialogs.showSimple(builder.build(parent=subview)))
@@ -409,10 +425,9 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
                 self._isItemAppliedToAll = self.__isItemAppliedToAllSeasons()
             else:
                 self._isItemAppliedToAll = self.__isItemAppliedToAllRegions()
-        elif self.__ctx.mode.tabId in (CustomizationTabs.MODIFICATIONS,
-         CustomizationTabs.EMBLEMS,
-         CustomizationTabs.INSCRIPTIONS,
-         CustomizationTabs.PROJECTION_DECALS):
+        elif self.__ctx.mode.tabId in (
+         CustomizationTabs.MODIFICATIONS, CustomizationTabs.EMBLEMS,
+         CustomizationTabs.INSCRIPTIONS, CustomizationTabs.PROJECTION_DECALS):
             self._isItemAppliedToAll = self.__isItemAppliedToAllSeasons()
         else:
             self._isItemAppliedToAll = False
@@ -455,10 +470,12 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
 
     def __makeVO(self):
         isEditMode = self.__inscriptionController.visible
-        vo = {'renderersData': self.__makeRenderersVOs() if not isEditMode else [],
-         'isBigRadius': self._attachedAnchor.slotType in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PROJECTION_DECAL, GUI_ITEM_TYPE.EMBLEM),
-         'showSwitchers': self._showSwitchers and not isEditMode,
-         'isNarrowSlot': self._isNarrowSlot}
+        vo = {'renderersData': (isEditMode or self.__makeRenderersVOs)() if 1 else [], 
+           'isBigRadius': self._attachedAnchor.slotType in (GUI_ITEM_TYPE.INSCRIPTION,
+                         GUI_ITEM_TYPE.PROJECTION_DECAL,
+                         GUI_ITEM_TYPE.EMBLEM), 
+           'showSwitchers': self._showSwitchers and not isEditMode, 
+           'isNarrowSlot': self._isNarrowSlot}
         return vo
 
     def __makeSlotVO(self):
@@ -528,7 +545,8 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         return renderers
 
     def __makeModificationsRenderersVOs(self):
-        return [self.__makeSetOnOtherSeasonsRendererVO()]
+        return [
+         self.__makeSetOnOtherSeasonsRendererVO()]
 
     def __makeStyleRenderersVOs(self):
         renderers = []
@@ -562,39 +580,44 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_CANCEL
         else:
             enabled = self.__ctx.mode.isPossibleToInstallToAllTankAreas(self._currentSlotData.intCD, self._attachedAnchor.slotType)
-        return {'iconSrc': icon,
-         'iconHoverSrc': hoverIcon,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_FULL_TANK_DISABLE,
-         'actionBtnLabel': actionBtnLabel,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_APPLY_TO_ALL_PARTS,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'animatedTransition': True,
-         'disableTooltip': disableTooltip,
-         'enabled': enabled}
+        return {'iconSrc': icon, 
+           'iconHoverSrc': hoverIcon, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_FULL_TANK_DISABLE, 
+           'actionBtnLabel': actionBtnLabel, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_APPLY_TO_ALL_PARTS, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'animatedTransition': True, 
+           'disableTooltip': disableTooltip, 
+           'enabled': enabled}
 
     def __makeMirrorRendererVO(self):
         if self._attachedAnchor.slotType not in (GUI_ITEM_TYPE.PROJECTION_DECAL,):
-            return {'iconSrc': '',
-             'iconHoverSrc': '',
-             'iconDisableSrc': '',
-             'actionBtnLabel': '',
-             'actionType': '',
-             'rendererLnk': '',
-             'enabled': False}
-        horizontalMirror = [{'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_HOVER}, {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_HOVER}]
-        verticalMirror = [{'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_UP_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_UP_HOVER}, {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_DOWN_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_DOWN_HOVER}]
-        comboMirror = [{'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_UP_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_UP_HOVER},
-         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_UP_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_UP_HOVER},
-         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_DOWN_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_DOWN_HOVER},
-         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_DOWN_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_DOWN_HOVER}]
+            return {'iconSrc': '', 
+               'iconHoverSrc': '', 
+               'iconDisableSrc': '', 
+               'actionBtnLabel': '', 
+               'actionType': '', 
+               'rendererLnk': '', 
+               'enabled': False}
+        horizontalMirror = [
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_HOVER}]
+        verticalMirror = [
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_UP_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_UP_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_DOWN_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_DOWN_HOVER}]
+        comboMirror = [
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_UP_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_UP_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_UP_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_UP_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_DOWN_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_LEFT_DOWN_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_DOWN_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MIRROR_RIGHT_DOWN_HOVER}]
         slotId = self._attachedAnchor
         slot = g_currentVehicle.item.getAnchorBySlotId(slotId.slotType, slotId.areaId, slotId.regionIdx)
         canBeMirroredHorizontally = self._currentItem.canBeMirroredHorizontally
@@ -620,14 +643,14 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         hoverIcon = mirrorStates[currentMirrorState]['hoverIcon']
         actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_MIRROR
         enabled = canBeMirroredHorizontally or canBeMirroredVertically
-        return {'iconSrc': icon,
-         'iconHoverSrc': hoverIcon,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_MIRROR_01_DISABLED,
-         'actionBtnLabel': actionBtnLabel,
-         'actionType': actionType,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_MIRROR,
-         'enabled': enabled}
+        return {'iconSrc': icon, 
+           'iconHoverSrc': hoverIcon, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_MIRROR_01_DISABLED, 
+           'actionBtnLabel': actionBtnLabel, 
+           'actionType': actionType, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_MIRROR, 
+           'enabled': enabled}
 
     def __makeGetBackRendererVO(self):
         actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_GETBACK
@@ -643,14 +666,14 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
                     enabled = True
                     break
 
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MOVE_NORMAL,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MOVE_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_MOVE_DISABLED,
-         'actionBtnLabel': actionBtnLabel,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_GET_BACK,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'enabled': enabled,
-         'disableTooltip': disableTooltip}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MOVE_NORMAL, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_MOVE_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_MOVE_DISABLED, 
+           'actionBtnLabel': actionBtnLabel, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_GET_BACK, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'enabled': enabled, 
+           'disableTooltip': disableTooltip}
 
     def __makeRemoveRendererVO(self):
         slotType = self._attachedAnchor.slotType
@@ -687,37 +710,37 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
                 enabled = not self.__ctx.mode.isBaseItem(self._attachedAnchor)
         else:
             enabled = True
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_REMOVE_DEL,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_REMOVE_DEL_HOVER,
-         'iconDisableSrc': disableIcon,
-         'actionBtnLabel': actionBtnLabel,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_REMOVE_ONE,
-         'animatedTransition': True,
-         'disableTooltip': disableTooltip,
-         'enabled': enabled}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_REMOVE_DEL, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_REMOVE_DEL_HOVER, 
+           'iconDisableSrc': disableIcon, 
+           'actionBtnLabel': actionBtnLabel, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_REMOVE_ONE, 
+           'animatedTransition': True, 
+           'disableTooltip': disableTooltip, 
+           'enabled': enabled}
 
     def __makeCloseRendererVO(self):
         iconSrc = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_CLOSE
         hoverIcon = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_CLOSE_HOVER
         actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_CLOSE
-        return {'iconSrc': iconSrc,
-         'iconHoverSrc': hoverIcon,
-         'actionBtnLabel': actionBtnLabel,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_CLOSE,
-         'enabled': True}
+        return {'iconSrc': iconSrc, 
+           'iconHoverSrc': hoverIcon, 
+           'actionBtnLabel': actionBtnLabel, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_CLOSE, 
+           'enabled': True}
 
     def __makeStyleInfoRendererVO(self):
         enabled = self._currentStyle is not None and bool(self._currentStyle.longDescriptionSpecial)
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_INFO,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_INFO_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_INFO_DISABLE,
-         'actionBtnLabel': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_INFO,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_INFO,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_STYLEINFO,
-         'enabled': enabled}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_INFO, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_INFO_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_INFO_DISABLE, 
+           'actionBtnLabel': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_INFO, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_INFO, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_STYLEINFO, 
+           'enabled': enabled}
 
     def __makeRentSelectorRendererVO(self):
         if self.__ctx.mode.isAutoRentEnabled():
@@ -728,14 +751,14 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             icon = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_RENTAL
             hoverIcon = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_RENTAL_HOVER
             label = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_AUTOPROLONGATIONLABEL
-        return {'iconSrc': icon,
-         'iconHoverSrc': hoverIcon,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_RENTAL_DISABLE,
-         'actionBtnLabel': label,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_RENT_CHECKBOX_CHANGE,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'animatedTransition': True,
-         'enabled': True}
+        return {'iconSrc': icon, 
+           'iconHoverSrc': hoverIcon, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_RENTAL_DISABLE, 
+           'actionBtnLabel': label, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_RENT_CHECKBOX_CHANGE, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'animatedTransition': True, 
+           'enabled': True}
 
     def __makeEditStyleRendererVO(self):
         editingReason = self._currentStyle.canBeEditedForVehicle(g_currentVehicle.item.intCD)
@@ -743,63 +766,63 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             disableTooltip = backport.text(R.strings.vehicle_customization.customization.slot.editBtn.disabled.notReachedLevel())
         else:
             disableTooltip = backport.text(R.strings.vehicle_customization.customization.slot.editBtn.disabled())
-        return {'iconSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style()),
-         'iconHoverSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style_hover()),
-         'iconDisableSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.disable.edit_style_disable()),
-         'actionBtnLabel': backport.text(R.strings.vehicle_customization.propertySheet.actionBtn.edit.style()),
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_EDIT_STYLE,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'animatedTransition': True,
-         'disableTooltip': disableTooltip,
-         'enabled': bool(editingReason)}
+        return {'iconSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style()), 'iconHoverSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style_hover()), 
+           'iconDisableSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.disable.edit_style_disable()), 
+           'actionBtnLabel': backport.text(R.strings.vehicle_customization.propertySheet.actionBtn.edit.style()), 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_EDIT_STYLE, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'animatedTransition': True, 
+           'disableTooltip': disableTooltip, 
+           'enabled': bool(editingReason)}
 
     def __makeCamoColorRendererVO(self):
         btnsBlockVO = []
         colornum = _DEFAULT_COLORNUM
         for palette in self._currentItem.palettes:
-            colornum = max(colornum, sum(((color >> 24) / 255.0 > 0 for color in palette)))
+            colornum = max(colornum, sum((color >> 24) / 255.0 > 0 for color in palette))
 
         for idx, palette in enumerate(islice(self._currentItem.palettes, _MAX_PALETTES)):
             texture = _PALETTE_TEXTURE.format(colornum=colornum)
             icon = camoIconTemplate(texture=texture, width=_PALETTE_WIDTH, height=_PALETTE_HEIGHT, colors=palette, background=_PALETTE_BACKGROUND, options=self._currentItem.imageOptions)
             btnsBlockVO.append(CustomizationCamoSwatchVO(icon, idx == self._currentComponent.palette)._asdict())
 
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_PALETTE,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_PALETTE_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_PALETTE_DISABLE,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_COLOR_CHANGE,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
-         'btnsBlockVO': btnsBlockVO,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_COLOR,
-         'enabled': len(btnsBlockVO) == _MAX_PALETTES}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_PALETTE, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_PALETTE_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_PALETTE_DISABLE, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_COLOR_CHANGE, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI, 
+           'btnsBlockVO': btnsBlockVO, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_COLOR, 
+           'enabled': len(btnsBlockVO) == _MAX_PALETTES}
 
     def __makeScaleRendererVO(self):
         btnsBlockVO = []
         if self._attachedAnchor.slotType == GUI_ITEM_TYPE.CAMOUFLAGE:
             selected = self._currentComponent.patternSize
-        elif self._attachedAnchor.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
-            selected = self._currentComponent.scaleFactorId - 1
         else:
-            return {'iconSrc': '',
-             'iconHoverSrc': '',
-             'iconDisableSrc': '',
-             'actionType': '',
-             'rendererLnk': '',
-             'btnsBlockVO': '',
-             'enabled': False}
-        for idx, scaleSizeLabel in enumerate(SCALE_SIZE):
-            btnsBlockVO.append({'paletteIcon': '',
-             'label': scaleSizeLabel,
-             'selected': selected == idx,
-             'value': idx})
+            if self._attachedAnchor.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
+                selected = self._currentComponent.scaleFactorId - 1
+            else:
+                return {'iconSrc': '', 
+                   'iconHoverSrc': '', 
+                   'iconDisableSrc': '', 
+                   'actionType': '', 
+                   'rendererLnk': '', 
+                   'btnsBlockVO': '', 
+                   'enabled': False}
+            for idx, scaleSizeLabel in enumerate(SCALE_SIZE):
+                btnsBlockVO.append({'paletteIcon': '', 
+                   'label': scaleSizeLabel, 
+                   'selected': selected == idx, 
+                   'value': idx})
 
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_SCALE_DISABLE,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
-         'btnsBlockVO': btnsBlockVO,
-         'enabled': True}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_SCALE_DISABLE, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI, 
+           'btnsBlockVO': btnsBlockVO, 
+           'enabled': True}
 
     def __makeSetOnOtherSeasonsRendererVO(self):
         notifyString = ''
@@ -857,17 +880,16 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             if lockedSeasons:
                 needNotify = True
                 notifyString = self.__makeProjectionDecalInstallToOtherSeasonsNotifyString(lockedSeasons)
-        return {'iconSrc': backport.image(icon),
-         'iconHoverSrc': backport.image(hoverIcon),
-         'iconDisableSrc': backport.image(iconDisable),
-         'actionBtnLabel': actionBtnLabel,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_APPLY_TO_ALL_SEASONS,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'animatedTransition': True,
-         'disableTooltip': disableTooltip,
-         'notifyText': notifyString,
-         'needNotify': needNotify,
-         'enabled': enabled}
+        return {'iconSrc': backport.image(icon), 'iconHoverSrc': backport.image(hoverIcon), 
+           'iconDisableSrc': backport.image(iconDisable), 
+           'actionBtnLabel': actionBtnLabel, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_APPLY_TO_ALL_SEASONS, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'animatedTransition': True, 
+           'disableTooltip': disableTooltip, 
+           'notifyText': notifyString, 
+           'needNotify': needNotify, 
+           'enabled': enabled}
 
     def __makeProjectionDecalInstallToOtherSeasonsNotifyString(self, lockedSeasons):
         removedText = text_styles.alert(VEHICLE_CUSTOMIZATION.PROPERTYSHEET_NOTIFY_DECAL_SEASONS_REMOVED)
@@ -883,14 +905,14 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         currentProgressionLevel = self._currentItem.getLatestOpenedProgressionLevel(g_currentVehicle.item)
         actionBtnLabel = _ms(VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_SWITCHPROGRESSION, current=self.__displayedProgressionLevel, total=currentProgressionLevel)
         enabled = currentProgressionLevel > _MIN_PROGRESSION_LEVEL
-        return {'iconSrc': _PROGRESSION_LEVEL_ICONS[self.__displayedProgressionLevel - 1],
-         'iconHoverSrc': _PROGRESSION_LEVEL_ICONS_HOVER[self.__displayedProgressionLevel - 1],
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_I_DISABLE,
-         'actionBtnLabel': actionBtnLabel,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SWITCH_PROGRESSION_LVL,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SWITCH_RENDERER_UI,
-         'enabled': enabled,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_SWITCHPROGRESSION_DISABLE_TOOLTIP}
+        return {'iconSrc': _PROGRESSION_LEVEL_ICONS[(self.__displayedProgressionLevel - 1)], 
+           'iconHoverSrc': _PROGRESSION_LEVEL_ICONS_HOVER[(self.__displayedProgressionLevel - 1)], 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_I_DISABLE, 
+           'actionBtnLabel': actionBtnLabel, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SWITCH_PROGRESSION_LVL, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SWITCH_RENDERER_UI, 
+           'enabled': enabled, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_SWITCHPROGRESSION_DISABLE_TOOLTIP}
 
     def __getLockedSeasonsString(self, lockedSeasons):
         seasonsMask = SeasonType.UNDEFINED
@@ -901,28 +923,30 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
         return seasonsString
 
     def __makeEditInscriptionRendererVO(self):
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_EDIT_DISABLE,
-         'actionBtnLabel': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_EDIT_INSCRIPTION,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_EDIT,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'animatedTransition': True,
-         'enabled': True}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_EDIT_DISABLE, 
+           'actionBtnLabel': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_EDIT_INSCRIPTION, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_EDIT, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'animatedTransition': True, 
+           'enabled': True}
 
     def __makeAttachmentRotateRendererVO(self):
-        rotation = [{'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_HOVER}, {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_NORMAL,
-          'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_HOVER}]
+        rotation = [
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_02_HOVER},
+         {'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_NORMAL, 
+            'hoverIcon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_MIRROR_01_HOVER}]
         currentRotationState = self._currentComponent.isRotated
-        return {'iconSrc': rotation[currentRotationState]['icon'],
-         'iconHoverSrc': rotation[currentRotationState]['hoverIcon'],
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_MIRROR_01_DISABLED,
-         'actionBtnLabel': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_ROTATE_ATTACHMENT,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_HORIZONZONTAL_MIRROR,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_ATTACHMENT_ROTATE,
-         'enabled': self._currentItem.rotatable}
+        return {'iconSrc': rotation[currentRotationState]['icon'], 
+           'iconHoverSrc': rotation[currentRotationState]['hoverIcon'], 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_MIRROR_01_DISABLED, 
+           'actionBtnLabel': VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_ROTATE_ATTACHMENT, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_HORIZONZONTAL_MIRROR, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_ATTACHMENT_ROTATE, 
+           'enabled': self._currentItem.rotatable}
 
     def __makeAttachmentScaleRendererVO(self):
         btnsBlockVO = []
@@ -930,20 +954,20 @@ class CustomizationPropertiesSheet(CustomizationPropertiesSheetMeta):
             selectedIdx = self._currentComponent.scaleFactorId - 1
             slotScaleFactorId = g_currentVehicle.item.getAnchorBySlotId(self._attachedAnchor.slotType, self._attachedAnchor.areaId, self._attachedAnchor.regionIdx).scaleFactorId
             for idx, scaleSizeLabel in enumerate(SCALE_SIZE):
-                btnsBlockVO.append({'paletteIcon': '',
-                 'label': scaleSizeLabel,
-                 'selected': selectedIdx == idx,
-                 'value': idx,
-                 'enable': idx < slotScaleFactorId})
+                btnsBlockVO.append({'paletteIcon': '', 
+                   'label': scaleSizeLabel, 
+                   'selected': selectedIdx == idx, 
+                   'value': idx, 
+                   'enable': idx < slotScaleFactorId})
 
-        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE,
-         'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE_HOVER,
-         'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_SCALE_DISABLE,
-         'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE,
-         'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
-         'btnsBlockVO': btnsBlockVO,
-         'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_ATTACHMENT_SCALE,
-         'enabled': sum((btn['enable'] for btn in btnsBlockVO)) > 1}
+        return {'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE, 
+           'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE_HOVER, 
+           'iconDisableSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_DISABLE_ICON_SCALE_DISABLE, 
+           'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE, 
+           'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI, 
+           'btnsBlockVO': btnsBlockVO, 
+           'disableTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_PROPERTYSHEET_DISABLED_ATTACHMENT_SCALE, 
+           'enabled': sum(btn['enable'] for btn in btnsBlockVO) > 1}
 
     def __isCustomMode(self):
         return self.__ctx.modeId == CustomizationModes.CUSTOM

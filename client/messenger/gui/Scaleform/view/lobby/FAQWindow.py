@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/FAQWindow.py
 from gui.shared.events import OpenLinkEvent
 from messenger.gui.Scaleform.data.faq_data import FAQList
 from messenger.gui.Scaleform.meta.FAQWindowMeta import FAQWindowMeta
@@ -24,15 +22,16 @@ class FAQWindow(FAQWindowMeta):
         batch = []
         item = self.__list.getItem(0)
         if item.question and item.answer:
-            batch = [formatHtml('firstFAQItem', ctx=item._asdict())]
+            batch = [
+             formatHtml('firstFAQItem', ctx=item._asdict())]
         for item in self.__list.getIterator(offset=1):
             if FAQ_BATCH_SIZE > len(batch):
-                self.as_appendTextS(''.join(batch))
+                self.as_appendTextS(('').join(batch))
                 batch = []
             batch.append(formatHtml('nextFAQItem', ctx=item._asdict()))
 
         if batch:
-            self.as_appendTextS(''.join(batch))
+            self.as_appendTextS(('').join(batch))
 
     def _populate(self):
         super(FAQWindow, self)._populate()

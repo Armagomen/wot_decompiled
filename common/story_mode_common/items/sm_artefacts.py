@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/common/story_mode_common/items/sm_artefacts.py
 import typing
 from items.artefacts import Equipment, AreaOfEffectEquipment, TooltipConfigReader, ArcadeEquipmentConfigReader, AreaMarkerConfigReader
 from items.components import component_constants
@@ -28,7 +26,7 @@ class NavmeshSettingsReader(object):
     def readNavmeshConfig(self, xmlCtx, section):
         self.navmeshGirth = section.readString('navmeshGirth')
         if not self.navmeshGirth:
-            raise SoftException('[Equipment=<{}>] Param=<navmeshGirth> is required.'.format(self.id))
+            raise SoftException(('[Equipment=<{}>] Param=<navmeshGirth> is required.').format(self.id))
         self.navmeshHeightTolerance = _xml.readNonNegativeFloat(xmlCtx, section, 'navmeshHeightTolerance', 1.0)
 
 
@@ -45,7 +43,8 @@ class AOENavmeshEquipment(AreaOfEffectEquipment, NavmeshSettingsReader):
 
 
 class BaseAbilityEquipment(Equipment, TooltipConfigReader, ArcadeEquipmentConfigReader, AreaMarkerConfigReader, NavmeshSettingsReader):
-    __slots__ = ('heightAboveBase', 'prepareTime', 'respawnTime', 'cooldownTime', 'unspotDelay', 'directVisionRadius', 'visionMinRadius', 'detectFromVehicle', 'observationPoints') + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + AreaMarkerConfigReader._MARKER_SLOTS_ + NavmeshSettingsReader._SLOTS
+    __slots__ = ('heightAboveBase', 'prepareTime', 'respawnTime', 'cooldownTime', 'unspotDelay',
+                 'directVisionRadius', 'visionMinRadius', 'detectFromVehicle', 'observationPoints') + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + AreaMarkerConfigReader._MARKER_SLOTS_ + NavmeshSettingsReader._SLOTS
 
     def __init__(self):
         super(BaseAbilityEquipment, self).__init__()

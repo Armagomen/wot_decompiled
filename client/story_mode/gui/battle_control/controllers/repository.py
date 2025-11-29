@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/battle_control/controllers/repository.py
 from gui.battle_control.controllers import _ControllersRepository, debug_ctrl, SharedControllersRepository
 from gui.battle_control.controllers.battle_hints import controller as battle_hints_ctrl
 from gui.battle_control.controllers.sound_ctrls.epic_battle_sounds import EpicShotsResultSoundsController
@@ -37,7 +35,9 @@ class StoryModeSharedRepository(SharedControllersRepository):
 
     @classmethod
     def getMessagesController(cls, setup):
-        return StoryModeBattleMessagesPlayer(setup) if setup.isReplayPlaying else StoryModeBattleMessagesController(setup)
+        if setup.isReplayPlaying:
+            return StoryModeBattleMessagesPlayer(setup)
+        return StoryModeBattleMessagesController(setup)
 
     @classmethod
     def getAreaMarkersController(cls):

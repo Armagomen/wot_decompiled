@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/regular/squad/entity.py
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from battle_royale.gui.constants import BattleRoyaleSubMode
 from battle_royale.gui.impl.lobby.br_helpers.utils import isBattleResultsStateEntered
@@ -31,7 +29,9 @@ class BattleRoyaleSquadEntryPoint(SquadEntryPoint):
 
 class BattleRoyaleSquadEntity(SquadEntity):
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
-    _VALID_RESTRICTIONS = (UNIT_RESTRICTION.UNIT_NOT_FULL, UNIT_RESTRICTION.NOT_READY_IN_SLOTS)
+    _VALID_RESTRICTIONS = (
+     UNIT_RESTRICTION.UNIT_NOT_FULL,
+     UNIT_RESTRICTION.NOT_READY_IN_SLOTS)
 
     def __init__(self):
         super(BattleRoyaleSquadEntity, self).__init__(FUNCTIONAL_FLAG.BATTLE_ROYALE, PREBATTLE_TYPE.BATTLE_ROYALE)
@@ -69,7 +69,10 @@ class BattleRoyaleSquadEntity(SquadEntity):
         return QUEUE_TYPE.BATTLE_ROYALE
 
     def getConfirmDialogMeta(self, ctx):
-        return None if not self.__battleRoyaleController.isEnabled() else super(BattleRoyaleSquadEntity, self).getConfirmDialogMeta(ctx)
+        if not self.__battleRoyaleController.isEnabled():
+            return None
+        else:
+            return super(BattleRoyaleSquadEntity, self).getConfirmDialogMeta(ctx)
 
     def isVehiclesReadyToBattle(self):
         result = self._actionsValidator.getVehiclesValidator().canPlayerDoAction()

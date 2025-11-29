@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/resources_loading_confirm.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.lobby.common.view_wrappers import createBackportTooltipDecorator
@@ -43,15 +41,18 @@ class ResourcesLoadingConfirm(FullScreenDialogView):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips[int(tooltipId)]
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips[int(tooltipId)]
 
     def _onLoading(self, *args, **kwargs):
         super(ResourcesLoadingConfirm, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillVehicleCounter(self.__rewardID, vehicleCounterModel=model.vehicleCounter, resourceWell=self.__resourceWell)
             self.__fillResources(resourceModels=model.getResources())
             model.setOperationType(self.__operation)
-            pointsDiff = sum((resource.rate * count for resource, count in self.__resources))
+            pointsDiff = sum(resource.rate * count for resource, count in self.__resources)
             currentPoints = self.__resourceWell.getCurrentPoints()
             maxPoints = self.__resourceWell.config.getRewardConfig(self.__rewardID).points
             model.setProgressDiff((pointsDiff + currentPoints) * _FULL_PROGRESS / maxPoints)
@@ -104,7 +105,7 @@ class ResourcesLoadingConfirm(FullScreenDialogView):
         resourceModel.setCount(count)
 
     def __onNumberRequesterUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillVehicleCounter(self.__rewardID, vehicleCounterModel=model.vehicleCounter, resourceWell=self.__resourceWell)
 
     def __onEventStateUpdated(self):

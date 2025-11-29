@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/blueprints/blueprints_conversion_view.py
 from collections import defaultdict
 import nations
 from blueprints.BlueprintTypes import BlueprintTypes
@@ -35,7 +33,9 @@ class BlueprintsConversionView(FullScreenDialogView):
         return self.getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return BlueprintsAllianceTooltipView(self.__vehicle.nationName, self.__vehicle.intCD, self.__vehicle.level) if contentID == R.views.lobby.blueprints.tooltips.BlueprintsAlliancesTooltipView() else super(BlueprintsConversionView, self).createToolTipContent(event=event, contentID=contentID)
+        if contentID == R.views.lobby.blueprints.tooltips.BlueprintsAlliancesTooltipView():
+            return BlueprintsAllianceTooltipView(self.__vehicle.nationName, self.__vehicle.intCD, self.__vehicle.level)
+        return super(BlueprintsConversionView, self).createToolTipContent(event=event, contentID=contentID)
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
@@ -48,25 +48,26 @@ class BlueprintsConversionView(FullScreenDialogView):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(BlueprintsConversionView, self).createToolTip(event)
+        return super(BlueprintsConversionView, self).createToolTip(event)
 
     def _initialize(self):
         super(BlueprintsConversionView, self)._initialize()
         self.viewModel.onSelectItem += self.__onSelectItem
         self.viewModel.onSliderShift += self.__onSliderShift
-        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.levels': self.__onBlueprintsSettingsChanged,
-         'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged,
-         'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged,
-         'blueprints': self.__onBlueprintsBalanceChanged})
+        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.levels': self.__onBlueprintsSettingsChanged, 
+           'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged, 
+           'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged, 
+           'blueprints': self.__onBlueprintsBalanceChanged})
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if self.__fragmentsCount > 1:
                 model.setTitleBody(R.strings.menu.blueprints.conversionView.multiConversion.title())
             else:
                 model.setTitleBody(R.strings.menu.blueprints.conversionView.title())
-            self._setTitleArgs(model.getTitleArgs(), (('vehName', self.__vehicle.shortUserName.replace(' ', '&nbsp;')),))
+            self._setTitleArgs(model.getTitleArgs(), (
+             (
+              'vehName', self.__vehicle.shortUserName.replace(' ', '&nbsp;')),))
             model.setTotalCount(self.__fragmentsCount)
             model.setCount(self.__fragmentsCount)
             allianceName = nations.ALLIANCES_TAGS_ORDER[nations.NATION_TO_ALLIANCE_IDS_MAP[nations.INDICES[self.__vehicle.nationName]]]
@@ -86,7 +87,7 @@ class BlueprintsConversionView(FullScreenDialogView):
 
     def __onSelectItem(self, args=None):
         selectedItemIdx = int(args.get('selectedItem'))
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             options = model.getAdditionalPriceOptions()
             usedPrices = model.getUsedAdditionalPrice()
             for idx, usedPrice in enumerate(usedPrices):
@@ -98,7 +99,7 @@ class BlueprintsConversionView(FullScreenDialogView):
     def __onSliderShift(self, args=None):
         index = int(args.get('index'))
         newCount = int(args.get('newCount'))
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             nId = nations.INDICES[model.getAdditionalPriceOptions()[index].getNationName()]
             sliderStep = model.getAdditionalPriceOptions()[index].getValue()
             oldCount = model.getUsedAdditionalPrice()[index].getValue()
@@ -121,7 +122,8 @@ class BlueprintsConversionView(FullScreenDialogView):
             if value > 0:
                 usedNationalFragments[nationId] = value
 
-        return (usedNationalFragments, self.viewModel.getCount())
+        return (
+         usedNationalFragments, self.viewModel.getCount())
 
     def __setUsedFragmentsPrice(self, mainPriceModel, usedAdditionalPrice):
         _, intelligenceValue = self.__blueprints.getRequiredIntelligenceAndNational(self.__vehicle.level)
@@ -182,7 +184,7 @@ class BlueprintsConversionView(FullScreenDialogView):
         return
 
     def __updateBallanceBlock(self, fragmentsBallance):
-        with fragmentsBallance.transaction() as model:
+        with fragmentsBallance.transaction() as (model):
             fragmentCount = self.__blueprints.getIntelligenceCount()
             item = fragmentsBallance.intelligenceBalance
             item.setValue(self.gui.systemLocale.getNumberFormat(fragmentCount))
@@ -215,13 +217,13 @@ class BlueprintsConversionView(FullScreenDialogView):
 
     def __onBlueprintsBalanceChanged(self, *_):
         self.__allyFragmentsBalance = self.__blueprints.getNationalAllianceFragments(self.__vehicle.intCD, self.__vehicle.level)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateBallanceBlock(model.fragmentsBalance)
             self.__updateNotEnoughFields(model.getAdditionalPriceOptions(), model.getUsedAdditionalPrice())
             self.__triggerSyncInitiator(model)
 
     def __updateBlocks(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__setUsedFragmentsPrice(model.usedMainPrice, model.getUsedAdditionalPrice())
             self.__setNationalPriceOptions(model.getAdditionalPriceOptions())
             self.__setBalanceBlock(model.fragmentsBalance)
@@ -237,9 +239,14 @@ class BlueprintsConversionView(FullScreenDialogView):
     def __getInitialNationalUsageCounts(self):
         options = self.__blueprints.getNationalRequiredOptions(self.__vehicle.intCD, self.__vehicle.level)
         if self.__fragmentsCount == 1:
-            priorityOrder = sorted(self.__allyFragmentsBalance.items(), key=lambda (nId, balance): (nId != nations.INDICES[self.__vehicle.nationName], nId))
+            priorityOrder = sorted(self.__allyFragmentsBalance.items(), key=lambda (nId, balance): (
+             nId != nations.INDICES[self.__vehicle.nationName],
+             nId))
         else:
-            priorityOrder = sorted(self.__allyFragmentsBalance.items(), key=lambda (nId, balance): (nId != nations.INDICES[self.__vehicle.nationName], -balance, nId))
+            priorityOrder = sorted(self.__allyFragmentsBalance.items(), key=lambda (nId, balance): (
+             nId != nations.INDICES[self.__vehicle.nationName],
+             -balance,
+             nId))
         totalCount = 0
         nationUsedDict = defaultdict(lambda : 0)
         for nId, balance in priorityOrder:

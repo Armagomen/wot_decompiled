@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/trainings_list_base.py
 import ArenaType
 from adisp import adisp_process
 from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, OBSERVERS_BONUS_TYPES
@@ -61,26 +59,26 @@ class TrainingsListBase(LobbySubView, TrainingFormMeta, ILegacyListener):
                 maxPlayersInTeam += PREBATTLE_MAX_OBSERVERS_IN_TEAM
             badge = item.getBadge()
             badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': False}) if badge else {}
-            listData.append({'id': item.prbID,
-             'comment': item.getCensoredComment(),
-             'arena': getArenaFullName(item.arenaTypeID),
-             'count': item.playersCount,
-             'total': maxPlayersInTeam,
-             'owner': item.getCreatorFullName(),
-             'creatorName': item.creator,
-             'creatorClan': item.clanAbbrev,
-             'creatorIgrType': item.creatorIgrType,
-             'creatorRegion': self._lobbyContext.getRegionCode(item.creatorDbId),
-             'icon': getArenaImage(arenaType.geometryName, 'small'),
-             'disabled': not item.isOpened,
-             'badgeVisualVO': badgeVO})
+            listData.append({'id': item.prbID, 
+               'comment': item.getCensoredComment(), 
+               'arena': getArenaFullName(item.arenaTypeID), 
+               'count': item.playersCount, 
+               'total': maxPlayersInTeam, 
+               'owner': item.getCreatorFullName(), 
+               'creatorName': item.creator, 
+               'creatorClan': item.clanAbbrev, 
+               'creatorIgrType': item.creatorIgrType, 
+               'creatorRegion': self._lobbyContext.getRegionCode(item.creatorDbId), 
+               'icon': getArenaImage(arenaType.geometryName, 'small'), 
+               'disabled': not item.isOpened, 
+               'badgeVisualVO': badgeVO})
 
         self.sendData(listData, playersTotal)
 
     def sendData(self, listData, playersTotal):
-        result = {'listData': listData,
-         'roomsLabel': text_styles.main(backport.text(R.strings.menu.training.roomsLabel(), roomsTotal=text_styles.stats(str(len(listData))))),
-         'playersLabel': text_styles.main(backport.text(R.strings.menu.training.playersLabel(), playersTotal=text_styles.stats(str(playersTotal))))}
+        result = {'listData': listData, 
+           'roomsLabel': text_styles.main(backport.text(R.strings.menu.training.roomsLabel(), roomsTotal=text_styles.stats(str(len(listData))))), 
+           'playersLabel': text_styles.main(backport.text(R.strings.menu.training.playersLabel(), playersTotal=text_styles.stats(str(playersTotal))))}
         self.as_setListS(result)
 
     def _populate(self):

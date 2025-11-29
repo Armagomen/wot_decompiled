@@ -1,9 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/settings.py
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from gui.shared.gui_items.Vehicle import VEHICLE_BATTLE_TYPES_ORDER_INDICES
 from shared_utils import BitmaskHelper
-__all__ = ('UNKNOWN_VEHICLE_NAME', 'UNKNOWN_VEHICLE_CLASS_NAME', 'UNKNOWN_PLAYER_NAME', 'UNKNOWN_VEHICLE_LEVEL', 'UNKNOWN_VEHICLE_CLASS_ORDER', 'SQUAD_RANGE_TO_SHOW', 'VEHICLE_STATUS', 'PLAYER_STATUS', 'INVALIDATE_OP', 'ARENA_LISTENER_SCOPE', 'getOrderByVehicleClass', 'VehicleSpottedStatus')
+__all__ = ('UNKNOWN_VEHICLE_NAME', 'UNKNOWN_VEHICLE_CLASS_NAME', 'UNKNOWN_PLAYER_NAME',
+           'UNKNOWN_VEHICLE_LEVEL', 'UNKNOWN_VEHICLE_CLASS_ORDER', 'SQUAD_RANGE_TO_SHOW',
+           'VEHICLE_STATUS', 'PLAYER_STATUS', 'INVALIDATE_OP', 'ARENA_LISTENER_SCOPE',
+           'getOrderByVehicleClass', 'VehicleSpottedStatus')
 CONTOUR_ICON_SF_PATH = '../maps/icons/vehicle/contour/{0}.png'
 CONTOUR_ICON_RES_PATH = 'gui/maps/icons/vehicle/contour/{0}.png'
 DEFAULT_SCREEN_MAP_IMAGE_RES_PATH = 'gui/maps/icons/map/screen/default_screen.dds'

@@ -1,18 +1,17 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/loadout/crew/crew_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.slot_model import SlotModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.tankman_model import TankmanModel
 
 class CrewModel(ViewModel):
-    __slots__ = ('onOpenCrew', 'onOpenBarracks', 'onToggleAcceleratedTraining', 'onToggleIntensiveTraining', 'onDogMoreInfoClick')
+    __slots__ = ('onOpenCrew', 'onOpenBarracks', 'onToggleAcceleratedTraining', 'onToggleIntensiveTraining',
+                 'onDogMoreInfoClick')
     DEFAULT_STATE = 'default'
     DISABLED_STATE = 'disabled'
     ON_TRAINING_STATE = 'on'
     OFF_TRAINING_STATE = 'off'
     DISABLED_TRAINING_STATE = 'disabled'
 
-    def __init__(self, properties=8, commands=5):
+    def __init__(self, properties=10, commands=5):
         super(CrewModel, self).__init__(properties=properties, commands=commands)
 
     def getHasDog(self):
@@ -71,6 +70,18 @@ class CrewModel(ViewModel):
     def setVehicleNation(self, value):
         self._setString(7, value)
 
+    def getVehicleType(self):
+        return self._getString(8)
+
+    def setVehicleType(self, value):
+        self._setString(8, value)
+
+    def getVehicleName(self):
+        return self._getString(9)
+
+    def setVehicleName(self, value):
+        self._setString(9, value)
+
     def _initialize(self):
         super(CrewModel, self)._initialize()
         self._addBoolProperty('hasDog', False)
@@ -81,6 +92,8 @@ class CrewModel(ViewModel):
         self._addStringProperty('acceleratedTraining', '')
         self._addStringProperty('intensiveTraining', '')
         self._addStringProperty('vehicleNation', '')
+        self._addStringProperty('vehicleType', '')
+        self._addStringProperty('vehicleName', '')
         self.onOpenCrew = self._addCommand('onOpenCrew')
         self.onOpenBarracks = self._addCommand('onOpenBarracks')
         self.onToggleAcceleratedTraining = self._addCommand('onToggleAcceleratedTraining')

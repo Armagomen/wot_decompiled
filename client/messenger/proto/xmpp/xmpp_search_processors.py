@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/xmpp_search_processors.py
 from debug_utils import LOG_WARNING
 from messenger import g_settings
 from messenger.m_constants import PROTO_TYPE, CLIENT_ACTION_ID, CLIENT_ERROR_ID, USER_TAG
@@ -33,7 +31,7 @@ class SearchChannelsProcessor(SearchProcessor, ClientEventsHandler):
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return None
+        return
 
     def find(self, token, **kwargs):
         client = self.proto.client
@@ -94,11 +92,11 @@ class SearchUsersProcessor(SearchProcessor, ClientEventsHandler):
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def find(self, token, **kwargs):
         error = self.__checkCooldown(CLIENT_ACTION_ID.FIND_USERS_BY_PREFIX)

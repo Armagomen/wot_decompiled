@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/request/access_token.py
 from helpers import dependency, time_utils
 from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.web import IWebController
@@ -17,10 +15,9 @@ class AccessTokenWebApiMixin(object):
     def accessToken(self, cmd):
         accessTokenData = yield self._webCtrl.getAccessTokenData(force=cmd.force)
         if accessTokenData is not None:
-            yield {'spa_id': str(self._connectionMgr.databaseID),
-             'access_token': str(accessTokenData.accessToken),
-             'expires_in': accessTokenData.expiresAt - time_utils.getCurrentTimestamp(),
-             'periphery_id': str(self._connectionMgr.peripheryID)}
+            yield {'spa_id': str(self._connectionMgr.databaseID), 'access_token': str(accessTokenData.accessToken), 
+               'expires_in': accessTokenData.expiresAt - time_utils.getCurrentTimestamp(), 
+               'periphery_id': str(self._connectionMgr.peripheryID)}
         else:
             yield {'error': 'Unable to obtain access token.'}
         return

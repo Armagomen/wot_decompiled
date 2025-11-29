@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/models/modifications.py
 import typing
 from enum import Enum, unique
 from gui.impl.gen import R
@@ -36,13 +34,13 @@ class PostProgressionActionTooltip(Enum):
 
 
 _ACTION_RES_STUB = R.strings.artefacts.actionStub
-_IDX_TO_PAIR_TYPE = {0: PAIR_TYPES.FIRST,
- 1: PAIR_TYPES.SECOND}
+_IDX_TO_PAIR_TYPE = {0: PAIR_TYPES.FIRST, 
+   1: PAIR_TYPES.SECOND}
 _NOT_PURCHASED_IDX = -1
 _PAIR_TYPE_TO_IDX = {val:key for key, val in _IDX_TO_PAIR_TYPE.iteritems()}
-_STATE_TO_RESTRICTION = {PostProgressionActionState.CHANGEABLE: ExtendedGuiItemEconomyCode.UNDEFINED,
- PostProgressionActionState.PERSISTENT: ExtendedGuiItemEconomyCode.MOD_PERSISTENT,
- PostProgressionActionState.SELECTABLE: ExtendedGuiItemEconomyCode.UNDEFINED}
+_STATE_TO_RESTRICTION = {PostProgressionActionState.CHANGEABLE: ExtendedGuiItemEconomyCode.UNDEFINED, 
+   PostProgressionActionState.PERSISTENT: ExtendedGuiItemEconomyCode.MOD_PERSISTENT, 
+   PostProgressionActionState.SELECTABLE: ExtendedGuiItemEconomyCode.UNDEFINED}
 
 class PostProgressionActionItem(PurchaseProvider):
     __slots__ = ('_descriptor', '_parentStepID', '_price', '_state', '_tooltip')
@@ -55,7 +53,7 @@ class PostProgressionActionItem(PurchaseProvider):
         self._tooltip = self._getDefaultTooltip()
 
     def __repr__(self):
-        return '{} <id: {}, name: {}>'.format(self.__class__.__name__, self.actionID, self.getTechName())
+        return ('{} <id: {}, name: {}>').format(self.__class__.__name__, self.actionID, self.getTechName())
 
     @property
     def actionID(self):
@@ -115,13 +113,15 @@ class PostProgressionActionItem(PurchaseProvider):
 
     def getLocSplitNameRes(self):
         splitName = R.strings.artefacts.dyn(self.getLocName()).dyn('splitName')
-        return splitName if splitName.exists() else self.getLocNameRes()
+        if splitName.exists():
+            return splitName
+        return self.getLocNameRes()
 
     def getPrice(self):
         return self._price
 
     def getServerAction(self, factory, vehicle):
-        return None
+        return
 
     def getSlotCategory(self):
         return SlotCategories.UNIVERSAL
@@ -193,7 +193,7 @@ class MultiModsItem(PostProgressionActionItem):
         return
 
     def __repr__(self):
-        innerRepr = ' with mods: {}, purchasedIdx: {}'.format(self.modifications, self.getPurchasedIdx())
+        innerRepr = (' with mods: {}, purchasedIdx: {}').format(self.modifications, self.getPurchasedIdx())
         return super(MultiModsItem, self).__repr__() + innerRepr
 
     @property
@@ -216,25 +216,37 @@ class MultiModsItem(PostProgressionActionItem):
         return _IDX_TO_PAIR_TYPE[self.__idToIdx[modificationID]]
 
     def getKpi(self, vehicle=None):
-        return self.__modifications[self.__purchasedIdx].getKpi() if self.isPurchased() else []
+        if self.isPurchased():
+            return self.__modifications[self.__purchasedIdx].getKpi()
+        return []
 
     def getModificationByID(self, modificationID):
         return self.__modifications[self.getInnerIdx(modificationID)]
 
     def getPurchasedID(self):
-        return self.__modifications[self.__purchasedIdx].actionID if self.isPurchased() else None
+        if self.isPurchased():
+            return self.__modifications[self.__purchasedIdx].actionID
+        else:
+            return
 
     def getPurchasedIdx(self):
         return self.__purchasedIdx
 
     def getPurchasedModification(self):
-        return self.__modifications[self.__purchasedIdx] if self.isPurchased() else None
+        if self.isPurchased():
+            return self.__modifications[self.__purchasedIdx]
+        else:
+            return
 
     def getServerAction(self, factory, vehicle, modID=_NOT_PURCHASED_IDX):
-        return factory.getAction(factory.DISCARD_POST_PROGRESSION_PAIRS, vehicle, [self.parentStepID], [modID]) if self.getPurchasedID() == modID else factory.getAction(factory.PURCHASE_POST_PROGRESSION_PAIR, vehicle, self.parentStepID, modID)
+        if self.getPurchasedID() == modID:
+            return factory.getAction(factory.DISCARD_POST_PROGRESSION_PAIRS, vehicle, [self.parentStepID], [modID])
+        return factory.getAction(factory.PURCHASE_POST_PROGRESSION_PAIR, vehicle, self.parentStepID, modID)
 
     def mayDiscardInner(self):
-        return PurchaseCheckResult(False, ExtendedGuiItemEconomyCode.MULTI_NOT_PURCHASED) if not self.isPurchased() else VALID_CHECK_RESULT
+        if not self.isPurchased():
+            return PurchaseCheckResult(False, ExtendedGuiItemEconomyCode.MULTI_NOT_PURCHASED)
+        return VALID_CHECK_RESULT
 
     def mayPurchaseInner(self, balance, modificationID, ignoreState=False):
         stateCheck = VALID_CHECK_RESULT if ignoreState else self.__getStateCheckResult(modificationID)
@@ -261,7 +273,9 @@ class MultiModsItem(PostProgressionActionItem):
         if modificationIdx is None:
             return PurchaseCheckResult(False, ExtendedGuiItemEconomyCode.MULTI_NOT_EXISTS)
         else:
-            return PurchaseCheckResult(False, ExtendedGuiItemEconomyCode.MULTI_NOT_EMPTY) if self.getPurchasedID() == modificationID else VALID_CHECK_RESULT
+            if self.getPurchasedID() == modificationID:
+                return PurchaseCheckResult(False, ExtendedGuiItemEconomyCode.MULTI_NOT_EMPTY)
+            return VALID_CHECK_RESULT
 
     def __fillModifications(self, parentStepID, descriptor, progression):
         self.__idToIdx = {}
@@ -272,7 +286,7 @@ class MultiModsItem(PostProgressionActionItem):
 
 
 class FeatureModItem(PostProgressionActionItem):
-    __slots__ = ('__isDisabled',)
+    __slots__ = ('__isDisabled', )
 
     def __init__(self, parentStepID, descriptor, progression):
         super(FeatureModItem, self).__init__(parentStepID, descriptor, progression)
@@ -285,7 +299,7 @@ class FeatureModItem(PostProgressionActionItem):
         return True
 
     def getActiveID(self):
-        return None
+        return
 
     def _getDefaultPrice(self, descriptor):
         return EXT_MONEY_UNDEFINED
@@ -299,14 +313,14 @@ class FeatureModItem(PostProgressionActionItem):
 
 class RoleSlotModItem(FeatureModItem):
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__slotCategory',)
+    __slots__ = ('__slotCategory', )
 
     def __init__(self, parentStepID, descriptor, progression):
         super(RoleSlotModItem, self).__init__(parentStepID, descriptor, progression)
         self.__applyDynamicSlotCategory(progression.getVehType())
 
     def __repr__(self):
-        innerRepr = ' with state: {}, category: {}'.format(self.getState(), self.getSlotCategory())
+        innerRepr = (' with state: {}, category: {}').format(self.getState(), self.getSlotCategory())
         return super(RoleSlotModItem, self).__repr__() + innerRepr
 
     def getServerAction(self, factory, vehicle):
@@ -336,7 +350,7 @@ class RoleSlotModItem(FeatureModItem):
 
 
 class _ActionByTypeFactory(object):
-    __slots__ = ('_producedType',)
+    __slots__ = ('_producedType', )
 
     def __init__(self, producedType):
         self._producedType = producedType
@@ -350,7 +364,7 @@ class _ActionByTypeFactory(object):
 
 
 class _ActionByNameFactory(_ActionByTypeFactory):
-    __slots__ = ('_nameToType',)
+    __slots__ = ('_nameToType', )
 
     def __init__(self, producedType, nameToType):
         super(_ActionByNameFactory, self).__init__(producedType)
@@ -361,9 +375,9 @@ class _ActionByNameFactory(_ActionByTypeFactory):
         return self._construct(producedType, parentStepID, descriptor, progression)
 
 
-_ACTION_TYPE_TO_MODEL = {ACTION_TYPES.MODIFICATION: _ActionByTypeFactory(SimpleModItem),
- ACTION_TYPES.PAIR_MODIFICATION: _ActionByTypeFactory(MultiModsItem),
- ACTION_TYPES.FEATURE: _ActionByNameFactory(FeatureModItem, {ROLESLOT_FEATURE: RoleSlotModItem})}
+_ACTION_TYPE_TO_MODEL = {ACTION_TYPES.MODIFICATION: _ActionByTypeFactory(SimpleModItem), 
+   ACTION_TYPES.PAIR_MODIFICATION: _ActionByTypeFactory(MultiModsItem), 
+   ACTION_TYPES.FEATURE: _ActionByNameFactory(FeatureModItem, {ROLESLOT_FEATURE: RoleSlotModItem})}
 
 def getActionModel(parentStepID, stepActionInfo, progression):
     actionType, actionID = stepActionInfo

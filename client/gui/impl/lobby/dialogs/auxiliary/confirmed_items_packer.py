@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/auxiliary/confirmed_items_packer.py
 import typing
 from gui.impl.lobby.dialogs.auxiliary.confirmed_item import ConfirmedItem
 from gui.impl.lobby.dialogs.auxiliary.confirmed_item_to_upgrade import ConfirmedItemToUpgrade
@@ -13,14 +11,19 @@ class ConfirmedItemsPacker(object):
         self._ctx = kwargs
 
     def packItemsType(self, items, typesToCombine=None):
-        return set((next((typesToCombine[t] for t in typesToCombine if item.itemTypeID in t), item.itemTypeName) for item in items)) if typesToCombine is not None else set((item.itemTypeName for item in items))
+        if typesToCombine is not None:
+            return set(next((typesToCombine[t] for t in typesToCombine if item.itemTypeID in t), item.itemTypeName) for item in items)
+        else:
+            return set(item.itemTypeName for item in items)
 
     def packItems(self, items, filterFunc=None, sortFunction=None):
         itemClass = self._getItemClass()
         if callable(sortFunction):
-            return sorted([ itemClass.createFromGUIItem(i, self._ctx) for i in items if filterFunc is not None and not filterFunc(i) or filterFunc is None ], cmp=sortFunction)
+            return sorted([ itemClass.createFromGUIItem(i, self._ctx) for i in items if filterFunc is not None and not filterFunc(i) or filterFunc is None
+                          ], cmp=sortFunction)
         else:
-            return [ itemClass.createFromGUIItem(i, self._ctx) for i in items if filterFunc is not None and not filterFunc(i) or filterFunc is None ]
+            return [ itemClass.createFromGUIItem(i, self._ctx) for i in items if filterFunc is not None and not filterFunc(i) or filterFunc is None
+                   ]
 
     @classmethod
     def _getItemClass(cls):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/shared/event_dispatcher.py
 from gui.impl.pub.notification_commands import NonPersistentEventNotificationCommand, NotificationEvent
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader

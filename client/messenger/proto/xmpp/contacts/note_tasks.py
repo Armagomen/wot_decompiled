@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/note_tasks.py
 from messenger.m_constants import USER_ACTION_ID, CLIENT_ACTION_ID, USER_TAG
 from messenger.proto.entities import SharedUserEntity
 from messenger.proto.events import g_messengerEvents
@@ -14,7 +12,7 @@ def canNoteAutoDelete(contact):
 
 
 class NotesListTask(SeqTask):
-    __slots__ = ('_offset',)
+    __slots__ = ('_offset', )
 
     def __init__(self):
         super(NotesListTask, self).__init__()
@@ -32,7 +30,8 @@ class NotesListTask(SeqTask):
             contact = getter(dbID)
             if contact:
                 contact.update(note=note)
-            setter(SharedUserEntity(dbID, note=note))
+            else:
+                setter(SharedUserEntity(dbID, note=note))
 
         self._offset += len(notes)
         if self._offset < count:
@@ -66,7 +65,7 @@ class _NoteTask(ContactTask):
 
 
 class SetNoteTask(_NoteTask):
-    __slots__ = ('_text',)
+    __slots__ = ('_text', )
 
     def __init__(self, jid, text):
         super(SetNoteTask, self).__init__(jid)

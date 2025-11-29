@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/battle_royale_sounds.py
 from sound_gui_manager import CommonSoundSpaceSettings
 from shared_utils import CONST_CONTAINER
 
@@ -18,7 +16,7 @@ class Sounds(CONST_CONTAINER):
     VEHILCE_INFO_STATE_OFF = 'STATE_hangar_filtered_off'
 
 
-BATTLE_ROYALE_PAGE_SOUND_SPACE = CommonSoundSpaceSettings(name=Sounds.MAIN_PAGE_SPACE_NAME, entranceStates={Sounds.MAIN_PAGE_STATE: Sounds.MAIN_PAGE_STATE_ON}, exitStates={Sounds.MAIN_PAGE_STATE: Sounds.MAIN_PAGE_STATE_OFF,
- Sounds.OVERLAY_HANGAR_GENERAL: Sounds.OVERLAY_HANGAR_GENERAL_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True)
+BATTLE_ROYALE_PAGE_SOUND_SPACE = CommonSoundSpaceSettings(name=Sounds.MAIN_PAGE_SPACE_NAME, entranceStates={Sounds.MAIN_PAGE_STATE: Sounds.MAIN_PAGE_STATE_ON}, exitStates={Sounds.MAIN_PAGE_STATE: Sounds.MAIN_PAGE_STATE_OFF, 
+   Sounds.OVERLAY_HANGAR_GENERAL: Sounds.OVERLAY_HANGAR_GENERAL_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True)
 BATTLE_ROYALE_OVERLAY_SOUND_SPACE = CommonSoundSpaceSettings(name=Sounds.OVERLAY_SPACE_NAME, entranceStates={Sounds.OVERLAY_HANGAR_GENERAL: Sounds.OVERLAY_HANGAR_GENERAL_ON}, exitStates={Sounds.OVERLAY_HANGAR_GENERAL: Sounds.OVERLAY_HANGAR_GENERAL_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True)
 BATTLE_ROYALE_VEHICLE_INFO_SOUND_SPACE = CommonSoundSpaceSettings(name=Sounds.VEHILCE_INFO_SPACE_NAME, entranceStates={Sounds.VEHILCE_INFO_STATE: Sounds.VEHILCE_INFO_STATE_ON}, exitStates={Sounds.VEHILCE_INFO_STATE: Sounds.VEHILCE_INFO_STATE_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True)

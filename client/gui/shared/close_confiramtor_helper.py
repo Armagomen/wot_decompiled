@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/close_confiramtor_helper.py
 import adisp
 from wg_async import wg_async, wg_await
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -10,7 +8,7 @@ from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 
 class CloseConfirmatorsHelper(object):
-    __slots__ = ('__closeConfirmator',)
+    __slots__ = ('__closeConfirmator', )
     _lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self):
@@ -18,7 +16,8 @@ class CloseConfirmatorsHelper(object):
         return
 
     def getRestrictedEvents(self):
-        return [events.ViewEventType.LOAD_VIEW,
+        return [
+         events.ViewEventType.LOAD_VIEW,
          events.ViewEventType.LOAD_GUI_IMPL_VIEW,
          events.ReferralProgramEvent.SHOW_REFERRAL_PROGRAM_WINDOW,
          events.RallyWindowEvent.ON_CLOSE,
@@ -30,7 +29,8 @@ class CloseConfirmatorsHelper(object):
          events.CustomizationEvent.SHOW]
 
     def getRestrictedSfViews(self):
-        return [VIEW_ALIAS.VEHICLE_COMPARE,
+        return [
+         VIEW_ALIAS.VEHICLE_COMPARE,
          VIEW_ALIAS.LOBBY_STORE,
          VIEW_ALIAS.LOBBY_PROFILE,
          VIEW_ALIAS.LOBBY_MISSIONS,
@@ -41,7 +41,9 @@ class CloseConfirmatorsHelper(object):
          VIEW_ALIAS.PERSONAL_MISSIONS_PAGE]
 
     def getRestrictedGuiImplViews(self):
-        return [R.views.lobby.dog_tags.DogTagsView(), R.views.lobby.crew.BarracksView()]
+        return [
+         R.views.lobby.dog_tags.DogTagsView(),
+         R.views.lobby.crew.BarracksView()]
 
     def start(self, closeConfirmator):
         self.__closeConfirmator = closeConfirmator

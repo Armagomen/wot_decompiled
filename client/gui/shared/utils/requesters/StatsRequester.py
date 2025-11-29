@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/StatsRequester.py
 import json
 from collections import namedtuple
-import typing
-import BigWorld
+import typing, BigWorld
 from account_helpers.premium_info import PremiumInfo
 from constants import SPA_ATTRS, MIN_VEHICLE_LEVEL
 from gui.shared.money import Money, Currency, DynamicMoney
@@ -17,7 +14,10 @@ from skeletons.gui.shared.utils.requesters import IStatsRequester
 if typing.TYPE_CHECKING:
     from typing import List, Tuple
 _ADDITIONAL_XP_DATA_KEY = '_additionalXPCache'
-_ControllableXPData = namedtuple('_ControllableXPData', ('vehicleID', 'bonusType', 'extraXP', 'extraFreeXP', 'extraTmenXP', 'isXPToTMan', 'premMask', 'dailyXPFactor'))
+_ControllableXPData = namedtuple('_ControllableXPData', ('vehicleID', 'bonusType',
+                                                         'extraXP', 'extraFreeXP',
+                                                         'extraTmenXP', 'isXPToTMan',
+                                                         'premMask', 'dailyXPFactor'))
 
 class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
     wallet = dependency.descriptor(IWalletController)
@@ -73,7 +73,9 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
 
     @property
     def actualGold(self):
-        return self.getCacheValue(Currency.GOLD, 0) if self.mayConsumeWalletResources or not self.wallet.useGold else 0
+        if self.mayConsumeWalletResources or not self.wallet.useGold:
+            return self.getCacheValue(Currency.GOLD, 0)
+        return 0
 
     @property
     def actualCrystal(self):
@@ -101,7 +103,9 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
 
     @property
     def actualFreeXP(self):
-        return self.getCacheValue('freeXP', 0) if self.mayConsumeWalletResources or not self.wallet.useFreeXP else 0
+        if self.mayConsumeWalletResources or not self.wallet.useFreeXP:
+            return self.getCacheValue('freeXP', 0)
+        return 0
 
     @property
     def vehiclesXPs(self):
@@ -216,7 +220,8 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
         return self.playLimits[1][0]
 
     def getPlayTimeLimits(self):
-        return (self.getDailyTimeLimits(), self.getWeeklyTimeLimits())
+        return (
+         self.getDailyTimeLimits(), self.getWeeklyTimeLimits())
 
     @property
     def tankmenBerthsCount(self):
@@ -298,7 +303,7 @@ class StatsRequester(AbstractSyncDataRequester, IStatsRequester):
                 value = json.loads(attrValue)
                 return value['bundleID']
 
-        return None
+        return
 
     @property
     def isSsrPlayEnabled(self):

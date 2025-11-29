@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/ValueReplay.py
 import struct
 from bit_coder import BitCoder
 from soft_exception import SoftException
@@ -89,14 +87,18 @@ class ValueReplayConnector(object):
         if subIndex > 0:
             subIndex -= 1
             subname2 = self.__getSecondValueByIndex(self._battleResults[subname1], subIndex)[0][1][0]
-            return (subname1 + '_' + subname2, secondName)
-        return (subname1, secondName)
+            return (
+             subname1 + '_' + subname2, secondName)
+        return (
+         subname1, secondName)
 
     def __splitName(self, item):
         if '_' in item:
             pos = item.find('_')
-            return (item[:pos], item[pos + 1:])
-        return (item,)
+            return (
+             item[:pos], item[pos + 1:])
+        return (
+         item,)
 
     def __getSecondValueByName(self, cont, name):
         return [ (i, v) for i, v in enumerate(cont) if v[0] == name ]
@@ -230,7 +232,9 @@ class ValueReplay:
         return self
 
     def __eq__(self, other):
-        return False if not isinstance(other, ValueReplay) else self.__replay == other.__replay
+        if not isinstance(other, ValueReplay):
+            return False
+        return self.__replay == other.__replay
 
     def __iter__(self):
         if not self.__replay:
@@ -297,11 +301,10 @@ class ValueReplay:
         other = other.lower()
         if 'factor100' in other or 'factors100' in other:
             return 100.0
-        elif 'factor10' in other or 'factors10' in other:
+        if 'factor10' in other or 'factors10' in other:
             return 10.0
-        else:
-            return None
-            return None
+        return
+        return
 
     def __opMul(self, other, _, x=None):
         if x is None:
@@ -360,15 +363,16 @@ class ValueReplay:
                     return finalResult - prevFinalResult
                 else:
                     return finalResult
+
             prevFinalResult = finalResult
 
         return 0
 
-    __OPERATORS = {ADD: __opAdd,
-     SUB: __opSub,
-     MUL: __opMul,
-     SET: __opSet,
-     TAG: __opTag,
-     FACTOR: __opFactor,
-     ADDCOEFF: __opAddCoeff,
-     SUBCOEFF: __opSubCoeff}
+    __OPERATORS = {ADD: __opAdd, 
+       SUB: __opSub, 
+       MUL: __opMul, 
+       SET: __opSet, 
+       TAG: __opTag, 
+       FACTOR: __opFactor, 
+       ADDCOEFF: __opAddCoeff, 
+       SUBCOEFF: __opSubCoeff}

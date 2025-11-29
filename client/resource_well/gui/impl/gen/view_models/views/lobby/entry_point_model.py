@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/gen/view_models/views/lobby/entry_point_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -13,7 +11,7 @@ class EventState(IntEnum):
 
 
 class EntryPointModel(ViewModel):
-    __slots__ = ('showProgression',)
+    __slots__ = ('showProgression', )
 
     def __init__(self, properties=4, commands=1):
         super(EntryPointModel, self).__init__(properties=properties, commands=commands)

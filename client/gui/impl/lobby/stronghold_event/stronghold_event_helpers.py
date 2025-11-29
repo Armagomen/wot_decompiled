@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/stronghold_event/stronghold_event_helpers.py
 import logging
 from typing import Optional, TYPE_CHECKING, Any
 from account_helpers import AccountSettings
@@ -17,13 +15,12 @@ def getStrongholdEventName(useDefault=True):
         if useDefault:
             return DEFAULT_EVENT_NAME
         return
-    else:
-        eventName = eventSettings.getEventConfig().name
-        if not eventName:
-            if useDefault:
-                return DEFAULT_EVENT_NAME
-            return
-        return eventName
+    eventName = eventSettings.getEventConfig().name
+    if not eventName:
+        if useDefault:
+            return DEFAULT_EVENT_NAME
+        return
+    return eventName
 
 
 def getSettings(settingName, defaultValue=None):
@@ -56,4 +53,6 @@ def setSettings(settingName, value):
 
 
 def isStrongholdEventBannerAvailable():
-    return False if not getStrongholdEventEnabled() else bool(g_clanCache.strongholdEventProvider.getSettings())
+    if not getStrongholdEventEnabled():
+        return False
+    return bool(g_clanCache.strongholdEventProvider.getSettings())

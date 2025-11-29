@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/interfaces.py
 import typing
 from typing import Tuple
 from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE as _SCOPE
@@ -20,7 +18,7 @@ if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.vse_hud_settings_ctrl.vse_hud_settings_ctrl import SettingsTypes, ItemSettingsTypes
 
 class IArenaController(IBattleController):
-    __slots__ = ('__weakref__',)
+    __slots__ = ('__weakref__', )
 
     def getControllerID(self):
         pass

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/collection/resources/cdn/cache.py
-import urlparse
-import typing
-import BigWorld
+import urlparse, typing, BigWorld
 from gui.collection import loggers
 from gui.collection.resources.cdn.config import createConfigModel
 from gui.collection.resources.cdn.models import CdnCacheParamsModel, ImageModel
@@ -99,15 +95,12 @@ class CollectionsCdnCache(BaseExternalCache):
         toDownloadByHosts = {}
         for url in existingUrls + toDownloadUrls:
             parsedUrl = urlparse.urlparse(url)
-            host = urlparse.urlunsplit((parsedUrl.scheme,
-             parsedUrl.netloc,
-             '',
-             '',
-             ''))
+            host = urlparse.urlunsplit((parsedUrl.scheme, parsedUrl.netloc, '', '', ''))
             toDownloadByHosts.setdefault(host, []).append(parsedUrl.path)
 
         self.__toDownloadImages = []
-        return [ createManifestRecord(appName='images', host=host, files=relativeUrls) for host, relativeUrls in toDownloadByHosts.iteritems() ]
+        return [ createManifestRecord(appName='images', host=host, files=relativeUrls) for host, relativeUrls in toDownloadByHosts.iteritems()
+               ]
 
 
 class CollectionsCdnCacheMgr(BaseExternalCacheManager):
@@ -142,7 +135,7 @@ class CollectionsCdnCacheMgr(BaseExternalCacheManager):
 
         def onSynced(result):
             isOk = result == CachePrefetchResult.SUCCESS
-            message = 'CachePrefetchResult is {}'.format(result)
+            message = ('CachePrefetchResult is {}').format(result)
             (_logger.debug if isOk else _logger.warning)(message)
             if self._cache is not None:
                 downloadedImages = self._cache.getImages(imagesIDs)

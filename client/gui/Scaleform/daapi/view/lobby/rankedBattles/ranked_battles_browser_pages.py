@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_browser_pages.py
 from helpers import dependency
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.lobby.components.browser_view_page import BrowserPageComponent
@@ -50,10 +48,16 @@ class RankedBrowserPage(BrowserPageComponent, IResetablePage):
         pass
 
     def __getClientParams(self):
-        return self.__ctx.get('clientParams', {}) if self.__ctx is not None else {}
+        if self.__ctx is not None:
+            return self.__ctx.get('clientParams', {})
+        else:
+            return {}
 
     def __patchUrlByCtx(self):
-        return self.__ctx.get('webParams', '') if self.__ctx is not None else ''
+        if self.__ctx is not None:
+            return self.__ctx.get('webParams', '')
+        else:
+            return ''
 
 
 class RankedSeasonGapPage(RankedBrowserPage):

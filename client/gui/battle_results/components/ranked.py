@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/components/ranked.py
 import typing
 from collections import namedtuple
 from account_helpers import AccountSettings
@@ -21,15 +19,15 @@ Shield = namedtuple('Shield', 'shieldCount, shieldIcon, plateIcon')
 IconsAndShield = namedtuple('IconsAndShield', 'icon, shield')
 
 def _getTopsLoseIcon(topNumber):
-    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.lose.c_106x98.dyn('top{}'.format(topNumber))())
+    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.lose.c_106x98.dyn(('top{}').format(topNumber))())
 
 
 def _getTopsTopIcon(topNumber):
-    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.top.c_106x98.dyn('top{}'.format(topNumber))())
+    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.top.c_106x98.dyn(('top{}').format(topNumber))())
 
 
 def _getTopsNotEffectiveIcon(topNumber):
-    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.notEffective.c_106x98.dyn('top{}'.format(topNumber))())
+    return backport.image(R.images.gui.maps.icons.rankedBattles.tops.notEffective.c_106x98.dyn(('top{}').format(topNumber))())
 
 
 class MiniSteps(CONST_CONTAINER):
@@ -43,11 +41,23 @@ class MiniSteps(CONST_CONTAINER):
 
 class RankedInfoHelper(object):
     rankedController = dependency.descriptor(IRankedBattlesController)
-    __slots__ = ('_reusable',)
-    _RESOURCE_MAP = {MiniSteps.STEPS_EARNED: (RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP2, RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP, _getTopsTopIcon),
-     MiniSteps.STEP_EARNED: (RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP, RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP, _getTopsTopIcon),
-     MiniSteps.STEP_NOT_CHANGED: (RANKEDBATTLES_ALIASES.BACKGROUND_STATE_NOTEFFECTIVE, RANKEDBATTLES_ALIASES.BACKGROUND_STATE_NOTEFFECTIVE, _getTopsNotEffectiveIcon),
-     MiniSteps.STEP_LOST: (RANKEDBATTLES_ALIASES.BACKGROUND_STATE_LOSE, RANKEDBATTLES_ALIASES.BACKGROUND_STATE_LOSE, _getTopsLoseIcon)}
+    __slots__ = ('_reusable', )
+    _RESOURCE_MAP = {MiniSteps.STEPS_EARNED: (
+                              RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP2,
+                              RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP,
+                              _getTopsTopIcon), 
+       MiniSteps.STEP_EARNED: (
+                             RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP,
+                             RANKEDBATTLES_ALIASES.BACKGROUND_STATE_TOP,
+                             _getTopsTopIcon), 
+       MiniSteps.STEP_NOT_CHANGED: (
+                                  RANKEDBATTLES_ALIASES.BACKGROUND_STATE_NOTEFFECTIVE,
+                                  RANKEDBATTLES_ALIASES.BACKGROUND_STATE_NOTEFFECTIVE,
+                                  _getTopsNotEffectiveIcon), 
+       MiniSteps.STEP_LOST: (
+                           RANKEDBATTLES_ALIASES.BACKGROUND_STATE_LOSE,
+                           RANKEDBATTLES_ALIASES.BACKGROUND_STATE_LOSE,
+                           _getTopsLoseIcon)}
 
     def __init__(self, reusable):
         self._reusable = reusable
@@ -58,34 +68,34 @@ class RankedInfoHelper(object):
 
 class RankedResultsInfoHelper(RankedInfoHelper):
     __slots__ = ()
-    _CHANGE_TO_ALIAS_STATE = {_RCS.LEAGUE_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.DIVISION_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.QUAL_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.QUAL_UNBURN_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.RANK_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.RANK_SHIELD_PROTECTED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE,
-     _RCS.RANK_UNBURN_PROTECTED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NORMAL_STATE,
-     _RCS.RANK_LOST: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE,
-     _RCS.STEP_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.STEPS_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.BONUS_STEP_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.BONUS_STEPS_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE,
-     _RCS.NOTHING_CHANGED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NORMAL_STATE,
-     _RCS.STEP_LOST: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE}
-    _STATUS_LABEL_MAP = {_RCS.LEAGUE_EARNED: None,
-     _RCS.DIVISION_EARNED: None,
-     _RCS.QUAL_EARNED: None,
-     _RCS.QUAL_UNBURN_EARNED: None,
-     _RCS.RANK_EARNED: R.strings.ranked_battles.battleresult.status.rankEarned(),
-     _RCS.RANK_SHIELD_PROTECTED: R.strings.ranked_battles.battleresult.status.shieldLoseStep(),
-     _RCS.RANK_UNBURN_PROTECTED: R.strings.ranked_battles.battleresult.status.rankUnburnable(),
-     _RCS.RANK_LOST: R.strings.ranked_battles.battleresult.status.rankLost(),
-     _RCS.STEP_EARNED: R.strings.ranked_battles.battleresult.status.stageEarned(),
-     _RCS.BONUS_STEP_EARNED: R.strings.ranked_battles.battleresult.status.stageEarned(),
-     _RCS.STEPS_EARNED: R.strings.ranked_battles.battleresult.status.stagesEarned(),
-     _RCS.BONUS_STEPS_EARNED: R.strings.ranked_battles.battleresult.status.stagesEarned(),
-     _RCS.STEP_LOST: R.strings.ranked_battles.battleresult.status.stageLost(),
-     _RCS.NOTHING_CHANGED: R.strings.ranked_battles.battleresult.status.stageSaved()}
+    _CHANGE_TO_ALIAS_STATE = {_RCS.LEAGUE_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.DIVISION_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.QUAL_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.QUAL_UNBURN_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.RANK_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.RANK_SHIELD_PROTECTED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE, 
+       _RCS.RANK_UNBURN_PROTECTED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NORMAL_STATE, 
+       _RCS.RANK_LOST: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE, 
+       _RCS.STEP_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.STEPS_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.BONUS_STEP_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.BONUS_STEPS_EARNED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_POSITIVE_STATE, 
+       _RCS.NOTHING_CHANGED: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NORMAL_STATE, 
+       _RCS.STEP_LOST: RANKEDBATTLES_ALIASES.BATTLE_RESULTS_NEGATIVE_STATE}
+    _STATUS_LABEL_MAP = {_RCS.LEAGUE_EARNED: None, 
+       _RCS.DIVISION_EARNED: None, 
+       _RCS.QUAL_EARNED: None, 
+       _RCS.QUAL_UNBURN_EARNED: None, 
+       _RCS.RANK_EARNED: R.strings.ranked_battles.battleresult.status.rankEarned(), 
+       _RCS.RANK_SHIELD_PROTECTED: R.strings.ranked_battles.battleresult.status.shieldLoseStep(), 
+       _RCS.RANK_UNBURN_PROTECTED: R.strings.ranked_battles.battleresult.status.rankUnburnable(), 
+       _RCS.RANK_LOST: R.strings.ranked_battles.battleresult.status.rankLost(), 
+       _RCS.STEP_EARNED: R.strings.ranked_battles.battleresult.status.stageEarned(), 
+       _RCS.BONUS_STEP_EARNED: R.strings.ranked_battles.battleresult.status.stageEarned(), 
+       _RCS.STEPS_EARNED: R.strings.ranked_battles.battleresult.status.stagesEarned(), 
+       _RCS.BONUS_STEPS_EARNED: R.strings.ranked_battles.battleresult.status.stagesEarned(), 
+       _RCS.STEP_LOST: R.strings.ranked_battles.battleresult.status.stageLost(), 
+       _RCS.NOTHING_CHANGED: R.strings.ranked_battles.battleresult.status.stageSaved()}
 
     def makeState(self):
         return self._CHANGE_TO_ALIAS_STATE.get(self.getRankChangeStatus())
@@ -97,10 +107,7 @@ class RankedResultsInfoHelper(RankedInfoHelper):
         shieldState = rankInfo.shieldState
         resultLabel = backport.text(self._STATUS_LABEL_MAP[rankState])
         resultSubLabel = ''
-        if rankState in (_RCS.LEAGUE_EARNED,
-         _RCS.DIVISION_EARNED,
-         _RCS.QUAL_EARNED,
-         _RCS.QUAL_UNBURN_EARNED):
+        if rankState in (_RCS.LEAGUE_EARNED, _RCS.DIVISION_EARNED, _RCS.QUAL_EARNED, _RCS.QUAL_UNBURN_EARNED):
             return ''
         if rankState == _RCS.NOTHING_CHANGED and isWin:
             resultLabel = backport.text(R.strings.ranked_battles.battleresult.status.stageNotEarned())
@@ -137,25 +144,29 @@ class RankedResultsInfoHelper(RankedInfoHelper):
             return (RANKEDBATTLES_ALIASES.STANDOFF_PLUS, configStepChanges)
         if stepChanges < 0 and updatedStepChanges == 0:
             return (RANKEDBATTLES_ALIASES.STANDOFF_RPOTECTED, configStepChanges)
-        return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, configStepChanges) if stepDiff == 0 else (RANKEDBATTLES_ALIASES.STANDOFF_MINUS, configStepChanges)
+        if stepDiff == 0:
+            return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, configStepChanges)
+        return (
+         RANKEDBATTLES_ALIASES.STANDOFF_MINUS, configStepChanges)
 
     def getStandoff(self, xp, xpToCompare, position, isLoser, isTop, lastStandoffInfo=None):
         rankChanges = self.rankedController.getRanksChanges(isLoser=isLoser)
         stepsDiff = rankChanges[position]
         if isTop:
             return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, stepsDiff)
-        elif xp == xpToCompare:
-            if lastStandoffInfo is not None:
-                lastStandoff, lastStepDiff = lastStandoffInfo
-                diff = lastStepDiff - stepsDiff
-                if diff == 0:
-                    return (lastStandoff, stepsDiff)
-                if diff > 0:
-                    return (self.__getNextStandoff(lastStandoff, diff), stepsDiff)
-                return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, stepsDiff)
-            return (RANKEDBATTLES_ALIASES.STANDOFF_PLUS, stepsDiff)
         else:
-            return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, stepsDiff)
+            if xp == xpToCompare:
+                if lastStandoffInfo is not None:
+                    lastStandoff, lastStepDiff = lastStandoffInfo
+                    diff = lastStepDiff - stepsDiff
+                    if diff == 0:
+                        return (lastStandoff, stepsDiff)
+                    if diff > 0:
+                        return (self.__getNextStandoff(lastStandoff, diff), stepsDiff)
+                    return (RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, stepsDiff)
+                return (RANKEDBATTLES_ALIASES.STANDOFF_PLUS, stepsDiff)
+            return (
+             RANKEDBATTLES_ALIASES.STANDOFF_INVISIBLE, stepsDiff)
 
     @classmethod
     def __getStepTypeByDiff(cls, stepDiff):
@@ -163,7 +174,9 @@ class RankedResultsInfoHelper(RankedInfoHelper):
             return MiniSteps.STEP_NOT_CHANGED
         if stepDiff == 1:
             return MiniSteps.STEP_EARNED
-        return MiniSteps.STEPS_EARNED if stepDiff > 0 else MiniSteps.STEP_LOST
+        if stepDiff > 0:
+            return MiniSteps.STEPS_EARNED
+        return MiniSteps.STEP_LOST
 
     @classmethod
     def __getStepInfo(cls, stepElement, rankChanges):
@@ -184,47 +197,47 @@ class RankedResultsInfoHelper(RankedInfoHelper):
 class RankedChangesInfoHelper(RankedInfoHelper):
     settingsCore = dependency.descriptor(ISettingsCore)
     __slots__ = ()
-    _STEPS_ICONS = {_RCS.BONUS_STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage4_bonus(),
-     _RCS.STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage2_green(),
-     _RCS.BONUS_STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage2_bonus(),
-     _RCS.STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_green(),
-     _RCS.STEP_LOST: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_red(),
-     _RCS.NOTHING_CHANGED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_grey(),
-     _RCS.RANK_UNBURN_PROTECTED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_grey()}
-    _MINI_STEPS_ICONS = {MiniSteps.STEPS_EARNED_BONUS: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus2Bonus(),
-     MiniSteps.STEP_EARNED_BONUS: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus1Bonus(),
-     MiniSteps.STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus2(),
-     MiniSteps.STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus1(),
-     MiniSteps.STEP_NOT_CHANGED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.nothing(),
-     MiniSteps.STEP_LOST: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.minus1()}
-    _STATE_TO_SUBTASK = {_RCS.LEAGUE_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_LEAGUE,
-     _RCS.DIVISION_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION,
-     _RCS.QUAL_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION,
-     _RCS.QUAL_UNBURN_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION,
-     _RCS.RANK_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK,
-     _RCS.RANK_SHIELD_PROTECTED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK,
-     _RCS.RANK_UNBURN_PROTECTED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.RANK_LOST: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK_LOST,
-     _RCS.STEP_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.BONUS_STEP_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.STEPS_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.BONUS_STEPS_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.STEP_LOST: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE,
-     _RCS.NOTHING_CHANGED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE}
-    _TITLE_LABEL_MAP = {_RCS.LEAGUE_EARNED: R.strings.ranked_battles.battleresult.leagueEarned(),
-     _RCS.DIVISION_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(),
-     _RCS.QUAL_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(),
-     _RCS.QUAL_UNBURN_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(),
-     _RCS.RANK_EARNED: R.strings.ranked_battles.battleresult.rankEarned(),
-     _RCS.RANK_SHIELD_PROTECTED: R.strings.ranked_battles.battleresult.shieldLoseStep(),
-     _RCS.RANK_UNBURN_PROTECTED: R.strings.ranked_battles.battleresult.rankUnburnable(),
-     _RCS.RANK_LOST: R.strings.ranked_battles.battleresult.rankLost(),
-     _RCS.BONUS_STEP_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(),
-     _RCS.BONUS_STEPS_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(),
-     _RCS.STEP_EARNED: R.strings.ranked_battles.battleresult.stageEarned(),
-     _RCS.STEPS_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(),
-     _RCS.STEP_LOST: R.strings.ranked_battles.battleresult.stageLost(),
-     _RCS.NOTHING_CHANGED: R.strings.ranked_battles.battleresult.stageSaved()}
+    _STEPS_ICONS = {_RCS.BONUS_STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage4_bonus(), 
+       _RCS.STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage2_green(), 
+       _RCS.BONUS_STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage2_bonus(), 
+       _RCS.STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_green(), 
+       _RCS.STEP_LOST: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_red(), 
+       _RCS.NOTHING_CHANGED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_grey(), 
+       _RCS.RANK_UNBURN_PROTECTED: R.images.gui.maps.icons.rankedBattles.ranks.stage.c_140x120.stage_grey()}
+    _MINI_STEPS_ICONS = {MiniSteps.STEPS_EARNED_BONUS: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus2Bonus(), 
+       MiniSteps.STEP_EARNED_BONUS: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus1Bonus(), 
+       MiniSteps.STEPS_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus2(), 
+       MiniSteps.STEP_EARNED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.plus1(), 
+       MiniSteps.STEP_NOT_CHANGED: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.nothing(), 
+       MiniSteps.STEP_LOST: R.images.gui.maps.icons.rankedBattles.ranks.miniStage.minus1()}
+    _STATE_TO_SUBTASK = {_RCS.LEAGUE_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_LEAGUE, 
+       _RCS.DIVISION_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION, 
+       _RCS.QUAL_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION, 
+       _RCS.QUAL_UNBURN_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION, 
+       _RCS.RANK_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK, 
+       _RCS.RANK_SHIELD_PROTECTED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK, 
+       _RCS.RANK_UNBURN_PROTECTED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.RANK_LOST: RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK_LOST, 
+       _RCS.STEP_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.BONUS_STEP_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.STEPS_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.BONUS_STEPS_EARNED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.STEP_LOST: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, 
+       _RCS.NOTHING_CHANGED: RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE}
+    _TITLE_LABEL_MAP = {_RCS.LEAGUE_EARNED: R.strings.ranked_battles.battleresult.leagueEarned(), 
+       _RCS.DIVISION_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(), 
+       _RCS.QUAL_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(), 
+       _RCS.QUAL_UNBURN_EARNED: R.strings.ranked_battles.battleresult.divisionEarned(), 
+       _RCS.RANK_EARNED: R.strings.ranked_battles.battleresult.rankEarned(), 
+       _RCS.RANK_SHIELD_PROTECTED: R.strings.ranked_battles.battleresult.shieldLoseStep(), 
+       _RCS.RANK_UNBURN_PROTECTED: R.strings.ranked_battles.battleresult.rankUnburnable(), 
+       _RCS.RANK_LOST: R.strings.ranked_battles.battleresult.rankLost(), 
+       _RCS.BONUS_STEP_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(), 
+       _RCS.BONUS_STEPS_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(), 
+       _RCS.STEP_EARNED: R.strings.ranked_battles.battleresult.stageEarned(), 
+       _RCS.STEPS_EARNED: R.strings.ranked_battles.battleresult.stagesEarned(), 
+       _RCS.STEP_LOST: R.strings.ranked_battles.battleresult.stageLost(), 
+       _RCS.NOTHING_CHANGED: R.strings.ranked_battles.battleresult.stageSaved()}
 
     def makeTitleAndDescription(self, allyVehicles):
         isWin = self._reusable.getPersonalTeam() == self._reusable.common.winnerTeam
@@ -249,10 +262,7 @@ class RankedChangesInfoHelper(RankedInfoHelper):
             description = backport.text(R.strings.ranked_battles.battleresult.notInTop.stageSaved())
         if rankInfo.isBonusBattle:
             description = text_styles.concatStylesToSingleLine(description, backport.text(R.strings.ranked_battles.battleresult.bonusBattlesUsed()))
-        if rankState in (_RCS.DIVISION_EARNED,
-         _RCS.LEAGUE_EARNED,
-         _RCS.QUAL_EARNED,
-         _RCS.QUAL_UNBURN_EARNED):
+        if rankState in (_RCS.DIVISION_EARNED, _RCS.LEAGUE_EARNED, _RCS.QUAL_EARNED, _RCS.QUAL_UNBURN_EARNED):
             if rankState == _RCS.LEAGUE_EARNED:
                 description = backport.text(R.strings.ranked_battles.battleresult.leagueUnavailable())
             bonusBattlesIncome = getBonusBattlesIncome(R.strings.ranked_battles.battleresult.bonusBattlesEarned, rankInfo.stepsBonusBattles, rankInfo.efficiencyBonusBattles, rankState == _RCS.LEAGUE_EARNED)
@@ -267,7 +277,7 @@ class RankedChangesInfoHelper(RankedInfoHelper):
         if state == RANKEDBATTLES_ALIASES.SUBTASK_STATE_LEAGUE:
             icon = backport.image(R.images.gui.maps.icons.rankedBattles.league.c_70x70.c_0())
         elif state == RANKEDBATTLES_ALIASES.SUBTASK_STATE_DIVISION:
-            icon = backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_58x80.dyn('c_{}'.format(self.rankedController.getDivision(rankInfo.accRank + 1).getID()))())
+            icon = backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_58x80.dyn(('c_{}').format(self.rankedController.getDivision(rankInfo.accRank + 1).getID()))())
         elif state == RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK_LOST:
             icon = self.__getRankIcon(rankInfo.prevAccRank)
         elif state == RANKEDBATTLES_ALIASES.SUBTASK_STATE_RANK:
@@ -289,26 +299,26 @@ class RankedChangesInfoHelper(RankedInfoHelper):
     def _getDescriptionIcon(self, state, stepChanges, updatedStepChanges):
         if stepChanges is None:
             return
-        if state in (_RCS.RANK_UNBURN_PROTECTED, _RCS.RANK_SHIELD_PROTECTED, _RCS.QUAL_UNBURN_EARNED):
-            if stepChanges == MiniSteps.STEP_LOST:
-                return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.miniStage.protected())
-        subTaskState = self.makeSubTaskState()
-        if subTaskState not in (RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, RANKEDBATTLES_ALIASES.SUBTASK_STATE_LEAGUE):
-            if stepChanges == MiniSteps.STEP_LOST and self.settingsCore.getSetting('isColorBlind'):
-                return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.miniStage.blindMinus1())
-            if stepChanges == MiniSteps.STEP_EARNED and updatedStepChanges > stepChanges:
-                stepChanges = MiniSteps.STEP_EARNED_BONUS
-            elif stepChanges == MiniSteps.STEPS_EARNED and updatedStepChanges > stepChanges:
-                stepChanges = MiniSteps.STEPS_EARNED_BONUS
-            return backport.image(self._MINI_STEPS_ICONS[stepChanges])
         else:
+            if state in (_RCS.RANK_UNBURN_PROTECTED, _RCS.RANK_SHIELD_PROTECTED, _RCS.QUAL_UNBURN_EARNED):
+                if stepChanges == MiniSteps.STEP_LOST:
+                    return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.miniStage.protected())
+            subTaskState = self.makeSubTaskState()
+            if subTaskState not in (RANKEDBATTLES_ALIASES.SUBTASK_STATE_STAGE, RANKEDBATTLES_ALIASES.SUBTASK_STATE_LEAGUE):
+                if stepChanges == MiniSteps.STEP_LOST and self.settingsCore.getSetting('isColorBlind'):
+                    return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.miniStage.blindMinus1())
+                if stepChanges == MiniSteps.STEP_EARNED and updatedStepChanges > stepChanges:
+                    stepChanges = MiniSteps.STEP_EARNED_BONUS
+                elif stepChanges == MiniSteps.STEPS_EARNED and updatedStepChanges > stepChanges:
+                    stepChanges = MiniSteps.STEPS_EARNED_BONUS
+                return backport.image(self._MINI_STEPS_ICONS[stepChanges])
             return
 
     def _getLoserBounds(self, position):
         loserRankChanges = self.rankedController.getRanksChanges(isLoser=True)
         if position is None:
             return sum([ 1 for item in loserRankChanges if item >= 0 ])
-        elif loserRankChanges[position] >= 0:
+        if loserRankChanges[position] >= 0:
             for idx, stepChange in enumerate(loserRankChanges[position:]):
                 if stepChange != loserRankChanges[position]:
                     return position + idx
@@ -332,13 +342,13 @@ class RankedChangesInfoHelper(RankedInfoHelper):
                 tmpXp = item.xp
                 position += 1
 
-        return None
+        return
 
     def _getWinnerBounds(self, position):
         winnerRankChanges = self.rankedController.getRanksChanges(isLoser=False)
         if position is None:
             return sum([ 1 for item in winnerRankChanges if item > 0 ])
-        elif winnerRankChanges[position] > 0:
+        if winnerRankChanges[position] > 0:
             for idx, stepChange in enumerate(winnerRankChanges[position:]):
                 if stepChange != winnerRankChanges[position]:
                     return position + idx
@@ -384,7 +394,8 @@ class RankedResultsEnableAnimation(base.StatsItem):
 
 
 class RankChangesBlock(base.StatsBlock):
-    __slots__ = ('state', 'linkage', 'title', 'description', 'descriptionIcon', 'icon', 'plateIcon', 'shieldIcon', 'shieldCount')
+    __slots__ = ('state', 'linkage', 'title', 'description', 'descriptionIcon', 'icon',
+                 'plateIcon', 'shieldIcon', 'shieldCount')
 
     def __init__(self, meta=None, field='', *path):
         super(RankChangesBlock, self).__init__(meta, field, *path)

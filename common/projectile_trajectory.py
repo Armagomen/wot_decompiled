@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/projectile_trajectory.py
-import BigWorld
-import Math
+import BigWorld, Math
 
 def computeProjectileTrajectory(beginPoint, velocity, gravity, time, epsilon):
     endPoint = beginPoint + velocity.scale(time) + gravity.scale(time * time * 0.5)
@@ -10,7 +7,9 @@ def computeProjectileTrajectory(beginPoint, velocity, gravity, time, epsilon):
 
 def computeProjectileTrajectoryWithEnd(beginPoint, endPoint, velocity, gravity, epsilon):
     checkPoints = []
-    stack = [(velocity, beginPoint, endPoint)]
+    stack = [
+     (
+      velocity, beginPoint, endPoint)]
     while len(stack) > 0:
         lastIdx = len(stack) - 1
         v1, p1, p2 = stack[lastIdx]
@@ -29,7 +28,8 @@ def computeProjectileTrajectoryWithEnd(beginPoint, endPoint, velocity, gravity, 
             extremeVelocity = v1 + gravity.scale(extremeTime)
             stack.append((extremeVelocity, p1 + extremePoint, p2))
             stack.append((v1, p1, p1 + extremePoint))
-        checkPoints.append(p2)
+        else:
+            checkPoints.append(p2)
 
     return checkPoints
 

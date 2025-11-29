@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/skill_formatters.py
 from gui.impl.gen.view_models.views.lobby.crew.crew_constants import CrewConstants
 from items.tankmen import MAX_SKILL_LEVEL
 
@@ -21,10 +19,10 @@ class SkillLvlFormatter(object):
         self.__lvlCost = lvlCost
 
     def __str__(self):
-        return 'SkillLvlFormatter(skillLvl={}, residual={}, lvlCost={})'.format(self.__skillLvl, self.__residual, self.__lvlCost)
+        return ('SkillLvlFormatter(skillLvl={}, residual={}, lvlCost={})').format(self.__skillLvl, self.__residual, self.__lvlCost)
 
     def __repr__(self):
-        return '<{}>'.format(self.__str__())
+        return ('<{}>').format(self.__str__())
 
     def __add__(self, other):
         if self.isSkillLvl:
@@ -68,7 +66,9 @@ class SkillLvlFormatter(object):
         raise TypeError('hash not implemented')
 
     def _cmp(self, other):
-        return cmp(self.intSkillLvl, other) if isinstance(other, int) else cmp(self.makeRealLvl(), other.makeRealLvl())
+        if isinstance(other, int):
+            return cmp(self.intSkillLvl, other)
+        return cmp(self.makeRealLvl(), other.makeRealLvl())
 
     def makeRealLvl(self):
         if not self.isSkillLvl:
@@ -86,7 +86,9 @@ class SkillLvlFormatter(object):
             return self.roundLvl(realLvl, self.NDIG)
         if realLvl < self.MIN_FRACTION:
             return realLvl
-        return self.MAX_FRACTION if realLvl < MAX_SKILL_LEVEL else MAX_SKILL_LEVEL
+        if realLvl < MAX_SKILL_LEVEL:
+            return self.MAX_FRACTION
+        return MAX_SKILL_LEVEL
 
     @staticmethod
     def roundLvl(realNumber, ndig):

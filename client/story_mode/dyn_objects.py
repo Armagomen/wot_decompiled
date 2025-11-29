@@ -1,16 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/dyn_objects.py
 import typing
 from dyn_objects_cache import DynObjectsBase, createTerrainCircleSettings
 from story_mode_common.story_mode_constants import RECON_ABILITY, DISTRACTION_ABILITY, SCC_AIRSTRIKE_ABILITY, SCC_AIRSTRIKE_ABILITY_HARD
 if typing.TYPE_CHECKING:
     from ResMgr import DataSection
 DEFAULT = 'default'
-EQUIPMENT_VISUALS = {SCC_AIRSTRIKE_ABILITY: 'SMSccAirstrikeAimingCircleVisual',
- SCC_AIRSTRIKE_ABILITY_HARD: 'SMSccAirstrikeAimingCircleVisual',
- RECON_ABILITY: 'ReconAimingCircleVisual',
- DISTRACTION_ABILITY: 'DistractionAimingCircleVisual',
- DEFAULT: 'AimingCircleRestrictionVisual'}
+EQUIPMENT_VISUALS = {SCC_AIRSTRIKE_ABILITY: 'SMSccAirstrikeAimingCircleVisual', 
+   SCC_AIRSTRIKE_ABILITY_HARD: 'SMSccAirstrikeAimingCircleVisual', 
+   RECON_ABILITY: 'ReconAimingCircleVisual', 
+   DISTRACTION_ABILITY: 'DistractionAimingCircleVisual', 
+   DEFAULT: 'AimingCircleRestrictionVisual'}
 
 class StoryModeDynObjects(DynObjectsBase):
 
@@ -32,4 +30,6 @@ class StoryModeDynObjects(DynObjectsBase):
 
     def getAimingCircleRestrictionEffect(self, equipment):
         settings = self._circleSettings.get(equipment.name)
-        return settings if settings else self._circleSettings.get(DEFAULT)
+        if settings:
+            return settings
+        return self._circleSettings.get(DEFAULT)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/base/controller.py
-import typing
-import wg_async
+import typing, wg_async
 from BWUtil import AsyncReturn
 from gui.platform.base import logger
 from gui.platform.base.requester import PlatformRequester

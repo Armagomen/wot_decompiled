@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/prebattle_timer.py
 import BattleReplay
 from constants import ARENA_PERIOD, VEHICLE_SELECTION_BLOCK_DELAY
 from comp7_core.gui.Scaleform.daapi.view.meta.Comp7PrebattleTimerMeta import Comp7PrebattleTimerMeta
@@ -99,8 +97,8 @@ class Comp7PrebattleTimer(Comp7PrebattleTimerMeta):
             self.as_showInfoS()
 
     def __getInfoVO(self):
-        return {'readyBtnLabel': backport.text(self.__RES_ROOT.info.readyBtn.label()),
-         'readyBtnTooltip': makeTooltip(body=backport.text(self.__RES_ROOT.info.readyBtn.tooltip.body()))}
+        return {'readyBtnLabel': backport.text(self.__RES_ROOT.info.readyBtn.label()), 
+           'readyBtnTooltip': makeTooltip(body=backport.text(self.__RES_ROOT.info.readyBtn.tooltip.body()))}
 
     def __onPrebattleInputStateLocked(self, _):
         self.__setIsPrebattleInputStateLocked(True)

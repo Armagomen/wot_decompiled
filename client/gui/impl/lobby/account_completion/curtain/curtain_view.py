@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_completion/curtain/curtain_view.py
 import typing
 from frameworks.wulf import ViewSettings, WindowLayer
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
@@ -133,7 +131,7 @@ class CurtainView(ViewImpl, IGlobalListener):
             self.viewModel.setState(CurtainStateEnum.OPENED)
 
     def _waitingChangedHandler(self, isVisible, msgResID=R.invalid()):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsWaiting(isVisible)
             model.setWaitingText(msgResID)
 
@@ -142,9 +140,7 @@ class CurtainView(ViewImpl, IGlobalListener):
         if args is None:
             return
         else:
-            ctx = {'dx': args.get('dx'),
-             'dy': args.get('dy'),
-             'dz': args.get('dz')}
+            ctx = {'dx': args.get('dx'), 'dy': args.get('dy'), 'dz': args.get('dz')}
             g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return
@@ -193,4 +189,7 @@ class CurtainWindow(LobbyWindow):
     @staticmethod
     def getActiveSubView():
         curtainView = CurtainWindow.getOpenedCurtainView()
-        return curtainView.activeSubView if curtainView else None
+        if curtainView:
+            return curtainView.activeSubView
+        else:
+            return

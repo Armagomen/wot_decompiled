@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/config_schemas/umg_config.py
 from base_schema_manager import GameParamsSchema
 from dict2model import fields, models
 
@@ -14,13 +12,11 @@ class ConfigModel(models.Model):
         self.enablePM3Banner = enablePM3Banner
 
     def _reprArgs(self):
-        return 'enableAllDaily=%s, enableAllWeekly=%s, enableDailyWeeklyUI=%s, enablePM3Banner=%s' % (self.enableAllDaily,
-         self.enableAllWeekly,
-         self.enableDailyWeeklyUI,
-         self.enablePM3Banner)
+        return 'enableAllDaily=%s, enableAllWeekly=%s, enableDailyWeeklyUI=%s, enablePM3Banner=%s' % (
+         self.enableAllDaily, self.enableAllWeekly, self.enableDailyWeeklyUI, self.enablePM3Banner)
 
 
-umgConfigSchema = GameParamsSchema[ConfigModel](gameParamsKey='umgConfig', modelClass=ConfigModel, fields={'enableAllDaily': fields.Integer(),
- 'enableAllWeekly': fields.Integer(),
- 'enableDailyWeeklyUI': fields.Integer(),
- 'enablePM3Banner': fields.Integer()})
+umgConfigSchema = GameParamsSchema[ConfigModel](gameParamsKey='umgConfig', modelClass=ConfigModel, fields={'enableAllDaily': fields.Integer(), 
+   'enableAllWeekly': fields.Integer(), 
+   'enableDailyWeeklyUI': fields.Integer(), 
+   'enablePM3Banner': fields.Integer()})

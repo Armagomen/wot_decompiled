@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/spectator_view.py
 import logging
 from enum import Enum
 from collections import namedtuple
-import BigWorld
-import CommandMapping
+import BigWorld, CommandMapping
 from AvatarInputHandler.control_modes import DeathFreeCamMode
 from helpers import dependency, time_utils
 from helpers.CallbackDelayer import CallbackDelayer
@@ -16,7 +13,8 @@ from gui.Scaleform.daapi.view.meta.SpectatorViewMeta import SpectatorViewMeta
 from gui.Scaleform.genConsts.EPIC_CONSTS import EPIC_CONSTS
 from skeletons.gui.battle_session import IBattleSessionProvider
 _logger = logging.getLogger(__name__)
-_MovementKeyBindings = namedtuple('MovementKeyBindings', ('forward', 'left', 'backward', 'right'))
+_MovementKeyBindings = namedtuple('MovementKeyBindings', ('forward', 'left', 'backward',
+                                                          'right'))
 
 class SPECTATOR_VIEW_SOUND(object):
     SPEED_CHANGE = 'dc_fc_speed_change'
@@ -182,7 +180,9 @@ class SpectatorView(SpectatorViewMeta, ISpectatorViewListener, CallbackDelayer):
         if not avatar:
             return False
         controlMode = avatar.inputHandler.ctrl
-        return controlMode.showFreeCamHints() if isinstance(controlMode, DeathFreeCamMode) else False
+        if isinstance(controlMode, DeathFreeCamMode):
+            return controlMode.showFreeCamHints()
+        return False
 
     def __playFollowHintSound(self, toggle):
         if not toggle:

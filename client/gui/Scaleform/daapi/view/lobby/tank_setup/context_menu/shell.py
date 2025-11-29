@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/shell.py
 from adisp import adisp_async, adisp_process
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import CMLabel, option
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel, FIRST_SLOT, SECOND_SLOT, THIRD_SLOT, BaseTankSetupContextMenu
@@ -32,12 +30,10 @@ class ShellItemContextMenu(BaseTankSetupContextMenu):
         view = self._getEmitterView()
         if view is None or self._slotType != view.getSelectedSetup():
             return
-        else:
-            view.sendSlotAction({'actionType': BaseSetupModel.SWAP_SLOTS_ACTION,
-             'intCD': self._intCD,
-             'leftID': min(onId, self._installedSlotId),
-             'rightID': max(onId, self._installedSlotId)})
-            return
+        view.sendSlotAction({'actionType': BaseSetupModel.SWAP_SLOTS_ACTION, 
+           'intCD': self._intCD, 'leftID': min(onId, self._installedSlotId), 
+           'rightID': max(onId, self._installedSlotId)})
+        return
 
     def _initFlashValues(self, ctx):
         super(ShellItemContextMenu, self)._initFlashValues(ctx)
@@ -60,7 +56,9 @@ class HangarShellItemContextMenu(BaseHangarEquipmentSlotContextMenu):
         self._makePutOnAction(TankSetupConstants.SHELLS, onId, copyVehicle, layout)
 
     def _isVisible(self, label):
-        return False if label == CMLabel.UPGRADE else super(HangarShellItemContextMenu, self)._isVisible(label)
+        if label == CMLabel.UPGRADE:
+            return False
+        return super(HangarShellItemContextMenu, self)._isVisible(label)
 
     @adisp_async
     @adisp_process

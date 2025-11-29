@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_results/components.py
 import logging
 from collections import defaultdict
 from constants import ARENA_BONUS_TYPE, DEATH_REASON_ALIVE
@@ -26,7 +24,8 @@ _logger.addHandler(logging.NullHandler())
 _THE_BEST_RANK = 1
 
 def _isSquadMode(reusable):
-    return reusable.common.arenaBonusType in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
+    return reusable.common.arenaBonusType in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD,
+     ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
 
 
 class BattleRoyaleArenaNameBlock(base.StatsItem):
@@ -140,13 +139,11 @@ class BattleRoyaleVehicleStatusBlock(base.StatsBlock):
                 if isBot:
                     vehicle = getter(reusable.vehicles.getVehicleInfo(killerVehicleID).intCD)
                     userName = vehicle.shortUserName
-                self.killer = {'userName': userName,
-                 'clanAbbrev': killerInfo.clanAbbrev,
-                 'isBot': isBot}
+                self.killer = {'userName': userName, 'clanAbbrev': killerInfo.clanAbbrev, 
+                   'isBot': isBot}
             else:
-                self.killer = {'userName': killerInfo.fakeName,
-                 'clanAbbrev': '',
-                 'isBot': isBot}
+                self.killer = {'userName': killerInfo.fakeName, 'clanAbbrev': '', 
+                   'isBot': isBot}
             self.isSelfDestroyer = killerInfo.realName == playerInfo.realName
 
 
@@ -247,13 +244,15 @@ class BattleRoyaleStatsItemBlock(base.StatsBlock):
         self.wreathImage = self._getWreathImage(result, reusable)
 
     def _getValue(self, result, reusable):
-        pass
+        return 0
 
     def _getMaxValue(self, result, reusable):
-        pass
+        return -1
 
     def _getWreathImage(self, result, reusable):
-        return self._ICON_PATH.wreath_silver() if self._isTop(result, reusable) else self._DEFAULT_ICON()
+        if self._isTop(result, reusable):
+            return self._ICON_PATH.wreath_silver()
+        return self._DEFAULT_ICON()
 
     def _isTop(self, result, reusable):
         return False
@@ -291,10 +290,14 @@ class PlaceParameter(BattleRoyaleStatsItemBlock):
             return not player.vehicle.isObserver and player.player.dbID != 0
 
         allPlayers = filter(playerFilter, list(reusable.getAllPlayersIterator(result['vehicles'])))
-        return len(set((item.player.team for item in allPlayers))) if _isSquadMode(reusable) else len(allPlayers)
+        if _isSquadMode(reusable):
+            return len(set(item.player.team for item in allPlayers))
+        return len(allPlayers)
 
     def _getWreathImage(self, result, reusable):
-        return self._ICON_PATH.wreath_gold() if self.value == _THE_BEST_RANK else self._DEFAULT_ICON()
+        if self.value == _THE_BEST_RANK:
+            return self._ICON_PATH.wreath_gold()
+        return self._DEFAULT_ICON()
 
 
 class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
@@ -303,7 +306,7 @@ class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
     def _getValue(self, result, reusable):
         allPlayers = reusable.getAllPlayersIterator(result['vehicles'])
         team = reusable.getPlayerInfo().team
-        return sum(list((item.kills for item in allPlayers if team != 0 and team == item.player.team)))
+        return sum(list(item.kills for item in allPlayers if team != 0 and team == item.player.team))
 
     def _isTop(self, result, reusable):
         if self.value == 0:
@@ -319,11 +322,11 @@ class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
 
 class BattleRoyaleStatsBlock(base.StatsBlock):
     __slots__ = ()
-    _itemsFactory = {StatsItemType.PLACE: PlaceParameter,
-     StatsItemType.KILLS_SOLO: SimpleEfficiencyParameter,
-     StatsItemType.KILLS_SQUAD: KilledBySquadParameter,
-     StatsItemType.DAMAGE_DEAL: SimpleEfficiencyParameter,
-     StatsItemType.DAMAGE_BLOCK: SimpleEfficiencyParameter}
+    _itemsFactory = {StatsItemType.PLACE: PlaceParameter, 
+       StatsItemType.KILLS_SOLO: SimpleEfficiencyParameter, 
+       StatsItemType.KILLS_SQUAD: KilledBySquadParameter, 
+       StatsItemType.DAMAGE_DEAL: SimpleEfficiencyParameter, 
+       StatsItemType.DAMAGE_BLOCK: SimpleEfficiencyParameter}
 
     def setRecord(self, result, reusable):
         items = SQUAD_ITEMS_ORDER if _isSquadMode(reusable) else SOLO_ITEMS_ORDER
@@ -339,7 +342,8 @@ class BattleRoyaleStatsBlock(base.StatsBlock):
 
 
 class BattleRoyaleRewardsBlock(base.StatsBlock):
-    __slots__ = ('achievements', 'bonuses', 'completedQuestsCount', 'completedQuests', 'brAwardTokens')
+    __slots__ = ('achievements', 'bonuses', 'completedQuestsCount', 'completedQuests',
+                 'brAwardTokens')
     __eventsCache = dependency.descriptor(IEventsCache)
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
     __QUESTS_WITH_MEDALS = frozenset(['br_battle_result_solo_1', 'br_battle_result_squad_1'])
@@ -389,7 +393,7 @@ class BattleRoyaleRewardsBlock(base.StatsBlock):
 
 
 class BattlePassBlock(base.StatsBlock):
-    __slots__ = ('bpTopPoints',)
+    __slots__ = ('bpTopPoints', )
 
     def __init__(self, meta=None, field='', *path):
         super(BattlePassBlock, self).__init__(meta, field, *path)
@@ -401,7 +405,9 @@ class BattlePassBlock(base.StatsBlock):
 
 
 class BattleRoyalePlayerBlock(base.StatsBlock):
-    __slots__ = ('isPersonal', 'userName', 'clanAbbrev', 'place', 'isPersonalSquad', 'squadIdx', 'hiddenName', 'achievedLevel', 'kills', 'damage', 'vehicleName', 'vehicleType', 'databaseID', 'prebattleID')
+    __slots__ = ('isPersonal', 'userName', 'clanAbbrev', 'place', 'isPersonalSquad',
+                 'squadIdx', 'hiddenName', 'achievedLevel', 'kills', 'damage', 'vehicleName',
+                 'vehicleType', 'databaseID', 'prebattleID')
 
     def __init__(self, meta=None, field='', *path):
         super(BattleRoyalePlayerBlock, self).__init__(meta, field, *path)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/backport/backport_tooltip.py
 from collections import namedtuple
 from typing import TYPE_CHECKING
 from frameworks.wulf import ViewModel, Window, WindowFlags, ViewSettings, PositionAnchor
@@ -12,12 +10,10 @@ if TYPE_CHECKING:
     from typing import Optional, Iterable, Any
     from frameworks.wulf import ViewEvent
 _STATE_TYPE_INFO = 'INFO'
-TooltipData = namedtuple('TooltipData', ('tooltip', 'isSpecial', 'specialAlias', 'specialArgs', 'isWulfTooltip'))
-TooltipData.__new__.__defaults__ = ('',
- False,
- '',
- None,
- False)
+TooltipData = namedtuple('TooltipData', ('tooltip', 'isSpecial', 'specialAlias', 'specialArgs',
+                                         'isWulfTooltip'))
+TooltipData.__new__.__defaults__ = (
+ '', False, '', None, False)
 
 def createTooltipData(tooltip=None, isSpecial=False, specialAlias=None, specialArgs=None, isWulfTooltip=False):
     if specialArgs is None:

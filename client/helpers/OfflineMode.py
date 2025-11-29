@@ -1,15 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/OfflineMode.py
-import math
-import logging
-import sys
-import BigWorld
-import GUI
-import Keys
-import Math
-import ResMgr
-import WWISE
-import game_mode_emulator
+import math, logging, sys, BigWorld, GUI, Keys, Math, ResMgr, WWISE, game_mode_emulator
 _logger = logging.getLogger(__name__)
 g_offlineModeEnabled = False
 g_offlineModeSpaceLoaded = False
@@ -21,7 +10,8 @@ MOVE_SPEED_ADJUST = 0.1
 FOV_ADJUST = math.radians(10)
 FOV_MIN = math.radians(10)
 FOV_MAX = math.radians(160)
-MOUSE_TOGGLE_KEYS = [Keys.KEY_ESCAPE, Keys.KEY_LEFTMOUSE]
+MOUSE_TOGGLE_KEYS = [
+ Keys.KEY_ESCAPE, Keys.KEY_LEFTMOUSE]
 SPACE_LOAD_EPS = 0.0001
 
 class CameraTransform(object):
@@ -99,7 +89,7 @@ def isSpaceLoaded():
 def onStartup():
     try:
         idx = sys.argv.index('offline')
-        offlineSpace = sys.argv[idx + 1]
+        offlineSpace = sys.argv[(idx + 1)]
         launch(offlineSpace)
         return True
     except (ValueError, IndexError):

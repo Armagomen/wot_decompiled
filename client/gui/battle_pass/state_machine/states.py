@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/state_machine/states.py
 from functools import partial
 import typing
 from battle_pass_common import BattlePassRewardReason, get3DStyleProgressToken
@@ -204,10 +202,10 @@ class RewardStyleState(State):
                 machine.post(StateEvent())
                 return
             prevLevel, _ = self.__battlePass.getChapterLevelInterval(chapterID)
-            data = {'reason': BattlePassRewardReason.STYLE_UPGRADE,
-             'chapter': chapterID,
-             'prevLevel': prevLevel,
-             'exitCallback': partial(machine.post, StateEvent())}
+            data = {'reason': BattlePassRewardReason.STYLE_UPGRADE, 
+               'chapter': chapterID, 
+               'prevLevel': prevLevel, 
+               'exitCallback': partial(machine.post, StateEvent())}
             styleToken = get3DStyleProgressToken(self.__battlePass.getSeasonID(), chapterID, level)
             rewards = packToken(styleToken)
             machine.clearChapterStyle()
@@ -216,7 +214,7 @@ class RewardStyleState(State):
 
 
 class RewardAnyState(State):
-    __slots__ = ('__needShowBuy',)
+    __slots__ = ('__needShowBuy', )
     __guiLoader = dependency.descriptor(IGuiLoader)
     __battlePass = dependency.descriptor(IBattlePassController)
 

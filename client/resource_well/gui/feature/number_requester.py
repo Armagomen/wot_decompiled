@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/number_requester.py
-import json
-import logging
-import typing
+import json, logging, typing
 from wg_async import wg_async, wg_await
 from Event import Event
 from gui.game_control.reactive_comm import Subscription
@@ -56,10 +52,16 @@ class ResourceWellNumberRequester(object):
         return
 
     def getValuesLeft(self):
-        return self.__remainingValues if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable else None
+        if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable:
+            return self.__remainingValues
+        else:
+            return
 
     def getRemainingValues(self):
-        return self.__remainingValues if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable and self.__initialValues != _NO_VEHICLES_VALUE else self.__initialValues
+        if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable and self.__initialValues != _NO_VEHICLES_VALUE:
+            return self.__remainingValues
+        else:
+            return self.__initialValues
 
     def getGivenValues(self):
         return self.__givenValues
@@ -74,10 +76,10 @@ class ResourceWellNumberRequester(object):
         if self.__subscription is not None:
             _logger.debug('Requester is already subscribed to channel: <%s>', channelName)
             return
-        elif not self.__reactiveCommunication.isChannelSubscriptionAvailable:
-            _logger.error('Channel subscription is unavailable! Please check reactive communication settings')
-            return
         else:
+            if not self.__reactiveCommunication.isChannelSubscriptionAvailable:
+                _logger.error('Channel subscription is unavailable! Please check reactive communication settings')
+                return
             self.__subscription = Subscription(channelName)
             status = yield wg_await(self.__reactiveCommunication.subscribeToChannel(self.__subscription))
             _logger.debug('Subscription status for channel <%s>: %s', channelName, status)

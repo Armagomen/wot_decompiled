@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/tips.py
-import typing
-import logging
-import random
-import re
+import typing, logging, random, re
 from collections import namedtuple
 import nations
 from account_helpers import AccountSettings
@@ -75,13 +70,15 @@ class TipsCriteria(object):
         return foundTip
 
     def _getArenaGuiType(self):
-        return None
+        return
 
     def _getTipsValidator(self):
         return _TipsValidator()
 
     def _suitableTipPredicate(self, tip):
-        return False if tip is None or self._tipsValidator is None else self._tipsValidator.validateRegularTip(tipFilter=tip.tipFilter, ctx=self._ctx)
+        if tip is None or self._tipsValidator is None:
+            return False
+        return self._tipsValidator.validateRegularTip(tipFilter=tip.tipFilter, ctx=self._ctx)
 
     def _getTargetList(self):
         _logger.error('Method _getTargetList has to be overridden')
@@ -155,12 +152,11 @@ class BattleRoyaleTipsCriteria(TipsCriteria):
             foundTip.markWatched()
             tipData = foundTip.getData()
             geometryName = replaceHyphenToUnderscore(self._arenaVisitor.getArenaType().geometryName)
-            geomertyIconResId = _tryGetTipIconRes('_'.join((foundTip.getTipId(), geometryName)))
+            geomertyIconResId = _tryGetTipIconRes(('_').join((foundTip.getTipId(), geometryName)))
             if geomertyIconResId != R.invalid():
                 tipData = TipData(tipData.status, tipData.body, geomertyIconResId)
             return tipData
-        else:
-            return TipData(R.invalid(), R.invalid(), R.invalid())
+        return TipData(R.invalid(), R.invalid(), R.invalid())
 
     def _getTargetList(self):
         return _battleRoyaleTips
@@ -193,14 +189,16 @@ class _MapboxTipsCriteria(TipsCriteria):
 
 
 class ExactTipsCriteria(TipsCriteria):
-    __slots__ = ('_exactTip',)
+    __slots__ = ('_exactTip', )
 
     def __init__(self, _exactTipPattern):
         self._exactTip = readTips(_exactTipPattern)
         super(ExactTipsCriteria, self).__init__()
 
     def find(self):
-        return self._exactTip[0].getData() if self._exactTip else TipData(R.invalid(), R.invalid(), R.invalid())
+        if self._exactTip:
+            return self._exactTip[0].getData()
+        return TipData(R.invalid(), R.invalid(), R.invalid())
 
 
 registerBattleTipCriteria(ARENA_GUI_TYPE.EVENT_BATTLES, _EventTipsCriteria)
@@ -217,7 +215,10 @@ def getTipsCriteria(arenaVisitor):
         if exactTipID:
             return ExactTipsCriteria('^(' + exactTipID + ')')
     criteriaCls = collectBattleTipsCriteria(arenaVisitor.gui.guiType)
-    return _getRandomTipsCriteria(arenaVisitor) if criteriaCls is None else criteriaCls(arenaVisitor)
+    if criteriaCls is None:
+        return _getRandomTipsCriteria(arenaVisitor)
+    else:
+        return criteriaCls(arenaVisitor)
 
 
 def showExactTip(exactTipID):
@@ -253,24 +254,31 @@ def _buildBattleLoadingTip(tipID, descriptionResID):
 
 
 def _getRandomTipsCriteria(arenaVisitor):
-    return _DevMapsTipsCriteria() if arenaVisitor.extra.isMapsInDevelopmentEnabled() else _RandomTipsCriteria()
+    if arenaVisitor.extra.isMapsInDevelopmentEnabled():
+        return _DevMapsTipsCriteria()
+    return _RandomTipsCriteria()
 
 
 def _getTipIconRes(tipID, group):
     res = R.images.gui.maps.icons.battleLoading.tips.dyn(tipID)
-    return res() if res.exists() else R.images.gui.maps.icons.battleLoading.groups.dyn(group)()
+    if res.exists():
+        return res()
+    return R.images.gui.maps.icons.battleLoading.groups.dyn(group)()
 
 
 def _tryGetTipIconRes(tipID):
     res = R.images.gui.maps.icons.battleLoading.tips.dyn(tipID)
-    return res() if res.exists() else R.invalid()
+    if res.exists():
+        return res()
+    return R.invalid()
 
 
 class _TipsValidator(object):
 
     def __init__(self):
         super(_TipsValidator, self).__init__()
-        self._validatorsList = (_BattlesValidator(),
+        self._validatorsList = (
+         _BattlesValidator(),
          _ArenaGuiTypeValidator(),
          _TagsValidator(),
          _LevelValidator(),
@@ -349,7 +357,9 @@ class _PrecedingBattleLoadingTip(_BattleLoadingTip):
 
     def getPriority(self):
         watchedTimes = _getTipWatchedCounter(self._tipId)
-        return _BattleLoadingTipPriority.PRECEDING if watchedTimes < self._showLimit else _BattleLoadingTipPriority.GENERIC
+        if watchedTimes < self._showLimit:
+            return _BattleLoadingTipPriority.PRECEDING
+        return _BattleLoadingTipPriority.GENERIC
 
 
 class _ChassisTypeValidator(object):
@@ -434,14 +444,16 @@ class _RealmsValidator(object):
 
 
 class _BattlePassValidator(object):
-    __slots__ = ('_isActiveSeason',)
+    __slots__ = ('_isActiveSeason', )
 
     def __init__(self):
         super(_BattlePassValidator, self).__init__()
         self._isActiveSeason = isBattlePassActiveSeason()
 
     def validate(self, tipFilter, _):
-        return tipFilter['isBattlePassActiveSeason'] == self._isActiveSeason if 'isBattlePassActiveSeason' in tipFilter else True
+        if 'isBattlePassActiveSeason' in tipFilter:
+            return tipFilter['isBattlePassActiveSeason'] == self._isActiveSeason
+        return True
 
 
 class _RankedBattlesValidator(object):
@@ -468,7 +480,7 @@ class _RankedBattlesValidator(object):
 
 
 class _PostProgressionValidator(object):
-    __slots__ = ('_isPostProgressionEnabled',)
+    __slots__ = ('_isPostProgressionEnabled', )
     _postProgressionCtrl = dependency.descriptor(IVehiclePostProgressionController)
 
     def __init__(self):
@@ -476,7 +488,9 @@ class _PostProgressionValidator(object):
         self._isPostProgressionEnabled = self._postProgressionCtrl.isEnabled()
 
     def validate(self, tipFilter, _):
-        return tipFilter['isPostProgressionEnabled'] == self._isPostProgressionEnabled if 'isPostProgressionEnabled' in tipFilter else True
+        if 'isPostProgressionEnabled' in tipFilter:
+            return tipFilter['isPostProgressionEnabled'] == self._isPostProgressionEnabled
+        return True
 
 
 def _getTipWatchedCounter(tipID):

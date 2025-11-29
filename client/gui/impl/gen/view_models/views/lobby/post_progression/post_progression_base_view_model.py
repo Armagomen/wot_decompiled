@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/post_progression_base_view_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.bonuses_model import BonusesModel
@@ -24,7 +22,7 @@ class ProgressionState(Enum):
 
 
 class PostProgressionBaseViewModel(ViewModel):
-    __slots__ = ('onViewRendered',)
+    __slots__ = ('onViewRendered', )
 
     def __init__(self, properties=5, commands=1):
         super(PostProgressionBaseViewModel, self).__init__(properties=properties, commands=commands)

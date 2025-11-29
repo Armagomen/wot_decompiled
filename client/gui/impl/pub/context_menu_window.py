@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/context_menu_window.py
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import View, ViewFlags, WindowFlags, ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.ui_kit.context_menu_item_model import ContextMenuItemModel
@@ -28,7 +25,7 @@ class ContextMenuContent(View):
         return super(ContextMenuContent, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._initItems()
             total = len(tx.contextMenuList.getItems())
             separators = len([ element for element in tx.contextMenuList.getItems() if element.getIsSeparator() ])
@@ -80,7 +77,7 @@ class ContextMenuContent(View):
             return
         else:
             item = found[0]
-            with item.transaction() as tx:
+            with item.transaction() as (tx):
                 if label is not None:
                     tx.setLabel(label)
                 tx.setIsEnabled(isEnabled)
@@ -94,10 +91,10 @@ class ContextMenuContent(View):
         self.viewModel.contextMenuList.getItems().addViewModel(separator)
 
     def _initItems(self):
-        raise NotImplementedError('Method _initItems should be overridden in {}'.format(self))
+        raise NotImplementedError(('Method _initItems should be overridden in {}').format(self))
 
     def _onAction(self, actionID):
-        raise NotImplementedError('Method _onAction should be overridden in {}'.format(self))
+        raise NotImplementedError(('Method _onAction should be overridden in {}').format(self))
 
     def __onItemClicked(self, args=None):
         if 'id' not in args:

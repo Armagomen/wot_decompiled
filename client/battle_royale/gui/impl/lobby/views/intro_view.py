@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/intro_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import currentHangarIsBattleRoyale
@@ -74,7 +72,7 @@ class IntroView(ViewImpl, IGlobalListener):
     def __updateViewModel(self):
         texts = R.strings.battle_royale.intro
         images = R.images.battle_royale.gui.maps.intro
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setTitle(texts.title())
             tx.setAbout(texts.aboutButton())
             tx.setButtonLabel(texts.button())

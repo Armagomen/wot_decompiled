@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/price_cards_content/retrain_massive_price_list.py
 import typing
 from frameworks.wulf import ViewSettings, Array
 from gui.impl.auxiliary.tankman_operations import packMassRetrain
@@ -14,10 +12,10 @@ from items.tankmen import TankmanDescr
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Tankman import Tankman
     from gui.shared.gui_items.Vehicle import Vehicle
-DEFAULT_OPERATION_DATA = {'isPriceApplicable': None,
- 'isCardDisabled': None,
- 'skillEfficiencies': None,
- 'cost': None}
+DEFAULT_OPERATION_DATA = {'isPriceApplicable': None, 
+   'isCardDisabled': None, 
+   'skillEfficiencies': None, 
+   'cost': None}
 
 class RetrainMassivePriceList(BasePriceList):
     __slots__ = ('_tankmen', '_vehicle')
@@ -44,11 +42,15 @@ class RetrainMassivePriceList(BasePriceList):
     @property
     def selectedOperationData(self):
         operationData = super(RetrainMassivePriceList, self).selectedOperationData
-        return DEFAULT_OPERATION_DATA if operationData is None else operationData
+        if operationData is None:
+            return DEFAULT_OPERATION_DATA
+        else:
+            return operationData
 
     def _getTankmanSkillsEfficiency(self, tankman, cost):
         isOperationUseless, isOperationDisabled, _, newSE = self.getOperationUselessInfo(tankman, tankman.role, self._vehicle, cost, self._retrainCost, True)
-        return (newSE, isOperationUseless, isOperationDisabled)
+        return (
+         newSE, isOperationUseless, isOperationDisabled)
 
     def _getOperationData(self, cost):
         ser = []
@@ -60,10 +62,10 @@ class RetrainMassivePriceList(BasePriceList):
             isApplicableForTankmen.append(isUseless)
             isCardDisabledForAllTankmen.append(isUseless or isDisabled)
 
-        return {'isPriceApplicable': isApplicableForTankmen,
-         'isCardDisabled': isCardDisabledForAllTankmen,
-         'skillEfficiencies': ser,
-         'cost': cost}
+        return {'isPriceApplicable': isApplicableForTankmen, 
+           'isCardDisabled': isCardDisabledForAllTankmen, 
+           'skillEfficiencies': ser, 
+           'cost': cost}
 
     def _fillPrices(self):
         tankmanCost = self._itemsCache.items.shop.tankmanCost

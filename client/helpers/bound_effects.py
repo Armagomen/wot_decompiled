@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/bound_effects.py
 from functools import partial
-import BigWorld
-import helpers
+import BigWorld, helpers
 from helpers.EffectsList import EffectsListPlayer
 
 class StaticSceneBoundEffects(object):
@@ -76,7 +73,8 @@ class ModelBoundEffects(object):
         if not node and matProv is None:
             position = None
         else:
-            position = (node, matProv)
+            position = (
+             node, matProv)
         desc = EffectsListPlayer(effectsList, keyPoints, position=position, **args)
         desc.play(self.__model, None, partial(self._effects.remove, desc), waitForKeyOff)
         self._effects.append(desc)

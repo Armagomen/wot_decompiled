@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionsPageMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class PersonalMissionsPageMeta(View):
@@ -23,34 +21,45 @@ class PersonalMissionsPageMeta(View):
         self._printOverrideError('showAwards')
 
     def as_setContentVisibleS(self, value):
-        return self.flashObject.as_setContentVisible(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setContentVisible(value)
 
     def as_initViewS(self, pmType, chainsLen):
-        return self.flashObject.as_initView(pmType, chainsLen) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_initView(pmType, chainsLen)
 
     def as_reInitViewS(self, pmType, chainsLen):
-        return self.flashObject.as_reInitView(pmType, chainsLen) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_reInitView(pmType, chainsLen)
 
     def as_setHeaderDataS(self, data):
-        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHeaderData(data)
 
     def as_updateSideBarDataS(self, data):
-        return self.flashObject.as_updateSideBarData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateSideBarData(data)
 
     def as_setStatusDataS(self, data):
-        return self.flashObject.as_setStatusData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setStatusData(data)
 
     def as_setSelectedBranchIndexS(self, index):
-        return self.flashObject.as_setSelectedBranchIndex(index) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSelectedBranchIndex(index)
 
     def as_showFirstAwardSheetObtainedPopupS(self, useAnim, data):
-        return self.flashObject.as_showFirstAwardSheetObtainedPopup(useAnim, data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showFirstAwardSheetObtainedPopup(useAnim, data)
 
     def as_showFourAwardSheetsObtainedPopupS(self, useAnim, data):
-        return self.flashObject.as_showFourAwardSheetsObtainedPopup(useAnim, data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showFourAwardSheetsObtainedPopup(useAnim, data)
 
     def as_hideAwardSheetObtainedPopupS(self):
-        return self.flashObject.as_hideAwardSheetObtainedPopup() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideAwardSheetObtainedPopup()
 
     def as_showAwardsPopoverForTutorS(self):
-        return self.flashObject.as_showAwardsPopoverForTutor() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showAwardsPopoverForTutor()

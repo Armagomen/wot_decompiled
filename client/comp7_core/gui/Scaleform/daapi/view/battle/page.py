@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/page.py
 import BigWorld
 from shared_utils import CONST_CONTAINER
 import BattleReplay
@@ -31,21 +29,31 @@ class _DynamicAliases(CONST_CONTAINER):
 class _Comp7Config(ComponentsConfig):
 
     def __init__(self):
-        super(_Comp7Config, self).__init__(((BATTLE_CTRL_ID.ARENA_PERIOD, (_DynamicAliases.LOBBY_NOTIFIER, BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL)),), ((_DynamicAliases.LOBBY_NOTIFIER, LobbyNotifier),))
+        super(_Comp7Config, self).__init__((
+         (
+          BATTLE_CTRL_ID.ARENA_PERIOD,
+          (
+           _DynamicAliases.LOBBY_NOTIFIER,
+           BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL)),), (
+         (
+          _DynamicAliases.LOBBY_NOTIFIER, LobbyNotifier),))
 
 
 _COMP7_CONFIG = _Comp7Config()
 _COMP7_VIEW_OVERRIDES = {DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER: Comp7StartTimerSoundPlayer}
 _COMMON_CONFIG = COMMON_CLASSIC_CONFIG + _COMP7_CONFIG
 _EXTENDED_CONFIG = EXTENDED_CLASSIC_CONFIG + _COMP7_CONFIG
-_EXTERNAL_COMPONENTS = (crosshair.CrosshairPanelContainer, Comp7MarkersManager, KillCamMarkersManager)
+_EXTERNAL_COMPONENTS = (
+ crosshair.CrosshairPanelContainer, Comp7MarkersManager, KillCamMarkersManager)
 _FULL_STATS_ALIAS = BATTLE_VIEW_ALIASES.FULL_STATS
 
 class Comp7BattlePage(Comp7BattlePageMeta):
     __TIME_TILL_CAMERA_RETURN = 3.0
     __CALLBACK_UPDATE_PERIOD = 0.2
-    __COMP7_RANKED_ARENA_BONUS_TYPES = (ARENA_BONUS_TYPE.COMP7, ARENA_BONUS_TYPE.TRAINING_COMP7, ARENA_BONUS_TYPE.TOURNAMENT_COMP7)
-    __COMP7_LIGHT_ARENA_BONUS_TYPES = (ARENA_BONUS_TYPE.COMP7_LIGHT,)
+    __COMP7_RANKED_ARENA_BONUS_TYPES = (
+     ARENA_BONUS_TYPE.COMP7, ARENA_BONUS_TYPE.TRAINING_COMP7, ARENA_BONUS_TYPE.TOURNAMENT_COMP7)
+    __COMP7_LIGHT_ARENA_BONUS_TYPES = (
+     ARENA_BONUS_TYPE.COMP7_LIGHT,)
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self, components=None, external=_EXTERNAL_COMPONENTS, fullStatsAlias=_FULL_STATS_ALIAS):
@@ -62,8 +70,8 @@ class Comp7BattlePage(Comp7BattlePageMeta):
 
     def showHelp(self):
         arenaBonusType = self.__sessionProvider.arenaVisitor.getArenaBonusType()
-        event_dispatcher.toggleHelpDetailed(ctx={'isComp7': arenaBonusType in self.__COMP7_RANKED_ARENA_BONUS_TYPES,
-         'isComp7Light': arenaBonusType in self.__COMP7_LIGHT_ARENA_BONUS_TYPES})
+        event_dispatcher.toggleHelpDetailed(ctx={'isComp7': arenaBonusType in self.__COMP7_RANKED_ARENA_BONUS_TYPES, 
+           'isComp7Light': arenaBonusType in self.__COMP7_LIGHT_ARENA_BONUS_TYPES})
 
     def moveSpace(self, x, y, delta):
         if self.__isCursorDragging:
@@ -192,7 +200,7 @@ class Comp7BattlePage(Comp7BattlePageMeta):
     def __updateComponentsVisibility(self, arenaPeriod=None):
         if arenaPeriod is None:
             arenaPeriod = self.sessionProvider.shared.arenaPeriod.getPeriod()
-        if not self.sessionProvider.isReplayPlaying:
+        if not self.sessionProvider.isReplayPlaying and not avatar_getter.isObserver():
             if arenaPeriod <= ARENA_PERIOD.PREBATTLE:
                 self.app.enterGuiControlMode(VIEW_ALIAS.COMP7_BATTLE_PAGE, enableAiming=False)
                 inputHandler = avatar_getter.getInputHandler()
@@ -222,13 +230,13 @@ class Comp7BattlePage(Comp7BattlePageMeta):
                 vehicleRole = vehicle.role
                 vehicleClass = vehicle.type
                 isEliteOrPremium = vehicle.isPremium or bool(rawData.get('isElite', False))
-                self.as_updateVehicleStatusS({'tankType': '{}_elite'.format(vehicleClass) if isEliteOrPremium else vehicleClass,
-                 'vehicleLevel': int2roman(vehicle.level),
-                 'vehicleName': vehicle.userName,
-                 'roleId': vehicleRole,
-                 'roleMessage': getRoleMessage(vehicleRole),
-                 'vehicleCD': vehicle.intCD,
-                 'isElite': isEliteOrPremium})
+                self.as_updateVehicleStatusS({'tankType': ('{}_elite').format(vehicleClass) if isEliteOrPremium else vehicleClass, 
+                   'vehicleLevel': int2roman(vehicle.level), 
+                   'vehicleName': vehicle.userName, 
+                   'roleId': vehicleRole, 
+                   'roleMessage': getRoleMessage(vehicleRole), 
+                   'vehicleCD': vehicle.intCD, 
+                   'isElite': isEliteOrPremium})
             return
 
     def __onSelectionConfirmed(self):
@@ -258,16 +266,16 @@ class Comp7BattlePage(Comp7BattlePageMeta):
 class _ComponentsVisibilityManager(object):
 
     def __init__(self, arenaPeriod, isSelectionConfirmed):
-        self.__components = {BATTLE_VIEW_ALIASES.DAMAGE_PANEL: self.__damagePanelPredicate,
-         BATTLE_VIEW_ALIASES.WIDGETS_PANEL: self.__widgetsPanelPredicate,
-         BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL: self.__damageLogPredicate,
-         BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR: self.__fragCorrelationBarPredicate,
-         BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL: self.__carouselPredicate,
-         BATTLE_VIEW_ALIASES.POINT_OF_INTEREST_NOTIFICATIONS_PANEL: self.__POINotificationsPredicate,
-         BATTLE_VIEW_ALIASES.RIBBONS_PANEL: self.__ribbonPanelPredicate,
-         BATTLE_VIEW_ALIASES.SITUATION_INDICATORS: self.__perksPanelPredicate,
-         BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL: self.__prebattleAmmoPredicate,
-         BATTLE_VIEW_ALIASES.VEHICLE_MESSAGES: self.__vehicleMessagesPredicate}
+        self.__components = {BATTLE_VIEW_ALIASES.DAMAGE_PANEL: self.__damagePanelPredicate, 
+           BATTLE_VIEW_ALIASES.WIDGETS_PANEL: self.__widgetsPanelPredicate, 
+           BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL: self.__damageLogPredicate, 
+           BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR: self.__fragCorrelationBarPredicate, 
+           BATTLE_VIEW_ALIASES.COMP7_TANK_CAROUSEL: self.__carouselPredicate, 
+           BATTLE_VIEW_ALIASES.POINT_OF_INTEREST_NOTIFICATIONS_PANEL: self.__POINotificationsPredicate, 
+           BATTLE_VIEW_ALIASES.RIBBONS_PANEL: self.__ribbonPanelPredicate, 
+           BATTLE_VIEW_ALIASES.SITUATION_INDICATORS: self.__perksPanelPredicate, 
+           BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL: self.__prebattleAmmoPredicate, 
+           BATTLE_VIEW_ALIASES.VEHICLE_MESSAGES: self.__vehicleMessagesPredicate}
         self.__isSelectionConfirmed = isSelectionConfirmed
         self.__arenaPeriod = arenaPeriod
         self.__isBattleLoaded = False

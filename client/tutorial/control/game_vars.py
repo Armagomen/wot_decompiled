@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/control/game_vars.py
 import types
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.techtree.techtree_dp import g_techTreeDP
@@ -12,15 +10,20 @@ __all__ = ('getUnlockedItems', 'getItemByIntCD', 'getVehicleByIntCD', 'getItemSt
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getUnlockedItems(itemsCache=None):
-    return itemsCache.items.stats.unlocks if itemsCache is not None else set()
+    if itemsCache is not None:
+        return itemsCache.items.stats.unlocks
+    else:
+        return set()
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getItemByIntCD(intCD, itemsCache=None):
     if intCD is None or not isinstance(intCD, (types.IntType, types.LongType, types.FloatType)):
         return
+    if itemsCache is not None:
+        return itemsCache.items.getItemByCD(intCD)
     else:
-        return itemsCache.items.getItemByCD(intCD) if itemsCache is not None else None
+        return
 
 
 def getVehicleByIntCD(intCD):
@@ -35,7 +38,9 @@ def _isItemSelected(intCD):
     if intCD is None:
         return False
     else:
-        return g_currentVehicle.item.intCD == intCD if g_currentVehicle.isPresent() else False
+        if g_currentVehicle.isPresent():
+            return g_currentVehicle.item.intCD == intCD
+        return False
 
 
 def _isItemPremium(intCD):
@@ -43,11 +48,16 @@ def _isItemPremium(intCD):
         return False
     else:
         vehicle = getVehicleByIntCD(intCD)
-        return vehicle.isPremium if vehicle is not None else False
+        if vehicle is not None:
+            return vehicle.isPremium
+        return False
 
 
 def _isItemUnlocked(intCD):
-    return False if intCD is None else intCD in getUnlockedItems()
+    if intCD is None:
+        return False
+    else:
+        return intCD in getUnlockedItems()
 
 
 def _isItemInInventory(intCD):
@@ -55,7 +65,9 @@ def _isItemInInventory(intCD):
         return False
     else:
         vehicle = getItemByIntCD(intCD)
-        return vehicle.invID != -1 if vehicle is not None else False
+        if vehicle is not None:
+            return vehicle.invID != -1
+        return False
 
 
 def _isAnyCrewSkillLearned(intCD, tankmanRole):
@@ -77,10 +89,10 @@ def _isAnyCrewSkillLearned(intCD, tankmanRole):
 def _isItemXPEnough(itemCD, vehicleCD, itemsCache=None):
     if itemCD is None or itemsCache is None:
         return False
+    vehicle = getVehicleByIntCD(vehicleCD)
+    if vehicle is None:
+        return False
     else:
-        vehicle = getVehicleByIntCD(vehicleCD)
-        if vehicle is None:
-            return False
         stats = itemsCache.items.stats
         costs = g_techTreeDP.getUnlockPrices(itemCD)
         if vehicleCD in costs:
@@ -94,13 +106,12 @@ def _isItemXPEnough(itemCD, vehicleCD, itemsCache=None):
 def _isItemMoneyEnough(itemCD, itemsCache=None):
     if itemCD is None or itemsCache is None:
         return False
+    item = getItemByIntCD(itemCD)
+    if item is not None:
+        result, _ = item.mayPurchase(itemsCache.items.stats.money)
     else:
-        item = getItemByIntCD(itemCD)
-        if item is not None:
-            result, _ = item.mayPurchase(itemsCache.items.stats.money)
-        else:
-            result = False
-        return result
+        result = False
+    return result
 
 
 def _isItemMayInstall(itemCD, vehicleCD):
@@ -125,12 +136,16 @@ def _isItemInstalled(itemCD, vehicleCD):
 
 def _vehicleHasRegularConsumables(vehicleCD):
     vehicle = getVehicleByIntCD(vehicleCD)
-    return False if vehicle is None or vehicle.invID == -1 else bool(filter(None, vehicle.consumables.installed))
+    if vehicle is None or vehicle.invID == -1:
+        return False
+    return bool(filter(None, vehicle.consumables.installed))
 
 
 def _vehicleHasOptionalDevices(vehicleCD):
     vehicle = getVehicleByIntCD(vehicleCD)
-    return False if vehicle is None or vehicle.invID == -1 else bool(filter(None, vehicle.optDevices.installed))
+    if vehicle is None or vehicle.invID == -1:
+        return False
+    return bool(filter(None, vehicle.optDevices.installed))
 
 
 def _isItemLevelEqual(itemCD, level):
@@ -145,18 +160,18 @@ def _isItemLevelEqual(itemCD, level):
         return result
 
 
-_ITEM_STATES = {CONDITION_STATE.SELECTED: _isItemSelected,
- CONDITION_STATE.PREMIUM: _isItemPremium,
- CONDITION_STATE.UNLOCKED: _isItemUnlocked,
- CONDITION_STATE.IN_INVENTORY: _isItemInInventory,
- CONDITION_STATE.CREW_HAS_ANY_SKILL: _isAnyCrewSkillLearned,
- CONDITION_STATE.XP_ENOUGH: _isItemXPEnough,
- CONDITION_STATE.MONEY_ENOUGH: _isItemMoneyEnough,
- CONDITION_STATE.LEVEL: _isItemLevelEqual,
- CONDITION_STATE.MAY_INSTALL: _isItemMayInstall,
- CONDITION_STATE.INSTALLED: _isItemInstalled,
- CONDITION_STATE.HAS_REGULAR_CONSUMABLES: _vehicleHasRegularConsumables,
- CONDITION_STATE.HAS_OPTIONAL_DEVICES: _vehicleHasOptionalDevices}
+_ITEM_STATES = {CONDITION_STATE.SELECTED: _isItemSelected, 
+   CONDITION_STATE.PREMIUM: _isItemPremium, 
+   CONDITION_STATE.UNLOCKED: _isItemUnlocked, 
+   CONDITION_STATE.IN_INVENTORY: _isItemInInventory, 
+   CONDITION_STATE.CREW_HAS_ANY_SKILL: _isAnyCrewSkillLearned, 
+   CONDITION_STATE.XP_ENOUGH: _isItemXPEnough, 
+   CONDITION_STATE.MONEY_ENOUGH: _isItemMoneyEnough, 
+   CONDITION_STATE.LEVEL: _isItemLevelEqual, 
+   CONDITION_STATE.MAY_INSTALL: _isItemMayInstall, 
+   CONDITION_STATE.INSTALLED: _isItemInstalled, 
+   CONDITION_STATE.HAS_REGULAR_CONSUMABLES: _vehicleHasRegularConsumables, 
+   CONDITION_STATE.HAS_OPTIONAL_DEVICES: _vehicleHasOptionalDevices}
 
 def getItemStateGetter(state):
     if state in _ITEM_STATES:

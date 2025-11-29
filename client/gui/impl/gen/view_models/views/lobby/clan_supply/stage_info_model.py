@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/clan_supply/stage_info_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
@@ -17,7 +15,7 @@ class StageInfoStatus(IntEnum):
 
 
 class StageInfoModel(ViewModel):
-    __slots__ = ('onRefresh',)
+    __slots__ = ('onRefresh', )
 
     def __init__(self, properties=9, commands=1):
         super(StageInfoModel, self).__init__(properties=properties, commands=commands)

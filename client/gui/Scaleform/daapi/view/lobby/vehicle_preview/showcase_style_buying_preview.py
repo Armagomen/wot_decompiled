@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/showcase_style_buying_preview.py
 import typing
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.impl import backport
@@ -52,9 +50,9 @@ class VehicleShowcaseStyleBuyingPreview(VehicleStylePreview):
     @staticmethod
     def __getVehicleInfoDescVO():
         vehicle = g_currentPreviewVehicle.item
-        vehicleType = '{}_elite'.format(vehicle.type) if vehicle.isElite or vehicle.isPremium else vehicle.type
-        return {'nationFlag': backport.image(R.images.gui.maps.icons.filters.nations.dyn(vehicle.nationName)()),
-         'level': backport.text(R.strings.menu.header.level.num(vehicle.level)()),
-         'typeImageSrc': backport.image(R.images.gui.maps.icons.filters.tanks.dyn(vehicleType.replace('-', '_'))()),
-         'isElite': vehicle.isElite or vehicle.isPremium,
-         'name': vehicle.descriptor.type.shortUserString}
+        vehicleType = ('{}_elite').format(vehicle.type) if vehicle.isElite or vehicle.isPremium else vehicle.type
+        return {'nationFlag': backport.image(R.images.gui.maps.icons.filters.nations.dyn(vehicle.nationName)()), 
+           'level': backport.text(R.strings.menu.header.level.num(vehicle.level)()), 
+           'typeImageSrc': backport.image(R.images.gui.maps.icons.filters.tanks.dyn(vehicleType.replace('-', '_'))()), 
+           'isElite': vehicle.isElite or vehicle.isPremium, 
+           'name': vehicle.descriptor.type.shortUserString}

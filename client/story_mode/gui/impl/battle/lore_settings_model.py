@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/battle/lore_settings_model.py
-import ResMgr
-import section2dict
-import typing
+import ResMgr, section2dict, typing
 from dict2model import models, schemas, fields, validate
 from story_mode_common.configs.sounds_schema import soundSchema
 if typing.TYPE_CHECKING:
@@ -38,14 +34,14 @@ class LoreSettingsModel(models.Model):
         self.epilogue = epilogue
 
 
-missionLoreSchema = schemas.Schema(fields={'id': fields.Integer(required=True, serializedValidators=validate.Range(minValue=1), deserializedValidators=validate.Range(minValue=1)),
- 'music': fields.Nested(schema=soundSchema, required=True),
- 'vo': fields.String(required=True),
- 'battleMusic': fields.String(required=True)}, modelClass=MissionLoreModel, checkUnknown=True)
-epilogueLoreSchema = schemas.Schema(fields={'music': fields.Nested(schema=soundSchema, required=True),
- 'vo': fields.String(required=True)}, modelClass=EpilogueLoreModel, checkUnknown=True)
-loreSchema = schemas.Schema(fields={'mission': fields.UniCapList(fieldOrSchema=missionLoreSchema, required=True, deserializedValidators=validate.Length(minValue=1)),
- 'epilogue': fields.Nested(schema=epilogueLoreSchema, required=True, public=False)}, modelClass=LoreSettingsModel, checkUnknown=True)
+missionLoreSchema = schemas.Schema(fields={'id': fields.Integer(required=True, serializedValidators=validate.Range(minValue=1), deserializedValidators=validate.Range(minValue=1)), 
+   'music': fields.Nested(schema=soundSchema, required=True), 
+   'vo': fields.String(required=True), 
+   'battleMusic': fields.String(required=True)}, modelClass=MissionLoreModel, checkUnknown=True)
+epilogueLoreSchema = schemas.Schema(fields={'music': fields.Nested(schema=soundSchema, required=True), 
+   'vo': fields.String(required=True)}, modelClass=EpilogueLoreModel, checkUnknown=True)
+loreSchema = schemas.Schema(fields={'mission': fields.UniCapList(fieldOrSchema=missionLoreSchema, required=True, deserializedValidators=validate.Length(minValue=1)), 
+   'epilogue': fields.Nested(schema=epilogueLoreSchema, required=True, public=False)}, modelClass=LoreSettingsModel, checkUnknown=True)
 __loreSchema = None
 
 def getLoreSettings():

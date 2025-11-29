@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/avatars.py
 from extension_utils import ResMgr
 from items import _xml, common_extras
 from constants import IS_CLIENT, IS_CELLAPP, ITEM_DEFS_PATH
@@ -26,8 +24,7 @@ class Cache(object):
                 _xml.raiseWrongXml(None, configXmlPath, 'can not open or read')
             if IS_CLIENT or IS_CELLAPP:
                 extras, extrasDict = common_extras.readExtras((None, configXmlPath), configXml, 'extras', 'avatar_extras')
-                config = self.__commonConfig = {'extras': extras,
-                 'extrasDict': extrasDict}
+                config = self.__commonConfig = {'extras': extras, 'extrasDict': extrasDict}
             configXml = None
             ResMgr.purge(configXmlPath, True)
         return config

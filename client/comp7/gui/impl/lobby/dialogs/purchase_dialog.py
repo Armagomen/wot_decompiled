@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/dialogs/purchase_dialog.py
-import logging
-import BigWorld
+import logging, BigWorld
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from shared_utils import findFirst
 from shared_utils import first
@@ -71,18 +68,19 @@ class PurchaseDialog(ViewComponent):
             vehicleCD = int(event.getArgument('vehicleCD'))
             return VehicleRolesTooltipView(vehicleCD)
         else:
-            return None
+            return
 
     def _getChildComponents(self):
         header = R.aliases.lobby_header.default
-        return {header.Wallet(): lambda : WalletPresenter((CrystalProvider(),
+        return {header.Wallet(): lambda : WalletPresenter((
+                           CrystalProvider(),
                            GoldProvider(),
                            CreditsProvider(),
                            FreeXpProvider()))}
 
     def _onLoading(self, *args, **kwargs):
         super(PurchaseDialog, self)._onLoading()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setPageState(PageState.CONFIRMATION)
             self.__setProducts(tx)
         self.__prevCameraName = self.__rotationHelper.getCameraManager().getCurrentCameraName()
@@ -112,12 +110,19 @@ class PurchaseDialog(ViewComponent):
         events = self.__rotationHelper.getCameraEvents(self.viewModel)
         cameraManager = self.__rotationHelper.getCameraManager()
         if cameraManager is not None:
-            events.append((cameraManager.onCameraSwitched, self.__onCameraSwitched))
-        events.extend([(self.viewModel.onClose, self.__onClose),
-         (self.viewModel.onConfirm, self.__onConfirm),
-         (self.__itemsCache.onSyncCompleted, self.__onItemsCacheSync),
-         (self.__comp7ShopController.onDataUpdated, self.__updateData),
-         (self.__comp7ShopController.onShopStateChanged, self.__onShopStateChanged)])
+            events.append((
+             cameraManager.onCameraSwitched, self.__onCameraSwitched))
+        events.extend([
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onConfirm, self.__onConfirm),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onItemsCacheSync),
+         (
+          self.__comp7ShopController.onDataUpdated, self.__updateData),
+         (
+          self.__comp7ShopController.onShopStateChanged, self.__onShopStateChanged)])
         return events
 
     def __onClose(self):

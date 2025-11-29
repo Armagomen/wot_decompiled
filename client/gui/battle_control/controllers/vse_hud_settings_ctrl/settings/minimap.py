@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vse_hud_settings_ctrl/settings/minimap.py
 from gui.battle_control.controllers.vse_hud_settings_ctrl.settings.base_models import BaseClientModel
 
 class MinimapClientModel(BaseClientModel):
-    __slots__ = ('showGrid', 'minimumAnimationDuration', 'maximumAnimationDuration', 'animationDurationPerMeter', 'minimumAnimationDistance', 'canToggleFullMap')
+    __slots__ = ('showGrid', 'minimumAnimationDuration', 'maximumAnimationDuration',
+                 'animationDurationPerMeter', 'minimumAnimationDistance', 'canToggleFullMap')
 
     def __init__(self, showGrid, canToggleFullMap, minimumAnimationDuration, maximumAnimationDuration, animationDurationPerMeter, minimumAnimationDistance):
         super(MinimapClientModel, self).__init__()
@@ -15,7 +14,8 @@ class MinimapClientModel(BaseClientModel):
         self.minimumAnimationDistance = minimumAnimationDistance
 
     def __repr__(self):
-        return ('<MinimapClientModel>: showGrid=%s, minimumAnimationDuration=%s, maximumAnimationDuration=%s, ' + 'animationDurationPerMeter=%s, minimumAnimationDistance=%s, canToggleFullMap=%s') % (self.showGrid,
+        return ('<MinimapClientModel>: showGrid=%s, minimumAnimationDuration=%s, maximumAnimationDuration=%s, ' + 'animationDurationPerMeter=%s, minimumAnimationDistance=%s, canToggleFullMap=%s') % (
+         self.showGrid,
          self.minimumAnimationDuration,
          self.maximumAnimationDuration,
          self.animationDurationPerMeter,

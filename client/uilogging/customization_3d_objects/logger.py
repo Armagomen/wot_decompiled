@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/customization_3d_objects/logger.py
 from typing import TYPE_CHECKING
 from CurrentVehicle import g_currentVehicle
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -23,7 +21,7 @@ if TYPE_CHECKING:
     from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CarouselCache
 
 class CustomizationMetricsLogger(MetricsLogger):
-    __slots__ = ('_parentScreen',)
+    __slots__ = ('_parentScreen', )
 
     def __init__(self, parentScreen=None):
         super(CustomizationMetricsLogger, self).__init__(FEATURE)
@@ -49,7 +47,9 @@ class _TutorialMixin(object):
         self.onClick(item=button, itemState=self._getTutorialState(isTutorial), parentScreen=parentScreen, info=info)
 
     def _getTutorialState(self, isTutorial):
-        return CustomizationTutorialStates.IS_TUTORIAL if isTutorial else CustomizationTutorialStates.IS_NOT_TUTORIAL
+        if isTutorial:
+            return CustomizationTutorialStates.IS_TUTORIAL
+        return CustomizationTutorialStates.IS_NOT_TUTORIAL
 
 
 class CustomizationMainViewLogger(CustomizationMetricsLogger):
@@ -86,7 +86,7 @@ class CustomizationAmmunitionPanelLogger(CustomizationMetricsLogger, _TutorialMi
 
 
 class CustomizationBottomPanelLogger(CustomizationMetricsLogger, _TutorialMixin):
-    __slots__ = ('__ctx',)
+    __slots__ = ('__ctx', )
     __service = dependency.descriptor(ICustomizationService)
 
     def __init__(self, parentScreen=None):
@@ -126,7 +126,8 @@ class CustomizationBottomPanelLogger(CustomizationMetricsLogger, _TutorialMixin)
     def onPrimaryFilterClick(self, index):
         if not self.__needToLogFilterClick():
             return
-        self.onClick(item=(CustomizationFilterButtons.IN_DEPOT, CustomizationFilterButtons.APPLIED)[index], info=CustomizationFilterTypes.PRIMARY)
+        self.onClick(item=(
+         CustomizationFilterButtons.IN_DEPOT, CustomizationFilterButtons.APPLIED)[index], info=CustomizationFilterTypes.PRIMARY)
 
     def __getCarouselState(self, tabId):
         if tabId == CustomizationTabs.ATTACHMENTS:
@@ -147,7 +148,7 @@ class VehicleSidebarLogger(CustomizationMetricsLogger):
 
 
 class CustomizationFilterLogger(CustomizationMetricsLogger):
-    __slots__ = ('__ctx',)
+    __slots__ = ('__ctx', )
     __service = dependency.descriptor(ICustomizationService)
 
     def __init__(self, parentScreen=None):

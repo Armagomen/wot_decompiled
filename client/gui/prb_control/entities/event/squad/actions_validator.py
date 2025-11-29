@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/event/squad/actions_validator.py
 from constants import BATTLE_MODE_VEH_TAGS_EXCEPT_EVENT
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite
 from gui.prb_control.entities.base.squad.actions_validator import SquadActionsValidator, SquadVehiclesValidator
@@ -28,7 +26,8 @@ class EventSquadSlotsValidator(CommanderValidator):
         roster = self._entity.getRoster()
         pInfo = self._entity.getPlayerInfo()
         hasEmptySlots = roster.MAX_SLOTS > stats.readyCount + roster.MAX_EMPTY_SLOTS
-        return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED) if hasEmptySlots or not pInfo.isReady else None
+        if hasEmptySlots or not pInfo.isReady:
+            return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED)
 
 
 class EventBattleSquadActionsValidator(SquadActionsValidator):
@@ -38,4 +37,6 @@ class EventBattleSquadActionsValidator(SquadActionsValidator):
 
     def _createSlotsValidator(self, entity):
         baseValidator = super(EventBattleSquadActionsValidator, self)._createSlotsValidator(entity)
-        return ActionsValidatorComposite(entity, validators=[baseValidator, EventSquadSlotsValidator(entity)])
+        return ActionsValidatorComposite(entity, validators=[
+         baseValidator,
+         EventSquadSlotsValidator(entity)])

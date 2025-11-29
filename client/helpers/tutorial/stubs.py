@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/tutorial/stubs.py
 from skeletons.tutorial import ITutorialLoader, IGuiController
 
 class StubGuiController(IGuiController):
 
     def getViewTutorialID(self, _):
-        return None
+        return
 
     def init(self, guiProviders):
         pass
@@ -68,15 +66,15 @@ class StubTutorialLoader(ITutorialLoader):
 
     @property
     def tutorial(self):
-        return None
+        return
 
     @property
     def hintsManager(self):
-        return None
+        return
 
     @property
     def tutorialID(self):
-        pass
+        return ''
 
     @property
     def isRunning(self):

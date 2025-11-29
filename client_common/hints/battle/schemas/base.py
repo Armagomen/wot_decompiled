@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/hints/battle/schemas/base.py
-import logging
-import typing
+import logging, typing
 from constants import IS_DEVELOPMENT, IS_VS_EDITOR
 from dict2model import exceptions
 from dict2model import fields
@@ -38,21 +35,21 @@ class ClientHintTextModel(models.Model):
 
     @staticmethod
     def _createMessage(raw='', key='', template=''):
-        return raw or (i18n.makeString(key) if key else '') or (makeHtmlString(HTML_TEMPLATE_PATH, template) if template else '')
+        return raw or ((i18n.makeString(key) if key else '') or (makeHtmlString(HTML_TEMPLATE_PATH, template) if template else ''))
 
     def _reprArgs(self):
-        return 'raw={}, key={}, template={}, highlight={}, msg={}'.format(self.raw, self.key, self.template, self.highlight, self._message)
+        return ('raw={}, key={}, template={}, highlight={}, msg={}').format(self.raw, self.key, self.template, self.highlight, self._message)
 
 
 class ClientHintVisualModel(models.Model):
-    __slots__ = ('image',)
+    __slots__ = ('image', )
 
     def __init__(self, image):
         super(ClientHintVisualModel, self).__init__()
         self.image = image
 
     def _reprArgs(self):
-        return 'image={}'.format(self.image)
+        return ('image={}').format(self.image)
 
 
 class ClientHintSoundModel(models.Model):
@@ -95,7 +92,7 @@ class ClientHintSoundModel(models.Model):
         return self.aliveOnly
 
     def _reprArgs(self):
-        return 'fx={}, notify={}'.format(self.fx, self.notify)
+        return ('fx={}, notify={}').format(self.fx, self.notify)
 
 
 class ClientHintLifecycleModel(models.Model):
@@ -108,7 +105,7 @@ class ClientHintLifecycleModel(models.Model):
         self.waitTime = waitTime
 
     def _reprArgs(self):
-        return 'showTime={}, minShowTime={}, waitTime={}'.format(self.showTime, self.minShowTime, self.waitTime)
+        return ('showTime={}, minShowTime={}, waitTime={}').format(self.showTime, self.minShowTime, self.waitTime)
 
 
 class ClientHintHistoryModel(models.Model):
@@ -122,7 +119,7 @@ class ClientHintHistoryModel(models.Model):
         self.perBattleCount = perBattleCount
 
     def _reprArgs(self):
-        return 'modifyPriority={}, cooldown={}, totalDisplayCount={}, perBattleCount={}'.format(self.modifyPriority, self.cooldown, self.totalDisplayCount, self.perBattleCount)
+        return ('modifyPriority={}, cooldown={}, totalDisplayCount={}, perBattleCount={}').format(self.modifyPriority, self.cooldown, self.totalDisplayCount, self.perBattleCount)
 
 
 CHMTextType = typing.TypeVar('CHMTextType', bound=ClientHintTextModel)
@@ -131,7 +128,8 @@ CHMSoundType = typing.TypeVar('CHMSoundType', bound=ClientHintSoundModel)
 CHMLifecycleType = typing.TypeVar('CHMLifecycleType', bound=ClientHintLifecycleModel)
 CHMHistoryType = typing.TypeVar('CHMHistoryType', bound=ClientHintHistoryModel)
 
-class ClientHintModel(CommonHintModel[HMCPropsType, HMCContextType], typing.Generic[HMCPropsType, HMCContextType, CHMTextType, CHMVisualType, CHMSoundType, CHMLifecycleType, CHMHistoryType]):
+class ClientHintModel(CommonHintModel[(HMCPropsType, HMCContextType)], typing.Generic[(
+ HMCPropsType, HMCContextType, CHMTextType, CHMVisualType, CHMSoundType, CHMLifecycleType, CHMHistoryType)]):
     __slots__ = ('text', 'visual', 'sound', 'lifecycle', 'history')
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
@@ -177,10 +175,10 @@ class ClientHintModel(CommonHintModel[HMCPropsType, HMCContextType], typing.Gene
             _logger.debug('[%s] missing visual.', self.uniqueName)
             return {}
         context = self.context.create(data) if self.context else {}
-        return {'message': message,
-         'messageHighlight': messageHighlight,
-         'iconSource': iconSource,
-         'context': context}
+        return {'message': message, 
+           'messageHighlight': messageHighlight, 
+           'iconSource': iconSource, 
+           'context': context}
 
     def _formatMessage(self, message, data):
         try:
@@ -188,8 +186,10 @@ class ClientHintModel(CommonHintModel[HMCPropsType, HMCContextType], typing.Gene
         except KeyError:
             _logger.error('[%s]. Incorrect message format for: %s', self.uniqueName, str(data))
 
+        return ''
+
     def _reprArgs(self):
-        return '{}, {}'.format(super(ClientHintModel, self)._reprArgs(), 'text={}, visual={}, sound={}, lifecycle={}, history={}'.format(self.text, self.visual, self.sound, self.lifecycle, self.history))
+        return ('{}, {}').format(super(ClientHintModel, self)._reprArgs(), ('text={}, visual={}, sound={}, lifecycle={}, history={}').format(self.text, self.visual, self.sound, self.lifecycle, self.history))
 
 
 CHMType = typing.TypeVar('CHMType', bound=ClientHintModel)
@@ -202,7 +202,7 @@ def validateHintTextKey(key):
 def validateHintTextTemplate(key):
     templates = g_htmlTemplates[HTML_TEMPLATE_PATH]
     if not templates:
-        raise exceptions.ValidationError('No templates by path: {}.'.format(HTML_TEMPLATE_PATH))
+        raise exceptions.ValidationError(('No templates by path: {}.').format(HTML_TEMPLATE_PATH))
 
 
 def validateHintTextModel(model):
@@ -229,10 +229,13 @@ class ClientHintTextSchema(schemas.Schema[CHMTextType]):
     __slots__ = ()
 
     def __init__(self, modelClass=ClientHintTextModel, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
-        super(ClientHintTextSchema, self).__init__(fields={'raw': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=500)),
-         'key': fields.String(required=False, default='', deserializedValidators=[validate.Length(minValue=1, maxValue=100), validateHintTextKey]),
-         'template': fields.String(required=False, default='', deserializedValidators=[validate.Length(minValue=1, maxValue=100), validateHintTextTemplate]),
-         'highlight': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100))}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=[validateHintTextModel] + validate.prepareValidators(deserializedValidators), modelClass=modelClass)
+        super(ClientHintTextSchema, self).__init__(fields={'raw': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=500)), 
+           'key': fields.String(required=False, default='', deserializedValidators=[
+                 validate.Length(minValue=1, maxValue=100), validateHintTextKey]), 
+           'template': fields.String(required=False, default='', deserializedValidators=[
+                      validate.Length(minValue=1, maxValue=100), validateHintTextTemplate]), 
+           'highlight': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100))}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=[
+         validateHintTextModel] + validate.prepareValidators(deserializedValidators), modelClass=modelClass)
 
 
 class ClientHintVisualSchema(schemas.Schema[CHMVisualType]):
@@ -246,34 +249,35 @@ class ClientHintSoundSchema(schemas.Schema[CHMSoundType]):
     __slots__ = ()
 
     def __init__(self, modelClass=ClientHintSoundModel, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
-        super(ClientHintSoundSchema, self).__init__(fields={'fx': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100)),
-         'notify': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100)),
-         'aliveOnly': fields.Boolean(default=False, required=False)}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)
+        super(ClientHintSoundSchema, self).__init__(fields={'fx': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100)), 
+           'notify': fields.String(required=False, default='', deserializedValidators=validate.Length(minValue=1, maxValue=100)), 
+           'aliveOnly': fields.Boolean(default=False, required=False)}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)
 
 
 class ClientHintHistorySchema(schemas.Schema[CHMHistoryType]):
     __slots__ = ()
 
     def __init__(self, modelClass=ClientHintHistoryModel, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
-        super(ClientHintHistorySchema, self).__init__(fields={'modifyPriority': fields.Boolean(required=False, default=False),
-         'cooldown': fields.Float(required=False, default=DEFAULT_COOLDOWN_TIME, deserializedValidators=validate.Range(minValue=0)),
-         'totalDisplayCount': fields.Integer(required=False, default=_DEFAULT_DISPLAY_COUNT, deserializedValidators=validate.Range(minValue=1)),
-         'perBattleCount': fields.Integer(required=False, default=_DEFAULT_DISPLAY_COUNT, deserializedValidators=validate.Range(minValue=1))}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)
+        super(ClientHintHistorySchema, self).__init__(fields={'modifyPriority': fields.Boolean(required=False, default=False), 
+           'cooldown': fields.Float(required=False, default=DEFAULT_COOLDOWN_TIME, deserializedValidators=validate.Range(minValue=0)), 
+           'totalDisplayCount': fields.Integer(required=False, default=_DEFAULT_DISPLAY_COUNT, deserializedValidators=validate.Range(minValue=1)), 
+           'perBattleCount': fields.Integer(required=False, default=_DEFAULT_DISPLAY_COUNT, deserializedValidators=validate.Range(minValue=1))}, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)
 
 
 clientHintTextSchema = ClientHintTextSchema()
 clientHintVisualSchema = ClientHintVisualSchema()
 clientHintSoundSchema = ClientHintSoundSchema()
 clientHintHistorySchema = ClientHintHistorySchema()
-clientHintLifecycleSchema = schemas.Schema[ClientHintLifecycleModel](fields={'showTime': fields.Float(required=False, default=DEFAULT_SHOW_TIME, deserializedValidators=validate.Range(minValue=0)),
- 'minShowTime': fields.Float(required=False, default=DEFAULT_MIN_SHOW_TIME, deserializedValidators=validate.Range(minValue=MIN_SHOW_TIME_LOWER_LIMIT, maxValue=MIN_SHOW_TIME_UPPER_LIMIT)),
- 'waitTime': fields.Float(required=False, default=DEFAULT_WAIT_TIME, deserializedValidators=validate.Range(minValue=0))}, checkUnknown=True, deserializedValidators=validateLifecycleModel, modelClass=ClientHintLifecycleModel)
+clientHintLifecycleSchema = schemas.Schema[ClientHintLifecycleModel](fields={'showTime': fields.Float(required=False, default=DEFAULT_SHOW_TIME, deserializedValidators=validate.Range(minValue=0)), 
+   'minShowTime': fields.Float(required=False, default=DEFAULT_MIN_SHOW_TIME, deserializedValidators=validate.Range(minValue=MIN_SHOW_TIME_LOWER_LIMIT, maxValue=MIN_SHOW_TIME_UPPER_LIMIT)), 
+   'waitTime': fields.Float(required=False, default=DEFAULT_WAIT_TIME, deserializedValidators=validate.Range(minValue=0))}, checkUnknown=True, deserializedValidators=validateLifecycleModel, modelClass=ClientHintLifecycleModel)
 
 class ClientHintSchema(CommonHintSchema[CHMType]):
     __slots__ = ('textSchema', 'visualSchema', 'soundSchema', 'historySchema')
 
     def __init__(self, modelClass=ClientHintModel, propsSchema=None, contextSchema=None, textSchema=None, visualSchema=None, soundSchema=None, historySchema=None, serializedValidators=None, deserializedValidators=None):
-        super(ClientHintSchema, self).__init__(propsSchema=propsSchema, contextSchema=contextSchema, serializedValidators=serializedValidators, deserializedValidators=[validateHintModel] + validate.prepareValidators(deserializedValidators), modelClass=modelClass)
+        super(ClientHintSchema, self).__init__(propsSchema=propsSchema, contextSchema=contextSchema, serializedValidators=serializedValidators, deserializedValidators=[
+         validateHintModel] + validate.prepareValidators(deserializedValidators), modelClass=modelClass)
         self.textSchema = textSchema or clientHintTextSchema
         self.visualSchema = visualSchema or clientHintVisualSchema
         self.soundSchema = soundSchema or clientHintSoundSchema

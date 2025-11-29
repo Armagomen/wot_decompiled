@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/resources.py
 from constants import IGR_TYPE, WG_GAMES
 from gui.shared.utils.decorators import ReprInjector
 from messenger.m_constants import USER_TAG
@@ -7,7 +5,8 @@ from messenger.proto.xmpp.gloox_constants import PRESENCES_ORDER, PRESENCE
 from messenger.proto.xmpp.wrappers import WGExtsInfo
 from messenger import g_settings
 
-@ReprInjector.simple('priority', 'message', 'presence', ('__wgExts', 'exts'), ('__mucInfo', 'muc'))
+@ReprInjector.simple('priority', 'message', 'presence', ('__wgExts', 'exts'), ('__mucInfo',
+                                                                               'muc'))
 class Resource(object):
     __slots__ = ('priority', 'message', 'presence', '__wgExts', '__mucInfo', '__order')
 
@@ -108,24 +107,33 @@ class ResourceDictionary(object):
 
     def getTags(self):
         resource = self.getHighestPriority()
-        return resource.getTags() if resource else set()
+        if resource:
+            return resource.getTags()
+        return set()
 
     def isEmpty(self):
         return not self.__resources
 
     def getHighestPriority(self):
         self.__initHighestData()
-        return self.__highest[1] if self.__highest else None
+        if self.__highest:
+            return self.__highest[1]
+        else:
+            return
 
     def getHighestPriorityID(self):
         self.__initHighestData()
-        return self.__highest[0] if self.__highest else None
+        if self.__highest:
+            return self.__highest[0]
+        else:
+            return
 
     def __initHighestData(self):
         if self.__resources and self.__highest is None:
             wotId = g_settings.server.XMPP.resource
             if wotId in self.__resources:
-                self.__highest = (wotId, self.__resources[wotId])
+                self.__highest = (
+                 wotId, self.__resources[wotId])
             elif self.__highest is None:
                 self.__highest = sorted(self.__resources.items(), cmp=priorityComparator)[0]
         return

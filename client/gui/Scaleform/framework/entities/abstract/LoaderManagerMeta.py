@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/LoaderManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class LoaderManagerMeta(BaseDAAPIComponent):
@@ -17,7 +15,9 @@ class LoaderManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('viewLoadCanceled')
 
     def as_loadViewS(self, data):
-        return self.flashObject.as_loadView(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadView(data)
 
     def as_cancelLoadViewS(self, viewName):
-        return self.flashObject.as_cancelLoadView(viewName) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_cancelLoadView(viewName)

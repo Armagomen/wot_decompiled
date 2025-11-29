@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/notifications/perk_available_notification.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEH_SKILL_TREE_POPUP_SHOWN
 from helpers import dependency
@@ -31,14 +29,18 @@ class PerkAvailableNotification(IGlobalListener, NotificationBase):
             settings.add(self.__vehCD)
             AccountSettings.setUIFlag(VEH_SKILL_TREE_POPUP_SHOWN, settings)
         vehicle = self.__itemsCache.items.getItemByCD(self.__vehCD)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsPopUp(self._isPopUp)
             vm.setIsDisabled(self.__isButtonDisabled())
             fillVehicleModel(vm.vehicle, vehicle)
 
     def _getEvents(self):
         events = super(PerkAvailableNotification, self)._getEvents()
-        return events + ((self.viewModel.onClose, self.__onClose), (self.viewModel.onGoToProgression, self.__onGoToProgression))
+        return events + (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onGoToProgression, self.__onGoToProgression))
 
     def __onClose(self):
         self.destroyWindow()

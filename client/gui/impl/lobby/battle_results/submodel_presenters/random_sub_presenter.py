@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/random_sub_presenter.py
 import typing
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
 from gui.battle_results.presenters.packers.progression.progression import ProgressionSubPresenter

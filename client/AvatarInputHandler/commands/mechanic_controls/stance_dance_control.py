@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/commands/mechanic_controls/stance_dance_control.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from vehicles.mechanics.mechanic_helpers import getPlayerVehicleMechanic
 if typing.TYPE_CHECKING:

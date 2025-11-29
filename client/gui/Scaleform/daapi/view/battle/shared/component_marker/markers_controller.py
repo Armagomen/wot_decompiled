@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/component_marker/markers_controller.py
 import logging
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from chat_commands_consts import INVALID_TARGET_ID
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
@@ -196,10 +193,12 @@ class BaseMarkerController(IArenaVehiclesController):
     def _checkInitedPlugin(self, marker):
         if marker.hasMarker2D() and self._gui.getMarkers2DPlugin() is None:
             return False
-        elif marker.hasMinimap() and self._gui.getMinimapPlugin() is None:
-            return False
         else:
-            return False if marker.hasFullscreenMap() and self._gui.getFullscreenMapPlugin() is None else True
+            if marker.hasMinimap() and self._gui.getMinimapPlugin() is None:
+                return False
+            if marker.hasFullscreenMap() and self._gui.getFullscreenMapPlugin() is None:
+                return False
+            return True
 
     def _checkGlobalVisibilityForMarker(self, marker):
         if not self._globalVisibility:

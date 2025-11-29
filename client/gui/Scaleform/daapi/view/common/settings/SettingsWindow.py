@@ -1,14 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/SettingsWindow.py
-import functools
-import BattleReplay
-import BigWorld
-import WGC
-import VOIP
+import Sound, functools, BattleReplay, BigWorld, WGC, VOIP
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COLOR_SETTINGS_TAB_IDX
 from account_helpers.settings_core.ServerSettingsManager import LIMITED_UI_KEY
 from account_helpers.settings_core.settings_constants import SETTINGS_GROUP
+from constants import MISC_GUI_SETTINGS
 from debug_utils import LOG_DEBUG, LOG_WARNING
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from account_helpers.counter_settings import getNewSettings, invalidateSettings
@@ -23,7 +18,7 @@ from gui.Scaleform.daapi.view.meta.SettingsWindowMeta import SettingsWindowMeta
 from gui.Scaleform.daapi.view.common.settings.SettingsParams import SettingsParams
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import APPLY_METHOD
-from helpers import dependency
+from helpers import dependency, server_settings
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from gui.Scaleform.genConsts.SETTINGS_DIALOGS import SETTINGS_DIALOGS
@@ -38,15 +33,11 @@ from skeletons.gui.battle_hints.newbie_battle_hints_controller import INewbieBat
 from uilogging.limited_ui.constants import LimitedUILogItem, LimitedUILogScreenParent
 from uilogging.limited_ui.loggers import LimitedUILogger
 from uilogging.newbie_hints.loggers import NewbieHintsSettingsUILogger, NewbieHintsSettingsTooltipsUILogger
-_PAGES = (SETTINGS.GAMETITLE,
- SETTINGS.GRAFICTITLE,
- SETTINGS.SOUNDTITLE,
- SETTINGS.KEYBOARDTITLE,
- SETTINGS.CURSORTITLE,
- SETTINGS.MARKERTITLE,
- SETTINGS.FEEDBACK,
- SETTINGS.OTHERTITLE)
-_PAGES_INDICES = dict(((v, k) for k, v in enumerate(_PAGES)))
+_PAGES = (
+ SETTINGS.GAMETITLE, SETTINGS.GRAFICTITLE, SETTINGS.SOUNDTITLE,
+ SETTINGS.KEYBOARDTITLE, SETTINGS.CURSORTITLE, SETTINGS.MARKERTITLE,
+ SETTINGS.FEEDBACK, SETTINGS.OTHERTITLE)
+_PAGES_INDICES = dict((v, k) for k, v in enumerate(_PAGES))
 _g_lastTabIdx = 0
 
 def _getLastTabIndex():
@@ -85,22 +76,21 @@ class SettingsWindow(SettingsWindowMeta):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def __getSettingsParam(self):
-        settings = {SETTINGS_GROUP.GAME_SETTINGS: self.params.getGameSettings(),
-         SETTINGS_GROUP.GRAPHICS_SETTINGS: self.params.getGraphicsSettings(),
-         SETTINGS_GROUP.SOUND_SETTINGS: self.params.getSoundSettings(),
-         SETTINGS_GROUP.CONTROLS_SETTINGS: self.params.getControlsSettings(),
-         SETTINGS_GROUP.AIM_SETTINGS: self.params.getAimSettings(),
-         SETTINGS_GROUP.MARKERS_SETTINGS: self.params.getMarkersSettings(),
-         SETTINGS_GROUP.FEEDBACK_SETTINGS: self.params.getFeedbackSettings()}
+        settings = {SETTINGS_GROUP.GAME_SETTINGS: self.params.getGameSettings(), 
+           SETTINGS_GROUP.GRAPHICS_SETTINGS: self.params.getGraphicsSettings(), 
+           SETTINGS_GROUP.SOUND_SETTINGS: self.params.getSoundSettings(), 
+           SETTINGS_GROUP.CONTROLS_SETTINGS: self.params.getControlsSettings(), 
+           SETTINGS_GROUP.AIM_SETTINGS: self.params.getAimSettings(), 
+           SETTINGS_GROUP.MARKERS_SETTINGS: self.params.getMarkersSettings(), 
+           SETTINGS_GROUP.FEEDBACK_SETTINGS: self.params.getFeedbackSettings()}
         return settings
 
     def __getSettings(self):
         settings = self.__getSettingsParam()
-        return {key:{'keys': value.keys(),
-         'values': value.values()} for key, value in settings.iteritems()}
+        return {key:{'keys': value.keys(), 'values': value.values()} for key, value in settings.iteritems()}
 
     def __commitSettings(self, settings=None, restartApproved=False, isCloseWnd=False):
         if settings is None:
@@ -139,16 +129,17 @@ class SettingsWindow(SettingsWindowMeta):
 
     def _populate(self):
         super(SettingsWindow, self)._populate()
-        dataVO = [{'label': SETTINGS.FEEDBACK_TAB_DAMAGEINDICATOR,
-          'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_INDICATOR},
-         {'label': SETTINGS.FEEDBACK_TAB_EVENTSINFO,
-          'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_EVENTS},
-         {'label': SETTINGS.FEEDBACK_TAB_DAMAGELOGPANEL,
-          'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_LOG},
-         {'label': SETTINGS.FEEDBACK_TAB_BATTLEBORDERMAP,
-          'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_BORDER_MAP},
-         {'label': SETTINGS.FEEDBACK_TAB_QUESTSPROGRESS,
-          'linkage': VIEW_ALIAS.FEEDBACK_QUESTS_PROGRESS}]
+        dataVO = [
+         {'label': SETTINGS.FEEDBACK_TAB_DAMAGEINDICATOR, 
+            'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_INDICATOR},
+         {'label': SETTINGS.FEEDBACK_TAB_EVENTSINFO, 
+            'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_EVENTS},
+         {'label': SETTINGS.FEEDBACK_TAB_DAMAGELOGPANEL, 
+            'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_LOG},
+         {'label': SETTINGS.FEEDBACK_TAB_BATTLEBORDERMAP, 
+            'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_BORDER_MAP},
+         {'label': SETTINGS.FEEDBACK_TAB_QUESTSPROGRESS, 
+            'linkage': VIEW_ALIAS.FEEDBACK_QUESTS_PROGRESS}]
         self.as_setFeedbackDataProviderS(dataVO)
         if self.__redefinedKeyModeEnabled:
             BigWorld.wg_setRedefineKeysMode(True)
@@ -156,19 +147,19 @@ class SettingsWindow(SettingsWindowMeta):
         self._update()
         self.settingsCore.onSettingsChanged += self.__onSettingsChanged
         self.anonymizerController.onStateChanged += self.__refreshSettings
+        self.lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
         g_guiResetters.add(self.onRecreateDevice)
         BigWorld.wg_setAdapterOrdinalNotifyCallback(self.onRecreateDevice)
         self.__uiNewbieHintsTooltipLogger.initialize()
 
     def _update(self):
         self.as_setDataS(self.__getSettings())
-        newSettings = getNewSettings()
-        if newSettings:
-            self.as_setCountersDataS(newSettings)
+        self.__updateNewSettingsCounters()
         self.as_updateVideoSettingsS(self.params.getMonitorSettings())
         self.as_openTabS(_getLastTabIndex())
         self.__setColorGradingTechnique()
         self.__setLimitedUISettingVisibility()
+        self.__setPhysicsSoundVisibility()
 
     def _dispose(self):
         if self.__redefinedKeyModeEnabled:
@@ -180,6 +171,7 @@ class SettingsWindow(SettingsWindowMeta):
         self.stopArtyBulbPreview()
         self.anonymizerController.onStateChanged -= self.__refreshSettings
         self.settingsCore.onSettingsChanged -= self.__onSettingsChanged
+        self.lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingChanged
         self.__uiNewbieHintsTooltipLogger.finalize()
         super(SettingsWindow, self)._dispose()
         return
@@ -195,8 +187,7 @@ class SettingsWindow(SettingsWindowMeta):
     def onCounterTargetVisited(self, tabName, subTabName, controlsIDs):
         isSettingsChanged = invalidateSettings(tabName, subTabName, controlsIDs)
         if isSettingsChanged:
-            newSettings = getNewSettings()
-            self.as_setCountersDataS(newSettings)
+            self.__updateNewSettingsCounters()
 
     def onSettingsChange(self, settingName, settingValue):
         settingValue = flashObject2Dict(settingValue)
@@ -254,6 +245,13 @@ class SettingsWindow(SettingsWindowMeta):
         option = self.settingsCore.options.getSetting(settings_constants.SOUND.SOUND_SPEAKERS)
         return option.getSystemPreset()
 
+    def autodetectPhysicsSoundQuality(self):
+        options = settings_constants.SoundPhysicsQuality.ORDER
+        recommendedPreset = Sound.getRecommendedPreset()
+        if recommendedPreset in options:
+            return recommendedPreset
+        return settings_constants.SoundPhysicsQuality.DISABLE
+
     def canSelectAcousticType(self, index):
         index = int(index)
         option = self.settingsCore.options.getSetting(settings_constants.SOUND.SOUND_SPEAKERS)
@@ -264,7 +262,20 @@ class SettingsWindow(SettingsWindowMeta):
                     LOG_DEBUG('Player result', result)
                     self.as_onSoundSpeakersPresetApplyS(result)
 
-            DialogsInterface.showI18nConfirmDialog('soundSpeakersPresetDoesNotMatch', callback=_apply)
+            DialogsInterface.showI18nConfirmDialog('soundSpeakersPresetDoesNotMatch', _apply)
+            return False
+        return True
+
+    def canSelectPhysicsSoundQuality(self, optionIdx):
+        option = self.settingsCore.options.getSetting(settings_constants.SOUND.PHYSICS_QUALITY)
+        if not option.isPresetSupportedByIdx(optionIdx):
+
+            def _apply(result):
+                if not self.isDisposed():
+                    LOG_DEBUG('PhysicsSoundQuality: Player result', result)
+                    self.as_onPhysicsSoundQualityApplyS(result)
+
+            DialogsInterface.showI18nConfirmDialog('physicsSoundQualityDoesNotMatch', _apply)
             return False
         return True
 
@@ -315,11 +326,9 @@ class SettingsWindow(SettingsWindowMeta):
         ctx = None
         applyMethod = functools.partial(self.applySettings, settings, False)
         if dialogID == SETTINGS_DIALOGS.MINIMAP_ALPHA_NOTIFICATION:
-            ctx = {'icon': icons.alert(),
-             'alert': makeHtmlString('html_templates:lobby/dialogs', 'minimapAlphaNotification', {'message': backport.text(R.strings.dialogs.minimapAlphaNotification.message.alert())})}
+            ctx = {'icon': icons.alert(), 'alert': makeHtmlString('html_templates:lobby/dialogs', 'minimapAlphaNotification', {'message': backport.text(R.strings.dialogs.minimapAlphaNotification.message.alert())})}
         elif dialogID == SETTINGS_DIALOGS.LIMITED_UI_OFF_NOTIFICATION:
-            ctx = {'icon': icons.alert(),
-             'alert': makeHtmlString('html_templates:lobby/dialogs', 'limitedUIOffNotification', {'message': backport.text(R.strings.dialogs.limitedUIOffNotification.message.alert())})}
+            ctx = {'icon': icons.alert(), 'alert': makeHtmlString('html_templates:lobby/dialogs', 'limitedUIOffNotification', {'message': backport.text(R.strings.dialogs.limitedUIOffNotification.message.alert())})}
             applyMethod = self.__applyLimitedUISetting
 
         def callback(isOk):
@@ -334,9 +343,9 @@ class SettingsWindow(SettingsWindowMeta):
         return
 
     def openGammaWizard(self, x, y, size):
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.GAMMA_WIZARD), ctx={'x': x,
-         'y': y,
-         'size': size}), EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.GAMMA_WIZARD), ctx={'x': x, 
+           'y': y, 
+           'size': size}), EVENT_BUS_SCOPE.DEFAULT)
 
     def openColorSettings(self):
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.COLOR_SETTING)), EVENT_BUS_SCOPE.DEFAULT)
@@ -356,7 +365,9 @@ class SettingsWindow(SettingsWindowMeta):
                 isGraphicsQualitySettings = True
                 break
 
-        return self.as_isPresetAppliedS() if isGraphicsQualitySettings else True
+        if isGraphicsQualitySettings:
+            return self.as_isPresetAppliedS()
+        return True
 
     def __onSettingsChanged(self, diff):
         if settings_constants.GRAPHICS.COLOR_GRADING_TECHNIQUE in diff:
@@ -365,6 +376,10 @@ class SettingsWindow(SettingsWindowMeta):
             self.__setLimitedUISettingVisibility()
         self.__uiNewbieHintsLogger.onSettingsChanged(diff)
         return
+
+    @server_settings.serverSettingsChangeListener(MISC_GUI_SETTINGS)
+    def __onServerSettingChanged(self, diff):
+        self.__setPhysicsSoundVisibility()
 
     def __refreshSettings(self, **_):
         self._update()
@@ -403,3 +418,13 @@ class SettingsWindow(SettingsWindowMeta):
     def __applyLimitedUISetting(self):
         self.limitedUIController.completeAllRulesByTypes(LuiRuleTypes.NOVICE)
         LimitedUILogger().handleClickOnce(LimitedUILogItem.DISABLE_LIMITED_UI_BUTTON, LimitedUILogScreenParent.SETTINGS_WINDOW)
+
+    def __setPhysicsSoundVisibility(self):
+        isPhysicsSoundEnabled = self.lobbyContext.getServerSettings().isPhysicsSoundEnabled()
+        self.as_showPhysicsSoundSettingsS(isPhysicsSoundEnabled)
+        self.__updateNewSettingsCounters()
+
+    def __updateNewSettingsCounters(self):
+        newSettings = getNewSettings()
+        if newSettings:
+            self.as_setCountersDataS(newSettings)

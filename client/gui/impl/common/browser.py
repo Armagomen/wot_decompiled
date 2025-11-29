@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/browser.py
-import logging
-import typing
-import Event
+import logging, typing, Event
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.browser import BrowserViewWebHandlers
 from gui.impl.pub import ViewImpl
@@ -26,7 +22,8 @@ class BrowserSettings(ViewSettings):
 TViewModel = typing.TypeVar('TViewModel', bound=BrowserModel)
 
 class Browser(ViewImpl[TViewModel]):
-    __slots__ = ('__url', '__browserId', '__browser', '__webCommandHandler', '__webHandlersMap', 'onBrowserObtained', '__eventManager')
+    __slots__ = ('__url', '__browserId', '__browser', '__webCommandHandler', '__webHandlersMap',
+                 'onBrowserObtained', '__eventManager')
     __browserCtrl = dependency.descriptor(IBrowserController)
 
     def __init__(self, url='', settings=None, webHandlersMap=None, preload=False, *args, **kwargs):
@@ -63,10 +60,15 @@ class Browser(ViewImpl[TViewModel]):
             self.getViewModel().setBrowserState(BrowserState.LOADED)
 
     def _getEvents(self):
-        return ((self.getViewModel().createWebView, self.__onCreateVebView),
-         (self.getViewModel().focus, self.__onFocus),
-         (self.getViewModel().unfocus, self.__onUnfocus),
-         (self.getViewModel().reload, self.__onReload))
+        return (
+         (
+          self.getViewModel().createWebView, self.__onCreateVebView),
+         (
+          self.getViewModel().focus, self.__onFocus),
+         (
+          self.getViewModel().unfocus, self.__onUnfocus),
+         (
+          self.getViewModel().reload, self.__onReload))
 
     def _finalize(self):
         self.__browserCtrl.onBrowserAdded -= self.__onBrowserAddedHandler
@@ -102,7 +104,7 @@ class Browser(ViewImpl[TViewModel]):
         self.__browser.onTitleChange += self.__onTitleChange
         self.__browser.onJsHostQuery += self.__onJsHostQuery
         self.__browser.onTextureStateChanged += self.__onTextureStateChanged
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setId(self.__browserId)
             if self.__browser.isNavigationComplete:
                 model.setBrowserState(BrowserState.LOADED)
@@ -142,14 +144,14 @@ class Browser(ViewImpl[TViewModel]):
         self.getViewModel().setPageState(PageState.LOADING)
 
     def __onLoadEnd(self, _, isLoaded=True, httpStatusCode=None):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setPageState(PageState.LOADED if isLoaded else PageState.FAILED)
             if httpStatusCode is not None:
                 model.setHttpStatusCode(httpStatusCode)
         return
 
     def __onLoadingStateChange(self, isLoading, allowAutoLoadingScreenChange):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             if allowAutoLoadingScreenChange:
                 model.setBrowserState(BrowserState.LOADING if isLoading else BrowserState.LOADED)
 

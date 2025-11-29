@@ -1,17 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BattleFuryController.py
-import BigWorld
-import typing
+import BigWorld, typing
 from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
 from vehicles.mechanics.mechanic_states import createMechanicStatesEvents, IMechanicStatesComponent, IMechanicState
 if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
     from typing import Optional, Dict, Any
 
-class BattleFuryState(typing.NamedTuple('BattleFuryState', (('level', int),
- ('maxLevel', int),
- ('startTime', float),
- ('endTime', float))), IMechanicState):
+class BattleFuryState(typing.NamedTuple('BattleFuryState', (
+ (
+  'level', int), ('maxLevel', int), ('startTime', float), ('endTime', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status):
@@ -19,7 +15,9 @@ class BattleFuryState(typing.NamedTuple('BattleFuryState', (('level', int),
 
     @property
     def progress(self):
-        return max(self.endTime - BigWorld.serverTime(), 0.0) / self.duration if self.level > 0 and self.duration > 0 else 0.0
+        if self.level > 0 and self.duration > 0:
+            return max(self.endTime - BigWorld.serverTime(), 0.0) / self.duration
+        return 0.0
 
     @property
     def duration(self):

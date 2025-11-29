@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/arena_dp.py
-import logging
-import operator
+import logging, operator
 from constants import TEAMS_IN_ARENA, PLAYER_RANK
 from shared_utils import first
 from gui.battle_control import avatar_getter
@@ -22,7 +19,9 @@ _OP = settings.INVALIDATE_OP
 _INVITATION_STATUS = settings.INVITATION_DELIVERY_STATUS
 
 class ArenaDataProvider(IArenaDataProvider):
-    __slots__ = ('__playerTeam', '__playerVehicleID', '__vInfoVOs', '__vStatsVOs', '__avatarsVIDs', '__accountVIDs', '__weakref__', '__teamsOnArena', '__squadFinder', '__description', '__invitationStatuses')
+    __slots__ = ('__playerTeam', '__playerVehicleID', '__vInfoVOs', '__vStatsVOs',
+                 '__avatarsVIDs', '__accountVIDs', '__weakref__', '__teamsOnArena',
+                 '__squadFinder', '__description', '__invitationStatuses')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, setup):
@@ -108,12 +107,14 @@ class ArenaDataProvider(IArenaDataProvider):
     def updatePlayerStatus(self, vID, vInfo):
         vInfoVO = self.__vInfoVOs[vID]
         flags = vInfoVO.updatePlayerStatus(**vInfo)
-        return (flags, vInfoVO)
+        return (
+         flags, vInfoVO)
 
     def updateVehicleStats(self, vID, vStats):
         vStatsVO = self.__vStatsVOs[vID]
         flags = vStatsVO.updateVehicleStats(**vStats)
-        return (flags, vStatsVO)
+        return (
+         flags, vStatsVO)
 
     def updateVehicleInteractiveStats(self, iStats):
         self.__vStatsVOs.clearInteractiveStats()
@@ -129,13 +130,15 @@ class ArenaDataProvider(IArenaDataProvider):
             if flags != _OP.NONE:
                 updatedStatuses.append((flags, vInfo))
 
-        return (updatedStats, updatedStatuses)
+        return (
+         updatedStats, updatedStatuses)
 
     def updateGameModeSpecificStats(self, vehicleID, isStatic, stats):
         if not isStatic:
             vStatsVO = self.__vStatsVOs[vehicleID]
             flags = vStatsVO.updateGameModeSpecificStats(stats)
-            return (flags, vStatsVO)
+            return (
+             flags, vStatsVO)
         vInfoVO = self.__vInfoVOs[vehicleID]
         flags = vInfoVO.updateGameModeSpecificStats(stats)
         return (flags, vInfoVO)
@@ -146,19 +149,22 @@ class ArenaDataProvider(IArenaDataProvider):
             vInfoVO = self.__vInfoVOs[vehicleID]
             flags = vInfoVO.updateInvitationStatus(include=include, exclude=exclude)
         else:
-            self.__invitationStatuses[avatarSessionID] = (include, exclude)
+            self.__invitationStatuses[avatarSessionID] = (
+             include, exclude)
             flags, vInfoVO = _OP.NONE, None
         return (flags, vInfoVO)
 
     def updateChatCommandState(self, vID, chatCommandState):
         vStatsVO = self.__vStatsVOs[vID]
         flags = vStatsVO.updateChatCommandState(chatCommandState)
-        return (flags, vStatsVO)
+        return (
+         flags, vStatsVO)
 
     def updateVehicleSpottedStatus(self, vID, spottedStatus):
         vStatsVO = self.__vStatsVOs[vID]
         flags = vStatsVO.updateSpottedStatus(spottedStatus)
-        return (flags, vStatsVO)
+        return (
+         flags, vStatsVO)
 
     def updateVehicleDogTag(self, vID, vInfo):
         if vID not in self.__vInfoVOs:
@@ -176,7 +182,8 @@ class ArenaDataProvider(IArenaDataProvider):
         return self.__teamsOnArena
 
     def getAllyTeams(self):
-        return (self.__playerTeam,)
+        return (
+         self.__playerTeam,)
 
     def getEnemyTeams(self):
         allyTeams = self.getAllyTeams()
@@ -220,10 +227,13 @@ class ArenaDataProvider(IArenaDataProvider):
     def getTeamIDsIterator(self):
         allyTeams = self.getAllyTeams()
         for teamIdx in self.__teamsOnArena:
-            yield (teamIdx not in allyTeams, teamIdx)
+            yield (
+             teamIdx not in allyTeams, teamIdx)
 
     def getNumberOfTeam(self, enemy=False):
-        return first(self.getEnemyTeams()) if enemy else self.__playerTeam
+        if enemy:
+            return first(self.getEnemyTeams())
+        return self.__playerTeam
 
     def getPersonalDescription(self):
         return self.__description
@@ -289,7 +299,9 @@ class ArenaDataProvider(IArenaDataProvider):
         arenaDP = sessionProvider.getArenaDP()
         vo = arenaDP.getVehicleStats(vID)
         rank = vo.gameModeSpecific.getValue(EPIC_BATTLE_KEYS.RANK)
-        return True if rank == PLAYER_RANK.GENERAL else False
+        if rank == PLAYER_RANK.GENERAL:
+            return True
+        return False
 
     def isTeamKiller(self, vID):
         return self.__getStateFlag(vID, 'isTeamKiller', playerTeam=self.__playerTeam)
@@ -340,12 +352,14 @@ class ArenaDataProvider(IArenaDataProvider):
 
     def getVehiclesItemsGenerator(self):
         for vInfo in self.__vInfoVOs.itervalues():
-            yield (vInfo, self.__vStatsVOs[vInfo.vehicleID])
+            yield (
+             vInfo, self.__vStatsVOs[vInfo.vehicleID])
 
     def getActiveVehiclesGenerator(self):
         for vInfo in self.__vInfoVOs.itervalues():
             if vInfo.isPlayer():
-                yield (vInfo, self.__vStatsVOs[vInfo.vehicleID])
+                yield (
+                 vInfo, self.__vStatsVOs[vInfo.vehicleID])
 
     def getAlliesVehiclesNumber(self):
         return vos_collections.AllyItemsCollection().count(self)

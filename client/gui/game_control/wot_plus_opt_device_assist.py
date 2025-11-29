@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/wot_plus_opt_device_assist.py
 import logging
 from functools import partial
 import typing
@@ -22,7 +20,7 @@ from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, List, Any, Callable, Set, Optional, Union
     from gui.shared.gui_items.Vehicle import Vehicle
-    _OptDevicePreset = Tuple[OptDeviceAssistType, int, List[VehicleLoadout]]
+    _OptDevicePreset = Tuple[(OptDeviceAssistType, int, List[VehicleLoadout])]
 _logger = logging.getLogger(__name__)
 
 class _IOptDeviceAssistDataProvider(object):
@@ -64,6 +62,7 @@ def _sortComparator(categories, device, itemsCache=None):
             return 1000
         categoriesSet = set().union(*(optDevice.descriptor.categories for optDevice in optDevices))
         return len(categoriesSet)
+    return 0
 
 
 class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
@@ -102,7 +101,8 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
         return
 
     def getPresets(self, vehicle):
-        return (self._searchVehicleLoadoutsInCache(vehicle), self._searchVehicleLoadoutsInCacheLegendary(vehicle))
+        return (
+         self._searchVehicleLoadoutsInCache(vehicle), self._searchVehicleLoadoutsInCacheLegendary(vehicle))
 
     def getMostPopularLoadout(self, vehicle):
         presetData = self._searchVehicleLoadoutsInCache(vehicle)
@@ -110,7 +110,7 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
             if loadout.devices:
                 return loadout
 
-        return None
+        return
 
     def _searchVehicleLoadoutsInCache(self, vehicle):
         vehIntCD = vehicle.intCD
@@ -126,17 +126,21 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
                 linkedVehicle = proxyVehicle
             else:
                 _logger.error('Attempt to retrieve copied vehicle %s as %s: No vehicle in cache. Invalid cache!', vehIntCD, proxyVehicle)
-        elif optDevicesLoadouts:
-            optDevicesSource = OptDeviceAssistType.NORMAL
-        elif vehType in self._typeToVehicleMap:
-            proxyVehicle = self._typeToVehicleMap[vehType]
-            optDevicesLoadouts = self._getOptionalDevicesFromCache(proxyVehicle)
+        else:
             if optDevicesLoadouts:
-                optDevicesSource = OptDeviceAssistType.LINKED
-                linkedVehicle = proxyVehicle
-            else:
-                _logger.error('Attempt to retrieve vehicle similar to %s as %s: No vehicle in cache. Invalid cache!', vehIntCD, proxyVehicle)
-        return (OptDeviceAssistType.NODATA, vehIntCD, []) if optDevicesLoadouts and not self._checkOptionalDevicesCompatibilityWithVehicle(optDevicesLoadouts, vehicle) else (optDevicesSource, linkedVehicle, optDevicesLoadouts)
+                optDevicesSource = OptDeviceAssistType.NORMAL
+            elif vehType in self._typeToVehicleMap:
+                proxyVehicle = self._typeToVehicleMap[vehType]
+                optDevicesLoadouts = self._getOptionalDevicesFromCache(proxyVehicle)
+                if optDevicesLoadouts:
+                    optDevicesSource = OptDeviceAssistType.LINKED
+                    linkedVehicle = proxyVehicle
+                else:
+                    _logger.error('Attempt to retrieve vehicle similar to %s as %s: No vehicle in cache. Invalid cache!', vehIntCD, proxyVehicle)
+            if optDevicesLoadouts and not self._checkOptionalDevicesCompatibilityWithVehicle(optDevicesLoadouts, vehicle):
+                return (OptDeviceAssistType.NODATA, vehIntCD, [])
+        return (
+         optDevicesSource, linkedVehicle, optDevicesLoadouts)
 
     def _searchVehicleLoadoutsInCacheLegendary(self, vehicle):
         vehIntCD = vehicle.intCD
@@ -144,7 +148,9 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
         optDevicesLoadouts = self._getOptionalDevicesFromCacheLegendary(vehIntCD)
         if optDevicesLoadouts:
             optDevicesSource = OptDeviceAssistType.NORMAL
-        return (OptDeviceAssistType.NODATA, vehIntCD, []) if optDevicesLoadouts and not self._checkOptionalDevicesCompatibilityWithVehicle(optDevicesLoadouts, vehicle) else (optDevicesSource, vehIntCD, optDevicesLoadouts)
+        if optDevicesLoadouts and not self._checkOptionalDevicesCompatibilityWithVehicle(optDevicesLoadouts, vehicle):
+            return (OptDeviceAssistType.NODATA, vehIntCD, [])
+        return (optDevicesSource, vehIntCD, optDevicesLoadouts)
 
     def _syncServerSettings(self, serverDiff):
         self._removedVehicles = set(serverDiff.get(OptionalDevicesUsageConst.REMOVE, []))
@@ -153,7 +159,8 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
         for compDescrTo, compDescrFrom in serverDiff.get(OptionalDevicesUsageConst.COPY, {}).items():
             if self._getOptionalDevicesFromCache(compDescrFrom):
                 self._vehicleToVehicleMap[compDescrTo] = compDescrFrom
-            _logger.error('Attempt to copy %s vehicle: vehicle not present in cache', compDescrFrom)
+            else:
+                _logger.error('Attempt to copy %s vehicle: vehicle not present in cache', compDescrFrom)
 
     def _onServerSettingsChange(self, diff):
         serverDiff = diff.get(OPTIONAL_DEVICES_USAGE_CONFIG)
@@ -185,11 +192,13 @@ class _OptDevicesAssistLocalDataProvider(_IOptDeviceAssistDataProvider):
                 deviceKey = GENERIC_OPTIONAL_DEVICE_MAP_TO_EQUIPMENT_NAME[device]
                 criteria = REQ_CRITERIA.OPTIONAL_DEVICE.SIMPLE | REQ_CRITERIA.OPTIONAL_DEVICE.HAS_ANY_FROM_TAGS({deviceKey})
                 optionalDevices = self._itemsCache.items.getItems(GUI_ITEM_TYPE.OPTIONALDEVICE, criteria=criteria).values()
-                compatible = any([ optionalDevice.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)[0] for optionalDevice in optionalDevices ])
+                compatible = any([ optionalDevice.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)[0] for optionalDevice in optionalDevices
+                                 ])
                 if not compatible:
                     criteria = REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED | REQ_CRITERIA.OPTIONAL_DEVICE.HAS_ANY_BY_ARCHETYPE(deviceKey)
                     optionalDevices = self._itemsCache.items.getItems(GUI_ITEM_TYPE.OPTIONALDEVICE, criteria=criteria).values()
-                    compatible = any([ optionalDevice.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)[0] for optionalDevice in optionalDevices ])
+                    compatible = any([ optionalDevice.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)[0] for optionalDevice in optionalDevices
+                                     ])
                     if not compatible:
                         return False
 
@@ -242,7 +251,11 @@ class _RemoteDataProvider(_IOptDeviceAssistDataProvider):
         return vehicleOptDeviceLoadoutsSchema.deserialize(rawPreset).convertToView()
 
     def _generateEmptyPreset(self, vehicleCD):
-        return ((OptDeviceAssistType.NODATA, vehicleCD, []), (OptDeviceAssistType.NODATA, vehicleCD, []))
+        return (
+         (
+          OptDeviceAssistType.NODATA, vehicleCD, []),
+         (
+          OptDeviceAssistType.NODATA, vehicleCD, []))
 
     def _getRawPreset(self, loadoutType, vehicleCD):
         rawPreset = {'vehicleId': vehicleCD}
@@ -263,7 +276,8 @@ class OptionalDevicesAssistantCtrl(object):
     OPT_DEVICE_ASSIST_DATA_CHANGED = 'optDeviceAssistDataChanged'
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _platoonCtrl = dependency.descriptor(IPlatoonController)
-    _SUPPORTED_PREBATTLE_TYPES = {PREBATTLE_TYPE.SQUAD}
+    _SUPPORTED_PREBATTLE_TYPES = {
+     PREBATTLE_TYPE.SQUAD}
     _PREBATTLE_TYPES_TO_LOADOUT_TYPE = {PREBATTLE_TYPE.SQUAD: SupportedWotldaLoadoutType.RANDOM}
 
     def __init__(self):
@@ -285,7 +299,7 @@ class OptionalDevicesAssistantCtrl(object):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def start(self):
         self._localDataProvider.start()
@@ -317,12 +331,17 @@ class OptionalDevicesAssistantCtrl(object):
     def getPopularOptDevicesPresets(self, vehicle):
         if not self.__isDataRetrievingAllowed():
             vehIntCD = vehicle.intCD
-            return ((OptDeviceAssistType.NODATA, vehIntCD, []), (OptDeviceAssistType.NODATA, vehIntCD, []))
+            return (
+             (
+              OptDeviceAssistType.NODATA, vehIntCD, []),
+             (
+              OptDeviceAssistType.NODATA, vehIntCD, []))
         if self._remoteDataProvider.initiated:
             loadoutType = self._PREBATTLE_TYPES_TO_LOADOUT_TYPE.get(self._platoonCtrl.getPrbEntityType())
             commonPreset, legendPreset = self._remoteDataProvider.getPresetByLoadoutType(loadoutType, vehicle)
             _logger.debug('Returning data from remote data provider')
-            return (commonPreset, legendPreset)
+            return (
+             commonPreset, legendPreset)
         common, legendary = self._localDataProvider.getPresets(vehicle)
         for loadout in common[2]:
             _sortDevices(vehicle, loadout)
@@ -333,12 +352,16 @@ class OptionalDevicesAssistantCtrl(object):
         return (common, legendary)
 
     def vehicleHasLoadout(self, vehicle):
-        return False if not self.__isDataRetrievingAllowed() else self._localDataProvider.hasLoadout(vehicle)
+        if not self.__isDataRetrievingAllowed():
+            return False
+        return self._localDataProvider.hasLoadout(vehicle)
 
     def __isDataRetrievingAllowed(self):
         if not self._lobbyContext.getServerSettings().isOptionalDevicesAssistantEnabled():
             return False
-        return False if self._platoonCtrl.getPrbEntityType() not in self._SUPPORTED_PREBATTLE_TYPES else True
+        if self._platoonCtrl.getPrbEntityType() not in self._SUPPORTED_PREBATTLE_TYPES:
+            return False
+        return True
 
     def __onOptDevAssistLocalDataChanged(self):
         g_eventBus.handleEvent(SharedEvent(self.OPT_DEVICE_ASSIST_DATA_CHANGED), EVENT_BUS_SCOPE.LOBBY)

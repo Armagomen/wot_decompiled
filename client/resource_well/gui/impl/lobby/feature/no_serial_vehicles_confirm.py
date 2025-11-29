@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/no_serial_vehicles_confirm.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
@@ -26,7 +24,7 @@ class NoSerialVehiclesConfirm(FullScreenDialogView):
 
     def _onLoading(self, *args, **kwargs):
         super(NoSerialVehiclesConfirm, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillVehicleCounter(self.__rewardID, vehicleCounterModel=model.vehicleCounter, resourceWell=self.__resourceWell)
             model.setVehicleName(self.__resourceWell.getRewardVehicle(self.__rewardID).shortUserName)
         switchHangarFilteredFilter(on=True)
@@ -58,7 +56,7 @@ class NoSerialVehiclesConfirm(FullScreenDialogView):
         pass
 
     def __onNumberRequesterUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillVehicleCounter(self.__rewardID, vehicleCounterModel=model.vehicleCounter, resourceWell=self.__resourceWell)
 
     def __onEventStateUpdated(self):

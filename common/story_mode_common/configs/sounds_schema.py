@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/common/story_mode_common/configs/sounds_schema.py
 import typing
 from dict2model import models
 from dict2model.schemas import Schema
@@ -20,7 +18,7 @@ class SoundModel(models.Model):
         self.state = state
 
     def __repr__(self):
-        return '<SoundModel(start={}, stop={}, group={}, state={})>'.format(self.start, self.stop, self.group, self.state)
+        return ('<SoundModel(start={}, stop={}, group={}, state={})>').format(self.start, self.stop, self.group, self.state)
 
 
 _SoundModelType = typing.TypeVar('_SoundModelType', bound=SoundModel)
@@ -30,10 +28,10 @@ class SoundSchema(Schema[_SoundModelType]):
     def __init__(self, fields=None, modelClass=SoundModel, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
         if not issubclass(modelClass, SoundModel):
             raise SoftException('modelClass should be a subclass of SoundModel')
-        baseFields = {'start': String(required=False, default=''),
-         'stop': String(required=False, default=''),
-         'group': String(required=False, default=''),
-         'state': String(required=False, default='')}
+        baseFields = {'start': String(required=False, default=''), 
+           'stop': String(required=False, default=''), 
+           'group': String(required=False, default=''), 
+           'state': String(required=False, default='')}
         if fields is not None:
             baseFields.update(fields)
         super(SoundSchema, self).__init__(fields=baseFields, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)

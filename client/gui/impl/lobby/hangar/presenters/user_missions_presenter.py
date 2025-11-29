@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/user_missions_presenter.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import ViewStatus
@@ -23,9 +21,9 @@ class UserMissionsPresenter(ViewComponent[UserMissionsWidgetModel]):
     __missionsService = dependency.descriptor(IMissionsService)
     __campaignService = dependency.descriptor(ICampaignService)
     _WIDGET_ALIAS = R.aliases.user_missions.hangarWidget
-    _CHILDREN = {_WIDGET_ALIAS.BattlePass(): BattlePassPresenter,
-     _WIDGET_ALIAS.Events(): EventBannersPresenter,
-     _WIDGET_ALIAS.Quests(): QuestsPresenter}
+    _CHILDREN = {_WIDGET_ALIAS.BattlePass(): BattlePassPresenter, 
+       _WIDGET_ALIAS.Events(): EventBannersPresenter, 
+       _WIDGET_ALIAS.Quests(): QuestsPresenter}
 
     def __init__(self):
         super(UserMissionsPresenter, self).__init__(model=UserMissionsWidgetModel)
@@ -39,30 +37,37 @@ class UserMissionsPresenter(ViewComponent[UserMissionsWidgetModel]):
 
     def _getEvents(self):
         baseEvents = self._getBaseEvents()
-        return baseEvents + ((self.__battlePassService.onBattlePassChanged, self._onBattlePassEvent),
-         (self.__eventsService.onEventsListChanged, self._onEventsEvent),
-         (self.__missionsService.onMissionsChanged, self._onMissionsEvent),
-         (self.__campaignService.onEventsListChanged, self._onEventsEvent),
-         (self.viewModel.onPresenterDisappear, self._onPresenterDisappear),
-         (self.viewModel.onWidgetUnmounted, self._onWidgetUnmounted))
+        return baseEvents + (
+         (
+          self.__battlePassService.onBattlePassChanged, self._onBattlePassEvent),
+         (
+          self.__eventsService.onEventsListChanged, self._onEventsEvent),
+         (
+          self.__missionsService.onMissionsChanged, self._onMissionsEvent),
+         (
+          self.__campaignService.onEventsListChanged, self._onEventsEvent),
+         (
+          self.viewModel.onPresenterDisappear, self._onPresenterDisappear),
+         (
+          self.viewModel.onWidgetUnmounted, self._onWidgetUnmounted))
 
     def _onLoading(self, *args, **kwargs):
         super(UserMissionsPresenter, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._updateBattlePass(vm)
             self._updateEntryPoints(vm)
             self._updateMissions(vm)
 
     def _onBattlePassEvent(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._updateBattlePass(vm)
 
     def _onEventsEvent(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._updateEntryPoints(vm)
 
     def _onMissionsEvent(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._updateMissions(vm)
 
     def _onPresenterDisappear(self, args):

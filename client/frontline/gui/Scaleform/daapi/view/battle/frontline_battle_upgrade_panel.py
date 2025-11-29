@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_battle_upgrade_panel.py
-import BigWorld
-import WWISE
+import BigWorld, WWISE
 from ReservesEvents import randomReservesEvents
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineBattleUpgradePanelMeta import FrontlineBattleUpgradePanelMeta
 from frontline.gui.frontline_helpers import getReserveIconPath, getHotKeyInfoListByIndex
@@ -75,13 +72,15 @@ class _AttentionEffectPlayer(object):
 
 
 class FrontlineBattleUpgradePanel(FrontlineBattleUpgradePanelMeta, IArenaVehiclesController):
-    __slots__ = ('__attentionEffect', '__offer', '__cooldownID', '__showCooldownID', '__canSelect', '__canShowNextTime', '__isInGameMessage', '__lastStatus')
+    __slots__ = ('__attentionEffect', '__offer', '__cooldownID', '__showCooldownID',
+                 '__canSelect', '__canShowNextTime', '__isInGameMessage', '__lastStatus')
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __FIRST_OFFER_INDEX = 0
     __SECOND_OFFER_INDEX = 1
     __TIME_WAITING_MESSAGE = 1
-    __PROHIBITED_CAMERA_MODE = (CTRL_MODE_NAME.MAP_CASE_EPIC, CTRL_MODE_NAME.MAP_CASE, CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD)
+    __PROHIBITED_CAMERA_MODE = (CTRL_MODE_NAME.MAP_CASE_EPIC, CTRL_MODE_NAME.MAP_CASE,
+     CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD)
 
     def __init__(self):
         super(FrontlineBattleUpgradePanel, self).__init__()
@@ -228,18 +227,20 @@ class FrontlineBattleUpgradePanel(FrontlineBattleUpgradePanelMeta, IArenaVehicle
 
     def __getShortDescription(self, equipment):
         techName = self.__epicController.getReserveTechName(equipment.extraName())
-        return backport.text(self.__getR().shortDescription.reserve.dyn(techName)()) if techName else ''
+        if techName:
+            return backport.text(self.__getR().shortDescription.reserve.dyn(techName)())
+        return ''
 
     def __getReserveInfo(self, equipment, level, index):
         category = self.__epicController.getReserveCategory(equipment.extraName())
-        reserveInfo = {'header': i18n.makeString(equipment.userString),
-         'description': self.__getShortDescription(equipment),
-         'module': {'icon': getReserveIconPath(equipment.iconName),
-                    'intCD': equipment.compactDescr,
-                    'level': level,
-                    'available': True},
-         'category': category,
-         'hotKeys': getHotKeyInfoListByIndex(index)}
+        reserveInfo = {'header': i18n.makeString(equipment.userString), 
+           'description': self.__getShortDescription(equipment), 
+           'module': {'icon': getReserveIconPath(equipment.iconName), 
+                      'intCD': equipment.compactDescr, 
+                      'level': level, 
+                      'available': True}, 
+           'category': category, 
+           'hotKeys': getHotKeyInfoListByIndex(index)}
         return reserveInfo
 
     def __getDescription(self, firstEquipment, secondEquipment):
@@ -256,7 +257,7 @@ class FrontlineBattleUpgradePanel(FrontlineBattleUpgradePanelMeta, IArenaVehicle
         return description
 
     def __getNumberName(self, number):
-        return backport.text(self.__getR().dyn('number_{}'.format(number))())
+        return backport.text(self.__getR().dyn(('number_{}').format(number))())
 
     def __hasOffer(self):
         return bool(self.__offer)
@@ -288,17 +289,18 @@ class FrontlineBattleUpgradePanel(FrontlineBattleUpgradePanelMeta, IArenaVehicle
         firstEquipment = self.__getEquipmentByIntCD(firstOfferReserve)
         secondEquipment = self.__getEquipmentByIntCD(secondOfferReserve)
         description = self.__getDescription(firstEquipment, secondEquipment)
-        data = {'firstItem': self.__getReserveInfo(firstEquipment, firstOfferReserveLevel, self.__FIRST_OFFER_INDEX),
-         'secondItem': self.__getReserveInfo(secondEquipment, secondOfferReserveLevel, self.__SECOND_OFFER_INDEX),
-         'title': backport.text(self.__getR().title(), number_name=self.__getNumberName(slotIdx + 1)),
-         'description': description,
-         'isInitData': True}
+        data = {'firstItem': self.__getReserveInfo(firstEquipment, firstOfferReserveLevel, self.__FIRST_OFFER_INDEX), 
+           'secondItem': self.__getReserveInfo(secondEquipment, secondOfferReserveLevel, self.__SECOND_OFFER_INDEX), 
+           'title': backport.text(self.__getR().title(), number_name=self.__getNumberName(slotIdx + 1)), 
+           'description': description, 
+           'isInitData': True}
         self.as_setDataS(data)
         if not self.__isInGameMessage:
             self.__showPanel()
 
     def __hasInstalledStackReserve(self):
-        return any([ self.__epicController.isReserveStack(e.getDescriptor().extraName()) for e in self.__getInstalledEquipments() ])
+        return any([ self.__epicController.isReserveStack(e.getDescriptor().extraName()) for e in self.__getInstalledEquipments()
+                   ])
 
     def __isReserveInstalled(self, equipment):
         return any([ e.getDescriptor().iconName == equipment.iconName for e in self.__getInstalledEquipments() ])

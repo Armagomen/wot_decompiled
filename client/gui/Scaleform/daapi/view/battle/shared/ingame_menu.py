@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ingame_menu.py
-import constants
-import BattleReplay
+import constants, BattleReplay
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.INGAMEMENU_CONSTANTS import INGAMEMENU_CONSTANTS
@@ -71,8 +68,7 @@ class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
     def __updateNewSettingsCount(self):
         newSettingsCount = getCountNewSettings()
         if newSettingsCount > 0:
-            self.as_setCounterS([{'componentId': INGAMEMENU_CONSTANTS.SETTINGS,
-              'count': str(newSettingsCount)}])
+            self.as_setCounterS([{'componentId': INGAMEMENU_CONSTANTS.SETTINGS, 'count': str(newSettingsCount)}])
         else:
             self.as_removeCounterS([INGAMEMENU_CONSTANTS.SETTINGS])
 
@@ -132,9 +128,8 @@ class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
         self.as_setMenuButtonsLabelsS(MENU.INGAME_MENU_BUTTONS_HELP, MENU.INGAME_MENU_BUTTONS_SETTINGS, MENU.INGAME_MENU_BUTTONS_BACK, quitLabel)
 
     def _setMenuButtons(self):
-        buttons = [INGAMEMENU_CONSTANTS.QUIT,
-         INGAMEMENU_CONSTANTS.SETTINGS,
-         INGAMEMENU_CONSTANTS.HELP,
+        buttons = [
+         INGAMEMENU_CONSTANTS.QUIT, INGAMEMENU_CONSTANTS.SETTINGS, INGAMEMENU_CONSTANTS.HELP,
          INGAMEMENU_CONSTANTS.CANCEL]
         self.as_setMenuButtonsS(buttons)
 
@@ -155,7 +150,9 @@ class IngameMenu(IngameMenuMeta, BattleGUIKeyHandler):
     @staticmethod
     def __isPlayerIGR(playerInfo):
         igrType = playerInfo.igrType if playerInfo else constants.IGR_TYPE.NONE
-        return True if constants.IS_KOREA and GUI_SETTINGS.igrEnabled and igrType != constants.IGR_TYPE.NONE else False
+        if constants.IS_KOREA and GUI_SETTINGS.igrEnabled and igrType != constants.IGR_TYPE.NONE:
+            return True
+        return False
 
     def __onViewLoaded(self, view, *args, **kwargs):
         if view.alias == VIEW_ALIAS.INGAME_HELP:

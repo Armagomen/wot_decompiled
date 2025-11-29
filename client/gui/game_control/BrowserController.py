@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/BrowserController.py
-import logging
-import typing
-import BigWorld
-import Event
+import logging, typing, BigWorld, Event
 from WebBrowser import WebBrowser
 from adisp import adisp_async, adisp_process
 from gui import GUI_SETTINGS
@@ -93,20 +88,20 @@ class BrowserController(IBrowserController):
             webBrowserID = browserID
         elif not isinstance(browserID, int):
             webBrowserID = self.__browserIDGenerator.next()
-        ctx = {'url': url,
-         'title': title,
-         'showActionBtn': showActionBtn,
-         'showWaiting': showWaiting,
-         'browserID': browserID,
-         'size': size,
-         'isAsync': isAsync,
-         'showCloseBtn': showCloseBtn,
-         'showWindow': useBrowserWindow,
-         'alias': VIEW_ALIAS.BROWSER_WINDOW_MODAL if isModal else VIEW_ALIAS.BROWSER_WINDOW,
-         'showCreateWaiting': showCreateWaiting,
-         'handlers': handlers,
-         'showBrowserCallback': showBrowserCallback,
-         'isSolidBorder': isSolidBorder}
+        ctx = {'url': url, 
+           'title': title, 
+           'showActionBtn': showActionBtn, 
+           'showWaiting': showWaiting, 
+           'browserID': browserID, 
+           'size': size, 
+           'isAsync': isAsync, 
+           'showCloseBtn': showCloseBtn, 
+           'showWindow': useBrowserWindow, 
+           'alias': VIEW_ALIAS.BROWSER_WINDOW_MODAL if isModal else VIEW_ALIAS.BROWSER_WINDOW, 
+           'showCreateWaiting': showCreateWaiting, 
+           'handlers': handlers, 
+           'showBrowserCallback': showBrowserCallback, 
+           'isSolidBorder': isSolidBorder}
         if browserID not in self.__browsers and browserID not in self.__pendingBrowsers:
             appLoader = dependency.instance(IAppLoader)
             app = appLoader.getApp()
@@ -209,16 +204,11 @@ class BrowserController(IBrowserController):
             browser.onFailedCreation += failedCreationCallback
             browser.onTitleChange += titleUpdateCallback
             if ctx['isAsync']:
-                self.__browsersCallbacks[browserID] = (None,
-                 successfulCreationCallback,
-                 failedCreationCallback,
-                 titleUpdateCallback)
+                self.__browsersCallbacks[browserID] = (None, successfulCreationCallback, failedCreationCallback, titleUpdateCallback)
                 browser.onLoadEnd += successfulCreationCallback
             else:
-                self.__browsersCallbacks[browserID] = (successfulCreationCallback,
-                 None,
-                 failedCreationCallback,
-                 titleUpdateCallback)
+                self.__browsersCallbacks[browserID] = (
+                 successfulCreationCallback, None, failedCreationCallback, titleUpdateCallback)
                 browser.onReady += successfulCreationCallback
             return
 
@@ -229,7 +219,10 @@ class BrowserController(IBrowserController):
             browser.destroy()
 
     def __clearCallbacks(self, browserID, browser, incDelayedCreation):
-        ready, loadEnd, failed, title = self.__browsersCallbacks.pop(browserID, (None, None, None, None))
+        ready, loadEnd, failed, title = self.__browsersCallbacks.pop(browserID, (None,
+                                                                                 None,
+                                                                                 None,
+                                                                                 None))
         if browser is not None:
             if failed is not None:
                 browser.onFailedCreation -= failed

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/shell_setup.py
 from functools import partial
 from gui.shared import sound_helpers
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -36,7 +34,7 @@ class ShellSetupSubView(DealBaseSetupSubView):
 
     def _updateSlots(self, fullUpdate=True, updateData=True):
         self._viewModel.setMaxCount(self._interactor.getItem().ammoMaxSize)
-        self._viewModel.setInstalledCount(sum((shell.count for shell in self._interactor.getCurrentLayout())))
+        self._viewModel.setInstalledCount(sum(shell.count for shell in self._interactor.getCurrentLayout()))
         super(ShellSetupSubView, self)._updateSlots(fullUpdate, updateData)
 
     def __onItemsSyncCompleted(self, *_):

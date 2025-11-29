@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/login/Manager.py
-import pickle
-import time
-import typing
-import logging
-import BigWorld
-import WGC
-import Settings
-import constants
+import pickle, time, typing, logging, BigWorld, WGC, Settings, constants
 from account_helpers.settings_core.settings_constants import GAME
 from connection_mgr import CONNECTION_METHOD
 from Preferences import Preferences
@@ -96,11 +87,11 @@ class Manager(ILoginManager):
         self._preferences['remember_user'] = rememberUser
         self._preferences['login'] = email
         self._preferences['server_name'] = serverName
-        loginParams = {'login': self._preferences['login'],
-         'session': self._preferences['session'],
-         'temporary': str(int(not rememberUser)),
-         'auth_method': authMethod,
-         'publication': str(self.__wgcPublication)}
+        loginParams = {'login': self._preferences['login'], 
+           'session': self._preferences['session'], 
+           'temporary': str(int(not rememberUser)), 
+           'auth_method': authMethod, 
+           'publication': str(self.__wgcPublication)}
         if isToken2Login:
             loginParams['token2'] = self._preferences['token2']
         if not isSocialToken2Login:
@@ -115,11 +106,11 @@ class Manager(ILoginManager):
         if self.wgcAvailable:
             self.__wgcManager.relogin(token2, serverName)
         else:
-            loginParams = {'login': login,
-             'token2': token2,
-             'session': BigWorld.wg_cpsalt(self._preferences['session']),
-             'temporary': str(int(not self._preferences['remember_user'])),
-             'auth_method': CONNECTION_METHOD.TOKEN2}
+            loginParams = {'login': login, 
+               'token2': token2, 
+               'session': BigWorld.wg_cpsalt(self._preferences['session']), 
+               'temporary': str(int(not self._preferences['remember_user'])), 
+               'auth_method': CONNECTION_METHOD.TOKEN2}
             self.connectionMgr.initiateConnection(loginParams, '', serverName)
 
     def getPreference(self, key):
@@ -184,14 +175,16 @@ class Manager(ILoginManager):
         if securityWarningType is not None:
             securityLink = ''
             if not GUI_SETTINGS.isEmpty('securitySettingsURL'):
-                securityLink = makeHtmlString('html_templates:lobby/system_messages', 'link', {'text': _ms(SYSTEM_MESSAGES.SECURITYMESSAGE_CHANGE_SETINGS),
-                 'linkType': 'securityLink'})
+                securityLink = makeHtmlString('html_templates:lobby/system_messages', 'link', {'text': _ms(SYSTEM_MESSAGES.SECURITYMESSAGE_CHANGE_SETINGS), 
+                   'linkType': 'securityLink'})
             SystemMessages.pushI18nMessage('#system_messages:securityMessage/%s' % securityWarningType, type=SystemMessages.SM_TYPE.Warning, link=securityLink)
         return
 
     def writePeripheryLifetime(self):
         if AUTO_LOGIN_QUERY_ENABLED and self.connectionMgr.peripheryID:
-            self._preferences['peripheryLifetime'] = pickle.dumps((self.connectionMgr.peripheryID, time.time() + _PERIPHERY_DEFAULT_LIFETIME))
+            self._preferences['peripheryLifetime'] = pickle.dumps((
+             self.connectionMgr.peripheryID,
+             time.time() + _PERIPHERY_DEFAULT_LIFETIME))
             self._preferences.writeLoginInfo()
 
     @staticmethod
@@ -210,7 +203,7 @@ class Manager(ILoginManager):
                 try:
                     peripheryID, expirationTimestamp = pickle.loads(pickledData)
                 except Exception:
-                    LOG_DEBUG("Couldn't to read pickled periphery data. Connecting to {0}.".format(hostName))
+                    LOG_DEBUG(("Couldn't to read pickled periphery data. Connecting to {0}.").format(hostName))
                     return hostName
 
                 if expirationTimestamp > time.time():
@@ -278,7 +271,9 @@ class Manager(ILoginManager):
         self.__triedToInitWGC = True
 
     def checkWgcCouldRetry(self, status):
-        return self.__wgcManager.checkWgcCouldRetry(status) if self.wgcAvailable else False
+        if self.wgcAvailable:
+            return self.__wgcManager.checkWgcCouldRetry(status)
+        return False
 
     def __onServerSettingsChanged(self, diff):
         if 'isEnabled' in diff and not diff['isEnabled']:

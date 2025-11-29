@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_selectable_reward_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.tooltips.common import BlocksTooltipData
@@ -29,7 +27,9 @@ class RankedSelectableRewardTooltip(BlocksTooltipData):
     @staticmethod
     def __packRewardNamesBlock():
         texts = R.strings.ranked_battles.selectableReward.tooltip.equipmentChoice
-        blocks = [formatters.packTextBlockData(text=text_styles.highTitle(backport.text(texts.title()))), formatters.packTextBlockData(text=text_styles.main(backport.text(texts.list())))]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(texts.title()))),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(texts.list())))]
         return formatters.packBuildUpBlockData(blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     @staticmethod

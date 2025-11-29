@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dynamic_currencies.py
 from hashlib import md5
 from typing import Dict
 

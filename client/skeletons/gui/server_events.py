@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/server_events.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Optional, Dict, Callable, Union

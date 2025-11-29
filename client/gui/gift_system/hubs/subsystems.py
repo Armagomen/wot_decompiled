@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/gift_system/hubs/subsystems.py
 import typing
 if typing.TYPE_CHECKING:
     from gui.gift_system.constants import GiftMessageType
     from helpers.server_settings import GiftEventConfig
 
 class BaseHubSubsystem(object):
-    __slots__ = ('_settings',)
+    __slots__ = ('_settings', )
 
     def __init__(self, eventSettings):
         super(BaseHubSubsystem, self).__init__()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ChannelCarouselMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ChannelCarouselMeta(BaseDAAPIComponent):
@@ -20,7 +18,9 @@ class ChannelCarouselMeta(BaseDAAPIComponent):
         self._printOverrideError('updateItemDataOpened')
 
     def as_getDataProviderS(self):
-        return self.flashObject.as_getDataProvider() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getDataProvider()
 
     def as_getBattlesDataProviderS(self):
-        return self.flashObject.as_getBattlesDataProvider() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getBattlesDataProvider()

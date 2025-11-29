@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/achievements_main_view.py
 import weakref
 from functools import partial
 import typing
@@ -15,7 +13,13 @@ from gui.impl.pub import ViewImpl
 from helpers import uniprof
 if typing.TYPE_CHECKING:
     from typing import Dict
-_SubModelInfo = typing.NamedTuple('_SubModelInfo', [('ID', AchievementsViews), ('presenter', SubModelPresenter), ('canBeLoaded', typing.Optional[typing.Callable[[], bool]])])
+_SubModelInfo = typing.NamedTuple('_SubModelInfo', [
+ (
+  'ID', AchievementsViews),
+ (
+  'presenter', SubModelPresenter),
+ (
+  'canBeLoaded', typing.Optional[typing.Callable[([], bool)]])])
 AchievementsViewCtx = namedtuple('AchievementsViewCtx', ('menuName', 'userID', 'closeCallback'))
 
 class AchievementMainView(ViewImpl):
@@ -52,10 +56,14 @@ class AchievementMainView(ViewImpl):
         self.__switchSubView(self.__ctx)
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def _getListeners(self):
-        return ((events.Achievements20Event.CHANGE_GF_VIEW, self.__switchSubViewEventHandler, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.Achievements20Event.CHANGE_GF_VIEW, self.__switchSubViewEventHandler, EVENT_BUS_SCOPE.LOBBY),)
 
     def _finalize(self):
         self.currentPresenter.finalize()
@@ -92,7 +100,7 @@ class AchievementMainView(ViewImpl):
         else:
             if self.currentPresenter.isLoaded:
                 self.currentPresenter.finalize()
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 subModelInfo.presenter.initialize()
                 tx.setViewType(subModelInfo.ID)
                 tx.setIsOtherPlayer(ctx.userID is not None)
@@ -114,8 +122,8 @@ class _PresentersMap(object):
         self.__presentersCache = {}
         self.__mainView = weakref.proxy(mainView)
         self.__userId = userId
-        self.__loadersMap = {VIEW_ALIAS.PROFILE_TOTAL_PAGE: partial(self.__makeSubModel, AchievementsViews.SUMMARY, self.__loadSummary),
-         VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE: partial(self.__makeSubModel, AchievementsViews.ACHIEVEMENTS, self.__loadAchievements)}
+        self.__loadersMap = {VIEW_ALIAS.PROFILE_TOTAL_PAGE: partial(self.__makeSubModel, AchievementsViews.SUMMARY, self.__loadSummary), 
+           VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE: partial(self.__makeSubModel, AchievementsViews.ACHIEVEMENTS, self.__loadAchievements)}
 
     def itervalues(self):
         return self.__presentersCache.itervalues()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/builders.py
 from collections import namedtuple
 import logging
 from typing import Iterable, Any, Optional
@@ -19,7 +17,8 @@ from shared_utils import first
 from skeletons.gui.app_loader import IAppLoader
 _logger = logging.getLogger(__name__)
 _MessageArgs = namedtuple('_MessageArgs', ('args', 'fmtArgs', 'namedFmtArgs'))
-_DialogButton = namedtuple('DialogButton', ('name', 'label', 'isFocused', 'soundDown', 'rawLabel'))
+_DialogButton = namedtuple('DialogButton', ('name', 'label', 'isFocused', 'soundDown',
+                                            'rawLabel'))
 
 def _makeMessageArgs(args=None, fmtArgs=None, namedFmtArgs=None):
     return _MessageArgs(args, fmtArgs, namedFmtArgs)
@@ -37,7 +36,9 @@ def _setupButtonsBasedOnRes(obj, message, buttons=R.strings.dialogs.common, focu
 
 class PureDialogBuilder(object):
     __appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('_windowClass', '__title', '__formattedTitle', '__titleArgs', '__icon', '__backImg', '__preset', '__flags', '__buttons', '__showBalance', '__checkboxLabel', '__checkboxCheckedByDefault')
+    __slots__ = ('_windowClass', '__title', '__formattedTitle', '__titleArgs', '__icon',
+                 '__backImg', '__preset', '__flags', '__buttons', '__showBalance',
+                 '__checkboxLabel', '__checkboxCheckedByDefault')
 
     def __init__(self):
         super(PureDialogBuilder, self).__init__()
@@ -129,7 +130,7 @@ class PureDialogBuilder(object):
 
 
 class SimpleDialogBuilder(PureDialogBuilder):
-    __slots__ = ('_windowClass', '__message', '__formattedMessage', '__messageArgs')
+    __slots__ = ('__message', '__formattedMessage', '__messageArgs')
 
     def __init__(self):
         super(SimpleDialogBuilder, self).__init__()
@@ -164,7 +165,8 @@ class SimpleDialogBuilder(PureDialogBuilder):
 
 
 class FormattedSimpleDialogBuilder(SimpleDialogBuilder):
-    _DIALOG_PRESETS = (DialogPresets.BLUEPRINTS_CONVERSION,
+    _DIALOG_PRESETS = (
+     DialogPresets.BLUEPRINTS_CONVERSION,
      DialogPresets.DEFAULT,
      DialogPresets.ERROR,
      DialogPresets.INFO,

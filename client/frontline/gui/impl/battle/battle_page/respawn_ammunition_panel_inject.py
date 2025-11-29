@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/battle/battle_page/respawn_ammunition_panel_inject.py
 import BigWorld
 from frontline.gui.battle_control.controllers.frontline_respawn_ctrl import IFrontlineRespawnView
 from frontline.gui.impl.battle.battle_page.respawn_ammunition_panel_view import RespawnAmmunitionPanelView
@@ -14,7 +12,7 @@ from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 
 class RespawnAmmunitionPanelInject(InjectComponentAdaptor, IRespawnView):
-    __slots__ = ('_vehicle',)
+    __slots__ = ('_vehicle', )
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
@@ -86,6 +84,6 @@ class FrontlineRespawnAmmunitionPanelInject(RespawnAmmunitionPanelInject, IFront
         ammoViews = BigWorld.player().ammoViews
         idx = ammoViews['vehTypeCompDescrs'].index(self._vehicle.intCD)
         abilitiesCDs = ammoViews['compDescrs'][idx] if len(ammoViews['compDescrs']) > idx else vehicleInfo.battleAbilities
-        battleAbilities = list(((BattleAbility(abilityCD) if abilityCD else None) for abilityCD in abilitiesCDs))
+        battleAbilities = list((BattleAbility(abilityCD) if abilityCD else None) for abilityCD in abilitiesCDs)
         self._vehicle.battleAbilities.setLayout(*battleAbilities)
         self._vehicle.battleAbilities.setInstalled(*battleAbilities)

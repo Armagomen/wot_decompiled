@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/web_controller.py
 import logging
 from collections import defaultdict
 import BigWorld
@@ -47,7 +45,8 @@ class _CACHE_KEYS(CONST_CONTAINER):
     APPS = 2
 
 
-_CLAN_WGNC_NOTIFICATION_TYPES = (WGNC_DATA_PROXY_TYPE.CLAN_APP,
+_CLAN_WGNC_NOTIFICATION_TYPES = (
+ WGNC_DATA_PROXY_TYPE.CLAN_APP,
  WGNC_DATA_PROXY_TYPE.CLAN_INVITE,
  WGNC_DATA_PROXY_TYPE.CLAN_APP_DECLINED,
  WGNC_DATA_PROXY_TYPE.CLAN_APP_ACCEPTED,
@@ -69,14 +68,14 @@ class _ClanDossier(object):
         self.__vitalInfo = defaultdict(lambda : None)
         self.__waitForSync = 0
         self.__syncState = 0
-        self.__responseHandlers = {(WebRequestDataType.DECLINE_APPLICATION, WebRequestDataType.ACCEPT_APPLICATION): self.__applicationHandler,
-         (WebRequestDataType.CREATE_INVITES,): self.__createInvitesHandler,
-         (WebRequestDataType.CLAN_INVITES,): self.__clanInvitesHandler,
-         (WebRequestDataType.CLAN_APPLICATIONS,): self.__clanApplicationHandler}
-        self.__notificationHandlers = {(WGNC_DATA_PROXY_TYPE.CLAN_APP,): self.__clanAppNotificationHandler,
-         (WGNC_DATA_PROXY_TYPE.CLAN_APP_ACCEPTED_FOR_MEMBERS, WGNC_DATA_PROXY_TYPE.CLAN_APP_DECLINED_FOR_MEMBERS): self.__clanMembersNotificationHandler,
-         (WGNC_DATA_PROXY_TYPE.CLAN_INVITE_DECLINED, WGNC_DATA_PROXY_TYPE.CLAN_INVITE_ACCEPTED): self.__clanInviteNotificationHandler,
-         (WGNC_DATA_PROXY_TYPE.CLAN_INVITES_CREATED,): self.__clanInviteCreatedNotificationHandler}
+        self.__responseHandlers = {(WebRequestDataType.DECLINE_APPLICATION, WebRequestDataType.ACCEPT_APPLICATION): self.__applicationHandler, 
+           (WebRequestDataType.CREATE_INVITES,): self.__createInvitesHandler, 
+           (WebRequestDataType.CLAN_INVITES,): self.__clanInvitesHandler, 
+           (WebRequestDataType.CLAN_APPLICATIONS,): self.__clanApplicationHandler}
+        self.__notificationHandlers = {(WGNC_DATA_PROXY_TYPE.CLAN_APP,): self.__clanAppNotificationHandler, 
+           (WGNC_DATA_PROXY_TYPE.CLAN_APP_ACCEPTED_FOR_MEMBERS, WGNC_DATA_PROXY_TYPE.CLAN_APP_DECLINED_FOR_MEMBERS): self.__clanMembersNotificationHandler, 
+           (WGNC_DATA_PROXY_TYPE.CLAN_INVITE_DECLINED, WGNC_DATA_PROXY_TYPE.CLAN_INVITE_ACCEPTED): self.__clanInviteNotificationHandler, 
+           (WGNC_DATA_PROXY_TYPE.CLAN_INVITES_CREATED,): self.__clanInviteCreatedNotificationHandler}
 
     def fini(self):
         self._webCtrl = None
@@ -96,8 +95,7 @@ class _ClanDossier(object):
                     return False
 
             return True
-        else:
-            return self.__syncState & key
+        return self.__syncState & key
 
     def getDbID(self):
         return self.__clanDbID
@@ -115,10 +113,14 @@ class _ClanDossier(object):
         return self._webCtrl.getLimits()
 
     def hasClanApplication(self, accountDbID):
-        return accountDbID in self.__cache[_CACHE_KEYS.APPS] if self.__cache[_CACHE_KEYS.APPS] else False
+        if self.__cache[_CACHE_KEYS.APPS]:
+            return accountDbID in self.__cache[_CACHE_KEYS.APPS]
+        return False
 
     def isClanInviteSent(self, accountDbID):
-        return accountDbID in self.__cache[_CACHE_KEYS.INVITES] if self.__cache[_CACHE_KEYS.INVITES] else False
+        if self.__cache[_CACHE_KEYS.INVITES]:
+            return accountDbID in self.__cache[_CACHE_KEYS.INVITES]
+        return False
 
     def resync(self, force=False):
         self.resyncClanInfo(force=force)
@@ -172,7 +174,10 @@ class _ClanDossier(object):
     def getClanInfo(self):
         self.resyncClanInfo()
         cachedValue = self.__webCache.get(WebRequestDataType.CLAN_INFO, None)
-        return cachedValue.getCachedValue() if cachedValue is not None else items.ClanExtInfoData()
+        if cachedValue is not None:
+            return cachedValue.getCachedValue()
+        else:
+            return items.ClanExtInfoData()
 
     def canAcceptsJoinRequests(self):
         return self.getClanInfo().isOpened()
@@ -453,13 +458,13 @@ class _ClanDossier(object):
         self.__changeWebInfo(SYNC_KEYS.INVITES, item.getNewInvitesCount() + currentInvitesCount, 'onClanInvitesCountReceived')
 
     def __repr__(self):
-        return 'ClanDossier(dbID = %d, my = %s, web = %s, cache = %s)' % (self.__clanDbID,
-         self.__isMy,
-         self.__vitalInfo,
-         self.__webCache.keys())
+        return 'ClanDossier(dbID = %d, my = %s, web = %s, cache = %s)' % (
+         self.__clanDbID, self.__isMy, self.__vitalInfo, self.__webCache.keys())
 
 
-@ReprInjector.simple(('__state', 'state'), ('__profile', 'profile'))
+@ReprInjector.simple((
+ '__state', 'state'), (
+ '__profile', 'profile'))
 class WebController(WebListeners, IWebController):
     lobbyContext = dependency.descriptor(ILobbyContext)
 
@@ -489,8 +494,8 @@ class WebController(WebListeners, IWebController):
 
     def simEnableClan(self, enable):
         settings = self.lobbyContext.getServerSettings()
-        clanSettings = {'wgcgProfile': {'isEnabled': enable,
-                         'gateUrl': settings.wgcg.getGateUrl()}}
+        clanSettings = {'wgcgProfile': {'isEnabled': enable, 
+                           'gateUrl': settings.wgcg.getGateUrl()}}
         settings.update(clanSettings)
         g_clientUpdateManager.update({'serverSettings': clanSettings})
 
@@ -518,9 +523,9 @@ class WebController(WebListeners, IWebController):
         self.__clanCache.onRead += self._onClanCacheRead
         self.__clanCache.read()
         self.invalidate()
-        g_clientUpdateManager.addCallbacks({'stats.clanInfo': self.__onClanInfoChanged,
-         'serverSettings.wgcg.isEnabled': self.__onServerSettingChanged,
-         'serverSettings.clanProfile.isEnabled': self.__onClanEnableChanged})
+        g_clientUpdateManager.addCallbacks({'stats.clanInfo': self.__onClanInfoChanged, 
+           'serverSettings.wgcg.isEnabled': self.__onServerSettingChanged, 
+           'serverSettings.clanProfile.isEnabled': self.__onClanEnableChanged})
         g_wgncEvents.onProxyDataItemShowByDefault += self._onProxyDataItemShowByDefault
         g_playerEvents.onClanMembersListChanged += self._onClanMembersListChanged
         self.__started = True
@@ -580,7 +585,10 @@ class WebController(WebListeners, IWebController):
 
     def isEnabled(self):
         settings = self.lobbyContext.getServerSettings()
-        return settings.wgcg.isEnabled() if settings is not None else True
+        if settings is not None:
+            return settings.wgcg.isEnabled()
+        else:
+            return True
 
     def compareStates(self, state):
         return self.__state.compare(state)
@@ -598,14 +606,17 @@ class WebController(WebListeners, IWebController):
         return self.__state.getLimits(self.__profile)
 
     def getClanDbID(self):
-        return self.__profile.getClanDbID() if self.__profile else None
+        if self.__profile:
+            return self.__profile.getClanDbID()
+        else:
+            return
 
     def getClanInfo(self):
-        return {'id': self.__profile.getClanDbID(),
-         'tag': self.__profile.getClanAbbrev(),
-         'joined_at': self.__profile.getJoinedAt(),
-         'name': self.__profile.getClanName(),
-         'full_name': self.__profile.getClanFullName()}
+        return {'id': self.__profile.getClanDbID(), 
+           'tag': self.__profile.getClanAbbrev(), 
+           'joined_at': self.__profile.getJoinedAt(), 
+           'name': self.__profile.getClanName(), 
+           'full_name': self.__profile.getClanFullName()}
 
     def changeState(self, state):
         self.__state = state

@@ -1,9 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/tankman_layout.py
 from dossiers2.common.DossierBlockBuilders import *
-_tmanTotalBlockLayout = ['battlesCount']
+_tmanTotalBlockLayout = [
+ 'battlesCount']
 _tmanTotalBlockBuilder = StaticSizeBlockBuilder('total', _tmanTotalBlockLayout, {}, [])
-TMAN_ACHIEVEMENTS_BLOCK_LAYOUT = ['warrior',
+TMAN_ACHIEVEMENTS_BLOCK_LAYOUT = [
+ 'warrior',
  'invader',
  'sniper',
  'defender',
@@ -34,4 +34,6 @@ TMAN_ACHIEVEMENTS_BLOCK_LAYOUT = ['warrior',
  'sniper2',
  'mainGun']
 _tankmanAchievementsBlockBuilder = StaticSizeBlockBuilder('achievements', TMAN_ACHIEVEMENTS_BLOCK_LAYOUT, {}, [])
-tmanDossierLayout = (_tmanTotalBlockBuilder, _tankmanAchievementsBlockBuilder)
+tmanDossierLayout = (
+ _tmanTotalBlockBuilder,
+ _tankmanAchievementsBlockBuilder)

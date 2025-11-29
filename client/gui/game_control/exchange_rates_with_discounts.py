@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/exchange_rates_with_discounts.py
-import logging
-import math
+import logging, math
 from abc import abstractmethod, ABCMeta
 from Event import Event, EventManager
 from exchange.personal_discounts_constants import EXCHANGE_RATE_GOLD_NAME, EXCHANGE_RATE_FREE_XP_NAME, EXCHANGE_NAME_TO_GAME_PARAM_NAME, ExchangeRate
@@ -57,7 +54,9 @@ class ExchangeRateWithDiscounts(IExchangeRateWithDiscounts):
         if not self.isDiscountAvailable():
             return None
         else:
-            return self.__personalLimitedDiscountInfo if self.__isPersonalLimitedDiscountAvailable() else self.unlimitedDiscountInfo
+            if self.__isPersonalLimitedDiscountAvailable():
+                return self.__personalLimitedDiscountInfo
+            return self.unlimitedDiscountInfo
 
     @property
     def unlimitedDiscountInfo(self):
@@ -82,7 +81,9 @@ class ExchangeRateWithDiscounts(IExchangeRateWithDiscounts):
     def discountRate(self):
         if self.__isPersonalLimitedDiscountAvailable():
             return self.__personalLimitedDiscountRate
-        return self.unlimitedDiscountRate if self.__isAnyUnlimitedDiscountAvailable() else self._exchangeRate
+        if self.__isAnyUnlimitedDiscountAvailable():
+            return self.unlimitedDiscountRate
+        return self._exchangeRate
 
     @property
     def bestPersonalDiscount(self):
@@ -92,17 +93,21 @@ class ExchangeRateWithDiscounts(IExchangeRateWithDiscounts):
             if unlimitedDiscount is not None and unlimitedDiscount.isPersonal:
                 return unlimitedDiscount
             return
-        else:
-            return limitedPersonalDiscount
+        return limitedPersonalDiscount
 
     @property
     def commonServerDiscountRate(self):
         serverDiscount = self._commonServerDiscountInfo
-        return ExchangeRate(goldRateValue=serverDiscount.goldRateValue, resourceRateValue=serverDiscount.resourceRateValue) if serverDiscount is not None else self.defaultRate
+        if serverDiscount is not None:
+            return ExchangeRate(goldRateValue=serverDiscount.goldRateValue, resourceRateValue=serverDiscount.resourceRateValue)
+        else:
+            return self.defaultRate
 
     @property
     def unlimitedRateAfterMainDiscount(self):
-        return self.unlimitedDiscountRate if self.__isPersonalLimitedDiscountAvailable() else self.defaultRate
+        if self.__isPersonalLimitedDiscountAvailable():
+            return self.unlimitedDiscountRate
+        return self.defaultRate
 
     @property
     def defaultRate(self):
@@ -147,15 +152,23 @@ class ExchangeRateWithDiscounts(IExchangeRateWithDiscounts):
 
     def _getRate(self, proxy):
         rate = EXCHANGE_NAME_TO_GAME_PARAM_NAME.get(self._exchangeName, None)
-        return getattr(proxy, rate) if rate is not None else None
+        if rate is not None:
+            return getattr(proxy, rate)
+        else:
+            return
 
     @property
     def _commonServerDiscountInfo(self):
-        return personal_discounts_helper.createCommonDiscount(self._exchangeName, self._exchangeRate) if self.defaultRate != self._exchangeRate else None
+        if self.defaultRate != self._exchangeRate:
+            return personal_discounts_helper.createCommonDiscount(self._exchangeName, self._exchangeRate)
+        else:
+            return
 
     @property
     def _config(self):
-        return self.__lobbyContext.getServerSettings().exchangeRates if self.__lobbyContext else _ExchangeRatesConfig()
+        if self.__lobbyContext:
+            return self.__lobbyContext.getServerSettings().exchangeRates
+        return _ExchangeRatesConfig()
 
     @property
     def _ratesRequester(self):
@@ -186,14 +199,18 @@ class ExchangeRateWithDiscounts(IExchangeRateWithDiscounts):
     def __personalLimitedDiscountInfo(self):
         if self.__allAvailableDiscounts == UNINITIALIZED_CACHE:
             self.__createDiscounts()
-        return self.allPersonalLimitedDiscounts[0] if self.__allAvailableDiscounts else None
+        if self.__allAvailableDiscounts:
+            return self.allPersonalLimitedDiscounts[0]
+        else:
+            return
 
     def __isPersonalDiscountTheBestDiscount(self):
         if self.__personalLimitedDiscountInfo is not None:
             commonDiscount = self.unlimitedDiscountInfo
             if commonDiscount is None:
                 return True
-            sortedDiscounts = personal_discounts_helper.sortExchangeRatesDiscounts([commonDiscount, self.__personalLimitedDiscountInfo])
+            sortedDiscounts = personal_discounts_helper.sortExchangeRatesDiscounts([
+             commonDiscount, self.__personalLimitedDiscountInfo])
             if sortedDiscounts:
                 return sortedDiscounts[0] == self.__personalLimitedDiscountInfo
         return False
@@ -243,7 +260,10 @@ class GoldExchangeRateWithDiscounts(ExchangeRateWithDiscounts):
 
     def _getRate(self, proxy):
         rate = EXCHANGE_NAME_TO_GAME_PARAM_NAME.get(self._exchangeName, None)
-        return (1, getattr(proxy, rate)) if rate is not None else None
+        if rate is not None:
+            return (1, getattr(proxy, rate))
+        else:
+            return
 
 
 class XpTranslationRateWithDiscounts(ExchangeRateWithDiscounts):
@@ -297,7 +317,9 @@ class ExchangeRatesWithDiscountsProvider(IExchangeRatesWithDiscountsProvider):
         if rateType == EXCHANGE_RATE_GOLD_NAME:
             return self.goldToCredits
         else:
-            return self.freeXpTranslation if rateType == EXCHANGE_RATE_FREE_XP_NAME else None
+            if rateType == EXCHANGE_RATE_FREE_XP_NAME:
+                return self.freeXpTranslation
+            return
 
     def exchange(self, currency, toCurrency, amount):
         exchangeName = getRateNameFromCurrencies((currency, toCurrency))

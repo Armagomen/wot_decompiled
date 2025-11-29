@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/lootboxes_common.py
 from constants import LOOTBOX_TOKEN_PREFIX
 from soft_exception import SoftException
 
@@ -15,7 +13,7 @@ def makeLootboxID(tokenName):
     except Exception:
         pass
 
-    raise SoftException('Invalid tokenName: {}'.format(tokenName))
+    raise SoftException(('Invalid tokenName: {}').format(tokenName))
 
 
 def isLootboxToken(tokenName):

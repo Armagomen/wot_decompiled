@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/collection_entry_point_view_model.py
 from frameworks.wulf import ViewModel
 
 class CollectionEntryPointViewModel(ViewModel):
-    __slots__ = ('openCollection',)
+    __slots__ = ('openCollection', )
 
     def __init__(self, properties=5, commands=1):
         super(CollectionEntryPointViewModel, self).__init__(properties=properties, commands=commands)

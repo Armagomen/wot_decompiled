@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/game_control/award_controller.py
-import logging
-import typing
-import ArenaType
+import logging, typing, ArenaType
 from chat_shared import SYS_MESSAGE_TYPE
 from comp7.gui.impl.lobby.comp7_helpers.comp7_quest_helpers import isComp7VisibleQuest, getComp7QuestType, parseComp7RanksQuestID, getRequiredTokensCountToComplete
 from comp7.gui.shared import event_dispatcher as comp7_events
@@ -28,7 +24,10 @@ class Comp7QuestRewardHandler(MultiTypeServiceChannelHandler):
     __comp7ShopCtrl = dependency.descriptor(IComp7ShopController)
 
     def __init__(self, awardCtrl):
-        handledTypes = (SYS_MESSAGE_TYPE.comp7BattleResults.index(), SYS_MESSAGE_TYPE.battleResults.index(), SYS_MESSAGE_TYPE.tokenQuests.index())
+        handledTypes = (
+         SYS_MESSAGE_TYPE.comp7BattleResults.index(),
+         SYS_MESSAGE_TYPE.battleResults.index(),
+         SYS_MESSAGE_TYPE.tokenQuests.index())
         super(Comp7QuestRewardHandler, self).__init__(handledTypes, awardCtrl)
         self.__completedQuestIDs = set()
 
@@ -40,7 +39,7 @@ class Comp7QuestRewardHandler(MultiTypeServiceChannelHandler):
     def _showAward(self, ctx):
         _, message = ctx
         data = message.data
-        self.__completedQuestIDs.update((qID for qID in data.get('completedQuestIDs', set()) if isComp7VisibleQuest(qID)))
+        self.__completedQuestIDs.update(qID for qID in data.get('completedQuestIDs', set()) if isComp7VisibleQuest(qID))
         if not self.__completedQuestIDs:
             return
         if self.eventsCache.waitForSync:
@@ -59,8 +58,8 @@ class Comp7QuestRewardHandler(MultiTypeServiceChannelHandler):
             for quest in ranksQuests:
                 comp7_events.showComp7RanksRewardsScreen(quest=quest)
 
-        for quest in tokensQuests:
-            comp7_events.showComp7TokensRewardsScreen(quest=quest)
+            for quest in tokensQuests:
+                comp7_events.showComp7TokensRewardsScreen(quest=quest)
 
     def __getComp7CompletedQuests(self):
         ranksQuests = []
@@ -90,10 +89,8 @@ class Comp7QuestRewardHandler(MultiTypeServiceChannelHandler):
 
             ranksQuests.sort(key=self.__getRanksQuestSortKey, reverse=True)
             tokensQuests.sort(key=self.__getTokensQuestSortKey)
-            return (ranksQuests,
-             tokensQuests,
-             periodicQuests,
-             isQualification)
+            return (
+             ranksQuests, tokensQuests, periodicQuests, isQualification)
 
     def __onEventCacheSyncCompleted(self, *_):
         self.eventsCache.onSyncCompleted -= self.__onEventCacheSyncCompleted
@@ -102,7 +99,8 @@ class Comp7QuestRewardHandler(MultiTypeServiceChannelHandler):
     @staticmethod
     def __getRanksQuestSortKey(quest):
         division = parseComp7RanksQuestID(quest.getID())
-        return (division.rank, division.index)
+        return (
+         division.rank, division.index)
 
     @staticmethod
     def __getTokensQuestSortKey(quest):
@@ -156,7 +154,8 @@ class Comp7PunishWindowHandler(PunishWindowHandler):
         if bonusType != ARENA_BONUS_TYPE.COMP7:
             return
         else:
-            if arenaCreateTime and arenaType and bonusType not in FAIRPLAY_EXCLUDED_ARENA_BONUS_TYPES and fairplayViolations is not None and fairplayViolations[:2] != (0, 0):
+            if arenaCreateTime and arenaType and bonusType not in FAIRPLAY_EXCLUDED_ARENA_BONUS_TYPES and fairplayViolations is not None and fairplayViolations[:2] != (0,
+                                                                                                                                                                        0):
                 restriction = message.data.get('restriction', None)
                 banDuration = restriction[1] if restriction else 0
                 extraData = restriction[2] if restriction else {}

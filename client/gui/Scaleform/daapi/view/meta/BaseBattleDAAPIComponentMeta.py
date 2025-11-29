@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BaseBattleDAAPIComponentMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIModule import BaseDAAPIModule
 
 class BaseBattleDAAPIComponentMeta(BaseDAAPIModule):
@@ -17,7 +15,9 @@ class BaseBattleDAAPIComponentMeta(BaseDAAPIModule):
         self._printOverrideError('getAlias')
 
     def as_populateS(self):
-        return self.flashObject.as_populate() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_populate()
 
     def as_disposeS(self):
-        return self.flashObject.as_dispose() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_dispose()

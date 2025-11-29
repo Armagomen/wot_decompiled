@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ClanProfileSummaryViewMeta.py
 from gui.Scaleform.daapi.view.lobby.clans.profile.ClanProfileBaseView import ClanProfileBaseView
 
 class ClanProfileSummaryViewMeta(ClanProfileBaseView):
@@ -14,16 +12,21 @@ class ClanProfileSummaryViewMeta(ClanProfileBaseView):
         self._printOverrideError('sendRequestHandler')
 
     def as_updateStatusS(self, data):
-        return self.flashObject.as_updateStatus(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateStatus(data)
 
     def as_updateGeneralBlockS(self, data):
-        return self.flashObject.as_updateGeneralBlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateGeneralBlock(data)
 
     def as_updateFortBlockS(self, data):
-        return self.flashObject.as_updateFortBlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateFortBlock(data)
 
     def as_updateGlobalMapBlockS(self, data):
-        return self.flashObject.as_updateGlobalMapBlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateGlobalMapBlock(data)
 
     def as_updateLeaguesBlockS(self, data):
-        return self.flashObject.as_updateLeaguesBlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateLeaguesBlock(data)

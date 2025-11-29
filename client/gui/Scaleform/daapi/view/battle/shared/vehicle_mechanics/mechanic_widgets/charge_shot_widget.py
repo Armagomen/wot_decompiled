@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/charge_shot_widget.py
-import typing
-import CommandMapping
+import typing, CommandMapping
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import HotKeyData
 from gui.Scaleform.daapi.view.meta.ChargeShotWidgetMeta import ChargeShotWidgetMeta
@@ -24,7 +21,8 @@ if typing.TYPE_CHECKING:
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
 
 class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ComponentListener, IMechanicStatesListenerLogic, IComponentLifeCycleListener):
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
 
     def __init__(self):
         super(ChargeShotMechanicWidget, self).__init__()
@@ -66,7 +64,8 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ComponentListener, IMechani
             self.as_showShootBlockAnimationS()
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicLifeCycleUpdater(VehicleMechanic.CHARGE_SHOT, self),
+        return [
+         VehicleMechanicLifeCycleUpdater(VehicleMechanic.CHARGE_SHOT, self),
          VehicleMechanicPassengerUpdater(VehicleMechanic.CHARGE_SHOT, self),
          VehicleMechanicStatesUpdater(VehicleMechanic.CHARGE_SHOT, self),
          HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self),
@@ -93,10 +92,10 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ComponentListener, IMechani
             self.as_setUpdateProgressS(state.level, state.progress(timeLeft))
             self.as_setTimeS(timeLeft)
             return
-        elif state.hasShotBlock:
-            self.as_setTimeS(state.timeLeft())
-            return
         else:
+            if state.hasShotBlock:
+                self.as_setTimeS(state.timeLeft())
+                return
             self.as_setTimeS(None)
             return
 

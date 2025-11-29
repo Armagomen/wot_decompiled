@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/__init__.py
 
 
 def registerComp7Lobby():
@@ -13,6 +11,7 @@ def registerComp7Lobby():
     from comp7.gui.Scaleform.daapi.view.lobby.rally.action_button_state_vo import unitRestrictionsGetter
     from comp7.gui.game_control.award_controller import Comp7QuestRewardHandler, Comp7InvoiceRewardHandler, Comp7PunishWindowHandler
     from comp7.gui.hangar_presets.comp7_dynamic_gui_provider import getComp7BattleModifiers
+    from comp7.gui.impl.lobby.user_missions.hangar_widget.event_banners.comp7_tournament_banner import Comp7TournamentBanner
     from comp7.notification.actions_handlers import Comp7OpenPunishmentWindowHandler
     from comp7.notification.listeners import Comp7OfferTokenListener
     from comp7.web.web_client_api import Comp7WebApi, Comp7OpenWindowWebApi
@@ -35,10 +34,12 @@ def registerComp7Lobby():
     from gui.impl.lobby.common.lobby_header_utils import registerFightButtonTooltipGetter
     from gui.impl.lobby.crew.widget.crew_widget import CrewWidget
     from gui.impl.gen.view_models.views.lobby.crew.common.crew_widget_model import SlotSizeMode
+    from gui.impl.lobby.user_missions.hangar_widget.event_banners.event_banners_container import EventBannersContainer
     from messenger.formatters.service_channel import AchievementFormatter
     from notification.actions_handlers import _AVAILABLE_HANDLERS, _OpenPunishmentWindowHandler
     from web.web_client_api.ui import OpenWindowWebApi
-    registerAwardControllerHandlers((Comp7QuestRewardHandler, Comp7InvoiceRewardHandler, Comp7PunishWindowHandler))
+    registerAwardControllerHandlers((
+     Comp7QuestRewardHandler, Comp7InvoiceRewardHandler, Comp7PunishWindowHandler))
     registerNotificationsListeners((Comp7OfferTokenListener,))
     registerOptimizedViews({COMP7_HANGAR_ALIASES.COMP7_TANK_CAROUSEL: OptimizationSetting()})
     registerQuestFlag(QuestFlagTypes.COMP7, Comp7QuestsFlag)
@@ -58,15 +59,20 @@ def registerComp7Lobby():
     GameSessionController._QUEUE_TYPE_TO_CONFIG_TIME_KEY.update({QUEUE_TYPE.COMP7: ARENA_BONUS_TYPE_IDS[ARENA_BONUS_TYPE.COMP7]})
     CrewWidget.PREBATTLE_TYPE_TO_SLOT_MODE.update({QUEUE_TYPE.COMP7: SlotSizeMode.COMPACT})
     CONFIG_KEYS_FOR_UPDATE.add(Configs.COMP7_CONFIG.value)
-    AchievementFormatter._HIDDEN_ACHIEVES.update({'comp7_4_yearly_iron',
+    AchievementFormatter._HIDDEN_ACHIEVES.update({
+     'comp7_4_yearly_iron',
      'comp7_4_yearly_bronze',
      'comp7_4_yearly_silver',
      'comp7_4_yearly_gold',
      'comp7_4_yearly_champion',
      'comp7_4_yearly_legend'})
+    EventBannersContainer().registerEventBanner(Comp7TournamentBanner)
 
 
 def _fightButtonTooltipGetter(pValidation):
     from CurrentVehicle import g_currentVehicle
     from comp7.gui.Scaleform.daapi.view.lobby.header.helpers.fight_btn_tooltips import getComp7BattlesOnlyVehicleTooltipData
-    return getComp7BattlesOnlyVehicleTooltipData(pValidation) if g_currentVehicle.isOnlyForComp7Battles() and (g_currentVehicle.isUnsuitableToQueue() or g_currentVehicle.isDisabledInRent()) else None
+    if g_currentVehicle.isOnlyForComp7Battles() and (g_currentVehicle.isUnsuitableToQueue() or g_currentVehicle.isDisabledInRent()):
+        return getComp7BattlesOnlyVehicleTooltipData(pValidation)
+    else:
+        return

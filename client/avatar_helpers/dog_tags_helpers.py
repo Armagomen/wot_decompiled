@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/avatar_helpers/dog_tags_helpers.py
-import random
-import BigWorld
+import random, BigWorld
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.components_packer import unpack_component
 from dog_tags_common.config.common import ComponentViewType
@@ -40,28 +37,20 @@ class DogTagsHelpers(object):
         result = []
         allComponents = componentConfigAdapter.getAllComponents()
         for viewType in ComponentViewType.__members__.values():
-            compID, grade = next((k for k in possibleDTs if allComponents[k[0]].viewType == viewType))
+            compID, grade = next(k for k in possibleDTs if allComponents[k[0]].viewType == viewType)
             progress = 0
-            result.append({'id': compID,
-             'progress': progress,
-             'grade': grade})
+            result.append({'id': compID, 'progress': progress, 'grade': grade})
 
         return result
 
     @classmethod
     def _getDeadReasonInfo(cls):
-        return ['Cheat',
-         True,
-         'X',
-         '',
-         '',
-         'Cheat',
-         {'userName': 'Cheat',
-          'clanAbbrev': '',
-          'tags': set([]),
-          'region': None,
-          'fakeName': '',
-          'igrType': 0}]
+        return [
+         'Cheat', True, 'X', '', '', 'Cheat',
+         {'userName': 'Cheat', 
+            'clanAbbrev': '', 
+            'tags': set([]), 
+            'region': None, 'fakeName': '', 'igrType': 0}]
 
     @classmethod
     def _selectRandomEnemyVehicleInfo(cls):
@@ -74,8 +63,8 @@ class DogTagsHelpers(object):
 
     @classmethod
     def _getRandomDogTagForVehicle(cls, vInfo):
-        dogTag = {'vehicleId': vInfo.vehicleID,
-         'dogTag': {'components': cls._randomDogTag()}}
+        dogTag = {'vehicleId': vInfo.vehicleID, 
+           'dogTag': {'components': cls._randomDogTag()}}
         return dogTag
 
     @classmethod

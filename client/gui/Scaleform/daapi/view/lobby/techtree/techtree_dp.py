@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/techtree_dp.py
 import operator
 from collections import defaultdict, namedtuple
-import ResMgr
-import nations
+import ResMgr, nations
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui import GUI_NATIONS_ORDER_INDEX
@@ -32,22 +29,21 @@ class _ConfigError(SoftException):
         self.ctx = ctx
 
     def __str__(self):
-        return 'Config error in {0:>s}. {1:>s}'.format(self.ctx[1], self.msg)
+        return ('Config error in {0:>s}. {1:>s}').format(self.ctx[1], self.msg)
 
 
 def _makeLines():
-    return {'outLiteral': None,
-     'outPin': None,
-     'inPins': []}
+    return {'outLiteral': None, 'outPin': None, 'inPins': []}
 
 
-DISPLAY_SETTINGS = {'hasRoot': 'readBool',
- 'isLevelDisplayed': 'readBool',
- 'nodeRendererName': 'readString',
- 'firstLevelToHighlight': 'readInt'}
+DISPLAY_SETTINGS = {'hasRoot': 'readBool', 
+   'isLevelDisplayed': 'readBool', 
+   'nodeRendererName': 'readString', 
+   'firstLevelToHighlight': 'readInt'}
 _VEHICLE = GUI_ITEM_TYPE.VEHICLE
 _VEHICLE_TYPE_NAME = GUI_ITEM_TYPE_NAMES[_VEHICLE]
-_AnnouncementInfo = namedtuple('_AnnouncementInfo', ('userString',
+_AnnouncementInfo = namedtuple('_AnnouncementInfo', (
+ 'userString',
  'tooltip',
  'tags',
  'level',
@@ -55,7 +51,10 @@ _AnnouncementInfo = namedtuple('_AnnouncementInfo', ('userString',
  'isElite'))
 
 class _TechTreeDataProvider(object):
-    __slots__ = ('__loaded', '__availableNations', '__override', '__displayInfo', '__displaySettings', '__gridSettings', '__premiumGridSettings', '__topLevels', '__topItems', '__nextLevels', '__unlockPrices', '__announcements', '__announcementCDToName', '__nextAnnouncements', '__nodes', '__nextTypeIDs')
+    __slots__ = ('__loaded', '__availableNations', '__override', '__displayInfo', '__displaySettings',
+                 '__gridSettings', '__premiumGridSettings', '__topLevels', '__topItems',
+                 '__nextLevels', '__unlockPrices', '__announcements', '__announcementCDToName',
+                 '__nextAnnouncements', '__nodes', '__nextTypeIDs')
     itemsCache = dependency.descriptor(IItemsCache)
     techTreeEventsListener = dependency.descriptor(ITechTreeEventsListener)
 
@@ -104,11 +103,17 @@ class _TechTreeDataProvider(object):
 
     def getGridSettings(self, nationID):
         result = self.__gridSettings[nationID]
-        return result if result is not None else {}
+        if result is not None:
+            return result
+        else:
+            return {}
 
     def getPremiumGridSettings(self, nationID):
         result = self.__premiumGridSettings[nationID]
-        return result if result is not None else {}
+        if result is not None:
+            return result
+        else:
+            return {}
 
     def getNationTreeIterator(self, nationID):
         if nationID >= len(self.__nodes):
@@ -124,7 +129,8 @@ class _TechTreeDataProvider(object):
                 LOG_ERROR('Display info is not found', nationID)
                 return
             for node in sorted(nodes.itervalues(), key=lambda item: item.order):
-                yield (node, displayInfo[node.nodeCD].copy())
+                yield (
+                 node, displayInfo[node.nodeCD].copy())
 
             return
 
@@ -149,7 +155,7 @@ class _TechTreeDataProvider(object):
                 topIDs.add(parentCD)
                 compare.append(UnlockProps(parentCD, idx, newCost, topIDs, discount, xpCost))
                 available = True
-            if not result.xpCost or result.xpCost > xpCost:
+            elif not result.xpCost or result.xpCost > xpCost:
                 result = UnlockProps(parentCD, idx, newCost, set(), discount, xpCost)
 
         if available:
@@ -162,7 +168,7 @@ class _TechTreeDataProvider(object):
         if not filtered or not unlocked:
             return {}
         available = defaultdict(list)
-        parentCDs = {item for item in itemCDs if getTypeOfCompactDescr(item) == _VEHICLE}
+        parentCDs = {item for item in itemCDs if getTypeOfCompactDescr(item) == _VEHICLE if getTypeOfCompactDescr(item) == _VEHICLE}
         for item in filtered:
             if item in unlocked:
                 parentCDs |= self.__topItems[item]
@@ -188,7 +194,8 @@ class _TechTreeDataProvider(object):
             section = ResMgr.openSection(TREE_SHARED_REL_FILE_PATH)
             if section is None:
                 _xml.raiseWrongXml(None, TREE_SHARED_REL_FILE_PATH, 'can not open or read')
-            xmlCtx = (None, TREE_SHARED_REL_FILE_PATH)
+            xmlCtx = (
+             None, TREE_SHARED_REL_FILE_PATH)
             self.__availableNations = self.__readAvailableNations(xmlCtx, section)
         return self.__availableNations[:]
 
@@ -199,10 +206,10 @@ class _TechTreeDataProvider(object):
         nationID = nations.INDICES[nation]
         hasDiscount = nationID in self.techTreeEventsListener.getNations(unviewed=True)
         isTooltipSpecial = hasDiscount or nationID in self.techTreeEventsListener.getNations()
-        return {'tooltip': TOOLTIPS_CONSTANTS.TECHTREE_NATION_DISCOUNT if isTooltipSpecial else nation,
-         'isTooltipSpecial': isTooltipSpecial,
-         'hasDiscount': hasDiscount,
-         'label': nation}
+        return {'tooltip': TOOLTIPS_CONSTANTS.TECHTREE_NATION_DISCOUNT if isTooltipSpecial else nation, 
+           'isTooltipSpecial': isTooltipSpecial, 
+           'hasDiscount': hasDiscount, 
+           'label': nation}
 
     def getAvailableNationsIndices(self):
         return [ nations.INDICES[nation] for nation in self.getAvailableNations() ]
@@ -254,7 +261,10 @@ class _TechTreeDataProvider(object):
     def getOldAndNewCost(self, vehicleCD, vehicleLevel):
         self.load()
         unlockProps = self.getUnlockProps(vehicleCD, vehicleLevel)
-        return (unlockProps.xpCost, unlockProps.discount, unlockProps.xpFullCost) if unlockProps is not None else (0, 0, 0)
+        if unlockProps is not None:
+            return (unlockProps.xpCost, unlockProps.discount, unlockProps.xpFullCost)
+        else:
+            return (0, 0, 0)
 
     def getBlueprintDiscountData(self, vehicleCD, level, xpCost, blueprintCount=0):
         blueprints = self.itemsCache.items.blueprints
@@ -263,10 +273,16 @@ class _TechTreeDataProvider(object):
         return (discount, newCost)
 
     def getAnnouncementByName(self, name):
-        return self.__announcements[name] if name in self.__announcements else None
+        if name in self.__announcements:
+            return self.__announcements[name]
+        else:
+            return
 
     def getAnnouncementByCD(self, intCD):
-        return self.getAnnouncementByName(self.__announcementCDToName[intCD]) if intCD in self.__announcementCDToName else None
+        if intCD in self.__announcementCDToName:
+            return self.getAnnouncementByName(self.__announcementCDToName[intCD])
+        else:
+            return
 
     def getNextAnnouncements(self, intCD):
         if intCD not in self.__nextAnnouncements:
@@ -281,11 +297,15 @@ class _TechTreeDataProvider(object):
         return self.__isBoundActionNode(node, self.getTopLevel(node.getNodeCD()))
 
     def _clear(self):
-        self.__displayInfo = [None] * len(nations.NAMES)
-        self.__nextTypeIDs = [0] * len(nations.NAMES)
-        self.__nodes = [None] * len(nations.NAMES)
+        self.__displayInfo = [
+         None] * len(nations.NAMES)
+        self.__nextTypeIDs = [
+         0] * len(nations.NAMES)
+        self.__nodes = [
+         None] * len(nations.NAMES)
         self.__displaySettings = {}
-        self.__gridSettings = [None] * len(nations.NAMES)
+        self.__gridSettings = [
+         None] * len(nations.NAMES)
         self.__premiumGridSettings = [None] * len(nations.NAMES)
         self.__topLevels = defaultdict(set)
         self.__topItems = defaultdict(set)
@@ -325,19 +345,18 @@ class _TechTreeDataProvider(object):
     def __readShared(self, clearCache=False):
         if clearCache:
             ResMgr.purge(TREE_SHARED_REL_FILE_PATH)
-        shared = {'settings': {},
-         'grids': {},
-         'default': {},
-         'lines': {}}
+        shared = {'settings': {}, 'grids': {}, 'default': {}, 'lines': {}}
         section = ResMgr.openSection(TREE_SHARED_REL_FILE_PATH)
         if section is None:
             _xml.raiseWrongXml(None, TREE_SHARED_REL_FILE_PATH, 'can not open or read')
-        xmlCtx = (None, TREE_SHARED_REL_FILE_PATH)
+        xmlCtx = (
+         None, TREE_SHARED_REL_FILE_PATH)
         precessed = _xml.getChildren(xmlCtx, section, 'settings-set')
         for name, settingsSec in precessed:
             settingsName = settingsSec.asString
-            xPath = '{0:>s}/{1:>s}/{2:>s}'.format(TREE_SHARED_REL_FILE_PATH, name, settingsName)
-            xmlCtx = (None, xPath)
+            xPath = ('{0:>s}/{1:>s}/{2:>s}').format(TREE_SHARED_REL_FILE_PATH, name, settingsName)
+            xmlCtx = (
+             None, xPath)
             settings = {}
             for _, settingSec in settingsSec.items():
                 name = _xml.readString(xmlCtx, settingSec, 'name')
@@ -355,13 +374,17 @@ class _TechTreeDataProvider(object):
             shared['settings'][settingsName] = settings
 
         if self.__availableNations is None:
-            self.__availableNations = self.__readAvailableNations((None, TREE_SHARED_REL_FILE_PATH), section)
-        self.__readAnnouncements((None, TREE_SHARED_REL_FILE_PATH), section)
+            self.__availableNations = self.__readAvailableNations((
+             None, TREE_SHARED_REL_FILE_PATH), section)
+        self.__readAnnouncements((
+         None, TREE_SHARED_REL_FILE_PATH), section)
         self.__readSharedMetrics(shared, xmlCtx, section)
         if self.__override:
-            subSec = section['overrides/{0:>s}'.format(self.__override)]
+            subSec = section[('overrides/{0:>s}').format(self.__override)]
             if subSec:
-                xmlCtx = (None, '{0:>s}/overrides/{1:>s}'.format(TREE_SHARED_REL_FILE_PATH, '', self.__override))
+                xmlCtx = (
+                 None,
+                 ('{0:>s}/overrides/{1:>s}').format(TREE_SHARED_REL_FILE_PATH, '', self.__override))
                 self.__readSharedMetrics(shared, xmlCtx, subSec)
         self.__readDefaultLine(shared, xmlCtx, section)
         return shared
@@ -370,31 +393,36 @@ class _TechTreeDataProvider(object):
         precessed = _xml.getChildren(xmlCtx, section, 'grids')
         for name, gridSection in precessed:
             gridName = gridSection.asString
-            xPath = '{0:>s}/{1:>s}/{2:>s}'.format(TREE_SHARED_REL_FILE_PATH, name, gridName)
-            gridCtx = (None, xPath)
+            xPath = ('{0:>s}/{1:>s}/{2:>s}').format(TREE_SHARED_REL_FILE_PATH, name, gridName)
+            gridCtx = (
+             None, xPath)
             subSec = _xml.getSubsection(xmlCtx, gridSection, 'root')
-            xmlCtx = (None, '{0:>s}/root'.format(xPath))
-            rootPos = {'start': _xml.readVector2(xmlCtx, subSec, 'start').tuple(),
-             'step': _xml.readInt(xmlCtx, subSec, 'step')}
+            xmlCtx = (None, ('{0:>s}/root').format(xPath))
+            rootPos = {'start': _xml.readVector2(xmlCtx, subSec, 'start').tuple(), 
+               'step': _xml.readInt(xmlCtx, subSec, 'step')}
             subSec = _xml.getSubsection(gridCtx, gridSection, 'vertical')
-            xmlCtx = (None, '{0:>s}/vertical'.format(xPath))
-            vertical = (_xml.readInt(xmlCtx, subSec, 'start'), _xml.readInt(xmlCtx, subSec, 'step'))
+            xmlCtx = (None, ('{0:>s}/vertical').format(xPath))
+            vertical = (
+             _xml.readInt(xmlCtx, subSec, 'start'),
+             _xml.readInt(xmlCtx, subSec, 'step'))
             subSec = _xml.getSubsection(gridCtx, gridSection, 'horizontal')
-            xmlCtx = (None, '{0:>s}/horizontal'.format(xPath))
-            horizontal = (_xml.readInt(xmlCtx, subSec, 'start'), _xml.readInt(xmlCtx, subSec, 'step'))
-            shared['grids'][gridName] = {'root': rootPos,
-             'vertical': vertical,
-             'horizontal': horizontal}
+            xmlCtx = (None, ('{0:>s}/horizontal').format(xPath))
+            horizontal = (
+             _xml.readInt(xmlCtx, subSec, 'start'),
+             _xml.readInt(xmlCtx, subSec, 'step'))
+            shared['grids'][gridName] = {'root': rootPos, 
+               'vertical': vertical, 
+               'horizontal': horizontal}
 
         precessed = _xml.getChildren(xmlCtx, section, 'lines')
         lines = shared['lines']
         for name, sub in precessed:
-            xPath = '{0:>s}/{1:>s}'.format(TREE_SHARED_REL_FILE_PATH, name)
+            xPath = ('{0:>s}/{1:>s}').format(TREE_SHARED_REL_FILE_PATH, name)
             xmlCtx = (None, xPath)
             pinsSec = _xml.getChildren(xmlCtx, sub, 'inPin')
-            inPins = dict(((pName, pSec.asVector2.tuple()) for pName, pSec in pinsSec))
+            inPins = dict((pName, pSec.asVector2.tuple()) for pName, pSec in pinsSec)
             pinsSec = _xml.getChildren(xmlCtx, sub, 'outPin')
-            outPins = dict(((pName, pSec.asVector2.tuple()) for pName, pSec in pinsSec))
+            outPins = dict((pName, pSec.asVector2.tuple()) for pName, pSec in pinsSec)
             pinsSec = _xml.getChildren(xmlCtx, sub, 'viaPin')
             viaPins = defaultdict(dict)
             for outPin, setSec in pinsSec:
@@ -404,40 +432,42 @@ class _TechTreeDataProvider(object):
             defSec = sub['default']
             default = {}
             if defSec is not None:
-                xmlCtx = (None, '{0:>s}/default'.format(xPath))
-                default = {'outPin': _xml.readString(xmlCtx, defSec, 'outPin'),
-                 'inPin': _xml.readString(xmlCtx, defSec, 'inPin')}
-            lines[name] = {'inPins': inPins,
-             'outPins': outPins,
-             'viaPins': viaPins,
-             'default': default}
+                xmlCtx = (
+                 None, ('{0:>s}/default').format(xPath))
+                default = {'outPin': _xml.readString(xmlCtx, defSec, 'outPin'), 
+                   'inPin': _xml.readString(xmlCtx, defSec, 'inPin')}
+            lines[name] = {'inPins': inPins, 
+               'outPins': outPins, 
+               'viaPins': viaPins, 
+               'default': default}
 
         return
 
     def __readDefaultLine(self, shared, xmlCtx, section):
         defSec = _xml.getSubsection(xmlCtx, section, 'default-line')
-        xPath = '{0:>s}/default-line'.format(TREE_SHARED_REL_FILE_PATH)
+        xPath = ('{0:>s}/default-line').format(TREE_SHARED_REL_FILE_PATH)
         xmlCtx = (None, xPath)
         name = _xml.readString(xmlCtx, defSec, 'line')
         outPin = _xml.readString(xmlCtx, defSec, 'outPin')
         inPin = _xml.readString(xmlCtx, defSec, 'inPin')
         self.__getLineInfo(xmlCtx, name, 0, outPin, inPin, shared['lines'])
-        shared['default'] = {'line': name,
-         'inPin': inPin,
-         'outPin': outPin}
+        shared['default'] = {'line': name, 
+           'inPin': inPin, 
+           'outPin': outPin}
         return
 
     def __getLineInfo(self, xmlCtx, lineName, nodeCD, outPin, inPin, lineShared):
         if lineName not in lineShared:
-            raise _ConfigError(xmlCtx, 'Line {0:>s} not found'.format(lineName))
+            raise _ConfigError(xmlCtx, ('Line {0:>s} not found').format(lineName))
         line = lineShared[lineName]
         if inPin not in line['inPins'].keys():
-            raise _ConfigError(xmlCtx, 'Not found in pin = {0:>s} for line {1:>s}'.format(inPin, lineName))
+            raise _ConfigError(xmlCtx, ('Not found in pin = {0:>s} for line {1:>s}').format(inPin, lineName))
         if outPin not in line['outPins'].keys():
-            raise _ConfigError(xmlCtx, 'Not found out pin = {0:>s} for line {1:>s} line'.format(outPin, lineName))
-        return (line['outPins'][outPin], {'childID': nodeCD,
-          'inPin': line['inPins'][inPin],
-          'viaPins': line['viaPins'].get(outPin, {}).get(inPin, [])})
+            raise _ConfigError(xmlCtx, ('Not found out pin = {0:>s} for line {1:>s} line').format(outPin, lineName))
+        return (line['outPins'][outPin],
+         {'childID': nodeCD, 
+            'inPin': line['inPins'][inPin], 
+            'viaPins': line['viaPins'].get(outPin, {}).get(inPin, [])})
 
     def __readAvailableNations(self, xmlCtx, root):
         names = []
@@ -445,7 +475,7 @@ class _TechTreeDataProvider(object):
         for _, section in _xml.getChildren(xmlCtx, root, 'available-nations'):
             name = section.asString
             if name not in indices:
-                _xml.raiseWrongXml(xmlCtx, 'available-nations', 'Nation {0:>s} not found'.format(name))
+                _xml.raiseWrongXml(xmlCtx, 'available-nations', ('Nation {0:>s} not found').format(name))
             if name not in nations.AVAILABLE_NAMES:
                 LOG_ERROR('Nation ignored, it not found in nations.AVAILABLE_NAMES', name)
                 continue
@@ -457,7 +487,7 @@ class _TechTreeDataProvider(object):
     def __readAnnouncements(self, xmlCtx, root):
         for name, section in _xml.getChildren(xmlCtx, root, 'announcements'):
             if name in self.__announcements:
-                _xml.raiseWrongXml(xmlCtx, 'announcements', 'Announcement vehicles {0:>s} is already added'.format(name))
+                _xml.raiseWrongXml(xmlCtx, 'announcements', ('Announcement vehicles {0:>s} is already added').format(name))
             tags = _xml.readNonEmptyString(xmlCtx, section, 'tags')
             if tags:
                 tags = frozenset(tags.split(' '))
@@ -482,25 +512,24 @@ class _TechTreeDataProvider(object):
             if order:
                 node.order = order
             return node
+        isFound = True
+        isAnnouncement = False
+        if nodeName in self.__announcements:
+            isAnnouncement = True
+            vehicleTypeID = self.__getNextTypeID(nationID)
         else:
-            isFound = True
-            isAnnouncement = False
-            if nodeName in self.__announcements:
-                isAnnouncement = True
-                vehicleTypeID = self.__getNextTypeID(nationID)
-            else:
-                _, vehicleTypeID = vehicles.g_list.getIDsByName('{0:>s}:{1:>s}'.format(nations.NAMES[nationID], nodeName))
-            try:
-                nodeCD = vehicles.makeIntCompactDescrByID(_VEHICLE_TYPE_NAME, nationID, vehicleTypeID)
-            except AssertionError:
-                nodeCD = 0
-                isFound = False
+            _, vehicleTypeID = vehicles.g_list.getIDsByName(('{0:>s}:{1:>s}').format(nations.NAMES[nationID], nodeName))
+        try:
+            nodeCD = vehicles.makeIntCompactDescrByID(_VEHICLE_TYPE_NAME, nationID, vehicleTypeID)
+        except AssertionError:
+            nodeCD = 0
+            isFound = False
 
-            if isAnnouncement:
-                self.__announcementCDToName[nodeCD] = nodeName
-            node = BaseNode(nodeName, nationID, vehicleTypeID, nodeCD, isFound=isFound, isAnnouncement=isAnnouncement, order=order)
-            nodes[nodeName] = node
-            return node
+        if isAnnouncement:
+            self.__announcementCDToName[nodeCD] = nodeName
+        node = BaseNode(nodeName, nationID, vehicleTypeID, nodeCD, isFound=isFound, isAnnouncement=isAnnouncement, order=order)
+        nodes[nodeName] = node
+        return node
 
     def __isBoundActionNode(self, node, boundNodes):
         nodeCD = node.getNodeCD()
@@ -508,7 +537,9 @@ class _TechTreeDataProvider(object):
         if nationID not in self.techTreeEventsListener.getNations(unviewed=True):
             return False
         hasAction = self.techTreeEventsListener.hasActiveAction
-        return not any((hasAction(boundCD, nationID) for boundCD in boundNodes)) if hasAction(nodeCD, nationID) else False
+        if hasAction(nodeCD, nationID):
+            return not any(hasAction(boundCD, nationID) for boundCD in boundNodes)
+        return False
 
     def __readNodeLines(self, parentCD, nation, xmlCtx, section, shared):
         linesSec = section['lines']
@@ -517,18 +548,18 @@ class _TechTreeDataProvider(object):
         result = defaultdict(_makeLines)
         nextLevel = self.__nextLevels[parentCD].keys()
         _, xPath = xmlCtx
-        xPath = '{0:>s}/lines'.format(xPath)
+        xPath = ('{0:>s}/lines').format(xPath)
         nationID = nations.INDICES[nation]
         for name, sub in linesSec.items():
-            xmlCtx = (None, '{0:>s}/lines/{1:>1}'.format(xPath, name))
+            xmlCtx = (None, ('{0:>s}/lines/{1:>1}').format(xPath, name))
             node = self.__getNodeByName(name, nationID)
             if not node.isFound:
-                raise _ConfigError(xmlCtx, 'Unknown vehicle type name {0:>s}'.format(name))
+                raise _ConfigError(xmlCtx, ('Unknown vehicle type name {0:>s}').format(name))
             if IS_DEVELOPMENT and not node.isAnnouncement:
                 if node.nodeCD not in nextLevel:
                     _, nationID, vTypeID = vehicles.parseIntCompactDescr(parentCD)
                     pName = vehicles.g_list.getList(nationID)[vTypeID].name
-                    LOG_ERROR('{0:>s} does not have relation with {1:>s}'.format(pName, name))
+                    LOG_ERROR(('{0:>s} does not have relation with {1:>s}').format(pName, name))
                 else:
                     nextLevel.remove(node.nodeCD)
             if node.isAnnouncement:
@@ -558,7 +589,7 @@ class _TechTreeDataProvider(object):
             for itemCD in nextLevel:
                 _, nationID, vTypeID = vehicles.parseIntCompactDescr(itemCD)
                 uName = vehicles.g_list.getList(nationID)[vTypeID].name
-                LOG_ERROR('Relation between {0:>s} and {1:>s} are not defined'.format(pName, uName))
+                LOG_ERROR(('Relation between {0:>s} and {1:>s} are not defined').format(pName, uName))
 
         return result.values()
 
@@ -592,7 +623,7 @@ class _TechTreeDataProvider(object):
             if gridName not in shared['grids']:
                 LOG_ERROR('not found grid (<grid> tag): ', gridName, xmlPath)
                 return ({}, {}, {})
-            xPath = '{0:>s}/grid'.format(xmlPath)
+            xPath = ('{0:>s}/grid').format(xmlPath)
             xmlCtx = (None, xPath)
             grid = shared['grids'][gridName]
             settings = {}
@@ -609,16 +640,17 @@ class _TechTreeDataProvider(object):
             precessed = _xml.getChildren(xmlCtx, section, 'nodes')
             displayInfo = {}
             for name, nodeSection in precessed:
-                xPath = '{0:>s}/nodes/{1:>s}'.format(xmlPath, name)
+                xPath = ('{0:>s}/nodes/{1:>s}').format(xmlPath, name)
                 xmlCtx = (None, xPath)
                 row = _xml.readInt(xmlCtx, nodeSection, 'row')
                 column = _xml.readInt(xmlCtx, nodeSection, 'column')
                 node = self.__getNodeByName(name, nationID, order=column * 1000 + orderPrefix * 100 + row)
                 if not node.isFound:
-                    raise _ConfigError(xmlCtx, 'Unknown vehicle type name {0:>s}'.format(node.nodeName))
+                    raise _ConfigError(xmlCtx, ('Unknown vehicle type name {0:>s}').format(node.nodeName))
                 if not node.isAnnouncement:
                     vType = getVehicle(node.nationID, node.itemTypeID)
-                    nextLevel = [ (idx, descr) for idx, descr in enumerate(vType.unlocksDescrs) if getTypeOfCompactDescr(descr[1]) == _VEHICLE ]
+                    nextLevel = [ (idx, descr) for idx, descr in enumerate(vType.unlocksDescrs) if getTypeOfCompactDescr(descr[1]) == _VEHICLE
+                                ]
                     for unlockDescr in vType.unlocksDescrs:
                         self.__unlockPrices[unlockDescr[1]][vType.compactDescr] = unlockDescr[0]
 
@@ -626,22 +658,24 @@ class _TechTreeDataProvider(object):
                         xpCost = data[0]
                         nextCD = data[1]
                         required = data[2:]
-                        self.__nextLevels[node.nodeCD][nextCD] = (idx, xpCost, set(required))
+                        self.__nextLevels[node.nodeCD][nextCD] = (
+                         idx, xpCost, set(required))
                         self.__topLevels[nextCD].add(node.nodeCD)
                         for itemCD in required:
                             self.__topItems[itemCD].add(node.nodeCD)
 
                 if hasRoot and row > 1 and column is 1:
-                    raise _ConfigError(xmlCtx, 'In first column must be one node - root node, {0:>s} '.format(node.nodeName))
+                    raise _ConfigError(xmlCtx, ('In first column must be one node - root node, {0:>s} ').format(node.nodeName))
                 elif row > rows or column > columns:
-                    raise _ConfigError(xmlCtx, 'Invalid row or column index: {0:>s}, {1:d}, {2:d}'.format(node.nodeName, row, column))
+                    raise _ConfigError(xmlCtx, ('Invalid row or column index: {0:>s}, {1:d}, {2:d}').format(node.nodeName, row, column))
                 lines = self.__readNodeLines(node.nodeCD, nation, xmlCtx, nodeSection, shared)
-                displayInfo[node.nodeCD] = {'row': row,
-                 'column': column,
-                 'position': coords[column - 1][row - 1],
-                 'lines': lines}
+                displayInfo[node.nodeCD] = {'row': row, 
+                   'column': column, 
+                   'position': coords[(column - 1)][(row - 1)], 
+                   'lines': lines}
 
-            return (displayInfo, settings, self.__makeGridSettings(grid, rows, columns))
+            return (
+             displayInfo, settings, self.__makeGridSettings(grid, rows, columns))
 
     def __makeAbsoluteCoordinates(self):
         for displayInfo in self.__displayInfo:
@@ -652,7 +686,8 @@ class _TechTreeDataProvider(object):
                 nodePos = info['position']
                 for lineInfo in lines:
                     pinPos = lineInfo['outPin']
-                    lineInfo['outPin'] = (pinPos[0] + nodePos[0], pinPos[1] + nodePos[1])
+                    lineInfo['outPin'] = (
+                     pinPos[0] + nodePos[0], pinPos[1] + nodePos[1])
                     inPins = lineInfo['inPins']
                     for pin in inPins:
                         if pin['childID'] not in displayInfo:
@@ -660,7 +695,8 @@ class _TechTreeDataProvider(object):
                         childInfo = displayInfo[pin['childID']]
                         childPos = childInfo['position']
                         pinPos = pin['inPin']
-                        pin['inPin'] = (pinPos[0] + childPos[0], pinPos[1] + childPos[1])
+                        pin['inPin'] = (
+                         pinPos[0] + childPos[0], pinPos[1] + childPos[1])
                         pin['viaPins'] = [ (item[0] + nodePos[0], item[1] + nodePos[1]) for item in pin['viaPins'] ]
 
         return
@@ -672,7 +708,10 @@ class _TechTreeDataProvider(object):
         vRange = xrange(start, start + step * rows, step)
         root = grid['root']['start']
         startRoot = root[1] + step * (rows >> 1)
-        coordinates = [[[root[0], startRoot]]]
+        coordinates = [
+         [
+          [
+           root[0], startRoot]]]
         for x in hRange:
             coordinates.append([ (x, y) for y in vRange ])
 
@@ -692,9 +731,11 @@ class _TechTreeDataProvider(object):
     def __makeGridSettings(self, grid, rows, columns):
         _, hStep = grid['horizontal']
         _, vStep = grid['vertical']
-        gridSettings = {'start': list(grid['root']['start']),
-         'step': [hStep, vStep],
-         'size': [rows, columns]}
+        gridSettings = {'start': list(grid['root']['start']), 
+           'step': [
+                  hStep, vStep], 
+           'size': [
+                  rows, columns]}
         return gridSettings
 
 

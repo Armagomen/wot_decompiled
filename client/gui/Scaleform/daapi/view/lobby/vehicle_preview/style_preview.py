@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/style_preview.py
-import logging
-import typing
+import logging, typing
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -37,8 +34,8 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         self.__backPreviewAlias = ctx.get('backPreviewAlias')
         self.__outfit = ctx.get('outfit')
         self.__vehicleCD = ctx['itemCD']
-        self.__styleDescr = (ctx.get('styleDescr') or self._style.getDescription()) % {'insertion_open': '',
-         'insertion_close': ''}
+        self.__styleDescr = (ctx.get('styleDescr') or self._style.getDescription()) % {'insertion_open': '', 
+           'insertion_close': ''}
         self.__topPanelData = ctx.get('topPanelData') or {}
         self.__selectedVehicleEntityId = None
         g_currentPreviewVehicle.selectHeroTank(ctx.get('isHeroTank', False))
@@ -92,23 +89,23 @@ class VehicleStylePreview(LobbySelectableView, VehicleBasePreviewMeta):
         return PreviewSelectableLogic()
 
     def _getAdditionalInfoVO(self):
-        return {'objectSubtitle': text_styles.main(backport.text(getGroupFullNameResourceID(self._style.groupID))),
-         'objectTitle': self._style.userName,
-         'descriptionTitle': backport.text(R.strings.tooltips.vehiclePreview.historicalReference.title()),
-         'descriptionText': self.__styleDescr}
+        return {'objectSubtitle': text_styles.main(backport.text(getGroupFullNameResourceID(self._style.groupID))), 
+           'objectTitle': self._style.userName, 
+           'descriptionTitle': backport.text(R.strings.tooltips.vehiclePreview.historicalReference.title()), 
+           'descriptionText': self.__styleDescr}
 
     def __onVehicleLoading(self, ctxEvent):
         isVehicleLoadingStarted = ctxEvent.ctx['started']
         if isVehicleLoadingStarted:
             _logger.debug('Too early VEHICLE_LOADING handler call.')
             return
-        elif ctxEvent.ctx['intCD'] != self.__vehicleCD:
-            _logger.warning('VEHICLE_LOADING handler: incompatible "intCD" parameter.')
-            return
-        elif ctxEvent.ctx['vEntityId'] != self.__selectedVehicleEntityId:
-            _logger.warning('VEHICLE_LOADING handler: incompatible "vEntityId" parameter.')
-            return
         else:
+            if ctxEvent.ctx['intCD'] != self.__vehicleCD:
+                _logger.warning('VEHICLE_LOADING handler: incompatible "intCD" parameter.')
+                return
+            if ctxEvent.ctx['vEntityId'] != self.__selectedVehicleEntityId:
+                _logger.warning('VEHICLE_LOADING handler: incompatible "vEntityId" parameter.')
+                return
             self.removeListener(CameraRelatedEvents.VEHICLE_LOADING, self.__onVehicleLoading, EVENT_BUS_SCOPE.DEFAULT)
             self.__selectedVehicleEntityId = None
             return

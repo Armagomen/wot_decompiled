@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/prb_control/entities/pre_queue/entity.py
 import BigWorld
 from constants import QUEUE_TYPE
 from debug_utils import LOG_DEBUG
@@ -43,11 +41,11 @@ class StoryModeEntity(PreQueueEntity):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     @storage_getter(RECENT_PRB_STORAGE)
     def storage(self):
-        return None
+        return
 
     def canDoActionWithoutVehicle(self):
         return True
@@ -89,10 +87,12 @@ class StoryModeEntity(PreQueueEntity):
         return super(StoryModeEntity, self).fini(ctx=ctx, woEvents=woEvents)
 
     def doSelectAction(self, action):
-        return SelectResult(True) if action.actionName == PREBATTLE_ACTION_NAME.STORY_MODE else super(StoryModeEntity, self).doSelectAction(action)
+        if action.actionName == PREBATTLE_ACTION_NAME.STORY_MODE:
+            return SelectResult(True)
+        return super(StoryModeEntity, self).doSelectAction(action)
 
     def getConfirmDialogMeta(self, ctx):
-        return None
+        return
 
     @tasksAvailableCheck
     def queue(self, ctx, callback=None):

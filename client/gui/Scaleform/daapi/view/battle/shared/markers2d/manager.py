@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/markers2d/manager.py
-import logging
-import weakref
-import BattleReplay
-import GUI
+import logging, weakref, BattleReplay, GUI
 from chat_commands_consts import INVALID_MARKER_SUBTYPE, MarkerType, INVALID_MARKER_ID
 from gui import DEPTH_OF_VehicleMarker, GUI_SETTINGS
 from gui.Scaleform.daapi.view.battle.shared.map_zones.markers2d import MapZonesPlugin
@@ -33,8 +28,7 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
     MARKERS_MANAGER_SWF = 'battleVehicleMarkersApp.swf'
     battleCommunications = dependency.descriptor(IBattleCommunicationsSettings)
     guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
-    setablePluginsDict = {'area': plugins.AreaStaticMarkerPlugin,
-     'teamAndControlPoints': plugins.TeamsOrControlsPointsPlugin}
+    setablePluginsDict = {'area': plugins.AreaStaticMarkerPlugin, 'teamAndControlPoints': plugins.TeamsOrControlsPointsPlugin}
 
     def __init__(self, settings=None):
         if settings is None:
@@ -72,10 +66,8 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
         return self.__isIBCEnabled and not sessionProvider.getCtx().isPlayerObserver()
 
     def setScaleProps(self, minScale=40, maxScale=100, defScale=100, speed=3.0):
-        self.__canvas.scaleProperties = (minScale,
-         maxScale,
-         defScale,
-         speed)
+        self.__canvas.scaleProperties = (
+         minScale, maxScale, defScale, speed)
 
     def setMarkerSettings(self, markerSettings, notify=False):
         self.as_setMarkerSettingsS(markerSettings)
@@ -95,7 +87,7 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
 
     def createMarker(self, symbol, matrixProvider=None, active=True, markerType=CommonMarkerType.NORMAL):
         if active and matrixProvider is None:
-            raise SoftException('Active marker {} must has matrixProvider'.format(symbol))
+            raise SoftException(('Active marker {} must has matrixProvider').format(symbol))
         markerID = self.__canvas.addMarker(matrixProvider, symbol, active, markerType)
         self.__ids.add(markerID)
         return markerID
@@ -160,7 +152,10 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
         self.__canvas.setIsPivotAtCamera(isPivotAtCamera)
 
     def getPlugin(self, name):
-        return self.__plugins.getPlugin(name) if self.__plugins is not None else None
+        if self.__plugins is not None:
+            return self.__plugins.getPlugin(name)
+        else:
+            return
 
     def startPlugins(self):
         if not isPlayerAvatar():
@@ -198,7 +193,8 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
                 if targetID > -1:
                     return (targetID, plugin.getMarkerType(aimedAtMarkerID), plugin.getMarkerSubtype(targetID))
 
-            return (INVALID_MARKER_ID, MarkerType.INVALID_MARKER_TYPE, INVALID_MARKER_SUBTYPE)
+            return (
+             INVALID_MARKER_ID, MarkerType.INVALID_MARKER_TYPE, INVALID_MARKER_SUBTYPE)
 
     def createExternalComponent(self):
         super(MarkersManager, self).createExternalComponent()
@@ -226,11 +222,11 @@ class MarkersManager(ExternalFlashComponent, VehicleMarkersManagerMeta, plugins.
         return GUI.WGVehicleMarkersCanvasFlashAS3(self.movie)
 
     def _setupPlugins(self, arenaVisitor):
-        setup = {'eventBus': plugins.EventBusPlugin,
-         'equipments': plugins.EquipmentsMarkerPlugin,
-         'vehiclesTargets': plugins.VehicleMarkerTargetPlugin,
-         'controlMode': plugins.ControlModePlugin,
-         'area_markers': plugins.AreaMarkerPlugin}
+        setup = {'eventBus': plugins.EventBusPlugin, 
+           'equipments': plugins.EquipmentsMarkerPlugin, 
+           'vehiclesTargets': plugins.VehicleMarkerTargetPlugin, 
+           'controlMode': plugins.ControlModePlugin, 
+           'area_markers': plugins.AreaMarkerPlugin}
         if self.__showBaseMarkers:
             setup['teamAndControlPoints'] = plugins.TeamsOrControlsPointsPlugin
         if self.__showLocationMarkers:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shop.py
 import logging
 from collections import namedtuple
 from adisp import adisp_process
@@ -20,15 +18,15 @@ from skeletons.gui.game_control import ITradeInController
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 _ProductInfo = namedtuple('_ProductInfo', ('price', 'href', 'method'))
-SHOP_RENT_TYPE_MAP = {RentType.NO_RENT: 'none',
- RentType.TIME_RENT: 'time',
- RentType.BATTLES_RENT: 'battles',
- RentType.WINS_RENT: 'wins',
- RentType.SEASON_RENT: 'season',
- RentType.SEASON_CYCLE_RENT: 'cycle'}
-SHOP_RENT_SEASON_TYPE_MAP = {GameSeasonType.NONE: 'none',
- GameSeasonType.RANKED: 'ranked',
- GameSeasonType.EPIC: 'frontline'}
+SHOP_RENT_TYPE_MAP = {RentType.NO_RENT: 'none', 
+   RentType.TIME_RENT: 'time', 
+   RentType.BATTLES_RENT: 'battles', 
+   RentType.WINS_RENT: 'wins', 
+   RentType.SEASON_RENT: 'season', 
+   RentType.SEASON_CYCLE_RENT: 'cycle'}
+SHOP_RENT_SEASON_TYPE_MAP = {GameSeasonType.NONE: 'none', 
+   GameSeasonType.RANKED: 'ranked', 
+   GameSeasonType.EPIC: 'frontline'}
 
 class _GoldPurchaseReason(object):
     VEHICLE = 'vehicle'
@@ -61,22 +59,26 @@ class Origin(object):
 
 
 def _getParams(reason, price, itemId=None):
-    params = {'reason': reason,
-     'goldPrice': price,
-     'source': Source.EXTERNAL}
+    params = {'reason': reason, 
+       'goldPrice': price, 
+       'source': Source.EXTERNAL}
     if itemId is not None:
         params['itemId'] = itemId
     return params
 
 
 def _makeBuyItemUrl(categoryUrl, itemId=None):
-    return '{}/items/$PARAMS(web2client_{})'.format(categoryUrl, itemId) if itemId else categoryUrl
+    if itemId:
+        return ('{}/items/$PARAMS(web2client_{})').format(categoryUrl, itemId)
+    return categoryUrl
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def canBuyGoldForItemThroughWeb(itemID, itemsCache=None):
     item = itemsCache.items.getItemByCD(itemID)
-    return canBuyGoldForVehicleThroughWeb(item) if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE else False
+    if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+        return canBuyGoldForVehicleThroughWeb(item)
+    return False
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, tradeIn=ITradeInController)
@@ -96,38 +98,38 @@ def canBuyGoldForVehicleThroughWeb(vehicle, itemsCache=None, tradeIn=None):
 
 
 def showBuyPersonalReservesOverlay(itemId, source=None, origin=None):
-    showBuyItemWebView(helpers.getBuyPersonalReservesUrl(), itemId, source, origin)
+    showBuyItemOverlayWebView(helpers.getBuyPersonalReservesUrl(), itemId, source, origin)
 
 
-def showBuyCreditsBattleBoosterOverlay(itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE):
-    showBuyItemWebView(helpers.getBuyCreditsBattleBoostersUrl(), itemId, source, origin, alias)
+def showBuyCreditsBattleBooster(itemId, source=None, origin=None):
+    showBuyItemWebView(helpers.getBuyCreditsBattleBoostersUrl(), itemId, source, origin)
 
 
-def showBuyBonBattleBoosterOverlay(itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE):
-    showBuyItemWebView(helpers.getBuyBonBattleBoostersUrl(), itemId, source, origin, alias)
-
-
-@dependency.replace_none_kwargs(itemsCache=IItemsCache)
-def showBattleBoosterOverlay(itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE, itemsCache=None):
-    item = itemsCache.items.getItemByCD(itemId)
-    if item.getBuyPrice().price.isCurrencyDefined(Currency.CRYSTAL):
-        showBuyMethod = showBuyBonBattleBoosterOverlay
-    else:
-        showBuyMethod = showBuyCreditsBattleBoosterOverlay
-    showBuyMethod(itemId, source, origin, alias)
-
-
-def showBuyEquipmentOverlay(itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE):
-    showBuyItemWebView(helpers.getBuyEquipmentUrl(), itemId, source, origin, alias)
+def showBuyBonBattleBooster(itemId, source=None, origin=None):
+    showBuyItemWebView(helpers.getBuyBonBattleBoostersUrl(), itemId, source, origin)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
-def showBuyOptionalDeviceOverlay(itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE, itemsCache=None):
+def showBattleBooster(itemId, source=None, origin=None, itemsCache=None):
     item = itemsCache.items.getItemByCD(itemId)
     if item.getBuyPrice().price.isCurrencyDefined(Currency.CRYSTAL):
-        showBuyItemWebView(helpers.getBonsDevicesUrl(), itemId, source, origin, alias)
+        showBuyMethod = showBuyBonBattleBooster
     else:
-        showBuyItemWebView(helpers.getBuyOptionalDevicesUrl(), itemId, source, origin, alias)
+        showBuyMethod = showBuyCreditsBattleBooster
+    showBuyMethod(itemId, source, origin)
+
+
+def showBuyEquipment(itemId, source=None, origin=None):
+    showBuyItemWebView(helpers.getBuyEquipmentUrl(), itemId, source, origin)
+
+
+@dependency.replace_none_kwargs(itemsCache=IItemsCache)
+def showBuyOptionalDevice(itemId, source=None, origin=None, itemsCache=None):
+    item = itemsCache.items.getItemByCD(itemId)
+    if item.getBuyPrice().price.isCurrencyDefined(Currency.CRYSTAL):
+        showBuyItemWebView(helpers.getBonsDevicesUrl(), itemId, source, origin)
+    else:
+        showBuyItemWebView(helpers.getBuyOptionalDevicesUrl(), itemId, source, origin)
 
 
 def showTradeOffOverlay(parent=None):
@@ -193,15 +195,28 @@ def showBlueprintsExchangeOverlay(url=None, parent=None):
 @adisp_process
 def _showBlurredWebOverlay(url, params=None, parent=None, isClientCloseControl=False):
     url = yield URLMacros().parse(url, params)
-    ctx = {'url': url,
-     'allowRightClick': False}
+    ctx = {'url': url, 
+       'allowRightClick': False}
     if isClientCloseControl:
         ctx.update(helpers.getClientControlledCloseCtx())
     g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WEB_VIEW_TRANSPARENT, parent=parent), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
 
 
 @adisp_process
-def showBuyItemWebView(url, itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE):
+def showBuyItemWebView(url, itemId, source=None, origin=None):
+    from gui.Scaleform.daapi.view.lobby.shared.states import BrowserLobbyTopState
+    url = yield URLMacros().parse(url)
+    params = {}
+    if source:
+        params['source'] = source
+    if origin:
+        params['origin'] = origin
+    url = yield URLMacros().parse(url=_makeBuyItemUrl(url, itemId), params=params)
+    BrowserLobbyTopState.goTo(ctx={'url': url})
+
+
+@adisp_process
+def showBuyItemOverlayWebView(url, itemId, source=None, origin=None, alias=VIEW_ALIAS.OVERLAY_WEB_STORE):
     url = yield URLMacros().parse(url)
     params = {}
     if source:
@@ -240,5 +255,5 @@ def showRentProductOverlay(params=None):
 def _showOverlayWebStoreDefault(url, params=None):
     if url:
         url = yield URLMacros().parse(url, params=params)
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url,
-         'browserParams': makeBrowserParams(R.strings.waiting.updating(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url, 
+           'browserParams': makeBrowserParams(R.strings.waiting.updating(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/tooltips.py
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.VEH_COMPARE import VEH_COMPARE
@@ -27,7 +25,9 @@ class CmpConsumableToolitpBuilder(ConsumableToolitpBuilder):
     @classmethod
     def getTooltipData(cls, vehicle, slotID, intCD):
         item = cls._itemsCache.items.getItemByCD(intCD)
-        return createTooltipData(tooltip=makeTooltip(item.userName, attention=VEH_COMPARE.VEHCONF_TOOLTIPS_DEVICENOTAFFECTEDTTC)) if item.name in cmp_helpers.NOT_AFFECTED_EQUIPMENTS else super(CmpConsumableToolitpBuilder, cls).getTooltipData(vehicle, slotID, intCD)
+        if item.name in cmp_helpers.NOT_AFFECTED_EQUIPMENTS:
+            return createTooltipData(tooltip=makeTooltip(item.userName, attention=VEH_COMPARE.VEHCONF_TOOLTIPS_DEVICENOTAFFECTEDTTC))
+        return super(CmpConsumableToolitpBuilder, cls).getTooltipData(vehicle, slotID, intCD)
 
     @classmethod
     def _getTooltipSpecialAlias(cls):
@@ -64,22 +64,23 @@ class CmpCamouflageTooltipBuilder(object):
 
     @classmethod
     def getPanelSlotTooltip(cls, *_):
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.VEH_CMP_CUSTOMIZATION, specialArgs=[True])
+        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.VEH_CMP_CUSTOMIZATION, specialArgs=[
+         True])
 
     @classmethod
     def getTooltipData(cls, *_):
-        return None
+        return
 
     @classmethod
     def getVehicle(cls, vehicle, _=None):
         return vehicle
 
 
-CMP_PANEL_SLOT_TOOLTIPS = {TankSetupConstants.BATTLE_BOOSTERS: CmpBattleBoostersTooltipBuilder,
- TankSetupConstants.OPT_DEVICES: CmpOptDeviceTooltipBuilder,
- TankSetupConstants.CONSUMABLES: CmpConsumableToolitpBuilder,
- TankSetupConstants.TOGGLE_CAMOUFLAGE: CmpCamouflageTooltipBuilder,
- TankSetupConstants.TOGGLE_SHELLS: CmpShellTooltipBuilder}
+CMP_PANEL_SLOT_TOOLTIPS = {TankSetupConstants.BATTLE_BOOSTERS: CmpBattleBoostersTooltipBuilder, 
+   TankSetupConstants.OPT_DEVICES: CmpOptDeviceTooltipBuilder, 
+   TankSetupConstants.CONSUMABLES: CmpConsumableToolitpBuilder, 
+   TankSetupConstants.TOGGLE_CAMOUFLAGE: CmpCamouflageTooltipBuilder, 
+   TankSetupConstants.TOGGLE_SHELLS: CmpShellTooltipBuilder}
 
 def getCmpSlotTooltipData(event, vehicle, currentSlotID=None, currentSection=None):
     return getSlotTooltipData(event, vehicle, currentSlotID, currentSection, tooltipsMap=CMP_PANEL_SLOT_TOOLTIPS)

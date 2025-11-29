@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/customization_confirm_dialog.py
-import logging
-import BigWorld
-import typing
+import logging, BigWorld, typing
 from frameworks.wulf import ViewSettings
 from constants import DOG_TAGS_CONFIG
 from gui.impl.gen import R
@@ -18,7 +14,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class CustomizationConfirmDialog(FullScreenDialogBaseView):
-    __slots__ = ('__dogTagsHelper', '__composer', '__backgroundId', '__engravingId', '__additionalData', '__isLocked')
+    __slots__ = ('__dogTagsHelper', '__composer', '__backgroundId', '__engravingId',
+                 '__additionalData', '__isLocked')
     _webCtrl = dependency.descriptor(IWebController)
     lobbyContext = dependency.descriptor(ILobbyContext)
 
@@ -42,8 +39,9 @@ class CustomizationConfirmDialog(FullScreenDialogBaseView):
         super(CustomizationConfirmDialog, self)._onLoading()
         unlockedComps = self.__dogTagsHelper.getUnlockedComps()
         self.__isLocked = self.__backgroundId not in unlockedComps or self.__engravingId not in unlockedComps
-        dogTag = self.__dogTagsHelper.getDisplayableDTForComponents([self.__backgroundId, self.__engravingId], self._webCtrl.getAccountProfile())
-        with self.viewModel.transaction() as tx:
+        dogTag = self.__dogTagsHelper.getDisplayableDTForComponents([
+         self.__backgroundId, self.__engravingId], self._webCtrl.getAccountProfile())
+        with self.viewModel.transaction() as (tx):
             if dogTag:
                 self.__composer.fillModel(tx.equippedDogTag, dogTag, isUnlocked=not self.__isLocked)
         self.__addListeners()

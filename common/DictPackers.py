@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/DictPackers.py
 import copy
 from debug_utils import LOG_ERROR
 from binascii import crc32
@@ -18,7 +16,8 @@ class DeltaPacker(object):
         if len(seq) == 0:
             return seq
         else:
-            ret = [None] * len(seq)
+            ret = [
+             None] * len(seq)
             s = sorted(seq)
             if self.packPredicate:
                 p = self.packPredicate
@@ -33,10 +32,11 @@ class DeltaPacker(object):
         if len(seq) == 0:
             return seq
         else:
-            ret = [None] * len(seq)
+            ret = [
+             None] * len(seq)
             ret[0] = seq[0]
             for index in xrange(1, len(seq)):
-                ret[index] = ret[index - 1] + seq[index]
+                ret[index] = ret[(index - 1)] + seq[index]
 
             return ret
 
@@ -44,7 +44,9 @@ class DeltaPacker(object):
 class ValueReplayPacker:
 
     def pack(self, value):
-        return value if isinstance(value, (str, unicode)) else value.pack()
+        if isinstance(value, (str, unicode)):
+            return value
+        return value.pack()
 
     def unpack(self, value):
         return value
@@ -85,18 +87,17 @@ class DictPacker(object):
         ret = {}
         if len(dataList) == 0 or dataList[0] != self._checksum:
             return
-        else:
-            getDefaultValue = self.getDefaultValue
-            for index, meta in enumerate(self._metaData):
-                val = dataList[index + 1]
-                name, _, _, packer, _ = meta
-                if val is None:
-                    val = getDefaultValue(index)
-                elif packer is not None:
-                    val = packer.unpack(val)
-                ret[name] = val
+        getDefaultValue = self.getDefaultValue
+        for index, meta in enumerate(self._metaData):
+            val = dataList[(index + 1)]
+            name, _, _, packer, _ = meta
+            if val is None:
+                val = getDefaultValue(index)
+            elif packer is not None:
+                val = packer.unpack(val)
+            ret[name] = val
 
-            return ret
+        return ret
 
     def getChecksum(self):
         return self._checksum
@@ -110,13 +111,10 @@ class DictPacker(object):
         meta_descriptor = []
         for entry in tuple(metaData):
             name, entry_type, default, packer, aggregatorName = entry
-            meta_descriptor.append(''.join([name,
-             str(entry_type),
-             str(default),
-             str(type(packer)),
-             str(aggregatorName)]))
+            meta_descriptor.append(('').join([name, str(entry_type),
+             str(default), str(type(packer)), str(aggregatorName)]))
 
-        return crc32(''.join(meta_descriptor))
+        return crc32(('').join(meta_descriptor))
 
 
 class SimpleDictPacker(object):
@@ -149,7 +147,8 @@ class SimpleDictPacker(object):
 class MergeDictPacker(object):
 
     def __init__(self, *metaData):
-        self._dictList = [DictPacker(*metaData)]
+        self._dictList = [
+         DictPacker(*metaData)]
 
     def pack(self, dataDict):
         ret = []
@@ -184,11 +183,7 @@ class Meta(DictPacker):
 
     def __init__(self, *metaData):
         DictPacker.__init__(self, *metaData)
-        self.__nameToData = {name:(index,
-         transportType,
-         default,
-         packer,
-         aggFunc) for index, (name, transportType, default, packer, aggFunc) in enumerate(self._metaData)}
+        self.__nameToData = {name:(index, transportType, default, packer, aggFunc) for index, (name, transportType, default, packer, aggFunc) in enumerate(self._metaData)}
         self.__names = set(self.__nameToData.keys())
         self.__initDefaults()
 
@@ -216,7 +211,9 @@ class Meta(DictPacker):
         return self.getDefaultValueByName(name)
 
     def getDefaultValueByName(self, name):
-        return self.__defaultsImmutable[name] if name in self.__defaultsImmutable else self.__defaultsMutable[name]()
+        if name in self.__defaultsImmutable:
+            return self.__defaultsImmutable[name]
+        return self.__defaultsMutable[name]()
 
     def __add__(self, other):
         newMeta = self._metaData + other._metaData
@@ -238,28 +235,27 @@ class Meta(DictPacker):
             mutableType = getMutability(transportType, default)
             if mutableType == 'immutable':
                 defaultsImmutable[name] = default
-            if mutableType == 'mutableList':
+            elif mutableType == 'mutableList':
                 defaultsMutable[name] = partial(lambda x: x[:], default)
-            if mutableType == 'mutableDeep':
+            elif mutableType == 'mutableDeep':
                 defaultsMutable[name] = partial(copy.deepcopy, default)
-            if mutableType == 'mutableCopy':
+            elif mutableType == 'mutableCopy':
                 defaultsMutable[name] = partial(lambda x: x.copy(), default)
-            raise KeyError(mutableType)
+            else:
+                raise KeyError(mutableType)
 
 
 def getMutability(transportType, default):
-    if transportType in (int,
-     float,
-     str,
-     bool,
-     None):
+    if transportType in (int, float, str, bool, None):
         return 'immutable'
     else:
         if transportType in (list, tuple, set):
-            if all((getMutability(type(value), value) == 'immutable' for value in default)):
+            if all(getMutability(type(value), value) == 'immutable' for value in default):
                 if transportType == list:
                     return 'mutableList'
                 if transportType == tuple:
                     return 'immutable'
                 return 'mutableCopy'
-        return 'mutableDeep' if default or transportType != dict else 'mutableCopy'
+        if default or transportType != dict:
+            return 'mutableDeep'
+        return 'mutableCopy'

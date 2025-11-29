@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/stronghold_action_button_state_vo.py
 from gui.Scaleform.daapi.view.lobby.rally.action_button_state_vo import ActionButtonStateVO
 from gui.prb_control.settings import UNIT_RESTRICTION
 from gui.Scaleform.locale.CYBERSPORT import CYBERSPORT
@@ -40,7 +38,12 @@ class StrongholdActionButtonStateVO(ActionButtonStateVO):
         return label
 
     def _notInSlotMessage(self):
-        return (CYBERSPORT.WINDOW_UNIT_MESSAGE_CANDIDATE, {}) if self._playerInfo.isLegionary() or not self.__hasFreeSlots else (CYBERSPORT.WINDOW_UNIT_MESSAGE_TAKESLOTINROSTER, {})
+        if self._playerInfo.isLegionary() or not self.__hasFreeSlots:
+            return (CYBERSPORT.WINDOW_UNIT_MESSAGE_CANDIDATE, {})
+        return (
+         CYBERSPORT.WINDOW_UNIT_MESSAGE_TAKESLOTINROSTER, {})
 
     def _getUnitReadyMessage(self):
-        return ('', {}) if self._playerInfo.isCommander() else super(StrongholdActionButtonStateVO, self)._getUnitReadyMessage()
+        if self._playerInfo.isCommander():
+            return ('', {})
+        return super(StrongholdActionButtonStateVO, self)._getUnitReadyMessage()

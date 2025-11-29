@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/managers/context_menu.py
-import inspect
-import weakref
+import inspect, weakref
 from abc import ABCMeta, abstractmethod
 import Keys
 from Event import EventManager, Event
@@ -17,12 +14,12 @@ def registerHandlers(*handlers):
     handlerTypes = []
     for item in handlers:
         if len(item) < 2:
-            raise SoftException('Item {} is invalid'.format(item))
+            raise SoftException(('Item {} is invalid').format(item))
         handlerType, handler = item[:2]
         if handlerType in _handlers:
-            raise SoftException('Type of handler {} already exists'.format(handlerType))
+            raise SoftException(('Type of handler {} already exists').format(handlerType))
         if not inspect.isclass(handler) or AbstractContextMenuHandler not in inspect.getmro(handler):
-            raise SoftException('Handler {} is invalid'.format(handler))
+            raise SoftException(('Handler {} is invalid').format(handler))
         _handlers[handlerType] = handler
         handlerTypes.append(handlerType)
 
@@ -41,7 +38,7 @@ def _getHandlerClass(handlerType):
         return _handlers[handlerType]
     else:
         LOG_WARNING('Unknown context menu handler type', handlerType)
-        return None
+        return
 
 
 class ContextMenuManager(ContextMenuManagerMeta):
@@ -157,12 +154,12 @@ class AbstractContextMenuHandler(object):
 
     @classmethod
     def _makeItem(cls, optId, optLabel=None, optInitData=None, optSubMenu=None, linkage=None, iconType=''):
-        return {'id': optId,
-         'label': optLabel,
-         'iconType': iconType,
-         'initData': cls.__makeOptDataDefaults(optInitData),
-         'submenu': optSubMenu,
-         'linkage': linkage}
+        return {'id': optId, 
+           'label': optLabel, 
+           'iconType': iconType, 
+           'initData': cls.__makeOptDataDefaults(optInitData), 
+           'submenu': optSubMenu, 
+           'linkage': linkage}
 
     def _makeSeparator(self):
         return self._makeItem(_SEPARATOR_ID)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/control/sales/triggers.py
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from tutorial.control.triggers import Trigger, TriggerWithValidateVar

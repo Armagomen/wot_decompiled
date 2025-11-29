@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/__init__.py
-import sys
-import weakref
-import typing
+import sys, weakref, typing
 from debug_utils import LOG_CURRENT_EXCEPTION
 from frameworks.wulf import WindowFlags
 from gui.Scaleform.daapi.view.lobby.techtree.settings import UNKNOWN_VEHICLE_LEVEL, UnlockProps
@@ -148,7 +144,7 @@ class ToolTipBaseData(object):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     @property
     def context(self):
@@ -158,12 +154,12 @@ class ToolTipBaseData(object):
         return False
 
     def getDisplayableData(self, *args, **kwargs):
-        return None
+        return
 
     def buildToolTip(self, *args, **kwargs):
-        return {'type': self.getType(),
-         'component': self.context.getComponent(),
-         'data': self.getDisplayableData(*args, **kwargs)}
+        return {'type': self.getType(), 
+           'component': self.context.getComponent(), 
+           'data': self.getDisplayableData(*args, **kwargs)}
 
     def getType(self):
         return self._toolTipType
@@ -195,10 +191,10 @@ class WulfTooltipData(ToolTipData):
         return WindowImpl(wndFlags=WindowFlags.SERVICE_WINDOW, content=self.getTooltipContent(*args, **kwargs), parent=parent, areaID=R.areas.specific())
 
     def buildToolTip(self, *args, **kwargs):
-        return None
+        return
 
     def getTooltipContent(self, *args, **kwargs):
-        raise SoftException('getTooltipContent should be overriden in {}'.format(self))
+        raise SoftException(('getTooltipContent should be overriden in {}').format(self))
 
 
 class ToolTipDataField(object):
@@ -209,14 +205,15 @@ class ToolTipDataField(object):
         self._isAvailable = True
 
     def buildData(self):
-        return (self._name, self._getValue())
+        return (
+         self._name, self._getValue())
 
     @property
     def isAvailable(self):
         return self._isAvailable
 
     def _getValue(self):
-        return None
+        return
 
 
 class ToolTipAttrField(ToolTipDataField):
@@ -231,7 +228,9 @@ class ToolTipAttrField(ToolTipDataField):
     def _getValue(self):
         attr = self._attr or self._name
         item = self._getItem()
-        return getattr(item, attr) if hasattr(item, attr) else super(ToolTipAttrField, self)._getValue()
+        if hasattr(item, attr):
+            return getattr(item, attr)
+        return super(ToolTipAttrField, self)._getValue()
 
 
 class ToolTipMethodField(ToolTipDataField):
@@ -247,7 +246,9 @@ class ToolTipMethodField(ToolTipDataField):
     def _getValue(self):
         attr = self._method or self._name
         item = self._getItem()
-        return getattr(item, attr)(*self._args) if hasattr(item, attr) else super(ToolTipMethodField, self)._getValue()
+        if hasattr(item, attr):
+            return getattr(item, attr)(*self._args)
+        return super(ToolTipMethodField, self)._getValue()
 
 
 class ToolTipAttrCheckField(ToolTipAttrField):
@@ -273,25 +274,27 @@ class ToolTipMethodCheckField(ToolTipMethodField):
 class ToolTipParameterField(ToolTipDataField):
 
     def _getParameterValue(self, *args):
-        return None
+        return
 
 
 def getComplexStatus(statusKey, **kwargs):
     try:
         if not statusKey:
             return (None, None)
-        headerKey = statusKey + '/header'
-        textKey = statusKey + '/text'
-        header = makeString(headerKey, **kwargs)
-        text = makeString(textKey, **kwargs)
-        if headerKey == TOOLTIPS.VEHICLESTATUS_INPREMIUMIGRONLY_HEADER:
-            icon = icons.premiumIgrSmall()
-            header = makeString(headerKey, icon=icon)
-        if header == headerKey.split(':', 1)[1]:
-            header = None
-        if text == textKey.split(':', 1)[1]:
-            text = None
-        return (header, text)
+        else:
+            headerKey = statusKey + '/header'
+            textKey = statusKey + '/text'
+            header = makeString(headerKey, **kwargs)
+            text = makeString(textKey, **kwargs)
+            if headerKey == TOOLTIPS.VEHICLESTATUS_INPREMIUMIGRONLY_HEADER:
+                icon = icons.premiumIgrSmall()
+                header = makeString(headerKey, icon=icon)
+            if header == headerKey.split(':', 1)[1]:
+                header = None
+            if text == textKey.split(':', 1)[1]:
+                text = None
+            return (header, text)
+
     except Exception:
         LOG_CURRENT_EXCEPTION()
         return (None, None)
@@ -310,7 +313,8 @@ def getComplexStatusWULF(statusKey, **kwargs):
             text = backport.text(textKey(), **kwargs)
         if headerKey is R.strings.tooltips.vehicleStatus.inPremiumIgrOnly.header:
             header = backport.text(headerKey(), icon=icons.premiumIgrSmall())
-    return (header, text)
+    return (
+     header, text)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -335,11 +339,7 @@ def getUnlockPrice(compactDescr, parentCD=None, vehicleLevel=UNKNOWN_VEHICLE_LEV
         pVehXp = xpVehs.get(vehCompDescr, 0)
         need = unlockPrice - pVehXp
         needWithFreeXP = need - freeXP
-        return (isAvailable,
-         unlockPrice,
-         min(need, needWithFreeXP),
-         oldPrice,
-         discount)
+        return (isAvailable, unlockPrice, min(need, needWithFreeXP), oldPrice, discount)
 
     if itemTypeId == vehicles._VEHICLE:
         isAvailable, unlockProps = g_techTreeDP.isNext2Unlock(compactDescr, unlocks, xpVehs, freeXP, vehicleLevel)
@@ -366,10 +366,6 @@ def getUnlockPrice(compactDescr, parentCD=None, vehicleLevel=UNKNOWN_VEHICLE_LEV
                 minUnlockPriceVehCD = vcd
 
         if minUnlockPriceVehCD is None:
-            return (isAvailable,
-             0,
-             0,
-             0,
-             0)
+            return (isAvailable, 0, 0, 0, 0)
         return getUnlockProps(isAvailable, minUnlockPriceVehCD)
         return

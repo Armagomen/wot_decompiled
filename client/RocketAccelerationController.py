@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/RocketAccelerationController.py
-import logging
-import typing
+import logging, typing
 from functools import partial
-import BigWorld
-import CGF
+import BigWorld, CGF
 from Event import Event
 from constants import ROCKET_ACCELERATION_STATE
 from wotdecorators import noexcept
@@ -62,12 +58,11 @@ class RocketAccelerationController(BigWorld.DynamicScriptComponent, ILifeCycleCo
     def unsubscribe(self, callback=None, tryActivateCallback=None):
         if self.entity.isDestroyed or not self.entity.inWorld:
             return
-        else:
-            if callback is not None:
-                self.__onStateChanged -= callback
-            if tryActivateCallback is not None:
-                self.__onTryActivate -= tryActivateCallback
-            return
+        if callback is not None:
+            self.__onStateChanged -= callback
+        if tryActivateCallback is not None:
+            self.__onTryActivate -= tryActivateCallback
+        return
 
     def sendStateToAllSubscribers(self):
         self.__onStateChanged(self.stateStatus, False)
@@ -75,15 +70,14 @@ class RocketAccelerationController(BigWorld.DynamicScriptComponent, ILifeCycleCo
     def cleanup(self):
         if self.entity.isDestroyed or not self.entity.inWorld:
             return
-        else:
-            self.__lifeCycleEvents.destroy()
-            self.__onStateChanged.clear()
-            self.__onTryActivate.clear()
-            self.entity.onAppearanceReady -= self.__tryUpdatePrefab
-            if self.__prefabGameObject is not None:
-                CGF.removeGameObject(self.__prefabGameObject)
-                self.__prefabGameObject = None
-            return
+        self.__lifeCycleEvents.destroy()
+        self.__onStateChanged.clear()
+        self.__onTryActivate.clear()
+        self.entity.onAppearanceReady -= self.__tryUpdatePrefab
+        if self.__prefabGameObject is not None:
+            CGF.removeGameObject(self.__prefabGameObject)
+            self.__prefabGameObject = None
+        return
 
     def __initAppearance(self):
         if not self.__tryUpdatePrefab():

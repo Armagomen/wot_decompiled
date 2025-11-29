@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/component_events/component_events.py
 from Event import EventManager, SafeEvent
 from vehicles.components.component_events.events_interfaces import IComponentEvents
 

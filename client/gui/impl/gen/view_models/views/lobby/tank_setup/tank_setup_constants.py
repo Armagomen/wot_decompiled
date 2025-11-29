@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/tank_setup_constants.py
 from frameworks.wulf import ViewModel
 
 class TankSetupConstants(ViewModel):
@@ -8,6 +6,7 @@ class TankSetupConstants(ViewModel):
     SHELLS = 'shells'
     CONSUMABLES = 'consumables'
     BATTLE_BOOSTERS = 'battleBoosters'
+    CREW_BOOSTERS = 'crewBoosters'
     BATTLE_ABILITIES = 'battleAbilities'
     TOGGLE_SHELLS = 'toggleShells'
     TOGGLE_CAMOUFLAGE = 'toggleCamouflage'

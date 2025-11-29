@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/base_sub_model_view.py
 import typing
 from frameworks.wulf import ViewModel
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)

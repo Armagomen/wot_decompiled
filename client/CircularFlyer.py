@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/CircularFlyer.py
-import math
-import BigWorld
-import AnimationSequence
+import math, BigWorld, AnimationSequence
 from Math import Matrix, Vector3
 from debug_utils import LOG_CURRENT_EXCEPTION
 from vehicle_systems.stricted_loading import makeCallbackWeak

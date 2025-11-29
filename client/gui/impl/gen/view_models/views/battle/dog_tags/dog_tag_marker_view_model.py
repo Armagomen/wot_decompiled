@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle/dog_tags/dog_tag_marker_view_model.py
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_dog_tag import DtDogTag
 
 class DogTagMarkerViewModel(DtDogTag):

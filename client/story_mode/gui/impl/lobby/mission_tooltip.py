@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/mission_tooltip.py
 import typing
 from debug_utils import LOG_ERROR
 from frameworks.wulf.view.view import ViewSettings
@@ -25,7 +23,7 @@ class MissionTooltip(ViewImpl):
         super(MissionTooltip, self)._onLoading(*args, **kwargs)
         self.viewModel.setVehicleName(self._vehicle.userName)
         self.viewModel.setVehicleDescription(self._vehicle.fullDescription)
-        vehicleName = self._vehicle.name.split(':', 1)[-1].lower()
+        vehicleName = self._vehicle.name.split(':', 1)[(-1)].lower()
         iconRes = R.images.story_mode.gui.maps.icons.missionSelection.tooltip.vehicle.dyn(vehicleName)()
         if iconRes != INVALID_RES_ID:
             self.viewModel.setVehicleIcon(iconRes)

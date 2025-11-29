@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/mode_selector/items/comp7_light_mode_selector_item.py
 from comp7_light.gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_comp7_light_model import ModeSelectorComp7LightModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_comp7_light_widget_model import Comp7LightProgressionStatus
 from comp7_light.skeletons.gui.game_control import IComp7LightProgressionController
@@ -47,7 +45,7 @@ class Comp7LightModeSelectorItem(ModeSelectorLegacyItem):
     def __fillModeData(self):
         currentSeason = self.__comp7LightController.getCurrentSeason()
         isSeasonAvailable = self.__comp7LightController.isAvailable() and currentSeason is not None
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             if isSeasonAvailable:
                 vm.setTimeLeft(self.__getCurrentSeasonTimeLeft(currentSeason))
                 self._addReward(ModeSelectorRewardID.CREDITS)
@@ -57,7 +55,7 @@ class Comp7LightModeSelectorItem(ModeSelectorLegacyItem):
         return
 
     def __fillWidgetData(self):
-        with self.viewModel.widget.transaction() as vm:
+        with self.viewModel.widget.transaction() as (vm):
             if not self.__comp7LightProgressionController.isEnabled:
                 self.viewModel.widget.setStatus(Comp7LightProgressionStatus.DISABLED)
                 return

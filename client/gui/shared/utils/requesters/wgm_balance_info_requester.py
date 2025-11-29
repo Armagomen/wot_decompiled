@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/wgm_balance_info_requester.py
 from functools import partial
-import BigWorld
-import AccountCommands
+import BigWorld, AccountCommands
 from adisp import adisp_async, adisp_process
 from gui.shared.utils.requesters.common import RequestProcessor
 from gui.shared.money import Currency
@@ -68,14 +65,16 @@ class WGMBalanceInfoRequester(object):
 
     def __nextRequestTime(self):
         cooldown = _REQUEST_COOLDOWN - (BigWorld.timeExact() - self.__lastResponseTime)
-        return cooldown if cooldown > 0 else 0
+        if cooldown > 0:
+            return cooldown
+        return 0
 
     def __processResponse(self, callback, resultID, errorStr, ext):
         self.__request = None
         self.__lastResponseTime = BigWorld.timeExact()
         self.__receivedData = {}
         if not AccountCommands.isCodeValid(resultID):
-            LOG_WARNING('WGM Balance info is not received, resultID: {}, errorStr: {}'.format(resultID, errorStr))
+            LOG_WARNING(('WGM Balance info is not received, resultID: {}, errorStr: {}').format(resultID, errorStr))
             callback(self.__receivedData)
             return
         else:
@@ -88,7 +87,8 @@ class WGMBalanceInfoRequester(object):
                         action = _ACTION_PURCHASED if isPaid else _ACTION_EARNED
                         key = currencyCode + action
                         self.__receivedData[key] = amount
-                LOG_WARNING('Error parsing wgm response, row is: ', item)
+                else:
+                    LOG_WARNING('Error parsing wgm response, row is: ', item)
 
             callback(self.__receivedData)
             return

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/status_notifications/sn_items.py
-import typing
-import BigWorld
+import typing, BigWorld
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.sn_items import TimerSN
 from gui.impl import backport
 from story_mode.gui.battle_control.battle_constant import VEHICLE_VIEW_STATE
@@ -14,7 +11,7 @@ class ReconAbilitySN(TimerSN):
         return RECON_ABILITY
 
     def getItemID(self):
-        pass
+        return ''
 
     def getViewTypeID(self):
         return STORY_MODE_NOTIFICATIONS_TIMER_TYPES.RECON_ABILITY

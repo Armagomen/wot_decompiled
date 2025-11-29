@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crystals_promo/crystals_promo_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.crystals_promo.battle_type_model import BattleTypeModel
 
 class CrystalsPromoViewModel(ViewModel):
-    __slots__ = ('goToShop',)
+    __slots__ = ('goToShop', )
     TANKS_TAB = 'tanksTab'
     INSTRUCTIONS_TAB = 'instructionsTab'
     EQUIPMENT_TAB = 'equipmentTab'

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/resources/cdn/history.py
-import os
-import typing
+import os, typing
 from gui.game_loading import loggers
 from gui.game_loading.common import loadDictFromJsonFile, saveDictToJsonFile, deleteFile
 from gui.game_loading.resources.cdn.config import createSequenceModel, dumpSequenceModel
@@ -99,7 +96,7 @@ class ViewHistory(object):
         sequenceStorage = self._history.setdefault('watched', {}).setdefault(sequence.name, {})
         slidesStorage = sequenceStorage.setdefault('slides', {})
         slidesStorage[slide.historyKey] = slidesStorage.get(slide.historyKey, 0) + count
-        slidesViewsCount = sorted((self.getSequenceSlideViewsCount(sequence, slide) for slide in sequence.slides))
+        slidesViewsCount = sorted(self.getSequenceSlideViewsCount(sequence, slide) for slide in sequence.slides)
         sequenceStorage['views'] = slidesViewsCount[0] if slidesViewsCount else 0
         self._changed = True
         _logger.debug('Sequence %s slide %s view added.', sequence.name, slide)
@@ -116,4 +113,4 @@ class ViewHistory(object):
         return self._history.get('selected')
 
     def __repr__(self):
-        return '<SequencesViewHistory(path={}, sequence={}, changed={})>'.format(self._filePath, self._selectedSequence, self._changed)
+        return ('<SequencesViewHistory(path={}, sequence={}, changed={})>').format(self._filePath, self._selectedSequence, self._changed)

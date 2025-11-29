@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/shared.py
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEHICLE_CAROUSEL_COUNTERS_SEEN
@@ -34,4 +32,6 @@ def isVehicleFilterNew(entry):
         return False
     if entry == FILTER_KEYS.CAN_INSTALL_ATTACHMENTS:
         return __hasAttachmentsOnAccount()
-    return __hasVehiclesWith3DStylesOnAccount() if entry == FILTER_KEYS.OWN_3D_STYLE else False
+    if entry == FILTER_KEYS.OWN_3D_STYLE:
+        return __hasVehiclesWith3DStylesOnAccount()
+    return False

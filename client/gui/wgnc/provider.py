@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgnc/provider.py
-import time
-import BigWorld
+import time, BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING
 from gui.shared.utils.decorators import ReprInjector
 from gui.wgnc.errors import ParseError, ValidationError
@@ -10,7 +7,8 @@ from gui.wgnc.xml import fromString, fromSection
 
 @ReprInjector.simple('notID', 'ttl', 'actions', 'items', 'order', 'marked', 'client')
 class _NotificationVO(object):
-    __slots__ = ('notID', 'ttl', 'actions', 'items', 'proxyDataItems', 'order', 'marked', 'client')
+    __slots__ = ('notID', 'ttl', 'actions', 'items', 'proxyDataItems', 'order', 'marked',
+                 'client')
 
     def __init__(self, notID, ttl, actions, items, proxyDataItems):
         super(_NotificationVO, self).__init__()
@@ -57,13 +55,22 @@ class _NotificationVO(object):
         return result
 
     def getItemByName(self, name):
-        return self.items.getItemByName(name) if self.items else None
+        if self.items:
+            return self.items.getItemByName(name)
+        else:
+            return
 
     def getItemByType(self, itemType):
-        return self.items.getItemByType(itemType) if self.items else None
+        if self.items:
+            return self.items.getItemByType(itemType)
+        else:
+            return
 
     def getProxyItemByType(self, itemType):
-        return self.proxyDataItems.getItemByType(itemType) if self.proxyDataItems else None
+        if self.proxyDataItems:
+            return self.proxyDataItems.getItemByType(itemType)
+        else:
+            return
 
     def showItem(self, notID, target):
         if self.items:

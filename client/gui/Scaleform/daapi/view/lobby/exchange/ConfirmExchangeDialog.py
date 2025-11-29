@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/exchange/ConfirmExchangeDialog.py
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.meta.ConfirmExchangeDialogMeta import ConfirmExchangeDialogMeta
@@ -30,8 +28,7 @@ class ConfirmExchangeDialog(ConfirmExchangeDialogMeta):
             needItemsValue = 0
         else:
             goldValue = 0
-        self.__selectedGold, self.__selectedResource = handleAndRoundStepperInput({'gold': goldValue,
-         'currency': needItemsValue}, exchangeRate=self.meta.getExchangeProvider(), validateGold=True)
+        self.__selectedGold, self.__selectedResource = handleAndRoundStepperInput({'gold': goldValue, 'currency': needItemsValue}, exchangeRate=self.meta.getExchangeProvider(), validateGold=True)
         isLimitExceeded = self.meta.discountsAmountAppliedForExchange(self.__selectedGold)
         self.as_setExchangeValuesS(self.__selectedGold, self.__selectedResource, isLimitExceeded)
         g_eventBus.handleEvent(events.ExchangeRatesDiscountsEvent(events.ExchangeRatesDiscountsEvent.ON_SELECTED_AMOUNT_CHANGED, {'amount': self.__selectedGold}), scope=EVENT_BUS_SCOPE.LOBBY)

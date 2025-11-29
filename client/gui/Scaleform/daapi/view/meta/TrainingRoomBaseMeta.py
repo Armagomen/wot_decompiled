@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TrainingRoomBaseMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class TrainingRoomBaseMeta(View):
@@ -53,67 +51,89 @@ class TrainingRoomBaseMeta(View):
         self._printOverrideError('getPlayerTeam')
 
     def as_setObserverS(self, isObserver):
-        return self.flashObject.as_setObserver(isObserver) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setObserver(isObserver)
 
     def as_updateCommentS(self, commentStr):
-        return self.flashObject.as_updateComment(commentStr) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateComment(commentStr)
 
     def as_updateMapS(self, arenaTypeID, maxPlayersCount, arenaName, title, arenaSubType, descriptionStr, battleTypeIco, additionalInfo, isObserverModeEnabled):
-        return self.flashObject.as_updateMap(arenaTypeID, maxPlayersCount, arenaName, title, arenaSubType, descriptionStr, battleTypeIco, additionalInfo, isObserverModeEnabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateMap(arenaTypeID, maxPlayersCount, arenaName, title, arenaSubType, descriptionStr, battleTypeIco, additionalInfo, isObserverModeEnabled)
 
     def as_updateTimeoutS(self, roundLenString):
-        return self.flashObject.as_updateTimeout(roundLenString) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateTimeout(roundLenString)
 
     def as_setTeam1S(self, data):
-        return self.flashObject.as_setTeam1(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTeam1(data)
 
     def as_setTeam2S(self, data):
-        return self.flashObject.as_setTeam2(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTeam2(data)
 
     def as_setOtherS(self, data):
-        return self.flashObject.as_setOther(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setOther(data)
 
     def as_setInfoS(self, data):
-        return self.flashObject.as_setInfo(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInfo(data)
 
     def as_setArenaVoipChannelsS(self, arenaVoipChannels):
-        return self.flashObject.as_setArenaVoipChannels(arenaVoipChannels) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setArenaVoipChannels(arenaVoipChannels)
 
     def as_disableControlsS(self, value):
-        return self.flashObject.as_disableControls(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_disableControls(value)
 
     def as_startCoolDownVoiceChatS(self, time):
-        return self.flashObject.as_startCoolDownVoiceChat(time) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_startCoolDownVoiceChat(time)
 
     def as_startCoolDownObserverS(self, time):
-        return self.flashObject.as_startCoolDownObserver(time) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_startCoolDownObserver(time)
 
     def as_startCoolDownSettingS(self, time):
-        return self.flashObject.as_startCoolDownSetting(time) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_startCoolDownSetting(time)
 
     def as_startCoolDownSwapButtonS(self, time):
-        return self.flashObject.as_startCoolDownSwapButton(time) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_startCoolDownSwapButton(time)
 
     def as_setPlayerStateInTeam1S(self, uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO):
-        return self.flashObject.as_setPlayerStateInTeam1(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerStateInTeam1(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO)
 
     def as_setPlayerStateInTeam2S(self, uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO):
-        return self.flashObject.as_setPlayerStateInTeam2(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerStateInTeam2(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO)
 
     def as_setPlayerStateInOtherS(self, uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO):
-        return self.flashObject.as_setPlayerStateInOther(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerStateInOther(uid, stateString, vContourIcon, vShortName, vLevel, igrType, badgeVisualVO)
 
     def as_setPlayerTagsInTeam1S(self, uid, tags):
-        return self.flashObject.as_setPlayerTagsInTeam1(uid, tags) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerTagsInTeam1(uid, tags)
 
     def as_setPlayerTagsInTeam2S(self, uid, tags):
-        return self.flashObject.as_setPlayerTagsInTeam2(uid, tags) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerTagsInTeam2(uid, tags)
 
     def as_setPlayerTagsInOtherS(self, uid, tags):
-        return self.flashObject.as_setPlayerTagsInOther(uid, tags) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerTagsInOther(uid, tags)
 
     def as_enabledCloseButtonS(self, value):
-        return self.flashObject.as_enabledCloseButton(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enabledCloseButton(value)
 
     def as_setStartButtonStateS(self, enabled, tooltip=None):
-        return self.flashObject.as_setStartButtonState(enabled, tooltip) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setStartButtonState(enabled, tooltip)

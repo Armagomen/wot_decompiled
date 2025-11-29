@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_systems/fun_hidden_vehicles.py
 from __future__ import absolute_import
 from future.utils import viewvalues
 import typing
@@ -54,13 +52,12 @@ class FunHiddenVehicles(IFunRandomController.IFunHiddenVehicles, IPrbListener):
         desiredSubMode = self.__subModes.getDesiredSubMode()
         if prbDispatcher is None or desiredSubMode is None:
             return
-        else:
-            baseModeCriteria = desiredSubMode.getCarouselBaseCriteria()
-            vehicle = self.__itemsCache.items.getVehicle(event.ctx['vehicleInvID'])
-            if vehicle is None or baseModeCriteria is None or baseModeCriteria(vehicle):
-                return
-            prevVehicleInvID = event.ctx['prevVehicleInvID']
-            result = yield prbDispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.RANDOM))
-            if not result and desiredSubMode.isEnabled():
-                g_currentVehicle.selectVehicle(prevVehicleInvID)
+        baseModeCriteria = desiredSubMode.getCarouselBaseCriteria()
+        vehicle = self.__itemsCache.items.getVehicle(event.ctx['vehicleInvID'])
+        if vehicle is None or baseModeCriteria is None or baseModeCriteria(vehicle):
             return
+        prevVehicleInvID = event.ctx['prevVehicleInvID']
+        result = yield prbDispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.RANDOM))
+        if not result and desiredSubMode.isEnabled():
+            g_currentVehicle.selectVehicle(prevVehicleInvID)
+        return

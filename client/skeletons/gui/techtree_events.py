@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/techtree_events.py
 from Event import Event
 
 class ITechTreeEventsListener(object):

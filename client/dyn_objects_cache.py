@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/dyn_objects_cache.py
 import logging
 from collections import namedtuple
-import typing
-import BigWorld
-import CGF
-import resource_helper
+import typing, BigWorld, CGF, resource_helper
 from constants import ARENA_GUI_TYPE
 from gui.shared.system_factory import registerDynObjCache, collectDynObjCache
 from gui.shared.utils.graphics import isRendererPipelineDeferred
@@ -19,11 +14,21 @@ _ScenariosEffect = namedtuple('_ScenariosEffect', ('path', 'rate', 'offset', 'sc
 _DropPlane = namedtuple('_DropPlane', ('model', 'flyAnimation', 'sound'))
 _AirDrop = namedtuple('_AirDrop', ('model', 'dropAnimation'))
 _Loot = namedtuple('_Loot', ('prefab', 'prefabPickup'))
-_MinesEffects = namedtuple('_MinesEffects', ('plantEffect', 'idleEffect', 'destroyEffect', 'placeMinesEffect', 'blowUpEffectName', 'activationEffect'))
-_BerserkerEffects = namedtuple('_BerserkerEffects', ('turretEffect', 'hullEffect', 'transformPath'))
+_MinesEffects = namedtuple('_MinesEffects', ('plantEffect', 'idleEffect', 'destroyEffect',
+                                             'placeMinesEffect', 'blowUpEffectName',
+                                             'activationEffect'))
+_BerserkerEffects = namedtuple('_BerserkerEffects', ('turretEffect', 'hullEffect',
+                                                     'transformPath'))
 MIN_OVER_TERRAIN_HEIGHT = 0
 MIN_UPDATE_INTERVAL = 0
-_TerrainCircleSettings = namedtuple('_TerrainCircleSettings', ('modelPath', 'color', 'enableAccurateCollision', 'enableWaterCollision', 'maxUpdateInterval', 'overTerrainHeight', 'cutOffDistance', 'cutOffAngle', 'minHeight', 'maxHeight'))
+_TerrainCircleSettings = namedtuple('_TerrainCircleSettings', ('modelPath', 'color',
+                                                               'enableAccurateCollision',
+                                                               'enableWaterCollision',
+                                                               'maxUpdateInterval',
+                                                               'overTerrainHeight',
+                                                               'cutOffDistance',
+                                                               'cutOffAngle', 'minHeight',
+                                                               'maxHeight'))
 
 def _createScenarioEffect(section, path):
     return _ScenariosEffect(section.readString(path, ''), section.readFloat('rate', ZERO_FLOAT), section.readVector3('offset', (ZERO_FLOAT, ZERO_FLOAT, ZERO_FLOAT)), section.readFloat('scaleRatio', ZERO_FLOAT))
@@ -67,7 +72,10 @@ def createTerrainCircleSettings(section):
     result = dict.fromkeys(sectionKeys)
 
     def readFloatOrNone(subSection, key):
-        return subSection.readFloat(key, default=None) if subSection.has_key(key) else None
+        if subSection.has_key(key):
+            return subSection.readFloat(key, default=None)
+        else:
+            return
 
     for sectionKey in sectionKeys:
         subSection = section[sectionKey]
@@ -226,7 +234,7 @@ class _CommonForBattleRoyaleAndEpicBattleDynObjects(DynObjectsBase):
 
     @property
     def _healPointKey(self):
-        pass
+        return 'HealPointVisual'
 
     def clear(self):
         pass
@@ -295,14 +303,9 @@ class _KillCamEffectDynObjects(DynObjectsBase):
         self.spacedArmorImpactPoint = killCamEffects['spacedArmorImpactPoint']['path'].asString
         self.trajectoryRed = killCamEffects['trajectoryRed']['path'].asString
         self.trajectoryGradient = killCamEffects['trajectoryGradient']['path'].asString
-        self.__cachedPrefabs.update({self.emptyGO,
-         self.cone,
-         self.impactPoint,
-         self.spacedArmorLinePoint,
-         self.explosionSphere,
-         self.spacedArmorImpactPoint,
-         self.trajectoryRed,
-         self.trajectoryGradient})
+        self.__cachedPrefabs.update({self.emptyGO, self.cone, self.impactPoint, self.spacedArmorLinePoint,
+         self.explosionSphere, self.spacedArmorImpactPoint,
+         self.trajectoryRed, self.trajectoryGradient})
         CGF.cacheGameObjects(list(self.__cachedPrefabs), False)
         super(_KillCamEffectDynObjects, self).init(dataSection)
 
@@ -400,7 +403,9 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
 
     def getVehicleRespawnEffect(self):
         paths = self.__vehicleRespawnEffects.prefabs
-        return str() if not paths else paths[0]
+        if not paths:
+            return str()
+        return paths[0]
 
     def clear(self):
         pass
@@ -416,7 +421,7 @@ class _BattleRoyaleDynObjects(_CommonForBattleRoyaleAndEpicBattleDynObjects):
 
     @property
     def _healPointKey(self):
-        pass
+        return 'battleRoyaleHealpoint'
 
     def __onResourcesLoaded(self, resourceRefs):
         self.__resourcesCache = resourceRefs
@@ -444,7 +449,7 @@ class _SpawnPointsConfig(object):
         return self.__colors[ownageKey][confirmationKey]
 
     def getVisualPath(self, positionNumber):
-        positionName = 'position{}'.format(positionNumber)
+        positionName = ('position{}').format(positionNumber)
         return self.__visualsPath.get(positionName)
 
     @classmethod
@@ -460,8 +465,7 @@ class _SpawnPointsConfig(object):
         colors = {}
         renderKey = 'deferred' if isRendererPipelineDeferred() else 'forward'
         for ownageType, colorsConfig in section[renderKey].items():
-            colors[ownageType] = {'confirmed': int(colorsConfig.readString('confirmed'), 16),
-             'notConfirmed': int(colorsConfig.readString('notConfirmed'), 16)}
+            colors[ownageType] = {'confirmed': int(colorsConfig.readString('confirmed'), 16), 'notConfirmed': int(colorsConfig.readString('notConfirmed'), 16)}
 
         return colors
 
@@ -488,7 +492,7 @@ class _PointsOfInterestConfig(object):
         for _, prefab in section.items():
             radiusRange = prefab.readVector2('radiusRange')
             path = prefab.readString('path')
-            points[radiusRange.x, radiusRange.y] = path
+            points[(radiusRange.x, radiusRange.y)] = path
 
         return cls(points)
 
@@ -526,10 +530,10 @@ class BattleDynamicObjectsCache(IBattleDynamicObjectsCache):
                 self.__gameModeConfigStorage[arenaType] = confStorage
                 confStorage.init(section)
                 resource_helper.purgeResource(_CONFIG_PATH)
-        for name, featureStorageType in _FEATURES_CONF_STORAGES.items():
-            fstorage = featureStorageType()
-            self.__featuresConfigStorage[name] = fstorage
-            fstorage.init(dataSection=section)
+            for name, featureStorageType in _FEATURES_CONF_STORAGES.items():
+                fstorage = featureStorageType()
+                self.__featuresConfigStorage[name] = fstorage
+                fstorage.init(dataSection=section)
 
     def unload(self, arenaType):
         for cV in self.__gameModeConfigStorage.itervalues():

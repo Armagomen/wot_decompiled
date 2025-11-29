@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/view_impl.py
-import logging
-import typing
-import json
+import logging, typing, json
 from frameworks.wulf import View, ViewEvent, ViewModel, Window, WindowLayer, WindowStatus
 from helpers import dependency
 from helpers.events_handler import EventsHandler
@@ -15,9 +11,9 @@ from .tooltip_window import AdvancedToolTipWindow, SimpleToolTipWindow, ToolTipW
 from .view_impl_helpers import createBackportContextMenuWindow, createParamTooltipWindow, createWulfTooltipWindow
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 _logger = logging.getLogger(__name__)
-_BACKPORT_POPOVER_DIRECTION_OVERRIDE = {1: 3,
- 3: 0,
- 0: 1}
+_BACKPORT_POPOVER_DIRECTION_OVERRIDE = {1: 3, 
+   3: 0, 
+   0: 1}
 
 class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
     __slots__ = ()
@@ -32,13 +28,13 @@ class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
         super(ViewImpl, self)._finalize()
 
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     def createPopOverContent(self, event):
-        return None
+        return
 
     def createContextMenuContent(self, event):
-        return None
+        return
 
     def prepareBackportTooltipArgs(self, args):
         return args
@@ -69,7 +65,8 @@ class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
     def createPopOver(self, event):
         window = None
         directionOverride = None
-        if event.contentID in (R.views.common.pop_over_window.backport_pop_over.BackportPopOverContent(), R.aliases.common.popOver.Backport()):
+        if event.contentID in (R.views.common.pop_over_window.backport_pop_over.BackportPopOverContent(),
+         R.aliases.common.popOver.Backport()):
             directionOverride = _BACKPORT_POPOVER_DIRECTION_OVERRIDE.get(event.direction, None)
         if event.contentID == R.aliases.common.popOver.Backport():
             content = self.__createBackportPopOverContent(event)

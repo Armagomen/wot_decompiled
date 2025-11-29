@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/gift_system/requesters/base_requester.py
-import typing
-import BigWorld
+import typing, BigWorld
 from adisp import adisp_process, adisp_async
 
 class IGiftSystemRequester(object):

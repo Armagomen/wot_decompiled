@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/decorative_crosshairs/overheat_crosshair.py
-import typing
-import BattleReplay
+import typing, BattleReplay
 from ReplayEvents import g_replayEvents
 from constants import OVERHEAT_GAIN_STATE
 from gui.veh_mechanics.battle.updaters.current_shell_damage_updater import CurrentShellDamageUpdater
@@ -71,7 +68,10 @@ class OverheatDecorativeCrosshair(OverheatDecorativeCrosshairMeta, ComponentList
         self.__invalidateExpectedDamage(newDamage)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.OVERHEAT_STACKS, self), VehicleMechanicStatesUpdater(VehicleMechanic.OVERHEAT_STACKS, self), CurrentShellDamageUpdater(self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.OVERHEAT_STACKS, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.OVERHEAT_STACKS, self),
+         CurrentShellDamageUpdater(self)]
 
     def _onReplayTimeWarpFinished(self):
         replayCtrl = BattleReplay.g_replayCtrl

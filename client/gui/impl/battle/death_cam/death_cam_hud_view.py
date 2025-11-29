@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/death_cam/death_cam_hud_view.py
 import logging
 from gui.impl.battle.death_cam.death_cam_ui_view import DeathCamUIView
 from gui.impl.battle.death_cam.marker_view import DeathCamMarkerView
@@ -11,7 +9,7 @@ from gui.impl.pub import ViewImpl
 _logger = logging.getLogger(__name__)
 
 class DeathCamHudView(ViewImpl):
-    __slots__ = ('__subviews',)
+    __slots__ = ('__subviews', )
 
     def __init__(self):
         viewSettings = ViewSettings(layoutID=R.views.battle.death_cam.DeathCamHudView(), flags=ViewFlags.VIEW, model=DeathCamHudViewModel())

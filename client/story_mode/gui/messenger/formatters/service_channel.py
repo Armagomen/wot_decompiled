@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/messenger/formatters/service_channel.py
 from adisp import adisp_async, adisp_process
 from constants import SCENARIO_RESULT
 from gui.impl import backport
@@ -41,13 +39,11 @@ class StoryModeResultsFormatter(BattleResultsFormatter):
         missionId = message.data.get('missionId', FIRST_MISSION_ID)
         isOnboarding = self._storyModeCtrl.missions.isOnboarding(missionId)
         if isOnboarding:
-            self._battleResultKeys = {SCENARIO_RESULT.LOSE: 'storyModeOnboardingBattleDefeatResult',
-             SCENARIO_RESULT.PARTIAL: 'storyModeOnboardingBattleDefeatResult',
-             SCENARIO_RESULT.WIN: 'storyModeOnboardingBattleVictoryResult'}
+            self._battleResultKeys = {SCENARIO_RESULT.LOSE: 'storyModeOnboardingBattleDefeatResult', SCENARIO_RESULT.PARTIAL: 'storyModeOnboardingBattleDefeatResult', 
+               SCENARIO_RESULT.WIN: 'storyModeOnboardingBattleVictoryResult'}
         else:
-            self._battleResultKeys = {SCENARIO_RESULT.LOSE: 'storyModeRegularBattleDefeatResult',
-             SCENARIO_RESULT.PARTIAL: 'storyModeRegularBattleDefeatResult',
-             SCENARIO_RESULT.WIN: 'storyModeRegularBattleVictoryResult'}
+            self._battleResultKeys = {SCENARIO_RESULT.LOSE: 'storyModeRegularBattleDefeatResult', SCENARIO_RESULT.PARTIAL: 'storyModeRegularBattleDefeatResult', 
+               SCENARIO_RESULT.WIN: 'storyModeRegularBattleVictoryResult'}
         templateName, ctx = super(StoryModeResultsFormatter, self)._prepareFormatData(message)
         ctx['scenarioName'] = backport.text(R.strings.sm_battle.prebattle.mission.title.num(missionId)())
         if isOnboarding:
@@ -63,8 +59,7 @@ class StoryModeResultsFormatter(BattleResultsFormatter):
         rewardList = getRewardList(progressionInfo, self._battlePass.isActive())
         completedTasksCount, tasksToCompleteCount = getTasksCount(progressionInfo)
         if tasksToCompleteCount:
-            ctx['missionsStr'] = g_settings.htmlTemplates.format('missionCompleted', {'completedTasksCount': completedTasksCount,
-             'tasksToCompleteCount': tasksToCompleteCount})
+            ctx['missionsStr'] = g_settings.htmlTemplates.format('missionCompleted', {'completedTasksCount': completedTasksCount, 'tasksToCompleteCount': tasksToCompleteCount})
         freeXP = 0
         credits = 0
         bpPoints = 0
@@ -78,7 +73,7 @@ class StoryModeResultsFormatter(BattleResultsFormatter):
         for reward in rewardList:
             credits += reward.get('credits', 0)
             freeXP += reward.get('freeXP', 0)
-            bpPoints += sum((points for points in reward.get('battlePassPoints', {}).get('vehicles', {}).itervalues()))
+            bpPoints += sum(points for points in reward.get('battlePassPoints', {}).get('vehicles', {}).itervalues())
             crystal += reward.get('crystal', 0)
             customizations += reward.get('customizations', [])
             premium += reward.get('premium_plus', 0)
@@ -125,7 +120,7 @@ class StoryModeResultsFormatter(BattleResultsFormatter):
             if commaItems:
                 if premium:
                     rewardsStr += '<br/>'
-                rewardsStr += g_settings.htmlTemplates.format('commaItems', {'items': ', '.join(commaItems)})
+                rewardsStr += g_settings.htmlTemplates.format('commaItems', {'items': (', ').join(commaItems)})
             ctx['rewardsStr'] = rewardsStr
         return (templateName, ctx)
 
@@ -144,6 +139,7 @@ class StoryModeAwardFormatter(ServiceChannelFormatter):
             award = medalAward
         else:
             award = badgeAward
-        formatted = g_settings.msgTemplates.format(self.__TEMPLATE, {'at': TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)),
-         'award': award})
-        return [MessageData(formatted, self._getGuiSettings(message, self.__TEMPLATE))]
+        formatted = g_settings.msgTemplates.format(self.__TEMPLATE, {'at': TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)), 
+           'award': award})
+        return [
+         MessageData(formatted, self._getGuiSettings(message, self.__TEMPLATE))]

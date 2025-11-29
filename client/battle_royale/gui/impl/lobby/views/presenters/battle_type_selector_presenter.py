@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/battle_type_selector_presenter.py
 from battle_royale.gui.constants import BattleRoyaleSubMode
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_type_selector_view_model import BattleTypeSelectorViewModel, BattleType
 from gui.impl.pub.view_component import ViewComponent
@@ -7,9 +5,9 @@ from gui.impl.gui_decorators import args2params
 from gui.prb_control.entities.listener import IGlobalListener
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
-SubModeIdToBattleType = {BattleRoyaleSubMode.SOLO_MODE_ID: BattleType.SOLO,
- BattleRoyaleSubMode.SOLO_DYNAMIC_MODE_ID: BattleType.PLATOON,
- BattleRoyaleSubMode.SQUAD_MODE_ID: BattleType.TEAM}
+SubModeIdToBattleType = {BattleRoyaleSubMode.SOLO_MODE_ID: BattleType.SOLO, 
+   BattleRoyaleSubMode.SOLO_DYNAMIC_MODE_ID: BattleType.PLATOON, 
+   BattleRoyaleSubMode.SQUAD_MODE_ID: BattleType.TEAM}
 BattleTypeToSubMode = {v:k for k, v in SubModeIdToBattleType.items()}
 
 class BattleTypeSelectorPresenter(ViewComponent[BattleTypeSelectorViewModel], IGlobalListener):
@@ -52,7 +50,7 @@ class BattleTypeSelectorPresenter(ViewComponent[BattleTypeSelectorViewModel], IG
         self.__battleRoyaleController.selectSubModeBattle(subModeID)
 
     def __update(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             subModeId = self.__battleRoyaleController.getCurrentSubModeID()
             model.setSelectedTab(SubModeIdToBattleType.get(subModeId, BattleType.SOLO))
 

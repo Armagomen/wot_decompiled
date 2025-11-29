@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/delayed_sixth_sense_indicator.py
-import BigWorld
-import SoundGroups
-import WWISE
+import BigWorld, SoundGroups, WWISE
 from constants import SERVER_TICK_LENGTH
 from SMDetectionDelayObservableComponent import SMDetectionDelayObservableComponent
 from story_mode.gui.scaleform.daapi.view.meta.DelayedSixthSenseMeta import DelayedSixthSenseMeta

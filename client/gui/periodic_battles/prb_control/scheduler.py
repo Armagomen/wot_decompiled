@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/periodic_battles/prb_control/scheduler.py
 import BigWorld
 from gui.impl import backport
 from gui import SystemMessages
@@ -40,7 +38,10 @@ class PeriodicScheduler(BaseScheduler):
 
     def _getPrimeTimeStatus(self, controller=None):
         controller = controller or self._getController()
-        return first(controller.getPrimeTimeStatus()) if controller else None
+        if controller:
+            return first(controller.getPrimeTimeStatus())
+        else:
+            return
 
     def _getResRoot(self):
         raise NotImplementedError
@@ -93,12 +94,11 @@ class PeriodicScheduler(BaseScheduler):
         controller = self._getController()
         if controller is None or not controller.isBattlesPossible():
             return
-        else:
-            if not self.__isConfigured and self._hasConfiguredNotification():
-                SystemMessages.pushMessage(backport.text(self._getResRoot().notification.notSet(), **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.notSet.title())}, type=SystemMessages.SM_TYPE.PeriodicBattlesNotSet)
-            elif not self.__isPrimeTime:
-                msgPath = self._getResRoot().notification.modeEnded() if self._checkEventEnding() and self._isEventEnded() else self._getResRoot().notification.primeTime()
-                SystemMessages.pushMessage(backport.text(msgPath, **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.primeTime.title())}, type=SystemMessages.SM_TYPE.PrimeTime)
-            elif not isInit:
-                SystemMessages.pushMessage(backport.text(self._getResRoot().notification.available(), **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.available.title())}, type=SystemMessages.SM_TYPE.PeriodicBattlesAvailable)
-            return
+        if not self.__isConfigured and self._hasConfiguredNotification():
+            SystemMessages.pushMessage(backport.text(self._getResRoot().notification.notSet(), **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.notSet.title())}, type=SystemMessages.SM_TYPE.PeriodicBattlesNotSet)
+        elif not self.__isPrimeTime:
+            msgPath = self._getResRoot().notification.modeEnded() if self._checkEventEnding() and self._isEventEnded() else self._getResRoot().notification.primeTime()
+            SystemMessages.pushMessage(backport.text(msgPath, **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.primeTime.title())}, type=SystemMessages.SM_TYPE.PrimeTime)
+        elif not isInit:
+            SystemMessages.pushMessage(backport.text(self._getResRoot().notification.available(), **self._getMessageParams()), messageData={'title': backport.text(self._getResRoot().notification.available.title())}, type=SystemMessages.SM_TYPE.PeriodicBattlesAvailable)
+        return

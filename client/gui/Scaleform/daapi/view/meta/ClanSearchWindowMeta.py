@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ClanSearchWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class ClanSearchWindowMeta(AbstractWindowView):
@@ -17,16 +15,21 @@ class ClanSearchWindowMeta(AbstractWindowView):
         self._printOverrideError('dummyButtonPress')
 
     def as_getDPS(self):
-        return self.flashObject.as_getDP() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getDP()
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)
 
     def as_setStateDataS(self, data):
-        return self.flashObject.as_setStateData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setStateData(data)
 
     def as_setDummyS(self, data):
-        return self.flashObject.as_setDummy(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDummy(data)
 
     def as_setDummyVisibleS(self, visible):
-        return self.flashObject.as_setDummyVisible(visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDummyVisible(visible)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/consumables_data_provider.py
 import logging
 from collections import OrderedDict
 from typing import TYPE_CHECKING, NamedTuple, List
@@ -17,7 +15,11 @@ if TYPE_CHECKING:
     from gui.shared.gui_items.artefacts import Equipment
     from typing import Dict, Optional
 _logger = logging.getLogger(__name__)
-ConsumableTagsInfo = NamedTuple('ConsumableTagsInfo', [('includedTags', List[str]), ('excludedTags', List[str])])
+ConsumableTagsInfo = NamedTuple('ConsumableTagsInfo', [
+ (
+  'includedTags', List[str]),
+ (
+  'excludedTags', List[str])])
 
 class ConsumablesPresetSlotInfo(object):
 
@@ -36,11 +38,26 @@ class ConsumablesPresetInfo(PresetInfo):
 
 
 class ConsumablesDataProvider(BaseDataProvider):
-    DEFAULT_CONFIG = {ConsumablesPresetType.STANDARD: [ConsumableTagsInfo(includedTags=['medkit'], excludedTags=['premium_equipment']), ConsumableTagsInfo(includedTags=['repairkit'], excludedTags=['premium_equipment']), ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment'])],
-     ConsumablesPresetType.ADVANCED: [ConsumableTagsInfo(includedTags=['medkit', 'premium_equipment'], excludedTags=[]), ConsumableTagsInfo(includedTags=['repairkit', 'premium_equipment'], excludedTags=[]), ConsumableTagsInfo(includedTags=['extinguisher', 'premium_equipment'], excludedTags=[])],
-     ConsumablesPresetType.IMPROVED: [ConsumableTagsInfo(includedTags=['medkit', 'premium_equipment'], excludedTags=[]), ConsumableTagsInfo(includedTags=['repairkit', 'premium_equipment'], excludedTags=[]), ConsumableTagsInfo(includedTags=['stimulator', 'premium_equipment'], excludedTags=[])]}
-    REPLACE_CONSUMABLES_MAP = [(ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment']), ConsumableTagsInfo(includedTags=['extinguisher', 'premium_equipment'], excludedTags=[]))]
-    PRESETS_ORDER = [ConsumablesPresetType.STANDARD, ConsumablesPresetType.ADVANCED, ConsumablesPresetType.IMPROVED]
+    DEFAULT_CONFIG = {ConsumablesPresetType.STANDARD: [
+                                      ConsumableTagsInfo(includedTags=['medkit'], excludedTags=['premium_equipment']),
+                                      ConsumableTagsInfo(includedTags=['repairkit'], excludedTags=['premium_equipment']),
+                                      ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment'])], 
+       ConsumablesPresetType.ADVANCED: [
+                                      ConsumableTagsInfo(includedTags=['medkit', 'premium_equipment'], excludedTags=[]),
+                                      ConsumableTagsInfo(includedTags=['repairkit', 'premium_equipment'], excludedTags=[]),
+                                      ConsumableTagsInfo(includedTags=['extinguisher', 'premium_equipment'], excludedTags=[])], 
+       ConsumablesPresetType.IMPROVED: [
+                                      ConsumableTagsInfo(includedTags=['medkit', 'premium_equipment'], excludedTags=[]),
+                                      ConsumableTagsInfo(includedTags=['repairkit', 'premium_equipment'], excludedTags=[]),
+                                      ConsumableTagsInfo(includedTags=['stimulator', 'premium_equipment'], excludedTags=[])]}
+    REPLACE_CONSUMABLES_MAP = [
+     (
+      ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment']),
+      ConsumableTagsInfo(includedTags=['extinguisher', 'premium_equipment'], excludedTags=[]))]
+    PRESETS_ORDER = [
+     ConsumablesPresetType.STANDARD,
+     ConsumablesPresetType.ADVANCED,
+     ConsumablesPresetType.IMPROVED]
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, vehicle, balance):
@@ -105,7 +122,8 @@ class ConsumablesDataProvider(BaseDataProvider):
         return data
 
     def __getPresetsInfo(self):
-        return [ self.__getConsumablesPresetInfo(presetType, items) for presetType, items in self.__consumablesPresets.items() ]
+        return [ self.__getConsumablesPresetInfo(presetType, items) for presetType, items in self.__consumablesPresets.items()
+               ]
 
     def __getConsumablesPresetInfo(self, presetType, consumables):
         installed = self.__isConsumablesPresetInstalled(consumables)
@@ -118,7 +136,8 @@ class ConsumablesDataProvider(BaseDataProvider):
         return ConsumablesPresetInfo(installed=installed, storedItemsCount=storedItemsCount, installedItemsCount=installedItemsCount, itemPrice=itemPrice, presetType=presetType, items=presetItems)
 
     def __getConsumablesPresetItems(self, consumables):
-        return [ ConsumablesPresetSlotInfo(consumable=consumable, info=self.__getSlotInfo(consumable), slotIdx=slotIdx) for slotIdx, consumable in enumerate(consumables) ]
+        return [ ConsumablesPresetSlotInfo(consumable=consumable, info=self.__getSlotInfo(consumable), slotIdx=slotIdx) for slotIdx, consumable in enumerate(consumables)
+               ]
 
     def __getSlotInfo(self, consumable):
         consumableOnVehicleCount = int(self.vehicle.consumables.setupLayouts.containsIntCD(consumable.intCD))
@@ -224,7 +243,7 @@ class ConsumablesDataProvider(BaseDataProvider):
         uniquePresets = OrderedDict()
         seenPresets = set()
         for presetType, items in self.__consumablesPresets.items():
-            intCDs = tuple((item.intCD for item in items))
+            intCDs = tuple(item.intCD for item in items)
             if intCDs not in seenPresets:
                 seenPresets.add(intCDs)
                 uniquePresets[presetType] = items
@@ -232,7 +251,7 @@ class ConsumablesDataProvider(BaseDataProvider):
         self.__consumablesPresets = uniquePresets
 
     def __sortPresets(self):
-        self.__consumablesPresets = OrderedDict(((presetType, [ consumables[index] for index in self.__consumablesOrder if index < len(consumables) ]) for presetType, consumables in self.__consumablesPresets.items()))
+        self.__consumablesPresets = OrderedDict((presetType, [ consumables[index] for index in self.__consumablesOrder if index < len(consumables) ]) for presetType, consumables in self.__consumablesPresets.items())
 
     def __getConsumable(self, itemTags):
         return first(self.__itemsCache.items.getItems(GUI_ITEM_TYPE.EQUIPMENT, REQ_CRITERIA.EQUIPMENT.TAGS(itemTags.includedTags, itemTags.excludedTags), nationID=self.vehicle.nationID).values())

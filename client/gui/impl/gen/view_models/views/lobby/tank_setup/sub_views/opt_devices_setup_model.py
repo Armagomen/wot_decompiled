@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/sub_views/opt_devices_setup_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.opt_device_filter_model import OptDeviceFilterModel
@@ -7,7 +5,7 @@ from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.opt_device_slot_m
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.special_currency_model import SpecialCurrencyModel
 
 class OptDevicesSetupModel(BaseSetupModel):
-    __slots__ = ('onIntroPassed',)
+    __slots__ = ('onIntroPassed', )
 
     def __init__(self, properties=11, commands=8):
         super(OptDevicesSetupModel, self).__init__(properties=properties, commands=commands)

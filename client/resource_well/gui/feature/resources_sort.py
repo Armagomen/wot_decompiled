@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/resources_sort.py
 from gui import GUI_NATIONS, NONE_NATION_NAME
 from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
 from resource_well.gui.feature.constants import ResourceType
@@ -31,8 +29,8 @@ def _resourceComparator(first, second):
     return typeComparator or first.type == ResourceType.BLUEPRINTS.value and _nationComparator(first, second) or first.type == ResourceType.CURRENCY.value and _currencyComparator(first, second) or _defaultComparator(first, second)
 
 
-_RESOURCE_COMPARATORS = {ResourceType.BLUEPRINTS: _nationComparator,
- ResourceType.CURRENCY: _currencyComparator}
+_RESOURCE_COMPARATORS = {ResourceType.BLUEPRINTS: _nationComparator, 
+   ResourceType.CURRENCY: _currencyComparator}
 
 def getComparatorByType(resourceType):
     return _RESOURCE_COMPARATORS.get(ResourceType(resourceType), _defaultComparator)

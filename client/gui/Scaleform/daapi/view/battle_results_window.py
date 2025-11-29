@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle_results_window.py
 import logging
 from functools import partial
-import BigWorld
-import constants
+import BigWorld, constants
 from adisp import adisp_process
 from constants import PremiumConfigs
 from gui import SystemMessages
@@ -159,10 +156,10 @@ class BattleResultsWindow(BattleResultsMeta, IGlobalListener):
         g_eventBus.addListener(events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onPremiumXpBonusChanged)
         g_eventBus.addListener(events.LobbySimpleEvent.BATTLE_RESULTS_SHOW_QUEST, self.__onBattleResultWindowShowQuest)
         g_eventBus.addListener(ViewEventType.LOAD_VIEW, self.__loadViewHandler, EVENT_BUS_SCOPE.LOBBY)
-        g_clientUpdateManager.addCallbacks({'account._additionalXPCache': self.__updateVO,
-         'inventory.1': self.__updateVO,
-         'inventory.8': self.__updateVO,
-         'cache.vehsLock': self.__updateVO})
+        g_clientUpdateManager.addCallbacks({'account._additionalXPCache': self.__updateVO, 
+           'inventory.1': self.__updateVO, 
+           'inventory.8': self.__updateVO, 
+           'cache.vehsLock': self.__updateVO})
         self.__gameSession.onPremiumTypeChanged += self.__onPremiumStateChanged
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChange
         self.startGlobalListening()

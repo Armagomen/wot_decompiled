@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/start_countdown_sound_player.py
-import logging
-import WWISE
+import logging, WWISE
 from helpers import dependency
 import BattleReplay
 from gui.battle_control.battle_constants import COUNTDOWN_STATE
@@ -29,7 +26,9 @@ class StartCountdownSoundPlayer(IAbstractPeriodView, IViewComponentsCtrlListener
 
     def __checkNotReplay(self):
         replay = BattleReplay.g_replayCtrl
-        return not replay.playbackSpeed == 0 if replay.isPlaying else True
+        if replay.isPlaying:
+            return not replay.playbackSpeed == 0
+        return True
 
     def __playSound(self, timeLeft):
         if self.__soundID:

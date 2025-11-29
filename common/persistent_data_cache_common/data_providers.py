@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/persistent_data_cache_common/data_providers.py
 import typing
 from persistent_data_cache_common.common import getLogger
 from soft_exception import SoftException
@@ -51,7 +49,7 @@ class PDProvider(object):
                 self._logger.exception('Failed to create data for <%s>.', self._name)
 
             if self._data is None:
-                raise SoftException('Failed to create data for <{}>.'.format(self._name))
+                raise SoftException(('Failed to create data for <{}>.').format(self._name))
             self._logger.debug('Data has been created.')
             return self._data
 

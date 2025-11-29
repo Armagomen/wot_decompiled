@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/hangar_space_reloader.py
 import logging
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpaceReloader
@@ -43,7 +41,8 @@ class HangarSpaceReloader(IHangarSpaceReloader):
         errCode = ErrorFlags.NONE
         if not spaceName:
             _logger.error('Invalid space name: the name cannot be empty.')
-            return (False, ErrorFlags.INVALID_NAME)
+            return (
+             False, ErrorFlags.INVALID_NAME)
         else:
             reloadValid = True
             if force and self.hangarSpace.spaceLoading():
@@ -62,18 +61,18 @@ class HangarSpaceReloader(IHangarSpaceReloader):
                     _logger.error('Failed to load space "%s", because another space is loading.', spaceName)
                     reloadValid = False
                     errCode |= ErrorFlags.WAITING_FOR_SPACE
-            hangarSpacePath = self.hangarSpace.spacePath
-            if self.hangarSpace.spaceInited and hangarSpacePath is None:
-                _logger.error('Abnormal behaviour: hangarSpace.spacePath is not initialized')
-                reloadValid = False
-                errCode |= ErrorFlags.SPACE_PATH_NOT_INITED
-            spacePath = self.buildHangarSpacePath(spaceName)
-            if spacePath == hangarSpacePath:
-                _logger.warning('No need to load space "%s", because it is already loaded', spaceName)
-                reloadValid = False
-                errCode |= ErrorFlags.DUPLICATE_REQUEST
-            if not reloadValid:
-                return (reloadValid, errCode)
+                hangarSpacePath = self.hangarSpace.spacePath
+                if self.hangarSpace.spaceInited and hangarSpacePath is None:
+                    _logger.error('Abnormal behaviour: hangarSpace.spacePath is not initialized')
+                    reloadValid = False
+                    errCode |= ErrorFlags.SPACE_PATH_NOT_INITED
+                spacePath = self.buildHangarSpacePath(spaceName)
+                if spacePath == hangarSpacePath:
+                    _logger.warning('No need to load space "%s", because it is already loaded', spaceName)
+                    reloadValid = False
+                    errCode |= ErrorFlags.DUPLICATE_REQUEST
+                if not reloadValid:
+                    return (reloadValid, errCode)
             self.__loadingSpacePath = spacePath
             self.__waitingMessage = waitingMessage
             if waitingMessage:
@@ -84,7 +83,9 @@ class HangarSpaceReloader(IHangarSpaceReloader):
 
     @staticmethod
     def buildHangarSpacePath(spaceId):
-        return spaceId if spaceId.startswith('space') else 'spaces/{}'.format(spaceId)
+        if spaceId.startswith('space'):
+            return spaceId
+        return ('spaces/{}').format(spaceId)
 
     @property
     def hangarSpacePath(self):

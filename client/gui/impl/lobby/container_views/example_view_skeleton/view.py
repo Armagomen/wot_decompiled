@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/example_view_skeleton/view.py
 import typing
 from frameworks.wulf import ViewModel
 from gui.impl.lobby.container_views.base.components import ContainerBase
@@ -19,7 +17,8 @@ class ExampleContainerView(ContainerBase, ViewImpl):
         super(ExampleContainerView, self).__init__(*args, **kwargs)
 
     def _getComponents(self):
-        return [ExampleComponent(key='someKey', parent=self)]
+        return [
+         ExampleComponent(key='someKey', parent=self)]
 
     def _getContext(self, *args, **kwargs):
         return ExampleViewContext(kwargs.get('tankmanID'))

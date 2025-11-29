@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/shop/stock.py
-import itertools
-import typing
+import itertools, typing
 from collections import namedtuple
 from functools import partial
 from WeakMethod import WeakMethodProxy
@@ -33,7 +30,7 @@ class _PremiumPack(object):
 
     @property
     def id(self):
-        pass
+        return 'premiumDay'
 
     @property
     def buyPrice(self):
@@ -45,7 +42,7 @@ class _PremiumPack(object):
 
     @property
     def userName(self):
-        return backport.text(R.strings.menu.premium.packet.dyn('days{}'.format(self.__duration))())
+        return backport.text(R.strings.menu.premium.packet.dyn(('days{}').format(self.__duration))())
 
     @property
     def shortDescriptionSpecial(self):
@@ -58,68 +55,58 @@ class _PremiumPack(object):
 
 _InventoryEnhancements = namedtuple('_InventoryEnhancements', ('id', 'count'))
 _InstalledEnhancements = namedtuple('_InstalledEnhancements', ('vehIntCD', 'enhancements'))
-_GUI_ITEMS_TYPE_MAP = {ShopItemType.VEHICLE: GUI_ITEM_TYPE.VEHICLE,
- ShopItemType.EQUIPMENT: GUI_ITEM_TYPE.EQUIPMENT,
- ShopItemType.DEVICE: GUI_ITEM_TYPE.OPTIONALDEVICE,
- ShopItemType.BATTLE_BOOSTER: GUI_ITEM_TYPE.BATTLE_BOOSTER,
- ShopItemType.MODULE: GUI_ITEM_TYPE.VEHICLE_MODULES,
- ShopItemType.SHELL: GUI_ITEM_TYPE.SHELL,
- ShopItemType.CREW_BOOKS: GUI_ITEM_TYPE.CREW_BOOKS,
- ShopItemType.PAINT: GUI_ITEM_TYPE.PAINT,
- ShopItemType.CAMOUFLAGE: GUI_ITEM_TYPE.CAMOUFLAGE,
- ShopItemType.MODIFICATION: GUI_ITEM_TYPE.MODIFICATION,
- ShopItemType.STYLE: GUI_ITEM_TYPE.STYLE,
- ShopItemType.DECAL: GUI_ITEM_TYPE.DECAL,
- ShopItemType.EMBLEM: GUI_ITEM_TYPE.EMBLEM,
- ShopItemType.INSCRIPTION: GUI_ITEM_TYPE.INSCRIPTION,
- ShopItemType.PROJECTION_DECAL: GUI_ITEM_TYPE.PROJECTION_DECAL,
- ShopItemType.ATTACHMENT: GUI_ITEM_TYPE.ATTACHMENT}
-_ITEMS_CRITERIA_MAP = {ShopItemType.VEHICLE: {'inventory': REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.EVENT,
-                        'premium': REQ_CRITERIA.VEHICLE.PREMIUM,
-                        'ready': REQ_CRITERIA.VEHICLE.READY,
-                        'sellable': REQ_CRITERIA.VEHICLE.CAN_SELL,
-                        'secret': REQ_CRITERIA.SECRET,
-                        'hidden': REQ_CRITERIA.HIDDEN,
-                        'is_premium_igr': REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR,
-                        'trade_in': REQ_CRITERIA.VEHICLE.CAN_TRADE_IN,
-                        'trade_off': REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF,
-                        'skip_multinational_copies': REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP,
-                        'collectible': REQ_CRITERIA.COLLECTIBLE,
-                        'earn_crystals': REQ_CRITERIA.VEHICLE.EARN_CRYSTALS,
-                        'event_battle': REQ_CRITERIA.VEHICLE.EVENT_BATTLE},
- ShopItemType.CREW: {'premium': ShopCrewCriteria.PREMIUM},
- ShopItemType.EQUIPMENT: {'inventory': REQ_CRITERIA.INVENTORY,
-                          'secret': REQ_CRITERIA.SECRET,
-                          'hidden': REQ_CRITERIA.HIDDEN,
-                          'builtin': REQ_CRITERIA.EQUIPMENT.BUILTIN},
- ShopItemType.DEVICE: {'inventory': REQ_CRITERIA.INVENTORY,
-                       'secret': REQ_CRITERIA.SECRET,
-                       'hidden': REQ_CRITERIA.HIDDEN},
- ShopItemType.BATTLE_BOOSTER: {'inventory': REQ_CRITERIA.INVENTORY,
-                               'secret': REQ_CRITERIA.SECRET,
-                               'hidden': REQ_CRITERIA.HIDDEN},
- ShopItemType.MODULE: {'inventory': REQ_CRITERIA.INVENTORY,
-                       'secret': REQ_CRITERIA.SECRET,
-                       'hidden': REQ_CRITERIA.HIDDEN},
- ShopItemType.BOOSTER: {'inventory': REQ_CRITERIA.BOOSTER.IN_ACCOUNT,
-                        'hidden': REQ_CRITERIA.HIDDEN,
-                        'enabled': REQ_CRITERIA.BOOSTER.ENABLED},
- ShopItemType.SHELL: {'inventory': REQ_CRITERIA.INVENTORY,
-                      'secret': REQ_CRITERIA.SECRET,
-                      'hidden': REQ_CRITERIA.HIDDEN},
- ShopItemType.PREMIUM: {},
- ShopItemType.PAINT: {},
- ShopItemType.CAMOUFLAGE: {},
- ShopItemType.MODIFICATION: {},
- ShopItemType.STYLE: {'on_account': REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT,
-                      'inventory': REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT},
- ShopItemType.DECAL: {},
- ShopItemType.EMBLEM: {},
- ShopItemType.INSCRIPTION: {},
- ShopItemType.PROJECTION_DECAL: {},
- ShopItemType.CREW_BOOKS: {},
- ShopItemType.ATTACHMENT: {},
- ShopItemType.ENHANCEMENT: {'inventory': REQ_CRITERIA.INVENTORY}}
+_GUI_ITEMS_TYPE_MAP = {ShopItemType.VEHICLE: GUI_ITEM_TYPE.VEHICLE, 
+   ShopItemType.EQUIPMENT: GUI_ITEM_TYPE.EQUIPMENT, 
+   ShopItemType.DEVICE: GUI_ITEM_TYPE.OPTIONALDEVICE, 
+   ShopItemType.BATTLE_BOOSTER: GUI_ITEM_TYPE.BATTLE_BOOSTER, 
+   ShopItemType.MODULE: GUI_ITEM_TYPE.VEHICLE_MODULES, 
+   ShopItemType.SHELL: GUI_ITEM_TYPE.SHELL, 
+   ShopItemType.CREW_BOOKS: GUI_ITEM_TYPE.CREW_BOOKS, 
+   ShopItemType.PAINT: GUI_ITEM_TYPE.PAINT, 
+   ShopItemType.CAMOUFLAGE: GUI_ITEM_TYPE.CAMOUFLAGE, 
+   ShopItemType.MODIFICATION: GUI_ITEM_TYPE.MODIFICATION, 
+   ShopItemType.STYLE: GUI_ITEM_TYPE.STYLE, 
+   ShopItemType.DECAL: GUI_ITEM_TYPE.DECAL, 
+   ShopItemType.EMBLEM: GUI_ITEM_TYPE.EMBLEM, 
+   ShopItemType.INSCRIPTION: GUI_ITEM_TYPE.INSCRIPTION, 
+   ShopItemType.PROJECTION_DECAL: GUI_ITEM_TYPE.PROJECTION_DECAL, 
+   ShopItemType.ATTACHMENT: GUI_ITEM_TYPE.ATTACHMENT}
+_ITEMS_CRITERIA_MAP = {ShopItemType.VEHICLE: {'inventory': REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.EVENT, 
+                          'premium': REQ_CRITERIA.VEHICLE.PREMIUM, 
+                          'ready': REQ_CRITERIA.VEHICLE.READY, 
+                          'sellable': REQ_CRITERIA.VEHICLE.CAN_SELL, 
+                          'secret': REQ_CRITERIA.SECRET, 
+                          'hidden': REQ_CRITERIA.HIDDEN, 
+                          'is_premium_igr': REQ_CRITERIA.VEHICLE.IS_PREMIUM_IGR, 
+                          'trade_in': REQ_CRITERIA.VEHICLE.CAN_TRADE_IN, 
+                          'trade_off': REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF, 
+                          'skip_multinational_copies': REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP, 
+                          'collectible': REQ_CRITERIA.COLLECTIBLE, 
+                          'earn_crystals': REQ_CRITERIA.VEHICLE.EARN_CRYSTALS, 
+                          'event_battle': REQ_CRITERIA.VEHICLE.EVENT_BATTLE}, 
+   ShopItemType.CREW: {'premium': ShopCrewCriteria.PREMIUM}, 
+   ShopItemType.EQUIPMENT: {'inventory': REQ_CRITERIA.INVENTORY, 
+                            'secret': REQ_CRITERIA.SECRET, 
+                            'hidden': REQ_CRITERIA.HIDDEN, 
+                            'builtin': REQ_CRITERIA.EQUIPMENT.BUILTIN}, 
+   ShopItemType.DEVICE: {'inventory': REQ_CRITERIA.INVENTORY, 
+                         'secret': REQ_CRITERIA.SECRET, 
+                         'hidden': REQ_CRITERIA.HIDDEN}, 
+   ShopItemType.BATTLE_BOOSTER: {'inventory': REQ_CRITERIA.INVENTORY, 
+                                 'secret': REQ_CRITERIA.SECRET, 
+                                 'hidden': REQ_CRITERIA.HIDDEN}, 
+   ShopItemType.MODULE: {'inventory': REQ_CRITERIA.INVENTORY, 
+                         'secret': REQ_CRITERIA.SECRET, 
+                         'hidden': REQ_CRITERIA.HIDDEN}, 
+   ShopItemType.BOOSTER: {'inventory': REQ_CRITERIA.BOOSTER.IN_ACCOUNT, 
+                          'hidden': REQ_CRITERIA.HIDDEN, 
+                          'enabled': REQ_CRITERIA.BOOSTER.ENABLED}, 
+   ShopItemType.SHELL: {'inventory': REQ_CRITERIA.INVENTORY, 
+                        'secret': REQ_CRITERIA.SECRET, 
+                        'hidden': REQ_CRITERIA.HIDDEN}, 
+   ShopItemType.PREMIUM: {}, ShopItemType.PAINT: {}, ShopItemType.CAMOUFLAGE: {}, ShopItemType.MODIFICATION: {}, ShopItemType.STYLE: {'on_account': REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT, 
+                        'inventory': REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT}, 
+   ShopItemType.DECAL: {}, ShopItemType.EMBLEM: {}, ShopItemType.INSCRIPTION: {}, ShopItemType.PROJECTION_DECAL: {}, ShopItemType.CREW_BOOKS: {}, ShopItemType.ATTACHMENT: {}, ShopItemType.ENHANCEMENT: {'inventory': REQ_CRITERIA.INVENTORY}}
 
 class IdInListCriteria(RequestCriteria):
 
@@ -129,12 +116,14 @@ class IdInListCriteria(RequestCriteria):
         def isValidItem(item):
             return not idList or getValue(item) in idList
 
-        self._conditions = (PredicateCondition(isValidItem),)
+        self._conditions = (
+         PredicateCondition(isValidItem),)
         return self
 
 
 ID_IN_LIST = IdInListCriteria()
-_SHOP_CUSTOMIZATION_TYPES = (ShopItemType.PAINT,
+_SHOP_CUSTOMIZATION_TYPES = (
+ ShopItemType.PAINT,
  ShopItemType.CAMOUFLAGE,
  ShopItemType.MODIFICATION,
  ShopItemType.STYLE,
@@ -143,17 +132,17 @@ _SHOP_CUSTOMIZATION_TYPES = (ShopItemType.PAINT,
  ShopItemType.INSCRIPTION,
  ShopItemType.PROJECTION_DECAL,
  ShopItemType.ATTACHMENT)
-_SHOP_ITEM_TYPE_MAP = {GUI_ITEM_TYPE.VEHICLE: ShopItemType.VEHICLE,
- GUI_ITEM_TYPE.EQUIPMENT: ShopItemType.EQUIPMENT,
- GUI_ITEM_TYPE.OPTIONALDEVICE: ShopItemType.DEVICE,
- GUI_ITEM_TYPE.BATTLE_BOOSTER: ShopItemType.BATTLE_BOOSTER,
- GUI_ITEM_TYPE.SHELL: ShopItemType.SHELL,
- GUI_ITEM_TYPE.GUN: ShopItemType.MODULE,
- GUI_ITEM_TYPE.TURRET: ShopItemType.MODULE,
- GUI_ITEM_TYPE.ENGINE: ShopItemType.MODULE,
- GUI_ITEM_TYPE.CHASSIS: ShopItemType.MODULE,
- GUI_ITEM_TYPE.RADIO: ShopItemType.MODULE,
- GUI_ITEM_TYPE.CREW_BOOKS: ShopItemType.CREW_BOOKS}
+_SHOP_ITEM_TYPE_MAP = {GUI_ITEM_TYPE.VEHICLE: ShopItemType.VEHICLE, 
+   GUI_ITEM_TYPE.EQUIPMENT: ShopItemType.EQUIPMENT, 
+   GUI_ITEM_TYPE.OPTIONALDEVICE: ShopItemType.DEVICE, 
+   GUI_ITEM_TYPE.BATTLE_BOOSTER: ShopItemType.BATTLE_BOOSTER, 
+   GUI_ITEM_TYPE.SHELL: ShopItemType.SHELL, 
+   GUI_ITEM_TYPE.GUN: ShopItemType.MODULE, 
+   GUI_ITEM_TYPE.TURRET: ShopItemType.MODULE, 
+   GUI_ITEM_TYPE.ENGINE: ShopItemType.MODULE, 
+   GUI_ITEM_TYPE.CHASSIS: ShopItemType.MODULE, 
+   GUI_ITEM_TYPE.RADIO: ShopItemType.MODULE, 
+   GUI_ITEM_TYPE.CREW_BOOKS: ShopItemType.CREW_BOOKS}
 
 def _parseCriteriaSpec(itemType, spec, idList=None):
     typeCriteria = _ITEMS_CRITERIA_MAP[itemType]
@@ -167,7 +156,7 @@ def _parseCriteriaSpec(itemType, spec, idList=None):
                 criteria = ~criteria
             compoundCriteria |= criteria
         except KeyError:
-            raise SoftException('item type "{}" does not support criteria "{}"'.format(itemType, critId))
+            raise SoftException(('item type "{}" does not support criteria "{}"').format(itemType, critId))
 
     return compoundCriteria
 
@@ -211,7 +200,8 @@ class ItemsWebApiMixin(object):
     def getItems(self, cmd):
         criteria = _parseCriteriaSpec(cmd.type, cmd.criteria, cmd.id_list)
         allowedFields = set(cmd.fields) if cmd.fields else None
-        return [ self.__getFormatter(cmd.type, criteria).format(item, allowedFields) for item in self.__collectItems(cmd.type, criteria) ]
+        return [ self.__getFormatter(cmd.type, criteria).format(item, allowedFields) for item in self.__collectItems(cmd.type, criteria)
+               ]
 
     def __getFormatter(self, itemType, criteria):
         key = self.__makeFormatterKey(itemType, criteria)
@@ -258,19 +248,19 @@ class ItemsWebApiMixin(object):
                 entries.append('inventory')
             else:
                 entries.append('installed')
-        return ','.join(entries)
+        return (',').join(entries)
 
     def __getItemByCD(self, cd, allowedFields=None):
         try:
             itemType = getTypeOfCompactDescr(cd)
             item = self.__itemsCache.items.getItemByCD(cd)
             if itemType not in _SHOP_ITEM_TYPE_MAP:
-                return None
+                return
             return self.__getFormatter(_SHOP_ITEM_TYPE_MAP[itemType], REQ_CRITERIA.EMPTY).format(item, allowedFields)
         except (IndexError, KeyError, SoftException):
-            return None
+            return
 
-        return None
+        return
 
     def __collectItems(self, itemType, criteria):
         if itemType == ShopItemType.CREW:

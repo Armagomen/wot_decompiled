@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/tankman_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
@@ -26,7 +24,7 @@ from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def _advancedPerkCondition(skillName, *_):
     return skillName in advanced.SKILL_MOVIES
@@ -72,8 +70,8 @@ class CrewPerkTooltipData(ToolTipBaseData):
         return DecoratedTooltipWindow(CrewPerksTooltip(skillName, skillRole, tankmanId, skillLevel, showAdditionalInfo, crewCustomName=crewCustomName, isBonus=isBonus, tankman=guiTankman, vehicle=vehicle, *args, **kwargs), parent, False)
 
     def buildToolTip(self, *args, **kwargs):
-        return {'type': self.getType(),
-         'component': self.context.getComponent()}
+        return {'type': self.getType(), 
+           'component': self.context.getComponent()}
 
     def setSupportAdvanced(self, supportAdvanced):
         pass
@@ -219,7 +217,8 @@ class EmptySkillTooltipData(ToolTipBaseData):
 
 
 def getTooltipBuilders():
-    return (NotRecruitedTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
+    return (
+     NotRecruitedTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      BattleRoyaleTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.BATTLE_ROYALE_TANKMAN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      SpecialTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.SPECIAL_TANKMAN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      AdvancedTooltipWindowBuilder(TOOLTIPS_CONSTANTS.CREW_PERK_GF, None, CrewPerkTooltipData(contexts.ToolTipContext(None)), CrewPerkTooltipDataAdditional(contexts.ToolTipContext(None)), condition=_advancedPerkCondition),

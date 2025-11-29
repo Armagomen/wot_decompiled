@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/rally_dps.py
 from gui.impl import backport
 from gui.prb_control import prbEntityProperty
 from helpers import dependency
@@ -45,7 +43,7 @@ class CandidatesDataProvider(DAAPIDataProvider):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def buildList(self, candidates):
         self.clear()
@@ -112,7 +110,8 @@ class SortieCandidatesLegionariesDP(SortieCandidatesDP):
         for key, value in candidates.iteritems():
             if value.isLegionary():
                 legionaryPlayers[key] = value
-            clanPlayers[key] = value
+            else:
+                clanPlayers[key] = value
 
         self.__legionariesCount = len(legionaryPlayers)
         if clanPlayers:
@@ -126,8 +125,8 @@ class SortieCandidatesLegionariesDP(SortieCandidatesDP):
         emptyRenders = {'emptyRender': True}
         legionariesIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_FORTIFICATION_LEGIONNAIRE, 16, 16, -4, 0)
         textResult = legionariesIcon + text_styles.standard(i18n.makeString(FORTIFICATIONS.FORTBATTLEROOM_LISTHEADER_LEGIONARIESPLAYERS))
-        headerLegionasriesPlayers = {'headerText': textResult,
-         'headerToolTip': TOOLTIPS.FORTIFICATION_BATTLEROOMLEGIONARIES}
+        headerLegionasriesPlayers = {'headerText': textResult, 
+           'headerToolTip': TOOLTIPS.FORTIFICATION_BATTLEROOMLEGIONARIES}
         if playersCount > 0:
             self._list.insert(0, headerClanPlayers)
         if playersCount > 0 and legionariesCount > 0:
@@ -145,7 +144,8 @@ class StaticFormationCandidatesDP(CandidatesDataProvider):
         for key, value in candidates.iteritems():
             if value.isLegionary():
                 legionaryPlayers[key] = value
-            teamPlayers[key] = value
+            else:
+                teamPlayers[key] = value
 
         if teamPlayers:
             self._buildData(teamPlayers)
@@ -162,8 +162,10 @@ class StaticFormationCandidatesDP(CandidatesDataProvider):
         if playersCount > 0 and legionariesCount > 0:
             self._list.append({'emptyRender': True})
         if legionariesCount > 0:
-            self._list.append({'headerText': '%s%s' % (icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_FORTIFICATION_LEGIONNAIRE, 16, 16, -4, 0), text_styles.standard(i18n.makeString(CYBERSPORT.WINDOW_UNIT_CANDIDATES_LEGIONARIES))),
-             'headerToolTip': TOOLTIPS.CYBERSPORT_STATICFORMATION_WAITLIST_LEGIONNAIRES})
+            self._list.append({'headerText': '%s%s' % (
+                            icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_FORTIFICATION_LEGIONNAIRE, 16, 16, -4, 0),
+                            text_styles.standard(i18n.makeString(CYBERSPORT.WINDOW_UNIT_CANDIDATES_LEGIONARIES))), 
+               'headerToolTip': TOOLTIPS.CYBERSPORT_STATICFORMATION_WAITLIST_LEGIONNAIRES})
 
 
 class ManualSearchDataProvider(BaseRallyListDataProvider):
@@ -171,7 +173,7 @@ class ManualSearchDataProvider(BaseRallyListDataProvider):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def getVO(self, unitIndex=None):
         return makeUnitShortVO(self.prbEntity, unitIndex)
@@ -195,19 +197,19 @@ class ManualSearchDataProvider(BaseRallyListDataProvider):
             if cfdUnitID == selectedID:
                 self._selectedIdx = index
             self.mapping[cfdUnitID] = index
-            self.collection.append({'cfdUnitID': cfdUnitID,
-             'unitMgrID': unitItem.unitMgrID,
-             'creator': creatorVO,
-             'creatorName': creatorVO.get('userName', ''),
-             'rating': ratingFormatter(unitItem.rating),
-             'playersCount': unitItem.playersCount,
-             'commandSize': unitItem.commandSize,
-             'inBattle': unitItem.flags.isInArena(),
-             'isFreezed': unitItem.flags.isLocked(),
-             'isRestricted': unitItem.isRosterSet,
-             'description': unitItem.description,
-             'peripheryID': unitItem.peripheryID,
-             'server': pNameGetter(unitItem.peripheryID)})
+            self.collection.append({'cfdUnitID': cfdUnitID, 
+               'unitMgrID': unitItem.unitMgrID, 
+               'creator': creatorVO, 
+               'creatorName': creatorVO.get('userName', ''), 
+               'rating': ratingFormatter(unitItem.rating), 
+               'playersCount': unitItem.playersCount, 
+               'commandSize': unitItem.commandSize, 
+               'inBattle': unitItem.flags.isInArena(), 
+               'isFreezed': unitItem.flags.isLocked(), 
+               'isRestricted': unitItem.isRosterSet, 
+               'description': unitItem.description, 
+               'peripheryID': unitItem.peripheryID, 
+               'server': pNameGetter(unitItem.peripheryID)})
 
         return self._selectedIdx
 
@@ -234,7 +236,7 @@ class ManualSearchDataProvider(BaseRallyListDataProvider):
         colorGetter = g_settings.getColorScheme('rosters').getColors
         ratingFormatter = backport.getIntegralFormat
         result = set(result)
-        removed = set((item for item in result if item[1] is None))
+        removed = set(item for item in result if item[1] is None)
         isFullUpdate = len(removed)
         for cfdUnitID, unitItem in removed:
             index = self.mapping.pop(cfdUnitID, None)
@@ -262,15 +264,15 @@ class ManualSearchDataProvider(BaseRallyListDataProvider):
                 creatorVO = makePlayerVO(creator, userGetter(dbID), colorGetter)
             else:
                 creatorVO = None
-            item.update({'creator': creatorVO,
-             'creatorName': creatorVO.get('userName', ''),
-             'rating': ratingFormatter(unitItem.rating),
-             'playersCount': unitItem.playersCount,
-             'commandSize': unitItem.commandSize,
-             'inBattle': unitItem.flags.isInArena(),
-             'isFreezed': unitItem.flags.isLocked(),
-             'isRestricted': unitItem.isRosterSet,
-             'description': unitItem.description})
+            item.update({'creator': creatorVO, 
+               'creatorName': creatorVO.get('userName', ''), 
+               'rating': ratingFormatter(unitItem.rating), 
+               'playersCount': unitItem.playersCount, 
+               'commandSize': unitItem.commandSize, 
+               'inBattle': unitItem.flags.isInArena(), 
+               'isFreezed': unitItem.flags.isLocked(), 
+               'isRestricted': unitItem.isRosterSet, 
+               'description': unitItem.description})
             diff.append(index)
 
         if self._selectedIdx is None and selectedID in self.mapping:

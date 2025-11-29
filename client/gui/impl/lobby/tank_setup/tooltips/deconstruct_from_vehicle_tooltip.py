@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/tooltips/deconstruct_from_vehicle_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.tank_setup.tooltips.deconstruct_from_vehicle_tooltip_model import DeconstructFromVehicleTooltipModel
 from gui.impl.pub import ViewImpl
@@ -21,7 +19,7 @@ class DeconstructFromVehicleTooltip(ViewImpl):
 
     def _initialize(self, *args, **kwargs):
         super(DeconstructFromVehicleTooltip, self)._initialize(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             vehicleNames = model.getVehicleNames()
             vehicleNames.clear()
             for vehicle in self.vehicleNames:

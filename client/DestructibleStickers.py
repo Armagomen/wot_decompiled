@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DestructibleStickers.py
-import BigWorld
-import math_utils
-import VehicleStickers
+import BigWorld, math_utils, VehicleStickers
 
 class DestructibleStickers(object):
 
@@ -28,9 +24,9 @@ class DestructibleStickers(object):
     def addDamageSticker(self, code, stickerID, segStart, segEnd):
         if code in self.__damageStickers:
             return
-        elif self.__stickerModel is None:
-            return
         else:
+            if self.__stickerModel is None:
+                return
             handle = self.__stickerModel.addDamageSticker(stickerID, segStart, segEnd)
             self.__damageStickers[code] = VehicleStickers.DamageSticker(stickerID, segStart, segEnd, handle)
             return

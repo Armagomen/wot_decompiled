@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/random/random_battle_results_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_results.additional_bonus_model import AdditionalBonusModel
 from gui.impl.gen.view_models.views.lobby.battle_results.base_capture_info_model import BaseCaptureInfoModel
@@ -13,7 +11,7 @@ from gui.impl.gen.view_models.views.lobby.battle_results.random.random_team_stat
 from gui.impl.gen.view_models.views.lobby.common.router_model import RouterModel
 
 class RandomBattleResultsViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
     PERSONAL = 'personal'
     TEAMS_STATISTICS = 'teamsStatistics'
     PROGRESSION = 'progression'

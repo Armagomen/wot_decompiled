@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/random_battle_results_view.py
 import logging
 from gui.impl.lobby.battle_results.flag_view import FlagWindow
 from gui.impl.lobby.battle_results.sounds import RANDOM_BATTLE_RESULTS_SOUND_SPACE
@@ -56,11 +54,17 @@ class RandomBattleResultsView(ViewImpl, IRoutableView):
 
     def createContextMenu(self, event):
         window = self.__subPresenter.createContextMenu(event)
-        return window if window is not None else super(RandomBattleResultsView, self).createContextMenu(event)
+        if window is not None:
+            return window
+        else:
+            return super(RandomBattleResultsView, self).createContextMenu(event)
 
     def createToolTipContent(self, event, contentID):
         content = self.__subPresenter.createToolTipContent(event, contentID)
-        return content if content is not None else super(RandomBattleResultsView, self).createToolTipContent(event, contentID)
+        if content is not None:
+            return content
+        else:
+            return super(RandomBattleResultsView, self).createToolTipContent(event, contentID)
 
     @classmethod
     def getLocalStorage(cls):
@@ -87,7 +91,9 @@ class RandomBattleResultsView(ViewImpl, IRoutableView):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onClose),)
+        return (
+         (
+          self.viewModel.onClose, self._onClose),)
 
     def _onLoading(self, *args, **kwargs):
         lsm = getLobbyStateMachine()

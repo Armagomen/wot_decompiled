@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/battle_timers.py
-import logging
-import SoundGroups
-import CommandMapping
+import logging, SoundGroups, CommandMapping
 from constants import ARENA_GUI_TYPE
 from PlayerEvents import g_playerEvents
 from gui.Scaleform.daapi.view.meta.BattleTimerMeta import BattleTimerMeta
@@ -163,7 +159,7 @@ class BattleTimer(BattleTimerMeta, IAbstractPeriodView):
 
     def _sendTime(self, totalTime):
         minutes, seconds = divmod(int(totalTime), 60)
-        self.as_setTotalTimeS('{:02d}'.format(minutes), '{:02d}'.format(seconds))
+        self.as_setTotalTimeS(('{:02d}').format(minutes), ('{:02d}').format(seconds))
 
     def _callWWISE(self, wwiseEventName):
         sound = SoundGroups.g_instance.getSound2D(wwiseEventName)

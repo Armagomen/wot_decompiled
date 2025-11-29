@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/tooltips/weekly_quest_widget_tooltip_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.user_missions.widget.bonus_model import BonusModel

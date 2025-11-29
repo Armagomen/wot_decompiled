@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/LobbyHeaderMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class LobbyHeaderMeta(BaseDAAPIComponent):
@@ -53,112 +51,149 @@ class LobbyHeaderMeta(BaseDAAPIComponent):
         self._printOverrideError('fightClick')
 
     def as_setScreenS(self, alias):
-        return self.flashObject.as_setScreen(alias) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setScreen(alias)
 
     def as_updateWalletBtnS(self, btnID, data):
-        return self.flashObject.as_updateWalletBtn(btnID, data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateWalletBtn(btnID, data)
 
     def as_doDisableNavigationS(self):
-        return self.flashObject.as_doDisableNavigation() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_doDisableNavigation()
 
     def as_doDisableHeaderButtonS(self, btnId, isEnabled):
-        return self.flashObject.as_doDisableHeaderButton(btnId, isEnabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_doDisableHeaderButton(btnId, isEnabled)
 
     def as_doSoftDisableHeaderButtonS(self, btnId, isSoftDisable):
-        return self.flashObject.as_doSoftDisableHeaderButton(btnId, isSoftDisable) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_doSoftDisableHeaderButton(btnId, isSoftDisable)
 
     def as_doDeselectHeaderButtonS(self, alias):
-        return self.flashObject.as_doDeselectHeaderButton(alias) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_doDeselectHeaderButton(alias)
 
     def as_setGoldFishEnabledS(self, isEnabled, playAnimation, tooltip, tooltipType):
-        return self.flashObject.as_setGoldFishEnabled(isEnabled, playAnimation, tooltip, tooltipType) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setGoldFishEnabled(isEnabled, playAnimation, tooltip, tooltipType)
 
     def as_updateSquadS(self, isInSquad, tooltip, tooltipType, isEvent, icon, hasPopover, eventBgLinkage, data):
-        return self.flashObject.as_updateSquad(isInSquad, tooltip, tooltipType, isEvent, icon, hasPopover, eventBgLinkage, data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateSquad(isInSquad, tooltip, tooltipType, isEvent, icon, hasPopover, eventBgLinkage, data)
 
     def as_nameResponseS(self, data):
-        return self.flashObject.as_nameResponse(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_nameResponse(data)
 
     def as_setBadgeS(self, data, selected):
-        return self.flashObject.as_setBadge(data, selected) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setBadge(data, selected)
 
     def as_setWotPlusDataS(self, data):
-        return self.flashObject.as_setWotPlusData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setWotPlusData(data)
 
     def as_setPremiumParamsS(self, data):
-        return self.flashObject.as_setPremiumParams(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPremiumParams(data)
 
     def as_setPremShopDataS(self, iconSrc, premShopText, tooltip, tooltipType):
-        return self.flashObject.as_setPremShopData(iconSrc, premShopText, tooltip, tooltipType) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPremShopData(iconSrc, premShopText, tooltip, tooltipType)
 
     def as_updateBattleTypeS(self, battleTypeName, battleTypeIcon, isEnabled, tooltip, tooltipType, battleTypeID, eventAnimEnabled, eventBgLinkage, showLegacySelector, hasNew):
-        return self.flashObject.as_updateBattleType(battleTypeName, battleTypeIcon, isEnabled, tooltip, tooltipType, battleTypeID, eventAnimEnabled, eventBgLinkage, showLegacySelector, hasNew) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateBattleType(battleTypeName, battleTypeIcon, isEnabled, tooltip, tooltipType, battleTypeID, eventAnimEnabled, eventBgLinkage, showLegacySelector, hasNew)
 
     def as_setServerS(self, name, tooltip, tooltipType):
-        return self.flashObject.as_setServer(name, tooltip, tooltipType) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setServer(name, tooltip, tooltipType)
 
     def as_updatePingStatusS(self, pingStatus, isColorBlind):
-        return self.flashObject.as_updatePingStatus(pingStatus, isColorBlind) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updatePingStatus(pingStatus, isColorBlind)
 
     def as_updateAnonymizedStateS(self, isAnonymized):
-        return self.flashObject.as_updateAnonymizedState(isAnonymized) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateAnonymizedState(isAnonymized)
 
     def as_updateReservesS(self):
-        return self.flashObject.as_updateReserves() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateReserves()
 
     def as_setWalletStatusS(self, walletStatus):
-        return self.flashObject.as_setWalletStatus(walletStatus) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setWalletStatus(walletStatus)
 
     def as_disableFightButtonS(self, isDisabled):
-        return self.flashObject.as_disableFightButton(isDisabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_disableFightButton(isDisabled)
 
     def as_setFightButtonS(self, label):
-        return self.flashObject.as_setFightButton(label) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFightButton(label)
 
     def as_setFightButtonHighlightS(self, linkage):
-        return self.flashObject.as_setFightButtonHighlight(linkage) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFightButtonHighlight(linkage)
 
     def as_setCoolDownForReadyS(self, value):
-        return self.flashObject.as_setCoolDownForReady(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCoolDownForReady(value)
 
     def as_showBubbleTooltipS(self, message, duration):
-        return self.flashObject.as_showBubbleTooltip(message, duration) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showBubbleTooltip(message, duration)
 
     def as_setFightBtnTooltipS(self, tooltip, isSpecial):
-        return self.flashObject.as_setFightBtnTooltip(tooltip, isSpecial) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFightBtnTooltip(tooltip, isSpecial)
 
     def as_updateOnlineCounterS(self, clusterStats, regionStats, tooltip, isAvailable):
-        return self.flashObject.as_updateOnlineCounter(clusterStats, regionStats, tooltip, isAvailable) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateOnlineCounter(clusterStats, regionStats, tooltip, isAvailable)
 
     def as_initOnlineCounterS(self, visible):
-        return self.flashObject.as_initOnlineCounter(visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_initOnlineCounter(visible)
 
     def as_setServerNameS(self, value):
-        return self.flashObject.as_setServerName(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setServerName(value)
 
     def as_setHangarMenuDataS(self, data):
-        return self.flashObject.as_setHangarMenuData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHangarMenuData(data)
 
     def as_setButtonCounterS(self, btnAlias, value):
-        return self.flashObject.as_setButtonCounter(btnAlias, value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setButtonCounter(btnAlias, value)
 
     def as_removeButtonCounterS(self, btnAlias):
-        return self.flashObject.as_removeButtonCounter(btnAlias) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_removeButtonCounter(btnAlias)
 
     def as_setHeaderButtonsS(self, data):
-        return self.flashObject.as_setHeaderButtons(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHeaderButtons(data)
 
     def as_hideMenuS(self, value):
-        return self.flashObject.as_hideMenu(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideMenu(value)
 
     def as_toggleVisibilityMenuS(self, state):
-        return self.flashObject.as_toggleVisibilityMenu(state) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_toggleVisibilityMenu(state)
 
     def as_setIsPlatoonDropdownShowingS(self, visible):
-        return self.flashObject.as_setIsPlatoonDropdownShowing(visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setIsPlatoonDropdownShowing(visible)
 
     def as_setIsFullscreenBattleSelectorShowingS(self, visible):
-        return self.flashObject.as_setIsFullscreenBattleSelectorShowing(visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setIsFullscreenBattleSelectorShowing(visible)
 
     def as_setButtonHighlightS(self, btnAlias, isHighlighted):
-        return self.flashObject.as_setButtonHighlight(btnAlias, isHighlighted) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setButtonHighlight(btnAlias, isHighlighted)

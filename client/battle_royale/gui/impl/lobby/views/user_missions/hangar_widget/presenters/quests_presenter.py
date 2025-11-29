@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/user_missions/hangar_widget/presenters/quests_presenter.py
 import typing
 from battle_royale.gui.impl.lobby.tooltips.progression_quest_tooltip import BattleRoyaleProgressionQuestTooltip
 from constants import ARENA_BONUS_TYPE
@@ -60,7 +58,9 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         if contentID == R.views.mono.user_missions.tooltips.daily_quest_tooltip():
             quest = self._getQuestFromEvent(event)
             return BattleRoyaleProgressionQuestTooltip(quest)
-        return AllQuestsDoneTooltip(layoutID=R.views.battle_royale.mono.lobby.tooltips.all_quests_done_tooltip(), questTimerLeft=self.__getTimeLeft()) if contentID == R.views.mono.user_missions.tooltips.all_quests_done_tooltip() else super(BattleRoayaleQuestsPresenter, self).createToolTipContent(event=event, contentID=contentID)
+        if contentID == R.views.mono.user_missions.tooltips.all_quests_done_tooltip():
+            return AllQuestsDoneTooltip(layoutID=R.views.battle_royale.mono.lobby.tooltips.all_quests_done_tooltip(), questTimerLeft=self.__getTimeLeft())
+        return super(BattleRoayaleQuestsPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     def prepare(self):
         super(BattleRoayaleQuestsPresenter, self).prepare()
@@ -84,7 +84,11 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         return
 
     def _getEvents(self):
-        return super(BattleRoayaleQuestsPresenter, self)._getEvents() + ((self.viewModel.onMissionClick, self.__onMissionClick), (self.viewModel.onMarkAsViewed, self.__onMarkAsViewed))
+        return super(BattleRoayaleQuestsPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onMissionClick, self.__onMissionClick),
+         (
+          self.viewModel.onMarkAsViewed, self.__onMarkAsViewed))
 
     def __getAvailability(self):
         isSpaceInited = self.__hangarSpace.spaceInited
@@ -94,7 +98,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
 
     def _rawUpdate(self):
         super(BattleRoayaleQuestsPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             modelQuests = vm.getQuests()
             modelQuests.clear()
             modelQuests.reserve(len(self.__quests))
@@ -184,4 +188,6 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         currentCycleEndTime = self.__battleRoyale.getEndTime()
         currServerTime = time_utils.getCurrentLocalServerTimestamp()
         cycleTimeLeft = currentCycleEndTime - currServerTime
-        return 0 if cycleTimeLeft < ONE_DAY and cycleTimeLeft < dailyQuestProgressDelta else dailyQuestProgressDelta
+        if cycleTimeLeft < ONE_DAY and cycleTimeLeft < dailyQuestProgressDelta:
+            return 0
+        return dailyQuestProgressDelta

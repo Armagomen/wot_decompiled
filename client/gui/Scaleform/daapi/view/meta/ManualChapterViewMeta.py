@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ManualChapterViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class ManualChapterViewMeta(View):
@@ -20,10 +18,13 @@ class ManualChapterViewMeta(View):
         self._printOverrideError('onPageChanged')
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)
 
     def as_setPagesS(self, pages):
-        return self.flashObject.as_setPages(pages) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPages(pages)
 
     def as_showPageS(self, index):
-        return self.flashObject.as_showPage(index) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showPage(index)

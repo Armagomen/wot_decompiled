@@ -1,27 +1,27 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/OfflineMapCreator.py
-import math
-import BigWorld
-import Math
+import math, BigWorld, Math
 from ArenaType import g_cache
 import constants
 from debug_utils import LOG_DEBUG, LOG_CURRENT_EXCEPTION
 from helpers import dependency
 from skeletons.map_activities import IMapActivities
-_CFG = {'basic': {'v_start_angles': Math.Vector3(0, 0, 0),
-           'v_start_pos': Math.Vector3(50, 0, 50),
-           'cam_start_dist': 9.0,
-           'cam_start_angles': [-25.0, 110.0],
-           'cam_start_target_pos': Math.Vector3(50, 0, 50),
-           'cam_dist_constr': [6.0, 11.0],
-           'cam_pitch_constr': [-70.0, -5.0],
-           'cam_yaw_constr': [-180.0, 180.0],
-           'cam_sens': 0.005,
-           'cam_pivot_pos': Math.Vector3(0, 1, 0),
-           'cam_fluency': 0.05,
-           'emblems_alpha_damaged': 0.3,
-           'emblems_alpha_undamaged': 0.9,
-           'shadow_light_dir': (0.55, -1, -1.7)}}
+_CFG = {'basic': {'v_start_angles': Math.Vector3(0, 0, 0), 
+             'v_start_pos': Math.Vector3(50, 0, 50), 
+             'cam_start_dist': 9.0, 
+             'cam_start_angles': [
+                                -25.0, 110.0], 
+             'cam_start_target_pos': Math.Vector3(50, 0, 50), 
+             'cam_dist_constr': [
+                               6.0, 11.0], 
+             'cam_pitch_constr': [
+                                -70.0, -5.0], 
+             'cam_yaw_constr': [
+                              -180.0, 180.0], 
+             'cam_sens': 0.005, 
+             'cam_pivot_pos': Math.Vector3(0, 1, 0), 
+             'cam_fluency': 0.05, 
+             'emblems_alpha_damaged': 0.3, 
+             'emblems_alpha_undamaged': 0.9, 
+             'shadow_light_dir': (0.55, -1, -1.7)}}
 _SPACE_NAME = None
 _V_START_ANGLES = None
 _V_START_POS = None
@@ -54,8 +54,8 @@ class OfflineMapCreator(object):
         return
 
     def create(self, mapName):
-        global _V_START_POS
         global _V_START_ANGLES
+        global _V_START_POS
         try:
             LOG_DEBUG('OfflineMapCreator.Create( %s )' % mapName)
             cfgType = 'basic'
@@ -66,7 +66,8 @@ class OfflineMapCreator(object):
             self.__isActive = True
             self.__arenaTypeID = self.__getArenaTypeId(mapName)
             self.__spaceMappingId = BigWorld.addSpaceGeometryMapping(self.__space.id, None, 'spaces/' + mapName)
-            self.__vEntityId = BigWorld.createEntity('Avatar', self.__space.id, 0, _V_START_POS, (_V_START_ANGLES[2], _V_START_ANGLES[1], _V_START_ANGLES[0]), {})
+            self.__vEntityId = BigWorld.createEntity('Avatar', self.__space.id, 0, _V_START_POS, (
+             _V_START_ANGLES[2], _V_START_ANGLES[1], _V_START_ANGLES[0]), {})
             avatar = BigWorld.entities[self.__vEntityId]
             avatar.arenaUniqueID = 0
             avatar.arenaTypeID = self.__arenaTypeID
@@ -147,7 +148,7 @@ class OfflineMapCreator(object):
     @staticmethod
     def __getArenaTypeId(mapName):
         info = {arenaType.gameplayName:arenaTypeId for arenaTypeId, arenaType in g_cache.iteritems() if mapName == arenaType.geometryName}
-        priority = ('ctf',)
+        priority = ('ctf', )
         for p in priority:
             if p in info:
                 return info[p]
@@ -155,11 +156,11 @@ class OfflineMapCreator(object):
         return next(iter(info.itervalues()))
 
     def __setupCamera(self):
-        global _CAM_START_TARGET_POS
-        global _CAM_START_DIST
+        global _CAM_FLUENCY
         global _CAM_PIVOT_POS
         global _CAM_START_ANGLES
-        global _CAM_FLUENCY
+        global _CAM_START_DIST
+        global _CAM_START_TARGET_POS
         self.__cam = BigWorld.CursorCamera()
         self.__cam.spaceID = self.__space.id
         self.__cam.pivotMaxDist = _CAM_START_DIST
@@ -176,21 +177,21 @@ class OfflineMapCreator(object):
         BigWorld.camera(self.__cam)
 
     def __loadCfg(self, t, mapName):
-        global _V_START_ANGLES
+        global _CAM_DIST_CONSTR
+        global _CAM_FLUENCY
         global _CAM_PITCH_CONSTR
         global _CAM_PIVOT_POS
+        global _CAM_SENS
+        global _CAM_START_ANGLES
+        global _CAM_START_DIST
+        global _CAM_START_TARGET_POS
+        global _CAM_YAW_CONSTR
         global _EMBLEMS_ALPHA_DAMAGED
         global _EMBLEMS_ALPHA_UNDAMAGED
-        global _CAM_FLUENCY
         global _SHADOW_LIGHT_DIR
-        global _CAM_START_TARGET_POS
         global _SPACE_NAME
-        global _CAM_START_ANGLES
+        global _V_START_ANGLES
         global _V_START_POS
-        global _CAM_START_DIST
-        global _CAM_DIST_CONSTR
-        global _CAM_YAW_CONSTR
-        global _CAM_SENS
         cfg = _CFG[t]
         _SPACE_NAME = mapName
         _V_START_ANGLES = cfg['v_start_angles']

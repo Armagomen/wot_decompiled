@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/DebugManager.py
 from typing import TYPE_CHECKING, Iterable, Dict
 try:
     import DebugManagerImpl
@@ -11,11 +9,11 @@ if TYPE_CHECKING:
 
 class COLORS(object):
     GREEN = 1996554018
-    DARK_GREEN = 2147516501L
-    DARK_BLUE = 4278190335L
-    WHITE = 4294967295L
-    BLUE = 3137404927L
-    RED = 4289864226L
+    DARK_GREEN = 2147516501
+    DARK_BLUE = 4278190335
+    WHITE = 4294967295
+    BLUE = 3137404927
+    RED = 4289864226
     ZERO = 0
     DEFAULT = BLUE
 

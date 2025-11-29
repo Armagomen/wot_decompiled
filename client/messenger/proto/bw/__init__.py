@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw/__init__.py
 from chat_shared import CHAT_RESPONSES
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from messenger import g_settings
@@ -76,7 +74,8 @@ class BWProtoPlugin(ChatActionsListener, IProtoPlugin):
         if hasattr(self, responseProcessor):
             getattr(self, responseProcessor)(chatAction)
         else:
-            LOG_ERROR('onChatActionFailure: response processor for response %s(%s) not registered' % (actionResponse, actionResponse.index()))
+            LOG_ERROR('onChatActionFailure: response processor for response %s(%s) not registered' % (
+             actionResponse, actionResponse.index()))
 
     def _addChatActionsListeners(self):
         self.channels.addListeners()
@@ -91,16 +90,19 @@ class BWProtoPlugin(ChatActionsListener, IProtoPlugin):
 
     @classmethod
     def __getClanListener(cls):
-        return None if g_settings.server.isXmppClansEnabled() else ClanListener()
+        if g_settings.server.isXmppClansEnabled():
+            return None
+        else:
+            return ClanListener()
 
-    __errorsHandlers = {CHAT_RESPONSES.channelNotExists: '_BWProtoPlugin__onChannelNotExists',
-     CHAT_RESPONSES.memberBanned: '_BWProtoPlugin__onMemberBanned',
-     CHAT_RESPONSES.chatBanned: '_BWProtoPlugin__onChatBanned',
-     CHAT_RESPONSES.actionInCooldown: '_BWProtoPlugin__passError',
-     CHAT_RESPONSES.commandInCooldown: '_BWProtoPlugin__onCommandInCooldown',
-     CHAT_RESPONSES.inviteCommandError: '_BWProtoPlugin__passError',
-     CHAT_RESPONSES.inviteCreateError: '_BWProtoPlugin__passError',
-     CHAT_RESPONSES.inviteCreationNotAllowed: '_BWProtoPlugin__passError'}
+    __errorsHandlers = {CHAT_RESPONSES.channelNotExists: '_BWProtoPlugin__onChannelNotExists', 
+       CHAT_RESPONSES.memberBanned: '_BWProtoPlugin__onMemberBanned', 
+       CHAT_RESPONSES.chatBanned: '_BWProtoPlugin__onChatBanned', 
+       CHAT_RESPONSES.actionInCooldown: '_BWProtoPlugin__passError', 
+       CHAT_RESPONSES.commandInCooldown: '_BWProtoPlugin__onCommandInCooldown', 
+       CHAT_RESPONSES.inviteCommandError: '_BWProtoPlugin__passError', 
+       CHAT_RESPONSES.inviteCreateError: '_BWProtoPlugin__passError', 
+       CHAT_RESPONSES.inviteCreationNotAllowed: '_BWProtoPlugin__passError'}
     __defaultErrorHandler = '_BWProtoPlugin__onActionFailure'
 
     def __onMemberBanned(self, chatAction):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/summary/summary_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.achievement_model import AchievementModel
@@ -13,7 +11,7 @@ class EditState(Enum):
 
 
 class SummaryViewModel(ViewModel):
-    __slots__ = ('onAchievementsSettings',)
+    __slots__ = ('onAchievementsSettings', )
 
     def __init__(self, properties=25, commands=1):
         super(SummaryViewModel, self).__init__(properties=properties, commands=commands)

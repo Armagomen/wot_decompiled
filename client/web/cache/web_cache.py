@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/cache/web_cache.py
-import os
-import typing
-import hashlib
-import json
-import logging
-import urlparse
-import itertools
+import os, typing, hashlib, json, logging, urlparse, itertools
 from functools import partial
 import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -27,35 +19,30 @@ class CachePrefetchResult(object):
     CLOSED = -5
     BUSY = -6
     RESTART = -7
-    ALL = (SUCCESS,
-     FAIL,
-     CACHE_SYNC_TIMEOUT,
-     MGR_SYNC_TIMEOUT,
-     WRONG_CONFIG,
-     CLOSED,
-     BUSY,
-     RESTART)
+    ALL = (
+     SUCCESS, FAIL, CACHE_SYNC_TIMEOUT, MGR_SYNC_TIMEOUT, WRONG_CONFIG, CLOSED, BUSY, RESTART)
 
 
 class CacheStates(object):
     INITIALIZED = 1
     SYNCING = 2
     SYNCED = 3
-    ALL = (INITIALIZED, SYNCING, SYNCED)
+    ALL = (
+     INITIALIZED, SYNCING, SYNCED)
 
 
 def generateKey(url, appName=None):
     md = hashlib.md5()
     md.update(url)
-    return md.hexdigest() + '.wotsrvreplay' if appName == 'server_replays' else md.hexdigest()
+    if appName == 'server_replays':
+        return md.hexdigest() + '.wotsrvreplay'
+    return md.hexdigest()
 
 
 def createManifestRecord(appName, host, files, code='OK', description='SUCCESS'):
-    return {'host': host,
-     'status': {'code': code,
-                'description': description},
-     'files': list(files),
-     'name': appName}
+    return {'host': host, 
+       'status': {'code': code, 'description': description}, 'files': list(files), 
+       'name': appName}
 
 
 class WebExternalCache(IWebExternalCache):
@@ -117,7 +104,7 @@ class WebExternalCache(IWebExternalCache):
                 return res
             self._cache.pop(key)
         _logger.debug('Resource %s not found in cache and will be loaded from Web.', url)
-        return None
+        return
 
     def getRelativePath(self, url, appName=None):
         return self.getRelativeFromAbsolute(self.get(url, appName=appName))
@@ -129,7 +116,7 @@ class WebExternalCache(IWebExternalCache):
             except Exception:
                 _logger.exception('Error while getting relative path from: %s, root: %s', absolute, self.rootDirPath)
 
-        return None
+        return
 
     def loadCustomUrls(self, urls, appName):
         filesToDownload = {}
@@ -336,11 +323,7 @@ class BaseExternalCache(WebExternalCache):
         self._cache[key] = filename
         _logger.debug('Config: %s saved on disk as: %s.', url, filename)
         parsedUrl = urlparse.urlparse(url)
-        host = urlparse.urlunsplit((parsedUrl.scheme,
-         parsedUrl.netloc,
-         '',
-         '',
-         ''))
+        host = urlparse.urlunsplit((parsedUrl.scheme, parsedUrl.netloc, '', '', ''))
         filePath = parsedUrl.path[1:] if parsedUrl.path.startswith('/') else parsedUrl.path
         self._prepareToUpdate(config, [createManifestRecord(self._CONFIGS_DIR_NAME, host, [filePath])])
 
@@ -348,11 +331,11 @@ class BaseExternalCache(WebExternalCache):
         if not self.syncing:
             _logger.debug('Receive config from: [%s], when stopped or destroyed (%s).', url, self._state)
             return
-        elif not url or rawConfig is None:
-            _logger.error('Config [%s] download error.', url)
-            self._prefetchEnd(CachePrefetchResult.FAIL)
-            return
         else:
+            if not url or rawConfig is None:
+                _logger.error('Config [%s] download error.', url)
+                self._prefetchEnd(CachePrefetchResult.FAIL)
+                return
             try:
                 config = self.decodeConfig(url, rawConfig)
             except Exception:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/training/legacy/requester.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from constants import PREBATTLE_TYPE, PREBATTLE_CACHE_KEY

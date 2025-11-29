@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/backport/backport_time_utils.py
 import time
 from gui.impl.backport import text
 from helpers import time_utils
@@ -20,8 +18,8 @@ def getTillTimeStringByRClass(timeValue, stringRClass, isRoundUp=False, removeLe
         fmtKey = 'lessMin'
     tm = time.struct_time(gmtime)
     otherYearsdays = (tm.tm_year - 1970) * time_utils.DAYS_IN_YEAR
-    fmtValues = {'day': str(tm.tm_yday + otherYearsdays),
-     'hour': time.strftime('%H', gmtime) if not removeLeadingZeros else str(tm.tm_hour),
-     'min': time.strftime('%M', gmtime) if not removeLeadingZeros else str(tm.tm_min),
-     'sec': time.strftime('%S', gmtime)}
+    fmtValues = {'day': str(tm.tm_yday + otherYearsdays), 
+       'hour': (removeLeadingZeros or time.strftime)('%H', gmtime) if 1 else str(tm.tm_hour), 
+       'min': (removeLeadingZeros or time.strftime)('%M', gmtime) if 1 else str(tm.tm_min), 
+       'sec': time.strftime('%S', gmtime)}
     return text(stringRClass.dyn(fmtKey)(), **fmtValues)

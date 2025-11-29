@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/anonymizer/battle_cooldown_manager.py
 from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 from messenger.proto.shared_errors import I18nActionID
 

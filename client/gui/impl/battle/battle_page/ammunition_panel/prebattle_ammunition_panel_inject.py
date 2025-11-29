@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/prebattle_ammunition_panel_inject.py
 from gui.Scaleform.daapi.view.meta.PrebattleAmmunitionPanelViewMeta import PrebattleAmmunitionPanelViewMeta
 from gui.Scaleform.framework.entities.inject_component_adaptor import hasAliveInject
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
@@ -15,7 +13,8 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 
 class PrebattleAmmunitionPanelInject(MethodsRules, PrebattleAmmunitionPanelViewMeta, IPrebattleSetupsListener, IAmmoListener, IAbstractPeriodView):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('_state', '__currShellCD', '__nextShellCD', '__timeLeft', '__isViewLoaded', '__isViewActive')
+    __slots__ = ('_state', '__currShellCD', '__nextShellCD', '__timeLeft', '__isViewLoaded',
+                 '__isViewActive')
 
     def __init__(self):
         super(PrebattleAmmunitionPanelInject, self).__init__()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/year_position_provider.py
-import logging
-import BigWorld
+import logging, BigWorld
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import RANKED_YEAR_POSITION
 from adisp import adisp_process
@@ -77,8 +74,13 @@ class RankedYearPositionProvider(object):
         return
 
     def __getInvokeDelay(self):
-        return _POSITION_SYNC_TIME if self.__webController.isAvailable() else _WEB_AVAILABLE_SYNC_TIME
+        if self.__webController.isAvailable():
+            return _POSITION_SYNC_TIME
+        return _WEB_AVAILABLE_SYNC_TIME
 
     def __hasServerFinalToken(self):
         token = self.__itemsCache.items.tokens.getTokens().get(YEAR_STRIPE_SERVER_TOKEN)
-        return True if token is not None and token[1] > 0 else False
+        if token is not None and token[1] > 0:
+            return True
+        else:
+            return False

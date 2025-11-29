@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/cache_providers/clan_supply_provider.py
 from copy import deepcopy
 import typing
 from gui.Scaleform.daapi.view.lobby.clans.clan_helpers import getClanSupplyEnabled
@@ -48,10 +46,10 @@ class ClanSupplyProvider(BaseProvider):
         return deepcopy(EXAMPLE_DATA)
 
     def _getSettings(self):
-        return {DataNames.PROGRESSION_SETTINGS: RequestSettings(context=contexts.ProgressionSettingsCtx(), isCached=True, updatePeriodType=UpdatePeriodType.BY_TIME, updateKwargs={'updateTime': time_utils.HALF_HOUR}),
-         DataNames.PROGRESSION_PROGRESS: RequestSettings(context=contexts.ProgressionProgressCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None),
-         DataNames.QUESTS_INFO: RequestSettings(context=contexts.QuestsInfoCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None),
-         DataNames.QUESTS_INFO_POST: RequestSettings(context=contexts.PostQuestsInfoCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None)}
+        return {DataNames.PROGRESSION_SETTINGS: RequestSettings(context=contexts.ProgressionSettingsCtx(), isCached=True, updatePeriodType=UpdatePeriodType.BY_TIME, updateKwargs={'updateTime': time_utils.HALF_HOUR}), 
+           DataNames.PROGRESSION_PROGRESS: RequestSettings(context=contexts.ProgressionProgressCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None), 
+           DataNames.QUESTS_INFO: RequestSettings(context=contexts.QuestsInfoCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None), 
+           DataNames.QUESTS_INFO_POST: RequestSettings(context=contexts.PostQuestsInfoCtx(), isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None)}
 
     def _dataReceived(self, dataName, data):
         if dataName == DataNames.QUESTS_INFO and not data.quests:
@@ -74,14 +72,14 @@ class ClanSupplyProvider(BaseProvider):
                 if cachedQuest.level > questForUpdate.level or cachedQuest.status == QuestStatus.COMPLETE:
                     continue
                 questAsDict = cachedQuest._asdict()
-                questAsDict.update({'current_progress': cachedQuest.required_progress,
-                 'status': QuestStatus.REWARD_PENDING})
+                questAsDict.update({'current_progress': cachedQuest.required_progress, 
+                   'status': QuestStatus.REWARD_PENDING})
                 cachedData.quests[idx] = makeTupleByDict(Quest, questAsDict)
 
         else:
             questIdx = cachedData.quests.index(questForUpdate)
             questAsDict = questForUpdate._asdict()
-            questAsDict.update({'current_progress': item.getProgress(),
-             'status': item.getStatus()})
+            questAsDict.update({'current_progress': item.getProgress(), 
+               'status': item.getStatus()})
             cachedData.quests[questIdx] = makeTupleByDict(Quest, questAsDict)
         return True

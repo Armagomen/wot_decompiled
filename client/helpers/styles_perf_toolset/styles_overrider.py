@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/styles_perf_toolset/styles_overrider.py
-import logging
-import ResMgr
+import logging, ResMgr
 from items.vehicles import makeIntCompactDescrByID, getItemByCompactDescr
 from items.components.c11n_constants import CustomizationType, SeasonType
 
@@ -35,4 +32,4 @@ class StylesOverrider(object):
             outfitDescr = styleItem.outfits[SeasonType.SUMMER].makeCompDescr()
             return outfitDescr
         else:
-            return None
+            return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/SystemMessageDialog.py
 from gui.Scaleform.daapi.view.meta.SystemMessageDialogMeta import SystemMessageDialogMeta
 
 class SystemMessageDialog(SystemMessageDialogMeta):
@@ -11,9 +9,9 @@ class SystemMessageDialog(SystemMessageDialogMeta):
 
     def _populate(self):
         super(SystemMessageDialog, self)._populate()
-        self.as_setInitDataS({'title': self.__meta.getTitle(),
-         'closeBtnTitle': self.__meta.getCancelLabel(),
-         'settings': self.__meta.getSettings()})
+        self.as_setInitDataS({'title': self.__meta.getTitle(), 
+           'closeBtnTitle': self.__meta.getCancelLabel(), 
+           'settings': self.__meta.getSettings()})
         self.as_setMessageDataS(self.__meta.getMessageObject())
 
     def onWindowClose(self):

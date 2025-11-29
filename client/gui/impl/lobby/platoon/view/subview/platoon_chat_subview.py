@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/subview/platoon_chat_subview.py
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
 from gui.impl.gen import R
@@ -68,13 +65,13 @@ class ChatSubview(ViewImpl, GFChannelViewInterface):
         return
 
     def __clearMessages(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             messagesArray = model.getMessages()
             messagesArray.clear()
             self.__messageCount = 0
 
     def __addMessage(self, message):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             messagesArray = model.getMessages()
             guiType = LobbyMessageBuilder().setGuiType(message.accountDBID).getGuiType()
             colorScheme = g_settings.getColorScheme('rosters')
@@ -110,12 +107,12 @@ class ChatSubview(ViewImpl, GFChannelViewInterface):
         channelCtrl = self.__platoonCtrl.getChannelController()
         if channelCtrl is not None and args[0]['message'] is not None:
             if channelCtrl.sendMessage(args[0]['message']):
-                with self.viewModel.transaction() as model:
+                with self.viewModel.transaction() as (model):
                     model.setCanClearInput(True)
         return
 
     def __onInputCleared(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCanClearInput(False)
 
     def __updateHeaderText(self):

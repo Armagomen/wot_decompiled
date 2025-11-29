@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ClientSelectableCameraObject.py
 import CGF
 from ClientSelectableObject import ClientSelectableObject
 from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
@@ -63,8 +61,7 @@ class ClientSelectableCameraObject(ClientSelectableObject):
 
     def setState(self, state):
         self.__state = state
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, ctx={'state': self.__state,
-         'entityId': self.id}), scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, ctx={'state': self.__state, 'entityId': self.id}), scope=EVENT_BUS_SCOPE.DEFAULT)
 
     @property
     def state(self):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/QUEST_PROGRESS_BASE.py
 
 
 class QUEST_PROGRESS_BASE(object):
@@ -17,11 +15,7 @@ class QUEST_PROGRESS_BASE(object):
     FAILED_STATE = 3
     PRELIMINARY_FAILED_STATE = 4
     COMPLETED_STATE = 5
-    QUEST_PROGRESS_STATES = [NOT_STARTED_STATE,
-     IN_PROGRESS_STATE,
-     FAILED_STATE,
-     PRELIMINARY_FAILED_STATE,
-     COMPLETED_STATE]
+    QUEST_PROGRESS_STATES = [NOT_STARTED_STATE, IN_PROGRESS_STATE, FAILED_STATE, PRELIMINARY_FAILED_STATE, COMPLETED_STATE]
     QP_VIEW_RENDERER_TAB = 'QuestProgressItemRendererTabViewUI'
     QP_VIEW_RENDERER_TOP = 'QuestProgressItemRendererTopViewUI'
     QP_VIEW_RENDERER_QUEST_AWARD = 'QuestProgressItemRendererQuestAwardViewUI'

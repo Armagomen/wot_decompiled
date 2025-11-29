@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/premacc/premacc_helpers.py
-import logging
-import WWISE
+import logging, WWISE
 from helpers import time_utils
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +20,9 @@ class PiggyBankConstants(object):
 
 
 def validateAdditionalBonusMultiplier(multiplier):
-    return BattleResultsBonusConstants.MIN_MULTIPLIER if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER else int(multiplier)
+    if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER:
+        return BattleResultsBonusConstants.MIN_MULTIPLIER
+    return int(multiplier)
 
 
 def getOpenTimeHelper(config, data):
@@ -49,8 +48,8 @@ def getDeltaTimeHelper(config, data):
 
 class SoundViewMixin(object):
     PREM_VIEW_STATE_TEMPL = 'STATE_hangar_filtered'
-    PREM_VIEW_STATE_ENTER = '{}_on'.format(PREM_VIEW_STATE_TEMPL)
-    PREM_VIEW_STATE_EXIT = '{}_off'.format(PREM_VIEW_STATE_TEMPL)
+    PREM_VIEW_STATE_ENTER = ('{}_on').format(PREM_VIEW_STATE_TEMPL)
+    PREM_VIEW_STATE_EXIT = ('{}_off').format(PREM_VIEW_STATE_TEMPL)
     __globSoundEntryCount = 0
 
     @classmethod

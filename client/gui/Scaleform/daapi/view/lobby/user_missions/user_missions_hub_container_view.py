@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_missions/user_missions_hub_container_view.py
 from account_helpers.AccountSettings import MISSIONS_PAGE
 from account_helpers import AccountSettings
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
@@ -42,8 +40,8 @@ class UserMissionsHubContainerView(UserMissionsHubContainerViewMeta):
             self.__commonTabView.setBuilder(self.__builder, self.__filterData, self.__eventID)
 
     def resetFilters(self):
-        self.__filterData = {'hideDone': False,
-         'hideUnavailable': False}
+        self.__filterData = {'hideDone': False, 
+           'hideUnavailable': False}
         AccountSettings.setFilter(MISSIONS_PAGE, self.__filterData)
         if self.__commonTabView:
             self.__commonTabView.setFilters(self.__filterData)
@@ -82,7 +80,7 @@ class UserMissionsHubContainerView(UserMissionsHubContainerViewMeta):
         totalQuests = self.__commonTabView.getTotalQuestsCount()
         currentQuests = self.__commonTabView.getCurrentQuestsCount()
         style = text_styles.error if currentQuests == 0 else text_styles.stats
-        countText = '{} / {}'.format(style(currentQuests), text_styles.standard(totalQuests))
+        countText = ('{} / {}').format(style(currentQuests), text_styles.standard(totalQuests))
         filterApplied = self.__filterApplied()
         self.as_showFilterCounterS(countText, filterApplied)
         if filterApplied:

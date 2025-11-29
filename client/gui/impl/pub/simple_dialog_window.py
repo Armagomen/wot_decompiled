@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/simple_dialog_window.py
 import typing
 from frameworks.wulf import ViewModel, ViewSettings
 from gui.impl.gen.resources import R
@@ -19,7 +17,10 @@ class SimpleDialogWindow(PureDialogWindow):
     @property
     def contentViewModel(self):
         content = self.content
-        return content.getViewModel() if content is not None else None
+        if content is not None:
+            return content.getViewModel()
+        else:
+            return
 
     def setFormattedMessage(self, formattedMessage=''):
         if formattedMessage != '':

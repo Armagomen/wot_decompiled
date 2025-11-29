@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/mechanics/death_zones.py
 from collections import namedtuple
-import CGF
-import Math
-import BigWorld
+import CGF, Math, BigWorld
 from death_zones_helpers import ZONE_STATE, idxFrom, zoneIdFrom, ZONES_SIZE
 from constants import IS_CLIENT
 from cgf_script.managers_registrator import Rule, registerManager, onProcessQuery, registerRule
@@ -23,13 +19,8 @@ _INVISIBLE_LEFT = 2
 _INVISIBLE_UP = 4
 _INVISIBLE_DOWN = 8
 _UPDATE_PERIOD = 0.1
-DeathZoneWallParameters = namedtuple('DeathZoneWallParameters', ['enableCenter',
- 'maxAlpha',
- 'centerAlpha',
- 'wallHeight',
- 'centerHeight',
- 'color',
- 'groundLineHeight',
+DeathZoneWallParameters = namedtuple('DeathZoneWallParameters', [
+ 'enableCenter', 'maxAlpha', 'centerAlpha', 'wallHeight', 'centerHeight', 'color', 'groundLineHeight',
  'groundLineAlpha'])
 
 class DeathZoneDrawManager(CGF.ComponentManager):
@@ -88,15 +79,20 @@ class DeathZoneDrawManager(CGF.ComponentManager):
 
     def _setBoundsVisibility(self, x, y, state, deathZones):
         visibilityMask = 0
-        dxdy = ((-1, 0, (_INVISIBLE_RIGHT, _INVISIBLE_LEFT)),
-         (1, 0, (_INVISIBLE_LEFT, _INVISIBLE_RIGHT)),
-         (0, 1, (_INVISIBLE_DOWN, _INVISIBLE_UP)),
-         (0, -1, (_INVISIBLE_UP, _INVISIBLE_DOWN)))
+        dxdy = (
+         (
+          -1, 0, (_INVISIBLE_RIGHT, _INVISIBLE_LEFT)),
+         (
+          1, 0, (_INVISIBLE_LEFT, _INVISIBLE_RIGHT)),
+         (
+          0, 1, (_INVISIBLE_DOWN, _INVISIBLE_UP)),
+         (
+          0, -1, (_INVISIBLE_UP, _INVISIBLE_DOWN)))
         for dx, dy, borderMsks in dxdy:
             _x, _y = x + dx, y + dy
-            if 0 <= _x < ZONES_SIZE:
-                if 0 <= _y < ZONES_SIZE:
-                    self._checkSide(_x, _y, borderMsks[0], state, deathZones) and visibilityMask |= borderMsks[1]
+            if 0 <= _x < ZONES_SIZE and 0 <= _y < ZONES_SIZE:
+                if self._checkSide(_x, _y, borderMsks[0], state, deathZones):
+                    visibilityMask |= borderMsks[1]
 
         return visibilityMask
 
@@ -145,4 +141,6 @@ class DeathZonesRule(Rule):
 
     @registerManager(DeathZoneDrawManager)
     def registerDeathZonesDrawManager(self):
-        return (DeathZoneWallParameters(self.activeEnableCenter, self.activeMaxAlpha, self.activeCentarAlpha, self.activeWallHeight, self.activeCenterHeight, self.activeColor, self.activeGroundLineHeight, self.activeGroundLineAlpha), DeathZoneWallParameters(self.waitingEnableCenter, self.waitingMaxAlpha, self.waitingCentarAlpha, self.waitingWallHeight, self.waitingCenterHeight, self.waitingColor, self.waitingGroundLineHeight, self.waitingGroundLineAlpha))
+        return (
+         DeathZoneWallParameters(self.activeEnableCenter, self.activeMaxAlpha, self.activeCentarAlpha, self.activeWallHeight, self.activeCenterHeight, self.activeColor, self.activeGroundLineHeight, self.activeGroundLineAlpha),
+         DeathZoneWallParameters(self.waitingEnableCenter, self.waitingMaxAlpha, self.waitingCentarAlpha, self.waitingWallHeight, self.waitingCenterHeight, self.waitingColor, self.waitingGroundLineHeight, self.waitingGroundLineAlpha))

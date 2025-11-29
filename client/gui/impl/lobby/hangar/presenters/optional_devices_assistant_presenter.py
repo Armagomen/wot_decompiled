@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/optional_devices_assistant_presenter.py
 from __future__ import absolute_import
-import logging
-import typing
-import Event
+import logging, typing, Event
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
 from frameworks.state_machine import BaseStateObserver, visitor
@@ -61,7 +57,11 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
         return super(OptionalDevicesAssistantPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return ((self._wotPlusController.onEnabledStatusChanged, self.__onWotPlusDataChanged), (g_currentVehicle.onChanged, self.__onVehicleChanged))
+        return (
+         (
+          self._wotPlusController.onEnabledStatusChanged, self.__onWotPlusDataChanged),
+         (
+          g_currentVehicle.onChanged, self.__onVehicleChanged))
 
     def _initialize(self, *args, **kwargs):
         super(OptionalDevicesAssistantPresenter, self)._initialize(*args, **kwargs)
@@ -97,7 +97,10 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
         return
 
     def createToolTipContent(self, event, contentID):
-        return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0))) if contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip() else None
+        if contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip():
+            return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0)))
+        else:
+            return
 
     def __onWotPlusDataChanged(self, isEnabledVal):
         if isEnabledVal is None:

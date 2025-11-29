@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/currency_reserves/reserves_award_view.py
 from constants import PREMIUM_TYPE
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl, getWotPlusShopUrl
@@ -20,7 +18,7 @@ class ReservesAwardView(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    __slots__ = ('_wotPlusUILogger',)
+    __slots__ = ('_wotPlusUILogger', )
     _COMMON_SOUND_SPACE = RESERVES_AWARD_SOUND_SPACE
 
     def __init__(self, layoutID, *args, **kwargs):

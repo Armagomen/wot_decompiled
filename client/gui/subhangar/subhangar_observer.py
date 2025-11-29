@@ -1,13 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/subhangar/subhangar_observer.py
 import logging
 from collections import namedtuple
 from functools import partial
-import typing
-import CGF
-import Hangar
-import Math
-import ResMgr
+import typing, CGF, Hangar, Math, ResMgr
 from cgf_components.hangar_camera_manager import HangarCameraManager
 from frameworks.state_machine import BaseStateObserver
 from gui.subhangar.subhangar_state_groups import SubhangarStateGroupConfigProvider, CameraMover
@@ -36,7 +30,9 @@ def hangarVehicleAABB():
         if not appearance or not appearance.collisions:
             return None
         collisions = appearance.collisions
-        enclosingAABB = (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0))
+        enclosingAABB = (
+         Math.Vector3(0.0, 0.0, 0.0),
+         Math.Vector3(0.0, 0.0, 0.0))
         for index in TankPartIndexes.ALL:
             aabb = collisions.getBoundingBox(index)
             enclosingAABB[0].x = min(enclosingAABB[0].x, aabb[0].x)
@@ -58,7 +54,7 @@ def selectItemByTankSize(tankSizeLowerBounds, items, default=None):
     if not aabb:
         if default:
             return default
-        return items[-1]
+        return items[(-1)]
     maxDimension = max(abs(aabb[1].x - aabb[0].x), abs(aabb[1].y - aabb[0].y), abs(aabb[1].z - aabb[0].z))
     if len(tankSizeLowerBounds) != len(items):
         _logger.error('tankSizeLowerBounds (%r) and items (%r) have to be equally sized.', tankSizeLowerBounds, items)
@@ -146,7 +142,7 @@ class SubhangarObserver(BaseStateObserver):
                 _logger.debug('Queued %s for deactivation due to exiting %r state', config.subHangar, state)
                 self.__subHangarsToDeactivate.add(config)
 
-        self.__subHangarsToActivate = set((config for config in self.__subHangarsToActivate if config.state is not state))
+        self.__subHangarsToActivate = set(config for config in self.__subHangarsToActivate if config.state is not state)
 
     def __navigationsFinished(self, *_):
         if self.__hangarSpace.spaceInited:
@@ -165,7 +161,8 @@ class SubhangarObserver(BaseStateObserver):
                 _logger.info('Deactivating %s', config.subHangar)
                 Hangar.deactivateGroup(hangarSpaceId, config.subHangar.name)
 
-        self.__activatedSubHangars = [ subhangarActivationConfig for subhangarActivationConfig in self.__activatedSubHangars if subhangarActivationConfig not in self.__subHangarsToDeactivate ]
+        self.__activatedSubHangars = [ subhangarActivationConfig for subhangarActivationConfig in self.__activatedSubHangars if subhangarActivationConfig not in self.__subHangarsToDeactivate
+                                     ]
         for config in self.__subHangarsToActivate:
             if config not in self.__activatedSubHangars:
                 _logger.info('Activating %s.', config.subHangar)
@@ -174,11 +171,11 @@ class SubhangarObserver(BaseStateObserver):
 
         cameraManager = CGF.getManager(hangarSpaceId, HangarCameraManager)
         if cameraManager and (self.__subHangarsToDeactivate or self.__subHangarsToActivate):
-            configWithCameras = [ config for config in self.__activatedSubHangars if config.subHangar.defaultCamera ]
+            configWithCameras = [ config for config in self.__activatedSubHangars if config.subHangar.defaultCamera
+                                ]
             if configWithCameras:
-                subHangar, _, cameraMover = configWithCameras[-1]
+                subHangar, _, cameraMover = configWithCameras[(-1)]
                 _logger.debug('Switching to %s camera (group: %s).', subHangar.defaultCamera, subHangar)
-                cameraManager.clearCurrentCameraComponents()
                 self.__callbackDelayer.clearCallbacks()
                 self.__callbackDelayer.delayCallback(0, partial(self.__switchToCameraWhenLoaded, subHangar.defaultCamera, cameraMover))
             else:
@@ -192,6 +189,5 @@ class SubhangarObserver(BaseStateObserver):
         cameraManager = CGF.getManager(hangarSpaceId, HangarCameraManager)
         if not cameraManager or not cameraManager.cameraExists(cameraName):
             return 0
-        else:
-            cameraMover.moveCamera(cameraManager, cameraName)
-            return None
+        cameraMover.moveCamera(cameraManager, cameraName)
+        return

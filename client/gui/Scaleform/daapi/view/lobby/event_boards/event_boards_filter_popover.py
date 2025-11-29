@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_filter_popover.py
 from gui.Scaleform.daapi.view.meta.EventBoardsResultFilterPopoverViewMeta import EventBoardsResultFilterPopoverViewMeta
 from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.shared.utils.functions import makeTooltip
@@ -27,7 +25,7 @@ class EventBoardsFilterPopover(EventBoardsResultFilterPopoverViewMeta):
         leaderboards = eventData.getLeaderboards()
         if leaderboardID is None:
             leaderboardID = leaderboards[0][0]
-        data = {'filters': makeFiltersVO(eventType, leaderboards, leaderboardID),
-         'tooltip': makeTooltip(EVENT_BOARDS.POPOVER_BUTTONS_RATING, '#event_boards:popover/tooltip/{}'.format(eventType))}
+        data = {'filters': makeFiltersVO(eventType, leaderboards, leaderboardID), 
+           'tooltip': makeTooltip(EVENT_BOARDS.POPOVER_BUTTONS_RATING, ('#event_boards:popover/tooltip/{}').format(eventType))}
         self.as_setInitDataS(data)
         return

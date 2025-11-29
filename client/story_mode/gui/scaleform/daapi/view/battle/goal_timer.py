@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/goal_timer.py
 from functools import partial
-import BigWorld
-import SoundGroups
+import BigWorld, SoundGroups
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
@@ -106,7 +103,7 @@ class StoryModeTimer(StoryModeTimerMeta, IAbstractPeriodView):
 
     def __updateTimer(self, timeLeft):
         minutes, seconds = divmod(int(timeLeft), ONE_MINUTE)
-        self.as_updateTimeS('{:02d}:{:02d}'.format(minutes, seconds))
+        self.as_updateTimeS(('{:02d}:{:02d}').format(minutes, seconds))
 
     def __callWWISE(self, wwiseEventName):
         sound = SoundGroups.g_instance.getSound2D(wwiseEventName)

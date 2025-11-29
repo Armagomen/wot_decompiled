@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/shared/gui_items/dossier/stats.py
-import logging
-import math
+import logging, math
 from collections import namedtuple
 import typing
 from gui.shared.gui_items.dossier.stats import AccountDossierStats, VehicleDossierStats, _BattleStatsBlock, _Battle2StatsBlock, _MaxStatsBlock, _VehiclesStatsBlock, _MaxVehicleStatsBlock
@@ -16,14 +13,14 @@ def getComp7DossierStats(stats, archive=None, season=None):
         clazz = Comp7StatsBlock
     else:
         _logger.warning('invalid dossier stats parameter')
-        return None
+        return
     if archive:
-        return clazz(stats._getDossierItem(), 'Archive{}'.format(archive))
-    elif season:
-        return clazz(stats._getDossierItem(), 'Season{}'.format(season))
+        return clazz(stats._getDossierItem(), ('Archive{}').format(archive))
     else:
+        if season:
+            return clazz(stats._getDossierItem(), ('Season{}').format(season))
         _logger.warning('comp7 season or archive number must be specified!')
-        return None
+        return
 
 
 class Comp7StatsBlock(_BattleStatsBlock, _Battle2StatsBlock, _MaxStatsBlock):
@@ -75,19 +72,31 @@ class Comp7StatsBlock(_BattleStatsBlock, _Battle2StatsBlock, _MaxStatsBlock):
 
     def getAvgPrestigePoints(self):
         avgValue = self._getAvgValue(self.getBattlesCount, self.getPrestigePoints)
-        return math.ceil(avgValue) if avgValue is not None else None
+        if avgValue is not None:
+            return math.ceil(avgValue)
+        else:
+            return
 
     def getAvgPoiCaptured(self):
         avgValue = self._getAvgValue(self.getBattlesCount, self.getPoiCaptured)
-        return round(avgValue) if avgValue is not None else None
+        if avgValue is not None:
+            return round(avgValue)
+        else:
+            return
 
     def getAvgRoleSkillUsed(self):
         avgValue = self._getAvgValue(self.getBattlesCount, self.getRoleSkillUsed)
-        return round(avgValue) if avgValue is not None else None
+        if avgValue is not None:
+            return round(avgValue)
+        else:
+            return
 
     def getAvgHealthRepair(self):
         avgValue = self._getAvgValue(self.getBattlesCount, self.getHealthRepair)
-        return math.ceil(avgValue) if avgValue is not None else None
+        if avgValue is not None:
+            return math.ceil(avgValue)
+        else:
+            return
 
     def _getStatsBlock(self, dossier):
         return self._getDossierBlock(dossier, 'comp7')
@@ -100,11 +109,15 @@ class Comp7StatsBlock(_BattleStatsBlock, _Battle2StatsBlock, _MaxStatsBlock):
 
     def _getDossierBlock(self, dossier, blockPrefix):
         dossierDescr = dossier.getDossierDescr()
-        blockName = '{}{}'.format(blockPrefix, self._statsKey)
-        return dossierDescr[blockName] if dossierDescr.isBlockInLayout(blockName) else {}
+        blockName = ('{}{}').format(blockPrefix, self._statsKey)
+        if dossierDescr.isBlockInLayout(blockName):
+            return dossierDescr[blockName]
+        return {}
 
 
-_Comp7VehiclesDossiersCut = namedtuple('Comp7VehiclesDossiersCut', ('battlesCount', 'wins', 'xp', 'prestigePoints'))
+_Comp7VehiclesDossiersCut = namedtuple('Comp7VehiclesDossiersCut', ('battlesCount',
+                                                                    'wins', 'xp',
+                                                                    'prestigePoints'))
 
 class Comp7VehiclesDossiersCut(_Comp7VehiclesDossiersCut):
 

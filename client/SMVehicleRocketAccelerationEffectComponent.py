@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMVehicleRocketAccelerationEffectComponent.py
 from functools import partial
-import typing
-import BigWorld
-import CGF
+import typing, BigWorld, CGF
 from cgf_components.rocket_acceleration_component import RocketAccelerationStateListener
 from debug_utils import LOG_ERROR
 from items.components.c11n_constants import SLOT_DEFAULT_ALLOWED_MODEL
@@ -56,11 +52,11 @@ class SMVehicleRocketAccelerationEffectComponent(DynamicScriptComponent):
         accelerationParams = self.entity.typeDescriptor.type.rocketAccelerationParams
         if accelerationParams is None or accelerationParams.effectsPrefab is None:
             return
+        modelsSet = self.entity.appearance.outfit.modelsSet or SLOT_DEFAULT_ALLOWED_MODEL
+        if modelsSet not in accelerationParams.effectsPrefab:
+            LOG_ERROR(('Effects prefab path is not specified for modelsSet.').format(modelsSet))
+            return
         else:
-            modelsSet = self.entity.appearance.outfit.modelsSet or SLOT_DEFAULT_ALLOWED_MODEL
-            if modelsSet not in accelerationParams.effectsPrefab:
-                LOG_ERROR('Effects prefab path is not specified for modelsSet.'.format(modelsSet))
-                return
             return accelerationParams.effectsPrefab[modelsSet]
 
     def _onLoaded(self, gameObject):
@@ -96,4 +92,7 @@ class SMVehicleRocketAccelerationEffectComponent(DynamicScriptComponent):
         return
 
     def _getRocketAcceleration(self):
-        return self._gameObject.findComponentByType(RocketAccelerationStateListener) if self._gameObject is not None else None
+        if self._gameObject is not None:
+            return self._gameObject.findComponentByType(RocketAccelerationStateListener)
+        else:
+            return

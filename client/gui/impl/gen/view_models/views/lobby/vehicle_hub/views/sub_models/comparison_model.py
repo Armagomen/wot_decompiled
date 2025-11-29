@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_hub/views/sub_models/comparison_model.py
 from frameworks.wulf import ViewModel
 
 class ComparisonModel(ViewModel):
-    __slots__ = ('onAddToComparison',)
+    __slots__ = ('onAddToComparison', )
     ENABLED = 'enabled'
     DISABLED_FULL_BASKET = 'disabledFullBasket'
     DISABLED_ON_SERVER = 'disabledOnServer'

@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/goodies/goodies_cache.py
 from collections import defaultdict
 from typing import TYPE_CHECKING
 from debug_utils import LOG_WARNING
 from goodies.goodie_constants import GOODIE_VARIETY, GOODIE_STATE, GOODIE_TARGET_TYPE
 from goodies.goodie_helpers import CURRENCY_TO_RESOURCE_TYPE
-from gui.goodies.goodie_items import Booster, PersonalVehicleDiscount, ClanReservePresenter, DemountKit, RecertificationForm, MentoringLicense
+from gui.goodies.goodie_items import Booster, PersonalVehicleDiscount, ClanReservePresenter, DemountKit, RecertificationForm, MentoringLicense, PersonalPetDiscount
 from gui.shared.money import Money
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
@@ -27,7 +25,7 @@ def _createDiscount(discountID, discountDescription, proxy):
         return _DISCOUNT_TYPES_MAPPING[targetType](discountID, discountDescription, proxy)
     else:
         LOG_WARNING('Current discount with ID: %s and type: %s is not supported by UX' % (discountID, targetType))
-        return None
+        return
 
 
 def _createDemountKit(demountKitID, demountKitDescription, proxy):
@@ -42,12 +40,13 @@ def _createMentoringLicense(mentoringLicenseID, mentoringLicenseDescription, pro
     return MentoringLicense(mentoringLicenseID, mentoringLicenseDescription, proxy)
 
 
-_GOODIES_VARIETY_MAPPING = {GOODIE_VARIETY.BOOSTER: _createBooster,
- GOODIE_VARIETY.DISCOUNT: _createDiscount,
- GOODIE_VARIETY.DEMOUNT_KIT: _createDemountKit,
- GOODIE_VARIETY.RECERTIFICATION_FORM: _createRecertificationForm,
- GOODIE_VARIETY.MENTORING_LICENSE: _createMentoringLicense}
-_DISCOUNT_TYPES_MAPPING = {GOODIE_TARGET_TYPE.ON_BUY_VEHICLE: PersonalVehicleDiscount}
+_GOODIES_VARIETY_MAPPING = {GOODIE_VARIETY.BOOSTER: _createBooster, 
+   GOODIE_VARIETY.DISCOUNT: _createDiscount, 
+   GOODIE_VARIETY.DEMOUNT_KIT: _createDemountKit, 
+   GOODIE_VARIETY.RECERTIFICATION_FORM: _createRecertificationForm, 
+   GOODIE_VARIETY.MENTORING_LICENSE: _createMentoringLicense}
+_DISCOUNT_TYPES_MAPPING = {GOODIE_TARGET_TYPE.ON_BUY_VEHICLE: PersonalVehicleDiscount, 
+   GOODIE_TARGET_TYPE.ON_BUY_PET: PersonalPetDiscount}
 
 class GoodiesCache(IGoodiesCache):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -92,10 +91,7 @@ class GoodiesCache(IGoodiesCache):
             defPrice = defPrices
             altPrice = None
             defAltPrice = None
-        return (buyPrice,
-         defPrice,
-         altPrice,
-         defAltPrice)
+        return (buyPrice, defPrice, altPrice, defAltPrice)
 
     def isBoosterHiddenInShop(self, boosterID):
         return boosterID in self._items.shop.getHiddenBoosters()

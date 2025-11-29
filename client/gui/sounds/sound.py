@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/sound.py
-import BigWorld
-import SoundGroups
+import BigWorld, SoundGroups
 
 class Sound(object):
 

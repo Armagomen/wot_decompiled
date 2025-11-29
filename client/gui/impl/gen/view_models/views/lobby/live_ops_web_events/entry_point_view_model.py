@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/live_ops_web_events/entry_point_view_model.py
 from gui.impl.gen.view_models.views.lobby.live_ops_web_events.entry_point_base import EntryPointBase
 
 class EntryPointViewModel(EntryPointBase):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
     def __init__(self, properties=6, commands=1):
         super(EntryPointViewModel, self).__init__(properties=properties, commands=commands)

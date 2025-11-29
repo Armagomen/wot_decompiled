@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/common/select_slot_spec_dialog_model.py
 from gui.impl.gen.view_models.common.price_model import PriceModel
 from gui.impl.gen.view_models.views.lobby.common.dialog_with_exchange import DialogWithExchange
 from gui.impl.gen.view_models.views.lobby.common.select_slot_spec_dialog_content_model import SelectSlotSpecDialogContentModel

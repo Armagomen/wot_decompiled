@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/research/buy_module_dialog_view.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -18,7 +16,8 @@ from gui.impl.gen.view_models.views.lobby.research.insufficient_credits_tooltip_
 _logger = logging.getLogger(__name__)
 
 class BuyModuleDialogView(FullScreenDialogView):
-    __slots__ = ('_module', '_previousModule', '_returnedData', '_currency', '_isAutoSellEnabled', '_mountDisabledReason')
+    __slots__ = ('_module', '_previousModule', '_returnedData', '_currency', '_isAutoSellEnabled',
+                 '_mountDisabledReason')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, module, previousModule, currency, mountDisabledReason):

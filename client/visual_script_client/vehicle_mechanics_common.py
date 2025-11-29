@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/vehicle_mechanics_common.py
 import typing
 from constants import IS_VS_EDITOR
 from events_handler import eventHandler
@@ -14,7 +12,7 @@ from visual_script.vehicle_mechanics_blocks import VehicleMechanicsMeta
 if typing.TYPE_CHECKING:
     from _weakref import ReferenceType
     from vehicles.mechanics.mechanic_states import IMechanicStatesComponent
-cgf_helpers = dependencyImporter('cgf_common.cgf_helpers')
+cgf_helpers, = dependencyImporter('cgf_common.cgf_helpers')
 if not IS_VS_EDITOR:
     from vehicles.components.component_life_cycle import IComponentLifeCycleListenerLogic
     from vehicles.mechanics.mechanic_states import IMechanicStatesListenerLogic
@@ -55,7 +53,7 @@ class VehicleMechanicEventsBlock(Block, VehicleMechanicsMeta, ComponentListener,
         return [ASPECT.CLIENT]
 
     def captionText(self):
-        return 'On {} {}'.format(self._vehicleMechanic.value, self._EVENTS_NAME)
+        return ('On {} {}').format(self._vehicleMechanic.value, self._EVENTS_NAME)
 
     @eventHandler
     def onComponentDestroyed(self):
@@ -93,7 +91,8 @@ class VehicleSelectableMechanicEventsBlock(VehicleMechanicEventsBlock):
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Vehicle Mechanic', SLOT_TYPE.STR, buildStrKeysValue(*cls._getInitParamMechanics()), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [
+         InitParam('Vehicle Mechanic', SLOT_TYPE.STR, buildStrKeysValue(*cls._getInitParamMechanics()), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     @classmethod
     def _getInitParamMechanics(cls):

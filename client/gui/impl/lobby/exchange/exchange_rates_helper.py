@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/exchange/exchange_rates_helper.py
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import EXCHANGE_GOLD_RATE_DISCOUNT_ANIMATION_SHOWED, EXCHANGE_XP_RATE_DISCOUNT_ANIMATION_SHOWED
@@ -21,19 +19,23 @@ if typing.TYPE_CHECKING:
     from exchange.personal_discounts_constants import ExchangeDiscountInfo
 MAX_SHOW_DISCOUNTS_INDEX = 5
 DISCOUNT_ANIMATION_TIME = 15.0
-EXCHANGE_RATE_NAME_TO_CURRENCIES = {EXCHANGE_RATE_GOLD_NAME: (Currency.GOLD, Currency.CREDITS),
- EXCHANGE_RATE_FREE_XP_NAME: (Currency.FREE_XP, Currency.GOLD)}
-NEED_ITEMS_TYPE_TO_EXCHANGE_RATE = {Currency.CREDITS: EXCHANGE_RATE_GOLD_NAME,
- Currency.FREE_XP: EXCHANGE_RATE_FREE_XP_NAME}
-EXCHANGE_RATE_TO_UI_KEY = {EXCHANGE_RATE_FREE_XP_NAME: EXCHANGE_XP_RATE_DISCOUNT_ANIMATION_SHOWED,
- EXCHANGE_RATE_GOLD_NAME: EXCHANGE_GOLD_RATE_DISCOUNT_ANIMATION_SHOWED}
+EXCHANGE_RATE_NAME_TO_CURRENCIES = {EXCHANGE_RATE_GOLD_NAME: (
+                           Currency.GOLD, Currency.CREDITS), 
+   EXCHANGE_RATE_FREE_XP_NAME: (
+                              Currency.FREE_XP, Currency.GOLD)}
+NEED_ITEMS_TYPE_TO_EXCHANGE_RATE = {Currency.CREDITS: EXCHANGE_RATE_GOLD_NAME, 
+   Currency.FREE_XP: EXCHANGE_RATE_FREE_XP_NAME}
+EXCHANGE_RATE_TO_UI_KEY = {EXCHANGE_RATE_FREE_XP_NAME: EXCHANGE_XP_RATE_DISCOUNT_ANIMATION_SHOWED, 
+   EXCHANGE_RATE_GOLD_NAME: EXCHANGE_GOLD_RATE_DISCOUNT_ANIMATION_SHOWED}
 
 def getCurrentTime():
     return time_utils.getCurrentLocalServerTimestamp()
 
 
 def isDiscountViewed(discountType):
-    return isGoldExchangeRateDiscountViewed() if discountType == EXCHANGE_RATE_GOLD_NAME else isExperienceTranslationRateDiscountViewed()
+    if discountType == EXCHANGE_RATE_GOLD_NAME:
+        return isGoldExchangeRateDiscountViewed()
+    return isExperienceTranslationRateDiscountViewed()
 
 
 def getRateNameFromCurrencies(currencies):
@@ -71,11 +73,15 @@ def _isDiscountViewed(exchangeName, exchangeDiscountCtr=None):
         if not viewedData:
             return False
         lastViewedUID, viewedTime = viewedData
-        return True if _getDiscountUID(discount) == lastViewedUID and viewedTime + DISCOUNT_ANIMATION_TIME < getCurrentTime() else False
+        if _getDiscountUID(discount) == lastViewedUID and viewedTime + DISCOUNT_ANIMATION_TIME < getCurrentTime():
+            return True
+        return False
 
 
 def _getDiscountUID(discount):
-    return discount.tokenName if discount.isPersonal else hash(str(discount.discountLifetime) + discount.exchangeType + str(discount.resourceRateValue) + str(discount.goldRateValue) + discount.discountType)
+    if discount.isPersonal:
+        return discount.tokenName
+    return hash(str(discount.discountLifetime) + discount.exchangeType + str(discount.resourceRateValue) + str(discount.goldRateValue) + discount.discountType)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -105,7 +111,10 @@ def getAllLimitedDiscountsAmount(allDiscounts):
 
 
 def getShowFormatRate(discount):
-    return (discount.goldRateValue, discount.resourceRateValue) if discount.exchangeType == EXCHANGE_RATE_GOLD_NAME else (discount.resourceRateValue, discount.goldRateValue)
+    if discount.exchangeType == EXCHANGE_RATE_GOLD_NAME:
+        return (discount.goldRateValue, discount.resourceRateValue)
+    return (
+     discount.resourceRateValue, discount.goldRateValue)
 
 
 @dependency.replace_none_kwargs(exchangeProvider=IExchangeRatesWithDiscountsProvider)
@@ -183,7 +192,8 @@ def fillAllDiscountsModel(allDiscountsModel, allLimitedDiscounts, selectedPrice,
         allDiscountsModel.addViewModel(discountModel)
         if selectedResource - discountAmount <= 0:
             break
-        selectedResource -= discountAmount
+        else:
+            selectedResource -= discountAmount
 
     return allDiscountsModel
 
@@ -206,7 +216,8 @@ def createSystemExchangeNotification(discounts, goldAmount, defaultRate, baseRat
         if exchanged == discount.amountOfDiscount and discounts:
             text += '\n' + backport.text(R.strings.personal_exchange_rates.exchange.personalExchangeRates.exceeded(), rateFrom=getattr(discount, fromRate), rateTo=getattr(discount, toRate))
             text += ';\n\n' if exchangedWithDiscounts != goldAmount else '.'
-        text += '\n' + backport.text(R.strings.personal_exchange_rates.exchange.personalExchangeRate(), rateFrom=getattr(discount, fromRate), rateTo=getattr(discount, toRate))
+        else:
+            text += '\n' + backport.text(R.strings.personal_exchange_rates.exchange.personalExchangeRate(), rateFrom=getattr(discount, fromRate), rateTo=getattr(discount, toRate))
 
     if exchangedWithDiscounts < goldAmount:
         goldExchanged = goldAmount - exchangedWithDiscounts
@@ -233,4 +244,5 @@ def handleAndRoundStepperInput(params, exchangeRate, validateGold=True):
         isRoundedToZero = downSelectedGold == 0 and selectedGold != 0
         if not isRoundedToZero and userSelectedCurrency - downSelectedCurrency < upperSelectedCurrency - userSelectedCurrency:
             selectedGold, selectedCurrency = downSelectedGold, downSelectedCurrency
-    return (selectedGold, selectedCurrency)
+    return (
+     selectedGold, selectedCurrency)

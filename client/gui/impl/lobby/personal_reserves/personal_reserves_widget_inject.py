@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_widget_inject.py
 import logging
 from gui.Scaleform.daapi.view.meta.PersonalReservesWidgetInjectMeta import PersonalReservesWidgetInjectMeta
 from gui.impl.lobby.personal_reserves.personal_reserves_widget import PersonalReservesWidget

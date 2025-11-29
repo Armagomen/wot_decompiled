@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/states.py
 from __future__ import absolute_import
-import logging
-import math
-import typing
-import BigWorld
+import logging, math, typing, BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import StateFlags
@@ -57,7 +52,8 @@ class _VehicleHubChildState(LobbyState, SubhangarStateGroupConfigProvider):
         lsm = self.getMachine()
         self.addNavigationTransition(lsm.getStateByCls(VehicleCompareState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(BlueprintState), record=True)
-        self.addNavigationTransition(lsm.getStateByCls(_LoadingState), record=True)
+        loadingState = lsm.getStateByCls(_LoadingState)
+        self.addTransition(loadingState.makeTransition(TransitionType.INTERNAL, True), loadingState)
         from gui.Scaleform.daapi.view.lobby.profile.states import ServiceRecordState
         self.addNavigationTransition(lsm.getStateByCls(ServiceRecordState), record=True)
 
@@ -77,7 +73,8 @@ class _VehicleHubChildState(LobbyState, SubhangarStateGroupConfigProvider):
     def getSubhangarStateGroupConfig(self):
         if not self._SUBHANGAR_GROUPS_BY_TANK_SIZE:
             _logger.error('Subhangar groups cannot be none.')
-        return SubhangarStateGroupConfig((selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, self._SUBHANGAR_GROUPS_BY_TANK_SIZE),), self.getParent().cameraMover)
+        return SubhangarStateGroupConfig((
+         selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, self._SUBHANGAR_GROUPS_BY_TANK_SIZE),), self.getParent().cameraMover)
 
 
 @SubScopeSubLayerState.parentOf
@@ -129,7 +126,9 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
 
     def serializeParams(self):
         view = self.getMachine().getRelatedView(self)
-        return {} if not view else {'vhCtx': view.vehicleCtx}
+        if not view:
+            return {}
+        return {'vhCtx': view.vehicleCtx}
 
     def _getViewLoadCtx(self, event):
         return {'ctx': event.params.get('vhCtx')}
@@ -151,9 +150,10 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
         pitch = math.radians(cfg['v_start_angles'][1])
         roll = math.radians(cfg['v_start_angles'][2])
         shadowYOffset = cfg['shadow_forward_y_offset'] if isForwardPipeline else cfg['shadow_deferred_y_offset']
-        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos,
-         'rotateYPR': (yaw, pitch, roll),
-         'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos, 
+           'rotateYPR': (
+                       yaw, pitch, roll), 
+           'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _onExited(self):
         if self.__blur is not None:
@@ -209,14 +209,20 @@ class _LoadingState(LobbyState, SubhangarStateGroupConfigProvider):
 class OverviewState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.OVERVIEW
     TAB_NAME = VehicleHubViewModel.OVERVIEW
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubOverviewSmallTank, SubhangarStateGroups.VehicleHubOverviewMediumTank, SubhangarStateGroups.VehicleHubOverviewLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
+     SubhangarStateGroups.VehicleHubOverviewSmallTank,
+     SubhangarStateGroups.VehicleHubOverviewMediumTank,
+     SubhangarStateGroups.VehicleHubOverviewLargeTank)
 
 
 @VehicleHubState.parentOf
 class ModulesState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.MODULES
     TAB_NAME = VehicleHubViewModel.MODULES
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubModulesSmallTank, SubhangarStateGroups.VehicleHubModulesMediumTank, SubhangarStateGroups.VehicleHubModulesLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
+     SubhangarStateGroups.VehicleHubModulesSmallTank,
+     SubhangarStateGroups.VehicleHubModulesMediumTank,
+     SubhangarStateGroups.VehicleHubModulesLargeTank)
 
     def registerTransitions(self):
         super(ModulesState, self).registerTransitions()
@@ -236,7 +242,10 @@ class ModulesState(_VehicleHubChildState):
 class VehSkillTreeState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.VEH_SKILL_TREE
     TAB_NAME = VehicleHubViewModel.VEH_SKILL_TREE
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubUpgradesSmallTank, SubhangarStateGroups.VehicleHubUpgradesMediumTank, SubhangarStateGroups.VehicleHubUpgradesLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
+     SubhangarStateGroups.VehicleHubUpgradesSmallTank,
+     SubhangarStateGroups.VehicleHubUpgradesMediumTank,
+     SubhangarStateGroups.VehicleHubUpgradesLargeTank)
 
     def registerStates(self):
         self.addChildState(VehSkillTreeInitialState(LobbyStateFlags.INITIAL))
@@ -254,7 +263,8 @@ class _VehSkillTreeSubStateBase(LobbyState):
 
     def getNavigationDescription(self):
         from gui.shared.event_dispatcher import showVehSkillTreeIntro
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_hub()), infos=(LobbyStateDescription.Info(tooltipBody=backport.text(R.strings.veh_skill_tree.intro.button.tooltip()), onMoreInfoRequested=showVehSkillTreeIntro),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_hub()), infos=(
+         LobbyStateDescription.Info(tooltipBody=backport.text(R.strings.veh_skill_tree.intro.button.tooltip()), onMoreInfoRequested=showVehSkillTreeIntro),))
 
 
 @VehSkillTreeState.parentOf
@@ -309,7 +319,10 @@ class VehSkillTreePrestigeState(_VehSkillTreeSubStateBase):
 class StatsState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.STATS
     TAB_NAME = VehicleHubViewModel.STATS
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubStatsSmallTank, SubhangarStateGroups.VehicleHubStatsMediumTank, SubhangarStateGroups.VehicleHubStatsLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
+     SubhangarStateGroups.VehicleHubStatsSmallTank,
+     SubhangarStateGroups.VehicleHubStatsMediumTank,
+     SubhangarStateGroups.VehicleHubStatsLargeTank)
 
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(StatsState, self).__init__(flags=flags)
@@ -327,4 +340,7 @@ class StatsState(_VehicleHubChildState):
 class ArmorState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.ARMOR
     TAB_NAME = VehicleHubViewModel.ARMOR
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubArmorSmallTank, SubhangarStateGroups.VehicleHubArmorMediumTank, SubhangarStateGroups.VehicleHubArmorLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
+     SubhangarStateGroups.VehicleHubArmorSmallTank,
+     SubhangarStateGroups.VehicleHubArmorMediumTank,
+     SubhangarStateGroups.VehicleHubArmorLargeTank)

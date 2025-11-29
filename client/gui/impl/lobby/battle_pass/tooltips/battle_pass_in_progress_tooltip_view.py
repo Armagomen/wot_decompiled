@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_in_progress_tooltip_view.py
 from collections import OrderedDict
 from battle_pass_common import BattlePassConsts, isPostProgressionChapter
 import constants
@@ -21,7 +19,7 @@ class BattlePassInProgressTooltipView(ViewImpl):
     __battlePass = dependency.descriptor(IBattlePassController)
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
-    __slots__ = ('__battleType',)
+    __slots__ = ('__battleType', )
 
     def __init__(self, battleType=None, *args, **kwargs):
         settings = ViewSettings(R.views.lobby.battle_pass.tooltips.BattlePassInProgressTooltipView())
@@ -42,7 +40,7 @@ class BattlePassInProgressTooltipView(ViewImpl):
             return
         else:
             battleType = self.__battleType or prbDispatcher.getEntity().getQueueType()
-            with self.getViewModel().transaction() as model:
+            with self.getViewModel().transaction() as (model):
                 if self.__battleRoyaleController.isBattleRoyaleMode():
                     self.__updateBattleRoyalePoints(model)
                 else:
@@ -115,14 +113,16 @@ class BattlePassInProgressTooltipView(ViewImpl):
         for i, _ in enumerate(win):
             points = win[i] + lose[i]
             if points not in placesDict.keys():
-                placesDict[points] = [i + 1, i + 1]
-            placesDict[points][1] = i + 1
+                placesDict[points] = [
+                 i + 1, i + 1]
+            else:
+                placesDict[points][1] = i + 1
 
         placesDict = OrderedDict(sorted(placesDict.items(), reverse=True))
         points = []
         for key, value in placesDict.items():
             if key > 0:
-                strValue = str(value[0]) if value[0] == value[1] else '{}-{}'.format(str(value[0]), str(value[1]))
+                strValue = str(value[0]) if value[0] == value[1] else ('{}-{}').format(str(value[0]), str(value[1]))
                 points.append([strValue, key])
 
         return points

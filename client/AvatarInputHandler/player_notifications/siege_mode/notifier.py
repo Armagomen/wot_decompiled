@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/player_notifications/siege_mode/notifier.py
 from Event import Event
 from sound_notifications import SiegeModeSoundNotifications, TurboshaftModeSoundNotifications, TwinGunModeSoundNotifications, PillboxSiegeSoundNotifications
 from camera_shaker import SiegeModeCameraShaker

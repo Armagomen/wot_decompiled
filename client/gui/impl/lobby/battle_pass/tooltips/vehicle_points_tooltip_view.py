@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/vehicle_points_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.battle_pass.battle_pass_helpers import getSupportedCurrentArenaBonusType
 from gui.impl.gen import R
@@ -29,7 +27,7 @@ class VehiclePointsTooltipView(ViewImpl):
         return super(VehiclePointsTooltipView, self).getViewModel()
 
     def _onLoading(self, intCD, *args, **kwargs):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             vehicle = self.__itemsCache.items.getItemByCD(intCD)
             isSpecial = self.__battlePassController.isSpecialVehicle(intCD)
             currentPoints, limitPoints = self.__battlePassController.getVehicleProgression(intCD)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/events_debugger.py
 from debug_utils import LOG_DEBUG_DEV
 
 def _iterEventNames(events):
@@ -18,7 +16,7 @@ class EventsDebugger(object):
         return True
 
     def _getDebugPrefix(self):
-        pass
+        return '[EVENT]'
 
     def _buildDebugString(self, item):
         return '%s %s' % (self._getDebugPrefix(), item)

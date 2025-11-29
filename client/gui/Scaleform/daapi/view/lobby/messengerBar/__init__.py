@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.messengerBar.VehicleCompareCartButton import VehicleCompareCartButton
@@ -14,7 +12,9 @@ from gui.Scaleform.genConsts.SESSION_STATS_CONSTANTS import SESSION_STATS_CONSTA
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.messengerBar.ChannelListContextMenuHandler import ChannelListContextMenuHandler
-    return ((CONTEXT_MENU_HANDLER_TYPE.CHANNEL_LIST, ChannelListContextMenuHandler),)
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CHANNEL_LIST, ChannelListContextMenuHandler),)
 
 
 def getViewSettings():
@@ -24,7 +24,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.messengerBar.NotificationListButton import NotificationListButton
     from notification.NotificationListView import NotificationListView
     from notification.NotificationPopUpViewer import NotificationPopUpViewer
-    return (GroupedViewSettings(VIEW_ALIAS.NOTIFICATIONS_LIST, NotificationListView, 'notificationsList.swf', WindowLayer.WINDOW, 'notificationsList', VIEW_ALIAS.NOTIFICATIONS_LIST, ScopeTemplates.WINDOW_VIEWED_MULTISCOPE),
+    return (
+     GroupedViewSettings(VIEW_ALIAS.NOTIFICATIONS_LIST, NotificationListView, 'notificationsList.swf', WindowLayer.WINDOW, 'notificationsList', VIEW_ALIAS.NOTIFICATIONS_LIST, ScopeTemplates.WINDOW_VIEWED_MULTISCOPE),
      ComponentSettings(VIEW_ALIAS.CHANNEL_CAROUSEL, ChannelCarousel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.CONTACTS_LIST_BUTTON, ContactsListButton, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(VIEW_ALIAS.VEHICLE_COMPARE_CART_BUTTON, VehicleCompareCartButton, ScopeTemplates.DEFAULT_SCOPE),
@@ -36,11 +37,14 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (MessengerBarBusinessHandler(),)
+    return (
+     MessengerBarBusinessHandler(),)
 
 
 class MessengerBarBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.NOTIFICATIONS_LIST, self.loadViewByCtxEvent),)
+        listeners = (
+         (
+          VIEW_ALIAS.NOTIFICATIONS_LIST, self.loadViewByCtxEvent),)
         super(MessengerBarBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

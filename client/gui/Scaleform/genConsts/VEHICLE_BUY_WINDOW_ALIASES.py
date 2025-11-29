@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/VEHICLE_BUY_WINDOW_ALIASES.py
 
 
 class VEHICLE_BUY_WINDOW_ALIASES(object):

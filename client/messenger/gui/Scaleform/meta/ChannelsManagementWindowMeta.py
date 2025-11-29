@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/meta/ChannelsManagementWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class ChannelsManagementWindowMeta(AbstractWindowView):
@@ -17,10 +15,13 @@ class ChannelsManagementWindowMeta(AbstractWindowView):
         self._printOverrideError('createChannel')
 
     def as_hideChannelNameInputS(self, isHide):
-        return self.flashObject.as_hideChannelNameInput(isHide) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideChannelNameInput(isHide)
 
     def as_freezSearchButtonS(self, isEnable):
-        return self.flashObject.as_freezSearchButton(isEnable) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_freezSearchButton(isEnable)
 
     def as_getDataProviderS(self):
-        return self.flashObject.as_getDataProvider() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getDataProvider()

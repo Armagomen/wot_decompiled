@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/sound_constants.py
 from shared_utils import CONST_CONTAINER
 
 class EnabledStatus(object):
@@ -43,7 +41,5 @@ class SPEAKERS_CONFIG(object):
     SPEAKER_SETUP_2_0 = 2
     SPEAKER_SETUP_5_1 = 5
     SPEAKER_SETUP_7_1 = 7
-    RANGE = (AUTO_DETECTION,
-     SPEAKER_SETUP_2_0,
-     SPEAKER_SETUP_5_1,
-     SPEAKER_SETUP_7_1)
+    RANGE = (
+     AUTO_DETECTION, SPEAKER_SETUP_2_0, SPEAKER_SETUP_5_1, SPEAKER_SETUP_7_1)

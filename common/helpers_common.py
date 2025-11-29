@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/helpers_common.py
 import math
 from soft_exception import SoftException
 from battle_modifiers_common import BattleModifiers
@@ -10,11 +8,11 @@ if TYPE_CHECKING:
     from battle_modifiers_common import BATTLE_MODIFIERS_TYPE
     from items.components.gun_components import GunShot
     from items.tankmen import TankmanDescr
-TIME_UNITS = {'w': 604800,
- 'd': 86400,
- 'h': 3600,
- 'm': 60,
- 's': 1}
+TIME_UNITS = {'w': 604800, 
+   'd': 86400, 
+   'h': 3600, 
+   'm': 60, 
+   's': 1}
 PI = math.pi
 HALF_PI = PI * 0.5
 HULL_AIMING_PITCH_BITS = 16
@@ -28,7 +26,8 @@ def bisectLE(a, v, lo=0, hi=None):
         mid = (lo + hi >> 1) + 1
         if a[mid] <= v:
             lo = mid
-        hi = mid - 1
+        else:
+            hi = mid - 1
 
     return lo
 
@@ -38,7 +37,9 @@ def interpolateLinearly(arg, arg1, arg2, val1, val2, limitLower=False, limitUppe
         return val1
     if limitUpper and arg >= arg2:
         return val2
-    return val1 if arg1 == arg2 else val1 + (arg - arg1) * (val2 - val1) / (arg2 - arg1)
+    if arg1 == arg2:
+        return val1
+    return val1 + (arg - arg1) * (val2 - val1) / (arg2 - arg1)
 
 
 def computePiercingPowerAtDist(piercingPower, dist, modifiers=BattleModifiers()):
@@ -82,7 +83,7 @@ def computeShotMaxDistance(shot, modifiers=BattleModifiers()):
 def getFinalRetrainCost(tmanDescr, cost):
     discountMult = 1.0
     if tmanDescr:
-        discountMult = cost['discounts'].get('perk_{}'.format(tmanDescr.getFullSkillsCount()), 1.0)
+        discountMult = cost['discounts'].get(('perk_{}').format(tmanDescr.getFullSkillsCount()), 1.0)
     return (cost['credits'] * discountMult, cost['gold'] * discountMult)
 
 
@@ -134,7 +135,7 @@ def parseDuration(timeStr):
     parts = timeStr.split(' ')
     duration = 0
     for part in parts:
-        value, unit = part[:-1], part[-1]
+        value, unit = part[:-1], part[(-1)]
         duration += int(value) * TIME_UNITS[unit]
 
     if negative:
@@ -153,7 +154,9 @@ def unpackChunkObstacles(obstacles):
 def castNumberToPrettyStr(value):
     if isinstance(value, float):
         return str(value).rstrip('0').rstrip('.')
-    return str(value) if isinstance(value, int) else value
+    if isinstance(value, int):
+        return str(value)
+    return value
 
 
 def getPercentFromFloat(value, accuracy=2):
@@ -191,10 +194,11 @@ def _clipSegmentByAABB(start, stop, aabb):
                     return None
                 if t1 < tend:
                     tend = t1
-        if start[i] < min[i] or start[i] > max[i]:
+        elif start[i] < min[i] or start[i] > max[i]:
             return None
 
-    return (start + tbeg * delta, start + tend * delta)
+    return (
+     start + tbeg * delta, start + tend * delta)
 
 
 def encodeSegment(bbox, componentIndex, startPoint, endPoint):
@@ -229,11 +233,11 @@ def decodeSegment(segment, bbox):
     segStart = minimum + Vector3(delta[0] * (segment >> 16 & 255), delta[1] * (segment >> 24 & 255), delta[2] * (segment >> 32 & 255))
     segEnd = minimum + Vector3(delta[0] * (segment >> 40 & 255), delta[1] * (segment >> 48 & 255), delta[2] * (segment >> 56 & 255))
     offset = (segEnd - segStart) * 0.01
-    return (int(segment >> 8 & 255),
-     int(segment & 255),
-     segStart - offset,
-     segEnd + offset)
+    return (
+     int(segment >> 8 & 255), int(segment & 255), segStart - offset, segEnd + offset)
 
 
 def reprSlots(self):
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(('%s=%s' % (name, getattr(self, name, 'NOT_FOUND')) for name in self.__slots__)))
+    return '%s(%s)' % (
+     self.__class__.__name__,
+     (', ').join('%s=%s' % (name, getattr(self, name, 'NOT_FOUND')) for name in self.__slots__))

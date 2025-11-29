@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/instructions_presenter.py
 from __future__ import absolute_import
-import typing
-import SoundGroups
+import typing, SoundGroups
 from gui.impl.gen.view_models.views.lobby.loadout.instructions.instructions_model import InstructionsModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -33,14 +30,22 @@ class InstructionsPresenter(LoadoutPresenterBase[InstructionsModel]):
         return actions
 
     def _getEvents(self):
-        return super(InstructionsPresenter, self)._getEvents() + ((self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),)
+        return super(InstructionsPresenter, self)._getEvents() + (
+         (
+          self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),)
 
     def _createProvider(self, vehInteractingItem):
-        self._provider = LoadoutEntityProvider(vehInteractingItem, BattleBoosterInteractor, {BattleBoosterTabs.OPT_DEVICE: OptDeviceBattleBoosterProvider,
-         BattleBoosterTabs.CREW: CrewBattleBoosterProvider})
+        self._provider = LoadoutEntityProvider(vehInteractingItem, BattleBoosterInteractor, {BattleBoosterTabs.OPT_DEVICE: OptDeviceBattleBoosterProvider, 
+           BattleBoosterTabs.CREW: CrewBattleBoosterProvider})
 
     def _getCallbacks(self):
-        return (('stats.{}'.format(Currency.GOLD), self._onCurrencyUpdate), ('stats.{}'.format(Currency.CREDITS), self._onCurrencyUpdate), ('stats.{}'.format(Currency.CRYSTAL), self._onCurrencyUpdate))
+        return (
+         (
+          ('stats.{}').format(Currency.GOLD), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.CREDITS), self._onCurrencyUpdate),
+         (
+          ('stats.{}').format(Currency.CRYSTAL), self._onCurrencyUpdate))
 
     def _updateInteractor(self, item=None):
         super(InstructionsPresenter, self)._updateInteractor(item)
@@ -60,7 +65,7 @@ class InstructionsPresenter(LoadoutPresenterBase[InstructionsModel]):
         dataProviders = self._provider.dataProviders
         equipmentInstructionsDataProvider = dataProviders[BattleBoosterTabs.OPT_DEVICE]
         crewInstructionsDataProvider = dataProviders[BattleBoosterTabs.CREW]
-        with self.getViewModel().transaction() as instructModel:
+        with self.getViewModel().transaction() as (instructModel):
             instructModel.setAutoloadEnabled(interactor.getAutoRenewal().getLocalValue())
             if recreate:
                 equipmentInstructionsDataProvider.fillArray(instructModel.getEquipmentInstructions(), BaseVehSectionContext(self._currentSlotIndex))

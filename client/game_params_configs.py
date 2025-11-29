@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/game_params_configs.py
 import typing
 from commendations_schema import commendationsConfigSchema
 from params_schemas.veh_playlists_schema import vehPlaylistsConfigSchema
@@ -8,10 +6,7 @@ from config_schemas.umg import umgMissionsConfigSchema, umgEventsConfigSchema
 from config_schemas.umg_config import umgConfigSchema
 from player_satisfaction_schema import playerSatisfactionSchema
 from schema_manager import getSchemaManager
-import armor_inspector_common.schemas
-import hints_common.prebattle.newbie.schemas
-import hints_common.prebattle.schemas
-import hints_common.battle.schemas.newbie
+import armor_inspector_common.schemas, hints_common.prebattle.newbie.schemas, hints_common.prebattle.schemas, hints_common.battle.schemas.newbie
 from weekly_quests_common.weekly_quests_schema import weeklyQuestsSchema
 if typing.TYPE_CHECKING:
     from schema_manager import SchemaManager

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/clan_cm_handlers.py
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -15,8 +13,8 @@ class CLAN_CM_OPTIONS(CONST_CONTAINER):
 class BaseClanCMHandler(AbstractContextMenuHandler, EventSystemEntity):
 
     def __init__(self, cmProxy, ctx=None):
-        super(BaseClanCMHandler, self).__init__(cmProxy, ctx, {CLAN_CM_OPTIONS.CLAN_PROFILE: 'showClanProfile',
-         CLAN_CM_OPTIONS.COPY_TO_CB: 'copyToClipboard'})
+        super(BaseClanCMHandler, self).__init__(cmProxy, ctx, {CLAN_CM_OPTIONS.CLAN_PROFILE: 'showClanProfile', 
+           CLAN_CM_OPTIONS.COPY_TO_CB: 'copyToClipboard'})
         self.__clanDbID = int(ctx.dbID)
         self.__clanName = ctx.clanName
         self.__clanAbbrev = ctx.clanAbbrev
@@ -28,4 +26,6 @@ class BaseClanCMHandler(AbstractContextMenuHandler, EventSystemEntity):
         utils.copyToClipboard(clans_fmts.getClanFullName(self.__clanName, self.__clanAbbrev))
 
     def _generateOptions(self, ctx=None):
-        return [self._makeItem(CLAN_CM_OPTIONS.CLAN_PROFILE, MENU.contextmenu('viewClanProfile')), self._makeItem(CLAN_CM_OPTIONS.COPY_TO_CB, MENU.contextmenu('copyClanName'))]
+        return [
+         self._makeItem(CLAN_CM_OPTIONS.CLAN_PROFILE, MENU.contextmenu('viewClanProfile')),
+         self._makeItem(CLAN_CM_OPTIONS.COPY_TO_CB, MENU.contextmenu('copyClanName'))]

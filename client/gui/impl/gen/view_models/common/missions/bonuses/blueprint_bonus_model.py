@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/common/missions/bonuses/blueprint_bonus_model.py
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
 
 class BlueprintBonusModel(IconBonusModel):

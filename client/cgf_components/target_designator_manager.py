@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/target_designator_manager.py
-import BigWorld
-import CGF
-import SoundGroups
+import BigWorld, CGF, SoundGroups
 from cgf_script.managers_registrator import autoregister
 from chat_commands_consts import LocationMarkerSubType
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
@@ -83,7 +79,9 @@ class TargetDesignatorSoundManager(CGF.ComponentManager, VehiclePassengerInfoWat
         return
 
     def __isEnemyVehicle(self, vehicle):
-        return False if vehicle is None or self.__currentVehicle is None else vehicle.publicInfo.team != self.__currentVehicle.publicInfo.team
+        if vehicle is None or self.__currentVehicle is None:
+            return False
+        return vehicle.publicInfo.team != self.__currentVehicle.publicInfo.team
 
     @classmethod
     def __playGlobalSound(cls, eventName):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/checkbox_content.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.resources import R
 from gui.impl.pub.dialog_window import DialogContent
@@ -19,7 +17,7 @@ class CheckBoxDialogContent(DialogContent):
 
     def _onLoading(self, label, selected):
         super(CheckBoxDialogContent, self)._onLoading()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setLabel(label)
             model.setIsSelected(selected)
         self.viewModel.onSelected += self.__onCheckBoxSelected
@@ -29,5 +27,5 @@ class CheckBoxDialogContent(DialogContent):
         super(CheckBoxDialogContent, self)._finalize()
 
     def __onCheckBoxSelected(self, args=None):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setIsSelected(args['selected'])

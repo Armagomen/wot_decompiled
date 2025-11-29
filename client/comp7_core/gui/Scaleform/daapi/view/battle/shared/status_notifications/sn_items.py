@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/shared/status_notifications/sn_items.py
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTIFICATIONS_TIMER_TYPES as _TIMER_TYPES
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE

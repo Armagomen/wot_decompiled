@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mode_selector/mode_selector_normal_card_model.py
 from enum import IntEnum
 from frameworks.wulf import Array
 from gui.impl.gen import R

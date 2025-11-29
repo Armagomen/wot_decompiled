@@ -1,17 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/consumables/opt_device_sound_ctrl.py
 from functools import partial
-import BigWorld
-import Math
-import SoundGroups
+import BigWorld, Math, SoundGroups
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
-_INIT_OPT_DEVICE_EVENTS = {'improvedVentilation': ('cons_ventilation_start', 'cons_ventilation_stop'),
- 'additionalInvisibilityDevice': ('cons_tracks_start', 'cons_tracks_stop'),
- 'grousers': ('cons_grousers_start', 'cons_grousers_stop'),
- 'antifragmentationLining': ('cons_spall_liner_start', 'cons_spall_liner_stop')}
+_INIT_OPT_DEVICE_EVENTS = {'improvedVentilation': ('cons_ventilation_start', 'cons_ventilation_stop'), 
+   'additionalInvisibilityDevice': ('cons_tracks_start', 'cons_tracks_stop'), 
+   'grousers': ('cons_grousers_start', 'cons_grousers_stop'), 
+   'antifragmentationLining': ('cons_spall_liner_start', 'cons_spall_liner_stop')}
 
 class OptDeviceSoundController(object):
-    __slots__ = ('__playerOptDevices', '__stopSoundEvents', '__schedulerToolbox', '__vehicleStateUpdatedHandlers', '__radioCommunicationHelper')
+    __slots__ = ('__playerOptDevices', '__stopSoundEvents', '__schedulerToolbox', '__vehicleStateUpdatedHandlers',
+                 '__radioCommunicationHelper')
 
     def __init__(self):
         self.__playerOptDevices = set()
@@ -33,8 +30,8 @@ class OptDeviceSoundController(object):
                 if stopEvent is not None:
                     self.__stopSoundEvents.append(stopEvent)
 
-        self.__vehicleStateUpdatedHandlers = {VEHICLE_VIEW_STATE.DEVICES: self.__updateDeviceState,
-         VEHICLE_VIEW_STATE.REPAIRING: self.__updateRepairingDevice}
+        self.__vehicleStateUpdatedHandlers = {VEHICLE_VIEW_STATE.DEVICES: self.__updateDeviceState, 
+           VEHICLE_VIEW_STATE.REPAIRING: self.__updateRepairingDevice}
         return
 
     def vehicleStateUpdated(self, state, value):

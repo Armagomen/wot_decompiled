@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/formatters/chat_message.py
 from helpers import dependency
 from messenger import g_settings
 from messenger.ext.player_helpers import isCurrentPlayer
@@ -14,10 +12,10 @@ class _BattleMessageBuilder(object):
 
     def __init__(self):
         super(_BattleMessageBuilder, self).__init__()
-        self._ctx = {'playerColor': '',
-         'playerName': '',
-         'messageColor': '',
-         'messageText': ''}
+        self._ctx = {'playerColor': '', 
+           'playerName': '', 
+           'messageColor': '', 
+           'messageText': ''}
 
     def setColors(self, avatarSessionID):
         getter = g_settings.getColorScheme
@@ -25,8 +23,8 @@ class _BattleMessageBuilder(object):
         self._ctx['messageColor'] = getter('battle/message').getHexStr('unknown')
         return self
 
-    def setName(self, avatarSessionID, pName=None, suffix=''):
-        name = self.sessionProvider.getCtx().getPlayerFullName(avatarSessionID=avatarSessionID, pName=pName)
+    def setName(self, avatarSessionID, pName=None, suffix='', vehID=None):
+        name = self.sessionProvider.getCtx().getPlayerFullName(avatarSessionID=avatarSessionID, pName=pName, vID=vehID)
         name = name + suffix
         if isinstance(name, str):
             name = unicode(name, 'utf-8')
@@ -110,7 +108,7 @@ class LobbyMessageBuilder(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def setTime(self, time_):
         self.__time = TimeFormatter.getMessageTimeFormat(time_)

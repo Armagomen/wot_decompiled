@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMDistractionAbilityEntityComponent.py
-import AnimationSequence
-import BigWorld
-import Math
+import AnimationSequence, BigWorld, Math
 from Event import Event
 from helpers import dependency
 from script_component.DynamicScriptComponent import DynamicScriptComponent

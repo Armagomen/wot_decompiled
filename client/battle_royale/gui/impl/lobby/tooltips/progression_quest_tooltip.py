@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/tooltips/progression_quest_tooltip.py
 from battle_royale_progression.gui.impl.lobby.views.bonus_packer import getBonusPacker, packMissionItem, packQuestBonuses
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.widget.widget_quest_model import WidgetQuestModel
@@ -20,7 +18,7 @@ class BattleRoyaleProgressionQuestTooltip(BaseQuestTooltip):
 
     def _fillViewModel(self):
         questsTimer = self.__battleRoyale.getQuestsTimerLeft()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setId(self._quest.getID())
             vm.setCountdown(questsTimer)
             bonusPacker = getBonusPacker()
@@ -29,4 +27,4 @@ class BattleRoyaleProgressionQuestTooltip(BaseQuestTooltip):
             packMissionItem(vm, self._quest, DailyQuestUIDataPacker)
 
     def _getRewardsSortFunc(self):
-        return None
+        return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/battle/ammunition_panel/prebattle_ammunition_panel_inject.py
 from gui.impl.battle.battle_page.ammunition_panel.prebattle_ammunition_panel_inject import PrebattleAmmunitionPanelInject
 from gui.impl.gen.view_models.views.battle.battle_page.prebattle_ammunition_panel_view_model import State
 from gui.shared import EVENT_BUS_SCOPE, events
@@ -17,7 +15,7 @@ class Comp7CorePrebattleAmmunitionPanelInject(PrebattleAmmunitionPanelInject):
         self.__delayedNextShell, self.__delayedCurrShell = (None, None)
         self.__isFullStatsShown = False
         self.__closeOnFullStatsClose = False
-        return None
+        return
 
     def setNextShellCD(self, shellCD):
         if self._state == State.PREBATTLE:

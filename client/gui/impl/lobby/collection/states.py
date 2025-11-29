@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collection/states.py
 from typing import Optional
 from frameworks.wulf import ViewStatus
 from gui.shared.event_dispatcher import showHangar
@@ -30,8 +28,7 @@ class CollectionState(SFViewLobbyState):
 
     @classmethod
     def goTo(cls, collectionId, page):
-        super(CollectionState, cls).goTo(ctx={'collectionId': collectionId,
-         'page': page})
+        super(CollectionState, cls).goTo(ctx={'collectionId': collectionId, 'page': page})
 
     def registerTransitions(self):
         from gui.Scaleform.daapi.view.lobby.vehicle_preview.states import StylePreviewState

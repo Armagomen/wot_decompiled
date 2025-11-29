@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/reserve_stock_feature.py
 import typing
 from constants import PremiumConfigs, PREMIUM_TYPE, RENEWABLE_SUBSCRIPTION_CONFIG
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -25,11 +23,11 @@ class ReserveStockFeature(FeatureItem):
 
     def initialize(self, *args, **kwargs):
         super(ReserveStockFeature, self).initialize(*args, **kwargs)
-        g_clientUpdateManager.addCallbacks({PiggyBankConstants.PIGGY_BANK: self._onPiggyBankChanged,
-         PiggyBankConstants.PIGGY_BANK_CREDITS: self._updateCredits,
-         PiggyBankConstants.PIGGY_BANK_GOLD: self._updateGold,
-         PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_CREDITS: self._updateLastSmashTimestamp,
-         PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_GOLD: self._updateLastSmashTimestamp})
+        g_clientUpdateManager.addCallbacks({PiggyBankConstants.PIGGY_BANK: self._onPiggyBankChanged, 
+           PiggyBankConstants.PIGGY_BANK_CREDITS: self._updateCredits, 
+           PiggyBankConstants.PIGGY_BANK_GOLD: self._updateGold, 
+           PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_CREDITS: self._updateLastSmashTimestamp, 
+           PiggyBankConstants.PIGGY_BANK_SMASH_TIMESTAMP_GOLD: self._updateLastSmashTimestamp})
         self._gameSession.onPremiumNotify += self._onPremiumNotify
         self._wotPlus.onDataChanged += self._onWotPlusChanged
         self._lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChange
@@ -66,7 +64,7 @@ class ReserveStockFeature(FeatureItem):
         self._update()
 
     def __onServerSettingsChange(self, diff):
-        if any((key in diff for key in (PremiumConfigs.PIGGYBANK, RENEWABLE_SUBSCRIPTION_CONFIG))):
+        if any(key in diff for key in (PremiumConfigs.PIGGYBANK, RENEWABLE_SUBSCRIPTION_CONFIG)):
             self._update()
 
     @replaceNoneKwargsModel

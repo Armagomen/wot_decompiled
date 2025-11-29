@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/page_base.py
 from logging import getLogger
-import BattleReplay
-import BigWorld
+import BattleReplay, BigWorld
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME
 from gui.Scaleform.daapi.view.battle.shared.crosshair import CrosshairPanelContainer
@@ -14,7 +11,8 @@ from story_mode.gui.scaleform.daapi.view.battle.markers2d import StoryModeMarker
 from story_mode.gui.scaleform.genConsts.STORY_MODE_BATTLE_VIEW_ALIASES import STORY_MODE_BATTLE_VIEW_ALIASES
 from story_mode.gui.shared.event_dispatcher import showIntro
 from story_mode_common.story_mode_constants import LOGGER_NAME
-STORY_MODE_EXTERNAL_COMPONENTS = (CrosshairPanelContainer, StoryModeMarkersManager)
+STORY_MODE_EXTERNAL_COMPONENTS = (
+ CrosshairPanelContainer, StoryModeMarkersManager)
 _logger = getLogger(LOGGER_NAME)
 
 class StoryModeBattlePageBase(object):
@@ -83,7 +81,8 @@ class StoryModeBattlePageBase(object):
     def __onRoundFinished(self, *_):
         hideSet = set(self.as_getComponentsVisibilityS())
         hideSet.difference_update([BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL, STORY_MODE_BATTLE_VIEW_ALIASES.SUBTITLES])
-        self._setComponentsVisibility(visible={BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL, STORY_MODE_BATTLE_VIEW_ALIASES.SUBTITLES}, hidden=hideSet)
+        self._setComponentsVisibility(visible={BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,
+         STORY_MODE_BATTLE_VIEW_ALIASES.SUBTITLES}, hidden=hideSet)
         if not self._isWinMessageShown:
             toggleCrosshairVisibility()
             self._isWinMessageShown = True

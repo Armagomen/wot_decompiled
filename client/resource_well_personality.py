@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well_personality.py
 from gui.shared.system_factory import registerAwardControllerHandlers
 from resource_well.gui.Scaleform import registerResourceWellScaleform
 from resource_well.gui.game_control import registerResourceWellController

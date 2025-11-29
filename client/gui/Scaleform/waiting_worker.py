@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/waiting_worker.py
-import logging
-import BigWorld
+import logging, BigWorld
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.common.waiting_transitions import WaitingTransition, TransitionMode
 from gui.app_loader.settings import APP_NAME_SPACE
@@ -12,7 +9,8 @@ from skeletons.gui.app_loader import IWaitingWidget, IAppFactory, IWaitingWorker
 _logger = logging.getLogger(__name__)
 
 class _WaitingTask(object):
-    __slots__ = ('__messageID', '__isBlocking', '__interruptCallbacks', '__isAlwaysOnTop', '__backgroundImage', '__softStart', '__showBg')
+    __slots__ = ('__messageID', '__isBlocking', '__interruptCallbacks', '__isAlwaysOnTop',
+                 '__backgroundImage', '__softStart', '__showBg')
 
     def __init__(self, messageID, interruptCallback=None, isBlocking=True, isAlwaysOnTop=False, backgroundImage=None, softStart=False, showBg=True):
         super(_WaitingTask, self).__init__()
@@ -23,13 +21,14 @@ class _WaitingTask(object):
         self.__softStart = softStart
         self.__showBg = showBg
         if interruptCallback is not None:
-            self.__interruptCallbacks = [interruptCallback]
+            self.__interruptCallbacks = [
+             interruptCallback]
         else:
             self.__interruptCallbacks = []
         return
 
     def __repr__(self):
-        return '_WaitingTask({}): message={}, interruptCallbacks={}, isBlocking={}, isAlwaysOnTop={}, bkImg={}, softStart={}, showBg={}'.format(id(self), self.__messageID, self.__interruptCallbacks, self.__isBlocking, self.__isAlwaysOnTop, self.__backgroundImage, self.__softStart, self.__showBg)
+        return ('_WaitingTask({}): message={}, interruptCallbacks={}, isBlocking={}, isAlwaysOnTop={}, bkImg={}, softStart={}, showBg={}').format(id(self), self.__messageID, self.__interruptCallbacks, self.__isBlocking, self.__isAlwaysOnTop, self.__backgroundImage, self.__softStart, self.__showBg)
 
     @property
     def messageID(self):
@@ -75,7 +74,8 @@ class _WaitingTask(object):
 
 
 class WaitingWorker(IWaitingWorker):
-    __slots__ = ('__appFactory', '__blocking', '__nonBlocking', '__waitingStack', '__suspendStack', '__isShown', '__transition', '__transitionMessageID', '__resumeLockers')
+    __slots__ = ('__appFactory', '__blocking', '__nonBlocking', '__waitingStack', '__suspendStack',
+                 '__isShown', '__transition', '__transitionMessageID', '__resumeLockers')
 
     def __init__(self):
         super(WaitingWorker, self).__init__()
@@ -129,10 +129,15 @@ class WaitingWorker(IWaitingWorker):
     def getWaitingView(self, isBlocking):
         if self.__transition.isInTransitionMode():
             return self.__transition
-        return self.__blocking if isBlocking else self.__nonBlocking
+        if isBlocking:
+            return self.__blocking
+        return self.__nonBlocking
 
     def isWaitingShown(self, messageID=None):
-        return self.__isShown if messageID is None else self.getWaitingTask(messageID) is not None
+        if messageID is None:
+            return self.__isShown
+        else:
+            return self.getWaitingTask(messageID) is not None
 
     def getWaitingTask(self, messageID):
         return findFirst(lambda task: task.messageID == messageID, self.__waitingStack)
@@ -168,7 +173,7 @@ class WaitingWorker(IWaitingWorker):
             self._hideWaiting(task)
             self.__waitingStack.remove(task)
         if self.__waitingStack:
-            self._showWaiting(self.__waitingStack[-1])
+            self._showWaiting(self.__waitingStack[(-1)])
         else:
             self.close()
         return
@@ -188,14 +193,14 @@ class WaitingWorker(IWaitingWorker):
             self.__resumeLockers.discard(lockerID)
         if not self.isSuspended():
             return
-        elif self.isResumeLocked() and not hard:
-            _logger.debug('waiting resume locked')
-            return
         else:
+            if self.isResumeLocked() and not hard:
+                _logger.debug('waiting resume locked')
+                return
             if hard:
                 self.__resumeLockers.clear()
             if self.__suspendStack:
-                self._showWaiting(self.__suspendStack[-1])
+                self._showWaiting(self.__suspendStack[(-1)])
                 self.__waitingStack += self.__suspendStack[:]
             del self.__suspendStack[:]
             return
@@ -227,8 +232,7 @@ class WaitingWorker(IWaitingWorker):
         return
 
     def snapshort(self):
-        return {'waiting': self.__waitingStack[:],
-         'suspend': self.__suspendStack[:]}
+        return {'waiting': self.__waitingStack[:], 'suspend': self.__suspendStack[:]}
 
     def _hasBlockingWaiting(self):
         found = findFirst(lambda task: task.isBlocking, self.__waitingStack)

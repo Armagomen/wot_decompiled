@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/battle_booster.py
 import typing
 from adisp import adisp_process
 from wg_async import wg_async, await_callback
 from gui import shop
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.lobby.tank_setup.interactors.base import BaseAutoRenewal
@@ -75,7 +72,7 @@ class BattleBoosterInteractor(BaseBattleBoosterInteractor):
 
     def buyMore(self, itemCD):
         if itemCD is not None:
-            shop.showBattleBoosterOverlay(itemId=int(itemCD), source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS, alias=VIEW_ALIAS.BROWSER_LOBBY_TOP_SUB)
+            shop.showBattleBooster(itemId=int(itemCD), source=shop.Source.EXTERNAL, origin=shop.Origin.BATTLE_BOOSTERS)
         return
 
     def updateFrom(self, vehicle, onlyInstalled=True):

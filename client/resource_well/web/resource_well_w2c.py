@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/web/resource_well_w2c.py
 import logging
 from gui.shared.event_dispatcher import showShop, showHangar
 from helpers import dependency

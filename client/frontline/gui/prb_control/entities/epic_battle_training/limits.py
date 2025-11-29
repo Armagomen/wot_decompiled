@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic_battle_training/limits.py
 from CurrentVehicle import g_currentVehicle
 from constants import PREBATTLE_ACCOUNT_STATE, PREBATTLE_TYPE
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import isVehLevelUnlockableInBattle
@@ -16,7 +14,10 @@ class ObserverInTeamIsValid(AbstractTeamIsValid):
         accountsInfo = self._getAccountsInfo(rosters, team)
         if len(accountsInfo) < teamLimits['minCount']:
             return (False, 'limit/minCount')
-        return (False, 'observers') if self.__isAllObservers(accountsInfo) else (True, '')
+        if self.__isAllObservers(accountsInfo):
+            return (False, 'observers')
+        return (
+         True, '')
 
     @classmethod
     def __isAllObservers(cls, accountsInfo):
@@ -43,10 +44,16 @@ class EpicVehicleIsValid(VehicleIsValid):
         if restriction == PREBATTLE_RESTRICTION.VEHICLE_EPIC_ONLY:
             return (True, '')
         vehicle = g_currentVehicle.item
-        return (False, PREBATTLE_RESTRICTION.VEHICLE_WILL_BE_UNLOCKED) if vehicle and isVehLevelUnlockableInBattle(vehicle.level) else (isValid, restriction)
+        if vehicle and isVehLevelUnlockableInBattle(vehicle.level):
+            return (False, PREBATTLE_RESTRICTION.VEHICLE_WILL_BE_UNLOCKED)
+        return (isValid, restriction)
 
 
 class EpicBattleTrainingLimits(LimitsCollection):
 
     def __init__(self, entity):
-        super(EpicBattleTrainingLimits, self).__init__(entity, (EpicVehicleIsValid(),), (TeamNoPlayersInBattle(PREBATTLE_TYPE.EPIC_TRAINING), TeamIsValid(), ObserverInTeamIsValid()))
+        super(EpicBattleTrainingLimits, self).__init__(entity, (
+         EpicVehicleIsValid(),), (
+         TeamNoPlayersInBattle(PREBATTLE_TYPE.EPIC_TRAINING),
+         TeamIsValid(),
+         ObserverInTeamIsValid()))

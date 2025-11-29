@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/progression_page.py
 import typing
 from adisp import adisp_process
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Division, MetaRootViews, Rank
@@ -22,7 +20,7 @@ if typing.TYPE_CHECKING:
     from comp7.helpers.comp7_server_settings import Comp7RanksConfig
 
 class ProgressionPage(PageSubModelPresenter):
-    __slots__ = ('__lastUpdateTime',)
+    __slots__ = ('__lastUpdateTime', )
     __comp7Controller = dependency.descriptor(IComp7Controller)
 
     def __init__(self, viewModel, parentView):
@@ -48,36 +46,41 @@ class ProgressionPage(PageSubModelPresenter):
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'divisions': event.getArgument('divisions'),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
+            params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
+               'from': event.getArgument('from'), 
+               'to': event.getArgument('to')}
             return GeneralRankTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.division_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'division': Division(event.getArgument('division')),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
-            return DivisionTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
-            return FifthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
-            return SixthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip():
-            return RankInactivityTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.last_update_tooltip():
-            description = event.getArgument('description')
-            return LastUpdateTooltip(description=description, updateTime=self.__lastUpdateTime)
         else:
-            return None
+            if contentID == R.views.comp7.mono.lobby.tooltips.division_tooltip():
+                params = {'rank': Rank(event.getArgument('rank')), 'division': Division(event.getArgument('division')), 
+                   'from': event.getArgument('from'), 
+                   'to': event.getArgument('to')}
+                return DivisionTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
+                return FifthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
+                return SixthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip():
+                return RankInactivityTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.last_update_tooltip():
+                description = event.getArgument('description')
+                return LastUpdateTooltip(description=description, updateTime=self.__lastUpdateTime)
+            return
 
     def _getEvents(self):
-        return ((self.viewModel.qualificationModel.onRankRewardsPageOpen, self.__onRankRewardsPageOpen),
-         (self.__comp7Controller.onRankUpdated, self.__updateData),
-         (self.__comp7Controller.onModeConfigChanged, self.__updateData),
-         (self.__comp7Controller.onComp7RanksConfigChanged, self.__updateData),
-         (self.__comp7Controller.onQualificationBattlesUpdated, self.__updateData),
-         (self.__comp7Controller.onQualificationStateUpdated, self.__updateData))
+        return (
+         (
+          self.viewModel.qualificationModel.onRankRewardsPageOpen, self.__onRankRewardsPageOpen),
+         (
+          self.__comp7Controller.onRankUpdated, self.__updateData),
+         (
+          self.__comp7Controller.onModeConfigChanged, self.__updateData),
+         (
+          self.__comp7Controller.onComp7RanksConfigChanged, self.__updateData),
+         (
+          self.__comp7Controller.onQualificationBattlesUpdated, self.__updateData),
+         (
+          self.__comp7Controller.onQualificationStateUpdated, self.__updateData))
 
     def __updateData(self, *_):
         isQualification = self.__comp7Controller.isQualificationActive()
@@ -87,12 +90,12 @@ class ProgressionPage(PageSubModelPresenter):
             self.__updateProgressionData()
 
     def __updateQualificationData(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             comp7_qualification_helpers.setQualificationInfo(vm.qualificationModel)
             comp7_qualification_helpers.setQualificationBattles(vm.qualificationModel.getBattles())
 
     def __updateProgressionData(self, *_):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.qualificationModel.setIsActive(False)
             vm.setRankInactivityCount(self.__comp7Controller.activityPoints)
             comp7_model_helpers.setElitePercentage(vm)

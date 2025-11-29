@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/common/badge_tooltip.py
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf.view.view import ViewSettings
 from gui.impl import backport
@@ -27,11 +25,11 @@ class BadgeTooltip(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(BadgeTooltip, self)._onLoading(*args, **kwargs)
         badge = self.__itemsCache.items.getBadges()[self._badgeId]
-        badgeIcon = R.images.gui.maps.icons.library.badges.c_220x220.dyn('badge_{}'.format(self._badgeId))()
+        badgeIcon = R.images.gui.maps.icons.library.badges.c_220x220.dyn(('badge_{}').format(self._badgeId))()
         self.viewModel.setImage(badgeIcon)
         self.viewModel.setName(backport.text(R.strings.sm_common.badgeTooltip.title(), badge_name=badge.getUserName()))
-        self.viewModel.setDescription(backport.text(R.strings.badge.dyn('badge_{}_descr'.format(self._badgeId))()))
-        badgeIcon = R.images.gui.maps.icons.library.badges.c_24x24.dyn('badge_{}'.format(self._badgeId))()
+        self.viewModel.setDescription(backport.text(R.strings.badge.dyn(('badge_{}_descr').format(self._badgeId))()))
+        badgeIcon = R.images.gui.maps.icons.library.badges.c_24x24.dyn(('badge_{}').format(self._badgeId))()
         self.viewModel.setSmallBadgeIcon(badgeIcon)
         self.viewModel.setPlayerName(getPlayerName())
         if g_currentVehicle.isPresent():

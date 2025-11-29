@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/team_statistics.py
 import typing
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
@@ -24,24 +22,22 @@ class TeamStatisticsSubPresenter(BattleResultsSubPresenter):
         RandomTeamEfficiency.packModel(self.getViewModel(), battleResults)
 
     def createContextMenu(self, event):
-        contextMenuData = None
-        if event.contentID == R.aliases.battle_result.contextMenu.Vehicle():
-            vehicleId = event.getArgument('id')
-            contextMenuData = createContextMenuData(CONTEXT_MENU_HANDLER_TYPE.PROFILE_VEHICLE, {'id': vehicleId})
-        if event.contentID == R.aliases.battle_result.contextMenu.User():
+        if event.contentID == R.views.common.BackportContextMenu():
             databaseID = int(event.getArgument('databaseID', default=-1))
-            if databaseID != self.__connectionMgr.databaseID:
-                vehicleCD = event.getArgument('vehicleCD')
-                contextMenuData = createContextMenuData(CONTEXT_MENU_HANDLER_TYPE.BATTLE_RESULTS_USER, self.__getContextMenuArgs(databaseID, vehicleCD))
-        if contextMenuData is not None:
-            window = BackportContextMenuWindow(contextMenuData, self.getParentWindow())
-            window.load()
-            return window
-        else:
-            return super(TeamStatisticsSubPresenter, self).createContextMenu(event)
+            if databaseID == self.__connectionMgr.databaseID:
+                return
+            vehicleCD = event.getArgument('vehicleCD')
+            contextMenuData = createContextMenuData(CONTEXT_MENU_HANDLER_TYPE.BATTLE_RESULTS_USER, self.__getContextMenuArgs(databaseID, vehicleCD))
+            if contextMenuData is not None:
+                window = BackportContextMenuWindow(contextMenuData, self.getParentWindow())
+                window.load()
+                return window
+        return
 
     def _getEvents(self):
-        return ((self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
+        return (
+         (
+          self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
 
     def __getContextMenuArgs(self, databaseID, vehicleCD):
         reusable = self.getBattleResults().reusable

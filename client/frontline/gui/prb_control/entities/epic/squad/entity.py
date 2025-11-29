@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic/squad/entity.py
 from frontline.gui.prb_control.entities.epic.pre_queue.vehicles_watcher import EpicVehiclesWatcher
 from frontline.gui.prb_control.entities.epic.squad.actions_validator import EpicSquadActionsValidator
 from frontline.gui.prb_control.entities.epic.squad.components import EpicRestrictedRoleTagDataProvider
@@ -106,7 +104,9 @@ class EpicSquadEntity(SquadEntity, RestrictedRoleTagMixin):
         return EpicSquadActionsValidator(self)
 
     def _vehicleStateCondition(self, v):
-        return self.isTagVehicleAvailable(v.tags) if self.isRoleRestrictionValid() else super(EpicSquadEntity, self)._vehicleStateCondition(v)
+        if self.isRoleRestrictionValid():
+            return self.isTagVehicleAvailable(v.tags)
+        return super(EpicSquadEntity, self)._vehicleStateCondition(v)
 
     def _onServerSettingChanged(self, *args, **kwargs):
         self._switchActionsValidator()

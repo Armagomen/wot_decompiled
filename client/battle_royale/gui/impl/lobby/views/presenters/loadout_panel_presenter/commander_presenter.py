@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/loadout_panel_presenter/commander_presenter.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.gen import R
 from gui.impl.pub.view_component import ViewComponent
@@ -33,11 +31,7 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
             if commanderID is None:
                 return
             role = first(ROLES_BY_SKILLS[tooltipId])
-            args = (tooltipId,
-             role,
-             None,
-             None,
-             False)
+            args = (tooltipId, role, None, None, False)
             self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
             return TOOLTIPS_CONSTANTS.CREW_PERK_GF
         else:
@@ -55,7 +49,7 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
     def __updateModel(self):
         if not self.__vehicle:
             return
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setNation(self.__vehicle.nationName)
             perkList = model.getPerkList()
             perkList.clear()
@@ -70,10 +64,12 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
 
     def __getCommanderID(self):
         if not self.__vehicle:
-            return None
+            return
         else:
             crew = self.__vehicle.crew
-            return None if crew is None else crew[0][1].invID
+            if crew is None:
+                return
+            return crew[0][1].invID
 
     def update(self, vehicle):
         self.__vehicle = vehicle

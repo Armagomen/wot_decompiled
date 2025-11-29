@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/aop.py
-import logging
-import re
-import sys
-import traceback
-import types
-import weakref
+import logging, re, sys, traceback, types, weakref
 from functools import partial
 _logger = logging.getLogger(__name__)
 
@@ -101,7 +94,9 @@ def pointcutable(pointcutTag=None):
     if callable(pointcutTag):
         return _addPointcutableTag(func=pointcutTag)
     else:
-        return partial(_addPointcutableTag, tag=pointcutTag) if pointcutTag is not None else _addPointcutableTag
+        if pointcutTag is not None:
+            return partial(_addPointcutableTag, tag=pointcutTag)
+        return _addPointcutableTag
 
 
 def _addPointcutableTag(func, tag=None):
@@ -128,7 +123,9 @@ def _regexpCriteria(func, regexp, match):
 
 
 def _pointcutableCriteria(func, pointcutTag):
-    return func.__pointcutable__ == pointcutTag if hasattr(func, '__pointcutable__') else False
+    if hasattr(func, '__pointcutable__'):
+        return func.__pointcutable__ == pointcutTag
+    return False
 
 
 def _isearch(ns, criteria):
@@ -200,7 +197,10 @@ class CallData(object):
         return self._kwargs.copy()
 
     def findArg(self, argIndex, argName):
-        return self._args[argIndex] if len(self._args) > argIndex else self._kwargs.get(argName, None)
+        if len(self._args) > argIndex:
+            return self._args[argIndex]
+        else:
+            return self._kwargs.get(argName, None)
 
     def changeArgs(self, *changes):
         if changes:
@@ -208,11 +208,14 @@ class CallData(object):
             for argIndex, argName, newValue in changes:
                 if len(self._args) > argIndex:
                     newArgs[argIndex] = newValue
-                newKwargs[argName] = newValue
+                else:
+                    newKwargs[argName] = newValue
 
             self.change()
-            return (newArgs, newKwargs)
-        return (self.args, self.kwargs)
+            return (
+             newArgs, newKwargs)
+        return (
+         self.args, self.kwargs)
 
     @property
     def returned(self):
@@ -223,10 +226,17 @@ class CallData(object):
         return self._exception
 
     def _packArgs(self):
-        return self._args if self._self is None else (self._self,) + tuple(self._args)
+        if self._self is None:
+            return self._args
+        else:
+            return (
+             self._self,) + tuple(self._args)
 
     def exceptionIs(self, cls):
-        return False if self._exception is None else isinstance(self._exception, cls)
+        if self._exception is None:
+            return False
+        else:
+            return isinstance(self._exception, cls)
 
     def avoid(self):
         self._avoid = True
@@ -298,7 +308,10 @@ class Pointcut(list):
 
     def getNs(self, path, name):
         imported = __import__(path, globals(), locals(), [name])
-        return getattr(imported, name, None) if name is not None else imported
+        if name is not None:
+            return getattr(imported, name, None)
+        else:
+            return imported
 
     def addAspect(self, aspect, *args, **kwargs):
         if isinstance(aspect, AspectType):
@@ -323,7 +336,7 @@ class Pointcut(list):
 PointcutType = type(Pointcut)
 
 class Weaver(object):
-    __slots__ = ('__pointcuts',)
+    __slots__ = ('__pointcuts', )
 
     def __init__(self):
         self.__pointcuts = []
@@ -341,7 +354,8 @@ class Weaver(object):
 
         result = len(self.__pointcuts)
         if avoid:
-            aspects = (DummyAspect,)
+            aspects = (
+             DummyAspect,)
         for aspect in aspects:
             try:
                 pointcut.addAspect(aspect)
@@ -367,6 +381,8 @@ class Weaver(object):
         for idx, item in enumerate(self.__pointcuts):
             if item.__class__ == clazz:
                 return idx
+
+        return -1
 
     def avoid(self, idx):
         self.addAspect(idx, DummyAspect)

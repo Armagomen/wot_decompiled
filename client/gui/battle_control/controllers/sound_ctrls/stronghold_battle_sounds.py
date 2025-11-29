@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/sound_ctrls/stronghold_battle_sounds.py
-import random
-import typing
-import BigWorld
-import SoundGroups
-import WWISE
+import random, typing, BigWorld, SoundGroups, WWISE
 from constants import EQUIPMENT_STAGES
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from gui.battle_control.controllers.sound_ctrls.common import VehicleStateSoundPlayer, SoundPlayersBattleController, SoundPlayer
@@ -39,7 +33,10 @@ class StrongholdBattleSoundController(SoundPlayersBattleController):
         super(StrongholdBattleSoundController, self).stopControl()
 
     def _initializeSoundPlayers(self):
-        return [_EquipmentSoundPlayer(), _InspireSoundPlayer(), _AOEZoneSoundPlayer()]
+        return [
+         _EquipmentSoundPlayer(),
+         _InspireSoundPlayer(),
+         _AOEZoneSoundPlayer()]
 
 
 class _EquipmentSoundPlayer(SoundPlayer):
@@ -61,10 +58,8 @@ class _EquipmentSoundPlayer(SoundPlayer):
         if item.getPrevStage() == item.getStage():
             return
         prevStageIsReady = item.getPrevStage() in (EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.PREPARING)
-        currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE,
-         EQUIPMENT_STAGES.COOLDOWN,
-         EQUIPMENT_STAGES.EXHAUSTED,
-         EQUIPMENT_STAGES.UNAVAILABLE)
+        currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE, EQUIPMENT_STAGES.COOLDOWN,
+         EQUIPMENT_STAGES.EXHAUSTED, EQUIPMENT_STAGES.UNAVAILABLE)
         descrType = type(item.getDescriptor())
         if item.getPrevStage() == EQUIPMENT_STAGES.READY and item.getStage() == EQUIPMENT_STAGES.PREPARING:
             self.__playSound(descrType, SoundEvents.EQUIPMENT_PREPARING)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/summary/summary_view.py
 import typing
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
@@ -51,7 +49,8 @@ _STATISTIC_LIST_ORDER = (KPITypes.DAMAGE,
  KPITypes.BLOCKED)
 
 class SummaryView(SubModelPresenter):
-    __slots__ = ('__dossier', '__uniqueAwardsCount', '__prevRatingRank', '__prevRatingSubRank', '__userId')
+    __slots__ = ('__dossier', '__uniqueAwardsCount', '__prevRatingRank', '__prevRatingSubRank',
+                 '__userId')
     __itemsCache = dependency.descriptor(IItemsCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __achvmntCtrl = dependency.descriptor(IAchievements20Controller)
@@ -83,7 +82,9 @@ class SummaryView(SubModelPresenter):
         if name is not None and block is not None:
             return self.__getAchievementsBackportTooltipData(name, block)
         else:
-            return self.__getDogTagBackportTooltipData(int(compId)) if compId is not None else None
+            if compId is not None:
+                return self.__getDogTagBackportTooltipData(int(compId))
+            return
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.achievements.tooltips.KPITooltip():
@@ -100,8 +101,7 @@ class SummaryView(SubModelPresenter):
         if contentID == R.views.lobby.achievements.tooltips.WOTPRMainTooltip():
             return WOTPRMainTooltip()
         if contentID == R.views.lobby.dog_tags.AnimatedDogTagGradeTooltip():
-            params = {'engravingId': event.getArgument('engravingId'),
-             'backgroundId': event.getArgument('backgroundId')}
+            params = {'engravingId': event.getArgument('engravingId'), 'backgroundId': event.getArgument('backgroundId')}
             return AnimatedDogTagGradeTooltip(params=params)
         return super(SummaryView, self).createToolTipContent(event, contentID)
 
@@ -120,13 +120,22 @@ class SummaryView(SubModelPresenter):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onAchievementsSettings, self.__onAchievementsSettings),
-         (self.viewModel.otherPlayerInfo.onOpenProfile, self.__openClanStatistic),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (g_playerEvents.onDossiersResync, self.__dossierResyncHandler))
+        return (
+         (
+          self.viewModel.onAchievementsSettings, self.__onAchievementsSettings),
+         (
+          self.viewModel.otherPlayerInfo.onOpenProfile, self.__openClanStatistic),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          g_playerEvents.onDossiersResync, self.__dossierResyncHandler))
 
     def _getListeners(self):
-        return ((events.Achievements20Event.LAYOUT_CHANGED, self.__onAchievementLayoutChanged, EVENT_BUS_SCOPE.LOBBY), (events.Achievements20Event.CLOSE_EDIT_VIEW, self.__onEditViewClose, EVENT_BUS_SCOPE.LOBBY))
+        return (
+         (
+          events.Achievements20Event.LAYOUT_CHANGED, self.__onAchievementLayoutChanged, EVENT_BUS_SCOPE.LOBBY),
+         (
+          events.Achievements20Event.CLOSE_EDIT_VIEW, self.__onEditViewClose, EVENT_BUS_SCOPE.LOBBY))
 
     def __updatePage(self):
         if isSummaryEnabled():
@@ -148,7 +157,7 @@ class SummaryView(SubModelPresenter):
     def __updateUserInfo(self):
         if self.__dossier is not None:
             info = getProfileCommonInfo(self.__dossier.getDossierDescr())
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setIsOtherPlayer(self.__isOtherPlayer)
                 model.setRegistrationDate(str(info['registrationDate']))
                 if info['lastBattleDate'] is not None:
@@ -160,7 +169,7 @@ class SummaryView(SubModelPresenter):
         if self.__dossier is not None:
             currentMastery, totalMastery = getMasteryStatistic(self.__dossier)
             mainStats, additionalStats = self.__fillStatistic()
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setCurrentMastery(currentMastery)
                 model.setTotalMastery(totalMastery)
                 statistic = model.getStatistic()
@@ -177,19 +186,21 @@ class SummaryView(SubModelPresenter):
 
     def __fillStatistic(self):
         stats = self.__dossier.getRandomStats()
-        mainStats = {KPITypes.BATTLES: getFormattedValue(stats.getBattlesCount()),
-         KPITypes.ASSISTANCE: getFormattedValue(stats.getMaxAssisted()),
-         KPITypes.DESTROYED: getFormattedValue(stats.getFragsCount()),
-         KPITypes.BLOCKED: getFormattedValue(stats.getMaxDamageBlockedByArmor()),
-         KPITypes.EXPERIENCE: getFormattedValue(stats.getMaxXp()),
-         KPITypes.DAMAGE: getFormattedValue(stats.getMaxDamage())}
-        additionalStats = {KPITypes.BATTLES: formatPercent(getNormalizedValue(stats.getWinsEfficiency()) * 100),
-         KPITypes.ASSISTANCE: getFormattedValue(stats.getDamageAssistedEfficiency()),
-         KPITypes.DESTROYED: stats.getMaxFrags(),
-         KPITypes.BLOCKED: getFormattedValue(stats.getAvgDamageBlocked()),
-         KPITypes.EXPERIENCE: getFormattedValue(stats.getAvgXP()),
-         KPITypes.DAMAGE: getFormattedValue(stats.getAvgDamage())}
-        return [mainStats, additionalStats]
+        mainStats = {KPITypes.BATTLES: getFormattedValue(stats.getBattlesCount()), 
+           KPITypes.ASSISTANCE: getFormattedValue(stats.getMaxAssisted()), 
+           KPITypes.DESTROYED: getFormattedValue(stats.getFragsCount()), 
+           KPITypes.BLOCKED: getFormattedValue(stats.getMaxDamageBlockedByArmor()), 
+           KPITypes.EXPERIENCE: getFormattedValue(stats.getMaxXp()), 
+           KPITypes.DAMAGE: getFormattedValue(stats.getMaxDamage())}
+        additionalStats = {KPITypes.BATTLES: formatPercent(getNormalizedValue(stats.getWinsEfficiency()) * 100), 
+           KPITypes.ASSISTANCE: getFormattedValue(stats.getDamageAssistedEfficiency()), 
+           KPITypes.DESTROYED: stats.getMaxFrags(), 
+           KPITypes.BLOCKED: getFormattedValue(stats.getAvgDamageBlocked()), 
+           KPITypes.EXPERIENCE: getFormattedValue(stats.getAvgXP()), 
+           KPITypes.DAMAGE: getFormattedValue(stats.getAvgDamage())}
+        return [
+         mainStats,
+         additionalStats]
 
     def __getAchievementsStats(self):
         achievements = self.__dossier.getTotalStats().getAchievements(isInDossier=True, showHidden=False)
@@ -201,13 +212,13 @@ class SummaryView(SubModelPresenter):
                 self.__uniqueAwardsCount += 1
                 if achievement.isDone():
                     total += 1
-                if achievement.getValue() > 0:
+                elif achievement.getValue() > 0:
                     if achievement.getSection() == ACHIEVEMENT_SECTION.CLASS:
                         total += 1
                     else:
                         total += achievement.getValue()
 
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setNumberOfUniqueAwards(self.__uniqueAwardsCount)
             model.setTotalAwards(total)
             model.setEditState(self.__getEditState())
@@ -247,7 +258,7 @@ class SummaryView(SubModelPresenter):
         achievements20GeneralConfig = self.__lobbyContext.getServerSettings().getAchievements20GeneralConfig()
         requiredCountOfBattles = achievements20GeneralConfig.getRequiredCountOfBattles()
         battlesLeftCount = requiredCountOfBattles - stats.getBattlesCount()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setPersonalScore(rating)
             model.setRequiredNumberOfBattles(requiredCountOfBattles)
             model.setBattlesLeftCount(0 if battlesLeftCount < 0 else battlesLeftCount)
@@ -266,11 +277,11 @@ class SummaryView(SubModelPresenter):
         self.__updateSettings()
         if isSummaryEnabled():
             self.__updatePage()
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setEditState(self.__getEditState())
 
     def __onAchievementsSettings(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsSuccessfullyEdited(False)
             model.setIsEditOpened(True)
         showAchievementEditView()
@@ -282,21 +293,25 @@ class SummaryView(SubModelPresenter):
     def __getEditState(self):
         if not isEditingEnabled():
             return EditState.NOT_ENOUGH_ACHIEVEMENTS
-        return EditState.DISABLED if not isLayoutEnabled() else EditState.AVAILABLE
+        if not isLayoutEnabled():
+            return EditState.DISABLED
+        return EditState.AVAILABLE
 
     def __getDogTagBackportTooltipData(self, compId):
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.DOG_TAGS_INFO, specialArgs=[compId, self.__userId])
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.DOG_TAGS_INFO, specialArgs=[
+         compId, self.__userId])
 
     def __getAchievementsBackportTooltipData(self, name, block):
         achievement = self.__dossier.getTotalStats().getAchievement((block, name))
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(self.__dossier.getDossierType(),
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(
+         self.__dossier.getDossierType(),
          dumpDossier(self.__dossier),
          block,
          name,
          isRareAchievement(achievement)))
 
     def __getPrevStates(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setPrevPersonalScore(self.__achvmntCtrl.getWtrPrevPoints())
             model.setPrevCurrentRatingRank(self.__achvmntCtrl.getWtrPrevRank())
             model.setPrevCurrentRatingSubRank(self.__achvmntCtrl.getWtrPrevSubRank())
@@ -319,7 +334,7 @@ class SummaryView(SubModelPresenter):
 
     def __updateClanInfo(self):
         clanDBID, clanInfo = self.__itemsCache.items.getClanInfo(self.__userId)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if clanInfo is not None:
                 clanInfo = ClanInfo(*clanInfo)
                 model.otherPlayerInfo.setIsInClan(True)
@@ -363,11 +378,11 @@ class SummaryView(SubModelPresenter):
 
     def __onAchievementLayoutChanged(self, ctx):
         self.__updateSignificantAchievements()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsSuccessfullyEdited(True)
 
     def __onEditViewClose(self, ctx):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsEditOpened(False)
 
     @property

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/GuiColorsLoader.py
-import Math
-import ResMgr
+import Math, ResMgr
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION
 from items import _xml
 DEFAULT_SUB_SCHEME = 'default'
@@ -22,19 +19,20 @@ class _GuiColorsLoader(object):
     OFFSET = 'offset'
     TRANSFORM = 'transform'
     ADJUST = 'adjust'
-    DEFAULTS = {OFFSET: DEFAULT_COLOR_OFFSET,
-     RGBA: DEFAULT_RGBA_COLOR,
-     MULT: DEFAULT_TRANSFORM_COLOR_MULT,
-     ALIAS: DEFAULT_ALIAS_COLOR}
-    VECTOR4_NAMES = (RGBA, MULT, OFFSET)
+    DEFAULTS = {OFFSET: DEFAULT_COLOR_OFFSET, 
+       RGBA: DEFAULT_RGBA_COLOR, 
+       MULT: DEFAULT_TRANSFORM_COLOR_MULT, 
+       ALIAS: DEFAULT_ALIAS_COLOR}
+    VECTOR4_NAMES = (
+     RGBA, MULT, OFFSET)
     STRING_NAMES = (ALIAS, GROUP)
     DEFAULT_TAG = 'default'
     COLOR_BLIND_TAG = 'color_blind'
-    DEFAULT_SCHEME = {'alias_color': DEFAULT_ALIAS_COLOR,
-     'rgba': DEFAULT_RGBA_COLOR,
-     'transform': {'mult': DEFAULT_TRANSFORM_COLOR_MULT,
-                   'offset': DEFAULT_TRANSFORM_COLOR_OFFSET},
-     'adjust': {'offset': DEFAULT_ADJUST_OFFSET}}
+    DEFAULT_SCHEME = {'alias_color': DEFAULT_ALIAS_COLOR, 
+       'rgba': DEFAULT_RGBA_COLOR, 
+       'transform': {'mult': DEFAULT_TRANSFORM_COLOR_MULT, 
+                     'offset': DEFAULT_TRANSFORM_COLOR_OFFSET}, 
+       'adjust': {'offset': DEFAULT_ADJUST_OFFSET}}
 
     def __init__(self):
         self.__colors = {}
@@ -55,9 +53,10 @@ class _GuiColorsLoader(object):
         for scheme_name, scheme_section in rootSection.items():
             if scheme_name in self.VECTOR4_NAMES:
                 outcome[scheme_name] = self.__readVector4(rootSection, scheme_name)
-            if scheme_name in self.STRING_NAMES:
+            elif scheme_name in self.STRING_NAMES:
                 outcome[scheme_name] = self.__readString(rootSection, scheme_name)
-            outcome[scheme_name] = self.__readHash(scheme_section)
+            else:
+                outcome[scheme_name] = self.__readHash(scheme_section)
 
         return outcome
 
@@ -80,12 +79,14 @@ class _GuiColorsLoader(object):
                     for subKey in insertingSection.keys():
                         if subKey not in baseHash.keys():
                             baseHash[subKey] = insertingSection[subKey]
-                        baseHash[subKey].update(insertingSection[subKey])
+                        else:
+                            baseHash[subKey].update(insertingSection[subKey])
 
                 baseHash = self.__overrideTags(rootSection, baseHash)
-            section = baseHash[key]
-            if key not in self.VECTOR4_NAMES and key not in self.STRING_NAMES:
-                baseHash[key] = self.__overrideTags(rootSection, section)
+            else:
+                section = baseHash[key]
+                if key not in self.VECTOR4_NAMES and key not in self.STRING_NAMES:
+                    baseHash[key] = self.__overrideTags(rootSection, section)
 
         return baseHash
 
@@ -117,8 +118,7 @@ class _GuiColorsLoader(object):
         if processed is not None:
             mult = self.__readVector4(processed, 'mult')
             offset = self.__readVector4(processed, 'offset')
-        return {'mult': mult,
-         'offset': offset}
+        return {'mult': mult, 'offset': offset}
 
     def __readColorSection(self, section):
         color_scheme = self.__initColorScheme(section)
@@ -127,14 +127,14 @@ class _GuiColorsLoader(object):
 
     def __initColorScheme(self, section):
         keys = section.keys()
-        color_scheme = {self.ALIAS: section[self.ALIAS] if self.ALIAS in keys else self.DEFAULT_ALIAS_COLOR,
-         self.RGBA: section[self.RGBA] if self.RGBA in keys else self.DEFAULT_RGBA_COLOR}
+        color_scheme = {self.ALIAS: section[self.ALIAS] if self.ALIAS in keys else self.DEFAULT_ALIAS_COLOR, 
+           self.RGBA: section[self.RGBA] if self.RGBA in keys else self.DEFAULT_RGBA_COLOR}
         return color_scheme
 
     def __readFilters(self, section, color_scheme):
         keys = section.keys()
-        color_scheme[self.TRANSFORM] = {self.MULT: self.DEFAULT_TRANSFORM_COLOR_MULT,
-         self.OFFSET: self.DEFAULT_TRANSFORM_COLOR_OFFSET}
+        color_scheme[self.TRANSFORM] = {self.MULT: self.DEFAULT_TRANSFORM_COLOR_MULT, 
+           self.OFFSET: self.DEFAULT_TRANSFORM_COLOR_OFFSET}
         if self.TRANSFORM in keys:
             transformSection = section[self.TRANSFORM]
             transformKeys = transformSection.keys()
@@ -172,16 +172,18 @@ class _GuiColorsLoader(object):
             LOG_WARNING('Color scheme not found', schemeName, group)
             return self.DEFAULT_SCHEME
         else:
-            return scheme[group] if group in scheme else scheme['default']
+            if group in scheme:
+                return scheme[group]
+            return scheme['default']
 
     def getSubSchemeToFlash(self, schemeName, group):
         result = self.getSubScheme(schemeName, group)
         transform = result['transform']
-        return {'adjust': {'offset': result['adjust']['offset'].tuple()},
-         'transform': {'mult': transform['mult'].tuple(),
-                       'offset': transform['offset'].tuple()},
-         'rgba': result['rgba'].tuple(),
-         'alias_color': result['alias_color']}
+        return {'adjust': {'offset': result['adjust']['offset'].tuple()}, 
+           'transform': {'mult': transform['mult'].tuple(), 
+                         'offset': transform['offset'].tuple()}, 
+           'rgba': result['rgba'].tuple(), 
+           'alias_color': result['alias_color']}
 
 
 _g_instance = None

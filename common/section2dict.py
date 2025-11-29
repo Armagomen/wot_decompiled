@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/section2dict.py
 import typing
 if typing.TYPE_CHECKING:
     from ResMgr import DataSection
-    TReaders = typing.Dict[str, typing.Callable[[DataSection], dict]]
+    TReaders = typing.Dict[(str, typing.Callable[([DataSection], dict)])]
 
 def _parseDataSection(dataSection, readers=None, normalizeValues=False):
     if not len(dataSection):
@@ -11,6 +9,7 @@ def _parseDataSection(dataSection, readers=None, normalizeValues=False):
             return _normalizeValue(dataSection.asString)
         else:
             return dataSection.asString
+
     result = {}
     for section in dataSection.values():
         if section.isAttribute:
@@ -24,8 +23,10 @@ def _parseDataSection(dataSection, readers=None, normalizeValues=False):
             if isinstance(result[key], list):
                 result[key].append(value)
             else:
-                result[key] = [result[key], value]
-        result[key] = value
+                result[key] = [
+                 result[key], value]
+        else:
+            result[key] = value
 
     return result
 
@@ -43,4 +44,6 @@ def _normalizeValue(value):
 
 
 def parse(data, readers=None, normalizeValues=False):
-    return {} if not len(data) else _parseDataSection(data, readers, normalizeValues)
+    if not len(data):
+        return {}
+    return _parseDataSection(data, readers, normalizeValues)

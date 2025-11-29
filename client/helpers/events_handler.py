@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/events_handler.py
 from typing import TYPE_CHECKING
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared import g_eventBus

@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/rocket_acceleration_component.py
 import logging
 from functools import partial
-import CGF
-import BigWorld
+import CGF, BigWorld
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery, tickGroup
 from GameplayDebug import DebugTextComponent
@@ -138,19 +135,28 @@ if IS_DEVELOPMENT:
         def __updateText(self, link, value, count):
             text = link()
             if text is not None:
-                text.setText('[RAM][{}][{}]'.format(value, count), (0, 0, 0), (1.0, 1.0, 1.0, 1.0))
+                text.setText(('[RAM][{}][{}]').format(value, count), (0, 0, 0), (1.0,
+                                                                                 1.0,
+                                                                                 1.0,
+                                                                                 1.0))
             return
 
         def __updateTextWithDuration(self, link, value, count, end):
             duration = max(0, end - BigWorld.serverTime())
             text = link()
             if text is not None:
-                text.setText('[RAM][{}][{}][{:.2f}]'.format(value, count, duration), (0, 0, 0), (1.0, 1.0, 1.0, 1.0))
+                text.setText(('[RAM][{}][{}][{:.2f}]').format(value, count, duration), (0,
+                                                                                        0,
+                                                                                        0), (1.0,
+                                                                                             1.0,
+                                                                                             1.0,
+                                                                                             1.0))
             return
 
         def __setupDebugStateHandling(self, root, provider):
             if root.findComponentByType(DebugTextComponent) is None:
-                root.createComponent(DebugTextComponent, '', (0, 0, 0), (1.0, 1.0, 1.0, 1.0))
+                root.createComponent(DebugTextComponent, '', (0, 0, 0), (1.0, 1.0,
+                                                                         1.0, 1.0))
             self.__listeners[root] = partial(self.onStateUpdate, root, CGF.ComponentLink(root, DebugTextComponent))
             if provider is not None:
                 provider.subscribe(self.__listeners[root])

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TargetMarkersComponent.py
-import BigWorld
-import Math
-import TriggersManager
+import BigWorld, Math, TriggersManager
 from gui.battle_control.controllers.area_marker_ctrl import AreaMarkersController
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from helpers import dependency
@@ -34,7 +30,8 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
 
     def onTriggerActivated(self, params):
         triggerType = params.get('type')
-        if triggerType not in [TriggersManager.TRIGGER_TYPE.VEHICLE_VISUAL_VISIBILITY_CHANGED, TriggersManager.TRIGGER_TYPE.VEHICLE_DESTROYED]:
+        if triggerType not in [TriggersManager.TRIGGER_TYPE.VEHICLE_VISUAL_VISIBILITY_CHANGED,
+         TriggersManager.TRIGGER_TYPE.VEHICLE_DESTROYED]:
             return
         else:
             vehicleId = params['vehicleId']
@@ -63,7 +60,7 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
                 lastVisiblePosition = settings['lastVisiblePosition']
                 if target is not None:
                     self._createVisibleMarker(targetId, settings, target)
-                if lastVisiblePosition:
+                elif lastVisiblePosition:
                     self._createInvisibleMarker(targetId, settings, lastVisiblePosition)
 
         return
@@ -81,16 +78,14 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
         ctrl = self.sessionProvider.shared.areaMarker
         if ctrl is None or not markerType:
             return
-        else:
-            params = {'markerType': markerType,
-             'visible': True,
-             'matrix': matrix,
-             'targetID': vehicleId,
-             'entity': vehicle}
-            marker = ctrl.createMarker(**params)
-            ctrl.addMarker(marker)
-            self._markers.setdefault(vehicleId, {})[settingId] = marker
-            return
+        params = {'markerType': markerType, 'visible': True, 
+           'matrix': matrix, 
+           'targetID': vehicleId, 
+           'entity': vehicle}
+        marker = ctrl.createMarker(**params)
+        ctrl.addMarker(marker)
+        self._markers.setdefault(vehicleId, {})[settingId] = marker
+        return
 
     def _deleteMarker(self, targetId, marker):
         self._removeMarker(marker.markerID)
@@ -113,7 +108,7 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
             if m == marker:
                 return sId
 
-        return None
+        return
 
     def _removeMarker(self, markerID):
         ctrl = self.sessionProvider.shared.areaMarker

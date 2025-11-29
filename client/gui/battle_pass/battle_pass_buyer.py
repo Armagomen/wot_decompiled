@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/battle_pass_buyer.py
 import logging
 from adisp import adisp_async, adisp_process
 from gui import SystemMessages

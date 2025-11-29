@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/common/comp7_common/__init__.py
 import constants
 from constants_utils import addArenaGuiTypesFromExtension, addPrebattleTypesFromExtension, initSquadCommonTypes
 from comp7_common import comp7_constants

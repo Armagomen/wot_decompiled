@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/currency_reserves/currency_reserves_view.py
-import logging
-import typing
+import logging, typing
 from constants import PremiumConfigs, PREMIUM_TYPE, RENEWABLE_SUBSCRIPTION_CONFIG
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -84,7 +81,7 @@ class CurrencyReservesView(ViewImpl):
         self.viewModel.setTimeToOpen(timeToOpen)
 
     def _updateCreditReserve(self):
-        with self.viewModel.creditReserve.transaction() as creditReserve:
+        with self.viewModel.creditReserve.transaction() as (creditReserve):
             creditReserve.setIsEnabled(self._creditReserveConfig.get('enabled'))
             creditReserve.setIsActive(self._isPremiumPlusActive())
             creditReserve.setCurrency(CurrencyEnum.CREDITS)
@@ -92,7 +89,7 @@ class CurrencyReservesView(ViewImpl):
             creditReserve.setMaxCapacity(self._creditReserveConfig.get('creditsThreshold', 0))
 
     def _updateGoldReserve(self):
-        with self.viewModel.goldReserve.transaction() as goldReserve:
+        with self.viewModel.goldReserve.transaction() as (goldReserve):
             goldReserve.setIsEnabled(self._serverSettings.isRenewableSubGoldReserveEnabled())
             goldReserve.setIsActive(self._wotPlusCtrl.isEnabled())
             goldReserve.setCurrency(CurrencyEnum.GOLD)

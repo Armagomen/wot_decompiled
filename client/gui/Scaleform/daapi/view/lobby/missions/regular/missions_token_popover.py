@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/missions_token_popover.py
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.meta.MissionsTokenPopoverMeta import MissionsTokenPopoverMeta
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -63,11 +61,11 @@ class MissionsTokenPopover(MissionsTokenPopoverMeta):
                 icon = ''
                 descr = text_styles.standard(ms(QUESTS.MISSIONS_TOKENPOPOVER_QUEST_DESCR_DATE, date=backport.getLongDateFormat(quest.getFinishTime())))
             tooltip = makeTooltip(ms(TOOLTIPS.MISSIONS_TOKENPOPOVER_QUEST_HEADER, name=quest.getUserName()), ms(TOOLTIPS.MISSIONS_TOKENPOPOVER_QUEST_BODY))
-            result.append({'headerText': header,
-             'descrText': descr,
-             'imgSrc': icon,
-             'questId': quest.getID(),
-             'tooltip': tooltip})
+            result.append({'headerText': header, 
+               'descrText': descr, 
+               'imgSrc': icon, 
+               'questId': quest.getID(), 
+               'tooltip': tooltip})
 
         self.as_setListDataProviderS(result)
         buyBtnVisible = self._token.isOnSale() or mainQuest.isTokensOnSale()
@@ -77,8 +75,8 @@ class MissionsTokenPopover(MissionsTokenPopoverMeta):
             descrText = ms(QUESTS.MISSIONS_TOKENPOPOVER_DESCR, name=text_styles.neutral(ms(self._token.getUserName())))
         if not GUI_SETTINGS.tokenShopURL:
             buyBtnVisible = False
-        self.as_setStaticDataS({'headerText': text_styles.highTitle(ms(self._token.getUserName())),
-         'descrText': text_styles.main(descrText),
-         'imageSrc': self._token.getImage(TOKEN_SIZES.MEDIUM),
-         'buyBtnLabel': QUESTS.MISSIONS_TOKENPOPOVER_BUYBTN_LABEL,
-         'buyBtnVisible': buyBtnVisible})
+        self.as_setStaticDataS({'headerText': text_styles.highTitle(ms(self._token.getUserName())), 
+           'descrText': text_styles.main(descrText), 
+           'imageSrc': self._token.getImage(TOKEN_SIZES.MEDIUM), 
+           'buyBtnLabel': QUESTS.MISSIONS_TOKENPOPOVER_BUYBTN_LABEL, 
+           'buyBtnVisible': buyBtnVisible})

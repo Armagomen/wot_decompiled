@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/camera_mover.py
 from __future__ import absolute_import
-import math
-import CGF
+import math, CGF
 from CameraComponents import OrbitComponent
 from GenericComponents import TransformComponent
 from gui.subhangar.subhangar_state_groups import CameraMover

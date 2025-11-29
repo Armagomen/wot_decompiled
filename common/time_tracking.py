@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/time_tracking.py
 from constants import SERVER_TICK_LENGTH, IS_CLIENT, IS_BOT, IS_CGF_DUMP, IS_VS_EDITOR, IS_UE_EDITOR
 from debug_utils import LOG_WARNING
 import sys
@@ -14,10 +12,8 @@ def LOG_TIME_WARNING(spentTime, context=None, tickLength=DEFAULT_TICK_LENGTH, *a
     percent = round(spentTime / tickLength * 100)
     if context is None:
         context = sys._getframe(1).f_code.co_name
-    LOG_WARNING(('Time is overspent in %s: %.4f sec, %d%% of %.2f sec tick' % (context,
-     spentTime,
-     percent,
-     tickLength)), *args)
+    LOG_WARNING(('Time is overspent in %s: %.4f sec, %d%% of %.2f sec tick' % (
+     context, spentTime, percent, tickLength)), *args)
     return
 
 
@@ -77,7 +73,10 @@ def timetracked(func=None, context=None, timeLimit=DEFAULT_TIME_LIMIT, tickLengt
 
         return wrapper
 
-    return decorator(func) if func is not None else decorator
+    if func is not None:
+        return decorator(func)
+    else:
+        return decorator
 
 
 def logTimeTracker(func):
@@ -87,7 +86,7 @@ def logTimeTracker(func):
         timeTracker = kwargs.get('timeTracker') or (getattr(args[1], 'timeTracker', None) if len(args) > 1 else None)
         result = func(*args, **kwargs)
         if timeTracker is not None:
-            timeTracker.checkpoint('{}.{}'.format(args[0].__class__.__name__, func.__name__))
+            timeTracker.checkpoint(('{}.{}').format(args[0].__class__.__name__, func.__name__))
         return result
 
     return wrapper

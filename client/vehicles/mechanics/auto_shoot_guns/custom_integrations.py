@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/auto_shoot_guns/custom_integrations.py
-import typing
-import weakref
-import InstantStatuses
-import Statuses
-import TriggersManager
+import typing, weakref, InstantStatuses, Statuses, TriggersManager
 from aih_constants import ShakeReason
 from events_handler import eventHandler
 from TriggersManager import TRIGGER_TYPE

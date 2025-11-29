@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/VideoCamera.py
-import math
-import time
-import BigWorld
-import GUI
-import Keys
-import Math
-import math_utils
+import math, time, BigWorld, GUI, Keys, Math, math_utils
 from aih_constants import CTRL_MODE_NAME
 from AvatarInputHandler import AimingSystems
 from AvatarInputHandler.cameras import ICamera
@@ -159,14 +151,18 @@ class _AlignerToLand(object):
             downPoint = Math.Vector3(position)
             downPoint.y -= self.__downPointDistance
             collideRes = BigWorld.wg_collideSegment(spaceID, upPoint, downPoint, 16, 8)
-            return None if collideRes is None else collideRes.closestPoint
+            if collideRes is None:
+                return
+            return collideRes.closestPoint
 
     def getAlignedPosition(self, position):
         if self.__desiredHeightShift is None:
             return position
         else:
             landPos = self._getLandAt(position)
-            return position if landPos is None else landPos + self.__desiredHeightShift
+            if landPos is None:
+                return position
+            return landPos + self.__desiredHeightShift
 
 
 class _VehicleBounder(object):
@@ -178,7 +174,10 @@ class _VehicleBounder(object):
     SELECT_DETACHED_TURRET = 4
 
     def __getLookAtPosition(self):
-        return None if self.__lookAtProvider is None else Matrix(self.__lookAtProvider).translation
+        if self.__lookAtProvider is None:
+            return
+        else:
+            return Matrix(self.__lookAtProvider).translation
 
     isBound = property(lambda self: self.__vehicle is not None)
     lookAtPosition = property(__getLookAtPosition)
@@ -228,24 +227,24 @@ class _VehicleBounder(object):
     def checkTurretDetachment(self, worldPos):
         if self.__vehicle is None:
             return
-        elif self.__vehicle.isTurretDetached and not self.__placement == _VehicleBounder.SELECT_DETACHED_TURRET:
-            turretFound = None
-            for turret in DetachedTurret.allTurrets:
-                if turret.vehicleID == self.__vehicle.id and turret.model.visible:
-                    turretFound = turret
-                    break
-
-            if turretFound is None:
-                return
-            turretToGoalShift = worldPos - turretFound.position
-            toTurretMat = Matrix(turretFound.matrix)
-            toTurretMat.invert()
-            turretToGoalShift = toTurretMat.applyVector(turretToGoalShift)
-            self.matrix = turretFound.matrix
-            self.__lookAtProvider = None
-            self.__placement = _VehicleBounder.SELECT_DETACHED_TURRET
-            return turretToGoalShift
         else:
+            if self.__vehicle.isTurretDetached and not self.__placement == _VehicleBounder.SELECT_DETACHED_TURRET:
+                turretFound = None
+                for turret in DetachedTurret.allTurrets:
+                    if turret.vehicleID == self.__vehicle.id and turret.model.visible:
+                        turretFound = turret
+                        break
+
+                if turretFound is None:
+                    return
+                turretToGoalShift = worldPos - turretFound.position
+                toTurretMat = Matrix(turretFound.matrix)
+                toTurretMat.invert()
+                turretToGoalShift = toTurretMat.applyVector(turretToGoalShift)
+                self.matrix = turretFound.matrix
+                self.__lookAtProvider = None
+                self.__placement = _VehicleBounder.SELECT_DETACHED_TURRET
+                return turretToGoalShift
             return
 
 
@@ -261,7 +260,9 @@ class _VehiclePicker(object):
             return (None, None)
         else:
             pos, collData = posColldata
-            return (None, None) if collData is None or not collData.isVehicle() else (collData.entity, pos)
+            if collData is None or not collData.isVehicle():
+                return (None, None)
+            return (collData.entity, pos)
 
 
 class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
@@ -316,7 +317,7 @@ class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
         return _AlignerToLand
 
     def getReasonsAffectCameraDirectly(self):
-        pass
+        return ()
 
     def applyImpulse(self, position, impulse, reason=1):
         pass
@@ -373,10 +374,12 @@ class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
     def handleKeyEvent(self, key, isDown):
         if key is None:
             return False
-        elif self._handleKeySwitches(key, isDown):
-            return True
         else:
-            return True if self._handleMoveAndSensitivityKeys(key, isDown) else None
+            if self._handleKeySwitches(key, isDown):
+                return True
+            if self._handleMoveAndSensitivityKeys(key, isDown):
+                return True
+            return
 
     def _handleKeySwitches(self, key, isDown):
         if isDown:
@@ -445,7 +448,8 @@ class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
 
     def __getMovementDirections(self):
         m = math_utils.createRotationMatrix(self._ypr)
-        result = (m.applyVector(Vector3(1, 0, 0)), Vector3(0, 1, 0), m.applyVector(Vector3(0, 0, 1)))
+        result = (
+         m.applyVector(Vector3(1, 0, 0)), Vector3(0, 1, 0), m.applyVector(Vector3(0, 0, 1)))
         if self._alignerToLand.enabled:
             result[0].y = 0.0
             result[2].y = 0.0
@@ -596,23 +600,28 @@ class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
         movementMappings[getattr(Keys, configDataSec.readString('keyMoveBackward', 'KEY_S'))] = Vector3(0, 0, -1)
         linearSensitivity = configDataSec.readFloat('linearVelocity', 40.0)
         linearSensitivityAcc = configDataSec.readFloat('linearVelocityAcceleration', 30.0)
-        linearIncDecKeys = (getattr(Keys, configDataSec.readString('keyLinearVelocityIncrement', 'KEY_I')), getattr(Keys, configDataSec.readString('keyLinearVelocityDecrement', 'KEY_K')))
+        linearIncDecKeys = (
+         getattr(Keys, configDataSec.readString('keyLinearVelocityIncrement', 'KEY_I')),
+         getattr(Keys, configDataSec.readString('keyLinearVelocityDecrement', 'KEY_K')))
         self._movementSensor = KeySensor(movementMappings, linearSensitivity, linearIncDecKeys, linearSensitivityAcc)
-        self._verticalMovementSensor = KeySensor({keyMoveUp: 1,
-         keyMoveDown: -1}, linearSensitivity, linearIncDecKeys, linearSensitivityAcc)
+        self._verticalMovementSensor = KeySensor({keyMoveUp: 1, keyMoveDown: -1}, linearSensitivity, linearIncDecKeys, linearSensitivityAcc)
         self._movementSensor.currentVelocity = Math.Vector3()
 
     def _readRotationSettings(self, configDataSec, rotationMappings):
         rotationSensitivity = configDataSec.readFloat('angularVelocity', 0.7)
         rotationSensitivityAcc = configDataSec.readFloat('angularVelocityAcceleration', 0.8)
-        rotationIncDecKeys = (getattr(Keys, configDataSec.readString('keyAngularVelocityIncrement', 'KEY_O')), getattr(Keys, configDataSec.readString('keyAngularVelocityDecrement', 'KEY_L')))
+        rotationIncDecKeys = (
+         getattr(Keys, configDataSec.readString('keyAngularVelocityIncrement', 'KEY_O')),
+         getattr(Keys, configDataSec.readString('keyAngularVelocityDecrement', 'KEY_L')))
         self._rotationSensor = KeySensor(rotationMappings, rotationSensitivity, rotationIncDecKeys, rotationSensitivityAcc)
         self._rotationSensor.currentVelocity = Math.Vector3()
 
     def _readZoomSettings(self, configDataSec, zoomMappings):
         zoomSensitivity = configDataSec.readFloat('zoomVelocity', 2.0)
         zoomSensitivityAcc = configDataSec.readFloat('zoomVelocityAcceleration', 1.5)
-        zoomIncDecKeys = (getattr(Keys, configDataSec.readString('keyZoomVelocityIncrement', 'KEY_NUMPADMINUS')), getattr(Keys, configDataSec.readString('keyZoomVelocityDecrement', 'KEY_ADD')))
+        zoomIncDecKeys = (
+         getattr(Keys, configDataSec.readString('keyZoomVelocityIncrement', 'KEY_NUMPADMINUS')),
+         getattr(Keys, configDataSec.readString('keyZoomVelocityDecrement', 'KEY_ADD')))
         self._zoomSensor = KeySensor(zoomMappings, zoomSensitivity, zoomIncDecKeys, zoomSensitivityAcc)
         self._zoomSensor.currentVelocity = 0.0
 
@@ -673,7 +682,9 @@ class VideoCamera(ICamera, CallbackDelayer, TimeDeltaMeter):
             return endPos
         else:
             _, collisionPointWithBorders = BigWorld.player().arena.collideWithSpaceBB(startPos, endPos)
-            return collisionPointWithBorders if collisionPointWithBorders is not None else endPos
+            if collisionPointWithBorders is not None:
+                return collisionPointWithBorders
+            return endPos
 
     def __processBindToVehicleKey(self):
         if BigWorld.isKeyDown(Keys.KEY_LSHIFT) or BigWorld.isKeyDown(Keys.KEY_RSHIFT):

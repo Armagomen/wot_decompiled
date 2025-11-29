@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/battle_hints/history.py
-import time
-import typing
-import BattleReplay
+import time, typing, BattleReplay
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from debug_utils import LOG_WARNING
@@ -14,9 +10,7 @@ _logger = getLogger('History')
 _PREFS_NAME = 'displayHistory'
 
 def _createEmptyHistory():
-    return {'lastDisplayTime': {},
-     'totalDisplayCount': {},
-     'perBattleCount': {}}
+    return {'lastDisplayTime': {}, 'totalDisplayCount': {}, 'perBattleCount': {}}
 
 
 class BattleHintsHistory(object):
@@ -71,19 +65,18 @@ class BattleHintsHistory(object):
     def _load(self):
         if self._history is not None or BattleReplay.isPlaying():
             return
+        loadedDisplayHistory = AccountSettings.getBattleHints(_PREFS_NAME)
+        if loadedDisplayHistory is None:
+            self._history = _createEmptyHistory()
+            _logger.debug('Created display history.')
+        elif isinstance(loadedDisplayHistory, dict):
+            self._history = loadedDisplayHistory
+            self._history['perBattleCount'] = {}
+            _logger.debug('Loaded display history.')
         else:
-            loadedDisplayHistory = AccountSettings.getBattleHints(_PREFS_NAME)
-            if loadedDisplayHistory is None:
-                self._history = _createEmptyHistory()
-                _logger.debug('Created display history.')
-            elif isinstance(loadedDisplayHistory, dict):
-                self._history = loadedDisplayHistory
-                self._history['perBattleCount'] = {}
-                _logger.debug('Loaded display history.')
-            else:
-                self._history = _createEmptyHistory()
-                _logger.debug('Corrupted display history. Reset to empty state.')
-            return
+            self._history = _createEmptyHistory()
+            _logger.debug('Corrupted display history. Reset to empty state.')
+        return
 
     def _update(self, battleHint):
         if battleHint.model.history is None:

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/poi_notification_panel.py
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from Event import EventsSubscriber
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, POI_STATUS_UI_MAPPING
 from gui.Scaleform.daapi.view.meta.PointsOfInterestNotificationPanelMeta import PointsOfInterestNotificationPanelMeta
@@ -47,11 +43,11 @@ class PointsOfInterestPanel(PointsOfInterestNotificationPanelMeta, PointsOfInter
         super(PointsOfInterestPanel, self)._dispose()
 
     def onPoiAdded(self, poiState):
-        poiVO = {'id': poiState.id,
-         'type': POI_TYPE_UI_MAPPING[poiState.type],
-         'status': POI_STATUS_UI_MAPPING[poiState.status.statusID],
-         'isAlly': self.__isAlly(poiState),
-         'progress': poiState.progress}
+        poiVO = {'id': poiState.id, 
+           'type': POI_TYPE_UI_MAPPING[poiState.type], 
+           'status': POI_STATUS_UI_MAPPING[poiState.status.statusID], 
+           'isAlly': self.__isAlly(poiState), 
+           'progress': poiState.progress}
         self.as_addPoiStatusS(poiVO)
 
     def onProcessPoi(self, poiState):
@@ -71,9 +67,9 @@ class PointsOfInterestPanel(PointsOfInterestNotificationPanelMeta, PointsOfInter
     def __onPoiCaptured(self, poiID, vehicleID):
         if vehicleID == avatar_getter.getVehicleIDAttached():
             return
-        elif not self.__isAvatarReady:
-            return
         else:
+            if not self.__isAvatarReady:
+                return
             poiState = self.__sessionProvider.dynamic.pointsOfInterest.getPoiState(poiID)
             if poiState is None:
                 _logger.error('Missing PointOfInterest id=%s.', poiID)

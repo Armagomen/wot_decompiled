@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TrainingFormMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class TrainingFormMeta(View):
@@ -17,7 +15,9 @@ class TrainingFormMeta(View):
         self._printOverrideError('onLeave')
 
     def as_setInfoS(self, data):
-        return self.flashObject.as_setInfo(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInfo(data)
 
     def as_setListS(self, data):
-        return self.flashObject.as_setList(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setList(data)

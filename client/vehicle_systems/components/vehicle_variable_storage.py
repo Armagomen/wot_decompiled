@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/vehicle_variable_storage.py
-import typing
-import enum
-import logging
-import Math
+import typing, enum, logging, Math
 from cgf_modules.variable_components import VariableStorageComponent
 from constants import VEHICLE_CLASSES, VEHICLE_CLASS_INDICES
 from vehicle_systems.tankStructure import TankPartIndexes
@@ -14,7 +9,7 @@ if typing.TYPE_CHECKING:
     from gui.hangar_vehicle_appearance import HangarVehicleAppearance
     from items.vehicles import VehicleDescriptor
     from cgf_modules.variable_components import VariableType
-    TAppearance = typing.Union[HangarVehicleAppearance, CommonTankAppearance, None]
+    TAppearance = typing.Union[(HangarVehicleAppearance, CommonTankAppearance, None)]
 _logger = logging.getLogger(__name__)
 
 class VehicleRootVars(enum.Enum):

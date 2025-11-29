@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/page.py
-import typing
-import BattleReplay
+import typing, BattleReplay
 from aih_constants import CTRL_MODE_NAME
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic import ClassicPage
@@ -22,19 +19,25 @@ _REMOVED_COMPONENTS = {BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR,
  BATTLE_VIEW_ALIASES.BATTLE_NOTIFIER,
  DynamicAliases.FINISH_SOUND_PLAYER,
  BATTLE_VIEW_ALIASES.NEWBIE_HINT}
-_FULL_MAP_HUD_STATE_COMPONENTS = {BATTLE_VIEW_ALIASES.DEBUG_PANEL, BATTLE_VIEW_ALIASES.BATTLE_MESSENGER, BATTLE_VIEW_ALIASES.FULLSCREEN_MAP}
-_POSTMORTEM_HIDDEN_COMPONENTS = {BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL,
+_FULL_MAP_HUD_STATE_COMPONENTS = {
+ BATTLE_VIEW_ALIASES.DEBUG_PANEL,
+ BATTLE_VIEW_ALIASES.BATTLE_MESSENGER,
+ BATTLE_VIEW_ALIASES.FULLSCREEN_MAP}
+_POSTMORTEM_HIDDEN_COMPONENTS = {
+ BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL,
  BATTLE_VIEW_ALIASES.RIBBONS_PANEL,
  BATTLE_VIEW_ALIASES.VEHICLE_MESSAGES,
  BATTLE_VIEW_ALIASES.VEHICLE_ERROR_MESSAGES,
  BATTLE_VIEW_ALIASES.STATUS_NOTIFICATIONS_PANEL}
-_GUI_CONTROL_MODE_CONSUMERS = (BATTLE_VIEW_ALIASES.RADIAL_MENU, 'chat')
+_GUI_CONTROL_MODE_CONSUMERS = (
+ BATTLE_VIEW_ALIASES.RADIAL_MENU,
+ 'chat')
 
 class PveBaseComponentsConfig(ComponentsConfig):
 
     def getConfig(self):
         configs = super(PveBaseComponentsConfig, self).getConfig()
-        return tuple(((ctrlId, tuple((alias for alias in aliases if alias not in _REMOVED_COMPONENTS))) for ctrlId, aliases in configs))
+        return tuple((ctrlId, tuple(alias for alias in aliases if alias not in _REMOVED_COMPONENTS)) for ctrlId, aliases in configs)
 
     def __iadd__(self, other):
         resultConfig = super(PveBaseComponentsConfig, self).__iadd__(other)
@@ -52,7 +55,7 @@ _EXTENDED_CONFIG = _PVE_BASE_CONFIG + EXTENDED_CLASSIC_CONFIG
 class PveBaseBattlePage(ClassicPage):
 
     def __init__(self, components=None, external=None, fullStatsAlias=BATTLE_VIEW_ALIASES.FULL_STATS, **kwargs):
-        components = components if components is not None else (_COMMON_CONFIG if self.sessionProvider.isReplayPlaying else _EXTENDED_CONFIG)
+        components = components if components is not None else _COMMON_CONFIG if self.sessionProvider.isReplayPlaying else _EXTENDED_CONFIG
         super(PveBaseBattlePage, self).__init__(components=components, external=external, fullStatsAlias=fullStatsAlias)
         self.__isFullMapVisible = False
         self.__defaultStateVisibleComponents = set()
@@ -115,10 +118,15 @@ class PveBaseBattlePage(ClassicPage):
         super(PveBaseBattlePage, self)._setComponentsVisibility(visibleAliases, hiddenAliases)
 
     def _filterExistingViewAliases(self, income):
-        return income - _REMOVED_COMPONENTS if income is not None else set()
+        if income is not None:
+            return income - _REMOVED_COMPONENTS
+        else:
+            return set()
 
     def as_isComponentVisibleS(self, componentKey):
-        return super(PveBaseBattlePage, self).as_isComponentVisibleS(componentKey) if componentKey in self.components else False
+        if componentKey in self.components:
+            return super(PveBaseBattlePage, self).as_isComponentVisibleS(componentKey)
+        return False
 
     def _minimapVisibleCmdHandler(self, event):
         if not self._isVisible or not self.__canToggleFullMap:
@@ -132,7 +140,8 @@ class PveBaseBattlePage(ClassicPage):
         elif self.__isFullMapVisible:
             self._toggleFullMap(False)
             if self._isInPostmortem:
-                self._setComponentsVisibility(hidden=_POSTMORTEM_HIDDEN_COMPONENTS, visible={BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
+                self._setComponentsVisibility(hidden=_POSTMORTEM_HIDDEN_COMPONENTS, visible={
+                 BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
 
     def _settingsChangeHandler(self, settingsID):
         settingsCtrl = self.sessionProvider.dynamic.vseHUDSettings
@@ -153,7 +162,8 @@ class PveBaseBattlePage(ClassicPage):
                         if self.__isChatHidden:
                             _FULL_MAP_HUD_STATE_COMPONENTS.discard(BATTLE_VIEW_ALIASES.BATTLE_MESSENGER)
                             self.__defaultStateVisibleComponents.discard(BATTLE_VIEW_ALIASES.BATTLE_MESSENGER)
-                            super(PveBaseBattlePage, self)._setComponentsVisibility(None, {BATTLE_VIEW_ALIASES.BATTLE_MESSENGER})
+                            super(PveBaseBattlePage, self)._setComponentsVisibility(None, {
+                             BATTLE_VIEW_ALIASES.BATTLE_MESSENGER})
                         else:
                             _FULL_MAP_HUD_STATE_COMPONENTS.add(BATTLE_VIEW_ALIASES.BATTLE_MESSENGER)
                             self.__defaultStateVisibleComponents.add(BATTLE_VIEW_ALIASES.BATTLE_MESSENGER)
@@ -174,11 +184,13 @@ class PveBaseBattlePage(ClassicPage):
         if self.__canToggleFullMap and self.__isFullMapVisible:
             self._toggleFullMap(False)
         super(PveBaseBattlePage, self)._onPostMortemSwitched(noRespawnPossible, respawnAvailable)
-        self._setComponentsVisibility(hidden=_POSTMORTEM_HIDDEN_COMPONENTS, visible={BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
+        self._setComponentsVisibility(hidden=_POSTMORTEM_HIDDEN_COMPONENTS, visible={
+         BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
 
     def _onRespawnBaseMoving(self):
         super(PveBaseBattlePage, self)._onRespawnBaseMoving()
-        self._setComponentsVisibility(visible=_POSTMORTEM_HIDDEN_COMPONENTS, hidden={BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
+        self._setComponentsVisibility(visible=_POSTMORTEM_HIDDEN_COMPONENTS, hidden={
+         BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
 
     def _canShowPostmortemTips(self):
         return super(PveBaseBattlePage, self)._canShowPostmortemTips() or BattleReplay.g_replayCtrl.isPlaying

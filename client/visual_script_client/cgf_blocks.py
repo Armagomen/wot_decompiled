@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/cgf_blocks.py
-import logging
-import typing
-import weakref
-import BigWorld
+import logging, typing, weakref, BigWorld
 from constants import IS_VS_EDITOR, ROCKET_ACCELERATION_STATE
 from debug_utils import LOG_WARNING
 from visual_script.block import Block
@@ -44,7 +39,9 @@ class GetVehicleAppearanceGameObject(Block, CGFClientMeta):
         self._appObject = self._makeDataOutputSlot('appearanceObject', SLOT_TYPE.GAME_OBJECT, self._exec)
 
     def validate(self):
-        return 'GameObject is required' if not self._object.hasValue() else super(GetVehicleAppearanceGameObject, self).validate()
+        if not self._object.hasValue():
+            return 'GameObject is required'
+        return super(GetVehicleAppearanceGameObject, self).validate()
 
     def _exec(self):
         currentGO = self._object.getValue()
@@ -67,7 +64,9 @@ class GetVehicleGameObject(Block, CGFClientMeta):
         self._vehicleObject = self._makeDataOutputSlot('vehicleObject', SLOT_TYPE.GAME_OBJECT, self._exec)
 
     def validate(self):
-        return 'GameObject is required' if not self._object.hasValue() else super(GetVehicleGameObject, self).validate()
+        if not self._object.hasValue():
+            return 'GameObject is required'
+        return super(GetVehicleGameObject, self).validate()
 
     def _exec(self):
         currentGO = self._object.getValue()
@@ -113,13 +112,13 @@ class RocketAcceleratorEvents(Block, CGFClientMeta):
             self._writeLog(errorMsg)
             self._failure.call()
             return
-        self.__switcher = {ROCKET_ACCELERATION_STATE.NOT_RUNNING: lambda *args: None,
-         ROCKET_ACCELERATION_STATE.DEPLOYING: lambda status: self._deploying.call(),
-         ROCKET_ACCELERATION_STATE.PREPARING: lambda status: self._preparing.call(),
-         ROCKET_ACCELERATION_STATE.READY: lambda status: self._ready.call(),
-         ROCKET_ACCELERATION_STATE.ACTIVE: lambda status: self._active.call(),
-         ROCKET_ACCELERATION_STATE.DISABLED: lambda status: self._disabled.call(),
-         ROCKET_ACCELERATION_STATE.EMPTY: lambda status: self._empty.call()}
+        self.__switcher = {ROCKET_ACCELERATION_STATE.NOT_RUNNING: lambda *args: None, 
+           ROCKET_ACCELERATION_STATE.DEPLOYING: lambda status: self._deploying.call(), 
+           ROCKET_ACCELERATION_STATE.PREPARING: lambda status: self._preparing.call(), 
+           ROCKET_ACCELERATION_STATE.READY: lambda status: self._ready.call(), 
+           ROCKET_ACCELERATION_STATE.ACTIVE: lambda status: self._active.call(), 
+           ROCKET_ACCELERATION_STATE.DISABLED: lambda status: self._disabled.call(), 
+           ROCKET_ACCELERATION_STATE.EMPTY: lambda status: self._empty.call()}
         provider.subscribe(self.__onStateChange, self.__onTryActivate)
         self.__controllerLink = CGF.ComponentLink(go, RAC.RocketAccelerationController)
         self._activateOut.call()
@@ -181,7 +180,9 @@ def _extractRACComponent(gameObjectLink):
         return (None, None, 'Input game object is not valid')
     else:
         provider = go.findComponentByType(RAC.RocketAccelerationController)
-        return (None, None, 'No RocketAccelerationController can be found') if provider is None else (go, provider, None)
+        if provider is None:
+            return (None, None, 'No RocketAccelerationController can be found')
+        return (go, provider, None)
 
 
 class OnVehiclePassengerInfo(Block, CGFClientMeta, VehiclePassengerInfoWatcher):

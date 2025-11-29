@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/entry_decorator.py
 from collections import defaultdict
 from messenger.gui import setGUIEntries
 from messenger.gui.interfaces import IGUIEntryDecorator, IGUIEntry

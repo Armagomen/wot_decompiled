@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/view_monitor.py
 from typing import TYPE_CHECKING
-import logging
-import weakref
+import logging, weakref
 from frameworks.wulf import ViewStatus
 from gui.impl.pub import ViewImpl
 from helpers import dependency

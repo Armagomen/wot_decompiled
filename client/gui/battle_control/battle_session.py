@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/battle_session.py
 import weakref
 from collections import namedtuple
-import BigWorld
-import Event
-import BattleReplay
+import BigWorld, Event, BattleReplay
 from PlayerEvents import g_playerEvents
 from adisp import adisp_async
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -28,7 +24,9 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 BattleExitResult = namedtuple('BattleExitResult', 'isDeserter playerInfo')
 
 class BattleSessionProvider(IBattleSessionProvider):
-    __slots__ = ('__ctx', '__sharedRepo', '__dynamicRepo', '__requestsCtrl', '__arenaDP', '__arenaListeners', '__viewComponentsBridge', '__weakref__', '__arenaVisitor', '__invitations', '__isReplayPlaying', '__battleCache', 'onUpdateObservedVehicleData')
+    __slots__ = ('__ctx', '__sharedRepo', '__dynamicRepo', '__requestsCtrl', '__arenaDP',
+                 '__arenaListeners', '__viewComponentsBridge', '__weakref__', '__arenaVisitor',
+                 '__invitations', '__isReplayPlaying', '__battleCache')
 
     def __init__(self):
         super(BattleSessionProvider, self).__init__()
@@ -148,7 +146,10 @@ class BattleSessionProvider(IBattleSessionProvider):
         return self.__arenaDP
 
     def addArenaCtrl(self, controller):
-        return self.__arenaListeners.addController(controller) if self.__arenaListeners is not None else False
+        if self.__arenaListeners is not None:
+            return self.__arenaListeners.addController(controller)
+        else:
+            return False
 
     def removeArenaCtrl(self, controller):
         if self.__arenaListeners is not None:

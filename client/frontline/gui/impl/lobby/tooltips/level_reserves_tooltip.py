@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/level_reserves_tooltip.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from frontline.gui.impl.gen.view_models.views.lobby.tooltips.level_reserves_tooltip_model import LevelReservesTooltipModel
 from gui.impl.pub import ViewImpl
@@ -20,7 +18,7 @@ class LevelReservesTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(LevelReservesTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             levels = vm.getLevels()
             levels.clear()
             for level in self.__epicController.getSkillLevelRanks():

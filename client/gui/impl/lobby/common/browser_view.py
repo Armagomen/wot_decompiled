@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/browser_view.py
 import typing
 from frameworks.wulf import ViewFlags
 from gui.impl import backport
@@ -10,17 +8,29 @@ from gui.impl.lobby.common.sound_constants import BROWSER_VIEW_SOUND_SPACES
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from web.web_client_api import webApiCollection
-BrowserViewSettings = typing.NamedTuple('BrowserViewSettings', (('url', str),
- ('webHandlers', typing.Optional[webApiCollection]),
- ('isClosable', bool),
- ('useSpecialKeys', bool),
- ('allowRightClick', bool),
- ('viewFlags', int),
- ('restoreBackground', bool),
- ('waitingMessageID', int),
- ('disabledKeys', typing.Iterable[typing.Tuple[str, bool, bool, bool, bool]]),
- ('soundSpaceID', typing.Optional[str]),
- ('returnClb', typing.Optional[typing.Callable])))
+BrowserViewSettings = typing.NamedTuple('BrowserViewSettings', (
+ (
+  'url', str),
+ (
+  'webHandlers', typing.Optional[webApiCollection]),
+ (
+  'isClosable', bool),
+ (
+  'useSpecialKeys', bool),
+ (
+  'allowRightClick', bool),
+ (
+  'viewFlags', int),
+ (
+  'restoreBackground', bool),
+ (
+  'waitingMessageID', int),
+ (
+  'disabledKeys', typing.Iterable[typing.Tuple[(str, bool, bool, bool, bool)]]),
+ (
+  'soundSpaceID', typing.Optional[str]),
+ (
+  'returnClb', typing.Optional[typing.Callable])))
 
 def makeSettings(url, webHandlers=None, isClosable=False, useSpecialKeys=False, allowRightClick=False, viewFlags=ViewFlags.LOBBY_SUB_VIEW, restoreBackground=False, waitingMessageID=R.invalid(), disabledKeys=(), soundSpaceID=None, returnClb=None):
     return BrowserViewSettings(url, webHandlers, isClosable, useSpecialKeys, allowRightClick, viewFlags, restoreBackground, waitingMessageID, disabledKeys, soundSpaceID, returnClb)
@@ -51,7 +61,7 @@ class BrowserView(Browser[BrowserViewModel]):
     def _onLoading(self, *args, **kwargs):
         super(BrowserView, self)._onLoading(*args, **kwargs)
         self.getViewModel().onClose += self.__onClose
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setIsClosable(self.__settings.isClosable)
             if self.__settings.waitingMessageID != R.invalid():
                 self.setWaitingMessage(backport.msgid(self.__settings.waitingMessageID))

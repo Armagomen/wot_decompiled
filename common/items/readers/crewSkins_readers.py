@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/readers/crewSkins_readers.py
-import ResMgr
-import nations
-import os
+import ResMgr, nations, os
 from constants import REGIONAL_REALMS
 from items import _xml
 from items import vehicles
@@ -57,12 +53,12 @@ def _readGroupTags(xmlCtx, section, subsectionName):
         restrictions = []
         for tag in tags:
             if not (tag in tankmen_components.GROUP_TAG.RANGE or vehicles.g_list.isVehicleExisting(tag)):
-                _xml.raiseWrongXml(xmlCtx, subsectionName, 'unknown tag "{}"'.format(tag))
+                _xml.raiseWrongXml(xmlCtx, subsectionName, ('unknown tag "{}"').format(tag))
             if tag in tankmen_components.GROUP_TAG.RESTRICTIONS:
                 restrictions.append(tag)
 
         if restrictions and tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN not in restrictions:
-            _xml.raiseWrongXml(xmlCtx, subsectionName, 'Group contains tags of restrictions {}, so tag "{}" is mandatory'.format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
+            _xml.raiseWrongXml(xmlCtx, subsectionName, ('Group contains tags of restrictions {}, so tag "{}" is mandatory').format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
     else:
         tags = []
     return frozenset(tags)
@@ -104,7 +100,8 @@ def _readSkinItem(pricesCache, cache, xmlCtx, section, storage):
     itemToGroup = cache.itemToPriceGroup
     if crewSkinItem.priceGroup:
         if crewSkinItem.priceGroup not in cache.priceGroupNames:
-            _xml.raiseWrongXml(xmlCtx, 'priceGroup', 'unknown price group %s for item %s' % (crewSkinItem.priceGroup, crewSkinItem.id))
+            _xml.raiseWrongXml(xmlCtx, 'priceGroup', 'unknown price group %s for item %s' % (
+             crewSkinItem.priceGroup, crewSkinItem.id))
         priceGroupId = cache.priceGroupNames[crewSkinItem.priceGroup]
         crewSkinItem.priceGroupTags = groupsDict[priceGroupId].tags
         itemToGroup[crewSkinItem.compactDescr] = groupsDict[priceGroupId].compactDescr

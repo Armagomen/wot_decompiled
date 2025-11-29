@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/vehicle_preview_bottom_panel.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelWellMeta import VehiclePreviewBottomPanelWellMeta
 from gui.impl.gen import R
@@ -48,7 +46,11 @@ class _BottomPanelView(ViewImpl):
         self.__updateModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onAction, self.__showResourcesLoading), (self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated))
+        return (
+         (
+          self.viewModel.onAction, self.__showResourcesLoading),
+         (
+          self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated))
 
     def __showResourcesLoading(self):
         if self.__resourceWell.getPurchaseMode() is PurchaseMode.SEQUENTIAL_PRODUCT:
@@ -74,14 +76,15 @@ class _BottomPanelView(ViewImpl):
         if mode == PurchaseMode.TWO_PARALLEL_PRODUCTS:
             currentRewardID = self.__resourceWell.getCurrentRewardID()
             isVisible &= not currentRewardID or currentRewardID == self.__rewardID
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsVisible(isVisible)
             model.setEventMode(convertPurchaseToEventMode(mode))
             model.setVehicleName(self.__resourceWell.getRewardVehicle(self.__rewardID).shortUserName)
             for rewardConfig in self.__resourceWell.config.rewards.itervalues():
                 if rewardConfig.isSerial:
                     model.setTopRewardsCount(rewardConfig.limit)
-                model.setRegularRewardsCount(rewardConfig.limit)
+                else:
+                    model.setRegularRewardsCount(rewardConfig.limit)
 
     def __onNumberRequesterUpdated(self):
         self.__updateModel()

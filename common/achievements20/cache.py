@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/achievements20/cache.py
 from functools import partial
 from time import time
 from enum import Enum
@@ -20,22 +18,18 @@ if TYPE_CHECKING:
     from dossiers2.common.DossierDescr import DossierDescr
     from items.vehicles import VehicleType
     from ResMgr import DataSection
-DEPRECATED_BONUSES = {'xp',
- 'tankmenXP',
- 'xpFactor',
- 'creditsFactor',
- 'vehicleXP',
- 'freeXPFactor',
- 'tankmenXPFactor',
- 'vehicleXPFactor'}
+DEPRECATED_BONUSES = {'xp', 'tankmenXP', 'xpFactor', 'creditsFactor', 'vehicleXP',
+ 'freeXPFactor', 'tankmenXPFactor', 'vehicleXPFactor'}
 ACHIEVEMENTS20_SUPPORTED_BONUSES = SUPPORTED_BONUSES - DEPRECATED_BONUSES
 ALLOWED_CUSTOMIZATION_TAGS = frozenset(('c11n2D', 'c11n3D'))
 ITEM_CONDITION_KEYS = frozenset(('vehicle', 'customizationItem'))
 ITEM_FILTER_CONDITION_KEYS = frozenset(('vehicleFilter', 'customizationItemFilter'))
 VEHICLE_FILTER_CONDITION_KEYS = frozenset(('nations', 'vehClasses', 'levels'))
 ALLOWED_ACHIEVEMENT_TYPES = frozenset(('vehicleAchievements', 'customizationAchievements'))
-ALLOWED_CONDITIONS_BY_ACHIEVEMENT_TYPE = {'vehicleAchievements': {'vehicle', 'vehicleFilter', 'requiredAchievementIDs'},
- 'customizationAchievements': {'customizationItem', 'customizationItemFilter', 'requiredAchievementIDs'}}
+ALLOWED_CONDITIONS_BY_ACHIEVEMENT_TYPE = {'vehicleAchievements': {
+                         'vehicle', 'vehicleFilter', 'requiredAchievementIDs'}, 
+   'customizationAchievements': {
+                               'customizationItem', 'customizationItemFilter', 'requiredAchievementIDs'}}
 
 class ProgressiveTypes(Enum):
     PROGRESSIVE = 'progressive'
@@ -71,7 +65,8 @@ class IconSizeMap(Enum):
 
 
 _VALID_ICON_SIZE_MAPS = {k.value for k in IconSizeMap}
-ROOT_ACHIEVEMENT_IDS = (('vehicleAchievements', 1), ('vehicleAchievements', 2), ('customizationAchievements', 1))
+ROOT_ACHIEVEMENT_IDS = (
+ ('vehicleAchievements', 1), ('vehicleAchievements', 2), ('customizationAchievements', 1))
 _CONFIG_FILE = 'scripts/item_defs/advanced_achievements/advanced_achievements.xml'
 
 def getCache():
@@ -83,11 +78,11 @@ def _readConfig():
     config = {}
     for name, value in section.items():
         if name in config:
-            raise SoftException('Duplicate achievement section name: {}'.format(name))
+            raise SoftException(('Duplicate achievement section name: {}').format(name))
         try:
             config[name] = __readAchievements(name, value)
         except SoftException as e:
-            raise SoftException("Error: '{}', achievement type '{}'".format(e.message, name))
+            raise SoftException(("Error: '{}', achievement type '{}'").format(e.message, name))
 
     return config
 
@@ -97,14 +92,15 @@ def __readUIConfig(section, achievementID):
     if section.has_key('UI'):
         for pName, pValue in section['UI'].items():
             if pName not in _VALID_UI_CONFIG_KEYS:
-                raise SoftException('Wrong UI parameter {} for achievement {}'.format(pName, achievementID))
+                raise SoftException(('Wrong UI parameter {} for achievement {}').format(pName, achievementID))
             if pName in uiConfig:
-                raise SoftException('Duplicated UI parameter {} for achievement {}'.format(pName, achievementID))
+                raise SoftException(('Duplicated UI parameter {} for achievement {}').format(pName, achievementID))
             if pName == UIConfigFields.ICON_SIZE_MAP.value and pValue.asString not in _VALID_ICON_SIZE_MAPS:
-                raise SoftException('Invalid iconSizeMap {} parameter {} for achievement {}'.format(pValue.asString, pName, achievementID))
+                raise SoftException(('Invalid iconSizeMap {} parameter {} for achievement {}').format(pValue.asString, pName, achievementID))
             if pName == UIConfigFields.ORDER.value:
                 uiConfig[pName] = list(map(int, pValue.asString.split()))
-            uiConfig[pName] = pValue.asString
+            else:
+                uiConfig[pName] = pValue.asString
 
     return uiConfig
 
@@ -119,16 +115,16 @@ def __readAchievements(achievementsType, achievementsSection):
         achievements = {}
         for name, value in achievementsSection.items():
             if name != 'achievement':
-                raise SoftException("Unexpected name '{}'".format(name))
+                raise SoftException(("Unexpected name '{}'").format(name))
             achievementID = value.readInt('id', -1)
             if achievementID < 0:
-                raise SoftException("Achievement id should be non-negative '{}'".format(value.readString('id')))
+                raise SoftException(("Achievement id should be non-negative '{}'").format(value.readString('id')))
             if achievementID in achievements:
-                raise SoftException("Duplicate achievement id '{}'".format(achievementID))
+                raise SoftException(("Duplicate achievement id '{}'").format(achievementID))
             try:
                 conditions = __readConditions(value['conditions'])
                 if set(conditions.iterkeys()) - ALLOWED_CONDITIONS_BY_ACHIEVEMENT_TYPE[achievementsType]:
-                    raise SoftException('Unexpected conditions for achievement type: {}'.format(set(conditions.iterkeys()) - ALLOWED_CONDITIONS_BY_ACHIEVEMENT_TYPE[achievementsType]))
+                    raise SoftException(('Unexpected conditions for achievement type: {}').format(set(conditions.iterkeys()) - ALLOWED_CONDITIONS_BY_ACHIEVEMENT_TYPE[achievementsType]))
                 if 'requiredAchievementIDs' in conditions:
                     if achievementID in conditions['requiredAchievementIDs']:
                         raise SoftException("Own achievement id can't be at required achievements list")
@@ -141,24 +137,24 @@ def __readAchievements(achievementsType, achievementsSection):
                     availableAchievementIDs.add(achievementID)
                 openByUnlock = value.has_key('openByUnlock')
                 if openByUnlock and achievementsType != 'vehicleAchievements':
-                    raise SoftException("Only vehicleAchievements could have openByUnlock achivement '{}'".format(value.readString('id')))
-                achievementData = {'id': achievementID,
-                 'stages': stages,
-                 'conditions': conditions,
-                 'type': achievementsType,
-                 'deprecated': isDeprecated,
-                 'openByUnlock': openByUnlock}
+                    raise SoftException(("Only vehicleAchievements could have openByUnlock achivement '{}'").format(value.readString('id')))
+                achievementData = {'id': achievementID, 
+                   'stages': stages, 
+                   'conditions': conditions, 
+                   'type': achievementsType, 
+                   'deprecated': isDeprecated, 
+                   'openByUnlock': openByUnlock}
                 if IS_CLIENT or IS_WEB:
                     achievementData['UI'] = __readUIConfig(value, achievementID)
             except SoftException as e:
-                raise SoftException(e.message + ", achievement id: '{}'".format(achievementID))
+                raise SoftException(e.message + (", achievement id: '{}'").format(achievementID))
 
             achievements[achievementID] = Achievement(achievementData)
 
         if deprecatedAchievementIDs & requiredAchievementIDs:
-            raise SoftException('Deprecated achievement can not be required: {}'.format(deprecatedAchievementIDs & requiredAchievementIDs))
+            raise SoftException(('Deprecated achievement can not be required: {}').format(deprecatedAchievementIDs & requiredAchievementIDs))
         if requiredAchievementIDs - availableAchievementIDs:
-            raise SoftException('Missed some required achievements: {}'.format(requiredAchievementIDs - availableAchievementIDs))
+            raise SoftException(('Missed some required achievements: {}').format(requiredAchievementIDs - availableAchievementIDs))
         return achievements
 
 
@@ -196,8 +192,8 @@ def __stageAllValueGetterByCustomizationItemFilter(filterData):
     return allValue
 
 
-__stageAllValueGetterByCondition = {'vehicleFilter': __stageAllValueGetterByVehicleFilter,
- 'customizationItemFilter': __stageAllValueGetterByCustomizationItemFilter}
+__stageAllValueGetterByCondition = {'vehicleFilter': __stageAllValueGetterByVehicleFilter, 
+   'customizationItemFilter': __stageAllValueGetterByCustomizationItemFilter}
 
 def __readStages(stagesSection, conditions):
     if stagesSection is None:
@@ -209,26 +205,26 @@ def __readStages(stagesSection, conditions):
                 raise SoftException('')
             stageValue = value.readString('value')
             if not stageValue:
-                raise SoftException("Missed stage '{}' value".format(len(stages)))
+                raise SoftException(("Missed stage '{}' value").format(len(stages)))
             if stageValue == 'all':
                 stageValue = 0
                 for conditionName, conditionData in conditions.iteritems():
                     if conditionName not in __stageAllValueGetterByCondition:
-                        raise SoftException("Unexpected condition '{}' for 'all' value, stage index: {}".format(conditionName, len(stages)))
+                        raise SoftException(("Unexpected condition '{}' for 'all' value, stage index: {}").format(conditionName, len(stages)))
                     stageValue += __stageAllValueGetterByCondition[conditionName](conditionData)
 
             else:
                 stageValue = int(stageValue)
             if stageValue < 1:
-                raise SoftException('Stage value should be greater than 0: {}, stage index: {}'.format(stageValue, len(stages)))
+                raise SoftException(('Stage value should be greater than 0: {}, stage index: {}').format(stageValue, len(stages)))
             points = value.readInt('points', 0)
             rewards = readBonusSection(ACHIEVEMENTS20_SUPPORTED_BONUSES, value['rewards'])
-            if stages and stages[-1]['value'] >= stageValue:
-                raise SoftException('Stages should be increased sequence by stage value: {}, stage index: {}'.format(stageValue, len(stages)))
-            stages.append({'id': len(stages) + 1,
-             'value': stageValue,
-             'points': points,
-             'rewards': rewards})
+            if stages and stages[(-1)]['value'] >= stageValue:
+                raise SoftException(('Stages should be increased sequence by stage value: {}, stage index: {}').format(stageValue, len(stages)))
+            stages.append({'id': len(stages) + 1, 
+               'value': stageValue, 
+               'points': points, 
+               'rewards': rewards})
 
         return stages
 
@@ -239,12 +235,12 @@ def __readVehicleFilterConditions(filterSection):
     else:
         unexpectedFilterKeys = set(filterSection.keys()) - VEHICLE_FILTER_CONDITION_KEYS
         if unexpectedFilterKeys:
-            raise SoftException('Unexpected filter keys: {}'.format(unexpectedFilterKeys))
+            raise SoftException(('Unexpected filter keys: {}').format(unexpectedFilterKeys))
         if filterSection.has_key('nations'):
             nations = set(filterSection.readString('nations').split())
             invalidNations = nations - set(NAMES)
             if invalidNations:
-                raise SoftException('Invalid nations: {}'.format(invalidNations))
+                raise SoftException(('Invalid nations: {}').format(invalidNations))
             nationsIDs = {INDICES[nation] for nation in nations}
         else:
             nationsIDs = set(INDICES.itervalues())
@@ -252,25 +248,25 @@ def __readVehicleFilterConditions(filterSection):
             vehClasses = set(filterSection.readString('vehClasses').split())
             invalidVehClasses = vehClasses - vehicles.VEHICLE_CLASS_TAGS
             if invalidVehClasses:
-                raise SoftException('Invalid vehicle types: {}'.format(invalidVehClasses))
+                raise SoftException(('Invalid vehicle types: {}').format(invalidVehClasses))
         else:
             vehClasses = vehicles.VEHICLE_CLASS_TAGS
         if filterSection.has_key('levels'):
-            levels = set((int(level) for level in filterSection.readString('levels').split()))
-            if any((level < MIN_VEHICLE_LEVEL or level > MAX_VEHICLE_LEVEL for level in levels)):
+            levels = set(int(level) for level in filterSection.readString('levels').split())
+            if any(level < MIN_VEHICLE_LEVEL or level > MAX_VEHICLE_LEVEL for level in levels):
                 raise SoftException('Invalid levels')
         else:
             levels = set(xrange(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1))
-        return {'nations': nationsIDs,
-         'vehClasses': vehClasses,
-         'levels': levels}
+        return {'nations': nationsIDs, 
+           'vehClasses': vehClasses, 
+           'levels': levels}
 
 
 def __readCustomizationItemConditions(customizationItemSection):
     custType, custID = customizationItemSection.asString.split(':')
     item, error = getCustomizationItem(custType, int(custID))
     if error:
-        raise SoftException('Invalid customization item, error - {}'.format(error))
+        raise SoftException(('Invalid customization item, error - {}').format(error))
     return item.compactDescr
 
 
@@ -280,7 +276,7 @@ def __readCustomizationItemFilter(filterSection):
     else:
         unexpectedFilterKeys = set(filterSection.keys()) - {'custTypes', 'tags', 'progressiveTypes'}
         if unexpectedFilterKeys:
-            raise SoftException('Unexpected filter keys: {}'.format(unexpectedFilterKeys))
+            raise SoftException(('Unexpected filter keys: {}').format(unexpectedFilterKeys))
         if filterSection.has_key('custTypes'):
             custTypes = set(filterSection.readString('custTypes').split())
             custTypeIDs = {getattr(CustomizationType, custType.upper()) for custType in custTypes}
@@ -292,25 +288,25 @@ def __readCustomizationItemFilter(filterSection):
             tags = set()
         unexpectedCustamizationTags = tags - ALLOWED_CUSTOMIZATION_TAGS
         if unexpectedCustamizationTags:
-            raise SoftException('Unexpected customization tags: {}'.format(unexpectedCustamizationTags))
+            raise SoftException(('Unexpected customization tags: {}').format(unexpectedCustamizationTags))
         if filterSection.has_key('progressiveTypes'):
             progressiveTypes = set(filterSection.readString('progressiveTypes').split())
             unexpectedProgressiveTypes = progressiveTypes - _VALID_PROGRESSIVE_TYPES
             if unexpectedProgressiveTypes:
-                raise SoftException('Unexpected progressive types keys: {}'.format(unexpectedProgressiveTypes))
+                raise SoftException(('Unexpected progressive types keys: {}').format(unexpectedProgressiveTypes))
             progressive = progressiveTypes
         else:
             progressive = _VALID_PROGRESSIVE_TYPES
-        return {'custTypes': custTypeIDs,
-         'tags': tags,
-         'progressiveTypes': progressive}
+        return {'custTypes': custTypeIDs, 
+           'tags': tags, 
+           'progressiveTypes': progressive}
 
 
-__conditionReaders = {'vehicle': lambda vehicleSection: vehicles.g_cache.vehicle(*vehicles.g_list.getIDsByName(vehicleSection.asString)).compactDescr,
- 'customizationItem': __readCustomizationItemConditions,
- 'vehicleFilter': __readVehicleFilterConditions,
- 'customizationItemFilter': __readCustomizationItemFilter,
- 'requiredAchievementIDs': lambda achievementsSection: set(map(int, achievementsSection.asString.split()))}
+__conditionReaders = {'vehicle': lambda vehicleSection: vehicles.g_cache.vehicle(*vehicles.g_list.getIDsByName(vehicleSection.asString)).compactDescr, 
+   'customizationItem': __readCustomizationItemConditions, 
+   'vehicleFilter': __readVehicleFilterConditions, 
+   'customizationItemFilter': __readCustomizationItemFilter, 
+   'requiredAchievementIDs': lambda achievementsSection: set(map(int, achievementsSection.asString.split()))}
 
 def __readConditions(conditionsSections):
     if conditionsSections is None:
@@ -319,9 +315,9 @@ def __readConditions(conditionsSections):
         conditions = {}
         for name, value in conditionsSections.items():
             if name in conditions:
-                raise SoftException('Duplicate condition type: {}'.format(name))
+                raise SoftException(('Duplicate condition type: {}').format(name))
             if name not in __conditionReaders:
-                raise SoftException('Unexpected condition: {}'.format(name))
+                raise SoftException(('Unexpected condition: {}').format(name))
             if len(conditions) > 0:
                 raise SoftException('Should be only 1 condition type')
             conditions[name] = __conditionReaders[name](value)
@@ -346,23 +342,26 @@ class g_cache(object):
             for achievementID, achievement in achievementsByType.iteritems():
                 rewards = achievement.getAllBonuses()
                 if rewards and 'dogTagComponents' in rewards:
-                    self.__totalVehicleAchievement = (achievementType, achievementID)
+                    self.__totalVehicleAchievement = (
+                     achievementType, achievementID)
                 for conditionKey, conditionData in achievement.conditions.iteritems():
                     if conditionKey in ITEM_CONDITION_KEYS:
                         achievementsByConditions.setdefault(conditionKey, {}).setdefault(conditionData, set()).add(achievement)
-                    if conditionKey in ITEM_FILTER_CONDITION_KEYS:
+                    elif conditionKey in ITEM_FILTER_CONDITION_KEYS:
                         itemFilter = achievementsByConditions.setdefault(conditionKey, {})
                         for filterName, filterValues in conditionData.iteritems():
                             filterData = itemFilter.setdefault(filterName, {})
                             for filterValue in filterValues:
                                 filterData.setdefault(filterValue, set()).add(achievement)
 
-                    if conditionKey == 'requiredAchievementIDs':
-                        requiredAchievements = [ data[achievementType][requiredAchievementID] for requiredAchievementID in conditionData if not data[achievementType][requiredAchievementID].deprecated ]
+                    elif conditionKey == 'requiredAchievementIDs':
+                        requiredAchievements = [ data[achievementType][requiredAchievementID] for requiredAchievementID in conditionData if not data[achievementType][requiredAchievementID].deprecated
+                                               ]
                         for requiredAchievement in requiredAchievements:
                             dependencies.setdefault(requiredAchievement.id, []).append(partial(_processAchievementDependency, achievement, requiredAchievements))
 
-                    raise SoftException('Unexpected condition key: {}, achievement type: {}, achievement id: {}'.format(conditionKey, achievementType, achievementID))
+                    else:
+                        raise SoftException(('Unexpected condition key: {}, achievement type: {}, achievement id: {}').format(conditionKey, achievementType, achievementID))
 
     def _getAchievementsByItem(self, itemTypeName, item):
         return self.__data.get('achievementsByConditions', {}).get(itemTypeName, {}).get(item.compactDescr, ())
@@ -396,8 +395,12 @@ class g_cache(object):
 
         return tuple(achievements)
 
-    _achievementsGettersByItemType = {ITEM_TYPES.vehicle: (_getAchievementsByItem, _getAchievementsByVehicleFilter),
-     ITEM_TYPES.customizationItem: (_getAchievementsByItem, _getAchievementsByCustomizationItemFilter)}
+    _achievementsGettersByItemType = {ITEM_TYPES.vehicle: (
+                          _getAchievementsByItem,
+                          _getAchievementsByVehicleFilter), 
+       ITEM_TYPES.customizationItem: (
+                                    _getAchievementsByItem,
+                                    _getAchievementsByCustomizationItemFilter)}
 
     def getAchievementsByItem(self, item, receivedItems):
         achievements = []
@@ -446,8 +449,8 @@ class Achievement(object):
         lastStage = len(stages)
         if not stages or currentStage > lastStage:
             return
-        elif currentValue >= stages[-1]['value']:
-            return stages[-1]
+        if currentValue >= stages[(-1)]['value']:
+            return stages[(-1)]
         else:
             for stageIndex in xrange(currentStage - 1 if currentStage else 0, lastStage):
                 if currentValue < stages[stageIndex]['value']:
@@ -460,7 +463,7 @@ class Achievement(object):
 
     def isAchievementCompleted(self, currentValue):
         stages = self.__data.get('stages', None)
-        return stages and currentValue >= stages[-1]['value']
+        return stages and currentValue >= stages[(-1)]['value']
 
     @staticmethod
     def isAnyStageCompleted(currentStage):
@@ -469,7 +472,9 @@ class Achievement(object):
     def getCurrentDataFromDossier(self, dossierDescr):
         achievementType = self.__data.get('type', None)
         achievementID = self.__data.get('id', None)
-        return (0, 0, 0) if achievementType not in dossierDescr or achievementID not in dossierDescr[achievementType] else dossierDescr[achievementType][achievementID]
+        if achievementType not in dossierDescr or achievementID not in dossierDescr[achievementType]:
+            return (0, 0, 0)
+        return dossierDescr[achievementType][achievementID]
 
     def updateValueInDossier(self, dossierDescr, currentValue=None, currentStage=None, currentTimestamp=None):
         data = self.__data
@@ -495,16 +500,21 @@ class Achievement(object):
             currentStage = activeStage['id']
             if currentValue < activeStage['value']:
                 currentStage -= 1
-        dossierDescr[data['type']][data['id']] = (currentValue, currentStage, currentTimestamp)
+        dossierDescr[data['type']][data['id']] = (
+         currentValue, currentStage, currentTimestamp)
         return (currentValue, currentStage, currentTimestamp)
 
     def getStageBonusByValue(self, currentStage):
         stages = self.__data.get('stages', None)
-        return {} if not stages or currentStage > len(stages) else stages[currentStage - 1].get('rewards', {})
+        if not stages or currentStage > len(stages):
+            return {}
+        return stages[(currentStage - 1)].get('rewards', {})
 
     def getStagePointsByValue(self, currentStage):
         stages = self.__data.get('stages', None)
-        return 0 if not stages or currentStage > len(stages) else stages[currentStage - 1]['points']
+        if not stages or currentStage > len(stages):
+            return 0
+        return stages[(currentStage - 1)]['points']
 
     def getAllBonuses(self):
         result = {}
@@ -522,7 +532,9 @@ class Achievement(object):
 
     def getStageValue(self, stage):
         stages = self.__data.get('stages')
-        return 0 if stages is None or stage > len(stages) or stage <= 0 else stages[stage - 1]['value']
+        if stages is None or stage > len(stages) or stage <= 0:
+            return 0
+        return stages[(stage - 1)]['value']
 
     def getID(self):
         return self.__data.get('id')

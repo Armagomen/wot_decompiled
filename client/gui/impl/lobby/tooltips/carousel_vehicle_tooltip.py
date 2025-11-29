@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tooltips/carousel_vehicle_tooltip.py
-import logging
-import math
-import typing
+import logging, math, typing
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
 from frameworks.wulf.view.array import fillIntsArray
 from gui.battle_pass.battle_pass_helpers import getSupportedCurrentArenaBonusType
@@ -54,7 +50,7 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
             _logger.error('No vehicle for with inventoryId %s for displaying a tooltip', self._inventoryId)
             return
         vState, vStateLevel = vehicle.getState()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setStatus(vState)
             model.setStateLevel(vStateLevel)
             model.setBpEntityValid(self._getIsBpEntityValid())
@@ -75,7 +71,7 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
 
     @prbEntityProperty
     def __prbEntity(self):
-        return None
+        return
 
     def __getCurrentArenaBonusType(self):
         return getSupportedCurrentArenaBonusType(self.__prbEntity.getQueueType())
@@ -88,7 +84,7 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
         statisticsModel.setNationId(vehicle.nationID)
         statisticsModel.setRole(vehicle.role)
         statisticsModel.setElite(vehicle.isElite)
-        statisticsModel.setRentLeftTime(vehicle.rentLeftTime if not math.isinf(vehicle.rentLeftTime) else -1)
+        statisticsModel.setRentLeftTime((math.isinf(vehicle.rentLeftTime) or vehicle).rentLeftTime if 1 else -1)
         statisticsModel.setRentLeftBattles(vehicle.rentLeftBattles or 0)
         statisticsModel.setRentLeftWins(vehicle.rentLeftWins or 0)
 

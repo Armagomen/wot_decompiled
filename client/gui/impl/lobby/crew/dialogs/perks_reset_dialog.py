@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/perks_reset_dialog.py
-import time
-import typing
-import SoundGroups
+import time, typing, SoundGroups
 from chat_shared import SYS_MESSAGE_TYPE
 from gui import SystemMessages
 from gui.customization.shared import getPurchaseGoldForCredits, getPurchaseMoneyState, MoneyForPurchase
@@ -38,7 +34,8 @@ if typing.TYPE_CHECKING:
 _LOC = R.strings.dialogs.perksReset
 
 class PerksResetDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('_tankman', '_priceListContent', '_isFreePerkReset', '_lastSoundEvent', '_isFreeByGold')
+    __slots__ = ('_tankman', '_priceListContent', '_isFreePerkReset', '_lastSoundEvent',
+                 '_isFreeByGold')
     _itemsCache = dependency.descriptor(IItemsCache)
     VIEW_MODEL = PerksResetDialogModel
 
@@ -75,7 +72,7 @@ class PerksResetDialog(BaseCrewDialogTemplateView):
         return
 
     def _initModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._updateTankmenBefore()
             if not self._isFreePerkReset and self._isFreeByGold:
                 _, (xpReuseFraction, _, _), _ = self._priceListContent.selectedPriceData
@@ -90,10 +87,14 @@ class PerksResetDialog(BaseCrewDialogTemplateView):
         return
 
     def _getCallbacks(self):
-        return (('cache.mayConsumeWalletResources', self._onConsumeWalletUpdate),)
+        return (
+         (
+          'cache.mayConsumeWalletResources', self._onConsumeWalletUpdate),)
 
     def _getEvents(self):
-        return tuple() if self._isFreePerkReset else ((self._priceListContent.onPriceChange, self._onPriceChange),)
+        if self._isFreePerkReset:
+            return tuple()
+        return ((self._priceListContent.onPriceChange, self._onPriceChange),)
 
     def _onPriceChange(self, index=None):
         submitBtn = self.getButton(DialogButtons.SUBMIT)
@@ -136,17 +137,17 @@ class PerksResetDialog(BaseCrewDialogTemplateView):
         if self._isFreePerkReset or self._isFreeByGold:
             self.__processReset(self._tankman, 0, None, True)
             return True
-        elif self._priceListContent.isRecertification:
-            self.__processReset(self._tankman, self._priceListContent.goldOptionKey, None, False)
-            return True
         else:
+            if self._priceListContent.isRecertification:
+                self.__processReset(self._tankman, self._priceListContent.goldOptionKey, None, False)
+                return True
             itemPrice, _, dropSkillKey = self._priceListContent.selectedPriceData
             price = self._itemsCache.items.shop.dropSkillsCost[dropSkillKey]
             purchaseMoneyState = getPurchaseMoneyState(itemPrice.price)
             if purchaseMoneyState is MoneyForPurchase.NOT_ENOUGH:
                 showBuyGoldForCrew(itemPrice.price.gold)
                 return False
-            elif purchaseMoneyState is MoneyForPurchase.ENOUGH_WITH_EXCHANGE:
+            if purchaseMoneyState is MoneyForPurchase.ENOUGH_WITH_EXCHANGE:
                 purchaseGold = getPurchaseGoldForCredits(itemPrice.price)
                 event_dispatcher.showExchangeCurrencyWindowModal(gold=purchaseGold, backgroundImage=R.images.gui.maps.icons.windows.background())
                 return False
@@ -174,9 +175,8 @@ class PerksResetDialog(BaseCrewDialogTemplateView):
             if not useRecertificationForm or freeDrop:
                 SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
             else:
-                action = {'sentTime': time.time(),
-                 'data': {'type': SYS_MESSAGE_TYPE.recertificationResetUsed.index(),
-                          'data': {'currencyType': 'blanks',
-                                   'count': 1}}}
+                action = {'sentTime': time.time(), 
+                   'data': {'type': SYS_MESSAGE_TYPE.recertificationResetUsed.index(), 
+                            'data': {'currencyType': 'blanks', 'count': 1}}}
                 MessengerEntry.g_instance.protos.BW.serviceChannel.onReceivePersonalSysMessage(action)
         return

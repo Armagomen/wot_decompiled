@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleMessengerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleMessengerMeta(BaseDAAPIComponent):
@@ -23,58 +21,77 @@ class BattleMessengerMeta(BaseDAAPIComponent):
         self._printOverrideError('onToxicPanelClosed')
 
     def as_enableToxicPanelS(self):
-        return self.flashObject.as_enableToxicPanel() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableToxicPanel()
 
     def as_updateMessagesS(self, messageID, value):
-        return self.flashObject.as_updateMessages(messageID, value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateMessages(messageID, value)
 
     def as_showGreenMessageS(self, message, messageID):
-        return self.flashObject.as_showGreenMessage(message, messageID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showGreenMessage(message, messageID)
 
     def as_showRedMessageS(self, message, messageID):
-        return self.flashObject.as_showRedMessage(message, messageID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showRedMessage(message, messageID)
 
     def as_showBlackMessageS(self, message, messageID):
-        return self.flashObject.as_showBlackMessage(message, messageID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showBlackMessage(message, messageID)
 
     def as_showSelfMessageS(self, message, messageID):
-        return self.flashObject.as_showSelfMessage(message, messageID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showSelfMessage(message, messageID)
 
     def as_setupListS(self, data):
-        return self.flashObject.as_setupList(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setupList(data)
 
     def as_setReceiverS(self, data, isResetReceivers):
-        return self.flashObject.as_setReceiver(data, isResetReceivers) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReceiver(data, isResetReceivers)
 
     def as_changeReceiverS(self, receiver):
-        return self.flashObject.as_changeReceiver(receiver) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeReceiver(receiver)
 
     def as_setActiveS(self, isActive):
-        return self.flashObject.as_setActive(isActive) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setActive(isActive)
 
     def as_setFocusS(self):
-        return self.flashObject.as_setFocus() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setFocus()
 
     def as_unSetFocusS(self):
-        return self.flashObject.as_unSetFocus() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_unSetFocus()
 
     def as_setUserPreferencesS(self, tooltipStr):
-        return self.flashObject.as_setUserPreferences(tooltipStr) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setUserPreferences(tooltipStr)
 
     def as_setReceiversS(self, receivers):
-        return self.flashObject.as_setReceivers(receivers) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setReceivers(receivers)
 
     def as_enableToSendMessageS(self):
-        return self.flashObject.as_enableToSendMessage() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableToSendMessage()
 
     def as_toggleCtrlPressFlagS(self, isCtrlPressed):
-        return self.flashObject.as_toggleCtrlPressFlag(isCtrlPressed) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_toggleCtrlPressFlag(isCtrlPressed)
 
     def as_enterPressedS(self, index):
-        return self.flashObject.as_enterPressed(index) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enterPressed(index)
 
     def as_updateToxicPanelS(self, messageID, value):
-        return self.flashObject.as_updateToxicPanel(messageID, value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateToxicPanel(messageID, value)
 
     def as_restoreMessagesS(self, messageID):
-        return self.flashObject.as_restoreMessages(messageID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_restoreMessages(messageID)

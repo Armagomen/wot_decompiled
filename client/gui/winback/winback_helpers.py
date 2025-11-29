@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/winback/winback_helpers.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import Winback
 from adisp import adisp_process
@@ -46,4 +44,6 @@ def setWinbackSetting(settingName, settingValue):
 def getQuestsFormatterBonusType():
     from skeletons.gui.game_control import IWinbackController
     winbackController = dependency.instance(IWinbackController)
-    return ARENA_BONUS_TYPE.WINBACK if winbackController.isModeAvailable() else ARENA_BONUS_TYPE.REGULAR
+    if winbackController.isModeAvailable():
+        return ARENA_BONUS_TYPE.WINBACK
+    return ARENA_BONUS_TYPE.REGULAR

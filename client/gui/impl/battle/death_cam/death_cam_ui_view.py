@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/death_cam/death_cam_ui_view.py
 import logging
 from AvatarInputHandler.DynamicCameras.kill_cam_camera import CallbackPauseManager
 from constants import IMPACT_TYPES

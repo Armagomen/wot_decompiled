@@ -1,14 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/avatar_input_handler/control_modes.py
-import math
-import typing
-import BigWorld
-import CommandMapping
-import GUI
-import Keys
-import Math
-import SoundGroups
-import math_utils
+import math, typing, BigWorld, CommandMapping, GUI, Keys, Math, SoundGroups, math_utils
 from AvatarInputHandler import aih_global_binding
 from AvatarInputHandler.DynamicCameras.ArcadeCamera import ArcadeCamera
 from AvatarInputHandler.DynamicCameras.StrategicCamera import StrategicCamera
@@ -30,7 +20,9 @@ if typing.TYPE_CHECKING:
 
 def targetIsBunker():
     target = BigWorld.target()
-    return False if not isinstance(target, Vehicle) else VEHICLE_BUNKER_TURRET_TAG in target.typeDescriptor.type.tags
+    if not isinstance(target, Vehicle):
+        return False
+    return VEHICLE_BUNKER_TURRET_TAG in target.typeDescriptor.type.tags
 
 
 class StoryModeArcadeCamera(ArcadeCamera):
@@ -76,7 +68,9 @@ class OnboardingArcadeControlMode(LockTargetDisabler, StoryModeArcadeControlMode
         return battlePage is not None and battlePage.isWinMessageShown
 
     def handleKeyEvent(self, isDown, key, mods, event=None):
-        return False if CommandMapping.g_instance.isFired(CommandMapping.CMD_CM_ALTERNATE_MODE, key) and self.isWinMessageShown else super(OnboardingArcadeControlMode, self).handleKeyEvent(isDown, key, mods, event)
+        if CommandMapping.g_instance.isFired(CommandMapping.CMD_CM_ALTERNATE_MODE, key) and self.isWinMessageShown:
+            return False
+        return super(OnboardingArcadeControlMode, self).handleKeyEvent(isDown, key, mods, event)
 
     def onChangeControlModeByScroll(self):
         if self.isWinMessageShown:
@@ -207,7 +201,8 @@ class SMStrategicMapCaseControlMode(MapCaseControlMode):
 class SMEntityViewMode(IControlMode):
     _guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
     _aimOffset = aih_global_binding.bindRO(aih_global_binding.BINDING_ID.AIM_OFFSET)
-    _MOVE_CMDS = (CommandMapping.CMD_MOVE_FORWARD,
+    _MOVE_CMDS = (
+     CommandMapping.CMD_MOVE_FORWARD,
      CommandMapping.CMD_MOVE_FORWARD_SPEC,
      CommandMapping.CMD_MOVE_BACKWARD,
      CommandMapping.CMD_ROTATE_LEFT,

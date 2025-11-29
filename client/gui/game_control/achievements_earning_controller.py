@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/achievements_earning_controller.py
-import typing
-import BigWorld
+import typing, BigWorld
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG_DEV
 from frameworks.wulf import WindowLayer, WindowStatus
@@ -34,9 +31,14 @@ class Achievements20EarningController(IAchievements20EarningController):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __advAchmntCtrl = dependency.descriptor(IAchievementsController)
     __guiLoader = dependency.descriptor(IGuiLoader)
-    __RESTRICTED_LAYERS = {WindowLayer.FULLSCREEN_WINDOW, WindowLayer.OVERLAY, WindowLayer.TOP_WINDOW}
-    __ACTIVE_WINDOW_STATUSES = (WindowStatus.LOADING, WindowStatus.LOADED)
-    __HIGH_PRIORITY_WINDOWS = (VIEW_ALIAS.LOBBY_STORE, VIEW_ALIAS.BATTLE_QUEUE)
+    __RESTRICTED_LAYERS = {
+     WindowLayer.FULLSCREEN_WINDOW,
+     WindowLayer.OVERLAY,
+     WindowLayer.TOP_WINDOW}
+    __ACTIVE_WINDOW_STATUSES = (
+     WindowStatus.LOADING, WindowStatus.LOADED)
+    __HIGH_PRIORITY_WINDOWS = (
+     VIEW_ALIAS.LOBBY_STORE, VIEW_ALIAS.BATTLE_QUEUE)
     __HIGH_PRIORITY_WULF_WINDOWS = ()
 
     def __init__(self):
@@ -192,16 +194,20 @@ class CommandBuilder(object):
     __limitedUICtrl = dependency.descriptor(ILimitedUIController)
 
     def _isTrophy(self, achievementsData):
-        return not any((not self.__advAchmntCtrl.getAchievementByID(idx, category).isDeprecated for idx, category, _, _ in achievementsData))
+        return not any(not self.__advAchmntCtrl.getAchievementByID(idx, category).isDeprecated for idx, category, _, _ in achievementsData)
 
     def _isMultiple(self, achievementsData):
         return len(achievementsData) > 1
 
     def _getMultipleText(self, isMultiple):
-        return 'multiple' if isMultiple else 'single'
+        if isMultiple:
+            return 'multiple'
+        return 'single'
 
     def _getTrophyText(self, isTrophy):
-        return 'trophy' if isTrophy else 'common'
+        if isTrophy:
+            return 'trophy'
+        return 'common'
 
     def _getNewAchievementIterator(self, achievementsData):
         for id, category, stage, _ in achievementsData:
@@ -210,21 +216,21 @@ class CommandBuilder(object):
     def _createAchievementDataDebugCommand(self, receiver, achievementData):
         message = ''
         for id, category, stage, _ in achievementData:
-            message += ' \n ------  Achievement: {} Category: {} Stage: {}'.format(id, category, stage)
+            message += (' \n ------  Achievement: {} Category: {} Stage: {}').format(id, category, stage)
 
-        args = {'receiver': receiver,
-         'message': message}
+        args = {'receiver': receiver, 
+           'message': message}
         return PrintCommand(args)
 
     def _createDebugMessageCommand(self, receiver, message):
-        args = {'receiver': receiver,
-         'message': message}
+        args = {'receiver': receiver, 
+           'message': message}
         return PrintCommand(args)
 
     def _createTimeStampUpdateCommand(self, receiver, achievementsData):
-        maxTimestamp = max((timestamp for _, _, _, timestamp in achievementsData))
-        args = {'receiver': receiver,
-         'timestamp': maxTimestamp}
+        maxTimestamp = max(timestamp for _, _, _, timestamp in achievementsData)
+        args = {'receiver': receiver, 
+           'timestamp': maxTimestamp}
         return TimeStampUpdateCommand(args)
 
     def _createNotificationCommand(self, receiver, achievementsData):
@@ -240,31 +246,30 @@ class CommandBuilder(object):
             targetData = (id, category)
         trophyText = self._getTrophyText(isTrophy)
         multipleText = self._getMultipleText(isMultiple)
-        args = {'receiver': receiver,
-         'header': backport.text(R.strings.system_messages.earning.title()),
-         'body': backport.text(R.strings.system_messages.earning.dyn(trophyText).dyn(multipleText)(), value=value),
-         'isTrophy': isTrophy,
-         'isMultiple': isMultiple,
-         'targetData': targetData}
+        args = {'receiver': receiver, 
+           'header': backport.text(R.strings.system_messages.earning.title()), 
+           'body': backport.text(R.strings.system_messages.earning.dyn(trophyText).dyn(multipleText)(), value=value), 
+           'isTrophy': isTrophy, 
+           'isMultiple': isMultiple, 
+           'targetData': targetData}
         return NotificationCommand(args)
 
     def _createEarningAnimationCommand(self, receiver, achievementsData):
         isMultiple = self._isMultiple(achievementsData)
         isTrophy = self._isTrophy(achievementsData)
-        args = {'receiver': receiver,
-         'data': self._getNewAchievementIterator(achievementsData),
-         'isTrophy': isTrophy,
-         'isMultiple': isMultiple}
+        args = {'receiver': receiver, 
+           'data': self._getNewAchievementIterator(achievementsData), 
+           'isTrophy': isTrophy, 
+           'isMultiple': isMultiple}
         return EarningAnimationCommand(args)
 
     def _createRewardScreenCommand(self, receiver, achievementsData):
         bonusTuples = getBonusTuples(self._getNewAchievementIterator(achievementsData))
         if bonusTuples:
-            args = {'receiver': receiver,
-             'bonusTuples': bonusTuples}
+            args = {'receiver': receiver, 'bonusTuples': bonusTuples}
             return RewardScreenCommand(args)
         else:
-            return None
+            return
 
     def createEarnAchievementChain(self, receiver, achievementsData):
         root = []
@@ -306,7 +311,7 @@ class Command(object):
 
 
 class TimeStampUpdateCommand(Command):
-    __slots__ = ('__timestamp',)
+    __slots__ = ('__timestamp', )
     __settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, args):
@@ -320,7 +325,7 @@ class TimeStampUpdateCommand(Command):
 
 
 class PrintCommand(Command):
-    __slots__ = ('__message',)
+    __slots__ = ('__message', )
 
     def __init__(self, args):
         super(PrintCommand, self).__init__(args)
@@ -345,11 +350,11 @@ class NotificationCommand(Command):
         self.__isTrophy = args['isTrophy']
 
     def execute(self):
-        self.__systemMessages.proto.serviceChannel.pushClientMessage({'header': self.__header,
-         'body': self.__body,
-         'isTrophy': self.__isTrophy,
-         'isMultiple': self.__isMultiple,
-         'targetData': self.__targetData}, SCH_CLIENT_MSG_TYPE.ACHIEVEMENTS20_EARNING_SM_TYPE)
+        self.__systemMessages.proto.serviceChannel.pushClientMessage({'header': self.__header, 
+           'body': self.__body, 
+           'isTrophy': self.__isTrophy, 
+           'isMultiple': self.__isMultiple, 
+           'targetData': self.__targetData}, SCH_CLIENT_MSG_TYPE.ACHIEVEMENTS20_EARNING_SM_TYPE)
         super(NotificationCommand, self).execute()
         self.release()
 
@@ -365,9 +370,9 @@ class EarningAnimationCommand(Command):
 
     def execute(self):
         g_eventBus.addListener(events.Achievements20Event.ACHIEVEMENT_EARNED_SHOWNED, self.release, EVENT_BUS_SCOPE.LOBBY)
-        g_eventBus.handleEvent(events.Achievements20Event(events.Achievements20Event.ACHIEVEMENT_EARNED, ctx={'isTrophy': self.__isTrophy,
-         'isMultiple': self.__isMultiple,
-         'data': self.__data}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.Achievements20Event(events.Achievements20Event.ACHIEVEMENT_EARNED, ctx={'isTrophy': self.__isTrophy, 
+           'isMultiple': self.__isMultiple, 
+           'data': self.__data}), scope=EVENT_BUS_SCOPE.LOBBY)
         super(EarningAnimationCommand, self).execute()
 
     def stop(self):
@@ -376,7 +381,7 @@ class EarningAnimationCommand(Command):
 
 
 class RewardScreenCommand(Command):
-    __slots__ = ('__bonusTuples',)
+    __slots__ = ('__bonusTuples', )
 
     def __init__(self, args):
         super(RewardScreenCommand, self).__init__(args)

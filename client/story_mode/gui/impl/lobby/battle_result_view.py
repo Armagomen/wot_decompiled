@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/battle_result_view.py
 from logging import getLogger
-import typing
-import BigWorld
-import SoundGroups
+import typing, BigWorld, SoundGroups
 from constants import DEATH_REASON_ALIVE
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import DISPLAY_ALL_AWARDS
@@ -59,7 +55,11 @@ class BattleResultView(ViewImpl):
 
     def _getEvents(self):
         viewModel = self.getViewModel()
-        return ((viewModel.onQuit, self.__onClose), (viewModel.onContinue, self.__onClose))
+        return (
+         (
+          viewModel.onQuit, self.__onClose),
+         (
+          viewModel.onContinue, self.__onClose))
 
     def _onLoading(self, *args, **kwargs):
         super(BattleResultView, self)._onLoading(*args, **kwargs)
@@ -114,7 +114,7 @@ class BattleResultView(ViewImpl):
 
     def __fillViewModel(self):
         battleResults = self._battleResultsService.getResultsVO(self.__arenaUniqueId)
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             rBattleResult = R.strings.sm_lobby.battleResult
             missionId = battleResults['missionId']
             finishResult = battleResults['finishResult']
@@ -149,7 +149,7 @@ class BattleResultView(ViewImpl):
         missionProgressModel.setValue(completedTasksCount)
         missionProgressModel.setIcon(self._ICON_OBJECTIVES)
         missionProgressModel.setName(text.tasksCompleted() if tasksToCompleteCount else text.noTasksToComplete())
-        with progressLevelsModels.transaction() as model:
+        with progressLevelsModels.transaction() as (model):
             vehicle = battleResults['vehicle']
             model.addViewModel(self.__createProgressModel(vehicle['kills'], self._ICON_KILLS, text.kills(), StatEnum.KILLS))
             model.addViewModel(self.__createProgressModel(vehicle['damageDealt'], self._ICON_DAMAGE, text.damageDealt(), StatEnum.DAMAGE))

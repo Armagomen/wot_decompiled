@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/qualification_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.qualification_tooltip_view_model import QualificationTooltipViewModel
@@ -21,7 +19,7 @@ class QualificationTooltip(ViewImpl):
         return super(QualificationTooltip, self).getViewModel()
 
     def _onLoading(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setRoleName(self._roleName)
             vm.setIsFemale(self._isFemale)
             vm.setQualificationIndex(self._qualificationIndex + 1)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/reward_view.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from gui.server_events.bonuses import DogTagComponentBonus
 from gui.shared.event_dispatcher import showAdvancedAchievementsRewardView, showAdvancedAchievementsView
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
@@ -25,7 +22,8 @@ if typing.TYPE_CHECKING:
     from typing import List
 
 class RewardView(ViewImpl):
-    __slots__ = ('__tooltipData', '__bonusTuples', '__isFirstEntry', '__haveNewAnimatedDogTag', '__uiLogger')
+    __slots__ = ('__tooltipData', '__bonusTuples', '__isFirstEntry', '__haveNewAnimatedDogTag',
+                 '__uiLogger')
     __MAX_REWARDS_PER_SCREEN = 3
     __achievementsController = dependency.descriptor(IAchievementsController)
 
@@ -47,16 +45,23 @@ class RewardView(ViewImpl):
         return super(RewardView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onGoToDogTag, self.__goToDogTag),
-         (self.viewModel.onGoToAchievement, self.__onOpenAchievement),
-         (self.viewModel.onOpenNextReward, self.__onOpenNextReward),
-         (self.viewModel.onOpenAchievementsPage, self.__onOpenAchievementsPage),
-         (self.viewModel.onClose, self.__onClose),
-         (g_playerEvents.onDisconnected, self.__onClose))
+        return (
+         (
+          self.viewModel.onGoToDogTag, self.__goToDogTag),
+         (
+          self.viewModel.onGoToAchievement, self.__onOpenAchievement),
+         (
+          self.viewModel.onOpenNextReward, self.__onOpenNextReward),
+         (
+          self.viewModel.onOpenAchievementsPage, self.__onOpenAchievementsPage),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          g_playerEvents.onDisconnected, self.__onClose))
 
     @createTooltipContentDecorator(AdvancedAchievementViewKey.REWARD_SCREEN)
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     @createBackportTooltipDecorator()
     def createToolTip(self, event):
@@ -64,7 +69,10 @@ class RewardView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def _onLoading(self):
         super(RewardView, self)._onLoading()
@@ -86,7 +94,7 @@ class RewardView(ViewImpl):
         return False
 
     def __fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsFirstEntry(self.__isFirstEntry)
             bonusTuples = self.__getBonusTuples()
             self.__updateAchievements(model, bonusTuples)

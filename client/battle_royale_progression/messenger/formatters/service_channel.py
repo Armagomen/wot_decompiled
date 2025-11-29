@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/messenger/formatters/service_channel.py
 from constants import LOOTBOX_TOKEN_PREFIX
 from battle_royale_progression.notification.decorators import BRProgressionLockButtonDecorator
 from gui.impl import backport
@@ -10,7 +8,7 @@ from messenger.formatters.service_channel_helpers import MessageData
 from gui.shared.formatters import text_styles
 
 class BRProgressionAchievesFormatter(QuestAchievesFormatter):
-    _BULLET = u'\u2022 '
+    _BULLET = '• '
     _SEPARATOR = '<br/>' + _BULLET
     __LOOTBOX_TEMPLATE = 'SHPLootBoxReceived'
     __STPCOIN_TEMPLATE = 'StPCoinReceived'
@@ -19,7 +17,9 @@ class BRProgressionAchievesFormatter(QuestAchievesFormatter):
     @classmethod
     def formatQuestAchieves(cls, data, asBattleFormatter, processCustomizations=True, processTokens=True):
         result = super(BRProgressionAchievesFormatter, cls).formatQuestAchieves(data, asBattleFormatter, processCustomizations, processTokens)
-        return cls._BULLET + result if result else result
+        if result:
+            return cls._BULLET + result
+        return result
 
     @classmethod
     def getFormattedAchieves(cls, data, asBattleFormatter, processCustomizations=True, processTokens=True):
@@ -29,7 +29,7 @@ class BRProgressionAchievesFormatter(QuestAchievesFormatter):
             stpcoinResult = g_settings.htmlTemplates.format(cls.__STPCOIN_TEMPLATE, {'count': stpcoinsCount})
             idx = 1 if [ t for t in data.get('tokens', {}) if t.startswith(LOOTBOX_TOKEN_PREFIX) ] else 0
             result.insert(idx, stpcoinResult)
-        battlePassPoints = sum((points for points in data.get('battlePassPoints', {}).get('vehicles', {}).itervalues()))
+        battlePassPoints = sum(points for points in data.get('battlePassPoints', {}).get('vehicles', {}).itervalues())
         if battlePassPoints > 0:
             result.append(g_settings.htmlTemplates.format(cls.__BATTLE_PASS_TEMPLATE, ctx={'battlePassProgression': backport.text(R.strings.messenger.serviceChannelMessages.BRbattleResults.battlePass(), pointsDiff=text_styles.neutral(battlePassPoints))}))
         return result
@@ -68,6 +68,5 @@ class BRProgressionSystemMessageFormatter(ServiceChannelFormatter):
             progressionName = backport.text(serviceMsg.progressionName())
             messageBody = backport.text(serviceMsg.body(), stage=str(stage), progressionName=progressionName)
             formattedRewards = self._achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False)
-            return MessageData(g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'header': messageHeader,
-             'body': messageBody,
-             'awards': formattedRewards}, data={}), self._getGuiSettings(message, self.__TEMPLATE, decorator=decorator))
+            return MessageData(g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'header': messageHeader, 'body': messageBody, 
+               'awards': formattedRewards}, data={}), self._getGuiSettings(message, self.__TEMPLATE, decorator=decorator))

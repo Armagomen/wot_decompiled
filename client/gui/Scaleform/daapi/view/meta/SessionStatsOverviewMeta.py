@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/SessionStatsOverviewMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class SessionStatsOverviewMeta(BaseDAAPIComponent):
@@ -23,10 +21,13 @@ class SessionStatsOverviewMeta(BaseDAAPIComponent):
         self._printOverrideError('onCounterUpdated')
 
     def as_setDataS(self, data):
-        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(data)
 
     def as_setButtonsStateS(self, states):
-        return self.flashObject.as_setButtonsState(states) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setButtonsState(states)
 
     def as_setHeaderTooltipS(self, value):
-        return self.flashObject.as_setHeaderTooltip(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHeaderTooltip(value)

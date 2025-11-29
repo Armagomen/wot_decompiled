@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/session_stats_requester.py
 from collections import namedtuple
 import BigWorld
 from constants import ARENA_BONUS_TYPE
@@ -9,22 +7,10 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared.utils.requesters import IRandomAccountStats, IRandomVehStats, ISessionStatsRequester
 ValueWithDelta = namedtuple('ValueWithDelta', ['value', 'delta'])
 RatioValue = namedtuple('RatioValue', ['ratio', 'dealt', 'received'])
-CreditsDetails = namedtuple('CreditsDetails', ['base',
- 'battlePayments',
- 'noPenalty',
- 'boosters',
- 'event',
- 'friendlyFireCompensation',
- 'squadBonus',
- 'aogasFactor',
- 'friendlyFirePenalty',
- 'autoRepair',
- 'autoLoad',
- 'autoEquip'])
-CrystalDetails = namedtuple('CrystalDetails', ['base',
- 'achievement',
- 'event',
- 'autoEquip'])
+CreditsDetails = namedtuple('CreditsDetails', [
+ 'base', 'battlePayments', 'noPenalty', 'boosters', 'event', 'friendlyFireCompensation',
+ 'squadBonus', 'aogasFactor', 'friendlyFirePenalty', 'autoRepair', 'autoLoad', 'autoEquip'])
+CrystalDetails = namedtuple('CrystalDetails', ['base', 'achievement', 'event', 'autoEquip'])
 
 class _StatKind(object):
     DAY_STAT = 'dayStat'
@@ -63,34 +49,45 @@ class BaseStats(object):
 
     @property
     def ratioDamage(self):
-        ratio, dealt, received = self.data.get('ratio_damage', {}).get('value', (None, None, None))
+        ratio, dealt, received = self.data.get('ratio_damage', {}).get('value', (None,
+                                                                                 None,
+                                                                                 None))
         return ValueWithDelta(value=RatioValue(ratio, dealt, received), delta=self.data.get('ratio_damage', {}).get('diff', None))
 
     @property
     def helpDamage(self):
-        return ValueWithDelta(value=self.data.get('help_damage', {}).get('value', (None, None))[0], delta=self.data.get('help_damage', {}).get('diff', None))
+        return ValueWithDelta(value=self.data.get('help_damage', {}).get('value', (None,
+                                                                                   None))[0], delta=self.data.get('help_damage', {}).get('diff', None))
 
     @property
     def ratioKill(self):
-        ratio, dealt, received = self.data.get('ratio_kill', {}).get('value', (None, None, None))
+        ratio, dealt, received = self.data.get('ratio_kill', {}).get('value', (None,
+                                                                               None,
+                                                                               None))
         return ValueWithDelta(value=RatioValue(ratio, dealt, received), delta=self.data.get('ratio_kill', {}).get('diff', None))
 
     @property
     def averageDamage(self):
-        return ValueWithDelta(value=self.data.get('average_damage', {}).get('value', (None, None))[0], delta=self.data.get('average_damage', {}).get('diff', None))
+        return ValueWithDelta(value=self.data.get('average_damage', {}).get('value', (None,
+                                                                                      None))[0], delta=self.data.get('average_damage', {}).get('diff', None))
 
     @property
     def blockedDamage(self):
-        return ValueWithDelta(value=self.data.get('blocked_damage', {}).get('value', (None, None))[0], delta=self.data.get('blocked_damage', {}).get('diff', None))
+        return ValueWithDelta(value=self.data.get('blocked_damage', {}).get('value', (None,
+                                                                                      None))[0], delta=self.data.get('blocked_damage', {}).get('diff', None))
 
     @property
     def winRate(self):
-        ratio, dealt, received = self.data.get('winner_ratio', {}).get('value', (None, None, None))
+        ratio, dealt, received = self.data.get('winner_ratio', {}).get('value', (None,
+                                                                                 None,
+                                                                                 None))
         return ValueWithDelta(value=RatioValue(ratio, dealt, received), delta=self.data.get('winner_ratio', {}).get('diff', None))
 
     @property
     def wins(self):
-        return ValueWithDelta(value=self.data.get('winner_ratio', {}).get('value', (None, None, None))[1], delta=None)
+        return ValueWithDelta(value=self.data.get('winner_ratio', {}).get('value', (None,
+                                                                                    None,
+                                                                                    None))[1], delta=None)
 
     @property
     def averageFrags(self):
@@ -98,12 +95,15 @@ class BaseStats(object):
 
     @property
     def survivedRatio(self):
-        ratio, dealt, received = self.data.get('survived_rate', {}).get('value', (None, None, None))
+        ratio, dealt, received = self.data.get('survived_rate', {}).get('value', (None,
+                                                                                  None,
+                                                                                  None))
         return ValueWithDelta(value=RatioValue(ratio, dealt, received), delta=self.data.get('survived_rate', {}).get('diff', None))
 
     @property
     def spotted(self):
-        return ValueWithDelta(value=self.data.get('spotted', {}).get('value', (None, None))[0], delta=self.data.get('spotted', {}).get('diff', None))
+        return ValueWithDelta(value=self.data.get('spotted', {}).get('value', (None,
+                                                                               None))[0], delta=self.data.get('spotted', {}).get('diff', None))
 
     @property
     def netCredits(self):
@@ -162,7 +162,8 @@ class RandomVehStats(BaseVehicleStats, IRandomVehStats):
         return ValueWithDelta(value=self.data.get('wtr', {}).get('value', None), delta=self.data.get('wtr', {}).get('diff', None))
 
 
-_ARENA_TYPE_TO_RETURN_CLASS_MAP = {ARENA_BONUS_TYPE.REGULAR: (RandomAccountStats, RandomVehStats)}
+_ARENA_TYPE_TO_RETURN_CLASS_MAP = {ARENA_BONUS_TYPE.REGULAR: (
+                            RandomAccountStats, RandomVehStats)}
 
 class SessionStatsRequester(AbstractSyncDataRequester, ISessionStatsRequester):
     settingsCore = dependency.descriptor(ISettingsCore)
@@ -197,12 +198,9 @@ class SessionStatsRequester(AbstractSyncDataRequester, ISessionStatsRequester):
     @staticmethod
     def __getWtr(data, arenaType, statsKind, vehicleId=None):
         if arenaType == ARENA_BONUS_TYPE.REGULAR:
-            buff = data.get('wtrDayStat', {'value': None,
-             'diff': None})
+            buff = data.get('wtrDayStat', {'value': None, 'diff': None})
             if statsKind == _StatKind.VEHICLE_DAY_STAT:
-                buff = buff.get('wtrForVeh', {}).get(vehicleId, {'value': None,
-                 'diff': None})
-            return {'wtr': {'value': buff.get('value', None),
-                     'diff': buff.get('diff', None)}}
+                buff = buff.get('wtrForVeh', {}).get(vehicleId, {'value': None, 'diff': None})
+            return {'wtr': {'value': buff.get('value', None), 'diff': buff.get('diff', None)}}
         else:
             return {}

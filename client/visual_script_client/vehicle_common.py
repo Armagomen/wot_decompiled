@@ -1,16 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/vehicle_common.py
 import BigWorld
 from constants import DEFAULT_GUN_INSTALLATION_INDEX
 from visual_script import ASPECT
 from visual_script.dependency import dependencyImporter
 from visual_script.tunable_event_block import TunableEventBlock
-TriggersManager = dependencyImporter('TriggersManager')
-edgeCases = {'track': ('leftTrack0', 'rightTrack0', 'leftTrack1', 'rightTrack1'),
- 'radioman': ('radioman1', 'radioman2'),
- 'gunner': ('gunner1', 'gunner2'),
- 'loader': ('loader1', 'loader2'),
- 'wheel': ('wheel0', 'wheel1', 'wheel2', 'wheel3', 'wheel4', 'wheel5', 'wheel6', 'wheel7')}
+TriggersManager, = dependencyImporter('TriggersManager')
+edgeCases = {'track': ('leftTrack0', 'rightTrack0', 'leftTrack1', 'rightTrack1'), 
+   'radioman': ('radioman1', 'radioman2'), 
+   'gunner': ('gunner1', 'gunner2'), 
+   'loader': ('loader1', 'loader2'), 
+   'wheel': ('wheel0', 'wheel1', 'wheel2', 'wheel3', 'wheel4', 'wheel5', 'wheel6', 'wheel7')}
 
 def getPartNames(originalPartName):
     return edgeCases.get(originalPartName, (originalPartName,))
@@ -30,7 +28,9 @@ def getPartState(originalPartName):
     states = [ deviceStates.get(name, 'normal') for name in available ]
     if 'destroyed' in states:
         return 2
-    return 1 if 'critical' in states else 0
+    if 'critical' in states:
+        return 1
+    return 0
 
 
 class TriggerListener(TriggersManager.ITriggerListener):

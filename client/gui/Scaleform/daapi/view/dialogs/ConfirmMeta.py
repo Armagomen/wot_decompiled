@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmMeta.py
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.Scaleform.framework import ScopeTemplates
 from gui.shared import events

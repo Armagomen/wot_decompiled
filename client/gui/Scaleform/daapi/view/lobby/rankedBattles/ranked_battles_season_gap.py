@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_season_gap.py
 import time
 from helpers import dependency, time_utils
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -13,31 +11,32 @@ from gui.shared.utils.scheduled_notifications import PeriodicNotifier
 from skeletons.gui.game_control import IRankedBattlesController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.server_events import IEventsCache
-_STATE_TO_READY_GAP_STATE = {SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.NOT_IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.NOT_IN_SEASON}
-_STATE_TO_BANNED_GAP_STATE = {SeasonGapStates.WAITING_IN_LEAGUES: SeasonGapStates.BANNED_IN_LEAGUES,
- SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.BANNED_IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.BANNED_NOT_IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.BANNED_NOT_IN_SEASON,
- SeasonGapStates.IN_LEAGUES: SeasonGapStates.BANNED_IN_LEAGUES,
- SeasonGapStates.IN_DIVISIONS: SeasonGapStates.BANNED_IN_DIVISIONS,
- SeasonGapStates.NOT_IN_SEASON: SeasonGapStates.BANNED_NOT_IN_SEASON,
- SeasonGapStates.NOT_IN_DIVISIONS: SeasonGapStates.BANNED_NOT_IN_DIVISIONS}
-_STATE_TO_ROLLED_GAP_STATE = {SeasonGapStates.WAITING_IN_LEAGUES: SeasonGapStates.ROLLED_IN_LEAGUES,
- SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.ROLLED_IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.ROLLED_NOT_IN_DIVISIONS,
- SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.ROLLED_NOT_IN_SEASON,
- SeasonGapStates.IN_LEAGUES: SeasonGapStates.ROLLED_IN_LEAGUES,
- SeasonGapStates.IN_DIVISIONS: SeasonGapStates.ROLLED_IN_DIVISIONS,
- SeasonGapStates.NOT_IN_SEASON: SeasonGapStates.ROLLED_NOT_IN_SEASON,
- SeasonGapStates.NOT_IN_DIVISIONS: SeasonGapStates.ROLLED_NOT_IN_DIVISIONS}
+_STATE_TO_READY_GAP_STATE = {SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.NOT_IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.NOT_IN_SEASON}
+_STATE_TO_BANNED_GAP_STATE = {SeasonGapStates.WAITING_IN_LEAGUES: SeasonGapStates.BANNED_IN_LEAGUES, 
+   SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.BANNED_IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.BANNED_NOT_IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.BANNED_NOT_IN_SEASON, 
+   SeasonGapStates.IN_LEAGUES: SeasonGapStates.BANNED_IN_LEAGUES, 
+   SeasonGapStates.IN_DIVISIONS: SeasonGapStates.BANNED_IN_DIVISIONS, 
+   SeasonGapStates.NOT_IN_SEASON: SeasonGapStates.BANNED_NOT_IN_SEASON, 
+   SeasonGapStates.NOT_IN_DIVISIONS: SeasonGapStates.BANNED_NOT_IN_DIVISIONS}
+_STATE_TO_ROLLED_GAP_STATE = {SeasonGapStates.WAITING_IN_LEAGUES: SeasonGapStates.ROLLED_IN_LEAGUES, 
+   SeasonGapStates.WAITING_IN_DIVISIONS: SeasonGapStates.ROLLED_IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_DIVISIONS: SeasonGapStates.ROLLED_NOT_IN_DIVISIONS, 
+   SeasonGapStates.WAITING_NOT_IN_SEASON: SeasonGapStates.ROLLED_NOT_IN_SEASON, 
+   SeasonGapStates.IN_LEAGUES: SeasonGapStates.ROLLED_IN_LEAGUES, 
+   SeasonGapStates.IN_DIVISIONS: SeasonGapStates.ROLLED_IN_DIVISIONS, 
+   SeasonGapStates.NOT_IN_SEASON: SeasonGapStates.ROLLED_NOT_IN_SEASON, 
+   SeasonGapStates.NOT_IN_DIVISIONS: SeasonGapStates.ROLLED_NOT_IN_DIVISIONS}
 
 class RankedBattlesSeasonGapView(RankedBattlesSeasonGapViewMeta, IResetablePage):
     __eventsCache = dependency.descriptor(IEventsCache)
     __itemsCache = dependency.descriptor(IItemsCache)
     __rankedController = dependency.descriptor(IRankedBattlesController)
-    __TOKENS_ORDER = (SeasonResultTokenPatterns.RANKED_OFF_BANNED,
+    __TOKENS_ORDER = (
+     SeasonResultTokenPatterns.RANKED_OFF_BANNED,
      SeasonResultTokenPatterns.RANKED_OFF_ROLLED,
      SeasonResultTokenPatterns.RANKED_OFF_BRONZE_LEAGUE_TOKEN,
      SeasonResultTokenPatterns.RANKED_OFF_SILVER_LEAGUE_TOKEN,
@@ -87,14 +86,17 @@ class RankedBattlesSeasonGapView(RankedBattlesSeasonGapViewMeta, IResetablePage)
                 if count > 0:
                     return tokenPattern
 
-        return None
+        return
 
     def __getNotLeagueQuest(self):
         return self.__eventsCache.getHiddenQuests().get(NOT_IN_LEAGUES_QUEST.format(self.__prevSeason.getSeasonID()))
 
     def __getTillUpdateTime(self):
         notLeagueQuest = self.__getNotLeagueQuest()
-        return notLeagueQuest.getStartTimeLeft() if notLeagueQuest is not None else time_utils.ONE_MINUTE
+        if notLeagueQuest is not None:
+            return notLeagueQuest.getStartTimeLeft()
+        else:
+            return time_utils.ONE_MINUTE
 
     def __hasSprinterToken(self):
         prevSeasonID = self.__prevSeason.getSeasonID()
@@ -153,7 +155,7 @@ class RankedBattlesSeasonGapView(RankedBattlesSeasonGapViewMeta, IResetablePage)
             self.__resultState = _STATE_TO_ROLLED_GAP_STATE.get(self.__resultState, self.__resultState)
         elif resultTokenPattern is not None:
             self.__resultState = SeasonGapStates.IN_LEAGUES
-            self.__resultLeague = int(resultTokenPattern.split('_')[-1])
+            self.__resultLeague = int(resultTokenPattern.split('_')[(-1)])
         else:
             notLeagueQuest = self.__getNotLeagueQuest()
             if notLeagueQuest is not None and notLeagueQuest.getStartTime() < time.time():

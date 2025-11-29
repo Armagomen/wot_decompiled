@@ -1,23 +1,27 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/meta/FrontlineScorePanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class FrontlineScorePanelMeta(BaseDAAPIComponent):
 
     def as_updateBasesS(self, west, center, east):
-        return self.flashObject.as_updateBases(west, center, east) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateBases(west, center, east)
 
     def as_updateHeadquarterHealthS(self, id, healthInPercent):
-        return self.flashObject.as_updateHeadquarterHealth(id, healthInPercent) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateHeadquarterHealth(id, healthInPercent)
 
     def as_headquarterDestroyedS(self, idx):
-        return self.flashObject.as_headquarterDestroyed(idx) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_headquarterDestroyed(idx)
 
     def as_updatePointsForBaseS(self, idx, points):
-        return self.flashObject.as_updatePointsForBase(idx, points) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updatePointsForBase(idx, points)
 
     def as_setTargetS(self, targetType, targetId):
-        return self.flashObject.as_setTarget(targetType, targetId) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTarget(targetType, targetId)
 
     def as_setPrebattleTimerS(self, remainingPrebattleTime):
-        return self.flashObject.as_setPrebattleTimer(remainingPrebattleTime) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPrebattleTimer(remainingPrebattleTime)

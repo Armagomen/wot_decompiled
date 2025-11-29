@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/PERSONAL_MISSIONS_30.py
 from debug_utils import LOG_WARNING
 
 class PERSONAL_MISSIONS_30(object):
@@ -225,13 +223,16 @@ class PERSONAL_MISSIONS_30(object):
     CAMPAIGNSELECTOR_STATUS_TOOLTIP_THIRD = '#personal_missions_30:campaignSelector/status/tooltip/third'
     CAMPAIGNSELECTOR_STATUS_TOOLTIP_FIRSTTWO = '#personal_missions_30:campaignSelector/status/tooltip/firstTwo'
     CAMPAIGNSELECTOR_OPERATION_TOOLTIP_LOCKED = '#personal_missions_30:campaignSelector/operation/tooltip/locked'
-    MAIN_CHAIN_ALL_NAME_ENUM = (MAIN_CHAIN_ASSAULT_NAME, MAIN_CHAIN_SNIPER_NAME, MAIN_CHAIN_SUPPORT_NAME)
+    MAIN_CHAIN_ALL_NAME_ENUM = (
+     MAIN_CHAIN_ASSAULT_NAME,
+     MAIN_CHAIN_SNIPER_NAME,
+     MAIN_CHAIN_SUPPORT_NAME)
 
     @classmethod
     def chainNameByRole(cls, key0):
-        outcome = '#personal_missions_30:main/chain/{}/name'.format(key0)
+        outcome = ('#personal_missions_30:main/chain/{}/name').format(key0)
         if outcome not in cls.MAIN_CHAIN_ALL_NAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

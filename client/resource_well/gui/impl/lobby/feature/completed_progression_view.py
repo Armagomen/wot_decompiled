@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/completed_progression_view.py
 from typing import Optional, Tuple
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -36,24 +34,32 @@ class CompletedProgressionView(ViewImpl):
         return super(CompletedProgressionView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return SerialNumberTooltip(parentLayout=self.layoutID) if contentID == R.views.resource_well.lobby.feature.tooltips.SerialNumberTooltip() else super(CompletedProgressionView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.resource_well.lobby.feature.tooltips.SerialNumberTooltip():
+            return SerialNumberTooltip(parentLayout=self.layoutID)
+        return super(CompletedProgressionView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(CompletedProgressionView, self)._onLoading(*args, **kwargs)
         self.__fillModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onAboutClick, self.__showEventInfo),
-         (self.viewModel.onClose, self.__close),
-         (self.viewModel.onShowVehicle, self.__showVehicle),
-         (self.__resourceWell.onEventUpdated, self.__onEventStateUpdated),
-         (self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
+        return (
+         (
+          self.viewModel.onAboutClick, self.__showEventInfo),
+         (
+          self.viewModel.onClose, self.__close),
+         (
+          self.viewModel.onShowVehicle, self.__showVehicle),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventStateUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
 
     def _onShown(self):
         g_eventBus.handleEvent(events.ViewReadyEvent(self.layoutID))
 
     def __fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             serialNumber = getSerialNumber(self.__rewardID, resourceWell=self.__resourceWell)
             model.setHasStyle(bool(serialNumber))
             model.setPersonalNumber(serialNumber)

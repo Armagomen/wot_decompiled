@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/migrations.py
-import BigWorld
-import constants
+import BigWorld, constants
 from account_helpers.AccountSettings import NEW_SETTINGS_COUNTER
 from account_helpers.settings_core.settings_constants import GAME, CONTROLS, VERSION, DAMAGE_INDICATOR, DAMAGE_LOG, BATTLE_EVENTS, SESSION_STATS, BattlePassStorageKeys, BattleCommStorageKeys, OnceOnlyHints, ScorePanelStorageKeys, SPGAim, GuiSettingsBehavior
 from adisp import adisp_process, adisp_async
@@ -18,29 +15,29 @@ def _initializeDefaultSettings(core, data, initialized):
     from account_helpers.counter_settings import dropCounters as dropNewSettingsCounters
     from account_helpers.AccountSettings import AccountSettings
     options = core.options
-    gameData = data['gameData'] = {GAME.DATE_TIME_MESSAGE_INDEX: 2,
-     GAME.ENABLE_OL_FILTER: options.getSetting(GAME.ENABLE_OL_FILTER).getDefaultValue(),
-     GAME.ENABLE_SPAM_FILTER: options.getSetting(GAME.ENABLE_SPAM_FILTER).getDefaultValue(),
-     GAME.INVITES_FROM_FRIENDS: options.getSetting(GAME.INVITES_FROM_FRIENDS).getDefaultValue(),
-     GAME.RECEIVE_FRIENDSHIP_REQUEST: core.options.getSetting(GAME.RECEIVE_FRIENDSHIP_REQUEST).getDefaultValue(),
-     GAME.STORE_RECEIVER_IN_BATTLE: core.options.getSetting(GAME.STORE_RECEIVER_IN_BATTLE).getDefaultValue(),
-     GAME.REPLAY_ENABLED: core.getSetting(GAME.REPLAY_ENABLED),
-     GAME.ENABLE_SERVER_AIM: core.getSetting(GAME.ENABLE_SERVER_AIM),
-     GAME.SHOW_DAMAGE_ICON: core.getSetting(GAME.SHOW_DAMAGE_ICON),
-     GAME.SHOW_VEHICLES_COUNTER: core.getSetting(GAME.SHOW_VEHICLES_COUNTER),
-     GAME.MINIMAP_ALPHA: core.getSetting(GAME.MINIMAP_ALPHA),
-     GAME.PLAYERS_PANELS_SHOW_LEVELS: core.getSetting(GAME.PLAYERS_PANELS_SHOW_LEVELS)}
-    data['gameExtData'] = {GAME.CHAT_CONTACTS_LIST_ONLY: options.getSetting(GAME.CHAT_CONTACTS_LIST_ONLY).getDefaultValue(),
-     GAME.SNIPER_ZOOM: core.getSetting(GAME.SNIPER_ZOOM),
-     GAME.HULLLOCK_ENABLED: core.getSetting(GAME.HULLLOCK_ENABLED),
-     GAME.PRE_COMMANDER_CAM: core.getSetting(GAME.PRE_COMMANDER_CAM),
-     GAME.COMMANDER_CAM: core.getSetting(GAME.COMMANDER_CAM)}
+    gameData = data['gameData'] = {GAME.DATE_TIME_MESSAGE_INDEX: 2, 
+       GAME.ENABLE_OL_FILTER: options.getSetting(GAME.ENABLE_OL_FILTER).getDefaultValue(), 
+       GAME.ENABLE_SPAM_FILTER: options.getSetting(GAME.ENABLE_SPAM_FILTER).getDefaultValue(), 
+       GAME.INVITES_FROM_FRIENDS: options.getSetting(GAME.INVITES_FROM_FRIENDS).getDefaultValue(), 
+       GAME.RECEIVE_FRIENDSHIP_REQUEST: core.options.getSetting(GAME.RECEIVE_FRIENDSHIP_REQUEST).getDefaultValue(), 
+       GAME.STORE_RECEIVER_IN_BATTLE: core.options.getSetting(GAME.STORE_RECEIVER_IN_BATTLE).getDefaultValue(), 
+       GAME.REPLAY_ENABLED: core.getSetting(GAME.REPLAY_ENABLED), 
+       GAME.ENABLE_SERVER_AIM: core.getSetting(GAME.ENABLE_SERVER_AIM), 
+       GAME.SHOW_DAMAGE_ICON: core.getSetting(GAME.SHOW_DAMAGE_ICON), 
+       GAME.SHOW_VEHICLES_COUNTER: core.getSetting(GAME.SHOW_VEHICLES_COUNTER), 
+       GAME.MINIMAP_ALPHA: core.getSetting(GAME.MINIMAP_ALPHA), 
+       GAME.PLAYERS_PANELS_SHOW_LEVELS: core.getSetting(GAME.PLAYERS_PANELS_SHOW_LEVELS)}
+    data['gameExtData'] = {GAME.CHAT_CONTACTS_LIST_ONLY: options.getSetting(GAME.CHAT_CONTACTS_LIST_ONLY).getDefaultValue(), 
+       GAME.SNIPER_ZOOM: core.getSetting(GAME.SNIPER_ZOOM), 
+       GAME.HULLLOCK_ENABLED: core.getSetting(GAME.HULLLOCK_ENABLED), 
+       GAME.PRE_COMMANDER_CAM: core.getSetting(GAME.PRE_COMMANDER_CAM), 
+       GAME.COMMANDER_CAM: core.getSetting(GAME.COMMANDER_CAM)}
     gameplayData = data['gameplayData'] = {GAME.GAMEPLAY_MASK: AccountSettings.getSettingsDefault('gameplayMask')}
-    aimData = data['aimData'] = {'arcade': core.getSetting('arcade'),
-     'sniper': core.getSetting('sniper')}
-    controlsData = data['controlsData'] = {CONTROLS.MOUSE_HORZ_INVERSION: core.getSetting(CONTROLS.MOUSE_HORZ_INVERSION),
-     CONTROLS.MOUSE_VERT_INVERSION: core.getSetting(CONTROLS.MOUSE_VERT_INVERSION),
-     CONTROLS.BACK_DRAFT_INVERSION: core.getSetting(CONTROLS.BACK_DRAFT_INVERSION)}
+    aimData = data['aimData'] = {'arcade': core.getSetting('arcade'), 
+       'sniper': core.getSetting('sniper')}
+    controlsData = data['controlsData'] = {CONTROLS.MOUSE_HORZ_INVERSION: core.getSetting(CONTROLS.MOUSE_HORZ_INVERSION), 
+       CONTROLS.MOUSE_VERT_INVERSION: core.getSetting(CONTROLS.MOUSE_VERT_INVERSION), 
+       CONTROLS.BACK_DRAFT_INVERSION: core.getSetting(CONTROLS.BACK_DRAFT_INVERSION)}
     igrCtrl = dependency.instance(IIGRController)
     if igrCtrl.getRoomType() == constants.IGR_TYPE.NONE:
         import Settings
@@ -48,14 +45,14 @@ def _initializeDefaultSettings(core, data, initialized):
         if section.has_key(Settings.KEY_MESSENGER_PREFERENCES):
             subSec = section[Settings.KEY_MESSENGER_PREFERENCES]
             tags = subSec.keys()
-            _userProps = {GAME.DATE_TIME_MESSAGE_INDEX: 'readInt',
-             GAME.ENABLE_OL_FILTER: 'readBool',
-             GAME.ENABLE_SPAM_FILTER: 'readBool',
-             GAME.INVITES_FROM_FRIENDS: 'readBool',
-             GAME.RECEIVE_FRIENDSHIP_REQUEST: 'readBool',
-             GAME.RECEIVE_INVITES_IN_BATTLE: 'readBool',
-             GAME.STORE_RECEIVER_IN_BATTLE: 'readBool',
-             GAME.CHAT_CONTACTS_LIST_ONLY: 'readBool'}
+            _userProps = {GAME.DATE_TIME_MESSAGE_INDEX: 'readInt', 
+               GAME.ENABLE_OL_FILTER: 'readBool', 
+               GAME.ENABLE_SPAM_FILTER: 'readBool', 
+               GAME.INVITES_FROM_FRIENDS: 'readBool', 
+               GAME.RECEIVE_FRIENDSHIP_REQUEST: 'readBool', 
+               GAME.RECEIVE_INVITES_IN_BATTLE: 'readBool', 
+               GAME.STORE_RECEIVER_IN_BATTLE: 'readBool', 
+               GAME.CHAT_CONTACTS_LIST_ONLY: 'readBool'}
             for key, reader in _userProps.iteritems():
                 if key in tags:
                     gameData[key] = getattr(subSec, reader)(key)
@@ -115,8 +112,8 @@ def _getSettingsCache():
 def _migrateTo3(core, data, initialized):
     aimData = data['aimData']
     if not initialized:
-        data['aimData'].update({'arcade': core.getSetting('arcade'),
-         'sniper': core.getSetting('sniper')})
+        data['aimData'].update({'arcade': core.getSetting('arcade'), 
+           'sniper': core.getSetting('sniper')})
     aimData['arcade']['reloaderTimer'] = 100
     aimData['sniper']['reloaderTimer'] = 100
     if not initialized:
@@ -143,7 +140,7 @@ def _migrateTo6(core, data, initialized):
     maskOffset = 7168
     currentMask = (storedValue & maskOffset) >> 10
     import ArenaType
-    newMask = currentMask | ArenaType.getGameplaysMask(('nations',))
+    newMask = currentMask | ArenaType.getGameplaysMask(('nations', ))
     data['gameplayData'][GAME.GAMEPLAY_MASK] = newMask
     clear = data['clear']
     clear[SETTINGS_SECTIONS.GAME] = clear.get(SETTINGS_SECTIONS.GAME, 0) | maskOffset
@@ -196,8 +193,7 @@ def _migrateTo18(core, data, initialized):
     storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.FALLOUT, 0)
     currentType = storedValue & 3
     if currentType > 0:
-        oldTypeToNewType = {1: QUEUE_TYPE.FALLOUT_CLASSIC,
-         2: QUEUE_TYPE.FALLOUT_MULTITEAM}
+        oldTypeToNewType = {1: QUEUE_TYPE.FALLOUT_CLASSIC, 2: QUEUE_TYPE.FALLOUT_MULTITEAM}
         newType = oldTypeToNewType.get(currentType, QUEUE_TYPE.UNKNOWN)
         data['fallout']['falloutBattleType'] = newType
 
@@ -370,8 +366,8 @@ def _migrateTo36(core, data, initialized):
     storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.GAMEPLAY, default)
     currentMask = storedValue & 65535
     import ArenaType
-    newMask = currentMask | ArenaType.getGameplaysMask(('ctf30x30',))
-    newnewMask = newMask | ArenaType.getGameplaysMask(('domination30x30',))
+    newMask = currentMask | ArenaType.getGameplaysMask(('ctf30x30', ))
+    newnewMask = newMask | ArenaType.getGameplaysMask(('domination30x30', ))
     data['gameplayData'][GAME.GAMEPLAY_MASK] = newnewMask
 
 
@@ -386,10 +382,10 @@ def _migrateTo38(core, data, initialized):
     storedValue = _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.GAMEPLAY, default)
     currentGameplayMask = storedValue & 65535
     import ArenaType
-    epicCtfEnabled = bool(currentGameplayMask & ArenaType.getGameplaysMask(('ctf30x30',)))
-    dominationEnabled = bool(currentGameplayMask & ArenaType.getGameplaysMask(('domination',)))
+    epicCtfEnabled = bool(currentGameplayMask & ArenaType.getGameplaysMask(('ctf30x30', )))
+    dominationEnabled = bool(currentGameplayMask & ArenaType.getGameplaysMask(('domination', )))
     if not epicCtfEnabled or not dominationEnabled:
-        currentGameplayMask &= ~ArenaType.getGameplaysMask(('domination30x30',))
+        currentGameplayMask &= ~ArenaType.getGameplaysMask(('domination30x30', ))
     data['gameplayData'][GAME.GAMEPLAY_MASK] = currentGameplayMask
     data['gameData'][GAME.MINIMAP_ALPHA] = 0
     data['gameExtData'][GAME.MINIMAP_ALPHA_ENABLED] = False
@@ -413,7 +409,7 @@ def _migrateTo42(core, data, initialized):
 
 
 def _migrateTo43(core, data, initialized):
-    data['delete'].extend((91,))
+    data['delete'].extend((91, ))
 
 
 def _migrateTo44(core, data, initialized):
@@ -429,8 +425,8 @@ def _migrateTo46(core, data, initialized):
 
 
 def _migrateTo47(core, data, initialized):
-    data['delete'].extend((92,))
-    data['delete'].extend((93,))
+    data['delete'].extend((92, ))
+    data['delete'].extend((93, ))
 
 
 def _migrateTo48(core, data, initialized):
@@ -594,21 +590,21 @@ def _migrateTo70(core, data, initialized):
 
 
 def _migrateTo71(core, data, initialized):
-    data['rankedCarouselFilter2'] = {'role_HT_assault': False,
-     'role_HT_break': False,
-     'role_HT_universal': False,
-     'role_HT_support': False,
-     'role_MT_assault': False,
-     'role_MT_universal': False,
-     'role_MT_sniper': False,
-     'role_MT_support': False,
-     'role_ATSPG_assault': False,
-     'role_ATSPG_universal': False,
-     'role_ATSPG_sniper': False,
-     'role_ATSPG_support': False,
-     'role_LT_universal': False,
-     'role_LT_wheeled': False,
-     'role_SPG': False}
+    data['rankedCarouselFilter2'] = {'role_HT_assault': False, 
+       'role_HT_break': False, 
+       'role_HT_universal': False, 
+       'role_HT_support': False, 
+       'role_MT_assault': False, 
+       'role_MT_universal': False, 
+       'role_MT_sniper': False, 
+       'role_MT_support': False, 
+       'role_ATSPG_assault': False, 
+       'role_ATSPG_universal': False, 
+       'role_ATSPG_sniper': False, 
+       'role_ATSPG_support': False, 
+       'role_LT_universal': False, 
+       'role_LT_wheeled': False, 
+       'role_SPG': False}
 
 
 def _migrateTo72(core, data, initialized):
@@ -680,57 +676,57 @@ def _migrateTo80(core, data, initialized):
 
 
 def _migrateTo81(core, data, initialized):
-    data['rankedCarouselFilter1'] = {'ussr': False,
-     'germany': False,
-     'usa': False,
-     'china': False,
-     'france': False,
-     'uk': False,
-     'japan': False,
-     'czech': False,
-     'sweden': False,
-     'poland': False,
-     'italy': False,
-     'lightTank': False,
-     'mediumTank': False,
-     'heavyTank': False,
-     'SPG': False,
-     'AT-SPG': False,
-     'level_1': False,
-     'level_2': False,
-     'level_3': False,
-     'level_4': False,
-     'level_5': False,
-     'level_6': False,
-     'level_7': False,
-     'level_8': False,
-     'level_9': False,
-     'level_10': False}
-    data['rankedCarouselFilter2'] = {'premium': False,
-     'elite': False,
-     'igr': False,
-     'rented': True,
-     'event': True,
-     'gameMode': False,
-     'favorite': False,
-     'bonus': False,
-     'crystals': False,
-     'ranked': True,
-     'role_HT_assault': False,
-     'role_HT_break': False,
-     'role_HT_universal': False,
-     'role_HT_support': False,
-     'role_MT_assault': False,
-     'role_MT_universal': False,
-     'role_MT_sniper': False,
-     'role_MT_support': False,
-     'role_ATSPG_assault': False,
-     'role_ATSPG_universal': False,
-     'role_ATSPG_sniper': False,
-     'role_ATSPG_support': False,
-     'role_LT_universal': False,
-     'role_LT_wheeled': False,
-     'role_SPG': False}
+    data['rankedCarouselFilter1'] = {'ussr': False, 
+       'germany': False, 
+       'usa': False, 
+       'china': False, 
+       'france': False, 
+       'uk': False, 
+       'japan': False, 
+       'czech': False, 
+       'sweden': False, 
+       'poland': False, 
+       'italy': False, 
+       'lightTank': False, 
+       'mediumTank': False, 
+       'heavyTank': False, 
+       'SPG': False, 
+       'AT-SPG': False, 
+       'level_1': False, 
+       'level_2': False, 
+       'level_3': False, 
+       'level_4': False, 
+       'level_5': False, 
+       'level_6': False, 
+       'level_7': False, 
+       'level_8': False, 
+       'level_9': False, 
+       'level_10': False}
+    data['rankedCarouselFilter2'] = {'premium': False, 
+       'elite': False, 
+       'igr': False, 
+       'rented': True, 
+       'event': True, 
+       'gameMode': False, 
+       'favorite': False, 
+       'bonus': False, 
+       'crystals': False, 
+       'ranked': True, 
+       'role_HT_assault': False, 
+       'role_HT_break': False, 
+       'role_HT_universal': False, 
+       'role_HT_support': False, 
+       'role_MT_assault': False, 
+       'role_MT_universal': False, 
+       'role_MT_sniper': False, 
+       'role_MT_support': False, 
+       'role_ATSPG_assault': False, 
+       'role_ATSPG_universal': False, 
+       'role_ATSPG_sniper': False, 
+       'role_ATSPG_support': False, 
+       'role_LT_universal': False, 
+       'role_LT_wheeled': False, 
+       'role_SPG': False}
 
 
 def _migrateTo82(core, data, initialized):
@@ -779,42 +775,42 @@ def _migrateTo89(core, data, initialized):
 
 def _migrateTo90(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
-    data[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1] = {'ussr': False,
-     'germany': False,
-     'usa': False,
-     'china': False,
-     'france': False,
-     'uk': False,
-     'japan': False,
-     'czech': False,
-     'sweden': False,
-     'poland': False,
-     'italy': False,
-     'lightTank': True,
-     'mediumTank': True,
-     'heavyTank': True,
-     'SPG': False,
-     'AT-SPG': False,
-     'level_1': False,
-     'level_2': False,
-     'level_3': False,
-     'level_4': False,
-     'level_5': False,
-     'level_6': False,
-     'level_7': False,
-     'level_8': False,
-     'level_9': False,
-     'level_10': False}
-    data[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2] = {'premium': False,
-     'elite': False,
-     'igr': False,
-     'rented': True,
-     'event': True,
-     'gameMode': False,
-     'favorite': False,
-     'bonus': False,
-     'crystals': False,
-     'battleRoyale': True}
+    data[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1] = {'ussr': False, 
+       'germany': False, 
+       'usa': False, 
+       'china': False, 
+       'france': False, 
+       'uk': False, 
+       'japan': False, 
+       'czech': False, 
+       'sweden': False, 
+       'poland': False, 
+       'italy': False, 
+       'lightTank': True, 
+       'mediumTank': True, 
+       'heavyTank': True, 
+       'SPG': False, 
+       'AT-SPG': False, 
+       'level_1': False, 
+       'level_2': False, 
+       'level_3': False, 
+       'level_4': False, 
+       'level_5': False, 
+       'level_6': False, 
+       'level_7': False, 
+       'level_8': False, 
+       'level_9': False, 
+       'level_10': False}
+    data[SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_2] = {'premium': False, 
+       'elite': False, 
+       'igr': False, 
+       'rented': True, 
+       'event': True, 
+       'gameMode': False, 
+       'favorite': False, 
+       'bonus': False, 
+       'crystals': False, 
+       'battleRoyale': True}
 
 
 def _migrateTo91(core, data, initialized):
@@ -847,56 +843,56 @@ def _migrateTo95(core, data, initialized):
 
 
 def _migrateTo96(core, data, initialized):
-    data['comp7CarouselFilter1'] = {'ussr': False,
-     'germany': False,
-     'usa': False,
-     'china': False,
-     'france': False,
-     'uk': False,
-     'japan': False,
-     'czech': False,
-     'sweden': False,
-     'poland': False,
-     'italy': False,
-     'lightTank': False,
-     'mediumTank': False,
-     'heavyTank': False,
-     'SPG': False,
-     'AT-SPG': False,
-     'level_1': False,
-     'level_2': False,
-     'level_3': False,
-     'level_4': False,
-     'level_5': False,
-     'level_6': False,
-     'level_7': False,
-     'level_8': False,
-     'level_9': False,
-     'level_10': False}
-    data['comp7CarouselFilter2'] = {'premium': False,
-     'elite': False,
-     'igr': False,
-     'rented': True,
-     'event': True,
-     'gameMode': False,
-     'favorite': False,
-     'bonus': False,
-     'crystals': False,
-     'role_HT_assault': False,
-     'role_HT_break': False,
-     'role_HT_universal': False,
-     'role_HT_support': False,
-     'role_MT_assault': False,
-     'role_MT_universal': False,
-     'role_MT_sniper': False,
-     'role_MT_support': False,
-     'role_ATSPG_assault': False,
-     'role_ATSPG_universal': False,
-     'role_ATSPG_sniper': False,
-     'role_ATSPG_support': False,
-     'role_LT_universal': False,
-     'role_LT_wheeled': False,
-     'role_SPG': False}
+    data['comp7CarouselFilter1'] = {'ussr': False, 
+       'germany': False, 
+       'usa': False, 
+       'china': False, 
+       'france': False, 
+       'uk': False, 
+       'japan': False, 
+       'czech': False, 
+       'sweden': False, 
+       'poland': False, 
+       'italy': False, 
+       'lightTank': False, 
+       'mediumTank': False, 
+       'heavyTank': False, 
+       'SPG': False, 
+       'AT-SPG': False, 
+       'level_1': False, 
+       'level_2': False, 
+       'level_3': False, 
+       'level_4': False, 
+       'level_5': False, 
+       'level_6': False, 
+       'level_7': False, 
+       'level_8': False, 
+       'level_9': False, 
+       'level_10': False}
+    data['comp7CarouselFilter2'] = {'premium': False, 
+       'elite': False, 
+       'igr': False, 
+       'rented': True, 
+       'event': True, 
+       'gameMode': False, 
+       'favorite': False, 
+       'bonus': False, 
+       'crystals': False, 
+       'role_HT_assault': False, 
+       'role_HT_break': False, 
+       'role_HT_universal': False, 
+       'role_HT_support': False, 
+       'role_MT_assault': False, 
+       'role_MT_universal': False, 
+       'role_MT_sniper': False, 
+       'role_MT_support': False, 
+       'role_ATSPG_assault': False, 
+       'role_ATSPG_universal': False, 
+       'role_ATSPG_sniper': False, 
+       'role_ATSPG_support': False, 
+       'role_LT_universal': False, 
+       'role_LT_wheeled': False, 
+       'role_SPG': False}
 
 
 def _migrateTo97(core, data, initialized):
@@ -923,8 +919,8 @@ def _migrateTo99(_, data, __):
 def _migrateTo100(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
     from account_helpers.settings_core.ServerSettingsManager import BATTLE_MATTERS_KEYS
-    data[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS] = {BATTLE_MATTERS_KEYS.QUESTS_SHOWN: core.serverSettings.getBattleMattersQuestWasShowed(),
-     BATTLE_MATTERS_KEYS.QUEST_PROGRESS: 0}
+    data[SETTINGS_SECTIONS.BATTLE_MATTERS_QUESTS] = {BATTLE_MATTERS_KEYS.QUESTS_SHOWN: core.serverSettings.getBattleMattersQuestWasShowed(), 
+       BATTLE_MATTERS_KEYS.QUEST_PROGRESS: 0}
 
 
 def _migrateTo101(core, data, initialized):
@@ -1021,114 +1017,117 @@ def _migrateTo115(core, data, initialized):
 
 def _migrateTo116(core, data, initialized):
     if initialized:
-        newbiesConfigs = {'gameData': {GAME.REPLAY_ENABLED: 1,
-                      GAME.SNIPER_MODE_STABILIZATION: True,
-                      GAME.SHOW_VEH_MODELS_ON_MAP: 2},
-         'gameExtData': {GAME.CAROUSEL_TYPE: 0,
-                         GAME.DOUBLE_CAROUSEL_TYPE: 0,
-                         GAME.VEHICLE_CAROUSEL_STATS: 0,
-                         GAME.PRE_COMMANDER_CAM: False,
-                         GAME.INCREASED_ZOOM: True,
-                         GAME.HULLLOCK_ENABLED: False,
-                         GAME.MINIMAP_MIN_SPOTTING_RANGE: True,
-                         GAME.MINIMAP_VIEW_RANGE: True,
-                         GAME.MINIMAP_MAX_VIEW_RANGE: False,
-                         GAME.MINIMAP_DRAW_RANGE: True},
-         'gameExtData2': {GAME.CUSTOMIZATION_DISPLAY_TYPE: 2},
-         'dogTags': {GAME.SHOW_VICTIMS_DOGTAG: False,
-                     GAME.SHOW_DOGTAG_TO_KILLER: False,
-                     GAME.SHOW_KILLERS_DOGTAG: False},
-         'graphicsData': {GAME.LENS_EFFECT: False},
-         'battleHud': {GAME.SHOW_VEHICLE_HP_IN_PLAYERS_PANEL: 0,
-                       ScorePanelStorageKeys.SHOW_HP_VALUES: True},
-         'feedbackDamageIndicator': {DAMAGE_INDICATOR.TYPE: 1,
-                                     DAMAGE_INDICATOR.PRESET_ALLIES: False,
-                                     DAMAGE_INDICATOR.DAMAGE_VALUE: True,
-                                     DAMAGE_INDICATOR.DYNAMIC_INDICATOR: True,
-                                     DAMAGE_INDICATOR.VEHICLE_INFO: True},
-         'feedbackBattleEvents': {BATTLE_EVENTS.SHOW_IN_BATTLE: True,
-                                  BATTLE_EVENTS.EVENT_NAME: True,
-                                  BATTLE_EVENTS.VEHICLE_INFO: True,
-                                  BATTLE_EVENTS.BLOCKED_DAMAGE: True,
-                                  BATTLE_EVENTS.RECEIVED_DAMAGE: True,
-                                  BATTLE_EVENTS.RECEIVED_CRITS: True,
-                                  BATTLE_EVENTS.ENEMIES_STUN: False,
-                                  BATTLE_EVENTS.BASE_CAPTURE_DROP: True,
-                                  BATTLE_EVENTS.BASE_CAPTURE: True,
-                                  BATTLE_EVENTS.ENEMY_DETECTION: True,
-                                  BATTLE_EVENTS.ENEMY_RAM_ATTACK: True,
-                                  BATTLE_EVENTS.ENEMY_KILL: True,
-                                  BATTLE_EVENTS.ENEMY_TRACK_DAMAGE: True,
-                                  BATTLE_EVENTS.ENEMY_CRITICAL_HIT: True,
-                                  BATTLE_EVENTS.ENEMY_HP_DAMAGE: True,
-                                  BATTLE_EVENTS.ENEMY_WORLD_COLLISION: True,
-                                  BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE: True,
-                                  BATTLE_EVENTS.ENEMY_ASSIST_STUN: True,
-                                  BATTLE_EVENTS.ENEMY_BURNING: True},
-         'feedbackDamageLog': {DAMAGE_LOG.TOTAL_DAMAGE: True,
-                               DAMAGE_LOG.BLOCKED_DAMAGE: True,
-                               DAMAGE_LOG.ASSIST_DAMAGE: True,
-                               DAMAGE_LOG.ASSIST_STUN: True,
-                               DAMAGE_LOG.SHOW_DETAILS: 0},
-         'FEEDBACK_BORDER_MAP': {'battleBorderMapMode': 2}}
+        newbiesConfigs = {'gameData': {GAME.REPLAY_ENABLED: 1, 
+                        GAME.SNIPER_MODE_STABILIZATION: True, 
+                        GAME.SHOW_VEH_MODELS_ON_MAP: 2}, 
+           'gameExtData': {GAME.CAROUSEL_TYPE: 0, 
+                           GAME.DOUBLE_CAROUSEL_TYPE: 0, 
+                           GAME.VEHICLE_CAROUSEL_STATS: 0, 
+                           GAME.PRE_COMMANDER_CAM: False, 
+                           GAME.INCREASED_ZOOM: True, 
+                           GAME.HULLLOCK_ENABLED: False, 
+                           GAME.MINIMAP_MIN_SPOTTING_RANGE: True, 
+                           GAME.MINIMAP_VIEW_RANGE: True, 
+                           GAME.MINIMAP_MAX_VIEW_RANGE: False, 
+                           GAME.MINIMAP_DRAW_RANGE: True}, 
+           'gameExtData2': {GAME.CUSTOMIZATION_DISPLAY_TYPE: 2}, 
+           'dogTags': {GAME.SHOW_VICTIMS_DOGTAG: False, 
+                       GAME.SHOW_DOGTAG_TO_KILLER: False, 
+                       GAME.SHOW_KILLERS_DOGTAG: False}, 
+           'graphicsData': {GAME.LENS_EFFECT: False}, 
+           'battleHud': {GAME.SHOW_VEHICLE_HP_IN_PLAYERS_PANEL: 0, 
+                         ScorePanelStorageKeys.SHOW_HP_VALUES: True}, 
+           'feedbackDamageIndicator': {DAMAGE_INDICATOR.TYPE: 1, 
+                                       DAMAGE_INDICATOR.PRESET_ALLIES: False, 
+                                       DAMAGE_INDICATOR.DAMAGE_VALUE: True, 
+                                       DAMAGE_INDICATOR.DYNAMIC_INDICATOR: True, 
+                                       DAMAGE_INDICATOR.VEHICLE_INFO: True}, 
+           'feedbackBattleEvents': {BATTLE_EVENTS.SHOW_IN_BATTLE: True, 
+                                    BATTLE_EVENTS.EVENT_NAME: True, 
+                                    BATTLE_EVENTS.VEHICLE_INFO: True, 
+                                    BATTLE_EVENTS.BLOCKED_DAMAGE: True, 
+                                    BATTLE_EVENTS.RECEIVED_DAMAGE: True, 
+                                    BATTLE_EVENTS.RECEIVED_CRITS: True, 
+                                    BATTLE_EVENTS.ENEMIES_STUN: False, 
+                                    BATTLE_EVENTS.BASE_CAPTURE_DROP: True, 
+                                    BATTLE_EVENTS.BASE_CAPTURE: True, 
+                                    BATTLE_EVENTS.ENEMY_DETECTION: True, 
+                                    BATTLE_EVENTS.ENEMY_RAM_ATTACK: True, 
+                                    BATTLE_EVENTS.ENEMY_KILL: True, 
+                                    BATTLE_EVENTS.ENEMY_TRACK_DAMAGE: True, 
+                                    BATTLE_EVENTS.ENEMY_CRITICAL_HIT: True, 
+                                    BATTLE_EVENTS.ENEMY_HP_DAMAGE: True, 
+                                    BATTLE_EVENTS.ENEMY_WORLD_COLLISION: True, 
+                                    BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE: True, 
+                                    BATTLE_EVENTS.ENEMY_ASSIST_STUN: True, 
+                                    BATTLE_EVENTS.ENEMY_BURNING: True}, 
+           'feedbackDamageLog': {DAMAGE_LOG.TOTAL_DAMAGE: True, 
+                                 DAMAGE_LOG.BLOCKED_DAMAGE: True, 
+                                 DAMAGE_LOG.ASSIST_DAMAGE: True, 
+                                 DAMAGE_LOG.ASSIST_STUN: True, 
+                                 DAMAGE_LOG.SHOW_DETAILS: 0}, 
+           'FEEDBACK_BORDER_MAP': {'battleBorderMapMode': 2}}
         for configGroup, configs in newbiesConfigs.items():
             if data.get(configGroup):
                 data[configGroup].update(configs)
-            data[configGroup] = configs
+            else:
+                data[configGroup] = configs
 
-        newbiesAimData = {'arcade': {'netType': 0,
-                    'centralTagType': 4},
-         'sniper': {'net': 100,
-                    'netType': 0,
-                    'centralTag': 100,
-                    'centralTagType': 4,
-                    'reloader': 100,
-                    'condition': 100,
-                    'mixingType': 3,
-                    'mixing': 100,
-                    'gunTagType': 9,
-                    'gunTag': 100,
-                    'cassette': 100,
-                    'reloaderTimer': 100,
-                    'zoomIndicator': 100}}
+        newbiesAimData = {'arcade': {'netType': 0, 
+                      'centralTagType': 4}, 
+           'sniper': {'net': 100, 
+                      'netType': 0, 
+                      'centralTag': 100, 
+                      'centralTagType': 4, 
+                      'reloader': 100, 
+                      'condition': 100, 
+                      'mixingType': 3, 
+                      'mixing': 100, 
+                      'gunTagType': 9, 
+                      'gunTag': 100, 
+                      'cassette': 100, 
+                      'reloaderTimer': 100, 
+                      'zoomIndicator': 100}}
         aimData = data.get('aimData')
         if aimData:
             for aimDataType in newbiesAimData:
                 if aimDataType in aimData:
                     data['aimData'][aimDataType].update(newbiesAimData[aimDataType])
-                data['aimData'][aimDataType] = newbiesAimData[aimDataType]
+                else:
+                    data['aimData'][aimDataType] = newbiesAimData[aimDataType]
 
         else:
             data['aimData'] = newbiesAimData
-        newbiesMarkersData = {'enemy': {'markerBaseHp': 1,
-                   'markerBaseLevel': True,
-                   'markerBaseVehicleName': True,
-                   'markerBasePlayerName': False,
-                   'markerAltIcon': True,
-                   'markerAltVehicleName': True,
-                   'markerAltPlayerName': True,
-                   'markerAltHp': 1},
-         'ally': {'markerBaseHp': 1,
-                  'markerBaseLevel': True,
-                  'markerBaseVehicleName': True,
-                  'markerBasePlayerName': False,
-                  'markerAltIcon': True,
-                  'markerAltVehicleName': True,
-                  'markerAltPlayerName': True,
-                  'markerAltHp': 1},
-         'dead': {'markerBaseHp': 3,
-                  'markerBaseHpIndicator': False,
-                  'markerBaseVehicleName': True,
-                  'markerAltIcon': True,
-                  'markerAltVehicleName': True,
-                  'markerAltPlayerName': False,
-                  'markerAltHp': 1}}
+        newbiesMarkersData = {'enemy': {'markerBaseHp': 1, 
+                     'markerBaseLevel': True, 
+                     'markerBaseVehicleName': True, 
+                     'markerBasePlayerName': False, 
+                     'markerAltIcon': True, 
+                     'markerAltVehicleName': True, 
+                     'markerAltPlayerName': True, 
+                     'markerAltHp': 1}, 
+           'ally': {'markerBaseHp': 1, 
+                    'markerBaseLevel': True, 
+                    'markerBaseVehicleName': True, 
+                    'markerBasePlayerName': False, 
+                    'markerAltIcon': True, 
+                    'markerAltVehicleName': True, 
+                    'markerAltPlayerName': True, 
+                    'markerAltHp': 1}, 
+           'dead': {'markerBaseHp': 3, 
+                    'markerBaseHpIndicator': False, 
+                    'markerBaseVehicleName': True, 
+                    'markerAltIcon': True, 
+                    'markerAltVehicleName': True, 
+                    'markerAltPlayerName': False, 
+                    'markerAltHp': 1}}
         markersData = data.get('markersData')
         if markersData:
             for markerType in newbiesMarkersData:
                 if markerType in markersData:
                     data['markersData'][markerType].update(newbiesMarkersData[markerType])
-                data['markersData'][markerType] = newbiesMarkersData[markerType]
+                else:
+                    data['markersData'][markerType] = newbiesMarkersData[markerType]
 
         else:
             data['markersData'] = newbiesMarkersData
@@ -1166,8 +1165,8 @@ def _migrateTo117(core, data, initialized):
     if rulesCount == 0 or commonRules & allCommonRulesCompleted == allCommonRulesCompleted:
         data['uiStorage'][UI_STORAGE_KEYS.LIMITED_UI_ALL_NOVICE_RULES_COMPLETED] = True
     clear = data['clear']
-    hintsToClear = {('onceOnlyHints', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)): (1, 24, 25),
-     ('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (0,)}
+    hintsToClear = {('onceOnlyHints', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)): (1, 24, 25), 
+       ('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (0, )}
     for sectionData, hintsPositions in hintsToClear.items():
         section, sectionValue = sectionData
         for bitPosition in hintsPositions:
@@ -1374,8 +1373,8 @@ def _migrateTo143(core, data, initialized):
 def _migrateTo144(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
     clear = data['clear']
-    hintsToClear = {('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (27, 28),
-     ('onceOnlyHints3', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_3, 0)): (8, 9)}
+    hintsToClear = {('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (27, 28), 
+       ('onceOnlyHints3', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_3, 0)): (8, 9)}
     for sectionData, hintsPositions in hintsToClear.items():
         section, sectionValue = sectionData
         for bitPosition in hintsPositions:
@@ -1417,14 +1416,23 @@ def _migrateTo147(core, data, initialized):
 
 def _migrateTo148(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
-    hangarFiltersSections = ((SETTINGS_SECTIONS.CAROUSEL_FILTER_1, SETTINGS_SECTIONS.CAROUSEL_FILTER_1),
-     (SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1, 'rankedCarouselFilter1'),
-     (SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_1),
-     (SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_1, 'comp7CarouselFilter1'),
-     (SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1),
-     (SETTINGS_SECTIONS.MAPBOX_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.MAPBOX_CAROUSEL_FILTER_1),
-     (SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1),
-     (SETTINGS_SECTIONS.COMP7_LIGHT_CAROUSEL_FILTER_1, 'comp7LightCarouselFilter1'))
+    hangarFiltersSections = (
+     (
+      SETTINGS_SECTIONS.CAROUSEL_FILTER_1, SETTINGS_SECTIONS.CAROUSEL_FILTER_1),
+     (
+      SETTINGS_SECTIONS.RANKED_CAROUSEL_FILTER_1, 'rankedCarouselFilter1'),
+     (
+      SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.EPICBATTLE_CAROUSEL_FILTER_1),
+     (
+      SETTINGS_SECTIONS.COMP7_CAROUSEL_FILTER_1, 'comp7CarouselFilter1'),
+     (
+      SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.ROYALE_CAROUSEL_FILTER_1),
+     (
+      SETTINGS_SECTIONS.MAPBOX_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.MAPBOX_CAROUSEL_FILTER_1),
+     (
+      SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1, SETTINGS_SECTIONS.FUN_RANDOM_CAROUSEL_FILTER_1),
+     (
+      SETTINGS_SECTIONS.COMP7_LIGHT_CAROUSEL_FILTER_1, 'comp7LightCarouselFilter1'))
     tier11Filter = 1073741824
     for sectionName, dataName in hangarFiltersSections:
         storedValue = _getSettingsCache().getSectionSettings(sectionName, 0)
@@ -1439,8 +1447,8 @@ def _migrateTo149(core, data, initialized):
 def _migrateTo150(core, data, initialized):
     from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
     clear = data['clear']
-    hintsToClear = {('onceOnlyHints', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)): (7,),
-     ('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (9, 24)}
+    hintsToClear = {('onceOnlyHints', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS, 0)): (7, ), 
+       ('onceOnlyHints2', _getSettingsCache().getSectionSettings(SETTINGS_SECTIONS.ONCE_ONLY_HINTS_2, 0)): (9, 24)}
     for sectionData, hintsPositions in hintsToClear.items():
         section, sectionValue = sectionData
         for bitPosition in hintsPositions:
@@ -1449,602 +1457,305 @@ def _migrateTo150(core, data, initialized):
                 clear[section] = clear.get(section, 0) | settingOffset
 
 
-_versions = ((1,
-  _initializeDefaultSettings,
-  True,
-  False),
- (2,
-  _reinitializeDefaultSettings,
-  True,
-  True),
- (3,
-  _migrateTo3,
-  False,
-  False),
- (4,
-  _migrateTo4,
-  True,
-  False),
- (5,
-  _migrateTo5,
-  False,
-  False),
- (6,
-  _migrateTo6,
-  True,
-  False),
- (7,
-  _migrateTo7,
-  False,
-  False),
- (8,
-  _migrateTo8,
-  True,
-  False),
- (9,
-  _migrateTo9,
-  True,
-  False),
- (11,
-  _migrateTo11,
-  True,
-  False),
- (12,
-  _migrateTo12,
-  False,
-  False),
- (13,
-  _migrateTo13,
-  False,
-  False),
- (14,
-  _migrateTo14,
-  False,
-  False),
- (15,
-  _migrateTo15,
-  False,
-  False),
- (16,
-  _migrateTo16,
-  False,
-  False),
- (17,
-  _migrateTo17,
-  False,
-  False),
- (18,
-  _migrateTo18,
-  False,
-  False),
- (19,
-  _migrateTo19,
-  False,
-  False),
- (20,
-  _migrateTo20,
-  False,
-  False),
- (21,
-  _migrateTo21,
-  False,
-  False),
- (22,
-  _migrateTo22,
-  False,
-  False),
- (23,
-  _migrateTo23,
-  False,
-  False),
- (24,
-  _migrateTo24,
-  False,
-  False),
- (25,
-  _migrateTo25,
-  False,
-  False),
- (26,
-  _migrateTo26,
-  False,
-  False),
- (27,
-  _migrateTo27,
-  False,
-  False),
- (28,
-  _migrateTo28,
-  False,
-  False),
- (29,
-  _migrateTo29,
-  False,
-  False),
- (30,
-  _migrateTo30,
-  False,
-  False),
- (31,
-  _migrateTo31,
-  False,
-  False),
- (32,
-  _migrateTo32,
-  False,
-  False),
- (33,
-  _migrateTo33,
-  False,
-  False),
- (34,
-  _migrateTo34,
-  False,
-  False),
- (35,
-  _migrateTo35,
-  False,
-  False),
- (36,
-  _migrateTo36,
-  True,
-  False),
- (37,
-  _migrateTo37,
-  False,
-  False),
- (38,
-  _migrateTo38,
-  False,
-  False),
- (39,
-  _migrateTo39,
-  False,
-  False),
- (40,
-  _migrateTo40,
-  False,
-  False),
- (41,
-  _migrateTo41,
-  False,
-  False),
- (42,
-  _migrateTo42,
-  False,
-  False),
- (43,
-  _migrateTo43,
-  False,
-  False),
- (44,
-  _migrateTo44,
-  False,
-  False),
- (45,
-  _migrateTo45,
-  False,
-  False),
- (46,
-  _migrateTo46,
-  False,
-  False),
- (47,
-  _migrateTo47,
-  False,
-  False),
- (48,
-  _migrateTo48,
-  False,
-  False),
- (49,
-  _migrateTo49,
-  False,
-  False),
- (50,
-  _migrateTo50,
-  False,
-  False),
- (51,
-  _migrateTo51,
-  False,
-  False),
- (52,
-  _migrateTo52,
-  False,
-  False),
- (53,
-  _migrateTo53,
-  False,
-  False),
- (54,
-  _migrateTo54,
-  False,
-  False),
- (55,
-  _migrateTo55,
-  False,
-  False),
- (56,
-  _migrateTo56,
-  False,
-  False),
- (57,
-  _migrateTo57,
-  False,
-  False),
- (58,
-  _migrateTo58,
-  False,
-  False),
- (59,
-  _migrateTo59,
-  False,
-  False),
- (60,
-  _migrateTo60,
-  False,
-  False),
- (61,
-  _migrateTo61,
-  False,
-  False),
- (62,
-  _migrateTo62,
-  False,
-  False),
- (63,
-  _migrateTo63,
-  False,
-  False),
- (64,
-  _migrateTo64,
-  False,
-  False),
- (65,
-  _migrateTo65,
-  False,
-  False),
- (66,
-  _migrateTo66,
-  False,
-  False),
- (67,
-  _migrateTo67,
-  False,
-  False),
- (68,
-  _migrateTo68,
-  False,
-  False),
- (69,
-  _migrateTo69,
-  False,
-  False),
- (70,
-  _migrateTo70,
-  False,
-  False),
- (71,
-  _migrateTo71,
-  False,
-  False),
- (72,
-  _migrateTo72,
-  False,
-  False),
- (73,
-  _migrateTo73,
-  False,
-  False),
- (74,
-  _migrateTo74,
-  False,
-  False),
- (75,
-  _migrateTo75,
-  False,
-  False),
- (76,
-  _migrateTo76,
-  False,
-  False),
- (77,
-  _migrateTo77,
-  False,
-  False),
- (78,
-  _migrateTo78,
-  False,
-  False),
- (79,
-  _migrateTo79,
-  False,
-  False),
- (80,
-  _migrateTo80,
-  False,
-  False),
- (81,
-  _migrateTo81,
-  False,
-  False),
- (82,
-  _migrateTo82,
-  False,
-  False),
- (83,
-  _migrateTo83,
-  False,
-  False),
- (84,
-  _migrateTo84,
-  False,
-  False),
- (85,
-  _migrateTo85,
-  False,
-  False),
- (86,
-  _migrateTo86,
-  False,
-  False),
- (87,
-  _migrateTo87,
-  False,
-  False),
- (88,
-  _migrateTo88,
-  False,
-  False),
- (89,
-  _migrateTo89,
-  False,
-  False),
- (90,
-  _migrateTo90,
-  False,
-  False),
- (91,
-  _migrateTo91,
-  False,
-  False),
- (92,
-  _migrateTo92,
-  False,
-  False),
- (93,
-  _migrateTo93,
-  False,
-  False),
- (94,
-  _migrateTo94,
-  False,
-  False),
- (95,
-  _migrateTo95,
-  False,
-  False),
- (96,
-  _migrateTo96,
-  False,
-  False),
- (97,
-  _migrateTo97,
-  False,
-  False),
- (98,
-  _migrateTo98,
-  False,
-  False),
- (99,
-  _migrateTo99,
-  False,
-  False),
- (100,
-  _migrateTo100,
-  False,
-  False),
- (101,
-  _migrateTo101,
-  False,
-  False),
- (102,
-  _migrateTo102,
-  False,
-  False),
- (103,
-  _migrateTo103,
-  False,
-  False),
- (104,
-  _migrateTo104,
-  False,
-  False),
- (105,
-  _migrateTo105,
-  False,
-  False),
- (106,
-  _migrateTo106,
-  False,
-  False),
- (107,
-  _migrateTo107,
-  False,
-  False),
- (108,
-  _migrateTo108,
-  False,
-  False),
- (109,
-  _migrateTo109,
-  False,
-  False),
- (110,
-  _migrateTo110,
-  False,
-  False),
- (111,
-  _migrateTo111,
-  False,
-  False),
- (112,
-  _migrateTo112,
-  False,
-  False),
- (113,
-  _migrateTo113,
-  False,
-  False),
- (114,
-  _migrateTo114,
-  False,
-  False),
- (115,
-  _migrateTo115,
-  False,
-  False),
- (116,
-  _migrateTo116,
-  False,
-  False),
- (117,
-  _migrateTo117,
-  False,
-  False),
- (118,
-  _migrateTo118,
-  False,
-  False),
- (119,
-  _migrateTo119,
-  False,
-  False),
- (120,
-  _migrateTo120,
-  False,
-  False),
- (121,
-  _migrateTo121,
-  False,
-  False),
- (122,
-  _migrateTo122,
-  False,
-  False),
- (123,
-  _migrateTo123,
-  False,
-  False),
- (124,
-  _migrateTo124,
-  False,
-  False),
- (125,
-  _migrateTo125,
-  False,
-  False),
- (126,
-  _migrateTo126,
-  False,
-  False),
- (127,
-  _migrateTo127,
-  False,
-  False),
- (128,
-  _migrateTo128,
-  False,
-  False),
- (129,
-  _migrateTo129,
-  False,
-  False),
- (130,
-  _migrateTo130,
-  False,
-  False),
- (131,
-  _migrateTo131,
-  False,
-  False),
- (132,
-  _migrateTo132,
-  False,
-  False),
- (133,
-  _migrateTo133,
-  False,
-  False),
- (134,
-  _migrateTo134,
-  False,
-  False),
- (135,
-  _migrateTo135,
-  False,
-  False),
- (136,
-  _migrateTo136,
-  False,
-  False),
- (137,
-  _migrateTo137,
-  False,
-  False),
- (138,
-  _migrateTo138,
-  False,
-  False),
- (139,
-  _migrateTo139,
-  False,
-  False),
- (140,
-  _migrateTo140,
-  False,
-  False),
- (141,
-  _migrateTo141,
-  False,
-  False),
- (142,
-  _migrateTo142,
-  False,
-  False),
- (143,
-  _migrateTo143,
-  False,
-  False),
- (144,
-  _migrateTo144,
-  False,
-  False),
- (145,
-  _migrateTo145,
-  False,
-  False),
- (146,
-  _migrateTo146,
-  False,
-  False),
- (147,
-  _migrateTo147,
-  False,
-  False),
- (148,
-  _migrateTo148,
-  False,
-  False),
- (149,
-  _migrateTo149,
-  False,
-  False),
- (150,
-  _migrateTo150,
-  False,
-  False))
+_versions = (
+ (
+  1, _initializeDefaultSettings, True, False),
+ (
+  2, _reinitializeDefaultSettings, True, True),
+ (
+  3, _migrateTo3, False, False),
+ (
+  4, _migrateTo4, True, False),
+ (
+  5, _migrateTo5, False, False),
+ (
+  6, _migrateTo6, True, False),
+ (
+  7, _migrateTo7, False, False),
+ (
+  8, _migrateTo8, True, False),
+ (
+  9, _migrateTo9, True, False),
+ (
+  11, _migrateTo11, True, False),
+ (
+  12, _migrateTo12, False, False),
+ (
+  13, _migrateTo13, False, False),
+ (
+  14, _migrateTo14, False, False),
+ (
+  15, _migrateTo15, False, False),
+ (
+  16, _migrateTo16, False, False),
+ (
+  17, _migrateTo17, False, False),
+ (
+  18, _migrateTo18, False, False),
+ (
+  19, _migrateTo19, False, False),
+ (
+  20, _migrateTo20, False, False),
+ (
+  21, _migrateTo21, False, False),
+ (
+  22, _migrateTo22, False, False),
+ (
+  23, _migrateTo23, False, False),
+ (
+  24, _migrateTo24, False, False),
+ (
+  25, _migrateTo25, False, False),
+ (
+  26, _migrateTo26, False, False),
+ (
+  27, _migrateTo27, False, False),
+ (
+  28, _migrateTo28, False, False),
+ (
+  29, _migrateTo29, False, False),
+ (
+  30, _migrateTo30, False, False),
+ (
+  31, _migrateTo31, False, False),
+ (
+  32, _migrateTo32, False, False),
+ (
+  33, _migrateTo33, False, False),
+ (
+  34, _migrateTo34, False, False),
+ (
+  35, _migrateTo35, False, False),
+ (
+  36, _migrateTo36, True, False),
+ (
+  37, _migrateTo37, False, False),
+ (
+  38, _migrateTo38, False, False),
+ (
+  39, _migrateTo39, False, False),
+ (
+  40, _migrateTo40, False, False),
+ (
+  41, _migrateTo41, False, False),
+ (
+  42, _migrateTo42, False, False),
+ (
+  43, _migrateTo43, False, False),
+ (
+  44, _migrateTo44, False, False),
+ (
+  45, _migrateTo45, False, False),
+ (
+  46, _migrateTo46, False, False),
+ (
+  47, _migrateTo47, False, False),
+ (
+  48, _migrateTo48, False, False),
+ (
+  49, _migrateTo49, False, False),
+ (
+  50, _migrateTo50, False, False),
+ (
+  51, _migrateTo51, False, False),
+ (
+  52, _migrateTo52, False, False),
+ (
+  53, _migrateTo53, False, False),
+ (
+  54, _migrateTo54, False, False),
+ (
+  55, _migrateTo55, False, False),
+ (
+  56, _migrateTo56, False, False),
+ (
+  57, _migrateTo57, False, False),
+ (
+  58, _migrateTo58, False, False),
+ (
+  59, _migrateTo59, False, False),
+ (
+  60, _migrateTo60, False, False),
+ (
+  61, _migrateTo61, False, False),
+ (
+  62, _migrateTo62, False, False),
+ (
+  63, _migrateTo63, False, False),
+ (
+  64, _migrateTo64, False, False),
+ (
+  65, _migrateTo65, False, False),
+ (
+  66, _migrateTo66, False, False),
+ (
+  67, _migrateTo67, False, False),
+ (
+  68, _migrateTo68, False, False),
+ (
+  69, _migrateTo69, False, False),
+ (
+  70, _migrateTo70, False, False),
+ (
+  71, _migrateTo71, False, False),
+ (
+  72, _migrateTo72, False, False),
+ (
+  73, _migrateTo73, False, False),
+ (
+  74, _migrateTo74, False, False),
+ (
+  75, _migrateTo75, False, False),
+ (
+  76, _migrateTo76, False, False),
+ (
+  77, _migrateTo77, False, False),
+ (
+  78, _migrateTo78, False, False),
+ (
+  79, _migrateTo79, False, False),
+ (
+  80, _migrateTo80, False, False),
+ (
+  81, _migrateTo81, False, False),
+ (
+  82, _migrateTo82, False, False),
+ (
+  83, _migrateTo83, False, False),
+ (
+  84, _migrateTo84, False, False),
+ (
+  85, _migrateTo85, False, False),
+ (
+  86, _migrateTo86, False, False),
+ (
+  87, _migrateTo87, False, False),
+ (
+  88, _migrateTo88, False, False),
+ (
+  89, _migrateTo89, False, False),
+ (
+  90, _migrateTo90, False, False),
+ (
+  91, _migrateTo91, False, False),
+ (
+  92, _migrateTo92, False, False),
+ (
+  93, _migrateTo93, False, False),
+ (
+  94, _migrateTo94, False, False),
+ (
+  95, _migrateTo95, False, False),
+ (
+  96, _migrateTo96, False, False),
+ (
+  97, _migrateTo97, False, False),
+ (
+  98, _migrateTo98, False, False),
+ (
+  99, _migrateTo99, False, False),
+ (
+  100, _migrateTo100, False, False),
+ (
+  101, _migrateTo101, False, False),
+ (
+  102, _migrateTo102, False, False),
+ (
+  103, _migrateTo103, False, False),
+ (
+  104, _migrateTo104, False, False),
+ (
+  105, _migrateTo105, False, False),
+ (
+  106, _migrateTo106, False, False),
+ (
+  107, _migrateTo107, False, False),
+ (
+  108, _migrateTo108, False, False),
+ (
+  109, _migrateTo109, False, False),
+ (
+  110, _migrateTo110, False, False),
+ (
+  111, _migrateTo111, False, False),
+ (
+  112, _migrateTo112, False, False),
+ (
+  113, _migrateTo113, False, False),
+ (
+  114, _migrateTo114, False, False),
+ (
+  115, _migrateTo115, False, False),
+ (
+  116, _migrateTo116, False, False),
+ (
+  117, _migrateTo117, False, False),
+ (
+  118, _migrateTo118, False, False),
+ (
+  119, _migrateTo119, False, False),
+ (
+  120, _migrateTo120, False, False),
+ (
+  121, _migrateTo121, False, False),
+ (
+  122, _migrateTo122, False, False),
+ (
+  123, _migrateTo123, False, False),
+ (
+  124, _migrateTo124, False, False),
+ (
+  125, _migrateTo125, False, False),
+ (
+  126, _migrateTo126, False, False),
+ (
+  127, _migrateTo127, False, False),
+ (
+  128, _migrateTo128, False, False),
+ (
+  129, _migrateTo129, False, False),
+ (
+  130, _migrateTo130, False, False),
+ (
+  131, _migrateTo131, False, False),
+ (
+  132, _migrateTo132, False, False),
+ (
+  133, _migrateTo133, False, False),
+ (
+  134, _migrateTo134, False, False),
+ (
+  135, _migrateTo135, False, False),
+ (
+  136, _migrateTo136, False, False),
+ (
+  137, _migrateTo137, False, False),
+ (
+  138, _migrateTo138, False, False),
+ (
+  139, _migrateTo139, False, False),
+ (
+  140, _migrateTo140, False, False),
+ (
+  141, _migrateTo141, False, False),
+ (
+  142, _migrateTo142, False, False),
+ (
+  143, _migrateTo143, False, False),
+ (
+  144, _migrateTo144, False, False),
+ (
+  145, _migrateTo145, False, False),
+ (
+  146, _migrateTo146, False, False),
+ (
+  147, _migrateTo147, False, False),
+ (
+  148, _migrateTo148, False, False),
+ (
+  149, _migrateTo149, False, False),
+ (
+  150, _migrateTo150, False, False))
 
 @adisp_async
 @adisp_process

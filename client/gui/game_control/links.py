@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/links.py
 import re
 from gui import macroses
 from debug_utils import LOG_ERROR
@@ -20,7 +18,7 @@ class URLMacros(object):
         for macro in macrosKeys:
             patterns.append('\\%(macro)s\\(.*\\)|\\%(macro)s' % {'macro': self._getUserMacrosName(macro)})
 
-        self.__filter = re.compile('|'.join(patterns))
+        self.__filter = re.compile(('|').join(patterns))
         self.__argsFilter = re.compile('\\$(\\w*)(\\((.*)\\))?')
         return
 

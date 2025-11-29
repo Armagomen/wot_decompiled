@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/win_points.py
 import ResMgr
 from constants import FLAG_TYPES
 from items import vehicles
@@ -10,7 +8,9 @@ class DamageSettings(object):
 
     def __init__(self, section):
         self.pointsForKill = section['winPointsForKill'].asInt
-        self.pointsForDamage = (section['winPointsForDamage']['damageToDeal'].asInt, section['winPointsForDamage']['pointsToGrant'].asInt)
+        self.pointsForDamage = (
+         section['winPointsForDamage']['damageToDeal'].asInt,
+         section['winPointsForDamage']['pointsToGrant'].asInt)
 
 
 class WinPointsTeamOrSoloSettings(object):
@@ -18,7 +18,8 @@ class WinPointsTeamOrSoloSettings(object):
     def __init__(self, section):
         self.vehicleDamageSettings = DamageSettings(section['vehicle'])
         self.equipmentDamageSettings = DamageSettings(section['equipment'])
-        self.pointsForFlag = [0] * len(FLAG_TYPES.RANGE)
+        self.pointsForFlag = [
+         0] * len(FLAG_TYPES.RANGE)
         for name, subsection in section['winPointsForFlag'].items():
             name = name.upper()
             flagTypeId = getattr(FLAG_TYPES, name, None)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/season_model.py
 from enum import IntEnum
 from comp7_light.gui.impl.gen.view_models.views.lobby.enums import SeasonName
 from frameworks.wulf import ViewModel
@@ -14,7 +12,7 @@ class SeasonState(IntEnum):
 
 
 class SeasonModel(ViewModel):
-    __slots__ = ('pollServerTime',)
+    __slots__ = ('pollServerTime', )
 
     def __init__(self, properties=6, commands=1):
         super(SeasonModel, self).__init__(properties=properties, commands=commands)

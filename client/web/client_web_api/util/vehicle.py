@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/client_web_api/util/vehicle.py
 from web.client_web_api.api import C2WHandler, c2w
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
@@ -20,8 +18,8 @@ class VehicleCompareEventHandler(C2WHandler):
 
     @c2w(name='comparison_basket_update')
     def __onComparisonBasketChange(self, *_):
-        return {'basketContents': self.__comparisonBasket.getVehiclesCDs(),
-         'basketMaxCount': self.__comparisonBasket.maxVehiclesToCompare}
+        return {'basketContents': self.__comparisonBasket.getVehiclesCDs(), 
+           'basketMaxCount': self.__comparisonBasket.maxVehiclesToCompare}
 
 
 class VehicleStateEventHandler(C2WHandler):
@@ -36,7 +34,10 @@ class VehicleStateEventHandler(C2WHandler):
         super(VehicleStateEventHandler, self).fini()
 
     def __onVehicleStateChanged(self, reason, diff):
-        updateReasons = {CACHE_SYNC_REASON.CLIENT_UPDATE, CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.DOSSIER_RESYNC}
+        updateReasons = {
+         CACHE_SYNC_REASON.CLIENT_UPDATE,
+         CACHE_SYNC_REASON.SHOP_RESYNC,
+         CACHE_SYNC_REASON.DOSSIER_RESYNC}
         if reason in updateReasons and GUI_ITEM_TYPE.VEHICLE in diff:
             vehicleCDs = diff[GUI_ITEM_TYPE.VEHICLE]
             for vehicleCD in vehicleCDs:
@@ -46,6 +47,6 @@ class VehicleStateEventHandler(C2WHandler):
     def __sendVehicleState(self, vehicleCD):
         vehicle = self.__itemsCache.items.getItemByCD(vehicleCD)
         state, stateLevel = vehicle.getState()
-        return {'id': vehicleCD,
-         'state': state,
-         'level': stateLevel}
+        return {'id': vehicleCD, 
+           'state': state, 
+           'level': stateLevel}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/base.py
 from account_helpers.settings_core.settings_constants import CONTROLS
 from wg_async import wg_async, wg_await, await_callback
 from BWUtil import AsyncReturn
@@ -148,10 +146,10 @@ class BaseAmmunitionSetupView(ViewImpl):
         self.__settingsCore.onSettingsApplied -= self.__onSettingsApplied
 
     def _getBackportTooltipData(self, event):
-        return None
+        return
 
     def _getBackportContextMenuData(self, event):
-        return None
+        return
 
     @wg_async
     def _onPanelSelected(self, args):
@@ -189,10 +187,9 @@ class BaseAmmunitionSetupView(ViewImpl):
         newLayoutIdx = int(args.get('currentIndex', None))
         if hudGroupID is None or newLayoutIdx is None:
             return
-        else:
-            if self._ammunitionPanel.isNewSetupLayoutIndexValid(hudGroupID, newLayoutIdx):
-                self._doChangeSetupLayoutIndex(hudGroupID, newLayoutIdx)
-            return
+        if self._ammunitionPanel.isNewSetupLayoutIndexValid(hudGroupID, newLayoutIdx):
+            self._doChangeSetupLayoutIndex(hudGroupID, newLayoutIdx)
+        return
 
     def _updateAmmunitionPanel(self, sectionName=None):
         if sectionName is None:

@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/dyn_squad_functional.py
 from typing import TYPE_CHECKING
-import CommandMapping
-import Keys
-import Event
-import VOIP
+import CommandMapping, Keys, Event, VOIP
 from constants import IS_CHINA
 from debug_utils import LOG_DEBUG
 from gui.app_loader import sf_battle
@@ -38,7 +33,9 @@ def _getVIOPState(key):
         return 'withoutVOIP'
     if key == Keys.KEY_NONE:
         return 'specifyVOIP'
-    return 'disableVOIP' if voipMgr.isEnabled() and voipMgr.isCurrentChannelEnabled() else 'enableVOIP'
+    if voipMgr.isEnabled() and voipMgr.isCurrentChannelEnabled():
+        return 'disableVOIP'
+    return 'enableVOIP'
 
 
 class DynSquadArenaController(object):
@@ -61,7 +58,7 @@ class DynSquadArenaController(object):
 
     @prbInvitesProperty
     def prbInvites(self):
-        return None
+        return
 
     def __handleBattleLoading(self, event):
         if not event.ctx['isShown']:
@@ -209,7 +206,7 @@ class DynSquadMessagesController(DynSquadArenaController):
 
     @dependency.replace_none_kwargs(ctrl=IAnonymizerController)
     def _inviteReceived(self, invite, ctrl=None):
-        self.__sendMessage(_R_DYN_SQUAD.inviteReceived if not ctrl.isAnonymized else _R_DYN_SQUAD.inviteReceived.anonymized, creator=invite.creator)
+        self.__sendMessage((ctrl.isAnonymized or _R_DYN_SQUAD).inviteReceived if 1 else _R_DYN_SQUAD.inviteReceived.anonymized, creator=invite.creator)
 
     def _inviteSent(self, invite):
         self.__sendMessage(_R_DYN_SQUAD.inviteSent, receiver=invite.receiver)
@@ -255,7 +252,7 @@ class _DynSquadSoundsController(DynSquadArenaController):
 
     @sf_battle
     def app(self):
-        return None
+        return
 
     def _squadCreatedImOwner(self, squadNum):
         self.__playSound(_DYN_SQUAD_PLATOON_CREATED)
@@ -286,7 +283,8 @@ class _DynSquadSoundsController(DynSquadArenaController):
 
 
 class DynSquadFunctional(IArenaVehiclesController):
-    __slots__ = ('__soundCtrl', '__msgsCtrl', '__eManager', '__wasOwnSquadCreated', 'onDynSquadCreatedOrJoined')
+    __slots__ = ('__soundCtrl', '__msgsCtrl', '__eManager', '__wasOwnSquadCreated',
+                 'onDynSquadCreatedOrJoined')
 
     def __init__(self, setup):
         super(DynSquadFunctional, self).__init__()
@@ -294,7 +292,8 @@ class DynSquadFunctional(IArenaVehiclesController):
         self.__msgsCtrl = DynSquadMessagesController()
         self.__eManager = Event.EventManager()
         if setup.isReplayPlaying:
-            g_messengerEvents.users.onUsersListReceived({USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.IGNORED_TMP})
+            g_messengerEvents.users.onUsersListReceived({
+             USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.IGNORED_TMP})
         self.__wasOwnSquadCreated = False
         self.onDynSquadCreatedOrJoined = Event.Event(self.__eManager)
 

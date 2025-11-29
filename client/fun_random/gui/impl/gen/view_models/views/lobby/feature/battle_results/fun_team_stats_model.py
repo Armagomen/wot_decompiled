@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/feature/battle_results/fun_team_stats_model.py
 from frameworks.wulf import Array
 from fun_random.gui.impl.gen.view_models.views.lobby.feature.battle_results.fun_player_model import FunPlayerModel
 from gui.impl.gen.view_models.views.lobby.battle_results.team_stats_model import TeamStatsModel

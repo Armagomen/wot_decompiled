@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/battle_entry.py
-import weakref
-import BigWorld
+import weakref, BigWorld
 from frameworks.wulf import WindowLayer
 from gui import DEPTH_OF_Battle
 from gui.shared.system_factory import collectBattleTooltipsBuilders
@@ -79,7 +76,10 @@ class BattleEntry(AppEntry):
         return
 
     def handleKey(self, isDown, key, mods):
-        return self.__input.handleKey(isDown, key, mods) if self.__input is not None else False
+        if self.__input is not None:
+            return self.__input.handleKey(isDown, key, mods)
+        else:
+            return False
 
     def enterGuiControlMode(self, consumerID, cursorVisible=True, enableAiming=True, stopVehicle=False):
         if self.__input is not None:
@@ -92,7 +92,10 @@ class BattleEntry(AppEntry):
         return
 
     def hasGuiControlModeConsumers(self, *consumersIDs):
-        return self.__input.hasGuiControlModeConsumers(*consumersIDs) if self.__input is not None else False
+        if self.__input is not None:
+            return self.__input.hasGuiControlModeConsumers(*consumersIDs)
+        else:
+            return False
 
     def registerGuiKeyHandler(self, handler):
         if self.__input is not None:
@@ -171,4 +174,7 @@ class BattleEntry(AppEntry):
         return BATTLE_REQUIRED_LIBRARIES + ADDITIONAL_BATTLE_REQUIRED_LIBRARIES.get(self._arenaGuiType, [])
 
     def __getCursorFromContainer(self):
-        return self._containerMgr.getView(WindowLayer.CURSOR) if self._containerMgr is not None else None
+        if self._containerMgr is not None:
+            return self._containerMgr.getView(WindowLayer.CURSOR)
+        else:
+            return

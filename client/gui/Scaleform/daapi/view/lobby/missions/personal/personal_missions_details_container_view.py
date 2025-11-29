@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_details_container_view.py
 import logging
 from operator import methodcaller
 from gui import SystemMessages
@@ -144,12 +142,12 @@ class PersonalMissionDetailsContainerView(LobbySubView, PersonalMissionDetailsCo
             self.__datailedList.append(qData)
             eventID = q.getID()
             status = qData.get('status')
-            pages.append({'buttonsGroup': 'MissionDetailsPageGroup',
-             'pageIndex': idx,
-             'label': str(idx + 1),
-             'tooltip': getMapRegionTooltipData(status, q),
-             'status': status,
-             'selected': self.__selectedQuestID == eventID})
+            pages.append({'buttonsGroup': 'MissionDetailsPageGroup', 
+               'pageIndex': idx, 
+               'label': str(idx + 1), 
+               'tooltip': getMapRegionTooltipData(status, q), 
+               'status': status, 
+               'selected': self.__selectedQuestID == eventID})
 
         self.as_setInitDataS({'pages': pages})
 

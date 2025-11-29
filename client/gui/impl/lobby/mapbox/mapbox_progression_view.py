@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mapbox/mapbox_progression_view.py
 import logging
 from wg_async import wg_async, wg_await
 from constants import QUEUE_TYPE
@@ -154,7 +152,7 @@ class MapboxProgressionView(ViewImpl):
         showBrowserOverlayView(self.__getInfoPageUrl(), VIEW_ALIAS.MAPBOX_INFO_OVERLAY)
 
     def __onSurveyCompleted(self, mapId):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             mapsList = model.getMaps()
             for mapModel in mapsList:
                 if mapModel.getMapName() == mapId:
@@ -169,7 +167,7 @@ class MapboxProgressionView(ViewImpl):
     def __doRemoveBubble(self, name):
         if not self.__mapboxController.isMapVisited(name):
             self.__mapboxController.addVisitedMap(name)
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 mapsList = model.getMaps()
                 for mapModel in mapsList:
                     if mapModel.getMapName() == name:
@@ -188,7 +186,7 @@ class MapboxProgressionView(ViewImpl):
             self.viewModel.setIsError(True)
             return
         else:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 actualSeason = self.__mapboxController.getCurrentSeason()
                 if actualSeason is not None:
                     model.setHasInfoPage(bool(self.__getInfoPageUrl()))
@@ -203,7 +201,7 @@ class MapboxProgressionView(ViewImpl):
             self.viewModel.setIsError(True)
             return
         else:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setIsDataSynced(True)
                 model.setIsError(False)
                 model.setHasInfoPage(bool(self.__getInfoPageUrl()))
@@ -266,7 +264,7 @@ class MapboxProgressionView(ViewImpl):
         return self.__mapboxController.getModeSettings().infoPageUrl
 
     def __setErrorStatus(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsDataSynced(True)
             model.setIsError(True)
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/rewards/prestige_milestone_achived_view.py
 import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from typing import Optional
@@ -46,10 +44,17 @@ class PrestigeMilestoneAchivedView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipItems.get(tooltipId)
 
     def _getEvents(self):
-        return ((self.viewModel.onOpen, self.__onRewardPreview), (self.viewModel.onClose, self.destroyWindow))
+        return (
+         (
+          self.viewModel.onOpen, self.__onRewardPreview),
+         (
+          self.viewModel.onClose, self.destroyWindow))
 
     def _onLoading(self, vehCD, level):
         super(PrestigeMilestoneAchivedView, self)._onLoading()
@@ -57,7 +62,7 @@ class PrestigeMilestoneAchivedView(ViewImpl):
         self.__vehicle = self.__itemsCache.items.getItemByCD(vehCD)
         self.__level = level
         self.__bonus = self.__getBonus()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self.__fillReward(vm)
             self.__fillVehicleInfo(vm)
 
@@ -74,7 +79,8 @@ class PrestigeMilestoneAchivedView(ViewImpl):
     def __fillReward(self, viewModel):
         rewardArray = viewModel.getRewards()
         rewardArray.clear()
-        packBonusModelAndTooltipData([self.__bonus], rewardArray, self.__tooltipItems, packer=getVehSkillTreeRewardViewBonusPacker())
+        packBonusModelAndTooltipData([
+         self.__bonus], rewardArray, self.__tooltipItems, packer=getVehSkillTreeRewardViewBonusPacker())
 
     def __fillVehicleInfo(self, viewModel):
         model = viewModel.vehicleInfo
@@ -88,7 +94,7 @@ class PrestigeMilestoneAchivedView(ViewImpl):
     def __onRewardPreview(self):
         if self.__vehicle is None or self.__level is None:
             return
-        elif not self.__bonus:
+        if not self.__bonus:
             return
         else:
             customizations = self.__bonus.getCustomizations()

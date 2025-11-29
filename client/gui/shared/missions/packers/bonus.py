@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/missions/packers/bonus.py
-import logging
-import typing
-import constants
+import logging, typing, constants
 from adisp import adisp_async, adisp_process
 from collections_common import g_collectionsRelatedItems
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -65,54 +61,54 @@ def getDefaultBonusPackersMap():
     tokenBonusPacker = TokenBonusUIPacker()
     blueprintBonusPacker = BlueprintBonusUIPacker()
     wotPlusBonusPacker = WoTPlusBonusPacker()
-    return {'battlePassPoints': BattlePassPointsBonusPacker(),
-     'battleToken': tokenBonusPacker,
-     'berths': simpleBonusPacker,
-     'blueprints': blueprintBonusPacker,
-     'blueprintsAny': blueprintBonusPacker,
-     'creditsFactor': simpleBonusPacker,
-     'crewBooks': CrewBookBonusUIPacker(),
-     'crewSkins': CrewSkinBonusUIPacker(),
-     'customizations': CustomizationBonusUIPacker(),
-     'dailyXPFactor': simpleBonusPacker,
-     'dossier': DossierBonusUIPacker(),
-     'finalBlueprints': blueprintBonusPacker,
-     'freeXP': simpleBonusPacker,
-     'freeXPFactor': simpleBonusPacker,
-     'goodies': GoodiesBonusUIPacker(),
-     'items': ItemBonusUIPacker(),
-     'lootBox': tokenBonusPacker,
-     'meta': simpleBonusPacker,
-     'slots': simpleBonusPacker,
-     'strBonus': simpleBonusPacker,
-     'tankmen': TankmenBonusUIPacker(),
-     'tankmenXP': simpleBonusPacker,
-     'tankmenXPFactor': simpleBonusPacker,
-     'tokens': tokenBonusPacker,
-     'vehicles': VehiclesBonusUIPacker(),
-     'xp': simpleBonusPacker,
-     'xpFactor': simpleBonusPacker,
-     'groups': GroupsBonusUIPacker(),
-     'progressionXPToken': tokenBonusPacker,
-     'dogTagComponents': DogTagComponentsUIPacker(),
-     Currency.CREDITS: simpleBonusPacker,
-     Currency.CRYSTAL: simpleBonusPacker,
-     Currency.GOLD: simpleBonusPacker,
-     Currency.BPCOIN: simpleBonusPacker,
-     Currency.EQUIP_COIN: simpleBonusPacker,
-     constants.PREMIUM_ENTITLEMENTS.BASIC: simpleBonusPacker,
-     constants.PREMIUM_ENTITLEMENTS.PLUS: simpleBonusPacker,
-     'currencies': CurrenciesBonusUIPacker,
-     constants.WoTPlusBonusType.GOLD_BANK: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.IDLE_CREW_XP: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.EXCLUDED_MAP: ExcludedMapsBonusPacker(),
-     constants.WoTPlusBonusType.FREE_EQUIPMENT_DEMOUNTING: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.EXCLUSIVE_VEHICLE: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.ATTENDANCE_REWARD: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.BATTLE_BONUSES: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.BADGES: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.ADDITIONAL_BONUSES: wotPlusBonusPacker,
-     constants.WoTPlusBonusType.OPTIONAL_DEVICES_ASSISTANT: wotPlusBonusPacker}
+    return {'battlePassPoints': BattlePassPointsBonusPacker(), 
+       'battleToken': tokenBonusPacker, 
+       'berths': simpleBonusPacker, 
+       'blueprints': blueprintBonusPacker, 
+       'blueprintsAny': blueprintBonusPacker, 
+       'creditsFactor': simpleBonusPacker, 
+       'crewBooks': CrewBookBonusUIPacker(), 
+       'crewSkins': CrewSkinBonusUIPacker(), 
+       'customizations': CustomizationBonusUIPacker(), 
+       'dailyXPFactor': simpleBonusPacker, 
+       'dossier': DossierBonusUIPacker(), 
+       'finalBlueprints': blueprintBonusPacker, 
+       'freeXP': simpleBonusPacker, 
+       'freeXPFactor': simpleBonusPacker, 
+       'goodies': GoodiesBonusUIPacker(), 
+       'items': ItemBonusUIPacker(), 
+       'lootBox': tokenBonusPacker, 
+       'meta': simpleBonusPacker, 
+       'slots': simpleBonusPacker, 
+       'strBonus': simpleBonusPacker, 
+       'tankmen': TankmenBonusUIPacker(), 
+       'tankmenXP': simpleBonusPacker, 
+       'tankmenXPFactor': simpleBonusPacker, 
+       'tokens': tokenBonusPacker, 
+       'vehicles': VehiclesBonusUIPacker(), 
+       'xp': simpleBonusPacker, 
+       'xpFactor': simpleBonusPacker, 
+       'groups': GroupsBonusUIPacker(), 
+       'progressionXPToken': tokenBonusPacker, 
+       'dogTagComponents': DogTagComponentsUIPacker(), 
+       Currency.CREDITS: simpleBonusPacker, 
+       Currency.CRYSTAL: simpleBonusPacker, 
+       Currency.GOLD: simpleBonusPacker, 
+       Currency.BPCOIN: simpleBonusPacker, 
+       Currency.EQUIP_COIN: simpleBonusPacker, 
+       constants.PREMIUM_ENTITLEMENTS.BASIC: simpleBonusPacker, 
+       constants.PREMIUM_ENTITLEMENTS.PLUS: simpleBonusPacker, 
+       'currencies': CurrenciesBonusUIPacker, 
+       constants.WoTPlusBonusType.GOLD_BANK: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.IDLE_CREW_XP: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.EXCLUDED_MAP: ExcludedMapsBonusPacker(), 
+       constants.WoTPlusBonusType.FREE_EQUIPMENT_DEMOUNTING: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.EXCLUSIVE_VEHICLE: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.ATTENDANCE_REWARD: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.BATTLE_BONUSES: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.BADGES: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.ADDITIONAL_BONUSES: wotPlusBonusPacker, 
+       constants.WoTPlusBonusType.OPTIONAL_DEVICES_ASSISTANT: wotPlusBonusPacker}
 
 
 def getLocalizedBonusName(name):
@@ -161,11 +157,13 @@ class BaseBonusUIPacker(object):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [createTooltipData(bonus.getTooltip())]
+        return [
+         createTooltipData(bonus.getTooltip())]
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [BACKPORT_TOOLTIP_CONTENT_ID]
+        return [
+         BACKPORT_TOOLTIP_CONTENT_ID]
 
     @classmethod
     def _isCollectionItem(cls, collectionItemID):
@@ -240,7 +238,8 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
             name = tokenID.split(':')[0]
             if name.endswith(GOLD_MISSION):
                 result.append(R.views.lobby.battle_pass.tooltips.BattlePassGoldMissionTooltipView())
-            result.append(BACKPORT_TOOLTIP_CONTENT_ID)
+            else:
+                result.append(BACKPORT_TOOLTIP_CONTENT_ID)
 
         return result
 
@@ -259,12 +258,12 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getTokenBonusPackers(cls):
-        return {BATTLE_BONUS_X5_TOKEN: cls.__packBonusQuestToken(BATTLE_BONUS_X5_TOKEN),
-         CREW_BONUS_X3_TOKEN: cls.__packBonusQuestToken(CREW_BONUS_X3_TOKEN),
-         COMPLEX_TOKEN: cls.__packComplexToken,
-         YEAR_POINTS_TOKEN: cls.__packRankedToken,
-         GOLD_MISSION: cls.__packGoldMissionToken,
-         PM_POINTS_TOKEN: cls.__packBonusQuestToken(cls._PM_POINTS_TOKEN_SOURCE)}
+        return {BATTLE_BONUS_X5_TOKEN: cls.__packBonusQuestToken(BATTLE_BONUS_X5_TOKEN), 
+           CREW_BONUS_X3_TOKEN: cls.__packBonusQuestToken(CREW_BONUS_X3_TOKEN), 
+           COMPLEX_TOKEN: cls.__packComplexToken, 
+           YEAR_POINTS_TOKEN: cls.__packRankedToken, 
+           GOLD_MISSION: cls.__packGoldMissionToken, 
+           PM_POINTS_TOKEN: cls.__packBonusQuestToken(cls._PM_POINTS_TOKEN_SOURCE)}
 
     @classmethod
     def _packToken(cls, bonusPacker, bonus, *args):
@@ -284,16 +283,18 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
             return YEAR_POINTS_TOKEN
         if isPM3Points(tokenID):
             return PM_POINTS_TOKEN
-        return GOLD_MISSION if tokenID.split(':')[0].endswith(GOLD_MISSION) else ''
+        if tokenID.split(':')[0].endswith(GOLD_MISSION):
+            return GOLD_MISSION
+        return ''
 
     @classmethod
     def _getTooltipsPackers(cls):
-        return {BATTLE_BONUS_X5_TOKEN: cls.__getBonusFactorTooltip(BATTLE_BONUS_X5_TOKEN),
-         CREW_BONUS_X3_TOKEN: cls.__getBonusFactorTooltip(CREW_BONUS_X3_TOKEN),
-         COMPLEX_TOKEN: cls.__getComplexToolTip,
-         YEAR_POINTS_TOKEN: cls.__getRankedPointToolTip,
-         GOLD_MISSION: cls.__getGoldMissionTooltip,
-         PM_POINTS_TOKEN: cls.__getPMPointsTooltip}
+        return {BATTLE_BONUS_X5_TOKEN: cls.__getBonusFactorTooltip(BATTLE_BONUS_X5_TOKEN), 
+           CREW_BONUS_X3_TOKEN: cls.__getBonusFactorTooltip(CREW_BONUS_X3_TOKEN), 
+           COMPLEX_TOKEN: cls.__getComplexToolTip, 
+           YEAR_POINTS_TOKEN: cls.__getRankedPointToolTip, 
+           GOLD_MISSION: cls.__getGoldMissionTooltip, 
+           PM_POINTS_TOKEN: cls.__getPMPointsTooltip}
 
     @classmethod
     def __packComplexToken(cls, model, bonus, complexToken, token):
@@ -358,7 +359,8 @@ class TokenBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def __getGoldMissionTooltip(cls, complexToken, token):
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[token.id])
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
+         token.id])
 
     @classmethod
     def __getPMPointsTooltip(cls, *_):
@@ -400,7 +402,8 @@ class ItemBonusUIPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for item, _ in sorted(bonus.getItems().iteritems(), key=lambda i: i[0]):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=ItemsBonusFormatter.getTooltip(item), specialArgs=[item.intCD]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=ItemsBonusFormatter.getTooltip(item), specialArgs=[
+             item.intCD]))
 
         return tooltipData
 
@@ -470,16 +473,20 @@ class GoodiesBonusUIPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for booster, _ in sorted(bonus.getBoosters().iteritems(), key=lambda b: b[0].boosterID):
-            tooltipData.append(TooltipData(tooltip=TOOLTIPS_CONSTANTS.SHOP_BOOSTER, isSpecial=False, specialAlias=None, specialArgs=[booster.boosterID], isWulfTooltip=True))
+            tooltipData.append(TooltipData(tooltip=TOOLTIPS_CONSTANTS.SHOP_BOOSTER, isSpecial=False, specialAlias=None, specialArgs=[
+             booster.boosterID], isWulfTooltip=True))
 
         for demountkit in sorted(bonus.getDemountKits().iterkeys()):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT, specialArgs=[demountkit.intCD]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.AWARD_DEMOUNT_KIT, specialArgs=[
+             demountkit.intCD]))
 
         for form in sorted(bonus.getRecertificationForms().iterkeys()):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP, specialArgs=[form.intCD]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.EPIC_BATTLE_RECERTIFICATION_FORM_TOOLTIP, specialArgs=[
+             form.intCD]))
 
         for item in sorted(bonus.getMentoringLicenses().iterkeys()):
-            tooltipData.append(TooltipData(tooltip=TOOLTIPS_CONSTANTS.MENTOR_LICENSE, isSpecial=False, specialAlias=None, specialArgs=[item.intCD], isWulfTooltip=True))
+            tooltipData.append(TooltipData(tooltip=TOOLTIPS_CONSTANTS.MENTOR_LICENSE, isSpecial=False, specialAlias=None, specialArgs=[
+             item.intCD], isWulfTooltip=True))
 
         return tooltipData
 
@@ -514,7 +521,9 @@ class BlueprintBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=bonus.getBlueprintSpecialAlias(), specialArgs=[bonus.getBlueprintSpecialArgs()])]
+        return [
+         TooltipData(tooltip=None, isSpecial=True, specialAlias=bonus.getBlueprintSpecialAlias(), specialArgs=[
+          bonus.getBlueprintSpecialArgs()])]
 
     @classmethod
     def _getBonusModel(cls):
@@ -561,7 +570,8 @@ class CrewBookBonusUIPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for item, count in sorted(bonus.getItems()):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_BOOK, specialArgs=[item.intCD, count]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_BOOK, specialArgs=[
+             item.intCD, count]))
 
         return tooltipData
 
@@ -600,7 +610,8 @@ class CrewSkinBonusUIPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for item, _, _, _ in sorted(bonus.getItems()):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_SKIN, specialArgs=[item.getID()]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_SKIN, specialArgs=[
+             item.getID()]))
 
         return tooltipData
 
@@ -729,7 +740,8 @@ class DossierBonusUIPacker(BaseBonusUIPacker):
     def _getAchievementTooltip(cls, bonus):
         tooltipData = []
         for achievement in bonus.getAchievements():
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS, specialArgs=[achievement.getBlock(), achievement.getName(), achievement.getValue()]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS, specialArgs=[
+             achievement.getBlock(), achievement.getName(), achievement.getValue()]))
 
         return tooltipData
 
@@ -737,7 +749,8 @@ class DossierBonusUIPacker(BaseBonusUIPacker):
     def _getBadgeTooltip(cls, bonus):
         tooltipData = []
         for badge in bonus.getBadges():
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[badge.badgeID]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[
+             badge.badgeID]))
 
         return tooltipData
 
@@ -817,7 +830,8 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
                 for bonusComp in compensation:
                     packedVehicles.extend(packer.pack(bonusComp))
 
-            packedVehicles.append(cls._packVehicle(bonus, vehInfo, vehicle))
+            else:
+                packedVehicles.append(cls._packVehicle(bonus, vehInfo, vehicle))
 
         return packedVehicles
 
@@ -830,7 +844,8 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
                 for bonusComp in compensation:
                     packedTooltips.extend(cls._packCompensationTooltip(bonusComp, vehicle))
 
-            packedTooltips.append(cls._packTooltip(bonus, vehicle, vehInfo))
+            else:
+                packedTooltips.append(cls._packTooltip(bonus, vehicle, vehInfo))
 
         return packedTooltips
 
@@ -858,14 +873,8 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
         rentCycle = bonus.getRentCycle(vehInfo)
         rentExpiryTime = cls._getRentExpiryTime(rentDays)
         isSeniority = False
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=cls._SPECIAL_ALIAS, specialArgs=[vehicle.intCD,
-         tmanRoleLevel,
-         rentExpiryTime,
-         rentBattles,
-         rentWins,
-         rentSeason,
-         rentCycle,
-         isSeniority])
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=cls._SPECIAL_ALIAS, specialArgs=[
+         vehicle.intCD, tmanRoleLevel, rentExpiryTime, rentBattles, rentWins, rentSeason, rentCycle, isSeniority])
 
     @staticmethod
     def _getRentExpiryTime(rentDays):
@@ -890,7 +899,9 @@ class VehiclesBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _createUIName(cls, bonus, isRent):
-        return bonus.getName() + VEHICLE_RENT_ICON_POSTFIX if isRent else bonus.getName()
+        if isRent:
+            return bonus.getName() + VEHICLE_RENT_ICON_POSTFIX
+        return bonus.getName()
 
     @classmethod
     def _getLabel(cls, vehicle):
@@ -903,7 +914,10 @@ class DailyMissionsVehiclesBonusUIPacker(VehiclesBonusUIPacker):
     @classmethod
     def _packTooltip(cls, bonus, vehicle, vehInfo):
         tooltipData = super(DailyMissionsVehiclesBonusUIPacker, cls)._packTooltip(bonus, vehicle, vehInfo)
-        tooltipData.specialArgs.extend([bonus.getTmanRoleLevel(vehInfo) > 0, False, False])
+        tooltipData.specialArgs.extend([
+         bonus.getTmanRoleLevel(vehInfo) > 0,
+         False,
+         False])
         return tooltipData
 
     @classmethod
@@ -959,7 +973,8 @@ class DogTagComponentsUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getDogTagTooltip(cls, dogTagRecord):
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.DOG_TAGS_INFO, specialArgs=[dogTagRecord.componentId])
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.DOG_TAGS_INFO, specialArgs=[
+         dogTagRecord.componentId])
 
 
 class GroupsBonusUIPacker(BaseBonusUIPacker):
@@ -973,7 +988,8 @@ class GroupsBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [createTooltipData(makeTooltip(TOOLTIPS.getAwardHeader(bonus.getName()), TOOLTIPS.getAwardBody(bonus.getName())))]
+        return [
+         createTooltipData(makeTooltip(TOOLTIPS.getAwardHeader(bonus.getName()), TOOLTIPS.getAwardBody(bonus.getName())))]
 
 
 class BattlePassPointsBonusPacker(SimpleBonusUIPacker):
@@ -988,7 +1004,8 @@ class BattlePassPointsBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS, specialArgs=[])]
+        return [
+         TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_PASS_POINTS, specialArgs=[])]
 
 
 class CurrenciesBonusUIPacker(SimpleBonusUIPacker):
@@ -1116,8 +1133,8 @@ def getWeeklyMissionsBonusPacker():
 
 def getWeeklyMissionsMapping():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'premium_plus': WeeklyMissionPremiumDaysPacker(),
-     'vehicles': DailyMissionsVehiclesBonusUIPacker()})
+    mapping.update({'premium_plus': WeeklyMissionPremiumDaysPacker(), 
+       'vehicles': DailyMissionsVehiclesBonusUIPacker()})
     return mapping
 
 

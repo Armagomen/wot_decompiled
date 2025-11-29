@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/client/battle_modifiers/gui/impl/lobby/hangar/presenters/modifiers_presenter.py
 from __future__ import absolute_import
 import typing
 from battle_modifiers.gui.impl.gen.view_models.views.lobby.hangar.modifiers_hangar_view_model import ModifiersHangarViewModel
@@ -22,7 +20,7 @@ class ModifiersPresenter(ViewComponent[ModifiersHangarViewModel]):
         self._updateData()
 
     def _updateData(self):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self.__invalidateModifiersDomains(model.getModifiersDomains())
 
     def __invalidateModifiersDomains(self, modifiersDomains):

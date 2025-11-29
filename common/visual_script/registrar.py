@@ -1,13 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/registrar.py
 import inspect
 from block import Block
 from context import VScriptContext
 from type import VScriptType, VScriptEnum, VScriptStruct
-__all__ = ['VSBlockRegistrar']
+__all__ = [
+ 'VSBlockRegistrar']
 
 def _findVScriptConponentsInModule(module, cls):
-    return list((value for key, value in inspect.getmembers(module, inspect.isclass) if issubclass(value, cls) and value is not cls and inspect.getmodule(value) is module))
+    return list(value for key, value in inspect.getmembers(module, inspect.isclass) if issubclass(value, cls) and value is not cls and inspect.getmodule(value) is module)
 
 
 def _collectContextMetaData(cls):
@@ -16,7 +15,8 @@ def _collectContextMetaData(cls):
         if inspect.ismethod(mem) and hasattr(mem, 'vse_meta'):
             membersData.append(mem.vse_meta)
 
-    return (cls.__name__, membersData)
+    return (
+     cls.__name__, membersData)
 
 
 class VSBlockRegistrar(object):
@@ -34,7 +34,7 @@ class VSBlockRegistrar(object):
 
     @property
     def aspects(self):
-        return ' | '.join(self._aspects)
+        return (' | ').join(self._aspects)
 
     def regBlock(self, block):
         if block not in self._domainBlocks:

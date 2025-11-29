@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/auto_shoot_guns/mechanic_events.py
-import weakref
-import typing
-import BigWorld
+import weakref, typing, BigWorld
 from auto_shoot_guns.auto_shoot_guns_common import AutoShootGunState
 from constants import SERVER_TICK_LENGTH
 from Event import EventManager, Event, LateEvent
@@ -112,7 +108,9 @@ class AutoShootingEvents(CallbackDelayer, IAutoShootingEvents):
         return self.__lastDiscreteShotTime + self.__controller.getGroupShotInterval() > BigWorld.time()
 
     def __tryActivateContinuousBurst(self):
-        return CONTINUOUS_ACTIVATION_DELTA if self.__needDelayContinuousBurst() else self.__activateContinuousBurst()
+        if self.__needDelayContinuousBurst():
+            return CONTINUOUS_ACTIVATION_DELTA
+        return self.__activateContinuousBurst()
 
     def __lateAppearanceReady(self, handler):
         if self.__isAppearanceReady:

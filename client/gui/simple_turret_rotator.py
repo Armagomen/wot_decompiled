@@ -1,16 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/simple_turret_rotator.py
-import logging
-import BigWorld
-import Math
-import Event
-import math_utils
+import logging, BigWorld, Math, Event, math_utils
 from vehicle_systems.tankStructure import TankNodeNames
 from VehicleGunRotator import VehicleGunRotator, MatrixAnimator
 logger = logging.getLogger(__name__)
 
 class SimpleTurretRotator(object):
-    __slots__ = ('__isStarted', '__turretYaw', '__targetTurretYaw', '__rotationTime', '__timerID', '__turretMatrixAnimator', '__easingCls', '__easing', '_eventsManager', 'onTurretRotated', 'onTurretRotationStarted', '__turretTranslation', '__turretPitch')
+    __slots__ = ('__isStarted', '__turretYaw', '__targetTurretYaw', '__rotationTime',
+                 '__timerID', '__turretMatrixAnimator', '__easingCls', '__easing',
+                 '_eventsManager', 'onTurretRotated', 'onTurretRotationStarted',
+                 '__turretTranslation', '__turretPitch')
     __ROTATION_TICK_LENGTH = 0.05
     turretMatrix = property(lambda self: self.__turretMatrixAnimator.matrix)
     turretYaw = property(lambda self: self.__turretYaw)

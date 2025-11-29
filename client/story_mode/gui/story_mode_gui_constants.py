@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/story_mode_gui_constants.py
 from constants_utils import ConstInjector
 from gui.Scaleform.daapi.settings import views
 from gui.prb_control import settings
@@ -10,7 +8,7 @@ class PREBATTLE_ACTION_NAME(settings.PREBATTLE_ACTION_NAME, ConstInjector):
 
 
 class FUNCTIONAL_FLAG(settings.FUNCTIONAL_FLAG, ConstInjector):
-    STORY_MODE = 2147483648L
+    STORY_MODE = 2147483648
 
 
 class SELECTOR_BATTLE_TYPES(settings.SELECTOR_BATTLE_TYPES, ConstInjector):
@@ -32,7 +30,8 @@ IS_ONBOARDING_SEAMLESS_MISSION_CHANGING_ON = True
 IS_STORY_MODE_FADE_IN_OUT_ON = True
 STORY_MODE_FADE_IN_DURATION = 0.4
 STORY_MODE_FADE_OUT_DURATION = 0.4
-BONUS_ORDER = ['dossier',
+BONUS_ORDER = [
+ 'dossier',
  'vehicles',
  'slots',
  'bpcoin',

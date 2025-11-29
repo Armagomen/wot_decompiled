@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/personal.py
 from collections import namedtuple
 import typing
 from constants import PREMIUM_TYPE, PlayerSatisfactionRating
@@ -32,7 +30,9 @@ class SquadBonusInfo(object):
         getter = self.itemsCache.items.getItemByCD
         levels = [ getter(typeCompDescr).level for typeCompDescr in self.__vehicles ]
         levels.sort()
-        return levels[-1] - levels[0] if levels else -1
+        if levels:
+            return levels[(-1)] - levels[0]
+        return -1
 
     def getSquadFlags(self, vehicleID, intCD):
         showSquadLabels = True
@@ -53,7 +53,9 @@ class SquadBonusInfo(object):
 
 
 class PersonalAvatarInfo(object):
-    __slots__ = ('__accountDBID', '__clanDBID', '__team', '__isPrematureLeave', '__fairplayViolations', '__squadBonusInfo', '__winnerIfDraw', '__eligibleForCrystalRewards', '__extInfo', '__playerSatisfactionRating', '__commendationsReceived')
+    __slots__ = ('__accountDBID', '__clanDBID', '__team', '__isPrematureLeave', '__fairplayViolations',
+                 '__squadBonusInfo', '__winnerIfDraw', '__eligibleForCrystalRewards',
+                 '__extInfo', '__playerSatisfactionRating', '__commendationsReceived')
 
     def __init__(self, bonusType, accountDBID=0, clanDBID=0, team=0, isPrematureLeave=False, fairplayViolations=None, squadBonusInfo=None, winnerIfDraw=0, eligibleForCrystalRewards=False, avatarPlayerSatisfactionRating=(), commendationsReceived=0, **kwargs):
         super(PersonalAvatarInfo, self).__init__()
@@ -122,7 +124,11 @@ class PersonalAvatarInfo(object):
 
 
 class PersonalInfo(shared.UnpackedInfo):
-    __slots__ = ('__avatar', '__vehicles', '__lifeTimeInfo', '__isObserver', '_economicsRecords', '__questsProgress', '__PM2Progress', '__rankInfo', '__isTeamKiller', '__progressiveReward', '__premiumMask', '__isWotPlus', '__isAddXPBonusApplied', '__c11nProgress', '__dogTags', '__goldBankGain', '__xpProgress', '__prestigeResults', '__questTokensCount', '__questTokensConvertion')
+    __slots__ = ('__avatar', '__vehicles', '__lifeTimeInfo', '__isObserver', '_economicsRecords',
+                 '__questsProgress', '__PM2Progress', '__rankInfo', '__isTeamKiller',
+                 '__progressiveReward', '__premiumMask', '__isWotPlus', '__isAddXPBonusApplied',
+                 '__c11nProgress', '__dogTags', '__goldBankGain', '__xpProgress',
+                 '__prestigeResults', '__questTokensCount', '__questTokensConvertion')
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, bonusType, personal, bonusCapsOverrides=None):
@@ -202,7 +208,8 @@ class PersonalInfo(shared.UnpackedInfo):
         for intCD in self.__vehicles:
             if intCD not in result:
                 continue
-            yield (intCD, result[intCD])
+            yield (
+             intCD, result[intCD])
 
     def getVehicleItemsIterator(self):
         getItemByCD = self.itemsCache.items.getItemByCD
@@ -220,13 +227,15 @@ class PersonalInfo(shared.UnpackedInfo):
             for direction, achievement in achievements:
                 if direction == 1:
                     right.append((achievement, True))
-                left.append((achievement, True))
+                else:
+                    left.append((achievement, True))
 
             achievement = shared.makeMarkOfMasteryFromPersonal(data)
             if achievement is not None:
                 left.append((achievement, False))
 
-        return (left, sorted(right, key=sort_keys.AchievementSortKey))
+        return (
+         left, sorted(right, key=sort_keys.AchievementSortKey))
 
     def getLifeTimeInfo(self):
         return self.__lifeTimeInfo
@@ -309,7 +318,7 @@ class PersonalInfo(shared.UnpackedInfo):
     def __collectRequiredData(self, info):
         getItemByCD = self.itemsCache.items.getItemByCD
         itemCDs = [ key for key in info.keys() if isinstance(key, (int, long, float)) ]
-        items = sorted((getItemByCD(itemCD) for itemCD in itemCDs))
+        items = sorted(getItemByCD(itemCD) for itemCD in itemCDs)
         lifeTimes = []
         infoAvatar = info['avatar']
         if infoAvatar:
@@ -341,8 +350,8 @@ class PersonalInfo(shared.UnpackedInfo):
             self.__questsProgress.update(data.get('questsProgress', {}))
             self.__PM2Progress.update(data.get('PM2Progress', {}))
             self.__c11nProgress[intCD] = data.get('c11nProgress', {})
-            self.__xpProgress[intCD] = {'xp': data.get('xp', 0),
-             'xpByTmen': data.get('xpByTmen', [])}
+            self.__xpProgress[intCD] = {'xp': data.get('xp', 0), 
+               'xpByTmen': data.get('xpByTmen', [])}
             self.__prestigeResults[intCD] = data.get('prestigeResults', {})
 
         if lifeTimes:

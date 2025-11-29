@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/tooltips/leaderboard_reward_tooltip_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 

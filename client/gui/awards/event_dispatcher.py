@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/awards/event_dispatcher.py
 import gui.awards.special_achievement_awards as specialAwards
 from gui.shared.event_dispatcher import showAwardWindow
 from gui.impl.lobby.reward_window import DynamicRewardWindow
@@ -21,8 +19,7 @@ def showRecruiterAward():
 
 
 def showDynamicAward(eventName, bonuses):
-    window = DynamicRewardWindow({'eventName': eventName,
-     'bonuses': bonuses})
+    window = DynamicRewardWindow({'eventName': eventName, 'bonuses': bonuses})
     window.load()
 
 

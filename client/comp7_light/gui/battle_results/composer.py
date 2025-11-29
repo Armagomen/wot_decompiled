@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/battle_results/composer.py
 import typing
 from comp7_light.gui.battle_results.templates import comp7_light_templates
 from gui.battle_results import templates

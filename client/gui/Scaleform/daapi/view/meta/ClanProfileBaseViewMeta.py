@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ClanProfileBaseViewMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ClanProfileBaseViewMeta(BaseDAAPIComponent):
@@ -11,25 +9,33 @@ class ClanProfileBaseViewMeta(BaseDAAPIComponent):
         self._printOverrideError('viewSize')
 
     def as_setClanInfoS(self, data):
-        return self.flashObject.as_setClanInfo(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setClanInfo(data)
 
     def as_setHeaderStateS(self, data):
-        return self.flashObject.as_setHeaderState(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHeaderState(data)
 
     def as_setClanEmblemS(self, source):
-        return self.flashObject.as_setClanEmblem(source) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setClanEmblem(source)
 
     def as_setDataS(self, value):
-        return self.flashObject.as_setData(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(value)
 
     def as_showWaitingS(self, value):
-        return self.flashObject.as_showWaiting(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showWaiting(value)
 
     def as_showDummyS(self, data):
-        return self.flashObject.as_showDummy(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showDummy(data)
 
     def as_hideDummyS(self):
-        return self.flashObject.as_hideDummy() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideDummy()
 
     def as_loadBrowserS(self):
-        return self.flashObject.as_loadBrowser() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadBrowser()

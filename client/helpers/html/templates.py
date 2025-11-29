@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/html/templates.py
 from types import DictType
 from typing import TYPE_CHECKING
 from collections import defaultdict
@@ -17,7 +15,7 @@ class Template(object):
         self.ctx = ctx
 
     def __repr__(self):
-        return u'Template(source = {0:>s})'.format(self.source)
+        return ('Template(source = {0:>s})').format(self.source)
 
     def format(self, ctx=None, **kwargs):
         sourceKey = kwargs.get('sourceKey', 'text')
@@ -25,7 +23,7 @@ class Template(object):
             text = unicode(self.source[sourceKey])
         else:
             LOG_ERROR('Invalid source key', sourceKey)
-            return u''
+            return ''
         if ctx is None:
             ctx = {}
         if isinstance(self.ctx, DictType) and isinstance(ctx, DictType):
@@ -33,10 +31,7 @@ class Template(object):
         if ctx:
             try:
                 text = text % ctx
-            except (ValueError,
-             TypeError,
-             KeyError,
-             UnicodeDecodeError):
+            except (ValueError, TypeError, KeyError, UnicodeDecodeError):
                 LOG_WARNING('Can not format template (source = %r, ctx = %r)', text, ctx)
                 LOG_CURRENT_EXCEPTION()
 
@@ -51,7 +46,7 @@ class DummyTemplate(Template):
             self.source = unicode(self.source)
 
     def __repr__(self):
-        return u'DummyTemplate(source = {0:>s})'.format(self.source)
+        return ('DummyTemplate(source = {0:>s})').format(self.source)
 
     def format(self, ctx=None, **kwargs):
         return self.source
@@ -65,7 +60,7 @@ class Collection(defaultdict):
         self._ns = ns
 
     def __repr__(self):
-        return 'Collection(domain = {0:>s}, ns = {1:>s}, keys = {2!r:s})'.format(self._domain, self._ns, self.keys())
+        return ('Collection(domain = {0:>s}, ns = {1:>s}, keys = {2!r:s})').format(self._domain, self._ns, self.keys())
 
     def __missing__(self, key):
         self[key] = value = DummyTemplate(key)
@@ -92,7 +87,7 @@ class XMLCollection(Collection):
                 ResMgr.purge(self._domain)
             section = ResMgr.openSection(self._domain)
             if section is None:
-                LOG_ERROR('{0:>s} can not open or read'.format(self._domain))
+                LOG_ERROR(('{0:>s} can not open or read').format(self._domain))
                 return
         if self._ns:
             subsection = section[self._ns]
@@ -112,8 +107,9 @@ class XMLCollection(Collection):
         if keys:
             for key in keys:
                 if key == 'context':
-                    ctx = dict(((item[0], item[1].asString) for item in source['context'].items()))
-                srcDict[key] = html.translation(source.readWideString(key))
+                    ctx = dict((item[0], item[1].asString) for item in source['context'].items())
+                else:
+                    srcDict[key] = html.translation(source.readWideString(key))
 
         else:
             srcDict['text'] = html.translation(source.asWideString)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/tooltips/earned_currency_tooltips.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.battle_results.economics.fun_tmen_xp_packer import FunTmenXpPacker
@@ -13,12 +11,12 @@ if typing.TYPE_CHECKING:
 
 class FunEarnedCurrencyTooltipsPacker(ITooltipPacker):
     __slots__ = ()
-    _CURRENCY_VALUES_PACKERS = {CurrenciesConstants.CREDITS: FunCreditsPacker,
-     CurrenciesConstants.GOLD: FunGoldPacker,
-     CurrenciesConstants.CRYSTAL: FunCrystalsPacker,
-     CurrenciesConstants.XP_COST: FunXpPacker,
-     CurrenciesConstants.FREE_XP: FunXpPacker,
-     CurrenciesConstants.TMEN_XP: FunTmenXpPacker}
+    _CURRENCY_VALUES_PACKERS = {CurrenciesConstants.CREDITS: FunCreditsPacker, 
+       CurrenciesConstants.GOLD: FunGoldPacker, 
+       CurrenciesConstants.CRYSTAL: FunCrystalsPacker, 
+       CurrenciesConstants.XP_COST: FunXpPacker, 
+       CurrenciesConstants.FREE_XP: FunXpPacker, 
+       CurrenciesConstants.TMEN_XP: FunTmenXpPacker}
 
     @classmethod
     def packTooltip(cls, model, battleResults, ctx=None):

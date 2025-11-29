@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/view_overrider.py
-import typing
-import Event
+import typing, Event
 from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
 if typing.TYPE_CHECKING:
@@ -68,4 +65,4 @@ class OverrideData(object):
         pass
 
     def getFadeCtx(self):
-        return None
+        return

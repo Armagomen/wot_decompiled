@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgnc/xml/proxy_data_parsers.py
-import logging
-import json
+import logging, json
 from gui.wgcg.promo_screens.parsers import PromoDataParser
 from gui.wgnc import proxy_data
 from gui.wgnc.wgnc_helpers import parseSize
@@ -11,7 +8,7 @@ _logger = logging.getLogger(__name__)
 class _ClanApplicationParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_application_received'
 
     def parse(self, section):
         return proxy_data.ClanApplicationItem(section.readInt64('account_id'), section.readInt64('application_id'), section.readInt('active_applications_count'))
@@ -29,7 +26,7 @@ class _ClanAppActionParser(SectionParser):
 class _ClanAppAcceptedActionParser(_ClanAppActionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_application_accepted_for_members'
 
     def _getItemClass(self):
         return proxy_data.ClanAppAcceptedActionItem
@@ -38,7 +35,7 @@ class _ClanAppAcceptedActionParser(_ClanAppActionParser):
 class _ClanAppDeclinedActionParser(_ClanAppActionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_application_declined_for_members'
 
     def _getItemClass(self):
         return proxy_data.ClanAppDeclinedActionItem
@@ -47,7 +44,7 @@ class _ClanAppDeclinedActionParser(_ClanAppActionParser):
 class _ClanInviteParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_invite_received'
 
     def parse(self, section):
         return proxy_data.ClanInviteItem(section.readInt('invite_id'), section.readInt64('clan_id'), self._readString('clan_name', section), self._readString('clan_tag', section), section.readInt('active_invites_count'))
@@ -65,7 +62,7 @@ class _ClanPersonalAppParser(SectionParser):
 class _ClanAppAcceptedParser(_ClanPersonalAppParser):
 
     def getTagName(self):
-        pass
+        return 'clan_application_accepted'
 
     def _createItem(self, cId, cName, cTag, appId):
         return proxy_data.ClanAppAcceptedItem(cId, cName, cTag, appId)
@@ -74,7 +71,7 @@ class _ClanAppAcceptedParser(_ClanPersonalAppParser):
 class _ClanAppDeclinedParser(_ClanPersonalAppParser):
 
     def getTagName(self):
-        pass
+        return 'clan_application_declined'
 
     def _createItem(self, cId, cName, cTag, appId):
         return proxy_data.ClanAppDeclinedItem(cId, cName, cTag, appId)
@@ -92,7 +89,7 @@ class _ClanInviteActionParser(SectionParser):
 class _ClanInviteAcceptedParser(_ClanInviteActionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_invite_accepted'
 
     def _createItem(self, account_id, invite_id):
         return proxy_data.ClanInviteAcceptedItem(account_id, invite_id)
@@ -101,7 +98,7 @@ class _ClanInviteAcceptedParser(_ClanInviteActionParser):
 class _ClanInviteDeclinedParser(_ClanInviteActionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_invite_declined'
 
     def _createItem(self, account_id, invite_id):
         return proxy_data.ClanInviteDeclinedItem(account_id, invite_id)
@@ -110,7 +107,7 @@ class _ClanInviteDeclinedParser(_ClanInviteActionParser):
 class _ClanInvitesCreatedParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'clan_invites_created'
 
     def parse(self, section):
         return proxy_data.ClanInvitesCreatedItem(self.__getItems('account_ids', section), self.__getItems('invite_ids', section))
@@ -118,13 +115,13 @@ class _ClanInvitesCreatedParser(SectionParser):
     def __getItems(self, sectionName, section):
         s = self._readString(sectionName, section)
         itemsList = s.split(',')
-        return tuple((long(itemsList[i].strip()) for i in xrange(len(itemsList))))
+        return tuple(long(itemsList[i].strip()) for i in xrange(len(itemsList)))
 
 
 class _ShowPromoParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'show_promo_teaser'
 
     def parse(self, section):
         return proxy_data.ShowTeaserItem(PromoDataParser.parseXML(section))
@@ -133,7 +130,7 @@ class _ShowPromoParser(SectionParser):
 class _ShowInBrowserParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'show_in_browser'
 
     def parse(self, section):
         url = section.readString('url')
@@ -152,7 +149,7 @@ class _ShowInBrowserParser(SectionParser):
 class _ProxyDataItemsParser(ParsersCollection):
 
     def getTagName(self):
-        pass
+        return 'proxy_data'
 
     def parse(self, section):
         items = []
@@ -166,7 +163,7 @@ class _ProxyDataItemsParser(ParsersCollection):
 class _ReferralBubbleParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'update_referral_bubble'
 
     def parse(self, section):
         return proxy_data.UpdateRefferalBubbleItem()
@@ -175,7 +172,7 @@ class _ReferralBubbleParser(SectionParser):
 class _ClanNotificationParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'update_clan_news_counter'
 
     def parse(self, section):
         alias = section.readString('alias')
@@ -189,7 +186,7 @@ class _ClanNotificationParser(SectionParser):
 class _BecomeRecruiterParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'become_recruiter'
 
     def parse(self, section):
         return proxy_data.BecomeRecruiterItem()
@@ -198,7 +195,7 @@ class _BecomeRecruiterParser(SectionParser):
 class _ShowReferralWindowParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'show_referral_window'
 
     def parse(self, section):
         relativeUrl = section.readString('relative_url')
@@ -227,20 +224,20 @@ class _PaymentMethodLinkParser(_PaymentMethodChangeParser):
     _OPERATION_NAME = 'link'
 
     def getTagName(self):
-        pass
+        return 'payment_method_link'
 
 
 class _PaymentMethodUnlinkParser(_PaymentMethodChangeParser):
     _OPERATION_NAME = 'unlink'
 
     def getTagName(self):
-        pass
+        return 'payment_method_unlink'
 
 
 class _MapboxSurveyAvailableParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'mapbox_survey_available'
 
     def parse(self, section):
         return proxy_data.ShowMapboxSurveyAvailableMessage(section.readString('geometry_name'))
@@ -249,7 +246,7 @@ class _MapboxSurveyAvailableParser(SectionParser):
 class _MapboxEventStartedParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'mapbox_event_started'
 
     def parse(self, _):
         return proxy_data.ShowMapboxEventStartedMessage()
@@ -258,7 +255,7 @@ class _MapboxEventStartedParser(SectionParser):
 class _MapboxEventEndedParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'mapbox_event_ended'
 
     def parse(self, _):
         return proxy_data.ShowMapboxEventEndedMessage()
@@ -267,18 +264,18 @@ class _MapboxEventEndedParser(SectionParser):
 class _MapboxRewardReceivedParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'mapbox_reward_received'
 
     def parse(self, section):
-        return proxy_data.ShowMapboxRewardReceivedMessage({'rewards': json.loads(section['rewards'].asString),
-         'battles': section['battles'].asInt,
-         'isFinal': section.readBool('is_last_reward')})
+        return proxy_data.ShowMapboxRewardReceivedMessage({'rewards': json.loads(section['rewards'].asString), 
+           'battles': section['battles'].asInt, 
+           'isFinal': section.readBool('is_last_reward')})
 
 
 class _IntegratedAuctionRateErrorParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'auction_rate_error'
 
     def parse(self, section):
         return proxy_data.ShowAuctionRateErrorMessage()
@@ -287,7 +284,7 @@ class _IntegratedAuctionRateErrorParser(SectionParser):
 class _IntegratedAuctionBelowCompetitiveRateParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'auction_below_competitive_rate'
 
     def parse(self, section):
         return proxy_data.ShowAuctionBelowCompetitiveRateMessage()
@@ -296,7 +293,7 @@ class _IntegratedAuctionBelowCompetitiveRateParser(SectionParser):
 class _IntegratedAuctionLostRateParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'auction_lost_rate'
 
     def parse(self, section):
         messageData = json.loads(section['data'].asString)
@@ -306,7 +303,7 @@ class _IntegratedAuctionLostRateParser(SectionParser):
 class _ClanSupplyQuestUpdatedParser(SectionParser):
 
     def getTagName(self):
-        pass
+        return 'clansupply_quest_update'
 
     def parse(self, section):
         return proxy_data.ClanSupplyQuestUpdateMessage(section.readString('name'), section.readInt('progress'), section.readString('status'))
@@ -315,7 +312,8 @@ class _ClanSupplyQuestUpdatedParser(SectionParser):
 class ProxyDataItemParser_v2(_ProxyDataItemsParser):
 
     def __init__(self):
-        super(ProxyDataItemParser_v2, self).__init__((_ClanApplicationParser(),
+        super(ProxyDataItemParser_v2, self).__init__((
+         _ClanApplicationParser(),
          _ClanAppAcceptedActionParser(),
          _ClanAppDeclinedActionParser(),
          _ClanInviteParser(),

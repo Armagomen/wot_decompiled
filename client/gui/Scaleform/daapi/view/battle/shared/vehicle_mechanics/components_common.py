@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/components_common.py
 import typing
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 if typing.TYPE_CHECKING:

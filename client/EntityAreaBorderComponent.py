@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/EntityAreaBorderComponent.py
 import BigWorld
 from Math import Vector3
 from cache import cached_property
@@ -46,7 +44,10 @@ class EntityAreaBorderComponent(DynamicScriptComponent):
         self._border.setMaterialBoolParam(self.COLOR_BLINDNESS_MATERIAL_PARAM_NAME, isColorBlind)
 
     def getClosestPoint(self, pos, searchRadius):
-        return self._border.getClosestPoint(pos, searchRadius) if self._border else None
+        if self._border:
+            return self._border.getClosestPoint(pos, searchRadius)
+        else:
+            return
 
     def updateDrawStyle(self):
         arenaBorderCtrl = self.sessionProvider.shared.arenaBorder
@@ -55,7 +56,9 @@ class EntityAreaBorderComponent(DynamicScriptComponent):
             self._border.setMaterialBoolParam(self.STRIPES_ENABLED_MATERIAL_PARAM_NAME, stripesEnabled)
 
     def getDimensions(self):
-        return Vector3() if not self._border else self._border.getDimensions()
+        if not self._border:
+            return Vector3()
+        return self._border.getDimensions()
 
     @cached_property
     def polygonCenter(self):

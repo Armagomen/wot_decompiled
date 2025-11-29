@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/battle_session_view.py
 import typing
 from adisp import adisp_process
 from constants import TOURNAMENT_CONFIG
@@ -35,12 +33,19 @@ class BattleSessionView(ViewImpl):
         return super(BattleSessionView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (self.viewModel.onClanClicked, self.__clanClickedHandler),
-         (self.viewModel.onTournamentsClicked, self.__tournamentsClickedHandler),
-         (self.viewModel.onGlobalMapClicked, self.__globalMapClickedHandler),
-         (self.viewModel.onCloseClicked, self.destroyWindow),
-         (self.viewModel.onNavigate, navigateTo))
+        return (
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          self.viewModel.onClanClicked, self.__clanClickedHandler),
+         (
+          self.viewModel.onTournamentsClicked, self.__tournamentsClickedHandler),
+         (
+          self.viewModel.onGlobalMapClicked, self.__globalMapClickedHandler),
+         (
+          self.viewModel.onCloseClicked, self.destroyWindow),
+         (
+          self.viewModel.onNavigate, navigateTo))
 
     def _onLoading(self):
         self.__updateModel()
@@ -48,7 +53,7 @@ class BattleSessionView(ViewImpl):
         super(BattleSessionView, self)._onLoading()
 
     def __updateModel(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             isInClan = g_clanCache.isInClan
             if isInClan:
                 tx.setClanName(g_clanCache.clanName)
@@ -82,5 +87,5 @@ class BattleSessionView(ViewImpl):
             self.__updateModel()
 
     def __updateMenuItems(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillMenuSharedItems(model)

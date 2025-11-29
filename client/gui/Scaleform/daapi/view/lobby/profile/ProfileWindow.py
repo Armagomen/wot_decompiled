@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileWindow.py
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -86,11 +84,11 @@ class ProfileWindow(ProfileWindowMeta, ClanListener):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def _onUserActionReceived(self, _, user, shadowMode):
         if user.getID() == self.__databaseID:
@@ -109,8 +107,9 @@ class ProfileWindow(ProfileWindowMeta, ClanListener):
 
     def registerFlashComponent(self, component, alias, *args):
         if alias == VIEW_ALIAS.PROFILE_TAB_NAVIGATOR:
-            super(ProfileWindow, self).registerFlashComponent(component, alias, self.__userName, self.__databaseID, self.__databaseID, {'selectedAlias': self.__selectedAlias,
-             'tabBarData': [self.__getSectionDataObject(PROFILE.SECTION_SUMMARY_TITLE, PROFILE.PROFILE_TABS_TOOLTIP_SUMMARY, VIEW_ALIAS.PROFILE_TOTAL_PAGE, 'ProfileTotalPage_UI', 'statsSummary'),
+            super(ProfileWindow, self).registerFlashComponent(component, alias, self.__userName, self.__databaseID, self.__databaseID, {'selectedAlias': self.__selectedAlias, 
+               'tabBarData': [
+                            self.__getSectionDataObject(PROFILE.SECTION_SUMMARY_TITLE, PROFILE.PROFILE_TABS_TOOLTIP_SUMMARY, VIEW_ALIAS.PROFILE_TOTAL_PAGE, 'ProfileTotalPage_UI', 'statsSummary'),
                             self.__getSectionDataObject(PROFILE.SECTION_ADVANCEDACHIEVEMENTS_TITLE, PROFILE.PROFILE_TABS_TOOLTIP_ADVANCEDACHIEVEMENTS, VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE, 'ProfileTotalPage_UI', 'statsAchievements'),
                             self.__getSectionDataObject(PROFILE.SECTION_AWARDS_TITLE, PROFILE.PROFILE_TABS_TOOLTIP_AWARDS, VIEW_ALIAS.PROFILE_AWARDS, 'ProfileAwards_UI', 'statsAwards'),
                             self.__getSectionDataObject(PROFILE.SECTION_STATISTICS_TITLE, PROFILE.PROFILE_TABS_TOOLTIP_STATISTICS, VIEW_ALIAS.PROFILE_STATISTICS, 'ProfileStatistics_UI', 'statsStatistics'),
@@ -119,12 +118,12 @@ class ProfileWindow(ProfileWindowMeta, ClanListener):
             super(ProfileWindow, self).registerFlashComponent(component, alias)
 
     def __getSectionDataObject(self, label, tooltip, alias, linkage, uiId):
-        return {'label': makeString(label),
-         'alias': alias,
-         'linkage': linkage,
-         'tooltip': tooltip,
-         'enabled': True,
-         'id': uiId}
+        return {'label': makeString(label), 
+           'alias': alias, 
+           'linkage': linkage, 
+           'tooltip': tooltip, 
+           'enabled': True, 
+           'id': uiId}
 
     def userAddFriend(self):
         self.proto.contacts.addFriend(self.__databaseID, self.__userName)

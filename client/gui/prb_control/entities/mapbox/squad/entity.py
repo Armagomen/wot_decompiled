@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/mapbox/squad/entity.py
 import account_helpers
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -87,7 +85,10 @@ class MapboxSquadEntity(SquadEntity, RestrictedRoleTagMixin):
         super(MapboxSquadEntity, self).leave(ctx, callback)
 
     def getConfirmDialogMeta(self, ctx):
-        return None if not self.__mapboxCtrl.isActive() else super(MapboxSquadEntity, self).getConfirmDialogMeta(ctx)
+        if not self.__mapboxCtrl.isActive():
+            return None
+        else:
+            return super(MapboxSquadEntity, self).getConfirmDialogMeta(ctx)
 
     def getQueueType(self):
         return QUEUE_TYPE.MAPBOX
@@ -138,7 +139,9 @@ class MapboxSquadEntity(SquadEntity, RestrictedRoleTagMixin):
             result = v.level in self._rosterSettings.getLevelsRange()
             if not result:
                 return False
-        return self.isTagVehicleAvailable(v.tags) if self.isRoleRestrictionValid() else super(MapboxSquadEntity, self)._vehicleStateCondition(v)
+        if self.isRoleRestrictionValid():
+            return self.isTagVehicleAvailable(v.tags)
+        return super(MapboxSquadEntity, self)._vehicleStateCondition(v)
 
     def _onServerSettingChanged(self, *args, **kwargs):
         self.invalidateVehicleStates()

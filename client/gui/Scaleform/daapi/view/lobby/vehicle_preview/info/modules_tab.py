@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/modules_tab.py
 from CurrentVehicle import g_currentPreviewVehicle
 from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS
 from gui.Scaleform.daapi.view.lobby.shared.fitting_slot_vo import FittingSlotVO
@@ -17,7 +15,8 @@ from helpers import dependency
 from items import ITEM_TYPES
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared import IItemsCache
-_MODULE_SLOTS = (GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleChassis],
+_MODULE_SLOTS = (
+ GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleChassis],
  GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleTurret],
  GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleGun],
  GUI_ITEM_TYPE_NAMES[ITEM_TYPES.vehicleEngine],
@@ -48,14 +47,18 @@ class VehiclePreviewModulesTab(VehiclePreviewModulesTabMeta):
         iconRes = R.images.gui.maps.icons.library
         if g_currentPreviewVehicle.hasModulesToSelect():
             if g_currentPreviewVehicle.isModified():
-                makeTextData = (textRes.status.text, iconRes.info_yellow, text_styles.neutral)
+                makeTextData = (
+                 textRes.status.text, iconRes.info_yellow, text_styles.neutral)
             else:
-                makeTextData = (textRes.Label, iconRes.info, text_styles.stats)
+                makeTextData = (
+                 textRes.Label, iconRes.info, text_styles.stats)
             tooltip = TOOLTIPS.VEHICLEPREVIEW_MODULS
         else:
-            makeTextData = (textRes.noModulesOptions, iconRes.info, text_styles.stats)
+            makeTextData = (
+             textRes.noModulesOptions, iconRes.info, text_styles.stats)
             tooltip = TOOLTIPS.VEHICLEPREVIEW_MODULSNOMODULES
-        return (_makeStatusText(*makeTextData),
+        return (
+         _makeStatusText(*makeTextData),
          tooltip,
          g_currentPreviewVehicle.getVehiclePreviewType(),
          cls.__needToShowAnim())
@@ -63,7 +66,10 @@ class VehiclePreviewModulesTab(VehiclePreviewModulesTabMeta):
     @staticmethod
     def __needToShowAnim():
         vehicle = g_currentPreviewVehicle.item
-        return not wasModulesAnimationShown() if vehicle is not None and vehicle.isCollectible and vehicle.hasModulesToSelect else False
+        if vehicle is not None and vehicle.isCollectible and vehicle.hasModulesToSelect:
+            return not wasModulesAnimationShown()
+        else:
+            return False
 
 
 class ModulesPanel(ModulesPanelMeta):
@@ -127,7 +133,7 @@ class ModulesPanel(ModulesPanelMeta):
 
 
 def _makeStatusText(textRes, iconRes, style):
-    return style(''.join((backport.text(textRes()), _makeStatusIcon(iconRes))))
+    return style(('').join((backport.text(textRes()), _makeStatusIcon(iconRes))))
 
 
 def _makeStatusIcon(iconRes):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/common/story_mode_common/helpers.py
 import typing
 from external_strings_utils import strtobool
 from story_mode_common.configs.story_mode_missions import MissionModel
@@ -11,7 +9,7 @@ def isTaskCompleted(progress, missionId, taskId):
 
 def isMissionCompleted(progress, missionModel):
     missionProgress = progress.get(missionModel.missionId, 0)
-    return missionProgress and all((missionProgress & taskBitMask(task.id) for task in missionModel.tasks))
+    return missionProgress and all(missionProgress & taskBitMask(task.id) for task in missionModel.tasks)
 
 
 def taskBitMask(taskId):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/goodies/demount_kit.py
 from gui.goodies.goodie_items import DemountKit
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
@@ -18,4 +16,5 @@ def getDemountKitForOptDevice(optDevice):
     goodiesCache = dependency.instance(IGoodiesCache)
     currency = optDevice.getRemovalPrice(itemsCache.items).getCurrency()
     demountKit = goodiesCache.getDemountKit(currency=currency)
-    return (demountKit, currency)
+    return (
+     demountKit, currency)

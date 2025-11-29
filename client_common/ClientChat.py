@@ -1,14 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/ClientChat.py
-import cPickle
-import zlib
-import time
+import cPickle, zlib, time
 from collections import deque
 from invites import INVITE_TYPES
-import helpers.time_utils as tm
-import BigWorld
-import Event
-import chat_shared
+import helpers.time_utils as tm, BigWorld, Event, chat_shared
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG
 from chat_shared import CHAT_RESPONSES, CHAT_ACTIONS, CHAT_COMMANDS, parseCommandMessage, ChatCommandError, isCommandMessage, buildChatActionData, ChatError, ChatCommandInCooldown, SYS_MESSAGE_TYPE
 from ids_generators import SequenceIDGenerator
@@ -16,7 +9,10 @@ from messenger import MessengerEntry
 from constants import USER_SEARCH_MODE, IS_CLIENT
 
 class ClientChat(object):
-    __dataProcessors = ['_ClientChat__dataTimeProcessor', '_ClientChat__inviteDataTimeProcessor', '_ClientChat__systemMessageTimeProcessor']
+    __dataProcessors = [
+     '_ClientChat__dataTimeProcessor',
+     '_ClientChat__inviteDataTimeProcessor',
+     '_ClientChat__systemMessageTimeProcessor']
     __actionHandlers = {CHAT_ACTIONS.receiveInvite.index(): '_ClientChat__onReceiveInvite'}
 
     def __init__(self):
@@ -262,7 +258,9 @@ class ClientChat(object):
         actionData['sentTime'] = tm.makeLocalServerTime(actionData['sentTime'])
 
     def __inviteDataTimeProcessor(self, actionData):
-        isInviteAction = CHAT_ACTIONS[actionData['action']] in (CHAT_ACTIONS.createInvite, CHAT_ACTIONS.receiveInvite, CHAT_ACTIONS.receiveArchiveInvite)
+        isInviteAction = CHAT_ACTIONS[actionData['action']] in (
+         CHAT_ACTIONS.createInvite, CHAT_ACTIONS.receiveInvite,
+         CHAT_ACTIONS.receiveArchiveInvite)
         if isInviteAction:
             if actionData.has_key('data'):
                 inviteData = actionData['data']
@@ -274,7 +272,8 @@ class ClientChat(object):
                     inviteData['processed_at'] = tm.utcToLocalDatetime(tm.makeLocalServerDatetime(inviteData['processed_at']))
 
     def __systemMessageTimeProcessor(self, actionData):
-        isSystemMessage = CHAT_ACTIONS[actionData['action']] in (CHAT_ACTIONS.personalSysMessage, CHAT_ACTIONS.sysMessage)
+        isSystemMessage = CHAT_ACTIONS[actionData['action']] in (
+         CHAT_ACTIONS.personalSysMessage, CHAT_ACTIONS.sysMessage)
         if isSystemMessage:
             if actionData.has_key('data'):
                 messageData = actionData['data']
@@ -292,7 +291,8 @@ class ClientChat(object):
                         messageData['data']['arenaCreateTime'] = tm.makeLocalServerTime(messageData['data']['arenaCreateTime'])
                 elif messageType == SYS_MESSAGE_TYPE.currencyUpdate.index():
                     messageData['data']['date'] = tm.makeLocalServerTime(messageData['data']['date'])
-                elif messageType in (SYS_MESSAGE_TYPE.accountTypeChanged.index(),
+                elif messageType in (
+                 SYS_MESSAGE_TYPE.accountTypeChanged.index(),
                  SYS_MESSAGE_TYPE.premiumBought.index(),
                  SYS_MESSAGE_TYPE.premiumExtended.index(),
                  SYS_MESSAGE_TYPE.premiumExpired.index()):

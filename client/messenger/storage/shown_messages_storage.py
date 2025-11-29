@@ -1,24 +1,24 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/shown_messages_storage.py
 import types
 from messenger.storage.local_cache import SimpleCachedStorage
 
 class ShownMessagesStorage(SimpleCachedStorage):
-    __slots__ = ('__channelShownMessageIDs',)
+    __slots__ = ('__channelShownMessageIDs', )
 
     def __init__(self):
         super(ShownMessagesStorage, self).__init__()
         self.__channelShownMessageIDs = {}
 
     def __repr__(self):
-        return 'ShownMessagesStorage(id=0x{0:08X})'.format(id(self))
+        return ('ShownMessagesStorage(id=0x{0:08X})').format(id(self))
 
     def clear(self):
         self.__channelShownMessageIDs.clear()
         super(ShownMessagesStorage, self).clear()
 
     def getMessages(self, channelID):
-        return self.__channelShownMessageIDs[channelID] if channelID in self.__channelShownMessageIDs else []
+        if channelID in self.__channelShownMessageIDs:
+            return self.__channelShownMessageIDs[channelID]
+        return []
 
     def setMessages(self, channelID, messageIDs):
         self.__channelShownMessageIDs[channelID] = messageIDs

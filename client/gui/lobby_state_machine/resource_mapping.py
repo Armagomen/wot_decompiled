@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/resource_mapping.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from gui.impl import backport
 from gui.lobby_state_machine.states import LobbyState
 _logger = logging.getLogger(__name__)
@@ -29,7 +26,10 @@ def stateIdToResId(stateId):
 
 def stateIdToResLayout(stateId):
     resId = _STATE_ID_TO_RESOURCE_ID_MAPPING.get(stateId, None)
-    return resId if resId is None else backport.layout(resId)
+    if resId is None:
+        return resId
+    else:
+        return backport.layout(resId)
 
 
 def resIdToStateId(resId):

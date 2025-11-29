@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/repositories.py
 import logging
 from constants import ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR, LOG_DEBUG
@@ -36,11 +34,17 @@ class BattleSessionSetup(object):
 
     @property
     def isReplayPlaying(self):
-        return self.replayCtrl.isPlaying if self.replayCtrl is not None else False
+        if self.replayCtrl is not None:
+            return self.replayCtrl.isPlaying
+        else:
+            return False
 
     @property
     def isReplayRecording(self):
-        return self.replayCtrl.isRecording if self.replayCtrl is not None else False
+        if self.replayCtrl is not None:
+            return self.replayCtrl.isRecording
+        else:
+            return False
 
     @property
     def battleCtx(self):
@@ -73,7 +77,7 @@ class BattleSessionSetup(object):
 
 
 class _ControllersLocator(object):
-    __slots__ = ('_repository',)
+    __slots__ = ('_repository', )
 
     def __init__(self, repository=None):
         super(_ControllersLocator, self).__init__()
@@ -349,14 +353,14 @@ class _EmptyRepository(interfaces.IBattleControllersRepository):
         pass
 
     def getController(self, ctrlID):
-        return None
+        return
 
     def addController(self, ctrl):
         pass
 
 
 class _ControllersRepository(interfaces.IBattleControllersRepository):
-    __slots__ = ('_ctrls',)
+    __slots__ = ('_ctrls', )
 
     def __init__(self):
         super(_ControllersRepository, self).__init__()
@@ -373,7 +377,10 @@ class _ControllersRepository(interfaces.IBattleControllersRepository):
             LOG_DEBUG('GUI Controller is stopped', getBattleCtrlName(ctrl.getControllerID()))
 
     def getController(self, ctrlID):
-        return self._ctrls[ctrlID] if ctrlID in self._ctrls else None
+        if ctrlID in self._ctrls:
+            return self._ctrls[ctrlID]
+        else:
+            return
 
     def addController(self, ctrl):
         ctrlID = ctrl.getControllerID()

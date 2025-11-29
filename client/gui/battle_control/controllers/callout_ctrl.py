@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/callout_ctrl.py
 import logging
 from collections import namedtuple
-import BigWorld
-import BattleReplay
-import CommandMapping
-import Keys
+import BigWorld, BattleReplay, CommandMapping, Keys
 from chat_commands_consts import _PERSONAL_MESSAGE_MUTE_DURATION, BATTLE_CHAT_COMMAND_NAMES
 from commendations_common.CommendationHelpers import CommendationsSource
 from constants import ARENA_BONUS_TYPE
@@ -35,18 +30,19 @@ _CALLOUT_MESSAGES_BLOCK_DURATION = 15
 _HINT_TIMEOUT = 10
 _DELAY_FOR_OPENING_RADIAL_MENU = 0.2
 _COMMENDATION_CALLOUT_ACTION_KEY = Keys.KEY_TAB
-_CONSUMERS_LOCKS = (BATTLE_VIEW_ALIASES.FULL_STATS,
+_CONSUMERS_LOCKS = (
+ BATTLE_VIEW_ALIASES.FULL_STATS,
  'chat',
  BATTLE_VIEW_ALIASES.BR_SELECT_RESPAWN,
  BATTLE_VIEW_ALIASES.BATTLE_ROYALE_WINNER_CONGRATS,
  BATTLE_VIEW_ALIASES.BR_PLAYER_STATS_IN_BATTLE,
  BATTLE_VIEW_ALIASES.FULLSCREEN_MAP)
 CommandReceivedData = namedtuple('CommandReceivedData', ('name', 'targetIdToAnswer'))
-_CALLOUT_COMMANDS_TO_REPLY_COMMANDS = {BATTLE_CHAT_COMMAND_NAMES.HELPME: BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
- BATTLE_CHAT_COMMAND_NAMES.TURNBACK: BATTLE_CHAT_COMMAND_NAMES.POSITIVE,
- BATTLE_CHAT_COMMAND_NAMES.THANKS: BATTLE_CHAT_COMMAND_NAMES.POSITIVE,
- BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: BATTLE_CHAT_COMMAND_NAMES.THANKS,
- BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: BATTLE_CHAT_COMMAND_NAMES.COMMENDATION}
+_CALLOUT_COMMANDS_TO_REPLY_COMMANDS = {BATTLE_CHAT_COMMAND_NAMES.HELPME: BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY, 
+   BATTLE_CHAT_COMMAND_NAMES.TURNBACK: BATTLE_CHAT_COMMAND_NAMES.POSITIVE, 
+   BATTLE_CHAT_COMMAND_NAMES.THANKS: BATTLE_CHAT_COMMAND_NAMES.POSITIVE, 
+   BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: BATTLE_CHAT_COMMAND_NAMES.THANKS, 
+   BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: BATTLE_CHAT_COMMAND_NAMES.COMMENDATION}
 
 class CalloutController(CallbackDelayer, IViewComponentsController):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -54,7 +50,11 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
     __commendationsCtrl = dependency.descriptor(ICommendationsController)
     __appLoader = dependency.descriptor(IAppLoader)
     __guiLoader = dependency.descriptor(IGuiLoader)
-    __slots__ = ('__isActive', '__isCalloutEnabled', '__isIBCEnabled', '__commandReceivedData', '__lastPersonalMsgTimestamp', '__lastCalloutTimestamp', '__ui', '__radialKeyDown', '__radialMenuIsOpen', '__previousForcedGuiControlModeFlags', '_uiPlayerSatisfactionRatingLogger', '__isCommendationsCalloutEnabled', '__isCommendationsEnabled', '__statsKeyDown', '__statsScreenIsOpen')
+    __slots__ = ('__isActive', '__isCalloutEnabled', '__isIBCEnabled', '__commandReceivedData',
+                 '__lastPersonalMsgTimestamp', '__lastCalloutTimestamp', '__ui',
+                 '__radialKeyDown', '__radialMenuIsOpen', '__previousForcedGuiControlModeFlags',
+                 '_uiPlayerSatisfactionRatingLogger', '__isCommendationsCalloutEnabled',
+                 '__isCommendationsEnabled', '__statsKeyDown', '__statsScreenIsOpen')
 
     def __init__(self, setup):
         super(CalloutController, self).__init__()
@@ -143,18 +143,20 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
             return False
         if containerManager.isModalViewsIsExists() or self.__appLoader.getApp().hasGuiControlModeConsumers(*_CONSUMERS_LOCKS):
             return False
-        return False if self.__guiLoader.windowsManager.findWindows(lambda w: w.isModal()) else True
+        if self.__guiLoader.windowsManager.findWindows(lambda w: w.isModal()):
+            return False
+        return True
 
     def handleTabScreenKeyPress(self, key, isDown):
         if key != _COMMENDATION_CALLOUT_ACTION_KEY:
             return False
-        elif not self.__isCommendationsCalloutEnabled or not self.__isCommendationsEnabled:
-            return False
-        elif not self.sessionProvider.arenaVisitor.hasCommendationsMessages():
-            return False
-        elif not self._isContainerStateOK():
-            return False
         else:
+            if not self.__isCommendationsCalloutEnabled or not self.__isCommendationsEnabled:
+                return False
+            if not self.sessionProvider.arenaVisitor.hasCommendationsMessages():
+                return False
+            if not self._isContainerStateOK():
+                return False
             isPlayerObserver = self.sessionProvider.getCtx().isPlayerObserver()
             if self.__statsKeyDown is None and isDown and self.isCommendationCalloutActive:
                 self.__statsKeyDown = key
@@ -178,11 +180,11 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
         isRadialmenuKey = cmdMap.isFired(CommandMapping.CMD_RADIAL_MENU_SHOW, key) or cmdMap.isFired(CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND, key)
         if not isRadialmenuKey:
             return False
-        elif not self.__enabledForArenaBonusType():
-            return False
-        elif not self._isContainerStateOK():
-            return False
         else:
+            if not self.__enabledForArenaBonusType():
+                return False
+            if not self._isContainerStateOK():
+                return False
             isPlayerObserver = self.sessionProvider.getCtx().isPlayerObserver()
             if self.__radialKeyDown is None and isDown:
                 self.__radialKeyDown = key
@@ -220,10 +222,12 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
     def __onCommandReceived(self, cmd):
         if not self.__isCalloutEnabled or not self.__isIBCEnabled or cmd.getCommandType() != MESSENGER_COMMAND_TYPE.BATTLE:
             return
-        elif not avatar_getter.isVehicleAlive():
+        if not avatar_getter.isVehicleAlive():
             return
         else:
             vehicleIDToAnswer = self.sessionProvider.getArenaDP().getVehIDBySessionID(cmd.getSenderID())
+            if not vehicleIDToAnswer:
+                vehicleIDToAnswer = cmd.getSenderVehID()
             commandName = _ACTIONS.battleChatCommandFromActionID(cmd.getID()).name
             if self.__isActive is True and vehicleIDToAnswer == avatar_getter.getPlayerVehicleID() and self.__commandReceivedData is not None and self.__commandReceivedData.name is not None and commandName == _CALLOUT_COMMANDS_TO_REPLY_COMMANDS[self.__commandReceivedData.name]:
                 self.__executeHide(True, self.__commandReceivedData.name)
@@ -255,10 +259,10 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
     def __handleCalloutButtonEvent(self, event):
         if not self.__isActive or self.__commandReceivedData is None:
             return
+        commands = self.sessionProvider.shared.chatCommands
+        if commands is None:
+            return
         else:
-            commands = self.sessionProvider.shared.chatCommands
-            if commands is None:
-                return
             if self.__commandReceivedData.name not in _CALLOUT_COMMANDS_TO_REPLY_COMMANDS:
                 _logger.error('Unsupported chat command name(%s) for replying to player(%d)', self.__commandReceivedData.name, self.__commandReceivedData.targetIdToAnswer)
                 return
@@ -280,13 +284,12 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
         isEnabled = self.battleCommunications.isEnabled
         if isEnabled is None or self.__isIBCEnabled == isEnabled:
             return
+        if isEnabled:
+            self.__activateListeners()
         else:
-            if isEnabled:
-                self.__activateListeners()
-            else:
-                self.__deactivateListeners()
-            self.__isIBCEnabled = isEnabled
-            return
+            self.__deactivateListeners()
+        self.__isIBCEnabled = isEnabled
+        return
 
     def __executeHide(self, wasAnswered=False, commandReceived=None):
         if self.__isActive:
@@ -325,7 +328,8 @@ class CalloutController(CallbackDelayer, IViewComponentsController):
         return
 
     def __enabledForArenaBonusType(self):
-        return self.sessionProvider.arenaVisitor.getArenaBonusType() not in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO)
+        return self.sessionProvider.arenaVisitor.getArenaBonusType() not in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO,
+         ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO)
 
 
 def createCalloutController(setup):

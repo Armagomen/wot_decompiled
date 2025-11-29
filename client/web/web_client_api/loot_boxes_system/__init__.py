@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/loot_boxes_system/__init__.py
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.lootbox_system.base.bonuses_packers import mergeNeededBonuses, processCompensationsWithLootbox
 from gui.lootbox_system.base.common import ViewID, Views
@@ -21,7 +19,7 @@ def _isValidViewID(_, data):
     viewID = data.get('view_id')
     if viewID in ViewsIDs.ALL:
         return True
-    raise WebCommandException('viewID: "{}" is not supported'.format(viewID))
+    raise WebCommandException(('viewID: "{}" is not supported').format(viewID))
 
 
 class _LootBoxInfo(W2CSchema):
@@ -80,8 +78,8 @@ class LootBoxSystemWebApi(object):
         for idx, slotData in slotsInfo.iteritems():
             bonuses = mergeNeededBonuses(slotData.get('bonuses', []), eventName)
             bonuses = processCompensationsWithLootbox(bonuses, eventName, showLootboxCompensation=False)
-            result.update({idx: {'probability': int(slotData.get('probability', [0])[0] * 10000 + 1e-06) / 100.0,
-                   'bonuses': []}})
+            result.update({idx: {'probability': int(slotData.get('probability', [0])[0] * 10000 + 1e-06) / 100.0, 
+                     'bonuses': []}})
             for bonus in bonuses:
                 bonusList = bonus.getWrappedLootBoxesBonusList()
                 for bonusEntry in bonusList:

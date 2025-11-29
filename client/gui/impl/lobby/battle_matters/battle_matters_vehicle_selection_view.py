@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_vehicle_selection_view.py
 from collections import OrderedDict
 from functools import partial
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
@@ -71,8 +69,7 @@ class BattleMattersVehicleSelectionView(ViewImpl):
         settings.model = BattleMattersVehicleSelectionViewModel()
         self.__selectableBonus = first(self._selectableBonusManager.getAvailableSelectableBonuses())
         bonuses = self._selectableBonusManager.getBonusOptions(self.__selectableBonus)
-        vehicles = {v['option'].displayedItem.intCD:{'vehicle': v['option'],
-         'giftID': k} for k, v in bonuses.iteritems() if not (v['option'].displayedItem.isUnlocked or v['option'].displayedItem.isCollectible)}
+        vehicles = {v['option'].displayedItem.intCD:{'vehicle': v['option'], 'giftID': k} for k, v in bonuses.iteritems() if not (v['option'].displayedItem.isUnlocked or v['option'].displayedItem.isCollectible) if not v['option'].displayedItem.isUnlocked or v['option'].displayedItem.isCollectible}
         self.__vehicles = OrderedDict(_sortVehicles(vehicles))
         self.__filterPopover = None
         self.__filters = {}
@@ -100,8 +97,7 @@ class BattleMattersVehicleSelectionView(ViewImpl):
         self.__savedCD = vehCD
         giftID = self.__getIdByCD(vehCD)
         onConfirm = partial(showBonusDelayedConfirmationDialog, self.__vehicles[self.__savedCD]['vehicle'].displayedItem, partial(_onDialogConfirm, bonus=self.__selectableBonus, giftID=giftID))
-        showOfferGiftVehiclePreview(vehCD, self._selectableBonusManager.getBonusOffer(self.__selectableBonus).id, giftID, onConfirm, customCallbacks={'previewBackCb': showDelayedReward,
-         'offerEndedCb': lambda : None})
+        showOfferGiftVehiclePreview(vehCD, self._selectableBonusManager.getBonusOffer(self.__selectableBonus).id, giftID, onConfirm, customCallbacks={'previewBackCb': showDelayedReward, 'offerEndedCb': lambda : None})
 
     def onResetFilter(self):
         self.__resetFilters()
@@ -127,7 +123,7 @@ class BattleMattersVehicleSelectionView(ViewImpl):
 
     def _update(self):
         expires = self._itemsCache.items.tokens.getTokenInfo(self._battleMattersController.getDelayedRewardCurrencyToken())[0]
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             if self._battleMattersController.isFinished():
                 tx.setEndDate(expires)
             tx.setTotalVehiclesCount(len(self.__vehicles))
@@ -145,17 +141,23 @@ class BattleMattersVehicleSelectionView(ViewImpl):
         vm.invalidate()
 
     def _getEvents(self):
-        return ((self._battleMattersController.onStateChanged, showBattleMatters),
-         (self.viewModel.onGoBack, showBattleMattersMainView),
-         (self.viewModel.onCompareVehicle, self.onCompareVehicle),
-         (self.viewModel.onShowVehicle, self.onShowVehicle),
-         (self.viewModel.onResetFilter, self.onResetFilter))
+        return (
+         (
+          self._battleMattersController.onStateChanged, showBattleMatters),
+         (
+          self.viewModel.onGoBack, showBattleMattersMainView),
+         (
+          self.viewModel.onCompareVehicle, self.onCompareVehicle),
+         (
+          self.viewModel.onShowVehicle, self.onShowVehicle),
+         (
+          self.viewModel.onResetFilter, self.onResetFilter))
 
     def __getIdByCD(self, vehCD):
         return self.__vehicles.get(vehCD, {}).get('giftID', -1)
 
     def __isFilterEmpty(self, key):
-        return not any((value for value in self.__filters[key].itervalues()))
+        return not any(value for value in self.__filters[key].itervalues())
 
     def __nationFit(self, vehCD):
         return self.__filters[_NATIONS_KEY_NAME][self.__vehicles[vehCD]['vehicle'].displayedItem.nationName]
@@ -164,8 +166,8 @@ class BattleMattersVehicleSelectionView(ViewImpl):
         return self.__filters[_TYPES_KEY_NAME][self.__vehicles[vehCD]['vehicle'].displayedItem.type]
 
     def __resetFilters(self, init=False):
-        self.__filters = {_NATIONS_KEY_NAME: OrderedDict(((nation, False) for nation in GUI_NATIONS)),
-         _TYPES_KEY_NAME: OrderedDict(((t, False) for t in VEHICLE_TYPES_ORDER))}
+        self.__filters = {_NATIONS_KEY_NAME: OrderedDict((nation, False) for nation in GUI_NATIONS), 
+           _TYPES_KEY_NAME: OrderedDict((t, False) for t in VEHICLE_TYPES_ORDER)}
         if self.__filterPopover and self.__filterPopover.viewStatus == ViewStatus.LOADED:
             self.__filterPopover.updateFilterFromOutside(self.__filters)
         elif not init:

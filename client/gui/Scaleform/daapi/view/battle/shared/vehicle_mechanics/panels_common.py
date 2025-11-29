@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/panels_common.py
 import typing
 from itertools import chain
 import BattleReplay
@@ -15,7 +13,7 @@ if typing.TYPE_CHECKING:
     from Vehicle import Vehicle
 
 def getMechanicsUIComponents(vehicleDescriptor, componentsMap):
-    return chain((componentsMap[mechanic] for mechanic in getVehicleMechanics(vehicleDescriptor) if mechanic in componentsMap))
+    return chain(componentsMap[mechanic] for mechanic in getVehicleMechanics(vehicleDescriptor) if mechanic in componentsMap)
 
 
 class VehicleMechanicsPanel(BaseDAAPIComponent, VehiclePassengerInfoWatcher):
@@ -101,4 +99,5 @@ class VehicleMechanicsPanel(BaseDAAPIComponent, VehiclePassengerInfoWatcher):
         self._setCrosshairViewID(viewID)
 
     def __updateVisibility(self):
-        self._setIsVisible(self.__isAllowedByContext and self.__crosshairViewID not in (CROSSHAIR_VIEW_ID.UNDEFINED, CROSSHAIR_VIEW_ID.POSTMORTEM))
+        self._setIsVisible(self.__isAllowedByContext and self.__crosshairViewID not in (CROSSHAIR_VIEW_ID.UNDEFINED,
+         CROSSHAIR_VIEW_ID.POSTMORTEM))

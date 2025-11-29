@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/player_menu_handler.py
 import logging
 from commendations_common import CommendationHelpers
 from commendations_common.CommendationHelpers import CommendationsSource
@@ -41,48 +39,49 @@ class BATTLE_CHAT_OPTION_ID(object):
     DISABLE_COMMUNICATIONS = 'disableCommunications'
 
 
-_OPTIONS_HANDLERS = {USER.ADD_TO_FRIENDS: 'addFriend',
- USER.REMOVE_FROM_FRIENDS: 'removeFriend',
- USER.ADD_TO_IGNORED: 'setIgnored',
- USER.REMOVE_FROM_IGNORED: 'unsetIgnored',
- BATTLE_CHAT_OPTION_ID.ENABLE_COMMUNICATIONS: 'enableCommunications',
- BATTLE_CHAT_OPTION_ID.DISABLE_COMMUNICATIONS: 'disableCommunications',
- DENUNCIATIONS.INCORRECT_BEHAVIOR: 'appealIncorrectBehavior',
- DENUNCIATIONS.NOT_FAIR_PLAY: 'appealNotFairPlay',
- DENUNCIATIONS.FORBIDDEN_NICK: 'appealForbiddenNick',
- DENUNCIATIONS.BOT: 'appealBot',
- DYN_SQUAD_OPTION_ID.SENT_INVITATION: 'sendInvitation',
- DYN_SQUAD_OPTION_ID.ACCEPT_INVITATION: 'acceptInvitation',
- DYN_SQUAD_OPTION_ID.REJECT_INVITATION: 'rejectInvitation',
- COMMENDATIONS_OPTION_ID.COMMEND_FIRST: 'commend',
- COMMENDATIONS_OPTION_ID.COMMEND_BACK: 'commend',
- COMMENDATIONS_OPTION_ID.OUTGOING_COMMENDATION: 'commend',
- COMMENDATIONS_OPTION_ID.MUTUAL_COMMENDATION: 'commend'}
+_OPTIONS_HANDLERS = {USER.ADD_TO_FRIENDS: 'addFriend', 
+   USER.REMOVE_FROM_FRIENDS: 'removeFriend', 
+   USER.ADD_TO_IGNORED: 'setIgnored', 
+   USER.REMOVE_FROM_IGNORED: 'unsetIgnored', 
+   BATTLE_CHAT_OPTION_ID.ENABLE_COMMUNICATIONS: 'enableCommunications', 
+   BATTLE_CHAT_OPTION_ID.DISABLE_COMMUNICATIONS: 'disableCommunications', 
+   DENUNCIATIONS.INCORRECT_BEHAVIOR: 'appealIncorrectBehavior', 
+   DENUNCIATIONS.NOT_FAIR_PLAY: 'appealNotFairPlay', 
+   DENUNCIATIONS.FORBIDDEN_NICK: 'appealForbiddenNick', 
+   DENUNCIATIONS.BOT: 'appealBot', 
+   DYN_SQUAD_OPTION_ID.SENT_INVITATION: 'sendInvitation', 
+   DYN_SQUAD_OPTION_ID.ACCEPT_INVITATION: 'acceptInvitation', 
+   DYN_SQUAD_OPTION_ID.REJECT_INVITATION: 'rejectInvitation', 
+   COMMENDATIONS_OPTION_ID.COMMEND_FIRST: 'commend', 
+   COMMENDATIONS_OPTION_ID.COMMEND_BACK: 'commend', 
+   COMMENDATIONS_OPTION_ID.OUTGOING_COMMENDATION: 'commend', 
+   COMMENDATIONS_OPTION_ID.MUTUAL_COMMENDATION: 'commend'}
 if not IS_CHINA:
-    _OPTIONS_HANDLERS.update({USER.SET_MUTED: 'setMuted',
-     USER.UNSET_MUTED: 'unsetMuted'})
-_OPTION_ICONS = {USER.ADD_TO_FRIENDS: 'addToFriends',
- USER.REMOVE_FROM_FRIENDS: 'removeFromFriends',
- USER.ADD_TO_IGNORED: 'addToBlacklist',
- USER.REMOVE_FROM_IGNORED: 'removeFromBlacklist',
- BATTLE_CHAT_OPTION_ID.ENABLE_COMMUNICATIONS: 'enableCommunications',
- BATTLE_CHAT_OPTION_ID.DISABLE_COMMUNICATIONS: 'disableCommunications',
- DYN_SQUAD_OPTION_ID.SENT_INVITATION: 'addToSquad',
- DYN_SQUAD_OPTION_ID.IN_SQUAD: 'inSquad',
- DYN_SQUAD_OPTION_ID.ACCEPT_INVITATION: 'acceptInvitation',
- DYN_SQUAD_OPTION_ID.REJECT_INVITATION: 'rejectInvitation',
- COMMENDATIONS_OPTION_ID.COMMEND_FIRST: 'commendFirst',
- COMMENDATIONS_OPTION_ID.COMMEND_BACK: 'commendBack',
- COMMENDATIONS_OPTION_ID.OUTGOING_COMMENDATION: 'outgoingCommendation',
- COMMENDATIONS_OPTION_ID.MUTUAL_COMMENDATION: 'mutualCommendation'}
+    _OPTIONS_HANDLERS.update({USER.SET_MUTED: 'setMuted', 
+       USER.UNSET_MUTED: 'unsetMuted'})
+_OPTION_ICONS = {USER.ADD_TO_FRIENDS: 'addToFriends', 
+   USER.REMOVE_FROM_FRIENDS: 'removeFromFriends', 
+   USER.ADD_TO_IGNORED: 'addToBlacklist', 
+   USER.REMOVE_FROM_IGNORED: 'removeFromBlacklist', 
+   BATTLE_CHAT_OPTION_ID.ENABLE_COMMUNICATIONS: 'enableCommunications', 
+   BATTLE_CHAT_OPTION_ID.DISABLE_COMMUNICATIONS: 'disableCommunications', 
+   DYN_SQUAD_OPTION_ID.SENT_INVITATION: 'addToSquad', 
+   DYN_SQUAD_OPTION_ID.IN_SQUAD: 'inSquad', 
+   DYN_SQUAD_OPTION_ID.ACCEPT_INVITATION: 'acceptInvitation', 
+   DYN_SQUAD_OPTION_ID.REJECT_INVITATION: 'rejectInvitation', 
+   COMMENDATIONS_OPTION_ID.COMMEND_FIRST: 'commendFirst', 
+   COMMENDATIONS_OPTION_ID.COMMEND_BACK: 'commendBack', 
+   COMMENDATIONS_OPTION_ID.OUTGOING_COMMENDATION: 'outgoingCommendation', 
+   COMMENDATIONS_OPTION_ID.MUTUAL_COMMENDATION: 'mutualCommendation'}
 if not IS_CHINA:
-    _OPTION_ICONS.update({USER.SET_MUTED: 'disableVoice',
-     USER.UNSET_MUTED: 'enableVoice'})
+    _OPTION_ICONS.update({USER.SET_MUTED: 'disableVoice', 
+       USER.UNSET_MUTED: 'enableVoice'})
 _BOT_NO_ACTIONS_OPTION_ID = 'botNoActions'
 
 class PlayerContextMenuInfo(object):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('avatarSessionID', 'isBot', 'isFriend', 'isIgnored', 'isTemporaryIgnored', 'isMuted', 'userName', 'isAlly', 'battleUser')
+    __slots__ = ('avatarSessionID', 'isBot', 'isFriend', 'isIgnored', 'isTemporaryIgnored',
+                 'isMuted', 'userName', 'isAlly', 'battleUser')
 
     def __init__(self, avatarSessionID, userName):
         super(PlayerContextMenuInfo, self).__init__()
@@ -104,7 +103,7 @@ class PlayerContextMenuInfo(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
 
 class PlayerMenuHandler(AbstractContextMenuHandler):
@@ -121,7 +120,7 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     @property
     def arenaVisitor(self):
@@ -234,15 +233,15 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
 
     @classmethod
     def _getOptionInitData(cls, optionID, isEnabled=True):
-        return {'enabled': isEnabled,
-         'iconType': cls._getOptionIcon(optionID)}
+        return {'enabled': isEnabled, 
+           'iconType': cls._getOptionIcon(optionID)}
 
     def __addDynSquadInfo(self, options):
         make = self._makeItem
         ctx = self.sessionProvider.getCtx()
         if not ctx.isInvitationEnabled() or ctx.hasSquadRestrictions():
             return options
-        elif not self.__userInfo.isAlly:
+        if not self.__userInfo.isAlly:
             return options
         else:
             isIgnored = self.__userInfo.isIgnored
@@ -339,8 +338,9 @@ class PlayerMenuHandler(AbstractContextMenuHandler):
             order = DENUNCIATIONS.ORDER
         else:
             order = DENUNCIATIONS.ENEMY_ORDER
-        sub = [ make(denunciation, MENU.contextmenu(denunciation), optInitData={'enabled': self.__isAppealsForTopicEnabled(denunciation)}) for denunciation in order ]
-        label = '{} {}/{}'.format(i18n.makeString(MENU.CONTEXTMENU_APPEAL), self.__denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
+        sub = [ make(denunciation, MENU.contextmenu(denunciation), optInitData={'enabled': self.__isAppealsForTopicEnabled(denunciation)}) for denunciation in order
+              ]
+        label = ('{} {}/{}').format(i18n.makeString(MENU.CONTEXTMENU_APPEAL), self.__denunciator.getDenunciationsLeft(), DENUNCIATIONS_PER_DAY)
         options.append(make(DENUNCIATIONS.APPEAL, label, optInitData={'enabled': self.__denunciator.isAppealsEnabled()}, optSubMenu=sub))
         return options
 

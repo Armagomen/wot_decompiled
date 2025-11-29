@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ContactsSettingsView.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from account_helpers.AccountSettings import AccountSettings, CONTACTS
 from helpers import dependency
@@ -38,8 +36,8 @@ class ContactsSettingsView(ContactsSettingsViewMeta):
     def _getInitDataObject(self):
         defaults = AccountSettings.getFilterDefault(CONTACTS)
         startData = self.settingsCore.serverSettings.getSection(CONTACTS, defaults)
-        self.__startData = {'showOfflineUsers': bool(startData['showOfflineUsers']),
-         'showOthersCategory': bool(startData['showOthersCategory'])}
+        self.__startData = {'showOfflineUsers': bool(startData['showOfflineUsers']), 
+           'showOthersCategory': bool(startData['showOthersCategory'])}
         self.__currentData = self.__startData.copy()
         baseData = self._getDefaultInitData(MESSENGER.MESSENGER_CONTACTS_VIEW_SETTINGS_MAINLABEL, MESSENGER.MESSENGER_CONTACTS_VIEW_SETTINGS_BTNOK_LABEL, MESSENGER.MESSENGER_CONTACTS_VIEW_SETTINGS_BTNCANCEL_LABEL, MESSENGER.CONTACTS_SETTINGSVIEW_TOOLTIPS_BTNS_APPLY, MESSENGER.CONTACTS_SETTINGSVIEW_TOOLTIPS_BTNS_CLOSE)
         baseData['mainData'] = self.__startData

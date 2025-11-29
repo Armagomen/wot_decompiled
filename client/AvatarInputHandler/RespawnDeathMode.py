@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/RespawnDeathMode.py
-import weakref
-import BigWorld
-import GUI
-import SoundGroups
-import BattleReplay
+import weakref, BigWorld, GUI, SoundGroups, BattleReplay
 from AvatarInputHandler import aih_global_binding
 from DynamicCameras.ArcadeCamera import ArcadeCamera
 from control_modes import IControlMode

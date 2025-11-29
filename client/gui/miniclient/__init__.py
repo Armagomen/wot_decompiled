@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/miniclient/__init__.py
 import ResMgr
 from constants import CONTENT_TYPE, IS_SANDBOX
 from gui.Scaleform.locale.MINICLIENT import MINICLIENT
@@ -105,4 +103,4 @@ def _enable_sandbox_platform_pointcuts(config):
     EnableCrew(config)
 
 
-__all__ = ('configure_state',)
+__all__ = ('configure_state', )

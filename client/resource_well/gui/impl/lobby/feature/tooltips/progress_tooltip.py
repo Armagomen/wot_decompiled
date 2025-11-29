@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/tooltips/progress_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -21,7 +19,7 @@ class ProgressTooltip(ViewImpl):
 
     def _onLoading(self, progress, diff=None, *args, **kwargs):
         super(ProgressTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCurrentProgress(progress)
             if diff is not None:
                 model.setNeedShowDiff(True)

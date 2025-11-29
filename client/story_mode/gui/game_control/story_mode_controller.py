@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/game_control/story_mode_controller.py
 from logging import getLogger
-import typing
-import AccountCommands
-import BigWorld
-import Event
-import WWISE
+import typing, AccountCommands, BigWorld, Event, WWISE
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSyncData
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
@@ -85,9 +79,9 @@ class StoryModeController(IStoryModeController, IGlobalListener):
         self.__missionsProgressDiff = {}
         self.__soundController = SoundsController()
         self._delayedBattleResultsID = None
-        self._eventMissionSelectorMap = {EventMissionSelector.DEFAULT: self.__getNotCompletedMissions,
-         EventMissionSelector.BATTLES_COUNT: self.__getMissionsByBattleCount,
-         EventMissionSelector.WITH_UNLOCK_MISSION: self.__getMissionsWithUnlockMission}
+        self._eventMissionSelectorMap = {EventMissionSelector.DEFAULT: self.__getNotCompletedMissions, 
+           EventMissionSelector.BATTLES_COUNT: self.__getMissionsByBattleCount, 
+           EventMissionSelector.WITH_UNLOCK_MISSION: self.__getMissionsWithUnlockMission}
         self.onSyncDataUpdated = Event.Event()
         self.onMissionsConfigUpdated = Event.Event()
         self.onSettingsUpdated = Event.Event()
@@ -127,7 +121,9 @@ class StoryModeController(IStoryModeController, IGlobalListener):
 
     @property
     def storyModeInfoPageKey(self):
-        return INFO_PAGE_STORY_MODE_EVENT if self.missions.isEventEnabled else INFO_PAGE_STORY_MODE
+        if self.missions.isEventEnabled:
+            return INFO_PAGE_STORY_MODE_EVENT
+        return INFO_PAGE_STORY_MODE
 
     @property
     def newMissionIdForNewbies(self):
@@ -180,10 +176,10 @@ class StoryModeController(IStoryModeController, IGlobalListener):
         return
 
     def isEventEntryPointVisible(self):
-        return any((not isTaskCompleted(self.__progress, mission.missionId, task.id) for mission in self.filterMissions(missionType=MissionType.EVENT) for task in mission.tasks if not task.isLocked()))
+        return any(not isTaskCompleted(self.__progress, mission.missionId, task.id) for mission in self.filterMissions(missionType=MissionType.EVENT) for task in mission.tasks if not task.isLocked())
 
     def isShowActiveModeState(self):
-        return self.isEnabled() and any((not isMissionCompleted(self.__progress, mission) for mission in self.filterMissions(missionType=MissionType.EVENT)))
+        return self.isEnabled() and any(not isMissionCompleted(self.__progress, mission) for mission in self.filterMissions(missionType=MissionType.EVENT))
 
     def isEnabled(self):
         return self.settings.enabled
@@ -201,10 +197,12 @@ class StoryModeController(IStoryModeController, IGlobalListener):
 
     def isMissionCompleted(self, missionId):
         mission = self.missions.getMission(missionId)
-        return False if not mission else isMissionCompleted(self.__progress, mission)
+        if not mission:
+            return False
+        return isMissionCompleted(self.__progress, mission)
 
     def isEventMissionSuitable(self, mission):
-        return not self.isMissionCompleted(mission.missionId) and any((not self.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks()))
+        return not self.isMissionCompleted(mission.missionId) and any(not self.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks())
 
     def isFirstTaskNotCompleted(self, mission):
         battlesCount = self._itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
@@ -214,7 +212,7 @@ class StoryModeController(IStoryModeController, IGlobalListener):
 
     def isAnyTaskNotCompleted(self, mission):
         battlesCount = self._itemsCache.items.getAccountDossier().getRandomStats().getBattlesCount()
-        return not mission.isMissionLocked(battlesCount) and any((not self.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks()))
+        return not mission.isMissionLocked(battlesCount) and any(not self.isMissionTaskCompleted(mission.missionId, task.id) for task in mission.getUnlockedTasks())
 
     def isSelectedMissionLocked(self):
         battlesCount = self._itemsCache.items.getAccountDossier().getRandomStats().getBattlesCount()
@@ -283,10 +281,10 @@ class StoryModeController(IStoryModeController, IGlobalListener):
         _logger.debug('goToBattle')
         if not isPlayerAvatar():
             _logger.error('goToBattle method can be called only for Avatar.')
-            return None
+            return
         else:
             BigWorld.player().setPlayerReadyToBattle()
-            return None
+            return
 
     def goToHangar(self, guiCtx=None):
         isAccount = isPlayerAccount()
@@ -305,8 +303,8 @@ class StoryModeController(IStoryModeController, IGlobalListener):
             BigWorld.player().battleQueueType = QUEUE_TYPE.UNKNOWN
             if guiCtx is None:
                 guiCtx = self._lobbyContext.getGuiCtx()
-            guiCtx.update({'inQueue': QUEUE_TYPE.UNKNOWN,
-             'skipHangar': False})
+            guiCtx.update({'inQueue': QUEUE_TYPE.UNKNOWN, 
+               'skipHangar': False})
             g_playerEvents.onAccountShowGUI(guiCtx)
             return
 
@@ -315,9 +313,9 @@ class StoryModeController(IStoryModeController, IGlobalListener):
         if guiCtx.get('skipHangar', False) and guiCtx.get('showOutroVideo', False):
             self._delayedBattleResultsID = arenaUniqueID
             BigWorld.player().battleQueueType = QUEUE_TYPE.UNKNOWN
-            guiCtx.update({'inQueue': QUEUE_TYPE.UNKNOWN,
-             'skipHangar': False,
-             'showOutroVideo': False})
+            guiCtx.update({'inQueue': QUEUE_TYPE.UNKNOWN, 
+               'skipHangar': False, 
+               'showOutroVideo': False})
             g_playerEvents.onAccountShowGUI(guiCtx)
 
     def popWaitingToBeShownAwardData(self):
@@ -390,7 +388,9 @@ class StoryModeController(IStoryModeController, IGlobalListener):
     def chooseSelectedMissionId(self, isEvent=False):
         chooser = self.__chooseEventSelectedMissionIds if isEvent else self.__chooseNewbieSelectedMissionIds
         missionId, defaultMissionId = chooser()
-        return missionId if missionId != UNDEFINED_MISSION_ID else defaultMissionId
+        if missionId != UNDEFINED_MISSION_ID:
+            return missionId
+        return defaultMissionId
 
     @property
     def _serverSettings(self):
@@ -570,7 +570,13 @@ class StoryModeController(IStoryModeController, IGlobalListener):
         return (firstSuitable, lastEnabled)
 
     def __chooseNewbieSelectedMissionIds(self):
-        for precondition, condition in ((self.isFirstTaskNotCompleted, lambda m: m.missionType == MissionType.REGULAR), (self.isAnyTaskNotCompleted, lambda m: m.missionType == MissionType.REGULAR), (self.isAnyTaskNotCompleted, lambda m: m.missionType == MissionType.ONBOARDING)):
+        for precondition, condition in (
+         (
+          self.isFirstTaskNotCompleted, lambda m: m.missionType == MissionType.REGULAR),
+         (
+          self.isAnyTaskNotCompleted, lambda m: m.missionType == MissionType.REGULAR),
+         (
+          self.isAnyTaskNotCompleted, lambda m: m.missionType == MissionType.ONBOARDING)):
             firstSuitable, lastEnabled = self.__chooseSelectedMissionsIds(precondition=precondition, condition=condition)
             if firstSuitable != UNDEFINED_MISSION_ID:
                 return (firstSuitable, lastEnabled)
@@ -586,13 +592,15 @@ class StoryModeController(IStoryModeController, IGlobalListener):
 
     def __getNotCompletedMissions(self):
         firstSuitable, lastEnabled = self.__chooseSelectedMissionsIds(missionType=MissionType.EVENT, condition=self.isEventMissionSuitable)
-        return (firstSuitable, lastEnabled)
+        return (
+         firstSuitable, lastEnabled)
 
     def __getMissionsByBattleCount(self):
         battlesCount = self._itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount() if self._itemsCache.isSynced() else 0
         currentDifficulty = self._clientSettings.event.missionSelectors.battlesCount.getDifficulty(battlesCount)
-        firstSuitable, lastEnabled = self.__chooseSelectedMissionsIds(missionType=MissionType.EVENT, condition=lambda m: m.difficulty == currentDifficulty and any((not self.isMissionTaskCompleted(m.missionId, task.id) for task in m.getUnlockedTasks())))
-        return (firstSuitable, lastEnabled)
+        firstSuitable, lastEnabled = self.__chooseSelectedMissionsIds(missionType=MissionType.EVENT, condition=lambda m: m.difficulty == currentDifficulty and any(not self.isMissionTaskCompleted(m.missionId, task.id) for task in m.getUnlockedTasks()))
+        return (
+         firstSuitable, lastEnabled)
 
     def __getMissionsWithUnlockMission(self):
         firstSuitable, lastEnabled = self.__chooseSelectedMissionsIds(missionType=MissionType.EVENT, precondition=lambda m: not (m.unlockMission > 0 and not self.isMissionCompleted(m.unlockMission)), condition=lambda m: not self.isMissionCompleted(m.missionId))
@@ -601,7 +609,8 @@ class StoryModeController(IStoryModeController, IGlobalListener):
             hint = OnceOnlyHints.VDAY_DIFFICULTY_HINT
             if mission.unlockMission and self.isMissionCompleted(mission.unlockMission) and not self._settingsCore.serverSettings.getOnceOnlyHintsSetting(hint, default=False):
                 self._settingsCore.serverSettings.setOnceOnlyHintsSettings({hint: True})
-        return (firstSuitable, lastEnabled)
+        return (
+         firstSuitable, lastEnabled)
 
     def __assignSelectedMission(self):
         eMissionId, eDefaultMissionId = self.__chooseEventSelectedMissionIds()

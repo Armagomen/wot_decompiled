@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/scaleform/daapi/view/battle/settings_window.py
 from account_helpers.settings_core.settings_constants import SETTINGS_GROUP
 from gui.Scaleform.daapi.view.common.settings import SettingsWindow
 from gui.impl import backport
@@ -12,18 +10,18 @@ from story_mode.uilogging.story_mode.loggers import WindowLogger
 
 class OnboardingSettingsWindow(SettingsWindow):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    _TAB_NAME_TO_INDEX = {SETTINGS_GROUP.GAME_SETTINGS: SettingsTabIndex.GAME,
-     SETTINGS_GROUP.GRAPHICS_SETTINGS: SettingsTabIndex.GRAPHICS,
-     SETTINGS_GROUP.SOUND_SETTINGS: SettingsTabIndex.SOUND,
-     SETTINGS_GROUP.CONTROLS_SETTINGS: SettingsTabIndex.CONTROL,
-     SETTINGS_GROUP.AIM_SETTINGS: SettingsTabIndex.AIM,
-     SETTINGS_GROUP.MARKERS_SETTINGS: SettingsTabIndex.MARKERS,
-     SETTINGS_GROUP.FEEDBACK_SETTINGS: SettingsTabIndex.FEEDBACK}
+    _TAB_NAME_TO_INDEX = {SETTINGS_GROUP.GAME_SETTINGS: SettingsTabIndex.GAME, 
+       SETTINGS_GROUP.GRAPHICS_SETTINGS: SettingsTabIndex.GRAPHICS, 
+       SETTINGS_GROUP.SOUND_SETTINGS: SettingsTabIndex.SOUND, 
+       SETTINGS_GROUP.CONTROLS_SETTINGS: SettingsTabIndex.CONTROL, 
+       SETTINGS_GROUP.AIM_SETTINGS: SettingsTabIndex.AIM, 
+       SETTINGS_GROUP.MARKERS_SETTINGS: SettingsTabIndex.MARKERS, 
+       SETTINGS_GROUP.FEEDBACK_SETTINGS: SettingsTabIndex.FEEDBACK}
 
     def __init__(self, **kwargs):
-        super(OnboardingSettingsWindow, self).__init__(ctx={'redefinedKeyMode': True,
-         'isBattleSettings': True,
-         'tabIndex': self.sessionProvider.dynamic.overrideSettingsController.defaultTab})
+        super(OnboardingSettingsWindow, self).__init__(ctx={'redefinedKeyMode': True, 
+           'isBattleSettings': True, 
+           'tabIndex': self.sessionProvider.dynamic.overrideSettingsController.defaultTab})
         self._uiLogger = WindowLogger(LogWindows.SETTINGS_MENU)
 
     def as_setCountersDataS(self, countersData):

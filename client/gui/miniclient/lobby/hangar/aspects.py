@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/miniclient/lobby/hangar/aspects.py
 from gui.Scaleform.locale.MINICLIENT import MINICLIENT
 from helpers import aop
 from helpers.i18n import makeString as _ms
@@ -28,7 +26,8 @@ class DisableTankServiceButtons(aop.Aspect):
             cd.args[0]['maintenanceEnabled'] = False
             cd.args[0]['customizationEnabled'] = False
             cd.args[0]['customizationTooltip'] = tooltip
-            return (cd.args, cd.kwargs)
+            return (
+             cd.args, cd.kwargs)
         else:
             return
 
@@ -44,7 +43,7 @@ class TankModelHangarVisibility(aop.Aspect):
             cd.avoid()
             return False
         else:
-            return None
+            return
 
 
 class TankHangarStatus(aop.Aspect):
@@ -56,9 +55,12 @@ class TankHangarStatus(aop.Aspect):
     def atCall(self, cd):
         if g_currentVehicle.isPresent() and not self.__config['vehicle_is_available'](g_currentVehicle.item):
             cd.avoid()
-            return (Vehicle.VEHICLE_STATE.NOT_PRESENT, _ms(self.__config.get('sandbox_platform_message', '#miniclient:hangar/unavailable')), Vehicle.VEHICLE_STATE_LEVEL.CRITICAL)
+            return (
+             Vehicle.VEHICLE_STATE.NOT_PRESENT,
+             _ms(self.__config.get('sandbox_platform_message', '#miniclient:hangar/unavailable')),
+             Vehicle.VEHICLE_STATE_LEVEL.CRITICAL)
         else:
-            return None
+            return
 
 
 class EnableCrew(aop.Aspect):
@@ -70,9 +72,11 @@ class EnableCrew(aop.Aspect):
     def atCall(self, cd):
         if g_currentVehicle.isPresent() and not self.__vehicle_is_available(g_currentVehicle.item):
             cd.change()
-            return ([True], {})
+            return (
+             [
+              True], {})
         else:
-            return None
+            return
 
 
 class ChangeLobbyMenuTooltip(aop.Aspect):

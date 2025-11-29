@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/battle_result_view/battle_result_view.py
 import typing
 from collections import OrderedDict
 import SoundGroups
@@ -47,14 +45,14 @@ if typing.TYPE_CHECKING:
     from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_result_view.leaderboard_model import LeaderboardModel
 _THE_BEST_PLACE = 1
 _BR_POINTS_ICON = R.images.gui.maps.icons.battleRoyale.battleResult.leaderboard.br_selector_16()
-_BATTLE_REWARD_TYPES = [BattleRewardItemModel.XP,
- BattleRewardItemModel.CREDITS,
- BattleRewardItemModel.BATTLE_PASS_POINTS,
- BattleRewardItemModel.CRYSTALS,
- BattleRewardItemModel.BATTLE_ROYALE_COIN,
- BattleRewardItemModel.BR_PROGRESSION_TOKEN]
-_HIDDEN_BONUSES_WITH_ZERO_VALUES = frozenset([BattleRewardItemModel.CRYSTALS, BattleRewardItemModel.BATTLE_PASS_POINTS])
-_TOURNAMENT_ARENA_BONUS_TYPES = (ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
+_BATTLE_REWARD_TYPES = [
+ BattleRewardItemModel.XP, BattleRewardItemModel.CREDITS,
+ BattleRewardItemModel.BATTLE_PASS_POINTS, BattleRewardItemModel.CRYSTALS,
+ BattleRewardItemModel.BATTLE_ROYALE_COIN, BattleRewardItemModel.BR_PROGRESSION_TOKEN]
+_HIDDEN_BONUSES_WITH_ZERO_VALUES = frozenset([
+ BattleRewardItemModel.CRYSTALS, BattleRewardItemModel.BATTLE_PASS_POINTS])
+_TOURNAMENT_ARENA_BONUS_TYPES = (
+ ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
 _INVALID_PREBATTLE_ID = 0
 
 class BattleRoyaleBattleResultsWindow(WindowImpl):
@@ -64,7 +62,8 @@ class BattleRoyaleBattleResultsWindow(WindowImpl):
 
 
 class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbListener):
-    __slots__ = ('__arenaUniqueID', '__tooltipsData', '__tooltipParametersCreator', '__data', '__isObserverResult', '__arenaBonusType', '__ally', '__squadCreatedByInvite')
+    __slots__ = ('__arenaUniqueID', '__tooltipsData', '__tooltipParametersCreator',
+                 '__data', '__isObserverResult', '__arenaBonusType', '__ally', '__squadCreatedByInvite')
     __battleResults = dependency.descriptor(IBattleResultsService)
     __brController = dependency.descriptor(IBattleRoyaleController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
@@ -112,7 +111,7 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
             tooltipID = self.__normalizeTooltipID(event.getArgument('tooltipId', ''))
             parametersCreator = self.__tooltipParametersCreator.get(tooltipID)
             if parametersCreator is None:
-                raise SoftException('Invalid arguments to create an old flash tooltip with id {}'.format(tooltipID))
+                raise SoftException(('Invalid arguments to create an old flash tooltip with id {}').format(tooltipID))
             tooltipParameters = parametersCreator(event)
             window = BackportTooltipWindow(tooltipParameters, self.getParentWindow())
             window.load()
@@ -158,20 +157,27 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
         self.__update()
 
     def _getEvents(self):
-        return ((self.viewModel.personalResults.battlePassProgress.onSubmitClick, self.__onBattlePassClick),
-         (self.viewModel.playerBattleTypeStatus.onInviteToPlatoon, self.__onInviteToPlatoonClick),
-         (self.__brController.onUpdated, self.__updateBattlePass),
-         (self.__platoonCtrl.onMembersUpdate, self.__updateSquadState))
+        return (
+         (
+          self.viewModel.personalResults.battlePassProgress.onSubmitClick, self.__onBattlePassClick),
+         (
+          self.viewModel.playerBattleTypeStatus.onInviteToPlatoon, self.__onInviteToPlatoonClick),
+         (
+          self.__brController.onUpdated, self.__updateBattlePass),
+         (
+          self.__platoonCtrl.onMembersUpdate, self.__updateSquadState))
 
     def _getListeners(self):
-        return ((BattleRoyalePlatoonEvent.LEAVED_PLATOON, self.__onLeavedPlatoon, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          BattleRoyalePlatoonEvent.LEAVED_PLATOON, self.__onLeavedPlatoon, EVENT_BUS_SCOPE.LOBBY),)
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def __update(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__setPlayerBattleTypeStatus(model.playerBattleTypeStatus)
             self.__setPersonalResult(model.personalResults)
             self.__setLeaderboard(model.leaderboardLobbyModel)
@@ -249,41 +255,42 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
             for vehicle in leaderboard:
                 placesData.append([vehicle])
 
-        placesData.sort(key=lambda v: v[0]['place'])
-        groupList = leaderboardModel.getPlacesList()
-        groupList.clear()
-        for placeData in placesData:
-            placeModel = PlaceModel()
-            placeModel.setPlace(str(placeData[0]['place']))
-            placeModel.setIsSquadMode(self.__isSquadMode())
-            rowList = placeModel.getPlayersList()
-            rowList.clear()
-            for rowData in placeData:
-                rowModel = RowModel()
-                if rowData['isPersonal']:
-                    rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_PLAYER)
-                elif rowData['isPersonalSquad']:
-                    rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_PLATOON)
-                else:
-                    rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_ENEMY)
-                rowModel.setAnonymizerNick(rowData['hiddenName'])
-                self.__setUserName(rowModel.user, rowData)
-                rowModel.user.setKills(rowData['kills'])
-                rowModel.user.setDamage(rowData['damage'])
-                rowModel.user.setVehicleLevel(rowData['achievedLevel'])
-                rowModel.user.setVehicleType(rowData['vehicleType'])
-                rowModel.user.setVehicleName(rowData['vehicleName'])
-                rowList.addViewModel(rowModel)
+            placesData.sort(key=lambda v: v[0]['place'])
+            groupList = leaderboardModel.getPlacesList()
+            groupList.clear()
+            for placeData in placesData:
+                placeModel = PlaceModel()
+                placeModel.setPlace(str(placeData[0]['place']))
+                placeModel.setIsSquadMode(self.__isSquadMode())
+                rowList = placeModel.getPlayersList()
+                rowList.clear()
+                for rowData in placeData:
+                    rowModel = RowModel()
+                    if rowData['isPersonal']:
+                        rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_PLAYER)
+                    elif rowData['isPersonalSquad']:
+                        rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_PLATOON)
+                    else:
+                        rowModel.setType(LeaderboardConstants.ROW_TYPE_BR_ENEMY)
+                    rowModel.setAnonymizerNick(rowData['hiddenName'])
+                    self.__setUserName(rowModel.user, rowData)
+                    rowModel.user.setKills(rowData['kills'])
+                    rowModel.user.setDamage(rowData['damage'])
+                    rowModel.user.setVehicleLevel(rowData['achievedLevel'])
+                    rowModel.user.setVehicleType(rowData['vehicleType'])
+                    rowModel.user.setVehicleName(rowData['vehicleName'])
+                    rowList.addViewModel(rowModel)
 
-            rowList.invalidate()
-            groupList.addViewModel(placeModel)
+                rowList.invalidate()
+                groupList.addViewModel(placeModel)
 
         groupList.invalidate()
         return
 
     def __getFinishReason(self):
         isWinner = self.__data[BRSections.COMMON]['playerPlace'] == _THE_BEST_PLACE
-        isWinnerPlace = self.__data[BRSections.COMMON]['playerPlace'] in (2, 3, 4, 5)
+        isWinnerPlace = self.__data[BRSections.COMMON]['playerPlace'] in (2, 3, 4,
+                                                                          5)
         isInSquad = self.__data[BRSections.COMMON]['isSquadMode']
         if isWinner:
             finishReason = R.strings.battle_royale.battleResult.title.victoryFirst()
@@ -353,7 +360,7 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
         rewardList.invalidate()
 
     def __setIsPlatoonWindowOpen(self, isOpen):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.playerBattleTypeStatus.setIsPlatoonWindowOpen(isOpen)
 
     def __getBrProgressionTokenCount(self):
@@ -397,6 +404,7 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
         model.setVehicleName(vehicleInfo['vehicleName'])
         model.setVehicleType(vehicleInfo['vehicleType'])
         model.setHasPremium(self.__hasPremium())
+        model.setIsObserver(vehicleInfo['isObserver'])
         return
 
     def __setMapName(self):
@@ -408,33 +416,35 @@ class BattleRoyaleBattleResultsView(ViewComponent[BattleResultViewModel], IPrbLi
         personalModel.setQuestCompleted(questsCount)
 
     def __getTooltipParametersCreator(self):
-        return {TooltipConstantsModel.ACHIEVEMENT_TOOLTIP: self.__getAchievementTooltipParameters,
-         TooltipConstantsModel.QUEST_COMPLETE_TOOLTIP: self.__getQuestsTooltipParameters,
-         TooltipConstantsModel.BONUS_TOOLTIP: self.__getBonusTooltipParameters}
+        return {TooltipConstantsModel.ACHIEVEMENT_TOOLTIP: self.__getAchievementTooltipParameters, 
+           TooltipConstantsModel.QUEST_COMPLETE_TOOLTIP: self.__getQuestsTooltipParameters, 
+           TooltipConstantsModel.BONUS_TOOLTIP: self.__getBonusTooltipParameters}
 
     def __getAchievementTooltipParameters(self, event):
         achievementName = event.getArgument('achievementName')
         if achievementName is None:
             raise SoftException('There is no achievement info in tooltip arguments')
-        return createTooltipData(isSpecial=True, specialAlias=TooltipConstantsModel.ACHIEVEMENT_TOOLTIP, specialArgs=[0,
-         achievementName,
-         False,
-         [],
-         0,
-         0])
+        return createTooltipData(isSpecial=True, specialAlias=TooltipConstantsModel.ACHIEVEMENT_TOOLTIP, specialArgs=[
+         0, achievementName, False, [], 0, 0])
 
     def __getQuestsTooltipParameters(self, _):
         completedQuestIDs = self.__data[BRSections.PERSONAL][BRSections.REWARDS]['completedQuests'].keys()
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_ROYALE_COMPLETED_QUESTS_INFO, specialArgs=[HANGAR_HEADER_QUESTS.QUEST_TYPE_COMMON, completedQuestIDs])
+        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_ROYALE_COMPLETED_QUESTS_INFO, specialArgs=[
+         HANGAR_HEADER_QUESTS.QUEST_TYPE_COMMON, completedQuestIDs])
 
     def __getBonusTooltipParameters(self, event):
         _, bonusID = event.getArgument('tooltipId', '').split(':')
         tooltipData = self.__tooltipsData.get(bonusID)
-        return None if tooltipData is None else tooltipData
+        if tooltipData is None:
+            return
+        else:
+            return tooltipData
 
     @staticmethod
     def __normalizeTooltipID(tooltipID):
-        return TooltipConstantsModel.BONUS_TOOLTIP if tooltipID.startswith(TooltipConstantsModel.BONUS_TOOLTIP) else tooltipID
+        if tooltipID.startswith(TooltipConstantsModel.BONUS_TOOLTIP):
+            return TooltipConstantsModel.BONUS_TOOLTIP
+        return tooltipID
 
     def __parseProgressionTokenCount(self, tokens):
         return tokens.get(self.__brProgressionController.progressionToken, {}).get('count', 0)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/DIALOGS.py
 from debug_utils import LOG_WARNING
 
 class DIALOGS(object):
@@ -815,6 +813,10 @@ class DIALOGS(object):
     SOUNDSPEAKERSPRESETRESET_MESSAGE = '#dialogs:soundSpeakersPresetReset/message'
     SOUNDSPEAKERSPRESETRESET_SUBMIT = '#dialogs:soundSpeakersPresetReset/submit'
     SOUNDSPEAKERSPRESETRESET_CANCEL = '#dialogs:soundSpeakersPresetReset/cancel'
+    PHYSICSSOUNDQUALITYDOESNOTMATCH_TITLE = '#dialogs:physicsSoundQualityDoesNotMatch/title'
+    PHYSICSSOUNDQUALITYDOESNOTMATCH_MESSAGE = '#dialogs:physicsSoundQualityDoesNotMatch/message'
+    PHYSICSSOUNDQUALITYDOESNOTMATCH_SUBMIT = '#dialogs:physicsSoundQualityDoesNotMatch/submit'
+    PHYSICSSOUNDQUALITYDOESNOTMATCH_CANCEL = '#dialogs:physicsSoundQualityDoesNotMatch/cancel'
     STRONGHOLD_LEAVE_TITLE = '#dialogs:stronghold/leave/title'
     STRONGHOLD_LEAVE_MESSAGE = '#dialogs:stronghold/leave/message'
     STRONGHOLD_LEAVEDEFEAT_TITLE = '#dialogs:stronghold/leaveDefeat/title'
@@ -1003,6 +1005,7 @@ class DIALOGS(object):
     RETRAIN_PRICECARD_CREDITS_DESCRIPTION = '#dialogs:retrain/priceCard/credits/description'
     RETRAIN_PRICECARD_GOLD_DESCRIPTION = '#dialogs:retrain/priceCard/gold/description'
     RETRAIN_TITLE_MASSIVE = '#dialogs:retrain/title/massive'
+    RETRAIN_TITLE_MASSIVEVEHICLETAG = '#dialogs:retrain/title/massiveVehicleTag'
     RETRAIN_MASSIVE_TANKMENCOUNT = '#dialogs:retrain/massive/tankmenCount'
     RETRAIN_CHANGEROLE = '#dialogs:retrain/changeRole'
     RETRAIN_PRICE = '#dialogs:retrain/price'
@@ -1064,12 +1067,14 @@ class DIALOGS(object):
     FILLALLPERKS_BUTTON_FILL = '#dialogs:fillAllPerks/button/fill'
     FILLALLPERKS_BUTTON_CANCEL = '#dialogs:fillAllPerks/button/cancel'
     FILLALLPERKS_DESCRIPTION = '#dialogs:fillAllPerks/description'
-    VEHICLESELLDIALOG_VEHICLETYPE_ENUM = (VEHICLESELLDIALOG_VEHICLETYPE_LIGHTTANK,
+    VEHICLESELLDIALOG_VEHICLETYPE_ENUM = (
+     VEHICLESELLDIALOG_VEHICLETYPE_LIGHTTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_MEDIUMTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_HEAVYTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_SPG,
      VEHICLESELLDIALOG_VEHICLETYPE_AT_SPG)
-    ALL_ENUM = (INTERVIEWQUIT_TITLE,
+    ALL_ENUM = (
+     INTERVIEWQUIT_TITLE,
      INTERVIEWQUIT_MESSAGE,
      INTERVIEWQUIT_SUBMIT,
      INTERVIEWQUIT_CANCEL,
@@ -1868,6 +1873,10 @@ class DIALOGS(object):
      SOUNDSPEAKERSPRESETRESET_MESSAGE,
      SOUNDSPEAKERSPRESETRESET_SUBMIT,
      SOUNDSPEAKERSPRESETRESET_CANCEL,
+     PHYSICSSOUNDQUALITYDOESNOTMATCH_TITLE,
+     PHYSICSSOUNDQUALITYDOESNOTMATCH_MESSAGE,
+     PHYSICSSOUNDQUALITYDOESNOTMATCH_SUBMIT,
+     PHYSICSSOUNDQUALITYDOESNOTMATCH_CANCEL,
      STRONGHOLD_LEAVE_TITLE,
      STRONGHOLD_LEAVE_MESSAGE,
      STRONGHOLD_LEAVEDEFEAT_TITLE,
@@ -2056,6 +2065,7 @@ class DIALOGS(object):
      RETRAIN_PRICECARD_CREDITS_DESCRIPTION,
      RETRAIN_PRICECARD_GOLD_DESCRIPTION,
      RETRAIN_TITLE_MASSIVE,
+     RETRAIN_TITLE_MASSIVEVEHICLETAG,
      RETRAIN_MASSIVE_TANKMENCOUNT,
      RETRAIN_CHANGEROLE,
      RETRAIN_PRICE,
@@ -2120,18 +2130,18 @@ class DIALOGS(object):
 
     @classmethod
     def vehicleselldialog_vehicletype(cls, key0):
-        outcome = '#dialogs:vehicleSellDialog/vehicleType/{}'.format(key0)
+        outcome = ('#dialogs:vehicleSellDialog/vehicleType/{}').format(key0)
         if outcome not in cls.VEHICLESELLDIALOG_VEHICLETYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def all(cls, key0):
-        outcome = '#dialogs:{}'.format(key0)
+        outcome = ('#dialogs:{}').format(key0)
         if outcome not in cls.ALL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

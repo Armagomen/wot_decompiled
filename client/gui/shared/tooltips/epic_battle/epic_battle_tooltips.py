@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/epic_battle/epic_battle_tooltips.py
 import logging
 from helpers.i18n import makeString
 from constants import PLAYER_RANK

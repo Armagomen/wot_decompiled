@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/battle_hints_blocks.py
 import typing
 from visual_script.slot_types import SLOT_TYPE
 from visual_script.misc import ASPECT, errorVScript
@@ -8,7 +6,7 @@ from visual_script.dependency import dependencyImporter
 from visual_script.battle_hints_common import BaseSelectHint, BaseHintAction, HintActionParamsMixin, HintsMeta
 from hints.battle import manager as battleHintsModelsMgr
 from skeletons.gui.battle_session import IBattleSessionProvider
-dependency = dependencyImporter('helpers.dependency')
+dependency, = dependencyImporter('helpers.dependency')
 if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.battle_hints.controller import BattleHintsController
     from hints.battle.schemas.base import CHMType
@@ -18,7 +16,8 @@ class SelectHint(BaseSelectHint):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
     @classmethod
     def _getModelsManager(cls, initialize=False):
@@ -36,7 +35,8 @@ class CanShowHint(Block, HintsMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
     def _execute(self):
         modelsMgr = battleHintsModelsMgr.get()
@@ -47,7 +47,7 @@ class CanShowHint(Block, HintsMeta):
         model = modelsMgr.get(hintId)
         if not model:
             self._result.setValue(False)
-            errorVScript(self, 'Hint [{}] does not exist.'.format(hintId))
+            errorVScript(self, ('Hint [{}] does not exist.').format(hintId))
             return
         self._result.setValue(model.canBeShown())
 
@@ -60,15 +60,17 @@ class ReceiverMixin(object):
         if not controller:
             errorVScript(self, 'Can not access the BattleHintsController.')
             return []
-        return [controller]
+        return [
+         controller]
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
 
 class ShowHint(ReceiverMixin, HintActionParamsMixin, BaseHintAction):
-    RESERVED = HintActionParamsMixin.RESERVED + ('immediately',)
+    RESERVED = HintActionParamsMixin.RESERVED + ('immediately', )
 
     def __init__(self, *args, **kwargs):
         super(ShowHint, self).__init__(*args, **kwargs)

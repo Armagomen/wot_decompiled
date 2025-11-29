@@ -1,13 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ClientHangarSpace.py
 import copy
 from logging import getLogger
-import itertools
-import BigWorld
-import Math
-import MusicControllerWWISE
-import ResMgr
-import constants
+import itertools, BigWorld, Math, MusicControllerWWISE, ResMgr, constants
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION
 from gui.hangar_config import HangarConfig
@@ -29,7 +22,7 @@ SERVER_CMD_CHANGE_HANGAR_ALT = 'cmd_change_hangar_alt'
 _CUSTOMIZATION_HANGAR_SETTINGS_SEC = 'customizationHangarSettings'
 _LOGIN_BLACK_BG_IMG = 'gui/maps/login/blackBg.png'
 _SECONDARY_HANGAR_SETTINGS_SEC = 'secondaryHangarSettings'
-FULL_VISIBILITY_TAG_IDS = set((HANGAR_VISIBILITY_TAGS.IDS[key] for key in itertools.chain(HANGAR_VISIBILITY_TAGS.LAYERS, HANGAR_VISIBILITY_TAGS.REGIONS)))
+FULL_VISIBILITY_TAG_IDS = set(HANGAR_VISIBILITY_TAGS.IDS[key] for key in itertools.chain(HANGAR_VISIBILITY_TAGS.LAYERS, HANGAR_VISIBILITY_TAGS.REGIONS))
 
 def getDefaultHangarPath(isPremium):
     global _HANGAR_CFGS
@@ -40,7 +33,9 @@ def _getHangarPath(isPremium, isPremIGR):
     global _EVENT_HANGAR_PATHS
     if isPremium in _EVENT_HANGAR_PATHS:
         return _EVENT_HANGAR_PATHS[isPremium][0]
-    return _HANGAR_CFGS[getDefaultHangarPath(False)][_IGR_HANGAR_PATH_KEY] if isPremIGR else getDefaultHangarPath(isPremium)
+    if isPremIGR:
+        return _HANGAR_CFGS[getDefaultHangarPath(False)][_IGR_HANGAR_PATH_KEY]
+    return getDefaultHangarPath(isPremium)
 
 
 def _getHangarKey(path):
@@ -48,7 +43,9 @@ def _getHangarKey(path):
 
 
 def _getHangarType(isPremium):
-    return 'premium' if isPremium else 'basic'
+    if isPremium:
+        return 'premium'
+    return 'basic'
 
 
 def getHangarFullVisibilityMask(spacePath):
@@ -59,7 +56,9 @@ def getHangarFullVisibilityMask(spacePath):
 
 
 def _getHangarVisibilityMask(isPremium, spacePath):
-    return _EVENT_HANGAR_PATHS[isPremium][1] if isPremium in _EVENT_HANGAR_PATHS else getHangarFullVisibilityMask(spacePath)
+    if isPremium in _EVENT_HANGAR_PATHS:
+        return _EVENT_HANGAR_PATHS[isPremium][1]
+    return getHangarFullVisibilityMask(spacePath)
 
 
 _CFG = HangarConfig()
@@ -92,11 +91,11 @@ def _readHangarSettings():
                 defaultSpace = item.readString('space')
                 break
 
-    configset = {constants.DEFAULT_HANGAR_SCENE: '{}/{}'.format(_DEFAULT_SPACES_PATH, defaultSpace)}
+    configset = {constants.DEFAULT_HANGAR_SCENE: ('{}/{}').format(_DEFAULT_SPACES_PATH, defaultSpace)}
     for folderName in paths:
-        spacePath = '{prefix}/{node}'.format(prefix=_DEFAULT_SPACES_PATH, node=folderName)
+        spacePath = ('{prefix}/{node}').format(prefix=_DEFAULT_SPACES_PATH, node=folderName)
         spaceKey = _getHangarKey(spacePath)
-        settingsXmlPath = '{path}/{file}/{sec}'.format(path=spacePath, file='space.settings', sec='hangarSettings')
+        settingsXmlPath = ('{path}/{file}/{sec}').format(path=spacePath, file='space.settings', sec='hangarSettings')
         ResMgr.purge(settingsXmlPath, True)
         settingsXml = ResMgr.openSection(settingsXmlPath)
         if settingsXml is None:
@@ -127,7 +126,9 @@ def _loadVisualScript(cfg, section):
 
 
 def _getSpaceNameFromPath(path):
-    return path if 'spaces' not in path else path.split('/')[-1]
+    if 'spaces' not in path:
+        return path
+    return path.split('/')[(-1)]
 
 
 class ClientHangarSpace(object):
@@ -167,7 +168,7 @@ class ClientHangarSpace(object):
         spacePath = _getHangarPath(isPremium, isIGR)
         spaceType = _getHangarType(isPremium)
         spaceVisibilityMask = _getHangarVisibilityMask(isPremium, spacePath)
-        LOG_DEBUG('load hangar: hangar type = <{0:>s}>, space = <{1:>s}>'.format(spaceType, spacePath))
+        LOG_DEBUG(('load hangar: hangar type = <{0:>s}>, space = <{1:>s}>').format(spaceType, spacePath))
         safeSpacePath = getDefaultHangarPath(False)
         if ResMgr.openSection(spacePath) is None:
             LOG_ERROR('Failed to load hangar from path: %s; default hangar will be loaded instead' % spacePath)
@@ -191,7 +192,8 @@ class ClientHangarSpace(object):
         spaceKey = _getHangarKey(spacePath)
         _CFG = copy.deepcopy(_HANGAR_CFGS[spaceKey])
         self.turretAndGunAngles.init()
-        self.__vEntityId = BigWorld.createEntity('HangarVehicle', self.__space.id, 0, _CFG['v_start_pos'], (_CFG['v_start_angles'][2], _CFG['v_start_angles'][1], _CFG['v_start_angles'][0]), dict())
+        self.__vEntityId = BigWorld.createEntity('HangarVehicle', self.__space.id, 0, _CFG['v_start_pos'], (
+         _CFG['v_start_angles'][2], _CFG['v_start_angles'][1], _CFG['v_start_angles'][0]), dict())
         camera = BigWorld.FreeCamera()
         camera.spaceID = self.__space.id
         cameraMatrix = Math.Matrix()
@@ -259,7 +261,10 @@ class ClientHangarSpace(object):
 
     def getCentralPointForArea(self, areaId):
         vEntity = self.getVehicleEntity()
-        return vEntity.appearance.getCentralPointForArea(areaId) if vEntity is not None and vEntity.isVehicleLoaded else None
+        if vEntity is not None and vEntity.isVehicleLoaded:
+            return vEntity.appearance.getCentralPointForArea(areaId)
+        else:
+            return
 
     def destroy(self):
         self.__onLoadedCallback = None
@@ -281,10 +286,14 @@ class ClientHangarSpace(object):
 
     def getAnchorParams(self, slotId, areaId, regionId):
         vEntity = self.getVehicleEntity()
-        return vEntity.appearance.getAnchorParams(slotId, areaId, regionId) if vEntity is not None and vEntity.appearance is not None and vEntity.isVehicleLoaded else None
+        if vEntity is not None and vEntity.appearance is not None and vEntity.isVehicleLoaded:
+            return vEntity.appearance.getAnchorParams(slotId, areaId, regionId)
+        else:
+            return
 
     def getVehicleEntity(self):
-        return BigWorld.entity(self.__vEntityId) if self.__vEntityId else None
+        if self.__vEntityId:
+            return BigWorld.entity(self.__vEntityId)
 
     @property
     def vehicleEntityId(self):
@@ -337,7 +346,10 @@ class ClientHangarSpace(object):
         return self.__space
 
     def getSpaceID(self):
-        return self.__space.id if self.__space is not None else None
+        if self.__space is not None:
+            return self.__space.id
+        else:
+            return
 
     @property
     def spacePath(self):
@@ -368,7 +380,8 @@ class _ClientHangarSpacePathOverride(object):
         if path is not None:
             if visibilityMask is None:
                 visibilityMask = getHangarFullVisibilityMask(path)
-            _EVENT_HANGAR_PATHS[isPremium] = (path, visibilityMask)
+            _EVENT_HANGAR_PATHS[isPremium] = (
+             path, visibilityMask)
         elif isPremium in _EVENT_HANGAR_PATHS:
             del _EVENT_HANGAR_PATHS[isPremium]
         if isReload:

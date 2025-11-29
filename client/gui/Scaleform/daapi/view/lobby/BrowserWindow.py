@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/BrowserWindow.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.BrowserWindowMeta import BrowserWindowMeta
@@ -36,7 +34,7 @@ class BrowserWindow(BrowserWindowMeta):
         if webBrowser is not None:
             webBrowser.onUserRequestToClose()
         else:
-            LOG_ERROR('Browser not found. Browser id = "{}"'.format(self.__browserID))
+            LOG_ERROR(('Browser not found. Browser id = "{}"').format(self.__browserID))
         self.destroy()
         return
 

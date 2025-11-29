@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/post_progression_cmp_component.py
 from __future__ import absolute_import
 import typing
 from Event import Event
@@ -19,17 +17,16 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.post_progression.single_step_model import SingleStepModel
     from gui.veh_post_progression.models.progression import PostProgressionItem
     from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
-_SINGLE_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED,
- PostProgressionStepState.LOCKED: StepState.AVAILABLEPURCHASE,
- PostProgressionStepState.RECEIVED: StepState.AVAILABLEPURCHASE,
- PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
-_MULTI_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED,
- PostProgressionStepState.LOCKED: StepState.RECEIVED,
- PostProgressionStepState.RECEIVED: StepState.RECEIVED,
- PostProgressionStepState.UNLOCKED: StepState.RECEIVED}
+_SINGLE_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED, PostProgressionStepState.LOCKED: StepState.AVAILABLEPURCHASE, 
+   PostProgressionStepState.RECEIVED: StepState.AVAILABLEPURCHASE, 
+   PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
+_MULTI_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED, 
+   PostProgressionStepState.LOCKED: StepState.RECEIVED, 
+   PostProgressionStepState.RECEIVED: StepState.RECEIVED, 
+   PostProgressionStepState.UNLOCKED: StepState.RECEIVED}
 
 class PostProgressionCmpComponentView(PostProgressionBaseComponentView):
-    __slots__ = ('onExitAction',)
+    __slots__ = ('onExitAction', )
 
     def __init__(self, layoutID=R.views.lobby.veh_post_progression.VehiclePostProgressionCmpView(), **kwargs):
         super(PostProgressionCmpComponentView, self).__init__(layoutID, PostProgressionCmpViewModel(), **kwargs)
@@ -47,7 +44,9 @@ class PostProgressionCmpComponentView(PostProgressionBaseComponentView):
         if contentID == R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView() and stepId is not None and modId is not None:
             return CmpPairModificationTooltipView(self._vehicle, stepId, modId)
         else:
-            return CmpProgressionLevelTooltipView(self._vehicle, stepId) if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None else super(PostProgressionCmpComponentView, self).createToolTipContent(event, contentID)
+            if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None:
+                return CmpProgressionLevelTooltipView(self._vehicle, stepId)
+            return super(PostProgressionCmpComponentView, self).createToolTipContent(event, contentID)
 
     def _addListeners(self):
         super(PostProgressionCmpComponentView, self)._addListeners()

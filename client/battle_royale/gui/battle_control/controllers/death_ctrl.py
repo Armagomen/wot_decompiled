@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/death_ctrl.py
 import logging
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from helpers import dependency

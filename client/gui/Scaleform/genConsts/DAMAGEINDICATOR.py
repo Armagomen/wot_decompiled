@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/DAMAGEINDICATOR.py
 
 
 class DAMAGEINDICATOR(object):
@@ -61,15 +59,3 @@ class DAMAGEINDICATOR(object):
     TRIPLEX_CIRCLE = 'triplexCircle'
     TURRET_CIRCLE = 'turretCircle'
     WHEEL_CIRCLE = 'wheelCircle'
-    HW_ALPHA = 'hw_alpha'
-    HW_BOMBER = 'hw_bomber'
-    HW_BOMBER_ALPHA = 'hw_bomber_alpha'
-    HW_BOSS = 'hw_boss'
-    HW_CATCHER = 'hw_catcher'
-    HW_CHARGER = 'hw_charger'
-    HW_DETONATOR = 'hw_detonator'
-    HW_HUNTER = 'hw_hunter'
-    HW_RIPPER = 'hw_ripper'
-    HW_RUNNER = 'hw_runner'
-    HW_SENTRY = 'hw_sentry'
-    HW_TURRET = 'hw_turret'

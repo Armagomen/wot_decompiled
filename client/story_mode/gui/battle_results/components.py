@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/battle_results/components.py
 from gui.battle_results.components import base
 from gui.server_events.bonuses import getNonQuestBonuses, mergeBonuses
 from gui.impl.gen import R
@@ -47,7 +45,10 @@ class VehicleNameItem(base.StatsItem):
 
     def _convert(self, record, reusable):
         mission = self._storyModeCtrl.missions.getMission(record['avatar']['missionId'])
-        return '' if mission is None else getUserName(vehicles.makeVehicleTypeByName(mission.vehicle.name))
+        if mission is None:
+            return ''
+        else:
+            return getUserName(vehicles.makeVehicleTypeByName(mission.vehicle.name))
 
 
 class VehicleBlock(base.StatsBlock):

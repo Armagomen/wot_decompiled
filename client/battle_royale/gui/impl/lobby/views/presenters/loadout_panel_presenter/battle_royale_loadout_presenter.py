@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/loadout_panel_presenter/battle_royale_loadout_presenter.py
 from helpers import dependency, time_utils
 from items import EQUIPMENT_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -28,10 +26,15 @@ class BattleRoyaleLoadoutPresenter(ViewComponent[LoadoutViewModel]):
     @staticmethod
     def getTooltipData(event):
         intCD = int(event.getArgument('intCD', 0))
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TECH_MAIN_SHELL, specialArgs=(intCD,))
+        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TECH_MAIN_SHELL, specialArgs=(
+         intCD,))
 
     def _getEvents(self):
-        return super(BattleRoyaleLoadoutPresenter, self)._getEvents() + ((self.getViewModel().showUpgrades, self.__showUpgrades), (self.__battleRoyaleController.onUpdated, self.__updateModel))
+        return super(BattleRoyaleLoadoutPresenter, self)._getEvents() + (
+         (
+          self.getViewModel().showUpgrades, self.__showUpgrades),
+         (
+          self.__battleRoyaleController.onUpdated, self.__updateModel))
 
     def _onLoading(self, *args, **kwargs):
         super(BattleRoyaleLoadoutPresenter, self)._onLoading()
@@ -45,7 +48,7 @@ class BattleRoyaleLoadoutPresenter(ViewComponent[LoadoutViewModel]):
     def __updateModel(self, *_):
         if not self.__vehicle:
             return
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             self.__setShells(self.__vehicle, model)
             self.__setEquipmentAndAbilities(self.__vehicle, model)
             self.__setRespawnAbility(model.respawnAbility)

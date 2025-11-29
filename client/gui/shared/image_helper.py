@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/image_helper.py
-import BigWorld
-import ResMgr
+import BigWorld, ResMgr
 from adisp import adisp_async
 from constants import GF_RES_PROTOCOL
 from debug_utils import LOG_WARNING, LOG_ERROR
@@ -9,11 +6,14 @@ from gui.shared.utils import mapTextureToTheMemory, getImageSize, removeTextureF
 
 def readLocalImage(path):
     data = ResMgr.openSection(path)
-    return data.asBinary if data is not None else None
+    if data is not None:
+        return data.asBinary
+    else:
+        return
 
 
 def getTextureLinkByID(imageID, prefix=GF_RES_PROTOCOL.IMG):
-    return '{}{}'.format(prefix, imageID)
+    return ('{}{}').format(prefix, imageID)
 
 
 class ImageHelper(object):
@@ -57,7 +57,7 @@ class ImagesFetchCoordinator(object):
 
     def __del__(self):
         for url, imageID in self.__texturesCache.iteritems():
-            LOG_ERROR('Image "{}" was not removed from memory (id={}). Perhaps, forgot to call "fini"'.format(url, imageID))
+            LOG_ERROR(('Image "{}" was not removed from memory (id={}). Perhaps, forgot to call "fini"').format(url, imageID))
 
     @adisp_async
     def fetchImageByUrl(self, url, oneUse=True, callback=None):
@@ -83,7 +83,7 @@ class ImagesFetchCoordinator(object):
 
     def clearMappedImageByUrl(self, url):
         if url not in self.__texturesCache:
-            LOG_WARNING('Mapped image "{}" not found!'.format(url))
+            LOG_WARNING(('Mapped image "{}" not found!').format(url))
         else:
             removeTextureFromMemory(self.__texturesCache[url])
 

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/LobbyView.py
-import logging
-import typing
-import constants
-import gui
+import logging, typing, constants, gui
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
@@ -34,7 +29,8 @@ from skeletons.gui.game_control import IIGRController, IMapsTrainingController, 
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
-registerLifecycleHandledSubViews([VIEW_ALIAS.LOBBY_HANGAR,
+registerLifecycleHandledSubViews([
+ VIEW_ALIAS.LOBBY_HANGAR,
  VIEW_ALIAS.LEGACY_LOBBY_HANGAR,
  VIEW_ALIAS.LOBBY_STORE,
  VIEW_ALIAS.LOBBY_STORAGE,
@@ -64,7 +60,8 @@ registerLifecycleHandledSubViews([VIEW_ALIAS.LOBBY_HANGAR,
 
 class _LobbySubViewsLifecycleHandler(IViewLifecycleHandler):
     __WAITING_LBL = 'loadPage'
-    __DYNAMIC_VIEWS = (R.views.lobby.dog_tags.AnimatedDogTagsView(),)
+    __DYNAMIC_VIEWS = (
+     R.views.lobby.dog_tags.AnimatedDogTagsView(),)
 
     def __init__(self):
         super(_LobbySubViewsLifecycleHandler, self).__init__([ ViewKey(alias) for alias in collectLifecycleHandledSubViews() + collectViewsForMonitoring() ] + [ ViewKeyDynamic(alias) for alias in self.__DYNAMIC_VIEWS ])
@@ -106,10 +103,9 @@ class LobbyPanelInjector(InjectComponentAdaptor, IGlobalListener):
         self._viewType = self._getViewType()
         if self._injectView is None or type(self._injectView) is self._viewType:
             return
-        else:
-            self._destroyInjected()
-            self._createInjectView()
-            return
+        self._destroyInjected()
+        self._createInjectView()
+        return
 
     def destroy(self):
         self.stopGlobalListening()
@@ -165,7 +161,7 @@ class LobbyView(LobbyPageMeta, IWaitingWidget, IGlobalListener):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def showWaiting(self, message, softStart=False, showBg=True):
         self.as_showWaitingS(backport.text(message))
@@ -174,12 +170,8 @@ class LobbyView(LobbyPageMeta, IWaitingWidget, IGlobalListener):
         self.as_hideWaitingS()
 
     def moveSpace(self, dx, dy, dz):
-        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
-        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
+        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
+        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
 
     def notifyCursorOver3dScene(self, isOver3dScene):
         if self.mapsTrainingController.isMapsTrainingPrbActive:

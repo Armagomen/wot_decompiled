@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/SMReconAbilityVehicleComponent.py
 import typing
 from Event import Event
 from gui.impl.gen import R
@@ -31,7 +29,7 @@ class SMReconAbilityVehicleComponent(DynamicScriptComponent):
             equipmentInfo = {}
             if item.getStage() in (STAGES.ACTIVATING, STAGES.DEACTIVATING):
                 res = R.strings.ingame_gui.abilities.recon
-                equipmentInfo = {'totalTime': item.getTotalTime(),
-                 'finishTime': 0,
-                 'text': res.stopVehicle() if item.getStage() == STAGES.ACTIVATING else res.startVehicle()}
+                equipmentInfo = {'totalTime': item.getTotalTime(), 
+                   'finishTime': 0, 
+                   'text': res.stopVehicle() if item.getStage() == STAGES.ACTIVATING else res.startVehicle()}
             self.entity.guiSessionProvider.shared.vehicleState.onEquipmentComponentUpdated(self._EQUIPMENT_NAME, self.entity.id, equipmentInfo)

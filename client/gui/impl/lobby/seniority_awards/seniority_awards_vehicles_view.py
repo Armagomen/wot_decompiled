@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/seniority_awards_vehicles_view.py
-import logging
-import typing
+import logging, typing
 from constants import ROLE_TYPE
 from gui.Scaleform.Waiting import Waiting
 from gui.game_control.seniority_awards_controller import VehicleSelectionState, VehiclesForSelectionState
@@ -31,12 +28,17 @@ from skeletons.gui.shared import IItemsCache
 from uilogging.seniority_awards.loggers import VehicleSelectionErrorNotificationsLogger
 from wg_async import wg_async, wg_await
 _logger = logging.getLogger(__name__)
-_SENIORITY_VEHICLES_ORDER = ('uk:GB146_Gabler_s_Destroyer', 'germany:G170_PzKpfwIV_Ausf_F2', 'ussr:R197_KV_1S_MZ', 'germany:G158_VK2801_105_SPXXI', 'usa:A134_M24E2_SuperChaffee', 'usa:A130_Super_Hellcat', 'ussr:R160_T_50_2')
+_SENIORITY_VEHICLES_ORDER = ('uk:GB146_Gabler_s_Destroyer', 'germany:G170_PzKpfwIV_Ausf_F2',
+                             'ussr:R197_KV_1S_MZ', 'germany:G158_VK2801_105_SPXXI',
+                             'usa:A134_M24E2_SuperChaffee', 'usa:A130_Super_Hellcat',
+                             'ussr:R160_T_50_2')
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def _vehiclesSortOrder(vehicleCD, itemsCache=None):
     vehicle = itemsCache.items.getItemByCD(vehicleCD)
-    return _SENIORITY_VEHICLES_ORDER.index(vehicle.name) if vehicle and vehicle.name in _SENIORITY_VEHICLES_ORDER else len(_SENIORITY_VEHICLES_ORDER)
+    if vehicle and vehicle.name in _SENIORITY_VEHICLES_ORDER:
+        return _SENIORITY_VEHICLES_ORDER.index(vehicle.name)
+    return len(_SENIORITY_VEHICLES_ORDER)
 
 
 def _sortVehiclesDict(vehDictItem):
@@ -72,8 +74,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(SeniorityRewardVehiclesView, self).createToolTip(event)
+        return super(SeniorityRewardVehiclesView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
@@ -91,7 +92,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
         if not self.__seniorityAwardsCtrl.isVehicleSelectionAvailable and not vehicles:
             _logger.error('Wrong data to show view')
             return
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             category = getRewardCategoryForUI()
             vm.setCategory(category.lower())
             vm.setFromEntryPoint(fromEntryPoint)
@@ -106,12 +107,19 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vm.setViewState(self.__state)
 
     def _getEvents(self):
-        return ((self.viewModel.onMoreRewards, self.__handleOnMoreRewards),
-         (self.viewModel.onGoToHangar, self.__handleShowHangar),
-         (self.viewModel.onClose, self.__handleOnClose),
-         (self.viewModel.onSelectVehicleReward, self.__handleOnSelectVehicleReward),
-         (self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange),
-         (self.__seniorityAwardsCtrl.onVehicleSelectionChanged, self.__onVehicleSelectionChanged))
+        return (
+         (
+          self.viewModel.onMoreRewards, self.__handleOnMoreRewards),
+         (
+          self.viewModel.onGoToHangar, self.__handleShowHangar),
+         (
+          self.viewModel.onClose, self.__handleOnClose),
+         (
+          self.viewModel.onSelectVehicleReward, self.__handleOnSelectVehicleReward),
+         (
+          self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange),
+         (
+          self.__seniorityAwardsCtrl.onVehicleSelectionChanged, self.__onVehicleSelectionChanged))
 
     def _finalize(self):
         self.__vehicles = []
@@ -153,17 +161,20 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vehicleCD = getVehicleCD(event.getArgument('vehicleCD'))
             if vehicleCD is None:
                 return
-            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SENIORITY_AWARD_VEHICLE, specialArgs=(vehicleCD,
-             100,
-             None,
-             None,
-             None,
-             None,
-             None,
-             False,
-             True,
-             True,
-             False)) if tooltipId == SeniorityAwardsTooltipConstants.TOOLTIP_VEHICLE_REWARD else None
+            if tooltipId == SeniorityAwardsTooltipConstants.TOOLTIP_VEHICLE_REWARD:
+                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SENIORITY_AWARD_VEHICLE, specialArgs=(
+                 vehicleCD,
+                 100,
+                 None,
+                 None,
+                 None,
+                 None,
+                 None,
+                 False,
+                 True,
+                 True,
+                 False))
+            return
 
     def __updateVehicles(self, vehicles):
         self.__vehicles = getSeniorityAwardsVehicles(vehicles, sortKey=_vehiclesSortOrder)
@@ -198,7 +209,8 @@ class SeniorityRewardVehiclesView(ViewImpl):
                 self.__state = ViewState.VIEW_REWARD_AFTER_SELECTION
                 vehicle = self.__seniorityAwardsCtrl.getVehicleSelectionQuestReward(self.__selectedVehicleId)
                 if vehicle:
-                    self.__vehicles = [vehicle.intCD]
+                    self.__vehicles = [
+                     vehicle.intCD]
                     self.__updateModelAfterSelection()
                 else:
                     self.destroyWindow()
@@ -227,7 +239,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
         Waiting.hide('selectSeniorityAwards')
 
     def __updateModelAfterSelection(self):
-        with self.getViewModel().transaction() as vm:
+        with self.getViewModel().transaction() as (vm):
             self.__setRewards(vm)
             vm.setViewState(self.__state)
 
@@ -237,7 +249,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
 
     def __onVehicleForSelectionChanged(self):
         if self.__state == ViewState.SELECTION:
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self.__setAvailableVehicles(vm)
                 vm.setAvailableRewardsCount(self.__seniorityAwardsCtrl.getVehiclesForSelectionCount)
 

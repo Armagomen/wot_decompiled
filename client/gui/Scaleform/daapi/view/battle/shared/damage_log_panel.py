@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/damage_log_panel.py
 from collections import defaultdict
 import BattleReplay
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE as _BET
@@ -24,46 +22,55 @@ from skeletons.gui.lobby_context import ILobbyContext
 _POSITIVE_EVENTS_MASK = _ETYPE.DAMAGE | _ETYPE.ASSIST_DAMAGE | _ETYPE.STUN
 _NEGATIVE_EVENTS_MASK = _ETYPE.BLOCKED_DAMAGE | _ETYPE.RECEIVED_DAMAGE | _ETYPE.RECEIVED_CRITICAL_HITS
 _ALL_EVENTS_MASK = _POSITIVE_EVENTS_MASK | _NEGATIVE_EVENTS_MASK
-_EVENT_POSITIONS_TO_CONTENT_MASK = {_EVENT_POSITIONS.ALL_BOTTOM: (0, _ALL_EVENTS_MASK),
- _EVENT_POSITIONS.NEGATIVE_AT_TOP: (_NEGATIVE_EVENTS_MASK, _POSITIVE_EVENTS_MASK)}
+_EVENT_POSITIONS_TO_CONTENT_MASK = {_EVENT_POSITIONS.ALL_BOTTOM: (
+                               0, _ALL_EVENTS_MASK), 
+   _EVENT_POSITIONS.NEGATIVE_AT_TOP: (
+                                    _NEGATIVE_EVENTS_MASK, _POSITIVE_EVENTS_MASK)}
 
 class _RECORD_STYLE(object):
     FULL = 0
     SHORT = 1
 
 
-_EVENT_POSITIONS_TO_RECORD_STYLE = {_EVENT_POSITIONS.ALL_BOTTOM: {_DISPLAYED_EVENT_TYPES.ALL: (_RECORD_STYLE.FULL, _RECORD_STYLE.FULL),
-                               _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: (_RECORD_STYLE.FULL, _RECORD_STYLE.FULL),
-                               _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: (_RECORD_STYLE.FULL, _RECORD_STYLE.SHORT)},
- _EVENT_POSITIONS.NEGATIVE_AT_TOP: {_DISPLAYED_EVENT_TYPES.ALL: (_RECORD_STYLE.FULL, _RECORD_STYLE.SHORT),
-                                    _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: (_RECORD_STYLE.FULL, _RECORD_STYLE.SHORT),
-                                    _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: (_RECORD_STYLE.FULL, _RECORD_STYLE.SHORT)}}
-_DISPLAYED_EVENT_TYPES_TO_CONTENT_MASK = {_DISPLAYED_EVENT_TYPES.ALL: _ALL_EVENTS_MASK,
- _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: _NEGATIVE_EVENTS_MASK,
- _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: _POSITIVE_EVENTS_MASK}
-_TOTAL_DAMAGE_SETTINGS_TO_CONTENT_MASK = {DAMAGE_LOG.TOTAL_DAMAGE: _ETYPE.DAMAGE,
- DAMAGE_LOG.ASSIST_DAMAGE: _ETYPE.ASSIST_DAMAGE,
- DAMAGE_LOG.BLOCKED_DAMAGE: _ETYPE.BLOCKED_DAMAGE,
- DAMAGE_LOG.ASSIST_STUN: _ETYPE.STUN}
-_LOGS_SETTINGS = (DAMAGE_LOG.SHOW_DETAILS, DAMAGE_LOG.EVENT_POSITIONS, DAMAGE_LOG.SHOW_EVENT_TYPES)
-_VEHICLE_CLASS_TAGS_ICONS = {VEHICLE_CLASS_NAME.LIGHT_TANK: _IMAGES.WHITE_ICON_LIGHTTANK_16X16,
- VEHICLE_CLASS_NAME.MEDIUM_TANK: _IMAGES.WHITE_ICON_MEDIUM_TANK_16X16,
- VEHICLE_CLASS_NAME.HEAVY_TANK: _IMAGES.WHITE_ICON_HEAVYTANK_16X16,
- VEHICLE_CLASS_NAME.SPG: _IMAGES.WHITE_ICON_SPG_16X16,
- VEHICLE_CLASS_NAME.AT_SPG: _IMAGES.WHITE_ICON_AT_SPG_16X16,
- BOT_DISPLAY_CLASS_NAMES.LIGHT_TANK_ELITE.value: _IMAGES.WHITE_ICON_LIGHTTANK_ELITE_16X16,
- BOT_DISPLAY_CLASS_NAMES.MEDIUM_TANK_ELITE.value: _IMAGES.WHITE_ICON_MEDIUM_TANK_ELITE_16X16,
- BOT_DISPLAY_CLASS_NAMES.HEAVY_TANK_ELITE.value: _IMAGES.WHITE_ICON_HEAVYTANK_ELITE_16X16,
- BOT_DISPLAY_CLASS_NAMES.SPG_ELITE.value: _IMAGES.WHITE_ICON_SPG_ELITE_16X16,
- BOT_DISPLAY_CLASS_NAMES.AT_SPG_ELITE.value: _IMAGES.WHITE_ICON_AT_SPG_ELITE_16X16,
- BOT_DISPLAY_CLASS_NAMES.BOSS.value: _IMAGES.WHITE_ICON_BOSS_16X16}
-_SHELL_TYPES_TO_STR = {BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING,
- BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_HE: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_HE,
- BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_CR: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_CR,
- BATTLE_LOG_SHELL_TYPES.HOLLOW_CHARGE: INGAME_GUI.DAMAGELOG_SHELLTYPE_HOLLOW_CHARGE,
- BATTLE_LOG_SHELL_TYPES.HE_MODERN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE,
- BATTLE_LOG_SHELL_TYPES.HE_LEGACY_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE,
- BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE}
+_EVENT_POSITIONS_TO_RECORD_STYLE = {_EVENT_POSITIONS.ALL_BOTTOM: {_DISPLAYED_EVENT_TYPES.ALL: (
+                                                            _RECORD_STYLE.FULL, _RECORD_STYLE.FULL), 
+                                 _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: (
+                                                                      _RECORD_STYLE.FULL, _RECORD_STYLE.FULL), 
+                                 _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: (
+                                                                      _RECORD_STYLE.FULL, _RECORD_STYLE.SHORT)}, 
+   _EVENT_POSITIONS.NEGATIVE_AT_TOP: {_DISPLAYED_EVENT_TYPES.ALL: (
+                                                                 _RECORD_STYLE.FULL, _RECORD_STYLE.SHORT), 
+                                      _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: (
+                                                                           _RECORD_STYLE.FULL, _RECORD_STYLE.SHORT), 
+                                      _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: (
+                                                                           _RECORD_STYLE.FULL, _RECORD_STYLE.SHORT)}}
+_DISPLAYED_EVENT_TYPES_TO_CONTENT_MASK = {_DISPLAYED_EVENT_TYPES.ALL: _ALL_EVENTS_MASK, 
+   _DISPLAYED_EVENT_TYPES.ONLY_NEGATIVE: _NEGATIVE_EVENTS_MASK, 
+   _DISPLAYED_EVENT_TYPES.ONLY_POSITIVE: _POSITIVE_EVENTS_MASK}
+_TOTAL_DAMAGE_SETTINGS_TO_CONTENT_MASK = {DAMAGE_LOG.TOTAL_DAMAGE: _ETYPE.DAMAGE, 
+   DAMAGE_LOG.ASSIST_DAMAGE: _ETYPE.ASSIST_DAMAGE, 
+   DAMAGE_LOG.BLOCKED_DAMAGE: _ETYPE.BLOCKED_DAMAGE, 
+   DAMAGE_LOG.ASSIST_STUN: _ETYPE.STUN}
+_LOGS_SETTINGS = (
+ DAMAGE_LOG.SHOW_DETAILS, DAMAGE_LOG.EVENT_POSITIONS, DAMAGE_LOG.SHOW_EVENT_TYPES)
+_VEHICLE_CLASS_TAGS_ICONS = {VEHICLE_CLASS_NAME.LIGHT_TANK: _IMAGES.WHITE_ICON_LIGHTTANK_16X16, 
+   VEHICLE_CLASS_NAME.MEDIUM_TANK: _IMAGES.WHITE_ICON_MEDIUM_TANK_16X16, 
+   VEHICLE_CLASS_NAME.HEAVY_TANK: _IMAGES.WHITE_ICON_HEAVYTANK_16X16, 
+   VEHICLE_CLASS_NAME.SPG: _IMAGES.WHITE_ICON_SPG_16X16, 
+   VEHICLE_CLASS_NAME.AT_SPG: _IMAGES.WHITE_ICON_AT_SPG_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.LIGHT_TANK_ELITE.value: _IMAGES.WHITE_ICON_LIGHTTANK_ELITE_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.MEDIUM_TANK_ELITE.value: _IMAGES.WHITE_ICON_MEDIUM_TANK_ELITE_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.HEAVY_TANK_ELITE.value: _IMAGES.WHITE_ICON_HEAVYTANK_ELITE_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.SPG_ELITE.value: _IMAGES.WHITE_ICON_SPG_ELITE_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.AT_SPG_ELITE.value: _IMAGES.WHITE_ICON_AT_SPG_ELITE_16X16, 
+   BOT_DISPLAY_CLASS_NAMES.BOSS.value: _IMAGES.WHITE_ICON_BOSS_16X16}
+_SHELL_TYPES_TO_STR = {BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING, 
+   BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_HE: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_HE, 
+   BATTLE_LOG_SHELL_TYPES.ARMOR_PIERCING_CR: INGAME_GUI.DAMAGELOG_SHELLTYPE_ARMOR_PIERCING_CR, 
+   BATTLE_LOG_SHELL_TYPES.HOLLOW_CHARGE: INGAME_GUI.DAMAGELOG_SHELLTYPE_HOLLOW_CHARGE, 
+   BATTLE_LOG_SHELL_TYPES.HE_MODERN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE, 
+   BATTLE_LOG_SHELL_TYPES.HE_LEGACY_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE, 
+   BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN: INGAME_GUI.DAMAGELOG_SHELLTYPE_HIGH_EXPLOSIVE}
 HIDDEN_SHELL = ''
 
 def _formatTotalValue(value):
@@ -75,7 +82,7 @@ class _VOModel(dict):
 
 
 class _VOModelProperty(object):
-    __slots__ = ('name',)
+    __slots__ = ('name', )
 
     def __init__(self, name):
         self.name = name
@@ -181,24 +188,29 @@ class _ShellVOBuilder(_IVOBuilder):
 
     def _getShellTypeStr(self, info):
         shType = info.getShellType()
-        return _SHELL_TYPES_TO_STR[shType] if shType is not None and shType in _SHELL_TYPES_TO_STR else ''
+        if shType is not None and shType in _SHELL_TYPES_TO_STR:
+            return _SHELL_TYPES_TO_STR[shType]
+        else:
+            return ''
 
     def _getShellTypeBg(self, info, arenaDP=None):
         shellType = info.getShellType()
         if shellType is None or arenaDP is None:
             return DAMAGE_LOG_SHELL_BG_TYPES.EMPTY
-        elif arenaDP.getVehicleInfo(info.getArenaVehicleID()).isSPG():
-            if shellType in (BATTLE_LOG_SHELL_TYPES.HE_MODERN, BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN):
-                return DAMAGE_LOG_SHELL_BG_TYPES.SPG_HE_NO_STUN
-            return DAMAGE_LOG_SHELL_BG_TYPES.SPG
         else:
-            return DAMAGE_LOG_SHELL_BG_TYPES.GOLD if info.isShellGold() else DAMAGE_LOG_SHELL_BG_TYPES.DEFAULT
+            if arenaDP.getVehicleInfo(info.getArenaVehicleID()).isSPG():
+                if shellType in (BATTLE_LOG_SHELL_TYPES.HE_MODERN, BATTLE_LOG_SHELL_TYPES.HE_LEGACY_NO_STUN):
+                    return DAMAGE_LOG_SHELL_BG_TYPES.SPG_HE_NO_STUN
+                return DAMAGE_LOG_SHELL_BG_TYPES.SPG
+            if info.isShellGold():
+                return DAMAGE_LOG_SHELL_BG_TYPES.GOLD
+            return DAMAGE_LOG_SHELL_BG_TYPES.DEFAULT
 
 
 class _EmptyShellVOBuilder(_ShellVOBuilder):
 
     def _getShellTypeStr(self, info):
-        pass
+        return ''
 
     def _getShellTypeBg(self, info, arenaDP=None):
         return DAMAGE_LOG_SHELL_BG_TYPES.EMPTY
@@ -290,7 +302,7 @@ class _ValueVOBuilder(_IVOBuilder):
         return _ValueVOModel(self._getValue(info))
 
     def _getValue(self, info):
-        pass
+        return 0
 
 
 class _CriticalHitValueVOBuilder(_ValueVOBuilder):
@@ -327,7 +339,11 @@ class _ActionImgVOBuilder(_IVOBuilder):
 
 
 class _DamageActionImgVOBuilder(_ActionImgVOBuilder):
-    __slots__ = ('__shotIcon', '__fireIcon', '__ramIcon', '__wcIcon', '__berserkerIcon', '__spawnBotDmgIcon', '__mineFieldIcon', '__smokeDmgIcon', '__corrodingShotDmgIcon', '__fireCircleDmgIcon', '__clingBranderDmgIcon', '__thunderStrikeIcon', '__airstrikeIcon', '__artilleryIcon', '__airstrikeZoneIcon', '__deathZoneIcon', '__battleshipIcon', '__destroyerIcon')
+    __slots__ = ('__shotIcon', '__fireIcon', '__ramIcon', '__wcIcon', '__berserkerIcon',
+                 '__spawnBotDmgIcon', '__mineFieldIcon', '__smokeDmgIcon', '__corrodingShotDmgIcon',
+                 '__fireCircleDmgIcon', '__clingBranderDmgIcon', '__thunderStrikeIcon',
+                 '__airstrikeIcon', '__artilleryIcon', '__airstrikeZoneIcon', '__deathZoneIcon',
+                 '__battleshipIcon', '__destroyerIcon')
 
     def __init__(self, shotIcon, fireIcon, ramIcon, wcIcon, mineFieldIcon, airstrikeIcon, artilleryIcon, airstrikeZoneIcon=None, deathZoneIcon=None, berserkerIcon=None, spawnBotDmgIcon=None, smokeDmgIcon=None, corrodingShotIcon=None, fireCircleDmgIcon=None, clingBranderDmgIcon=None, thunderStrikeIcon=None, battleshipIcon=None, destroyerIcon=None):
         super(_DamageActionImgVOBuilder, self).__init__('')
@@ -385,7 +401,9 @@ class _DamageActionImgVOBuilder(_ActionImgVOBuilder):
             return self.__battleshipIcon
         if info.isDestroyerStrike():
             return self.__destroyerIcon
-        return self.__fireIcon if info.isFireDamageZone() else self.__ramIcon
+        if info.isFireDamageZone():
+            return self.__fireIcon
+        return self.__ramIcon
 
 
 class _AssistActionImgVOBuilder(_ActionImgVOBuilder):
@@ -396,18 +414,20 @@ class _AssistActionImgVOBuilder(_ActionImgVOBuilder):
     def _getImage(self, info):
         if info.getBattleEventType() == _BET.TRACK_ASSIST:
             return _IMAGES.DAMAGELOG_IMMOBILIZED_16X16
-        return _IMAGES.DAMAGELOG_COORDINATE_16X16 if info.getBattleEventType() == _BET.RADIO_ASSIST else super(_AssistActionImgVOBuilder, self)._getImage(info)
+        if info.getBattleEventType() == _BET.RADIO_ASSIST:
+            return _IMAGES.DAMAGELOG_COORDINATE_16X16
+        return super(_AssistActionImgVOBuilder, self)._getImage(info)
 
 
 _DEFAULT_VEHICLE_VO_BUILDER = _VehicleVOBuilder()
 _EMPTY_SHELL_VO_BUILDER = _EmptyShellVOBuilder()
 _DAMAGE_VALUE_VO_BUILDER = _DamageValueVOBuilder()
-_ETYPE_TO_RECORD_VO_BUILDER = {_ETYPE.DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_16X16, fireIcon=_IMAGES.DAMAGELOG_FIRE_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_16X16, wcIcon=_IMAGES.DAMAGELOG_ICON_WORLD_COLLISION, mineFieldIcon=_IMAGES.DAMAGELOG_MINE_FIELD_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_YOUR_SPAWNED_BOT_DMG_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_16X16, airstrikeIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_EQ_16X16, artilleryIcon=_IMAGES.DAMAGELOG_ARTILLERY_EQ_16X16, battleshipIcon=_IMAGES.DAMAGELOG_ARTILLERY_16X16, destroyerIcon=_IMAGES.DAMAGELOG_ARTILLERY_16X16)),
- _ETYPE.RECEIVED_DAMAGE: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _DamageShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, fireIcon=_IMAGES.DAMAGELOG_BURN_ENEMY_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_ENEMY_16X16, wcIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, mineFieldIcon=_IMAGES.DAMAGELOG_BY_MINE_FIELD_16X16, berserkerIcon=_IMAGES.DAMAGELOG_BERSERKER_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SPAWNED_BOT_16X16, smokeDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SMOKE_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_ENEMY_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_ENEMY_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_ENEMY_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_ENEMY_16X16, airstrikeIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_EQ_ENEMY_16X16, artilleryIcon=_IMAGES.DAMAGELOG_ARTILLERY_EQ_ENEMY_16X16, airstrikeZoneIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_ENEMY_16X16, deathZoneIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16, battleshipIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16, destroyerIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16)),
- _ETYPE.BLOCKED_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _ShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_REFLECT_16X16)),
- _ETYPE.ASSIST_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _AssistActionImgVOBuilder()),
- _ETYPE.RECEIVED_CRITICAL_HITS: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _CritsShellVOBuilder(), _CriticalHitValueVOBuilder(), _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_CRITICAL_ENEMY_16X16)),
- _ETYPE.STUN: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_STUN_16X16))}
+_ETYPE_TO_RECORD_VO_BUILDER = {_ETYPE.DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_16X16, fireIcon=_IMAGES.DAMAGELOG_FIRE_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_16X16, wcIcon=_IMAGES.DAMAGELOG_ICON_WORLD_COLLISION, mineFieldIcon=_IMAGES.DAMAGELOG_MINE_FIELD_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_YOUR_SPAWNED_BOT_DMG_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_16X16, airstrikeIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_EQ_16X16, artilleryIcon=_IMAGES.DAMAGELOG_ARTILLERY_EQ_16X16, battleshipIcon=_IMAGES.DAMAGELOG_ARTILLERY_16X16, destroyerIcon=_IMAGES.DAMAGELOG_ARTILLERY_16X16)), 
+   _ETYPE.RECEIVED_DAMAGE: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _DamageShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _DamageActionImgVOBuilder(shotIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, fireIcon=_IMAGES.DAMAGELOG_BURN_ENEMY_16X16, ramIcon=_IMAGES.DAMAGELOG_RAM_ENEMY_16X16, wcIcon=_IMAGES.DAMAGELOG_DAMAGE_ENEMY_16X16, mineFieldIcon=_IMAGES.DAMAGELOG_BY_MINE_FIELD_16X16, berserkerIcon=_IMAGES.DAMAGELOG_BERSERKER_16X16, spawnBotDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SPAWNED_BOT_16X16, smokeDmgIcon=_IMAGES.DAMAGELOG_DMG_BY_SMOKE_16X16, corrodingShotIcon=_IMAGES.DAMAGELOG_CORRODING_SHOT_ENEMY_16X16, fireCircleDmgIcon=_IMAGES.DAMAGELOG_FIRE_CIRCLE_ENEMY_16X16, clingBranderDmgIcon=_IMAGES.DAMAGELOG_CLING_BRANDER_ENEMY_16X16, thunderStrikeIcon=_IMAGES.DAMAGELOG_THUNDER_STRIKE_ENEMY_16X16, airstrikeIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_EQ_ENEMY_16X16, artilleryIcon=_IMAGES.DAMAGELOG_ARTILLERY_EQ_ENEMY_16X16, airstrikeZoneIcon=_IMAGES.DAMAGELOG_AIRSTRIKE_ENEMY_16X16, deathZoneIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16, battleshipIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16, destroyerIcon=_IMAGES.DAMAGELOG_ARTILLERY_ENEMY_16X16)), 
+   _ETYPE.BLOCKED_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _ShellVOBuilder(), _DAMAGE_VALUE_VO_BUILDER, _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_REFLECT_16X16)), 
+   _ETYPE.ASSIST_DAMAGE: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _AssistActionImgVOBuilder()), 
+   _ETYPE.RECEIVED_CRITICAL_HITS: _LogRecordVOBuilder(_ReceivedHitVehicleVOBuilder(), _CritsShellVOBuilder(), _CriticalHitValueVOBuilder(), _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_CRITICAL_ENEMY_16X16)), 
+   _ETYPE.STUN: _LogRecordVOBuilder(_DEFAULT_VEHICLE_VO_BUILDER, _EMPTY_SHELL_VO_BUILDER, _DAMAGE_VALUE_VO_BUILDER, _ActionImgVOBuilder(image=_IMAGES.DAMAGELOG_STUN_16X16))}
 
 class _LogViewComponent(object):
 
@@ -520,10 +540,15 @@ class DamageLogPanel(BattleDamageLogPanelMeta):
         self.__efficiencyCtrl = self.sessionProvider.shared.personalEfficiencyCtrl
         self._topLog.initialize(setListProxyMethod=self._updateTopLog, addToListProxyMethod=self._addToTopLog, efficiencyCtrl=self.__efficiencyCtrl, arenaDP=self.__arenaDP)
         self._bottomLog.initialize(setListProxyMethod=self._updateBottomLog, addToListProxyMethod=self._addToBottomLog, efficiencyCtrl=self.__efficiencyCtrl, arenaDP=self.__arenaDP)
-        self._totalEvents = ((_ETYPE.DAMAGE, self._updateTotalDamageValue),
-         (_ETYPE.BLOCKED_DAMAGE, self._updateTotalBlockedDamageValue),
-         (_ETYPE.ASSIST_DAMAGE, self._updateTotalAssistValue),
-         (_ETYPE.STUN, self._updateTotalStunValue))
+        self._totalEvents = (
+         (
+          _ETYPE.DAMAGE, self._updateTotalDamageValue),
+         (
+          _ETYPE.BLOCKED_DAMAGE, self._updateTotalBlockedDamageValue),
+         (
+          _ETYPE.ASSIST_DAMAGE, self._updateTotalAssistValue),
+         (
+          _ETYPE.STUN, self._updateTotalStunValue))
         self._invalidatePanelVisibility()
         if self.__efficiencyCtrl is not None:
             self._invalidateContent()
@@ -619,21 +644,20 @@ class DamageLogPanel(BattleDamageLogPanelMeta):
     def _invalidatePanelVisibility(self):
         if self._isFullStatsShown or self._isWinnerScreenShown:
             return
-        else:
+        isVisible = True
+        if self.sessionProvider.getCtx().isPlayerObserver():
             isVisible = True
-            if self.sessionProvider.getCtx().isPlayerObserver():
-                isVisible = True
-            elif self.__vehStateCtrl is None:
+        elif self.__vehStateCtrl is None:
+            isVisible = self._isVisible
+        elif self.__vehStateCtrl.isInPostmortem:
+            if self.__arenaDP is None:
                 isVisible = self._isVisible
-            elif self.__vehStateCtrl.isInPostmortem:
-                if self.__arenaDP is None:
-                    isVisible = self._isVisible
-                else:
-                    isVisible = self.isSwitchToVehicle()
-            if self._isVisible != isVisible:
-                self._isVisible = isVisible
-                self._setSettings(self._isVisible, bool(self.settingsCore.getSetting(GRAPHICS.COLOR_BLIND)))
-            return
+            else:
+                isVisible = self.isSwitchToVehicle()
+        if self._isVisible != isVisible:
+            self._isVisible = isVisible
+            self._setSettings(self._isVisible, bool(self.settingsCore.getSetting(GRAPHICS.COLOR_BLIND)))
+        return
 
     def _onSettingsChanged(self, diff):
         for key in _TOTAL_DAMAGE_SETTINGS_TO_CONTENT_MASK.iterkeys():
@@ -679,9 +703,11 @@ class DamageLogPanel(BattleDamageLogPanelMeta):
             value = None
         if value != self.__totalValues[etype]:
             self.__totalValues[etype] = value
-            return (True, value)
+            return (
+             True, value)
         else:
-            return (False, value)
+            return (
+             False, value)
 
     def _updateTopLog(self, isVisible, isShortMode, records):
         self.as_detailStatsTopS(isVisible, isShortMode, records)

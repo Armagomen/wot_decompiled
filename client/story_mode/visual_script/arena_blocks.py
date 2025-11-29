@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/visual_script/arena_blocks.py
 from story_mode_common.story_mode_constants import UNDEFINED_MISSION_ID, MissionsDifficulty
 from visual_script import ASPECT
 from visual_script.arena_blocks import ArenaMeta
 from visual_script.block import Block
 from visual_script.dependency import dependencyImporter
 from visual_script.slot_types import SLOT_TYPE
-story_mode_missions = dependencyImporter('story_mode_common.configs.story_mode_missions')
+story_mode_missions, = dependencyImporter('story_mode_common.configs.story_mode_missions')
 
 class GetStoryModeDifficulty(Block, ArenaMeta):
 

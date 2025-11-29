@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/missions/missions_helpers.py
 import typing
 from constants import PREMIUM_TYPE
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.basic_missions.reward_progress.reward_progress_block_model import RewardProgressTypes
@@ -15,7 +13,7 @@ if typing.TYPE_CHECKING:
     from gui.server_events.event_items import Quest, DailyQuest, DailyEpicTokenQuest
     from gui.server_events.conditions import Token
     from frameworks.wulf.view.array import Array
-__all__ = ('needToUpdateQuestsInModel',)
+__all__ = ('needToUpdateQuestsInModel', )
 NUM_OF_COMMON_DAILY_QUESTS = 3
 
 class IMissionsGuiHelper(object):
@@ -120,7 +118,7 @@ def needToUpdateQuestsInModelByIds(quests, questIdsInModel):
 
 
 def getDailyEpicQuestToken(quest):
-    return first((token for token in quest.accountReqs.getTokens() if token.isDailyQuest()))
+    return first(token for token in quest.accountReqs.getTokens() if token.isDailyQuest())
 
 
 def formatCompleteCount(completedQuestsCount, totalCount, isIncreased=False):
@@ -136,13 +134,15 @@ def getRewardProgressType(winBackData=None, eventsCache=None):
     if winBackData:
         return RewardProgressTypes.WINBACK
     else:
-        return RewardProgressTypes.EPICQUEST if isEpicQuestEnabled() and eventsCache.getDailyEpicQuest() is not None else RewardProgressTypes.DISABLED
+        if isEpicQuestEnabled() and eventsCache.getDailyEpicQuest() is not None:
+            return RewardProgressTypes.EPICQUEST
+        return RewardProgressTypes.DISABLED
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def __hasProgressChanged(ids, eventsCache=None):
     hasProgressedFunc = eventsCache.questsProgress.hasQuestProgressed
-    return any((hasProgressedFunc(index) for index in ids))
+    return any(hasProgressedFunc(index) for index in ids)
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/platoon/view/comp7_light_platoon_welcome_view.py
 from comp7_light.gui.comp7_light_constants import SELECTOR_BATTLE_TYPES
 from comp7_light.gui.prb_control.entities import comp7_light_prb_helpers
 from constants import QUEUE_TYPE
@@ -17,11 +15,13 @@ class Comp7LightWelcomeView(WelcomeView):
     __platoonController = dependency.descriptor(IPlatoonController)
 
     def createToolTipContent(self, event, contentID):
-        return SquadBonusTooltipContent(battleType=SELECTOR_BATTLE_TYPES.COMP7_LIGHT, bonusState=getPlatoonBonusState(False)) if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip() else super(Comp7LightWelcomeView, self).createToolTipContent(event=event, contentID=contentID)
+        if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip():
+            return SquadBonusTooltipContent(battleType=SELECTOR_BATTLE_TYPES.COMP7_LIGHT, bonusState=getPlatoonBonusState(False))
+        return super(Comp7LightWelcomeView, self).createToolTipContent(event=event, contentID=contentID)
 
     def _initButtons(self):
         super(Comp7LightWelcomeView, self)._initButtons()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.createPlatoonForTwo.setText(backport.text(R.strings.platoon.buttons.createPlatoon.comp7_light.forTwo.text()))
             model.createPlatoonForTwo.setCaption(backport.text(R.strings.platoon.buttons.createPlatoon.caption()))
             model.createPlatoonForTwo.setTooltipCaption(backport.text(R.strings.platoon.buttons.createPlatoon.comp7_light.forTwo.caption()))
@@ -32,20 +32,20 @@ class Comp7LightWelcomeView(WelcomeView):
             model.createPlatoonForSeven.setDescription(backport.text(R.strings.platoon.buttons.createPlatoon.comp7_light.forSeven.description()))
 
     def _addListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.createPlatoonForTwo.onClick += self.__onCreateForTwo
             model.createPlatoonForSeven.onClick += self.__onCreateForSeven
             model.onOutsideClick += self._onOutsideClick
 
     def _removeListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.createPlatoonForTwo.onClick -= self.__onCreateForTwo
             model.createPlatoonForSeven.onClick -= self.__onCreateForSeven
             model.onOutsideClick -= self._onOutsideClick
 
     def _setBattleTypeRelatedProps(self):
         if self.__platoonController.getQueueType() == QUEUE_TYPE.COMP7_LIGHT:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setBattleType(backport.text(R.strings.menu.headerButtons.battle.types.comp7Light()))
                 model.setBackgroundImage(backport.image(R.images.gui.maps.icons.platoon.dropdown_backgrounds.comp7_light()))
         else:

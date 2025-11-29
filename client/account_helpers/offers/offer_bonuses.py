@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/offers/offer_bonuses.py
 from operator import itemgetter
 from helpers.i18n import makeString as _ms
 import typing
@@ -32,7 +30,9 @@ EXTRA_PARAMS_JOINER = ', '
 
 def _canCustomizationBeAdded(c11nItem, count):
     maxNumber = c11nItem.descriptor.maxNumber
-    return False if maxNumber != 0 and c11nItem.fullCount() + count > maxNumber else True
+    if maxNumber != 0 and c11nItem.fullCount() + count > maxNumber:
+        return False
+    return True
 
 
 class OfferBonusMixin(object):
@@ -40,25 +40,33 @@ class OfferBonusMixin(object):
 
     @property
     def displayedItem(self):
-        return None
+        return
 
     def getOfferName(self):
-        return self.displayedItem.userName if self.displayedItem else ''
+        if self.displayedItem:
+            return self.displayedItem.userName
+        return ''
 
     def getOfferDescription(self):
-        return self.displayedItem.shortDescriptionSpecial if self.displayedItem else ''
+        if self.displayedItem:
+            return self.displayedItem.shortDescriptionSpecial
+        return ''
 
     def getOfferIcon(self):
-        return self.displayedItem.getShopIcon(STORE_CONSTANTS.ICON_SIZE_SMALL) if self.displayedItem else ''
+        if self.displayedItem:
+            return self.displayedItem.getShopIcon(STORE_CONSTANTS.ICON_SIZE_SMALL)
+        return ''
 
     def getOfferNationalFlag(self):
-        pass
+        return ''
 
     def getOfferHighlight(self):
-        return self.displayedItem.getOverlayType() if self.displayedItem else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
+        if self.displayedItem:
+            return self.displayedItem.getOverlayType()
+        return SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
 
     def getGiftCount(self):
-        pass
+        return 0
 
     def getInventoryCount(self):
         if self.displayedItem and self.displayedItem.inventoryCount is not None:
@@ -109,7 +117,10 @@ class GoldOfferBonus(OfferEconomyBonusMixin, GoldBonus):
     DESCRIPTION_NAME = 'economyGold'
 
     def formatValue(self):
-        return backport.getIntegralFormat(self._value) if self._value else None
+        if self._value:
+            return backport.getIntegralFormat(self._value)
+        else:
+            return
 
 
 class CrystalOfferBonus(OfferEconomyBonusMixin, CrystalBonus):
@@ -139,7 +150,10 @@ class VehiclesOfferBonus(OfferBonusMixin, VehiclesBonus):
         return vehItem
 
     def getOfferName(self):
-        return ' '.join([getTypeUserName(self.displayedItem.type, False), tagText(int2roman(self.displayedItem.level), 'neutral'), self.displayedItem.shortUserName])
+        return (' ').join([
+         getTypeUserName(self.displayedItem.type, False),
+         tagText(int2roman(self.displayedItem.level), 'neutral'),
+         self.displayedItem.shortUserName])
 
     def getOfferNationalFlag(self):
         return RES_SHOP.getNationFlagIcon(self.displayedItem.nationName)
@@ -186,7 +200,8 @@ class OfferItemsBonusMixin(OfferBonusMixin):
 
     @property
     def displayedItem(self):
-        return self._getItems()[0][0] if self._getItems else None
+        if self._getItems:
+            return self._getItems()[0][0]
 
     def getGiftCount(self):
         giftCount = 0
@@ -218,7 +233,10 @@ class CrewBooksOfferBonus(OfferItemsBonusMixin, CrewBooksBonus):
 
     def getOfferNationalFlag(self):
         nation = self.displayedItem.getNation()
-        return RES_SHOP.getNationFlagIcon(self.displayedItem.getNation()) if nation is not None else None
+        if nation is not None:
+            return RES_SHOP.getNationFlagIcon(self.displayedItem.getNation())
+        else:
+            return
 
     def getOfferDescription(self):
         return self.displayedItem.shortDescription
@@ -274,7 +292,9 @@ class CustomizationsOfferBonus(OfferBonusMixin, CustomizationsBonus):
     @property
     def displayedItem(self):
         customizations = self.getCustomizations()
-        return customizations[0] if customizations else {}
+        if customizations:
+            return customizations[0]
+        return {}
 
 
 class CrewSkinsOfferBonus(OfferBonusMixin, CrewSkinsBonus):
@@ -299,11 +319,16 @@ class CrewSkinsOfferBonus(OfferBonusMixin, CrewSkinsBonus):
     @property
     def displayedItem(self):
         items = self.getItems()
-        return items[-1] if items else None
+        if items:
+            return items[(-1)]
+        else:
+            return
 
     @property
     def displayedBonusData(self):
-        return {self.getName(): self.getValue()} if isinstance(self.getValue(), list) else {self.getName(): [self.getValue()]}
+        if isinstance(self.getValue(), list):
+            return {self.getName(): self.getValue()}
+        return {self.getName(): [self.getValue()]}
 
 
 class NationalBlueprintOfferBonus(OfferBonusMixin, NationalBlueprintBonus):
@@ -380,10 +405,10 @@ def blueprintsOfferBonusFactory(name, value, isCompensation=False, ctx=None):
         fragmentType = getFragmentType(fragmentCD)
         if fragmentType == BlueprintTypes.VEHICLE:
             blueprintBonuses.append(VehicleBlueprintOfferBonus(name, (fragmentCD, fragmentCount), isCompensation, ctx))
-        if fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
+        elif fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
             vehicleCD = getVehicleCDForIntelligence(fragmentCD)
             blueprintBonuses.append(IntelligenceBlueprintOfferBonus(name, (vehicleCD, fragmentCount), isCompensation, ctx))
-        if fragmentType == BlueprintTypes.NATIONAL:
+        elif fragmentType == BlueprintTypes.NATIONAL:
             vehicleCD = getVehicleCDForNational(fragmentCD)
             blueprintBonuses.append(NationalBlueprintOfferBonus(name, (vehicleCD, fragmentCount), isCompensation, ctx))
 
@@ -410,7 +435,9 @@ def goodiesOfferBonusFactory(name, value, isCompensation=False, ctx=None):
     if baseGoodie.getBoosters():
         return BoosterOfferBonus(name, value, isCompensation, ctx)
     else:
-        return DemountKitOfferBonus(name, value, isCompensation, ctx) if baseGoodie.getDemountKits() else None
+        if baseGoodie.getDemountKits():
+            return DemountKitOfferBonus(name, value, isCompensation, ctx)
+        return
 
 
 class GoodiesOfferBonus(OfferBonusMixin, GoodiesBonus):
@@ -430,7 +457,7 @@ class BoosterOfferBonus(GoodiesOfferBonus):
         for key in goodies.iterkeys():
             return key
 
-        return None
+        return
 
     def getOfferName(self):
         return backport.text(R.strings.tooltips.boostersWindow.booster.activateInfo.title.dyn(self.displayedItem.boosterGuiType)())
@@ -450,7 +477,7 @@ class DemountKitOfferBonus(GoodiesOfferBonus):
         for key in goodies.iterkeys():
             return key
 
-        return None
+        return
 
     def getOfferName(self):
         return self.displayedItem.userName
@@ -473,7 +500,7 @@ class TankmenOfferBonus(OfferBonusMixin, TankmenBonus):
                 key = 'no_skills'
             result.append(backport.text(R.strings.quests.bonusName.tankmen.dyn(key)()))
 
-        return ' '.join(result)
+        return (' ').join(result)
 
     def getOfferDescription(self):
         result = []
@@ -484,7 +511,7 @@ class TankmenOfferBonus(OfferBonusMixin, TankmenBonus):
                 key = 'no_skills'
             result.append(backport.text(R.strings.quests.bonuses.item.tankmen.dyn(key)(), **group))
 
-        return ' '.join(result)
+        return (' ').join(result)
 
     def getOfferIcon(self):
         return backport.image(R.images.gui.maps.icons.quests.bonuses.s180x135.dyn(self.getName())())
@@ -497,7 +524,7 @@ class TankwomanOfferBonus(TankmenOfferBonus, TankwomanBonus):
 class TokensOfferBonus(OfferBonusMixin, TokensBonus):
 
     def getOfferDescription(self):
-        pass
+        return ''
 
     def getOfferIcon(self):
         return self.getIconBySize('s180x135')
@@ -526,9 +553,10 @@ def tokensOfferFactory(name, value, isCompensation=False, ctx=None):
     for tID, tValue in value.iteritems():
         if tID.startswith(BATTLE_BONUS_X5_TOKEN):
             result.append(X5BattleTokensOfferBonus({tID: tValue}, isCompensation, ctx))
-        if tID.startswith(CREW_BONUS_X3_TOKEN):
+        elif tID.startswith(CREW_BONUS_X3_TOKEN):
             result.append(X3CrewTokensOfferBonus({tID: tValue}, isCompensation, ctx))
-        result.append(TokensOfferBonus(name, {tID: tValue}, isCompensation, ctx))
+        else:
+            result.append(TokensOfferBonus(name, {tID: tValue}, isCompensation, ctx))
 
     return result
 
@@ -543,19 +571,19 @@ class OfferBonusAdapter(OfferBonusMixin):
         return getattr(self._bonus, item)
 
 
-OFFER_BONUSES = {Currency.CREDITS: CreditsOfferBonus,
- Currency.GOLD: GoldOfferBonus,
- Currency.CRYSTAL: CrystalOfferBonus,
- 'freeXP': FreeXpOfferBonus,
- PREMIUM_ENTITLEMENTS.PLUS: PlusPremiumDaysOfferBonus,
- 'vehicles': VehiclesOfferBonus,
- 'items': ItemsOfferBonusFactory(),
- 'customizations': CustomizationsOfferBonus,
- 'crewSkins': CrewSkinsOfferBonusFactory(),
- 'blueprints': blueprintsOfferBonusFactory,
- 'slots': CountableIntegralOfferBonus,
- 'goodies': goodiesOfferBonusFactory,
- 'tokens': tokensOfferFactory,
- 'tankmen': {'default': TankmenOfferBonus,
-             _ET.PERSONAL_MISSION: TankwomanOfferBonus},
- 'berths': CountableIntegralOfferBonus}
+OFFER_BONUSES = {Currency.CREDITS: CreditsOfferBonus, 
+   Currency.GOLD: GoldOfferBonus, 
+   Currency.CRYSTAL: CrystalOfferBonus, 
+   'freeXP': FreeXpOfferBonus, 
+   PREMIUM_ENTITLEMENTS.PLUS: PlusPremiumDaysOfferBonus, 
+   'vehicles': VehiclesOfferBonus, 
+   'items': ItemsOfferBonusFactory(), 
+   'customizations': CustomizationsOfferBonus, 
+   'crewSkins': CrewSkinsOfferBonusFactory(), 
+   'blueprints': blueprintsOfferBonusFactory, 
+   'slots': CountableIntegralOfferBonus, 
+   'goodies': goodiesOfferBonusFactory, 
+   'tokens': tokensOfferFactory, 
+   'tankmen': {'default': TankmenOfferBonus, 
+               _ET.PERSONAL_MISSION: TankwomanOfferBonus}, 
+   'berths': CountableIntegralOfferBonus}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/story_mode/gui/impl/lobby/difficulty_hint_checker.py
 from helpers import dependency
 from shared_utils import first
 from story_mode.skeletons.story_mode_controller import IStoryModeController

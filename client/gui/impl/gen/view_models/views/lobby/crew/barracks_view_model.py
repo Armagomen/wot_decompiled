@@ -1,11 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/barracks_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.crew.common.range_model import RangeModel
 from gui.impl.gen.view_models.views.lobby.crew.tankman_model import TankmanModel
 
 class BarracksViewModel(ViewModel):
-    __slots__ = ('onResetFilters', 'onBuyBerth', 'onTankmanSelected', 'onTankmanRecruit', 'onTankmanDismiss', 'onPlayTankmanVoiceover', 'onTankmanRestore', 'onLoadCards', 'showHangar', 'onNewTankmanHovered')
+    __slots__ = ('onResetFilters', 'onBuyBerth', 'onTankmanSelected', 'onTankmanRecruit',
+                 'onTankmanDismiss', 'onPlayTankmanVoiceover', 'onTankmanRestore',
+                 'onLoadCards', 'showHangar', 'onNewTankmanHovered')
 
     def __init__(self, properties=7, commands=10):
         super(BarracksViewModel, self).__init__(properties=properties, commands=commands)

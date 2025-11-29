@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/progress_counter/progress_counter.py
 import BattleReplay
 from gui.Scaleform.daapi.view.battle.pve_base.base.pve_hud_widget import SingleItemPveHudWidget
 from gui.Scaleform.daapi.view.battle.pve_base.progress_counter.settings_model import ProgressCounterServerModel
@@ -17,7 +15,9 @@ class PveProgressCounter(SingleItemPveHudWidget, PveProgressCounterMeta):
         if serverState == ProgressCounterState.HIDDEN:
             return None
         else:
-            return ProgressCounterState.REGULAR if serverState in [ProgressCounterState.APPEARANCE, ProgressCounterState.REGULAR] else serverState
+            if serverState in [ProgressCounterState.APPEARANCE, ProgressCounterState.REGULAR]:
+                return ProgressCounterState.REGULAR
+            return serverState
 
     def _onPrebattlePeriod(self):
         if BattleReplay.isPlaying():

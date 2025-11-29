@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/customization.py
 import typing
 from Event import Event
 if typing.TYPE_CHECKING:
@@ -84,6 +82,9 @@ class ICustomizationService(object):
         raise NotImplementedError
 
     def getItemByID(self, itemTypeID, itemID):
+        raise NotImplementedError
+
+    def getTypedItemsByCDs(self, itemTypeID, itemCDs):
         raise NotImplementedError
 
     def getItemByCD(self, itemCD):

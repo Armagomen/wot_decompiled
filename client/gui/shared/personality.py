@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/personality.py
-import logging
-import time
+import logging, time
 from functools import partial
-import typing
-import weakref
-import BigWorld
-import SoundGroups
+import typing, weakref, BigWorld, SoundGroups
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
 from account_helpers.account_validator import ValidationCodes, InventoryVehiclesValidator, InventoryOutfitValidator, InventoryTankmenValidator
@@ -109,27 +103,16 @@ def onAccountShowGUI(ctx):
     ServicesLocator.lobbyContext.onAccountShowGUI(ctx)
     skippedHangar = ctx.get('skipHangar', False)
     if skippedHangar:
-        __runComponentsSync(ctx, [partial(__processWebCtrl, force=False, skipLogin=True),
-         partial(__runUiLogging, ensureSession=True),
-         __runItemsCacheSync,
-         __runSettingsSync])
+        __runComponentsSync(ctx, [
+         partial(__processWebCtrl, force=False, skipLogin=True), partial(__runUiLogging, ensureSession=True),
+         __runItemsCacheSync, __runSettingsSync])
     else:
         Waiting.show('enter')
         ServicesLocator.statsCollector.noteHangarLoadingState(HANGAR_LOADING_STATE.SHOW_GUI)
-        __runComponentsSync(ctx, [__runUiLogging,
-         __runItemsCacheSync,
-         __validateInventoryVehicles,
-         __validateInventoryOutfit,
-         __validateInventoryTankmen,
-         __cacheVehicles,
-         __runQuestSync,
-         __runSettingsSync,
-         __processEULA,
-         __notifyOnSyncComplete,
-         __requestDossier,
-         __initializeHangarSpace,
-         __initializeHangar,
-         __processWebCtrl,
+        __runComponentsSync(ctx, [
+         __runUiLogging, __runItemsCacheSync, __validateInventoryVehicles, __validateInventoryOutfit,
+         __validateInventoryTankmen, __cacheVehicles, __runQuestSync, __runSettingsSync, __processEULA,
+         __notifyOnSyncComplete, __requestDossier, __initializeHangarSpace, __initializeHangar, __processWebCtrl,
          __processElen])
 
 
@@ -222,24 +205,24 @@ def onCenterIsLongDisconnected(isLongDisconnected):
 
 
 def onIGRTypeChanged(roomType, xpFactor):
-    ServicesLocator.lobbyContext.updateGuiCtx({'igrData': {'roomType': roomType,
-                 'igrXPFactor': xpFactor}})
+    ServicesLocator.lobbyContext.updateGuiCtx({'igrData': {'roomType': roomType, 
+                   'igrXPFactor': xpFactor}})
 
 
 def init():
-    global onCenterIsLongDisconnected
-    global onShopResyncStarted
-    global onAccountShowGUI
-    global onScreenShotMade
-    global onIGRTypeChanged
     global onAccountBecomeNonPlayer
-    global onAvatarBecomePlayer
     global onAccountBecomePlayer
-    global onServerReplayExiting
-    global onKickedFromServer
-    global onServerReplayEntering
+    global onAccountShowGUI
     global onAvatarBecomeNonPlayer
+    global onAvatarBecomePlayer
+    global onCenterIsLongDisconnected
+    global onIGRTypeChanged
+    global onKickedFromServer
+    global onScreenShotMade
+    global onServerReplayEntering
+    global onServerReplayExiting
     global onShopResync
+    global onShopResyncStarted
     miniclient.configure_state()
     ServicesLocator.connectionMgr.onKickedFromServer += onKickedFromServer
     g_playerEvents.onAccountShowGUI += onAccountShowGUI
@@ -425,7 +408,7 @@ def __processEULA(_, callback=None):
 def __processValidator(validator, callback):
     code = yield future_async.await_callback(validator.validate)()
     if code != ValidationCodes.OK:
-        ServicesLocator.gameplay.goToLoginByError('#menu:disconnect/codes/{}'.format(code))
+        ServicesLocator.gameplay.goToLoginByError(('#menu:disconnect/codes/{}').format(code))
         callback(False)
         return
     callback(True)

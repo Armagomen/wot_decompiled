@@ -1,15 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: story_mode/scripts/client/StoryModeLootableComponent.py
-import CGF
-import Math
+import CGF, Math
 from GenericComponents import TransformComponent
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from Event import SafeEvent, EventManager
 
 class StoryModeLootableComponent(DynamicScriptComponent):
-    _PREFAB_URL_BY_STYLE = {'SM_LOOT_EQUIPMENT': 'content/CGFPrefabs/Storymode/loot.prefab',
-     'SM_LOOT_PLAN': 'content/CGFPrefabs/Storymode/loot.prefab',
-     'SM_LOOT_TANK': 'content/CGFPrefabs/Storymode/loot_yellow.prefab'}
+    _PREFAB_URL_BY_STYLE = {'SM_LOOT_EQUIPMENT': 'content/CGFPrefabs/Storymode/loot.prefab', 
+       'SM_LOOT_PLAN': 'content/CGFPrefabs/Storymode/loot.prefab', 
+       'SM_LOOT_TANK': 'content/CGFPrefabs/Storymode/loot_yellow.prefab'}
 
     def __init__(self, *args, **kwargs):
         super(StoryModeLootableComponent, self).__init__(*args, **kwargs)

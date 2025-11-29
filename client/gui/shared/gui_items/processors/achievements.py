@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/processors/achievements.py
-import logging
-import BigWorld
+import logging, BigWorld
 from gui import SystemMessages
 from gui.SystemMessages import SM_TYPE
 from gui.impl import backport

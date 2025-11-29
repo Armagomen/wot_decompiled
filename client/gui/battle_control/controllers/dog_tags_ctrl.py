@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/dog_tags_ctrl.py
-import logging
-import weakref
-import Math
-import BigWorld
-import Event
-import PlayerEvents
-import CGF
-import GenericComponents
+import logging, weakref, Math, BigWorld, Event, PlayerEvents, CGF, GenericComponents
 from UIComponents import GamefaceMarkerComponent
 from AvatarInputHandler import cameras
 from constants import ARENA_PERIOD
@@ -138,10 +129,10 @@ class DogTagsController(IBattleController):
             vInfo = arenaDP.getVehicleInfo(vehicleId)
             playerName = vInfo.player.name
             playerClanAbbrev = vInfo.player.clanAbbrev
-            dtInfoExt = {'vehicleId': vehicleId,
-             'dogTag': {'components': dogTagInfo['dogTag']['components'],
-                        'playerName': playerName if playerName else '',
-                        'clanTag': playerClanAbbrev if playerClanAbbrev else ''}}
+            dtInfoExt = {'vehicleId': vehicleId, 
+               'dogTag': {'components': dogTagInfo['dogTag']['components'], 
+                          'playerName': playerName if playerName else '', 
+                          'clanTag': playerClanAbbrev if playerClanAbbrev else ''}}
             result.append(dtInfoExt)
 
         return result

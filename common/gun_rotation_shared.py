@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/gun_rotation_shared.py
-import BigWorld
-import Math
+import BigWorld, Math
 from math import pi, fabs
 from debug_utils import *
 
@@ -41,13 +38,17 @@ def encodeGunAngles(yaw, pitch, pitchLimits):
 
 
 def decodeGunAngles(code, pitchLimits):
-    return (decodeAngleFromUint(code >> 6 & 1023, 10), decodeRestrictedValueFromUint((code & 63), 6, *pitchLimits))
+    return (
+     decodeAngleFromUint(code >> 6 & 1023, 10),
+     decodeRestrictedValueFromUint((code & 63), 6, *pitchLimits))
 
 
 def _clamp(minBound, value, maxBound):
     if value < minBound:
         return minBound
-    return maxBound if value > maxBound else value
+    if value > maxBound:
+        return maxBound
+    return value
 
 
 def getLocalAimPoint(vehicleDescriptor):

@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/web_season_provider.py
 from collections import namedtuple
-import logging
-import time
-import BigWorld
-import Event
-import constants
+import logging, time, BigWorld, Event, constants
 from adisp import adisp_process
 from helpers import dependency
 from helpers.time_utils import ONE_MINUTE
@@ -21,7 +15,8 @@ TOP_LEAGUE_ID = 1
 
 class RankedWebSeasonProvider(object):
     __webController = dependency.descriptor(IWebController)
-    __slots__ = ('onInfoUpdated', '__isStarted', '__callbackID', '__lastUpdateTime', '__webSeasonInfo', '__fakeInfo')
+    __slots__ = ('onInfoUpdated', '__isStarted', '__callbackID', '__lastUpdateTime',
+                 '__webSeasonInfo', '__fakeInfo')
 
     def __init__(self):
         super(RankedWebSeasonProvider, self).__init__()
@@ -93,4 +88,6 @@ class RankedWebSeasonProvider(object):
         return
 
     def __getInvokeDelay(self):
-        return _LEAGUE_SYNC_TIME if self.__webController.isAvailable() else _WEB_AVAILABLE_SYNC_TIME
+        if self.__webController.isAvailable():
+            return _LEAGUE_SYNC_TIME
+        return _WEB_AVAILABLE_SYNC_TIME
